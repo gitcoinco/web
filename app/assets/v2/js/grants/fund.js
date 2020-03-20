@@ -52,7 +52,7 @@ $(document).ready(function() {
     e.preventDefault();
   });
 
-  $('#frequency_unit, #js-token').on('select2:select', event => {
+  $('#frequency_unit, #js-token').on('select2:select', (event) => {
     updateSummary();
   });
 

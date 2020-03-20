@@ -88,7 +88,7 @@ function openContributorPopOver(contributor, element) {
   const keywords = document.result.keywords || '';
   const contributorURL = `/api/v0.1/profile/${contributor}?keywords=${keywords}`;
 
-  if (popoverData.filter(index => index[contributor]).length === 0) {
+  if (popoverData.filter((index) => index[contributor]).length === 0) {
     if (controller) {
       controller.abort();
     }

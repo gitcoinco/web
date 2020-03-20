@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
+
 var appBounty;
 let bounty = [];
 let url = location.href;
@@ -13,7 +15,7 @@ document.result = bounty;
 
 Vue.mixin({
   methods: {
-    fetchBounty: function(newData) {
+    fetchBounty(newData) {
       let vm = this;
       let apiUrlBounty = `/actions/api/v0.1/bounty?github_url=${document.issueURL}`;
       const getBounty = fetchData(apiUrlBounty, 'GET');
@@ -63,7 +65,7 @@ Vue.mixin({
           console.log(result);
           const data = {
             url: document.issueURL,
-            txid: txid,
+            txid,
             network: document.web3network
           };
           let syncDb = fetchData ('/sync/web3/', 'POST', data);
@@ -91,7 +93,7 @@ Vue.mixin({
       return false;
 
     },
-    checkOwnerAddress: function(bountyOwnerAddress) {
+    checkOwnerAddress(bountyOwnerAddress) {
       let vm = this;
 
       if (cb_address) {
@@ -100,7 +102,7 @@ Vue.mixin({
       return false;
 
     },
-    checkInterest: function() {
+    checkInterest() {
       let vm = this;
 
       if (!vm.contxt.github_handle) {

@@ -287,7 +287,7 @@ var getFilters = function() {
     $.each($('input[name="' + filter + '"]:checked'), function() {
       if ($(this).attr('val-ui')) {
         _filters.push('<a class="filter-tag ' + filter + '"><span>' + $(this).attr('val-ui') + '</span>' +
-          '<i class="fas fa-times" onclick="removeFilter(\'' + filter + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+          '<i class="fas fa-times" onclick="removeFilter(\'' + filter + "', '" + $(this).attr('value') + '\')"></i></a>');
       }
     });
   });

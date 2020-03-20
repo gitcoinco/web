@@ -98,7 +98,7 @@ Vue.mixin({
       vm.checkUnread();
 
     },
-    onScroll: function() {
+    onScroll() {
       vm = this;
       let scrollContainer = event.target;
 
@@ -247,4 +247,3 @@ const newData = (newObj, oldObj) => {
     });
   });
 };
-

@@ -24,7 +24,7 @@ var tokenAddressToDetailsByNetwork = function(addr, network) {
 const tokenNameToDetails = (network, token_name) => {
   var _tokens = tokens(network);
 
-  return _tokens.filter(_token => _token.name == token_name)[0];
+  return _tokens.filter((_token) => _token.name == token_name)[0];
 };
 
 var load_tokens = function() {

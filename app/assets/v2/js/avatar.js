@@ -12,7 +12,7 @@ var AvatarPage = (function() {
         'Content-Type': 'application/json; charset=utf-8',
         'X-CSRFToken': csrftoken
       },
-      body: JSON.stringify({ avatarPk: avatarPk })
+      body: JSON.stringify({ avatarPk })
     });
   }
 

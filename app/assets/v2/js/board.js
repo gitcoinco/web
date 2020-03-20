@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
+
 let contributorBounties = {};
 let bounties = {};
 let authProfile = document.contxt.profile_id;
@@ -7,7 +9,7 @@ let network = document.contxt.env === 'prod' ? 'mainnet' : 'rinkeby';
 
 Vue.mixin({
   methods: {
-    fetchBounties: function(type) {
+    fetchBounties(type) {
       let vm = this;
       let apiUrlbounties = `/funder_dashboard/${type}/`;
       let getbounties = fetchData (apiUrlbounties, 'GET');
@@ -20,7 +22,7 @@ Vue.mixin({
         vm.error[type] = 'Error fetching bounties. Please contact founders@gitcoin.co';
       });
     },
-    fetchApplicants: function(id, key, type) {
+    fetchApplicants(id, key, type) {
       let vm = this;
       let apiUrlApplicants = `/funder_dashboard/bounties/${id}/`;
 
@@ -36,7 +38,7 @@ Vue.mixin({
         vm.isLoading[`${type}Contrib`] = false;
       });
     },
-    fetchContributorBounties: function(type) {
+    fetchContributorBounties(type) {
       let vm = this;
       let apiUrlbounties = `/contributor_dashboard/${type}/`;
       let getbounties = fetchData (apiUrlbounties, 'GET');
@@ -85,7 +87,7 @@ Vue.mixin({
 
       vm.disabledBtn = key;
 
-      $.when(postStartpWork).then(response => {
+      $.when(postStartpWork).then((response) => {
         vm.contributors.splice(key, 1);
         vm.disabledBtn = '';
         _alert({ message: gettext('Contributor removed from bounty.') }, 'success');

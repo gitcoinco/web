@@ -101,7 +101,7 @@ $(document).ready(function($) {
             timestamp: timestamp(),
             dataHash: null,
             issuer: web3.eth.coinbase,
-            txid: txid
+            txid
           });
         }
       };

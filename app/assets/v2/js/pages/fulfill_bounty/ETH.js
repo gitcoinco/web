@@ -9,7 +9,7 @@ window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 1000);
 });
 
-const ethFulfillBounty = data => {
+const ethFulfillBounty = (data) => {
   if (is_bounties_network) {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
   }

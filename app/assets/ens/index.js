@@ -13,7 +13,10 @@ function signMsgAndCreateSubdomain(message, from) {
       return console.error(err);
     if (result.error)
       return console.error(result.error);
-    $.post('', { 'signedMsg': result.result, 'signer': from }, function(data) {
+    $.post('', {
+      'signedMsg': result.result,
+      'signer': from
+    }, function(data) {
       _alert(data.msg);
       location.reload();
     });

@@ -28,12 +28,12 @@ const save_job_status = function() {
 
   const dataSend = {
     'job_cv': job_cv[0],
-    'job_search_status': job_search_status,
-    'show_job_status': show_job_status,
-    'job_type': job_type,
-    'remote': remote,
-    'linkedin_url': linkedin_url,
-    'job_salary': job_salary
+    job_search_status,
+    show_job_status,
+    job_type,
+    remote,
+    linkedin_url,
+    job_salary
   };
 
   $.each(dataSend, (index, input) => {

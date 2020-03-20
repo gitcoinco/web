@@ -57,7 +57,7 @@ createBounty = data => {
     'expires_date': expiresDate,
     'metadata': JSON.stringify(metadata),
     'raw_data': {}, // ETC-TODO REMOVE ?
-    'network': network,
+    network,
     'issue_description': metadata.issueDescription,
     'funding_organisation': metadata.fundingOrganisation,
     'balance': data.amount * 10 ** token.decimals, // ETC-TODO REMOVE ?

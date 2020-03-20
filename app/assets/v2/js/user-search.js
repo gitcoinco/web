@@ -45,7 +45,7 @@ function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_
         cache: true
       },
       data: initialData,
-      allowClear: allowClear,
+      allowClear,
       theme: themeChoice,
       placeholder: 'Search by Github/Gitcoin username',
       minimumInputLength: 3,

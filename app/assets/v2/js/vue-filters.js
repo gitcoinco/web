@@ -1,4 +1,3 @@
-/* eslint no-empty: "error" */
 Vue.filter('moment-fromnow', function(date) {
   moment.defineLocale('en-custom', {
     parentLocale: 'en',

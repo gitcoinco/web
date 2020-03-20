@@ -11,7 +11,7 @@ const tribeTitle = () => {
       const sendTitle = fetchData (
         url,
         'POST',
-        { 'member': memberId, 'title': title },
+        { 'member': memberId, title },
         { 'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()}
       );
 

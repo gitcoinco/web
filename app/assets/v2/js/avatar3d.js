@@ -158,14 +158,18 @@ $(document).ready(function() {
     var request = $.ajax({
       url: url,
       type: 'POST',
-      data: JSON.stringify({save: true}),
+      data: JSON.stringify({
+        save: true
+      }),
       dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       success: function(response) {
         if (onSuccess) {
           onSuccess();
         } else {
-          _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
+          _alert({
+            message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')
+          }, 'success');
           changeStep(1);
         }
       },
@@ -176,7 +180,9 @@ $(document).ready(function() {
           text = response.responseJSON.message;
         }
         $('#later-button').show();
-        _alert({ message: text}, 'error');
+        _alert({
+          message: text
+        }, 'error');
       }
     });
   }
@@ -187,7 +193,9 @@ $(document).ready(function() {
   function upload3DAvatars() {
 
     save3DAvatar(() => {
-      _alert({ message: gettext('The avatar has been saved to GitCoin profile. Now upload to 3Box...') }, 'success');
+      _alert({
+        message: gettext('The avatar has been saved to GitCoin profile. Now upload to 3Box...')
+      }, 'success');
       if (window.syncTo3Box) {
         syncTo3Box({
           onLoading,

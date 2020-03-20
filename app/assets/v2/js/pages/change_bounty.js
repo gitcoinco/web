@@ -75,7 +75,7 @@ const formatUser = user => {
   return markup;
 };
 
-const formatUserSelection = user => {
+const formatUserSelection = (user) => {
   let selected;
 
   if (user.id) {

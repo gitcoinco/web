@@ -7,7 +7,7 @@ let numUsers = '';
 
 Vue.mixin({
   methods: {
-    fetchUsers: function(newPage) {
+    fetchUsers(newPage) {
       let vm = this;
 
       vm.isLoading = true;
@@ -95,7 +95,7 @@ Vue.mixin({
         }
       }
     },
-    fetchBounties: function() {
+    fetchBounties() {
       let vm = this;
 
       // fetch bounties
@@ -179,7 +179,7 @@ Vue.mixin({
           vm.errorIssueDetails = undefined;
         } else {
           vm.issueDetails = null;
-          vm.errorIssueDetails = 'This issue wasn\'t bountied yet.';
+          vm.errorIssueDetails = "This issue wasn't bountied yet.";
         }
       });
 

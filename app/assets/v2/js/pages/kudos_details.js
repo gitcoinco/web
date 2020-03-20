@@ -1,17 +1,13 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
+
 var cloneKudos = function(name, numClones) {
   console.log('name: ' + name);
-  /* eslint no-console: "error" */
-
-  // show: number of Clones
   console.log('numClones: ' + numClones);
 
   var account = web3.eth.coinbase;
   var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
 
   kudosContractInstance.clone(name, numClones, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
-    /* eslint no-console: "error" */
-
-    // show: txid
     console.log('txid:' + txid);
     return true;
   });
@@ -81,7 +77,7 @@ $(document).ready(function() {
 
 var rotate_kudos_msg = function() {
   var messages = [
-    [ 'Buy Me!', 'I\'m looking for a good home.' ],
+    [ 'Buy Me!', "I'm looking for a good home." ],
     [ 'Please.. Choose me!', 'All I want is a good home.' ],
     [ 'Please.. Choose me!', "You don't know what it's like to live in the blockchain..." ],
     [ "It's ...", '... so lonely in here..' ],

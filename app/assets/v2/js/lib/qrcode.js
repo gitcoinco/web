@@ -65,10 +65,10 @@ var QRCode;
 	}
 
 	QR8bitByte.prototype = {
-		getLength: function (buffer) {
+		getLength(buffer) {
 			return this.parsedData.length;
 		},
-		write: function (buffer) {
+		write(buffer) {
 			for (var i = 0, l = this.parsedData.length; i < l; i++) {
 				buffer.put(this.parsedData[i], 8);
 			}

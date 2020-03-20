@@ -1,3 +1,5 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
+
 $(document).ready(function() {
 
   load_tokens();
@@ -91,7 +93,7 @@ const handleRequest = (data) => {
   $.ajax({
     type: 'post',
     url: '',
-    data: data,
+    data,
     headers: {'X-CSRFToken': csrftoken},
     success: () => {
       if (data.comment)

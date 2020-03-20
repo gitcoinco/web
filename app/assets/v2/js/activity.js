@@ -1,4 +1,5 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 
 $(document).ready(function() {
 
@@ -55,9 +56,9 @@ $(document).ready(function() {
     const $target = $(this).parents('.activity_detail_content');
     const html = `
     <p class='float-right p-0 m-0 video_options_container'>
-    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> | 
-    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> | 
-    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> | 
+    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> |
+    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> |
+    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> |
     <a href=# class=' leave_video_call'>Leave Video Call <i class="far fa-times-circle"></i></a>
     </p>`;
 
@@ -289,11 +290,7 @@ $(document).ready(function() {
     // calc total
     var answers = $this.parents('.poll_choices').find('span');
 
-<<<<<<< HEAD
-    // eslint-disable-next-line no-console
     console.log(answers.length);
-=======
->>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
     for (var i = 0; i < answers.length; i++) {
       total += parseInt(($(answers[i]).text()));
     }
@@ -602,6 +599,7 @@ $(document).ready(function() {
     var $target = $parent.parents('.activity.box').find('.comment_container');
     var $existing_textarea = $target.find('textarea.enter-activity-comment');
     var existing_text = $existing_textarea.length ? $existing_textarea.val() : '';
+
     if (!$target.length) {
       $target = $parent.parents('.box').find('.comment_container');
     }
@@ -673,7 +671,7 @@ $(document).ready(function() {
                 <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
                   •
                 </span>
-              </span>          
+              </span>
                 <b>${comment['name']}</b>
                 <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
                 @${comment['profile_handle']}
@@ -760,9 +758,6 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $(this).parents('.activity').data('pk');
 
     $.post(url, params, function(response) {
-      /* eslint no-console: "error" */
-
-      // event: toggle like
       console.log('toggle like');
     });
     var like_count = parseInt($(this).find('span.like_count').text());
@@ -936,7 +931,7 @@ function throttle(fn, wait) {
     }
   };
 }
-  
+
 
 window.addEventListener('scroll', throttle(function() {
   var offset = 800;
@@ -945,4 +940,3 @@ window.addEventListener('scroll', throttle(function() {
     $('.infinite-more-link').click();
   }
 }, 500));
-

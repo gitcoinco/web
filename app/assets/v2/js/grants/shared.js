@@ -27,7 +27,7 @@ function grantCategoriesSelection(target, apiUrl) {
 }
 
 // Waiting State screen
-var enableWaitState = container => {
+var enableWaitState = (container) => {
   $(container).hide();
   $('.interior .body').addClass('open');
   $('.interior .body').addClass('loading');

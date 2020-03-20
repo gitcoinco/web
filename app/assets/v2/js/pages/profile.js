@@ -3,7 +3,7 @@ $(document).ready(function() {
     document.location = $(this).attr('href');
   });
 
-  $('#kudos-section').on('click keypress', '.flip-card', e => {
+  $('#kudos-section').on('click keypress', '.flip-card', (e) => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
       return;

@@ -11,7 +11,7 @@ const load_kudos_card_images = function() {
   };
 
   function onIntersection(imageEntites) {
-    imageEntites.forEach(image => {
+    imageEntites.forEach((image) => {
       if (image.isIntersecting) {
         observer.unobserve(image.target);
         image.target.src = image.target.dataset.src;
@@ -45,4 +45,3 @@ function resetTimer() {
   clearInterval(interval);
   startTimer();
 }
-

@@ -50,7 +50,7 @@ function saveGrant(grantData, isFinal) {
   });
 }
 
-const processReceipt = receipt => {
+const processReceipt = (receipt) => {
   let formData = new FormData();
 
   formData.append('contract_address', receipt.contractAddress);

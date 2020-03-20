@@ -1,8 +1,10 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
+
 $(document).ready(function() {
   var post_receipt = function(err, res) {
     $('#loadingImg').hide();
     $('.js-submit').removeAttr('disabled');
-    if (err != null) {
+    if (err !== null) {
       $('#failureReason').html(err.message);
       $('#errResponse').show();
       return;
@@ -20,9 +22,6 @@ $(document).ready(function() {
 
     decimals = 6;
     faucetAmount = Math.round(faucetAmount * 10 ** decimals) / 10 ** decimals;
-    /* eslint no-console: "error" */
-
-    // show: fundingAccount and destinationAccount
     console.log(fundingAccount, 'from:to', destinationAccount);
     web3.eth.sendTransaction({
       from: fundingAccount,

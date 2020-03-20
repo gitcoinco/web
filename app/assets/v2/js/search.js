@@ -12,7 +12,7 @@ function search(elem) {
         url: '/api/v0.1/search/',
         dataType: 'json',
         delay: 250,
-        data: function(params) {
+        data(params) {
 
           let query = {
             term: params.term[0] === '@' ? params.term.slice(1) : params.term
@@ -143,4 +143,3 @@ $('document').ready(function() {
 
 
 });
-

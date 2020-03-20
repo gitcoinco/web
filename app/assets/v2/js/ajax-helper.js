@@ -18,8 +18,8 @@ var fetchData = function(urlRequest, methodType, data, headers) {
   return $.ajax({
     url: urlRequest,
     type: methodType,
-    headers: headers,
+    headers,
     dataType: 'json',
-    data: data
+    data
   });
 };

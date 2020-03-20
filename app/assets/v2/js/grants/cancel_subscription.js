@@ -2,17 +2,17 @@
 $(document).ready(() => {
   $('#period').select2();
 
-  setInterval (() => {
+  setInterval(() => {
     notifyOwnerAddressMismatch(
       $('#subscriber-handle').val(),
       $('#subscriber-address').val(),
       '#cancel-subscription',
-      'Looks like you\'ve funded this grant with ' + $('#subscriber-address').val() + '. Switch to that to take action on your subscription.'
+      "Looks like you've funded this grant with " + $('#subscriber-address').val() + '. Switch to that to take action on your subscription.'
     );
   }, 1000);
 
   $('#js-cancelSubscription').validate({
-    submitHandler: function(form) {
+    submitHandler(form) {
       let data = {};
 
       $.each($(form).serializeArray(), function() {
@@ -31,13 +31,18 @@ $(document).ready(() => {
       deployedToken.methods.decimals().call(function(err, decimals) {
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
-        let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
+        let amountSTR = realTokenAmount.toLocaleString('fullwide', {
+          useGrouping: false
+        });
 
         let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
 
         web3.eth.getAccounts(function(err, accounts) {
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: realGasPrice})
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({
+            from: accounts[0],
+            gasPrice: realGasPrice
+          })
             .on('transactionHash', function(transactionHash) {
               $('#sub_end_approve_tx_id').val(transactionHash);
               const linkURL = get_etherscan_url(transactionHash);

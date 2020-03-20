@@ -1207,7 +1207,7 @@ var do_actions = function(result) {
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['payout'],
-      text: '<i class=\'fab fa-ethereum mr-2\'></i> Payout Bounty',
+      text: "<i class='fab fa-ethereum mr-2'></i> Payout Bounty",
       title: gettext('Payout the bounty to one or more submitters.'),
       primary: true,
       parent: 'bounty_actions'
@@ -1669,7 +1669,7 @@ const render_activity = function(result, all_results) {
   }).reverse();
   only_one_approve(activities);
 
-  var html = '<div class="row box activity"><div class="col-12 empty"><p>' + gettext('There\'s no activity yet!') + '</p></div></div>';
+  var html = '<div class="row box activity"><div class="col-12 empty"><p>' + gettext("There's no activity yet!") + '</p></div></div>';
 
   if (activities.length > 0) {
     var template = $.templates('#activity_template');

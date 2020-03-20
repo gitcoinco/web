@@ -1,5 +1,5 @@
 const sleep = (milliseconds) => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
 var trim_dots = function(_str, _chars) {
@@ -154,7 +154,7 @@ $(document).ready(function() {
       }
       document.typewriter_speed = 40;
       e.preventDefault();
-      
+
     }
   });
   $('body').keydown(function(e) {
@@ -163,7 +163,7 @@ $(document).ready(function() {
     if (e.keyCode == 32 || e.keyCode == 13) {
       document.typewriter_speed = 5;
       e.preventDefault();
-      
+
     }
   });
 
@@ -207,7 +207,7 @@ $(document).ready(function() {
     e.preventDefault();
     var feedback = prompt('Any comments for the quest author? (optional)', 'Feedback: ');
     var polarity = $(this).data('direction');
-    
+
     var params = {
       'polarity': polarity,
       'feedback': feedback

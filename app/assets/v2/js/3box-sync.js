@@ -1,6 +1,6 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 (function($) {
   function syncComplete(res) {
-    // eslint-disable-next-line no-console
     console.log('sync complete');
   }
 
@@ -29,7 +29,7 @@
         // eslint-disable-next-line no-console
         console.log('openBox succeeded');
         callback(box);
-      }).catch(err => {
+      }).catch((err) => {
         onFailure();
       });
     });
@@ -46,7 +46,7 @@
       }
     };
 
-    box.openSpace(name, opts).catch(err => {
+    box.openSpace(name, opts).catch((err) => {
       onFailure();
     });
   }
@@ -59,13 +59,13 @@
 
       if (data) {
         // get public key-value
-        const public_keys = Object.keys(data).filter(k => k[0] !== '_');
-        const public_values = public_keys.map(k => data[k]);
+        const public_keys = Object.keys(data).filter((k) => k[0] !== '_');
+        const public_values = public_keys.map((k) => data[k]);
         // get private key-value
-        let private_keys = Object.keys(data).filter(k => k[0] === '_');
-        const private_values = private_keys.map(k => data[k]);
+        let private_keys = Object.keys(data).filter((k) => k[0] === '_');
+        const private_values = private_keys.map((k) => data[k]);
 
-        private_keys = private_keys.map(k => k.substring(1));
+        private_keys = private_keys.map((k) => k.substring(1));
 
         // save data to space
         const r_public = await space.public.setMultiple(public_keys, public_values);
@@ -96,10 +96,10 @@
   }
 
   async function removeUnusedFields(space, keys) {
-    const public_keys = keys.filter(k => k[0] !== '_');
-    let private_keys = keys.filter(k => k[0] === '_');
+    const public_keys = keys.filter((k) => k[0] !== '_');
+    let private_keys = keys.filter((k) => k[0] === '_');
 
-    private_keys = private_keys.map(k => k.substring(1));
+    private_keys = private_keys.map((k) => k.substring(1));
 
     const public_data = await space.public.all();
     const private_data = await space.private.all();
@@ -136,18 +136,12 @@
         return result;
       }
     } catch (err) {
-      /* eslint no-console: "error" */
-
-      // show Error when fetching profile data
       console.log('Error when fetching profile data', err);
     }
     return null;
   }
 
   async function syncTo3Box(option) {
-    /* eslint no-console: "error" */
-
-    // process: start sync data
     console.log('start sync data to 3box');
 
     onLoading = option ? option.onLoading : null;
