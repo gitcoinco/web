@@ -8,7 +8,7 @@ REVISION=$(git rev-parse --verify HEAD)
 USER=$(whoami)
 
 echo "Submitting deployment to Sentry - Revision: ($REVISION) - Environment: ($ENV) - User: ($USER)"
-curl -v https://sentry.io/api/0/organizations/$SENTRY_ORG/releases/ \
+curl -v https://sentry.io/api/0/organizations/"$SENTRY_ORG"/releases/ \
   -X POST \
   -H 'Authorization: Bearer '"$SENTRY_TOKEN"'' \
   -H 'Content-Type: application/json' \

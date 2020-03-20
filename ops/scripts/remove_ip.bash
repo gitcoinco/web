@@ -6,7 +6,6 @@ GC_SG_ID=$(< app/app/.env | grep "GC_SG_ID" | awk -F "=" '{print $2}')
 : "${GC_SSH_PORT?You need to set GC_SSH_PORT in .env}"
 : "${GC_SG_ID?You need to set GC_SG_ID in .env}"
 
-CURRENT_USER=$(whoami)
 WAN_IP=$(curl v4.ifconfig.co)/32
 GC_SSH_PROTO=${GC_SSH_PROTO:-'tcp'}
 

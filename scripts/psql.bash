@@ -23,11 +23,11 @@ export $(grep -v '^#' app/app/.env | xargs)
 
 
 # Settings
-PGUSER=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $1}')
-PGHOST=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}'  | awk -F '@' '{print $2}')
-PGPORT=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $3}'  | awk -F ':' '{print $1}' | awk -F '/' '{print $1}')
-PGPASS=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}' | awk -F '@' '{print $1}')
+PGUSER=$(echo "$DATABASE_URL" | awk -F '://' '{print "$2"}'  | awk -F ':' '{print "$1"}')
+PGHOST=$(echo "$DATABASE_URL" | awk -F '://' '{print "$2"}'  | awk -F ':' '{print "$2"}'  | awk -F '@' '{print "$2"}')
+PGPORT=$(echo "$DATABASE_URL" | awk -F '://' '{print "$2"}'  | awk -F ':' '{print $3}'  | awk -F ':' '{print "$1"}' | awk -F '/' '{print "$1"}')
+PGPASS=$(echo "$DATABASE_URL" | awk -F '://' '{print "$2"}'  | awk -F ':' '{print "$2"}' | awk -F '@' '{print "$1"}')
 PGDB=gitcoin
 PGDB=postgres
 
-psql $PGDB -p $PGPORT -h $PGHOST -U $PGUSER
+psql "$PGDB" -p "$PGPORT" -h "$PGHOST" -U "$PGUSER"

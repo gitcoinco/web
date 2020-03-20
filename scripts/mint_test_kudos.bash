@@ -10,14 +10,14 @@ read input
 KUDOS_CONTRACT_DIR=Kudos721Contract
 
 # If no network is specified, use localhost
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
 	NETWORK=localhost
 else
-	NETWORK=$1
+	NETWORK="$1"
 fi
 
-ACCOUNT=$2
-PRIVATE_KEY=$3
+ACCOUNT="$2"
+PRIVATE_KEY="$3"
 
 docker-compose down -v
 docker-compose up -d
@@ -32,7 +32,7 @@ truffle migrate --reset
 cd - || exit 1
 
 if [ -n "$ACCOUNT" ] && [ -n "$PRIVATE_KEY" ]; then
-	docker-compose exec web bash -c "cd app && python manage.py mint_all_kudos ${NETWORK} /code/app/kudos/kudos.yaml --account ${ACCOUNT} --private_key ${PRIVATE_KEY} --live"
+	docker-compose exec web bash -c "cd app && python manage.py mint_all_kudos "${NETWORK}" /code/app/kudos/kudos.yaml --account "${ACCOUNT}" --private_key "${PRIVATE_KEY}" --live"
 else
-	docker-compose exec web bash -c "cd app && python manage.py mint_all_kudos ${NETWORK} /code/app/kudos/kudos.yaml --live"
+	docker-compose exec web bash -c "cd app && python manage.py mint_all_kudos "${NETWORK}" /code/app/kudos/kudos.yaml --live"
 fi

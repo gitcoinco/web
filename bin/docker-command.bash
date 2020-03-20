@@ -80,4 +80,4 @@ if [ "$KUDOS_LOCAL_SYNC" = "on" ]; then
     bash /code/scripts/sync_kudos_local.bash &
 fi
 
-exec python3 manage.py $GC_WEB_OPTS
+exec python3 manage.py "$GC_WEB_OPTS"
