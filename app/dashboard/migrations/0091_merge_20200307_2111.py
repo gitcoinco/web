@@ -7,7 +7,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('dashboard', '0090_merge_20200306_1553'),
-        ('dashboard', '0089_merge_20200307_2024'),
     ]
 
     operations = [
