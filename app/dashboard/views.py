@@ -905,13 +905,7 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         )
 
     if rating != 0:
-        pass
-        # TODO - reenable in future when we have avg feedback availaable
- #       profile_list = profile_list.annotate(
- #           average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
- #       ).filter(
- #           average_rating__gte=rating
- #       )
+        profile_list = profile_list.filter(average_rating__gte=rating)
 
     if organisation:
         profile_list1 = profile_list.filter(
