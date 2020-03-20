@@ -1005,8 +1005,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "COVID: Stay Safe & Carry On"
-    new_kudos_pks = [12403, 12299, 12239]
+    subject = "Public Health is a Public Good"
+    new_kudos_pks = [12681, 12577, 12580]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1025,25 +1025,31 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Hello Gitcoiners,
+Hello Gitcoin community,
 </p>
-<p>
-We'd like to first and foremost wish you all a safe few weeks ahead. We're living in a COVID world now - and while there's no need to panic - we can take simple precautions to
-impact the lives of ourselves and others. The biggest - social distancing - is outlined with fantastic detail alongside the reasons this could
-save countless lives <a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">in this article.</a>
-We first and foremost hope you and your families stay safe.
 
-With proper precautions in shape, feel free to come join us (virtually!) for <a href=https://hackathons.gitcoin.co/funding-the-future”>Funding The Future.</a> Our goal
-is to make this our most interactive hackathon yet -- especially important in a time where distance physically is a requirement. Do join us if your circumstances allow, we'd love
-to have you! You can get a sneak preview of this in our <a href="https://gitcoin.co/townsquare">Town Square</a> anytime :)
+<p>
+Hows everyone doing? Since the world has begun to fully grasp the impact of the COVID-19 crisis, things are clearly moving very quickly.
+</p>
 
-</p>
 <p>
- <a href=“https://hackathons.gitcoin.co/funding-the-future”>Funding the Future</a> Virtual Hackathon starts on Monday, March 16th and will be packed with great bounties on DeFi, funding mechanisms, and DAOs!
- In an update, we've moved the <a href=“https://gitcoin.co/grants/">Gitcoin Grants CLR</a> Round 5 round back one week (starting 3/23), giving us some time to readjust to uncertainty across markets and the world.
+One way that the Gitcoin team is responding is by announcing a round of Gitcoin Grants Matching for Public Health. The TLDR is that it's going to be at least $100k for tech, $50k for media, and $50k for public health. It will start Monday. Details <a href=“https://twitter.com/gitcoin/status/1238524450045337603”>here</a>.
 </p>
+
 <p>
-Interested in sneak peaks at what the product team is doing or being an early tester? <a href=“https://gitcoin.co/pixelantdesign”>Hit me up</a> on the <a href=“https://gitcoin.co/chat”>Gitcoin Chat</a>!
+Our mission has always been to "Grow Open Source". Those who are economists will recognize that Open Source is a public good - everyone benefits from it. In Gitcoin Grants Round 4 we expanded into Media Grants - to fund Journalism in a 21st century native way. In Gitcoin Grants Round 5 we will be funding Public Health.
+</p>
+
+<p>
+Open Source Software is a public good. Journalism is a public good. Public Health is a public good. Let me say this emphatically: Public Goods are Good!
+</p>
+
+<p>
+Recently, a Gitcoin contributor named @cervoneluca submitted a GIP (Gitcoin Improvement Proposal) to expand the scope of our mission beyond just Open Source. Read it <a href=“https://github.com/gitcoinco/GIPs/issues/17”>here</a>. What would Gitcoin look like if it focused on *all* public goods, not just Open Source?
+</p>
+
+<p>
+It is an interesting and important time to be a Gitcoiner. I hope we can rally and come out the other side of this better, together.
 </p>
 
 {kudos_friday}
@@ -1051,31 +1057,31 @@ Interested in sneak peaks at what the product team is doing or being an early te
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be an ETH 2.0 stream hosted by our own Kevin Owocki!
+        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will feature sponsors from the <a href=“https://gitcoin.co/hackathon/funding-the-future/“>Funding The Future</a> virtual hackathon. We'll have developers from Alto, ETC Labs, and Mysterium on to talk about their bounties, so come with questions!
         </li>
     </ul>
 </p>
 <p>
-Back to (remote) work,
+Stay safe,
 </p>
 '''
     highlights = [{
-        'who': 'Bobface',
+        'who': 'thecydonian',
         'who_link': True,
-        'what': 'More great work with Austin Griffith!',
-        'link': 'https://gitcoin.co/issue/austintgriffith/eth.build/14/4074',
+        'what': 'DESIGN - Created A ROBOT Vector Avatar For The Gitcoin Avatar Builder',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/6169/4091',
         'link_copy': 'View more',
     }, {
-        'who': 'dhaileytaha',
+        'who': 'xiaods',
         'who_link': True,
-        'what': 'Kudos to the best Infura Community contributor',
-        'link': 'https://gitcoin.co/issue/INFURA/infura/198/4066',
+        'what': 'Fixed 2 MultiGesture component breaks on iOS Safari with react-script',
+        'link': 'https://gitcoin.co/issue/cybersemics/em/308/4075',
         'link_copy': 'View more',
     }, {
-        'who': 'developerfred',
+        'who': 'x5engine',
         'who_link': True,
-        'what': 'Kudos to one of our most active Gitcoiners!',
-        'link': 'https://gitcoin.co/issue/gitcoinco/web/6093/4068',
+        'what': 'Added Chainlink Contracts To Log Parser',
+        'link': 'https://gitcoin.co/issue/blockchain-etl/ethereum-etl-airflow/65/4110',
         'link_copy': 'View more',
     }, ]
 
@@ -1092,14 +1098,14 @@ Back to (remote) work,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
-        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge: Last Chance! ',
+        'url': 'https://github.com/mysteriumnetwork/node/issues/1867',
+        'primer': '[1 ETH + Chance to win $5,000] Lightning Network Payments On Mysterium Network',
     }, {
-        'url': 'https://github.com/mysteriumnetwork/node/issues/1865',
-        'primer': 'A sneak peak at a Mysterium prize during FTF next week',
+        'url': 'https://github.com/etclabscore/evm_llvm/issues/48',
+        'primer': '!First True ETC Bounty! EVM LLVM Implement Instruction Scheduler - $1500 Bounty',
     }, {
-        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/93',
-        'primer': 'A great AdEx one, also a sneak peak :)',
+        'url': 'https://github.com/nknorg/nkn/issues/686',
+        'primer': '1-Click Deploy NKN On Synology NAS (918+, 718+, 218+)',
     }]
 
 
