@@ -47,7 +47,6 @@
   width: 100%;
   object-fit: contain;
   height: 100%;
-  border-bottom: 1px solid lightgrey;
 }
 
 .grant-item__logo {
