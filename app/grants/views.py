@@ -66,7 +66,7 @@ total_clr_pot = 200000
 clr_round = 4
 clr_active = False
 show_clr_card = True
-next_round_start = timezone.datetime(2020, 3, 23)
+next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 
 if True:
     clr_matching_banners_style = 'results'
