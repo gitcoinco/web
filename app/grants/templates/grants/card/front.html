@@ -60,29 +60,19 @@
   </div>
   <div class="grant-item__footer ">
       {% if clr_active %}
-          {% if show_clr_card %}
-            <div class="clr mb-3">
-              <div class="match__round pb-1 pt-2 mb-2">
-                <h2 class="title col-8 font-caption g-bold">
-                  CLR MATCH ROUND 5
-                </h2>
-              </div>
-              <div class="col-12">
-                <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                  {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
-                </h2>
-                <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate <b>(32 contributors)</b></p>
-              </div>
+          <div class="clr mb-3">
+            <div class="match__round pb-1 pt-2 mb-2">
+              <h2 class="title col-8 font-caption g-bold">
+                CLR MATCH ROUND 5
+              </h2>
             </div>
-          {% else %}
-            <p class="sub-title font-weight-semibold font-caption mb-1 py-1">MONTHLY RECURRING</p>
-            <p class="font-title mb-0 font-weight-bold">
-              {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
-            </p>
-            <p class="font-caption {% if grant.clr_matching %} mb-2 {% endif %}">
-              of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
-            </p>
-          {% endif %}
+            <div class="col-12">
+              <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
+              </h2>
+              <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate <b>(32 contributors)</b></p>
+            </div>
+          </div>
           <div class="col-12 pb-4">
             {% include 'grants/card/clr_estimate.html' with short=True %}
           </div>
