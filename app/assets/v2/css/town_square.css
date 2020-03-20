@@ -1056,6 +1056,52 @@ input[type=checkbox].toggle-switch:checked::after {
   background-color: rgb(23, 7, 61);
 }
 
+.dark .bg-white {
+  background-color: #2b2642!important;
+  box-shadow: 60px!important;
+}
+
+.dark .grey {
+  color: #fff!important;
+}
+
+.dark .tip_activity {
+  background-color: black!important;
+}
+
+.dark .activity_stream {
+  color: #fff!important;
+}
+
+.dark .activity_stream .activity_comments .comment_container.filled {
+  background-color: #877cab42!important;
+}
+
+.dark .activity_stream .activity_comments .activity_comments_main_comment {
+  color: #fff!important;
+}
+
+.dark .textarea.form__input {
+  color: #fff!important;
+}
+
+.dark .font-body {
+  color: #fff!important;
+}
+
+.dark .form-control {
+  background-color: #282440!important;
+}
+
+.dark #status {
+  background-color: #282440;
+}
+
+.dark .form__input {
+  background-color: #282440;
+  color: #fff!important;
+}
+
 .dark .townsquare_nav-list .nav-item .nav-link {
   color: #fff;
 }
