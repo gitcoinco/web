@@ -1173,6 +1173,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     relevant_grants = []
     if what == 'tribes':
         relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
+    elif what == 'all_grants':
+        activities = activities.filter(grant__isnull=False)
     elif what == 'grants':
         relevant_grants = get_my_grants(user.profile) if is_auth else []
     elif what == 'my_threads' and is_auth:
@@ -1321,7 +1323,11 @@ def create_status_update(request):
                 key = f"{key}_id"
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
-        
+
+        if request.POST.get('has_video'):
+            kwargs['metadata']['video'] = True
+            kwargs['metadata']['gfx'] = request.POST.get('video_gfx')
+
         if request.POST.get('option1'):
             poll_choices = []
             for i in range(1, 5):

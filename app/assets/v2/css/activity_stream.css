@@ -5,6 +5,17 @@
   background-color: #ecf0f4;
   border: 0px solid;
 }
+.click_here_to_join_video{
+  width: 100%;
+  cursor: pointer;
+  min-height: 250px;
+}
+.click_here_to_join_video iframe{
+  min-height: 250px;
+}
+.click_here_to_join_video img{
+  width: 100%;
+}
 .after_copy{
   font-size: 12px;
 }
@@ -197,8 +208,25 @@ a .sup {
   display: inline-block;
 }
 
-#poll-button.selected{
+.click-gif.selected,
+#poll-button.selected,
+#video-button.selected{
   color: black;
+}
+#video_container{
+  background-color: white;
+  text-align: center;
+}
+#video_container img{
+  width: 75%;
+  margin: 0px auto;
+}
+iframe.popout{
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  width: 25% !important;
+  height: 25% !important;
 }
 
 #poll_container input{
@@ -270,6 +298,9 @@ a .sup {
   border: 1px solid;
   margin-left: 25%;
 }
+.dropdown-menu.gif-inject-target.show{
+  margin-top: -185px;
+}
 
 @media (min-width: 768px) {
   .activity_feed_kudos_image{
@@ -281,6 +312,11 @@ a .sup {
   }
 }
 @media (max-width: 767.98px) {
+  .dropdown-menu.gif-inject-target.show{
+    margin-top: -150px;
+    margin-left: -300px;
+  }
+
   .activity_stream .activity-avatar{
     margin-top: 0px;
   }
