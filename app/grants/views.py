@@ -755,7 +755,7 @@ def grant_fund(request, grant_id, grant_slug):
     active_tab = 'normal'
     fund_reward = None
     round_number = 4
-    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders').exists() and clr_active
+    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders_round_5').exists() and clr_active
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
