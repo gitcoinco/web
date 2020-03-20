@@ -100,19 +100,42 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-  $('#js-token').change(function(e) {
-    if($("#js-token").val() == '0x0000000000000000000000000000000000000000'){
-      _alert("Sorry but this token is not supported for recurring donations", 'error', 1000);
-      $('.contribution_type select').val('once');
-      $('.contribution_type').addClass('hidden');
+
+  $('input[name=match_direction]').change(function(e) {
+    var direction = $(this).val();
+    if(direction == "+"){
+      $(".est_direction").text('increase').css('background-color', 'yellow');
+      setTimeout(function(){
+        $(".est_direction").css('background-color', 'white');
+      }, 500)
+      $(".comment_container").removeClass('hidden');
+      $(".hide_wallet_address_container").removeClass('hidden');
     } else {
-      $('.contribution_type').removeClass('hidden');
+      $(".est_direction").text('decrease').css('background-color', 'yellow');;
+      setTimeout(function(){
+        $(".est_direction").css('background-color', 'white');
+      }, 500)
+      $(".comment_container").addClass('hidden');
+      $(".hide_wallet_address_container").addClass('hidden');
+    }
+  });
+  
+  $('#js-token').change(function(e) {
+    
+    if($("#js-token").val() == '0x0000000000000000000000000000000000000000' && $("#recurring_or_not").val() == 'recurring'){
+      _alert("Sorry but this token is not supported for recurring donations", 'error', 1000);
+    }
+    if($("#js-token").val() == '0x0000000000000000000000000000000000000000'){
+      $('.contribution_type select').val('once');
+    } else {
     }
   });
   setInterval(function(){
     if($("#js-token").val() == '0x0000000000000000000000000000000000000000'){
-      $('.contribution_type').addClass('hidden');
+      $('option[value=recurring]').attr('disabled', 'disabled');
       $('.contribution_type select').val('once');
+    } else {
+      $('option[value=recurring]').attr('disabled', null);
     }
   }, 100);
 
@@ -524,8 +547,8 @@ const waitforData = (callback) => {
 const updateSummary = (element) => {
   contract_version = $('#contract_version').val();
 
-  $('.summary-period').html($('input#frequency_count').val());
-  $('.summary-period-gitcoin').html($('input#frequency_count').val());
+  $('.summary-period').html($('#period').val());
+  $('.summary-period-gitcoin').html($('#period').val());
   $('.summary-frequency-unit').html($('#frequency_unit').val());
   $('.summary-frequency-unit-gitcoin').html($('#frequency_unit').val());
 

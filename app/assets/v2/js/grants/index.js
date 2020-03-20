@@ -74,6 +74,10 @@ const populateFilters = () => {
 
 $('.grants_nav a').on('click', function(event) {
   event.preventDefault();
+  if($(this).attr('href')){
+    document.location.href = $(this).attr('href');
+    return;
+  }
   const queryParam = $(this).data('type');
   const queryParamValue = $(this).data('value');
 

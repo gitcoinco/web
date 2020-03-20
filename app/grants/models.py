@@ -305,6 +305,10 @@ class Grant(SuperModel):
         self.activeSubscriptions = handles
 
     @property
+    def negative_voting_enabled(self):
+        return self.grant_type == 'media'
+
+    @property
     def org_name(self):
         from git.utils import org_name
         try:
@@ -505,6 +509,12 @@ class Subscription(SuperModel):
         default='',
         max_length=255,
         help_text=_('The tx id of the split transfer'),
+        blank=True,
+    )
+    match_direction = models.CharField(
+        default='+',
+        max_length=255,
+        help_text=_('The direction of the match'),
         blank=True,
     )
     split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
@@ -1189,7 +1199,8 @@ class MatchPledge(SuperModel):
 
     PLEDGE_TYPES = [
         ('tech', 'tech'),
-        ('media', 'media')
+        ('media', 'media'),
+        ('health', 'health')
     ]
 
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))

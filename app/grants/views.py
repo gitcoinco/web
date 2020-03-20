@@ -69,6 +69,8 @@ clr_round = 5
 clr_active = True
 show_clr_card = True
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
+round_end = timezone.datetime(2020, 4, 7, 20, 0)
+
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12427, 12392, 12307, 12343, 12156, 12164]
 
 if not clr_active:
@@ -181,6 +183,7 @@ def grants(request):
         'network': network,
         'keyword': keyword,
         'type': grant_type,
+        'round_end': round_end,
         'next_round_start': next_round_start,
         'now': timezone.now(),
         'clr_matching_banners_style': clr_matching_banners_style,
@@ -675,6 +678,7 @@ def grant_fund(request, grant_id, grant_slug):
 
             subscription.active = False
             subscription.contributor_address = request.POST.get('contributor_address', '')
+            subscription.match_direction = request.POST.get('match_direction', '')
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
             subscription.frequency = request.POST.get('frequency', 30)

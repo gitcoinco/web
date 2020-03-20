@@ -3,7 +3,9 @@
     border-bottom: 1px solid #515151;
   }
 }
-
+.est_direction{
+  font-weight: 900;
+}
 .admin_profile a,
 #grant-link {
   color: #0D0764;

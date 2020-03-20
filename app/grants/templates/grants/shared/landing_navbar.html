@@ -29,6 +29,11 @@
                     {{grant_type.label}} Grants ({{grant_type.count}})
                   </a>
                 {% endfor %}
+                {% if github_handle %}
+                <a data-type="type" href='/{{github_handle}}/grants' class="mr-3 px-2 ">
+                  My Grants <i class="fas fa-external-link-alt"></i>
+                </a>
+                {% endif %}
               </ul>
             </div>
 

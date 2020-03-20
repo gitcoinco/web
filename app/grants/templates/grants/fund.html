@@ -171,7 +171,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                   </div>
 
-                  <div class="form__group-horizontal contribution_type">
+                  {% if grant.negative_voting_enabled %}
+                  <div class="form__group-horizontal match_direction mt-0 pt-0">
+                    <div class="row">
+                      <div class="col-12 col-sm-12 font-body">
+                        <label class="form__label">{% trans "Match Pool Voting Direction" %}</label>
+                        <ul class="mb-0 pb-0">
+                          <li style="list-style-type: none;">
+                            <input type="radio" name="match_direction" id="positive" value="+" style="vertical-align:top" class="m-3" checked="checked">
+                            <label for="positive" class="form__label"><strong>Positive - I want to support this Grant.</strong>
+                            <BR>
+                            - Grant Contribution on Gitcoin's site will be <i>Public</i>.
+                            <BR>
+                            - Contribution will go to <i>Grantee</i>.
+                            <BR>
+                            - Matching Funds will go to <i>Grantee</i>.</label>
+                          </li>
+                          <li style="list-style-type: none;">
+                            <input type="radio" name="match_direction" id="negative" value="-" style="vertical-align:top" class="m-3">
+                            <label for="negative" class="form__label"><strong>Negative - I want to inhibit this Grant.</strong>
+                            <BR>
+                            - Grant Contribution on Gitcoin's site will be <i>Private</i>.
+                            <BR>
+                            - Contribution will go to <i>Matching Pool</i>.
+                            <BR>
+                            - Matching Funds will be <i>*deducted* from Grantee</i>.</label>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  {% else %}
+                  <input type="hidden" name="match_direction" value="+">
+                  {% endif %}
+
+                  <div class="form__group-horizontal contribution_type comment_container">
                     <div class="row">
                       <div class="col-12 col-sm-12 font-body">
                         <label class="form__label">{% trans "Comment (Public)" %}</label>
@@ -182,7 +216,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
 
 
-                  <div class="my-1 text-left">
+                  <div class="my-1 text-left hide_wallet_address_container">
                     <input type="checkbox" name="hide_wallet_address" id="hide_wallet_address" {% if profile.hide_wallet_address %} checked="checked" {% endif %} >
                     <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
                     <small id="hide_wallet_address_help" class="form__input-help">{% trans "If this option is chosen, your wallet address will be hidden" %}</small>
@@ -191,11 +225,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
                     <div class="row">
                       <div class="col-12 mb-3">
-                        <h3 class="font-subheader ">{% trans "Support Gitcoin (optional)" %}</h3>
                         <p class="font-body">
                           {% trans "By using this service, you’ll also be contributing" %}
                           <span class="gitcoin-grant-percent">5</span>
-                          {% trans "% of your contribution to the" %} <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund">Gitcoin Sustainability Fund</a>. 
+                          {% trans "% of your contribution to the" %} <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="blank">Gitcoin Sustainability Fund <i class="fas fa-external-link-alt"></i></a>.
                           <br>
                           <a href="#" id="adjust">Adjust &gt;&gt;</a>
                         </p>
@@ -251,8 +284,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <span id="summary-amount" class="font-weight-bold">-</span>
                       <span class="summary-token font-weight-bold">
                         {{ grant.token_symbol }}
-                      </span>
-                      {% trans "to this grant" %}
+                      </span>.
                       <span class="hide_if_onetime hidden">
                         for
                         <span class="summary-period font-weight-bold">-</span>
