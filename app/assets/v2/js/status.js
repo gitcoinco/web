@@ -54,6 +54,13 @@ $(document).ready(function() {
     $('#preview-img').attr('src', '');
     $('#preview').hide();
     $('#thumbnail').hide();
+    $('#btn_gif').removeClass('selected');
+    $('.gif-inject-target').removeClass('show');
+  }
+
+  function deselectVideo(e) {
+    $('#video-button').removeClass('selected');
+    $('#video_container').remove();
   }
 
   function injectGiphy(query) {
@@ -253,7 +260,7 @@ $(document).ready(function() {
   $('#btn_gif').click(function(e) {
     e.preventDefault();
     closeBackgroundDropdown(e);
-    deselectGif(e);
+    deselectVideo(e);
 
     $('#poll-button').removeClass('selected');
     $('#poll_container').remove();
@@ -283,7 +290,7 @@ $(document).ready(function() {
 
     $('#poll-button').removeClass('selected');
     $('#poll_container').remove();
-
+    deselectVideo(e)
     deselectGif(e);
   });
 
@@ -300,6 +307,7 @@ $(document).ready(function() {
     e.preventDefault();
     deselectGif(e);
     closeBackgroundDropdown(e);
+    deselectVideo(e);
     $(this).toggleClass('selected');
     var is_selected = $(this).hasClass('selected');
 
@@ -324,6 +332,11 @@ $(document).ready(function() {
   // handle video button
   $('body').on('click', '#video-button', function(e) {
     e.preventDefault();
+    closeBackgroundDropdown(e);
+    deselectGif(e);
+    $('#poll-button').removeClass('selected');
+    $('#poll_container').remove();
+
     $(this).toggleClass('selected');
     var is_selected = $(this).hasClass('selected');
 
