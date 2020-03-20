@@ -19,9 +19,11 @@
   <div class="grant-item__img">
     <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
   </div>
+  {% comment %}
   <div class="grant-item__logo ml-3">
       <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
   </div>
+  {% endcomment %}
 
   <div class="grant-item__content px-3">
     <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title|truncatechars:60 }}</a></h2>
@@ -47,8 +49,11 @@
           <p class="font-title font-weight-bold">
             {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
           </p>
-          <p class="font-caption pb-1">
+          <p class="font-caption pb-1 contribution-overview">
            from <b>{{ grant.contributor_count}} contributor{% if grant.contributor_count > 1 %}s{% endif %}</b>, including {{ grant.clr_matching|floatformat:0 }} DAI CLR
+              <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top" html="true"
+                 title="The CLR mechanism is a concrete proposal for turning your small donations into something much larger.">
+              </i>
           </p>
         </div>
     </div>
@@ -57,7 +62,7 @@
       {% if clr_active %}
           {% if show_clr_card %}
             <div class="clr mb-3">
-              <div class="match__round pb-1 pt-2">
+              <div class="match__round pb-1 pt-2 mb-2">
                 <h2 class="title col-8 font-caption g-bold">
                   CLR MATCH ROUND 5
                 </h2>
