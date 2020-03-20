@@ -169,28 +169,32 @@ Vue.mixin({
         });
       }
     },
-    fulfillmentComplete: function(fulfillment_id, amount) {
-
+    fulfillmentComplete: function(fulfillment_id, amount, event) {
       let vm = this;
-
       const token_name = vm.bounty.token_name;
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
-
       const payload = {
         amount: amount * 10 ** decimals,
         token_name: token_name,
         bounty_owner_address: vm.bounty.bounty_owner_address
       };
-
       const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;
 
+      event.target.disabled = true;
+
       fetchData(apiUrlBounty, 'POST', payload).then(response => {
+        event.target.disabled = false;
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          vm.fetchBounty();
+          this.$refs["payout-modal"][0].closeModal();
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
+      }).catch(function(error) {
+        event.target.disabled = false;
+        _alert('Unable to make payout bounty. Please try again later', 'error');
       });
     },
     closeBounty: function() {
