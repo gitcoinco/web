@@ -1709,6 +1709,13 @@ div.busyOverlay {
   font-size: 24px;
   line-height: 0px
 }
+.indie_chat_indicator{
+  color: #0fce7c;
+  display: inline;
+}
+.indie_chat_indicator.offline{
+  color: #aaa;
+}
 .navbar .chat_presence_indicator:hover{
   background-color: rgba(0,0,0,.5);
   border-radius: 5px;
