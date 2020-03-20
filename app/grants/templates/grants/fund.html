@@ -38,7 +38,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
 
-    {% include 'grants/shared/alpha.html' %}
     {% include 'grants/shared/waiting_state.html' %}
 
     <div class="row">
@@ -66,6 +65,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </ul>
         </div>
       {% endif %}
+      <div id="debit" class="tab_target ">
+                        <div id="wyre-dropin-widget-container">WIDGET HERE</div>
+                    <button id='buy'>Buy</button>
+                    <script src="https://verify.sendwyre.com/js/verify-module-init-beta.js"></script>
+      </div>
+
       <div id="phantom_fund" class="tab_target {% if active_tab == "normal" %} hidden {% endif %} ">
         <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
           <div class="form__group-horizontal">
@@ -149,7 +154,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       </div>
                     </div>
                   </div>
-
                   <div class="form__group-horizontal contribution_type">
                     <div class="row">
                       <div class="col-12 col-sm-8 font-body">
