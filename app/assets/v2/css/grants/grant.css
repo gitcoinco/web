@@ -1,6 +1,7 @@
-.infinite-more-link{
+.infinite-more-link {
   display: none;
 }
+
 .announce {
   text-align: center;
   border-radius: 5px;
@@ -273,9 +274,11 @@
 .grants_landing .grants-container {
   background-color: #F2F6F9;
 }
-.grants_landing .grants-results{
+
+.grants_landing .grants-results {
   text-align: center;
 }
+
 .grant-item {
   background-color: #fff;
 }
@@ -391,8 +394,8 @@
 }
 
 .arrow_box {
-	position: relative;
-	background: #fff;
+  position: relative;
+  background: #fff;
   border: 1px solid #0FCE7C;
   border-radius: 3px;
 }
@@ -409,17 +412,17 @@
 }
 
 .arrow_box:after {
-	border-color: rgba(255, 255, 255, 0);
-	border-bottom-color: #fff;
-	border-width: 9px;
-	margin-left: -31px;
+  border-color: rgba(255, 255, 255, 0);
+  border-bottom-color: #fff;
+  border-width: 9px;
+  margin-left: -31px;
 }
 
 .arrow_box:before {
-	border-color: rgba(16, 205, 122, 0);
-	border-bottom-color: #0FCE7C;
-	border-width: 11px;
-	margin-left: -33px;
+  border-color: rgba(16, 205, 122, 0);
+  border-bottom-color: #0FCE7C;
+  border-width: 11px;
+  margin-left: -33px;
 }
 
 .grant-partners {
@@ -439,11 +442,10 @@
 
 .grant-partners .nav-tabs {
   border: none;
-
 }
 
 .grant-partners .nav-link,
-.grant-partners .nav-tabs .nav-line.active  {
+.grant-partners .nav-tabs .nav-line.active {
   color: white;
   cursor: pointer;
 }
@@ -453,7 +455,7 @@
   border: none;
 }
 
-.grant-partners .nav-tabs .nav-line.active  {
+.grant-partners .nav-tabs .nav-line.active {
   font-weight: 700;
 }
 
@@ -473,7 +475,6 @@
   }
 }
 
-
 @media (max-width: 390px) {
   #search_form .sort_container .select2-container {
     width: 200px !important;
@@ -481,19 +482,43 @@
 }
 
 @-webkit-keyframes gradient {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
 }
 
 @-moz-keyframes gradient {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
 }
 
 @keyframes gradient {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
 }

@@ -14,6 +14,8 @@
 
 .form__group-item {
   height: 37px;
+  flex: 1;
+  position: relative;
 }
 
 .form__img {
@@ -27,11 +29,6 @@
 
 .form__amount-wrapper {
   margin-right: 1rem;
-}
-
-.form__group-item {
-  flex: 1;
-  position: relative;
 }
 
 .form__group-item:not(:last-of-type) {

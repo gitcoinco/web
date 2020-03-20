@@ -108,7 +108,7 @@
   margin: 0 0 -30px;
   background: -webkit-linear-gradient(top, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
   background: -moz-linear-gradient(top, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
-  background: linear-gradient(bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
+  background: linear-gradient(#fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
   background: -ms-linear-gradient(bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
   background: -o-linear-gradient(bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
   background: -webkit-gradient(bottom, #fafafa, #fafafa 30%, rgba(255, 255, 255, 0));
@@ -118,7 +118,7 @@
   margin: -30px 0 0;
   background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
-  background: linear-gradient(bottom, rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
+  background: linear-gradient(rgba(255, 255, 255, 0), #fafafa 70%, #fafafa);
 }
 
 .notifications__item {

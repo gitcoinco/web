@@ -27,9 +27,10 @@
   }
 }
 
-.ql-editor {
+/*todo: check name font-family */
+/* .ql-editor {
   font-family: 'Muli';
-}
+} */
 
 .ql-editor[contenteditable="false"] {
   padding: 12px 15px !important;

@@ -84,7 +84,6 @@
   top: 8px;
 }
 
-
 .checkbox_container input:focus+label::before,
 .checkbox_container input:focus~* label::before {
   outline: auto;
@@ -146,7 +145,6 @@
   min-height: 16px;
   vertical-align: middle;
 }
-
 
 .gc-checkbox input[type="checkbox"]+label::after {
   content: none;

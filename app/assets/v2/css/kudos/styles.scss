@@ -529,9 +529,10 @@ a.cellarius-partner:before {
   bottom: 3rem;
   width: 16%;
   height: 16%;
-  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
   background-repeat: no-repeat;
   background-size: cover;
+  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
+
 }
 
 .cellarius-badge {
@@ -540,9 +541,9 @@ a.cellarius-partner:before {
   width: 16%;
   height: 16%;
   background-size: cover;
-  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
   background-repeat: no-repeat;
   background-color: #fff;
+  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
   border-radius: 50px;
 }
 // Kudos details

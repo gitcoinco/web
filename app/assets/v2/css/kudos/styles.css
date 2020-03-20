@@ -239,7 +239,6 @@ header .kd-card .kd-name {
 
 .kd-extended .sender-avatar {
   position: absolute;
-  width: 50px;
   border-radius: 50%;
   bottom: 1em;
   left: 7%;
@@ -401,7 +400,6 @@ header .kd-card .kd-name {
 .hexagon {
   background: red;
   width: 10rem;
-  display: block;
   margin: auto;
   height: 11.56rem;
   display: flex;
@@ -462,9 +460,6 @@ a:hover #shape-hexagon {
 
 .hexagon-group {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   margin: auto;
   font-size: 16px;
   padding-bottom: 3em;
@@ -686,8 +681,8 @@ a.cellarius-partner:before {
   width: 16%;
   height: 16%;
   background-size: cover;
-  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
   background-repeat: no-repeat;
+  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
 }
 
 .cellarius-badge {
@@ -696,9 +691,9 @@ a.cellarius-partner:before {
   width: 16%;
   height: 16%;
   background-size: cover;
-  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
   background-repeat: no-repeat;
   background-color: #fff;
+  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
   border-radius: 50px;
 }
 
@@ -869,8 +864,6 @@ a.cellarius-partner:before {
   z-index: 2;
   transform: rotateY(0);
 }
-
-
 
 .flip-card.turn .flip-card__flipper {
   transform: rotateY(-0.5turn);
