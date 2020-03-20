@@ -28,8 +28,12 @@
   --bg-shade-1: white;
   --bg-shade-2: #5f5c74;
 
-  --main-bg: #EFF3F6;
+  --main-bg: #eff3f6;
   --form-input-bg: white;
+  --form-input-color: rgba(0, 0, 0, 0.38);
+  --button-radio-icon-color: #3e00ff;
+  --link-color: #3e00ff;
+  --town-square-link-color: black;
 }
 
 @media screen and (prefers-color-scheme: dark) {
@@ -62,9 +66,13 @@
     --bg-shade-0: #0a0428;
     --bg-shade-1: #221d3e;
     --bg-shade-2: #5f5c74;
-    
+
     --main-bg: #0a0428;
     --form-input-bg: #221d3e;
+    --form-input-color: white;
+    --button-radio-icon-color: white;
+    --link-color: white;
+    --town-square-link-color: white;
   }
 }
 

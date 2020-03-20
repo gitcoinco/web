@@ -47,20 +47,11 @@ textarea.form__input {
   background-position: top 0.5rem right 0.5rem;
 }
 
-.form__input::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.38);
-}
-
-.form__input::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.38);
-}
-
-.form__input:-moz-placeholder {
-  color: rgba(0, 0, 0, 0.38);
-}
-
+.form__input::-webkit-input-placeholder,
+.form__input::-moz-placeholder,
+.form__input:-moz-placeholder,
 .form__input:-ms-input-placeholder {
-  color: rgba(0, 0, 0, 0.38);
+  color: var(--form-input-color);
 }
 
 .form__input:disabled {
