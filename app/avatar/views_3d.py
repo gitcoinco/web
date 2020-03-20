@@ -394,6 +394,20 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/megaman.svg',
         },
+        'megaman2': {
+            'preview_viewbox': {
+                'Background': '0 0 350 350',
+                'Arms': '50 50 250 250',
+                'Ears': '80 30 100 100',
+                'Mouth': '100 50 100 100',
+                'Eyes': '100 50 150 150',
+                'Accessory': '50 50 250 250',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/Mega2.svg',
+        },
         'starbot': {
             'preview_viewbox': {
                 'Head': '50 20 250 250',
