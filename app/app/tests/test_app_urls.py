@@ -41,11 +41,11 @@ class AppUrlsTestCase(TestCase):
 
     def test_sitemap_reverse(self):
         """Test the sitemap url and check the reverse."""
-        self.assertEqual(reverse('django.contrib.sitemaps.views.sitemap'), '/sitemap.xml')
+        self.assertEqual(reverse('django.contrib.sitemaps.views.index'), '/sitemap.xml')
 
     def test_sitemap_resolve(self):
         """Test the sitemap url and check the resolution."""
-        self.assertEqual(resolve('/sitemap.xml').view_name, 'django.contrib.sitemaps.views.sitemap')
+        self.assertEqual(resolve('/sitemap.xml').view_name, 'django.contrib.sitemaps.views.index')
 
     def test_email_settings_reverse(self):
         """Test the email_settings url and check the reverse."""

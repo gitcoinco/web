@@ -46,7 +46,7 @@ class Alumni(SuperModel):
 
 class EmailSubscriber(SuperModel):
 
-    email = models.EmailField(max_length=255)
+    email = models.EmailField(max_length=255, unique=True)
     source = models.CharField(max_length=50)
     active = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=True)
@@ -374,6 +374,7 @@ class MarketingCallback(SuperModel):
 
     key = models.CharField(max_length=255, db_index=True)
     val = models.CharField(max_length=255)
+    msg = models.TextField()
 
     def __str__(self):
         return f"{self.key} - {self.val}"

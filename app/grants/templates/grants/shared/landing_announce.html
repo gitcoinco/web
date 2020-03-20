@@ -1,0 +1,30 @@
+{% load humanize static i18n %}
+
+      <div class="container-fluid pt-3 pb-1 grants-results">
+        <div class="container">
+          <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 100px;" class="pb-1 pt-1" />
+          <br>
+          <div class="announce announce3">
+            <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount}}</strong> to community public goods since it's launch in January 2019.
+            <a class="font-body" href="/results">See more results</a>.
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid pt-0 pb-2 grants-matching">
+        <div class="container">
+          <div class="col-md-12 font-smaller-1 text-center pt-2">
+            <img style="width: 80px; height: 80px;" src="{% static 'v2/images/quests/enemies/super_bot.png' %}" data-toggle="tooltip">
+            <div class="announce announce6">
+              <h4 class="mb-0 mt-0 pt-1 font-weight-semibold">
+                $200k+ Matching Round 5 coming soon.
+              </h4>
+              <h5 class="mt-1 pt-1">
+                Start Date: {{next_round_start|date:'Y-m-d'}} 
+                  (<span class="m-0" data-time="{{next_round_start|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

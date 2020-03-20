@@ -433,6 +433,7 @@ var update_fulfiller_list = function(bounty_pk) {
   });
   return fulfillers;
 };
+// ETC TODO END
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -692,12 +693,15 @@ const randomElement = array => {
 };
 
 /* eslint-disable no-lonely-if */
-var currentNetwork = function(network) {
+var currentNetwork = function(network, no_ui_updates) {
 
   $('.navbar-network').removeClass('hidden');
-  let tooltip_info;
 
   document.web3network = network;
+  if (typeof no_ui_updates != 'undefined') {
+    return;
+  }
+
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
     if (network == 'mainnet') {
       $('#current-network').text('Main Ethereum Network');
@@ -930,7 +934,7 @@ function getNetwork(id) {
 }
 
 // figure out what version of web3 this is, whether we're logged in, etc..
-var listen_for_web3_changes = async function() {
+var listen_for_web3_changes = async function(no_ui_updates) {
   reloadCbAddress();
   if (document.location.pathname.indexOf('grants') === -1) {
     if (!document.listen_for_web3_iterations) {
@@ -940,13 +944,13 @@ var listen_for_web3_changes = async function() {
     }
 
     if (typeof web3 == 'undefined') {
-      currentNetwork();
+      currentNetwork(undefined, no_ui_updates);
       trigger_form_hooks();
     } else if (typeof web3.eth == 'undefined') {
-      currentNetwork('locked');
+      currentNetwork('locked', no_ui_updates);
       trigger_form_hooks();
     } else if (typeof cb_address == 'undefined' || !cb_address) {
-      currentNetwork('locked');
+      currentNetwork('locked', no_ui_updates);
       trigger_form_hooks();
     } else {
       is_metamask_unlocked = true;
@@ -962,11 +966,11 @@ var listen_for_web3_changes = async function() {
 
       web3.version.getNetwork(function(error, netId) {
         if (error) {
-          currentNetwork();
+          currentNetwork(undefined, no_ui_updates);
         } else {
           var network = getNetwork(netId);
 
-          currentNetwork(network);
+          currentNetwork(network, no_ui_updates);
           trigger_form_hooks();
         }
       });
@@ -1025,7 +1029,12 @@ var actions_page_warn_if_not_on_same_network = function() {
 attach_change_element_type();
 
 window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 1000);
+  const listen = function() {
+    listen_for_web3_changes(true);
+  };
+
+  listen();
+  setInterval(listen, 5000);
 });
 
 var setUsdAmount = function() {
@@ -1470,9 +1479,25 @@ const indicateMetamaskPopup = (closePopup) => {
   }
 };
 
+(function($) {
+  $.fn.visible = function(partial) {
+    let $t = $(this);
+    let $w = $(window);
+    let viewTop = $w.scrollTop();
+    let viewBottom = viewTop + $w.height();
+    let _top = $t.offset().top;
+    let _bottom = _top + $t.height();
+    let compareTop = partial === true ? _bottom : _top;
+    let compareBottom = partial === true ? _top : _bottom;
+
+    return ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+  };
+})(jQuery);
+
+
 $(document).ready(function() {
   $(window).scroll(function() {
-    $('.g-fadein').each(function(i) {
+    $('.g-fadein').each(function(index, element) {
       let duration = $(this).attr('data-fade-duration') ? $(this).attr('data-fade-duration') : 1500;
       let direction = $(this).attr('data-fade-direction') ? $(this).attr('data-fade-direction') : 'mid';
       let animateProps;
@@ -1488,11 +1513,10 @@ $(document).ready(function() {
           animateProps = { 'opacity': '1', 'bottom': '0' };
       }
 
-      let bottom_of_object = $(this).position().top + $(this).outerHeight() / 2;
-      let bottom_of_window = $(window).scrollTop() + $(window).height();
-
-      if (bottom_of_window > bottom_of_object)
+      if ($(element).visible(true)) {
         $(this).animate(animateProps, duration);
+      }
+
     });
   });
 });
@@ -1536,3 +1560,31 @@ function check_balance_and_alert_user_if_not_enough(
   });
 
 }
+
+/**
+ * fetches github issue details of the issue_url
+ * @param {string} issue_url
+ */
+const fetchIssueDetailsFromGithub = issue_url => {
+  return new Promise((resolve, reject) => {
+    if (!issue_url || issue_url.length < 5 || issue_url.indexOf('github') == -1) {
+      reject('error: issue_url needs to be a valid github URL');
+    }
+
+    const github_token = currentProfile.githubToken;
+
+    if (!github_token) {
+      reject('error: API calls needs user to be logged in');
+    }
+
+    const request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url) + '&token=' + github_token;
+
+    $.get(request_url, function(result) {
+      result = sanitizeAPIResults(result);
+      resolve(result);
+    }).fail(err => {
+      console.log(err);
+      reject(error);
+    });
+  });
+};

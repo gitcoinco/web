@@ -1,16 +1,6 @@
 
 $(document).ready(function() {
 
-  $('#reflink').click(function() {
-    $(this).focus();
-    $(this).select();
-    document.execCommand('copy');
-    $(this).after('<div class=after_copy>Copied to clipboard</div>');
-    setTimeout(function() {
-      $('.after_copy').remove();
-    }, 500);
-  });
-
   $('.demo').click(function(e) {
     e.preventDefault();
     $(this).fadeOut(function() {

@@ -30,6 +30,9 @@ class Command(BaseCommand):
         from quests.models import Quest
 
         for quest in Quest.objects.filter(visible=True):
-            if quest.kudos_reward and quest.kudos_reward.num_clones_available_counting_indirect_send < 0:
-                print(quest.url)
-                notify_deadbeat_quest(quest)
+            if quest.kudos_reward:
+                is_dead = quest.kudos_reward.num_clones_available_counting_indirect_send <= 0
+                is_dead = is_dead or quest.kudos_reward.owner_address.lower() != "0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F".lower()
+                if is_dead:
+                    print(quest.url)
+                    notify_deadbeat_quest(quest)

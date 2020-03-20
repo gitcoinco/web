@@ -33,6 +33,11 @@ This action expires at end of day, so act soon!
 
 <HR>
 {% endif %}
+<h1>{{ trending_quests|length }} {% trans "Trending Quests" %}</h1>
+
+{% for quest in trending_quests %}
+  {% include 'emails/quest_small.html' with quest=quest count=forloop.counter %}
+{% endfor %}
 
 <h1>{{ bounties|length }} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{% endif %}</h1>
 <h3>{% trans "Matching your profile" %}</h3>

@@ -2,10 +2,11 @@ from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-from dashboard.models import Activity, Bounty, HackathonEvent, Profile
+from dashboard.models import Activity, Bounty, HackathonEvent, HackathonProject, Profile
 from grants.models import Grant
 from kudos.models import Token
 from quests.models import Quest
+from wiki.models import Article
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
@@ -17,7 +18,8 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
             'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'faucet', 'mission', 'slack', 'labs', 'results',
-            'activity', 'kudos_main', 'kudos_marketplace', 'grants', 'funder_bounties', 'quests_index', 'newquest'
+            'activity', 'kudos_main', 'kudos_marketplace', 'grants', 'funder_bounties', 'quests_index', 'newquest',
+            'products', 'chat', 'avatar_landing'
         ]
 
     def location(self, item):
@@ -31,7 +33,7 @@ class IssueSitemap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Bounty.objects.current().cache()
+        return Bounty.objects.current().order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
@@ -45,7 +47,7 @@ class KudosSitemap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Token.objects.filter(hidden=False)
+        return Token.objects.filter(hidden=False, num_clones_allowed__gt=0).order_by('-pk')
 
     def lastmod(self, obj):
         return obj.modified_on
@@ -57,15 +59,16 @@ class KudosSitemap(Sitemap):
 class ProfileSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.8
+    limit = 5000
 
     def items(self):
-        return Profile.objects.filter(hide_profile=False).cache()
+        return Profile.objects.visible().order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
 
     def location(self, item):
-        return item.get_relative_url()
+        return f"/{item.handle}"
 
 
 class ContributorLandingPageSitemap(Sitemap):
@@ -107,13 +110,13 @@ class GrantsSitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        return Grant.objects.filter(hidden=False).cache()
+        return Grant.objects.filter(hidden=False).order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
 
     def location(self, item):
-        return item.url
+        return item.url + '?tab=description'
 
 
 class QuestsSitemap(Sitemap):
@@ -121,13 +124,13 @@ class QuestsSitemap(Sitemap):
     priority = 0.6
 
     def items(self):
-        return Quest.objects.filter(visible=True).cache()
+        return Quest.objects.filter(visible=True).order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
 
     def location(self, item):
-        return item.url
+        return "/" + item.relative_url
 
 
 class HackathonEventSiteMap(Sitemap):
@@ -135,38 +138,86 @@ class HackathonEventSiteMap(Sitemap):
     priority = 0.6
 
     def items(self):
-        return HackathonEvent.objects.filter(visible=True).cache()
+        return HackathonEvent.objects.order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
 
     def location(self, item):
-        return item.url
+        return "/" + item.relative_url
+
+
+class HackathonProjectSiteMap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.8
+
+    def items(self):
+        return HackathonProject.objects.order_by('-pk').cache()
+
+    def lastmod(self, obj):
+        return obj.modified_on
+
+    def location(self, item):
+        return item.url()
+
+
+class PostSitemap(Sitemap):
+    changefreq = "daily"
+    priority = 0.9
+    limit = 5000
+
+    def items(self):
+        return Activity.objects.filter(
+            hidden=False, activity_type__in=['wall_post', 'status_update']
+        ).order_by('-pk').cache()
+
+    def lastmod(self, obj):
+        return obj.modified_on
+
+    def location(self, item):
+        return '/' + item.relative_url
 
 
 class ActivitySitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.6
+    limit = 5000
 
     def items(self):
-        return Activity.objects.filter(private=False).cache()
+        return Activity.objects.filter(hidden=False).exclude(activity_type__in=['wall_post', 'status_update']
+                                                             ).order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on
 
     def location(self, item):
-        return item.url
+        return '/' + item.relative_url
+
+
+class ArticleSitemap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.6
+    limit = 5000
+
+    def items(self):
+        return Article.objects.all()
+
+    def location(self, item):
+        return item.get_absolute_url()
 
 
 sitemaps = {
+    'article': ArticleSitemap,
+    'grants': GrantsSitemap,
+    'hackathons': HackathonEventSiteMap,
+    'projects': HackathonProjectSiteMap,
+    'profiles': ProfileSitemap,
+    'posts': PostSitemap,
+    'quests': QuestsSitemap,
+    'issues': IssueSitemap,
+    'kudos': KudosSitemap,
+    'activity': ActivitySitemap,
     'landers': ContributorLandingPageSitemap,
     'results': ResultsSitemap,
     'static': StaticViewSitemap,
-    'issues': IssueSitemap,
-    'orgs': ProfileSitemap,
-    'kudos': KudosSitemap,
-    'activity': ActivitySitemap,
-    'quests': QuestsSitemap,
-    'grants': GrantsSitemap,
-    'hackathons': HackathonEventSiteMap,
 }

@@ -60,7 +60,7 @@
   padding: 2px 5px;
   background-color: #fff;
   border-radius: 2px;
-  height: 35px !important;
+  height: 30px !important;
 }
 
 .select2-container .select2-search--inline .select2-search__field {
@@ -70,4 +70,8 @@
 
 .ql-editor p {
   font-size: 1rem;
+}
+
+.select2-selection__rendered .select2-selection__choice {
+  font-size: 14px;
 }

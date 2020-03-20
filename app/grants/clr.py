@@ -224,11 +224,11 @@ def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=No
     debug_output = []
 
     if clr_type == 'tech':
-        grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech')
+        grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech', link_to_new_grant=None)
     elif clr_type == 'media':
-        grants = Grant.objects.filter(network=network, hidden=False, grant_type='media')
+        grants = Grant.objects.filter(network=network, hidden=False, grant_type='media', link_to_new_grant=None)
     else:
-        grants = Grant.objects.filter(network=network, hidden=False)
+        grants = Grant.objects.filter(network=network, hidden=False, link_to_new_grant=None)
 
     # set up data to load contributions for each grant
     if not random_data:

@@ -12,14 +12,6 @@ tr div {
   top: 2px;
 }
 
-.gc-green-text {
-  color: #0FCE7C;
-}
-
-.gc-blue-text {
-  color: #3E00FF;
-}
-
 .table-hover tbody tr:hover{
   background-color: #FAFAFA;
 }

@@ -48,7 +48,7 @@ def generate_leaderboard(max_items=100):
     for contribution in Contribution.objects.all().select_related('subscription'):
         key = contribution.subscription.contributor_profile.handle
         users_to_results[key]['handle'] = key
-        amount = contribution.subscription.get_converted_amount()
+        amount = contribution.subscription.get_converted_amount(False)
         if amount:
             users_to_results[key]['no'] += 1
             users_to_results[key]['sum'] += round(amount)
@@ -62,3 +62,24 @@ def generate_leaderboard(max_items=100):
             items.append(item)
             counter += 1
     return items[:max_items]
+
+
+def is_grant_team_member(grant, profile):
+    """Checks to see if profile is a grant team member
+
+    Args:
+        grant (grants.models.Grant): The grant in question.
+        profile (dashboard.models.Profile): The current user's profile.
+
+    """
+    if not profile:
+        return False
+    is_team_member = False
+    if grant.admin_profile == profile:
+        is_team_member = True
+    else:
+        for team_member in grant.team_members.all():
+            if team_member.id == profile.id:
+                is_team_member = True
+                break
+    return is_team_member

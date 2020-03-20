@@ -30,7 +30,7 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    <div class="container-fluid submit_bounty_content">
+    <div class="container-fluid px-0 submit_bounty_content">
       <div class="row no-gutters metamask-banner">
         <div class="col-12">
           {% include 'shared/no_issue_error.html' with page='fulfill_bounty' %}
@@ -71,14 +71,14 @@
                   <div class="mt-2 github-username">
                     <label class="form__label mb-0" for="githubUsername">{% trans "Github Username" %}</label>
                     <input name='githubUsername' id='githubUsername' class="form__input border-0 font-body pt-0 px-lg-0" type="text"
-                      readonly placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}" 
+                      readonly placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}"
                     />
                   </div>
 
                   <div class="mt-2">
                     <label class="form__label" for="githubPRLink">{% trans "Github PR Link" %}</label>
                     <input name='githubPRLink' id='githubPRLink' class="form__input font-body" type="text"
-                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM (optional)" value="" 
+                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM (optional)" value=""
                     />
                   </div>
 
@@ -107,7 +107,7 @@
                       <label class="form__label" for="notificationEmail">{% trans "Notification Email" %}</label>
                       <input name='notificationEmail' id='notificationEmail'  class="form__input font-body" type="email"
                         placeholder="you@domain.co (optional, but recommended for notifications)"
-                        value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{ notificationEmail }}{% endif %}" 
+                        value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{ notificationEmail }}{% endif %}"
                       />
                       {% if show_information_publicly_checkbox %}
                         {% include "shared/show_information_publicly.html" with id="show_email_publicly" %}
@@ -135,7 +135,7 @@
                       </label>
                     </div>
                   </div>
-                  <div class="mt-2 terms_container">
+                  <div class="terms_container">
                     <div class="form__checkbox">
                       <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
                       <label class="form__label" for=blockchain_tos>
@@ -156,6 +156,10 @@
         </div>
       </div>
     </div>
+
+    <script>
+      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
+    </script>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
@@ -166,9 +170,10 @@
   <script>
     $('[data-toggle="popover"]').popover()
     $('[data-toggle="tooltip"]').bootstrapTooltip();
-    const is_bounties_network = {{ is_bounties_network|lower }};
     let eventTag;
+    let standardBountyId;
     {% if bounty.event %}
+      standardBountyId = {{bounty.standard_bounties_id}};
       eventTag = '{{ bounty.event.slug }}';
     {% endif %}
   </script>

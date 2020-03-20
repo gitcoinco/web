@@ -12,6 +12,7 @@ class QuestAdmin(admin.ModelAdmin):
     readonly_fields = ['feedback','background_preview']
 
     def response_change(self, request, obj):
+        from django.shortcuts import redirect
         if "_approve_quest" in request.POST:
             if obj.visible:
                 self.message_user(request, f"Quest was already approved.")
@@ -28,6 +29,7 @@ class QuestAdmin(admin.ModelAdmin):
                     self.message_user(request, f"Cannot approve quest. The quest has a dead end question in it!")
                     return super().response_change(request, obj)
                 quest = obj
+                obj.value = 1
                 qa = QuestAttempt.objects.create(
                     quest=obj,
                     success=True,
@@ -39,7 +41,7 @@ class QuestAdmin(admin.ModelAdmin):
                 obj.save()
                 new_quest_approved(obj)
                 self.message_user(request, f"Quest Approved + Points awarded + Made Live.")
-        return super().response_change(request, obj)
+        return redirect(obj.admin_url)
 
     def feedback(self, instance):
         fb = instance.feedbacks

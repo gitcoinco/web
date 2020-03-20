@@ -5,6 +5,9 @@ let description = new Quill('#input-description', {
 });
 
 $(document).ready(function() {
+
+  $('.select2-selection__choice').removeAttr('title');
+
   if (web3 && web3.eth) {
     web3.eth.net.isListening((error, connectionStatus) => {
       if (connectionStatus)
@@ -55,6 +58,7 @@ const processReceipt = receipt => {
 
   saveGrant(formData, true);
 };
+
 
 const init = () => {
   if (localStorage['grants_quickstart_disable'] !== 'true') {
@@ -181,6 +185,12 @@ const init = () => {
             let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
+            if (!$('#contract_owner_address').val()) {
+              web3.eth.getAccounts(function(err, accounts) {
+                $('#contract_owner_address').val(accounts[0]);
+              });
+            }
+
             formData.append('input_image', file);
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('title', $('#input_title').val());
@@ -196,6 +206,8 @@ const init = () => {
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());
             formData.append('team_members[]', $('#input-team_members').val());
+            formData.append('categories[]', $('#input-categories').val());
+            formData.append('grant_type', $('#input-grant_type').val().toLowerCase());
             saveGrant(formData, false);
 
             document.issueURL = linkURL;
@@ -287,8 +299,18 @@ const init = () => {
     $('#js-token').select2();
     $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
     $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
-    $('.select2-selection__rendered').hover(function() {
-      $(this).removeAttr('title');
-    });
+  });
+
+  grantCategoriesSelection('.categories', '/grants/categories?type=tech');
+
+  $('#input-grant_type').on('change', function() {
+    $('.categories').val(null);
+    const type = this.value && this.value.toLowerCase();
+
+    grantCategoriesSelection('.categories', `/grants/categories?type=${type}`);
+  });
+
+  $('.select2-selection__rendered').hover(function() {
+    $(this).removeAttr('title');
   });
 };

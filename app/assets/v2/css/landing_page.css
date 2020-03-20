@@ -345,13 +345,6 @@ body.funder-page {
   -o-filter: grayscale(0%);
 }
 
-.navbar.following .nav-link,
-.navbar.following img,
-.navbar.following .nav-item,
-.navbar.following i.fa-angle-right {
-  display: none !important;
-}
-
 #gc-tree {
   text-align: center;
 }
@@ -469,10 +462,6 @@ body.funder-page {
   height: 100%;
 }
 
-.index #gitcoin-background {
-  min-width: 100vw;
-  min-height: 1000vh;
-}
 
 /* Landing Page Animations */
 #WindmillBlades {

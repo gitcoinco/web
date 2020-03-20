@@ -32,13 +32,13 @@
       <div class="message"></div>
       <div id="default-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat:3}}" class="py-1 px-auto recommended-prices"></div>
       <div id="slow-recommended-gas" data-amount="{{recommend_gas_price_slow | floatformat:3}}" class="py-1 pl-5 recommended-prices"></div>
-      <div id="average-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat:3}}" class="active py-1 pl-5 recommended-prices"></div>
-      <div id="fast-recommended-gas" data-amount="{{recommend_gas_price_fast | floatformat:3}}" class="py-1 pl-5 recommended-prices"></div>
+      <div id="average-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat:3}}" class="py-1 pl-5 recommended-prices"></div>
+      <div id="fast-recommended-gas" data-amount="{{recommend_gas_price_fast | floatformat:3}}" class="active py-1 pl-5 recommended-prices"></div>
     </div>
   </div>
 </div>
 <div id="accordion-set-own-limit" class="py-2 font-body">
-  Set my own gas limit <i class="fa fa-angle-down mt-1"></i>
+  Set my own gas price <i class="fa fa-angle-down mt-1"></i>
 </div>
 <div class="w-100 mt-2 p-2" id="metamask_context" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
   {% if recommend_gas_price > 30 %}

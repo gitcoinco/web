@@ -35,11 +35,12 @@ class GeneralAdmin(admin.ModelAdmin):
 
 class TokenRequestAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    list_display = ['created_on', '__str__']
+    list_display = ['pk', 'created_on', '__str__']
     raw_id_fields = ['profile']
     readonly_fields = ['preview']
 
     def response_change(self, request, obj):
+        from django.shortcuts import redirect
         if "_mint_kudos" in request.POST:
             from kudos.tasks import mint_token_request
             try:
@@ -52,7 +53,7 @@ class TokenRequestAdmin(admin.ModelAdmin):
             obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
             obj.save()
             self.message_user(request, f"Changed owner to gitcoin")
-        return super().response_change(request, obj)
+        return redirect(obj.admin_url)
 
     def preview(self, instance):
         html = f"<img style='max-width: 400px;' src='{instance.artwork_url}'>"

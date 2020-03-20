@@ -21,8 +21,9 @@
     {% include 'shared/helmet-white-animated.html' %}
   </a>
   <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand ml-2 pt-0 pb-0" href="/hackathon-list">
-    <img id="logo" src="{% static "v2/images/top-bar/hackathons-logo.svg" %}" height="35" alt="Logo" />
+  <a class="navbar-brand ml-2 py-0 brand-hover" href="/hackathon-list">
+    <img class="mw-100 logo-static" id="logo" src="{% static "v2/images/top-bar/hackathons-logo.svg" %}" height="35" alt="Logo" />
+    <img class="mw-100 logo-animated" src="{% static "v2/images/products/hackathons.gif" %}" alt="kudos" height="35" style="margin-top: -2px;">
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
@@ -30,44 +31,7 @@
       <span id="current-network"></span>
     </div>
   {% endif %}
-  <div class="d-flex order-0 order-md-last">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    {% if user.is_authenticated %}
-      {% include 'shared/chat_nav.html' %}
-      {% include 'shared/notifications.html' %}
-    {% endif %}
-  </div>
-
-  <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
-    <nav class="navbar-nav ml-auto mr-3">
-      {% if request.path == '/bounties/funder' %}
-        <span class="navbar__cta mr-2">{% trans "Want to get help on your repo? Easily get started!" %}</span>
-      {% endif %}
-
-      <div class="nav-item interior">
-        <a class="nav-link selected" href="/hackathon-list" id="navbarDropdownHow" role="button">
-          {% trans "Marketplace" %}
-        </a>
-      </div>
-
-      <div class="nav-item interior">
-        <a class="nav-link" href="mailto:founders@gitcoin.co?subject=I+want+to+work+together+on+a+hackathon." id="navbarDropdownHow" role="button">
-          {% trans "Get involved" %} 
-          <i class="fas fa-rocket"></i>
-        </a>
-      </div>
-
-
-
-      {% if request.path != '/' or user.is_authenticated %}
-        {% include 'shared/nav_auth.html' with source='authed' %}
-      {% endif %}
-    </nav>
-  </div>
-
+  {% include 'shared/menu.html' %}
 </nav>
 {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*)|(.*fund.*)|(.*cancel.*))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>

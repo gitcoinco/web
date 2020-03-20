@@ -2,6 +2,18 @@
 
 <h1 class="profile-header__handle">
   {{ profile.name }}
+</h1>
+<p class="mb-0">
+  @{{ profile.handle }}
+ {% include 'profiles/presence_indicator.html' with show_even_if_offline=1 last_chat_status=profile.last_chat_status chat_id=profile.chat_id handle=profile.handle %}
+  {% if profile.match_this_round %}
+    <span data-placement="bottom" data-toggle="tooltip" data-html="true"  title="
+      {% include 'profiles/match_estimate_explainer.html' %}
+
+    ">
+      <i class="fab fa-ethereum" style="font-size:20px;" data-toggle="tooltip" title="${{profile.match_this_round|floatformat:2}} in Matching Payout This Week." aria-hidden="true"></i>
+    </span>
+  {% endif %}
   {% if verification %}
     <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
       <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
@@ -11,10 +23,27 @@
       <img src="{% static 'v2/images/badge-verify.svg' %}" alt="">
     </button>
   {% endif %}
+</p>
+{% if profile.data.bio %}
+  <div class="profile-header__bio my-2">
+    <small class="review-comment">{{ profile.data.bio }}</small>
+  </div>
+{% endif %}
+  {% if profile.custom_tagline %}
+  <div class="profile-header__bio my-2">
+    <small class="review-comment">{{ profile.custom_tagline }}</small>
+  </div>
+  {% endif %}
+{% if not profile.is_org %}
+  <div class="static-stars my-3">
+    {% for i in ratings %}
+      <i class="far fa-star {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
+    {% endfor %}
+    <small class="text-muted">({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
+  </div>
+{% endif %}
 
-</h1>
-<p class="mb-0">
-  {{ profile.handle }}
+<p class="mb-0 mt-1">
   {% if not profile.is_org and profile.chat_id %}
     <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" data-openchat="{{profile}}">
       <i class="fas fa-comment-dots" data-placement="bottom" data-toggle="tooltip" data-html="true"
@@ -29,52 +58,46 @@
     <i class="fab fa-ethereum"></i>
   </a>
 
+  <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" 
+     href="{% url 'kudos_send' %}?username={{ profile.handle }}" data-placement="bottom" data-toggle="tooltip" data-html="true" title="Kudos @{{ profile.handle }}">
+     <i class="fas fa-dice-d6"></i>
+  </a>
+  
   <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="/users?invite={{ profile.handle }}"
     data-placement="bottom" data-toggle="tooltip" data-html="true" title="Invite @{{ profile.handle }} to Bounty"
   >
+
   <i class="fas fa-envelope-open-text"></i>
+
   </a>
-  {% if profile.custom_tagline %}
-    <span style="font-size: 14px; font-color: #000;">- {{ profile.custom_tagline }}</span>
-  {% endif %}
-</p>
-<p class="profile-header__links clearfix mt-1">
-  <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
+
+  |
+
+  <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
     <i class="fab fa-github"></i>
   </a>
   {% if profile.data.blog and user.is_authenticated %}
-    <a href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s website" >
+    <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s website" >
       <i class="fas fa-home"></i>
     </a>
   {% endif %}
   {% if profile.linkedin_url and user.is_authenticated %}
-    <a href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Linkedin" >
+    <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Linkedin" >
       <i class="fab fa-linkedin-in"></i>
     </a>
   {% endif %}
   {% if profile.data.email and user.is_authenticated %}
-    <a href="mailto:{{profile.data.email | obfuscate}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s Email">
+    <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="mailto:{{profile.data.email | obfuscate}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s Email">
       <i class="far fa-envelope"></i>
     </a>
   {% endif %}
   {% if profile.gitcoin_discord_username and user.is_authenticated %}
-    <a href="https://discord.gg/TxRKTn8#{{profile.gitcoin_discord_username}}" data-placement="bottom" data-toggle="tooltip" data-html="true" title="Gitcoin Discord: {{profile.gitcoin_discord_username}}">
+    <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="https://discord.gg/TxRKTn8#{{profile.gitcoin_discord_username}}" data-placement="bottom" data-toggle="tooltip" data-html="true" title="Gitcoin Discord: {{profile.gitcoin_discord_username}}">
       <i class="fab fa-discord"></i>
     </a>
   {% endif %}
 </p>
 
-{% if profile.data.bio %}
-  <div class="profile-header__bio my-2">
-    <small class="review-comment">{{ profile.data.bio }}</small>
-  </div>
-{% endif %}
-
-{% if user.is_authenticated and is_on_tribe and profile.is_org %}
-  <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Leave Tribe</button>
-{% elif user.is_authenticated and profile.is_org %}
-  <button class="btn btn-gc-blue btn-sm" data-jointribe="{{profile.handle}}">Join Tribe</button>
-{% endif %}
 
 {% if not profile.hide_wallet_address %}
   {% if profile.preferred_payout_address %}
@@ -104,17 +127,10 @@
   </div>
 {% endif %}
 
-{% if not profile.is_org %}
-  <div class="static-stars my-3">
-    {% for i in ratings %}
-      <i class="far fa-star {% if avg_rating.overall != 0 and i <= avg_rating.overall %}fas{% endif %}"></i>
-    {% endfor %}
-    <small class="text-muted">({{ avg_rating.total_rating }} {% trans "rating" %}{{avg_rating.total_rating | pluralize}})</small>
-  </div>
-{% endif %}
-
 {% if profile.show_job_status %}
   <div class="my-2" id="job_status">
     <i class="fa fa-briefcase mr-2" aria-hidden="true"></i>{{ profile.job_status_verbose }}
   </div>
 {% endif %}
+
+

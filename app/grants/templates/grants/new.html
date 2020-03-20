@@ -28,7 +28,7 @@
   </head>
   <body class="interior {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header dash px-0">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
       <div class="row no-gutters metamask-banner">
@@ -82,9 +82,28 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-grant_type">{% trans "Grant Type" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2 form__input form__input-lg" name="input-grant_type" id="input-grant_type">
+                      <option selected value="tech">{% trans "Tech" %}</option>
+                      <option value="media">{% trans "Media" %}</option>
+                      <option value="health">{% trans "Public Health" %}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
                   <div class="form__select2 g-multiselect">
-                    <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
+                    <select id="input-team_members" class="form__input form__input-lg team_members" name="team_members[]" multiple="multiple">
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body">{% trans "Grant Categories" %}</label>
+                  <div class="form__select2 g-multiselect">
+                    <select id="input-categories" class="form__input form__input-lg categories" name="categories[]" multiple="multiple">
                     </select>
                   </div>
                 </div>
@@ -116,7 +135,7 @@
                   <label class="font-body">{% trans "Project Logo" %}</label>
                   <div class="form__drop" id="js-drop">
                     <input id="img-project" type="file" name="input_image" accept="image/*">
-                    <span>{% trans "Drag & Drop or Browse" %} </span> 
+                    <span>{% trans "Drag & Drop or Browse" %} </span>
                     <span> | {% trans "Square or 16:9; above 400x400 preferred" %}</span>
                     <img id="preview"/>
                   </div>
@@ -141,6 +160,7 @@
                   <input type="hidden" id="contract_version" name="contract_version" value="1">
                   <input type="hidden" id="token_address" name="token_address" value="">
                   <input type="hidden" id="token_symbol" name="token_symbol" value="">
+                  <input type="hidden" id="category" name="category" value="">
                   <input type="hidden" id="network" name="network">
                   <input type="hidden" id="trusted_relayer" name="trusted_relayer" value="{{ trusted_relayer }}">
                 </div>

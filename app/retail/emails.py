@@ -69,7 +69,8 @@ TRANSACTIONAL_EMAILS = [
 
 
 NOTIFICATION_EMAILS = [
-    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat'))
+    ('chat', _('Chat Emails'), _('Only emails from Gitcoin Chat')),
+    ('mention', _('Mentions'), _('Only when other users mention you on posts')),
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
@@ -216,9 +217,8 @@ def thank_you_for_supporting(request):
 
 @staff_member_required
 def new_supporter(request):
-    grant = Grant.objects.first()
-    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
-    response_html, __, __ = render_new_supporter_email(grant, subscription)
+    subscription = Subscription.objects.last()
+    response_html, __, __ = render_new_supporter_email(subscription.grant, subscription)
     return HttpResponse(response_html)
 
 
@@ -335,6 +335,15 @@ def render_funder_payout_reminder(**kwargs):
     return response_html, response_txt
 
 
+def render_match_distribution(mr):
+    params = {
+        'mr': mr,
+    }
+    response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
@@ -426,8 +435,8 @@ PS - we've got some new gitcoin schwag on order. if interested, let us know and 
         'txt': txt,
 		'email_type': 'bounty_feedback'
     }
-    response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = txt
+    response_txt = premailer_transform(render_to_string("emails/txt.html", params))
+    response_html = f"<pre>{response_txt}</pre>"
 
     return response_html, response_txt
 
@@ -487,7 +496,7 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quests=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -499,6 +508,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
+        'show_action': True,
+        'trending_quests': trending_quests,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
@@ -706,6 +717,21 @@ def render_comment(to_email, comment):
 
     response_html = premailer_transform(render_to_string("emails/comment.html", params))
     response_txt = render_to_string("emails/comment.txt", params)
+
+    return response_html, response_txt
+
+
+def render_mention(to_email, post):
+    from dashboard.models import Activity
+    params = {
+        'post': post,
+        'email_type': 'mention',
+        'is_activity': isinstance(post, Activity),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/mention.html", params))
+    response_txt = render_to_string("emails/mention.txt", params)
 
     return response_html, response_txt
 
@@ -979,8 +1005,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "$344k for Ethereum Public Goods"
-    new_kudos_pks = [7260, 5304, 7275]
+    subject = "COVID: Stay Safe & Carry On"
+    new_kudos_pks = [12403, 12299, 12239]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -999,47 +1025,57 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Hey Gitcoiners,
+Hello Gitcoiners,
 </p>
 <p>
-What a start to 2020 it’s been! Between the new <a href="https://gitcoin.co/townsquare">Town Square</a>, Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a>, and <a href="https://gitcoin.co/hackathon/take-back-the-web?">Take Back The Web</a>, this month has seen the most activity ever on the Gitcoin platform. Let’s keep that momentum going, make sure to check back on the home page for daily, weekly, and monthly actions. Keep an eye out for temporary “secret actions” as well, we may have given out a bit of ETH recently… ;)
+We'd like to first and foremost wish you all a safe few weeks ahead. We're living in a COVID world now - and while there's no need to panic - we can take simple precautions to
+impact the lives of ourselves and others. The biggest - social distancing - is outlined with fantastic detail alongside the reasons this could
+save countless lives <a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">in this article.</a>
+We first and foremost hope you and your families stay safe.
+
+With proper precautions in shape, feel free to come join us (virtually!) for <a href=https://hackathons.gitcoin.co/funding-the-future”>Funding The Future.</a> Our goal
+is to make this our most interactive hackathon yet -- especially important in a time where distance physically is a requirement. Do join us if your circumstances allow, we'd love
+to have you! You can get a sneak preview of this in our <a href="https://gitcoin.co/townsquare">Town Square</a> anytime :)
+
 </p>
 <p>
-We’re proud to share that <a href="https://gitcoin.co/grants/">CLR Round 4</a> was the biggest and best grants round yet. A total of 1,315 unique community members made 6,473 contributions worth $144,810 in 14 days. With matches, that is $344k... wild! No good social experiment in crypto is without a bit of Twitter drama, but we’re extremely thankful to all of you who helped fund public goods and made this a success.
+ <a href=“https://hackathons.gitcoin.co/funding-the-future”>Funding the Future</a> Virtual Hackathon starts on Monday, March 16th and will be packed with great bounties on DeFi, funding mechanisms, and DAOs!
+ In an update, we've moved the <a href=“https://gitcoin.co/grants/">Gitcoin Grants CLR</a> Round 5 round back one week (starting 3/23), giving us some time to readjust to uncertainty across markets and the world.
 </p>
 <p>
-On another note, only 6 more days until the <a href="https://hackathons.gitcoin.co/sustain-web3/">Sustain Web3</a> Virtual Hackathon kicks off. Sponsors include FOAM, Dfuse, and Xpring, with more be announced next week. This hackathon will lead into our physical <a href="https://web3.sustainoss.org/">Sustain Web3</a> conference the day before ETHDenver. To learn more about Sustain Web3 and what Gitcoin will be up to at ETHDenver, check out our most recent blog post: <a href="https://gitcoin.co/blog/git-coins-at-ethdenver/">Git Coins at ETHDenver</a>. 
+Interested in sneak peaks at what the product team is doing or being an early tester? <a href=“https://gitcoin.co/pixelantdesign”>Hit me up</a> on the <a href=“https://gitcoin.co/chat”>Gitcoin Chat</a>!
 </p>
 
 {kudos_friday}
+
 <h3>What else is new?</h3>
-    <ul>
-        <li>
-            Today's Livestream will feature lightning talks on the <a href="https://onemilliondevs.com/">One Million Devs</a> initiative from industry leaders. Come share your ideas for how to onboard more developers onto Ethereum. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET.
+    <ul>
+        <li>
+        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be an ETH 2.0 stream hosted by our own Kevin Owocki!
         </li>
-    </ul>
+    </ul>
 </p>
 <p>
-Back to BUIDLing,
+Back to (remote) work,
 </p>
 '''
     highlights = [{
-        'who': 'kfichter',
+        'who': 'Bobface',
         'who_link': True,
-        'what': 'Created the Initial Design for the Eth2 Book',
-        'link': 'https://gitcoin.co/issue/quilt/pm/6/3904',
+        'what': 'More great work with Austin Griffith!',
+        'link': 'https://gitcoin.co/issue/austintgriffith/eth.build/14/4074',
         'link_copy': 'View more',
     }, {
-        'who': 'marcoautiero',
+        'who': 'dhaileytaha',
         'who_link': True,
-        'what': 'Created a React Component To Responsively Render Externally Hosted PDF Files On Mobile, Tablet And Desktop Devices',
-        'link': 'https://gitcoin.co/issue/consensys-space/trusat-frontend/215/3845',
+        'what': 'Kudos to the best Infura Community contributor',
+        'link': 'https://gitcoin.co/issue/INFURA/infura/198/4066',
         'link_copy': 'View more',
     }, {
-        'who': 'acolytec3',
+        'who': 'developerfred',
         'who_link': True,
-        'what': 'Made an outline for the eth2 client architecture under the Ethereum 2.0 section',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/418/3885',
+        'what': 'Kudos to one of our most active Gitcoiners!',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/6093/4068',
         'link_copy': 'View more',
     }, ]
 
@@ -1056,14 +1092,14 @@ Back to BUIDLing,
 }
 
     bounties_spec = [{
-        'url': 'https://github.com/ProofSuite/OrFeed/issues/31',
-        'primer': 'Bug(S) Fix: Leveraged Positions Smart Contract Example',
+        'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
+        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge: Last Chance! ',
     }, {
-        'url': 'https://github.com/harmonylion/99designsformemes/issues/1',
-        'primer': 'Create A Meme For "The Fed Is Bad"',
+        'url': 'https://github.com/mysteriumnetwork/node/issues/1865',
+        'primer': 'A sneak peak at a Mysterium prize during FTF next week',
     }, {
-        'url': 'https://github.com/Minds/minds/issues/151',
-        'primer': 'Show A List Of Who Has Voted On A Post',
+        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/93',
+        'primer': 'A great AdEx one, also a sneak peak :)',
     }]
 
 
@@ -1254,6 +1290,13 @@ def comment(request):
 
 
 @staff_member_required
+def mention(request):
+    from dashboard.models import Activity
+    response_html, _ = render_mention(settings.CONTACT_EMAIL, Activity.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
 def grant_update(request):
     from dashboard.models import Activity
     response_html, _ = render_grant_update(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post', grant__isnull=False).last())
@@ -1316,6 +1359,16 @@ def no_applicant_reminder(request):
     ).first()
     response_html, _ = render_no_applicant_reminder(bounty=bounty)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def match_distribution(request):
+    from townsquare.models import MatchRanking
+    mr = MatchRanking.objects.last()
+    response_html, _ = render_match_distribution(mr)
+    return HttpResponse(response_html)
+
+
 
 
 @staff_member_required

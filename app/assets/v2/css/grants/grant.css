@@ -1,3 +1,122 @@
+.infinite-more-link{
+  display: none;
+}
+.announce {
+  text-align: center;
+  border-radius: 5px;
+  background-color: #fdedee;
+  padding: 3px;
+  position: relative;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.announce:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-bottom-color: #fdedee;
+  border-top: 0;
+  border-left: 0;
+  margin-left: -10px;
+  margin-top: -20px;
+}
+
+.announce a {
+  background-color: #f2c3c4;
+  color: black;
+}
+
+.announce h4 {
+  border-bottom: 3px solid #fdedee;
+}
+
+.announce5 h4 {
+  border-bottom: 3px solid #def390 !important;
+}
+
+.announce5:after {
+  border-bottom-color: #def390 !important;
+}
+
+.announce5 {
+  background-color: #def390 !important;
+}
+
+.announce5 a {
+  background-color: #cee370 !important;
+}
+
+.announce4 h4 {
+  border-bottom: 3px solid #fce5ac !important;
+}
+
+.announce4:after {
+  border-bottom-color: #fce5ac !important;
+}
+
+.announce4 {
+  background-color: #fce5ac !important;
+}
+
+.announce4 a {
+  background-color: #dcc58c !important;
+}
+
+.announce3 h4 {
+  border-bottom: 3px solid #d0f9f4 !important;
+}
+
+.announce3:after {
+  border-bottom-color: #d0f9f4 !important;
+}
+
+.announce3 {
+  background-color: #d0f9f4 !important;
+}
+
+.announce3 a {
+  background-color: #b0d9d4 !important;
+}
+
+.announce2 h4 {
+  border-bottom: 3px solid #a4affc !important;
+}
+
+.announce2:after {
+  border-bottom-color: #a4affc !important;
+}
+
+.announce2 {
+  background-color: #a4affc !important;
+}
+
+.announce2 a {
+  background-color: #849ffc !important;
+}
+
+.announce6 h4 {
+  border-bottom: 3px solid #fde9ed !important;
+}
+
+.announce6:after {
+  border-bottom-color: #fde9ed !important;
+}
+
+.announce6 {
+  background-color: #fde9ed !important;
+}
+
+.announce6 a {
+  background-color: #ddb9bd !important;
+}
+
 .clr .label {
   background: #0FCE7C;
   color: #fff;
@@ -30,10 +149,7 @@
 }
 
 .header {
-  background-image: none;
-  background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764);
-  animation: gradient 40s ease infinite;
-  background-size: 200% 200% !important;
+  background-size: cover;
 }
 
 .header .embed-responsive {

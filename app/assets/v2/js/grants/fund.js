@@ -12,6 +12,8 @@ document.suppress_faucet_solicitation = 1;
 
 $(document).ready(function() {
 
+  // _alert({ message: gettext('Note: Brave users seem to have issues while contributing to Grants while using both Brave Wallet and MetaMask. We recommend disabling one. For more info, see this <a target="_blank" href="https://github.com/brave/brave-browser/issues/6053">issue</a>') }, 'warning');
+
   predictPhantomCLRMatch();
   predictCLRMatch();
 
@@ -41,6 +43,12 @@ $(document).ready(function() {
     $('.tab_target').addClass('hidden');
     target.removeClass('hidden');
 
+    e.preventDefault();
+  });
+
+  $('#adjust').click(function(e) {
+    $(this).remove();
+    $('.unhide_if_expanded').removeClass('hidden');
     e.preventDefault();
   });
 
@@ -92,7 +100,6 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-
   $('.contribution_type select').change(function() {
     if ($('.contribution_type select').val() == 'once') {
       $('.frequency').addClass('hidden');
@@ -110,6 +117,7 @@ $(document).ready(function() {
       $('.hide_if_recurring').addClass('hidden');
     }
   });
+  $('.contribution_type select').trigger('change');
 
   $('#js-fundGrant').validate({
     rules: {
@@ -124,7 +132,6 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
-
 
       if (data.frequency) {
 

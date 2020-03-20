@@ -3,6 +3,11 @@
  * Data is stored on IPFS + the data is stored in
  * standard bounties contract on the ethereum blockchain
  */
+
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 1000);
+});
+
 const ethCancelBounty = data => {
 
   if (is_bounties_network) {
@@ -103,7 +108,10 @@ const ethCancelBounty = data => {
     indicateMetamaskPopup();
     bounty.killBounty(
       bountyId,
-      { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
+      {
+        from: web3.eth.accounts[0],
+        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+      },
       final_callback
     );
 
@@ -112,6 +120,6 @@ const ethCancelBounty = data => {
   const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + 
     issueURL + '&network=' + $('input[name=network]').val() + 
     '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
-  
+
   $.get(uri, apiCallback);
 }

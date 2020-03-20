@@ -63,7 +63,11 @@ class Quest(SuperModel):
     @property
     def url(self):
         from django.conf import settings
-        return settings.BASE_URL + f"quests/{self.pk}/{slugify(self.title)}"
+        return settings.BASE_URL + self.relative_url
+
+    @property
+    def relative_url(self):
+        return f"quests/{self.pk}/{slugify(self.title)}"
 
     @property
     def edit_url(self):
@@ -261,18 +265,19 @@ def psave_quest(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
-    SearchResult.objects.update_or_create(
-        source_type=ContentType.objects.get(app_label='quests', model='quest'),
-        source_id=instance.pk,
-        defaults={
-            "created_on":instance.created_on,
-            "title":instance.title,
-            "description":instance.description,
-            "url":instance.url,
-            "visible_to":None,
-            'img_url': instance.enemy_img_url,
-        }
-        )
+    if instance.pk:
+        SearchResult.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='quests', model='quest'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "title":instance.title,
+                "description":instance.description,
+                "url":instance.url,
+                "visible_to":None,
+                'img_url': instance.enemy_img_url,
+            }
+            )
 
 
 
@@ -319,7 +324,18 @@ class QuestPointAward(SuperModel):
     value = models.FloatField()
     action = models.CharField(max_length=100, default='Beat')
     round_number = models.IntegerField(default=1)
+    metadata = JSONField(default=dict, blank=True)
 
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.value}, {self.profile.handle}'
+
+@receiver(pre_save, sender=QuestPointAward, dispatch_uid="psave_point")
+def psave_point(sender, instance, **kwargs):
+    has_quest = instance.questattempt and instance.questattempt.quest
+    instance.metadata = {
+        'enemy_img' : instance.questattempt.quest.enemy_img_url if has_quest else None,
+        'quest_url' : instance.questattempt.quest.url  if has_quest else None,
+        'handle' : instance.profile.handle if instance.profile else None,
+        'title' : instance.questattempt.quest.title if has_quest else None,
+    }

@@ -174,6 +174,10 @@ def process_win(request, qa):
     """
     Processes the win on behalf of the user
     """
+
+    if qa.profile.pk != request.user.profile.pk:
+        messages.info(request, "Invalid Quest attempt")
+        return "https://gitcoin.co/quests"
     quest = qa.quest
     was_already_beaten = quest.is_beaten(request.user)
     first_time_beaten = not was_already_beaten

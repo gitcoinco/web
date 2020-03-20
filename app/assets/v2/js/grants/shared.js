@@ -3,6 +3,29 @@ var compiledSubscription;
 var compiledSplitter;
 var contractVersion;
 
+function grantCategoriesSelection(target, apiUrl) {
+  $(target).select2({
+    ajax: {
+      url: apiUrl,
+      dataType: 'json',
+      processResults: function(data) {
+        return {
+          results: data.categories.map(category => {
+            const name = category[0];
+            const humanisedName = name.charAt(0).toUpperCase() + name.substring(1);
+
+            const index = category[1];
+
+            return {value: name, text: humanisedName, id: index};
+          })
+        };
+      },
+      cache: true
+    },
+    allowClear: true
+  });
+}
+
 // Waiting State screen
 var enableWaitState = container => {
   $(container).hide();
