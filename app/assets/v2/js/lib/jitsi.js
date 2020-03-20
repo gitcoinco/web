@@ -55,9 +55,15 @@
       })); var r = n(5); const i = n.n(r).a.getLogger(e);
 
       function s(e) {
+<<<<<<< HEAD
         return e.sendRequest({type: 'devices', name: 'getAvailableDevices'}).catch((e)=>(i.error(e), {}));
       } function o(e) {
         return e.sendRequest({type: 'devices', name: 'getCurrentDevices'}).catch((e)=>(i.error(e), {}));
+=======
+        return e.sendRequest({type: 'devices', name: 'getAvailableDevices'}).catch(e=>(i.error(e), {}));
+      } function o(e) {
+        return e.sendRequest({type: 'devices', name: 'getCurrentDevices'}).catch(e=>(i.error(e), {}));
+>>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
       } function a(e, t) {
         return e.sendRequest({deviceType: t, type: 'devices', name: 'isDeviceChangeAvailable'});
       } function c(e) {
@@ -465,7 +471,11 @@
 
         if (e.startsWith('/') && 1 === e.split('&').length)
           return i;
+<<<<<<< HEAD
       } return s.forEach((e)=>{
+=======
+      } return s.forEach(e=>{
+>>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
         const n = e.split('='); const r = n[0];
 
         if (!r)
@@ -501,7 +511,11 @@
               g(e, t, n[t]);
             }));
           } return e;
+<<<<<<< HEAD
         }({}, y, e)), this._receiveCallback = ()=>{}, this.postis.listen(b, (e)=>this._receiveCallback(e));
+=======
+        }({}, y, e)), this._receiveCallback = ()=>{}, this.postis.listen(b, e=>this._receiveCallback(e));
+>>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
       }dispose() {
         this.postis.destroy();
       }send(e) {
@@ -530,13 +544,21 @@
       }emit(e, ...t) {
         const n = this._listeners.get(e); let r = !1;
 
+<<<<<<< HEAD
         return n && n.size && n.forEach((e)=>{
+=======
+        return n && n.size && n.forEach(e=>{
+>>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
           r = e(...t) || r;
         }), r || this._unprocessedMessages.add(t), r;
       }on(e, t) {
         let n = this._listeners.get(e);
 
+<<<<<<< HEAD
         return n || (n = new Set, this._listeners.set(e, n)), n.add(t), this._unprocessedMessages.forEach((e)=>{
+=======
+        return n || (n = new Set, this._listeners.set(e, n)), n.add(t), this._unprocessedMessages.forEach(e=>{
+>>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
           t(...e) && this._unprocessedMessages.delete(e);
         }), this;
       }removeAllListeners(e) {
@@ -561,7 +583,11 @@
       }
     } const j = {}; let C;
 
+<<<<<<< HEAD
     'number' == typeof f && (j.scope = `jitsi_meet_external_api_${f}`), (window.JitsiMeetJS || (window.JitsiMeetJS = {}), window.JitsiMeetJS.app || (window.JitsiMeetJS.app = {}), window.JitsiMeetJS.app).setExternalTransportBackend = (e)=>C.setBackend(e); var E = n(4); var S = n(0);
+=======
+    'number' == typeof f && (j.scope = `jitsi_meet_external_api_${f}`), (window.JitsiMeetJS || (window.JitsiMeetJS = {}), window.JitsiMeetJS.app || (window.JitsiMeetJS.app = {}), window.JitsiMeetJS.app).setExternalTransportBackend = e=>C.setBackend(e); var E = n(4); var S = n(0);
+>>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
 
     function I(e, t) {
       if (null == e)

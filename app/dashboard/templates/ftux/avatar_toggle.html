@@ -3,9 +3,9 @@
        <div id="theme">
         {% for option in avatar_options %}
           <a class="avatar_builder {% if option.name == theme %}selected {% endif %}" href='{{option.url}}'>
-            <img src='{{option.img_url}}' data-toggle="tooltip" title="Created {{option.created_on|naturaltime}} | {{option.popularity}} avatars created" data-html="true" >
+            <img src='{{option.img_url}}' data-toggle="tooltip" title="Created {{option.created_on|naturaltime}} | {{option.popularity}} active avatars" data-html="true" >
             <p class="title m-0 p-0">{{option.humanized_name}}</p>
-            <p class="desc">{{option.popularity}} created</p>
+            <p class="desc">{{option.popularity}} active</p>
           </a>
         {% endfor %}
        </div>

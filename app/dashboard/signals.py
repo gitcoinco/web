@@ -19,10 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
-from django.db.models.signals import post_save
-
 from corsheaders.signals import check_request_enabled
-from git.utils import  get_url_dict, issue_number
+from git.utils import  get_url_dict
 
 from .notifications import maybe_market_to_github
 

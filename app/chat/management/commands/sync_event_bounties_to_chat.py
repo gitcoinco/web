@@ -23,8 +23,14 @@ from django.db.models import Q
 from django.utils.text import slugify
 
 from celery import group
+<<<<<<< HEAD
 from chat.tasks import add_to_channel, create_channel, create_user, get_driver
 from chat.utils import create_user_if_not_exists
+=======
+from chat.tasks import (
+    add_to_channel, associate_chat_to_profile, create_channel, create_channel_if_not_exists, create_user, get_driver,
+)
+>>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
 from dashboard.models import Bounty, Interest, Profile
 
 logger = logging.getLogger(__name__)
@@ -46,20 +52,22 @@ class Command(BaseCommand):
             for bounty in bounties_to_sync:
                 profiles_to_connect = []
                 try:
-                    funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username.lower())
+                    funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username.lower())
 
                     if funder_profile:
                         if funder_profile.chat_id:
+<<<<<<< HEAD
                             funder_profile_request = create_user_if_not_exists(funder_profile)
                             funder_profile.chat_id = funder_profile_request['id']
                             funder_profile.save()
+=======
+                            created, funder_profile = associate_chat_to_profile(funder_profile)
+>>>>>>> 86eb6b20a633b8d45b6c61b8122edb09bec0b463
                         profiles_to_connect.append(funder_profile.chat_id)
                         for interest in bounty.interested.all():
                             if interest.profile:
                                 if interest.profile.chat_id:
-                                    created, chat_user = create_user_if_not_exists(interest.profile)
-                                    interest.profile.chat_id = chat_user['id']
-                                    interest.profile.save()
+                                    created, interest.profile = associate_chat_to_profile(interest.profile)
                                 profiles_to_connect.append(interest.profile.chat_id)
                         if bounty.chat_channel_id is None or bounty.chat_channel_id is '':
                             bounty_channel_name = slugify(f'{bounty.github_org_name}-{bounty.github_issue_number}')

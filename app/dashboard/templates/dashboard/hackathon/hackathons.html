@@ -54,49 +54,56 @@
     <div class="container-fluid">
     </div>
 
+    {% for title, hackathons in events.items %}
+    {% if hackathons|length %}
     <div class="container">
-      <div class="row justify-content-around my-5">
-        {% for hackathon in hackathons %}
-        <style>
-          #{{hackathon.slug}} .card-img-top {
-            background: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
-          }
-        </style>
-        <div class="col-xs-12 col-sm-6 col-lg-4">
-          <div class="card mb-5" id="{{hackathon.slug}}">
-            {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-            {% if logo %}
-              <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
-            {% else %}
-              <div class="card-img-top d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
-                {{ hackathon.name }}
-              </div>
-            {% endif %}
-            <div class="card-body">
-              <h5 class="card-title"><a href="{% url 'hackathon' hackathon.slug %}">{{ hackathon.name }}</a></h5>
-              <div class="small">
-                Starts: <time class="" datetime="{{ hackathon.start_date|date:'c' }}" title="{{ hackathon.start_date }}">{{ hackathon.start_date|date:"m/d/Y" }}</time>
-              </div>
-              <div class="small">
-                Ends: <time class="" datetime="{{ hackathon.end_date|date:'c' }}" title="{{ hackathon.end_date }}">{{ hackathon.end_date|date:"m/d/Y" }}</time>
-              </div>
-              <div class="text-center mt-3">
-                {% if hackathon.end_date|timesince <= "1 min" %}
-                <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue">Join</a>
-                {% endif %}
-                {% if hackathon.start_date|timesince >= "1 min" %}
-                <a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
-                {% endif %}
-                {% if hackathon.show_results %}
-                  <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue">Projects</a>
-                {% endif %}
+      <div class="row my-2">
+        <h1>{{title|title}}</h1>
+      </div>
+      <div class="row my-5">
+          {% for hackathon in hackathons %}
+          <style>
+            #{{hackathon.slug}} .card-img-top {
+              background: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
+            }
+          </style>
+          <div class="col-xs-12 col-sm-6 col-lg-4">
+            <div class="card mb-5" id="{{hackathon.slug}}">
+              {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+              {% if logo %}
+                <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
+              {% else %}
+                <div class="card-img-top d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
+                  {{ hackathon.name }}
+                </div>
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'hackathon' hackathon.slug %}">{{ hackathon.name }}</a></h5>
+                <div class="small">
+                  Starts: <time class="" datetime="{{ hackathon.start_date|date:'c' }}" title="{{ hackathon.start_date }}">{{ hackathon.start_date|date:"m/d/Y" }}</time>
+                </div>
+                <div class="small">
+                  Ends: <time class="" datetime="{{ hackathon.end_date|date:'c' }}" title="{{ hackathon.end_date }}">{{ hackathon.end_date|date:"m/d/Y" }}</time>
+                </div>
+                <div class="text-center mt-3">
+                  {% if hackathon.end_date|timesince <= "1 min" %}
+                  <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue">Join</a>
+                  {% endif %}
+                  {% if hackathon.start_date|timesince >= "1 min" %}
+                  <a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
+                  {% endif %}
+                  {% if hackathon.show_results %}
+                    <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue">Projects</a>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {% endfor %}
+          {% endfor %}
       </div>
     </div>
+    {% endif %}
+    {% endfor %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}

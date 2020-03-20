@@ -75,7 +75,7 @@
             <option {% if args.period_size == "hours" %}selected{% endif %}>hours</option>
         </select>
         <br>
-        Time Period Start: <input type="number" value="{{args.num_periods}}">
+        Time Period Start: <input type="number" name=num_periods value="{{args.num_periods}}">
         <br>
         <input type="submit" name="submit" value="Go">
     </form>

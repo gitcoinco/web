@@ -5,8 +5,22 @@
   background-color: #ecf0f4;
   border: 0px solid;
 }
+.click_here_to_join_video{
+  width: 100%;
+  cursor: pointer;
+  min-height: 250px;
+}
+.click_here_to_join_video iframe{
+  min-height: 250px;
+}
+.click_here_to_join_video img{
+  width: 100%;
+}
 .after_copy{
   font-size: 12px;
+}
+.activity_stream{
+  margin-bottom: 50px;
 }
 .activity_stream .content{
   cursor: pointer;
@@ -94,7 +108,7 @@ a .sup {
 
 .comment_container img {
   border-radius: 20px;
-  max-width: 20px;
+  max-width: 40px;
 }
 .activity_stream .content img{
   max-height: 100px;
@@ -150,10 +164,16 @@ a .sup {
 .copy_activity:hover {
   text-decoration: none;
 }
-
+.funder-avatar,
+.activity-avatar {
+  text-align: center;
+}
+.activity_stream .activity-avatar{
+  margin-top: -10px;
+}
 .activity_stream .avatar {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 4.5rem;
+  height: 4.5rem;
   min-height: 2.5rem;
   margin: 0px auto;
   border-radius: 50px;
@@ -179,11 +199,6 @@ a .sup {
   min-height: 2rem;
 }
 
-.funder-avatar,
-.activity-avatar {
-  text-align: center;
-}
-
 .last-icon {
   font-size: 1.25rem;
   color: #0D0764;
@@ -193,8 +208,25 @@ a .sup {
   display: inline-block;
 }
 
-#poll-button.selected{
+.click-gif.selected,
+#poll-button.selected,
+#video-button.selected{
   color: black;
+}
+#video_container{
+  background-color: white;
+  text-align: center;
+}
+#video_container img{
+  width: 75%;
+  margin: 0px auto;
+}
+iframe.popout{
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  width: 25% !important;
+  height: 25% !important;
 }
 
 #poll_container input{
@@ -232,12 +264,42 @@ a .sup {
   background-color: #f0f0f0;
 }
 
+.activity_stream .activity_detail .tag{
+  background-color: #e7f0fa;
+  color: var(--gc-blue);
+  font-size: 10px;
+  list-style: none;
+  padding: 5px;
+}
+.staff_tag
+{
+  background-color: #eEbAEE;
+  border-radius: 5px;
+  color: #8E2ABE;
+  font-size: 10px;
+  list-style: none;
+  padding: 5px;
+}
+
 .bounty_removed_by_funder .activity-tags .tag,
 .bounty_removed_by_staff .activity-tags .tag,
 .bounty_abandonment_escalation_to_mods .activity-tags .tag,
 .bounty_abandonment_warning .activity-tags .tag,
 .activity.new_kudos .activity-tags .tag {
   display: none;
+}
+
+.infinite-more-link{
+  position: absolute;
+  bottom: 10px;
+  text-align: center;
+  width: 50%;
+  background-color: white;
+  border: 1px solid;
+  margin-left: 25%;
+}
+.dropdown-menu.gif-inject-target.show{
+  margin-top: -185px;
 }
 
 @media (min-width: 768px) {
@@ -249,8 +311,20 @@ a .sup {
     left: -10px;
   }
 }
-
 @media (max-width: 767.98px) {
+  .dropdown-menu.gif-inject-target.show{
+    margin-top: -150px;
+    margin-left: -300px;
+  }
+
+  .activity_stream .activity-avatar{
+    margin-top: 0px;
+  }
+  .activity_stream .avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    min-height: 2.5rem;
+  }
   .comment_container.filled{
     text-align: center;
     margin: 0px auto;
@@ -263,6 +337,19 @@ a .sup {
   #activities .organizations{
     text-align: center;
     margin: 0px auto;
+  }
+}
+@media (max-width: 1100px) {
+  .activity_stream .avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .activity_stream .avatar {
+    width: 4rem;
+    height: 4rem;
   }
 }
 

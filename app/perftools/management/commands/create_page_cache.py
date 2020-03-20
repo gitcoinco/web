@@ -22,11 +22,12 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
+from django.db.models import Count, Q
 from django.db.models.query import QuerySet
-from django.forms.models import model_to_dict
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
+from dashboard.models import Profile
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
@@ -38,6 +39,47 @@ def fetchPost(qt='2'):
     url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
     last_posts = requests.get(url=url).json()
     return last_posts
+
+def create_hidden_profiles_cache():
+
+    handles = list(Profile.objects.all().hidden().values_list('handle', flat=True))
+
+    view = 'hidden_profiles'
+    keyword = 'hidden_profiles'
+    with transaction.atomic():
+        JSONStore.objects.filter(view=view).all().delete()
+        data = handles
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=data,
+            )
+
+
+def create_tribes_cache():
+
+    _tribes = Profile.objects.filter(is_org=True).order_by('-follower_count')[:8]
+
+    tribes = []
+
+    for _tribe in _tribes:
+        tribe = {
+            'name': _tribe.handle,
+            'img': _tribe.avatar_url,
+            'followers_count': _tribe.follower_count
+        }
+        tribes.append(tribe)
+
+    view = 'tribes'
+    keyword = 'tribes'
+    with transaction.atomic():
+        JSONStore.objects.filter(view=view).all().delete()
+        data = tribes
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=data,
+            )
 
 
 def create_post_cache():
@@ -177,8 +219,10 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_activity_cache()
+        create_hidden_profiles_cache()
         if not settings.DEBUG:
+            create_tribes_cache()
+            create_activity_cache()
             create_post_cache()
             create_results_cache()
             create_avatar_cache()

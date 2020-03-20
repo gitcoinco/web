@@ -26,7 +26,7 @@ from django.utils import timezone
 from dashboard.models import Bounty
 from dashboard.notifications import maybe_post_on_craigslist
 
-warnings.filterwarnings("ignore", category=DeprecationWarning) 
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 

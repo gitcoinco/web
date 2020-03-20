@@ -106,9 +106,9 @@
 
   <body class="g-font-muli">
     <div class="invoice-box">
-      {% if grant.network != 'mainnet' %}
+      {% if subscription.grant.network != 'mainnet' %}
         <div style="color:red; border: 1px red solid; padding: 5px;">
-          {% trans "Note: This is not a mainnet grant, it is a " %} {{grant.network}} {% trans "grant, and this invoice is only for demonstration purposes." %}
+          {% trans "Note: This is not a mainnet grant, it is a " %} {{subscription.grant.network}} {% trans "grant, and this invoice is only for demonstration purposes." %}
         </div>
       {% endif %}
       <table cellpadding="0" cellspacing="0">
