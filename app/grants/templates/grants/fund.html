@@ -162,32 +162,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                       <div class="col-12 col-sm-4 font-body num_recurring hidden">
                         <label class="form__label">
-                          {% trans "Number of Contribution Periods" %}
+                          {% trans "Number of Grants Rounds" %}
                         </label>
+                        <input type="hidden" id="frequency_count" name="frequency_count" class="form__input" value='1' required />
+                        <input type="hidden" id="frequency_unit" name="frequency_unit" class="form__input" value='rounds' required />
                         <input id="period" type="number" min="1" step="1" name="num_periods" class="form__input" value="12" required />
                       </div>
                     </div>
                   </div>
-
-                  <div class="form__group-horizontal frequency hidden">
-                    <label class="form__label">{% trans "Payment Period" %}</label>
-                    <div class="row">
-                      <div class="col-6 col-sm-8 font-body">
-                        <input type="number" min=0 step="1" id="frequency_count" name="frequency" class="form__input" value='30' required />
-                      </div>
-                      <div class="col-6 col-sm-4 font-body">
-                        <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
-                          {% if user.is_staff %}
-                            <option value="minutes" selected="selected">{% trans "minutes" %}</option>
-                            <option value="hours" selected="selected">{% trans "hours" %}</option>
-                          {% endif %}
-                          <option value="days" selected="selected">{% trans "days" %}</option>
-                          <option value="months">{% trans "months" %}</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
 
                   <div class="form__group-horizontal contribution_type">
                     <div class="row">
@@ -240,7 +222,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </span>
                           </p>
                           <p class="mb-0 mx-0 font-caption text-center summary-rollup-gitcoin">
-                          {% trans "every" %} <span class="font-caption summary-period">-</span>
+                          {% trans "for" %} <span class="font-caption summary-period">-</span>
                             <span class="font-caption summary-frequency-unit-gitcoin">-</span>
                             (<span class="summary-frequency-gitcoin">-</span> times)
                           </p>
@@ -272,7 +254,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       </span>
                       {% trans "to this grant" %}
                       <span class="hide_if_onetime hidden">
-                        every
+                        for
                         <span class="summary-period font-weight-bold">-</span>
                         <span class="summary-frequency-unit font-weight-bold">-</span>.
                       </span>
@@ -286,7 +268,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         {% if not grant_has_no_token %} {{ grant.token_symbol }} {% endif %}
                       </span>
                       {% if grant.contract_version == 1 %}
-                        {% trans "to the gitcoin maintainer grant every" %}
+                        {% trans "to the gitcoin maintainer grant for" %}
                       {% elif grant.contract_version == 0 %}
                         {% trans "to the gitcoin maintainer grant" %}
                       {% endif %}

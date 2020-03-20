@@ -100,13 +100,29 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-  $('.contribution_type select').change(function() {
+  $('#js-token').change(function(e) {
+    if($("#js-token").val() == '0x0000000000000000000000000000000000000000'){
+      _alert("Sorry but this token is not supported for recurring donations", 'error', 1000);
+      $('.contribution_type select').val('once');
+      $('.contribution_type').addClass('hidden');
+    } else {
+      $('.contribution_type').removeClass('hidden');
+    }
+  });
+  setInterval(function(){
+    if($("#js-token").val() == '0x0000000000000000000000000000000000000000'){
+      $('.contribution_type').addClass('hidden');
+      $('.contribution_type select').val('once');
+    }
+  }, 100);
+
+  $('.contribution_type select').change(function(e) {
     if ($('.contribution_type select').val() == 'once') {
       $('.frequency').addClass('hidden');
       $('.num_recurring').addClass('hidden');
       $('.hide_if_onetime').addClass('hidden');
       $('.hide_if_recurring').removeClass('hidden');
-      $('#period').val(1);
+      $('#period').val(4);
       updateSummary();
       $('#amount_label').text('Amount');
     } else {
@@ -127,6 +143,7 @@ $(document).ready(function() {
       }
     },
     submitHandler: function(form) {
+
       var data = {};
 
       $.each($(form).serializeArray(), function() {
@@ -146,6 +163,8 @@ $(document).ready(function() {
           periodSeconds *= 60;
         } else if (data.frequency_unit == 'months') {
           periodSeconds *= 2592000;
+        } else if (data.frequency_unit == 'rounds') {
+          periodSeconds *= 2592001;
         }
         if (periodSeconds) {
           realPeriodSeconds = periodSeconds;
@@ -277,7 +296,8 @@ $(document).ready(function() {
         text: ele.name
       }));
 
-      $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
+      $("#js-token option[value='0x0000000000000000000000000000000000000001']").remove(); // ETC
+      //$("#js-token option[value='0x0000000000000000000000000000000000000000']").remove(); // ETH
     });
     $('#js-token').select2();
   }); // waitforWeb3

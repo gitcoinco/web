@@ -69,6 +69,7 @@ clr_round = 5
 clr_active = True
 show_clr_card = True
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
+kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12427, 12392, 12307, 12343, 12156, 12164]
 
 if not clr_active:
     clr_matching_banners_style = 'results'
@@ -758,6 +759,7 @@ def grant_fund(request, grant_id, grant_slug):
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
+    fund_reward = BulkTransferCoupon.objects.filter(token__id__in=kudos_reward_pks).order_by('?').first()
     if can_phantom_fund:
         active_tab = 'phantom'
     if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
@@ -768,7 +770,6 @@ def grant_fund(request, grant_id, grant_slug):
             msg = "You are now signaling for this grant."
             show_tweet_modal = True
             name_search = 'grants_round_4_contributor' if not settings.DEBUG else 'pogs_eth'
-            fund_reward = BulkTransferCoupon.objects.filter(token__name__contains=name_search).order_by('?').first()
             PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
             record_grant_activity_helper('new_grant_contribution', grant, request.user.profile)
 
