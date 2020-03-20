@@ -33,7 +33,10 @@
   --form-input-color: rgba(0, 0, 0, 0.38);
   --button-radio-icon-color: #3e00ff;
   --link-color: #3e00ff;
-  --town-square-link-color: black;
+  --townsquare-link-color: black;
+  --townsquare-block-header-color: #626365;
+  --active-button-border-color: var(--link-color);
+  --default-text-color: var(--text-dark);
 }
 
 @media screen and (prefers-color-scheme: dark) {
@@ -72,7 +75,10 @@
     --form-input-color: white;
     --button-radio-icon-color: white;
     --link-color: white;
-    --town-square-link-color: white;
+    --townsquare-link-color: white;
+    --townsquare-block-header-color: white;
+    --active-button-border-color: white;
+    --default-text-color: white;
   }
 }
 

@@ -47,10 +47,8 @@ textarea.form__input {
   background-position: top 0.5rem right 0.5rem;
 }
 
-.form__input::-webkit-input-placeholder,
-.form__input::-moz-placeholder,
-.form__input:-moz-placeholder,
-.form__input:-ms-input-placeholder {
+.form__input,
+.form__input::-webkit-input-placeholder {
   color: var(--form-input-color);
 }
 
