@@ -2,12 +2,12 @@
  * Handles Bounty cancellation for crypto tokens
  * Data is stored in the db
  */
-cancelBounty = data => {
+const cancelBounty = data => {
 
-  const url  = '/api/v1/bounty/cancel';
-  params = data.payload;
+  const url = '/api/v1/bounty/cancel';
+  let params = data.payload;
 
-  $.post(url, params, function(response) {
+  $.post(url, params, function (response) {
     if (200 <= response.status && response.status <= 204) {
       /* eslint no-console: "error" */
 

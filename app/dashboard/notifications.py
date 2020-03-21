@@ -64,7 +64,8 @@ def notify_of_lowball_bounty(bounty):
             f"Owner Email: {bounty.bounty_owner_email}\n\n" \
             f"Owner Address: {bounty.bounty_owner_address}\n\n" \
             f"Owner Profile: {bounty.bounty_owner_profile}"
-        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"), categories=['admin'], cc_emails=cc_emails)
+        send_mail(from_email, to_email, subject, body, from_name=_(
+            "No Reply from Gitcoin.co"), categories=['admin'], cc_emails=cc_emails)
     finally:
         translation.activate(cur_language)
 
@@ -442,7 +443,8 @@ def maybe_market_kudos_to_email(kudos_transfer):
     # 2. Generate subject
     from_name = 'Someone' if not kudos_transfer.from_username else f'{kudos_transfer.from_username}'
     on_network = '' if kudos_transfer.network == 'mainnet' else f'({kudos_transfer.network})'
-    subject = gettext(f"⚡️ {from_name} Sent You a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos {on_network}")
+    subject = gettext(
+        f"⚡️ {from_name} Sent You a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos {on_network}")
 
     logger.info(f'Emails to send to: {kudos_transfer.emails}')
 
@@ -490,8 +492,6 @@ def get_status_header(bounty):
                 statuses.append('Submitted')
                 if status == 'done':
                     statuses.append('**Done**')
-                else:
-                    statuses.append('**Done**')
 
     # 1. Open | **2. Started** | 3. Submitted | 4. Done
     status_bar = ""
@@ -537,7 +537,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                 f"[here]({absolute_url})"
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
     crowdfund_amount = f"(plus a crowdfund of {bounty.additional_funding_summary_sentence})" if bounty.additional_funding_summary_sentence else ""
-    crowdfund_thx = ", ".join(f"@{tip.from_username}" for tip in bounty.tips.filter(is_for_bounty_fulfiller=True) if tip.from_username)
+    crowdfund_thx = ", ".join(f"@{tip.from_username}" for tip in bounty.tips.filter(
+        is_for_bounty_fulfiller=True) if tip.from_username)
     funding_org = f" as part of the {bounty.funding_organisation} fund" if bounty.funding_organisation else ""
     if crowdfund_thx:
         crowdfund_thx = f"Thanks to {crowdfund_thx} for their crowdfunded contributions to this bounty.\n\n"
@@ -588,14 +589,14 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             issue_message = interest.issue_message.strip()
             if issue_message:
                 msg += f"\n\n{issue_message}"
-        
+
         msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
         sub_msg = ""
         if bounty.fulfillments.exists():
             sub_msg = f"\n\n{bounty_owner if bounty_owner else 'If you are the bounty funder,'} " \
-                       "please take a look at the submitted work:\n"
+                "please take a look at the submitted work:\n"
             for bf in bounty.fulfillments.all():
                 username = "@"+bf.fulfiller_github_username if bf.fulfiller_github_username else bf.fulfiller_address
                 link_to_work = f"[PR]({bf.fulfiller_github_url})" if bf.fulfiller_github_url else "(Link Not Provided)"
@@ -606,7 +607,6 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             for i, profile in enumerate(profile_pairs, start=1):
                 profiles = profiles + f"\n {i}. [@{profile[0]}]({profile[1]})"
             profiles += "\n\n"
-
 
         msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__:\n" \
               f"{profiles}{sub_msg}\n<hr>\n\n" \
@@ -846,7 +846,6 @@ def maybe_market_kudos_to_github(kt):
         print(e)
         return False
     return True
-
 
 
 def maybe_market_to_email(b, event_name):

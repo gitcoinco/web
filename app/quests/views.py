@@ -65,9 +65,8 @@ def editquest(request, pk=None):
             quest = Quest.objects.get(pk=pk)
             if not request.user.is_authenticated:
                 raise Exception('no')
-            if quest.creator != request.user.profile:
-                if not request.user.is_staff:
-                    raise Exception('no')
+            if quest.creator != request.user.profile and not request.user.is_staff:
+                raise Exception('no')
         except:
             raise Http404
 

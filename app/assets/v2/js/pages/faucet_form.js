@@ -1,10 +1,10 @@
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
   setInterval(listen_for_web3_changes, 1000);
 });
 
-$('document').ready(function() {
+$('document').ready(function () {
 
-  $('#comment').bind('input propertychange', function() {
+  $('#comment').bind('input propertychange', function () {
     this.value = this.value.replace(/ +(?= )/g, '');
 
     if (this.value.length > 500) {
@@ -17,17 +17,17 @@ $('document').ready(function() {
 
   });
 
-  $('#githubProfile').on('focus', function() {
+  $('#githubProfile').on('focus', function () {
     $('#githubProfileHelpBlock').hide();
     $('#githubProfile').removeClass('is-invalid');
   });
 
-  $('#emailAddress').on('focus', function() {
+  $('#emailAddress').on('focus', function () {
     $('#emailAddressHelpBlock').hide();
     $('#emailAddress').removeClass('is-invalid');
   });
 
-  $('#emailAddress').on('change', function() {
+  $('#emailAddress').on('change', function () {
     var exp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     if (!exp.test(this.value)) {
@@ -48,10 +48,12 @@ $('document').ready(function() {
     }
   });
 
-  $('#submitFaucet').on('click', function(e) {
+  $('#submitFaucet').on('click', function (e) {
     e.preventDefault();
     if (document.web3network !== 'mainnet') {
-      _alert({ message: gettext('you must be on mainnet')}, 'error');
+      _alert({
+        message: gettext('you must be on mainnet')
+      }, 'error');
       return;
     }
     if ($(this).hasClass('disabled')) {
@@ -60,10 +62,10 @@ $('document').ready(function() {
     $('#submitFaucet').addClass('disabled');
 
     if (e.target.hasAttribute('disabled') ||
-       $('#githubProfile').is(['is-invalid']) ||
-       $('#emailAddress').is(['is-invalid']) ||
-       $('#githubProfile').val() === '' ||
-       $('#emailAddress').val() === '') {
+      $('#githubProfile').is(['is-invalid']) ||
+      $('#emailAddress').is(['is-invalid']) ||
+      $('#githubProfile').val() === '' ||
+      $('#emailAddress').val() === '') {
       _alert(gettext('Please make sure to fill out all fields.'));
       $('#submitFaucet').removeClass('disabled');
       return;
@@ -77,13 +79,13 @@ $('document').ready(function() {
     };
 
     $.post('/api/v0.1/faucet/save', faucetRequestData)
-      .done(function(d) {
+      .done(function (d) {
         $('#primary_form').hide();
         $('#success_container').show();
         $('#submitFaucet').removeClass('disabled');
       })
 
-      .fail(function(response) {
+      .fail(function (response) {
         var message = gettext('Got an unexpected error');
 
         if (response && response.responseJSON && response.responseJSON.message) {
