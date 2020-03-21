@@ -3,9 +3,9 @@ $(document).ready(() => {
     minimumResultsForSearch: Infinity
   });
 
-  if($(".grants_type_nav").length){
+  if ($('.grants_type_nav').length) {
     localStorage.setItem('last_grants_index', document.location.href);
-    localStorage.setItem('last_grants_title', $("title").text().split("|")[0]);
+    localStorage.setItem('last_grants_title', $('title').text().split('|')[0]);
   }
 
   $('#network').select2({
@@ -89,19 +89,20 @@ $('.grants_nav a').on('click', function(event) {
   updateParams(queryParam, queryParamValue);
 });
 
-var glow_skip = function(){
-  setTimeout(function(){
-     $("#skip").animate( {color:'#999'}, {duration:1000});
-    setTimeout(function(){
-       $("#skip").animate( {color:'#bbb'}, {duration:2000});
-    }, 1500)
-  }, 1000);  
-}
-setInterval(glow_skip, 5000)
+var glow_skip = function() {
+  setTimeout(function() {
+    $('#skip').animate({color: '#999'}, {duration: 1000});
+    setTimeout(function() {
+      $('#skip').animate({color: '#bbb'}, {duration: 2000});
+    }, 1500);
+  }, 1000);
+};
+
+setInterval(glow_skip, 5000);
 glow_skip();
 
 window.addEventListener('scroll', function() {
-  if($('.activity_stream').length && $('.activity_stream').isInViewport()){
+  if ($('.activity_stream').length && $('.activity_stream').isInViewport()) {
     $('#skip').addClass('hidden');
   } else {
     $('#skip').removeClass('hidden');

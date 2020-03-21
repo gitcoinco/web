@@ -45,9 +45,9 @@ $(document).ready(function() {
   var lgi = localStorage.getItem('last_grants_index');
   var lgt = localStorage.getItem('last_grants_title');
 
-  if(lgi){
-    $("#backgrants").attr('href', lgi);
-    $("#backgrants").text("< Back to " + lgt);
+  if (lgi) {
+    $('#backgrants').attr('href', lgi);
+    $('#backgrants').text('< Back to ' + lgt);
   }
 
 
