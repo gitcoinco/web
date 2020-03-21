@@ -1,5 +1,4 @@
-[
-  {
+[{
   "model": "oauth2_provider.application",
   "pk": 1,
   "fields": {

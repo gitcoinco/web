@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import copy
 import datetime as dt
 import json
-import math
 import time
 from itertools import combinations
 

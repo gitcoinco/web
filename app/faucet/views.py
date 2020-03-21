@@ -24,7 +24,6 @@ from django.core.validators import validate_email, validate_slug
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext_lazy as _

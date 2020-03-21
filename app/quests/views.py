@@ -16,7 +16,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Profile
-from kudos.models import BulkTransferCoupon, Token
+from kudos.models import  Token
 from marketing.mails import new_quest_request, send_user_feedback
 from marketing.models import EmailSubscriber
 from quests.helpers import (

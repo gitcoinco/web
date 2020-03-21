@@ -12,7 +12,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from kudos.models import BulkTransferCoupon, BulkTransferRedemption, Token
+from kudos.models import BulkTransferRedemption, Token
 from quests.helpers import (
     get_active_attempt_if_any, get_base_quest_view_params, get_leaderboard, max_ref_depth, process_start, process_win,
     record_award_helper, record_quest_activity,
