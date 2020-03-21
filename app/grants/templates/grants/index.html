@@ -34,7 +34,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% include 'grants/shared/landing_announce.html' %}
       {% endif %}
       <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
-        <div style="background-color: rgba(255, 255, 255, 0.85);  padding-bottom: 20px;">
+        <div style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.75{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#3cca93{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
       {% include 'grants/shared/landing_navbar.html' %}
       {% include 'grants/shared/landing_clr.html' %}
       {% if type != 'activity' %}

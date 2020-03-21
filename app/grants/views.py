@@ -120,7 +120,6 @@ def grants(request):
     if grant_type == 'health':
         bottom_back = 'health.jpg'
         bg = 'health.jpg'
-        mid_back = 'bg11.gif'
     show_past_clr = False
 
     sort_by_index = None

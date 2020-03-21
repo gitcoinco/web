@@ -3,9 +3,30 @@
         <div class="grants-hero white my-5">
           <div class="row">
             <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
+            {% if type == 'activity' %}
               <div class="embed-responsive embed-responsive-16by9">
                 <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/eVgEWSPFR2o?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
               </div>
+            {% else %}
+              <p class="p-3 font-header" style="margin-top: 115px;">
+                <strong style="font-size: 24px;">$250k matching going on now.</strong>
+
+              $100k for Tech Grants, $100k for Public Health Grants, $50k for Media Grants. -- 
+              Matching ends on {{round_end|date:'Y-m-d'}} 
+                (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so get started today!
+              </p>
+              <div class="float-right">
+              <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
+                <img class="mr-1 white-icon" src="{% static "v2/images/grants/icons/white.svg" %}">
+                {% trans 'Create a Grant' %}
+              </a>
+              <span class="ml-2">
+              or
+              <a class="explore_grants" href="#content_navbar" style="text-decoration: underline;">
+                <i class="fas fa-map"></i> | Explore Grants
+              </a>
+              </div>
+            {% endif %}
             </div>
             <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
               <h1 class="font-title-xl font-weight-semibold">{% trans 'Get Matching Funding for Your Pubilc Goods Projects' %}</h1>
@@ -16,6 +37,7 @@
                 Show your support.
                 {% endblocktrans %}
               </p>
+              {% if type == 'activity' %}
               <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
                 <img class="mr-1 white-icon" src="{% static "v2/images/grants/icons/white.svg" %}">
                 {% trans 'Create a Grant' %}
@@ -26,6 +48,7 @@
                 <i class="fas fa-map"></i> | Explore Grants
               </a>
               </span>
+              {%endif%}
             </div>
           </div>
         </div>

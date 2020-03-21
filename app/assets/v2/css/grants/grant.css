@@ -400,7 +400,7 @@
 
 .health_grants .grants-hero .font-header,
 .health_grants .grants-hero h1,
-.explore_grants {
+.health_grants .explore_grants {
   background-color: rgba(16,207,125, 0.8);
 }
 .health_grants .grants-hero.white a.btn {
@@ -554,6 +554,12 @@
   border-radius: 3px;
 }
 
+.media_grants .grant-partners {
+background: linear-gradient(11deg, #e99907 0%,#207cca 63%,#2989d8 99%,#110f22 100%,#2989d8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+.tech_grants .grant-partners {
+background: linear-gradient(11deg, #942f3d 0%,#9c602f 12%,#110f22 42%,#09060e 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
 .grant-partners h2 {
   letter-spacing: 3px;
 }
