@@ -1,4 +1,4 @@
-:root {
+html {
   --color-notification: 37, 232, 153;
   --badge-bg: #D6FBEB;
   --badge-text: #00A55E;
@@ -7,17 +7,15 @@
   --badge-blue-text: #6587AE;
 }
 
-@media screen and (prefers-color-scheme: dark) {
-  :root {
-    --color-notification: 37, 232, 153;
-    --badge-bg: #D6FBEB;
-    --badge-text: #00A55E;
-    --link-color: #3E00FF;
-    --badge-blue-bg: #5f5c74;
-    --badge-blue-text: white;
-  }
+/* @media screen and (prefers-color-scheme: dark) { */
+html.dark-mode {
+  --color-notification: 37, 232, 153;
+  --badge-bg: #D6FBEB;
+  --badge-text: #00A55E;
+  --link-color: #3E00FF;
+  --badge-blue-bg: #5f5c74;
+  --badge-blue-text: white;
 }
-
 
 .navbar-nav .nav-link.notification__icon {
   position: relative;
