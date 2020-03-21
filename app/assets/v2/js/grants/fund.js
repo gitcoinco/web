@@ -194,7 +194,6 @@ $(document).ready(function() {
     }
     if ($('#js-token').val() == '0x0000000000000000000000000000000000000000') {
       $('.contribution_type select').val('once');
-    } else {
     }
   });
   setInterval(function() {
