@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
-import random
+import secrets
 import re
 from urllib.parse import urlparse as parse
 
@@ -154,7 +154,7 @@ def maybe_market_to_twitter(bounty, event_name):
             'Worked approved on {} {} {}\n{}'
         ]
 
-    random.shuffle(tweet_txts)
+    secrets.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
 
     url = bounty.get_absolute_url()

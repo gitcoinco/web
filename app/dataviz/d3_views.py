@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import math
-import random
 import re
 import time
 
@@ -32,9 +31,11 @@ import pytz
 from dashboard.models import Bounty, BountyFulfillment, Profile, Tip
 from marketing.models import Stat
 from perftools.models import JSONStore
+from random import SystemRandom
 
 from .models import DataPayload
 
+cryptogen = SystemRandom()
 
 @staff_member_required
 def data_viz_helper_get_data_responses(request, visual_type):
@@ -524,7 +525,7 @@ def viz_graph_data_helper(_type, keyword, hide_pii):
                 names[node] = None
                 types[node] = 'independent'
             if last_node and _type == 'what_future_could_look_like':  # and random.randint(0, 2) == 0:
-                weight = random.randint(1, 10)
+                weight = cryptogen.random.randint(1, 10)
                 # edges.append((node, last_node, weight))
                 # edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
                 target = nodes.order_by('?').first().handle.lower()

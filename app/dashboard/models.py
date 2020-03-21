@@ -2929,10 +2929,10 @@ class Profile(SuperModel):
         # give the user a profile header if they have not yet selected one
         if not self.profile_wallpaper:
             from dashboard.helpers import load_files_in_directory
-            import random
+            import secrets
             try:
                 wallpapers = load_files_in_directory('wallpapers')
-                self.profile_wallpaper = f"/static/wallpapers/{random.choice(wallpapers)}"
+                self.profile_wallpaper = f"/static/wallpapers/{secrets.choice(wallpapers)}"
             except Exception as e:
                 # fix for travis, which has no static dir
                 logger.exception(e)

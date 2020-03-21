@@ -1,7 +1,7 @@
 
 import copy
 import logging
-import random
+import secrets
 
 from django.conf import settings
 from django.contrib import messages
@@ -72,7 +72,7 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
             num_uses_remaining=1,
             num_uses_total=1,
             current_uses=0,
-            secret=random.randint(10**19, 10**20),
+            secret=secrets.randint(10**19, 10**20),
             comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
             sender_profile=gitcoinbot,
             metadata={
@@ -196,7 +196,7 @@ def process_win(request, qa):
             num_uses_remaining=1,
             num_uses_total=1,
             current_uses=0,
-            secret=random.randint(10**19, 10**20),
+            secret=secrets.randint(10**19, 10**20),
             comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
             sender_profile=get_profile('gitcoinbot'),
             metadata={

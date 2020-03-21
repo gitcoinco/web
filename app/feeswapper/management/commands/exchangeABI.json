@@ -1,5 +1,6 @@
 /*eslint quotes: ["error", "double"]*/
 /*eslint-env es6*/
+
 [{
     "name": "TokenPurchase",
     "inputs": [{

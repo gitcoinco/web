@@ -16,14 +16,16 @@
 
 '''
 
-import random
+
 import time
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Earning, Profile, ProfileStatHistory
+from random import SystemRandom
 
+cryptogen = SystemRandom()
 
 def get_exponent(num, base=5):
     i = 1
@@ -33,7 +35,7 @@ def get_exponent(num, base=5):
 
 
 def choose_edge(edges):
-    entropy = random.random()
+    entropy = cryptogen.random()
     cursor = 0
     last_edge = edges[0]
     for edge in edges:

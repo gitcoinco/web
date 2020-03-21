@@ -1,5 +1,3 @@
-/*eslint quotes: ["error", "double"]*/
-/*eslint-env es6*/
 [{
     "model": "avatar.baseavatar",
     "pk": 1,

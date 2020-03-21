@@ -1,4 +1,4 @@
-import random
+import secrets
 
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
@@ -156,7 +156,7 @@ class Quest(SuperModel):
         if self.background:
             return self.background
         backgrounds = list(range(0, num_backgrounds + 1))
-        which_back_idx = random.choice(backgrounds)
+        which_back_idx = secrets.choice(backgrounds)
         if self.pk:
             which_back_idx = self.pk % len(backgrounds)
         which_back = backgrounds[which_back_idx]

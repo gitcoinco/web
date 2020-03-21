@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 import os
-import random
+import secrets
 import re
 from io import BytesIO
 from secrets import token_hex
@@ -419,19 +419,19 @@ def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_f
     optional.append('Makeup')  # Also include Makeup as optional
 
     payload = dict()
-    payload['SkinTone'] = random.choice(context['skin_tones'])
+    payload['SkinTone'] = secrets.choice(context['skin_tones'])
     if override_skin_tone:
         payload['SkinTone'] = override_skin_tone
-    payload['HairColor'] = random.choice(context['hair_colors'])
+    payload['HairColor'] = secrets.choice(context['hair_colors'])
     if override_hair_color:
         payload['HairColor'] = override_hair_color
-    payload['ClothingColor'] = random.choice(context['clothing_colors'])
+    payload['ClothingColor'] = secrets.choice(context['clothing_colors'])
 
     for section in context['sections']:
         section_name = section['name'].replace(' ', '')
         paid_options = section['paid_options'].keys()
 
-        set_optional = random.choice([False, True]) if section_name in optional else True
+        set_optional = secrets.choice([False, True]) if section_name in optional else True
 
         if set_optional == True:
             options = dict()
@@ -446,7 +446,7 @@ def build_random_avatar(override_skin_tone=None, override_hair_color=None, add_f
                     if option[0] not in paid_options and option not in ignore_options
                 ]
 
-            random_choice = random.choice(options)
+            random_choice = secrets.choice(options)
 
             if section_name == 'Wallpaper':
                 continue
@@ -615,7 +615,7 @@ def svg_to_png(svg_content, width=100, height=100, scale=1, index=None, prefer=N
         png = svg_to_png_pyvips(svg_content, scale=scale)
     if not png:
         if not index:
-            index = random.randint(1000000, 10000000)
+            index = secrets.randint(1000000, 10000000)
         print("failed; using inkscape")
         return svg_to_png_inkscape(svg_content, height=height, width=width, index=index, extra_flags=extra_flags)
     return png

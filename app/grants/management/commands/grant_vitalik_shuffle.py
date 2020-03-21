@@ -18,18 +18,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-import random
+
 
 from django.core.management.base import BaseCommand
 
 from grants.models import Grant
+from random import SystemRandom
+
+cryptogen = SystemRandom()
 
 # VB 2019/09/27
 # > To prevent a winner-takes-all effect from grants with already the most funding being shown at the top, how about a randomized sort, where your probability of being first is equal to (your expected CLR match) / (total expected CLR match) and then you just do that recursively to position everyone?
 
 
 def weighted_select(items):
-    stop = random.randrange(sum([ele[1] for ele in items]))
+    stop = cryptogen.random.randrange(sum([ele[1] for ele in items]))
     pos = 0
     for ele in items:
         i = ele[1]

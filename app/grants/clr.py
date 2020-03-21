@@ -27,6 +27,9 @@ from django.utils import timezone
 
 from grants.models import Contribution, Grant, PhantomFunding
 from perftools.models import JSONStore
+from random import SystemRandom
+
+cryptogen = SystemRandom()
 
 LOWER_THRESHOLD = 0.0
 CLR_START_DATE = dt.datetime(2020, 1, 6, 0, 0)
@@ -174,7 +177,7 @@ def grants_clr_calculate (grant_contributions, total_pot, lower_bound):
 
 
 def generate_random_contribution_data():
-    import random
+    import secrets
     contrib_data = []
     # whatever the range is here, you should have that many grants locally to test with
     # this function generates fake contribution data, but assumes the grants are in the db
@@ -189,8 +192,8 @@ def generate_random_contribution_data():
             'id': grant_id,
             'contributions': [
                 {
-                    str(profile_id): random.randint(low_donation, high_donation)
-                } for profile_id in range(random.randint(1, number_of_profiles))
+                    str(profile_id): secrets.randint(low_donation, high_donation)
+                } for profile_id in range(secrets.randint(1, number_of_profiles))
             ]
         })
     return contrib_data

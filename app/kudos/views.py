@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import json
 import logging
-import random
+import secrets
 import re
 import urllib.parse
 import uuid
@@ -54,6 +54,7 @@ from web3 import Web3
 from .forms import KudosSearchForm
 from .helpers import get_token
 from .models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token, TokenRequest, TransferEnabledFor
+
 
 logger = logging.getLogger(__name__)
 
@@ -421,7 +422,7 @@ def send_3(request):
             num_uses_remaining=num_redemptions,
             num_uses_total=num_redemptions,
             current_uses=0,
-            secret=random.randint(10**19, 10**20),
+            secret=secrets.randint(10**19, 10**20),
             comments_to_put_in_kudos_transfer=params['comments_public'],
             sender_address=params['metadata']['address'],
             sender_pk=params.get('pk'),

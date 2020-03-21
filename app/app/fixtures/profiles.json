@@ -1,7 +1,7 @@
 /*eslint quotes: ["error", "double"]*/
 /*eslint-env es6*/
-[
-  {
+
+[{
     "model": "dashboard.profile",
     "pk": 1,
     "fields": {
@@ -2506,5 +2506,4 @@
       "admin_override_name": "",
       "admin_override_avatar": ""
     }
-  }
-]
+  }]
