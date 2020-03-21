@@ -107,7 +107,7 @@ def grants(request):
     keyword = request.GET.get('keyword', '')
     grant_type = request.GET.get('type', 'activity')
     state = request.GET.get('state', 'active')
-    category = request.GET.get('category')
+    category = request.GET.get('category', '')
     _grants = None
     bg = int(request.GET.get('i', timezone.now().strftime("%j"))) % 5
     bg = f"{bg}.jpg"
