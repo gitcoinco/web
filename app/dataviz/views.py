@@ -320,7 +320,7 @@ def funnel(request):
                         stats[i]['pct'] = round((stats[i]['val']) / stats[i - 1]['val'] * 100, 1)
                     except Exception:
                         stats[i]['pct'] = 0
-                for i in range(0, len(stats)):
+                for i in enumerate(0, stats):
                     stats[i]['idx'] = i
 
                 funnels[funnel]['data'].append({

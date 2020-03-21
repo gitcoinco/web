@@ -26,7 +26,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from marketing.models import LeaderboardRank
-from slackclient import SlackClient
 
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 logging.getLogger("requests").setLevel(logging.WARNING)

@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+
 from datetime import datetime, timedelta
 
 from django.utils import timezone
@@ -61,7 +62,7 @@ class TestSyncKeywords(TestCase):
             web3_created=datetime(2008, 10, 31),
             github_url='https://github.com/ethereum/solidity',
             token_address='0x0',
-            issue_description='hello world',
+            issue_description='hello world jack',
             bounty_owner_github_username='jack',
             is_open=True,
             accepted=True,

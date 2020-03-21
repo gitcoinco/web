@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """Define the marketing views.
 
 Copyright (C) 2020 Gitcoin Core
@@ -17,6 +18,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+
 from __future__ import unicode_literals
 
 import csv
@@ -134,8 +136,7 @@ def settings_helper_get_auth(request, key=None):
         profile = sync_profile(github_handle, user=request.user)
 
     # lazily create email settings if needed
-    if not es:
-        if request.user.is_authenticated and request.user.email:
+    if not es and request.user.is_authenticated and request.user.email:
             es = EmailSubscriber.objects.create(
                 email=request.user.email,
                 source='settings_page',
@@ -155,19 +156,18 @@ def privacy_settings(request):
         return login_redirect
 
     msg = ''
-    if request.POST and request.POST.get('submit'):
-        if profile:
-            profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
-            profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
-            profile.hide_profile = bool(request.POST.get('hide_profile', False))
-            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
-            profile = record_form_submission(request, profile, 'privacy')
-            if profile.alumni and profile.alumni.exists():
-                alumni = profile.alumni.first()
-                alumni.public = bool(not request.POST.get('hide_alumni', False))
-                alumni.save()
+    if request.POST and request.POST.get('submit') and profile:
+        profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
+        profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
+        profile.hide_profile = bool(request.POST.get('hide_profile', False))
+        profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
+        profile = record_form_submission(request, profile, 'privacy')
+        if profile.alumni and profile.alumni.exists():
+            alumni = profile.alumni.first()
+            alumni.public = bool(not request.POST.get('hide_alumni', False))
+            alumni.save()
 
-            profile.save()
+        profile.save()
 
     context = {
         'profile': profile,

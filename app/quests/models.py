@@ -232,8 +232,6 @@ class Quest(SuperModel):
             for i in range(0, len(num_responses)):
                 del question['responses'][i]['correct']
             return question
-        except:
-            return None
 
     def is_within_cooldown_period(self, user):
         if not user.is_authenticated:

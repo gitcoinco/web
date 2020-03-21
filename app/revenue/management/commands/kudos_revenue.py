@@ -35,20 +35,23 @@ DEFAULT_START_BLOCK = 0
 def call_etherscan_api(network, params):
     try:
         api_url = f'http://api{f"-{network}" if network != "mainnet" else ""}.etherscan.io/api'
-        headers= {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:71.0) Gecko/20100101 Firefox/71.0'}
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:71.0) Gecko/20100101 Firefox/71.0'}
         rs = requests.get(api_url, params, headers=headers)
         if not rs.ok:
-            logger.error(f"* Error while executing API request to Etherscan in kudos_revenue => Error {rs.status_code}: {rs.reason}")
+            logger.error(
+                f"* Error while executing API request to Etherscan in kudos_revenue => Error {rs.status_code}: {rs.reason}")
             return []
         rs_json = rs.json()
         if rs_json['message'] != 'OK':
             if type(rs_json['result']) == list:
                 logger.info(f"No {params['action']} found in blocks {params['startblock']} to {params['endblock']}")
             else:
-                logger.error(f"* Error while executing API request to Etherscan in kudos_revenue => {rs_json['message']}: {rs_json['result']}")
+                logger.error(
+                    f"* Error while executing API request to Etherscan in kudos_revenue => {rs_json['message']}: {rs_json['result']}")
             return []
         records = [rec for rec in rs_json['result'] if rec['to'] == params['address']]
-        logger.info(f"Total {params['action']} found in blocks {params['startblock']} to {params['endblock']}: {len(records)}")
+        logger.info(
+            f"Total {params['action']} found in blocks {params['startblock']} to {params['endblock']}: {len(records)}")
         return records
     except Exception as e:
         logger.error(f"* Exception in kudos_revenue => {e}")
@@ -106,7 +109,7 @@ class Command(BaseCommand):
 
         # config
         network = options['network']
-        params  = {
+        params = {
             'module': 'account',
             'address': options['account_address'],
             'startblock': options['start_block'],
@@ -120,11 +123,11 @@ class Command(BaseCommand):
             .filter(receive_address__iexact=options['account_address'], tokenName__iexact='ETH') \
             .order_by('-id') \
             .values('id', 'metadata')[:1]
-        
+
         if len(dgp_records) > 0:
             params['startblock'] = int(dgp_records[0]['metadata']['blockNumber']) + 1
             logger.info(f"ETH Tx Records were found. Continuing from block {params['startblock']}")
-        
+
         params['action'] = 'txlist'
         records = call_etherscan_api(network, params)
         for rec in records:

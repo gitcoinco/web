@@ -46,7 +46,6 @@ def delete_user_from_mailchimp(email_address):
     except Exception as e:
         logger.debug(e)
 
-
         try:
             client.lists.members.delete(
                 list_id=settings.MAILCHIMP_LIST_ID,
@@ -293,7 +292,8 @@ def get_platform_wide_stats(since_last_n_days=90):
     bounty_fulfillments = BountyFulfillment.objects.filter(
         accepted_on__gte=last_n_days).order_by('-bounty__value_in_token')[:5]
     num_items = 10
-    hunters = LeaderboardRank.objects.active().filter(leaderboard='quarterly_earners').order_by('-amount')[0:num_items].values_list('github_username', flat=True)
+    hunters = LeaderboardRank.objects.active().filter(leaderboard='quarterly_earners').order_by(
+        '-amount')[0:num_items].values_list('github_username', flat=True)
 
     # Overall transactions across the network are hard-coded for now
     total_transaction_in_usd = round(sum(
@@ -330,8 +330,7 @@ def handle_marketing_callback(_input, request):
         obj = callbacks.first()
         callback_reference = obj.val
         #set user referrer
-        if key == 'ref':
-            if request.user.is_authenticated:
+        if key == 'ref' and request.user.is_authenticated:
                 from django.contrib.auth.models import User
                 value = _input.split(':')[1]
                 pk = int(value, 16)

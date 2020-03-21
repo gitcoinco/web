@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """Define the is_in_list template tag to allow if in list checking in templates.
 
 Copyright (C) 2020 Gitcoin Core
@@ -17,6 +18,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+
 from django import template
 
 register = template.Library()

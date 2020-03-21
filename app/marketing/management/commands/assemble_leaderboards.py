@@ -197,7 +197,6 @@ def tip_index_terms(tip):
     return index_terms
 
 
-
 def grant_index_terms(gc):
     index_terms = []
     if not gc.subscription:
@@ -232,7 +231,8 @@ def add_element(key, index_term, amount):
 
 
 def sum_bounty_helper(b, time, index_term, val_usd):
-    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
+    fulfiller_index_terms = list(b.fulfillments.filter(
+        accepted=True).values_list('fulfiller_github_username', flat=True))
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
     if index_term == b.bounty_owner_github_username and index_term not in IGNORE_PAYERS:
@@ -353,7 +353,6 @@ def sum_grants(t, index_terms):
             sum_grant_helper(t, YEARLY, index_term, val_usd)
 
 
-
 def sum_grant_helper(gc, time, index_term, val_usd):
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
@@ -395,7 +394,7 @@ def do_leaderboard_feed():
             metadata = {
                 'title': f"was ranked #{lr.rank} on the Gitcoin Weekly {_type.title()} Leaderboard",
                 'link': f'/leaderboard/{_type}'
-                }
+            }
             if lr.profile:
                 Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
 
@@ -404,18 +403,18 @@ def do_leaderboard_feed():
         url = f'/leaderboard/{_type}'
         what = _type.title() if _type != PAYERS else "Funders"
         key = f'{WEEKLY}_{_type}'
-        lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank, product='all').order_by('rank')[0:10]
+        lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank,
+                                                      product='all').order_by('rank')[0:10]
         copy = f"<a href={url}>Weekly {what} Leaderboard</a>:<BR>"
-        counter = 0
         for lr in lrs:
-            profile_link = f"<a href=/{lr.profile}>@{lr.profile}</a>" if _type not in [CITIES, TOKENS] else f"<strong>{lr.github_username}</strong>"
+            profile_link = f"<a href=/{lr.profile}>@{lr.profile}</a>" if _type not in [
+                CITIES, TOKENS] else f"<strong>{lr.github_username}</strong>"
             copy += f" - {profile_link} was ranked <strong>#{lr.rank}</strong>. <BR>"
         metadata = {
             'copy': copy,
         }
         key = f'{WEEKLY}_{_type}'
         Activity.objects.create(profile=profile, activity_type='consolidated_leaderboard_rank', metadata=metadata)
-
 
 
 def do_leaderboard():

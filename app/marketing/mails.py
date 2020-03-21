@@ -34,7 +34,7 @@ from retail.emails import (
     render_bounty_request, render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment,
     render_faucet_rejected, render_faucet_request, render_featured_funded_bounty, render_funder_payout_reminder,
     render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email,
-    render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
+    render_grant_update, render_match_distribution, render_match_email, render_mention,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
     render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
     render_nth_day_email_campaign, render_quarterly_stats, render_reserved_issue, render_share_bounty,
@@ -376,7 +376,7 @@ def tip_email(tip, to_emails, is_new):
     subject = gettext("⚡️ New Tip Worth {} {} {}").format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
         subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(round(tip.amount, round_decimals), warning,
-                                                                        tip.tokenName)
+                                                                       tip.tokenName)
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -439,7 +439,6 @@ def mention_email(post, to_emails):
     translation.activate(cur_language)
 
 
-
 def wall_post_email(activity):
 
     to_emails = []
@@ -474,7 +473,8 @@ def grant_update_email(activity):
 
     what = activity.grant.title
     subject = f"📣 Message from @{activity.profile.handle} of Gitcoin Grant: {what}"
-    to_emails = [profile.email for profile in activity.grant.contributors if profile.pk not in activity.grant.metadata.get('unsubscribed_profiles', [])]
+    to_emails = [profile.email for profile in activity.grant.contributors if profile.pk not in activity.grant.metadata.get(
+        'unsubscribed_profiles', [])]
     cur_language = translation.get_language()
     for to_email in to_emails:
         try:
@@ -1215,7 +1215,7 @@ def bounty_expire_warning(bounty, to_emails=None):
                 num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
             unit = unit + ("s" if num != 1 else "")
             subject = gettext("😕 Your Funded Issue ({}) Expires In {} {} ... 😕").format(bounty.title_or_desc, num,
-                                                                                          unit)
+                                                                                        unit)
 
             from_email = settings.CONTACT_EMAIL
             html, text = render_bounty_expire_warning(to_email, bounty)
@@ -1357,12 +1357,10 @@ def start_work_applicant_about_to_expire(interest, bounty):
 def start_work_applicant_expired(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
-    if not to_email:
-        if bounty.bounty_owner_profile:
-            to_email = bounty.bounty_owner_profile.email
-    if not to_email:
-        if bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
-            to_email = bounty.bounty_owner_profile.user.email
+    if not to_email and bounty.bounty_owner_profile:
+        to_email = bounty.bounty_owner_profile.email
+    if not to_email and bounty.bounty_owner_profile and bounty.bounty_owner_profile.user:
+        to_email = bounty.bounty_owner_profile.user.email
     if not to_email:
         return
     cur_language = translation.get_language()
@@ -1468,9 +1466,8 @@ def new_funding_limit_increase_request(profile, cleaned_data):
 def bounty_request_feedback(profile):
     from_email = 'vivek.singh@consensys.net'
     to_email = profile.email
-    if not to_email:
-        if profile and profile.user:
-            to_email = profile.user.email
+    if not to_email and profile and profile.user:
+        to_email = profile.user.email
     if not to_email:
         return
     cur_language = translation.get_language()

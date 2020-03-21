@@ -376,9 +376,9 @@ def get_emails_master(username):
     emails_by_category = get_emails_by_category(username)
     emails = []
     for category, to_email in emails_by_category.items():
-        if type(to_email) is str:
+        if isinstance(to_email, str):
             emails.append(to_email)
-        if type(to_email) is list:
+        if isinstance(to_email, list):
             for email in to_email:
                 emails.append(email)
     return list(set(emails))

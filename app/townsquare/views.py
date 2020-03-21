@@ -16,7 +16,6 @@ from retail.views import get_specific_activities
 
 from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction
 from .tasks import increment_offer_view_counts
-from .utils import is_user_townsquare_enabled
 
 tags = [
     ['#announce','bullhorn','search-announce'],
@@ -227,7 +226,7 @@ def get_tags(request):
 
     # pull tag amounts
     view_tags = tags.copy()
-    for i in range(0, len(view_tags)):
+    for i in enumerate(0, view_tags):
         keyword = view_tags[i][2]
         view_tags[i] = view_tags[i] + [get_amount_unread(keyword, request)]
 

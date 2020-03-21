@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+
 import json
 import logging
 import re
@@ -215,7 +216,8 @@ class KudosContract:
         @wraps(f)
         def wrapper(self, *args, **kwargs):
             if self.network != 'localhost' and (kwargs['account'] is None or kwargs['private_key'] is None):
-                raise ValueError(f'Since you are on the {self.network} network, you must provide and account and private_key')
+                raise ValueError(
+                    f'Since you are on the {self.network} network, you must provide and account and private_key')
             else:
                 return f(self, *args, **kwargs)
         return wrapper
@@ -454,7 +456,7 @@ class KudosContract:
             gasPrice = self._w3.toWei(gas_price_gwei, 'gwei')
             txn = self._contract.functions.mint(*args).buildTransaction(
                 {'gasPrice': gasPrice, 'gas': gas_estimate, 'nonce': nonce, 'from': account}
-                )
+            )
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
@@ -486,7 +488,6 @@ class KudosContract:
 
         return kudos_id
 
-
     @may_require_key
     def clone(self, *args, account=None, private_key=None, skip_sync=False):
         """Contract transaction method.
@@ -513,8 +514,10 @@ class KudosContract:
         if private_key:
             logger.debug('Private key found, creating raw transaction...')
             nonce = self._w3.eth.getTransactionCount(account)
-            gas_estimate = self._contract.functions.clone(*args).estimateGas({'nonce': nonce, 'from': account, 'value': price_wei})
-            txn = self._contract.functions.clone(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account, 'value': price_wei})
+            gas_estimate = self._contract.functions.clone(
+                *args).estimateGas({'nonce': nonce, 'from': account, 'value': price_wei})
+            txn = self._contract.functions.clone(
+                *args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account, 'value': price_wei})
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
@@ -558,11 +561,12 @@ class KudosContract:
             logger.debug('Private key found, creating raw transaction...')
             nonce = self._w3.eth.getTransactionCount(account)
             gas_estimate = self._contract.functions.burn(*args).estimateGas({'nonce': nonce, 'from': account})
-            txn = self._contract.functions.burn(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
+            txn = self._contract.functions.burn(
+                *args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
-            logger.debug('No private key provided, using local signing...')
+            logger.debug('No private key provided, using local signing account...')
             tx_hash = self._contract.functions.burn(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)

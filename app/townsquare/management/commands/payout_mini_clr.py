@@ -21,7 +21,6 @@ import time
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 

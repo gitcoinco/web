@@ -1,7 +1,6 @@
 
 import json
 import logging
-import random
 import re
 
 from django.conf import settings
@@ -23,7 +22,6 @@ from ratelimit.decorators import ratelimit
 
 
 def details(request, quest):
-    # return params
     prize_url = ''
     active_attempt = get_active_attempt_if_any(request.user, quest)
     if request.POST.get('start'):
@@ -46,7 +44,8 @@ def details(request, quest):
             messages.info(request, f'You lose. Try again after the cooltown period.')
             return redirect('/quests')
 
-    attempts = quest.attempts.filter(profile=request.user.profile) if request.user.is_authenticated else quest.attempts.none()
+    attempts = quest.attempts.filter(
+        profile=request.user.profile) if request.user.is_authenticated else quest.attempts.none()
     params = get_base_quest_view_params(request.user, quest)
     params['prize_url'] = prize_url
     params['started'] = request.POST.get('start', '')
