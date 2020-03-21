@@ -12,70 +12,71 @@ document.suppress_faucet_solicitation = 1;
 
 $(document).ready(function() {
 
-        // TODO: fully bake this
-        var wyre=function($) {
-            // debit card popup
-            var widget = new Wyre({
-                env: 'test',
-                operation: {
-                    type: 'debitcard-hosted-dialog',
-                    dest: "ethereum:0x98B031783d0efb1E65C4072C6576BaCa0736A912",
-                    destCurrency: "ETH",
-                    sourceAmount: 10.0,
-                    paymentMethod: 'apple-pay'
-                }
-            });
+  // TODO: fully bake this
+  var wyre = function($) {
+    // debit card popup
+    var widget = new Wyre({
+      env: 'test',
+      operation: {
+        type: 'debitcard-hosted-dialog',
+        dest: 'ethereum:0x98B031783d0efb1E65C4072C6576BaCa0736A912',
+        destCurrency: 'ETH',
+        sourceAmount: 10.0,
+        paymentMethod: 'apple-pay'
+      }
+    });
 
-            // debit card embedded
-            // var widget = new Wyre({
-            //     env: 'test',
-            //     operation: {
-            //         type: 'debitcard',
-            //         dest: "ethereum:0x98B031783d0efb1E65C4072C6576BaCa0736A912",
-            //         destCurrency: "ETH",
-            //         sourceAmount: 10.0,
-            //         paymentMethod: 'apple-pay'
-            //     }
-            // });
+    // debit card embedded
+    // var widget = new Wyre({
+    //     env: 'test',
+    //     operation: {
+    //         type: 'debitcard',
+    //         dest: "ethereum:0x98B031783d0efb1E65C4072C6576BaCa0736A912",
+    //         destCurrency: "ETH",
+    //         sourceAmount: 10.0,
+    //         paymentMethod: 'apple-pay'
+    //     }
+    // });
 
-            // ach
-            // var widget = new Wyre.Widget({
-            //     env: 'test',
-            //     auth: {
-            //         type: 'metamask'
-            //     },
-            //     operation: {
-            //         type: 'onramp',
-            //         dest: "ethereum:0x98B031783d0efb1E65C4072C6576BaCa0736A912",
-            //         destCurrency: "ETH",
-            //         sourceAmount: 10.0
-            //     }
-            // });
+    // ach
+    // var widget = new Wyre.Widget({
+    //     env: 'test',
+    //     auth: {
+    //         type: 'metamask'
+    //     },
+    //     operation: {
+    //         type: 'onramp',
+    //         dest: "ethereum:0x98B031783d0efb1E65C4072C6576BaCa0736A912",
+    //         destCurrency: "ETH",
+    //         sourceAmount: 10.0
+    //     }
+    // });
 
-            widget.on("exit", function (e) {
-                console.log("exit", e);
-            })
+    widget.on('exit', function(e) {
+      console.log('exit', e);
+    });
 
-            widget.on("error", function (e) {
-                console.log("error", e);
-            })
+    widget.on('error', function(e) {
+      console.log('error', e);
+    });
 
-            widget.on("complete", function (e) {
-                console.log("complete", e );
-            });
+    widget.on('complete', function(e) {
+      console.log('complete', e);
+    });
 
-            widget.on('ready', function(e) {
-                console.log("ready", e );
-                // widget.open();
-            })
+    widget.on('ready', function(e) {
+      console.log('ready', e);
+      // widget.open();
+    });
 
-            $('#buy').click(function(){
-                console.log('open')
-                widget.open();
-            })
+    $('#buy').click(function() {
+      console.log('open');
+      widget.open();
+    });
 
-        };
-        wyre($);
+  };
+
+  wyre($);
 
   // _alert({ message: gettext('Note: Brave users seem to have issues while contributing to Grants while using both Brave Wallet and MetaMask. We recommend disabling one. For more info, see this <a target="_blank" href="https://github.com/brave/brave-browser/issues/6053">issue</a>') }, 'warning');
 
@@ -168,35 +169,36 @@ $(document).ready(function() {
 
   $('input[name=match_direction]').change(function(e) {
     var direction = $(this).val();
-    if(direction == "+"){
-      $(".est_direction").text('increase').css('background-color', 'yellow');
-      setTimeout(function(){
-        $(".est_direction").css('background-color', 'white');
-      }, 500)
-      $(".comment_container").removeClass('hidden');
-      $(".hide_wallet_address_container").removeClass('hidden');
+
+    if (direction == '+') {
+      $('.est_direction').text('increase').css('background-color', 'yellow');
+      setTimeout(function() {
+        $('.est_direction').css('background-color', 'white');
+      }, 500);
+      $('.comment_container').removeClass('hidden');
+      $('.hide_wallet_address_container').removeClass('hidden');
     } else {
-      $(".est_direction").text('decrease').css('background-color', 'yellow');;
-      setTimeout(function(){
-        $(".est_direction").css('background-color', 'white');
-      }, 500)
-      $(".comment_container").addClass('hidden');
-      $(".hide_wallet_address_container").addClass('hidden');
+      $('.est_direction').text('decrease').css('background-color', 'yellow');
+      setTimeout(function() {
+        $('.est_direction').css('background-color', 'white');
+      }, 500);
+      $('.comment_container').addClass('hidden');
+      $('.hide_wallet_address_container').addClass('hidden');
     }
   });
   
   $('#js-token').change(function(e) {
     
-    if($("#js-token").val() == '0x0000000000000000000000000000000000000000' && $("#recurring_or_not").val() == 'recurring'){
-      _alert("Sorry but this token is not supported for recurring donations", 'error', 1000);
+    if ($('#js-token').val() == '0x0000000000000000000000000000000000000000' && $('#recurring_or_not').val() == 'recurring') {
+      _alert('Sorry but this token is not supported for recurring donations', 'error', 1000);
     }
-    if($("#js-token").val() == '0x0000000000000000000000000000000000000000'){
+    if ($('#js-token').val() == '0x0000000000000000000000000000000000000000') {
       $('.contribution_type select').val('once');
     } else {
     }
   });
-  setInterval(function(){
-    if($("#js-token").val() == '0x0000000000000000000000000000000000000000'){
+  setInterval(function() {
+    if ($('#js-token').val() == '0x0000000000000000000000000000000000000000') {
       $('option[value=recurring]').attr('disabled', 'disabled');
       $('.contribution_type select').val('once');
     } else {
@@ -385,7 +387,7 @@ $(document).ready(function() {
       }));
 
       $("#js-token option[value='0x0000000000000000000000000000000000000001']").remove(); // ETC
-      //$("#js-token option[value='0x0000000000000000000000000000000000000000']").remove(); // ETH
+      // $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove(); // ETH
     });
     $('#js-token').select2();
   }); // waitforWeb3

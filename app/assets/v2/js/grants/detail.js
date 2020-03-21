@@ -62,18 +62,20 @@ $(document).ready(function() {
     }
   }, 1000);
 
-  $("#flag a").click(function(e){
+  $('#flag a').click(function(e) {
     e.preventDefault();
-    const comment = prompt("What is your reason for flagging this Grant?")
-    if(!comment){
+    const comment = prompt('What is your reason for flagging this Grant?');
+
+    if (!comment) {
       return;
     }
     const data = {
       'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
-      'comment': comment,
-    } 
+      'comment': comment
+    };
+
     if (!document.contxt.github_handle) {
-        _alert({ message: gettext('Please login.') }, 'error', 1000);
+      _alert({ message: gettext('Please login.') }, 'error', 1000);
       return;
     }
     $.ajax({
@@ -88,7 +90,7 @@ $(document).ready(function() {
       }
     });
 
-  })
+  });
 
   userSearch('#grant-members', false, undefined, false, false, true);
   $('.select2-selection__rendered').removeAttr('title');
