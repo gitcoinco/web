@@ -1061,7 +1061,8 @@ def grant_categories(request):
 def predict_clr_v1(request, grant_id):
     '''
         {
-            amount: <float>
+            amount: <float>,
+            match_direction: <char> +, -
         }
     '''
     response = {
@@ -1092,7 +1093,15 @@ def predict_clr_v1(request, grant_id):
         response['message'] = 'error: missing parameter amount'
         return JsonResponse(response)
 
-    predicted_clr_match = predict_clr_live(grant, profile, float(amount))
+
+    match_direction = request.GET.get('match_direction', '+')
+
+    predicted_clr_match = predict_clr_live(
+        grant,
+        profile,
+        float(amount),
+        match_direction
+    )
 
     response = {
         'status': 200,
