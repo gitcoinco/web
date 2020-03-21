@@ -1,5 +1,6 @@
 {% load humanize static i18n %}
-
+    <div style="border-top: 10px solid #ccc; border-bottom: 10px solid #eee; background-image: url('/static/v2/images/bg/bg12.png'); background-size: contain;">
+    <div style="background-color: rgba(255, 255, 255, 0.75);">
       <div class="container-fluid pt-3 pb-1 grants-results">
         <div class="container">
           <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 100px;" class="pb-1 pt-1" />
@@ -19,35 +20,19 @@
               <h4 class="mb-0 mt-0 pt-1 font-weight-semibold">
                 $250k Matching Round 5 Started!
               </h4>
-              <h5 class="mt-1 pt-1">
+              <h5>
+              $100k for Tech Grants, $100k for Public Health, $50k for Media.
+              </h5>
+              <p class="m-0 p-0">
                 End Date: {{round_end|date:'Y-m-d'}} 
                   (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
-              </h5>
-
-            <div class="mininav">
-              <a class="mininavcategory p-0 {% if type == 'tech' %}selected{% endif %}" href="/grants?type=tech">
-                <h4 class="p-0 m-0">View Tech Grants</h4>
-                <h5 class="p-0 m-0">$100k Matching</h5>
-              </a>
-
-              <a class="mininavcategory p-0 {% if type == 'media' %}selected{% endif %}" href="/grants?type=media">
-                <h4 class="p-0 m-0">View Media Grants</h4>
-                <h5 class="p-0 m-0">$50k Matching</h5>
-              </a>
-
-              <a class="mininavcategory p-0 {% if type == 'health' %}selected{% endif %}"  href="/grants?type=health">
-                <h4 class="p-0 m-0">View Health Grants</h4>
-                <h5 class="p-0 m-0">$100k Matching</h5>
-              </a>
-            </div>
-
+              </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-      <div class="container-fluid pt-0 pb-2 grants-matching" style="height: 170px;">
+      <div class="container-fluid pt-0 pb-2 grants-matching" style="height: 220px;">
         <div class="container">
           <div class="col-md-12 font-smaller-1 text-center pt-2">
             <div class="float-right announcea right-announce2" style="margin-top: 0px; width: 35%; z-index: 9999;">
@@ -62,5 +47,8 @@
           </div>
         </div>
       </div>
+    </div>
+    </div>
+    </div>
 
 

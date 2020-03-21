@@ -1,6 +1,17 @@
 .infinite-more-link{
   display: none;
 }
+#flag a{
+  background-color: #F9006C;
+  color:white;
+  border-radius: 3px;
+  padding: 5px;
+}
+#flag a:hover{
+  background-color: #F9309C;
+  font-weight: bold;
+  text-decoration: none;
+}
 .announce {
   text-align: center;
   border-radius: 5px;
@@ -81,7 +92,7 @@
 }
 
 .announce3 a {
-  background-color: #b0d9d4 !important;
+  text-decoration: underline;
 }
 
 .announce2 h4 {
@@ -335,8 +346,6 @@
 }
 
 .grants_landing .grants-search,
-.grants_landing .grants-results,
-.grants_landing .grants-matching,
 .grants_landing .grants-container {
   background-color: #F2F6F9;
 }

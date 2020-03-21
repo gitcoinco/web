@@ -62,6 +62,34 @@ $(document).ready(function() {
     }
   }, 1000);
 
+  $("#flag a").click(function(e){
+    e.preventDefault();
+    const comment = prompt("What is your reason for flagging this Grant?")
+    if(!comment){
+      return;
+    }
+    const data = {
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+      'comment': comment,
+    } 
+    if (!document.contxt.github_handle) {
+        _alert({ message: gettext('Please login.') }, 'error', 1000);
+      return;
+    }
+    $.ajax({
+      type: 'post',
+      url: $(this).data('href'),
+      data,
+      success: function(json) {
+        _alert({ message: gettext('Your flag has been sent to Gitcoin.') }, 'success', 1000);
+      },
+      error: function() {
+        _alert({ message: gettext('Your report failed to save Please try again.') }, 'error', 1000);
+      }
+    });
+
+  })
+
   userSearch('#grant-members', false, undefined, false, false, true);
   $('.select2-selection__rendered').removeAttr('title');
   $('#form--input__title').height($('#form--input__title').prop('scrollHeight'));

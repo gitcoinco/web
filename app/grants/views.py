@@ -21,6 +21,7 @@ import datetime
 import json
 import logging
 from decimal import Decimal
+from ratelimit.decorators import ratelimit
 
 from django.conf import settings
 from django.contrib import messages
@@ -46,13 +47,13 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recom
 from grants.clr import predict_clr_live
 from grants.forms import MilestoneForm
 from grants.models import (
-    Contribution, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
+    Contribution, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update, Flag
 )
 from grants.utils import get_leaderboard, is_grant_team_member
 from kudos.models import BulkTransferCoupon
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_supporter, subscription_terminated, support_cancellation,
-    thank_you_for_supporting,
+    thank_you_for_supporting, new_grant_flag_admin
 )
 from marketing.models import Keyword, Stat
 from retail.helpers import get_ip
@@ -381,6 +382,23 @@ def grant_details(request, grant_id, grant_slug):
             params[key] = value
 
     return TemplateResponse(request, 'grants/detail/index.html', params)
+
+
+@login_required
+@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
+def flag(request, grant_id):
+    comment = request.POST.get("comment", '')
+    grant = Grant.objects.get(pk=grant_id)
+    if comment and request.user.is_authenticated and grant:
+        flag = Flag.objects.create(
+            comments=comment,
+            profile=request.user.profile,
+            grant=grant,
+            )
+        new_grant_flag_admin(flag)
+    return JsonResponse({
+        'success': True,
+    })
 
 
 @login_required

@@ -156,6 +156,29 @@ def featured_funded_bounty(from_email, bounty):
         translation.activate(cur_language)
 
 
+def new_grant_flag_admin(flag):
+    from_email = settings.CONTACT_EMAIL
+    to_email = 'kevin@gitcoin.co'
+
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        subject = _("New Grant Flag")
+        body = f"{flag.comments} : {settings.BASE_URL}{flag.admin_url}"
+        if not should_suppress_notification_email(to_email, 'new_grant_flag_admin'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_grant(grant, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email

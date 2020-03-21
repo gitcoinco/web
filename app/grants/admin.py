@@ -22,13 +22,40 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+from grants.models import CLRMatch, Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update, Flag
 
 
 class GeneralAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
     ordering = ['-id']
+
+
+class FlagAdmin(admin.ModelAdmin):
+    """Define the FlagAdmin administration layout."""
+
+    ordering = ['-id']
+    raw_id_fields = ['profile', 'grant']
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_tweet" in request.POST:
+            import twitter
+            from django.conf import settings
+            # TODO : get @gicoindisputes out of twitter jail
+            api = twitter.Api(
+                consumer_key=settings.TWITTER_CONSUMER_KEY,
+                consumer_secret=settings.TWITTER_CONSUMER_SECRET,
+                access_token_key=settings.TWITTER_ACCESS_TOKEN,
+                access_token_secret=settings.TWITTER_ACCESS_SECRET,
+            )
+            new_tweet = f"{settings.BASE_URL}{obj.grant.url} : {obj.comments}"[0:280]
+            result = api.PostUpdate(new_tweet).AsDict()
+            obj.processed = True
+            obj.tweet = f"https://twitter.com/{result['user']['screen_name']}/statuses/{result['id']}"
+            obj.save()
+        return redirect(obj.admin_url)
+
 
 
 class MatchPledgeAdmin(admin.ModelAdmin):
@@ -253,6 +280,7 @@ class PhantomFundingAdmin(admin.ModelAdmin):
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
+admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, GeneralAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
