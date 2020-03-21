@@ -110,6 +110,17 @@ def grants(request):
     category = request.GET.get('category')
     _grants = None
     bg = int(request.GET.get('i', timezone.now().strftime("%j"))) % 5
+    bg = f"{bg}.jpg"
+    mid_back = 'bg14.png'
+    bottom_back = 'bg13.gif'
+    if grant_type == 'tech':
+        bottom_back = 'bg20-2.png'
+    if grant_type == 'media':
+        bottom_back = 'bg16.gif'
+    if grant_type == 'health':
+        bottom_back = 'health.jpg'
+        bg = 'health.jpg'
+        mid_back = 'bg11.gif'
     show_past_clr = False
 
     sort_by_index = None
@@ -187,6 +198,8 @@ def grants(request):
         'round_end': round_end,
         'next_round_start': next_round_start,
         'now': timezone.now(),
+        'mid_back': mid_back,
+        'bottom_back': bottom_back,
         'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,
         'grant_types': grant_types,
