@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
-        parser.add_argument('clr_type', type=str, default='all', choices=['tech', 'media', 'all'])
+        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health'])
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
 
     def handle(self, *args, **options):
@@ -42,7 +42,6 @@ class Command(BaseCommand):
         network = options['network']
 
         clr_prediction_curves = predict_clr(
-            random_data=False,
             save_to_db=True,
             from_date=timezone.now(),
             clr_type=clr_type,

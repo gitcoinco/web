@@ -224,32 +224,6 @@ def grants_clr_calculate_pos_neg(pos_totals, neg_totals, total_pot=0.0):
     return final_bigtot, final_totals
 
 
-def generate_random_contribution_data():
-    import random
-    contrib_data = []
-    # whatever the range is here, you should have that many grants locally to test with
-    # this function generates fake contribution data, but assumes the grants are in the db
-
-    grants_to_use = 33
-    low_donation = 3000
-    high_donation = 6890
-    number_of_profiles = 17
-
-    for grant_id in range(grants_to_use):
-        contrib_data.append({
-            'id': grant_id,
-            'contributions': [
-                {
-                    str(profile_id): random.randint(low_donation, high_donation)
-                } for profile_id in range(random.randint(1, number_of_profiles))
-            ]
-        })
-    return contrib_data
-
-
-'''
- TODO: ANYTHING LEFT ?
-'''
 def calculate_clr_for_donation(grant, amount, grant_contributions, total_pot, threshold):
 
     ### ADD NEW GRANT CONTRIBUTIONS MODEL IS UPDATED AND PULL SEPARATE POSITIVE AND NEGATIVE CONTRIBUTIONS, INPUT VARIABLES IN THE METHOD grants_clr_calculate LINES 292 AND ON WILL NEED TO BE CHANGED
@@ -279,7 +253,6 @@ def calculate_clr_for_donation(grant, amount, grant_contributions, total_pot, th
     Populate Data needed to calculate CLR
 
     Args:
-        random_data :   boolean  - generate random data / use data from db
         clr_type    :   media | tech | None
         network     :   mainnet | rinkeby
 
@@ -289,7 +262,7 @@ def calculate_clr_for_donation(grant, amount, grant_contributions, total_pot, th
         total_pot: float
         threshold : int
 '''
-def populate_data_for_clr (random_data=False, clr_type=None, network='mainnet'):
+def populate_data_for_clr(clr_type=None, network='mainnet'):
 
     from_date = timezone.now()
     # get all the eligible contributions and calculate total
@@ -312,49 +285,44 @@ def populate_data_for_clr (random_data=False, clr_type=None, network='mainnet'):
         return None, None, None, None
 
     # set up data to load contributions for each grant
-    if not random_data:
-        contrib_data = []
+    contrib_data = []
 
-        for grant in grants:
-            # go through all the individual contributions for each grant
-            g_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id)
+    for grant in grants:
+        # go through all the individual contributions for each grant
+        g_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id)
 
-            # put in correct format
-            phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
-            all_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in g_contributions] + [p.profile_id for p in phantom_funding_profiles]))
-            all_summed_contributions = []
+        # put in correct format
+        phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
+        all_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in g_contributions] + [p.profile_id for p in phantom_funding_profiles]))
+        all_summed_contributions = []
 
-            for profile_id in all_contributing_profile_ids:
-                # get sum of contributions per grant for each profile
-                profile_g_contributions = g_contributions.filter(subscription__contributor_profile_id=profile_id)
-                sum_of_each_profiles_contributions = float(sum([c.subscription.get_converted_monthly_amount() for c in profile_g_contributions]))
+        for profile_id in all_contributing_profile_ids:
+            # get sum of contributions per grant for each profile
+            profile_g_contributions = g_contributions.filter(subscription__contributor_profile_id=profile_id)
+            sum_of_each_profiles_contributions = float(sum([c.subscription.get_converted_monthly_amount() for c in profile_g_contributions]))
 
-                phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id, created_on__lte=from_date)
-                if phantom_funding.exists():
-                    sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
+            phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id, created_on__lte=from_date)
+            if phantom_funding.exists():
+                sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
 
-                all_summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
+            all_summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
 
-            # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
-            grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
-            contrib_data.append({
-                'id': grant_id,
-                'contributions': all_summed_contributions
-            })
-
-    else:
-        # use random contribution data for testing
-        contrib_data = generate_random_contribution_data()
+        # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
+        grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
+        contrib_data.append({
+            'id': grant_id,
+            'contributions': all_summed_contributions
+        })
 
     #print(f'\n contributions data: {contrib_data} \n')
     return (grants, contrib_data, total_pot, threshold)
 
 
-def predict_clr(random_data=False, save_to_db=False, from_date=None, clr_type=None, network='mainnet'):
+def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainnet'):
     # setup
     clr_calc_start_time = timezone.now()
     debug_output = []
-    grants, contrib_data, total_pot, threshold = populate_data_for_clr(random_data, clr_type, network)
+    grants, contrib_data, total_pot, threshold = populate_data_for_clr(clr_type, network)
 
     # calculate clr given additional donations
     for grant in grants:
@@ -461,7 +429,7 @@ def predict_clr_live(grant, contributor, amount):
 
     clr_type = grant.grant_type
     network = grant.network
-    _, contrib_data, total_pot, threshold = populate_data_for_clr(False, clr_type, network)
+    _, contrib_data, total_pot, threshold = populate_data_for_clr(clr_type, network)
 
     predicted_clr_match = calculate_clr_for_donation_live(
         grant, contributor, amount, contrib_data, total_pot, threshold
