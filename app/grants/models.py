@@ -511,12 +511,7 @@ class Subscription(SuperModel):
         help_text=_('The tx id of the split transfer'),
         blank=True,
     )
-    match_direction = models.CharField(
-        default='+',
-        max_length=255,
-        help_text=_('The direction of the match'),
-        blank=True,
-    )
+    is_postive_vote = models.BooleanField(default=True, help_text=_('Whether this is positive or negative vote'))
     split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
 
     subscription_hash = models.CharField(

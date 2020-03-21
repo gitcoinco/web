@@ -239,6 +239,8 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
+      data.is_postive_vote = (data.match_direction == '-') ? 0 : 1;
+
       if (data.frequency) {
 
         // translate timeAmount&timeType to requiredPeriodSeconds

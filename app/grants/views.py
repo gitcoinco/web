@@ -696,7 +696,7 @@ def grant_fund(request, grant_id, grant_slug):
 
             subscription.active = False
             subscription.contributor_address = request.POST.get('contributor_address', '')
-            subscription.match_direction = request.POST.get('match_direction', '')
+            subscription.is_postive_vote = request.POST.get('is_postive_vote', True)
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
             subscription.frequency = request.POST.get('frequency', 30)
@@ -770,8 +770,6 @@ def grant_fund(request, grant_id, grant_slug):
                 'success': True,
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))
             })
-
-    splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
 
     # handle phantom funding
     active_tab = 'normal'
@@ -1080,7 +1078,7 @@ def predict_clr_v1(request, grant_id):
     '''
         {
             amount: <float>,
-            match_direction: <char> +, -
+            is_postive_vote: <char> +, -
         }
     '''
     response = {
@@ -1111,14 +1109,13 @@ def predict_clr_v1(request, grant_id):
         response['message'] = 'error: missing parameter amount'
         return JsonResponse(response)
 
-
-    match_direction = request.GET.get('match_direction', '+')
+    is_postive_vote = True if request.GET.get('is_postive_vote', 1) else False
 
     predicted_clr_match = predict_clr_live(
         grant,
         profile,
         float(amount),
-        match_direction
+        is_postive_vote
     )
 
     response = {
