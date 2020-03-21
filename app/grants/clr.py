@@ -159,6 +159,8 @@ def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
 
     if len(totals_neg) == 0:
         totals = totals_pos
+    elif len(totals_pos) == 0:
+        totals = [{'id': x['id'], 'clr_amount': 0 } for x in totals_neg]
     else:
         totals = [{'id': x['id'], 'clr_amount': (math.sqrt(x['clr_amount']) - math.sqrt(y['clr_amount']))**2} for x in totals_pos for y in totals_neg if x['id'] == y['id']]
 
