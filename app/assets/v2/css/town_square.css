@@ -1027,7 +1027,7 @@ input[type=checkbox].toggle-switch::after {
   content: '';
   width: 2em;
   height: 2em;
-  background-color: white;
+  background-color: #f8f8f8;
   border-radius: 3em;
   position: absolute;
   left: -5px;
@@ -1048,6 +1048,7 @@ input[type=checkbox].toggle-switch:checked:active::after {
 input[type=checkbox].toggle-switch:checked::after {
   left: 2em;
   background-color: #fff;
+  align-content: 10px center;
 }
 
 .dark {
@@ -1164,4 +1165,9 @@ input[type=checkbox].toggle-switch:checked::after {
 .dark #new_activity_notifier {
   background-color: #262661!important;
   border-bottom: 1px solid #262661!important;
+}
+
+
+.dark #status .btn-group-toggle .btn-radio {
+  background-color: #2b3358!important;
 }
