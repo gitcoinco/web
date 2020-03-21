@@ -3,6 +3,11 @@ $(document).ready(() => {
     minimumResultsForSearch: Infinity
   });
 
+  if($(".grants_type_nav").length){
+    localStorage.setItem('last_grants_index', document.location.href);
+    localStorage.setItem('last_grants_title', $("title").text().split("|")[0]);
+  }
+
   $('#network').select2({
     minimumResultsForSearch: Infinity
   });

@@ -1387,6 +1387,9 @@ const updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
+  if(key!='category'){
+    params.set('category', '')
+  }
   window.location.href = '/grants/?' + decodeURIComponent(params.toString());;
 };
 

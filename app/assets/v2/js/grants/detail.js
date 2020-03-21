@@ -25,7 +25,6 @@ function getCategoryIndex(categoryName, categories) {
   return '-1';
 }
 
-
 function initGrantCategoriesInput() {
   const grant_type = $('#grant-type').html();
 
@@ -41,6 +40,16 @@ $(document).ready(function() {
   showMore();
   addGrantLogo();
   initGrantCategoriesInput();
+
+
+  var lgi = localStorage.getItem('last_grants_index');
+  var lgt = localStorage.getItem('last_grants_title');
+
+  if(lgi){
+    $("#backgrants").attr('href', lgi);
+    $("#backgrants").text("< Back to " + lgt);
+  }
+
 
   setInterval (() => {
     notifyOwnerAddressMismatch(

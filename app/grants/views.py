@@ -147,7 +147,7 @@ def grants(request):
 
     if category:
         _grants = _grants.filter(Q(categories__category__icontains = category))
-
+    
     _grants = _grants.prefetch_related('categories')
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -179,17 +179,19 @@ def grants(request):
         network=network, hidden=False, grant_type='health'
     ).count()
 
-    categories = [category[0] for category in basic_grant_categories(grant_type)]
+    categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
         {'label': 'Public Health', 'keyword': 'health', 'count': health_grants_count}
     ]
-
+    title = matching_live + str(_('Grants'))
+    if grant_type:
+        title = f"{grant_type.title()} {category.title()} Grants"
     params = {
         'active': 'grants_landing',
-        'title': matching_live + str(_('Gitcoin Grants Explorer')),
+        'title': title,
         'sort': sort,
         'network': network,
         'keyword': keyword,
