@@ -1120,6 +1120,8 @@ input[type=checkbox].toggle-switch:checked::after {
 
 .dark .activity_stream .box {
   border-bottom: 1px solid #312979;
+  box-shadow: 1px -5px #312979;
+  border-radius: 10px;
 }
 
 .dark .poll_choices.answered div span {
