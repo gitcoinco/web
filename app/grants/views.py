@@ -694,9 +694,10 @@ def grant_fund(request, grant_id, grant_slug):
         if 'contributor_address' in request.POST:
             subscription = Subscription()
 
+            is_postive_vote = True if request.GET.get('is_postive_vote', 1) else False
+            subscription.is_postive_vote = is_postive_vote
             subscription.active = False
             subscription.contributor_address = request.POST.get('contributor_address', '')
-            subscription.is_postive_vote = request.POST.get('is_postive_vote', True)
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
             subscription.frequency = request.POST.get('frequency', 30)
