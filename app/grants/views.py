@@ -843,8 +843,9 @@ def grant_fund(request, grant_id, grant_slug):
     params = {
         'profile': profile,
         'active': 'fund_grant',
-        'title': _('Fund Grant'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'title': matching_live + grant.title + "| Fund Now",
+        'card_desc': grant.description,
+        'avatar_url': grant.logo.url if grant.logo else None,
         'subscription': {},
         'show_tweet_modal': show_tweet_modal,
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
