@@ -65,7 +65,7 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '($250K matching live now!) '
+matching_live = '(💰$250K Match Round LIVE NOW!) Gitcoin Grants | '
 total_clr_pot = 250000
 clr_round = 5
 clr_active = True
@@ -188,6 +188,8 @@ def grants(request):
         {'label': 'Public Health', 'keyword': 'health', 'count': health_grants_count}
     ]
     title = matching_live + str(_('Grants'))
+    grant_type_title_if_any = grant_type.title() if grant_type else ''
+    grant_type_gfx_if_any = grant_type if grant_type else 'total'
     if grant_type:
         title = f"{grant_type.title()} {category.title()} Grants"
     params = {
@@ -208,10 +210,8 @@ def grants(request):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'past_partners': past_partners,
-        'card_desc': _('Get Substantial Sustainable Funding for Your Projects with Gitcoin Grants'),
-        'card_player_override': 'https://www.youtube.com/embed/eVgEWSPFR2o',
-        'card_player_stream_override': static('v2/card/grants.mp4'),
-        'card_player_thumb_override': static('v2/card/grants.png'),
+        'card_desc': f'❇️ LIVE NOW! Up to $250k Matching Funding for {grant_type_title_if_any} on Gitcoin Grants',
+        'avatar_url': static('v2/images/grants/headers/total.png'),
         'grants': grants,
         'target': f'/activity?what=all_grants',
         'bg': bg,
