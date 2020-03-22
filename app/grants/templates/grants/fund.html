@@ -123,10 +123,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <p class="col-12 font-weight-semibold mb-4 text-center">
             <a href="{{ grant.url }}">{{ grant.title }}</a> {% trans "is accepting contributions in "%}
             {% if grant_has_no_token %}
-              {% trans "any token." %}
+              {% trans "any token" %}
             {% else %}
               {{ grant.token_symbol }}
             {% endif %}
+            for {{ grant.title }}
           </p>
 
           <div id="grants_form" class="col-12">

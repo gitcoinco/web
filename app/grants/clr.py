@@ -155,6 +155,9 @@ def calculate_new_clr(aggregated_contributions, pair_totals, threshold=0.0, tota
 def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
     # calculate final totals
 
+    # print(f'+ve {len(totals_pos)} {totals_pos}')
+    # print(f'-ve {len(totals_neg)} {totals_neg}')
+
     if len(totals_neg) == 0:
         totals = totals_pos
     elif len(totals_pos) == 0:
@@ -298,8 +301,8 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
         grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
 
         # Get the +ve and -ve contributions
-        positive_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__match_direction='+')
-        negative_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__match_direction='-')
+        positive_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True)
+        negative_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=False)
 
         # Generate list of profiles who've made +ve and -ve contributions to the grant
         phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
@@ -411,7 +414,7 @@ LIVE GRANTS FUNDING PAGE METHODS START HERE
         grant: <Grant> - grant to be funded
         contributor: <Profile> - contributor making a contribution
         amount: <float> - amount with which is grant is to be funded
-        match_direction: <char> + , -
+        is_postive_vote: <boolean>
         positive_grant_contributions: [Object]
         negative_grant_contributions: [Object]
         total_pot: <float>
@@ -420,7 +423,7 @@ LIVE GRANTS FUNDING PAGE METHODS START HERE
     Returns:
         clr_amount
 '''
-def calculate_clr_for_donation_live(grant, contributor, amount, match_direction, positive_grant_contributions, negative_grant_contributions, total_pot, threshold):
+def calculate_clr_for_donation_live(grant, contributor, amount, is_postive_vote, positive_grant_contributions, negative_grant_contributions, total_pot, threshold):
 
     if amount == 0:
         return 0
@@ -430,7 +433,7 @@ def calculate_clr_for_donation_live(grant, contributor, amount, match_direction,
 
     profile_id = str(contributor.pk)
 
-    if match_direction == '+':
+    if is_postive_vote:
         for grant_contribution in _positive_grant_contributions:
             if grant_contribution['id'] == grant.id:
                 grant_contribution['contributions'].append({
@@ -464,12 +467,12 @@ def calculate_clr_for_donation_live(grant, contributor, amount, match_direction,
         grant: <Grant>
         contributor: <Profile>
         amount: <float>
-        match_direction: <char> + , -
+        is_postive_vote: <boolean>
 
     Returns:
         predicted_clr_match
 '''
-def predict_clr_live(grant, contributor, amount, match_direction='+'):
+def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
 
     if not grant or not contributor:
         print('error: predict_clr_live - missing parameters')
@@ -483,7 +486,7 @@ def predict_clr_live(grant, contributor, amount, match_direction='+'):
     _, positive_contrib_data, negative_contrib_data , total_pot, threshold = populate_data_for_clr(clr_type, network)
 
     predicted_clr_match = calculate_clr_for_donation_live(
-        grant, contributor, amount, match_direction, positive_contrib_data, negative_contrib_data, total_pot, threshold
+        grant, contributor, amount, is_postive_vote, positive_contrib_data, negative_contrib_data, total_pot, threshold
     )
 
     return predicted_clr_match

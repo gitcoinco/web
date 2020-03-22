@@ -319,7 +319,7 @@ class Grant(SuperModel):
     @property
     def get_contribution_count(self):
         num = 0
-        for sub in self.subscriptions.filter(match_direction='+'):
+        for sub in self.subscriptions.filter(is_postive_vote=True):
             for contrib in sub.subscription_contribution.filter(success=True):
                 num += 1
         for pf in self.phantom_funding.all():
@@ -329,7 +329,7 @@ class Grant(SuperModel):
     @property
     def contributors(self):
         return_me = []
-        for sub in self.subscriptions.filter(match_direction='+'):
+        for sub in self.subscriptions.filter(is_postive_vote=True):
             for contrib in sub.subscription_contribution.filter(success=True):
                 return_me.append(contrib.subscription.contributor_profile)
         for pf in self.phantom_funding.all():
@@ -339,7 +339,7 @@ class Grant(SuperModel):
     @property
     def get_contributor_count(self):
         contributors = []
-        for sub in self.subscriptions.filter(match_direction='+'):
+        for sub in self.subscriptions.filter(is_postive_vote=True):
             for contrib in sub.subscription_contribution.filter(success=True):
                 contributors.append(contrib.subscription.contributor_profile.handle)
         for pf in self.phantom_funding.all():
@@ -511,12 +511,7 @@ class Subscription(SuperModel):
         help_text=_('The tx id of the split transfer'),
         blank=True,
     )
-    match_direction = models.CharField(
-        default='+',
-        max_length=255,
-        help_text=_('The direction of the match'),
-        blank=True,
-    )
+    is_postive_vote = models.BooleanField(default=True, help_text=_('Whether this is positive or negative vote'))
     split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
 
     subscription_hash = models.CharField(
@@ -638,7 +633,7 @@ class Subscription(SuperModel):
 
     @property
     def negative(self):
-        return self.match_direction == "-"
+        return self.is_postive_vote == False
 
     @property
     def status(self):

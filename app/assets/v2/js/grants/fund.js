@@ -53,10 +53,6 @@ $(document).ready(function() {
   gitcoinDonationAddress = $('#gitcoin_donation_address').val();
   splitterAddress = $('#splitter_contract_address').val();
 
-  $('.select2-selection__rendered').hover(function() {
-    $(this).removeAttr('title');
-  });
-
   updateSummary();
 
   $('#grants_form .nav-item').click(function(e) {
@@ -127,22 +123,19 @@ $(document).ready(function() {
   });
 
   $('input[name=match_direction]').change(function(e) {
-    var direction = $(this).val();
+    let direction = $(this).val();
 
     if (direction == '+') {
       $('.est_direction').text('increase').css('background-color', 'yellow');
       setTimeout(function() {
         $('.est_direction').css('background-color', 'white');
       }, 500);
-      // $('.comment_container').removeClass('hidden');
       $('.hide_wallet_address_container').removeClass('hidden');
     } else {
       $('.est_direction').text('decrease').css('background-color', 'yellow');
       setTimeout(function() {
         $('.est_direction').css('background-color', 'white');
       }, 500);
-      // $('.comment_container').addClass('hidden');
-      // $('.comment_container').val('');
       $('.hide_wallet_address_container').addClass('hidden');
     }
   });
@@ -209,6 +202,8 @@ $(document).ready(function() {
     localStorage.setItem('grantstoken_address', $('#js-token').val());
     localStorage.setItem('grantsgitcoin-grant-input-amount', $('#gitcoin-grant-input-amount').val());
 
+    data.is_postive_vote = (data.match_direction == '-') ? 0 : 1;
+  
     if (data.frequency_unit) {
 
       // translate timeAmount&timeType to requiredPeriodSeconds
@@ -253,11 +248,10 @@ $(document).ready(function() {
     }
 
     // eth payments
-    var is_eth = $('#js-token').val() == '0x0000000000000000000000000000000000000000';
+    const is_eth = $('#js-token').val() == '0x0000000000000000000000000000000000000000';
 
     if (is_eth) {
       const percent = $('#gitcoin-grant-input-amount').val();
-      const to_addr_amount = percent * 0.01 * data.amount_per_period * 10 ** 18;
       const gitcoin_amount = (100 - percent) * 0.01 * data.amount_per_period * 10 ** 18;
 
       web3.eth.getAccounts(function(err, accounts) {
@@ -440,6 +434,9 @@ $(document).ready(function() {
     });
     $('#js-token').select2();
     $('.contribution_type select').trigger('change');
+    $('.select2-selection__rendered').hover(function() {
+      $(this).removeAttr('title');
+    });
     updateSummary();
   }); // waitforWeb3
 }); // document ready
@@ -462,7 +459,6 @@ const subscribeToGrant = (transactionHash) => {
   web3.eth.getAccounts(function(err, accounts) {
     deployedToken.methods.decimals().call(function(err, decimals) {
       const linkURL = get_etherscan_url(transactionHash);
-      let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
       let data = {
         'contributor_address': $('#contributor_address').val(),
         'amount_per_period': grant_amount,
@@ -479,11 +475,13 @@ const subscribeToGrant = (transactionHash) => {
         'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
       };
 
+      data.is_postive_vote = (data.match_direction == '-') ? 0 : 1;
+
       $.ajax({
         type: 'post',
         url: '',
         data: data,
-        success: json => {
+        success: () => {
           console.log('successfully saved subscription');
         },
         error: () => {
@@ -832,4 +830,3 @@ const predictCLRLive = (amount) => {
     }
   });
 };
-

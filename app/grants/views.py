@@ -265,8 +265,8 @@ def grant_details(request, grant_id, grant_slug):
         )
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
-        subscriptions = grant.subscriptions.filter(active=True, error=False, match_direction='+').order_by('-created_on')
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, match_direction='+').order_by('-created_on')
+        subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
+        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
 
         activity_count = grant.contribution_count
         contributors = []
@@ -275,8 +275,8 @@ def grant_details(request, grant_id, grant_slug):
         voucher_fundings = []
         if tab in ['transactions', 'contributors']:
             _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all().cache(timeout=60)).cache(timeout=60)
-            negative_contributions = _contributions.filter(subscription__match_direction='-')
-            _contributions = _contributions.filter(subscription__match_direction='+')
+            negative_contributions = _contributions.filter(subscription__is_postive_vote=False)
+            _contributions = _contributions.filter(subscription__is_postive_vote=True)
             phantom_funds = grant.phantom_funding.all().cache(timeout=60)
             contributions = list(_contributions.order_by('-created_on'))
             voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
@@ -689,7 +689,7 @@ def grant_fund(request, grant_id, grant_slug):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     active_subscription = Subscription.objects.select_related('grant').filter(
-        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, match_direction='+'
+        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, is_postive_vote=True
     )
 
     if active_subscription:
@@ -712,12 +712,15 @@ def grant_fund(request, grant_id, grant_slug):
     if request.method == 'POST':
         if 'contributor_address' in request.POST:
             subscription = Subscription()
-            match_direction = '+'
+
             if grant.negative_voting_enabled:
-                match_direction = request.POST.get('match_direction', '+')
+                is_postive_vote = True if request.GET.get('is_postive_vote', 1) else False
+            else:
+                is_postive_vote = True
+            subscription.is_postive_vote = is_postive_vote
+
             subscription.active = False
             subscription.contributor_address = request.POST.get('contributor_address', '')
-            subscription.match_direction = match_direction
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
             subscription.frequency = request.POST.get('frequency', 30)
@@ -797,8 +800,6 @@ def grant_fund(request, grant_id, grant_slug):
                 'success': True,
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))
             })
-
-    splitter_contract_address = settings.SPLITTER_CONTRACT_ADDRESS
 
     # handle phantom funding
     active_tab = 'normal'
@@ -1117,7 +1118,7 @@ def predict_clr_v1(request, grant_id):
     '''
         {
             amount: <float>,
-            match_direction: <char> +, -
+            is_postive_vote: <char> +, -
         }
     '''
     response = {
@@ -1148,14 +1149,13 @@ def predict_clr_v1(request, grant_id):
         response['message'] = 'error: missing parameter amount'
         return JsonResponse(response)
 
-
-    match_direction = request.GET.get('match_direction', '+')
+    is_postive_vote = True if request.GET.get('is_postive_vote', 1) else False
 
     predicted_clr_match = predict_clr_live(
         grant,
         profile,
         float(amount),
-        match_direction
+        is_postive_vote
     )
 
     response = {
