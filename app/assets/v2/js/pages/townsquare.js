@@ -99,7 +99,7 @@ $(document).ready(function() {
   
   // Enables Dark Mode
   $('body').toggleClass(localStorage.toggled);
-   $('.toggle-switch').on("click",function(event) {
+   $('.toggle-switch').on('click',function(event) {
   if (localStorage.toggled != 'dark') {
     $('body').toggleClass('dark',  true)
     localStorage.toggled = 'dark';
