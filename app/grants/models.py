@@ -1162,19 +1162,22 @@ def psave_contrib(sender, instance, **kwargs):
     from django.contrib.contenttypes.models import ContentType
     from dashboard.models import Earning
     if instance.subscription and not instance.subscription.negative:
-        Earning.objects.update_or_create(
-            source_type=ContentType.objects.get(app_label='grants', model='contribution'),
-            source_id=instance.pk,
-            defaults={
-                "created_on":instance.created_on,
-                "from_profile":instance.subscription.contributor_profile,
-                "org_profile":instance.subscription.grant.org_profile,
-                "to_profile":instance.subscription.grant.admin_profile,
-                "value_usd":instance.subscription.get_converted_amount(False),
-                "url":instance.subscription.grant.url,
-                "network":instance.subscription.grant.network,
-            }
-        )
+        try:
+            Earning.objects.update_or_create(
+                source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+                source_id=instance.pk,
+                defaults={
+                    "created_on":instance.created_on,
+                    "from_profile":instance.subscription.contributor_profile,
+                    "org_profile":instance.subscription.grant.org_profile,
+                    "to_profile":instance.subscription.grant.admin_profile,
+                    "value_usd":instance.subscription.get_converted_amount(False),
+                    "url":instance.subscription.grant.url,
+                    "network":instance.subscription.grant.network,
+                }
+            )
+        except:
+            pass
 
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):

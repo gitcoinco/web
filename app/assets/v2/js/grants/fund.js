@@ -252,7 +252,8 @@ $(document).ready(function() {
 
     if (is_eth) {
       const percent = $('#gitcoin-grant-input-amount').val();
-      const gitcoin_amount = (100 - percent) * 0.01 * data.amount_per_period * 10 ** 18;
+      const to_addr_amount = (100 - percent) * 0.01 * data.amount_per_period * 10 ** 18;
+      const gitcoin_amount = (percent) * 0.01 * data.amount_per_period * 10 ** 18;
 
       web3.eth.getAccounts(function(err, accounts) {
         indicateMetamaskPopup();
@@ -261,7 +262,7 @@ $(document).ready(function() {
         web3.eth.sendTransaction({
           from: accounts[0],
           to: to_address,
-          value: gitcoin_amount
+          value: to_addr_amount
         }, function(err, txid) {
           indicateMetamaskPopup(1);
           if (err) {
@@ -472,10 +473,9 @@ const subscribeToGrant = (transactionHash) => {
         'num_tx_approved': $('#period').val(),
         'network': $('#network').val(),
         'match_direction': $('input[name=match_direction]:checked').val(),
+        'is_postive_vote': ($('input[name=match_direction]:checked').val() == '-') ? 0 : 1,
         'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
       };
-
-      data.is_postive_vote = (data.match_direction == '-') ? 0 : 1;
 
       $.ajax({
         type: 'post',

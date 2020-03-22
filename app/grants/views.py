@@ -714,7 +714,8 @@ def grant_fund(request, grant_id, grant_slug):
             subscription = Subscription()
 
             if grant.negative_voting_enabled:
-                is_postive_vote = True if request.GET.get('is_postive_vote', 1) else False
+                #is_postive_vote = True if request.POST.get('is_postive_vote', 1) else False
+                is_postive_vote = request.POST.get('match_direction', '+') == '+'
             else:
                 is_postive_vote = True
             subscription.is_postive_vote = is_postive_vote
@@ -760,9 +761,13 @@ def grant_fund(request, grant_id, grant_slug):
                         comment=comment)
 
             # TODO - how do we attach the tweet modal WITH BULK TRANSFER COUPON next pageload??
+            message = 'Your contribution has succeeded. Thank you for supporting Public Goods on Gitcoin !'
+            if subscription.num_tx_approved > 1:
+                message = 'Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Public Goods on Gitcoin !'
+
             messages.info(
                 request,
-                _('Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Open Source !')
+                message
             )
 
             return JsonResponse({
