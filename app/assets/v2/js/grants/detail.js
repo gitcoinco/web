@@ -47,7 +47,7 @@ $(document).ready(function() {
 
   if (lgi) {
     $('#backgrants').attr('href', lgi);
-    $('#backgrants').text('< Back to ' + lgt);
+    $('#backgrants').text('<i class="fas fa-chevron-left mr-2"></i> Back to ' + lgt);
   }
 
 

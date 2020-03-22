@@ -3,9 +3,11 @@
     border-bottom: 1px solid #515151;
   }
 }
+
 .est_direction{
   font-weight: 900;
 }
+
 .admin_profile a,
 #grant-link {
   color: #0D0764;
@@ -13,17 +15,6 @@
 
 .tab_target{
   width: 100%;
-}
-
-.banner-img {
-  max-height: 22rem;
-  overflow-y: hidden;
-}
-
-.banner-img img {
-  height: auto;
-  width: 100%;
-  object-fit: cover;
 }
 
 #grants_form .nav-link {
@@ -263,18 +254,6 @@
 
   #gitcoin-grant-section .fee-slider-summary {
     margin-bottom: 1rem !important;
-  }
-}
-
-@media (max-width: 767.98px) {
-
-  .banner-img {
-    text-align: center;
-  }
-
-  .banner-img img {
-    width: auto;
-    max-width: 100%;
   }
 }
 

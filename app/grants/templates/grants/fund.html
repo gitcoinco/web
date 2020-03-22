@@ -51,8 +51,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <h2 class="font-title-lg my-4">{% trans "Fund Grant" %}</h2>
       </div>
 
-      {% include 'grants/banner.html' %}
-
       {% if can_phantom_fund %}
         <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
           <ul class="nav">
@@ -115,14 +113,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </div>
       <div id="original_fund" class="tab_target {% if active_tab == "phantom" %} hidden {% endif %}">
-        <div class="col-12 offset-md-2 col-md-10 offset-xl-3 col-xl-6 mt-5 font-subheader mx-0 mx-md-auto row">
+        <div class="col-12 offset-md-2 col-md-10 offset-xl-3 col-xl-6 mt-0 font-subheader mx-0 mx-md-auto row">
           <p class="col-12 font-weight-semibold my-4 text-center">
             {{ grant.admin_profile }} {% trans "is accepting contributions in "%}
             {% if grant_has_no_token %}
-              {% trans "any token." %}
+              {% trans "any token" %}
             {% else %}
               {{ grant.token_symbol }}
             {% endif %}
+            for {{ grant.title }}
           </p>
 
           <div id="grants_form" class="col-12">

@@ -53,10 +53,6 @@ $(document).ready(function() {
   gitcoinDonationAddress = $('#gitcoin_donation_address').val();
   splitterAddress = $('#splitter_contract_address').val();
 
-  $('.select2-selection__rendered').hover(function() {
-    $(this).removeAttr('title');
-  });
-
   updateSummary();
 
   $('#grants_form .nav-item').click(function(e) {
@@ -438,6 +434,9 @@ $(document).ready(function() {
     });
     $('#js-token').select2();
     $('.contribution_type select').trigger('change');
+    $('.select2-selection__rendered').hover(function() {
+      $(this).removeAttr('title');
+    });
     updateSummary();
   }); // waitforWeb3
 }); // document ready
@@ -831,4 +830,3 @@ const predictCLRLive = (amount) => {
     }
   });
 };
-
