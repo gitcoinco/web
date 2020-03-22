@@ -773,6 +773,7 @@ def grant_fund(request, grant_id, grant_slug):
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
             subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
             subscription.active = True
+
             subscription.subscription_hash = request.POST.get('subscription_hash', '')
             subscription.contributor_signature = request.POST.get('signature', '')
             if 'split_tx_id' in request.POST:

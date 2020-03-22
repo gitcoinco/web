@@ -144,22 +144,19 @@ $(document).ready(function() {
   });
   
   $('#js-token').change(function(e) {
-    
-    if ($('#js-token').val() == '0x0000000000000000000000000000000000000000' && $('#recurring_or_not').val() == 'recurring') {
+    const val = $(this).val();
+    const is_eth = val == '0x0000000000000000000000000000000000000000';
+    if (is_eth && $('#recurring_or_not').val() == 'recurring') {
       _alert('Sorry but this token is not supported for recurring donations', 'error', 1000);
     }
-    if ($('#js-token').val() == '0x0000000000000000000000000000000000000000') {
-      $('.contribution_type select').val('once');
-    }
-  });
-  setInterval(function() {
-    if ($('#js-token').val() == '0x0000000000000000000000000000000000000000') {
+    if(is_eth){
       $('option[value=recurring]').attr('disabled', 'disabled');
-      $('.contribution_type select').val('once');
+      $('.contribution_type select').val('once').trigger('change');
     } else {
       $('option[value=recurring]').attr('disabled', null);
     }
-  }, 100);
+  });
+
 
   $('.contribution_type select').change(function(e) {
     if ($('.contribution_type select').val() == 'once') {
@@ -224,7 +221,6 @@ $(document).ready(function() {
         }
       }
 
-
       if (data.contract_version == 0) {
         deployedSubscription = new web3.eth.Contract(compiledSubscription0.abi, data.contract_address);
       } else if (data.contract_version == 1) {
@@ -247,6 +243,75 @@ $(document).ready(function() {
         return;
       }
 
+      // eth payments
+      var is_eth = $('#js-token').val() == '0x0000000000000000000000000000000000000000';
+      if(is_eth){
+        const percent = $('#gitcoin-grant-input-amount').val();
+        const to_addr_amount = percent * 0.01 * data.amount_per_period * 10**18;
+        const gitcoin_amount = (100 - percent) * 0.01 * data.amount_per_period * 10**18;
+        web3.eth.getAccounts(function(err, accounts) {
+          indicateMetamaskPopup();
+          var to_address = data.match_direction == '+' ? data.admin_address : gitcoinDonationAddress;
+            web3.eth.sendTransaction({
+              from: accounts[0],
+              to: to_address,
+              value: gitcoin_amount,
+            }, function(err, txid){
+              indicateMetamaskPopup(1);
+              if (err) {
+                console.log(err);
+                _alert('There was an error', 'error');
+                return;
+              }
+              $('#gas_price').val(1);
+              $('#sub_new_approve_tx_id').val(txid);
+
+              var data = {};
+              $.each($('#js-fundGrant').serializeArray(), function() {
+                data[this.name] = this.value;
+              });
+              saveSubscription(data, true);
+              var success_callback = function(err, new_txid){
+                 indicateMetamaskPopup(1);
+                data = {
+                  'subscription_hash': 'onetime',
+                  'signature': 'onetime',
+                  'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val(),
+                  'sub_new_approve_tx_id': txid,
+                };
+                 saveSplitTx(data, new_txid, true);
+
+                  waitforData(() => {
+                    document.suppress_loading_leave_code = true;
+                    window.location = window.location.href.replace('/fund', '');
+                  });
+
+                  const linkURL = get_etherscan_url(new_txid);
+
+                  document.issueURL = linkURL;
+
+                  $('#transaction_url').attr('href', linkURL);
+                  enableWaitState('#grants_form');
+                  // TODO: Fix tweet modal
+                  $('#tweetModal').css('display', 'block');
+
+              }
+              if(!gitcoin_amount){
+               success_callback(null, txid);
+              } else {
+                indicateMetamaskPopup();
+                web3.eth.sendTransaction({
+                  from: accounts[0],
+                  to: gitcoinDonationAddress,
+                  value: gitcoin_amount,
+                }, success_callback);
+              }
+            });
+        });
+        return;
+      }
+
+      // erc20
       tokenAddress = data.token_address;
 
       deployedToken.methods.decimals().call(function(err, decimals) {
@@ -290,8 +355,8 @@ $(document).ready(function() {
             approvalAddress = data.contract_address;
           }
 
-
-          deployedToken.methods.balanceOf(
+          // ERC20
+          deployedToken.methods.balanceOf(  
             accounts[0]
           ).call().then(function(result) {
             if (result < realTokenAmount) {
@@ -315,7 +380,6 @@ $(document).ready(function() {
                 $('#sub_new_approve_tx_id').val(transactionHash);
                 if (data.num_periods == 1) {
                   // call splitter after approval
-                  var to_address = data.match_direction == '+' ? data.admin_address : gitcoinDonationAddress;
                   splitPayment(accounts[0], to_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
                 } else {
                   if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
@@ -642,7 +706,7 @@ const splitGrantAmount = () => {
   }
 
   $('.gitcoin-grant-percent').html(percent);
-  $('.summary-gitcoin-amount').html(gitcoin_grant_amount.toFixed(2));
+  $('.summary-gitcoin-amount').html(gitcoin_grant_amount.toFixed(3));
   $('#summary-amount').html(grant_amount);
 };
 
