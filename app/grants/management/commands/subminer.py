@@ -27,8 +27,8 @@ from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.models import Grant
-from marketing.mails import warn_subscription_failed
 from grants.views import clr_active
+from marketing.mails import warn_subscription_failed
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
