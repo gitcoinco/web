@@ -1046,14 +1046,10 @@ to have you! You can get a sneak preview of this in our <a href="https://gitcoin
 Interested in sneak peaks at what the product team is doing or being an early tester? <a href=“https://gitcoin.co/pixelantdesign”>Hit me up</a> on the <a href=“https://gitcoin.co/chat”>Gitcoin Chat</a>!
 </p>
 
-{kudos_friday}
-
 <h3>What else is new?</h3>
-    <ul>
-        <li>
-        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be an ETH 2.0 stream hosted by our own Kevin Owocki!
-        </li>
-    </ul>
+<div>
+    <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be an ETH 2.0 stream hosted by our own Kevin Owocki!
+</div>
 </p>
 <p>
 Back to (remote) work,
@@ -1159,6 +1155,7 @@ Back to (remote) work,
         'hide_header': False,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'kudos_friday': kudos_friday,
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
 		'email_type': 'roundup',

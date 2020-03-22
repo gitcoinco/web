@@ -19,10 +19,7 @@
 {% block content %}
 <style>
   .roundup {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    padding-left: 2em;
-    padding-right: 2em;
+    padding: 0.5em 2em;
     line-height: 20px;
   }
   p, li, a{
@@ -32,21 +29,47 @@
     list-style: none;
   }
   .intro li{
-    margin-bottom: 15px;
+    margin:0 0 15px 0;
   }
   h1{
     color: black;
     font-weight: bold;
+    text-align: center;
+    margin: 20px 0 40px 0;
   }
   h3{
     color: #0d0860;
     font-weight: bold;
+    text-align: center;
   }
   h5{
     color: #aeaeae;
+    text-align: center;
   }
   a{
-    text-decoration: underline;
+    text-decoration: none;
+    color:#421cff;
+  }
+
+  @media screen and (min-width: 35.5em) {
+    .roundup {
+      margin-left: 20%;
+      margin-right: 20%;
+    }
+  }
+
+  @media screen and (min-width: 48em) {
+    .roundup {
+      margin-left: 10%;
+      margin-right: 10%;
+    }
+  }
+
+  @media screen and (max-width: 48em) {
+    .roundup {
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
 </style>
 
@@ -57,18 +80,24 @@
 
   <div class='intro text-left'>
     {{ intro|safe }}
-    <div style="text-align: center; ">
+    <div style="text-align: left;">
       <a href="https://twitter.com/vsinghdothings">
-        <img style="max-height: 170px; " src="{% static "v2/images/vs77bb.png" %}">
+        <img style="max-height: 57px; border-radius: 50%;" alt="vs77bb icon" src="{% static "v2/images/vs77bb.png" %}">
       </a>
       <p>
         <a href="https://twitter.com/vsinghdothings">-Vivek</a>
       </p>
     </div>
+    
+    {% if kudos_friday %}
+    <div style="text-align: center;">
+      {{ kudos_friday|safe }}
+    </div>
+    {% endif %}
 
     {% if sponsor %}
-      <div style="padding: 5px 15px 15px 15px; background-color: #f2f6f9; text-align: center;">
-        <p style="text-transform: uppercase; font-size: 12px; color: rgba(0,0,0,0.4);">Sponsored by <a href="{{ sponsor.link }}" style="font-weight: bold; color: rgba(0,0,0,0.8);">{{ sponsor.name }}</a></p>
+      <div style="padding: 5px 15px 15px 15px; background-color: #eff4f8; text-align: center;">
+        <p style="text-transform: uppercase; font-size: 12px; color: rgba(0,0,0,0.4);">Sponsored by <a href="{{ sponsor.link }}" style="font-weight: bold;">{{ sponsor.name }}</a></p>
         <a href="{{ sponsor.link }}" style="text-align: center; color: #0d0860; font-weight: bold; font-size: 16px; display: block; text-decoration: none; line-height: 19px;">{{ sponsor.title }}</a>
         {% for paragraph in sponsor.body %}
           <p style="font-size: 14px; text-align: center; line-height: 18px;">{{ paragraph | safe }}</p>
@@ -76,8 +105,8 @@
         <div style="margin-bottom: 1em; margin-top: 2em;">
           <a class="button" style="padding: 8px 16px; font-size: 15px;" href="{{ sponsor.link }}">{{ sponsor.cta }}</a>
         </div>
-        <small style="text-align: center; color: rgba(0,0,0,0.4); font-size: 10px; line-height: 12px;">Interested in sponsoring The Gitcoin Weekly?
-          <a href="https://share.hsforms.com/1--0ESFkIQ1m-y8wCW-3Q_g3bjxf" style="color: rgba(0,0,0,0.4); font-size: 10px; line-height: 12px;">Let us know</a>
+        <small style="text-align: center; color: rgba(120, 120, 120, 1); font-size: 10px; line-height: 12px;">Interested in sponsoring The Gitcoin Weekly?
+          <a href="https://share.hsforms.com/1--0ESFkIQ1m-y8wCW-3Q_g3bjxf" style="color:  rgba(120, 120, 120, 1);  text-decoration: underline; font-size: 10px; line-height: 12px;">Let us know</a>
         </small>
       </div>
     {% endif %}
@@ -86,14 +115,15 @@
   </div>
 
   {% if highlights %}
-    <h3>{% trans "Last Week's Highlights" %}</h3>
+    <h3>{% trans "✨Last Week's Highlights" %}</h3>
     <h5>{% trans "Community Members growing open source" %}</h5>
 
     <div style="text-align: center;">
       {% for highlight in highlights %}
+      <ul>
         <li style="list-style:none; margin-bottom: 5px;">
           {% if highlight.who_link %}
-            <img style="border-radius: 20px;" src="{% avatar_url highlight.who%}" width=30px height=30px>
+            <img style="border-radius: 20px;" alt="{% avatar_url highlight.who%}" src="{% avatar_url highlight.who%}" width=30px height=30px>
             <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>
           {% else %}
             * <strong>{{ highlight.who }}</strong>
@@ -103,6 +133,7 @@
             <a href="{{ highlight.link }}">{{ highlight.link_copy }}</a>
           {% endif %}
         </li>
+      </ul>
       {% endfor %}
     </div>
     <br>
@@ -111,7 +142,7 @@
   {% endif %}
 
   <div>
-    <h3>{% trans "Open Funded Issues" %}</h3>
+    <h3>{% trans "💡Open Funded Issues" %}</h3>
     <h5>{% trans "Grow Open Source &amp; Make Some ETH" %}</h5>
   </div>
 
@@ -129,23 +160,25 @@
   </div>
   <hr>
   {% if leaderboard %}
-    <h3>{% trans "Who's leading the Leaderboard?" %}</h3>
-    <h5>{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
+    <div style="background-color: rgba(0, 0, 0, 1); color: #fff;">
+      <h3 style="color: #fff; padding: 56px 0 0 0;">{% trans "🏆 Who's leading the Leaderboard?" %}</h3>
+      <h5 style="color: #fff;">{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
 
-    <div class="text-left">
-      {% for key, package in leaderboard.items %}
-        <div style="width: 30%; display: inline-block; min-width: 250px;">
-          <h4>{{ package.title }}</h4>
-          <ul>
-            {% for leaderboard_item in package.items %}
-            <li style="list-style:none; margin-bottom: 5px;">
-              {{ leaderboard_item.rank }}. <img style="border-radius: 20px;" src="{% avatar_url leaderboard_item.profile %}" width=30px height=30px>
-              <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" leaderboard_item.github_username %}">{{ leaderboard_item.github_username }}</a> : ${{ leaderboard_item.amount|floatformat:2 }}
-            </li>
-          {% endfor %}
-          </ul>
-        </div>
-      {% endfor %}
+      <div class="text-left">
+        {% for key, package in leaderboard.items %}
+          <div style="width: 30%; display: inline-block; min-width: 250px;">
+            <h4>{{ package.title }}</h4>
+            <ul style="text-align: left;">
+              {% for leaderboard_item in package.items %}
+              <li style="list-style:none; margin-bottom: 5px;">
+                {{ leaderboard_item.rank }}. <img style="padding: 22px; border-radius: 50%; max-width: 36px;" alt="avatar leaderboard" src="{% avatar_url leaderboard_item.profile %}" width=36px height=36px>
+                <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" leaderboard_item.github_username %}">{{ leaderboard_item.github_username }}</a> : <span style="font-weight: normal;">${{ leaderboard_item.amount|floatformat:2 }}</span>
+              </li>
+            {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
     </div>
     <br>
     <br>
@@ -157,23 +190,29 @@
   <hr>
 
   {% if kudos_highlights %}
-    <h3>{% trans "Kudos" %}</h3>
+    <h3>{% trans "❤️Kudos" %}</h3>
     <h5>{% trans "Recognition throughout the platform" %}</h5>
-    <div style="text-align: center;">
+    <div style="text-align: center; background-color:rgba(247, 245, 255, 1);">
       <ul style="text-align: center; padding-left: 20px;">
         {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
-          <li style="list-style:none; margin: 5px; padding: 15px 30px; min-height: 310px; display: inline-block; float:left; border: 1px solid #cccccc; border-radius: 5px; width: 220px;">
-              <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received <strong>{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
+          <li style="list-style:none; margin: 25px; padding: 15px 30px; min-height: 310px; display: inline-block; float:left; border: 1px solid #cccccc; border-radius: 5px; width: 220px; border-radius: 2px; background-color: #fff;">
+              <a style="font-weight: bold; text-decoration: none; color:rgba(48, 48, 48, 1);"
+                href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a>
+              received <strong
+                style="color: rgba(48, 48, 48, 1);">{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from
+              <a
+                style="font-weight: bold; text-decoration: none; color: rgba(48, 48, 48, 1);"
+                href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
             <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.pk kudos.kudos_token_cloned_from.name  %}">
 
-              <img style="max-width: 120px;" src="{{ kudos.kudos_token_cloned_from.img_url }}"></a>
+              <img style="max-width: 120px; text-aling: center;" alt="kudos image" src="{{ kudos.kudos_token_cloned_from.img_url }}"></a>
 
             {% if kudos.comments_public %}
               <br>
-              <i>
+              <em>
                 Comment: {{ kudos.comments_public }}
-              </i>
+              </em>
             {% endif %}
           </li>
         {% endif %}
@@ -187,7 +226,9 @@
   {% endif %}
   <hr>
 </div>
-<p>
-  {% trans "You are receiving this email because your email address is on the notification list." %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
+<p style="text-align: center; color: #fff; background-color: rgba(21, 0, 63, 1);">
+  {% trans "You are receiving this email because your email address is on the notification list." %} <a
+    style="color: rgba(112, 178, 255, 1);" href="
+    {% url "email_settings" subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
 </p>
 {% endblock %}
