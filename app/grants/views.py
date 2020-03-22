@@ -264,15 +264,18 @@ def grant_details(request, grant_id, grant_slug):
         )
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
-        subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
+        subscriptions = grant.subscriptions.filter(active=True, error=False, match_direction='+').order_by('-created_on')
+        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, match_direction='+').order_by('-created_on')
 
         activity_count = grant.contribution_count
         contributors = []
         contributions = []
+        negative_contributions = []
         voucher_fundings = []
         if tab in ['transactions', 'contributors']:
             _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all().cache(timeout=60)).cache(timeout=60)
+            negative_contributions = _contributions.filter(subscription__match_direction='-')
+            _contributions = _contributions.filter(subscription__match_direction='+')
             phantom_funds = grant.phantom_funding.all().cache(timeout=60)
             contributions = list(_contributions.order_by('-created_on'))
             voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
@@ -360,6 +363,7 @@ def grant_details(request, grant_id, grant_slug):
         'subscriptions': subscriptions,
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
+        'negative_contributions': negative_contributions,
         'user_subscription': user_subscription,
         'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
@@ -684,7 +688,7 @@ def grant_fund(request, grant_id, grant_slug):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     active_subscription = Subscription.objects.select_related('grant').filter(
-        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile
+        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, match_direction='+'
     )
 
     if active_subscription:
@@ -707,10 +711,12 @@ def grant_fund(request, grant_id, grant_slug):
     if request.method == 'POST':
         if 'contributor_address' in request.POST:
             subscription = Subscription()
-
+            match_direction = '+'
+            if grant.negative_voting_enabled:
+                match_direction = request.POST.get('match_direction', '+')
             subscription.active = False
             subscription.contributor_address = request.POST.get('contributor_address', '')
-            subscription.match_direction = request.POST.get('match_direction', '')
+            subscription.match_direction = match_direction
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
             subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
             subscription.frequency = request.POST.get('frequency', 30)
@@ -740,8 +746,12 @@ def grant_fund(request, grant_id, grant_slug):
             if 'comment' in request.POST:
                 comment = request.POST.get('comment')
                 if comment and activity:
+                    profile = request.user.profile
+                    if subscription.negative:
+                        profile = Profile.objects.filter(handle='gitcoinbot').first()
+                        comment = f"Comment from contributor: {comment}"
                     comment = Comment.objects.create(
-                        profile=request.user.profile,
+                        profile=profile,
                         activity=activity,
                         comment=comment)
 
@@ -778,8 +788,9 @@ def grant_fund(request, grant_id, grant_slug):
                 grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
 
             grant.save()
-            new_supporter(grant, subscription)
-            thank_you_for_supporting(grant, subscription)
+            if not subscription.negative:
+                new_supporter(grant, subscription)
+                thank_you_for_supporting(grant, subscription)
             return JsonResponse({
                 'success': True,
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))
@@ -939,6 +950,9 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
+    if subscription.negative:
+        profile = Profile.objects.filter(handle='gitcoinbot').first()
+        activity_type = 'negative_contribution'
     try:
         grant_logo = subscription.grant.logo.url
     except:

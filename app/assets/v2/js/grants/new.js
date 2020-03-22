@@ -168,6 +168,7 @@ const init = () => {
 
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {
+          indicateMetamaskPopup();
           SubscriptionContract.deploy({
             data: compiledSubscription.bytecode,
             arguments: args

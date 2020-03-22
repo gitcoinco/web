@@ -15,6 +15,30 @@ $(document).ready(function() {
 
   // _alert({ message: gettext('Note: Brave users seem to have issues while contributing to Grants while using both Brave Wallet and MetaMask. We recommend disabling one. For more info, see this <a target="_blank" href="https://github.com/brave/brave-browser/issues/6053">issue</a>') }, 'warning');
 
+  // set defaults
+  var set_defaults = function(){
+  var lookups = {
+    'frequency_unit': "#frequency_unit",
+    'token_address': "select[name=denomination]",
+    'recurring_or_not': "#recurring_or_not",
+    'real_period_seconds': "#real_period_seconds",
+    'amount_per_period': "input#amount",
+    'comment': 'textarea[name=comment]',
+    'num_periods': 'input[name=num_periods]',
+    'gitcoin-grant-input-amount': '#gitcoin-grant-input-amount',
+
+    };
+  for (key in lookups){
+    const selector = lookups[key]
+    const ls = localStorage.getItem("grants"+key);
+    if(ls){
+      $(selector).val(ls)
+      $(selector +' option:eq('+ls+')').prop('selected', true)
+    }
+  }
+  }
+
+
   predictPhantomCLRMatch();
   predictCLRMatch();
 
@@ -24,10 +48,6 @@ $(document).ready(function() {
 
   gitcoinDonationAddress = $('#gitcoin_donation_address').val();
   splitterAddress = $('#splitter_contract_address').val();
-
-  $('.js-select2').each(function() {
-    $(this).select2();
-  });
 
   $('.select2-selection__rendered').hover(function() {
     $(this).removeAttr('title');
@@ -110,14 +130,15 @@ $(document).ready(function() {
       setTimeout(function() {
         $('.est_direction').css('background-color', 'white');
       }, 500);
-      $('.comment_container').removeClass('hidden');
+      //$('.comment_container').removeClass('hidden');
       $('.hide_wallet_address_container').removeClass('hidden');
     } else {
       $('.est_direction').text('decrease').css('background-color', 'yellow');
       setTimeout(function() {
         $('.est_direction').css('background-color', 'white');
       }, 500);
-      $('.comment_container').addClass('hidden');
+      //$('.comment_container').addClass('hidden');
+      //$('.comment_container').val('');
       $('.hide_wallet_address_container').addClass('hidden');
     }
   });
@@ -149,35 +170,43 @@ $(document).ready(function() {
       $('#period').val(4);
       updateSummary();
       $('#amount_label').text('Amount');
+      $("#negative").prop('disabled', '');
+      $("label[for=negative]").css('color', 'black');
+      $("#period").val(1);
     } else {
       $('.frequency').removeClass('hidden');
       $('.num_recurring').removeClass('hidden');
       $('#amount_label').text('Amount Per Period');
       $('.hide_if_onetime').removeClass('hidden');
       $('.hide_if_recurring').addClass('hidden');
+      $("#positive").click();
+      $("#negative").prop('disabled', 'disabled');
+      $("label[for=negative]").css('color', 'grey');
     }
   });
   $('.contribution_type select').trigger('change');
 
-  $('#js-fundGrant').validate({
-    rules: {
-      num_periods: {
-        required: true,
-        min: 1
-      }
-    },
-    submitHandler: function(form) {
-
+  $('#js-fundGrant').submit(function(e) {
+      e.preventDefault();
       var data = {};
-
-      $.each($(form).serializeArray(), function() {
+      var form = $(this).serializeArray();
+      $.each(form, function() {
         data[this.name] = this.value;
       });
 
-      if (data.frequency) {
+      for(key in data){
+        const val = data[key];
+        var ls_key = 'grants' + key;
+        localStorage.setItem(ls_key, val);
+      };
+      localStorage.setItem('grantsrecurring_or_not', $('#recurring_or_not').val());
+      localStorage.setItem('grantstoken_address', $('#js-token').val());
+      localStorage.setItem('grantsgitcoin-grant-input-amount', $('#gitcoin-grant-input-amount').val());
+
+      if (data.frequency_unit) {
 
         // translate timeAmount&timeType to requiredPeriodSeconds
-        let periodSeconds = data.frequency;
+        let periodSeconds = 1;
 
         if (data.frequency_unit == 'days') {
           periodSeconds *= 86400;
@@ -222,6 +251,7 @@ $(document).ready(function() {
 
       deployedToken.methods.decimals().call(function(err, decimals) {
         if (err) {
+          console.log(err);
           _alert('The token you selected is not a valid ERC20 token', 'error');
           return;
         }
@@ -260,12 +290,14 @@ $(document).ready(function() {
             approvalAddress = data.contract_address;
           }
 
+
           deployedToken.methods.balanceOf(
             accounts[0]
           ).call().then(function(result) {
             if (result < realTokenAmount) {
               _alert({ message: gettext('You do not have enough tokens to make this transaction.')}, 'error');
             } else {
+              indicateMetamaskPopup();
               deployedToken.methods.approve(
                 approvalAddress,
                 web3.utils.toTwosComplement(approvalSTR)
@@ -275,13 +307,16 @@ $(document).ready(function() {
                 gas: web3.utils.toHex(gas_amount(document.location.href)),
                 gasLimit: web3.utils.toHex(gas_amount(document.location.href))
               }).on('error', function(error) {
+                indicateMetamaskPopup(true);
                 console.log('1', error);
                 _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
               }).on('transactionHash', function(transactionHash) {
+                indicateMetamaskPopup(true);
                 $('#sub_new_approve_tx_id').val(transactionHash);
                 if (data.num_periods == 1) {
                   // call splitter after approval
-                  splitPayment(accounts[0], data.admin_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+                  var to_address = data.match_direction == '+' ? data.admin_address : gitcoinDonationAddress;
+                  splitPayment(accounts[0], to_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
                 } else {
                   if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
                     donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
@@ -298,8 +333,7 @@ $(document).ready(function() {
           }); // check token balance
         }); // getAccounts
       }); // decimals
-    } // submitHandler
-  }); // validate
+    }); // validate
 
   waitforWeb3(function() {
     if (document.web3network != $('#network').val()) {
@@ -319,11 +353,16 @@ $(document).ready(function() {
         value: ele.addr,
         text: ele.name
       }));
-
       $("#js-token option[value='0x0000000000000000000000000000000000000001']").remove(); // ETC
       // $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove(); // ETH
     });
+    set_defaults();
+    $('.js-select2').each(function() {
+      $(this).select2();
+    });
     $('#js-token').select2();
+    $('.contribution_type select').trigger('change');
+    updateSummary();
   }); // waitforWeb3
 }); // document ready
 
@@ -358,6 +397,7 @@ const subscribeToGrant = (transactionHash) => {
         'sub_new_approve_tx_id': transactionHash,
         'num_tx_approved': $('#period').val(),
         'network': $('#network').val(),
+        "match_direction": $("input[name=match_direction]:checked").val(),
         'csrfmiddlewaretoken': $("#js-fundGrant input[name='csrfmiddlewaretoken']").val()
       };
 
@@ -376,8 +416,6 @@ const subscribeToGrant = (transactionHash) => {
       document.issueURL = linkURL;
       $('#transaction_url').attr('href', linkURL);
       enableWaitState('#grants_form');
-      // TODO: fix the tweet modal
-      $('#tweetModal').css('display', 'block');
 
       deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
@@ -402,7 +440,11 @@ const subscribeToGrant = (transactionHash) => {
 const signSubscriptionHash = (subscriptionHash) => {
   web3.eth.getAccounts(function(err, accounts) {
 
+    indicateMetamaskPopup();
     web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
+      indicateMetamaskPopup(true);
+      $('#tweetModal').css('display', 'block');
+
       if (signature) {
         $('#signature').val(signature);
 
@@ -491,13 +533,17 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
   let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
 
+  indicateMetamaskPopup();
   deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
     from: account,
     gas: web3.utils.toHex(100000)
   }).on('error', function(error) {
     console.log('1', error);
+    indicateMetamaskPopup(1);
     _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
   }).on('transactionHash', function(transactionHash) {
+    indicateMetamaskPopup(1);
+    $('#tweetModal').css('display', 'block');
     data = {
       'subscription_hash': 'onetime',
       'signature': 'onetime',

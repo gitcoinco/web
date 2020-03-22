@@ -319,7 +319,7 @@ class Grant(SuperModel):
     @property
     def get_contribution_count(self):
         num = 0
-        for sub in self.subscriptions.all():
+        for sub in self.subscriptions.filter(match_direction='+'):
             for contrib in sub.subscription_contribution.filter(success=True):
                 num += 1
         for pf in self.phantom_funding.all():
@@ -329,7 +329,7 @@ class Grant(SuperModel):
     @property
     def contributors(self):
         return_me = []
-        for sub in self.subscriptions.all():
+        for sub in self.subscriptions.filter(match_direction='+'):
             for contrib in sub.subscription_contribution.filter(success=True):
                 return_me.append(contrib.subscription.contributor_profile)
         for pf in self.phantom_funding.all():
@@ -339,7 +339,7 @@ class Grant(SuperModel):
     @property
     def get_contributor_count(self):
         contributors = []
-        for sub in self.subscriptions.all():
+        for sub in self.subscriptions.filter(match_direction='+'):
             for contrib in sub.subscription_contribution.filter(success=True):
                 contributors.append(contrib.subscription.contributor_profile.handle)
         for pf in self.phantom_funding.all():
@@ -635,6 +635,10 @@ class Subscription(SuperModel):
         max_digits=64,
         help_text=_('The amount per contribution period in USDT'),
     )
+
+    @property
+    def negative(self):
+        return self.match_direction == "-"
 
     @property
     def status(self):
@@ -936,7 +940,8 @@ next_valid_timestamp: {next_valid_timestamp}
         self.save()
         grant.updateActiveSubscriptions()
         grant.save()
-        successful_contribution(self.grant, self, contribution)
+        if not self.negative:
+            successful_contribution(self.grant, self, contribution)
         return contribution
 
 
@@ -1161,19 +1166,20 @@ def psave_contrib(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from dashboard.models import Earning
-    Earning.objects.update_or_create(
-        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
-        source_id=instance.pk,
-        defaults={
-            "created_on":instance.created_on,
-            "from_profile":instance.subscription.contributor_profile,
-            "org_profile":instance.subscription.grant.org_profile,
-            "to_profile":instance.subscription.grant.admin_profile,
-            "value_usd":instance.subscription.get_converted_amount(False),
-            "url":instance.subscription.grant.url,
-            "network":instance.subscription.grant.network,
-        }
-    )
+    if instance.subscription and not instance.subscription.negative:
+        Earning.objects.update_or_create(
+            source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+            source_id=instance.pk,
+            defaults={
+                "created_on":instance.created_on,
+                "from_profile":instance.subscription.contributor_profile,
+                "org_profile":instance.subscription.grant.org_profile,
+                "to_profile":instance.subscription.grant.admin_profile,
+                "value_usd":instance.subscription.get_converted_amount(False),
+                "url":instance.subscription.grant.url,
+                "network":instance.subscription.grant.network,
+            }
+        )
 
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):
