@@ -117,7 +117,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div id="original_fund" class="tab_target {% if active_tab == "phantom" %} hidden {% endif %}">
         <div class="col-12 offset-md-2 col-md-10 offset-xl-3 col-xl-6 mt-1 font-subheader mx-0 mx-md-auto row">
           <p class="col-12 font-weight-semibold mb-4 text-center">
-            *{{ grant.title }}* {% trans "is accepting contributions in "%}
+            <a href="{{ grant.url }}">{{ grant.title }}</a> {% trans "is accepting contributions in "%}
             {% if grant_has_no_token %}
               {% trans "any token." %}
             {% else %}
