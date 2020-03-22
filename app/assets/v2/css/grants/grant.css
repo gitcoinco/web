@@ -167,6 +167,7 @@
   cursor: pointer;
   font-size: 50px;
   color: #bbb;
+  z-index: 99999;
 }
 
 #skip:hover{
@@ -401,10 +402,10 @@
 .health_grants .grants-hero .font-header,
 .health_grants .grants-hero h1,
 .health_grants .explore_grants {
-  background-color: rgba(16,207,125, 0.8);
+  background-color: rgba(131, 189, 180, 0.8);
 }
 .health_grants .grants-hero.white a.btn {
-  background-color: #0caa63;
+  background-color: rgba(101, 153, 152, 1);
 }
 .health_grants .grants-hero.white a.btn:hover {
   background-color: #0c9a43;
@@ -549,7 +550,7 @@
 }
 
 .grant-partners {
-  background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764);
+background: linear-gradient(140deg, #659998 0%,#659998 0%,#659998 0%,#97dbca 37%,#97dbca 37%,#cbf3e0 98%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   animation: gradient 40s ease infinite;
   border-radius: 3px;
 }
