@@ -15,9 +15,9 @@
     <div class="col-5 col-sm-4 my-auto">
       <div class="font-weight-bold font-body">
         {% if not anonymous %}
-        <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
-          {{ transaction.subscription.contributor_profile }}
-        </a>
+          <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
+            {{ transaction.subscription.contributor_profile }}
+          </a>
         {% else %}
          Anonymous
         {% endif %}
