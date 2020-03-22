@@ -21,7 +21,7 @@
   </div>
   {% comment %}
   <div class="grant-item__logo ml-3">
-      <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
   </div>
   {% endcomment %}
 
@@ -37,45 +37,45 @@
             </div>
             <div class="grant-item__owner-handle font-body">
               <span class="ml-2">
-                  {{ grant.admin_profile.handle|default:'anonymous' }}
+                {{ grant.admin_profile.handle|default:'anonymous' }}
               </span>
             </div>
           </div>
         </a>
       </div>
     <div class="row progress-container mb-2">
-        <div class="col-12 text-center text-xl-left offset-xl-0 col-xl-12">
-          <p class="sub-title mb-1 g-bold font-caption mb-1 py-1">TOTAL FUNDED</p>
-          <p class="font-title font-weight-bold">
-            {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
-          </p>
-          <p class="font-caption pb-1 contribution-overview">
-           from <b>{{ grant.contributor_count}} contributor{% if grant.contributor_count > 1 %}s{% endif %}</b>, including {{ grant.clr_matching|floatformat:0 }} DAI CLR
-              <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top" html="true"
-                 title="The CLR mechanism is a concrete proposal for turning your small donations into something much larger.">
-              </i>
-          </p>
-        </div>
+      <div class="col-12 text-center text-xl-left offset-xl-0 col-xl-12">
+        <p class="sub-title mb-1 g-bold font-caption mb-1 py-1">TOTAL FUNDED</p>
+        <p class="font-title font-weight-bold">
+          {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
+        </p>
+        <p class="font-caption pb-1 contribution-overview">
+          from <b>{{ grant.contributor_count}} contributor{% if grant.contributor_count > 1 %}s{% endif %}</b>, including {{ grant.clr_matching|floatformat:0 }} DAI CLR
+            <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top" html="true"
+              title="The CLR mechanism is a concrete proposal for turning your small donations into something much larger.">
+            </i>
+        </p>
+      </div>
     </div>
   </div>
-  <div class="grant-item__footer ">
+  <div class="grant-item__footer">
       {% if clr_active %}
-          <div class="clr mb-3">
-            <div class="match__round pb-1 pt-2 mb-2">
-              <h2 class="title col-8 font-caption g-bold">
-                CLR MATCH ROUND 5
-              </h2>
-            </div>
-            <div class="col-12">
-              <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
-              </h2>
-              <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate <b>(32 contributors)</b></p>
-            </div>
+        <div class="clr mb-3">
+          <div class="match__round pb-1 pt-2 mb-2">
+            <h2 class="title col-8 font-caption g-bold">
+              CLR MATCH ROUND 5
+            </h2>
           </div>
-          <div class="col-12 pb-4">
-            {% include 'grants/card/clr_estimate.html' with short=True %}
+          <div class="col-12">
+            <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+              {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
+            </h2>
+            <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate <b>(32 contributors)</b></p>
           </div>
+        </div>
+        <div class="col-12 pb-4">
+          {% include 'grants/card/clr_estimate.html' with short=True %}
+        </div>
       {% endif %}
   </div>
 </a>

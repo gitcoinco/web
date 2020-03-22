@@ -47,12 +47,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
     <div class="row" id="grants_form">
       <div class="col-12 text-left mt-md-3">
-          <a href="{{ grant.url }}" class="float-left ml-2">< Back to {{ grant.title }}</a>
+        <a href="{{ grant.url }}" class="float-left ml-2">< Back to {{ grant.title }}</a>
       </div>
     </div> 
     <div class="row" id="grants_form">
       <div class="col-12 text-center mt-md-3">
-          <img src="/static/v2/images/grants/{{img}}" style="max-width: 200px; max-height: 200px; ">
+        <img src="/static/v2/images/grants/{{img}}" style="max-width: 200px; max-height: 200px; ">
         <h2 class="font-title-lg my-4">{% trans "Fund Grant" %}</h2>
         <hr>
       </div>
@@ -176,37 +176,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
 
                   {% if grant.negative_voting_enabled %}
-                  <div class="form__group-horizontal match_direction mt-0 pt-0">
-                    <div class="row">
-                      <div class="col-12 col-sm-12 font-body">
-                        <label class="form__label">{% trans "Match Pool Voting Direction" %}</label>
-                        <ul class="mb-0 pb-0">
-                          <li style="list-style-type: none;">
-                            <input type="radio" name="match_direction" id="positive" value="+" style="vertical-align:top" class="m-3" checked="checked">
-                            <label for="positive" class="form__label"><strong>Positive - I want to support this Grant.</strong>
-                            <BR>
-                            - Grant Contribution on Gitcoin's site will be <i>Public</i>.
-                            <BR>
-                            - Contribution will go to <i>Grantee</i>.
-                            <BR>
-                            - Matching Funds will go to <i>Grantee</i>.</label>
-                          </li>
-                          <li style="list-style-type: none;">
-                            <input type="radio" name="match_direction" id="negative" value="-" style="vertical-align:top" class="m-3">
-                            <label for="negative" class="form__label"><strong>Negative - I want to inhibit this Grant.</strong>
-                            <BR>
-                            - Grant Contribution on Gitcoin's site will be <i>Private</i>.
-                            <BR>
-                            - Contribution will go to <i>Matching Pool</i>.
-                            <BR>
-                            - Matching Funds will be <i>*deducted* from Grantee</i>.</label>
-                          </li>
-                        </ul>
+                    <div class="form__group-horizontal match_direction mt-0 pt-0">
+                      <div class="row">
+                        <div class="col-12 col-sm-12 font-body">
+                          <label class="form__label">{% trans "Match Pool Voting Direction" %}</label>
+                          <ul class="mb-0 pb-0">
+                            <li style="list-style-type: none;">
+                              <input type="radio" name="match_direction" id="positive" value="+" style="vertical-align:top" class="m-3" checked="checked">
+                              <label for="positive" class="form__label"><strong>Positive - I want to support this Grant.</strong>
+                              <BR>
+                              - Grant Contribution on Gitcoin's site will be <i>Public</i>.
+                              <BR>
+                              - Contribution will go to <i>Grantee</i>.
+                              <BR>
+                              - Matching Funds will go to <i>Grantee</i>.</label>
+                            </li>
+                            <li style="list-style-type: none;">
+                              <input type="radio" name="match_direction" id="negative" value="-" style="vertical-align:top" class="m-3">
+                              <label for="negative" class="form__label"><strong>Negative - I want to inhibit this Grant.</strong>
+                              <BR>
+                              - Grant Contribution on Gitcoin's site will be <i>Private</i>.
+                              <BR>
+                              - Contribution will go to <i>Matching Pool</i>.
+                              <BR>
+                              - Matching Funds will be <i>*deducted* from Grantee</i>.</label>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
-                  </div>
                   {% else %}
-                  <input type="hidden" name="match_direction" value="+">
+                    <input type="hidden" name="match_direction" value="+">
                   {% endif %}
 
                   <div class="form__group-horizontal contribution_type comment_container">
