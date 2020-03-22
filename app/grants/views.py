@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import datetime
+import random
 import json
 import logging
 from decimal import Decimal
@@ -826,7 +827,13 @@ def grant_fund(request, grant_id, grant_slug):
             msg
         )
         is_phantom_funding_this_grant = not is_phantom_funding_this_grant
-
+    images = [
+        'new.svg',
+        'torchbearer.svg',
+        'robots.png',
+        'profile/fund.svg',
+    ]
+    img = random.choice(images)
     params = {
         'profile': profile,
         'active': 'fund_grant',
@@ -836,6 +843,7 @@ def grant_fund(request, grant_id, grant_slug):
         'show_tweet_modal': show_tweet_modal,
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
+        'img': img,
         'clr_prediction_curve': [c[1] for c in grant.clr_prediction_curve] if grant.clr_prediction_curve and len(grant.clr_prediction_curve[0]) > 1 else [0, 0, 0, 0, 0, 0],
         'keywords': get_keywords(),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
