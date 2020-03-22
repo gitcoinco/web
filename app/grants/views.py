@@ -107,9 +107,19 @@ def grants(request):
     keyword = request.GET.get('keyword', '')
     grant_type = request.GET.get('type', 'activity')
     state = request.GET.get('state', 'active')
-    category = request.GET.get('category')
+    category = request.GET.get('category', '')
     _grants = None
     bg = int(request.GET.get('i', timezone.now().strftime("%j"))) % 5
+    bg = f"{bg}.jpg"
+    mid_back = 'bg14.png'
+    bottom_back = 'bg13.gif'
+    if grant_type == 'tech':
+        bottom_back = 'bg20-2.png'
+    if grant_type == 'media':
+        bottom_back = 'bg16.gif'
+    if grant_type == 'health':
+        bottom_back = 'health.jpg'
+        bg = 'health2.jpg'
     show_past_clr = False
 
     sort_by_index = None
@@ -137,7 +147,7 @@ def grants(request):
 
     if category:
         _grants = _grants.filter(Q(categories__category__icontains = category))
-
+    
     _grants = _grants.prefetch_related('categories')
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -169,17 +179,19 @@ def grants(request):
         network=network, hidden=False, grant_type='health'
     ).count()
 
-    categories = [category[0] for category in basic_grant_categories(grant_type)]
+    categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
         {'label': 'Public Health', 'keyword': 'health', 'count': health_grants_count}
     ]
-
+    title = matching_live + str(_('Grants'))
+    if grant_type:
+        title = f"{grant_type.title()} {category.title()} Grants"
     params = {
         'active': 'grants_landing',
-        'title': matching_live + str(_('Gitcoin Grants Explorer')),
+        'title': title,
         'sort': sort,
         'network': network,
         'keyword': keyword,
@@ -187,6 +199,8 @@ def grants(request):
         'round_end': round_end,
         'next_round_start': next_round_start,
         'now': timezone.now(),
+        'mid_back': mid_back,
+        'bottom_back': bottom_back,
         'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,
         'grant_types': grant_types,
@@ -250,15 +264,18 @@ def grant_details(request, grant_id, grant_slug):
         )
         milestones = grant.milestones.order_by('due_date')
         updates = grant.updates.order_by('-created_on')
-        subscriptions = grant.subscriptions.filter(active=True, error=False).order_by('-created_on')
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False).order_by('-created_on')
+        subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
+        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
 
         activity_count = grant.contribution_count
         contributors = []
         contributions = []
+        negative_contributions = []
         voucher_fundings = []
         if tab in ['transactions', 'contributors']:
             _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all().cache(timeout=60)).cache(timeout=60)
+            negative_contributions = _contributions.filter(subscription__is_postive_vote=False)
+            _contributions = _contributions.filter(subscription__is_postive_vote=True)
             phantom_funds = grant.phantom_funding.all().cache(timeout=60)
             contributions = list(_contributions.order_by('-created_on'))
             voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
@@ -346,6 +363,7 @@ def grant_details(request, grant_id, grant_slug):
         'subscriptions': subscriptions,
         'cancelled_subscriptions': cancelled_subscriptions,
         'contributions': contributions,
+        'negative_contributions': negative_contributions,
         'user_subscription': user_subscription,
         'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
@@ -670,7 +688,7 @@ def grant_fund(request, grant_id, grant_slug):
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
     active_subscription = Subscription.objects.select_related('grant').filter(
-        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile
+        grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, is_postive_vote=True
     )
 
     if active_subscription:
@@ -694,8 +712,12 @@ def grant_fund(request, grant_id, grant_slug):
         if 'contributor_address' in request.POST:
             subscription = Subscription()
 
-            is_postive_vote = True if request.GET.get('is_postive_vote', 1) else False
+            if grant.negative_voting_enabled:
+                is_postive_vote = True if request.GET.get('is_postive_vote', 1) else False
+            else:
+                is_postive_vote = True
             subscription.is_postive_vote = is_postive_vote
+
             subscription.active = False
             subscription.contributor_address = request.POST.get('contributor_address', '')
             subscription.amount_per_period = request.POST.get('amount_per_period', 0)
@@ -727,8 +749,12 @@ def grant_fund(request, grant_id, grant_slug):
             if 'comment' in request.POST:
                 comment = request.POST.get('comment')
                 if comment and activity:
+                    profile = request.user.profile
+                    if subscription.negative:
+                        profile = Profile.objects.filter(handle='gitcoinbot').first()
+                        comment = f"Comment from contributor: {comment}"
                     comment = Comment.objects.create(
-                        profile=request.user.profile,
+                        profile=profile,
                         activity=activity,
                         comment=comment)
 
@@ -750,6 +776,7 @@ def grant_fund(request, grant_id, grant_slug):
             sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
             subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
             subscription.active = True
+
             subscription.subscription_hash = request.POST.get('subscription_hash', '')
             subscription.contributor_signature = request.POST.get('signature', '')
             if 'split_tx_id' in request.POST:
@@ -765,8 +792,9 @@ def grant_fund(request, grant_id, grant_slug):
                 grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
 
             grant.save()
-            new_supporter(grant, subscription)
-            thank_you_for_supporting(grant, subscription)
+            if not subscription.negative:
+                new_supporter(grant, subscription)
+                thank_you_for_supporting(grant, subscription)
             return JsonResponse({
                 'success': True,
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))
@@ -924,6 +952,9 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
+    if subscription.negative:
+        profile = Profile.objects.filter(handle='gitcoinbot').first()
+        activity_type = 'negative_contribution'
     try:
         grant_logo = subscription.grant.logo.url
     except:

@@ -24,12 +24,13 @@ import math
 import time
 from itertools import combinations
 
+from django.conf import settings
 from django.utils import timezone
 
 from grants.models import Contribution, Grant, PhantomFunding
 from perftools.models import JSONStore
 
-CLR_START_DATE = dt.datetime(2020, 1, 6, 0, 0)
+CLR_START_DATE = dt.datetime(2020, 3, 21, 0, 0) if not settings.DEBUG else dt.datetime(2020, 1, 6, 0, 0)
 
 # TODO: MOVE TO DB
 THRESHOLD_TECH = 20.0

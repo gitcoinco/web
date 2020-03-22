@@ -2077,6 +2077,7 @@ class Activity(SuperModel):
         ('new_grant', 'New Grant'),
         ('update_grant', 'Updated Grant'),
         ('killed_grant', 'Cancelled Grant'),
+        ('negative_contribution', 'Negative Grant Contribution'),
         ('new_grant_contribution', 'Contributed to Grant'),
         ('new_grant_subscription', 'Subscribed to Grant'),
         ('killed_grant_contribution', 'Cancelled Grant Contribution'),
