@@ -253,7 +253,7 @@ def calculate_clr_for_donation(grant, amount, positive_grant_contributions, nega
         if grant_clr['id'] == grant.id:
             return (grant_clr['clr_amount'], grants_clr)
 
-    print(f'info: no contributions found for grant {grant}')
+    # print(f'info: no contributions found for grant {grant}')
     return (None, None)
 
 
@@ -278,15 +278,15 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
     contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=CLR_START_DATE, created_on__lte=from_date, success=True)
 
     if clr_type == 'tech':
-        grants = Grant.objects.filter(network=network, hidden=False, grant_type='tech', link_to_new_grant=None)
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', link_to_new_grant=None)
         threshold = THRESHOLD_TECH
         total_pot = TOTAL_POT_TECH
     elif clr_type == 'media':
-        grants = Grant.objects.filter(network=network, hidden=False, grant_type='media', link_to_new_grant=None)
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='media', link_to_new_grant=None)
         threshold = THRESHOLD_MEDIA
         total_pot = TOTAL_POT_MEDIA
     elif clr_type == 'health':
-        grants = Grant.objects.filter(network=network, hidden=False, grant_type='health', link_to_new_grant=None)
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='health', link_to_new_grant=None)
         threshold = THRESHOLD_HEALTH
         total_pot = TOTAL_POT_HEALTH
     else:
@@ -358,6 +358,9 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
     clr_calc_start_time = timezone.now()
     debug_output = []
     grants, positive_contrib_data, negative_contrib_data, total_pot, threshold = populate_data_for_clr(clr_type, network)
+
+    # print(f'GRANT {len(grants)}')
+    # print(f'CONTRIB {len(positive_contrib_data)}')
 
     # calculate clr given additional donations
     for grant in grants:
