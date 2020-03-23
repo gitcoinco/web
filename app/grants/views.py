@@ -18,9 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import datetime
-import random
 import json
 import logging
+import random
 from decimal import Decimal
 
 from django.conf import settings
@@ -111,6 +111,7 @@ def grants(request):
     category = request.GET.get('category', '')
     _grants = None
     bg = int(request.GET.get('i', timezone.now().strftime("%j"))) % 5
+    bg = 4
     bg = f"{bg}.jpg"
     mid_back = 'bg14.png'
     bottom_back = 'bg13.gif'

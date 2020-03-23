@@ -2175,6 +2175,10 @@ class Activity(SuperModel):
         return self.url
 
     @property
+    def show_token_info(self):
+        return self.activity_type in 'new_bounty,increased_bounty,killed_bounty,negative_contribution,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund'.split(',')
+
+    @property
     def video_participants_count(self):
         if not self.metadata.get('video'):
             return 0
