@@ -851,8 +851,8 @@ def grant_fund(request, grant_id, grant_slug):
             msg = "You are now signaling for this grant."
             show_tweet_modal = True
             name_search = 'grants_round_4_contributor' if not settings.DEBUG else 'pogs_eth'
-            PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
-            record_grant_activity_helper('new_grant_contribution', grant, request.user.profile)
+            pt = PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
+            record_grant_activity_helper('new_grant_contribution', grant, request.user.profile, amount=pt.value, token='DAI')
 
         messages.info(
             request,
@@ -1019,7 +1019,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
     }
     return Activity.objects.create(**kwargs)
 
-def record_grant_activity_helper(activity_type, grant, profile):
+def record_grant_activity_helper(activity_type, grant, profile, amount=None, token=None):
     """Registers a new activity concerning a grant
 
     Args:
@@ -1034,9 +1034,9 @@ def record_grant_activity_helper(activity_type, grant, profile):
         grant_logo = None
     metadata = {
         'id': grant.id,
-        'value_in_token': '{0:.2f}'.format(grant.amount_received),
-        'amount_goal': '{0:.2f}'.format(grant.amount_goal),
-        'token_name': grant.token_symbol,
+        'value_in_token': '{0:.2f}'.format(grant.amount_received) if not amount else amount,
+        'amount_goal': '{0:.2f}'.format(grant.amount_goal) if not amount else amount,
+        'token_name': grant.token_symbol if not token else token,
         'title': grant.title,
         'grant_logo': grant_logo,
         'grant_url': grant.url,
