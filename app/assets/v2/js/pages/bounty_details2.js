@@ -187,7 +187,7 @@ Vue.mixin({
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
           vm.fetchBounty();
-          this.$refs["payout-modal"][0].closeModal();
+          this.$refs['payout-modal'][0].closeModal();
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);

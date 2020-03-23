@@ -5,9 +5,8 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
 from dashboard.models import Activity, Bounty, Profile
-from marketing.mails import func_name, send_mail
+from marketing.mails import func_name, grant_update_email, send_mail
 from retail.emails import render_share_bounty
-from marketing.mails import grant_update_email
 
 logger = get_task_logger(__name__)
 
@@ -135,5 +134,3 @@ def grant_update_email_task(self, pk, retry: bool = True) -> None:
     """
     activity = Activity.objects.get(pk=pk)
     grant_update_email(activity)
-
-

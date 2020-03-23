@@ -390,6 +390,7 @@ $(document).ready(function() {
               if (data.num_periods == 1) {
                 // call splitter after approval
                 var to_address = data.match_direction == '+' ? data.admin_address : gitcoinDonationAddress;
+
                 splitPayment(accounts[0], to_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
               } else {
                 if (data.contract_version == 0 && gitcoin_grant_amount > 0) {

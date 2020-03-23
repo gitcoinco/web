@@ -45,9 +45,7 @@ from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_e
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
-from marketing.mails import (
-    mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email,
-)
+from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
