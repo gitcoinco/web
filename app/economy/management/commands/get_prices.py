@@ -263,12 +263,6 @@ class Command(BaseCommand):
         except Exception as e:
             print(e)
 
-        try:
-            print('cryptocompare')
-            cryptocompare()
-        except Exception as e:
-            print(e)
-
 
         try:
             print('uniswap')
@@ -278,6 +272,12 @@ class Command(BaseCommand):
 
         if not options['perform_obj_updates']:
             return
+
+        try:
+            print('cryptocompare')
+            cryptocompare()
+        except Exception as e:
+            print(e)
 
         try:
             print('refresh')
