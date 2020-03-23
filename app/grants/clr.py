@@ -388,7 +388,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
             _grant.last_clr_calc_date = timezone.now()
             _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=10)
 
-            can_estimate = True if base or _grant.clr_prediction_curve[1][1] or _grant.clr_prediction_curve[1][2] or _grant.clr_prediction_curve[1][3] else False
+            can_estimate = True if base or _grant.clr_prediction_curve[1][1] or _grant.clr_prediction_curve[2][1] or _grant.clr_prediction_curve[3][1] else False
 
             if can_estimate :
                 _grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in _grant.clr_prediction_curve ]
