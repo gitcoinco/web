@@ -851,7 +851,7 @@ def grant_fund(request, grant_id, grant_slug):
     params = {
         'profile': profile,
         'active': 'fund_grant',
-        'title': matching_live + grant.title + "| Fund Now",
+        'title': matching_live + grant.title + " | Fund Now",
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscription': {},
