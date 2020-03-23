@@ -972,6 +972,7 @@ def psave_grant(sender, instance, **kwargs):
                 instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
         #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
+    instance.amount_received = 0
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
     if instance.pk:
