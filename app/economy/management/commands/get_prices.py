@@ -257,9 +257,6 @@ class Command(BaseCommand):
         except Exception as e:
             print(e)
 
-        if not options['perform_obj_updates']:
-            return
-
         try:
             print('polo')
             polo()
@@ -278,6 +275,9 @@ class Command(BaseCommand):
             uniswap()
         except Exception as e:
             print(e)
+
+        if not options['perform_obj_updates']:
+            return
 
         try:
             print('refresh')
