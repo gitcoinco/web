@@ -764,7 +764,7 @@ def grant_fund(request, grant_id, grant_slug):
 
             # TODO - how do we attach the tweet modal WITH BULK TRANSFER COUPON next pageload??
             message = 'Your contribution has succeeded. Thank you for supporting Public Goods on Gitcoin !'
-            if subscription.num_tx_approved > 1:
+            if int(subscription.num_tx_approved) > 1:
                 message = 'Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Public Goods on Gitcoin !'
 
             messages.info(
