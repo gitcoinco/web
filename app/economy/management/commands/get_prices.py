@@ -268,7 +268,7 @@ class Command(BaseCommand):
 
         try:
             print('uniswap')
-            uniswap()
+            #uniswap()
         except Exception as e:
             print(e)
 
