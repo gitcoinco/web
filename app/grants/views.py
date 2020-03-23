@@ -50,7 +50,7 @@ from grants.models import (
     Contribution, Flag, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
 )
 from grants.utils import get_leaderboard, is_grant_team_member
-from kudos.models import BulkTransferCoupon
+from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_supporter, subscription_terminated,
     support_cancellation, thank_you_for_supporting,
@@ -60,6 +60,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
+from django.utils.crypto import get_random_string
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -78,6 +79,26 @@ kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12
 if not clr_active:
     clr_matching_banners_style = 'results'
     matching_live = ''
+
+def get_fund_reward(request):
+    token = Token.objects.filter(
+        id__in=kudos_reward_pks,
+        num_clones_available_counting_indirect_send__gt=0,
+        owner_address__iexact='0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F').order_by('?').first()
+    if not token:
+        return None
+    key_len = 25
+    _key = get_random_string(key_len)
+    btc = BulkTransferCoupon.objects.create(
+        token=token,
+        num_uses_total=1,
+        num_uses_remaining=1,
+        current_uses=0,
+        secret=_key,
+        comments_to_put_in_kudos_transfer="Congrats on winning #ETHDenver2019!",
+        sender_profile=Profile.objects.get(handle='gitcoinbot')
+        )
+    return btc
 
 def get_keywords():
     """Get all Keywords."""
@@ -819,10 +840,7 @@ def grant_fund(request, grant_id, grant_slug):
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
-    fund_reward = BulkTransferCoupon.objects.filter(
-        token__id__in=kudos_reward_pks,
-        token__num_clones_available_counting_indirect_send__gt=0,
-        token__owner_address__iexact='0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F').order_by('?').first()
+    fund_reward = get_fund_reward(request)
     if can_phantom_fund:
         active_tab = 'phantom'
     if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
