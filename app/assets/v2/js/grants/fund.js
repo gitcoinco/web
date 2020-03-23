@@ -36,7 +36,7 @@ $(document).ready(function() {
 
         if (ls) {
           $(selector).val(ls);
-          $(selector + ' option:eq(' + ls + ')').prop('selected', true);
+          $(selector + ' option:eq("' + ls + '")').prop('selected', true);
         }
       }
     }
