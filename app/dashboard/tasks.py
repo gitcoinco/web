@@ -7,6 +7,7 @@ from chat.tasks import create_channel
 from dashboard.models import Activity, Bounty, Profile
 from marketing.mails import func_name, send_mail
 from retail.emails import render_share_bounty
+from marketing.mails import grant_update_email
 
 logger = get_task_logger(__name__)
 
@@ -124,3 +125,15 @@ def maybe_market_to_user_discord(self, bounty_pk, event_name, retry: bool = True
         bounty = Bounty.objects.get(pk=bounty_pk)
         from dashboard.notifications import maybe_market_to_user_discord_helper
         maybe_market_to_user_discord_helper(bounty, event_name)
+
+@app.shared_task(bind=True, max_retries=3)
+def grant_update_email_task(self, pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    activity = Activity.objects.get(pk=pk)
+    grant_update_email(activity)
+
+
