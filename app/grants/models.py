@@ -264,6 +264,9 @@ class Grant(SuperModel):
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
     contribution_count = models.PositiveIntegerField(blank=True, default=0)
     contributor_count = models.PositiveIntegerField(blank=True, default=0)
+    positive_round_contributor_count = models.PositiveIntegerField(blank=True, default=0)
+    negative_round_contributor_count = models.PositiveIntegerField(blank=True, default=0)
+
     defer_clr_to = models.ForeignKey(
         'grants.Grant',
         related_name='defered_clr_from',
@@ -336,11 +339,12 @@ class Grant(SuperModel):
             return_me.append(pf.profile)
         return return_me
 
-    @property
-    def get_contributor_count(self):
+    def get_contributor_count(self, since=None, is_postive_vote=True):
+        if not since:
+            since = timezone.datetime(1990, 1, 1)
         contributors = []
-        for sub in self.subscriptions.filter(is_postive_vote=True):
-            for contrib in sub.subscription_contribution.filter(success=True):
+        for sub in self.subscriptions.filter(is_postive_vote=is_postive_vote):
+            for contrib in sub.subscription_contribution.filter(success=True, created_on__gt=since):
                 contributors.append(contrib.subscription.contributor_profile.handle)
         for pf in self.phantom_funding.all():
             contributors.append(pf.profile.handle)
@@ -943,7 +947,10 @@ next_valid_timestamp: {next_valid_timestamp}
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
     instance.contribution_count = instance.get_contribution_count
-    instance.contributor_count = instance.get_contributor_count
+    instance.contributor_count = instance.get_contributor_count()
+    from grants.clr import CLR_START_DATE
+    instance.positive_round_contributor_count = instance.get_contributor_count(CLR_START_DATE, True)
+    instance.negative_round_contributor_count = instance.get_contributor_count(CLR_START_DATE, False)
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
     #print(instance.id)

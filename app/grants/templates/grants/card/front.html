@@ -70,7 +70,7 @@
             <h2 class="font-title font-weight-bold amount pt-1 mb-2">
               {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
             </h2>
-            <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate <b>(32 contributors)</b></p>
+            <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate <b>( {{grant.positive_round_contributor_count}} contributors {% if grant.negative_round_contributor_count %} | {{grant.negative_round_contributor_count}} negative contributors {% endif %})</b></p>
           </div>
         </div>
         <div class="col-12 pb-4">
