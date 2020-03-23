@@ -114,6 +114,11 @@ class GrantCategory(SuperModel):
         help_text=_('Grant Category'),
     )
 
+    def __str__(self):
+        """Return the string representation of a Grant."""
+        return f"{self.category}"
+
+
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
