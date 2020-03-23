@@ -46,10 +46,10 @@ class FlagAdmin(admin.ModelAdmin):
             from django.conf import settings
             # TODO : get @gicoindisputes out of twitter jail
             api = twitter.Api(
-                consumer_key=settings.TWITTER_CONSUMER_KEY,
-                consumer_secret=settings.TWITTER_CONSUMER_SECRET,
-                access_token_key=settings.TWITTER_ACCESS_TOKEN,
-                access_token_secret=settings.TWITTER_ACCESS_SECRET,
+                consumer_key=settings.DISPUTES_TWITTER_CONSUMER_KEY,
+                consumer_secret=settings.DISPUTES_TWITTER_CONSUMER_SECRET,
+                access_token_key=settings.DISPUTES_TWITTER_ACCESS_TOKEN,
+                access_token_secret=settings.DISPUTES_TWITTER_ACCESS_SECRET,
             )
             new_tweet = f"{settings.BASE_URL}{obj.grant.url} : {obj.comments}"[0:280]
             result = api.PostUpdate(new_tweet).AsDict()
