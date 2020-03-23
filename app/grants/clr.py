@@ -132,7 +132,7 @@ def calculate_new_clr(aggregated_contributions, pair_totals, threshold=0.0, tota
                     if k2 > k1:  # removes single donations but adds it in below, vitalik's formula
                         tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / threshold + 1)
                     if k2 == k1:  # negative vote will count less if single, but will count
-                        tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / 1 + 1)
+                        tot += ((v1 * v2) ** 0.5)
             totals.append({'id': proj, 'clr_amount': tot})
 
     return totals
