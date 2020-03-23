@@ -21,14 +21,20 @@
       <div class="row justify-content-center">
         <div class="col-12 col-lg-{% if type != 'activity' %}9{%else%}12{%endif%}">
           <ul class="grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
-            <a data-type="type" data-value="activity" class="mr-3 px-2 {% if type == 'activity' %}selected{% endif %}">
-              Home
+            <a data-type="type" data-value="all" class="mr-3 px-2 {% if type == 'all' %}selected{% endif %}">
+              All Grants ({{all_grants_count}})
             </a>
             {% for grant_type in grant_types %}
               <a data-type="type" data-value="{{grant_type.keyword}}" class="mr-3 px-2 {% if type == grant_type.keyword %}selected{% endif %}">
                 {{grant_type.label}} Grants ({{grant_type.count}})
               </a>
             {% endfor %}
+            <a data-type="type" data-value="about" class="mr-3 px-2 {% if type == 'about' %}selected{% endif %}">
+              About
+            </a>
+            <a data-type="type" data-value="activity" class="mr-3 px-2 {% if type == 'activity' %}selected{% endif %}">
+              Activity
+            </a>
             {% if github_handle %}
               <a data-type="type" href='/{{github_handle}}/grants' class="mr-3 px-2 ">
                 My Grants <i class="fas fa-external-link-alt"></i>

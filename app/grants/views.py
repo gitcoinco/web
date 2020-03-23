@@ -127,7 +127,7 @@ def grants(request):
     sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
-    grant_type = request.GET.get('type', 'activity')
+    grant_type = request.GET.get('type', 'all')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
     _grants = None
@@ -159,7 +159,8 @@ def grants(request):
         grant_type = ''
     else:
         # dotn do search by cateogry
-        _grants = _grants.filter(grant_type=grant_type)
+        if grant_type != 'all':
+            _grants = _grants.filter(grant_type=grant_type)
 
 
     clr_prediction_curve_schema_map = {10**x:x+1 for x in range(0, 5)}
@@ -201,6 +202,10 @@ def grants(request):
     health_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='health'
     ).count()
+    all_grants_count = Grant.objects.filter(
+        network=network, hidden=False
+    ).count()
+    
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
@@ -224,6 +229,7 @@ def grants(request):
         'type': grant_type,
         'round_end': round_end,
         'next_round_start': next_round_start,
+        'all_grants_count': all_grants_count,
         'now': timezone.now(),
         'mid_back': mid_back,
         'bottom_back': bottom_back,

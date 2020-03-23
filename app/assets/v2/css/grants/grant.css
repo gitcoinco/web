@@ -483,6 +483,7 @@
 
 .grants_type_nav {
   border-bottom: 1px solid #979797;
+  line-height: 37px;
 }
 
 .grants_type_nav a.selected {
