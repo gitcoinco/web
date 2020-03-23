@@ -80,7 +80,7 @@ if not clr_active:
     clr_matching_banners_style = 'results'
     matching_live = ''
 
-def get_fund_reward(request):
+def get_fund_reward(request, grant):
     token = Token.objects.filter(
         id__in=kudos_reward_pks,
         num_clones_available_counting_indirect_send__gt=0,
@@ -95,7 +95,7 @@ def get_fund_reward(request):
         num_uses_remaining=1,
         current_uses=0,
         secret=_key,
-        comments_to_put_in_kudos_transfer="Congrats on winning #ETHDenver2019!",
+        comments_to_put_in_kudos_transfer=f"Thank you for funding '{grant.title}' on Gitcoin Grants!",
         sender_profile=Profile.objects.get(handle='gitcoinbot')
         )
     return btc
@@ -840,7 +840,7 @@ def grant_fund(request, grant_id, grant_slug):
     phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
-    fund_reward = get_fund_reward(request)
+    fund_reward = get_fund_reward(request, grant)
     if can_phantom_fund:
         active_tab = 'phantom'
     if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
@@ -850,7 +850,6 @@ def grant_fund(request, grant_id, grant_slug):
         else:
             msg = "You are now signaling for this grant."
             show_tweet_modal = True
-            name_search = 'grants_round_4_contributor' if not settings.DEBUG else 'pogs_eth'
             pt = PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
             record_grant_activity_helper('new_grant_contribution', grant, request.user.profile, amount=pt.value, token='DAI')
 
