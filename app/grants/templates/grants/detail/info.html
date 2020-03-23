@@ -15,9 +15,13 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
-<div class="summary p-5 px-md-3">
+<div class="summary p-5 px-md-3 pt-1" style="padding-top: 0px !important;">
+  <a id="backgrants" class="font-caption" href="/grants">
+    <i class="fas fa-chevron-left mr-1"></i>
+    Back to Grants
+  </a>
   <!-- GRANT LOGO -->
-  <div class="grant-logo pb-2">
+  <div class="grant-logo pb-2" style="padding-top: 20px !important;">
     {% if is_team_member %}
       <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
         <i class="far fa-image" data-toggle="tooltip" data-placement="right" title="Change Grant Profile Photo"></i>
@@ -160,6 +164,11 @@
       {% endif %}
 
     {% endif %}
+
+    <div class="mt-2 pt-2" id="flag">
+      <a class="float-right" href="#" data-href="/grants/flag/{{grant.id}}">Flag <i class="far fa-flag"></i></a>
+    </div>
+
 
     <div class="mt-2 pt-2">
       <!-- FUNDING AMOUNT-->

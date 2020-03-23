@@ -37,8 +37,8 @@ $(document).ready(function() {
   $('#btn_gif').on('click', function(e) {
     window.setTimeout(function() {
       $('#search-gif').focus();
-      console.log($('#search-gif'))
-    }, 100)
+      console.log($('#search-gif'));
+    }, 100);
 
     if (!$('.pick-gif').length) {
       injectGiphy('latest');

@@ -305,6 +305,10 @@ class Grant(SuperModel):
         self.activeSubscriptions = handles
 
     @property
+    def negative_voting_enabled(self):
+        return self.grant_type == 'media'
+
+    @property
     def org_name(self):
         from git.utils import org_name
         try:
@@ -315,7 +319,7 @@ class Grant(SuperModel):
     @property
     def get_contribution_count(self):
         num = 0
-        for sub in self.subscriptions.all():
+        for sub in self.subscriptions.filter(is_postive_vote=True):
             for contrib in sub.subscription_contribution.filter(success=True):
                 num += 1
         for pf in self.phantom_funding.all():
@@ -325,7 +329,7 @@ class Grant(SuperModel):
     @property
     def contributors(self):
         return_me = []
-        for sub in self.subscriptions.all():
+        for sub in self.subscriptions.filter(is_postive_vote=True):
             for contrib in sub.subscription_contribution.filter(success=True):
                 return_me.append(contrib.subscription.contributor_profile)
         for pf in self.phantom_funding.all():
@@ -335,7 +339,7 @@ class Grant(SuperModel):
     @property
     def get_contributor_count(self):
         contributors = []
-        for sub in self.subscriptions.all():
+        for sub in self.subscriptions.filter(is_postive_vote=True):
             for contrib in sub.subscription_contribution.filter(success=True):
                 contributors.append(contrib.subscription.contributor_profile.handle)
         for pf in self.phantom_funding.all():
@@ -507,6 +511,7 @@ class Subscription(SuperModel):
         help_text=_('The tx id of the split transfer'),
         blank=True,
     )
+    is_postive_vote = models.BooleanField(default=True, help_text=_('Whether this is positive or negative vote'))
     split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
 
     subscription_hash = models.CharField(
@@ -625,6 +630,10 @@ class Subscription(SuperModel):
         max_digits=64,
         help_text=_('The amount per contribution period in USDT'),
     )
+
+    @property
+    def negative(self):
+        return self.is_postive_vote == False
 
     @property
     def status(self):
@@ -926,7 +935,8 @@ next_valid_timestamp: {next_valid_timestamp}
         self.save()
         grant.updateActiveSubscriptions()
         grant.save()
-        successful_contribution(self.grant, self, contribution)
+        if not self.negative:
+            successful_contribution(self.grant, self, contribution)
         return contribution
 
 
@@ -970,6 +980,33 @@ class DonationQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
 
     pass
+
+
+
+class Flag(SuperModel):
+
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='flags',
+        on_delete=models.CASCADE,
+        null=False,
+        help_text=_('The associated Grant.'),
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='grantflags',
+        on_delete=models.SET_NULL,
+        help_text=_("The flagger's profile."),
+        null=True,
+    )
+    comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
+    processed = models.BooleanField(default=False, help_text=_('Was it processed?'))
+    comments_admin = models.TextField(default='', blank=True, help_text=_('The comments of an admin.'))
+    tweet = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+
+    def __str__(self):
+        """Return the string representation of a Grant."""
+        return f"id: {self.pk}, processed: {self.processed}, comments: {self.comments} "
 
 
 class Donation(SuperModel):
@@ -1124,19 +1161,23 @@ def psave_contrib(sender, instance, **kwargs):
 
     from django.contrib.contenttypes.models import ContentType
     from dashboard.models import Earning
-    Earning.objects.update_or_create(
-        source_type=ContentType.objects.get(app_label='grants', model='contribution'),
-        source_id=instance.pk,
-        defaults={
-            "created_on":instance.created_on,
-            "from_profile":instance.subscription.contributor_profile,
-            "org_profile":instance.subscription.grant.org_profile,
-            "to_profile":instance.subscription.grant.admin_profile,
-            "value_usd":instance.subscription.get_converted_amount(False),
-            "url":instance.subscription.grant.url,
-            "network":instance.subscription.grant.network,
-        }
-    )
+    if instance.subscription and not instance.subscription.negative:
+        try:
+            Earning.objects.update_or_create(
+                source_type=ContentType.objects.get(app_label='grants', model='contribution'),
+                source_id=instance.pk,
+                defaults={
+                    "created_on":instance.created_on,
+                    "from_profile":instance.subscription.contributor_profile,
+                    "org_profile":instance.subscription.grant.org_profile,
+                    "to_profile":instance.subscription.grant.admin_profile,
+                    "value_usd":instance.subscription.get_converted_amount(False),
+                    "url":instance.subscription.grant.url,
+                    "network":instance.subscription.grant.network,
+                }
+            )
+        except:
+            pass
 
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):
@@ -1189,7 +1230,8 @@ class MatchPledge(SuperModel):
 
     PLEDGE_TYPES = [
         ('tech', 'tech'),
-        ('media', 'media')
+        ('media', 'media'),
+        ('health', 'health')
     ]
 
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))

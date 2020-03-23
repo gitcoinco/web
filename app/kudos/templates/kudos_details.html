@@ -12,7 +12,6 @@
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <header class="header">
       {% include 'shared/kudos_nav.html' %}
-      <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container pb-5">
         {% include 'shared/kudos_searchbar.html' %}
       </div>
@@ -117,7 +116,9 @@
               {% if kudos.quests_reward %}
                 <BR>
                 <BR>
+                {% if reward_for|length %}
                 or: 
+                {% endif %}
                 {% for quest in reward_for %}
                   <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
                   <BR>

@@ -22,7 +22,7 @@ def mint_token_request(self, token_req_id, retry=False):
     :param token_req_id:
     :return:
     """
-    with redis.lock("tasks:all_token_mint_requests", timeout=LOCK_TIMEOUT):
+    with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
         with redis.lock("tasks:token_req_id:%s" % token_req_id, timeout=LOCK_TIMEOUT):
             from kudos.management.commands.mint_all_kudos import sync_latest
             from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -53,7 +53,7 @@ def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
     :param signed_rawTransaction:
     :return:
     """
-    with redis.lock("tasks:all_redeem_bulk_kudos", timeout=LOCK_TIMEOUT):
+    with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
         with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
             from dashboard.utils import has_tx_mined
             from gas.utils import recommend_min_gas_price_to_confirm_in_time
