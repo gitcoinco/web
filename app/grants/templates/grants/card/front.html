@@ -50,7 +50,7 @@
           {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
         </p>
         <p class="font-caption pb-1 contribution-overview">
-          from <b>{{ grant.contributor_count}} contributor{% if grant.contributor_count > 1 %}s{% endif %}</b>, including {{ grant.clr_matching|floatformat:0 }} DAI CLR
+          from <b>{{ grant.contributor_count}} contributor{% if grant.contributor_count > 1 %}s{% endif %}</b>
             <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top" html="true"
               title="The CLR mechanism is a concrete proposal for turning your small donations into something much larger.">
             </i>
