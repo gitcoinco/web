@@ -252,8 +252,8 @@ $(document).ready(function() {
 
     if (is_eth) {
       const percent = $('#gitcoin-grant-input-amount').val();
-      const to_addr_amount = (100 - percent) * 0.01 * data.amount_per_period * 10 ** 18;
-      const gitcoin_amount = (percent) * 0.01 * data.amount_per_period * 10 ** 18;
+      const to_addr_amount = parseInt((100 - percent) * 0.01 * data.amount_per_period * 10 ** 18);
+      const gitcoin_amount = parseInt((percent) * 0.01 * data.amount_per_period * 10 ** 18);
 
       web3.eth.getAccounts(function(err, accounts) {
         indicateMetamaskPopup();
