@@ -34,6 +34,7 @@ from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
@@ -60,7 +61,6 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
-from django.utils.crypto import get_random_string
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))

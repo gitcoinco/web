@@ -58,8 +58,10 @@ class Command(BaseCommand):
         clr_data = [g['grants_clr'] for g in clr_prediction_curves]
 
         # print(clr_data)
-
-        total_clr_funds = sum([each_grant['clr_amount'] for each_grant in clr_data[0]])
-        print("allocated CLR funds:{}".format(total_clr_funds))
+        if clr_data[0]:
+            total_clr_funds = sum([each_grant['clr_amount'] for each_grant in clr_data[0]])
+            print("allocated CLR funds:{}".format(total_clr_funds))
+        else:
+            print(f'could not find any grant contributions for {clr_type}')
 
         print("finished CLR estimates")
