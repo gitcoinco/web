@@ -71,7 +71,7 @@ $(document).ready(function() {
     }
   }, 1000);
 
-  $('#flag a').click(function(e) {
+  $('#flag').click(function(e) {
     e.preventDefault();
     const comment = prompt('What is your reason for flagging this Grant?');
 
