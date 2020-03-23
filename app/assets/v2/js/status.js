@@ -314,7 +314,7 @@ $(document).ready(function() {
     const data = new FormData();
     const message = $('#textarea');
     const the_message = message.val().trim();
-    const ask = $('.activity_type_selector .active input').val();
+    const ask = $('.activity_type_selector input:checked').val();
 
     data.append('ask', ask);
     data.append('data', the_message);

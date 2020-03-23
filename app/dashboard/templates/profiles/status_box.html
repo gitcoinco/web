@@ -38,9 +38,18 @@
     {% if tags %}
       {% for tag in tags %}
         <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip"  title="{{tag.2}}" >
-          <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
+          <input type="checkbox" name="" value="{{tag.0}}" autocomplete="off">
           <i class="fas fa-{{tag.1}} mr-2"></i>
         {{tag.0}}
+        </label>
+      {% endfor %}
+    {% endif %}
+    {% if options %}
+      {% for option in options %}
+        <input id={{option.1}} type="checkbox" name="activity_type" value="{{option.0}}" autocomplete="off">
+        <label class="mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip" title="{{option.2}}" for='{{option.1}}' >
+          <i class="fas fa-{{option.1}} mr-2"></i>
+        {{option.0}}
         </label>
       {% endfor %}
     {% endif %}
