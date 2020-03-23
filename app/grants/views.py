@@ -65,7 +65,7 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '(💰$250K Match Round LIVE NOW!)'
+matching_live = '(💰$250K Match Round LIVE NOW!) '
 total_clr_pot = 250000
 clr_round = 5
 clr_active = True
