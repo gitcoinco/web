@@ -306,6 +306,7 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
 
         # Generate list of profiles who've made +ve and -ve contributions to the grant
         phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
+
         positive_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in positive_contributions] + [p.profile_id for p in phantom_funding_profiles]))
         negative_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in negative_contributions]))
 
@@ -386,7 +387,10 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
             base = _grant.clr_prediction_curve[0][1]
             _grant.last_clr_calc_date = timezone.now()
             _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=10)
-            if base:
+
+            can_estimate = True if base or _grant.clr_prediction_curve[1][1] or _grant.clr_prediction_curve[1][2] or _grant.clr_prediction_curve[1][3] else False
+
+            if can_estimate :
                 _grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in _grant.clr_prediction_curve ]
             else:
                 _grant.clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
