@@ -930,7 +930,8 @@ def users_fetch(request):
     persona = request.GET.get('persona', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', '-actions_count')
+    default_sort = '-actions_count' if persona != 'tribe' else '-follower_count'
+    order_by = request.GET.get('order_by', default_sort)
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
