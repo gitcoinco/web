@@ -152,7 +152,7 @@ def grants(request):
 
     _grants = Grant.objects.filter(
         network=network, hidden=False
-    ).keyword(keyword).order_by(sort)
+    ).keyword(keyword).order_by(sort, 'pk')
     if state == 'active':
         _grants = _grants.active()
     if keyword:
