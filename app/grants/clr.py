@@ -378,23 +378,24 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
             potential_clr.append(predicted_clr)
 
         if save_to_db:
-            grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
-            base = grant.clr_prediction_curve[0][1]
-            grant.last_clr_calc_date = timezone.now()
-            grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=10)
+            _grant = Grant.objects.get(pk=grant.pk)
+            _grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
+            base = _grant.clr_prediction_curve[0][1]
+            _grant.last_clr_calc_date = timezone.now()
+            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=10)
             if base:
-                grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in grant.clr_prediction_curve ]
+                _grant.clr_prediction_curve  = [[ele[0], ele[1], ele[1] - base] for ele in _grant.clr_prediction_curve ]
             else:
-                grant.clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
+                _grant.clr_prediction_curve = [[0.0, 0.0, 0.0] for x in range(0, 6)]
 
             JSONStore.objects.create(
                 created_on=from_date,
                 view='clr_contribution',
                 key=f'{grant.id}',
-                data=grant.clr_prediction_curve,
+                data=_grant.clr_prediction_curve,
             )
             if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
-                grant.save()
+                _grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return debug_output
