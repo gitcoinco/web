@@ -347,7 +347,7 @@ class Grant(SuperModel):
             for contrib in sub.subscription_contribution.filter(success=True, created_on__gt=since):
                 contributors.append(contrib.subscription.contributor_profile.handle)
         if is_postive_vote:
-            for pf in self.phantom_funding.all():
+            for pf in self.phantom_funding.filter(created_on__gt=since).all():
                 contributors.append(pf.profile.handle)
         return len(set(contributors))
 
