@@ -18,6 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 END
 
 IS_ALREADY_RUNNING=$(pgrep -fl $1 | grep -c python)
+if [ "$2" -ne "" ]; then
+    IS_ALREADY_RUNNING=$(pgrep -fl $1 | grep $2 | grep -c python)
+fi
+
 if [ "$IS_ALREADY_RUNNING" -eq "0" ]; then
     bash scripts/run_management_command.bash $1 $2 $3 $4 $5 $6 $7 $8 $9
 fi
