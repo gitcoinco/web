@@ -53,7 +53,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="row" id="grants_form">
       <div class="col-12 text-center mt-md-3">
         <img src="/static/v2/images/grants/{{img}}" style="max-width: 200px; max-height: 200px; ">
-        <h2 class="font-title-lg my-4">{% trans "Fund Grant" %}</h2>
+        <h2 class="font-title-lg my-4">{% if direction == '-' %} Negative {%endif%}  {% trans "Fund Grant" %}</h2>
         <hr>
       </div>
 
@@ -182,7 +182,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           <label class="form__label">{% trans "Match Pool Voting Direction" %}</label>
                           <ul class="mb-0 pb-0">
                             <li style="list-style-type: none;">
-                              <input type="radio" name="match_direction" id="positive" value="+" style="vertical-align:top" class="m-3" checked="checked">
+                              <input type="radio" name="match_direction" id="positive" value="+" style="vertical-align:top" class="m-3" {% if direction != '-' %} checked="checked" {% endif %}>
                               <label for="positive" class="form__label"><strong>Positive - I want to support this Grant.</strong>
                               <BR>
                               - Grant Contribution on Gitcoin's site will be <i>Public</i>.
@@ -192,8 +192,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                               - Matching Funds will go to <i>Grantee</i>.</label>
                             </li>
                             <li style="list-style-type: none;">
-                              <input type="radio" name="match_direction" id="negative" value="-" style="vertical-align:top" class="m-3">
-                              <label for="negative" class="form__label"><strong>Negative - I want to inhibit this Grant.</strong>
+                              <input type="radio" name="match_direction" id="negative" value="-" style="vertical-align:top" class="m-3"{% if direction == '-' %} checked="checked" {% endif %} >
+                              <label for="negative" class="form__label"><strong>Negative - I want to inhibit this Grant.</strong> <i class="fas fa-info-circle" title="Use this option if you want to cancel out someone elses positive contribution."></i>
                               <BR>
                               - Grant Contribution on Gitcoin's site will be <i>Private</i>.
                               <BR>

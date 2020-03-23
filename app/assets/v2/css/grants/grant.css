@@ -1,13 +1,16 @@
 .infinite-more-link{
   display: none;
 }
-#flag a{
+#negative_fund,
+#flag{
   background-color: #F9006C;
   color:white;
   border-radius: 3px;
   padding: 5px;
 }
-#flag a:hover{
+
+#negative_fund:hover,
+#flag:hover{
   background-color: #F9309C;
   font-weight: bold;
   text-decoration: none;

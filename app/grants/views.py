@@ -850,6 +850,7 @@ def grant_fund(request, grant_id, grant_slug):
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscription': {},
         'show_tweet_modal': show_tweet_modal,
+        'direction': request.GET.get('direction', '+'),
         'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
         'grant': grant,
         'img': img,
