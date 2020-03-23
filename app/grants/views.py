@@ -131,18 +131,24 @@ def grants(request):
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
     _grants = None
-    bg = int(request.GET.get('i', timezone.now().strftime("%j"))) % 5
     bg = 4
     bg = f"{bg}.jpg"
     mid_back = 'bg14.png'
     bottom_back = 'bg13.gif'
     if grant_type == 'tech':
+        bottom_back = '0.png'
+        bg = '0.jpg'
+    if grant_type == 'tech':
         bottom_back = 'bg20-2.png'
+        bg = '1.jpg'
     if grant_type == 'media':
         bottom_back = 'bg16.gif'
+        bg = '2.jpg'
     if grant_type == 'health':
         bottom_back = 'health.jpg'
         bg = 'health2.jpg'
+    if grant_type in ['about', 'activity']:
+        bg = '3.jpg'
     show_past_clr = False
 
     sort_by_index = None

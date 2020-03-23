@@ -387,14 +387,6 @@
   color: white;
 }
 
-.grants-hero .font-header{
-  border-radius: 0px 0px 0px 30px;
-}
-
-.grants-hero h1{
-  border-radius: 0px 30px 0px 0px;
-}
-
 .grants-hero .font-header,
 .grants-hero h1,
 .explore_grants {
