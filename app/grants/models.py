@@ -289,7 +289,7 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
-    categories = models.ManyToManyField(GrantCategory)
+    categories = models.ManyToManyField(GrantCategory, blank=True)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()

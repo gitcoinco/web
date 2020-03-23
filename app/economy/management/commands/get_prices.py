@@ -213,6 +213,8 @@ def uniswap():
                         token_name = exchange['tokenSymbol']
                         if float(exchange['price']) == 0.: # Skip exchange pairs with zero value
                             continue
+                        if token_name == 'ETH':
+                            continue # dont pull ETH/ETH and ETH/USD pricing
                         to_amount = (float(exchange['price']) + float(exchange['lastPrice'])) / 2.
                         ConversionRate.objects.create(
                             from_amount=1,
