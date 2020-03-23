@@ -65,7 +65,7 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '(💰$250K Match Round LIVE NOW!) Gitcoin Grants | '
+matching_live = '(💰$250K Match Round LIVE NOW!)'
 total_clr_pot = 250000
 clr_round = 5
 clr_active = True
@@ -189,10 +189,11 @@ def grants(request):
         {'label': 'Public Health', 'keyword': 'health', 'count': health_grants_count}
     ]
     title = matching_live + str(_('Grants'))
-    grant_type_title_if_any = grant_type.title() if grant_type else ''
-    grant_type_gfx_if_any = grant_type if grant_type else 'total'
-    if grant_type:
-        title = f"{grant_type.title()} {category.title()} Grants"
+    has_real_grant_type = grant_type and grant_type != 'activity'
+    grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
+    grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
+    if has_real_grant_type:
+        title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -359,7 +360,7 @@ def grant_details(request, grant_id, grant_slug):
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
         'tab': tab,
-        'title': matching_live + grant.title,
+        'title': matching_live + " Gitcoin Grants | " + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
