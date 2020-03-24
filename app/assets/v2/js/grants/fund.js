@@ -249,6 +249,10 @@ $(document).ready(function() {
 
     // eth payments
     const is_eth = $('#js-token').val() == '0x0000000000000000000000000000000000000000';
+    if (is_eth && $('#recurring_or_not').val() == 'recurring') {
+      _alert('Sorry but ETH is not supported for recurring donations', 'error', 1000);
+      return;
+    }
 
     if (is_eth) {
       const percent = $('#gitcoin-grant-input-amount').val();
@@ -436,6 +440,7 @@ $(document).ready(function() {
       $(this).select2();
     });
     $('#js-token').select2();
+    $('#js-token').trigger('change');
     $('.contribution_type select').trigger('change');
     $('.select2-selection__rendered').hover(function() {
       $(this).removeAttr('title');

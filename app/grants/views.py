@@ -453,6 +453,14 @@ def flag(request, grant_id):
             grant=grant,
             )
         new_grant_flag_admin(flag)
+        profile = Profile.objects.filter(handle='gitcoinbot').first()
+        activity = Activity.objects.create(profile=profile, activity_type='flagged_grant', grant=grant)
+        comment = Comment.objects.create(
+            profile=profile,
+            activity=activity,
+            comment=f"Comment from anonymous user: {comment}")
+
+
     return JsonResponse({
         'success': True,
     })
@@ -853,8 +861,6 @@ def grant_fund(request, grant_id, grant_slug):
     is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
     show_tweet_modal = False
     fund_reward = get_fund_reward(request, grant)
-    if can_phantom_fund:
-        active_tab = 'phantom'
     if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
         if is_phantom_funding_this_grant:
             msg = "You are no longer signaling for this grant."

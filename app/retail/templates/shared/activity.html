@@ -155,6 +155,11 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
+        {% elif row.activity_type == 'flagged_grant' %}
+           has observed a new Flag <i class="far fa-flag"></i> for
+          <a href="{{ row.grant.url }}" >
+            {{ row.grant.title }}
+          </a>
         {% elif row.activity_type == 'new_grant_contribution' %}
           {% trans "contributed to" %}
           <a href="{{ row.metadata.grant_url }}" >

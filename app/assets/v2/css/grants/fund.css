@@ -22,7 +22,9 @@
   border-top-right-radius: 4px;
   color: #000;
 }
-
+#grants_form .nav-link.active {
+  background-color: #eee;
+}
 #grants_form .form__input.valid,
 #grants_form .form__input.error {
   background-position: top 0.5rem right 0.5rem;
