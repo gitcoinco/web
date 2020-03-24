@@ -97,7 +97,7 @@ $(document).ready(function() {
     }, 10);
   });
   
-  // Enables Dark Mode
+  // Enables Dope Mode
   $('body').toggleClass(localStorage.toggled);
    $('.toggle-switch').on('click',function(event) {
   if (localStorage.toggled != 'dark') {
