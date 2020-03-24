@@ -1146,6 +1146,7 @@ class Contribution(SuperModel):
         blank=True,
         help_text=_('the normalized grant data; for easy consumption on read'),
     )
+    match = models.BooleanField(default=True, help_text=_('Whether or not this contribution should be matched.'))
 
     def __str__(self):
         """Return the string representation of this object."""

@@ -275,7 +275,7 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
 
     from_date = timezone.now()
     # get all the eligible contributions and calculate total
-    contributions = Contribution.objects.prefetch_related('subscription').filter(created_on__gte=CLR_START_DATE, created_on__lte=from_date, success=True)
+    contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=CLR_START_DATE, created_on__lte=from_date, success=True)
 
     if clr_type == 'tech':
         grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', link_to_new_grant=None)
