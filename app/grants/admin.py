@@ -133,15 +133,14 @@ class GrantAdmin(GeneralAdmin):
 
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
-        eles = []
+        eles = []   
 
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
             eles.append(html)
-            for ele in instance.subscriptions.all().order_by('pk'):
-                for sub_ele in ele.subscription_contribution.filter(success=i).order_by('pk'):
-                    html = f" - <a href='{sub_ele.admin_url}'>{sub_ele}</a>"
-                    eles.append(html)
+            for ele in instance.contributions.order_by('-subscription__amount_per_period_usdt'):
+                html = f" - <a href='{ele.admin_url}'>{ele}</a>"
+                eles.append(html)
 
         return mark_safe("<BR>".join(eles))
 

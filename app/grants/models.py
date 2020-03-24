@@ -313,6 +313,14 @@ class Grant(SuperModel):
         self.activeSubscriptions = handles
 
     @property
+    def contributions(self):
+        pks = []
+        for subscription in self.subscriptions.all():
+            pks += list(subscription.subscription_contribution.values_list('pk', flat=True))
+        return Contribution.objects.filter(pk__in=pks)
+
+
+    @property
     def negative_voting_enabled(self):
         return self.grant_type == 'media'
 
@@ -1143,7 +1151,7 @@ class Contribution(SuperModel):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
         txid_shortened = self.tx_id[0:10] + "..."
-        return f"id: {self.pk} (${round(self.subscription.amount_per_period_usdt)}) - Success:{self.success}, tx_cleared:{self.tx_cleared} - created {naturaltime(self.created_on)} "
+        return f"${round(self.subscription.amount_per_period_usdt)}, txids: {self.tx_id}, {self.split_tx_id}, id: {self.pk}, Success:{self.success}, tx_cleared:{self.tx_cleared} - created {naturaltime(self.created_on)} "
 
     @property
     def is_first_in_sequence(self):
