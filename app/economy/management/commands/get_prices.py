@@ -180,6 +180,7 @@ def cryptocompare():
 
 def uniswap():
     """Hangle pulling market data from Uniswap using its subgraph node on mainnet."""
+    pull_uniswap_tokens_only = ['PAN']
     endpoint = 'https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap'
     query_limit = 100
     skip = 0
@@ -211,6 +212,8 @@ def uniswap():
                 for exchange in json_data['data']['exchanges']:
                     try:
                         token_name = exchange['tokenSymbol']
+                        if token_name not in pull_uniswap_tokens_only:
+                            continue
                         if float(exchange['price']) == 0.: # Skip exchange pairs with zero value
                             continue
                         if token_name == 'ETH':
@@ -268,7 +271,7 @@ class Command(BaseCommand):
 
         try:
             print('uniswap')
-            #uniswap()
+            uniswap()
         except Exception as e:
             print(e)
 
