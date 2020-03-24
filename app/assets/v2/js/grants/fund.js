@@ -249,6 +249,7 @@ $(document).ready(function() {
 
     // eth payments
     const is_eth = $('#js-token').val() == '0x0000000000000000000000000000000000000000';
+
     if (is_eth && $('#recurring_or_not').val() == 'recurring') {
       _alert('Sorry but ETH is not supported for recurring donations', 'error', 1000);
       return;
