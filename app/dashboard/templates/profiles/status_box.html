@@ -34,7 +34,7 @@
       <button id="poll-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add a poll to post." style="bottom: 2em; right: 0em;"><i class="fas fa-fw fa-chart-bar"></i></i></button>
     </div>
   </div>
-  <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
+  <div class="btn-group-toggle text-center text-md-left activity_type_selector" {% if not suppress_data_toggle %} data-toggle="buttons" {%endif%}>
     {% if tags %}
       {% for tag in tags %}
         <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip"  title="{{tag.2}}" >
