@@ -302,7 +302,7 @@
             >
               <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
             </a>
-            {% if row.profile.handle == github_handle %}
+            {% if row.profile.handle|lower == github_handle|lower %}
             <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
               <i class="fas fa-trash mr-2"></i> Delete
             </a>
