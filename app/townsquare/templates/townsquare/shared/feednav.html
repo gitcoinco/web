@@ -55,3 +55,30 @@
                     </div>
                   </div>
                 </div>
+
+                <div class="townsquare_nav-list my-2 tribe">
+                  <div class="townsquare_block-header" data-target="tribes">
+                    Suggested Tribes
+                  </div>
+                  <div id="tribes">
+                    <ul class="nav d-inline-block font-body col-sm-10">
+                      {% for tribe in suggested_tribes %}
+                        <li class="nav-item d-flex justify-content-between align-items-center my-3">
+                          <a href="/profile/{{ tribe.title }}" class="d-flex nav-link nav-line">
+                            <img src="{{tribe.avatar_url}}" class="nav_avatar mr-2">
+                              <span class="">
+                                <span class="nav-title font-weight-bold pt-0 mb-0 text-capitalize">{{tribe.title}}</span><br>
+                                <p class="mb-0">
+                                  <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                  <b>{{ tribe.follower_count }}</b> followers
+                                </p>
+                              </span>
+                          </a>
+                          <a class="btn btn-outline-gc-blue btn-sm font-smaller-3 font-weight-bold px-4 " href="#" style="height: 30px" data-jointribe="{{ tribe.title }}">
+                          Follow <i class="fas fa-plus"></i>
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
