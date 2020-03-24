@@ -54,7 +54,7 @@ def get_avatar_attrs(theme, key):
             ],
             'hair_tones': [
                 'F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC',
-                '0ECF7C'
+                '0ECF7C', 'ca5200'
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_bufficorn.svg',
@@ -76,7 +76,8 @@ def get_avatar_attrs(theme, key):
                 '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair', 'mage_skin'],
             'path': 'assets/v2/images/avatar3d/avatar.svg',
@@ -100,7 +101,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_female.svg',
@@ -139,7 +141,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'background_tones': [
                 '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
@@ -158,7 +161,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'background_tones': [
                 '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
@@ -177,7 +181,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'background_tones': [
                 '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
@@ -196,7 +201,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'background_tones': [
                 '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
@@ -227,7 +233,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'background_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/tech.svg',
@@ -241,7 +248,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'background_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/landscape.svg',
@@ -255,7 +263,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'background_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/space.svg',
@@ -269,7 +278,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'background_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/spring.svg',
@@ -480,7 +490,7 @@ def get_avatar_attrs(theme, key):
             ],
             'hair_tones': [
                 'F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC',
-                '0ECF7C'
+                '0ECF7C', 'ca5200'
             ],
             'tone_maps': ['cj_skin', 'cj_hair'],
             'path': 'assets/v2/images/avatar3d/cartoon_jedi.svg',
