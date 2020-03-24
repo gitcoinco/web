@@ -30,7 +30,7 @@ from django.utils import timezone
 from grants.models import Contribution, Grant, PhantomFunding
 from perftools.models import JSONStore
 
-CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0) if not settings.DEBUG else dt.datetime(2020, 1, 6, 0, 0)
+CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
 
 # TODO: MOVE TO DB
 THRESHOLD_TECH = 20.0
@@ -158,7 +158,7 @@ def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
     # print(f'+ve {len(totals_pos)} {totals_pos}')
     # print(f'-ve {len(totals_neg)} {totals_neg}')
 
-    if len(totals_neg) == 0:
+    if len(totals_neg) == 0 or True:
         totals = totals_pos
     elif len(totals_pos) == 0:
         totals = [{'id': x['id'], 'clr_amount': 0 } for x in totals_neg]
@@ -323,7 +323,7 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
             for profile_id in positive_contributing_profile_ids:
                 # get sum of contributions per grant for each profile
                 profile_positive_contributions = positive_contributions.filter(subscription__contributor_profile_id=profile_id)
-                sum_of_each_profiles_contributions = float(sum([c.subscription.get_converted_monthly_amount() for c in profile_positive_contributions]))
+                sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_positive_contributions if c.subscription.amount_per_period_usdt]))
 
                 phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id, created_on__lte=from_date)
                 if phantom_funding.exists():
@@ -341,7 +341,7 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
         if len(negative_contributing_profile_ids) > 0:
             for profile_id in negative_contributing_profile_ids:
                 profile_negative_contributions = negative_contributions.filter(subscription__contributor_profile_id=profile_id)
-                sum_of_each_negative_contributions = float(sum([c.subscription.get_converted_monthly_amount() for c in profile_negative_contributions]))
+                sum_of_each_negative_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_negative_contributions if c.subscription.amount_per_period_usdt]))
                 negative_summed_contributions.append({str(profile_id): sum_of_each_negative_contributions})
 
             negative_contrib_data.append({
