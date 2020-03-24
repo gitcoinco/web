@@ -135,12 +135,13 @@ class GrantAdmin(GeneralAdmin):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
 
-        for ele in instance.subscriptions.all().order_by('pk'):
-            html = f"<a href='{ele.admin_url}'>{ele}</a>"
+        for i in [True, False]:
+            html = f"<h3>Success {i}</h3>"
             eles.append(html)
-            for sub_ele in ele.subscription_contribution.all().order_by('pk'):
-                html = f" - <a href='{sub_ele.admin_url}'>{sub_ele}</a>"
-                eles.append(html)
+            for ele in instance.subscriptions.all().order_by('pk'):
+                for sub_ele in ele.subscription_contribution.filter(success=i).order_by('pk'):
+                    html = f" - <a href='{sub_ele.admin_url}'>{sub_ele}</a>"
+                    eles.append(html)
 
         return mark_safe("<BR>".join(eles))
 
@@ -220,6 +221,7 @@ class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
     list_display = ['id', 'github_created_on', 'from_ip_address', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
+    readonly_fields = ['etherscan_links']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
@@ -246,6 +248,11 @@ class ContributionAdmin(GeneralAdmin):
         visits = [visit for visit in visits if visit]
         return " , ".join(visits)
 
+
+    def etherscan_links(self, instance):
+        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id}</a><BR>"
+        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
+        return mark_safe(html)
 
 class MilestoneAdmin(admin.ModelAdmin):
     """Define the Milestone administration layout."""

@@ -166,13 +166,14 @@
     {% endif %}
 
     {% if not is_team_member %}
-    <div class="mt-2 pt-2 float-right">
+    <div class="mt-2 pt-2 float-right mb-1">
       {% if grant.negative_voting_enabled %}
         <a id="negative_fund" href="{% url 'grants:fund' grant.id grant.slug %}?direction=-">Negative Fund <i class="fas fa-user-minus"></i></a>
       {% endif %} 
       <a  id="flag" href="#" data-href="/grants/flag/{{grant.id}}">Flag <i class="far fa-flag"></i></a>
     </div>
     {% endif %}
+    <br style="clear:both;">
 
 
     <div class="mt-2 pt-2">

@@ -672,11 +672,8 @@ class Subscription(SuperModel):
     def __str__(self):
         """Return the string representation of a Subscription."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
-        active_details = f"( active: {self.active}, billed {self.subscription_contribution.count()} times, last contrib: {naturaltime(self.last_contribution_date)},  next contrib: {naturaltime(self.next_contribution_date)} )"
-        if self.last_contribution_date < timezone.now() - timezone.timedelta(days=10*365):
-            active_details = "(NEVER BILLED)"
 
-        return f"id: {self.pk}; {self.status}, {round(self.amount_per_period,1)} {self.token_symbol} / {self.frequency} {self.frequency_unit}, {int(self.num_tx_approved)} times for grant {self.grant.pk} created {naturaltime(self.created_on)} by {self.contributor_profile} {active_details}"
+        return f"id: {self.pk}; {round(self.amount_per_period,1)} {self.token_symbol} (${round(self.amount_per_period_usdt)}) {int(self.num_tx_approved)} times, created {naturaltime(self.created_on)} by {self.contributor_profile}"
 
     def get_nonce(self, address):
         return self.grant.contract.functions.extraNonce(address).call() + 1
@@ -1146,7 +1143,7 @@ class Contribution(SuperModel):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
         txid_shortened = self.tx_id[0:10] + "..."
-        return f"id: {self.pk}; {txid_shortened} => subs:{self.subscription}; {naturaltime(self.created_on)}"
+        return f"id: {self.pk} (${round(self.subscription.amount_per_period_usdt)}) - Success:{self.success}, tx_cleared:{self.tx_cleared} - created {naturaltime(self.created_on)} "
 
     @property
     def is_first_in_sequence(self):
