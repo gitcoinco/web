@@ -374,7 +374,10 @@ a.offer_container.animate:hover .prize-gift::after {
   color: #a58484;
   text-shadow: 0 2px 0px #a58484;
 }
-
+.empty {
+  background-color: #ddd;
+  color: #808080;
+}
 .empty .prize-gift {
   color: grey;
   text-shadow: 0 2px 0px grey;
@@ -881,8 +884,14 @@ body.green.offer_view .announce {
   font-size: 0.9rem;
   color: #626365;
   text-transform: uppercase;
+  cursor: pointer;
 }
-
+.townsquare_block-header::after {
+  content: ""
+}
+.townsquare_block-header.closed::after {
+  content: "^"
+}
 #status .btn-group-toggle .btn-radio {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
@@ -911,9 +920,9 @@ body.green.offer_view .announce {
 
 .activity_stream .activity_comments .comment_container.filled
 .activity-avatar img {
-  height: 30px;
-  width: 30px;
-  max-width: 30px;
+  height: 40px;
+  width: 40px;
+  max-width: 40px;
   border-radius: 50%;
 }
 

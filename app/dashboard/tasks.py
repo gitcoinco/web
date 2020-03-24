@@ -4,7 +4,7 @@ from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Bounty, Profile
 from marketing.mails import func_name, send_mail
 from retail.emails import render_share_bounty
 
@@ -57,7 +57,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
     """
     with redis.lock("tasks:bounty_email:%s" % invite_url, timeout=LOCK_TIMEOUT):
         # need to look at how to send bulk emails with SG
-        profile = Profile.objects.get(handle=profile_handle)
+        profile = Profile.objects.get(handle=profile_handle.lower())
         try:
             for email in emails:
                 to_email = email
@@ -98,15 +98,29 @@ def profile_dict(self, pk, retry: bool = True) -> None:
             profile.save()
 
 
-@app.shared_task(bind=True, max_retries=3)
-def refresh_activity_views(self, pk, retry: bool = True) -> None:
+@app.shared_task(bind=True)
+def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) -> None:
     """
     :param self:
-    :param pk:
+    :param bounty_pk:
+    :param event_name:
     :return:
     """
-    if isinstance(pk, list):
-        pk = pk[0]
-    with redis.lock("tasks:refresh_activity_views:%s" % pk, timeout=LOCK_TIMEOUT):
-        activity = Activity.objects.get(pk=pk)
-        activity.generate_view_props_cache()
+    with redis.lock("maybe_market_to_user_slack:bounty", timeout=LOCK_TIMEOUT):
+        bounty = Bounty.objects.get(pk=bounty_pk)
+        from dashboard.notifications import maybe_market_to_user_slack_helper
+        maybe_market_to_user_slack_helper(bounty, event_name)
+
+
+@app.shared_task(bind=True)
+def maybe_market_to_user_discord(self, bounty_pk, event_name, retry: bool = True) -> None:
+    """
+    :param self:
+    :param bounty_pk:
+    :param event_name:
+    :return:
+    """
+    with redis.lock("maybe_market_to_user_discord:bounty", timeout=LOCK_TIMEOUT):
+        bounty = Bounty.objects.get(pk=bounty_pk)
+        from dashboard.notifications import maybe_market_to_user_discord_helper
+        maybe_market_to_user_discord_helper(bounty, event_name)

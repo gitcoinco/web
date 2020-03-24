@@ -112,6 +112,9 @@
   document.pk = {{ pk }};
   document.result = {{ result|safe }};
   const token_address = '{{ token_address }}';
+  {% if not is_bounties_network %}
+    document.web3network = 'mainnet';
+  {% endif %}
 </script>
 <script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>

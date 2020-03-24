@@ -962,7 +962,7 @@ def weekly_roundup(to_emails=None):
                     subject,
                     text,
                     html,
-                    from_name="Connor and the Gitcoin Team (Gitcoin.co)",
+                    from_name="Vivek and the Gitcoin Team (Gitcoin.co)",
                     categories=['marketing', func_name()],
                 )
             else:

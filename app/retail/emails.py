@@ -1005,8 +1005,8 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Have We Mentioned The Future Of Work Is Remote?"
-    new_kudos_pks = [11602, 7496, 1838]
+    subject = "COVID: Stay Safe & Carry On"
+    new_kudos_pks = [12403, 12299, 12239]
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1025,19 +1025,25 @@ def render_new_bounty_roundup(to_email):
 
     intro = f'''
 <p>
-Good day Gitcoiners,
+Hello Gitcoiners,
 </p>
 <p>
-Well that was quick - February has been a fast and crazy month. Watching the spread of the SARS-CoV-2 virus and economic uncertainty that follows, we hope everyone in our global community is staying safe and healthy. Now more than ever it’s obvious the future of work will have to be flexible and remote. If you’re feeling isolated, come hang out in the <a href="https://gitcoin.co/townsquare">Town Square</a>, we promise it’s virus free.
+We'd like to first and foremost wish you all a safe few weeks ahead. We're living in a COVID world now - and while there's no need to panic - we can take simple precautions to
+impact the lives of ourselves and others. The biggest - social distancing - is outlined with fantastic detail alongside the reasons this could
+save countless lives <a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">in this article.</a>
+We first and foremost hope you and your families stay safe.
+
+With proper precautions in shape, feel free to come join us (virtually!) for <a href=https://hackathons.gitcoin.co/funding-the-future”>Funding The Future.</a> Our goal
+is to make this our most interactive hackathon yet -- especially important in a time where distance physically is a requirement. Do join us if your circumstances allow, we'd love
+to have you! You can get a sneak preview of this in our <a href="https://gitcoin.co/townsquare">Town Square</a> anytime :)
+
 </p>
 <p>
-As we leap Into March, there are plenty of new opportunities for you to earn crypto working for the open internet. First off, the <a href="https://blockchainforsocialimpact.com/incubator/">Social Impact Incubator</a> is in full swing. Today is the last day to <a href="https://gitcoin.co/hackathon/onboard/decentralized-impact-incubator/">sign up</a> and find a team, now with <a href="https://gitcoin.co/hackathon/decentralized-impact-incubator">$40,000</a> up for grabs.
+ <a href=“https://hackathons.gitcoin.co/funding-the-future”>Funding the Future</a> Virtual Hackathon starts on Monday, March 16th and will be packed with great bounties on DeFi, funding mechanisms, and DAOs!
+ In an update, we've moved the <a href=“https://gitcoin.co/grants/">Gitcoin Grants CLR</a> Round 5 round back one week (starting 3/23), giving us some time to readjust to uncertainty across markets and the world.
 </p>
 <p>
-Next, the <a href=“https://gitcoin.co/hackathon/skynet”>Skynet Virtual Hackathon</a> by <a href=“https://siasky.net/">Sia</a> goes live today! Check out our <a href="https://gitcoin.co/blog/sia-virtual-hackathon-launching-on-gitcoin-2-28/">blog post</a> to learn more about Skynet and the 1,750,000 SC (~$5k) in prizes. There is even a 25,000 SC consolation prize for all submissions. Join the event  <a href="https://gitcoin.co/hackathon/onboard/skynet/">here</a>. If you need some hackathon inspiration, our Global Communities retro post is also live - <a href="https://gitcoin.co/blog/global-communities-hackathon-retro/">take a gander here</a>.
-</p>
-<p>
-Finally, March 16th will kick off both the <a href="https://gitcoin.co/hackathon/onboard/funding-the-future/">Funding The Future</a> Virtual Hackathon, alongside <a href=“https://gitcoin.co/grants/">Gitcoin Grants</a> Round 5. More to come on those soon.
+Interested in sneak peaks at what the product team is doing or being an early tester? <a href=“https://gitcoin.co/pixelantdesign”>Hit me up</a> on the <a href=“https://gitcoin.co/chat”>Gitcoin Chat</a>!
 </p>
 
 {kudos_friday}
@@ -1045,31 +1051,31 @@ Finally, March 16th will kick off both the <a href="https://gitcoin.co/hackathon
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href=“gitcoin.co/livestream”>Join us</a> for the Livestream today as David Vorick, Co-Founder of Sia, speaks to us about the launch of Skynet and the Skynet Hackathon. We’ll start at 2pm ET, so join the conversation and come with questions.
+        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be an ETH 2.0 stream hosted by our own Kevin Owocki!
         </li>
     </ul>
 </p>
 <p>
-Back to Chillin and Shillin,
+Back to (remote) work,
 </p>
 '''
     highlights = [{
-        'who': 'kfichter',
+        'who': 'Bobface',
         'who_link': True,
-        'what': 'Restructured And Wrote Further Content In Eth2 Book',
-        'link': 'https://gitcoin.co/issue/quilt/pm/7/4032',
+        'what': 'More great work with Austin Griffith!',
+        'link': 'https://gitcoin.co/issue/austintgriffith/eth.build/14/4074',
         'link_copy': 'View more',
     }, {
-        'who': 'bobface',
+        'who': 'dhaileytaha',
         'who_link': True,
-        'what': 'Streamlined Buying Tokens From Bonding Curve Using RDAI',
-        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/7/4031',
+        'what': 'Kudos to the best Infura Community contributor',
+        'link': 'https://gitcoin.co/issue/INFURA/infura/198/4066',
         'link_copy': 'View more',
     }, {
-        'who': 'vbstreetz',
+        'who': 'developerfred',
         'who_link': True,
-        'what': 'Built a Mobile-Friendly Map Viewer With FOAM (Sustain Web3 Hackathon)',
-        'link': 'https://gitcoin.co/issue/ryan-foamspace/Sustain-Web3-hackathon/3/3960',
+        'what': 'Kudos to one of our most active Gitcoiners!',
+        'link': 'https://gitcoin.co/issue/gitcoinco/web/6093/4068',
         'link_copy': 'View more',
     }, ]
 
@@ -1087,13 +1093,13 @@ Back to Chillin and Shillin,
 
     bounties_spec = [{
         'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
-        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge',
+        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge: Last Chance! ',
     }, {
-        'url': 'https://github.com/blockchainforsocialimpact/incubator/issues/7',
-        'primer': '[$10,000] - Celo Peace & Prosperity Challenge',
+        'url': 'https://github.com/mysteriumnetwork/node/issues/1865',
+        'primer': 'A sneak peak at a Mysterium prize during FTF next week',
     }, {
-        'url': 'https://github.com/xpring-eng/challenges/issues/1',
-        'primer': '[$1000 XRP] Bifrost - XRP, ETH & ERC-20 Bridge Over Interledger Protocol',
+        'url': 'https://github.com/AdExNetwork/adex-protocol-eth/issues/93',
+        'primer': 'A great AdEx one, also a sneak peak :)',
     }]
 
 
