@@ -450,7 +450,6 @@ def send_tip_2(request):
     fund_request = None
     username = request.GET.get('username', None)
     pk_fund_request = request.GET.get('request', None)
-    print(pk_fund_request)
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
@@ -463,12 +462,10 @@ def send_tip_2(request):
 
     if pk_fund_request:
         requests = FundRequest.objects.filter(pk=int(pk_fund_request))
-        print(requests)
         if requests.exists():
             fund_request = requests.first()
             profile = fund_request.requester
         else:
-            print('Failed to retrieve')
             messages.error(f'Failed to retrieve the fund request {fund_request}')
 
     if profile:

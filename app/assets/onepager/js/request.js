@@ -28,11 +28,11 @@ $(document).ready(function() {
       return;
     }
 
-    var success_callback = function(txid) {
-      unloading_button($(this));
+    var success_callback = function() {
+      unloading_button($('#request'));
     };
     var failure_callback = function() {
-      unloading_button($('#send'));
+      unloading_button($('#request'));
     };
 
     return requestFunds(username, amount, comments, tokenAddress, tokenName, success_callback, failure_callback);
@@ -74,7 +74,10 @@ function requestFunds(username, amount, comments, tokenAddress, tokenName, succe
     method: 'POST',
     body: formData
   }).then(function(json) {
-    success_callback();
-
+    _alert('The funder has been notified', 'success');
+    success_callback()
+  }).catch(function (error) {
+    _alert('Something goes wrong, try later.', 'error');
+    failure_callback()
   });
 }
