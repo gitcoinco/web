@@ -27,6 +27,7 @@
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
+  <script src="{% static "onepager/js/request.js" %}"></script>
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
@@ -77,6 +78,7 @@
   </header>
   <div id="send_eth">
     <h1>{% trans "Request money." %}</h1>
+    {% csrf_token %}
     <div>
       <br>
       <div class="pb-1 to_name">
@@ -96,13 +98,13 @@
     <div id="usd_amount"> &nbsp;</div>
     <div>
       {% trans "Comments" %}:
-      <textarea id="comments_public"></textarea>
+      <textarea id="comments"></textarea>
     </div>
     <div class="terms pb-1">
       <input type="checkbox" id="tos" value="1" >
       <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
     </div>
-    <a href="#" id="send-request-money" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
+    <a href="#" id="request" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
     <br>
   </div>
 </section>

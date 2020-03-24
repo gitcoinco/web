@@ -24,6 +24,7 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -39,7 +40,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
-from .models import Activity, Profile, Tip, TipPayout
+from .models import Activity, Profile, Tip, TipPayout, FundRequest
 from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 
 logging.basicConfig(level=logging.DEBUG)
@@ -62,34 +63,33 @@ def send_tip(request):
 
 def request_money(request):
     """"""
-    username = request.GET.get('username', None)
-    is_user_authenticated = request.user.is_authenticated
-    from_username = request.user.username if is_user_authenticated else ''
-    primary_from_email = request.user.email if is_user_authenticated else ''
-
-    user = {}
-    if username:
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip('@')
+        token_name = request.POST.get('tokenName')
+        amount = request.POST.get('amount')
+        comments = request.POST.get('comments')
+        token_address = request.POST.get('tokenAddress')
         profiles = Profile.objects.filter(handle=username.lower())
 
         if profiles.exists():
             profile = profiles.first()
-            user['id'] = profile.id
-            user['text'] = profile.handle
-            user['avatar_url'] = profile.avatar_url
-
-            if profile.avatar_baseavatar_related.exists():
-                user['avatar_id'] = profile.avatar_baseavatar_related.filter(active=True).first().pk
-                user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
-                user['preferred_payout_address'] = profile.preferred_payout_address
+            kwargs = {
+                'profile': profile,
+                'token_name': token_name,
+                'amount': amount,
+                'comments': comments,
+                'requester': request.user.profile,
+            }
+            fund_request = FundRequest.objects.create(**kwargs)
+            messages.success(request, f'Stay tuned, {profile.handle} has been notified by email.')
+        else:
+            messages.error(request, f'The user {username} doesn\'t exists.')
 
     params = {
         'class': 'send2',
         'title': 'Request Money | Gitcoin',
         'card_desc': 'Request money from any user at the click of a button.',
     }
-
-    if user:
-        params['user_json'] = user
 
     return TemplateResponse(request, 'request_payment.html', params)
 
@@ -446,8 +446,11 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
-
+    profile = None
+    fund_request = None
     username = request.GET.get('username', None)
+    pk_fund_request = request.GET.get('request', None)
+    print(pk_fund_request)
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
@@ -455,17 +458,28 @@ def send_tip_2(request):
     user = {}
     if username:
         profiles = Profile.objects.filter(handle=username.lower())
-
         if profiles.exists():
             profile = profiles.first()
-            user['id'] = profile.id
-            user['text'] = profile.handle
-            user['avatar_url'] = profile.avatar_url
 
-            if profile.avatar_baseavatar_related.exists():
-                user['avatar_id'] = profile.avatar_baseavatar_related.filter(active=True).first().pk
-                user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
-                user['preferred_payout_address'] = profile.preferred_payout_address
+    if pk_fund_request:
+        requests = FundRequest.objects.filter(pk=int(pk_fund_request))
+        print(requests)
+        if requests.exists():
+            fund_request = requests.first()
+            profile = fund_request.requester
+        else:
+            print('Failed to retrieve')
+            messages.error(f'Failed to retrieve the fund request {fund_request}')
+
+    if profile:
+        user['id'] = profile.id
+        user['text'] = profile.handle
+        user['avatar_url'] = profile.avatar_url
+
+        if profile.avatar_baseavatar_related.exists():
+            user['avatar_id'] = profile.avatar_baseavatar_related.filter(active=True).first().pk
+            user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
+            user['preferred_payout_address'] = profile.preferred_payout_address
 
     params = {
         'issueURL': request.GET.get('source'),
@@ -475,6 +489,7 @@ def send_tip_2(request):
         'from_handle': from_username,
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
+        'fund_request': fund_request
     }
 
     if user:
