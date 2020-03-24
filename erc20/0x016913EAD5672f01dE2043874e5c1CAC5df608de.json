@@ -1,0 +1,17 @@
+{
+  "symbol": "NS",
+  "address": "0x016913EAD5672f01dE2043874e5c1CAC5df608de",
+  "overview":{
+        "en": "NS  is the first project to integrate the ecological incentive plan and file slicing technology.Everyone in the world needs to store files, NS to define a new era!",
+        "zh": "NS是第一个将生态激励计划与文件切片技术融合的项目。全球每个人都需要存储文件，NS来定义新时代！"
+  },
+  "email": "admin@newstar.city",
+  "website": "http://newstar.city/",
+  "whitepaper": "http://newstar.city/ns.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-02-22",
+  "initial_price":{
+  },
+  "links": {
+  }
+}
