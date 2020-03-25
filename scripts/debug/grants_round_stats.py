@@ -1,5 +1,6 @@
 from django.utils import timezone
 
+from grants.models import *
 from grants.models import Contribution, PhantomFunding
 from grants.views import next_round_start, round_end
 
@@ -22,11 +23,8 @@ print('amount', amount)
 
 # new feature stats for round 5 
 
-from grants.models import *
-from django.utils import timezone
 subs = Subscription.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(hours=48))
 subs = subs.filter(subscription_contribution__success=True)
 print(subs.count())
 print(subs.filter(num_tx_approved__gt=1).count())
 print(subs.filter(is_postive_vote=False).count())
-

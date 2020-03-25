@@ -203,7 +203,7 @@
           <p class="sub-title mb-1 font-weight-semibold font-caption mb-1 pt-1">ROUND 5</p>
           <p class="font-subtitle mb-0">
             <span class="font-weight-bold">
-              {{grant.amount_received_in_round|floatformat:2}} DAI
+              {{grant.amount_received_in_round|floatformat:0|intcomma}} DAI
             </span>
             <BR>
             {{grant.positive_round_contributor_count}} contributors 
@@ -214,7 +214,6 @@
             {% endif %}
           </p>
 
-          {% include 'grants/card/clr_estimate_prev.html' %}
         </div>
 
       </div>
