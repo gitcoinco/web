@@ -245,7 +245,7 @@ def grants(request):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'past_partners': past_partners,
-        'card_desc': f'❇️ LIVE NOW! Up to $250k Matching Funding for {grant_type_title_if_any} on Gitcoin Grants',
+        'card_desc': f'❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants',
         'avatar_url': static(f'v2/images/grants/headers/{grant_type_gfx_if_any}.png'),
         'card_type': 'summary_large_image',
         'avatar_height': 1097,
