@@ -2661,6 +2661,15 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'tribe':
         context['team'] = profile.team_or_none_if_timeout
+    elif tab == 'follow':
+        context['org_kudos'] = profile.get_org_kudos
+        owned_kudos = profile.get_my_kudos.order_by('id', order_by)
+        sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
+        kudos_limit = 8
+        context['kudos'] = owned_kudos[0:kudos_limit]
+        context['sent_kudos'] = sent_kudos[0:kudos_limit]
+        context['kudos_count'] = owned_kudos.count()
+        context['sent_kudos_count'] = sent_kudos.count()
     elif tab == 'people':
         if profile.is_org:
             context['team'] = profile.team_or_none_if_timeout
@@ -2781,7 +2790,7 @@ def profile(request, handle, tab=None):
     disable_cache = False
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
+    all_tabs = ['active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2850,6 +2859,7 @@ def profile(request, handle, tab=None):
 
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
+    context['show_follow_tab'] = True
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False

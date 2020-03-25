@@ -11,7 +11,7 @@
             {% trans "TRIBE" %}{%if not profile.is_org %}S <span class="nav-badge">({{profile.tribe_members.count}})</span>{% endif %}
           </button>
         {% endif %}
-        <button type="button" id="nav-description" href="{{profile.url}}/follow" class="text-center section-tab {% if tab == "followtab" %} active {% endif %}">
+        <button type="button" id="nav-description" href="{{profile.url}}/follow" class="text-center section-tab {% if tab == "follow" %} active {% endif %}">
           {% trans "FOLLOW" %}
         </button>
         {% if show_resume_tab %}
@@ -109,7 +109,7 @@
         <div class="col-12 px-lg-0">
           {% if tab == 'kudos' %}
             {% include 'profiles/tab_kudos.html' %}
-          {% elif tab == 'followtab' %}
+          {% elif tab == 'follow' %}
             {% include 'profiles/tab_follow.html' %}
           {% elif tab == 'resume' %}
             {% include 'profiles/tab_resume.html' %}
