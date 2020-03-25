@@ -799,7 +799,7 @@ next_valid_timestamp: {next_valid_timestamp}
         from dashboard.utils import get_nonce
         return {
             'from': settings.GRANTS_OWNER_ACCOUNT,
-            'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT),
+            'nonce': get_nonce(self.grant.network, settings.GRANTS_OWNER_ACCOUNT, True),
             'value': 0,
             'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(minutes_to_confirm_within) * 10**9),
             'gas': 204066,

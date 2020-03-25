@@ -900,7 +900,7 @@ def is_blocked(handle):
     return False
 
 
-def get_nonce(network, address):
+def get_nonce(network, address, ignore_db=False):
     # this function solves the problem of 2 pending tx's writing over each other
     # by checking both web3 RPC *and* the local DB for the nonce
     # and then using the higher of the two as the tx nonce
@@ -910,7 +910,9 @@ def get_nonce(network, address):
 
     # web3 RPC node: nonce
     nonce_from_web3 = w3.eth.getTransactionCount(address)
-
+    if ignore_db:
+        return nonce_from_web3
+        
     # db storage
     key = f"nonce_{network}_{address}"
     view = 'get_nonce'
