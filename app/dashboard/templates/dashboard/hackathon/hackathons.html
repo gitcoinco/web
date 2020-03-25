@@ -22,6 +22,8 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
 
+    <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
+
     <style>
       .card-img-top {
         height: 253px;
@@ -33,15 +35,99 @@
   </head>
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header dash text-white">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav_hackathons.html' %}
-      {% include 'shared/minihero.html' with h1='Hackathons' suppress_logo=0 position_h1_below_logo=True hide_rain=True %}
 
-      <div class="row justify-content-md-center">
-        <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe"
-          method="post" id="mc-embedded-subscribe-form" class="col-12 col-md-6 text-center white pb-5 px-5" name="mc-embedded-subscribe-form" target="_blank">
-          <label for="newsletter-input" class="text-uppercase">{% trans "Signup to get hackathon updates" %}</label>
+      <div class="row justify-content-center" style="margin-top:8rem!important;">
+      {% if featured %}
+        <div class="col-12 col-lg-7">
+          <div class="box-cta rounded" style="width:100%;padding:0px 15x;">
+            <div class="container" align="center">
+              <div class="row">
+              <div class="col-12 col-xl-6 mt-5">
+                <div class="row">
+                  <div class="col-12">
+                    <p class="font-bigger-2">Register now for</p>
+                  </div>
+                  <div class="col-12">
+                    <h2>{{ featured.name }}</h2>
+                  </div>
+                </div>
+                <div class="row mt-4">
+                  <div class="col-12">
+                    <a class="btn btn-gc-green text-center mr-2" href="{% url 'hackathon_onboard' featured.slug %}">Register</a>
+                  {% if featured_conversation %}
+                    <a class="btn button--primary shadow-none text-white" href="/townsquare?tab={{ featured_conversation }}">Join Conversation</a>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% firstof featured.logo_svg or featured.logo as logo %}
+              {% if logo %}
+              {% load math_filters %}
+              <style>
+                #featured-logo {
+                  max-width: {{ featured.featured_logo_width }}px;
+                  {% if featured_logo_height %}
+                  max-height: {{ featured.featured_logo_height }}px;
+                  {% endif %}
+
+                }
+                @media (max-width: 800px) {
+                  #featured-logo {
+                    max-width: {{ featured.featured_logo_width|divide:"1.7" }}px;
+                    {% if featured_logo_height %}
+                    max-height: {{ featured.featured_logo_height|divide:"1.5" }}px;
+                    {% endif %}
+                    margin-top: 3rem!important
+                  }
+                }
+              </style>
+
+              <div class="col-12 col-lg-2">
+                  <img id="featured-logo" src="{{ MEDIA_URL }}{{ logo }}" alt="Featured hackathon logo" />
+              </div>
+              {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% else %}
+          <div class="col-12 col-lg-7">
+            <div class="box-cta rounded" style="width:100%;padding:0px 15x;">
+              <div class="container">
+                <div class="row">
+                  <div class="col-12 col-xl-6 mt-5">
+                    <div class="row">
+                      <div class="col-12">
+                        <p class="font-bigger-2">Learn, earn, network with the best open source projects</p>
+                        <p>Participate in Gitcoin hackathons, meet great devs, earn crypto and stay up to date on upcoming events be entering your email address below.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-2">
+                      <img width="316" src="/static/v2/images/hackathon/work_for_internet.svg" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        <div class="col-12 col-lg-12 col-xl-3 mt-3">
+          <div class="box-cta rounded text-center">
+            <img  class="mb-2" width="128" src="/static/v2/images/hackathon/hackathon_robot.png" />
+            <p class="mt-2 mb-3 font-bigger-3">Planning a hackathon for companies?</p>
+            <a href="https://hackathons.gitcoin.co/contact/" class="btn button--primary mt-3 mb-4 mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">Get Involved</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="rounded row justify-content-md-center my-5" style="background-color:#0D0665;">
+        <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe" method="post" id="mc-embedded-subscribe-form" class="col-12 col-md-6 text-center white pb-5 pt-4 px-5" name="mc-embedded-subscribe-form" target="_blank">
+          <label for="newsletter-input">{% trans "Subscribe to get Hackathon news upcoming hackathons!" %}</label>
           <div class="form-row pt-1">
             <div class="col">
               <input name="EMAIL" id="newsletter-input" class="form-control" placeholder="Enter your email" required>
@@ -50,62 +136,117 @@
           </div>
         </form>
       </div>
-    </div>
-    <div class="container-fluid">
-    </div>
 
-    {% for title, hackathons in events.items %}
-    {% if hackathons|length %}
-    <div class="container">
-      <div class="row my-2">
-        <h1>{{title|title}}</h1>
+      <div id="tabs" class="row my-4">
+        <div class="container">
+          <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+            {% for title, count in tabs %}
+              <li class="nav-item">
+                <a class="nav-link nav-line {% if title == default_tab %}active{% endif %}" href="#" data-href="{{ title }}" style="{% if title == default_tab %}font-weight: 700;{% endif %}">{{ title|title }} ({{ count }})</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
-      <div class="row my-5">
-          {% for hackathon in hackathons %}
-          <style>
-            #{{hackathon.slug}} .card-img-top {
-              background: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
-            }
-          </style>
-          <div class="col-xs-12 col-sm-6 col-lg-4">
-            <div class="card mb-5" id="{{hackathon.slug}}">
-              {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-              {% if logo %}
-                <img class="card-img-top" width="364" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
-              {% else %}
-                <div class="card-img-top d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
-                  {{ hackathon.name }}
-                </div>
-              {% endif %}
-              <div class="card-body">
-                <h5 class="card-title"><a href="{% url 'hackathon' hackathon.slug %}">{{ hackathon.name }}</a></h5>
-                <div class="small">
-                  Starts: <time class="" datetime="{{ hackathon.start_date|date:'c' }}" title="{{ hackathon.start_date }}">{{ hackathon.start_date|date:"m/d/Y" }}</time>
-                </div>
-                <div class="small">
-                  Ends: <time class="" datetime="{{ hackathon.end_date|date:'c' }}" title="{{ hackathon.end_date }}">{{ hackathon.end_date|date:"m/d/Y" }}</time>
-                </div>
-                <div class="text-center mt-3">
-                  {% if hackathon.end_date|timesince <= "1 min" %}
-                  <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue">Join</a>
-                  {% endif %}
-                  {% if hackathon.start_date|timesince >= "1 min" %}
-                  <a href="{% url 'hackathon_prizes' hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
-                  {% endif %}
-                  {% if hackathon.show_results %}
-                    <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue">Projects</a>
-                  {% endif %}
-                </div>
+
+      <div class="row my-4">
+      {% if events|length %}
+        {% for event in events %}
+        <style>
+          #{{event.hackathon.slug}} .card-img-top {
+            background: {% firstof event.hackathon.background_color or 'rgb(25, 0, 63)' %};
+          }
+        </style>
+
+
+        <div class="col-xs-12 col-sm-6 col-lg-4 hackathon-list {{ event.title }} {% if event.title != default_tab %}hidden{% endif %}">
+          <div class="card mb-5" id="{{event.hackathon.slug}}">
+            {% firstof event.hackathon.logo_svg or event.hackathon.logo as logo %}
+            {% if logo %}
+              <img class="card-img-top" width="364" src="{{ MEDIA_URL }}{{ logo }}" alt="Hackathon logo" />
+            {% else %}
+              <div class="card-img-top d-flex align-items-center justify-content-around font-bigger-4 text-center text-white">
+                {{ event.hackathon.name }}
+              </div>
+            {% endif %}
+            <div class="card-body container">
+              <h5 class="card-title"><a href="{% url 'hackathon' event.hackathon.slug %}">{{ event.hackathon.name }}</a></h5>
+              <div class="row">
+              <div class="col-sm">
+                <div class="small">Starts: <time class="" datetime="{{ event.hackathon.start_date|date:'c' }}" title="{{ event.hackathon.start_date }}">{{ event.hackathon.start_date|date:"m/d/Y" }}</time></div>
+                <div class="small">Ends: <time class="" datetime="{{ event.hackathon.end_date|date:'c' }}" title="{{ event.hackathon.end_date }}">{{ event.hackathon.end_date|date:"m/d/Y" }}</time></div>
+              </div>
+              <div class="col-sm">
+                <div class="small"><strong>${{ event.value_in_usdt }}</strong> in prizes</div>
+                <div class="small"><i class="fas fa-user-alt"></i> {{ event.registrants }} builders</div>
+              </div>
+              </div>
+              <div class="text-center mt-3">
+                {% if event.hackathon.end_date|timesince <= "1 min" %}
+                <a href="{% url 'hackathon_onboard' event.hackathon.slug %}" class="btn btn-gc-blue">Join</a>
+                {% endif %}
+                {% if event.hackathon.start_date|timesince >= "1 min" %}
+                <a href="{% url 'hackathon_prizes' event.hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
+                {% endif %}
+                {% if hackathon.show_results %}
+                  <a href="{% url 'hackathon_projects' event.hackathon.slug %}" class="btn btn-gc-blue">Projects</a>
+                {% endif %}
               </div>
             </div>
           </div>
-          {% endfor %}
+        </div>
+        {% endfor %}
+      {% endif %}
       </div>
+
+      <div class="row my-4">
+        <div class="container">
+          <div class="row">
+            <h3 class="text-uppercase font-weight-bolder">Hack with these tribes</h3>
+          </div>
+          <div class="row">
+            {% if tribes|length %}
+              {% for tribe in tribes %}
+                <div class="col-xs-12 col-sm-5 col-lg-3 text-center" align="center">
+                  <div class="mb-5 mt-5">
+                    <a href="{{ tribe.path }}" target="_blank" style="text-decoration:none;">
+                      <img width="128" src="{{ tribe.logo_path }}" alt="Tribe logo" />
+                      <span class="font-weight-bold d-flex align-items-center justify-content-around font-bigger-4 text-center mt-1 mb-1" style="color:black;">{{ tribe.display_name }}</span>
+                    </a>
+                    <div calss="small"><i class="fas fa-user-alt mr-1"></i> {{ tribe.members }} members</div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div class="row text-center mb-5" align="center">
+            <div class="col-12"><a class="font-bigger-3" href="{% url 'tribes_directory' %}">See all tribes</a></div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
-    {% endif %}
-    {% endfor %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
 
+    {% block 'scripts' %}
+    <!-- <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script> -->
+    <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
+    <!-- <script>
+      $(document).ready(function() {
+        setInterval(function(){
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          if (scrollTop > 500 && !document.offset_loaded){
+            $("img").unveil(200);
+            document.offset_loaded = true;
+          }
+        }, 3000);
+        setTimeout(function(){
+          $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
+        }, 1000);
+      });
+    </script> -->
+    {% endblock %}
   </body>
