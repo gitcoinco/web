@@ -2303,6 +2303,41 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h2 id="dashboard.models.Profile_organizations_fk">Profile_organizations_fk</h2>
+
+<pre><code class="python">Profile_organizations_fk(self, *args, **kwargs)
+</code></pre>
+
+<p>Profile_organizations_fk(id, from_profile, to_profile)
+<h3 id="dashboard.models.Profile_organizations_fk.from_profile">from_profile</h3></p>
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Profile_organizations_fk.from_profile_id">from_profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile_organizations_fk.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile_organizations_fk.to_profile">to_profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.Profile_organizations_fk.to_profile_id">to_profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h2 id="dashboard.models.Profile_profile_organizations">Profile_profile_organizations</h2>
 
 <pre><code class="python">Profile_profile_organizations(self, *args, **kwargs)
@@ -5105,6 +5140,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.average_rating">average_rating</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.avg_hourly_rate">avg_hourly_rate</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -5241,6 +5280,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.earnings_count">earnings_count</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.email">email</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -5341,6 +5384,14 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.follower_count">follower_count</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.following_count">following_count</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.form_submission_records">form_submission_records</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -5548,6 +5599,10 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 <p>Determine whether or not the user is a moderator.</p>
 <p>Returns:
     bool: Whether or not the user is a moderator.</p>
+<h3 id="dashboard.models.Profile.is_org">is_org</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.is_staff">is_staff</h3>
 
 <p>Determine whether or not the user is a staff member.</p>
@@ -5589,14 +5644,6 @@ many-to-one relation.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.last_calc_date">last_calc_date</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Profile.last_chat_seen">last_chat_seen</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Profile.last_chat_status">last_chat_status</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -5724,6 +5771,18 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.organizations_fk">organizations_fk</h3>
+
+<p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example::</p>
+<pre><code>class Pizza(Model):
+    toppings = ManyToManyField(Topping, related_name='pizzas')
+</code></pre>
+<p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.other_activities">other_activities</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
@@ -5779,6 +5838,18 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.profile_organizations">profile_organizations</h3>
+
+<p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example::</p>
+<pre><code>class Pizza(Model):
+    toppings = ManyToManyField(Topping, related_name='pizzas')
+</code></pre>
+<p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.profile_set">profile_set</h3>
 
 <p>Accessor to the related objects manager on the forward and reverse sides of
 a many-to-many relation.</p>
@@ -6023,6 +6094,10 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.slack_token">slack_token</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.Profile.spent_count">spent_count</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -7098,8 +7173,28 @@ FieldFile when accessed so you can write code like::</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h2 id="dashboard.models.HackathonEvent">HackathonEvent</h2>
+<h2 id="dashboard.models.HackathonEventQuerySet">HackathonEventQuerySet</h2>
 
+<pre><code class="python">HackathonEventQuerySet(self, model=None, query=None, using=None, hints=None)
+</code></pre>
+
+<p>Handle the manager queryset for HackathonEvents.
+<h3 id="dashboard.models.HackathonEventQuerySet.current">current</h3></p>
+<pre><code class="python">HackathonEventQuerySet.current(self)
+</code></pre>
+
+<p>Filter results down to current events only.
+<h3 id="dashboard.models.HackathonEventQuerySet.upcoming">upcoming</h3></p>
+<pre><code class="python">HackathonEventQuerySet.upcoming(self)
+</code></pre>
+
+<p>Filter results down to upcoming events only.
+<h3 id="dashboard.models.HackathonEventQuerySet.finished">finished</h3></p>
+<pre><code class="python">HackathonEventQuerySet.finished(self)
+</code></pre>
+
+<p>Filter results down to upcoming events only.
+<h2 id="dashboard.models.HackathonEvent">HackathonEvent</h2></p>
 <pre><code class="python">HackathonEvent(self, *args, **kwargs)
 </code></pre>
 
