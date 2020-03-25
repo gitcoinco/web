@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+import pytz
 from datetime import timedelta
 from decimal import Decimal
 
@@ -173,6 +174,12 @@ class Grant(SuperModel):
         decimal_places=4,
         max_digits=50,
         help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
+    )
+    amount_received_in_round = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The amount received in DAI this round.'),
     )
     monthly_amount_subscribed = models.DecimalField(
         default=0,
@@ -960,22 +967,23 @@ def psave_grant(sender, instance, **kwargs):
     instance.contribution_count = instance.get_contribution_count
     instance.contributor_count = instance.get_contributor_count()
     from grants.clr import CLR_START_DATE
-    instance.positive_round_contributor_count = instance.get_contributor_count(CLR_START_DATE, True)
-    instance.negative_round_contributor_count = instance.get_contributor_count(CLR_START_DATE, False)
+    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
+    instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
+    instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
+    instance.amount_received_in_round = 0
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
-    #print(instance.id)
     for subscription in instance.subscriptions.all():
         value_usdt = subscription.get_converted_amount(False)
         for contrib in subscription.subscription_contribution.filter(success=True):
             if value_usdt:
-                #print(f"adding contribution of {round(subscription.amount_per_period,2)} {subscription.token_symbol}, pk: {contrib.pk}, worth ${round(value_usdt,2)} to make total ${round(instance.amount_received,2)}. (txid: {contrib.tx_id} tx_cleared:{contrib.tx_cleared} )")
                 instance.amount_received += Decimal(value_usdt)
+                if contrib.created_on > round_start_date:
+                    instance.amount_received_in_round += Decimal(value_usdt)
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
             if subscription.num_tx_approved != 1:
                 instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-        #print("-", subscription.id, value_usdt, instance.monthly_amount_subscribed )
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
