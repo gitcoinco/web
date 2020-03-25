@@ -21,28 +21,32 @@
       <div class="row justify-content-center">
         <div class="col-12 col-lg-{% if type != 'activity' %}10{%else%}12{%endif%}">
           <ul class="grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
-            <a data-type="type" data-value="all" class="mr-1 px-2 {% if type == 'all' %}selected{% endif %}">
+            <a data-type="type" data-value="all" class="mr-1 px-1 {% if type == 'all' %}selected{% endif %}">
               All ({{all_grants_count}})
             </a>
             {% for grant_type in grant_types %}
-              <a data-type="type" data-value="{{grant_type.keyword}}" class="mr-1 px-2 {% if type == grant_type.keyword %}selected{% endif %}">
+              <a data-type="type" data-value="{{grant_type.keyword}}" class="mr-1 px-1 {% if type == grant_type.keyword %}selected{% endif %}">
                 {{grant_type.label}} ({{grant_type.count}})
               </a>
             {% endfor %}
-            <a data-type="type" data-value="about" class="mr-1 px-2 {% if type == 'about' %}selected{% endif %}">
+            |
+            <a data-type="type" data-value="about" class="mr-1 px-1 {% if type == 'about' %}selected{% endif %}">
               About
             </a>
-            <a data-type="type" data-value="activity" class="mr-1 px-2 {% if type == 'activity' %}selected{% endif %}">
+            <a data-type="type" data-value="activity" class="mr-1 px-1 {% if type == 'activity' %}selected{% endif %}">
               Activity
             </a>
             {% if github_handle %}
-              <a data-type="type" href='/{{github_handle}}/grants' class="mr-1 px-2 ">
+              <a data-type="type" target="new" href='/{{github_handle}}/grants' class="mr-1 px-1 ">
                 My Grants <i class="fas fa-external-link-alt"></i>
               </a>
-              <a data-type="type" href='/wiki/grants' class="mr-1 px-2 ">
-                FAQ <i class="fas fa-external-link-alt"></i>
-              </a>
             {% endif %}
+            <a data-type="type" target="new"href='/wiki/grants' class="mr-1 px-1 ">
+              FAQ <i class="fas fa-external-link-alt"></i>
+            </a>
+            <a data-type="type" target="new" href='https://gitcoin.co/leaderboard/payers?cadence=weekly&keyword=all&product=grants' class="mr-1 px-1 ">
+              Leaderboard <i class="fas fa-external-link-alt"></i>
+            </a>
           </ul>
         </div>
 

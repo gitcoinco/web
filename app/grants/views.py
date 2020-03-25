@@ -218,7 +218,7 @@ def grants(request):
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
-        {'label': 'Public Health', 'keyword': 'health', 'count': health_grants_count}
+        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count}
     ]
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
