@@ -52,11 +52,24 @@
               CLR MATCH ROUND 5
             </h2>
           </div>
-          <div class="col-12">
+          <div class="col-6 float-right">
+            <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+              {{grant.amount_received_in_round|floatformat:2}} DAI
+            </h2>
+            <p class="amount mb-2 font-caption font-weight-semibold">
+            raised from {{grant.positive_round_contributor_count}} contributors 
+            {% if grant.negative_round_contributor_count %}
+              &
+              {{grant.negative_round_contributor_count}}
+              negative 
+            {% endif %}
+            </p>
+          </div>
+          <div class="col-6">
             <h2 class="font-title font-weight-bold amount pt-1 mb-2">
               {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
             </h2>
-            <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate <b>( {{grant.positive_round_contributor_count}} contributors {% if grant.negative_round_contributor_count %} | {{grant.negative_round_contributor_count}} negative contributors {% endif %})</b></p>
+            <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate</p>
           </div>
         </div>
         <div class="col-12 pb-4">
