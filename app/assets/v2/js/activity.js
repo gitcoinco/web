@@ -596,6 +596,7 @@ $(document).ready(function() {
     var $target = $parent.parents('.activity.box').find('.comment_container');
     var $existing_textarea = $target.find('textarea.enter-activity-comment');
     var existing_text = $existing_textarea.length ? $existing_textarea.val() : '';
+
     if (!$target.length) {
       $target = $parent.parents('.box').find('.comment_container');
     }
