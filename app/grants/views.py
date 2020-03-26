@@ -101,7 +101,7 @@ def get_stats():
             title = ele[1]
             order_by = ele[2]
             top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
-            keys = [grant.title[0:44] + key for grant in top_grants]
+            keys = [grant.title[0:43] + key for grant in top_grants]
             charts.append({
                 'title': f"Num {title} Over Time ({round_type.title()} Round)",
                 'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on),
