@@ -382,7 +382,7 @@ $(document).ready(function() {
               web3.utils.toTwosComplement(approvalSTR)
             ).send({
               from: accounts[0],
-              gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+              gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))),
               gas: web3.utils.toHex(gas_amount(document.location.href)),
               gasLimit: web3.utils.toHex(gas_amount(document.location.href))
             }).on('error', function(error) {
