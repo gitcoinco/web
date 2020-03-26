@@ -30,9 +30,19 @@ from avatar.helpers import add_rgb_array, hex_to_rgb_array, rgb_array_to_hex, su
 from dashboard.utils import create_user_action
 from PIL import Image, ImageOps
 
-from .models import BaseAvatar, CustomAvatar, SocialAvatar
+from .models import AvatarTextOverlayInput, BaseAvatar, CustomAvatar, SocialAvatar
 
 logger = logging.getLogger(__name__)
+
+
+def get_avatar_text_if_any():
+    obj = AvatarTextOverlayInput.objects.filter(num_uses_remaining__gt=0, active=True).first()
+    if obj:
+        obj.num_uses_remaining -= 1
+        obj.current_uses += 1
+        obj.save()
+        return f'<text id="text_injection" opacity="0.03" font-family="Muli" font-size="4" font-weight="normal" fill="#FFFFFF"><tspan x="7" y="14">{obj.text}</tspan></text>'
+    return ''
 
 
 def get_avatar_attrs(theme, key):
@@ -791,6 +801,10 @@ def avatar3d(request):
                     or 'defs' in str(item.tag)
                 if include_item:
                     elements.append(ET.tostring(item).decode('utf-8'))
+            if request.method == 'POST':
+                _ele = get_avatar_text_if_any()
+                if _ele:
+                    elements.append(_ele)
             output = prepend + "".join(elements) + postpend
             tone_maps = get_avatar_attrs(theme, 'tone_maps')
             for _type in tone_maps:
