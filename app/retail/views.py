@@ -1207,7 +1207,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
                 activities = Activity.objects.none()
     elif 'hackathon:' in what:
         pk = what.split(':')[1]
-        activities = activities.filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
+        activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
