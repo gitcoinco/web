@@ -108,7 +108,7 @@ def settings_helper_get_auth(request, key=None):
     es = EmailSubscriber.objects.none()
 
     # find the user info
-    if not key:
+    if key is None or not EmailSubscriber.objects.filter(priv=key).exists():
         email = request.user.email if request.user.is_authenticated else None
         if not email:
             github_handle = request.user.username if request.user.is_authenticated else None
@@ -128,7 +128,7 @@ def settings_helper_get_auth(request, key=None):
     # lazily create profile if needed
     profiles = Profile.objects.none()
     if github_handle:
-        profiles = Profile.objects.prefetch_related('alumni').filter(handle__iexact=github_handle)
+        profiles = Profile.objects.prefetch_related('alumni').filter(handle=github_handle.lower())
     profile = None if not profiles.exists() else profiles.first()
     if not profile and github_handle:
         profile = sync_profile(github_handle, user=request.user)
@@ -139,6 +139,7 @@ def settings_helper_get_auth(request, key=None):
             es = EmailSubscriber.objects.create(
                 email=request.user.email,
                 source='settings_page',
+                profile=request.user.profile,
             )
             es.set_priv()
             es.save()
@@ -626,7 +627,7 @@ def account_settings(request):
                 es.delete()
             request.user.delete()
             AccountDeletionRequest.objects.create(
-                handle=profile.handle,
+                handle=profile.handle.lower(),
                 profile={
                         'ip': get_ip(request),
                     }
@@ -705,7 +706,7 @@ def job_settings(request):
                 es.delete()
             request.user.delete()
             AccountDeletionRequest.objects.create(
-                handle=profile.handle,
+                handle=profile.handle.lower(),
                 profile={
                         'ip': get_ip(request),
                     }
@@ -803,7 +804,7 @@ def leaderboard(request, key=''):
 
     titles = {
         f'payers': _('Top Funders'),
-        f'earners': _('Top Coders'),
+        f'earners': _('Top Earners'),
         f'orgs': _('Top Orgs'),
         f'tokens': _('Top Tokens'),
         f'keywords': _('Top Keywords'),
@@ -886,12 +887,19 @@ def leaderboard(request, key=''):
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
     product_ui = product.capitalize() if product != 'all' else ''
     page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
+    last_update = items[0].created_on if len(items) else None
+    next_update = last_update + timezone.timedelta(days=7) if last_update else None
+    if next_update and next_update < timezone.now():
+        next_update = timezone.now() + timezone.timedelta(days=1)
+
     context = {
         'items': items[0:limit],
         'nav': 'home',
         'cht': cht,
         'titles': titles,
         'cadence': cadence,
+        'last_update': last_update,
+        'next_update': next_update,
         'product': product,
         'products': ['kudos', 'grants', 'bounties', 'tips', 'all'],
         'selected': title,

@@ -19,3 +19,6 @@ app/assets/onepager/js/tx.js
 app/assets/onepager/js/bignumber.js
 
 app/assets/v2/js/lib/emoji-button.js
+app/assets/v2/js/lib/vue.js
+app/assets/v2/js/lib/jitsi.js
+app/assets/v2/js/lib/qrcode.js

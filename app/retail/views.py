@@ -43,10 +43,9 @@ from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
+from dashboard.tasks import grant_update_email_task
 from economy.models import Token
-from marketing.mails import (
-    grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email,
-)
+from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -618,9 +617,8 @@ def how_it_works(request, work_type):
     return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
-@cached_view_as(Profile.objects.hidden())
 def robotstxt(request):
-    hidden_profiles = Profile.objects.hidden()
+    hidden_profiles = list(JSONStore.objects.get(view='hidden_profiles').data)
     context = {
         'settings': settings,
         'hidden_profiles': hidden_profiles,
@@ -1008,6 +1006,26 @@ def products(request):
     """Render the Products response."""
     products = [
         {
+            'name': 'Town Square',
+            'heading': _("A Web3-enabled social networking bazaar."),
+            'description': _("Gitcoin offers social features that uses mechanism design create a community that #GivesFirst."),
+            'link': 'https://gitcoin.co/townsquare',
+            'img': static('v2/images/products/social.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of posts per day',
+        },
+        {
+            'name': 'Chat',
+            'heading': _("Reach your favorite Gitcoiner's in realtime.."),
+            'description': _("Gitcoin Chat is an enterprise-grade solution to connect with your favorite Gitcoiners in realtime.  Download the mobile apps to stay connected on the go!"),
+            'link': 'https://gitcoin.co/chat/landing',
+            'img': static('v2/images/products/chat.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of DAUs',
+        },
+        {
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
@@ -1154,6 +1172,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     relevant_grants = []
     if what == 'tribes':
         relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
+    elif what == 'all_grants':
+        activities = activities.filter(grant__isnull=False)
     elif what == 'grants':
         relevant_grants = get_my_grants(user.profile) if is_auth else []
     elif what == 'my_threads' and is_auth:
@@ -1176,8 +1196,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         activities = activities.filter(keyword_filter | base_filter)
     elif 'tribe:' in what:
         key = what.split(':')[1]
-        profile_filter = Q(profile__handle=key)
-        other_profile_filter = Q(other_profile__handle=key)
+        profile_filter = Q(profile__handle=key.lower())
+        other_profile_filter = Q(other_profile__handle=key.lower())
         keyword_filter = Q(metadata__icontains=key)
         activities = activities.filter(keyword_filter | profile_filter | other_profile_filter)
     elif 'activity:' in what:
@@ -1190,7 +1210,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
                 activities = Activity.objects.none()
     elif 'hackathon:' in what:
         pk = what.split(':')[1]
-        activities = activities.filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
+        activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
@@ -1305,7 +1325,11 @@ def create_status_update(request):
                 key = f"{key}_id"
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
-        
+
+        if request.POST.get('has_video'):
+            kwargs['metadata']['video'] = True
+            kwargs['metadata']['gfx'] = request.POST.get('video_gfx')
+
         if request.POST.get('option1'):
             poll_choices = []
             for i in range(1, 5):
@@ -1326,7 +1350,7 @@ def create_status_update(request):
             if key == 'hackathon':
                 kwargs['hackathonevent'] = HackathonEvent.objects.get(pk=result)
             if key == 'tribe':
-                kwargs['other_profile'] = Profile.objects.get(handle__iexact=result)
+                kwargs['other_profile'] = Profile.objects.get(handle=result.lower())
 
         try:
             activity = Activity.objects.create(**kwargs)
@@ -1339,7 +1363,7 @@ def create_status_update(request):
 
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):
-                    grant_update_email(activity)
+                    grant_update_email_task.delay(activity.pk)
                 else:
                     wall_post_email(activity)
 
@@ -1349,6 +1373,11 @@ def create_status_update(request):
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
             return JsonResponse(response, status=400)
     return JsonResponse(response)
+
+
+def grant_redir(request):
+    return redirect('/grants/')
+
 
 def help(request):
     return redirect('/wiki/')
@@ -1714,18 +1743,7 @@ def tribes(request):
         }
     ]
 
-    _tribes = Profile.objects.filter(data__type='Organization').\
-        annotate(follower_count=Count('org')).order_by('-follower_count')[:8]
-
-    tribes = []
-
-    for _tribe in _tribes:
-        tribe = {
-            'name': _tribe.handle,
-            'img': _tribe.avatar_url,
-            'followers_count': _tribe.follower_count
-        }
-        tribes.append(tribe)
+    tribes = JSONStore.objects.get(view='tribes', key='tribes').data
 
     testimonials = [
         {
