@@ -53,7 +53,7 @@
           <div id="no-issue-banner" class="my-4">
             <img class="w-100" src="{% static "v2/images/bounty/no_issue.svg" %}">
           </div>
-          <div id="issue-details" class="mt-4">
+          <div id="issue-details" class="mt-4 issue-details-public">
             <div class="mt-4">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">{% trans "Issue Title" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
               <input name='title' id="title"  class="form__input" type="text" value="{{ issue_title }}" placeholder="{% trans 'Your issue title' %}" readonly required/>
