@@ -101,7 +101,9 @@ function openContributorPopOver(contributor, element) {
         controller = null;
         element.popover({
           placement: 'auto',
-          trigger: 'hover',
+          // container: element,
+          trigger: 'manual',
+          delay: { 'show': 200, 'hide': 500 },
           template: `
             <div class="popover popover-bounty" role="tooltip">
               <div class="arrow"></div>
@@ -110,6 +112,21 @@ function openContributorPopOver(contributor, element) {
             </div>`,
           content: renderPopOverData(response),
           html: true
+        }).on('mouseenter', function() {
+          var _this = this;
+
+          $(this).popover('show');
+          $('.popover').on('mouseleave', function() {
+            $(_this).popover('hide');
+          });
+        }).on('mouseleave', function() {
+          var _this = this;
+
+          setTimeout(function() {
+            if (!$('.popover:hover').length) {
+              $(_this).popover('hide');
+            }
+          }, 100);
         });
         $(element).popover('show');
       })
@@ -119,7 +136,9 @@ function openContributorPopOver(contributor, element) {
   } else {
     element.popover({
       placement: 'auto',
-      trigger: 'hover',
+      // container: element,
+      trigger: 'manual',
+      delay: { 'show': 200, 'hide': 500 },
       template: `
         <div class="popover popover-bounty" role="tooltip">
           <div class="arrow"></div>
@@ -130,6 +149,21 @@ function openContributorPopOver(contributor, element) {
         popoverData.filter(item => item[contributor])[0][contributor]
       ),
       html: true
+    }).on('mouseenter', function() {
+      var _this = this;
+
+      $(this).popover('show');
+      $('.popover').on('mouseleave', function() {
+        $(_this).popover('hide');
+      });
+    }).on('mouseleave', function() {
+      var _this = this;
+
+      setTimeout(function() {
+        if (!$('.popover:hover').length) {
+          $(_this).popover('hide');
+        }
+      }, 100);
     });
     $(element).popover('show');
   }

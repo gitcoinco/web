@@ -1005,8 +1005,10 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Spring & New Things Around the Corner"
-    new_kudos_pks = [11843, 11803, 11799]
+    from marketing.models import RoundupEmail
+    args = RoundupEmail.objects.order_by('created_on').last()
+    subject = args.subject
+    new_kudos_pks = args.kudos_ids.split(',')
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1023,76 +1025,10 @@ def render_new_bounty_roundup(to_email):
 </p>
     '''
 
-    intro = f'''
-<p>
-What’s up Gitcoiners,
-</p>
-<p>
-Spring is just around the corner! March is going to be an exciting month on Gitcoin. We are halfway through the <a href="https://gitcoin.co/hackathon/decentralized-impact-incubator">Social Impact Incubator Hackathon</a> and the <a href=“https://gitcoin.co/hackathon/skynet”>Skynet Virtual Hackathon</a> by Sia. Check out the great <a href="https://gitcoin.co/hackathon/projects/skynet/">projects</a> in the <a href="https://gitcoin.co/hackathon/projects/decentralized-impact-incubator">works</a>! There are also more exciting bounties up ahead. <a href=“https://hackathons.gitcoin.co/funding-the-future”>Funding the Future</a> Virtual Hackathon starts on March 16th and will be packed with great bounties on DeFi, funding mechanisms, DAOs and more! On top of that, we’re doing a concurrent <a href=“https://gitcoin.co/grants/">Gitcoin Grants CLR</a> Round 5, kicking off at the same time.
-</p>
-<p>
-We’re working on launching the next stage of open source community BUIDLing. We’ve got a few tricks up our sleeves about how to make it easier and more purposeful for all of us to create strong connections, teams, concepts and wheel-spinning products. Keep an eye out for what’s coming in the next month! In the mean time come hangout in <a href="https://gitcoin.co/townsquare">Town Square</a> to be part of the conversation, earn tips (with mini CLR matches), and learn how you can help Grow Open Source!
-</p>
-<p>
-Interested in sneak peaks at what the product team is doing or being an early tester? <a href=“https://gitcoin.co/pixelantdesign”>Hit me up</a> on the <a href=“https://gitcoin.co/chat”>Gitcoin Chat</a>!
-</p>
-
-{kudos_friday}
-
-<h3>What else is new?</h3>
-    <ul>
-        <li>
-        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will be a "meta" community stream - we want to hear from you! We'll be presenting some of the new features we're building out with Townsquare, Gitcoin Tribes, Hackathons, and more. But we also want you to participate. What new features do you want to have in 2020? Who do you want to see on future Livestreams? What kind of themes should we host hackathons around? This is an open discussion, come with questions, comments, concerns, complaints, and we'll make it fun!
-        </li>
-    </ul>
-</p>
-<p>
-Back to (remote) work,
-</p>
-'''
-    highlights = [{
-        'who': 'Bobface',
-        'who_link': True,
-        'what': 'Enabled Token Purchases With ETH And Other ERC20s for IdeaMarkets',
-        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/18/4053',
-        'link_copy': 'View more',
-    }, {
-        'who': 'agbilotia1998',
-        'who_link': True,
-        'what': 'Moved Code Of Conduct Into Footer And Out Of Cent-Node Docs',
-        'link': 'https://gitcoin.co/issue/centrifuge/developer.centrifuge.io/163/4062',
-        'link_copy': 'View more',
-    }, {
-        'who': 'proy24',
-        'who_link': True,
-        'what': 'Won Bancor Hackathon Prize - Trade & Liquidity Widget',
-        'link': 'https://gitcoin.co/issue/bancorprotocol/contracts/336/3947',
-        'link_copy': 'View more',
-    }, ]
-
-    sponsor = {
-    'name': 'CodeFund',
-    'title': 'Does your project need 🦄 developers?',
-    'image_url': '',
-    'link': 'http://bit.ly/codefund-gitcoin-weekly',
-    'cta': 'Learn More',
-    'body': [
-       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
-       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
-    ]
-}
-
-    bounties_spec = [{
-        'url': 'https://github.com/NebulousLabs/Skynet-Hive/issues/1',
-        'primer': '(1,750,000 SC) - Gitcoin Skynet Hackathon Challenge',
-    }, {
-        'url': 'https://github.com/cybersemics/em/issues/308',
-        'primer': 'React-Scripts >= 2 Breaks MultiGesture On Build',
-    }, {
-        'url': 'https://github.com/diadata-org/diadata/issues/203',
-        'primer': 'DeFI Lending | MasterKey Risk Analysis',
-    }]
-
+    intro = args.body.replace('KUDOS_INPUT_HERE', kudos_friday)
+    highlights = args.highlights
+    sponsor = args.sponsor
+    bounties_spec = args.bounties_spec
 
     num_leadboard_items = 5
     highlight_kudos_ids = []
@@ -1159,7 +1095,7 @@ Back to (remote) work,
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
-    return response_html, response_txt, subject
+    return response_html, response_txt, subject, args.from_email, args.from_name
 
 
 
@@ -1421,7 +1357,7 @@ def faucet_rejected(request):
 
 @staff_member_required
 def roundup(request):
-    response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    response_html, _, _, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
 
 

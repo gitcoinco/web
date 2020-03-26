@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.urls import reverse
 
 from app.utils import get_profiles_from_text
 from dashboard.models import Activity
@@ -126,10 +128,18 @@ def create_notification(sender, **kwargs):
         )
 
     if activity.activity_type == 'new_kudos':
+        kudos_url = reverse('profile_min', args=[
+            activity.kudos_transfer.recipient_profile.handle,
+            'kudos'
+        ])
+
+        if activity.kudos_transfer and activity.kudos_transfer.recipient_profile:
+            kudos_url = activity.kudos_transfer.receive_url_for_recipient
+
         send_notification_to_user(
             activity.profile.user,
             activity.kudos_transfer.recipient_profile.user,
-            activity.kudos_transfer.receive_url_for_recipient,
+            kudos_url,
             'new_kudos',
             f'You received a <b>new kudos from {activity.profile.user}</b>'
         )
@@ -171,10 +181,20 @@ def create_like_notification(sender, **kwargs):
         activity.profile.user,
         activity.url,
         'new_like',
-        f'❤️ <b>{like.profile.user} liked your comment</b>: {activity.metadata["title"]}'
+        f'❤️ <b>{like.profile.user} liked your comment</b>: {activity.metadata.get("title", "")}'
     )
 
+@receiver(post_save, sender=Activity, dispatch_uid="psave_activitiy")
+def psave_activitiy(sender, instance, created, **kwargs):
+    if created:
+        create_notification(sender=Activity, instance=instance)
 
-post_save.connect(create_notification, sender=Activity)
-post_save.connect(create_comment_notification, sender=Comment)
-post_save.connect(create_like_notification, sender=Like)
+@receiver(post_save, sender=Comment, dispatch_uid="psave_comment")
+def psave_comment(sender, instance, created, **kwargs):
+    if created:
+        create_comment_notification(sender=Comment, instance=instance)
+
+@receiver(post_save, sender=Like, dispatch_uid="psave_like")
+def psave_like(sender, instance, created, **kwargs):
+    if created:
+        create_like_notification(sender=Like, instance=instance)

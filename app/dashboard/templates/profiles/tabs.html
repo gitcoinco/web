@@ -46,7 +46,7 @@
         {% if profile.is_org %}
           <button type="button" id="nav-description" href="{{profile.url}}/people" class="text-center section-tab {% if tab == "people" %} active {% endif %}">
             {% trans "PEOPLE" %}
-            <span  class="nav-badge">({{profile.team|length}})</span>
+            <span  class="nav-badge">({{team|length}})</span>
           </button>
         {% endif %}
         {% if total_grant_actions %}
