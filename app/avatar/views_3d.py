@@ -41,7 +41,7 @@ def get_avatar_text_if_any():
         obj.num_uses_remaining -= 1
         obj.current_uses += 1
         obj.save()
-        return f'<text id="text_injection" opacity="0.03" font-family="Muli" font-size="4" font-weight="normal" fill="#FFFFFF"><tspan x="7" y="14">{obj.text}</tspan></text>'
+        return f'<text id="text_injection" opacity="0.03" font-family="Muli" font-size="4" font-weight="normal" fill="#777777"><tspan x="7" y="14">{obj.text}</tspan></text>'
     return ''
 
 
