@@ -168,7 +168,12 @@ def grants(request):
 
     _grants = Grant.objects.filter(
         network=network, hidden=False
-    ).keyword(keyword).order_by(sort, 'pk')
+    ).keyword(keyword)
+    try:
+        _grants = _grants.order_by(sort, 'pk')
+        ____ = _grants.first()
+    except:
+        return redirect('/grants')
     if state == 'active':
         _grants = _grants.active()
     if keyword:
