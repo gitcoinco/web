@@ -1,4 +1,4 @@
-{% comment %}
+'''
     Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
@@ -14,13 +14,22 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-{% endcomment %}
-{% load static %}
-<script src="{% static "v2/js/lib/jitsi.js" %}"></script>
-<script src="{% static "v2/js/lib/jquery.autogrow.js" %}"></script>
-<script src="{% static "v2/js/activity.js" %}"></script>
-<script>
-  document.long_poller_live = true;
+'''
 
-</script>
-{% include 'shared/tip_dependancies.html' %}
+
+from django.core.management.base import BaseCommand
+
+from marketing.mails import notify_deadbeat_grants
+
+
+class Command(BaseCommand):
+
+    help = 'finds quests whose reward is out of redemptions'
+
+    def handle(self, *args, **options):
+        from grants.models import Grant
+        from django.utils import timezone
+        before = timezone.now() - timezone.timedelta(hours=6)
+        grants = Grant.objects.filter(contract_address='0x0', active=True, created_on__lt=before)
+        if grants.count():
+            notify_deadbeat_grants(grants)

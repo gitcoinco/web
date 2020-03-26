@@ -128,7 +128,7 @@ def preprocess(request):
         'chat_url': chat_url,
         'chat_id': chat_id,
         'chat_access_token': chat_access_token,
-        'github_handle': request.user.username if user_is_authenticated else False,
+        'github_handle': request.user.username.lower() if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
         'last_chat_status':

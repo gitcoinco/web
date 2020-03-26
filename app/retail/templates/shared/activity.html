@@ -185,6 +185,9 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
+          {% if row.metadata.num_tx_approved %}
+            for {{row.metadata.num_tx_approved}} CLR round{{row.metadata.num_tx_approved|pluralize}}
+          {% endif %}
         {% elif row.activity_type == 'killed_grant_contribution' %}
           {% trans "unsubscribed from" %}
           <a href="{{ row.metadata.grant_url }}" >
@@ -220,7 +223,7 @@
           </a>
         {% endif %}
       :
-        <b>{{ row.metadata.title }}</b>
+        <span>{{ row.metadata.title }}</span>
       {% elif row.activity_type == 'consolidated_leaderboard_rank'  or row.activity_type == 'consolidated_mini_clr_payout' %}
         {{row.metadata.copy|safe}}
 

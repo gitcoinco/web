@@ -122,6 +122,14 @@ $(document).ready(function() {
     $(event.currentTarget).addClass('badge-active');
   });
 
+  var set_form_disabled = function(is_disabled) {
+    if(is_disabled){
+      $('body').append('<div id=intercept_overlay>&nbsp;</div>');
+    } else {
+      $("#intercept_overlay").remove();
+    }
+  };
+
   $('input[name=match_direction]').change(function(e) {
     let direction = $(this).val();
 
@@ -264,15 +272,18 @@ $(document).ready(function() {
         indicateMetamaskPopup();
         var to_address = data.match_direction == '+' ? data.admin_address : gitcoinDonationAddress;
 
+        set_form_disabled(true);
         web3.eth.sendTransaction({
           from: accounts[0],
           to: to_address,
-          value: to_addr_amount
+          value: to_addr_amount,
+          gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
         }, function(err, txid) {
           indicateMetamaskPopup(1);
           if (err) {
             console.log(err);
             _alert('There was an error', 'error');
+            set_form_disabled(false);
             return;
           }
           $('#gas_price').val(1);
@@ -286,6 +297,12 @@ $(document).ready(function() {
           saveSubscription(data, true);
           var success_callback = function(err, new_txid) {
             indicateMetamaskPopup(1);
+            if (err) {
+              console.log(err);
+              _alert('There was an error', 'error');
+              set_form_disabled(false);
+              return;
+            }
             data = {
               'subscription_hash': 'onetime',
               'signature': 'onetime',
@@ -317,7 +334,8 @@ $(document).ready(function() {
             web3.eth.sendTransaction({
               from: accounts[0],
               to: gitcoinDonationAddress,
-              value: gitcoin_amount
+              value: gitcoin_amount,
+              gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
             }, success_callback);
           }
         });
@@ -376,17 +394,19 @@ $(document).ready(function() {
           if (result < realTokenAmount) {
             _alert({ message: gettext('You do not have enough tokens to make this transaction.')}, 'error');
           } else {
+            set_form_disabled(true);
             indicateMetamaskPopup();
             deployedToken.methods.approve(
               approvalAddress,
               web3.utils.toTwosComplement(approvalSTR)
             ).send({
               from: accounts[0],
-              gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+              gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))),
               gas: web3.utils.toHex(gas_amount(document.location.href)),
               gasLimit: web3.utils.toHex(gas_amount(document.location.href))
             }).on('error', function(error) {
               indicateMetamaskPopup(true);
+              set_form_disabled(false);
               console.log('1', error);
               _alert({ message: gettext('Your approval transaction failed. Please try again.')}, 'error');
             }).on('transactionHash', function(transactionHash) {
@@ -555,6 +575,7 @@ const processSubscriptionHash = (parts) => {
 const saveSubscription = (data, isOneTimePayment) => {
   if (isOneTimePayment) {
     data['real_period_seconds'] = 0;
+    data['csrfmiddlewaretoken'] = $("#js-fundGrant input[name='csrfmiddlewaretoken']").val();
   }
   $.ajax({
     type: 'post',
@@ -620,10 +641,12 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   indicateMetamaskPopup();
   deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
     from: account,
-    gas: web3.utils.toHex(100000)
+    gas: web3.utils.toHex(100000),
+    gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
   }).on('error', function(error) {
     console.log('1', error);
     indicateMetamaskPopup(1);
+    set_form_disabled(false);
     _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
   }).on('transactionHash', function(transactionHash) {
     indicateMetamaskPopup(1);
