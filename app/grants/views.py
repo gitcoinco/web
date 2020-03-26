@@ -90,8 +90,8 @@ def get_stats():
     created_on = next_round_start
     charts = []
     key_titles = [
-        ('_match', 'Estimated Matching Amount', '-clr_prediction_curve__0__1' ),
-        ('_pctrbs', 'Positive', '-positive_round_contributor_count' ),
+        ('_match', 'Estimated Matching Amount', '-positive_round_contributor_count' ),
+        ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count' ),
         ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count' ),
         ('_amt', 'CrowdFund Amount', '-amount_received_in_round' ),
     ]
@@ -105,7 +105,7 @@ def get_stats():
             top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
             charts.append({
-                'title': f"Num {title} Over Time ({round_type.title()} Round)",
+                'title': f"{title} Over Time ({round_type.title()} Round)",
                 'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on),
                 })
     results = []
@@ -246,7 +246,8 @@ def grants(request):
     try:
         _grants = _grants.order_by(sort, 'pk')
         ____ = _grants.first()
-    except:
+    except Exception as e:
+        print(e)
         return redirect('/grants')
     if state == 'active':
         _grants = _grants.active()
