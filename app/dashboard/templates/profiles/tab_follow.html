@@ -10,45 +10,68 @@
   </button>
 </div>
 
-<div class="tab-projects d-flex flex-column">
-    <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
-      <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-        <img class="profile-header__avatar mr-3" src="{% avatar_url viewer.viewer.handle %}" alt="">
-      </div>
-      <div class="tab-projects__item-details col-12 col-md-8 d-flex flex-column bounty-detail">
-        {% if foltab == 'followers' %}
-        <div class="d-flex">
-          <div class="font-weight-semibold font-subheader">{{viewer.viewer.handle}}</div>&nbsp;
+{% if foltab == 'followers' %}
+  <!-- Show This users followers-->
+  <div class="tab-projects d-flex flex-column">
+    {% if profile.viewed_by.count == 0 %}
+      No Viewers
+    {% endif %}
+    {% for viewer in profile.viewed_by.all %}
+      <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
+        <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+          <img class="profile-header__avatar mr-3" src="{% avatar_url viewer.viewer.handle %}" alt="">
         </div>
-        <div class="info font-caption">Viewed profile {{viewer.created_on | naturaltime}}</div>
-        <div class="tag-list">
-          {% for keyword in viewer.keywords %}
-            <small class="tag-list__item px-2">{{keyword}}</small>
-          {% endfor %}
+        <div class="tab-projects__item-details col-12 col-md-8 d-flex flex-column bounty-detail">
+          <div class="d-flex">
+            <div class="font-weight-semibold font-subheader">{{viewer.viewer.handle}}</div>&nbsp;
+          </div>
+          <div class="info font-caption">Viewed profile {{viewer.created_on | naturaltime}}</div>
+          <div class="tag-list">
+            {% for keyword in viewer.keywords %}
+              <small class="tag-list__item px-2">{{keyword}}</small>
+            {% endfor %}
+          </div>
         </div>
-      </div>
-      <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
-        <a class="btn btn-gc-blue btn-sm font-caption font-weight-semibold" href="/profile/{{viewer.viewer.handle}}">
-          View Profile <i class="fas fa-chevron-right ml-1 font-smaller-5"></i>
-        </a>
-      </div>
-        {% elif foltab == 'following' %}
-        <div class="d-flex">
-          <div class="font-weight-semibold font-subheader">{{viewer.viewer.handle}}</div>&nbsp;
-        </div>
-        <div class="info font-caption">Viewed profile {{viewer.created_on | naturaltime}}</div>
-        <div class="tag-list">
-          {% for keyword in viewer.keywords %}
-            <small class="tag-list__item px-2">{{keyword}}</small>
-          {% endfor %}
+        <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
+          <a class="btn btn-gc-blue btn-sm font-caption font-weight-semibold" href="/profile/{{viewer.viewer.handle}}">
+            View Profile <i class="fas fa-chevron-right ml-1 font-smaller-5"></i>
+          </a>
         </div>
       </div>
-      <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
-        {% include 'profiles/follow.html' %}
+    {% endfor %}
+  </div>
+{% elif foltab == 'following' %}
+  <!-- Show which users this one is following-->
+  <div class="tab-projects d-flex flex-column">
+    {% if profile.viewed_by.count == 0 %}
+      No Viewers
+    {% endif %}
+    {% for viewer in profile.viewed_by.all %}
+      <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
+        <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+          <img class="profile-header__avatar mr-3" src="{% avatar_url viewer.viewer.handle %}" alt="">
+        </div>
+        <div class="tab-projects__item-details col-12 col-md-8 d-flex flex-column bounty-detail">
+          <div class="d-flex">
+            <div class="font-weight-semibold font-subheader">{{viewer.viewer.handle}}</div>&nbsp;
+          </div>
+          <div class="info font-caption">Viewed profile {{viewer.created_on | naturaltime}}</div>
+          <div class="tag-list">
+            {% for keyword in viewer.keywords %}
+              <small class="tag-list__item px-2">{{keyword}}</small>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
+          <a class="btn btn-gc-blue btn-sm font-caption font-weight-semibold" href="/profile/{{viewer.viewer.handle}}">
+            View Profile <i class="fas fa-chevron-right ml-1 font-smaller-5"></i>
+          </a>
+        </div>
       </div>
-    </div>
-  {% endfor %}
-</div>
+    {% endfor %}
+  </div>
+
+
   <script>
     setInterval(function(){
       if($ && $('.load-more').length && $(".load-more").isInViewport()){
