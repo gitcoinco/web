@@ -3,6 +3,18 @@
     border-bottom: 1px solid #515151;
   }
 }
+#intercept_overlay{
+  background-color: rgba(0,0,0, 0.1);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 99999999;
+  top: 0px;
+  left: 0px;
+}
+.est_direction{
+  font-weight: 900;
+}
 
 .admin_profile a,
 #grant-link {
@@ -13,23 +25,14 @@
   width: 100%;
 }
 
-.banner-img {
-  max-height: 22rem;
-  overflow-y: hidden;
-}
-
-.banner-img img {
-  height: auto;
-  width: 100%;
-  object-fit: cover;
-}
-
 #grants_form .nav-link {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   color: #000;
 }
-
+#grants_form .nav-link.active {
+  background-color: #eee;
+}
 #grants_form .form__input.valid,
 #grants_form .form__input.error {
   background-position: top 0.5rem right 0.5rem;
@@ -261,18 +264,6 @@
 
   #gitcoin-grant-section .fee-slider-summary {
     margin-bottom: 1rem !important;
-  }
-}
-
-@media (max-width: 767.98px) {
-
-  .banner-img {
-    text-align: center;
-  }
-
-  .banner-img img {
-    width: auto;
-    max-width: 100%;
   }
 }
 
