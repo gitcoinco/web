@@ -16,7 +16,7 @@
     {% for user in profile.followers %}
       <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
         <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-          <img class="profile-header__avatar mr-3" src="{% avatar_url viewer.viewer.handle %}" alt="">
+          <img class="profile-header__avatar mr-3" src="{% avatar_url user.handle %}" alt="">
         </div>
         <div class="tab-projects__item-details col-12 col-md-8 d-flex flex-column bounty-detail">
           <div class="d-flex">
