@@ -40,6 +40,7 @@ $(document).ready(() => {
     etherscanUrlConvert(links, _network);
   });
 
+  md.renderMarkdown()
 });
 
 const etherscanUrlConvert = (elem, network) => {
@@ -107,6 +108,22 @@ window.addEventListener('scroll', function() {
   } else {
     $('#skip').removeClass('hidden');
   }
-  
+
 });
+
+let markdowned = window.markdownit();
+
+const md = new Vue({
+  el: "#status",
+    data: {
+      name: "# now you can make your comment at markdown",
+      markdown: ""
+    },
+    methods: {
+      renderMarkdown: function () {
+        this.markdown = markdowned.render(this.name);
+        $("#renderedHTML").html(markdowned.render(this.name));
+      }
+    }
+})
 
