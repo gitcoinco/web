@@ -619,6 +619,12 @@ TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')  # TODO
 TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')  # TODO
 TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
 
+DISPUTES_TWITTER_CONSUMER_KEY = env('DISPUTES_TWITTER_CONSUMER_KEY', default='')  # TODO
+DISPUTES_TWITTER_CONSUMER_SECRET = env('DISPUTES_TWITTER_CONSUMER_SECRET', default='')  # TODO
+DISPUTES_TWITTER_ACCESS_TOKEN = env('DISPUTES_TWITTER_ACCESS_TOKEN', default='')  # TODO
+DISPUTES_TWITTER_ACCESS_SECRET = env('DISPUTES_TWITTER_ACCESS_SECRET', default='')  # TODO
+
+
 # Slack Integration
 # optional: only needed if you slack things
 SLACK_TOKEN = env('SLACK_TOKEN', default='')  # TODO
@@ -730,7 +736,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)

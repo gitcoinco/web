@@ -2077,6 +2077,7 @@ class Activity(SuperModel):
         ('new_grant', 'New Grant'),
         ('update_grant', 'Updated Grant'),
         ('killed_grant', 'Cancelled Grant'),
+        ('negative_contribution', 'Negative Grant Contribution'),
         ('new_grant_contribution', 'Contributed to Grant'),
         ('new_grant_subscription', 'Subscribed to Grant'),
         ('killed_grant_contribution', 'Cancelled Grant Contribution'),
@@ -2095,6 +2096,7 @@ class Activity(SuperModel):
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
         ('hackathon_registration', 'Hackathon Registration'),
+        ('flagged_grant', 'Flagged Grant'),
     ]
 
     profile = models.ForeignKey(
@@ -2172,6 +2174,10 @@ class Activity(SuperModel):
 
     def get_absolute_url(self):
         return self.url
+
+    @property
+    def show_token_info(self):
+        return self.activity_type in 'new_bounty,increased_bounty,killed_bounty,negative_contribution,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund'.split(',')
 
     @property
     def video_participants_count(self):
@@ -4833,7 +4839,7 @@ def get_my_grants(profile):
     relevant_grants = list(profile.grant_contributor.all().values_list('grant', flat=True)) \
         + list(profile.grant_teams.all().values_list('pk', flat=True)) \
         + list(profile.grant_admin.all().values_list('pk', flat=True)) \
-        + list(profile.grant_phantom_funding.values_list('pk', flat=True))
+        + list(profile.grant_phantom_funding.values_list('grant__pk', flat=True))
     return relevant_grants
 
 

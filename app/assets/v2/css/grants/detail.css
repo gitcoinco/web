@@ -1,3 +1,6 @@
+.grant-detail #status{
+  color: black;
+}
 .grant_details span.box {
   width: 20px;
   height: 20px;

@@ -171,7 +171,7 @@ urlpatterns = [
 
     # grant views
     path('grants/', include('grants.urls', namespace='grants')),
-    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
+    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall_')),
     re_path(r'^grant/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
