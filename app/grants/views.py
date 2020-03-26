@@ -66,7 +66,8 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '(💰$250K Match Round LIVE NOW!) '
+matching_live = '(💰$250K Match LIVE!) '
+matching_live_tiny = '💰'
 total_clr_pot = 250000
 clr_round = 5
 clr_active = True
@@ -79,6 +80,7 @@ kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12
 if not clr_active:
     clr_matching_banners_style = 'results'
     matching_live = ''
+    matching_live_tiny = ''
 
 def get_fund_reward(request, grant):
     token = Token.objects.filter(
@@ -396,7 +398,7 @@ def grant_details(request, grant_id, grant_slug):
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
         'tab': tab,
-        'title': matching_live + " Gitcoin Grants | " + grant.title,
+        'title': matching_live_tiny + " Grants | " + grant.title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
