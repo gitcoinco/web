@@ -34,22 +34,18 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
-        parser.add_argument('clr_type', type=str, default='all', choices=['tech', 'media', 'all'])
+        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health'])
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
-        parser.add_argument('clr_amount', type=float, default=0.0)
 
     def handle(self, *args, **options):
         clr_type = options['clr_type']
         network = options['network']
-        clr_amount = options['clr_amount']
 
         clr_prediction_curves = predict_clr(
-            random_data=False,
             save_to_db=True,
             from_date=timezone.now(),
             clr_type=clr_type,
-            network=network,
-            clr_amount=clr_amount
+            network=network
         )
 
         # Uncomment these for debugging and sanity checking
@@ -62,8 +58,8 @@ class Command(BaseCommand):
         clr_data = [g['grants_clr'] for g in clr_prediction_curves]
 
         # print(clr_data)
-
-        total_clr_funds = sum([each_grant['clr_amount'] for each_grant in clr_data[0]])
-        print("allocated CLR funds:{}".format(total_clr_funds))
+        if clr_data and clr_data[0]:
+            total_clr_funds = sum([each_grant['clr_amount'] for each_grant in clr_data[0]])
+            print("allocated CLR funds:{}".format(total_clr_funds))
 
         print("finished CLR estimates")

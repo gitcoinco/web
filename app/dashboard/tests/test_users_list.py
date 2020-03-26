@@ -96,7 +96,7 @@ class UsersListTest(TestCase):
     def test_user_list(self):
         request = self.request
         request.user = self.current_user
-        assert json.loads(users_fetch(request.get('/api/v0.1/users_fetch?user={}'.format(self.current_user.id))).content)['count'] == 22
+        assert json.loads(users_fetch(request.get('/api/v0.1/users_fetch?user={}'.format(self.current_user.id))).content)['count'] == 21
 
     def test_default_users_ordering_with_previous_workers_at_the_top(self):
         setup_bounties()

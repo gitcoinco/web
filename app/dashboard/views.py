@@ -232,7 +232,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         activity = Activity.objects.create(**kwargs)
 
         # leave a comment on townsquare IFF someone left a start work plan
-        if event_name == 'start_work' and interest and interest.issue_message:
+        if event_name in ['start_work', 'worker_applied'] and interest and interest.issue_message:
             from townsquare.models import Comment
             Comment.objects.create(
                 profile=interest.profile,
@@ -905,13 +905,7 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         )
 
     if rating != 0:
-        pass
-        # TODO - reenable in future when we have avg feedback availaable
- #       profile_list = profile_list.annotate(
- #           average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
- #       ).filter(
- #           average_rating__gte=rating
- #       )
+        profile_list = profile_list.filter(average_rating__gte=rating)
 
     if organisation:
         profile_list1 = profile_list.filter(
@@ -936,7 +930,8 @@ def users_fetch(request):
     persona = request.GET.get('persona', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', '-actions_count')
+    default_sort = '-actions_count' if persona != 'tribe' else '-follower_count'
+    order_by = request.GET.get('order_by', default_sort)
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
@@ -5028,6 +5023,7 @@ def payout_bounty_v1(request, fulfillment_id):
         return JsonResponse(response)
 
     fulfillment.payout_amount = amount
+    fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name
     fulfillment.save()
 

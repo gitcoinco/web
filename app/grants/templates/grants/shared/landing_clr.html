@@ -9,7 +9,6 @@
                   <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
                     {{ type }} GRANTS CLR MATCHING ROUND {{clr_round}}
                   </h2>
-                  <p class="px-4">Jan 6, 2020 - Jan 21, 2020</p>
                 {% else %}
                   <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
                     GRANTS CLR {{ clr_round|add:"1" }} ( COMING SOON )
@@ -17,7 +16,7 @@
                 {% endif %}
               </div>
               <div class="col-12 col-md-3 total_active_fund">
-                {% if current_partners %}
+                {% if current_partners and False %}
                   <p class="pt-4 mb-0 font-weight-semibold">${{current_partners_fund|floatformat|intcomma}}</p>
                 {% endif %}
               </div>
@@ -28,7 +27,7 @@
                       <a class="nav-link nav-line active px-0 pb-1" id="currentpartners-tab"
                         data-toggle="tab" href="#currentpartners" role="tab" class="text-white"
                         aria-controls="currentpartners" aria-selected="true">
-                        Sponsors
+                        Current Sponsors
                       </a>
                     </li>
                   {% endif %}
