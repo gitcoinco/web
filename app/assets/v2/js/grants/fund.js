@@ -578,6 +578,7 @@ const processSubscriptionHash = (parts) => {
 const saveSubscription = (data, isOneTimePayment) => {
   if (isOneTimePayment) {
     data['real_period_seconds'] = 0;
+    data['csrfmiddlewaretoken'] = $("#js-fundGrant input[name='csrfmiddlewaretoken']").val();
   }
   $.ajax({
     type: 'post',
