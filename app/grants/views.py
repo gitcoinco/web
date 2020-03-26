@@ -100,7 +100,7 @@ def get_stats():
             key = ele[0]
             title = ele[1]
             order_by = ele[2]
-            if _nctrbs == '_nctrbs' and round_type != 'media':
+            if key == '_nctrbs' and round_type != 'media':
                 continue
             top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
@@ -315,6 +315,8 @@ def grants(request):
     grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
     if has_real_grant_type:
         title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"
+    if grant_type == 'stats':
+        title = f"Round {clr_round} Stats"
     cht = []
     chart_list = ''
     if grant_type == 'stats':
