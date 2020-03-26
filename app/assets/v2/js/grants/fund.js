@@ -123,10 +123,10 @@ $(document).ready(function() {
   });
 
   var set_form_disabled = function(is_disabled) {
-    if(is_disabled){
+    if (is_disabled) {
       $('body').append('<div id=intercept_overlay>&nbsp;</div>');
     } else {
-      $("#intercept_overlay").remove();
+      $('#intercept_overlay').remove();
     }
   };
 
