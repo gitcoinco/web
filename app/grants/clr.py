@@ -446,22 +446,26 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                 data=_grant.clr_prediction_curve,
             )
             try:
-                Stat.objects.create(
-                    key=_grant.title[0:43] + "_match",
-                    val=_grant.clr_prediction_curve[0][1],
-                    )
-                Stat.objects.create(
-                    key=_grant.title[0:43] + "_pctrbs",
-                    val=_grant.positive_round_contributor_count,
-                    )
-                Stat.objects.create(
-                    key=_grant.title[0:43] + "_nctrbs",
-                    val=_grant.negative_round_contributor_count,
-                    )
-                Stat.objects.create(
-                    key=_grant.title[0:43] + "_amt",
-                    val=_grant.amount_received_in_round,
-                    )
+                if _grant.clr_prediction_curve[0][1]:
+                    Stat.objects.create(
+                        key=_grant.title[0:43] + "_match",
+                        val=_grant.clr_prediction_curve[0][1],
+                        )
+                if _grant.positive_round_contributor_count:
+                    Stat.objects.create(
+                        key=_grant.title[0:43] + "_pctrbs",
+                        val=_grant.positive_round_contributor_count,
+                        )
+                if _grant.negative_round_contributor_count:
+                    Stat.objects.create(
+                        key=_grant.title[0:43] + "_nctrbs",
+                        val=_grant.negative_round_contributor_count,
+                        )
+                if _grant.amount_received_in_round:
+                    Stat.objects.create(
+                        key=_grant.title[0:43] + "_amt",
+                        val=_grant.amount_received_in_round,
+                        )
             except:
                 pass
 
