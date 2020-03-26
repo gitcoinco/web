@@ -73,6 +73,8 @@ from .signals import m2m_changed_interested
 logger = logging.getLogger(__name__)
 
 
+CROSS_CHAIN_STANDARD_BOUNTIES_OFFSET = 100000000 
+
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""
 
@@ -1842,6 +1844,9 @@ def psave_bounty(sender, instance, **kwargs):
             profiles = Profile.objects.filter(handle=instance.bounty_owner_github_username.lower().replace('@',''))
             if profiles.exists():
                 instance.bounty_owner_profile = profiles.first()
+
+    if not instance.is_bounties_network:
+        instance.standard_bounties_id = CROSS_CHAIN_STANDARD_BOUNTIES_OFFSET + instance.pk
 
     from django.contrib.contenttypes.models import ContentType
     from search.models import SearchResult
