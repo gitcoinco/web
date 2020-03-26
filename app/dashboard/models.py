@@ -1845,6 +1845,7 @@ def psave_bounty(sender, instance, **kwargs):
             if profiles.exists():
                 instance.bounty_owner_profile = profiles.first()
 
+    # this is added to allow activities, project submissions, etc. to attach to a specific bounty based on standard_bounties_id - DL
     if not instance.is_bounties_network and instance.standard_bounties_id == 0:
         instance.standard_bounties_id = CROSS_CHAIN_STANDARD_BOUNTIES_OFFSET + instance.pk
 
