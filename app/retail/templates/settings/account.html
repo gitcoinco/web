@@ -50,8 +50,36 @@
     border-radius: 50%;
     border: 0.2rem solid #1AB56D;
   }
+
+  .profile-header__sync {
+    margin-top: -140px;
+    position: relative;
+  }
+
+  .profile-header__sync.inactive {
+    display: none;
+  }
+
+  .profile-header__sync img {
+    width: 32px;
+  }
+
+  .profile-header__sync img.loading {
+    display: none;
+  }
+
 </style>
 <form id="settings" method="POST" action="{% url 'account_settings' %}" class="col-md-8 m-auto">
+
+
+  <div class="form-group mb-5">
+    <h5>  Backup Profile data to 3box:</h5>
+    <div>
+      {% if is_alpha_tester %}
+        {% include 'profiles/header_sync_profile.html' %}
+      {% endif %}
+    </div>
+  </div>
   <div class="form-group mb-5">
     <h5>{% trans "Account type" %}</h5>
     <p>{% trans "Let us know your account type so we can optimize your experience" %}</p>
@@ -216,5 +244,7 @@
     });
   });
 </script>
+<script src="{% static "v2/js/3box-sync.js" %}"></script>
+<script src="{% static "v2/js/pages/profile-backup.js" %}"></script>
 {{ block.super }}
 {% endblock %}

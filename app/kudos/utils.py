@@ -448,14 +448,12 @@ class KudosContract:
             nonce = self._w3.eth.getTransactionCount(account)
             gas_estimate = self._contract.functions.mint(*args).estimateGas({'nonce': nonce, 'from': account})
             logger.debug(f'Gas estimate for raw tx: {gas_estimate}')
-            if gas_price_gwei:
-                gasPrice = self._w3.toWei(gas_price_gwei, 'gwei')
-                txn = self._contract.functions.mint(*args).buildTransaction(
-                    {'gasPrice': gasPrice, 'gas': gas_estimate, 'nonce': nonce, 'from': account}
-                )
-            else:
-                txn = self._contract.functions.mint(*args).buildTransaction(
-                    {'gas': gas_estimate, 'nonce': nonce, 'from': account}
+            if not gas_price_gwei:
+                from gas.utils import recommend_min_gas_price_to_confirm_in_time
+                gas_price_gwei = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 1.2)
+            gasPrice = self._w3.toWei(gas_price_gwei, 'gwei')
+            txn = self._contract.functions.mint(*args).buildTransaction(
+                {'gasPrice': gasPrice, 'gas': gas_estimate, 'nonce': nonce, 'from': account}
                 )
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)

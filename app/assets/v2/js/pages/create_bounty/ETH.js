@@ -134,7 +134,7 @@ const ethCreateBounty = data => {
     _alert({ message: gettext('Submission sent to web3.') }, 'info');
     setTimeout(() => {
       delete localStorage['issueURL'];
-      document.location.href = '/funding/details/?url=' + issueURL;
+      document.location.href = '/funding/details/?url=' + issueURL + '&sb=1';
     }, 1000);
   }
 

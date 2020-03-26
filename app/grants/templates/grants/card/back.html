@@ -23,7 +23,7 @@
       <div class="overflow-auto h-90">
         {% for handle in grant.activeSubscriptions %}
           <a class="grant__stakeholders-item ml-2" href="{% url 'profile' handle %}">
-            <img data-src="{% avatar_url handle  %}" />
+          <img data-src="/dynamic/avatar/{{handle}}" />
           </a>
         {% endfor %}
       </div>

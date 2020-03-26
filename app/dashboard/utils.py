@@ -30,9 +30,10 @@ from django.utils import timezone
 import ipfshttpclient
 import requests
 from app.utils import sync_profile
+from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
+from dashboard.models import Activity, BlockedUser, Bounty, BountyFulfillment, Profile, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -473,21 +474,31 @@ def has_tx_mined(txid, network):
 
 
 def etc_txn_already_used(t):
-    b = Bounty.objects.filter(token_name='ETC',
-                              network='ETC',
-                              payout_tx_id=t['hash']).first()
-    return True if b else False
+    return BountyFulfillment.objects.filter(
+        payout_tx_id = t['hash'],
+        token_name='ETC'
+    ).exists()
 
 
-def search_for_etc_bounty_payout(bounty, payeeAddress=None, network='mainnet'):
-    funderAddress = bounty.bounty_owner_profile.etc_address
+def search_for_etc_bounty_payout(fulfillment, network='mainnet'):
+    if fulfillment.token_name != 'ETC':
+        return None
+
+    funderAddress = fulfillment.bounty.bounty_owner_address
+    amount = fulfillment.payout_amount
+    payeeAddress = fulfillment.fulfiller_address
+
     blockscout_url = f'https://blockscout.com/etc/{network}/api?module=account&action=txlist&address={funderAddress}'
-    response = requests.get(blockscout_url).json()
+    blockscout_response = requests.get(blockscout_url).json()
     if blockscout_response['message'] and blockscout_response['result']:
-        for t in blockscout_response['result']:
-            if (t['to'] == payeeAddress and t['amount'] >= bounty.value
-                and etc_txn_not_already_used(t)):
-                return t
+        for txn in blockscout_response['result']:
+            if (
+                txn['from'] == funderAddress.lower() and
+                txn['to'] == payeeAddress.lower() and
+                float(txn['value']) >= float(amount) and
+                not etc_txn_already_used(txn)
+            ):
+                return txn
     return None
 
 
@@ -499,10 +510,12 @@ def get_etc_txn_status(txnid, network='mainnet'):
     blockscout_response = requests.get(blockscout_url).json()
 
     if blockscout_response['status'] and blockscout_response['result']:
+
         response = {
             'blockNumber': int(blockscout_response['result']['blockNumber']),
             'confirmations': int(blockscout_response['result']['confirmations'])
         }
+
         if response['confirmations'] > 0:
             response['has_mined'] = True
         else:
@@ -512,15 +525,15 @@ def get_etc_txn_status(txnid, network='mainnet'):
     return None
 
 
-def sync_etc_payout(bounty):
-    t = search_for_etc_bounty_payout(bounty)
-    if t:
-        if not etc_txn_already_used(t):
-            bounty.payout_tx_id = t['hash']
-            bounty.save()
-            if get_etc_txn_status.get('has_mined'):
-                bounty.payout_confirmed = True
-                bounty.save()
+def sync_etc_payout(fulfillment):
+    txn = search_for_etc_bounty_payout(fulfillment)
+    if txn:
+        fulfillment.payout_tx_id = txn['hash']
+        if get_etc_txn_status(fulfillment.payout_tx_id).get('has_mined'):
+            fulfillment.payout_status = 'done'
+            fulfillment.accepted_on = timezone.now()
+            fulfillment.accepted = True
+        fulfillment.save()
 
 
 def get_bounty_id(issue_url, network):
@@ -765,7 +778,7 @@ def release_bounty_lock(standard_bounty_id):
     release_semaphore(ns)
 
 
-def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None, disable_cache=False, full_profile=False):
     """Define the profile helper.
 
     Args:
@@ -786,8 +799,11 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
     if current_profile and current_profile.handle == handle:
         return current_profile
 
+    base = Profile.objects if not full_profile else Profile.objects_full
     try:
-        profile = Profile.objects.get(handle__iexact=handle)
+        if disable_cache:
+            base = base.nocache()
+        profile = base.get(handle=handle.lower())
     except Profile.DoesNotExist:
         profile = sync_profile(handle)
         if not profile:
@@ -796,7 +812,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
         # Handle edge case where multiple Profile objects exist for the same handle.
         # We should consider setting Profile.handle to unique.
         # TODO: Should we handle merging or removing duplicate profiles?
-        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        profile = base.filter(handle=handle.lower()).latest('id')
         logging.error(e)
 
     if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
@@ -861,7 +877,7 @@ def is_blocked(handle):
         return True
 
     # check banned country list
-    profiles = Profile.objects.filter(handle__iexact=handle)
+    profiles = Profile.objects.filter(handle=handle.lower())
     if profiles.exists():
         profile = profiles.first()
         last_login = profile.actions.filter(action='Login').order_by('pk').last()
@@ -884,7 +900,7 @@ def is_blocked(handle):
     return False
 
 
-def get_nonce(network, address):
+def get_nonce(network, address, ignore_db=False):
     # this function solves the problem of 2 pending tx's writing over each other
     # by checking both web3 RPC *and* the local DB for the nonce
     # and then using the higher of the two as the tx nonce
@@ -894,7 +910,9 @@ def get_nonce(network, address):
 
     # web3 RPC node: nonce
     nonce_from_web3 = w3.eth.getTransactionCount(address)
-
+    if ignore_db:
+        return nonce_from_web3
+        
     # db storage
     key = f"nonce_{network}_{address}"
     view = 'get_nonce'
@@ -1026,3 +1044,6 @@ def get_url_first_indexes():
         urls.append(url)
 
     return set(urls)
+
+def get_custom_avatars(profile):
+    return CustomAvatar.objects.filter(profile=profile).order_by('-id')
