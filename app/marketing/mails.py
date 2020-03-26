@@ -720,6 +720,27 @@ def notify_deadbeat_quest(quest):
         translation.activate(cur_language)
 
 
+def notify_deadbeat_grants(grants):
+    to_email = 'kevin@gitcoin.co'
+    from_email = to_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"Dead Grants Alert {grants.count()}"
+        body = "<BR>-".join([f"({grant.title}): https://gitcoin.co/{grant.admin_url} " for grant in grants])
+        if not should_suppress_notification_email(to_email, 'sdeadbeat'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_kudos_request(obj):
     to_email = 'founders@gitcoin.co'
     from_email = obj.profile.email
