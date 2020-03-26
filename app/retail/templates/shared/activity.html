@@ -185,6 +185,9 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
+          {% if row.metadata.num_tx_approved %}
+            for {{row.metadta.num_tx_approved}} CLR round{{row.metadta.num_tx_approved|pluralize}}
+          {% endif %}
         {% elif row.activity_type == 'killed_grant_contribution' %}
           {% trans "unsubscribed from" %}
           <a href="{{ row.metadata.grant_url }}" >

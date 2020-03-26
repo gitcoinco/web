@@ -1040,6 +1040,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         'title': subscription.grant.title,
         'grant_logo': grant_logo,
         'grant_url': subscription.grant.url,
+        'num_tx_approved': subscription.num_tx_approved,
         'category': 'grant',
     }
     kwargs = {
