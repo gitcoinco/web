@@ -51,6 +51,7 @@ from grants.models import (
     Contribution, Flag, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
 )
 from grants.utils import get_leaderboard, is_grant_team_member
+from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
     grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_supporter, subscription_terminated,
@@ -100,6 +101,13 @@ def get_fund_reward(request, grant):
         comments_to_put_in_kudos_transfer=f"Thank you for funding '{grant.title}' on Gitcoin Grants!",
         sender_profile=Profile.objects.get(handle='gitcoinbot')
         )
+
+    #store btc on session
+    request.session['send_notification'] = 1
+    request.session['cta_text'] = "Redeem Kudos"
+    request.session['msg_html'] = f"You have received a new {token.ui_name} for your contribution to {grant.title}"
+    request.session['cta_url'] = btc.url
+
     return btc
 
 def get_keywords():
@@ -808,8 +816,13 @@ def grant_fund(request, grant_id, grant_slug):
                         activity=activity,
                         comment=comment)
 
-            # TODO - how do we attach the tweet modal WITH BULK TRANSFER COUPON next pageload??
             message = 'Your contribution has succeeded. Thank you for supporting Public Goods on Gitcoin !'
+            if request.session.get('send_notification'):
+                msg_html = request.session.get('msg_html')
+                cta_text = request.session.get('cta_text')
+                cta_url = request.session.get('cta_url')
+                to_user = request.user
+                send_notification_to_user_from_gitcoinbot(to_user, cta_url, cta_text, msg_html)
             if int(subscription.num_tx_approved) > 1:
                 message = 'Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Public Goods on Gitcoin !'
 

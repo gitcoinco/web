@@ -220,7 +220,7 @@
           </a>
         {% endif %}
       :
-        <b>{{ row.metadata.title }}</b>
+        <span>{{ row.metadata.title }}</span>
       {% elif row.activity_type == 'consolidated_leaderboard_rank'  or row.activity_type == 'consolidated_mini_clr_payout' %}
         {{row.metadata.copy|safe}}
 

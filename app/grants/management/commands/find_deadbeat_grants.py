@@ -33,4 +33,3 @@ class Command(BaseCommand):
         grants = Grant.objects.filter(contract_address='0x0', active=True, created_on__lt=before)
         if grants.count():
             notify_deadbeat_grants(grants)
-
