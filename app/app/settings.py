@@ -137,6 +137,8 @@ INSTALLED_APPS = [
     'wiki.plugins.notifications.apps.NotificationsConfig',
     'wiki.plugins.images.apps.ImagesConfig',
     'wiki.plugins.macros.apps.MacrosConfig',
+    'debug_toolbar',
+
 ]
 
 MIDDLEWARE = [
@@ -217,6 +219,22 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'auth.User'
 
+# adds django debug toolbar
+if DEBUG:
+    INTERNAL_IPS = [
+        # ...
+        '127.0.0.1',
+        'localhost',
+        # ...
+    ]
+    def callback(request):
+        return True
+    SHOW_TOOLBAR_CALLBACK = callback
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK" : callback,
+    }
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+    
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
