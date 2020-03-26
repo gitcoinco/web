@@ -364,6 +364,7 @@ $(document).ready(function() {
 
     var parent = $(this).parents('.activity.box');
     var self = $(this);
+
     parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
