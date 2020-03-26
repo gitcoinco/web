@@ -67,42 +67,6 @@
       </div>
     </div>
   {% endif %}
-  {% if bounty.repo_type == 'private' %}
-    <div class="text-center" style="border-top: 1px solid #979797; border-bottom: 1px solid #979797; padding: 50px; text-align: center;">
-      <h3 style="font-size: 2.1em;">{% trans "What to do next" %}</h3>
-
-      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
-        <img src="{% static "v2/images/emails/private-repo-1.png" %}" width="185" height="147" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
-        <div style="">
-          <h3 style="color: #0D0764; text-align: left;">{% trans "Get Applications from Awesome Talent" %}</h3>
-          <p style="text-align: left;">{% trans "Contributors will apply to work on your bounty with a signed NDA. You can view the applications on the Issue Details page." %}</p>
-          <p style="text-align: left;">(<b>{% trans "Note:" %}</b> {% trans "Contributors will NOT have access to your private repo until you approve them)" %}</p>
-        </div>
-      </div>
-      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
-        <img src="{% static "v2/images/emails/private-repo-2.png" %}" width="185" height="102" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
-        <div style="">
-          <h3 style="color: #0D0764; text-align: left;">{% trans "Approve Worker" %}</h3>
-          <p style="text-align: left;">{% trans "Approve Worker to assign them to your bounty." %}</p>
-        </div>
-      </div>
-      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
-        <img src="{% static "v2/images/emails/private-repo-3.png" %}" width="185" height="151" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
-        <div style="">
-          <h3 style="color: #0D0764; text-align: left;">{% trans "Invite Worker to Your Repo" %}</h3>
-          <p style="text-align: left;">{% trans "Invite the approved worker to your GitHub private repo. You can do this through" %} <b>{% trans "GitHub > Settings > Collaborators." %}</b></p>
-        </div>
-      </div>
-      <div style="padding: 20px 10px 20px; text-align: center;" class="desktop-col">
-        <img src="{% static "v2/images/emails/private-repo-4.png" %}" width="185" height="112" style="margin-right: 30px; flex-shrink: 0;" alt="Featured bounty avatar">
-        <div style="">
-          <h3 style="color: #0D0764; text-align: left;">{% trans "Complete Bounty" %}</h3>
-          <p style="text-align: left;">{% trans "Once the bounty is completed, you can remove the contributor from your repo through GitHub." %}</p>
-        </div>
-      </div>
-    </div>
-  {% endif %}
-
 </div>
 
 {% endblock %}
