@@ -985,8 +985,7 @@ def weekly_roundup(to_emails=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            html, text, subject = render_new_bounty_roundup(to_email)
-            from_email = settings.CONTACT_EMAIL
+            html, text, subject, from_name, from_email = render_new_bounty_roundup(to_email)
 
             if not html:
                 print("no content")
@@ -999,7 +998,7 @@ def weekly_roundup(to_emails=None):
                     subject,
                     text,
                     html,
-                    from_name="Kevin and the Gitcoin Team (Gitcoin.co)",
+                    from_name=from_name,
                     categories=['marketing', func_name()],
                 )
             else:

@@ -1005,8 +1005,10 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Public Health is a Public Good"
-    new_kudos_pks = [12681, 12577, 12580]
+    from marketing.models import RoundupEmail
+    args = RoundupEmail.objects.order_by('created_on').last()
+    subject = args.subject
+    new_kudos_pks = ','.split(args.kudos_ids)
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1023,91 +1025,10 @@ def render_new_bounty_roundup(to_email):
 </p>
     '''
 
-    intro = f'''
-<p>
-Hello Gitcoin community,
-</p>
-
-<p>
-Hows everyone doing? Since the world has begun to fully grasp the impact of the COVID-19 crisis, things are clearly moving very quickly.
-</p>
-
-<p>
-One way that the Gitcoin team is responding is by announcing a round of Gitcoin Grants Matching for Public Health. The TLDR is that it's going to be at least $100k for tech, $50k for media, and $50k for public health. It will start Monday. Details <a href=“https://twitter.com/gitcoin/status/1238524450045337603”>here</a>.
-</p>
-
-<p>
-Our mission has always been to "Grow Open Source". Those who are economists will recognize that Open Source is a public good - everyone benefits from it. In Gitcoin Grants Round 4 we expanded into Media Grants - to fund Journalism in a 21st century native way. In Gitcoin Grants Round 5 we will be funding Public Health.
-</p>
-
-<p>
-Open Source Software is a public good. Journalism is a public good. Public Health is a public good. Let me say this emphatically: Public Goods are Good!
-</p>
-
-<p>
-Recently, a Gitcoin contributor named @cervoneluca submitted a GIP (Gitcoin Improvement Proposal) to expand the scope of our mission beyond just Open Source. Read it <a href=“https://github.com/gitcoinco/GIPs/issues/17”>here</a>. What would Gitcoin look like if it focused on *all* public goods, not just Open Source?
-</p>
-
-<p>
-It is an interesting and important time to be a Gitcoiner. I hope we can rally and come out the other side of this better, together.
-</p>
-
-{kudos_friday}
-
-<h3>What else is new?</h3>
-    <ul>
-        <li>
-        <a href=“gitcoin.co/livestream”>Join us</a> for the Gitcoin Livestream today at 2 pm ET. This Livestream will feature sponsors from the <a href=“https://gitcoin.co/hackathon/funding-the-future/“>Funding The Future</a> virtual hackathon. We'll have developers from Alto, ETC Labs, and Mysterium on to talk about their bounties, so come with questions!
-        </li>
-    </ul>
-</p>
-<p>
-Stay safe,
-</p>
-'''
-    highlights = [{
-        'who': 'thecydonian',
-        'who_link': True,
-        'what': 'DESIGN - Created A ROBOT Vector Avatar For The Gitcoin Avatar Builder',
-        'link': 'https://gitcoin.co/issue/gitcoinco/web/6169/4091',
-        'link_copy': 'View more',
-    }, {
-        'who': 'xiaods',
-        'who_link': True,
-        'what': 'Fixed 2 MultiGesture component breaks on iOS Safari with react-script',
-        'link': 'https://gitcoin.co/issue/cybersemics/em/308/4075',
-        'link_copy': 'View more',
-    }, {
-        'who': 'x5engine',
-        'who_link': True,
-        'what': 'Added Chainlink Contracts To Log Parser',
-        'link': 'https://gitcoin.co/issue/blockchain-etl/ethereum-etl-airflow/65/4110',
-        'link_copy': 'View more',
-    }, ]
-
-    sponsor = {
-    'name': 'CodeFund',
-    'title': 'Does your project need 🦄 developers?',
-    'image_url': '',
-    'link': 'http://bit.ly/codefund-gitcoin-weekly',
-    'cta': 'Learn More',
-    'body': [
-       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
-       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
-    ]
-}
-
-    bounties_spec = [{
-        'url': 'https://github.com/mysteriumnetwork/node/issues/1867',
-        'primer': '[1 ETH + Chance to win $5,000] Lightning Network Payments On Mysterium Network',
-    }, {
-        'url': 'https://github.com/etclabscore/evm_llvm/issues/48',
-        'primer': '!First True ETC Bounty! EVM LLVM Implement Instruction Scheduler - $1500 Bounty',
-    }, {
-        'url': 'https://github.com/nknorg/nkn/issues/686',
-        'primer': '1-Click Deploy NKN On Synology NAS (918+, 718+, 218+)',
-    }]
-
+    intro = args.body.replace('KUDOS_INPUT_HERE', kudos_friday)
+    highlights = args.highlights
+    sponsor = args.sponsor
+    bounties_spec = args.bounties_spec
 
     num_leadboard_items = 5
     highlight_kudos_ids = []
@@ -1174,7 +1095,7 @@ Stay safe,
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
-    return response_html, response_txt, subject
+    return response_html, response_txt, subject, args.from_email, args.from_name
 
 
 
@@ -1436,7 +1357,7 @@ def faucet_rejected(request):
 
 @staff_member_required
 def roundup(request):
-    response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    response_html, _, _, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
 
 
