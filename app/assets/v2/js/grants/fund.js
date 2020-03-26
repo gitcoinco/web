@@ -122,15 +122,16 @@ $(document).ready(function() {
     $(event.currentTarget).addClass('badge-active');
   });
 
-  var set_form_disabled = function(is_disabled){
+  var set_form_disabled = function(is_disabled) {
     const disabled = is_disabled ? 'disabled' : null;
+
     $('input[name=match_direction]').attr('disabled', disabled);
     $('#js-token').attr('disabled', disabled);
     $('#amount').attr('disabled', disabled);
     $('#recurring_or_not').attr('disabled', disabled);
     $('textarea[name=comment]').attr('disabled', disabled);
     $('input').attr('disabled', disabled);
-  }
+  };
 
   $('input[name=match_direction]').change(function(e) {
     let direction = $(this).val();
@@ -273,12 +274,13 @@ $(document).ready(function() {
       web3.eth.getAccounts(function(err, accounts) {
         indicateMetamaskPopup();
         var to_address = data.match_direction == '+' ? data.admin_address : gitcoinDonationAddress;
+
         set_form_disabled(true);
         web3.eth.sendTransaction({
           from: accounts[0],
           to: to_address,
           value: to_addr_amount,
-          gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))),
+          gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
         }, function(err, txid) {
           indicateMetamaskPopup(1);
           if (err) {
@@ -336,7 +338,7 @@ $(document).ready(function() {
               from: accounts[0],
               to: gitcoinDonationAddress,
               value: gitcoin_amount,
-              gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))),
+              gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
             }, success_callback);
           }
         });
@@ -642,7 +644,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
     from: account,
     gas: web3.utils.toHex(100000),
-    gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))),
+    gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
   }).on('error', function(error) {
     console.log('1', error);
     indicateMetamaskPopup(1);
