@@ -123,15 +123,11 @@ $(document).ready(function() {
   });
 
   var set_form_disabled = function(is_disabled) {
-    const disabled = is_disabled ? 'disabled' : null;
-    return;
-
-    $('input[name=match_direction]').attr('disabled', disabled);
-    $('#js-token').attr('disabled', disabled);
-    $('#amount').attr('disabled', disabled);
-    $('#recurring_or_not').attr('disabled', disabled);
-    $('textarea[name=comment]').attr('disabled', disabled);
-    $('input').attr('disabled', disabled);
+    if(is_disabled){
+      $('body').append('<div id=intercept_overlay>&nbsp;</div>');
+    } else {
+      $("#intercept_overlay").remove();
+    }
   };
 
   $('input[name=match_direction]').change(function(e) {
