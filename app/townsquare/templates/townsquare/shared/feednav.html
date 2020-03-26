@@ -61,10 +61,10 @@
                     Suggested Tribes
                   </div>
                   <div id="tribes">
-                    <ul class="nav d-inline-block font-body col-sm-10">
+                    <ul class="nav d-inline-block font-body col-sm-8">
                       {% for tribe in suggested_tribes %}
                         <li class="nav-item d-flex justify-content-between align-items-center my-3">
-                          <a href="/profile/{{ tribe.title }}" class="d-flex nav-link nav-line">
+                          <a href="/profile/{{ tribe.title }}" class="d-flex nav-link nav-line pr-0 mr-0">
                             <img src="{{tribe.avatar_url}}" class="nav_avatar mr-2">
                               <span class="">
                                 <span class="nav-title font-weight-bold pt-0 mb-0 text-capitalize">{{tribe.title}}</span><br>
@@ -74,8 +74,8 @@
                                 </p>
                               </span>
                           </a>
-                          <a class="btn btn-outline-gc-blue btn-sm font-smaller-3 font-weight-bold px-4 " href="#" style="height: 30px" data-jointribe="{{ tribe.title }}">
-                          Follow <i class="fas fa-plus"></i>
+                          <a class="btn btn-outline-gc-blue btn-sm font-weight-bold font-smaller-7 h-100" href="#" style="height: 30px" data-jointribe="{{ tribe.title }}">
+                          <i class="fas fa-plus"></i> Follow
                           </a>
                         </li>
                       {% endfor %}
