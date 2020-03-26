@@ -91,6 +91,8 @@ class GrantAdmin(GeneralAdmin):
     ]
     list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
+    search_fields = ['amount_goal', 'description', 'admin_profile__handle']
+
 
     # Custom Avatars
     def logo_svg_asset(self, instance):
