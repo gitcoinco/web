@@ -1,0 +1,20 @@
+{% load humanize static i18n %}
+  <div style="">
+    <div style="background-color: rgba(255, 255, 255, 0.95);">
+
+      <div class="container-fluid pt-3 pb-1 grants-results">
+        <div class="container">
+          <div class="">
+            {% for this_cht in cht %}
+            <div class="row no-gutter">
+              <div id="container{{ forloop.counter0 }}" style="width:100%;"> Chart will be rendered here 
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+

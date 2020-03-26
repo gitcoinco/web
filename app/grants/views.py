@@ -27,7 +27,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Avg, Count, Max, Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -41,6 +41,7 @@ from django.views.decorators.http import require_GET
 
 from app.utils import get_profile
 from cacheops import cached_view
+from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
@@ -75,6 +76,7 @@ clr_active = True
 show_clr_card = True
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 round_end = timezone.datetime(2020, 4, 7, 20, 0)
+round_types = ['media', 'tech', 'health']
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12427, 12392, 12307, 12343, 12156, 12164]
 
@@ -82,6 +84,76 @@ if not clr_active:
     clr_matching_banners_style = 'results'
     matching_live = ''
     matching_live_tiny = ''
+
+
+def get_stats():
+    created_on = next_round_start
+    charts = []
+    key_titles = [
+        ('_match', 'Estimated Matching Amount', '-clr_prediction_curve__0__1' ),
+        ('_pctrbs', 'Positive', '-positive_round_contributor_count' ),
+        ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count' ),
+        ('_amt', 'CrowdFund Amount', '-amount_received_in_round' ),
+    ]
+    for round_type in round_types:
+        for ele in key_titles:
+            key = ele[0]
+            title = ele[1]
+            order_by = ele[2]
+            top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
+            keys = [grant.title[0:44] + key for grant in top_grants]
+            charts.append({
+                'title': f"Num {title} Over Time ({round_type.title()} Round)",
+                'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on),
+                })
+    results = []
+    counter = 0
+    for chart in charts:
+        source = chart['db']
+        rankdata = \
+            PivotDataPool(
+               series=
+                [{'options': {
+                   'source': source,
+                    'legend_by': 'key',
+                    'categories': ['created_on'],
+                    'top_n_per_cat': 10,
+                    },
+                  'terms': {
+                    'val': Avg('val'),
+                    }}
+                 ])
+
+        #Step 2: Create the Chart object
+        cht = PivotChart(
+                datasource = rankdata,
+                series_options =
+                  [{'options':{
+                      'type': 'line',
+                      'stacking': False
+                      },
+                    'terms': 
+                        ['val']
+                    
+                }],
+                chart_options =
+                  {'title': {
+                       'text': chart['title']},
+                   'xAxis': {
+                        'title': {
+                           'text': 'Time'}
+                        },
+                    'renderTo':f'container{counter}',
+                    'height': '800px',
+                    'legend': {
+                        'enabled': False,
+                    },
+                    },
+                )
+        results.append(cht)
+        counter += 1
+    chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
+    return results, chart_list_str
 
 def get_fund_reward(request, grant):
     token = Token.objects.filter(
@@ -241,6 +313,10 @@ def grants(request):
     grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
     if has_real_grant_type:
         title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"
+    cht = []
+    chart_list = ''
+    if grant_type == 'stats':
+        cht, chart_list = get_stats() 
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -253,6 +329,8 @@ def grants(request):
         'all_grants_count': all_grants_count,
         'now': timezone.now(),
         'mid_back': mid_back,
+        'cht': cht,
+        'chart_list': chart_list,
         'bottom_back': bottom_back,
         'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,

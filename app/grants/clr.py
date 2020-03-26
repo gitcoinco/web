@@ -28,6 +28,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from grants.models import Contribution, Grant, PhantomFunding
+from marketing.models import Stat
 from perftools.models import JSONStore
 
 CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
@@ -444,8 +445,29 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                 key=f'{grant.id}',
                 data=_grant.clr_prediction_curve,
             )
+            try:
+                Stat.objects.create(
+                    key=_grant.title[0:43] + "_match",
+                    val=_grant.clr_prediction_curve[0][1],
+                    )
+                Stat.objects.create(
+                    key=_grant.title[0:43] + "_pctrbs",
+                    val=_grant.positive_round_contributor_count,
+                    )
+                Stat.objects.create(
+                    key=_grant.title[0:43] + "_nctrbs",
+                    val=_grant.negative_round_contributor_count,
+                    )
+                Stat.objects.create(
+                    key=_grant.title[0:43] + "_amt",
+                    val=_grant.amount_received_in_round,
+                    )
+            except:
+                pass
+
             if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
                 _grant.save()
+
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return debug_output
