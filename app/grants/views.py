@@ -100,6 +100,8 @@ def get_stats():
             key = ele[0]
             title = ele[1]
             order_by = ele[2]
+            if _nctrbs == '_nctrbs' and round_type != 'media':
+                continue
             top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
             charts.append({
