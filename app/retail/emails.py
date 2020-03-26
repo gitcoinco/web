@@ -1008,7 +1008,7 @@ def render_new_bounty_roundup(to_email):
     from marketing.models import RoundupEmail
     args = RoundupEmail.objects.order_by('created_on').last()
     subject = args.subject
-    new_kudos_pks = ','.split(args.kudos_ids)
+    new_kudos_pks = args.kudos_ids.split(',')
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
