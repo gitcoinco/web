@@ -113,7 +113,7 @@ def get_stats(round_type):
             keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=ele[0]).values_list('key', flat=True).cache())
         charts.append({
             'title': f"{title} Over Time ({round_type.title()} Round)",
-            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=04).cache(),
+            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=4).cache(),
             })
     results = []
     counter = 0
