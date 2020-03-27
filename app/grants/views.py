@@ -110,7 +110,7 @@ def get_stats(round_type):
             top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
-            keys = Stat.objects.filter(created_on__gt=created_on, key__startswith=ele[0]).values_list('key', flat=True).cache()
+            keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=ele[0]).values_list('key', flat=True).cache())
         charts.append({
             'title': f"{title} Over Time ({round_type.title()} Round)",
             'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=10).cache(),
@@ -162,6 +162,7 @@ def get_stats(round_type):
         results.append(cht)
         counter += 1
     chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
+    import ipdb; ipdb.set_trace()
     return results, chart_list_str
 
 def get_fund_reward(request, grant):
