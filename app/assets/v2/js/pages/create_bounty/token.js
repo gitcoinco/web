@@ -29,7 +29,7 @@ createBounty = data => {
   const tokenAddress = data.denomination;
   const token = tokenAddressToDetails(tokenAddress);
 
-  if (metadata.tokenName == 'ETC') {
+  if (qr_tokens.includes(metadata.tokenName)) {
     is_featured = 'True';
     coupon_code = null;
     fee_amount = 0;

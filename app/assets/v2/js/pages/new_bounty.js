@@ -3,10 +3,9 @@
 /* eslint-disable no-lonely-if */
 document.web3network = 'mainnet';
 load_tokens();
-// listen_for_web3_changes();
 
-const qr_tokens = ['ETC'];
-
+// TODO: remove erc-20 ZIL from tokens and update qr_tokens
+const qr_tokens = [ 'ETC', 'CELO' ];
 
 const updateOnNetworkOrTokenChange = () => {
   const tokenName = $('select[name=denomination]').select2('data')[0] &&
@@ -272,7 +271,7 @@ const handleTokenAuth = () => {
     const tokenAddress = $('#token option:selected').val();
     let isTokenAuthed = true;
 
-    const authedTokens = [ 'ETH', 'ETC' ];
+    const authedTokens = ['ETH'].concat(qr_tokens);
 
     if (!token) {
       isTokenAuthed = false;
@@ -331,7 +330,7 @@ const tokenAuthAlert = (isTokenAuthed, tokenName) => {
 
 const updateViewForToken = (token_name) => {
 
-  if (token_name == 'ETC') {
+  if (qr_tokens.includes(token_name)) {
     $('.eth-chain').hide();
     FEE_PERCENTAGE = 0;
   } else {
@@ -656,12 +655,7 @@ $('#submitBounty').validate({
     const token = $('#summary-bounty-token').html();
     const data = transformBountyData(form);
 
-    if (token == 'ETC') {
-      /*
-        TODO:
-        1. TRIGGER DB UPDATE
-        2. REDESIGN METAMASK LOCK NOTIFICATION
-      */
+    if (qr_tokens.includes(token)) {
       createBounty(data);
     } else {
       ethCreateBounty(data);

@@ -20,16 +20,16 @@
 from django.core.management.base import BaseCommand
 
 from dashboard.models import BountyFulfillment
-from dashboard.utils import sync_etc_payout
+from dashboard.utils import sync_payout
 
 
 class Command(BaseCommand):
 
-    help = 'checks if payments are confirmed for ETC bounties that have been paid out'
+    help = 'checks if payments are confirmed for cross-chain tokens bounties that have been paid out'
 
     def handle(self, *args, **options):
-        fulfillments_to_check = BountyFulfillment.objects.filter(
-             payout_status='pending', token_name='ETC'
+        pending_fulfillments = BountyFulfillment.objects.filter(
+             payout_status='pending'
         )
-        for fulfillment in fulfillments_to_check.all():
-            sync_etc_payout(fulfillment)
+        for fulfillment in pending_fulfillments.all():
+            sync_payout(fulfillment)
