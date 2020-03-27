@@ -28,3 +28,21 @@ subs = subs.filter(subscription_contribution__success=True)
 print(subs.count())
 print(subs.filter(num_tx_approved__gt=1).count())
 print(subs.filter(is_postive_vote=False).count())
+
+# all contributions
+
+from django.utils import timezone
+
+from grants.models import *
+from grants.models import Contribution, PhantomFunding
+from grants.views import next_round_start, round_end
+
+start = next_round_start
+end = round_end
+
+contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')
+for contribution in contributions:
+    print(contribution.tx_id, contribution.subscription.amount_per_period, contribution.subscription.amount_per_period_minus_gas_price,
+        contribution.subscription.token_address)
+
+
