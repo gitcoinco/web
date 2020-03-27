@@ -1,6 +1,6 @@
 # Running Gitcoin remotely
 
-I'm gonna be using DigitalOcean which is a nice VPS service pretty customizable, easy to use and cheap. You need to create an account and pay for a droplet using any of the payment methods available.
+We'll be using DigitalOcean which is a nice VPS service pretty customizable, easy to use and cheap. You need to create an account and pay for a droplet using any of the payment methods available.
 
 There will be kind of a high memory load, so we gonna need the second best droplet which offers 2GB/1CPU (costs $10).
 
