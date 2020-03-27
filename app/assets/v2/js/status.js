@@ -1,3 +1,4 @@
+
 const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
 const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
@@ -242,6 +243,8 @@ $(document).ready(function() {
 
   });
 
+  $('#textarea').autogrow();
+
   // handle video button
   $('body').on('click', '#video-button', function(e) {
     e.preventDefault();
@@ -271,6 +274,7 @@ $(document).ready(function() {
         document.is_shift = false;
       }
     });
+
 
   });
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
@@ -425,7 +429,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   if (button && picker) {
     picker.on('emoji', function(emoji) {
-      document.querySelector('textarea').value += emoji;
+      document.querySelector('#textarea').value += emoji;
     });
 
     button.addEventListener('click', function() {
