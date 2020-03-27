@@ -17,9 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 END
 
-IS_ALREADY_RUNNING=$(ps -aux | grep $1 | grep -c python)
+IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1" | grep -c python)
 if [ "$2" != "" ]; then
-    IS_ALREADY_RUNNING=$(ps -aux | grep $1 | grep $2 | grep -c python)
+    IS_ALREADY_RUNNING=$(ps -aux | grep -e "$1" | grep -e "$2" | grep -c python)
 fi
 
 if [ "$IS_ALREADY_RUNNING" -eq "0" ]; then

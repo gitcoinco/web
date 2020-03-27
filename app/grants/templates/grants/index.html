@@ -12,6 +12,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load humanize static i18n %}
+{% load chartit %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -38,6 +39,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% include 'grants/shared/landing_activity.html' %}
       {% elif type == 'about' %}
         {% include 'grants/shared/landing_announce.html' %}
+      {% elif type == 'stats' %}
+        {% include 'grants/shared/landing_stats.html' %}
       {% else %}
         {% include 'grants/shared/landing_subnav.html' %}
         {% include 'grants/shared/landing_grants.html' %}
@@ -71,4 +74,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       });
     </script>
   {% endif %}
+  {% if type == 'stats' %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    {{cht|length}}
+    {{ cht|load_charts:chart_list }}
+  {% endif %}
+  
 </html>
