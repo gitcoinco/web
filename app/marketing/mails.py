@@ -1006,7 +1006,7 @@ def weekly_roundup(to_emails=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            html, text, subject, from_name, from_email = render_new_bounty_roundup(to_email)
+            html, text, subject, from_email, from_name = render_new_bounty_roundup(to_email)
 
             if not html:
                 print("no content")
