@@ -36,43 +36,41 @@ from retail.utils import build_stat_results, programming_languages
 
 
 def create_top_grant_spenders_cache():
-    from django.contrib.contenttypes.models import ContentType
-    from dashboard.models import Earning
     from marketing.models import Stat
-    from grants.views import next_round_start
-    content_type = ContentType.objects.get(app_label='grants', model='contribution')
+    from grants.views import next_round_start, round_types
+    from grants.models import Grant, Contribution
+    for round_type in round_types:
+        contributions = Contribution.objects.filter(
+            success=True,
+            created_on__gt=next_round_start,
+            subscription__grant__grant_type=round_type
+            ).values_list('subscription__contributor_profile__handle', 'subscription__amount_per_period_usdt')
 
-    from dashboard.models import Earning
-    earnings = Earning.objects.filter(
-        source_type=content_type,
-        created_on__gt=next_round_start,
-        ).values_list('from_profile__handle', 'value_usd')
+        count_dict = {ele[0]:0 for ele in contributions}
+        sum_dict = {ele[0]:0 for ele in contributions}
+        for ele in contributions:
+            if ele[1]:
+                count_dict[ele[0]] += 1
+                sum_dict[ele[0]] += ele[1]
 
-    count_dict = {ele[0]:0 for ele in earnings}
-    sum_dict = {ele[0]:0 for ele in earnings}
-    for ele in earnings:
-        if ele[1]:
-            count_dict[ele[0]] += 1
-            sum_dict[ele[0]] += ele[1]
+        from_date = timezone.now()
+        for key, val in count_dict.items():
+            if val:
+                #print(key, val)
+                Stat.objects.create(
+                    created_on=from_date,
+                    key="count_" + round_type + "_" + key,
+                    val=val,
+                    )
 
-    from_date = timezone.now()
-    for key, val in count_dict.items():
-        if val:
-            #print(key, val)
-            Stat.objects.create(
-                created_on=from_date,
-                key="count_" + key,
-                val=val,
-                )
-
-    for key, val in sum_dict.items():
-        if val:
-            #print(key, val)
-            Stat.objects.create(
-                created_on=from_date,
-                key="sum_" + key,
-                val=val,
-                )
+        for key, val in sum_dict.items():
+            if val:
+                #print(key, val)
+                Stat.objects.create(
+                    created_on=from_date,
+                    key="sum_" + round_type + "_" + key,
+                    val=val,
+                    )
 
 
 

@@ -91,6 +91,7 @@ def get_stats(round_type):
         round_type = 'tech'
     created_on = next_round_start
     charts = []
+    minute = 4 if not settings.DEBUG else 60
     key_titles = [
         ('_match', 'Estimated Matching Amount', '-positive_round_contributor_count', 'grants' ),
         ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
@@ -110,10 +111,11 @@ def get_stats(round_type):
             top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
-            keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=ele[0]).values_list('key', flat=True).cache())
+            startswith = f"{ele[0]}{round_type}_"
+            keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=startswith).values_list('key', flat=True).cache())
         charts.append({
             'title': f"{title} Over Time ({round_type.title()} Round)",
-            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=4).cache(),
+            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=minute).cache(),
             })
     results = []
     counter = 0
