@@ -91,7 +91,7 @@ def get_stats(round_type):
         round_type = 'tech'
     created_on = next_round_start
     charts = []
-    minute = 4 if not settings.DEBUG else 60
+    minute = 15 if not settings.DEBUG else 60
     key_titles = [
         ('_match', 'Estimated Matching Amount', '-positive_round_contributor_count', 'grants' ),
         ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
