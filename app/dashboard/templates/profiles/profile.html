@@ -17,8 +17,8 @@
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
     <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/town_square.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %} />
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -92,13 +92,15 @@
 
     </div>
   </div>
-
-    {% include 'shared/result.html' %}
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/footer.html' %}
+    
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html'%}
+    {% include 'shared/bottom_notification.html' %}
     {% include 'shared/current_profile.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/footer_scripts.html'%}
+    {% include 'shared/result.html' %}
+    
+    
     {% if tab == 'activity' %}
       {% include 'shared/tip_dependancies.html' %}
     {% else %}
@@ -121,6 +123,7 @@
     <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
     <script src="{% static "v2/js/activity.js" %}"></script>
     <script src="{% static "v2/js/3box.min.js" %}"></script>
+    {% include 'shared/activity_scripts.html' %}
     <script>
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;
