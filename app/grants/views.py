@@ -96,8 +96,8 @@ def get_stats(round_type):
         ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
         ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count', 'grants' ),
         ('_amt', 'CrowdFund Amount', '-amount_received_in_round', 'grants' ),
-        ('_contrib_count', 'Top Contributors by Num Contributations', '-val', 'profile' ),
-        ('_contrib_sum', 'Top Contributors by Value Contributed', '-val', 'profile' ),
+        ('count_', 'Top Contributors by Num Contributations', '-val', 'profile' ),
+        ('sum_', 'Top Contributors by Value Contributed', '-val', 'profile' ),
     ]
     for ele in key_titles:
         key = ele[0]
@@ -110,10 +110,10 @@ def get_stats(round_type):
             top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
-            keys = Stat.objects.filter(created_on__gt=created_on, key__endswith=ele[0]).values_list('key', flat=True)
+            keys = Stat.objects.filter(created_on__gt=created_on, key__startswith=ele[0]).values_list('key', flat=True).cache()
         charts.append({
             'title': f"{title} Over Time ({round_type.title()} Round)",
-            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on),
+            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on).cache(),
             })
     results = []
     counter = 0

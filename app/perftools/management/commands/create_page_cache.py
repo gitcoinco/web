@@ -61,7 +61,7 @@ def create_top_grant_spenders_cache():
             #print(key, val)
             Stat.objects.create(
                 created_on=from_date,
-                key=key + "_contrib_count",
+                key="count_" + key,
                 val=val,
                 )
 
@@ -70,7 +70,7 @@ def create_top_grant_spenders_cache():
             #print(key, val)
             Stat.objects.create(
                 created_on=from_date,
-                key=key + "_contrib_sum",
+                key="sum_" + key,
                 val=val,
                 )
 
