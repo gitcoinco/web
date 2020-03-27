@@ -25,6 +25,7 @@ from django.db import models, transaction
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
+from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
@@ -32,7 +33,6 @@ from dashboard.models import Profile
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
-from django.utils import timezone
 
 
 def create_top_grant_spenders_cache():
@@ -58,7 +58,7 @@ def create_top_grant_spenders_cache():
     from_date = timezone.now()
     for key, val in count_dict.items():
         if val:
-            print(key, val)
+            #print(key, val)
             Stat.objects.create(
                 created_on=from_date,
                 key=key + "_contrib_count",
@@ -67,7 +67,7 @@ def create_top_grant_spenders_cache():
 
     for key, val in sum_dict.items():
         if val:
-            print(key, val)
+            #print(key, val)
             Stat.objects.create(
                 created_on=from_date,
                 key=key + "_contrib_sum",
