@@ -86,28 +86,35 @@ if not clr_active:
     matching_live_tiny = ''
 
 
-def get_stats():
+def get_stats(round_type):
+    if not round_type:
+        round_type = 'tech'
     created_on = next_round_start
     charts = []
     key_titles = [
-        ('_match', 'Estimated Matching Amount', '-positive_round_contributor_count' ),
-        ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count' ),
-        ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count' ),
-        ('_amt', 'CrowdFund Amount', '-amount_received_in_round' ),
+        ('_match', 'Estimated Matching Amount', '-positive_round_contributor_count', 'grants' ),
+        ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
+        ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count', 'grants' ),
+        ('_amt', 'CrowdFund Amount', '-amount_received_in_round', 'grants' ),
+        ('_contrib_count', 'Top Contributors by Num Contributations', '-val', 'profile' ),
+        ('_contrib_sum', 'Top Contributors by Value Contributed', '-val', 'profile' ),
     ]
-    for round_type in round_types:
-        for ele in key_titles:
-            key = ele[0]
-            title = ele[1]
-            order_by = ele[2]
-            if key == '_nctrbs' and round_type != 'media':
-                continue
+    for ele in key_titles:
+        key = ele[0]
+        title = ele[1]
+        order_by = ele[2]
+        if key == '_nctrbs' and round_type != 'media':
+            continue
+        keys = []
+        if ele[3] == 'grants':
             top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
-            charts.append({
-                'title': f"{title} Over Time ({round_type.title()} Round)",
-                'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on),
-                })
+        if ele[3] == 'profile':
+            keys = Stat.objects.filter(created_on__gt=created_on, key__endswith=ele[0]).values_list('key', flat=True)
+        charts.append({
+            'title': f"{title} Over Time ({round_type.title()} Round)",
+            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on),
+            })
     results = []
     counter = 0
     for chart in charts:
@@ -321,7 +328,7 @@ def grants(request):
     cht = []
     chart_list = ''
     if grant_type == 'stats':
-        cht, chart_list = get_stats() 
+        cht, chart_list = get_stats(category) 
     params = {
         'active': 'grants_landing',
         'title': title,

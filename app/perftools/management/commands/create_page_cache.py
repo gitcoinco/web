@@ -32,6 +32,48 @@ from dashboard.models import Profile
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
+from django.utils import timezone
+
+
+def create_top_grant_spenders_cache():
+    from django.contrib.contenttypes.models import ContentType
+    from dashboard.models import Earning
+    from marketing.models import Stat
+    from grants.views import next_round_start
+    content_type = ContentType.objects.get(app_label='grants', model='contribution')
+
+    from dashboard.models import Earning
+    earnings = Earning.objects.filter(
+        source_type=content_type,
+        created_on__gt=next_round_start,
+        ).values_list('from_profile__handle', 'value_usd')
+
+    count_dict = {ele[0]:0 for ele in earnings}
+    sum_dict = {ele[0]:0 for ele in earnings}
+    for ele in earnings:
+        if ele[1]:
+            count_dict[ele[0]] += 1
+            sum_dict[ele[0]] += ele[1]
+
+    from_date = timezone.now()
+    for key, val in count_dict.items():
+        if val:
+            print(key, val)
+            Stat.objects.create(
+                created_on=from_date,
+                key=key + "_contrib_count",
+                val=val,
+                )
+
+    for key, val in sum_dict.items():
+        if val:
+            print(key, val)
+            Stat.objects.create(
+                created_on=from_date,
+                key=key + "_contrib_sum",
+                val=val,
+                )
+
 
 
 def fetchPost(qt='2'):
@@ -220,8 +262,9 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_hidden_profiles_cache()
+        create_top_grant_spenders_cache()
         if not settings.DEBUG:
+            create_hidden_profiles_cache()
             create_tribes_cache()
             create_activity_cache()
             create_post_cache()
