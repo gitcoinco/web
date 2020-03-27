@@ -162,7 +162,6 @@ def get_stats(round_type):
         results.append(cht)
         counter += 1
     chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
-    import ipdb; ipdb.set_trace()
     return results, chart_list_str
 
 def get_fund_reward(request, grant):
