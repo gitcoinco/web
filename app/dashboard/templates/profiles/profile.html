@@ -67,7 +67,7 @@
               {% include 'profiles/header_avatar.html' %}
               {% include 'profiles/header_details.html' %}
             </div>
-            
+
             {% if profile.is_org %}
               {% include 'profiles/organization.html' %}
             {% elif profile.cascaded_persona == 'funder' %}

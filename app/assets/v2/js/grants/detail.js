@@ -272,4 +272,6 @@ $(document).ready(() => {
     document.location = $(this).attr('href');
   });
   $('.select2-selection__choice').removeAttr('title');
+
+  markdownGrants();
 });

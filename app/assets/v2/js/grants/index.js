@@ -20,6 +20,7 @@ $(document).ready(() => {
     });
   });
 
+  
   searchGrant();
   populateFilters();
 
@@ -40,7 +41,9 @@ $(document).ready(() => {
     etherscanUrlConvert(links, _network);
   });
 
-  md.renderMarkdown()
+  
+
+
 });
 
 const etherscanUrlConvert = (elem, network) => {
@@ -111,19 +114,26 @@ window.addEventListener('scroll', function() {
 
 });
 
-let markdowned = window.markdownit();
 
-const md = new Vue({
-  el: "#status",
-    data: {
-      name: "# now you can make your comment at markdown",
-      markdown: ""
-    },
-    methods: {
-      renderMarkdown: function () {
-        this.markdown = markdowned.render(this.name);
-        $("#renderedHTML").html(markdowned.render(this.name));
+const markdownGrants = () => {
+
+  let markdowned = window.markdownit();
+
+  let md = new Vue({
+    el: "#status",
+      data: {
+        name: "",
+        markdown: ""
+      },
+      methods: {
+        renderMarkdown: function () {
+          this.markdown = markdowned.render(this.name);
+          $("#preview-markdown").html(markdowned.render(this.name));
+        }
       }
-    }
-})
+  })
+
+  md.renderMarkdown()
+
+};
 
