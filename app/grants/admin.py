@@ -274,6 +274,7 @@ class PhantomFundingAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     list_display = ['id', 'github_created_on', 'from_ip_address', '__str__']
+    raw_id_fields = ['profile', 'grant']
 
     def github_created_on(self, instance):
         from django.contrib.humanize.templatetags.humanize import naturaltime
