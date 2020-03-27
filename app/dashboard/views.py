@@ -4096,25 +4096,7 @@ def hackathon_registration(request):
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
-
-    tabs = {
-        'current': {
-            'title': 'Current',
-            'event_count': HackathonEvent.objects.current().order_by('-start_date').count(),
-            'href': 'current'
-        },
-        'upcoming': {
-            'title': 'Upcoming',
-            'event_count': HackathonEvent.objects.upcoming().order_by('-start_date').count(),
-            'href': 'upcoming'
-        },
-        'finished': {
-            'title': 'Finished',
-            'event_count': HackathonEvent.objects.finished().order_by('-start_date').count(),
-            'href': 'finished'
-        }
-    }
-
+    
     events = {
         'current': HackathonEvent.objects.current().filter(visible=True).order_by('start_date'),
         'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
@@ -4125,7 +4107,6 @@ def get_hackathons(request):
         'title': 'Hackathons',
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'events': events,
-        'tabs': tabs,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 
