@@ -185,6 +185,7 @@ def process_win(request, qa):
     btcs = BulkTransferCoupon.objects.filter(
         token=quest.kudos_reward,
         tag='quest',
+        comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
         metadata__recipient=request.user.profile.pk)
     btc = None
     if btcs.exists():
