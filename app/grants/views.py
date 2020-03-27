@@ -36,6 +36,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
@@ -212,6 +213,17 @@ def grants_addr_as_json(request):
     response = list(set(_grants.values_list('title', 'admin_address')))
     return JsonResponse(response, safe=False)
 
+@cache_page(60 * 60)
+def grants_stats_view(request):
+    cht, chart_list = get_stats(request.GET.get('category'))
+    params = { 
+        'cht': cht,
+        'chart_list': chart_list,
+        'round_types': round_types,
+    }
+    response =  TemplateResponse(request, 'grants/shared/landing_stats.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 def grants(request):
     """Handle grants explorer."""
@@ -329,8 +341,6 @@ def grants(request):
         title = f"Round {clr_round} Stats"
     cht = []
     chart_list = ''
-    if grant_type == 'stats':
-        cht, chart_list = get_stats(category) 
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -385,7 +395,9 @@ def grants(request):
             logger.debug(e)
             pass
 
-    return TemplateResponse(request, 'grants/index.html', params)
+    response = TemplateResponse(request, 'grants/index.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 def add_form_categories_to_grant(form_category_ids, grant, grant_type):
     form_category_ids = [int(i) for i in form_category_ids if i != '']
