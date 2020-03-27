@@ -913,8 +913,10 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         offers = ""
 
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
-        if has_offer is not None:
+        if has_offer:
             return offers = f"💰 1 New Action"
+        if not has_offer:
+            return
 
         new_bounties = ""
         if bounties.count():
