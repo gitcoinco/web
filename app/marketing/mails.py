@@ -973,7 +973,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
 
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
-            return offers = f"💰 1 New Action"
+            offers = f"💰 1 New Action"
         if not has_offer:
             return
 
