@@ -476,13 +476,6 @@ def has_tx_mined(txid, network):
         return False
 
 
-def txn_already_used(t, token_name):
-    return BountyFulfillment.objects.filter(
-        payout_tx_id = t['hash'],
-        token_name=token_name
-    ).exists()
-
-
 def sync_payout(fulfillment):
     token_name = fulfillment.token_name
 

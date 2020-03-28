@@ -1,8 +1,7 @@
 from django.utils import timezone
 
 import requests
-from dashboard.models import BountyFulfillment
-from dashboard.utils import txn_already_used
+from dashboard.sync.helpers import txn_already_used
 
 
 def find_txn_on_etc_explorer(fulfillment, network='mainnet'):
@@ -22,7 +21,7 @@ def find_txn_on_etc_explorer(fulfillment, network='mainnet'):
                 txn['from'] == funderAddress.lower() and
                 txn['to'] == payeeAddress.lower() and
                 float(txn['value']) >= float(amount) and
-                not txn_already_used(txn, token_name)
+                not txn_already_used(txn['hash'], token_name)
             ):
                 return txn
     return None

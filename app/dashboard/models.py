@@ -1328,6 +1328,7 @@ class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""
 
     PAYOUT_STATUS = [
+        ('expired', 'expired'),
         ('pending', 'pending'),
         ('done', 'done'),
     ]
