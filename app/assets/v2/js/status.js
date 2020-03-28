@@ -1,3 +1,4 @@
+
 const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
 const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
@@ -28,17 +29,31 @@ $(document).ready(function() {
         let downsize = item.images.original.webp;
         let preview = item.images.fixed_width_downsampled.webp;
 
-        $('.gif-grid').append('<img class="pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
+        $('.gif-grid').append('<img width="300" class="pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
       }
       $('.pick-gif').on('click', selectGif);
     });
   }
+
+  $('#btn_gif').on('click', function(e) {
+    window.setTimeout(function() {
+      $('#search-gif').focus();
+      console.log($('#search-gif'));
+    }, 100);
+
+    if (!$('.pick-gif').length) {
+      injectGiphy('latest');
+    }
+  });
 
   $('#search-gif').on('input', function(e) {
     e.preventDefault();
     const query = e.target.value;
 
     injectGiphy(query);
+    if (!query) {
+      injectGiphy('latest');
+    }
   });
 
   if (button) {
@@ -203,14 +218,8 @@ $(document).ready(function() {
     $('#textarea').focus();
   }
 
-  document.is_shift = false;
-  // handle shift button
-  $('body').on('keyup', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = false;
-    }
-  });
-  // handle shift button
+
+  // handle poll button
   $('body').on('click', '#poll-button', function(e) {
     e.preventDefault();
     $(this).toggleClass('selected');
@@ -233,22 +242,64 @@ $(document).ready(function() {
     }
 
   });
-  $('body').on('keydown', '#textarea', function(e) {
-    if (e.keyCode == 16) {
-      document.is_shift = true;
-    }
-  });
 
+  $('#textarea').autogrow();
+
+  // handle video button
+  $('body').on('click', '#video-button', function(e) {
+    e.preventDefault();
+    $(this).toggleClass('selected');
+    var is_selected = $(this).hasClass('selected');
+
+    if (is_selected) {
+      const items = [ 'video1.gif', 'video2.gif', 'video3.png' ];
+      const item = $(this).data('gfx') ? $(this).data('gfx') : items[Math.floor(Math.random() * items.length)];
+
+      let html = `
+      <div data-gfx=` + item + ` id=video_container class="bg-lightblue p-2">
+        <img src='/static/v2/images/` + item + `'>
+      </div>
+      `;
+
+      $(html).insertAfter('#status');
+    } else {
+      $('#video_container').remove();
+    }
+
+
+    document.is_shift = false;
+    // handle shift button
+    $('body').on('keyup', '#textarea', function(e) {
+      if (e.keyCode == 16) {
+        document.is_shift = false;
+      }
+    });
+
+
+  });
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
     // enforce a max length
     var max_len = $(this).data('maxlen');
+    var len = $(this).val().trim().length;
 
+    var update_max_len = function() {
+      if ($('#char_count').length) {
+        if (len < max_len) {
+          $('#char_count').addClass('hidden');
+        } else {
+          $('#char_count').removeClass('hidden');
+        }
+        $('#char_count').text(len + '/' + max_len);
+      }
+    };
+
+    update_max_len();
     localStorage.setItem(lskey, $(this).val());
     if ($(this).val().trim().length > max_len) {
       $(this).addClass('red');
       $('#btn_post').attr('disabled', true);
-    } else if ($(this).val().trim().length > 4) {
+    } else if (len > 4) {
       $('#btn_post').attr('disabled', false);
       $(this).removeClass('red');
       if ($('#textarea').is(':focus') && !e.shiftKey && e.keyCode == 13) {
@@ -267,13 +318,17 @@ $(document).ready(function() {
     const data = new FormData();
     const message = $('#textarea');
     const the_message = message.val().trim();
-    const ask = $('.activity_type_selector .active input').val();
+    const ask = $('.activity_type_selector input:checked').val();
 
     data.append('ask', ask);
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
     data.append('tab', getParam('tab'));
-    
+    if ($('#video_container').length) {
+      data.append('has_video', $('#video_container').length);
+      data.append('video_gfx', $('#video_container').data('gfx'));
+    }
+
     message.val('');
     localStorage.setItem(lskey, '');
     data.append(
@@ -326,6 +381,7 @@ $(document).ready(function() {
       }
     }
     $('#poll_container').remove();
+    $('#video_container').remove();
 
     fetch('/api/v0.1/activity', {
       method: 'post',
@@ -364,7 +420,6 @@ $(document).ready(function() {
       .catch(err => fail_callback());
   }
 
-  injectGiphy('latest');
 });
 window.addEventListener('DOMContentLoaded', function() {
   var button = document.querySelector('#emoji-button');
@@ -374,7 +429,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   if (button && picker) {
     picker.on('emoji', function(emoji) {
-      document.querySelector('textarea').value += emoji;
+      document.querySelector('#textarea').value += emoji;
     });
 
     button.addEventListener('click', function() {

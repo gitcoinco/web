@@ -1,4 +1,5 @@
 import re
+import time
 
 from django.conf import settings
 from django.contrib import messages
@@ -8,6 +9,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 import metadata_parser
+from app.redis_service import RedisService
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
@@ -23,6 +25,7 @@ tags = [
     ['#announce','bullhorn','search-announce'],
     ['#mentor','terminal','search-mentor'],
     ['#jobs','code','search-jobs'],
+    ['#bounty','hand-holding-usd','search-bounty'],
     ['#help','laptop-code','search-help'],
     ['#meme','images','search-meme'],
     ['#music','music','search-music'],
@@ -51,11 +54,6 @@ def get_next_time_available(key):
 
 
 def index(request):
-
-    # TODO: temporary until town square is approved for non-staff use
-    if not is_user_townsquare_enabled(request.user):
-        from retail.views import index as regular_homepage
-        return regular_homepage(request)
 
     return town_square(request)
 
@@ -122,7 +120,7 @@ def get_sidebar_tabs(request):
         threads = {
             'title': f"My Threads",
             'slug': f'my_threads',
-            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin in the last 24 hours.',
+            'helper_text': f'The Threads that you\'ve liked, commented on, or sent a tip upon on Gitcoin since you last checked.',
             'badge': threads_last_24_hours
         }
         tabs = [threads] + tabs
@@ -272,7 +270,7 @@ def get_following_tribes(request):
             tribe = {
                 'title': handle,
                 'slug': f"tribe:{handle}",
-                'helper_text': f'Activities from @{handle} in the last 24 hours',
+                'helper_text': f'Activities from @{handle} since you last checked',
                 'badge': last_24_hours_activity,
                 'avatar_url': f'/dynamic/avatar/{handle}'
             }
@@ -284,6 +282,8 @@ def town_square(request):
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
+    max_length_offset = abs(((request.user.profile.created_on if request.user.is_authenticated else timezone.now()) - timezone.now()).days)
+    max_length = 280 + max_length_offset
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
         trending_only = int(request.GET.get('trending', 0))
@@ -299,6 +299,8 @@ def town_square(request):
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
             'tags': tags,
+            'max_length': max_length,
+            'max_length_offset': max_length_offset,
             'admin_link': admin_link,
             'now': timezone.now(),
             'is_townsquare': True,
@@ -386,22 +388,41 @@ def api(request, activity_id):
 
     # no perms needed responses go here
     if request.GET.get('method') == 'comment':
-        comments = activity.comments.order_by('created_on')
+        comments = activity.comments.prefetch_related('profile').order_by('created_on')
         response['comments'] = []
+        results = {i : 0 for i in range(0, 15)}
         for comment in comments:
+            counter = 0; start_time = time.time()
             comment_dict = comment.to_standard_dict(properties=['profile_handle'])
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['handle'] = comment.profile.handle
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            # perf - 0.3s on a 150 comment thread
             comment_dict['last_chat_status'] = comment.profile.last_chat_status
-            comment_dict['last_chat_status_title'] = comment.profile.last_chat_status.title()
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            comment_dict['last_chat_status_title'] = comment_dict['last_chat_status'].title()
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['tip_count_eth'] = comment.tip_count_eth
-            comment_dict['match_this_round'] = comment.profile.match_this_round
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['is_liked'] = request.user.is_authenticated and (request.user.profile.pk in comment.likes)
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['like_count'] = len(comment.likes)
-            comment_dict['likes'] = ", ".join(Profile.objects.filter(pk__in=comment.likes).values_list('handle', flat=True)) if len(comment.likes) else "no one. Want to be the first?"
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            comment_dict['likes'] = ", ".join(comment.likes_handles) if len(comment.likes) else "no one. Want to be the first?"
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['name'] = comment.profile.data.get('name', None) or comment.profile.handle
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            # perf - 0.2 on a 150 comment thread
             comment_dict['default_match_round'] = comment.profile.matchranking_this_round.default_match_estimate if comment.profile.matchranking_this_round else None
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            comment_dict['match_this_round'] = comment.profile.match_this_round
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['sorted_match_curve'] = comment.profile.matchranking_this_round.sorted_match_curve if comment.profile.matchranking_this_round else None
+            counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             response['comments'].append(comment_dict)
+        for key, val in results.items():
+            if settings.DEBUG:
+                print(key, round(val, 2))
         return JsonResponse(response)
 
     # check for permissions
@@ -612,6 +633,25 @@ def offer_new(request):
         'nav': 'home',
     }
     return TemplateResponse(request, 'townsquare/new.html', context)
+
+
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def video_presence(request):
+    """Sets user presence on mattermost."""
+    if not request.user.is_authenticated:
+        return Http404
+
+    roomname = request.POST.get('roomname', '').replace('meet', '')
+    participants = request.POST.get('participants', '')
+    activity = Activity.objects.filter(pk=roomname).first()
+    set_status = activity and int(participants) >= 0
+
+    # if so, make it so
+    if set_status:
+        redis = RedisService().redis
+        seconds = 100 if not settings.DEBUG else 9999999
+        redis.setex(roomname, seconds, participants)
+    return JsonResponse({'status': 'OK'})
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

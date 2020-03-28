@@ -253,6 +253,7 @@ def send_tip_4(request):
             tip=tip,
             )
     tip.save()
+    tip.trigger_townsquare()
 
     from townsquare.tasks import calculate_clr_match
     calculate_clr_match.delay()
@@ -296,7 +297,7 @@ def tipee_address(request, handle):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='15/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_3(request):
     """Handle the third stage of sending a tip (the POST).
 
