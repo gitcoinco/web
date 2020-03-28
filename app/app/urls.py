@@ -20,8 +20,10 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import index as sitemap_index
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.decorators.cache import cache_page
 from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
@@ -61,12 +63,18 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
+    path('wiki/', include('wiki.urls')),
+
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     url('^api/v1/bounty/create', dashboard.views.create_bounty_v1, name='create_bounty_v1'),
     url('^api/v1/bounty/cancel', dashboard.views.cancel_bounty_v1, name='cancel_bounty_v1'),
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
+    path('api/v1/bounty/<int:bounty_id>/close', dashboard.views.close_bounty_v1, name='close_bounty_v1'),
+    path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
+    re_path(r'.*api/v0.1/chat/presence$', chat.views.chat_presence, name='chat_presence'),
+    re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
@@ -163,7 +171,8 @@ urlpatterns = [
 
     # grant views
     path('grants/', include('grants.urls', namespace='grants')),
-    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
+    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall_')),
+    re_path(r'^grant/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/?$', dashboard.views.onboard, name='onboard'),
@@ -203,6 +212,14 @@ urlpatterns = [
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
     path('hackathon/projects/<str:hackathon>/', dashboard.views.hackathon_projects, name='hackathon_projects'),
     path('hackathon/projects/<str:hackathon>', dashboard.views.hackathon_projects, name='hackathon_projects2'),
+    path(
+        'hackathon/projects/<str:hackathon>/<str:project>', dashboard.views.hackathon_project, name='hackathon_project'
+    ),
+    path(
+        'hackathon/projects/<str:hackathon>/<str:project>/',
+        dashboard.views.hackathon_project,
+        name='hackathon_project2'
+    ),
     path('modal/new_project/<int:bounty_id>/', dashboard.views.hackathon_get_project, name='hackathon_get_project'),
     path(
         'modal/new_project/<int:bounty_id>/<int:project_id>/',
@@ -214,6 +231,8 @@ urlpatterns = [
     re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
+    re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons3'),
+    re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons4'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
 
@@ -231,7 +250,11 @@ urlpatterns = [
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
-    url(r'^bounty/sync_payout/(?P<bounty_id>.*)?', dashboard.views.manual_sync_etc_payout, name='manual_sync_etc_payout'),
+    url(
+        r'^bounty/sync_payout/(?P<bounty_id>.*)?',
+        dashboard.views.manual_sync_etc_payout,
+        name='manual_sync_etc_payout'
+    ),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),  # TODO: Remove
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),  # TODO: Remove
     # TODO: Rename below to bounty/
@@ -352,7 +375,6 @@ urlpatterns = [
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
-    url(r'^sync/etc/?', dashboard.views.sync_etc, name='sync_etc'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
@@ -362,6 +384,7 @@ urlpatterns = [
 
     # brochureware views
     re_path(r'^home/?$', retail.views.index, name='home'),
+    re_path(r'^landing/?$', retail.views.index, name='landing'),
     re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
     re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
@@ -369,6 +392,7 @@ urlpatterns = [
     re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
     re_path(r'^products/?', retail.views.products, name='products'),
+    re_path(r'^landing/avatar/?', retail.views.avatar, name='avatar_landing'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
@@ -458,6 +482,11 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path(
+        '_administration/email/new_bounty_daily',
+        marketing.views.new_bounty_daily_preview,
+        name='admin_new_bounty_daily'
+    ),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
     path(
         '_administration/email/featured_funded_bounty',
@@ -620,7 +649,12 @@ urlpatterns = [
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    url(r'^sitemap.xml/?', perftools.views.sitemap, name='django.contrib.sitemaps.views.sitemap'),
+    path('sitemap.xml', sitemap_index, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
+    path(
+        'sitemap-<section>.xml',
+        cache_page(86400)(sitemap), {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'
+    ),
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
@@ -660,6 +694,9 @@ urlpatterns = [
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
+
+    # wiki
+    path('wiki/notifications/', include('django_nyt.urls')),
 ]
 
 if settings.ENABLE_SILK:
@@ -679,12 +716,26 @@ if settings.DEBUG:
 
 urlpatterns += [
     re_path(
-        r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),
-    re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
+    re_path(
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'
+    ),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+
+        # For django versions before 2.0:
+        # url(r'^__debug__/', include(debug_toolbar.urls)),
+
+    ] + urlpatterns
+
+LOGIN_REDIRECT_URL = '/login'
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'

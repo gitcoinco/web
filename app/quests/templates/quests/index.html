@@ -236,12 +236,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {{ row.created_on|naturaltime }}
             </td>
             <td>
-              <img data-src="/dynamic/avatar/{{ row.profile.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
-              <a href="{{ row.profile.url }}">@{{ row.profile.handle }}</a>
+              <img data-src="/dynamic/avatar/{{ row.metadata.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
+              <a href="/{{ row.metadata.handle }}">@{{ row.metadata.handle }}</a>
             </td>
             <td>
-              <img data-src="{{ row.questattempt.quest.enemy_img_url }}" style="width: 15px; height: 15px; border-radius: 10px">
-              {{row.action}} <a href="{{row.questattempt.quest.url}}">{{row.questattempt.quest.title}}</a>
+              <img data-src="{{ row.metadata.enemy_img }}" style="width: 15px; height: 15px; border-radius: 10px">
+              {{row.action}} <a href="{{row.metadata.quest_url}}">{{row.metadata.title}}</a>
             </td>
           </tr>
           {% endfor %}

@@ -24,7 +24,7 @@ from secrets import token_hex
 from tempfile import NamedTemporaryFile
 
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.db import models
@@ -163,6 +163,7 @@ class CustomAvatar(BaseAvatar):
 
         with NamedTemporaryFile(mode='w+', suffix='.svg') as tmp:
             tmp.write(svg)
+            tmp.flush()
             with open(tmp.name) as file:
                 svg_name = profile.handle if profile and profile.handle else token_hex(8)
                 avatar.svg.save(f"{svg_name}.svg", File(file), save=False)
@@ -259,3 +260,48 @@ def psave_avatar(sender, instance, **kwargs):
     from dashboard.models import Activity
     metadata = {'url': instance.png.url if getattr(instance, 'png', False) else None, }
     Activity.objects.create(profile=instance.profile, activity_type='updated_avatar', metadata=metadata)
+
+
+class AvatarTextOverlayInput(SuperModel):
+
+    active = models.BooleanField(default=False, db_index=True)
+    text = models.TextField(default='', blank=True)
+    coment = models.TextField(default='', blank=True)
+    num_uses_total = models.IntegerField(default=0)
+    num_uses_remaining = models.IntegerField(default=0)
+    current_uses = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.pk} / {self.text} / {self.coment}"
+
+
+class AvatarTheme(SuperModel):
+    """Store diff avatar theme types."""
+
+    active = models.BooleanField(default=False, db_index=True)
+    name = models.CharField(max_length=256)
+    description = models.TextField(default='', blank=True)
+    artist_bio = models.TextField(default='', blank=True)
+    popularity = models.IntegerField(default=0, db_index=True)
+    tags = ArrayField(models.CharField(max_length=200), blank=True, default=list)
+    img_url = models.CharField(max_length=256)
+    popularity_cheat_by = models.IntegerField(
+        default=0, db_index=True, help_text="Used by admin to rank avatar higher (or lower)."
+    )
+    override_name_ui = models.CharField(max_length=256, default='', blank=True)
+
+    def __str__(self):
+        """Return the str representing this avatar."""
+        return f"{self.humanized_name}, Active {self.active} -- {self.popularity} created"
+
+    @property
+    def url(self):
+        return f'/onboard/profile?steps=avatar&theme={self.name}'
+
+    @property
+    def humanized_name(self):
+        base_name = self.name if not self.override_name_ui else self.override_name_ui
+        return base_name.title().replace('_', ' ')
+
+    def get_absolute_url(self):
+        return self.url

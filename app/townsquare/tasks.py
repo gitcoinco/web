@@ -69,3 +69,18 @@ def send_comment_email(self, pk, retry=False):
         instance = Comment.objects.get(pk=pk)
         comment_email(instance)
         print("SENT EMAIL")
+
+
+
+@app.shared_task(bind=True, max_retries=3)
+def calculate_clr_match(self, retry=False):
+    """
+    :param self:
+    :return:
+    """
+    with redis.lock("tasks:calculate_clr_match", timeout=LOCK_TIMEOUT):
+
+        from townsquare.models import MatchRound
+        mr = MatchRound.objects.current().first()
+        if mr:
+            mr.process()

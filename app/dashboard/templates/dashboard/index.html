@@ -29,7 +29,7 @@
   </head>
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header sticky-top dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% if type != 'hackathon' %}
         {% include 'shared/nav.html' %}
@@ -72,10 +72,22 @@
             <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue mr-3"><i class="far fa-lightbulb mr-1"></i> Hackathon Guide</a>
           {% endif %}
           {% if hackathon.show_results %}
-            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue mr-3">Projects</a>
+            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue mr-3">
+            <i class="fas fa-tasks"></i>
+            Projects
+            </a>
           {% endif %}
           {% if hackathon.quest_link %}
-            <a href="{{hackathon.quest_link}}" class="btn btn-gc-blue mr-3">Quests</a>
+            <a href="{{hackathon.quest_link}}" class="btn btn-gc-blue mr-3">
+            <i class="fas fa-globe-europe"></i>
+            Quests
+          </a>
+          {% endif %}
+          {% if hackathon.town_square_link %}
+            <a href="/{{hackathon.town_square_link}}" class="btn btn-gc-blue mr-3">
+              <i class="fas fa-city"></i>
+              Town Square
+            </a>
           {% endif %}
         </div>
       </div>

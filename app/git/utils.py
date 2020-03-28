@@ -359,7 +359,7 @@ def get_github_emails(oauth_token):
 def get_emails_by_category(username):
     from dashboard.models import Profile
     to_emails = {}
-    to_profiles = Profile.objects.filter(handle__iexact=username)
+    to_profiles = Profile.objects.filter(handle=username.lower())
     if to_profiles.exists():
         to_profile = to_profiles.first()
         if to_profile.github_access_token:

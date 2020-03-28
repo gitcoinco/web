@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from gettext import gettext
 
+from django.contrib.auth.models import User
 from django.template.defaultfilters import truncatechars
 
 from app.utils import get_profiles_from_text
@@ -27,13 +28,27 @@ from inbox.models import Notification
 
 def send_notification_to_user(from_user, to_user, cta_url, cta_text, msg_html):
     """Helper method to create a new notification."""
-    Notification.objects.create(
-        cta_url=cta_url,
-        cta_text=cta_text,
-        message_html=msg_html,
-        from_user=from_user,
-        to_user=to_user
-    )
+    if to_user and from_user:
+      Notification.objects.create(
+          cta_url=cta_url,
+          cta_text=cta_text,
+          message_html=msg_html,
+          from_user=from_user,
+          to_user=to_user
+      )
+
+
+def send_notification_to_user_from_gitcoinbot(to_user, cta_url, cta_text, msg_html):
+    """Helper method to create a new notification."""
+    from_user = User.objects.filter(username='gitcoinbot').first()
+    if to_user and from_user:
+      Notification.objects.create(
+          cta_url=cta_url,
+          cta_text=cta_text,
+          message_html=msg_html,
+          from_user=from_user,
+          to_user=to_user
+      )
 
 
 def send_mention_notification_to_users(activity, mentioned_profiles):
