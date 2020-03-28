@@ -2,25 +2,26 @@
 
 {% if not hidden %}
 <div id="profile-tabs" class="tab-container font-body mt-3 mb-4">
-  <button type="button" id="nav-description" href="{{profile.url}}/activity/followers" class="text-center section-tab {% if foltab == "followers" %} active {% endif %}">
-    {% trans "FOLLOWERS" %}
+  <button type="button" id="nav-description" href="{{profile.url}}/follow?sub=followers" class="text-center section-tab {% if foltab == "followers" %} active {% endif %}">
+    {% trans "FOLLOWERS" %} ({{ followers.count }})
   </button>
-  <button type="button" id="nav-description" href="{{profile.url}}/activity/following" class="text-center section-tab {% if foltab == "following" %} active {% endif %}">
-    {% trans "FOLLOWING" %}
+  <button type="button" id="nav-description" href="{{profile.url}}/follow?sub=following" class="text-center section-tab {% if foltab == "following" %} active {% endif %}">
+    {% trans "FOLLOWING" %} ({{ following.count }})
   </button>
 </div>
+{% endif %}
 
 <div class="tab-projects d-flex flex-column">
   {% if foltab == 'followers' %}
     <!-- Show This users followers-->
-    {% for user in profile.followers %}
+    {% for user in followers %}
       <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
         <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-          <img class="profile-header__avatar mr-3" src="{% avatar_url user.handle %}" alt="">
+          <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.profile.handle }}" alt="">
         </div>
         <div class="tab-projects__item-details col-12 col-md-8 d-flex flex-column bounty-detail">
           <div class="d-flex">
-            <div class="font-weight-semibold font-subheader">{{user.handle}}</div>&nbsp;
+            <div class="font-weight-semibold font-subheader">{{user.profile.handle}}</div>
           </div>
         </div>
         <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
@@ -31,14 +32,14 @@
 
     {% elif foltab == 'following' %}
       <!-- Show which users this one is following-->
-      {% for user in profile.followers %}
+      {% for user in following %}
         <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
           <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-            <img class="profile-header__avatar mr-3" src="{% avatar_url user.handle %}" alt="">
+            <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.org.handle }}" alt="">
           </div>
           <div class="tab-projects__item-details col-12 col-md-8 d-flex flex-column bounty-detail">
             <div class="d-flex">
-              <div class="font-weight-semibold font-subheader">{{user.handle}}</div>&nbsp;
+              <div class="font-weight-semibold font-subheader">{{user.org.handle}}</div>&nbsp;
             </div>
           </div>
           <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">

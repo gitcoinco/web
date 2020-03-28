@@ -2824,6 +2824,7 @@ def profile(request, handle, tab=None):
         context = {
             'hidden': True,
             'ratings': range(0,5),
+            'followers': TribeMember.objects.filter(org=request.user.profile),
             'profile': {
                 'handle': handle,
                 'avatar_url': f"/dynamic/avatar/Self",
@@ -2872,7 +2873,11 @@ def profile(request, handle, tab=None):
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
     context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
+    context['followers'] = TribeMember.objects.filter(org=request.user.profile)
+    context['following'] = TribeMember.objects.filter(profile=request.user.profile)
+    context['foltab'] = request.GET.get('sub', 'followers')
 
+    print(f'===== TRIBES COUNT: {TribeMember.objects.filter(org=request.user.profile)}')
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
         context.update(tab)
