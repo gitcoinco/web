@@ -113,10 +113,10 @@ def get_stats(round_type):
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
             startswith = f"{ele[0]}{round_type}_"
-            keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=startswith).values_list('key', flat=True).cache(timeout=3600))
+            keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=startswith).values_list('key', flat=True))
         charts.append({
             'title': f"{title} Over Time ({round_type.title()} Round)",
-            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=minute).cache(timeout=3600),
+            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=minute),
             })
     results = []
     counter = 0
