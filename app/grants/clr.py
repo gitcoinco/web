@@ -22,6 +22,8 @@ import datetime as dt
 import json
 import math
 import time
+import pandas as pd
+
 from itertools import combinations
 
 from django.conf import settings
@@ -30,6 +32,11 @@ from django.utils import timezone
 from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
 from perftools.models import JSONStore
+
+from web3.auto.infura import w3
+from web3.exceptions import (
+    TransactionNotFound,
+)
 
 CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
 
@@ -571,3 +578,51 @@ def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
     )
 
     return predicted_clr_match
+
+
+'''
+    Server Side Grants Transaction Validator
+
+    Args:
+        list_contributions : csv | text | file
+        
+    Returns:
+        status: sucess or fail, reason
+        sucess_validator: [{'sucess': <int>, 'reason': <Object>}]
+        fail_validator: [{'fail': <int>, 'reason': <Object>}]
+
+'''
+
+def grants_transaction_validator(list_contributions):
+    """This function check grants transaction list"""
+
+    df = pd.read_csv(list_contributions, sep=" ")
+    check_transaction = lambda txid: w3.eth.getTransaction(txid)
+    check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE}{index_transaction}{txid[:10]} -> status: 0 False - amount was off by 0.001{bcolors.ENDC}")
+    check_token = lambda token_address: len(token_address) == 42
+
+    for index_transaction, txid in enumerate(df.txid):
+        try:
+            transaction = check_transaction(txid)
+            amount =  check_amount(transaction.input)
+            token_address = check_token(transaction.to)
+            if token_address == True  and isinstance(amount, int):
+                print (f"{bcolors.OKGREEN} {index_transaction}{txid[:10]} -> status: 1{bcolors.ENDC}")
+        except TransactionNotFound:
+            print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} {txid[:10]} -> status: 0 - tx failed{bcolors.ENDC}")
+
+    # Colors for Console.
+    class bcolors:
+        HEADER = '\033[95m'
+        OKBLUE = '\033[94m'
+        OKGREEN = '\033[92m'
+        WARNING = '\033[93m'
+        FAIL = '\033[91m'
+        ENDC = '\033[0m'
+        BOLD = '\033[1m'
+        UNDERLINE = '\033[4m'
+
+    
+    
+    
+    
