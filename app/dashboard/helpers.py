@@ -817,6 +817,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
         dashboard.Activity: The Activity object if user_profile is present or None.
 
     """
+
     user_profile = None
     fulfillment = _fulfillment
     try:
@@ -829,7 +830,8 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                           'bounty_changed']
         if event_name not in funder_actions:
             if not fulfillment:
-                fulfillment = new_bounty.fulfillments.order_by('-pk').first()
+                if new_bounty.fulfillments.exists():
+                    fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             if fulfillment:

@@ -18,22 +18,19 @@
               <div class="heading">{% trans "Sort by" %}</div>
               <select name="sort_option" id="sort_option">
                 <option value="weighted_shuffle">{% trans "Weighted Shuffle" %}</option>
-                <option value="match_pledge_amount_1">{% trans "Round 4 - $1 Contrib Matching Amount" %}</option>
-                <option value="match_pledge_amount_10">{% trans "Round 4 - $10 Contrib Matching Amount" %}</option>
-                <option value="match_pledge_amount_100">{% trans "Round 4 - $100 Contrib Matching Amount" %}</option>
-                <option value="match_pledge_amount_1000">{% trans "Round 4 - $1k Contrib Matching Amount" %}</option>
-                <option value="-clr_prediction_curve__0__1">{% trans "Round 4 - CLR Match Estimate: Highest" %}</option>
-                <option value="clr_prediction_curve__0__1">{% trans "Round 4 - CLR Match Estimate: Lowest" %}</option>
-                <option value="-clr_matching">{% trans "Rounds 1 & 2 - Total CLR Match: Highest" %}</option>
-                <option value="clr_matching">{% trans "Rounds 1 & 2 - Total CLR Match: Lowest" %}</option>
+                <option value="-weighted_shuffle">{% trans "Weighted Shuffle:Lowest First" %}</option>
+                <option value="-clr_prediction_curve__0__1">{% trans "Round 5 - Match Estimate: Highest" %}</option>
+                <option value="-amount_received_in_round">{% trans "Round 5 - Amount Raised : Highest" %}</option>
+                <option value="-positive_round_contributor_count">{% trans "Round 5 - Contributors: Highest" %}</option>
+                {% if type == 'media' %}
+                  <option value="-negative_round_contributor_count">{% trans "Round 5 - Negative Contributors: Highest" %}</option>
+                {% endif %}
                 <option value="-created_on">{% trans "Created: Recent" %}</option>
                 <option value="created_on">{% trans "Created: Oldest" %}</option>
-                <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
-                <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
-                <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
-                <option value="amount_received">{% trans "Amount Raised: Lowest" %}</option>
-                <option value="-contribution_count">{% trans "Most Contributions" %}</option>
-                <option value="-contributor_count">{% trans "Most Contributors" %}</option>
+                <option value="-amount_received">{% trans " Alltime Amount Raised: Highest" %}</option>
+                <option value="amount_received">{% trans " Alltime Amount Raised: Lowest" %}</option>
+                <option value="-contribution_count">{% trans "Most Contributions Alltime" %}</option>
+                <option value="-contributor_count">{% trans "Most Contributors Alltime" %}</option>
               </select>
             </div>
 
