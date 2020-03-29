@@ -1,0 +1,22 @@
+{
+    "symbol": "UNIQ",
+    "address": "0x1452DbfCff5aa0BA612B74876A025750a51B5b15",
+    "overview": {
+        "en": "The Uniqson Artificial Intelligence is a big data blockchain system which utilizes UniqCoins that can be used for restaurants, payment of bills, e-commerce, and travel",
+        "zh": "优胜币是一种采用自动智能合约挖矿的代币,作为优胜大数据区块链系统中的中介,用于支付餐馆,支付账单,电子商务和旅行. 该系统分析大数据 捕捉消费者的喜好和他们的消费行为,以及使大数据计算分析变得无章碍,价格便宜,对大众来说更有安全性.通过使用区块链技术,计算方面的负担将会分散在优胜全球区块链中众多计算设备的生态系统,让优胜伙伴,优胜支付,优胜旅游和优胜商城, 在整个优胜生态系统中都能使用优胜币, 作为首选的支付代币. 目前首个韩国饮食app软件公司yeahyag.com是优胜国际的伙伴."
+    },
+    "email": "support@uniqinternational.com",
+    "website": "http://www.uniqinternational.com",
+    "whitepaper": "https://uniqinternational.com/whitepaper/",
+    "state": "NORMAL",
+    "published_on": "2019-02-28",
+    "initial_price": {
+        "USD": "0.03 USD"
+    },
+    "links": {
+        "blog": "https://uniqinternational.com/category/media/",
+        "twitter": "https://twitter.com/uniqson/",
+        "telegram": "https://t.me/uniqcoin",
+        "github": "https://github.com/uniqson"
+    }
+}

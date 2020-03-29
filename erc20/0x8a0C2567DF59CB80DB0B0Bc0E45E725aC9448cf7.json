@@ -1,0 +1,21 @@
+{
+  "symbol": "OSX",
+  "address": "0x8a0C2567DF59CB80DB0B0Bc0E45E725aC9448cf7",
+  "overview": {
+    "en": "OSX is the common ground of the iOscarX team under Oscar Resources Ltd. to open up the traditional technical pain points of traditional gold mining, using the equity gold agreement and income stream transactions to realize future assets under the premise of combining blockchain technology. To create an opportunity for investors to participate in the upstream gold industry chain, which aims to change the traditional interaction and cooperation model of gold mining.",
+    "zh": "OSX是奥斯卡资源有限公司旗下iOscarX团队为打通传统黄金矿业线下技术痛点，在结合区块链技术的前提下，利用权益金协议与收入流交易这两种黄金矿业集团变现未来资产的共同点，来为投资者创造一个参与上游黄金产业链的机会，旨在改变了黄金矿业传统的互动与合作模式."
+  },
+  "email": "support@ioscarx.com",
+  "website": "http://www.ioscarx.com/",
+  "whitepaper": "http://ioscarx.com/doc/iOscarX%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-21",
+  "initial_price":{
+        "USD":"0.060 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/iOscarX_DG",
+    "facebook": "https://www.facebook.com/ioscarx",
+    "medium": "https://medium.com/@iOscarX_DigitalGold"
+  }
+}

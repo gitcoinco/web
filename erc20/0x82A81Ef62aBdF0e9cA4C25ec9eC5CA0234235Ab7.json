@@ -1,0 +1,19 @@
+{
+  "symbol": "LV",
+  "address": "0x82A81Ef62aBdF0e9cA4C25ec9eC5CA0234235Ab7",
+  "overview":{
+    "en": "The first building based on the Libra blockchain People Eco-Community Platform.",
+    "zh": "首家基于Libra区块链搭建的生态社区平台."
+  },
+  "email": "LibraVote@gmail.com",
+  "website": "http://www.libravote.vip",
+  "whitepaper": "http://www.libravote.vip/file/LibraVoteCommunityWhitePaper-CN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-21",
+  "links": {
+    "twitter": "https://twitter.com/LibraVote",
+    "github": "https://github.com/LibraVote",
+    "facebook": "https://www.facebook.com/libra.vote.9",
+    "medium": "https://medium.com/@libravote"
+  }
+}

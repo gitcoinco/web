@@ -1,0 +1,17 @@
+{
+    "symbol": "FX",
+    "address": "0x75857809BDcDB2835243df2D9F2198F85040B4bC",
+    "overview": {
+        "en": "FAEX is a distributed,  unauthorized, scalable, open, and Shared order book ethereum high-frequency side chain settlement network based on decentralized ethereum asset  matching trading. Its business covers exchange, leverage, legal currency, futures, options, data matching trading, etc FAEX.IO decentralized  exchange is the first application of FAEX, and the trading speed and experience are in line with that of the centralized exchange.",
+        "zh": "FAEX是一个基于以太坊资产去中心化撮合交易而建立的分布式、无任何授权、可扩展、开放式、共享订单薄的以太坊高频侧链结算网络，业务覆盖于，兑汇 、杠杆、法币、期货、期权，数据撮合交易等。FAEX.IO去中心化交易所是FAEX第一个落地应用, 交易速度、体验与中心化交易所的均以持平。"
+    },
+    "email": "faexio.io@gmail.com",
+    "website": "http://www.faex.io",
+    "state": "NORMAL",
+    "initial_price": {
+        "USD": "$0.044USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/faex_io"
+    }
+}

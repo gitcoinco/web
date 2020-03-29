@@ -1,0 +1,17 @@
+{
+  "symbol": "ENC",
+  "address": "0x0393ab33832c932C15aa6f19DeD20815633346A8",
+  "overview": {
+      "en": "Eosmos Network is is a cross-chain distributed game ecological platform based on blockchain technology.",
+      "zh": "Eosmos Network是⼀个基于区块链技术的跨链分布式游戏生态平台。"
+  },
+  "email": "support@eosmos.network",
+  "website": "https://eosmos.network",
+  "whitepaper": "https://eosmos.network/static/eosmos-WhitePaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-15",
+  "links": {
+      "twitter": "https://twitter.com/EosmosNetwork",
+      "telegram": "https://t.me/eosmos_network"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "symbol": "OMS",
+    "address": "0xcaFA95fe1a5a05A0dbbc4E682A80aD16C860C63f",
+    "overview":{
+          "en": "OMS team built a decentralized financial payment network mousse chain based on blockchain. Mousse chain enables the digital currency card to link all payment scenes to flow with each other, creating a new business model of blockchain plus financial payment plus industry plus consumption, enabling the digital currency card economy to empower consumption industry, upgrade consumption capacity, promote a new era of blockchain commercial finance, and build a global digital currency consumption and payment platform.",
+          "zh": "OMS团队打造基于区块链去中心化的金融支付网络慕斯链。慕斯链让数字货币通证链接一切支付场景相互流通开创区块链加金融支付加产业加消费新商业模式，让数字货币通证经济赋能消费产业，升级消费产能，推动区块链商业金融新时代，打造全球数字货币消费支付平台。"
+    },
+    "email": "postmaster@oms.ink",
+    "website": "http://www.oms.ink/",
+    "whitepaper": "http://www.oms.ink/templet/qukuai/img/omswhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-11-05",
+    "links": {
+        "blog": "https://weibo.com/rdx199289",
+        "telegram": "https://t.me/OMSOfficialGroup"
+      }
+}

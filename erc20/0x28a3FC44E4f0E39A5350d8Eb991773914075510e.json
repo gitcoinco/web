@@ -1,0 +1,21 @@
+{
+  "symbol": "SPAY",
+  "address": "0x28a3FC44E4f0E39A5350d8Eb991773914075510e",
+  "overview":{
+        "en": "SPAY, SuperPay Chain launched a user and merchant value-added service equity system, which is based on the Ethereum ERC20 standard. ",
+        "zh": "SPAY，Super Pay Chain推出的用户及商家增值服务权益体系，它基于 Ethereum ERC20标准发行。"
+  },
+  "email": "bd@superpay.one",
+  "website": "http://superpay.one",
+  "whitepaper": "https://superpay.one/download/SuperPay_whitepaper_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-25",
+  "initial_price":{
+        "ETH": "0.00003 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/superpayone",
+    "telegram": "https://t.me/superpayofficial",
+    "github": "https://github.com/SuperPay"
+  }
+}

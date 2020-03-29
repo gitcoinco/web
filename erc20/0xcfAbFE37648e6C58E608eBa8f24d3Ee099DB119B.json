@@ -1,0 +1,18 @@
+{
+  "symbol": "XBBC",
+  "address": "0xcfAbFE37648e6C58E608eBa8f24d3Ee099DB119B",
+  "overview":{
+        "en": "X-BBC是全球首个公链 +5G 应用架构的价值生态网络体系，可以实现去中心化的网络存储，网络速度优化，平衡网络带宽，避免黑客攻击，DDoS攻击，钓鱼网站等",
+        "zh": "X-BBC is the world's first value ecological network system of public chain + 5G application architecture, which can realize decentralized network storage, network speed optimization, and balanced network bandwidth. It can defense hacking attacks, DDoS attacks, and phishing websites."
+  },
+  "email": "18217482179@163.com",
+  "website": "http://xbbc.top/",
+  "whitepaper": "http://xbbc.top/indexCh.html",
+  "state": "NORMAL",
+  "published_on": "2019-07-01",
+  "initial_price":{
+        "ETH":"0.0005 ETH",
+        "USD":"0.14 USD",
+        "BTC":"0.000012 BTC"
+  }
+}

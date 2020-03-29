@@ -1,0 +1,18 @@
+{
+  "symbol": "YOO",
+  "address": "0xC7596f3FC97AE603e1D7FfA61e6eFb7B6a59Bed2",
+  "overview":{
+    "en": "YOO Ecology combines blockchain technology to create a decentralized overseas e-commerce platform. The world's first to create volatility-based pass points in cross-border e-commerce. After the user purchases the pass, if there is an increase, the profit can be realized through the secondary market transaction. If it falls, if the realized value is impaired, The use value in e-commerce will not be lost, and the interests of investors will be protected to the greatest extent, and consumers will also be given a new shopping experience.",
+    "zh": "YOO生态是结合了区块链技术打造一个去中心化的海外电子商务平台。全球首创在跨境电商中植入可波动的通证积分，用户购买通证后，如果出现涨幅，可以通过二级市场交易变现获得利润，如果下跌，在变现价值受损的情况下，其在电商中的使用价值不会受到损失，最大程度的保障了投资者的利益，也带给消费者全新的购物体验。"
+  },
+  "email": "910345891@qq.com",
+  "website": "http://yogoo.pro",
+  "state": "NORMAL",
+  "published_on": "2019-04-15",
+    "initial_price":{
+        "USD":"0.0015 USD"
+  },
+  "links": {
+    "website": "http://yogoo.pro"
+  }
+}

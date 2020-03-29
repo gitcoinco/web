@@ -1,0 +1,20 @@
+{
+  "symbol": "LVCB",
+  "address": "0x5056440f5aE5c815739aEAb64De0f68B7CDc2Cda",
+  "overview":{
+        "en": "LVC Trip Chains",
+        "zh": "新旅链"
+  },
+  "email": "info@lvcb.net",
+  "website": "https://www.lvcb.net",
+  "whitepaper": "https://www.lvccoin.com/lvcb.pdf",
+  "state": "NORMAL", 
+  "published_on": "2019-04-29",
+  "initial_price":{
+        "USD":"0.0015 USD"
+  },
+  "links": {
+    "blog": "https://www.lvcb.net/index.html",
+    "wechat": "LVCBKF"
+  }
+}

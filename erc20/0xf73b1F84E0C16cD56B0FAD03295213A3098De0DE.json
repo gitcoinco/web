@@ -1,0 +1,19 @@
+{
+  "symbol": "SHT",
+  "address": "0xf73b1F84E0C16cD56B0FAD03295213A3098De0DE",
+  "overview":{
+    "en": "Shine Layer 2 (SHT) is a universal Token issued by Shine Chain Foundation for the Layer 2 scenario in the global insurance industry. It focuses on the ecological construction of global insurance data interaction, insurance anti-fraud and personal credit information system; it builds the interconnection between public blockchain and DAPP applications in the above areas, and promotes the application of block chain technology in the insurance field.",
+    "zh": "ShineLayer2（简称：SHT）是ShineChain基金会发行的应用于全球保险业Layer2场景的通用Token，专注于全球保险数据交互、保险反欺诈和个人征信体系的生态搭建；营造公链和DAPP应用在上述领域中的互联互通，促进区块链技术在保险领域的应用落地。"
+  },
+  "email": "admin@shinelayer2.com",
+  "website": "http://www.shinelayer2.com",
+  "whitepaper": "http://www.shinelayer2.com/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-30",
+  "initial_price":{
+    "USD":"0.00075 USD"
+  },
+  "links": {
+    "github": "https://github.com/ShineLayer2"
+  }
+}

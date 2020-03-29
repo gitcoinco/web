@@ -1,0 +1,16 @@
+{
+	"symbol": "GWNT",
+	"address": "0x2bEFc4c6293460442f28A98a70b0e493d092e306",
+	"overview": {
+		"en": "GWNT is based on the token of the GoldWire Chain Game Cloud Gaming System, which is mainly used for decentralized virtual props storage transactions and distributed GPU Cloud Computing.",
+		"zh": "GWNT 是基于「金线链游」云游戏共享系统的代币，主要用于去中心化游戏虚拟道具的存储交易和分布式GPU算力云。"
+	},
+	"email": "gwntio@hotmail.com",
+	"website": "http://gwnt.io/",
+	"whitepaper": "http://gwnt.io/downloads/gwnt.io%E7%99%BD%E7%9A%AE%E4%B9%A6v1.0.4.pdf",
+	"state": "NORMAL",
+	"published_on": "2019-06-28",
+	"links": {
+		"facebook": "https://www.facebook.com/gwnt.man.7"
+	}
+}

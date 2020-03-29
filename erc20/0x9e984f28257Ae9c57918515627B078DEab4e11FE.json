@@ -1,0 +1,17 @@
+{
+    "symbol": "AVX",
+    "address": "0x9e984f28257Ae9c57918515627B078DEab4e11FE",
+    "overview": {
+        "en": "AVXChange, or Audio Video eXchange is an incentivized peer-to-peer (P2P) file sharing platform designed for the exchange of audio and video entertainment over the internet. It is a unique distributed P2P file sharing platform built using Distributed Ledger Technology (DLT), blockchain, and our native cryptocurrency (AVX), for incentivized purchasing and participation, easy global transactions, security, and an immutable transparent transaction history.",
+        "zh": "AVXChange是一个音频和视频文件共享社区，具有代币经济以奖励所有成员在文件分发中的角色。AVXChange运行在一个专门构建的自定义分布式平台上，该平台具有区块链元素，致力于透明度和不可变的事务历史记录以及加密货币。AVXChange使用自己的加密货币形式，AVX，借此将促进快速有效的全球交易，并用于激励用户共享文件，维护网络，以及奖励知识产权所有者创作了我们所喜爱和享受的媒体。AVXChange P2P文件共享应用程序旨在通过开发透明的互换来彻底改变我们进行文件共享的方式，让每个人都能获得奖励，让每个人都能获得公平的份额。"
+    },
+    "email": "info@avxchange.io",
+    "website": "https://www.avxchange.io",
+    "whitepaper": "https://avxchange.io/wp-content/uploads/2019/04/AVXChange-White-Paper-v0.65.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-03-05",
+    "links": {
+        "telegram": "https://t.me/AVXCHANGEOFFICIAL",
+        "github": "https://github.com/avxchange"
+    }
+}

@@ -1,0 +1,19 @@
+{
+  "symbol": "GYB_OLD",
+  "address": "0x427f8892A1c6c44EC87e9b5f92C7df90452De19E",
+  "overview":{
+        "zh": "我们是GYB公元币项目方（以下简称“我方”），由于GYB技术升级更换新的合约地址，申请更换为新的合约地址，原合约地址0x427f8892a1c6c44ec87e9b5f92c7df90452de19e，新合约地址0x0a3e9a3c0a95c7d66d0178508437ee94c4e033a1， 我方将对已拥有旧币的用户进行1: 1 兑换新的币， 钱包内的旧合约代币1: 1 更换为新的合约的代币； 合约更换后， 旧币合约地址将不再继续使用， 全部使用新的合约地址， 换币咨询客服联系方式： 2790497030@qq.com， 我方承担更换新币的责任， 把已拥有相应数量的新币赔偿给用户（ 用户需提供旧币的账户记录证明）。 我方承诺承担并赔偿由于更换合约带来的一切损失。 "
+  },
+  "email": "1464632939@qq.com",
+  "website": "http://www.adchain131419.com/",
+  "whitepaper": "http://www.adchain131419.com/baipi/whitePaperCN.pdf",
+  "published_on": "2019-07-01",
+  "initial_price":{
+        "ETH":"0.0005 ETH",
+        "USD":"0.1445 USD",
+        "BTC":"0.00001114 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Joe00052830"
+  }
+}

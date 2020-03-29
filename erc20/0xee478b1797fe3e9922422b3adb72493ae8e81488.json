@@ -1,8 +1,8 @@
 {
-    "symbol": "FNK",
+    "symbol": "FNK_OLD",
     "address": "0xee478b1797fe3e9922422b3adb72493ae8e81488",
     "overview": {
-        "en": "The New P2P Payment Solution on SNS Services."
+        "en": "The New P2P Payment Solution on SNS Services.注：此为 FNK 官方发行的旧 FNK 代币。新 FNK 合约地址：0x06404399e748cd83f25ab163711f9f4d61cfd0e6"
     },
     "email": "official@funkeypay.com",
     "website": "http://funkeypay.com",

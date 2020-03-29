@@ -1,0 +1,20 @@
+
+{
+    "symbol": "PH",
+    "address": "0xA54629F15f9149490b3bC51e9829fd3A932Ce506",
+    "overview":{
+          "en": "PH addresses basic coordination issues among payment processors, gateways, and financial institutions by developing a new generation of payment services. The payment service supports conversion between currency and asset types. Through the PH network and electronic wallet, end users can flexibly complete payment, remittance, financial management, consumption, salary storage, B2B business, supply chain financing, credit system, asset management and trade, and a variety of on-demand financial services. Specifically, rapid movement of funds at home and abroad, secure ledger tracking assets in departments of large organizations, credit score systems for brand alliances, and digital gift CARDS to networks that support multiple wallet vendors",
+          "zh": "PH 通过开发新一代支付服务来解决支付处理商、网关以及金融机构之间基本的协调问题。该支付服务支持在货币及资产类型间进行转换操作。通过 PH 网络和电子钱包，终端用户可以灵活完成支付、汇款、理财、消费、薪水存储、B2B 商业、供应链融资、信用制度、资产管理和贸易以及各种随需应变的金融服务。具体而言，可在国内外迅速移动资金、在大型组织的各部门中获取跟踪资产的安全分类账、为品牌联盟建立信用积分系统、向可支持多个钱包供应商的网络发放数字礼品卡等"
+    },
+    "whitepaper": "http://paymentincurrency.com/ph-token.pdf",
+    "website": "http://paymentincurrency.com",
+    "state": "NORMAL",
+    "published_on": "2019-07-08",
+    "initial_price":{
+    },
+
+    "links": {
+      "blog": "https://weibo.com/u/7222187203"
+    }
+
+  }

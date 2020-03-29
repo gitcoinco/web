@@ -1,0 +1,19 @@
+{
+    "symbol": "SCB",
+    "address": "0xeb4e96bfda20d63867667a84b1878687cd5a6804",
+    "overview": {
+        "en": "SCB is committed to creating a public chain platform to protect the rights and interests of consumers and drive car enterprises to continuously pursue excellence, so as to establish a high-quality Shared car display platform that millions of people can trust,promote the rapid spread of high-quality cars of high-quality enterprises, and let inferior cars have no place to hide.",
+        "zh": "共享汽车链 SCB 致力于打造一个保障消费者权益、驱动车企不断逐优的公链平台，进而建立万众可信任的高品质共享汽车展示平台，促进优质企业的优质汽车被快速传播，让劣质汽车无处藏身。"
+    },
+    "email": "scbchina6@gmail.com",
+    "website": "https://scbchain.cn/",
+    "whitepaper": "http://scbchain.cn/SCB.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-08-02",
+    "initial_price": {
+        "USD": "0.03 USD"
+    },
+    "links": {
+        "telegram": "https://t.me/libyshuai"
+    }
+}

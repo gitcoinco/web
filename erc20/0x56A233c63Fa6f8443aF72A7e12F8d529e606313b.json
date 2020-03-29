@@ -1,0 +1,19 @@
+﻿{
+    "symbol": "GCT",
+    "address": "0x56A233c63Fa6f8443aF72A7e12F8d529e606313b",
+    "overview": {
+        "en": "GCT is an innovative blockchain legal coin created by GC team",
+        "zh": "GCT是由GC團隊打造的創新型區塊鏈法幣。"
+    },
+    "email": "globalchain@gmx.com",
+    "website": "http://www.global-chain.cc/",
+    "whitepaper": "http://www.global-chain.cc/static/gc-white-cn.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-11-01",
+    "initial_price": {
+        "USD": "0.1 USD"
+    },
+    "links": {
+        "github": "https://github.com/RBSC-2019"
+    }
+}

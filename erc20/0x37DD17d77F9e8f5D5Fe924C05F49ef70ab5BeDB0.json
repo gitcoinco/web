@@ -1,0 +1,17 @@
+{
+  "symbol": "BIRTHDAY",
+  "address": "0x37DD17d77F9e8f5D5Fe924C05F49ef70ab5BeDB0",
+  "overview":{
+    "en": "BIRTHDAY is a encrypted digital commemorative coin based on blockchain technology. It is a perfect birthday gift when you have no idea what to send or cannot afford expensive gifts.",
+    "zh": "BIRTHDAY是一种基于区块链技术的数字加密纪念币。它是完美的生日礼物，有效地解决了你不知道送什么礼物的烦恼，亦或买不起贵重礼物的尴尬。"
+  },
+  "email": "Happy@BirthdayCoin.me",
+  "website": "http://birthdaycoin.me/",
+  "whitepaper": "http://birthdaycoin.me/birthdaycoin_white_paper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-12",
+  "links": {
+    "twitter": "https://twitter.com/CoinBirthday",
+    "telegram": "https://t.me/BirthdayCoin"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "symbol": "DNA",
+  "address": "0x286f0322164F532f388dac8bce2a5101D92A3475",
+  "overview":{
+        "en": "We are establishing a new ecosystem in gene industry with users as the core, gene sequencing companies, gene product and service providers and project parties. We use distributed storage and encryption technology to solve the gene data privacy and security issues. We and other third-party genetic testing companies can develop a variety of gene applications on the platform for nutritional diet, exercise, skin care, health management, drug development, parental recognition, and scientific research, allowing individuals to obtain the benefits of digital assets by Token stimulus while accelerating the exploration of genetic technology. With the rapid development of genome sequencing technology, the cost of personal genome sequencing is rapidly decreasing, and personal genome data will become an important digital asset for everyone. After an individual has ownership of personal genomic data and is free and easy to control personal genomic data, economic and social value will be realized for individuals and businesses.",
+        "zh": "DNA项目通过引入区块链技术，把基因组数据完整确权给个人，让个人切实拥有自己数据的所有权。同时，利用分布式存储和加密技术保障数据的隐私和安全。通过解构行业分工，形成以用户为核心，测序商、服务提供方、项目方参与的新生态。用户数据作为生态中的数字资产，在医疗健康、科学研究等领域流动，让个人获得数字资产收益的同时，加快生命健康的探索，造福人类社会。"
+  },
+  "email": "service@hgbc.io",
+  "website": "http://hgbc.io",
+  "whitepaper": "https://github.com/human-genome-block-chain/HGBC-White-Paper/blob/master/HGBC-whitepaper-english.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-08-14",
+  "initial_price":{
+        "ETH":"00.000015 ETH",
+        "USD":"0.005 USD",
+        "BTC":"0.0000004 BTC"
+  },
+  "links": {
+    "blog": "http://news.hgbc.io",
+    "twitter": "https://twitter.com/HGBC_CHAIN",
+    "telegram": "https://t.me/hgbc_cn",
+    "github": "https://github.com/human-genome-block-chain",
+    "facebook": "https://www.facebook.com/humangenomeblockchain.hgbc"
+  }
+}

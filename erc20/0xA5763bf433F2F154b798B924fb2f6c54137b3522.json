@@ -1,0 +1,29 @@
+
+{
+    "symbol": "ASC",
+    "address": "0xA5763bf433F2F154b798B924fb2f6c54137b3522",
+    "overview":{
+          "en": "ASC（Adanos Chain）as a leader in e-commerce of blockchain ,Based on the powerful of Block chain underlying Technology, Via DPoC (Delegates Proof of Credit) and PoL(Proof of Labor) to construct of a decentralized BAAS（Blockchain as a Service） ecosystem.BAAS ecosystem is committed to building a trusted ecological entrance for the e-commerce industry. Constructing the Global decentralized E-commerce Ecosystem, Realize the interconnection of global EC nodes, Promoting the Development of Product traceability system,Provide value data services.It will become the next generation of e-commerce engine, Promoting the Reform of e-commerce Industry,To realize the new harmonious commercial ecology of resource sharing, co-governance and interconnection.",
+          "zh": "ASC (艾达链)是全球区块链电商BAAS生态系统开创者，艾达链创造性地通过 DPoC(Delegates Proof of Credit)信用权益证明共识机制和 PoL(Proof of Labor) 跨链共识机制，致力于构建去中心化BAAS（Blockchain as a Service）应用生态系统。 BAAS 生态系统致力于打造全行业、全产业链基于区块链电商的可信任生态底层入口。构建全球去中心化电商生态，实现全球电商节点互联，推动产品溯源体系的发展，提供价值数据服务。艾达链BAAS生态系统将成为下一代电商引擎，推动电商产业变革，实现资源共享、共治、共联的和谐商业新生态。"
+    },
+    "email": "ascchain@outlook.com",
+    "website": "https://www.ascchain.com/",
+    "whitepaper": "http://www.ascchain.com/ASC%E7%99%BD%E7%9A%AE%E4%B9%A6%20-v1.0.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-01-01",
+    "initial_price":{
+          "ETH":"0.0000666 ETH",
+          "USD":"0.0143 USD",
+          "BTC":"0.00000143 BTC"
+    },
+    "links": {
+      "blog": "https://ascchain.com/blog",
+      "twitter": "https://twitter.com/adanoschain",
+      "telegram": "https://t.me/adanoschain",
+      "github": "https://github.com/ascchain/token-profile",
+      "facebook": "https://www.facebook.com/ascchain",
+      "reddit": "https://www.reddit.com/r/ascchain/",
+      "slack": "https://your-awesome-project.slack.com",
+      "medium": "https://medium.com/ascchain"
+    }
+  }

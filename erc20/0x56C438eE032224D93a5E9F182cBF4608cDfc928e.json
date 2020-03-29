@@ -1,0 +1,10 @@
+{
+  "symbol": "EPK",
+  "address": "0x56C438eE032224D93a5E9F182cBF4608cDfc928e",
+  "overview":{
+        "en": "EPK is the utility token within ETH Player. The total supply of EPK is 1 billion, of which 900 million is locked by the inherent smart contract which, if needed, is released only to compensate the players when the project is restarted. As for the remaining 100 million, 21 million is open for public offer during the genesis stage, and 79 million is the overall market circulation at first. All the EPK used to unlock accounts and pay profits withdraw fees will be burned until the market circulation of EPK is reduced to 10 million.",
+        "zh": "风云令（EPK）是ETH Player链上游戏系统内的通行令牌，总量10亿，其中9亿锁仓于合约地址，仅在项目重启时自动补偿给玩家；剩余1亿的中2100万用于创世兑换，7900万将根据市场发展而逐步流通。用户在解锁账号、领取收益消耗的EPK将1:1销毁，直至EPK市场流通量恒定1000万枚。"
+  },
+  "website": "https://ethplayer.io/",
+  "state": "NORMAL"
+}

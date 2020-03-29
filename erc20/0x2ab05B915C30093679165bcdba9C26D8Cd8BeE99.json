@@ -1,0 +1,21 @@
+{
+  "symbol": "BCHC",
+  "address": "0x2ab05B915C30093679165bcdba9C26D8Cd8BeE99",
+  "overview":{
+        "en": "BCHC is BitCherry distributed electricity networks Token.",
+        "zh": "BCHC是 BitCherry 分布式电商网络通证。"
+  },
+  "email": "contact@bitcherry.io",
+  "website": "http://www.bitcherry.io/",
+  "whitepaper": "http://www.bitcherry.io/img/BitCherry-White-Paper-EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-05",
+  "initial_price":{
+        "USD":"0.015 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Bitcherry1",
+    "telegram": "https://t.me/bitcherry",
+    "reddit": "https://www.reddit.com/user/BitCherryOfficial"
+  }
+}

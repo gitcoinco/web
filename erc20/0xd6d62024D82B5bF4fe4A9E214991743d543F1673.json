@@ -1,0 +1,20 @@
+{
+    "symbol": "SLT",
+    "address": "0xd6d62024D82B5bF4fe4A9E214991743d543F1673",
+    "overview": {
+        "en": "The SIMPLELIFE (SLT) team is working to develop a fast, private, easy-to-use, encrypted digital currency payment solution that can be distributed to users who cannot keep their keys for long periods of time, even in resource-constrained environments. Control is always in the hands of the user and will not be transferred to the third-party payment service provider. "
+    },
+    "email": "kuang.kao@gmail.com",
+    "website": "https://www.simplelifetoken.com/",
+    "whitepaper": "https://www.simplelifetoken.com/contact",
+    "state": "NORMAL",
+    "published_on": "2018-05-18",
+    "initial_price": {
+        "USD": "0.00004 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/simplelife",
+        "telegram": "https://t.me/simplelifetoken",
+        "facebook": "https://www.facebook.com/simplelife"
+    }
+}

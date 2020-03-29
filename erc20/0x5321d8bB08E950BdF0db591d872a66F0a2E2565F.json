@@ -1,0 +1,19 @@
+{
+    "symbol": "STRI",
+    "address": "0x5321d8bB08E950BdF0db591d872a66F0a2E2565F",
+    "overview":{
+          "en": "StringChain is a high-performance blockchain public chain project. It provides the infrastructure for the next generation Internet, blockchain, and intelligent Internet of Things by opening up the data connection between the Internet and the blockchain. The only token in the string chain is named stri, which means that the string chain serves as the underlying source of the blockchain and the digital world of the Internet.",
+          "zh": "StringChain是一个高性能区块链公链项目，通过打通互联网与区块链间的数据连接，为下一代互联网、区块链、智能物联网提供基础架构。弦链中的唯一Token名为stri,寓意为区块链和互联网数字世界的底层本源。"
+    },
+    "email": "global@stringchain.io",
+    "website": "http://stringchain.io/index.html",
+    "whitepaper": "http://www.stringchain.io/stringwhitepage.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-02-28",
+    "links": {
+        "telegram": "http://www.t.me/stringchain/",
+        "facebook": "http://www.facebook.com/StringChain/",
+        "twitter": "https://twitter.com/stringchain",
+        "github": "http://www.github.com/strichain/"
+      }
+}

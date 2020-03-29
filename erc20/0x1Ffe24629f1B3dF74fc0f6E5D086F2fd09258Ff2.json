@@ -1,0 +1,19 @@
+{
+  "symbol": "VBT",
+  "address": "0x1Ffe24629f1B3dF74fc0f6E5D086F2fd09258Ff2",
+  "overview":{
+        "en": "VBT Token is a digital asset issued by VBT trading platform which referred to as VBT. It's the certificate of interest in the VBT platform ecology. People who hold VBT can Enjoy a series of rights and interests, such as asset value-added, interest-generating through lock-in, mortgage lending and voting supervision.",
+        "zh": "VBT Token是由VBT交易平台发行的数字资产，简称VBT。VBT是VBT平台生态的权益凭证，持有VBT的用户可享受资产增值、锁仓生息、抵押借贷、投票监督等系列权益。"
+  },
+  "email": "support@vbt.cc",
+  "website": "https://www.vbt.cc/",
+  "state": "NORMAL",
+  "published_on": "2019-04-23",
+  "initial_price":{
+        "USD":"0.002941 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/vbt_cc",
+    "telegram": "https://t.me/vbtoffical"
+  }
+}

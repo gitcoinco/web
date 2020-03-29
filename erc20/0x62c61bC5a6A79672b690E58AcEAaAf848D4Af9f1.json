@@ -1,0 +1,16 @@
+{
+    "symbol": "IWCE",
+    "address": "0x62c61bC5a6A79672b690E58AcEAaAf848D4Af9f1",
+    "overview": {
+        "en": "IWC ECO is the world's first blockchain management ecosystem sustainable development business co-sponsored and operated by the IWC Sustainability Foundation in conjunction with the Google Technology Team and the communities in the Asia Pacific region in accordance with the agenda set out in the SDG (United Nations Sustainable Development Goals). Practice, based on IWC Chain to build a blockchain application system for distributed intelligent contracts, build an ecological industry chain, use the blockchain workload to prove the reward system, change the traditional distribution method, and realize the sharing of global IWC ECO participants' business value. Understand the interrelated influences of global companies and society, and adhere to the commitment to corporate social responsibility and corporate sustainability. By measuring and managing our progress on these related or important topics, we can assess and improve the impact of business on society.",
+        "zh": "IWC ECO 是由IWC可持续发展基金会联合Google技术团队及亚太地区各国社区依据SDG（联合国可持续发展目标）中规定的议程联合发起、运营的全球首个区块链管理生态系统可持续发展业务实践，基于IWC Chain打造分布式智能合约的区块链应用体系，构建生态产业链，利用区块链的工作量证明奖励制度，改变传统分配方式，实现全球IWC ECO参与人员商业价值共享，通过深度了解全球企业和社会的彼此关联影响，坚守对企业社会责任和公司可持续发展的承诺，通过衡量和管理我们在这些相关或重要主题方面的进展，可以评估及改进企业对社会的影响。"
+    },
+    "email": "sdg@iwceco.com",
+    "website": "https://iwceco.com/",
+    "state": "NORMAL",
+    "published_on": "2019-04-21",
+    "links": {
+        "github": "https://github.com/iwceco",
+        "medium": "https://m.sohu.com/a/299847119_100232208/"
+    }
+}

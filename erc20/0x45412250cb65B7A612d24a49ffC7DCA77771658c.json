@@ -1,0 +1,19 @@
+{
+    "symbol": "CITY",
+    "address": "0x45412250cb65B7A612d24a49ffC7DCA77771658c",
+    "overview": {
+        "en": "The rules of gamification will encourage users to actively participate in urban life, contribute value to urban development, and receive corresponding CITY rewards, thus forming a virtuous cycle",
+        "zh": "CITY chain的概念是“通过应用块链技术+游戏化规则来重新定义城市生活”，将其作为未来城市生活的基本公共链。所有的城市生活场景链都可以连接到城市，你可以使用内生的Token消费者场景，不同的Token场景可以是等价的交换，通过智能合同通过不同生活场景的Token传输，一个用户在一个场景中赚取Token，可以用于其他场景的消费。游戏化的规则将鼓励用户积极参与城市生活，为城市发展贡献价值，并得到相应的城市奖励，从而形成良性循环"
+    },
+    "email": "kefu@ffex.pro",
+    "website": "https://www.ocity.io",
+    "whitepaper": "http://wp.chinasv.com/city",
+    "state": "NORMAL",
+    "published_on": "2018-04-15",
+    "initial_price": {
+        "ETH": "0.0000791 ETH",
+        "USD": "0.014 USD",
+        "BTC": "0.00000139 BTC"
+    },
+    "links": {}
+} 

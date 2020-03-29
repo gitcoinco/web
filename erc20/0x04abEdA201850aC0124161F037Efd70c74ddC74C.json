@@ -1,0 +1,18 @@
+{
+    "symbol": "NEST",
+    "address": "0x04abEdA201850aC0124161F037Efd70c74ddC74C",
+    "overview": {
+        "en": "NEST is a decentralized financial (DeFi) service platform. At present, NEST DAPP based on Ethereum has been launched to centralize the digital asset mortgage lending function: support mortgage ETH to borrow TUSD stable currency, and support mortgage HT, BAT, OMG, LOOM and other mainstream ERC20 Token to borrow ETH and TUSD stable currency. NEST adopts the mechanism of “chain contract” + “excess mortgage” + “no need to make up the position”, and the real digital assets [decentralized + peer-to-peer] mortgage lending.",
+        "zh": "NEST 是一个去中心化金融（DeFi）服务平台。目前，基于以太坊开发的 NEST DAPP 已经上线了去中心化数字资产抵押借贷功能：支持抵押 ETH 借 TUSD 稳定币，以及支持抵押 HT、BAT、OMG、LOOM 等主流 ERC20 Token 借 ETH 和 TUSD 稳定币。NEST 采用“链上合约”+“超额抵押”+“无需补仓”的机制，实现了真正意义上的数字资产【去中心化+点对点】抵押借贷。"
+    },
+    "email": "hello@nestchain.io",
+    "website": "https://nestchain.io/",
+    "whitepaper": "https://nestchain.io/lib/nestwhitepaper/zhnestwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-12-19",
+    "links": {
+        "blog": "https://nestchain.zendesk.com/hc/zh-cn",
+        "twitter": "https://twitter.com/NestCore",
+        "telegram": "https://t.me/NestOfficial"
+    }
+}

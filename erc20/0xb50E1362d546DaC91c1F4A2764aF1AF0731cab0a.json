@@ -1,0 +1,19 @@
+{
+  "symbol": "APT",
+  "address": "0xb50E1362d546DaC91c1F4A2764aF1AF0731cab0a",
+  "overview":{
+        "en": "All Pass Go Cooperation would like integrate tourism industry by publish AllPassGo Token (APT). AllPassGo Token (APT) will be a media for integrating the global tourism ecosystem. The first step in the application is the exchange of related services and commodities for partners such as hotels,shopping stores, tickets, tours,restaurants etc,.. we would like to keep the system simple and efficient, so the first step is to make it accessible for everyone.",
+        "zh": "全球都會通及觀光產業者透過創建AllPassGo Token(APT) 做為整合全球旅遊生態系的媒介。應用上第一步為觀光產業等合作伙伴之相關服務及商品的兌換。都會通深知，越複雜的技術越需要簡單快速落地，所以第一步的方向是使老嫗能解。"
+  },
+  "email": "dev.allpassgo@gmail.com",
+  "website": "https://www.allpassgo.com/",
+  "whitepaper": "https://www.allpassgo.com/doc/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-06",
+  "initial_price":{
+        "USD":"0.33 USD"
+  },
+  "links": {
+    "facebook": "https://www.facebook.com/allpassgo/"
+  }
+}

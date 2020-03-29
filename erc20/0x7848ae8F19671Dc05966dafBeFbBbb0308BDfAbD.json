@@ -1,0 +1,19 @@
+{
+    "symbol": "WED",
+    "address": "0x7848ae8F19671Dc05966dafBeFbBbb0308BDfAbD",
+    "overview": {
+        "en": "WednesdayCoin is an ERC20 token that can only be sent on Wednesdays! The logic to restrict sending on Wednesdays (UTC) is coded right into the smart contract. WednesdayCoin was created both to learn about solidity and smart contracts as well as to help people detach a little from the 24/7 crypto world. Visit our site to learn more about our Wednesday ecosystem including WednesdayClub, our Wednesday based social network DApp that runs on WednesdayCoin; Happy Wednesday!"
+    },
+    "email": "voltasoftware@gmail.com",
+    "website": "https://wednesdaycoin.io",
+    "whitepaper": "https://wednesdaycoin.io",
+    "state": "NORMAL",
+    "published_on": "2018-01-24",
+    "links": {
+        "medium": "https://medium.com/@kerryctx/wednesdaycoin-the-coin-that-can-only-be-used-on-wednesdays-every-wednesday-66b3ef3c2e33",
+        "github": "https://github.com/aelchim/WednesdayCoin",
+        "twitter": "https://twitter.com/WednesdayCoin",
+        "telegram": "https://t.me/WednesdayChat",
+        "reddit": "https://www.reddit.com/r/WednesdayCoin/"
+    }
+}

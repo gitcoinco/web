@@ -1,0 +1,21 @@
+{
+    "symbol": "BIZ",
+    "address": "0x399f9A95305114efAcB91d1d6C02CBe234dD36aF",
+    "overview": {
+        "en": "BIZAIN combines two trend changes of blockchain and new retail, innovative application blockchain characteristics to build a transparent and trusted basic public chain platform, solve the problem of deep integration between offline and online, and reconstruct people, goods, Commercial elements of the field, to achieve resource aggregation and value circulation of various forms of business. The optimized PBFT consensus technology supports 5000 TTS transaction speed and has the ability to realize various medium and low frequency commercial applications. BIZAIN's digital asset certification is BIZAIN Token abbreviated as “BIZ”, Chinese name “Commerce”, the total amount of issuance is 10 billion, the current circulation is 1.5 billion. BIZ is the benefit certificate of the BIZAIN platform, which can be used to obtain various income distribution and consumption scenarios for the business chain platform. As a vertical industry chain, BIZAIN will connect a large number of C-end users to build a BIZAIN-certified economy.",
+        "zh": "商链结合区块链与新零售两个趋势性变革，创新性的应用区块链特性构建一个透明和信任的基础公链平台，解决线下与线上深度融合难题，重构“人、货、场”商业要素，实现各形态商业的资源聚合和价值流通。采用优化PBFT共识技术，支持5000TPS的交易速度，具备各种中低频商业应用的实现能力。商链的数字资产通证为BIZAIN Token缩写为“BIZ”，发行总量恒定为100亿个，目前流通量为15亿。BIZ是商链平台的权益通证，可持续获得商链平台的各种收益分配及消费场景应用。作为垂直领域行业公链，商链将对接海量C端用户，构建商链通证经济体生态。"
+    },
+    "email": "foundation@bizain.net",
+    "website": "http://www.bizain.org/",
+    "whitepaper": "http://www.bizain.org/bizain_whitepaper_cn.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-28",
+    "initial_price": {
+        "ETH": "0.00000655 ETH"
+    },
+    "links": {
+        "wx_short_url":"https://0x9.me/duKnL",
+        "telegram": "https://t.me/bizain",
+        "twitter": "https://twitter.com/szbizain"
+    }
+}

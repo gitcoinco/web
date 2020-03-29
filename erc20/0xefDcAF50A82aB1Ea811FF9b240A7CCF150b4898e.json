@@ -1,0 +1,18 @@
+{
+  "symbol": "ANY",
+  "address": "0xefDcAF50A82aB1Ea811FF9b240A7CCF150b4898e",
+  "overview":{
+        "zh": "Any匿名加密协议（Anonymity）旨在解决数字资产交易中数据传输的隐私性、安全性，当比特币、以太坊这类的数字资产在数据传输的时候通过加密协议对交易地址进行加密，保证交易双方的匿名性，安全性。随着互联网信息的过度透明化，也导致了区块链交易双方的信息安全性、自由性得不到有效保障，Any匿名加密协议基于多样化的区块链生态，利用区块链的分布式记账方式来衔接去中心化世界与现存的中心化世界。Any基于不同维度的区块链之间的数据传输，通过匿名加密来保障交易双方的安全性和匿名性，实现区块链与未来一切的连接。"
+  },
+  "email": "anonymity_any@hotmail.com",
+  "website": "http://www.anonymity.vip/",
+  "whitepaper": "http://www.anonymity.vip/file/ANY-white-paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-28",
+  "initial_price":{
+        "ETH":"0.0001639 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/anonymi50778668"
+  }
+}

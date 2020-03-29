@@ -1,0 +1,23 @@
+{
+  "symbol": "AYB",
+  "address": "0x922B9C95EF7E6f8eF0A843e4A75B2365C656593c",
+  "overview": {
+    "en": "AYB(AoYuBit) Combining the traditional gambling industry with the decentralization of blockchain technology, the characteristics and advantages of non-tampering and fairness and justice, and the construction and development of a new business model under the new era will completely subvert the traditional gaming industry and traditional asset trading platform. The traditional foreign exchange market acceptance business and the gaming industry as the center to derive tourism, shopping, vacation and other comprehensive industries.",
+    "zh": "AYB 将传统的博彩业结合区块链技术的去中心化、不可篡改及公平公正的特性与优势，实现新时代背景下新型商业模式的构建和发展，将彻底颠覆传统博彩行业、传统资产交易平台、传统外汇市场承兑业务以及以博彩业为中心进而衍生出旅游、购物、度假等综合性行业。"
+  },
+  "email": "2578482773@qq.com",
+  "website": "http://aoyu.aygj.cc/",
+  "whitepaper": "http://aoyu.aygj.cc/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2019-03-27",
+  "initial_price":{
+        "ETH":"0.666 ETH",
+        "USD":"0.666 USD",
+        "BTC":"0.666 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/AYint6",
+    "telegram": "https://t.me/AYint123",
+    "facebook": "https://www.facebook.com/int.ay.399"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "symbol": "ALC",
+  "address": "0x55CE0D5b70E10eE978B25F54EA734e632786ce66",
+  "overview":{
+    "en": "ALC 是 ALicoin 主链上通证的简称。ALC 将作为 ALicoin 平台的权益证明，发行总量为 100 亿枚，并 保证永不增发。",
+    "zh": "ALC 是 ALicoin 主链上通证的简称。ALC 将作为 ALicoin 平台的权益证明，发行总量为 100 亿枚，并 保证永不增发。"
+  },
+  "email": "alicoin20@gmail.com",
+  "website": "https://www.alicoin.one",
+  "state": "NORMAL"
+}

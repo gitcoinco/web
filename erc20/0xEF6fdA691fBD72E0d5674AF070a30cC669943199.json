@@ -1,0 +1,22 @@
+{
+	"symbol": "YOS",
+	"address": "0xEF6fdA691fBD72E0d5674AF070a30cC669943199",
+	"overview": {
+		"en": "YOS is a digital certificate issued by the YOOSourcing platform. It is a blockchain-based global trade inter-enterprise communication and procurement collaboration platform. YOS is applied to all payments of the YOOSourcing platform. The YOOSourcing platform paid corporate members provide value support for YOS.",
+		"zh": "YOS是YOOSourcing平台发行的数字通证，是基于区块链的全球贸易企业间沟通和采购协作平台，YOS应用于YOOSourcing平台的所有支付，YOOSourcing平台付费企业会员为YOS提供价值支撑。"
+	},
+	"website": "https://yos.mobi/",
+	"whitepaper": "https://yos.mobi/YOOSourcingWhitePaper.pdf",
+	"state": "NORMAL",
+	"published_on": "2019-09-26",
+	"initial_price": {
+		"USD": "0.1 USD"
+	},
+	"links": {
+		"blog": "https://blog.yos.mobi/",
+		"twitter": "https://twitter.com/yoosourcing",
+		"telegram": "https://t.me/YOOSourcing",
+		"facebook": "https://www.facebook.com/yoosourcing/",
+		"Youtube": "https://m.youtube.com/channel/UCjcpatjyWj3_yH1rkSLLchg"
+	}
+}

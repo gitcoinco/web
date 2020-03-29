@@ -1,0 +1,17 @@
+{
+    "symbol": "CER",
+    "address": "0x198CB860Bf0cbE4FDD2E19D2BA43Aa46fc8a83C0",
+    "overview": {
+        "en": "Exrelay is a distributed, non-authorized, extensible, open and Shared order book trading  relay node network based on the decentralized matchmaking of ethereum assets, covering exchange,  leverage, fiat currency, futures, options and data matchmaking..",
+        "zh": "ExRelay 是一个基于 以太坊资产去中心化撮合交易而建立的分布式、无任何授权、可扩展、开放式、共享订单薄的交易中继节点网络， 业务覆盖于，兑汇、杠杆、法币、期货、期权，数据撮合交易等。"
+    },
+    "email": "service@exrelay.org",
+    "website": "http://www.exrelay.org",
+    "state": "NORMAL",
+    "initial_price": {
+        "USD": "$0.06 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/exrelay"
+    }
+}

@@ -1,0 +1,18 @@
+{
+  "symbol": "LHC",
+  "address": "0x1Bec42771E74088bA106CF9Dcb864f0fA24A1e57",
+  "overview":{
+        "en": "LOHAS Coin (hereinafter referred to as LHC, Lehuo Coin) has a total of 1 billion issuances, and guarantees never additional issuance. LHCoin is a de-centralized block chain digital asset issued by ETH. It is based on the ERC-20 standard token of ETH block chain.",
+        "zh": "LOHAS Coin(简称LHC，乐活币),其发行总量为10亿个，且保证永不增发，LHCoin是基于以太坊发行的去中心化的区块链数字资产，它是基于以太坊区块链的ERC-20标准代币。乐活生命平台是一个帮助国民养成乐活生活的专属平台，利用大数据以人工智能分析,将全国养生,养老,保健,健康,教育,运动,生命,成长,青春,休闲,旅游,投资...项目，依不同人群与个人，不同需求来打造的全新严选发布平台，以身、心、灵、育、乐、生的全方位健康作为生命目标，为乐活族传递绿色、有机、环保的生活方式。所有社区参与者都能享受社区发展带来的多重收益，包括（不限于）区块链项目节点供应延伸出来的价值，电商等互联网分享经济带来的现金收益。LHC是践行众多区块链特性的落地应用平台，节点社区将大部分的权益代币免费发放出去，即让众多社区参与者获得未来可期的数字资产，又以开放的社区模式将大部分社区运营的收益无偿发放给所有代币持有者。"
+  },
+  "email": "luojie@163.com",
+  "website": "https://lhcoin.site",
+  "whitepaper": "https://lhcoin.site/LHC.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-07-09",
+  "initial_price":{
+        "ETH":"0.001 ETH",
+        "USD":"0.25 USD",
+        "BTC":"0.00003 BTC"
+  }
+}

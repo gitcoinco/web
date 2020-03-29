@@ -1,0 +1,22 @@
+{
+  "symbol": "ABCP",
+  "address": "0x5daf655C14f366003Bef5172300c1deB61C4Ed6d",
+  "overview":{
+        "en": "Ants block chain protocol (abbreviated as ant coin: ABCP) is a multi-decentralized interactive protocol. It runs on the ant blockchain and has different forms of heterogeneous multi-centered interaction protocols, which is convenient for developers. Developed asset management applications; the contract layer uses the creation contract and control contract for asset issuance and management, and supports the extended utxo model butxo at the bottom.We have proposed a system for electronic transactions without relying on trust. ",
+        "zh": "中文：ants block chain protocol（简称蚂蚁币：ABCP）是一种多元去中心化的交互协议，运行在蚂蚁区块链上的不同形态的、异构的多元去中心化的交互协议，方便开发者便捷的开发出资产管理应用；合约层采用创世合约和控制合约进行资产的发行和管理，在底层支持扩展的utxo模型butxo，我们提出了一种不依赖信任的电子交易系统。"
+  },
+  "email": "E-mail：abcp333@gmail.com",
+  "website": "https://www.abcp.club",
+  "whitepaper": "https://img1.wsimg.com/blobby/go/943f685b-2391-4f1d-9919-a9fb8c1cf5c1/downloads/ABCP_White_Paper.pdf?ver=1571593680383",
+  "state": "NORMAL",
+  "published_on": "2019-10-01",
+  "initial_price":{
+        "ETH":"0.00000000 ETH",
+        "USD":"0.105 USD",
+        "BTC":"0.00000000 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ABCP04285133",
+    "github": "https://github.com/abcp333"
+}
+}

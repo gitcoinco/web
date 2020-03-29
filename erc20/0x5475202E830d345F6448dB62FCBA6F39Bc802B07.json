@@ -1,0 +1,21 @@
+{
+    "symbol": "LAD_OLD",
+    "address": "0x5475202E830d345F6448dB62FCBA6F39Bc802B07",
+    "overview": {
+        "en": "The safest, most decentralized and largest POS cross-chain network, Ladder network is committed to become the cornerstone of the cross-chain field in the web3.0 era.",
+        "zh": "专注于商业生态的全球最安全跨链网络，致力于成为万链互联的领航者。"
+    },
+    "email": "contact@laddernetwork.io",
+    "website": "http://laddernetwork.io/",
+    "whitepaper": "http://laddernetwork.io/file/LadderNetwork-Whitepaper-v0.7.7.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-03-20",
+    "initial_price": {},
+    "links": {
+        "weibo": "https://weibo.com/u/7091768413",
+        "twitter": "https://twitter.com/Ladder_network",
+        "telegram": "https://t.me/laddernetwork",
+        "github": "https://github.com/laddernetwork",
+        "medium": "https://medium.com/@Ladder_network"
+    }
+}

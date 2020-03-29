@@ -1,0 +1,21 @@
+{
+  "symbol": "FM",
+  "address": "0x6E8b3BF967405F2b1FEAeb3a09c76bC94A8f37a4",
+  "overview":{
+        "en": "Future Mine is committed to creating a world-leading distributed hash power distribution platform. Through an open source hash power system,relying on its own   infrastructure,with a professional hash power solution as its core, a strong technical team In order to guarantee,we provide customers with one-stop services such as FM public chain technology,DAPP solutions,hash power sales,power supply and mine operations.As the world's first blockchain software and hardware full industrial chain platform, the industrial planning layout covers chip design,mining machine production,mine construction,mining pool R & D,PoW project incubation,miner community,hash power sales/leasing,and other sub-sectors.",
+        "zh": "Future Mine Limited致力于打造全球领先的分布式云算力分发平台，通过开源的算力体系，依托自身具有的基础设施，以专业的云算力解决方案为核心，强大的技术团队为保障，为客户提供FM公链技术、DAPP解决方案、算力销售/租赁、电力供应及矿场运营等一站式服务。作为全球首个区块链软硬件全产业链平台，未来矿场的产业规划布局覆盖芯片设计、矿机生产、矿场布局、矿场建设、矿池研发、PoW 项目孵化、矿工社区、算力销售/租赁等多个细分产业。"
+  },
+  "email": "Futuremineofficial@futuremine.io",
+  "website": "http://futuremine.io/",
+  "whitepaper": "http://futuremine.io/public/Future%20Mine%20White%20Paper%20Final%20Ver.pdf",
+  "state": "NORMAL",
+  "published_on": "2019.4.19",
+  "initial_price":{
+        "ETH":"0.01027467 ETH",
+        "USD":"1.5 USD",
+        "BTC":"0.00020733 BTC"
+  },
+  "links": {
+    "weibo": "https://weibo.com/7224613834/profile?topnav=1&wvr=6&is_all=1#_rnd1562635951647"
+  }
+}

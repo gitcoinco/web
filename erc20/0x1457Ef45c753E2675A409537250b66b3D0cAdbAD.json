@@ -1,0 +1,21 @@
+{
+    "symbol": "AGT",
+    "address": "0x1457Ef45c753E2675A409537250b66b3D0cAdbAD",
+    "overview": {
+        "en": "AGT (integrated trading) aggregate trading can help global investors seamlessly exchange blockchain world, build one-stop aggregate trading and financial services. Only one AGT account can trade all global trading AGT The (Integrated Trading) team was established in Singapore to create an autonomous, trusting, and efficient digital asset that will allow ordinary investors to enjoy the hedge arbitrage",
+        "zh": "AGT（Aggregate Trading）聚合交易能帮助全球投资者无缝接入区块链世界，搭建一站式的聚合交易及金融服务。只需一个AGT账户，即可交易全球各大交易所的数字资产，实现跨交易所低买高卖赚差价，让普通投资者也能享受搬砖对冲套利。AGT（Aggregate Trading）团队成立于新加坡，志在打造一个自治、信任、高效的数字资产投资服务生态。"
+    },
+    "email": "admin@agt.network",
+    "website": "https://agt.network",
+    "whitepaper": "https://agt.network/whitepaper.pdf/",
+    "state": "NORMAL",
+    "published_on": "2019-10-29",
+    "initial_price": {
+        "USD": "0.09 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/AggregateTradi1/",
+        "telegram": "https://t.me/agtnetwork",
+        "github": "https://github.com/AggregateTrading"
+    }
+}

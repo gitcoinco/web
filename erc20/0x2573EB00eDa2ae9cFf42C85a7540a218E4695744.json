@@ -1,0 +1,17 @@
+{
+  "symbol": "UGA",
+  "address": "0x2573EB00eDa2ae9cFf42C85a7540a218E4695744",
+  "overview": {
+   "en": "UGA (Universal Green Asset) is generated using a smart car device, that is plugged into the car 24/7. Car owners will be able to generate UGA by having a good driving behavior, UGA can be used to purchase any service that the platform provides, as well as trading on token exchange markets.",
+   "zh": "UGA（环球绿色资产）是使用智能汽车设备生成的，该设备24小时插入汽车OBD接口，读取车主行车数据，车主将能够通过具有良好的驾驶行为来生成UGA，UGA可用于购买平台提供的任何服务，以及在数字货币交易所进行交易。"
+  },
+  "email": "ugachainoffical@gmail.com",
+  "website": "http://www.ugachain.com/",
+  "whitepaper": "http://www.ugachain.com/",
+  "state": "NORMAL",
+  "published_on": "2019-10-18",
+  "links": {
+    "twitter": "https://twitter.com/UgaChain",
+    "telegram": "https://t.me/UgaChain"
+  }
+}

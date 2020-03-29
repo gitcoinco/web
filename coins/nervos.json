@@ -1,0 +1,18 @@
+{
+  "symbol": "CKB",
+  "address": "nervos",
+  "overview":{
+        "en": "Nervos CKB is the only PoW multi-asset & store of value general purpose blockchain for the new crypto-economy.",
+        "zh": "Nervos CKB 是一条基于 PoW 共识机制的多资产价值存储公链。"
+  },
+  "website": "https://www.nervos.org",
+  "whitepaper": "https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0002-ckb/0002-ckb.md",
+  "state": "NORMAL",
+  "published_on": "2019-11",
+  "links": {
+    "twitter": "https://twitter.com/NervosNetwork",
+    "facebook": "https://www.facebook.com/theNervosNetwork",
+    "medium": "https://medium.com/nervosnetwork",
+    "github": "https://github.com/nervosnetwork"
+  }
+}

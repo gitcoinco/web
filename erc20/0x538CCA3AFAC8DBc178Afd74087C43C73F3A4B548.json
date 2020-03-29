@@ -1,0 +1,19 @@
+{
+    "symbol": "CBD",
+    "address": "0x538CCA3AFAC8DBc178Afd74087C43C73F3A4B548",
+    "overview": {
+        "en": "CBD. token, Global Digital Bank",
+        "zh": "CBD.聚合量化交易平台体系权益通证。"
+    },
+    "email": "coincbd@gmail.com",
+    "website": "http://www.yscbd.io/",
+    "whitepaper": "http://www.yscbd.io/cbdwhitepaper.pdf",
+    "published_on": "2020-03-09",
+	"state": "NORMAL",
+    "initial_price":{
+          "USD":"0.1416 USD"
+    },
+	"links": {
+    "telegram": "https://t.me/cbdchain"
+  }
+}

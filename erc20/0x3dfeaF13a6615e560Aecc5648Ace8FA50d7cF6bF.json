@@ -1,0 +1,23 @@
+{
+  "symbol": "NTS",
+  "address": "0x3dfeaF13a6615e560Aecc5648Ace8FA50d7cF6bF",
+  "overview":{
+        "en": "Nerthus is a universal contract programming platform based on DAG technology and a distributed blockchain operating system,which  will effectively solve the problem of the traditional blockchain system with low throughput transaction confirmation delay, block expansion and so on.Nerthus has its own Turing-complete programming language, Witstone, and the runtime environment OVM and Nerthus is also compatible with Go and Ethereum's Solidity,so that developers can write Nerthus smart contracts in a short period of time to construct and define their own features, develop their own applications and blockchain systems, and publish their own tokens. In addition,Nerthus has designed an out-of-chain data validation/confirmation/consensus mechanism, promoting the popularization and application of smart contracts in the real world.",
+        "zh": "Nerthus（纳尔图）是一个基于DAG技术的通用型区块链编程平台，一个分布式的区块链操作系统。可解决传统区块链系统面临的低吞吐量，交易确认延时，区块膨胀等问题。Nerthus有自己的图灵完备的编程语言Witstone以及运行环境OVM，兼容Go和以太坊的Solidity，可用于编写Nerthus智能合约语言，极大降低开发者的学习成本，使其能在短时间内编写出Nerthus智能合约，来建构和定义他自己的各种特性，开发自己的应用与区块链系统和发行自己的货币。并且在Nerthus系统里设计了一套链外数据验证确认共识的机制，推动智能合约在现实世界的普及应用。"
+  },
+  "email": "admin@nerthusfoundation.org",
+  "website": "https://nerthusfoundation.org",
+  "whitepaper": "https://github.com/nerthus-foundation-ltd/whitepaper/raw/master/nerthus_whitepaper_ch.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-09-06",
+  "initial_price":{
+  },
+  "links": {
+    "blog": "https://nerthusfoundation.org/#/guide",
+    "twitter": "https://twitter.com/Nerthusfans",
+    "telegram": "https://t.me/NerthusEnglishGroup",
+    "github": "https://github.com/nerthus-foundation-ltd/",
+    "reddit": "https://www.reddit.com/r/Nerthus",
+    "medium": "https://medium.com/@NerthusOfficial"
+  }
+}

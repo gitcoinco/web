@@ -1,0 +1,24 @@
+{
+  "symbol": "SU",
+  "address": "0xf1BFe5b1c2332CeD7D18DDB3A52eF9B512399e97",
+  "overview":{
+        "en": "SUToken",
+        "zh": "物流链"
+  },
+  "email": "hanyannan99@gmail.com",
+  "website": "http://swifts.top",
+  "whitepaper": "http://www.swifts.top/media/SE-Whitepaper-English.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-08-24",
+  "initial_price":{
+        "ETH":"0.0269 ETH",
+        "USD":"1.7 USD"
+  },
+  "links": {
+    "blog": "https://weibo.com/swiftsexpress",
+    "twitter": "https://twitter.com/XueYong14",
+    "telegram": "https://t.me/swifts",
+    "github": "https://github.com/hanyannan",
+    "facebook": "http://www.facebook.com/hanyannan.9"
+  }
+}

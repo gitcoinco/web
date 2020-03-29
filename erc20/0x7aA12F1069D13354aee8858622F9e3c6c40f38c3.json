@@ -1,0 +1,19 @@
+{
+  "symbol": "BUSD",
+  "address": "0x7aA12F1069D13354aee8858622F9e3c6c40f38c3",
+  "overview": {
+    "en": "BUSD is a stablecoin issued by a Swiss company, BeTreasury Asset Management. It is developed based on the underlying technology of blockchain with a 1:1 US dollar parity. BUSD strictly executes the iron law of “Assets in reserve >= BUSD in circulation”. Which means, every BUSD in the market is guaranteed to have a corresponding $1 asset stored in the custodian bank. BUSD assets are audited by independent third party accounting firms and the audit results are regularly disclosed. Furthermore, BUSD is the very first stablecoin to develop its own mobile App which supports QR code scan for payments, receive and transfer functions for users and more. As the new payment system, BUSD satisfies the demands for smart payments and remittances to both users and merchants, online shopping, global money transfers, cross-border payments, other major industrial payment scenarios and various new methods of payment applications that are driven by blockchain. At present, BUSD has reached a strategic partnership with overseas merchants to actively build and improve the existing ecosystem of stablecoins. In the future, we will provide more application scenarios for customers to promote the development of blockchain payment towards consensus.",
+    "zh": "BUSD是由BeTreasury Asset Management公司基于区块链技术而发行的与美元1:1锚定的稳定币，即在市场流通的每一枚BUSD都有对应的1美金资产存放在银行，以“背书资产总量 >= BUSD总发行量”为铁律，采用独立的第三方会计事务所对资产进行审计并定期将审计结果予以披露。BUSD亦是第一个拥有自己独立客户端APP的稳定币，支持二维码扫码支付，收款，转账等功能，满足客户对收付款、落地商户消费、线上商城购物、线下各大产业消费、跨境支付、各类区块链交易媒介等应用需求，是由区块链驱动的一种新型的支付方式。 目前，BUSD已经和海外商户达成了战略合作关系，积极构建、完善稳定币现存的生态系统，未来将为广大客户提供更多的应用场景，推进区块链支付朝着共识化方向发展。"
+  },
+  "email": "Hello@betreasury.com",
+  "website": "https://beassets.io",
+  "whitepaper": "https://beassets.io",
+  "state": "NORMAL",
+  "published_on": "2019-04-22",
+  "links": {
+    "twitter": "https://twitter.com/BUSD_official",
+    "telegram": "https://t.me/BUSDEnglish",
+    "facebook": "https://www.facebook.com/BUSD.Official/?modal=admin_todo_tour",
+    "Linkedin": "https://www.linkedin.com/company/busd/"
+  }
+}

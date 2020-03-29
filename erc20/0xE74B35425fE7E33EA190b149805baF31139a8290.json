@@ -1,0 +1,19 @@
+{
+    "website": "https://www.zb.cn/",
+    "published_on": "2017-11-27",
+    "links": {
+        "reddit": "https://www.reddit.com/r/ZBExchange",
+        "facebook": "https://www.facebook.com/ZBGlobalGroup",
+        "twitter": "https://twitter.com/Zb_group"
+    },
+    "overview": {
+        "en": "Qcash is a cryptocurrency with a value meant to mirror the value of the CNY(Chinese Yuan). The idea was to create a stable cryptocurrency that can be used like digital CNY. The price of 1 Qcash is 1 CNY. Users can use 1 CNY to buy 1 QC and then use QC to exchange BTC, LTC, ETH or other crypto assets. The max supply of QCash is 10,000,000,000 QC and circulating supply is 310,000,100 QC.",
+        "zh": "QC，全称为QCash，由QCASH基金会发行的独立数字货币，支持量子链智能合约代币和以太坊智能合约代币两种形式。1 QC的价格是1 CNY，用户可以使用1 CNY购买1个QC，然后使用QC交换BTC，LTC，ETH或其他数字资产。QCash的最大供应量为100亿 QC，流通量为310,000,100 QC。"
+    },
+    "symbol": "QC",
+    "initial_price": {
+        "USD": "0.153 USD"
+    },
+    "address": "0xE74B35425fE7E33EA190b149805baF31139a8290",
+    "email": "support@zb.cn"
+}

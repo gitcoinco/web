@@ -1,0 +1,29 @@
+{
+  "symbol": "STPT",
+  "address": "0xDe7D85157d9714EADf595045CC12Ca4A5f3E2aDb",
+  "overview":{
+        "en": "Standard Tokenization Protocol is an open-source standard defining how tokenized assets are issued and transferred while complying with all necessary regulations. Tokens built on top of the STP-Standard will use the protocol’s on-chain Validator to verify compliance with any jurisdictional or issuer-specific requirements",
+        "zh": "标准通证协议（Standard TokenizationProtocol）,一个由 STP 通证驱动的数字资产发布平台，一个全新的智能合约协议框架，用于所有类型的通证发行。"
+  },
+  "email": "contact@stp.network",
+  "website": "https://stp.network/",
+  "whitepaper": "https://stp.network/wp-content/uploads/2019/06/Standard-Tokenization-Protocol-Whitepaper-EN-v4-1.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-06-11",
+  "initial_price":{
+        "ETH":"0.00004129160129 ETH",
+        "USD":"0.01 USD",
+        "BTC":"0.0000012719 BTC"
+  },
+  "links": {
+    "blog": "N/A",
+    "twitter": "https://twitter.com/STP_Networks",
+    "telegram": "https://t.me/STPofficial",
+    "github": "N/A",
+    "facebook": "N/A",
+    "reddit": "https://www.reddit.com/r/STP_Networks/",
+    "slack": "N/A",
+    "medium": "https://medium.com/@StandardTokenizationProtocol",
+    "reddit": "https://www.reddit.com/r/STP_Networks/"
+  }
+}

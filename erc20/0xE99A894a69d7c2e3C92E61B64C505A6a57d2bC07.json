@@ -1,0 +1,22 @@
+{
+    "symbol": "HYN",
+    "address": "0xE99A894a69d7c2e3C92E61B64C505A6a57d2bC07",
+    "overview": {
+        "en": "Hyperion, a decentralized map platform, aims to achieve the One Map vision to provide an unified view of global map data and service, and to make it universally accessible just like a public utility for 10B people.",
+        "zh": "海伯利安是致力于为全球100亿用户提供完整公民地图数据服务的去中心化地图平台，旨在实现“One Map”愿景。"
+    },
+    "email": "info@hyn.space",
+    "website": "https://www.hyn.space/",
+    "state": "NORMAL",
+    "published_on": "2018-12-11",
+    "initial_price": {
+        "USD": "0.03 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/HyperionHYN",
+        "telegram": "https://t.me/HyperionOfficialHYN",
+        "github": "https://github.com/hyperion-hyn",
+        "facebook": "https://www.facebook.com/Hyperion-854025704797996/",
+        "medium": "https://medium.com/@hyperionsgoffical"
+    }
+}

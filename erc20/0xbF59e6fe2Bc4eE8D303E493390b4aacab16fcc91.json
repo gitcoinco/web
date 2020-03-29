@@ -1,0 +1,23 @@
+{
+    "symbol": "CCC",
+    "address": "0xbF59e6fe2Bc4eE8D303E493390b4aacab16fcc91",
+    "overview": {
+    "en": "Clipper is a decentralized financial ecosystem that provides crypto banking, asset management and brokerage services. Clipper is founded by a team of Wall Street finance professionals, backed by top Silicon Valley VC, and a founding member of Hong Kong Blockchain Association. Clipper utilizes CCC as its platform token, which issues 100USDT dividends per year per 10,000CCC, distributed daily.",
+    "zh": "Clipper 数币银行是一个去中心化金融生态，为您提供支付，兑换，存贷，理财等一站式数币金融服务。 Clipper 数币银行有华尔街/硅谷投资机构背书，香港区块链协会保证，专业金融团队运营，严谨风控，安全合规。 Clipper 采用 CCC 为平台币，并发放红利：每1万CCC每年享有100USDT的红利，每天发放。"
+    },
+    "email": "info@clippercoin.com",
+    "website": "http://clippercoin.com/",
+    "whitepaper": "http://clipperadvisor.com/static/EClipper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-10-08",
+    "initial_price": {
+        "ETH": "0.00000900 ETH",
+        "USD": "0.006575 USD",
+        "BTC": "0.0000007543 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ClipperCoinCap",
+        "telegram": "https://t.me/CCC_official",
+        "facebook": "https://www.facebook.com/clippercoincapital"
+    }
+}

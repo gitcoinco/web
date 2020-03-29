@@ -1,0 +1,20 @@
+{
+    "symbol": "GOMC",
+    "address": "0xc3fc3549e50c68662c21649f3F6D88e28271498F",
+    "overview": {
+        "en": "GOMC(GGOOUM CHAIN TOKEN) is a token issued by the GGOOUM CHAIN platform.GOMC is the decentral block chain digital asset issued on ETH. It is based on the ETH ERC 20 standard token.The total amount of GOMC to be issued is constant at 1 billion, and it promises never to issue more.",
+        "zh": "GOMC（GGOOUM CHAIN TOKEN）是GGOOUM CHAIN平台发行的代币。GOMC是根据以太坊发行的去中心化的区块链数字资产，它是基于以太坊区块链的ERC 20标准代币.拟共发行 GOMC总量恒定为 10 亿枚，且保证永不增发。"
+    },
+    "email": "ggooumchain@outlook.com",
+    "website": "http://www.ggooum.com",
+    "whitepaper": "http://www.ggooum.com/GGOOUM_CHAIN_CN_V1.0(Beta).pdf",
+    "published_on": "2019-04-19",
+    "initial_price": {
+        "ETH": "0.0 ETH",
+        "USD": "0.0 USD",
+        "BTC": "0.0 BTC"
+    },
+    "links": {
+        "blog": "http://www.ggooum.com"
+    }
+}

@@ -1,0 +1,22 @@
+{
+  "symbol": "EB",
+  "address": "0x63f0b23080DeC3d4485577F085D117D6DeDa9fDF",
+  "overview":{
+        "en": "Developed by the EveryBody Entertainment Technology team, EB is an encrypted digital currency based on blockchain and Zetron's smart contract technology for the EB commercial application ecosystem. Using EB as a medium, blockchain technology will improve traceability and transparency in the value chain of commercial applications. Aggregate big data cloud computing model analysis, provide intelligent cluster ecological model. Share global business information solutions.",
+        "zh": "EB由EveryBody Entertainment科技公司技术团队研发，是一种基于区块链和宙创智能合约技术的加密数字货币，用于EB商业落地应用生态体系。EB作为媒介，利用区块链技术将改善商业落地应用价值链中的可追溯性和透明度。集合大数据云计算模型分析，提供智能聚众生态模式.共享全球商业信息解决方案。"
+  },
+  "email": "eb@everybody.best",
+  "website": "https://www.everybody.best",
+  "whitepaper": "https://www.everybody.best/eb.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-20",
+  "initial_price":{
+        "USD":"0.2 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/everybodybest",
+    "telegram": "https://t.me/joinchat/H-cHH1YuY2Nv5irzPywv0Q",
+    "facebook": "https://www.facebook.com/everybodybest",
+	"reddit": "https://www.reddit.com/user/everybodybest"
+  }
+}

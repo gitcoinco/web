@@ -1,0 +1,16 @@
+{
+    "symbol": "YOLE",
+    "address": "0x189394dCd1824c3af35f664D8D47119875278330",
+    "overview": {
+        "en": "Through the blockchain technology to build a traceable public chain, with a similar cross-chain protocol with Ethereum, using the unique non-tamperable distributed ledger record characteristics of the blockchain, the underlying communication node, traceability cloud platform, distributed storage cloud service, Through the sub-chain of the landing project and the corresponding DAPP application to solve the enterprise's information traceability in the process of commodity raw material procurement, production, warehousing, circulation, distribution, store, terminal consumption, anti-counterfeiting and real-time marketing problems.",
+        "zh": "通过区块链技术搭建溯源公链，具备与以太坊类似的跨链协议，利用区块链独特的不可篡改的分布式账本记录特性，构建底层通讯节点、溯源云平台、分布式存储云服务，通过落地项目的子链及对应DAPP应用来解决企业在商品原材料采购、生产、仓储、流转、分销、门店、终端消费过程中的信息溯源，防伪验真，互动营销难题."
+    },
+    "email": "support@yole.club",
+    "website": "http://www.yole.club/",
+    "whitepaper": "https://github.com/yoleclub/yolewhitepaper",
+    "state": "NORMAL",
+    "published_on": "2019-07-25",
+    "links": {
+        "github": "https://github.com/yoleclub"
+     }
+}

@@ -1,0 +1,23 @@
+{
+	"symbol": "HDS",
+	"address": "0xcAFE27178308351a12ffFffDeb161d9d730DA082",
+	"overview": {
+		"en": "HDS(HotDollars Token) Ecology covers the decentralized IZO smart contract fundraising protocol and the decentralized game open platform. It is a brand new blockchain commercial ecosystem.",
+		"zh": "HDS涵盖去中心化IZO智能合约募资协议、去中心化游戏开放平台，是全新的区块链项目商业综合体。"
+	},
+	"email": "hdsgo123@gmail.com",
+	"website": "https://hdsgo.io/",
+	"whitepaper": "https://hdsgo.io/res/cn.pdf",
+	"state": "NORMAL",
+	"published_on": "2019-05-10",
+	"initial_price": {
+		"ETH": "0.000021 ETH",
+		"USD": "0.0036 USD",
+		"BTC": "0.0000006 BTC"
+	},
+	"links": {
+		"twitter": "https://twitter.com/HDS_Official_",
+		"telegram": "https://t.me/HDSOFFICIAL",
+		"facebook": "https://www.facebook.com/offical.hds.5"
+	}
+}
