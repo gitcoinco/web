@@ -1924,6 +1924,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     if issue_url:
         try:
+            if stdbounties_id is not None and stdbounties_id == "0":
+                new_id = Bounty.objects.current().filter(github_url=issue_url).first().standard_bounties_id
+                return redirect('issue_details_new3', ghuser=ghuser, ghrepo=ghrepo, ghissue=ghissue, stdbounties_id=new_id)
             if stdbounties_id and stdbounties_id.isdigit():
                 stdbounties_id = clean_str(stdbounties_id)
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
