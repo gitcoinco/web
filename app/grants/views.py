@@ -94,11 +94,11 @@ def get_stats(round_type):
     charts = []
     minute = 15 if not settings.DEBUG else 60
     key_titles = [
-        ('_match', 'Estimated Matching Amount', '-positive_round_contributor_count', 'grants' ),
+        ('_match', 'Estimated Matching Amount ($)', '-positive_round_contributor_count', 'grants' ),
         ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
         ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count', 'grants' ),
         ('_amt', 'CrowdFund Amount', '-amount_received_in_round', 'grants' ),
-        ('_admt1', 'Estimated Matching Amount / Twitter Followers', '-positive_round_contributor_count', 'grants' ),
+        ('_admt1', 'Estimated Matching Amount (in cents) / Twitter Followers', '-positive_round_contributor_count', 'grants' ),
         ('count_', 'Top Contributors by Num Contributations', '-val', 'profile' ),
         ('sum_', 'Top Contributors by Value Contributed', '-val', 'profile' ),
     ]

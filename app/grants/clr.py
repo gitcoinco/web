@@ -465,7 +465,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                         Stat.objects.create(
                             created_on=from_date,
                             key=_grant.title[0:43] + "_admt1",
-                            val=int(_grant.clr_prediction_curve[0][1]/max_twitter_followers),
+                            val=int(100 * _grant.clr_prediction_curve[0][1]/max_twitter_followers),
                             )
 
                 if _grant.positive_round_contributor_count:
