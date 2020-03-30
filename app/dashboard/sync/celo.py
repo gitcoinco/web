@@ -13,8 +13,12 @@ def find_txn_on_celo_explorer(fulfillment, network='mainnet'):
     amount = fulfillment.payout_amount
     payeeAddress = fulfillment.fulfiller_address
 
-    # TODO: UPDATE URL + RESPONSE
-    blockscout_url = f'https://blockscout.com/etc/{network}/api?module=account&action=txlist&address={funderAddress}'
+    if network == 'alfajores':
+        blockscout_url = f'https://alfajores-blockscout.celo-testnet.org/api?module=account&action=txlist&address={funderAddress}'
+    else:
+        # TODO: validate mainnet URL
+        blockscout_url = f'https://blockscout.com/celo/mainnet/api?module=account&action=txlist&address={funderAddress}'
+
     blockscout_response = requests.get(blockscout_url).json()
     if blockscout_response['message'] and blockscout_response['result']:
         for txn in blockscout_response['result']:
@@ -32,8 +36,12 @@ def get_celo_txn_status(txnid, network='mainnet'):
     if not txnid:
         return None
 
-    # TODO: UPDATE URL + RESPONSE
-    blockscout_url = f'https://blockscout.com/etc/{network}/api?module=transaction&action=gettxinfo&txhash={txnid}'
+    if network == 'alfajores':
+        blockscout_url = f'https://alfajores-blockscout.celo-testnet.org/api?module=transaction&action=gettxinfo&txhash={txnid}'
+    else:
+        # TODO: validate mainnet URL
+        blockscout_url = f'https://blockscout.com/etc/{network}/api?module=transaction&action=gettxinfo&txhash={txnid}'
+
     blockscout_response = requests.get(blockscout_url).json()
 
     if blockscout_response['status'] and blockscout_response['result']:
