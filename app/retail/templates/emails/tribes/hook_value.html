@@ -1,0 +1,132 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static humanize avatar_tags %}
+
+{% block content %}
+<style>
+  #header {
+    height: 400px !important;
+  }
+
+  .primary-content {
+    padding: 0;
+    margin: 0;
+  }
+  h1 {
+    margin: 0;
+  }
+
+  #hook_value_tribes_features img {
+    align-self: center;
+  }
+
+  @media screen and (max-width: 35.5em) {
+    #hook_value {
+      padding: 2em 5%;
+    }
+
+    #hook_value_tribes_features {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      margin-bottom: 1em;
+    }
+
+    #header {
+      height: 400px !important;
+    }
+
+    #logo {
+      height: 40%;
+      width: 60%;
+    }
+  }
+
+  @media screen and (min-width: 48em) {
+    #hook_value {
+      padding: 2em 30%;
+    }
+    #logo {
+      height: 40%;
+      width: 30% !important;
+    }
+
+    #hook_value_tribes_features {
+      display: flex;
+      justify-content: center;
+      flex-direction: row;
+      text-align: justify;
+      margin-bottom: 1em;
+    }
+
+    #tribes_feature {
+      align-self: center;
+      text-align: left;
+      padding-left: 2em;
+    }
+  }
+  
+  
+</style>
+
+<div id="hook_value">
+  <h1>{% trans "The future of buidling is now" %}</h1>
+  <p>{% trans "We’ve listened to your feedback and all the crazy-awesome ideas, and put everything in our new vision for open source (ad)ventures." %}</p>
+  <img style="width: 50%;" src="{% static "v2/images/emails/group_tribe.png" %}" alt="Gitcoin" title="Gitcoin Tribes">
+  <h3><b>{% trans "Meet Tribes" %}</b></h3>
+  <p><b>{% trans "Introducing the two-way broadcast environment for core teams & the OS community." %}</b></p>
+    <h3><b>{% trans "So what’s in a Tribe?" %}</b></h3>
+    <p>{% trans "A Tribe is a cooperative initiated and led by various Funders of Gitcoin. It provides a community space, where communication is direct and noise-free through Townsquare. Projects and ideas are publicly announced within the Tribe and long term collaborations are easier than ever to establish." %}</p>
+    <h3><b>{% trans "What’s in a Tribe for me?" %}</b></h3>
+  <div id="hook_value_tribes_features">
+    <img src="{% static "v2/images/emails/long-term-partnerships.png" %}" alt="Gitcoin" title="Gitcoin Tribe">
+    <div id="tribes_feature">
+        <h3>
+          <b>{% trans "Find Your Dream Team" %}</b>
+        </h3>
+        <p>{% trans "Start by checking out our hall of open source Tribes. Find your tribe and give it a follow, to be exposed to that organization’s directed work." %}</p>
+      </div>
+  </div>
+  <div id="hook_value_tribes_features">
+    <img src="{% static "v2/images/emails/tribes_convo.png" %}" alt="Gitcoin" title="Gitcoin tribes">
+    <div id="tribes_feature">
+        <h3>
+          <b>{% trans "Engage Better" %}</b>
+        </h3>
+        <p>{% trans "Strike up a conversation in the Townsquare or join the action by checking out the tribe’s Active Issues. Working on Active Issues upgrades your role to Tribe Contributor." %}</p>
+      </div>
+  </div>
+  <div id="hook_value_tribes_features">
+    <img src="{% static "v2/images/emails/innovation-pools.png" %}" alt="Gitcoin" title="Gitcoin Innovation pools">
+    <div id="tribes_feature">
+        <h3>
+          <b>{% trans "Buidl & Earn Faster" %}</b>
+        </h3>
+        <p>{% trans "Whenever you’ve got an idea on how to develop the Tribe’s protocol or products, go ahead and suggest a bounty. This will make you an even more important member of the Tribe!" %}</p>
+      </div>
+  </div>
+  <p>{% trans "Tribes give you the chance to really connect with funders and buidlers and to grow meaningful, long term partnerships. Toggle your work and creativity from “on-demand” to “on-board”!" %}</p>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button" href="#">{% trans "Join A Tribe" %}</a>
+  </div>
+  <p>{% trans "Learn, grow, earn!" %}</p>
+  <p>{% trans "The Gitcoiniacs" %}</p>
+  <p>{% trans "P.S. Don’t forget to join our Gitcoin Tribe too!" %}</p>
+</div>
+{% endblock %}

@@ -142,6 +142,18 @@ def render_tribes_sales_funnel(to_email):
 
     return response_html, response_txt
 
+def render_tribes_hook_value(to_email):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'hide_preferred_payout': True,
+        'email_style': 26
+    }
+    response_html = premailer_transform(render_to_string("emails/tribes/hook_value.html", params))
+    response_txt = render_to_string("emails/tribes/hook_value.txt", params)
+
+    return response_html, response_txt
+
+
 def render_new_supporter_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
     response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
@@ -1409,6 +1421,11 @@ def gdpr_reconsent(request):
 @staff_member_required
 def tribes_sales_funnel(request):
     response_html = render_tribes_sales_funnel(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+@staff_member_required
+def tribes_hook_value(request):
+    response_html = render_tribes_hook_value(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
 
 @staff_member_required
