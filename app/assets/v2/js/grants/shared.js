@@ -75,7 +75,7 @@ const notifyOwnerAddressMismatch = (username, address, button, message) => {
     if (
       typeof accounts != 'undefined' &&
       document.contxt && document.contxt.github_handle == username &&
-      accounts[0] && accounts[0] != address
+      accounts[0] && accounts[0].toLowerCase() != address.toLowerCase()
     ) {
       if ($(button).attr('disabled') != 'disabled') {
         $(button).attr('disabled', 'disabled');
