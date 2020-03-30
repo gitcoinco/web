@@ -20,78 +20,100 @@
 
 {% block content %}
 <style>
+  #header {
+    height: 400px !important;
+  }
+
+  
+
   .primary-content {
     padding: 0;
     margin: 0;
   }
   h1 {
     margin: 0;
-    padding-top: 2em;
-  }
-  .container {
-    padding:  2em;
   }
 
-  .tribes-features {
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    margin-bottom: 1em;
-  }
-
-  .tribes-features img {
-    width: 30%; 
+  #tribes_features img {
     align-self: center;
   }
 
-  @media screen and (min-width: 35.5em) {
-    .container {
-      padding-left: 20%;
-      padding-right: 20%;
+  @media screen and (max-width: 35.5em) {
+    #sales_funnel {
+      padding: 2em 5%;
+    }
+
+    #tribes_features {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      margin-bottom: 1em;
+    }
+
+    #header {
+      height: 400px !important;
+    }
+
+    #logo {
+      height: 40%;
+      width: 60%;
     }
   }
 
   @media screen and (min-width: 48em) {
-    .container {
-      padding-left: 30%;
-      padding-right: 30%;
+    #sales_funnel {
+      padding: 2em 30%;
     }
-  }
+    #logo {
+      height: 40%;
+      width: 30% !important;
+    }
 
-  @media screen and (max-width: 48em) {
-    .container {
-      padding-left: 0;
-      padding-right: 0;
+    #tribes_features {
+      display: flex;
+      justify-content: center;
+      flex-direction: row;
+      text-align: justify;
+      margin-bottom: 1em;
+    }
+
+    #tribes_feature {
+      align-self: center;
+      text-align: left;
+      padding-left: 2em;
     }
   }
   
+  
 </style>
-<div class="container">
+
+<div id="sales_funnel">
   <h1>{% trans "Is a Tribe missing in your life?" %}</h1>
   <p>{% trans "At Gitcoin we’re constantly flying ideas across the room and tinkering with wild contraptions. Some go live, some we bank or transform into something easier or better. What keeps our flow going, you ask?" %}</p>
+  <img style="width: 50%;" src="{% static "v2/images/emails/group_tribe.png" %}" alt="Gitcoin" title="Gitcoin Tribes">
   <h3>{% trans "The Tribe" %}</h3>
   <p><b>{% trans "Tribes are a two-way broadcast channel between core teams & the open-source community. But don’t take our word for it. Try tribe-ing yourself, for a couple of solid reasons."%}</b></p>
-  <div style="display: flex; justify-content: center; flex-direction: row; margin-bottom: 1em;">
-    <img style="width: 10%; align-self: center;" src="{% static "v2/images/emails/focused_communities.png" %}" alt="Gitcoin" title="Gitcoin Focused communities">
-    <div style="align-self: center; text-align: left; padding-left: 2em;">
+  <div id="tribes_features">
+    <img src="{% static "v2/images/emails/focused_communities.png" %}" alt="Gitcoin" title="Gitcoin Focused communities">
+    <div id="tribes_feature">
         <h3>
           <b>Focused communities</b>
         </h3>
         <p>{% trans "Having a Tribe gives you community traction. It brings people in and keeps them together, for common causes and conversations. #tribeconnections" %}</p>
       </div>
   </div>
-  <div style="display: flex; justify-content: center; flex-direction: row; margin-bottom: 1em;">
-    <img style="width: 10%; align-self: center;" src="{% static "v2/images/emails/long-term-partnerships.png" %}" alt="Gitcoin" title="Gitcoin tribes long term partnerships">
-    <div style="align-self: center; text-align: left; padding-left: 2em;">
+  <div id="tribes_features">
+    <img src="{% static "v2/images/emails/long-term-partnerships.png" %}" alt="Gitcoin" title="Gitcoin tribes long term partnerships">
+    <div id="tribes_feature">
         <h3>
           <b>{% trans "Long-term partnerships" %}</b>
         </h3>
         <p>{% trans "Having a Tribe gives you community traction. It brings people in and keeps them together, for common causes and conversations. #tribeconnections" %}</p>
       </div>
   </div>
-  <div style="display: flex; justify-content: center; flex-direction: row; margin-bottom: 1em;">
-    <img style="width: 10%; align-self: center;" src="{% static "v2/images/emails/innovation-pools.png" %}" alt="Gitcoin" title="Gitcoin Innovation pools">
-    <div style="align-self: center; text-align: left; padding-left: 2em;">
+  <div id="tribes_features">
+    <img src="{% static "v2/images/emails/innovation-pools.png" %}" alt="Gitcoin" title="Gitcoin Innovation pools">
+    <div id="tribes_feature">
         <h3>
           <b>{% trans "Innovation pools" %}</b>
         </h3>
