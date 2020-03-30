@@ -1,0 +1,16 @@
+{
+  "symbol": "BAA",
+  "address": "0x8e70cd9A3962e192B76454dcf10d24B63fDDA195",
+  "overview":{
+        "en": "BAA (BAAToken), is issued by Apollo Green Energy Foundation（Apollo）, incorporated in Singapore on Sep 2018. Apollothrough its blockchain consensus algorithm ensures the security of accounts and assets, it provides tamper proof technology, digital signature, encrypted wallet and other means of security features.",
+        "zh": "BAAtoken(简称 BAA)，是由新加坡阿波罗基金会（简称 阿波罗）发行，该基金会成立于2018年9月，阿波罗通过区块链共识、不可篡改技术以及数字签名、加密钱包等安全手段确保帐户和资产的安全性。"
+  },
+  "email": "colinkplim@outlook.com",
+  "website": "http://www.baatoken.com/",
+  "whitepaper": "http://20811820.s21d-20.faiusrd.com/61/ABUIABA9GAAg0Lnd8gUo0I_83AQ.pdf?v=1582783771",
+  "state": "NORMAL",
+  "published_on": "2020-03-04",
+  "links": {
+     "website": "http://www.baatoken.com/"
+  }
+}
