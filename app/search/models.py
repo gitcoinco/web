@@ -1,10 +1,11 @@
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from elasticsearch import Elasticsearch
-from economy.models import SuperModel
-from django.conf import settings
 from django.utils import timezone
+
+from economy.models import SuperModel
+from elasticsearch import Elasticsearch
 
 
 class SearchResult(SuperModel):

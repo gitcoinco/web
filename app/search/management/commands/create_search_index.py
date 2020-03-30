@@ -16,7 +16,9 @@
 
 '''
 from django.core.management.base import BaseCommand
+
 from search.models import SearchResult
+
 
 class Command(BaseCommand):
 
@@ -26,5 +28,3 @@ class Command(BaseCommand):
         for sr in SearchResult.objects.all():
             print(sr.pk)
             sr.put_on_elasticserach()
-            
-        
