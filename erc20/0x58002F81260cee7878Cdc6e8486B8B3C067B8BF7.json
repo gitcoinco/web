@@ -1,0 +1,18 @@
+{
+  "symbol": "SOT",
+  "address": "0x58002f81260cee7878cdc6e8486b8b3c067b8bf7",
+  "overview":{
+        "en": "Singapore Open Token",
+        "zh": "基于 Singapore Open Token 创建的各种规则和协议，嫁接包括游戏、AI 虚拟商城、DAPP、新媒体、金融等在内的各类数字资源应用场
+景。第三方开发商可以发行通证，构建自己的经济体系，也可以围绕 Open 重点打造各
+类应用，使用 Open 中的 Singapore Open Token 作为系统内凭证"
+  },
+  "email": "492703106@qq.com",
+  "website": "http://www.sotopen.vip",
+  "whitepaper": "http://q7yfdtncu.bkt.clouddn.com/SOT%E7%99%BD%E7%9A%AE%E4%B9%A6%E7%A1%AE%E5%AE%9A%E7%89%88.pdf",
+  "published_on": "2018-03-01",
+ 
+  "links": {
+    "blog": "http://www.sotopen.vip"
+  }
+}
