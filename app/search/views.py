@@ -8,13 +8,18 @@ from dashboard.models import SearchHistory
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
-from .models import SearchResult
+from .models import SearchResult, search
 
 
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def search(request):
     keyword = request.GET.get('term', '')
-    all_result_sets = [SearchResult.objects.filter(title__icontains=keyword), SearchResult.objects.filter(description__icontains=keyword)]
+    all_result_sets = search(keyword)
+    if all_result_sets:
+        pks = [ele['pk'] for ele in all_result_sets]
+        all_result_sets = SearchResult.objects.filter(pk__in=pks)
+    else:
+        all_result_sets = [SearchResult.objects.filter(title__icontains=keyword), SearchResult.objects.filter(description__icontains=keyword)]
     return_results = []
     exclude_pks = []
     for results in all_result_sets:

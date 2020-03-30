@@ -1,8 +1,10 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
+from elasticsearch import Elasticsearch
 from economy.models import SuperModel
+from django.conf import settings
+from django.utils import timezone
 
 
 class SearchResult(SuperModel):
@@ -19,6 +21,25 @@ class SearchResult(SuperModel):
 
     def __str__(self):
         return f"{self.source_type}; {self.url}"
+
+
+    def put_on_elasticserach(self):
+        es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
+        doc = {
+            'title': self.title,
+            'description': self.description,
+            'url': self.url,
+            'pk': self.pk,
+            'img_url': self.img_url,
+            'timestamp': timezone.now(),
+        }
+        res = es.index(index="search-index", id=self.pk, body=doc)
+
+
+def search(query):
+    es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
+    res = es.search(index="search-index", body={"query": {"match_all": {'title': query}}})
+    return res
 
 
 class ProgrammingLanguage(SuperModel):
