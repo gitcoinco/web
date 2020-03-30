@@ -181,10 +181,10 @@ a {
   margin-left: 0;
 }
 
-.interior .container-fluid {
+/* .interior .container-fluid {
   padding-left: 0;
   padding-right: 0;
-}
+} */
 
 .with-grey-background .body {
   background-color: #eee !important;

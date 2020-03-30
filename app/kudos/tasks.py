@@ -22,14 +22,14 @@ def mint_token_request(self, token_req_id, retry=False):
     :param token_req_id:
     :return:
     """
-    with redis.lock("tasks:all_token_mint_requests", timeout=LOCK_TIMEOUT):
+    with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
         with redis.lock("tasks:token_req_id:%s" % token_req_id, timeout=LOCK_TIMEOUT):
             from kudos.management.commands.mint_all_kudos import sync_latest
             from gas.utils import recommend_min_gas_price_to_confirm_in_time
             from dashboard.utils import has_tx_mined
             obj = TokenRequest.objects.get(pk=token_req_id)
             multiplier = 1 if not retry else (mint_token_request.request.retries + 1)
-            gas_price = int(recommend_min_gas_price_to_confirm_in_time(1) * multiplier)
+            gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
             tx_id = obj.mint(gas_price)
             if tx_id:
                 while not has_tx_mined(tx_id, obj.network):
@@ -50,7 +50,7 @@ def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
     :param signed_rawTransaction:
     :return:
     """
-    with redis.lock("tasks:all_redeem_bulk_kudos", timeout=LOCK_TIMEOUT):
+    with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
         with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
             from dashboard.utils import has_tx_mined
             try:

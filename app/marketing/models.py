@@ -46,7 +46,7 @@ class Alumni(SuperModel):
 
 class EmailSubscriber(SuperModel):
 
-    email = models.EmailField(max_length=255)
+    email = models.EmailField(max_length=255, unique=True)
     source = models.CharField(max_length=50)
     active = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=True)
