@@ -1,0 +1,27 @@
+{
+  "symbol": "LEDU",
+  "address": "0xC741f06082AA47F93729070aD0dD95E223Bda091",
+  "overview": {
+    "en": "Education Ecosystem is a project-based learning ecosystem that teaches professional developers and students how to build real products in areas such as programming, game development, artificial intelligence, cybersecurity, data science, and blockchain. $360 billion professional development market.",
+  },
+  "email": "tokens@education-ecosystem.com",
+  "website": "https://ledu.education-ecosystem.com/",
+  "whitepaper": "https://ledu.education-ecosystem.com/static/docs/Education-Ecosystem-White-Paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-02-12",
+  "initial_price":{
+        "ETH":"0.00002975 ETH",
+        "USD":"0.003945 USD",
+        "BTC":"0.00000063 BTC"
+  },
+  "links": {
+    "blog": "https://ledu.education-ecosystem.com/blog",
+    "twitter": "https://twitter.com/eduecosystem",
+    "telegram": "https://t.me/ledu_token",
+    "reddit": "",
+    "github": "",
+    "facebook": "",
+    "slack": "",
+    "medium": ""
+  }
+}
