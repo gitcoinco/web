@@ -34,7 +34,7 @@
     margin: 0;
   }
 
-  #tribes_features img {
+  #sales_features img {
     align-self: center;
   }
 
@@ -43,7 +43,7 @@
       padding: 2em 5%;
     }
 
-    #tribes_features {
+    #sales_features {
       display: flex;
       justify-content: center;
       flex-direction: column;
@@ -58,6 +58,10 @@
       height: 40%;
       width: 60%;
     }
+
+    #sales_funnel_index {
+        display: none;
+    }
   }
 
   @media screen and (min-width: 48em) {
@@ -69,7 +73,7 @@
       width: 30% !important;
     }
 
-    #tribes_features {
+    #sales_features {
       display: flex;
       justify-content: center;
       flex-direction: row;
@@ -77,10 +81,30 @@
       margin-bottom: 1em;
     }
 
-    #tribes_feature {
+    #sales_feature {
       align-self: center;
       text-align: left;
       padding-left: 2em;
+    }
+
+    #sales_funnel_index {
+      margin: 0 3em;
+      background-color: #3E00FF;
+      color: #ffffff;
+      height: 2em;
+      width: 7em;
+      border-radius: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #sales_funnel_img {
+        width: 100%;
+    }
+
+    #sales_funnel_img img {
+        width: 100%;
     }
   }
   
@@ -93,27 +117,36 @@
   <img style="width: 50%;" src="{% static "v2/images/emails/group_tribe.png" %}" alt="Gitcoin" title="Gitcoin Tribes">
   <h3>{% trans "The Tribe" %}</h3>
   <p><b>{% trans "Tribes are a two-way broadcast channel between core teams & the open-source community. But don’t take our word for it. Try tribe-ing yourself, for a couple of solid reasons."%}</b></p>
-  <div id="tribes_features">
-    <img src="{% static "v2/images/emails/focused_communities.png" %}" alt="Gitcoin" title="Gitcoin Focused communities">
-    <div id="tribes_feature">
+  <div id="sales_features">
+    <div id="sales_funnel_img">
+      <img src="{% static "v2/images/emails/focused_communities.png" %}" alt="Gitcoin" title="Gitcoin Focused communities">
+    </div>
+    <div id="sales_funnel_index">1</div>
+    <div id="sales_feature">
         <h3>
           <b>Focused communities</b>
         </h3>
         <p>{% trans "Having a Tribe gives you community traction. It brings people in and keeps them together, for common causes and conversations. #tribeconnections" %}</p>
       </div>
   </div>
-  <div id="tribes_features">
-    <img src="{% static "v2/images/emails/long-term-partnerships.png" %}" alt="Gitcoin" title="Gitcoin tribes long term partnerships">
-    <div id="tribes_feature">
+  <div id="sales_features">
+    <div id="sales_funnel_img">
+      <img src="{% static "v2/images/emails/long-term-partnerships.png" %}" alt="Gitcoin" title="Gitcoin tribes long term partnerships">
+    </div>
+    <div id="sales_funnel_index">2</div>
+    <div id="sales_feature">
         <h3>
           <b>{% trans "Long-term partnerships" %}</b>
         </h3>
         <p>{% trans "Having a Tribe gives you community traction. It brings people in and keeps them together, for common causes and conversations. #tribeconnections" %}</p>
       </div>
   </div>
-  <div id="tribes_features">
-    <img src="{% static "v2/images/emails/innovation-pools.png" %}" alt="Gitcoin" title="Gitcoin Innovation pools">
-    <div id="tribes_feature">
+  <div id="sales_features">
+    <div id="sales_funnel_img">
+      <img src="{% static "v2/images/emails/innovation-pools.png" %}" alt="Gitcoin" title="Gitcoin Innovation pools">
+    </div>
+    <div id="sales_funnel_index">3</div>
+    <div id="sales_feature">
         <h3>
           <b>{% trans "Innovation pools" %}</b>
         </h3>
