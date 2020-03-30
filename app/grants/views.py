@@ -414,7 +414,7 @@ def add_form_categories_to_grant(form_category_ids, grant, grant_type):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
-    tab = request.GET.get('tab', 'activity')
+    tab = request.GET.get('tab', 'description')
     profile = get_profile(request)
     add_cancel_params = False
     try:
