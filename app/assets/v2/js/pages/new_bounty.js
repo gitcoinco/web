@@ -4,8 +4,7 @@
 document.web3network = 'mainnet';
 load_tokens();
 
-// TODO: remove erc-20 ZIL from tokens and update qr_tokens
-const qr_tokens = [ 'ETC', 'CELO' ];
+const qr_tokens = [ 'ETC', 'CELO', 'ZIL' ];
 
 const updateOnNetworkOrTokenChange = () => {
   const tokenName = $('select[name=denomination]').select2('data')[0] &&
