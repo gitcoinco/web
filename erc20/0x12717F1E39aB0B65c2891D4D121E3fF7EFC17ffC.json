@@ -1,0 +1,16 @@
+{
+    "symbol": "HH",
+    "address": "0x12717F1E39aB0B65c2891D4D121E3fF7EFC17ffC",
+    "overview":{
+          "en": "Human Health Chain is a medical data application system that builds an open, equal and secure smart medical chain using blockchain technology, artificial intelligence and big data analysis technology.",
+          "zh": "众康链是运用区块链技术以及人工智能和大数据分析技术建立开放、平等、安全的智慧医疗链医疗数据应用系统。"
+    },
+    "email": "blocker@humanhealth.vip",
+    "website": "http://humanhealth.vip/",
+    "whitepaper": "http://humanhealth.vip/files/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-03-19",
+    "links": {
+        "telegram": "https://t.me/humanhealthgroup"
+      }
+}
