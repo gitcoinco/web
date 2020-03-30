@@ -1919,6 +1919,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         'is_staff': request.user.is_staff,
         'is_moderator': request.user.profile.is_moderator if hasattr(request.user, 'profile') else False,
     }
+
+    bounty = None
+
     if issue_url:
         try:
             if stdbounties_id and stdbounties_id.isdigit():
