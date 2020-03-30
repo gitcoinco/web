@@ -1,8 +1,14 @@
+import json
+
+from django.conf import settings
 from django.utils import timezone
 
 import requests
 from dashboard.sync.helpers import txn_already_used
 
+headers = {
+    "X-APIKEY" : settings.VIEW_BLOCK_API_KEY
+}
 
 def find_txn_on_zil_explorer(fulfillment, network='mainnet'):
     token_name = fulfillment.token_name
@@ -13,14 +19,15 @@ def find_txn_on_zil_explorer(fulfillment, network='mainnet'):
     amount = fulfillment.payout_amount
     payeeAddress = fulfillment.fulfiller_address
 
-    # TODO: UPDATE URL + RESPONSE
-    blockscout_url = f'https://blockscout.com/etc/{network}/api?module=account&action=txlist&address={funderAddress}'
-    blockscout_response = requests.get(blockscout_url).json()
-    if blockscout_response['message'] and blockscout_response['result']:
-        for txn in blockscout_response['result']:
+    url = f'https://api.viewblock.io/v1/zilliqa/addresses/{funderAddress}/txs?network={network}'
+
+    response = requests.get(url, headers=headers).json()
+    if len(response):
+        for txn in response:
             if (
                 txn['from'] == funderAddress.lower() and
                 txn['to'] == payeeAddress.lower() and
+                txn['direction'] == 'out' and
                 float(txn['value']) >= float(amount) and
                 not txn_already_used(txn['hash'], token_name)
             ):
@@ -32,18 +39,17 @@ def get_zil_txn_status(txnid, network='mainnet'):
     if not txnid:
         return None
 
-    # TODO: UPDATE URL + RESPONSE
-    blockscout_url = f'https://blockscout.com/etc/{network}/api?module=transaction&action=gettxinfo&txhash={txnid}'
-    blockscout_response = requests.get(blockscout_url).json()
+    url = f'https://api.viewblock.io/v1/zilliqa/txs/{txnid}?network={network}'
+    response = requests.get(url, headers=headers).json()
 
-    if blockscout_response['status'] and blockscout_response['result']:
+    if response:
 
         response = {
-            'blockNumber': int(blockscout_response['result']['blockNumber']),
-            'confirmations': int(blockscout_response['result']['confirmations'])
+            'blockHeight': int(response['blockHeight']),
+            'receiptSuccess': json.loads(response['receiptSuccess'])
         }
 
-        if response['confirmations'] > 0:
+        if response['receiptSuccess']:
             response['has_mined'] = True
         else:
             response['has_mined'] = False
@@ -55,7 +61,7 @@ def get_zil_txn_status(txnid, network='mainnet'):
 def sync_zil_payout(fulfillment):
     if not fulfillment.payout_tx_id:
         txn = find_txn_on_zil_explorer(fulfillment)
-        fulfillment.payout_tx_id = txn['hash'] # TODO: UPDATE
+        fulfillment.payout_tx_id = txn['hash']
 
     if fulfillment.payout_tx_id:
         if get_zil_txn_status(fulfillment.payout_tx_id).get('has_mined'):
