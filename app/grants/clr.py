@@ -29,14 +29,21 @@ from itertools import combinations
 from django.conf import settings
 from django.utils import timezone
 
+from dashboard.abi import erc20_abi
 from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
 from perftools.models import JSONStore
 
+from decimal import Decimal
 from web3.auto.infura import w3
 from web3.exceptions import (
     TransactionNotFound,
 )
+
+
+# ERC20 / ERC721 tokens
+SEARCH_METHOD = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+
 
 CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
 
@@ -585,7 +592,7 @@ def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
 
     Args:
         list_contributions : csv | text | file
-        
+
     Returns:
         status: sucess or fail, reason
         sucess_validator: [{'sucess': <int>, 'reason': <Object>}]
@@ -598,8 +605,12 @@ def grants_transaction_validator(list_contributions):
 
     df = pd.read_csv(list_contributions, sep=" ")
     check_transaction = lambda txid: w3.eth.getTransaction(txid)
-    check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE}{index_transaction}{txid[:10]} -> status: 0 False - amount was off by 0.001{bcolors.ENDC}")
+    check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE}{index_transaction} txid: {txid[:10]} -> status: 0 False - amount was off by 0.001{bcolors.ENDC}")
     check_token = lambda token_address: len(token_address) == 42
+    check_contract = lambda token_address, abi : w3.eth.contract(token_address, abi=abi)
+    check_event_transfer =  lambda contract_address, search, txid : w3.eth.filter({ "address": contract_address, "topics": [search, txid]})
+    get_decimals = lambda contract : int(contract.functions.decimals().call())
+    get_symbol = lambda contract : contract.functions.symbol().call()
 
     for index_transaction, txid in enumerate(df.txid):
         try:
@@ -607,9 +618,16 @@ def grants_transaction_validator(list_contributions):
             amount =  check_amount(transaction.input)
             token_address = check_token(transaction.to)
             if token_address == True  and isinstance(amount, int):
-                print (f"{bcolors.OKGREEN} {index_transaction}{txid[:10]} -> status: 1{bcolors.ENDC}")
+                contract = check_contract(transaction.to, erc20_abi)
+                contract_symbol = get_symbol(contract)
+                transfer_event = check_event_transfer(contract.address, SEARCH_METHOD, txid )
+                decimals = get_decimals(contract)
+                human_readable_value = Decimal(int(transaction.input[75:], 16)) / Decimal(10 ** decimals) if decimals else None
+                if (transfer_event):
+                    print (f"{bcolors.OKGREEN} {index_transaction} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol} -> status: 1{bcolors.ENDC}")
         except TransactionNotFound:
-            print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} {txid[:10]} -> status: 0 - tx failed{bcolors.ENDC}")
+            print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} txid: {txid[:10]} -> status: 0 - tx failed{bcolors.ENDC}")
+
 
     # Colors for Console.
     class bcolors:
@@ -622,7 +640,5 @@ def grants_transaction_validator(list_contributions):
         BOLD = '\033[1m'
         UNDERLINE = '\033[4m'
 
-    
-    
-    
-    
+
+
