@@ -460,6 +460,14 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                         key=_grant.title[0:43] + "_match",
                         val=_grant.clr_prediction_curve[0][1],
                         )
+                    max_twitter_followers = max(_grant.twitter_handle_1_follower_count, _grant.twitter_handle_2_follower_count)
+                    if max_twitter_followers:
+                        Stat.objects.create(
+                            created_on=from_date,
+                            key=_grant.title[0:43] + "_admt1",
+                            val=int(_grant.clr_prediction_curve[0][1]/max_twitter_followers),
+                            )
+
                 if _grant.positive_round_contributor_count:
                     Stat.objects.create(
                         created_on=from_date,

@@ -297,6 +297,10 @@ class Grant(SuperModel):
         blank=True,
     )
     categories = models.ManyToManyField(GrantCategory, blank=True)
+    twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
+    twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
+    twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
+    twitter_handle_2_follower_count = models.PositiveIntegerField(blank=True, default=0)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()

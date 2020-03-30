@@ -89,6 +89,14 @@ class Command(BaseCommand):
             rankings = mr.ranking.filter(final=True, paid=False).order_by('-match_total')
             print(rankings.count(), " to pay")
             w3 = get_web3(network)
+
+            num_rankings = rankings.count()
+            num_handles = len(set(list(rankings.values_list('profile__handle', flat=True))))
+            if num_handles != num_rankings:
+                print(f"cannot payout; there are duplicate profile handles. {num_handles} handles + {num_rankings} rankings")
+                return
+            return
+
             for ranking in rankings:
 
                 # figure out amount_owed

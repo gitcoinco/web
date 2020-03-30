@@ -98,6 +98,7 @@ def get_stats(round_type):
         ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
         ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count', 'grants' ),
         ('_amt', 'CrowdFund Amount', '-amount_received_in_round', 'grants' ),
+        ('_admt1', 'Estimated Matching Amount / Twitter Followers', '-positive_round_contributor_count', 'grants' ),
         ('count_', 'Top Contributors by Num Contributations', '-val', 'profile' ),
         ('sum_', 'Top Contributors by Value Contributed', '-val', 'profile' ),
     ]
@@ -610,6 +611,8 @@ def grant_new(request):
                 'contract_version': request.POST.get('contract_version', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
+                'twitter_handle_1': request.POST.get('handle1', ''),
+                'twitter_handle_2': request.POST.get('handle2', ''),
                 'metadata': receipt,
                 'admin_profile': profile,
                 'logo': logo,

@@ -67,7 +67,7 @@ var waitingStateActive = function() {
  */
 const notifyOwnerAddressMismatch = (username, address, button, message) => {
 
-  if (!web3 || !web3.eth || !username || !document.contxt.github_handle) {
+  if (!web3 || !web3.eth || !username || !document.contxt.github_handle || !address) {
     return;
   }
 
