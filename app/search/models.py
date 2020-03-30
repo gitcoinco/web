@@ -24,21 +24,36 @@ class SearchResult(SuperModel):
 
 
     def put_on_elasticserach(self):
+        if self.visible_to:
+            return None
+
         es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
+        source_type  = str(str(self.source_type).replace('token', 'kudos')).title()
+        full_search = f"{self.title}{self.description}{source_type}"
         doc = {
             'title': self.title,
             'description': self.description,
+            'full_search': full_search,
             'url': self.url,
             'pk': self.pk,
             'img_url': self.img_url,
             'timestamp': timezone.now(),
+            'source_type': source_type,
         }
         res = es.index(index="search-index", id=self.pk, body=doc)
 
 
 def search(query):
+    if not settings.ELASTIC_SEARCH_URL:
+        return {}
     es = Elasticsearch([settings.ELASTIC_SEARCH_URL])
-    res = es.search(index="search-index", body={"query": {"match_all": {'title': query}}})
+    res = es.search(index="search-index", body={
+      "query": {
+        "match": {
+          "full_search": query,
+        }
+      }
+    })
     return res
 
 
