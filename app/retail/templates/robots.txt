@@ -5,6 +5,7 @@ Disallow: {{ handle }}*
 Disallow: profile/{{ handle }}*
 {% endfor %}
 
+Disallow: kudos/redeem/*
 Disallow: dynamic/avatar/*
 Disallow: login/github/*
 
