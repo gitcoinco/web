@@ -32,24 +32,23 @@
       padding: 0;
   }
 
+  #bounty_information {
+    margin: 0 !important;
+    background-color: #F3F9FF;
+    padding: 2em;
+  }
+
   @media screen and (min-width: 35.5em) {
     .bounty-idea {
-      padding-left: 20rem;
-      padding-right: 20rem;
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 
   @media screen and (min-width: 48em) {
     .bounty-idea {
-      padding-left: 40rem;
-      padding-right: 40rem;
-    }
-  }
-
-  @media screen and (max-width: 48em) {
-    .bounty-idea {
-      padding-left: 0;
-      padding-right: 0;
+      padding-left: 20rem;
+      padding-right: 20rem;
     }
   }
   .text-center {
@@ -62,18 +61,18 @@
     <div style="margin-bottom: 1em;">
         {% trans "We come in peace and bring you favorable news. Your work is inspiring other contributors and new ideas are flowing towards your tribe. Here is the latest bounty suggestion sent to you from a fellow Gitcoiner."%}
     </div>
-    <div style="background-color: #F3F9FF; padding: 2em;">
+    <div id="bounty_information">
         <div style="display: flex; justify-content: center;">
           <div class="bounty-avatar">
-            <img style="border-radius: 100%;border: 2px solid #1AB56D; margin-right: 1em;" src="{% avatar_url interest.profile.handle %}" width="48" height="48">
+            <img style="border-radius: 100%;border: 2px solid #1AB56D; margin-right: 3em;" src="{% avatar_url interest.profile.handle %}" width="64" height="64">
           </div>
           <div class="bounty-avatar">
-            <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{ bounty.avatar_url }}" width="48" height="48">
+            <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{ bounty.avatar_url }}" width="64" height="64">
           </div>
         </div>
         <h4>{{ bounty.title }}</h4>
         <span><a href="{% url "profile" interested.profile.handle %}"> {{ interested.profile.handle }}</a> {% trans "is willing to build for:" %}</span>
-        <div style="display: flex; justify-content: center; margin-top: 1em;">
+        <div style="display: flex; justify-content: center; margin-top: 3em;">
           <div style="background-color: #E7F0FA; color: #3F00FF; padding: 1em; margin-right: 1em">
             {{ bounty.value_true }} {{ bounty.token_name }}
           </div>
