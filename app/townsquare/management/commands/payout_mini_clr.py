@@ -131,6 +131,11 @@ class Command(BaseCommand):
 
                 signed = w3.eth.account.signTransaction(tx, from_pk)
                 tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+                if not tx_id:
+                    print("cannot pay advance, did not get a txid")
+                    continue
+
                 print("paid via", tx_id)
 
                 # wait for tx to clear
