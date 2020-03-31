@@ -322,7 +322,7 @@ $(document).ready(function() {
 
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
-            // TODO: Fix tweet modal
+            set_form_disabled(false);
             $('#tweetModal').css('display', 'block');
 
           };
@@ -547,6 +547,7 @@ const signSubscriptionHash = (subscriptionHash) => {
     indicateMetamaskPopup();
     web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
       indicateMetamaskPopup(true);
+      set_form_disabled(false);
       $('#tweetModal').css('display', 'block');
 
       if (signature) {
@@ -640,12 +641,12 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
   indicateMetamaskPopup();
   deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).estimateGas(function(err, gas_amount){
-    if (err) {
-      _alert('There was an error', 'error');
-      set_form_disabled(false);
-     indicateMetamaskPopup(1);
-      return;
-    } 
+      if (err) {
+        _alert('There was an error', 'error');
+        set_form_disabled(false);
+       indicateMetamaskPopup(1);
+        return;
+      } 
     deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
       from: account,
       gas: web3.utils.toHex(gas_amount + 1000),
@@ -657,6 +658,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
       _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
     }).on('transactionHash', function(transactionHash) {
       indicateMetamaskPopup(1);
+      set_form_disabled(false);
       $('#tweetModal').css('display', 'block');
       data = {
         'subscription_hash': 'onetime',
@@ -677,7 +679,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
       $('#transaction_url').attr('href', linkURL);
       enableWaitState('#grants_form');
-      // TODO: Fix tweet modal
+      set_form_disabled(false);
       $('#tweetModal').css('display', 'block');
     }).on('confirmation', function(confirmationNumber, receipt) {
       data = {
@@ -690,10 +692,8 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
       saveSubscription(data, true);
       saveSplitTx(data, false, true);
     });
-
-
-  });
-};
+  })
+  };
 
 const waitforData = (callback) => {
   if ($('#wait').val() === 'false') {
