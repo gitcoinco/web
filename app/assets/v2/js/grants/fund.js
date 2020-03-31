@@ -10,6 +10,15 @@ let gitcoinDonationAddress;
 
 document.suppress_faucet_solicitation = 1;
 
+var set_form_disabled = function(is_disabled) {
+  if (is_disabled) {
+    $('body').append('<div id=intercept_overlay>&nbsp;</div>');
+  } else {
+    $('#intercept_overlay').remove();
+  }
+};
+
+
 $(document).ready(function() {
 
 
@@ -121,14 +130,6 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-
-  var set_form_disabled = function(is_disabled) {
-    if (is_disabled) {
-      $('body').append('<div id=intercept_overlay>&nbsp;</div>');
-    } else {
-      $('#intercept_overlay').remove();
-    }
-  };
 
   $('input[name=match_direction]').change(function(e) {
     let direction = $(this).val();
