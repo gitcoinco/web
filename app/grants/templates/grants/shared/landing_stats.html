@@ -1,12 +1,28 @@
 {% load humanize static i18n %}
+{% load chartit %}
+<style type="text/css">
+.container{
+  text-align: center;
+}
+.container a {
+  margin: 5px; padding: ; color:black;
+}
+
+@media (max-width: 700px) {
+  .container a {
+  display: block;  
+  }
+}
+
+</style>
   <div style="">
     <div style="background-color: rgba(255, 255, 255, 0.95);">
 
       <div class="container-fluid pt-3 pb-1 grants-results">
         <div class="container">
-          {% for grant_type in grant_types %}
-            <a href="/grants/?type=stats&category={{grant_type.keyword}}" class="mr-1 px-1 {% if selected_category == grant_type.keyword  or not selected_category and grant_type.keyword  == 'tech' %}font-weight-bold{% endif %}">
-              {{grant_type.label}} Round Stats
+          {% for round_type in round_types %}
+            <a href="/grants/stats/?category={{round_type}}" style="" class=" {% if selected_category == round_type  or not selected_category and round_type == 'tech' %}font-weight:bold{% endif %}">
+              {{round_type|title}} Round Stats
             </a>
           {% endfor %}
             {{category}}
@@ -26,3 +42,6 @@
   </div>
 
 
+<script src="{% static "v2/js/lib/jquery.js" %}"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+{{ cht|load_charts:chart_list }}
