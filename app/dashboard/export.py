@@ -120,7 +120,7 @@ class GrantExportSerializer(serializers.ModelSerializer):
         return instance.get_absolute_url()
 
     def get_contributor_count(self, instance):
-        return instance.get_contributor_count
+        return instance.get_contributor_count()
 
     def get_contribution_count(self, instance):
         return instance.get_contribution_count

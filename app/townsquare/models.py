@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models, transaction
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
@@ -57,6 +57,8 @@ class Comment(SuperModel):
         on_delete=models.CASCADE, related_name='comments', blank=True, db_index=True)
     comment = models.TextField(default='', blank=True)
     likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
+    likes_handles = ArrayField(models.CharField(max_length=200, blank=True), default=list, blank=True) #handles of users who like this post
+    tip_count_eth = models.DecimalField(default=0, decimal_places=5, max_digits=50)
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"
@@ -70,7 +72,7 @@ class Comment(SuperModel):
         return self.activity.url
 
     @property
-    def tip_count_eth(self):
+    def get_tip_count_eth(self):
         from dashboard.models import Tip
         network = 'rinkeby' if settings.DEBUG else 'mainnet'
         tips = Tip.objects.filter(comments_priv=f"comment:{self.pk}", network=network)
@@ -78,6 +80,13 @@ class Comment(SuperModel):
 
     def get_absolute_url(self):
         return self.url
+
+
+@receiver(pre_save, sender=Comment, dispatch_uid="pre_save_comment")
+def presave_comment(sender, instance, **kwargs):
+    from dashboard.models import Profile
+    instance.likes_handles = list(Profile.objects.filter(pk__in=instance.likes).values_list('handle', flat=True))
+    instance.tip_count_eth = instance.get_tip_count_eth
 
 
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
