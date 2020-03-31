@@ -727,7 +727,7 @@ def notify_deadbeat_grants(grants):
     try:
         setup_lang(to_email)
         subject = f"Dead Grants Alert {grants.count()}"
-        body = "<BR>-".join([f"({grant.title}): https://gitcoin.co/{grant.admin_url} " for grant in grants])
+        body = "\n\n-".join([f"({grant.title}): https://gitcoin.co/{grant.admin_url} " for grant in grants])
         if not should_suppress_notification_email(to_email, 'sdeadbeat'):
             send_mail(
                 from_email,
