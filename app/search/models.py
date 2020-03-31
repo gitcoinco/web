@@ -24,7 +24,7 @@ class SearchResult(SuperModel):
         return f"{self.source_type}; {self.url}"
 
 
-    def put_on_elasticserach(self):
+    def put_on_elasticsearch(self):
         if self.visible_to:
             return None
 

@@ -27,4 +27,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for sr in SearchResult.objects.all():
             print(sr.pk)
-            sr.put_on_elasticserach()
+            sr.put_on_elasticsearch()
