@@ -3899,6 +3899,8 @@ def hackathon_save_project(request):
     bounty_id = request.POST.get('bounty_id')
     profiles = request.POST.getlist('profiles[]')
     logo = request.FILES.get('logo')
+    looking_members = request.POST.get('looking-members', '') == 'on'
+    message = request.POST.get('looking-members-message', '')[:150]
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
 
@@ -3919,7 +3921,9 @@ def hackathon_save_project(request):
         'logo': request.FILES.get('logo'),
         'bounty': bounty_obj,
         'summary': clean(request.POST.get('summary'), strip=True),
-        'work_url': clean(request.POST.get('work_url'), strip=True)
+        'work_url': clean(request.POST.get('work_url'), strip=True),
+        'looking_members': looking_members,
+        'message': message,
     }
 
     try:
@@ -3939,24 +3943,24 @@ def hackathon_save_project(request):
                 'logo': request.FILES.get('logo', project.first().logo)
             })
 
-            project.update(**kwargs)
+            # project.update(**kwargs)
 
-            try:
-                bounty_profile = Profile.objects.get(handle=project.bounty.bounty_owner_github_username.lower())
-                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
-                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
+            #try:
+            #    bounty_profile = Profile.objects.get(handle=project.bounty.bounty_owner_github_username.lower())
+            #    if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+            #        created, bounty_profile = associate_chat_to_profile(bounty_profile)
 
-                profiles_to_connect.append(bounty_profile.chat_id)
-            except Exception as e:
-                logger.info("Bounty Profile owner not apart of gitcoin")
+            #    profiles_to_connect.append(bounty_profile.chat_id)
+            #except Exception as e:
+            #    logger.info("Bounty Profile owner not apart of gitcoin")
 
-            for profile_id in profiles:
-                curr_profile = Profile.objects.get(id=profile_id)
-                if not curr_profile.chat_id:
-                    created, curr_profile = associate_chat_to_profile(curr_profile)
-                profiles_to_connect.append(curr_profile.chat_id)
+            #for profile_id in profiles:
+            #    curr_profile = Profile.objects.get(id=profile_id)
+            #    if not curr_profile.chat_id:
+            #        created, curr_profile = associate_chat_to_profile(curr_profile)
+            #    profiles_to_connect.append(curr_profile.chat_id)
 
-            add_to_channel.delay(project.first().chat_channel_id, profiles_to_connect)
+            #add_to_channel.delay(project.first().chat_channel_id, profiles_to_connect)
 
             profiles.append(str(profile.id))
             project.first().profiles.set(profiles)
