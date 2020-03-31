@@ -75,7 +75,7 @@ total_clr_pot = 250000
 clr_round = 5
 clr_active = True
 show_clr_card = True
-next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
+next_round_start = timezone.datetime(2020, 3, 23, 8, 0)
 round_end = timezone.datetime(2020, 4, 7, 20, 0)
 round_types = ['media', 'tech', 'health']
 
