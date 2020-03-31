@@ -242,8 +242,9 @@ def sync_profile(handle, user=None, hide_profile=True):
         if not profile_exists:
             defaults['hide_profile'] = hide_profile
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
-        access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
-        orgs = get_user(handle, '/orgs', auth=(profile.handle, access_token))
+        latest_obj = profile.user.social_auth.filter(provider='github').latest('pk') if profile.user else None
+        access_token = latest_obj.access_token if latest_obj else None
+        orgs = get_user(handle, '/orgs', auth=(profile.handle, access_token)) if access_token else []
         profile.organizations = [ele['login'] for ele in orgs if ele and type(ele) is dict] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
