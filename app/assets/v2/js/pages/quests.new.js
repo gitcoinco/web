@@ -1,3 +1,87 @@
+function debounce(fn, time){
+  let timeout;
+
+  return function() {
+    const functionCall = () => fn.apply(this, arguments);
+
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  }
+}
+
+function updateCodeValidationOutput(type, title, text, otherInfo) {
+  console.log(otherInfo);
+  const codeValidationOutput = $('#code-validation-output');
+  const codeValidationOutputTitle = $('#code-validation-output-title');
+  const codeValidationOutputText = $('#code-validation-output-text');
+  codeValidationOutputTitle.html(title);
+  codeValidationOutputText.html(text);
+
+  if (type === 'error') {
+    codeValidationOutput.addClass('bg-danger').removeClass('bg-success');
+  } else if (type === 'ok') {
+    codeValidationOutput.addClass('bg-success').removeClass('bg-danger');
+    const newText = (!otherInfo) ? text : `
+      ${text}
+      <p class="code-validation-other-info">
+        You want that users write a function named
+        <strong class="text-primary">"${otherInfo.name}"</strong>,
+         accepting
+        <strong class="text-primary">
+        "${otherInfo.paramsNumber}"
+        </strong>
+        parameters.
+      </p>
+      <p> Write your test function in here and click on the "evaluate" button </p>
+      <p><textarea id="code-validation-test-function" cols="50" rows="10"></textarea></p>
+      <p><button class="btn btn-primary" id="evaluate-code">Evaluate</button></p>`;
+    codeValidationOutputText.html(newText);
+    $('#evaluate-code').click(function (e) {
+      e.preventDefault();
+      const program = `
+        ${document.getElementById('code-battle-quest-boss-fight-textarea').value}
+        ${document.getElementById('code-validation-test-function').value}
+      `;
+      alert(eval(program));
+    })
+  }
+};
+
+function realTimeCodeValidation(e) {
+  try {
+    const parseResult = acorn.parse(e.target.value);
+    const codeBody = parseResult.body;
+    if (codeBody.length === 1) {
+      const funct = _.find(codeBody, { type: "FunctionDeclaration" });
+      const otherInfo = {
+        name: funct.id.name,
+        paramsNumber: 0,
+      }
+      updateCodeValidationOutput('ok', 'Great!', 'Your code seems to be valid', otherInfo);
+      console.log(funct);
+      const functBody = funct.body;
+      const functParams = funct.params;
+
+      if (_.filter(functBody.body, { type: "FunctionDeclaration" }).length > 0) {
+        updateCodeValidationOutput('error', 'No nested functions!', 'Currently, nested functions are not allowed');
+      } else if (functParams.length > 0) {
+        otherInfo.paramsNumber = functParams.length;
+        updateCodeValidationOutput('ok', 'Great!', 'Your code seems to be valid', otherInfo);
+        console.log(functParams);
+      }
+
+    } else if (codeBody.length > 1) {
+      updateCodeValidationOutput('error', 'Too many stuffs!', 'Currently, only one function is allowed for the battle code quest!');
+    } else {
+      updateCodeValidationOutput('error', 'Too many functions!', 'Currently, only one function is allowed for the battle code quest!');
+    }
+  } catch (err) {
+    // console.log(err);
+    if (err.name === 'SyntaxError') {
+      updateCodeValidationOutput('error', 'Syntax Error!', 'It seems that your code contains errors. Please fix them!')
+    }
+  }
+};
 
 $(document).ready(function() {
   const QUESTIONS_LIMIT = 10;
@@ -29,15 +113,21 @@ $(document).ready(function() {
     <div class="boss_fight_language_select_container form-group">
       <label class="form__label" for="answer_language[]">${gettext('Boss Fight Code Language')}</label>
       <select name="answer_language[]" class="select2 boss_fight_language_select">
-        <option value="boss_fight_language_solidity" selected="selected">Solidity</option>
-        <option value="boss_fight_language_javascript">Javascript</option>
+      <option value="boss_fight_language_javascript" selected="selected">Javascript</option>
+      <option value="boss_fight_language_solidity" disabled>Solidity - coming soon - </option>
       </select>
     </div>
     <span>
       <label class="form__label" for="points">${gettext('Insert the code for the boss fight')}</label>
       <input type="hidden" name="answer_correct[]" class="form__input" value="YES">
-      <textarea name="answer[]" class="form__input" cols="50" rows="10" required></textarea>
+      <textarea id="code-battle-quest-boss-fight-textarea" name="answer[]" class="form__input" cols="50" rows="10" required></textarea>
     </span>
+    <div id="code-validation-output" class="card text-white bg-success mb-3">
+      <div id="code-validation-output-title" class="card-header">Start writing your code!</div>
+      <div class="card-body">
+        <p id="code-validation-output-text" class="card-text">Fill up the textarea above with your code. You are allowed to insert only one function. You'll see outputs of validation of your code here.</p>
+      </div>
+    </div>
     <hr>
   `;
   const question_code_battle_template = question_template.clone();
@@ -83,6 +173,9 @@ $(document).ready(function() {
     $(boss_fight_answer_template).insertAfter(new_question_code_battle.find('.form__input')[2]);
     new_question_code_battle.find('option[value=boss_fight_question]').attr('selected', 'selected');
     $(e.target.parentNode.parentNode).replaceWith(new_question_code_battle);
+
+    const textArea = document.getElementById('code-battle-quest-boss-fight-textarea');
+    $(textArea).keyup(debounce(realTimeCodeValidation, 250));
   });
 
 
