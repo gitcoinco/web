@@ -322,7 +322,7 @@ $(document).ready(function() {
 
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
-            // TODO: Fix tweet modal
+            set_form_disabled(false);
             $('#tweetModal').css('display', 'block');
 
           };
@@ -547,6 +547,7 @@ const signSubscriptionHash = (subscriptionHash) => {
     indicateMetamaskPopup();
     web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
       indicateMetamaskPopup(true);
+      set_form_disabled(false);
       $('#tweetModal').css('display', 'block');
 
       if (signature) {
@@ -650,6 +651,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
   }).on('transactionHash', function(transactionHash) {
     indicateMetamaskPopup(1);
+    set_form_disabled(false);
     $('#tweetModal').css('display', 'block');
     data = {
       'subscription_hash': 'onetime',
@@ -670,7 +672,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
     $('#transaction_url').attr('href', linkURL);
     enableWaitState('#grants_form');
-    // TODO: Fix tweet modal
+    set_form_disabled(false);
     $('#tweetModal').css('display', 'block');
   }).on('confirmation', function(confirmationNumber, receipt) {
     data = {
