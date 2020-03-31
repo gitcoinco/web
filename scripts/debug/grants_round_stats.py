@@ -31,11 +31,7 @@ print(subs.filter(is_postive_vote=False).count())
 
 # all contributions
 
-from django.utils import timezone
 
-from grants.models import *
-from grants.models import Contribution, PhantomFunding
-from grants.views import next_round_start, round_end
 
 start = next_round_start
 end = round_end
