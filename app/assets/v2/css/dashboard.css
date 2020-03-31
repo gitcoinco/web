@@ -309,3 +309,31 @@ body {
   padding-right: 0.5em;
   vertical-align: text-bottom;
 }
+
+.navigation {
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.navigation .nav-link, .navigation .nav-link:hover {
+  color: inherit;
+  border:0;
+}
+
+.navigation .nav-link.active{
+  background-color: transparent !important;
+  border:0;
+}
+
+.navigation a {
+  width:100% !important;
+  font-weight: 500 !important;
+  padding: 0 !important;
+}
+
+.navigation a.active {
+  font-weight: bold !important;
+  color: #0b0d9d !important;
+  border-bottom: 4px solid #0b0d9d !important;
+}

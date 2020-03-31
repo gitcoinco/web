@@ -26,18 +26,17 @@
   </p>
   <form>
     <div class="col">
-      {% if hackathon.logo_svg %}
-        <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
-      {% elif hackathon.logo %}
-        <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
-      {% endif %}
 
-    </div>
-    <div class="col">
+    {%  if not no_filter %}
+    {% if hackathon %}
+      <div class="col-12 subheading left-ribbon">
+        {% trans "Hackathon Sponsors" %}
+      </div>
+    {% else %}
       <div class="col-12 subheading">
         {% trans "Sponsors" %}
       </div>
-
+    {% endif %}
       <div class="col-12 options" id="list-orgs">
 
         <div class="form__radio option mb-2">

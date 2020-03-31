@@ -9,7 +9,7 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0091_merge_20200316_1102'),
+        ('dashboard', '0091_merge_20200316_2209'),
     ]
 
     operations = [
