@@ -1,0 +1,652 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% if use_pic_card %}
+      {% include 'shared/cards_pic.html' %}
+    {% else %}
+      {% include 'shared/cards.html' %}
+    {% endif %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
+    <style>
+      form .col:first-child {
+        border-top: none;
+      }
+      .onboard-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+      }
+
+      .card-bg {
+        padding: 1em;
+        background-size: cover;
+      }
+
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 5rem 3rem;
+      }
+
+      .card-project {
+        /* padding: 2em; */
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      }
+
+      .card-badge {
+        right: 1em;
+        top: 1em;
+        filter: drop-shadow(0 0.3rem 0.2rem rgba(0,0,0,0.25));
+        width: 4em;
+      }
+
+      .card-project-logo {
+        background-color: rgba(255, 255, 255, 0.30);
+        object-fit: contain;
+      }
+
+      @media (min-width: 768px) {
+        .project-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 992px) {
+        .project-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 1200px) {
+        .project-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .page-link-gc {
+        color: #3e24fb;
+      }
+      .page-item.active .page-link-gc {
+        background-color: #3e24fb;
+        border-color: #3e24fb;
+      }
+
+      .nav-list-dashboard {
+        position:absolute;
+        bottom:0;
+      }
+    </style>
+  </head>
+
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header sticky-top dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% if type != 'hackathon' %}
+        {% include 'shared/nav.html' %}
+      {% else %}
+        {% include 'shared/nav_hackathons.html' %}
+      {% endif %}
+    </div>
+    {% if hackathon %}
+      <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
+
+      <style>
+        .hackathon-banner {
+          background: {% firstof hackathon.background_color or 'white' %};
+          color: {% firstof hackathon.text_color or 'black' %};
+        }
+      </style>
+
+      {% if is_staff %}
+        <div class="alpha-warning font-caption mb-0">
+          <span class="font-weight-bold">Staff only</span>
+          <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+        </div>
+      {% endif %}
+      <div id="{{ hackathon.identifier }}" class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
+        <div class="">
+          <div class="">
+            <p class="font-weight-bold mb-0 font-smaller-6">GITCOIN VIRTUAL HACKATHON</p>
+            <span class="gc-letter-spacing text-uppercase font-weight-bold">{{ hackathon.name }}</span>
+          </div>
+          <p class="mb-1 font-smaller-1">
+            {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+            {% if hackathon.end_date|timeuntil >= "1 min" %}
+              <small class=" text-uppercase">(Ends in {{hackathon.end_date|timeuntil}})</small>
+            {% endif %}
+          </p>
+        </div>
+
+      </div>
+    {% else %}
+      {% include 'dashboard/ftux.html' %}
+    {% endif %}
+    <div id="dashboard-content" class="container-fluid no-gutter">
+      <div id="dashboard-vue-app" v-cloak>
+        <div class="col-12 body px-4 {% if hackathon %} hackathon-explorer {% endif %}">
+            <div class="">
+              <img src="https://placekitten.com/300/300">
+            </div>
+            <b-tabs justified nav-wrapper-class="col-7 offset-2" align="left" content-class="row px-4 mt-4 light-blue" class="col-12">
+
+              <b-tab class="col-12 col-lg-9" title="Prizes (98)">
+                <div id="prizes" class="row">
+                  <div class="col-12 col-lg-2 d-lg-block" style="background: #F2F6F9;">
+                    <div class="row mt-4 invisible" id="sidebar_container">
+                      {% if hackathon %}
+                        {% include 'dashboard/sidebar_search_hackathon.html' %}
+                      {% else %}
+                        {% include 'dashboard/sidebar_search.html' %}
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-7 p-2">
+                    <div class="px-2" id="bounties">
+                      <div id="dashboard-title" class="hidden">
+                        {% if not hackathon %}
+                        <div class="my-3 mx-3">
+                          <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
+                        </div>
+                        {% endif %}
+                        {% include 'shared/search_bar.html' %}
+                      </div>
+                    </div>
+                    <div class="row loading justify-content-center align-items-center loading_img">
+                      <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
+                    </div>
+                    <div class="row nonefound mx-auto" style="display:none;">
+                  {% if hackathon %}
+                    <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                    <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                    <p>
+                      <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
+                    </p>
+                    {% include 'shared/hackathon_sponsors.html' %}
+
+                  {% else %}
+                    <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                    <h3>{% trans "No results found." %}</h3>
+                    <p>{% trans "Request an organisation to fund an issue" %}</p>
+                    <div class="mt-3">
+                      <a class="button button--primary py-2 font-weight-semibold" role="button" href="/requests">
+                        {% trans "REQUEST BOUNTY" %}
+                      </a>
+                    </div>
+                  {% endif %}
+                </div>
+                    {% include 'dashboard/featured_bounties.html' %}
+                  </div>
+                </div>
+              </b-tab>
+              <b-tab class="col-12 col-lg-9" title="Townsquare" active>
+                <div class="row townsquare_header">
+                  <div class="col-12 col-lg-2 d-lg-block" style="background: #F2F6F9;">
+                    <div id=left_sidebar>
+                      {% if SHOW_DRESSING %}
+                        <div class="townsquare_left-sidebar feed_container">
+                          <div class="townsquare_block-header" data-target="search-area" >
+                            Search
+                          </div>
+                          <div class="search font-caption mb-2 text-left" id="search-area">
+                            <div class="search-area">
+                              <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
+                            </div>
+                            <div class="mt-2">
+
+                              <div class="checkbox_container">
+                                <input name="trending" id="trending" type="checkbox" value="0" {% if trending_only %}checked=checked{%endif%} />
+                                <!-- <span class="checkbox"></span> -->
+                                <label for=trending>{% trans "Trending Only" %}</label>
+                              </div>
+                            </div>
+                          </div>
+                        {% include 'townsquare/shared/feednav.html' %}
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="feed_container col-12 col-lg-7">
+                    {% csrf_token %}
+                    {% include 'townsquare/shared/shareactivity.html' %}
+
+                    <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+                      <span id=activity_subheader>
+                        <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+                        <br>
+                        <span>
+                          {{card_desc}}
+                        </span>
+                      </span>
+                      {% include 'shared/activity_container.html' %}
+                    </div>
+                  </div>
+                </div>
+              </b-tab>
+              <b-tab class="col-12 col-lg-9" title="Participants (134)">Participant View Here</b-tab>
+              <b-tab class="col-12 col-lg-9" title="Projects (57)">
+
+              <div class="container-fluid p-5">
+              {% if hackathon.end_date|timeuntil >= "1 min" and not projects%}
+                <p class="p-3 mt-3 alert-warning">This hackathon event is running until {{hackathon.end_date}}, please check again later.</p>
+              {% endif %}
+                <form action="{% url 'hackathon_projects' hackathon.slug %}" method="get" id="filter-form" class="row py-3">
+                  <div class="col-12 col-md-3">
+                    <div class="input-group">
+                      <input type="text" class="form-control" name="q" id="project-search" placeholder="{% trans 'Search Projects' %}" value="{{query|join:' '}}">
+                      <div class="input-group-append">
+                        <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-dark clear-search {% if not query %}hidden{% endif %}"><i class="fas fa-times"></i></a>
+                        <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+                      </div>
+                    </div>
+                    {% if query %}
+                      <small>Results for: {% for q in query %}{{ q }} {% endfor %}</small>
+                    {% endif %}
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <div class="form-group row">
+                      <label for="inputPassword" class="col-sm-6 col-form-label">Filter by sponsor:</label>
+                      <div class="col-sm-6">
+                        <select name="sponsor" id="sponsor" class="form-control">
+                          <option value="">All</option>
+                          {% for sponsor_item in sponsors_list %}
+                            <option value="{{sponsor_item.org_name}}" {% if sponsor_item.org_name == sponsor %}selected {% endif %}>{{sponsor_item.org_name}}</option>
+                          {% endfor%}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-3 text-md-center">
+                    <a href="{% url 'hackathon_projects' hackathon.slug %}" class="{% ifequal filters '' %}underline{% endifequal %}">See all</a> |
+                    <a href="{% url 'hackathon_projects' hackathon.slug %}?filters=winners" class="{% ifequal filters 'winners' %}underline{% endifequal %}">See winners</a>
+                  </div>
+                  <div class="col-12 col-md-3 text-md-right">
+                    Order by:
+                    <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=-created_on" class="{% ifequal order_by '-created_on' %}underline{% endifequal %}">Newest</a> |
+                    <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=created_on" class="{% ifequal order_by 'created_on' %}underline{% endifequal %}">Oldest</a>
+                  </div>
+                </form>
+                <div class="row py-5">
+                  <div class="col-12">
+                    <div class="project-grid">
+                      {% for project in projects %}
+                        <div class="card card-project">
+                          {% if project.badge %}
+                            <img class="position-absolute card-badge" width="50" src="{{project.badge}}" alt="badge" />
+                          {% endif %}
+
+                          {% for profile in project.profiles.all %}
+                            {% if profile_id == profile.id %}
+                              <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+                            {% endif %}
+                          {% endfor %}
+
+
+                          <div class="card-bg rounded-top" style="background-image: url({% firstof project.profiles.first.profile_wallpaper or '/static/wallpapers/burst-pink.png' %})">
+                            {% if project.logo %}
+                              <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
+                            {% else %}
+                              <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
+                            {% endif %}
+                          </div>
+                          <div class="card-body">
+                            <h5 class="card-title text-uppercase">{{ project.name }}</h5>
+                            <a href="{{project.work_url}}" target="_blank" class="font-weight-bold card-subtitle">Project Home</a>
+                            <div class="my-2">
+                              <b class="text-muted">Project Summary</b>
+                              <p>
+                                {{project.summary | truncatechars:90}}
+                              </p>
+                            </div>
+                            <div class="mb-2">
+                              <b class="text-muted">Team Members</b>
+                              <div class="mt-1">
+                                {% for profile in project.profiles.all %}
+                                  <a href="{% url 'profile' profile %}" class="">
+                                    <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
+                                  </a>
+                                {% endfor %}
+                              </div>
+                            </div>
+                            <div class="mb-2">
+                              <a href="{{project.bounty.url}}">Prize Bounty</a>
+                            </div>
+                            <div class="font-smaller-2">
+                              <b class="text-muted">Sponsor</b>
+                              <img class="" width="20" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
+                              <a href="{% url 'profile' project.bounty.org_name %}">{{project.bounty.org_name}}</a>
+                            </div>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    {% if not projects and query %}
+                      <h4>Nothing found</h4>
+                    {% elif not projects %}
+                      <h4>No projects submitted yet</h4>
+                    {% endif %}
+                    {% if projects.has_other_pages %}
+                      <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center mt-5">
+                          {% if projects.has_previous %}
+                            <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.previous_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Previous</a></li>
+                          {% else %}
+                            <li class="page-item disabled"><span class="page-link page-link-gc">Previous</span></li>
+                          {% endif %}
+                          {% for i in projects.paginator.page_range %}
+                            {% if projects.number == i %}
+                              <li class="page-item active" aria-current="page">
+                                <span class="page-link page-link-gc">{{ i }}<span class="sr-only">(current)</span></span>
+                              </li>
+                            {% else %}
+                              <li class="page-item"><a class="page-link page-link-gc" href="?page={{ i }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">{{ i }}</a></li>
+                            {% endif %}
+                          {% endfor %}
+                          {% if projects.has_next %}
+                            <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.next_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Next</a></li>
+                          {% else %}
+                            <li class="page-item disabled"><span class="page-link page-link-gc">Next</span></li>
+                          {% endif %}
+                        </ul>
+                      </nav>
+                    {% endif %}
+                  </div>
+
+                </div>
+              </div>
+            </b-tab>
+              <b-tab class="col-12 col-lg-9" title="About">
+                <div class="container-fluid  pb-5">
+                  <div class="container bg-white rounded">
+                    <div class="row p-5">
+                      <div class="col-12">
+                          <span>Gitcoin Virtual Hackathon</span>
+                          <h1 class="text-uppercase gc-letter-spacing">
+                            {{ hackathon.name }}
+                          </h1>
+                          <p>
+                            {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+                          </p>
+                          {% if hackathon.end_date|timesince >= "1 min" %}
+                            <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
+                          {% endif %}
+                          {% if not github_handle %}
+                            <div class="text-center">
+                              <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+                                onclick="dataLayer.push({'event': 'login'});">
+                                <i class="fab fa-github"></i>
+                                <span>{% trans "Register with GitHub for Hackathon" %}</span>
+                              </a>
+                              <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                            </div>
+                          {% else %}
+                            {% if not is_registered %}
+                              <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                              <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+                            {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
+                              <p>Explore Web3 and be prepared via sponsors Quests</p>
+                              <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+                            {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
+                              <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
+                            {% else %}
+                              <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                              <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                            {% endif %}
+                          {% endif %}
+                        </div>
+                      </div>
+
+                  </div>
+
+                  <div class="container bg-white mt-4 rounded">
+                    <div class="row p-5">
+                      <div class="col-12">
+                        {% if is_staff %}
+                          <div class="">
+                            <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
+                            <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
+                          </div>
+                        {% endif %}
+                        <div class="editor-container ">
+                          <div id="description-hackathon" class="gc-editor description-hackathon">{{hackathon.description | safe}}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row px-5">
+                      <div class="col-12">
+                        <h4 class="text-uppercase font-weight-bolder text-left">How does the Hackathon work?</h4>
+                      </div>
+                    </div>
+
+                    <div class="row px-5 my-5">
+                      <div class="col-12 col-md-5">
+                          <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
+                      </div>
+                      <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                          <b class="counter">{% trans "Check out the Prizes" %}</b>
+                          {% blocktrans %}
+                            <p class="">
+                              Visit the <a target="_blank" href="{{ hackathon_url }}#bounties">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
+                            </p>
+                          {% endblocktrans %}
+                      </div>
+                    </div>
+                    <div class="row px-5 my-5">
+                      <div class="col-12 col-md-5">
+                          <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
+                      </div>
+                      <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                          <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
+                          {% blocktrans %}
+                            <p class="">
+                              Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://chat.gitcoin.co/hackathons">Click here to join the party!</a>.
+                            </p>
+                          {% endblocktrans %}
+                      </div>
+                    </div>
+                    <div class="row px-5 my-5">
+                      <div class="col-12 col-md-5">
+                          <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
+                      </div>
+                      <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                          <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
+                          {% blocktrans %}
+                            <p class="">
+                              When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
+                            </p>
+                          {% endblocktrans %}
+                      </div>
+                    </div>
+                    <div class="row px-5 my-5">
+                      <div class="col-12 col-md-5">
+                          <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
+                      </div>
+                      <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                          <b class="counter">{% trans "BUIDL!" %}</b>
+                          {% blocktrans %}
+                            <p class="">
+                              Build your cool ideas and make your vision come true with your team!
+                            </p>
+                          {% endblocktrans %}
+                      </div>
+                    </div>
+                    <div class="row my-4 px-5">
+                      <div class="col-12 col-md-5">
+                        <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
+                      </div>
+                      <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                          <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
+                          {% blocktrans %}
+                            <p class="">
+                              When your project is completed, submit your work by clicking the “Submit Work” button on the prize page/
+                            </p>
+                          {% endblocktrans %}
+                      </div>
+                    </div>
+
+                    <div class="row px-5 pb-5">
+                      <div class="col-12">
+                        <p class="font-weight-bolder text-uppercase h4 text-left mb-4">
+                          JOIN THE HACKATHON
+                        </p>
+                        {% if not github_handle %}
+                          <div class="text-center">
+                            <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+                              onclick="dataLayer.push({'event': 'login'});">
+                              <i class="fab fa-github"></i>
+                              <span>{% trans "Register with GitHub for Hackathon" %}</span>
+                            </a>
+                            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                          </div>
+                        {% else %}
+                          {% if not is_registered %}
+                            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                            <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+                          {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
+                            <p>Explore Web3 and be prepared via sponsors Quests</p>
+                            <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+                          {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
+                            <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
+                          {% else %}
+                            <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                            <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+
+                  {% if sponsors %}
+                  <div class="container bg-white my-4 py-2 rounded">
+                        <div class="row px-5">
+                          <div class="col-12 sponsors mt-5 mb-3">
+                            <p class="font-weight-bolder h4 text-left mb-4">SUPPORTED BY</p>
+                            {% if sponsors.sponsors_gold %}
+                              <div class="d-flex flex-wrap mb-4">
+                                {% for sponsor in sponsors.sponsors_gold %}
+                                  <div class="sponsors-gold my-auto mx-2">
+                                    <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                                  </div>
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+
+                            {% if sponsors.sponsors_silver %}
+                              <div class="d-flex flex-wrap mb-4">
+                                {% for sponsor in sponsors.sponsors_silver %}
+                                  <div class="sponsors-silver my-auto mx-2">
+                                    <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                                  </div>
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                  {% endif %}
+                </div>
+              </b-tab>
+              <div class="actions_container col-12 col-md-4 col-lg-3">
+                <div id="right_sidebar">
+                  {% if SHOW_DRESSING %}
+
+                  {% include 'townsquare/shared/reflink.html' %}
+
+                  <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
+                  Actions <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
+                  <strong>Gitcoin Actions</strong> are a way to introduce entropy into your learning routine.  Gitcoin will select the best educational, networking, or (sometimes)monetary or reputational opportunities and put them in front of you on a daily, weekly, monthly, and (sometimes) secret basis!
+                  <br>
+                  <br>
+                  Come to Gitcion daily to discover today's daily action!
+                  "></i>
+                  </div>
+                    <div id=actions>
+                      <div class="offer_coming font-caption">
+                        <div class="checkbox_container">
+                          <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                          <span class="checkbox"></span>
+                          <div class="filter-label ml-1">
+                            <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
+                          </div>
+                        </div>
+                      </div>
+
+                    {% include 'townsquare/shared/offers.html' %}
+
+                    <a href="/action/new" class="font-smaller-2 mb-2">
+                      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                      Create Action
+                    </a>
+                    <hr>
+                  </div>
+
+                    {% include 'townsquare/shared/matchround.html' %}
+                  {% endif %}
+                  </div>
+              </div>
+          </b-tabs>
+        </div>
+      </div>
+    </div>
+    <div class="row bottom_notification font-caption">
+    {{footer_msg|safe}}
+  </div>
+
+    <div id="onboard-footer" class="row hidden font-body">
+      <div class="col-12">
+        <p>{% trans "Want to Fund an issue ? " %}
+          <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
+        </p>
+      </div>
+    </div>
+
+    {% include 'shared/result.html' %}
+    {% include 'shared/featured_bounty_cards.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+    <script>
+      document.keywords = {{keywords | safe}};
+
+      {% if hackathon %}
+        document.hackathon = "{{ hackathon.slug | safe }}";
+        if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
+      {% endif %}
+    </script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/activity.js" %}"></script>
+    <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
+    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+    {% include 'shared/activity_scripts.html' %}
+    <script src="{% static "v2/js/status.js" %}"></script>
+    <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
+    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
+  </body>
+</html>

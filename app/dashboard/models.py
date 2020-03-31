@@ -2654,7 +2654,6 @@ class Profile(SuperModel):
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
-
     @property
     def subscribed_threads(self):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
@@ -4601,6 +4600,13 @@ def psave_hackathonevent(sender, instance, **kwargs):
                 'img_url': instance.logo.url if instance.logo else None,
             }
             )
+
+
+class HackathonSponsorProfile(SuperModel):
+    hackathon = models.ForeignKey('HackathonEvent', default=1, on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', blank=True, on_delete=models.CASCADE)
+    chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+
 
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [

@@ -3620,6 +3620,15 @@ def hackathon(request, hackathon=''):
         }
         orgs.append(org)
 
+    is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
+                                                         hackathon=hackathon_event) if request.user and request.user.profile else None
+
+    activities = Activity.objects.filter(Q(hackathonevent=hackathon_event.id))
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related(
+        'profiles').order_by('-created_on').select_related('bounty')
+    from townsquare.views import get_tags
+    view_tags = get_tags(request)
+
     params = {
         'active': 'dashboard',
         'type': 'hackathon',
@@ -3627,7 +3636,15 @@ def hackathon(request, hackathon=''):
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
+        'is_registered': is_registered,
+        'user': request.user,
+        'tags': view_tags,
+        'activities': activities,
+        'SHOW_DRESSING': True,
+        'use_pic_card': True,
+        'projects': projects
     }
+
 
     # fetch sponsors for the hackathon
     hackathon_sponsors = HackathonSponsor.objects.filter(hackathon=hackathon_event)
@@ -3665,7 +3682,7 @@ def hackathon(request, hackathon=''):
         from dashboard.context.hackathon_explorer import eth_hack
         params['sponsors'] = eth_hack
 
-    return TemplateResponse(request, 'dashboard/index.html', params)
+    return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
 
 def hackathon_onboard(request, hackathon=''):

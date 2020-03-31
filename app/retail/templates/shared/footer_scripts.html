@@ -28,6 +28,7 @@
 {% else %}
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 {% endif %}
+
 {% include 'shared/sentry.html' %}
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
@@ -61,8 +62,8 @@
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
 <script src="{% static "v2/js/search.js" %}"></script>
 <script src="{% static "v2/js/vue-filters.js" %}"></script>
+<script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js">
 {% if user.is_authenticated %}
-
   <script src="{% static "v2/js/notifications.js" %}"></script>
 {% endif %}
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
