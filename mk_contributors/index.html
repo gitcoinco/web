@@ -2610,7 +2610,7 @@ These should also be created directly off of the <code>master</code> branch.</p>
 </ul>
 <h3 id="step-4-commit">Step 4: Commit</h3>
 <ol>
-<li>Ensure your code changes adhere to our styling and linting standards: <code>npm run eslint:fix; npm run stylelint:fix; isort -rc --atomic .</code></li>
+<li>Ensure your code changes adhere to our styling and linting standards: <code>make fix</code> (or <code>npm run eslint:fix; npm run stylelint:fix; isort -rc --atomic .; yapf -i -r -e "app/**/migrations/*.py" -e "app/app/settings.py" -p app/app/ app/avatar/ app/credits/ app/dataviz/ app/enssubdomain/ app/ethos/ app/github/</code>)</li>
 <li>List all your changes as a list if needed else simply give a brief description on what the changes are.</li>
 <li>All lines at 100 columns.</li>
 <li>
