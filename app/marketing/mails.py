@@ -41,7 +41,7 @@ from retail.emails import (
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
     render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
-    render_tip_email, render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap, render_bounty_idea_notification, render_tribes_sales_funnel
+    render_tip_email, render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap, render_bounty_idea_notification, render_tribes_sales_funnel, render_tribes_hook_value, render_tribes_weekly_email, render_tribes_biweekly_email
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -225,6 +225,54 @@ def tribes_sales_funnel(profile):
     try:
         setup_lang(to_email)
         html, text = render_tribes_sales_funnel(to_email)
+        
+        if not should_suppress_notification_email(to_email, 'tribes'):
+            send_mail(from_email, to_email, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+def tribes_hook_value(profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text = render_tribes_hook_value(to_email)
+        
+        if not should_suppress_notification_email(to_email, 'tribes'):
+            send_mail(from_email, to_email, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+def tribes_weekly_email(bounty, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text = render_tribes_weekly_email(bounty, profile)
+        
+        if not should_suppress_notification_email(to_email, 'tribes'):
+            send_mail(from_email, to_email, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+def tribes_biweekly(bounties, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text = render_tribes_biweekly_email(bounties, profile)
         
         if not should_suppress_notification_email(to_email, 'tribes'):
             send_mail(from_email, to_email, text, html, categories=['transactional', func_name()])

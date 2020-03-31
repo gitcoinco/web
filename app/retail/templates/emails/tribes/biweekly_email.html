@@ -1,0 +1,150 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static humanize avatar_tags %}
+
+{% block content %}
+<style>
+  .primary-content {
+    margin: 0;
+  }
+  .weekly-email {
+    background-color: white;
+    text-align: center;
+  }
+
+  h4 {
+      padding: 0;
+  }
+
+  #bounty_information {
+    background-color: #F3F9FF;
+    padding: 2em;
+  }
+
+  @media screen and (max-width: 35.5em) {
+    .weekly-email {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    #bounty_information {
+      margin: 1rem 0;
+    }
+  }
+
+  @media screen and (min-width: 48em) {
+    .weekly-email {
+      padding-left: 20rem;
+      padding-right: 20rem;
+    }
+
+    #bounty_information {
+      margin: 1rem 10rem;
+    }
+
+    #info {
+      padding: 1rem 10rem 2rem 10rem;
+    }
+    #tribal {
+      padding: 2em 0
+    }
+  }
+  .text-center {
+    text-align: center;
+  }
+</style>
+
+<div class="weekly-email">
+    <h1 class="text-center">{% trans "Biweekly Tribes Highlights" %}</h1>
+    <p id="info">{% trans "Wondering what’s been going on with Tribes on Gitcoin in the last 2 weeks? Here’s our scoop of events."%}</p>
+    <hr />
+    <div>
+      <h3>{% trans "Tribes on Wheels" %}</h3>
+      <p>{% trans "Latest Tribes on Gitcoin" %}</p>
+        <div style="display: flex; justify-content: center;  padding: 2em">
+          {% for tribe in tribes|slice:":3"%}
+          <div style="padding-left: 3rem; padding-right: 3rem;">
+            <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="/dynamic/avatar/{{ tribe }}" width="64" height="64">
+            <div><b>{{ tribe }}</b></div>
+            <div>{{ tribe.follower_count }}{% trans "members" %}</div>
+          </div>
+          {% endfor %}
+        </div>
+      <div>
+        <p>{% trans "Tribes in the open source world" %}</p>
+        <span>{{ tribes | length}}</span>
+      </div>
+      <p>{% trans "Top Tribes on Gitcoin" %}</p>
+        <div style="display: flex; justify-content: center;  padding: 2em">
+          {% for tribe in tribes|slice:":3"%}
+            <div style="padding-left: 3rem; padding-right: 3rem;">
+              <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="/dynamic/avatar/{{ tribe }}" width="64" height="64">
+              <div><b>{{ tribe }}</b></div>
+              <div>{{ tribe.follower_count }}{% trans "members" %}</div>
+            </div>
+          {% endfor %}
+        </div>
+      <!-- logos here -->
+    </div>
+    <hr />
+    <div>
+      <h3>{% trans "Top Bounty Ideas" %}</h3>
+      {% for bounty in bounties %}
+        <div id="bounty_information">
+          <div style="display: flex; justify-content: center;">
+            <div class="bounty-avatar">
+              <img style="border-radius: 100%;border: 2px solid #1AB56D; margin-right: 3em;" src="{% avatar_url interest.profile.handle %}" width="64" height="64">
+            </div>
+            <div class="bounty-avatar">
+              <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{ bounty.avatar_url }}" width="64" height="64">
+            </div>
+          </div>
+          <h4>{{ bounty.title }}</h4>
+          <span><a href="{% url "profile" interested.profile.handle %}"> {{ interested.profile.handle }}</a> {% trans "is willing to build for:" %}</span>
+          <div style="display: flex; justify-content: center; margin-top: 3em;">
+            <div style="background-color: #E7F0FA; color: #3F00FF; padding: 1em; margin-right: 1em">
+              {{ bounty.value_true }} {{ bounty.token_name }}
+            </div>
+            <div style="background-color: #D6FBEB; color: #00A55E; padding: 1em;">
+              {{ bounty.value_in_usdt_now }} USD
+            </div>
+          </div>
+      </div>
+      {% endfor %}
+      </div>
+      <hr />
+      <div id="tribal">
+        <h3>{% trans "Kudos Going Tribal" %}</h3>
+        <img src="{% static "v2/images/emails/kudos.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+        <img src="{% static "v2/images/emails/kudos.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+        <img src="{% static "v2/images/emails/kudos.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+        <img src="{% static "v2/images/emails/kudos.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+        <img src="{% static "v2/images/emails/kudos.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+        <img src="{% static "v2/images/emails/kudos.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+      </div>
+      <hr>
+      <div id="info">
+        <p>{% trans "And that’s a wrap, tribe folks!" %}</p>
+        <p>{% trans "If you’re not yet a Tribe member, maybe it’s time to find your matching banner." %}</p>
+        <div style="margin-bottom: 2em; margin-top: 2em;">
+          <a class="button" href="#">{% trans "Join A Tribe" %}</a>
+        </div>
+      </div>
+    </div>
+{% endblock %}

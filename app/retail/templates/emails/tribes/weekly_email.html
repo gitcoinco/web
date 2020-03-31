@@ -1,0 +1,155 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static humanize avatar_tags %}
+
+{% block content %}
+<style>
+  #header {
+    height: 400px !important;
+  }
+  .primary-content {
+    margin: 0;
+  }
+  #weekly-email {
+    background-color: white;
+    text-align: center;
+  }
+
+  h4 {
+      padding: 0;
+  }
+
+  #bounty_information {
+    margin: 0 !important;
+    background-color: #F3F9FF;
+    padding: 2em;
+  }
+
+  @media screen and (max-width: 35.5em) {
+    #weekly-email {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    #tribe_talk img {
+      width: 100%;
+    }
+
+    #hackathons img{
+      width: 100%;
+    }
+  }
+
+  #tribe_talk img {
+    width: 100%;
+  }
+
+  
+  @media screen and (min-width: 48em) {
+    #logo {
+      height: 40%;
+      width: 30% !important;
+    }
+    #weekly-email {
+      padding-left: 20rem;
+      padding-right: 20rem;
+    }
+    #hackathons {
+      display: flex;
+    }
+    #hackathons img{
+      width: 50%;
+    }
+  }
+  .text-center {
+    text-align: center;
+  }
+</style>
+
+<div id="weekly-email">
+    <h1 class="text-center">{% trans "Hello, fantastic" %} Metamask!</h1>
+    <p>{% trans "It’s been one more week of buidling & tweaking on Gitcoin and you’re adding rocket fuel to our community engine! Let’s take a quick look at what your tribe’s trajectory has been like these past 7 days."%}</p>
+    <hr />
+    <div>
+      <h3>Metamask {% trans "Social Status" %}</h3>
+      <div>
+        <p>{% trans "Your organization rank:" %}</p>
+        <p>#7</p>
+      </div>
+      <div>
+        <p>{% trans "Tribe members: "%}</p>
+        <p><span>203</span></p>
+      </div>
+      <div>
+        <p>{% trans "Gitcoiners following you "%}</p>
+        <p><span>431</span></p>
+      </div>
+      <div>
+        <p>{% trans "Contributors working with you "%}</p>
+        <p><span>12</span></p>
+      </div>
+    </div>
+    <hr />
+    <div>
+      <h3>{% trans "Bounty ideas for your launchpad" %}</h3>
+      <div>
+        <p>{% trans "New bounty ideas received:" %}</p>
+        <p>12</p>
+      </div>
+      <div>
+        <h3>{% trans "Featured idea" %}</h3>
+        <!-- <div id="bounty_information">
+          <div style="display: flex; justify-content: center;">
+            <div class="bounty-avatar">
+              <img style="border-radius: 100%;border: 2px solid #1AB56D; margin-right: 3em;" src="{% avatar_url interest.profile.handle %}" width="64" height="64">
+            </div>
+            <div class="bounty-avatar">
+              <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{ bounty.avatar_url }}" width="64" height="64">
+            </div>
+          </div>
+          <h4>{{ bounty.title }}</h4>
+          <span><a href="{% url "profile" interested.profile.handle %}"> {{ interested.profile.handle }}</a> {% trans "is willing to build for:" %}</span>
+          <div style="display: flex; justify-content: center; margin-top: 3em;">
+            <div style="background-color: #E7F0FA; color: #3F00FF; padding: 1em; margin-right: 1em">
+              {{ bounty.value_true }} {{ bounty.token_name }}
+            </div>
+            <div style="background-color: #D6FBEB; color: #00A55E; padding: 1em;">
+              {{ bounty.value_in_usdt_now }} USD
+            </div>
+          </div>
+      </div> -->
+      </div>
+      <hr />
+      <div id="tribe_talk">
+        <h3>{% trans "Talk the Talk of Your Tribe" %}</h3>
+        <img src="{% static "v2/images/emails/tribe_talk.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+      </div>
+    </div>
+    <hr>
+    <div>
+      <h4>{% trans "Ready for another week of open source goodness? Here’s what’s we’ve got lined up for you on Gitcoin:" %}</h4>
+      <div id="hackathons">
+        <img src="{% static "v2/images/emails/hackathon_current.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+        <img src="{% static "v2/images/emails/hackathon_next.png" %}" alt="Gitcoin" title="Gitcoin talk of the tribes">
+      </div>
+      <p>{% trans "Keep on growing open source!" %}</p>
+      <p>{% trans "The Gitcoiniacs" %}</p>
+    </div>
+</div>
+{% endblock %}

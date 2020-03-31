@@ -153,6 +153,31 @@ def render_tribes_hook_value(to_email):
 
     return response_html, response_txt
 
+def render_tribes_weekly_email(bounties, interested):
+    params = {
+        'bounties': bounties,
+        'interested': interested,
+        'hide_preferred_payout': True,
+        'email_style': 26
+    }
+    response_html = premailer_transform(render_to_string("emails/tribes/weekly_email.html", params))
+    response_txt = render_to_string("emails/tribes/weekly_email.txt", params)
+    subject = _("Tribes weekly roundup")
+    return response_html, response_txt, subject
+
+def render_tribes_biweekly_email(bounties, tribes, interested):
+    params = {
+        'bounties': bounties,
+        'tribes': tribes,
+        'interested': interested,
+        'hide_preferred_payout': True,
+        'email_style': 26
+    }
+    response_html = premailer_transform(render_to_string("emails/tribes/biweekly_email.html", params))
+    response_txt = render_to_string("emails/tribes/biweekly_email.txt", params)
+    subject = _("Tribes biweekly roundup")
+    return response_html, response_txt, subject
+
 
 def render_new_supporter_email(grant, subscription):
     params = {'grant': grant, 'subscription': subscription}
@@ -1426,6 +1451,21 @@ def tribes_sales_funnel(request):
 @staff_member_required
 def tribes_hook_value(request):
     response_html = render_tribes_hook_value(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+@staff_member_required
+def tribes_weekly_email(request):
+    from dashboard.models import Bounty, Interest
+    bounty = Bounty.objects.all()[:2]
+    response_html, __, __ = render_tribes_weekly_email(bounty, Interest.objects.all().last())
+    return HttpResponse(response_html)
+
+@staff_member_required
+def tribes_biweekly_email(request):
+    from dashboard.models import Bounty, Interest, Profile
+    bounties = Bounty.objects.all()[:2]
+    tribes = Profile.objects.filter(data__type='Organization')
+    response_html, __, __ = render_tribes_biweekly_email(bounties, tribes, Interest.objects.all().last())
     return HttpResponse(response_html)
 
 @staff_member_required

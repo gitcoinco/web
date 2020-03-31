@@ -500,6 +500,8 @@ urlpatterns = [
     ),
     path('_administration/email/bounty_idea_notification', retail.emails.bounty_idea_notification, name='admin_bounty_idea_notification'),
     path('_administration/email/tribes_sales_funnel', retail.emails.tribes_sales_funnel, name='admin_tribes_sales_funnel'),
+    path('_administration/email/tribes_weekly_email', retail.emails.tribes_weekly_email, name='admin_tribes_weekly_email'),
+    path('_administration/email/tribes_biweekly_email', retail.emails.tribes_biweekly_email, name='admin_tribes_biweekly_email'),
     path('_administration/email/tribes_hook_value', retail.emails.tribes_hook_value, name='admin_tribes_hook_value'),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
