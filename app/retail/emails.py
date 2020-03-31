@@ -1456,8 +1456,8 @@ def tribes_hook_value(request):
 @staff_member_required
 def tribes_weekly_email(request):
     from dashboard.models import Bounty, Interest
-    bounty = Bounty.objects.all()[:2]
-    response_html, __, __ = render_tribes_weekly_email(bounty, Interest.objects.all().last())
+    bounties = Bounty.objects.all()[:2]
+    response_html, __, __ = render_tribes_weekly_email(bounties, Interest.objects.all().last())
     return HttpResponse(response_html)
 
 @staff_member_required
