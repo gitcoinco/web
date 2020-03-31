@@ -40,13 +40,13 @@ def get_zil_txn_status(txnid, network='mainnet'):
         return None
 
     url = f'https://api.viewblock.io/v1/zilliqa/txs/{txnid}?network={network}'
-    response = requests.get(url, headers=headers).json()
+    view_block_response = requests.get(url, headers=headers).json()
 
-    if response:
+    if view_block_response:
 
         response = {
-            'blockHeight': int(response['blockHeight']),
-            'receiptSuccess': json.loads(response['receiptSuccess'])
+            'blockHeight': int(view_block_response['blockHeight']),
+            'receiptSuccess': json.loads(view_block_response['receiptSuccess'])
         }
 
         if response['receiptSuccess']:
