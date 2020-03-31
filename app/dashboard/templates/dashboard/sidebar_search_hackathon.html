@@ -66,6 +66,7 @@
         </a>
     </div>
     <div class="col">
+    {%  if not no_filter %}
     {% if hackathon %}
       <div class="col-12 subheading left-ribbon">
         {% trans "Hackathon Sponsors" %}
@@ -92,6 +93,7 @@
           </div>
         {% endfor %}
       </div>
+    {% endif %}
     </div>
   </form>
 </div>
