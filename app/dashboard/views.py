@@ -1913,8 +1913,14 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         'is_staff': request.user.is_staff,
         'is_moderator': request.user.profile.is_moderator if hasattr(request.user, 'profile') else False,
     }
+
+    bounty = None
+
     if issue_url:
         try:
+            if stdbounties_id is not None and stdbounties_id == "0":
+                new_id = Bounty.objects.current().filter(github_url=issue_url).first().standard_bounties_id
+                return redirect('issue_details_new3', ghuser=ghuser, ghrepo=ghrepo, ghissue=ghissue, stdbounties_id=new_id)
             if stdbounties_id and stdbounties_id.isdigit():
                 stdbounties_id = clean_str(stdbounties_id)
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
@@ -4050,9 +4056,9 @@ def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
     events = {
-        'current': HackathonEvent.objects.current().order_by('-start_date'),
-        'upcoming': HackathonEvent.objects.upcoming().order_by('-start_date'),
-        'finished': HackathonEvent.objects.finished().order_by('-start_date'),
+        'current': HackathonEvent.objects.current().filter(visible=True).order_by('-start_date'),
+        'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date'),
+        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
     }
     params = {
         'active': 'hackathons',

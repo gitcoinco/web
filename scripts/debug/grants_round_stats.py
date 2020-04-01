@@ -28,3 +28,20 @@ subs = subs.filter(subscription_contribution__success=True)
 print(subs.count())
 print(subs.filter(num_tx_approved__gt=1).count())
 print(subs.filter(is_postive_vote=False).count())
+
+# all contributions
+
+
+
+start = next_round_start
+end = round_end
+
+contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
+print("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
+for contribution in contributions:
+    print(contribution.tx_id, 
+        contribution.split_tx_id,
+        contribution.subscription.contributor_address,
+        contribution.subscription.amount_per_period, 
+        contribution.subscription.amount_per_period_minus_gas_price,
+        contribution.subscription.token_address)
