@@ -4,6 +4,9 @@
 .follow_button[member=true]{
   display: none;
 }
+.follow_tribe i {
+  display: none;
+}
 .tooltip-inner {
   max-width: 450px;
 }

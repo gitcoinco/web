@@ -299,6 +299,16 @@
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
+            <a href=# data-action='favorite' data-toggle="tooltip" title="Mark as favorite this activity" data-affirmative=favorite
+              data-negative=unfavorite data-state="{% if row.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
+              class="favorite_activity mr-2 dropdown-item px-3 font-smaller-5"
+            >
+              {% if row.favorite %}
+                  <i class="fas fa-star mr-2"></i>
+              {% else %}
+                  <i class="far fa-star mr-2"></i>
+              {%endif%} Favorite
+            </a>
             <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
               data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
               class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"
