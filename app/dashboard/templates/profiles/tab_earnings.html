@@ -23,7 +23,7 @@
 {% endif %}
 
 <div class="tab-projects d-flex flex-column">
-  <h3>Earnings</h3>
+  <h3>{{earnings_type|title}}</h3>
   {% if earnings.count == 0 %}
     No Earnings
   {% endif %}
