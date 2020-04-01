@@ -1,0 +1,15 @@
+                {% load i18n %}
+                {% if tribe %}
+                  <div class="text-left mb-5 mt-0">
+                  <div class="d-flex mb-2">
+                    <img src="/dynamic/avatar/{{ tribe.handle }}" alt="{{ tribe.name }}" class="pl-0 mr-1 mb-2 col-sm-3"/>
+                    <div class="d-flex justify-content-center flex-column font-body">
+                      <h4 class="font-weight-bold pt-0 mb-0 font-title text-capitalize" style="color: black">{{ tribe.name }}</h4>
+                      <a href="/profile/{{tribe.handle}}">View Tribe Page</a>
+                    </div>
+                  </div>
+                  <a href="/profile/{{tribe.handle}}/tribe" class="col-md-8 btn button--full px-3 btn-gc-blue">
+                    {% trans "Suggest a bounty" %}
+                  </a>
+                  </div>
+                {% endif %}

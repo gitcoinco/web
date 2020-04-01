@@ -236,6 +236,9 @@ body {
   font-weight: 600;
   letter-spacing: 1.7px;
 }
+.hackathon-explorer {
+  background: rgb(242, 246, 249) !important;
+}
 
 .hackathon-explorer .hackathon-alt {
   display: none;
@@ -291,4 +294,21 @@ body {
   font-size: 15px;
   padding-right: 0.5em;
   vertical-align: text-bottom;
+}
+
+.navigation {
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.navigation a {
+  font-weight: 500;
+  padding: 0;
+}
+
+.navigation a.active {
+  font-weight: bold;
+  color: #0b0d9d;
+  border-bottom: 4px solid #0b0d9d;
 }
