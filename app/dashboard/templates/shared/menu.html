@@ -313,7 +313,7 @@
                   <img src="{{post.jetpack_featured_media_url}}" width="100" alt="" class="mw-100">
                 </div>
                 <a class="media-body text-reset" href="{{post.link}}">
-                  <b>{{post.title.rendered}}</b>
+                  <b>{{post.title.rendered | safe}}</b>
                   {{post.excerpt.rendered |truncatechars_html:150|safe}}
                 </a>
               </li>

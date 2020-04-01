@@ -28,7 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Subquery
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -1178,6 +1178,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         relevant_grants = get_my_grants(user.profile) if is_auth else []
     elif what == 'my_threads' and is_auth:
         activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
+    elif what == 'my_favorites' and is_auth:
+        favorites = user.favorites.all().values_list('activity_id')
+        activities = Activity.objects.filter(id__in=Subquery(favorites)).order_by('-created')
     elif 'keyword-' in what:
         keyword = what.split('-')[1]
         relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
@@ -1286,7 +1289,9 @@ def activity(request):
 
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def create_status_update(request):
+    issue_re = re.compile(r'^(?:https?://)?(?:github\.com)/(?:[\w,\-,\_]+)/(?:[\w,\-,\_]+)/issues/(?:[\d]+)')
     response = {}
+
     if request.POST:
         profile = request.user.profile
         title = request.POST.get('data')
@@ -1299,6 +1304,7 @@ def create_status_update(request):
             'metadata': {
                 'title': title,
                 'ask': request.POST.get('ask'),
+                'fund_able': provider and issue_re.match(provider) != None,
                 'resource': {
                     'type': resource,
                     'provider': provider,
