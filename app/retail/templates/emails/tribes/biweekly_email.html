@@ -76,7 +76,7 @@
     <hr />
     <div>
       <h3>{% trans "Tribes on Wheels" %}</h3>
-      <p>{% trans "Latest Tribes on Gitcoin" %}</p>
+        <p>{% trans "Latest Tribes on Gitcoin" %}</p>
         <div style="display: flex; justify-content: center;  padding: 2em">
           {% for tribe in tribes|slice:":3"%}
           <div style="padding-left: 3rem; padding-right: 3rem;">
@@ -88,7 +88,10 @@
         </div>
       <div>
         <p>{% trans "Tribes in the open source world" %}</p>
-        <span>{{ tribes | length}}</span>
+        <div style="color: #FF0000;">
+          <b>{{ tribes | length}}</b>
+          <img style="width: 2%; margin-bottom: .1rem;" src="{% static "v2/images/down_ticker.png" %}" alt="Gitcoin" title="Gitcoin ticker">
+        </div>
       </div>
       <p>{% trans "Top Tribes on Gitcoin" %}</p>
         <div style="display: flex; justify-content: center;  padding: 2em">
@@ -96,7 +99,9 @@
             <div style="padding-left: 3rem; padding-right: 3rem;">
               <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="/dynamic/avatar/{{ tribe }}" width="64" height="64">
               <div><b>{{ tribe }}</b></div>
-              <div>{{ tribe.follower_count }}{% trans "members" %}</div>
+              <div>
+                <img style="width: 2%; margin-bottom: .1rem;" src="{% static "v2/images/user.png" %}" alt="Gitcoin" title="Gitcoin user">
+                {{ tribe.follower_count }}{% trans "members" %}</div>
             </div>
           {% endfor %}
         </div>
