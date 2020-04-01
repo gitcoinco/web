@@ -61,10 +61,12 @@ def get_zil_txn_status(txnid, network='mainnet'):
 def sync_zil_payout(fulfillment):
     if not fulfillment.payout_tx_id:
         txn = find_txn_on_zil_explorer(fulfillment)
-        fulfillment.payout_tx_id = txn['hash']
+        if txn:
+            fulfillment.payout_tx_id = txn['hash']
 
     if fulfillment.payout_tx_id:
-        if get_zil_txn_status(fulfillment.payout_tx_id).get('has_mined'):
+        txn_status = get_zil_txn_status(fulfillment.payout_tx_id)
+        if txn_status and txn_status.get('has_mined'):
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True

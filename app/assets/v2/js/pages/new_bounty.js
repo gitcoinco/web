@@ -4,7 +4,7 @@
 document.web3network = 'mainnet';
 load_tokens();
 
-const qr_tokens = [ 'ETC', 'CELO', 'ZIL' ];
+const qr_tokens = [ 'ETC', 'cGLD', 'cUSD', 'ZIL' ];
 
 const updateOnNetworkOrTokenChange = () => {
   const tokenName = $('select[name=denomination]').select2('data')[0] &&

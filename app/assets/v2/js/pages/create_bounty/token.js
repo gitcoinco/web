@@ -76,7 +76,7 @@ createBounty = data => {
     'eventTag': metadata.eventTag,
     'auto_approve_workers': data.auto_approve_workers ? 'True' : 'False',
     'web3_type': 'qr',
-    'activity': data.activity
+    'activity': data.activity,
     'bounty_owner_address': data.funderAddress
   };
 

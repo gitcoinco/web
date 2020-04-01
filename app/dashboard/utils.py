@@ -481,7 +481,7 @@ def sync_payout(fulfillment):
 
     if token_name == 'ETC':
         sync_etc_payout(fulfillment)
-    elif token_name == 'CELO':
+    elif token_name == 'cUSD' or token_name == 'cGLD':
         sync_celo_payout(fulfillment)
     elif token_name == 'ZIL':
         sync_zil_payout(fulfillment)

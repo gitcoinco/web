@@ -17,9 +17,10 @@
 '''
 
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from dashboard.models import BountyFulfillment
 from dashboard.utils import sync_payout
@@ -34,10 +35,11 @@ class Command(BaseCommand):
             payout_status='pending'
         )
 
-        timeout_period = datetime.now() - timedelta(minutes=5)
-        pending_fulfillments.filter(created__gt=timeout_period).update(payout_status='expired')
+        timeout_period = timezone.now() - timedelta(minutes=5)
 
-        fulfillments = pending_fulfillments.filter(created__lte=timeout_period)
+        pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
+
+        fulfillments = pending_fulfillments.filter(created_on__lte=timeout_period)
 
         for fulfillment in fulfillments.all():
             sync_payout(fulfillment)
