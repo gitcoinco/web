@@ -22,6 +22,8 @@ import datetime as dt
 import json
 import math
 import time
+import re
+import requests
 import pandas as pd
 
 from itertools import combinations
@@ -34,8 +36,10 @@ from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
 from perftools.models import JSONStore
 
+from bs4 import BeautifulSoup
 from decimal import Decimal
 from hexbytes import HexBytes
+from time import sleep
 from web3.auto.infura import w3
 from web3.exceptions import (
     TransactionNotFound,
@@ -643,6 +647,25 @@ def grants_transaction_validator(list_contributions):
         BOLD = '\033[1m'
         UNDERLINE = '\033[4m'
 
+    # scrapper settings
+    ethurl = "https://etherscan.io/tx/"
+    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+    headers = {'User-Agent': user_agent}
+
+    # scrapes etherscan to get the replaced tx
+    def getReplacedTX(tx):
+        sleep(2)  # 2s delay to avoid getting the finger from etherscan
+        response = requests.get(ethurl + tx, headers=headers)
+        soup = BeautifulSoup(response.content, "html.parser")
+        # look for span that contains the dropped&replaced msg
+        p = soup.find("span", "u-label u-label--sm u-label--warning rounded")
+        if "Replaced" in p.text:  # check if it's a replaced tx
+            # get the id for the replaced tx
+            q = soup.find(href=re.compile("/tx/0x"))
+            return q.text
+        else:
+            return "dropped"
+
     def transaction_status(transaction, txid):
         """This function is core for check grants transaction list"""
         contract_address = transaction.to
@@ -672,7 +695,14 @@ def grants_transaction_validator(list_contributions):
                         print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
 
                 except TransactionNotFound:
-                    print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
+                    rtx = getReplacedTX(transaction_tax)
+                    if rtx == "dropped":
+                        print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
+                    else:
+                        print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} False, replaced with tx: {rtx[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
+                        print ("\t↳", end='')
+                        transaction_status(transaction, rtx)
+
 
                 except:
                         transaction_receipt = w3.eth.getTransactionReceipt(transaction_tax)
