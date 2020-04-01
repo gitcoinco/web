@@ -299,7 +299,7 @@
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
             <a href=# data-action='favorite' data-toggle="tooltip" title="Mark as favorite this activity" data-affirmative=favorite
-              data-negative=unfavorite data-state="{% if row.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
+              data-negative=unfavorite data-state="{% if row.metadata.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
               class="favorite_activity mr-2 dropdown-item px-3 font-smaller-5">
               {% if row.metadata.favorite %}
                   <i class="fas fa-star mr-2"></i>
