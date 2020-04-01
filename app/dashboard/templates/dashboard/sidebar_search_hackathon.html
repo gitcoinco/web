@@ -61,7 +61,7 @@
           {% endif %}
         <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
         </div>
-        <a href="/{{hackathon.town_square_link}}" class="btn btn-gc-blue register col-xs-12 mt-4 mb-2">
+        <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue register col-xs-12 mt-4 mb-2">
               Register
         </a>
     </div>
