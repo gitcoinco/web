@@ -282,8 +282,8 @@ $(document).ready(function() {
   $('.bg-thumbnail').click(function(e) {
     e.preventDefault();
 
-    $('#bg-selector').children('div').children('div').addClass('hide');
-    $(this).children('div').removeClass('hide');
+    $('#bg-selector').find('.selector-bar').addClass('d-none');
+    $(this).children('div').removeClass('d-none');
 
     selectedElement = $(this);
     $('#bg-selector').attr('data-selected', $(this).attr('data-bg-name'));
@@ -293,8 +293,8 @@ $(document).ready(function() {
   // handle add background button push
   $('body').on('click', '#background-button', function(e) {
     e.preventDefault();
-    $('#bg-selector').toggleClass('hide');
-    if ($('#bg-selector').hasClass('hide')) {
+    $('#bg-selector').toggleClass('d-none');
+    if ($('#bg-selector').hasClass('d-none')) {
       closeBackgroundDropdown(e);
     }
 
@@ -471,8 +471,8 @@ $(document).ready(function() {
       }
     }
     $('#bg-selector').attr('data-selected', null);
-    $('#bg-selector').addClass('hide');
-    $('#bg-selector').children('div').children('div').addClass('hide');
+    $('#bg-selector').addClass('d-none');
+    $('#bg-selector').children('div').children('div').addClass('d-none');
     var fail_callback = function() {
       message.val(the_message);
       localStorage.setItem(lskey, the_message);
