@@ -185,10 +185,10 @@
     </div>
     {% if hackathon %}
       {% if is_staff %}
-        <div class="alpha-warning font-caption mb-0">
-          <span class="font-weight-bold">Staff only</span>
-          <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
-        </div>
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+  </div>
       {% endif %}
     {% else %}
       {% include 'dashboard/ftux.html' %}
@@ -904,11 +904,11 @@
         </div>
       </div>
     </div>
-  </div>
+    </div>
 
-  <div class="row bottom_notification font-caption">
-    {{footer_msg|safe}}
-  </div>
+    <div class="row bottom_notification font-caption">
+      {{footer_msg|safe}}
+    </div>
 
     <div id="onboard-footer" class="row hidden font-body">
       <div class="col-12">
