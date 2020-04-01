@@ -487,7 +487,7 @@ def api(request, activity_id):
             already_likes = Favorite.objects.filter(activity=activity, user=request.user).exists()
             if not already_likes:
                 Favorite.objects.create(user=request.user, activity=activity)
-        if request.POST['direction'] == 'unfavorite':
+        elif request.POST['direction'] == 'unfavorite':
             Favorite.objects.filter(user=request.user, activity=activity).delete()
 
     # flag request
