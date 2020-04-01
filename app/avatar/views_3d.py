@@ -441,6 +441,15 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/chappie.svg',
         },
+        'chappie2': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/chappie2.svg',
+        },
         'megaman2': {
             'preview_viewbox': {
                 'Background': '0 0 350 350',

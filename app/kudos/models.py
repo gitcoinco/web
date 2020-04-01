@@ -665,7 +665,6 @@ class TokenRequest(SuperModel):
             'description': self.description,
             'priceFinney': self.priceFinney,
             'artist': self.artist,
-            'platform': self.name,
             'platform': self.platform,
             'numClonesAllowed': self.numClonesAllowed,
             'tags': self.tags,
