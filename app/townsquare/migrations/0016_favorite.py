@@ -10,8 +10,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('dashboard', '0085_merge_20200303_2256'),
-        ('townsquare', '0013_suggestedaction'),
+        ('dashboard', '0095_hackathonevent_visible'),
+        ('townsquare', '0015_offer_comments_admin'),
     ]
 
     operations = [
