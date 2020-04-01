@@ -720,6 +720,27 @@ def notify_deadbeat_quest(quest):
         translation.activate(cur_language)
 
 
+def notify_kudos_minted(token_request):
+    to_email = token_request.profile.email
+    from_email = 'kevin@gitcoin.co'
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Kudos has been minted")
+        body = f"Your kudos '{token_request.name}' has been minted and should be available on https://gitcoin.co/kudos/marketplace soon."
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def notify_deadbeat_grants(grants):
     to_email = 'kevin@gitcoin.co'
     from_email = to_email

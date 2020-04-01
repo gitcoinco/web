@@ -857,6 +857,7 @@ def newkudos(request):
                 description=request.POST['description'],
                 priceFinney=request.POST['priceFinney'],
                 artist=request.POST['artist'],
+                bounty_url=request.POST['bounty_url'],
                 platform=request.POST['platform'],
                 numClonesAllowed=request.POST['numClonesAllowed'],
                 tags=request.POST['tags'].split(","),

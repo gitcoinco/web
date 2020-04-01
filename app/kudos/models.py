@@ -639,6 +639,7 @@ class TokenRequest(SuperModel):
     artist = models.CharField(max_length=255)
     platform = models.CharField(max_length=255)
     to_address = models.CharField(max_length=255)
+    bounty_url = models.CharField(max_length=255, blank=True, default='')
     artwork_url = models.CharField(max_length=255)
     numClonesAllowed = models.IntegerField(default=18)
     metadata = JSONField(null=True, default=dict, blank=True)
