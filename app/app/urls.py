@@ -171,7 +171,7 @@ urlpatterns = [
 
     # grant views
     path('grants/', include('grants.urls', namespace='grants')),
-    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
+    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall_')),
     re_path(r'^grant/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
@@ -724,6 +724,16 @@ urlpatterns += [
         r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'
     ),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+
+        # For django versions before 2.0:
+        # url(r'^__debug__/', include(debug_toolbar.urls)),
+
+    ] + urlpatterns
 
 LOGIN_REDIRECT_URL = '/login'
 

@@ -88,6 +88,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
+from townsquare.models import Comment
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
@@ -232,7 +233,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         activity = Activity.objects.create(**kwargs)
 
         # leave a comment on townsquare IFF someone left a start work plan
-        if event_name == 'start_work' and interest and interest.issue_message:
+        if event_name in ['start_work', 'worker_applied'] and interest and interest.issue_message:
             from townsquare.models import Comment
             Comment.objects.create(
                 profile=interest.profile,
@@ -905,13 +906,7 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         )
 
     if rating != 0:
-        pass
-        # TODO - reenable in future when we have avg feedback availaable
- #       profile_list = profile_list.annotate(
- #           average_rating=Avg('feedbacks_got__rating', filter=Q(feedbacks_got__bounty__network=network))
- #       ).filter(
- #           average_rating__gte=rating
- #       )
+        profile_list = profile_list.filter(average_rating__gte=rating)
 
     if organisation:
         profile_list1 = profile_list.filter(
@@ -936,7 +931,8 @@ def users_fetch(request):
     persona = request.GET.get('persona', '')
     limit = int(request.GET.get('limit', 10))
     page = int(request.GET.get('page', 1))
-    order_by = request.GET.get('order_by', '-actions_count')
+    default_sort = '-actions_count' if persona != 'tribe' else '-follower_count'
+    order_by = request.GET.get('order_by', default_sort)
     bounties_completed = request.GET.get('bounties_completed', '').strip().split(',')
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
@@ -1924,8 +1920,14 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         'is_staff': request.user.is_staff,
         'is_moderator': request.user.profile.is_moderator if hasattr(request.user, 'profile') else False,
     }
+
+    bounty = None
+
     if issue_url:
         try:
+            if stdbounties_id is not None and stdbounties_id == "0":
+                new_id = Bounty.objects.current().filter(github_url=issue_url).first().standard_bounties_id
+                return redirect('issue_details_new3', ghuser=ghuser, ghrepo=ghrepo, ghissue=ghissue, stdbounties_id=new_id)
             if stdbounties_id and stdbounties_id.isdigit():
                 stdbounties_id = clean_str(stdbounties_id)
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
@@ -3008,6 +3010,22 @@ def sync_web3(request):
                         max_tries_attempted = counter > 3
                     if new_bounty:
                         url = new_bounty.url
+                        try:
+                            fund_ables = Activity.objects.filter(activity_type='status_update',
+                                                                 bounty=None,
+                                                                 metadata__fund_able=True,
+                                                                 metadata__resource__contains={
+                                                                     'provider': issue_url
+                                                                 })
+                            if fund_ables.exists():
+                                comment = f'New Bounty created {new_bounty.get_absolute_url()}'
+                                activity = fund_ables.first()
+                                activity.bounty = new_bounty
+                                activity.save()
+                                Comment.objects.create(profile=new_bounty.bounty_owner_profile, activity=activity, comment=comment)
+                        except Activity.DoesNotExist as e:
+                            print(e)
+
                 result = {
                     'status': '200',
                     'msg': "success",
@@ -3315,6 +3333,13 @@ def new_bounty(request):
             params['coupon_code'] = coupon.code
         else:
             params['expired_coupon'] = True
+
+    activity_ref = request.GET.get('activity', False)
+    try:
+        activity_id = int(activity_ref)
+        params['activity'] = Activity.objects.get(id=activity_id)
+    except (ValueError, Activity.DoesNotExist):
+        pass
 
     return TemplateResponse(request, 'bounty/fund.html', params)
 
@@ -4087,9 +4112,9 @@ def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
     events = {
-        'current': HackathonEvent.objects.current().order_by('-start_date'),
-        'upcoming': HackathonEvent.objects.upcoming().order_by('-start_date'),
-        'finished': HackathonEvent.objects.finished().order_by('-start_date'),
+        'current': HackathonEvent.objects.current().filter(visible=True).order_by('-start_date'),
+        'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date'),
+        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
     }
     params = {
         'active': 'hackathons',
@@ -4752,6 +4777,18 @@ def create_bounty_v1(request):
 
     bounty.save()
 
+    activity_ref = request.POST.get('activity', False)
+    if activity_ref:
+        try:
+            comment = f'New Bounty created {bounty.get_absolute_url()}'
+            activity_id = int(activity_ref)
+            activity = Activity.objects.get(id=activity_id)
+            activity.bounty = bounty
+            activity.save()
+            Comment.objects.create(profile=bounty.bounty_owner_profile, activity=activity, comment=comment)
+        except (ValueError, Activity.DoesNotExist) as e:
+            print(e)
+
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
@@ -5028,6 +5065,7 @@ def payout_bounty_v1(request, fulfillment_id):
         return JsonResponse(response)
 
     fulfillment.payout_amount = amount
+    fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name
     fulfillment.save()
 
