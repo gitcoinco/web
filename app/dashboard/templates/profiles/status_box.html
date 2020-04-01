@@ -34,7 +34,8 @@
       </div>
       <button id="poll-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add a poll to post." style="bottom: 2em; right: 0em;"><i class="fas fa-fw fa-chart-bar"></i></i></button>
     </div>
-    <div class="hide" id="bg-selector">
+    <div class="d-none" id="bg-selector">
+    </div>
   </div>
   <div class="btn-group-toggle text-center text-md-left activity_type_selector" {% if not suppress_data_toggle %} data-toggle="buttons" {%endif%}>
     {% if tags %}
