@@ -143,6 +143,7 @@ class Offer(SuperModel):
     public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
     view_count = models.IntegerField(default=0, db_index=True)
     amount = models.CharField(max_length=50, blank=True)
+    comments_admin = models.TextField(default='', blank=True)
 
     # Offer QuerySet Manager
     objects = OfferQuerySet.as_manager()
