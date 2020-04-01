@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models, transaction
 from django.db.models.signals import post_delete, post_save, pre_save
@@ -365,3 +366,13 @@ class SuggestedAction(SuperModel):
 
     def __str__(self):
         return f"{self.title} / {self.suggested_donation}"
+
+
+class Favorite(SuperModel):
+    """Model for each favorite."""
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='favorites')
+    activity = models.ForeignKey('dashboard.Activity', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Favorite {self.activity.activity_type}:{self.activity_id} by {self.user}"
