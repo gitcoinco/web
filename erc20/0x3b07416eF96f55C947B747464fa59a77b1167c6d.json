@@ -13,7 +13,7 @@
     "initial_price":{
                 "ETH":"0.666  ETH",
                 "USD":"0.666  USD",
-                "BTC":"0.666  BTC"
+                "BTC":"0.666  BTC" 
     },
     "links":  {
         "twitter":  "https://twitter.com/CelareCommunity?s=05",
