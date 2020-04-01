@@ -3943,24 +3943,24 @@ def hackathon_save_project(request):
                 'logo': request.FILES.get('logo', project.first().logo)
             })
 
-            # project.update(**kwargs)
+            project.update(**kwargs)
 
-            #try:
-            #    bounty_profile = Profile.objects.get(handle=project.bounty.bounty_owner_github_username.lower())
-            #    if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
-            #        created, bounty_profile = associate_chat_to_profile(bounty_profile)
+            try:
+                bounty_profile = Profile.objects.get(handle=project.bounty.bounty_owner_github_username.lower())
+                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
 
-            #    profiles_to_connect.append(bounty_profile.chat_id)
-            #except Exception as e:
-            #    logger.info("Bounty Profile owner not apart of gitcoin")
+                profiles_to_connect.append(bounty_profile.chat_id)
+            except Exception as e:
+                logger.info("Bounty Profile owner not apart of gitcoin")
 
-            #for profile_id in profiles:
-            #    curr_profile = Profile.objects.get(id=profile_id)
-            #    if not curr_profile.chat_id:
-            #        created, curr_profile = associate_chat_to_profile(curr_profile)
-            #    profiles_to_connect.append(curr_profile.chat_id)
+            for profile_id in profiles:
+                curr_profile = Profile.objects.get(id=profile_id)
+                if not curr_profile.chat_id:
+                    created, curr_profile = associate_chat_to_profile(curr_profile)
+                profiles_to_connect.append(curr_profile.chat_id)
 
-            #add_to_channel.delay(project.first().chat_channel_id, profiles_to_connect)
+            add_to_channel.delay(project.first().chat_channel_id, profiles_to_connect)
 
             profiles.append(str(profile.id))
             project.first().profiles.set(profiles)
