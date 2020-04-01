@@ -423,6 +423,15 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/walle2.svg',
         },
+        'walle3': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/walle3.svg',
+        },
         'chappie': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
