@@ -673,7 +673,7 @@ class TokenRequest(SuperModel):
         }
         kudos_contract = KudosContract(network=self.network)
         gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2 if not gas_price_gwei else None
-        tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
+        tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=self.to_address, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True
         self.save()
