@@ -19,11 +19,16 @@
   <div class="grant-item__img">
     <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
   </div>
-  <div class="grant-item__content py-4 px-3">
+  {% comment %}
+  <div class="grant-item__logo ml-3">
+    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+  </div>
+  {% endcomment %}
+
+  <div class="grant-item__content px-3">
     <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title|truncatechars:60 }}</a></h2>
-    <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:145 }}</p>
-    <div class="grant-item__footer">
-      <div class="grant-item__owner">
+    <p class="grant-item__pitch font-caption mb-2">{{ grant.description|truncatechars:145 }}</p>
+    <div class="grant-item__owner">
         <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
         <a href="{% url 'profile' grant.admin_profile.handle %}" target="_blank" rel="noopener noreferrer">
           <div class="grant-item__owner mt-3 mb-4">
@@ -32,75 +37,44 @@
             </div>
             <div class="grant-item__owner-handle font-body">
               <span class="ml-2">
-                  {{ grant.admin_profile.handle|default:'anonymous' }}
+                {{ grant.admin_profile.handle|default:'anonymous' }}
               </span>
             </div>
           </div>
         </a>
       </div>
-
-      <div class="row progress-container mb-2">
-        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
-          {% if show_clr_card %}
-            {% include 'grants/card/clr_match.html' %}
-          {% else %}
-            <p class="sub-title font-weight-semibold font-caption mb-1 py-1">MONTHLY RECURRING</p>
-            <p class="font-title mb-0 font-weight-bold">
-              {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
-            </p>
-            <p class="font-caption {% if grant.clr_matching %} mb-2 {% endif %}">
-              of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
-            </p>
-          {% endif %}
-        </div>
-
-        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6">
-          <p class="sub-title mb-1 font-weight-semibold font-caption mb-1 py-1">TOTAL FUNDED</p>
-          <p class="font-title mb-0 font-weight-bold">
-            {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
-          </p>
-
-          {% include 'grants/card/clr_estimate_prev.html' %}
-
-        </div>
-      </div>
-
+  </div>
+  <div class="grant-item__footer">
       {% if clr_active %}
-        {% include 'grants/card/clr_estimate.html' %}
+        <div class="clr mb-3">
+          <div class="match__round pb-1 pt-2 mb-2">
+            <h2 class="title col-8 font-caption g-bold">
+              CLR MATCH ROUND 5
+            </h2>
+          </div>
+          <div class="col-6 float-right">
+            <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+              {{grant.amount_received_in_round|floatformat:2}} DAI
+            </h2>
+            <p class="amount mb-2 font-caption font-weight-semibold">
+            raised from {{grant.positive_round_contributor_count}} contributors 
+            {% if grant.negative_round_contributor_count %}
+              &
+              {{grant.negative_round_contributor_count}}
+              negative 
+            {% endif %}
+            </p>
+          </div>
+          <div class="col-6">
+            <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+              {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
+            </h2>
+            <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate</p>
+          </div>
+        </div>
+        <div class="col-12 pb-4">
+          {% include 'grants/card/clr_estimate.html' with short=True %}
+        </div>
       {% endif %}
-
-      <div class="grant-item__state mt-2 row">
-        <div class="col-3">
-          {% if grant.active %}
-            <div class="grant-item__state-active">
-              <div class="inner"></div>
-            </div>
-            <span class="grant-item__state-label font-caption">Active</span>
-          {% else %}
-            <div class="grant-item__state-completed">
-              <div class="inner"></div>
-            </div>
-            <span class="grant-item__state-label font-caption">Completed</span>
-          {% endif %}
-        </div>
-        {% if grant.active and grant.activeSubscriptions %}
-          <div class="col-9 text-right mt-1 font-caption font-weight-semibold">
-            {{ grant.contribution_count}}
-            contribution{% if grant.contribution_count > 1 %}s{% endif %} by {{ grant.contributor_count}}
-            contributor{% if grant.contributor_count > 1 %}s{% endif %}
-          </div>
-        {% endif %}
-      </div>
-
-      <div class="mt-2 row">
-        <div class="col">
-          <div>
-            {% for category in grant.categories.all %}
-              <span class="btn btn-outline-primary font-smaller-6 font-weight-semibold py-1">{{category.category}}</span>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </a>

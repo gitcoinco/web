@@ -90,6 +90,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <div class="row mt-4 townsquare_header">
             <div class="col-12 col-lg-3 d-lg-block">
               <div id=left_sidebar>
+                <div class="promo mb-4 align-items-center hidden">
+                    <span class="close-promo"><i class="fas fa-times"></i></span>
+                    <img class="logo" src="{% static "v2/images/tribes/logo-townsquare.svg" %}">
+                    <div class="d-flex flex-column flex-fill ml-3">
+                      <p class="p-0 font-smaller-1">Work with the coolest projects and the best developers in Web3</p>
+                      <div class="font-caption font-smaller-5 text-left">
+                        <a href="{% url 'tribes_directory' %}" class="btn pl-5 pr-5 pt-2 pb-2 action font-smaller-4 btn-sm mt-2">Find a Tribe</a>
+                      </div>
+                    </div>
+                </div>
                 {% if SHOW_DRESSING %}
                   <div class="townsquare_left-sidebar feed_container">
                     <div class="townsquare_block-header" data-target="search-area" >
