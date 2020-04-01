@@ -32,7 +32,7 @@ def mint_token_request(self, token_req_id, retry=False):
             multiplier = 1 if not retry else min((mint_token_request.request.retries + 1), 10)
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
             if gas_price > delay_if_gas_prices_gt:
-                self.retry(120)
+                self.retry(countdown=120)
                 return
             tx_id = obj.mint(gas_price)
             if tx_id:
@@ -44,7 +44,7 @@ def mint_token_request(self, token_req_id, retry=False):
                 sync_latest(3)
                 notify_kudos_minted(obj)
             else:
-                self.retry(30)
+                self.retry(countdown=30)
 
 
 @app.shared_task(bind=True, max_retries=3)
@@ -63,7 +63,7 @@ def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
                 multiplier = 1 if not retry else min((mint_token_request.request.retries + 1), 10)
                 gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
                 if gas_price > delay_if_gas_prices_gt:
-                    self.retry(120)
+                    self.retry(countdown=120)
                     return
 
                 obj = KudosTransfer.objects.get(pk=kt_id)
@@ -75,4 +75,4 @@ def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
                     time.sleep(1)
                 pass
             except Exception as e:
-                self.retry(30)
+                self.retry(countdown=30)
