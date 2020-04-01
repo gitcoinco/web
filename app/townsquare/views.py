@@ -10,7 +10,8 @@ from django.utils import timezone
 
 import metadata_parser
 from app.redis_service import RedisService
-from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants, \
+    TribeMember
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore
@@ -276,6 +277,28 @@ def get_param_metadata(request, tab):
             print(e)
     return title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link
 
+
+def get_suggested_tribes(request):
+    following_tribes = []
+    if request.user.is_authenticated:
+        handles = TribeMember.objects.filter(profile=request.user.profile).distinct('org').values_list('org__handle', flat=True)
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-created_on')[:5]
+
+        for profile in tribes:
+            handle = profile.handle
+            last_24_hours_activity = 0  # TODO: integrate this with get_amount_unread
+            tribe = {
+                'title': handle,
+                'slug': f"tribe:{handle}",
+                'helper_text': f'Activities from @{handle} since you last checked',
+                'badge': last_24_hours_activity,
+                'avatar_url': f'/dynamic/avatar/{handle}',
+                'follower_count': profile.tribe_members.all().count()
+            }
+            following_tribes = [tribe] + following_tribes
+    return following_tribes
+
+
 def get_following_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
@@ -330,6 +353,7 @@ def town_square(request):
     announcements = Announcement.objects.current().filter(key='townsquare')
     view_tags = get_tags(request)
     following_tribes = get_following_tribes(request)
+    suggested_tribes = get_suggested_tribes(request)
 
     # render page context
     trending_only = int(request.GET.get('trending', 0))
@@ -360,8 +384,16 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
-        'following_tribes': following_tribes
+        'following_tribes': following_tribes,
+        'suggested_tribes': suggested_tribes,
     }
+
+    if 'tribe:' in tab:
+        key = tab.split(':')[1]
+        profile = Profile.objects.get(handle=key.lower())
+        if profile.is_org:
+            context['tribe'] = profile
+
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
         if ":" not in request.GET.get('tab'):
