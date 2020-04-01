@@ -33,8 +33,14 @@ function updateCodeValidationOutput(type, title, text, otherInfo) {
         parameters.
       </p>
       <p> Write your test function in here and click on the "evaluate" button </p>
-      <p><textarea id="code-validation-test-function" cols="50" rows="10"></textarea></p>
-      <p><button class="btn btn-primary" id="evaluate-code">Evaluate</button></p>`;
+      <p>
+        <input type="hidden" name="answer_correct[]" class="form__input" value="YES">
+        <input id="boss-fight-answer" type="hidden" name="answer[]" class="form__input" value="YES">
+        <textarea id="code-validation-test-function" cols="50" rows="3"></textarea>
+      </p>
+      <p><button class="btn btn-primary" id="evaluate-code">Evaluate</button></p>
+      <p id="evaluation-result-text"></p>`;
+    let questionText = `Write a function named "${otherInfo.name}" that accepts ${otherInfo.paramsNumber} parameters, `;
     codeValidationOutputText.html(newText);
     $('#evaluate-code').click(function (e) {
       e.preventDefault();
@@ -42,8 +48,19 @@ function updateCodeValidationOutput(type, title, text, otherInfo) {
         ${document.getElementById('code-battle-quest-boss-fight-textarea').value}
         ${document.getElementById('code-validation-test-function').value}
       `;
-      alert(eval(program));
-    })
+      try {
+        const evaluationResult = eval(program);
+        questionText = `${questionText}so that calling "${document.getElementById('code-validation-test-function').value}" `;
+        questionText = `${questionText}will return ${evaluationResult}`
+        $('#evaluation-result-text').html(`Great, everything seems to work properly. The text of your question will be: <br/> <i><strong class="text-primary">${questionText}</strong></i>.`);
+        $($('.boss_fight_question')[0]).find('input[name="question[]"]').val(questionText);
+        $('#boss-fight-answer').val(`${document.getElementById('code-validation-test-function').value}---BOSS-FIGHT-ANSWER-DELIMITER---${evaluationResult}`);
+        // $(evaluationResultText).insertAfter(e.target);
+      } catch (err) {
+        _alert(err);
+      }
+    });
+    return true;
   }
 };
 
@@ -58,7 +75,6 @@ function realTimeCodeValidation(e) {
         paramsNumber: 0,
       }
       updateCodeValidationOutput('ok', 'Great!', 'Your code seems to be valid', otherInfo);
-      console.log(funct);
       const functBody = funct.body;
       const functParams = funct.params;
 
@@ -67,7 +83,6 @@ function realTimeCodeValidation(e) {
       } else if (functParams.length > 0) {
         otherInfo.paramsNumber = functParams.length;
         updateCodeValidationOutput('ok', 'Great!', 'Your code seems to be valid', otherInfo);
-        console.log(functParams);
       }
 
     } else if (codeBody.length > 1) {
@@ -76,7 +91,6 @@ function realTimeCodeValidation(e) {
       updateCodeValidationOutput('error', 'Too many functions!', 'Currently, only one function is allowed for the battle code quest!');
     }
   } catch (err) {
-    // console.log(err);
     if (err.name === 'SyntaxError') {
       updateCodeValidationOutput('error', 'Syntax Error!', 'It seems that your code contains errors. Please fix them!')
     }
@@ -95,12 +109,18 @@ $(document).ready(function() {
   const question_type_select_template = `
     <div class="question_type_select_container form-group">
       <label class="form__label" for="question_type">${gettext('Question Type')}</label>
-      <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="This is the meat & potatoes of the event so take care in writing this copy! Other tips:
-      <BR>
-      <BR>
-      - Make sure that each answer can be found in the reading material.
-      - There can be many correct answers, but not ZERO correct answers.
-      - Questions should be about key 'a-ha moments' about the decentralized internet and/or your product.
+      <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
+        <p>
+          In code battle fight quests you can choose between two question types:
+        </p>
+        <p>
+          <strong>Quiz: </strong> the usual question type. You can supply a question and multiple answer options.
+        </p>
+        <p>
+          <strong>Boss Fight: </strong> here you will not be allowed to write your question text. You will need to write a sample
+          function and a test function to evaluate it. If everything works properly, the text of your question and the correct answer
+          will be full-filled automatically. You are allowed to write only one boss fight question per quest.
+        </p>
       "></i>
       <select name="question_type" class="select2 question_type_select">
         <option value="quiz_question" selected="selected">Quiz</option>
@@ -119,8 +139,7 @@ $(document).ready(function() {
     </div>
     <span>
       <label class="form__label" for="points">${gettext('Insert the code for the boss fight')}</label>
-      <input type="hidden" name="answer_correct[]" class="form__input" value="YES">
-      <textarea id="code-battle-quest-boss-fight-textarea" name="answer[]" class="form__input" cols="50" rows="10" required></textarea>
+      <textarea id="code-battle-quest-boss-fight-textarea" class="form__input" cols="50" rows="10" required></textarea>
     </span>
     <div id="code-validation-output" class="card text-white bg-success mb-3">
       <div id="code-validation-output-title" class="card-header">Start writing your code!</div>
@@ -145,6 +164,7 @@ $(document).ready(function() {
     e.preventDefault();
     // creates a new question battle code clone
     const new_question_code_battle = question_code_battle_template.clone();
+    $(new_question_code_battle).find('input[name="question[]"]').val('').prop('disabled', true);
 
     // quiz type selected
     if (e.target.value === 'quiz_question') {
@@ -176,6 +196,8 @@ $(document).ready(function() {
 
     const textArea = document.getElementById('code-battle-quest-boss-fight-textarea');
     $(textArea).keyup(debounce(realTimeCodeValidation, 250));
+
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
   });
 
 
@@ -213,8 +235,8 @@ $(document).ready(function() {
     var last_answer = $(this).parents('.form-group.question').children('span:last');
 
     last_answer.after(answer_template.clone());
-
   });
+
   $(document).on('click', '.new_quest_background', function(e) {
     e.preventDefault();
     $('.new_quest_background').removeClass('selected');

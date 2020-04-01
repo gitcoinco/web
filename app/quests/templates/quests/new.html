@@ -194,6 +194,14 @@
               <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="How many seconds will the user have to respond to this question? Recommending starting point: 30"></i>
               <input type="number" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" min="0" required>
               <label class="form__label" for="question[]">{% trans "Question Text" %}</label>
+              <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
+                <p>
+                  In <strong>quiz type questions</strong> you will be able to write the text of your question.
+                </p>
+                <p>
+                  In <strong>boss fight questions</strong> the text of your question will be updated automatically.
+                </p>
+              "></i>
               <input type="text" name="question[]" class="form__input" placeholder='Does Ethereum foo the bar?' value="{{question.question}}" required>
               {% for response in question.responses %}
               <span>
