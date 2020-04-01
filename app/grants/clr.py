@@ -23,6 +23,7 @@ import json
 import math
 import time
 import pandas as pd
+from dashboard.utils import get_web3
 
 from itertools import combinations
 
@@ -37,9 +38,6 @@ from perftools.models import JSONStore
 from decimal import Decimal
 from hexbytes import HexBytes
 from web3.auto.infura import w3
-from web3.exceptions import (
-    TransactionNotFound,
-)
 
 # ERC20 / ERC721 tokens
 # Transfer(address,address,uint256)
@@ -623,8 +621,6 @@ def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
 
 def grants_transaction_validator(list_contributions):
     """This function check grants transaction list"""
-    df = pd.read_csv(list_contributions, sep=" ")
-    df.columns = [col.replace(',', '') for col in df.columns]
     check_transaction = lambda txid: w3.eth.getTransaction(txid)
     check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} txid: {transaction_tax[:10]} -> status: 0 False - amount was off by 0.001 {bcolors.ENDC}")
     check_token = lambda token_address: len(token_address) == 42
@@ -659,31 +655,29 @@ def grants_transaction_validator(list_contributions):
             print(
                 f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
 
-    for index_transaction, index_valid in enumerate(df):
-        for index_element, check_value in enumerate(df[index_valid]):
-            if check_value is not None and not isinstance(check_value, float) and len(check_value) == 66:
-                transaction_tax = check_value
-                try:
-                    transaction = check_transaction(transaction_tax)
-                    token_address = check_token(transaction.to)
-                    if (token_address):
-                        transaction_status(transaction, transaction_tax)
-                    else:
-                        print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
-
-                except TransactionNotFound:
+    w3 = get_web3('mainnet')
+    for check_value in list_contributions:
+        if check_value is not None and not isinstance(check_value, float) and len(check_value):
+            transaction_tax = check_value[0]
+            try:
+                transaction = check_transaction(transaction_tax)
+                token_address = check_token(transaction.to)
+                if (token_address):
+                    transaction_status(transaction, transaction_tax)
+                else:
                     print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
 
-                except:
-                        transaction_receipt = w3.eth.getTransactionReceipt(transaction_tax)
-                        if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
-                            transaction_hash = transaction_receipt.transactionHash.hex()
-                            transaction = check_transaction(transaction_hash)
-                            if transaction.value > 0.001:
-                                amount = w3.fromWei(transaction.value, 'ether')
-                                print (f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax[:10]} {amount} ETH -> status: 1 {bcolors.ENDC}")
-                            else:
-                                print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
+            except Exception as e:
+                print(e)
+                transaction_receipt = w3.eth.getTransactionReceipt(transaction_tax)
+                if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
+                    transaction_hash = transaction_receipt.transactionHash.hex()
+                    transaction = check_transaction(transaction_hash)
+                    if transaction.value > 0.001:
+                        amount = w3.fromWei(transaction.value, 'ether')
+                        print (f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax[:10]} {amount} ETH -> status: 1 {bcolors.ENDC}")
+                    else:
+                        print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
 
 
 
