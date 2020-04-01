@@ -41,7 +41,7 @@ def get_avatar_text_if_any():
         obj.num_uses_remaining -= 1
         obj.current_uses += 1
         obj.save()
-        return f'<text id="text_injection" opacity="0.03" font-family="Muli" font-size="4" font-weight="normal" fill="#777777"><tspan x="7" y="14">{obj.text}</tspan></text>'
+        return f'<text id="text_injection" opacity="0.3" font-family="Muli" font-size="4" font-weight="normal" fill="#777777"><tspan x="7" y="14">{obj.text}</tspan></text>'
     return ''
 
 
@@ -413,6 +413,24 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/megaman.svg',
+        },
+        'walle2': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/walle2.svg',
+        },
+        'chappie': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/chappie.svg',
         },
         'megaman2': {
             'preview_viewbox': {
