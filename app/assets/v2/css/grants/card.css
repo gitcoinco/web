@@ -4,14 +4,20 @@
   flex-direction: column;
 }
 
+.grant-item__content {
+  margin-top: 1.0625rem;
+}
+
 .flip-card__flipper {
   border: 1px solid #D3D3D3;
 }
 
 .grant-item__title {
   line-height: 24px;
-  height: 50px;
   overflow-y: hidden;
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-bottom: 15px;
 }
 
 .grant-item__title a {
@@ -19,10 +25,12 @@
 }
 
 .grant-item__pitch {
-  color: #9B9B9B;
-  line-height: 18px;
-  height: 3.3rem;
-  overflow-y: hidden;
+  color: #666666;
+  height: 3.8rem;
+  overflow: hidden;
+  font-size: 0.875rem;
+  line-height: 22px;
+  text-overflow: ellipsis;
 }
 
 .grant-item__owner {
@@ -39,7 +47,21 @@
   width: 100%;
   object-fit: contain;
   height: 100%;
-  border-bottom: 1px solid lightgrey;
+}
+
+.grant-item__logo {
+  background-color: white;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: -35px;
+}
+
+.grant-item__logo img {
+  width: 65px;
+  height: 65px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 13px;
 }
 
 .grant-item__owner-image,
@@ -62,6 +84,7 @@
 
 .grant-item__footer {
   margin-top: auto;
+  background-color: rgba(156, 255, 213, 0.06);
 }
 
 .grant-item__funding {
@@ -130,4 +153,60 @@
 
 .h-90 {
   height: 90% !important;
+}
+
+
+.progress-container {
+  color: #000000;
+}
+.progress-container .sub-title {
+  line-height: 22px;
+  letter-spacing: 1px;
+}
+
+.progress-container .font-title {
+  line-height: 25px;
+  margin-bottom: 5px;
+}
+
+.progress-container .font-caption{
+  color: #000000;
+  line-height: 15px;
+}
+
+.match__round {
+  font-size: 12px;
+  line-height: 22px;
+  letter-spacing: 1px;
+  color: #069953;
+  background-color: rgba(88, 254, 183, 0.1);
+}
+
+.clr-prediction.arrow_box {
+  background: transparent !important;
+}
+
+.clr .font-title {
+  font-size: 20px;
+  line-height: 25px;
+  color: #069953;
+}
+
+.clr .font-caption, .clr-prediction .amount {
+  line-height: 15px;
+  color: #069953;
+}
+
+.progress-container .contribution-overview {
+  color: #666666;
+}
+
+.clr-prediction .predict-label, .clr-prediction .title  {
+  font-size: 12px;
+  line-height: 15px;
+  color: #040404;
+}
+
+.clr-prediction .amount {
+  margin-top: 7px;
 }
