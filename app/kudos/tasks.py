@@ -29,7 +29,7 @@ def mint_token_request(self, token_req_id, retry=False):
             from gas.utils import recommend_min_gas_price_to_confirm_in_time
             from dashboard.utils import has_tx_mined
             obj = TokenRequest.objects.get(pk=token_req_id)
-            multiplier = 1 if not retry else min((self.request.retries + 1), 10)
+            multiplier = 1
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
             if gas_price > delay_if_gas_prices_gt:
                 self.retry(countdown=120)
@@ -60,7 +60,7 @@ def redeem_bulk_kudos(self, kt_id, signed_rawTransaction, retry=False):
             from dashboard.utils import has_tx_mined
             from gas.utils import recommend_min_gas_price_to_confirm_in_time
             try:
-                multiplier = 1 if not retry else min((self.request.retries + 1), 10)
+                multiplier = 1
                 gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
                 if gas_price > delay_if_gas_prices_gt:
                     self.retry(countdown=120)
