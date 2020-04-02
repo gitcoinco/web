@@ -51,7 +51,7 @@ function updateCodeValidationOutput(type, title, text, otherInfo) {
       try {
         const evaluationResult = eval(program);
         questionText = `${questionText}so that calling "${document.getElementById('code-validation-test-function').value}" `;
-        questionText = `${questionText}will return ${evaluationResult}`
+        questionText = `${questionText}will return "${evaluationResult}"`
         $('#evaluation-result-text').html(`Great, everything seems to work properly. The text of your question will be: <br/> <i><strong class="text-primary">${questionText}</strong></i>.`);
         $($('.boss_fight_question')[0]).find('input[name="question[]"]').val(questionText);
         $('#boss-fight-answer').val(`${document.getElementById('code-validation-test-function').value}---BOSS-FIGHT-ANSWER-DELIMITER---${evaluationResult}`);
