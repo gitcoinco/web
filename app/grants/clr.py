@@ -24,6 +24,7 @@ import math
 import time
 import re
 import requests
+import numpy
 import pandas as pd
 
 from itertools import combinations
@@ -627,7 +628,11 @@ def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
 
 def grants_transaction_validator(list_contributions):
     """This function check grants transaction list"""
-    df = pd.read_csv(list_contributions, sep=" ")
+    if isinstance(list_contributions, list):
+        df = pd.DataFrame(list_contributions=list_contributions[1:,1:],index=list_contributions[1:,0], columns=list_contributions[0,1:])
+    else:
+        df = pd.read_csv(list_contributions, sep=" ")
+
     df.columns = [col.replace(',', '') for col in df.columns]
     check_transaction = lambda txid: w3.eth.getTransaction(txid)
     check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} txid: {transaction_tax[:10]} -> status: 0 False - amount was off by 0.001 {bcolors.ENDC}")
