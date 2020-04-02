@@ -200,6 +200,11 @@ $(document).ready(function() {
           currentNetwork(getNetwork(network));
         });
 
+        web3.eth.getAccounts((error, accounts) => {
+          if (accounts && accounts[0]) {
+            document.web3_address = accounts[0];
+          }
+        });
       } else {
         currentNetwork('locked');
       }
@@ -208,6 +213,6 @@ $(document).ready(function() {
     });
   };
 
-  setInterval(listen_web3_1_changes, 1000);
+  setInterval(listen_web3_1_changes, 5000);
 
 });
