@@ -629,7 +629,8 @@ def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
 def grants_transaction_validator(list_contributions):
     """This function check grants transaction list"""
     if isinstance(list_contributions, list):
-        df = pd.DataFrame(list_contributions=list_contributions[1:,1:],index=list_contributions[1:,0], columns=list_contributions[0,1:])
+        list_contrib = pd.DataFrame(list_contributions=list_contributions[1:,1:],index=list_contributions[1:,0], columns=list_contributions[0,1:])
+        df = tuple(list_contrib)
     else:
         df = pd.read_csv(list_contributions, sep=" ")
 
