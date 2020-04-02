@@ -1,4 +1,7 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+});
 
 $(document).ready(function() {
 
@@ -885,6 +888,19 @@ $(document).ready(function() {
     }, 300);
   });
 
+  $(document).on('click', '.fund_issue', function(e) {
+    e.preventDefault();
+    const url = $(this).data('url');
+
+    copyToClipboard(url);
+    _alert('Link copied to clipboard.', 'success', 1000);
+    $(this).addClass('open');
+    const $target = $(this);
+
+    setTimeout(function() {
+      $target.removeClass('open');
+    }, 300);
+  });
 
   // auto open new comment threads
   setInterval(function() {

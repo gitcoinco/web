@@ -1846,7 +1846,7 @@ def psave_bounty(sender, instance, **kwargs):
                 instance.bounty_owner_profile = profiles.first()
 
     # this is added to allow activities, project submissions, etc. to attach to a specific bounty based on standard_bounties_id - DL
-    if not instance.is_bounties_network and instance.standard_bounties_id == 0:
+    if instance.pk and not instance.is_bounties_network and instance.standard_bounties_id == 0:
         instance.standard_bounties_id = CROSS_CHAIN_STANDARD_BOUNTIES_OFFSET + instance.pk
 
     from django.contrib.contenttypes.models import ContentType
@@ -2290,7 +2290,7 @@ class Activity(SuperModel):
         if self.likes.exists():
             vp.metadata['liked'] = self.likes.filter(profile=user.profile).exists()
             vp.metadata['likes_title'] = "Liked by " + ",".join(self.likes.values_list('profile__handle', flat=True)) + '. '
-        vp['favorite'] = self.favorite_set.filter(user=user).exists()
+        vp.metadata['favorite'] = self.favorite_set.filter(user=user).exists()
         vp.metadata['poll_answered'] = self.has_voted(user)
 
         return vp

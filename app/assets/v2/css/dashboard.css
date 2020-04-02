@@ -8,6 +8,23 @@ body {
   height: 0;
 }
 
+.navigation {
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.navigation a {
+  font-weight: 500;
+  padding: 0;
+}
+
+.navigation a.active {
+  font-weight: bold;
+  color: #0b0d9d;
+  border-bottom: 4px solid #0b0d9d;
+}
+
 #onboard-dashboard {
   background: #F2F6F9;
   margin-bottom: 2em;

@@ -1289,7 +1289,9 @@ def activity(request):
 
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def create_status_update(request):
+    issue_re = re.compile(r'^(?:https?://)?(?:github\.com)/(?:[\w,\-,\_]+)/(?:[\w,\-,\_]+)/issues/(?:[\d]+)')
     response = {}
+
     if request.POST:
         profile = request.user.profile
         title = request.POST.get('data')
@@ -1302,6 +1304,7 @@ def create_status_update(request):
             'metadata': {
                 'title': title,
                 'ask': request.POST.get('ask'),
+                'fund_able': provider and issue_re.match(provider) != None,
                 'resource': {
                     'type': resource,
                     'provider': provider,
