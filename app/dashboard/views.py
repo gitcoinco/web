@@ -4777,6 +4777,11 @@ def create_bounty_v1(request):
 
     bounty.save()
 
+    # save again so we have the primary key set and now we can set the
+    # standard_bounties_id
+
+    bounty.save()
+
     activity_ref = request.POST.get('activity', False)
     if activity_ref:
         try:

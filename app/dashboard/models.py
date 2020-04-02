@@ -1846,7 +1846,7 @@ def psave_bounty(sender, instance, **kwargs):
                 instance.bounty_owner_profile = profiles.first()
 
     # this is added to allow activities, project submissions, etc. to attach to a specific bounty based on standard_bounties_id - DL
-    if not instance.is_bounties_network and instance.standard_bounties_id == 0:
+    if instance.pk and not instance.is_bounties_network and instance.standard_bounties_id == 0:
         instance.standard_bounties_id = CROSS_CHAIN_STANDARD_BOUNTIES_OFFSET + instance.pk
 
     from django.contrib.contenttypes.models import ContentType
