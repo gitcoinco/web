@@ -19,10 +19,17 @@
         <div class="avatar-container col-1 justify-content-center hide_min_viewport">
           <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.profile.handle }}" alt="">
         </div>
-        <div class="tab-projects__item-details col-12 col-md-8 d-flex flex-column bounty-detail">
+        <div class="tab-projects__item-details col-2 d-flex flex-column bounty-detail">
           <div class="d-flex">
             <div class="font-weight-semibold font-subheader">{{user.profile.handle}}</div>
           </div>
+        </div>
+        <div class="mb-0 mt-1">
+          <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" data-openchat="{{user.profile}}">
+            <i class="fas fa-comment-dots" data-placement="bottom" data-toggle="tooltip" data-html="true"
+              title="Chat @{{ user.profile.handle }}">
+            </i>
+          </button>
         </div>
         <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
           {% include 'profiles/follow.html' %}
