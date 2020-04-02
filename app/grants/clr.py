@@ -26,7 +26,6 @@ import re
 import requests
 import numpy
 import pandas as pd
-from dashboard.utils import get_web3
 
 from itertools import combinations
 
@@ -42,7 +41,7 @@ from bs4 import BeautifulSoup
 from decimal import Decimal
 from hexbytes import HexBytes
 from time import sleep
-from web3.auto.infura import w3
+from dashboard.utils import get_web3
 
 # ERC20 / ERC721 tokens
 # Transfer(address,address,uint256)
@@ -627,11 +626,14 @@ def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
 def grants_transaction_validator(list_contributions):
     """This function check grants transaction list"""
     if isinstance(list_contributions, list):
-        df = pd.DataFrame(list_contributions=list_contributions[1:,1:],index=list_contributions[1:,0], columns=list_contributions[0,1:])
+        df = pd.DataFrame(list_contributions, columns=["tx_id1","tx_id2","from address","amount","amount_minus_gitcoin","token_address"])
     else:
         df = pd.read_csv(list_contributions, sep=" ")
 
-    df.columns = [col.replace(',', '') for col in df.columns]
+    from web3 import Web3
+
+    PROVIDER = "wss://mainnet.infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
+    w3 = Web3(Web3.WebsocketProvider(PROVIDER))
     check_transaction = lambda txid: w3.eth.getTransaction(txid)
     check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} txid: {transaction_tax[:10]} -> status: 0 False - amount was off by 0.001 {bcolors.ENDC}")
     check_token = lambda token_address: len(token_address) == 42
@@ -662,6 +664,8 @@ def grants_transaction_validator(list_contributions):
         soup = BeautifulSoup(response.content, "html.parser")
         # look for span that contains the dropped&replaced msg
         p = soup.find("span", "u-label u-label--sm u-label--warning rounded")
+        if not p:
+            return 'dropped'
         if "Replaced" in p.text:  # check if it's a replaced tx
             # get the id for the replaced tx
             q = soup.find(href=re.compile("/tx/0x"))
@@ -685,19 +689,7 @@ def grants_transaction_validator(list_contributions):
             print(
                 f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
 
-<<<<<<< HEAD
-    w3 = get_web3('mainnet')
-    for check_value in list_contributions:
-        if check_value is not None and not isinstance(check_value, float) and len(check_value):
-            transaction_tax = check_value[0]
-            try:
-                transaction = check_transaction(transaction_tax)
-                token_address = check_token(transaction.to)
-                if (token_address):
-                    transaction_status(transaction, transaction_tax)
-                else:
-                    print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
-=======
+
     for index_transaction, index_valid in enumerate(df):
         for index_element, check_value in enumerate(df[index_valid]):
             if check_value is not None and not isinstance(check_value, float) and len(check_value) == 66:
@@ -710,7 +702,8 @@ def grants_transaction_validator(list_contributions):
                     else:
                         print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
 
-                except TransactionNotFound:
+                except Exception as e:
+                    print(e)
                     rtx = getReplacedTX(transaction_tax)
                     if rtx == "dropped":
                         print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
@@ -719,19 +712,17 @@ def grants_transaction_validator(list_contributions):
                         print ("\t↳", end='')
                         transaction_status(transaction, rtx)
 
->>>>>>> developerfred/issues/6318
-
-            except Exception as e:
-                print(e)
-                transaction_receipt = w3.eth.getTransactionReceipt(transaction_tax)
-                if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
-                    transaction_hash = transaction_receipt.transactionHash.hex()
-                    transaction = check_transaction(transaction_hash)
-                    if transaction.value > 0.001:
-                        amount = w3.fromWei(transaction.value, 'ether')
-                        print (f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax[:10]} {amount} ETH -> status: 1 {bcolors.ENDC}")
-                    else:
-                        print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
+                except Exception as e:
+                    print(e)
+                    transaction_receipt = w3.eth.getTransactionReceipt(transaction_tax)
+                    if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
+                        transaction_hash = transaction_receipt.transactionHash.hex()
+                        transaction = check_transaction(transaction_hash)
+                        if transaction.value > 0.001:
+                            amount = w3.fromWei(transaction.value, 'ether')
+                            print (f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax[:10]} {amount} ETH -> status: 1 {bcolors.ENDC}")
+                        else:
+                            print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
 
 
 

@@ -17,11 +17,11 @@ class Command(BaseCommand):
         print("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
         inputs = []
         for contribution in contributions:
-            _input = (contribution.tx_id, 
+            _input = [contribution.tx_id, 
                 contribution.split_tx_id,
                 contribution.subscription.contributor_address,
                 contribution.subscription.amount_per_period, 
                 contribution.subscription.amount_per_period_minus_gas_price,
-                contribution.subscription.token_address)
+                contribution.subscription.token_address]
             inputs.append(_input)
         grants_transaction_validator(inputs)
