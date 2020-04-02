@@ -4516,6 +4516,7 @@ class HackathonEvent(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+    visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
 
     objects = HackathonEventQuerySet.as_manager()
 
