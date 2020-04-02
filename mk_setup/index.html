@@ -418,6 +418,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#fix-local-test-issues" title="Fix local test issues" class="md-nav__link">
+    Fix local test issues
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#makefile-help" title="Makefile Help" class="md-nav__link">
     Makefile Help
   </a>
@@ -2412,6 +2419,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#fix-local-test-issues" title="Fix local test issues" class="md-nav__link">
+    Fix local test issues
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#makefile-help" title="Makefile Help" class="md-nav__link">
     Makefile Help
   </a>
@@ -2675,14 +2689,11 @@ open http://localhost:8000/_administration
 <p><code>Q: When building with docker on my mac, CPU usage is high and device is overheating what should I do?</code></p>
 <p>Problems regarding docker and high CPU usage seem to be common on mac. One community user found that going to the resources section on Docker desktop and lowering CPU cores and disk image size to minimum improves this issue.</p>
 <pre><code>For more troubleshooting tips on this problem consult the docker for-mac repo issues [https://github.com/docker/for-mac/issues?q=cpu](https://github.com/docker/for-mac/issues?q=cpu)
-````
+</code></pre>
 
-#### Fix local test issues
-
-`Q: How can I attempt automatic remediation of eslint and isort test failures?`
-
-```shell
-make fix # npm run eslint:fix; docker-compose exec web isort -rc --atomic .;
+<h4 id="fix-local-test-issues">Fix local test issues</h4>
+<p><code>Q: How can I attempt automatic remediation of eslint and isort test failures?</code></p>
+<pre><code class="shell">make fix # npm run eslint:fix; docker-compose exec web isort -rc --atomic .;
 </code></pre>
 
 <h4 id="makefile-help">Makefile Help</h4>
