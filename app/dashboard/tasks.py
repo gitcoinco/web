@@ -77,7 +77,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
         except ConnectionError as exc:
             logger.info(str(exc))
             logger.info("Retrying connection")
-            self.retry(30)
+            self.retry(countdown=30)
         except Exception as e:
             logger.error(str(e))
 

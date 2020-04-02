@@ -1,6 +1,7 @@
 from django.utils import timezone
 
 from grants.models import *
+
 pk= 600
 
 grant = Grant.objects.get(pk=pk)
@@ -15,4 +16,3 @@ for profile in set(profiles):
 for key, val in last_ips.items():
     if val > 1:
         print(key, "created", val, "accounts")
-
