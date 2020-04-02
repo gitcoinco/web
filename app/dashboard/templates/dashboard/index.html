@@ -44,26 +44,7 @@
         .hackathon-banner {
           background: {% firstof hackathon.background_color or 'white' %};
           color: {% firstof hackathon.text_color or 'black' %};
-          height: 225px;
-          background-image: url("/static/wallpapers/V3.png");
         }
-
-        .hackathon-text {
-            color: white;
-        }
-        .hackathon-title {
-            font-size: 1.4rem;
-        }
-        .hackathon-countdown {
-            font-size: 1rem;
-        }
-        {% if hackathon  %}
-        .bounty_row {
-          background-color: white;
-          margin-bottom: 15px;
-          border-radius: 4px;
-        }
-        {% endif %}
       </style>
 
       {% if is_staff %}
@@ -73,44 +54,43 @@
         </div>
       {% endif %}
       <div id="{{ hackathon.identifier }}" class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
-        <div class="offset-2 hackathon-text pl-4">
+
+        <div class="">
           <div class="">
-            <p class="hackathon-title title font-weight-bold mb-0">GITCOIN VIRTUAL HACKATHON</p>
+            <p class="font-weight-bold mb-0 font-smaller-6">GITCOIN VIRTUAL HACKATHON</p>
+            <span class="gc-letter-spacing text-uppercase font-weight-bold">{{ hackathon.name }}</span>
           </div>
-          <p class="mb-1">
+          <p class="mb-1 font-smaller-1">
+            {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
             {% if hackathon.end_date|timeuntil >= "1 min" %}
-              <small class="hackathon-countdown text-uppercase">Ends in {{hackathon.end_date|timeuntil}}</small>
+              <small class=" text-uppercase">(Ends in {{hackathon.end_date|timeuntil}})</small>
             {% endif %}
           </p>
         </div>
-      </div>
-      <div class="offset-2 navigation">
-          {% if hackathon.town_square_link %}
-            <a href="/{{hackathon.town_square_link}}" class="btn ml-2 mr-4 active">
-              Prizes (98)
-            </a>
-          {% endif %}
-          {% if hackathon.town_square_link %}
-            <a href="/{{hackathon.town_square_link}}" class="btn mr-4">
-              SW3 Town Square
-            </a>
-          {% endif %}
-
-          {% if hackathon.quest_link %}
-            <a href="{{hackathon.quest_link}}" class="btn mr-4">
-            Participants (134)
-          </a>
+        <div class="text-right">
+          {% if hackathon.end_date|timesince <= "1 min" %}
+            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue mr-3"><i class="far fa-lightbulb mr-1"></i> Hackathon Guide</a>
           {% endif %}
           {% if hackathon.show_results %}
-            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn mr-4">
-            Projects (57)
+            <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue mr-3">
+            <i class="fas fa-tasks"></i>
+            Projects
             </a>
           {% endif %}
-          {% if hackathon.end_date|timesince <= "1 min" %}
-            <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn mr-3">Guide</a>
+          {% if hackathon.quest_link %}
+            <a href="{{hackathon.quest_link}}" class="btn btn-gc-blue mr-3">
+            <i class="fas fa-globe-europe"></i>
+            Quests
+          </a>
+          {% endif %}
+          {% if hackathon.town_square_link %}
+            <a href="/{{hackathon.town_square_link}}" class="btn btn-gc-blue mr-3">
+              <i class="fas fa-city"></i>
+              Town Square
+            </a>
           {% endif %}
         </div>
-
+      </div>
     {% else %}
       {% include 'dashboard/ftux.html' %}
     {% endif %}
@@ -120,7 +100,7 @@
           <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
             {% include 'dashboard/sidebar_search_hackathon.html' %}
           </div>
-          <div class="col-10 col-lg-8 col-xl-10 body px-4 px-lg-0 pr-lg-5 hackathon-explorer">
+          <div class="col-12 col-lg-9 col-xl-10 body px-4 px-lg-0 hackathon-explorer">
             <div class="container-fluid p-2" id="bounties">
               <div id="dashboard-title" class="hidden">
                 {% include 'shared/search_bar.html' %}

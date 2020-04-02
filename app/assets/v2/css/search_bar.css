@@ -115,12 +115,3 @@
     padding-right: 15px;
   }
 }
-
-.em-dash::before {
-  content: '\2014\2014';
-  width: 13px;
-  color: var(--gc-green-hover);
-  font-weight: bold;
-  font-size: large;
-  padding-right: 10px;
-}
