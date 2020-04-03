@@ -22,6 +22,7 @@ def find_txn_on_zil_explorer(fulfillment, network='mainnet'):
     url = f'https://api.viewblock.io/v1/zilliqa/addresses/{funderAddress}/txs?network={network}'
 
     response = requests.get(url, headers=headers).json()
+
     if len(response):
         for txn in response:
             if (
@@ -46,7 +47,7 @@ def get_zil_txn_status(txnid, network='mainnet'):
 
         response = {
             'blockHeight': int(view_block_response['blockHeight']),
-            'receiptSuccess': json.loads(view_block_response['receiptSuccess'])
+            'receiptSuccess': view_block_response['receiptSuccess']
         }
 
         if response['receiptSuccess']:
