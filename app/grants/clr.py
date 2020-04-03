@@ -631,6 +631,8 @@ def grants_transaction_validator(list_contributions):
         df = pd.read_csv(list_contributions, sep=" ")
 
     from web3 import Web3
+    from web3.exceptions import BadFunctionCallOutput
+    import decimal
 
     PROVIDER = "wss://mainnet.infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
     w3 = Web3(Web3.WebsocketProvider(PROVIDER))
@@ -683,22 +685,25 @@ def grants_transaction_validator(list_contributions):
         get_symbol = lambda contract: str(contract.functions.symbol().call())
         decimals = get_decimals(contract)
         contract_value = contract.decode_function_input(transaction.input)[1]['_value']
-        contract_symbol = get_symbol(contract)
+        # contract_symbol = get_symbol(contract)
         human_readable_value = Decimal(int(contract_value)) / Decimal(10 ** decimals) if decimals else None
         if (transfer_event or deposit_event or approve_event):
             print(
-                f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
+                f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value}    -> status: 1{bcolors.ENDC}")
+
 
 
     for index_transaction, index_valid in enumerate(df):
         for index_element, check_value in enumerate(df[index_valid]):
-            if check_value is not None and not isinstance(check_value, float) and len(check_value) == 66:
+            print (check_value)
+            if check_value is not None and not isinstance(check_value, float) and not isinstance(check_value, decimal.Decimal) and len(check_value) == 66:
                 transaction_tax = check_value
                 try:
                     transaction = check_transaction(transaction_tax)
-                    token_address = check_token(transaction.to)
-                    if (token_address):
-                        transaction_status(transaction, transaction_tax)
+                    if transaction is not None:
+                        token_address = check_token(transaction.to)
+                        if token_address is not False:
+                            transaction_status(transaction, transaction_tax)
                     else:
                         print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
 
@@ -725,7 +730,7 @@ def grants_transaction_validator(list_contributions):
                             print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
 
 
-
-
+                except BadFunctionCallOutput as e:
+                    print(e)
 
 
