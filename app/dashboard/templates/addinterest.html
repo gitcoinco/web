@@ -62,17 +62,6 @@
               <textarea id="issue_message" class="form__input"></textarea>
             </div>
             <div>
-            {% if bounty.event %}
-              <div class="d-flex">
-                <div class="filter-label ml-0 mb-3">
-                  <label for="checkbox2 mb-0">
-                    {% trans "Discord Username" %}
-                  </label>
-                  <input type="text" id="discord_username" name="discord_username" class="form__input font-body" placeholder="vivek#9746" value="{{gitcoin_discord_username}}" required/>
-                  <span class="font-caption"><a target="_blank" href="https://chat.gitcoin.co/hackathons">Join Chat</a> to get updates from our sponsors prizes and find help</span>
-                </div>
-              </div>
-              {% endif %}
               <div class="checkbox_container d-flex font-caption">
                 <input type="checkbox" id="checkbox2" class="form__input" value="1" required/>
                 <span class="checkbox"></span>
@@ -101,7 +90,7 @@
                 </div>
               </div>
             </div>
-            <button id="submit" class="row button button--primary btn-interested" type="submit">{% trans "Submit" %}</button>
+            <button id="submit" class="row button button--primary btn-interested" type="submit">{% trans "Next" %}</button>
           </form>
         {% else %}
           <div class="text-center mb-5 mt-4">
