@@ -358,7 +358,8 @@ $(document).ready(function() {
       let realApproval;
 
       if (data.contract_version == 1 || data.num_periods == 1) {
-        realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
+        const approve_buffer = 100000;
+        realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + approve_buffer);
       } else if (data.contract_version == 0) {
         console.log('grant amount: ' + grant_amount);
         console.log('gitcoin grant amount: ' + gitcoin_grant_amount);
@@ -417,7 +418,9 @@ $(document).ready(function() {
                 // call splitter after approval
                 var to_address = data.match_direction == '+' ? data.admin_address : gitcoinDonationAddress;
 
-                splitPayment(accounts[0], to_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+                var first = Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false});
+                var second = Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false});
+                splitPayment(accounts[0], to_address, gitcoinDonationAddress, first, second);
               } else {
                 if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
                   donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
