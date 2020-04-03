@@ -20,26 +20,6 @@
   form .col:first-child {
     border-top: none;
   }
-  .hackathon-logo {
-      margin-top: -245px;
-      height: 185px;
-      max-height: 185px;
-      width: 185px;
-      max-width: 185px;
-      background-color: #090E60;
-      border-radius: 10px;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-  }
-  .hackathon-logo img {
-      height: 115px;
-  }
-  .register {
-    width: 100%;
-  }
 </style>
 
 <div class="sidebar_search font-body">
@@ -53,30 +33,17 @@
   </p>
   <form>
     <div class="col">
-        <div class="hackathon-logo mb-1">
-          {% if hackathon.logo_svg %}
-            <img class="d-none d-md-block mx-auto mb-5 mw-100" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
-          {% elif hackathon.logo %}
-            <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
-          {% endif %}
-        <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
-        </div>
-        <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue register col-xs-12 mt-4 mb-2">
-              Register
-        </a>
+      {% if hackathon.logo_svg %}
+        <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
+      {% elif hackathon.logo %}
+        <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
+      {% endif %}
+
     </div>
     <div class="col">
-    {%  if not no_filter %}
-    {% if hackathon %}
-      <div class="col-12 subheading left-ribbon">
-        {% trans "Hackathon Sponsors" %}
-      </div>
-    {% else %}
       <div class="col-12 subheading">
         {% trans "Sponsors" %}
       </div>
-    {% endif %}
-
 
       <div class="col-12 options" id="list-orgs">
 
@@ -93,7 +60,26 @@
           </div>
         {% endfor %}
       </div>
-    {% endif %}
+    </div>
+
+    <div class="col" id="network-filter" style="display: hidden;">
+      <div class="col-12 subheading">{% trans "Network" %}</div>
+      <div class="col-12 options">
+        <div class="checkbox_container">
+          <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=rinkeby>{% trans "Rinkeby" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=mainnet>{% trans "Mainnet" %}</label>
+          </div>
+        </div>
+      </div>
     </div>
   </form>
 </div>
