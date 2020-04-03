@@ -10,9 +10,13 @@ from decimal import Decimal
 from hexbytes import HexBytes
 from time import sleep
 from web3.auto.infura import w3
-from web3.exceptions import (
-    TransactionNotFound,
-)
+
+## web3 Exceptions
+class TransactionNotFound(Exception):
+    """
+    Raised when a tx hash used to lookup a tx in a jsonrpc call cannot be found.
+    """
+    pass
 
 # ERC20 / ERC721 tokens
 # Transfer(address,address,uint256)
