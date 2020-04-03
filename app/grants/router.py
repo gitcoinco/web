@@ -54,9 +54,13 @@ class GrantViewSet(viewsets.ModelViewSet):
         if 'description' in param_keys:
             queryset = queryset.filter(description_iexact=self.request.query_params.get('description'))
 
-        # Filter by description.
+        # Filter by keyword.
         if 'keyword' in param_keys:
             queryset = queryset.keyword(self.request.query_params.get('keyword'))
+
+        # Filter by grant_type.
+        if 'grant_type' in param_keys:
+            queryset = queryset.filter(grant_type=self.request.query_params.get('grant_type'))
 
         return queryset
 
