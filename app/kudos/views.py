@@ -42,7 +42,7 @@ from django.views.decorators.csrf import csrf_exempt
 import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
-from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
+from dashboard.utils import get_nonce, get_web3, is_valid_eth_address, getTransactionCount__
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
@@ -689,7 +689,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
     contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
-    nonce = w3.eth.getTransactionCount(kudos_owner_address)
+    nonce = getTransactionCount__(kudos_owner_address)
     gas_price = int(int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9) * gas_price_multiplier)
     tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
         'nonce': nonce,

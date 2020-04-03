@@ -31,6 +31,7 @@ from django.views.decorators.csrf import csrf_exempt
 import idna
 from dashboard.models import Profile
 from dashboard.views import w3
+from dashboard.utils import getTransactionCount__, getTransactionReceipt__
 from ens import ENS
 from ens.abis import ENS as ens_abi
 from ens.abis import RESOLVER as resolver_abi
@@ -66,7 +67,7 @@ def handle_subdomain_exists(request, github_handle):
     last_request = ENSSubdomainRegistration.objects.filter(profile=profile).latest('created_on')
     request_reset_time = timezone.now() - datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS)
     if last_request.pending:
-        txn_receipt = w3.eth.getTransactionReceipt(last_request.txn_hash_3)
+        txn_receipt = getTransactionReceipt__(last_request.txn_hash_3)
         if txn_receipt:
             if w3.toHex(txn_receipt.transactionHash) == last_request.txn_hash_3:
                 last_request.pending = False
@@ -186,7 +187,7 @@ def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
 
 
 def get_nonce():
-    web3_nonce = w3.eth.getTransactionCount(settings.ENS_OWNER_ACCOUNT)
+    web3_nonce = getTransactionCount__(settings.ENS_OWNER_ACCOUNT)
     next_db_nonce = 0
     try:
         last_ens = ENSSubdomainRegistration.objects.order_by('-end_nonce').first()

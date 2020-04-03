@@ -24,7 +24,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import requests
-from kudos.utils import KudosContract
+from kudos.utils import KudosContract, getKudosTransaction__, getKudosBlock__
 
 warnings.simplefilter("ignore", category=DeprecationWarning)
 warnings.simplefilter("ignore", category=UserWarning)
@@ -105,7 +105,7 @@ class Command(BaseCommand):
         last_block_hash = None
         while True:
             # wait for a new block
-            block = kudos_contract._w3.eth.getBlock('latest')
+            block = kudos_contract.getKudosBlock__('latest')
             block_hash = block['hash']
             block_number = block['number']
 
@@ -119,7 +119,7 @@ class Command(BaseCommand):
             # get txs
             transactions = block['transactions']
             for tx in transactions:
-                tx = kudos_contract._w3.eth.getTransaction(tx)
+                tx = kudos_contract.getKudosTransaction__(tx)
                 if not tx or tx['to'] != kudos_contract.address:
                     continue
 

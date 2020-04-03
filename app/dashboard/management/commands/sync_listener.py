@@ -22,7 +22,7 @@ import time
 from django.core.management.base import BaseCommand
 
 from dashboard.utils import (
-    get_bounty, get_web3, getBountyContract, getStandardBountiesContractAddresss, web3_process_bounty,
+    get_bounty, get_web3, getBountyContract, getBlock__, getTransaction__, getStandardBountiesContractAddresss, web3_process_bounty,
 )
 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -53,7 +53,7 @@ class Command(BaseCommand):
 
         while True:
             # wait for a new block
-            block = web3.eth.getBlock('latest')
+            block = getBlock__('latest')
             block_hash = block['hash']
 
             if last_block_hash == block_hash:
@@ -65,7 +65,7 @@ class Command(BaseCommand):
             # get txs
             transactions = block['transactions']
             for tx in transactions:
-                tx = web3.eth.getTransaction(tx)
+                tx = getTransaction__(tx)
                 if not tx or tx['to'] != contract_address:
                     continue
 

@@ -27,7 +27,7 @@ from django.db.models import Max
 import requests
 import web3
 from kudos.models import Token
-from kudos.utils import KudosContract
+from kudos.utils import KudosContract, getKudosBlock__, getKudosTransaction__
 from python_http_client.exceptions import HTTPError
 
 # from web3.middleware import local_filter_middleware
@@ -120,11 +120,11 @@ class Command(BaseCommand):
     def block_sync(self, kudos_contract, fromBlock):
         raise NotImplementedError('block_sync does not work properly')
         block = fromBlock
-        last_block_number = kudos_contract._w3.eth.getBlock('latest')['number']
+        last_block_number = kudos_contract.getBlock__('latest')['number']
         # for block_num in range(block, last_block_number + 1)
         while True:
             # wait for a new block
-            block = kudos_contract._w3.eth.getBlock(block)
+            block = kudos_contract.getBlock__(block)
             if not block:
                 break
             block_hash = block['hash']
@@ -136,7 +136,7 @@ class Command(BaseCommand):
             # get txs
             transactions = block['transactions']
             for tx in transactions:
-                tx = kudos_contract._w3.eth.getTransaction(tx)
+                tx = kudos_contract.getKudosTransaction__(tx)
                 if not tx or tx['to'] != kudos_contract.address:
                     continue
 
@@ -183,7 +183,7 @@ class Command(BaseCommand):
             elif rewind:
                 if web3.__version__ != '4.7.2':
                     raise RuntimeError('This option is unstable if not on web3py 4.7.2.  May crash testrpc.')
-                fromBlock = kudos_contract._w3.eth.getBlock('latest')['number'] - rewind
+                fromBlock = kudos_contract.getKudosBlock('latest')['number'] - rewind
             elif catchup:
                 raise ValueError('--catchup option is not valid for filter syncing')
 
@@ -201,7 +201,7 @@ class Command(BaseCommand):
                 else:
                     raise ValueError('--fromBlock must be "earliest", or "latest"')
             elif rewind:
-                fromBlock = kudos_contract._w3.eth.getBlock('latest')['number'] - rewind
+                fromBlock = kudos_contract.getKudosBlock('latest')['number'] - rewind
             elif catchup:
                 raise ValueError('--catchup option is not valid for block syncing')
 

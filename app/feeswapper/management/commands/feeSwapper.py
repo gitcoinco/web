@@ -27,6 +27,7 @@ from django.utils.timezone import now
 
 import requests
 import sendgrid
+from dashboard.utils import getTransactionReceipt__, getTransactionCount__
 from feeswapper.models import CurrencyConversion
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from sendgrid.helpers.mail import Content, Email, Mail
@@ -111,14 +112,14 @@ class Command(BaseCommand):
                         numerator = walletBalance*outputReserve * (1-settings.UNISWAP_LIQUIDITY_FEE)*1000
                         denominator = inputReserve*1000 + walletBalance*(1-settings.UNISWAP_LIQUIDITY_FEE)*1000
                         outputAmount = numerator / denominator
-                        deadline = self.web3.eth.getBlock('latest')['timestamp'] + settings.UNISWAP_TRADE_DEADLINE
+                        deadline = getBlock__('latest')['timestamp'] + settings.UNISWAP_TRADE_DEADLINE
                         logger.info('Current token balance is : ' + str(self.web3.fromWei(walletBalance,'ether')))
                         logger.info('Amount of ETH to be bought is :' + str(self.web3.fromWei(outputAmount,'ether')))
                         logger.info('Exchange rate is : ' + str(outputAmount/walletBalance)+ ' ETH/token')
 
                         # Call contract function to give exchange approval to spend ERC-20 token balance.
                         # Required to have exchange perform ERC-20 token transactions on behalf of FEE_ADDRESS
-                        nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
+                        nonce = getTransactionCount__(settings.FEE_ADDRESS)
                         txn_dict = exchangeContract.functions.approve(settings.FEE_ADDRESS,self.web3.toWei(walletBalance,'wei')).buildTransaction({
                                 'chainId': chain,
                                 'gas': 300000,
@@ -128,15 +129,15 @@ class Command(BaseCommand):
                         logger.info(txn_dict)
                         signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=settings.FEE_ADDRESS_PRIVATE_KEY)
                         result = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-                        tx_receipt = self.web3.eth.getTransactionReceipt(result)
+                        tx_receipt = getTransactionReceipt__(result)
                         count = 0
                         while tx_receipt is None and (count < 30):
                                 time.sleep(10)
-                                tx_receipt = self.web3.eth.getTransactionReceipt(result)
+                                tx_receipt = getTransactionReceipt__(result)
                         logger.info(str(tx_receipt))
 
                         # Submit token -> ETH exchange trade to Uniswap.  Transaction only works for BAT exchange on Rinkeby.
-                        nonce = self.web3.eth.getTransactionCount(settings.FEE_ADDRESS)
+                        nonce = getTransactionCount__(settings.FEE_ADDRESS)
                         txn_dict = exchangeContract.functions.tokenToEthSwapInput(self.web3.toWei(walletBalance,'wei'),self.web3.toWei(outputAmount*(1-settings.SLIPPAGE),'wei'),deadline=deadline).buildTransaction({
                                 'chainId': chain,
                                 'gas': 300000,
@@ -146,11 +147,11 @@ class Command(BaseCommand):
                         signed_txn = self.web3.eth.account.signTransaction(txn_dict,private_key=settings.FEE_ADDRESS_PRIVATE_KEY)
                         result = self.web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
-                        tx_receipt = self.web3.eth.getTransactionReceipt(result)
+                        tx_receipt = getTransactionReceipt__(result)
                         count = 0
                         while tx_receipt is None and (count < 30):
                                 time.sleep(10)
-                                tx_receipt = self.web3.eth.getTransactionReceipt(result)
+                                tx_receipt = getTransactionReceipt__(result)
 
                         logger.info(str(tx_receipt))
 

@@ -5,7 +5,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
-from dashboard.utils import get_nonce, get_web3
+from dashboard.utils import get_nonce, get_web3, getTransactionCount__
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from kudos.models import BulkTransferCoupon, BulkTransferRedemption, KudosTransfer, Token
 from kudos.utils import kudos_abi
@@ -49,7 +49,7 @@ def ethdenver2019(request):
         recv_addr = request.GET.get('eth_addr', 'invalid')
     if not recv_addr.lower().startswith("0x"):
         recv_addr = f"0x{recv_addr}"
-        
+
     kudos_select = KudosTransfer.objects.filter(receive_address=recv_addr).all()
 
     i_kudos_item = 0
@@ -126,7 +126,7 @@ def receive_bulk_ethdenver(request, secret):
             kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
             kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
             w3 = get_web3(coupon.token.contract.network)
-            nonce = w3.eth.getTransactionCount(kudos_owner_address)
+            nonce = getTransactionCount__(kudos_owner_address)
             contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
             tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
                 'nonce': nonce,

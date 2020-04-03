@@ -44,7 +44,7 @@ from app.utils import get_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, Profile, SearchHistory
-from dashboard.utils import get_web3, has_tx_mined
+from dashboard.utils import get_web3, has_tx_mined, getTransaction__
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.clr import predict_clr_live
@@ -145,9 +145,9 @@ def get_stats(round_type):
                       'type': 'line',
                       'stacking': False
                       },
-                    'terms': 
+                    'terms':
                         ['val']
-                    
+
                 }],
                 chart_options =
                   {'title': {
@@ -217,7 +217,7 @@ def grants_addr_as_json(request):
 @cache_page(60 * 60)
 def grants_stats_view(request):
     cht, chart_list = get_stats(request.GET.get('category'))
-    params = { 
+    params = {
         'cht': cht,
         'chart_list': chart_list,
         'round_types': round_types,
@@ -289,7 +289,7 @@ def grants(request):
 
     if category:
         _grants = _grants.filter(Q(categories__category__icontains = category))
-    
+
     _grants = _grants.prefetch_related('categories')
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -323,7 +323,7 @@ def grants(request):
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
-    
+
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
@@ -1223,7 +1223,7 @@ def new_matching_partner(request):
     if request.POST and tx_hash:
         network = 'mainnet'
         web3 = get_web3(network)
-        tx = web3.eth.getTransaction(tx_hash)
+        tx = getTransaction__(tx_hash)
         if not tx:
             raise Http404
         match_pledge = MatchPledge.objects.create(

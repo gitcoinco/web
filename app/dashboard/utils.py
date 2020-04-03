@@ -40,7 +40,7 @@ from hexbytes import HexBytes
 from ipfshttpclient.exceptions import CommunicationError
 from pytz import UTC
 from web3 import HTTPProvider, Web3, WebsocketProvider
-from web3.exceptions import BadFunctionCallOutput
+from web3.exceptions import BadFunctionCallOutput, BlockNotFound, TransactionNotFound
 from web3.middleware import geth_poa_middleware
 
 from .notifications import maybe_market_to_slack
@@ -461,16 +461,12 @@ def web3_process_bounty(bounty_data):
 
 
 def has_tx_mined(txid, network):
-    web3 = get_web3(network)
-    try:
-        transaction = web3.eth.getTransaction(txid)
-        if not transaction:
-            return False
-        if not transaction.blockHash:
-            return False
-        return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
-    except Exception:
+    transaction = getTransaction__(txid)
+    if not transaction:
         return False
+    if not transaction.blockHash:
+        return False
+    return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
 
 
 def etc_txn_already_used(t):
@@ -836,7 +832,7 @@ def get_tx_status(txid, network, created_on):
         return 'success', None #overridden by admin
     try:
         web3 = get_web3(network)
-        tx = web3.eth.getTransactionReceipt(txid)
+        tx = getTransactionReceipt__(txid)
         if not tx:
             drop_dead_date = created_on + timezone.timedelta(days=DROPPED_DAYS)
             if timezone.now() > drop_dead_date:
@@ -909,7 +905,7 @@ def get_nonce(network, address, ignore_db=False):
     w3 = get_web3(network)
 
     # web3 RPC node: nonce
-    nonce_from_web3 = w3.eth.getTransactionCount(address)
+    nonce_from_web3 = getTransactionCount__(address)
     if ignore_db:
         return nonce_from_web3
 
@@ -1047,3 +1043,38 @@ def get_url_first_indexes():
 
 def get_custom_avatars(profile):
     return CustomAvatar.objects.filter(profile=profile).order_by('-id')
+
+
+
+
+
+def getTransaction__(txid):
+    """Returns a transaction"""
+    try:
+        return web3.eth.getTransaction(txid)
+    except TransactionNotFound:
+        return None
+
+
+def getBlock__(latest):
+    try:
+        return web3.eth.getBlock(latest)
+    except BlockNotFound:
+        return None
+
+def getTransactionCount__(address):
+    try:
+        return w3.eth.getTransactionCount(address)
+    except TransactionNotFound:
+        return None
+
+def getTransactionReceipt__(txid):
+    try:
+        return web3.eth.getTransactionReceipt(txid)
+    except TransactionNotFound:
+        return None
+
+
+
+
+
