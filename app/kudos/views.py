@@ -46,6 +46,7 @@ from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
+from kudos.tasks import redeem_bulk_kudos
 from kudos.utils import kudos_abi
 from marketing.mails import new_kudos_request
 from ratelimit.decorators import ratelimit
@@ -738,6 +739,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
                 receive_txid=txid,
                 tx_status='pending',
                 receive_tx_status='pending',
+                receive_address=address,
             )
 
             # save to DB
@@ -765,8 +767,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
             maybe_market_kudos_to_email(kudos_transfer)
 
             if retry_later:
-                from kudos.tasks import redeem_bulk_kudos
-                redeem_bulk_kudos.delay(kudos_transfer.id, signed.rawTransaction.hex())
+                redeem_bulk_kudos.delay(kudos_transfer.id)
 
     return True, None, kudos_transfer
 
@@ -857,6 +858,7 @@ def newkudos(request):
                 description=request.POST['description'],
                 priceFinney=request.POST['priceFinney'],
                 artist=request.POST['artist'],
+                bounty_url=request.POST['bounty_url'],
                 platform=request.POST['platform'],
                 numClonesAllowed=request.POST['numClonesAllowed'],
                 tags=request.POST['tags'].split(","),
