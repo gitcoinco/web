@@ -1,17 +1,7 @@
 from dashboard.router import ProfileSerializer
 from rest_framework import serializers
 
-from .models import Contribution, Grant, Milestone, Subscription
-
-
-class MilestoneSerializer(serializers.ModelSerializer):
-    """Handle serializing the Milestone object."""
-
-    class Meta:
-        """Define the milestone serializer metadata."""
-
-        model = Milestone
-        fields = ('title', 'description', 'due_date', 'completion_date')
+from .models import Contribution, Grant, Subscription
 
 
 class GrantSerializer(serializers.ModelSerializer):
@@ -19,7 +9,6 @@ class GrantSerializer(serializers.ModelSerializer):
 
     admin_profile = ProfileSerializer()
     team_members = ProfileSerializer(many=True)
-    milestones = MilestoneSerializer(many=True)
 
     class Meta:
         """Define the grant serializer metadata."""
@@ -28,7 +17,7 @@ class GrantSerializer(serializers.ModelSerializer):
         fields = (
             'active', 'title', 'slug', 'description', 'reference_url', 'logo', 'admin_address', 'amount_goal',
             'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
-            'network', 'required_gas_price', 'admin_profile', 'team_members', 'percentage_done', 'milestones',
+            'network', 'required_gas_price', 'admin_profile', 'team_members', 'percentage_done',
         )
 
 

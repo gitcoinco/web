@@ -48,10 +48,7 @@ from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.clr import predict_clr_live
-from grants.forms import MilestoneForm
-from grants.models import (
-    Contribution, Flag, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
-)
+from grants.models import Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription
 from grants.utils import get_leaderboard, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -418,11 +415,9 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates', 'team_members').get(
+        grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
             pk=grant_id, slug=grant_slug
         )
-        milestones = grant.milestones.order_by('due_date')
-        updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
 
@@ -467,14 +462,6 @@ def grant_details(request, grant_id, grant_slug):
             for sub in subscriptions:
                 subscription_terminated(grant, sub)
             record_grant_activity_helper('killed_grant', grant, profile)
-        elif 'input-title' in request.POST:
-            update_kwargs = {
-                'title': request.POST.get('input-title', ''),
-                'description': request.POST.get('description', ''),
-                'grant': grant
-            }
-            Update.objects.create(**update_kwargs)
-            record_grant_activity_helper('update_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
@@ -527,8 +514,6 @@ def grant_details(request, grant_id, grant_slug):
         'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
-        'updates': updates,
-        'milestones': milestones,
         'keywords': get_keywords(),
         'target': f'/activity?what=grant:{grant.pk}',
         'activity_count': activity_count,
@@ -767,52 +752,6 @@ def grant_new_v0(request):
     }
 
     return TemplateResponse(request, 'grants/newv0.html', params)
-
-
-
-@login_required
-def milestones(request, grant_id, grant_slug):
-    profile = get_profile(request)
-    grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
-
-    if not is_grant_team_member(grant, profile):
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
-    if request.method == "POST":
-        method = request.POST.get('method')
-
-        if method == "POST":
-            form = MilestoneForm(request.POST)
-            milestone = form.save(commit=False)
-            milestone.grant = grant
-            milestone.save()
-
-        if method == "PUT":
-            milestone_id = request.POST.get('milestone_id')
-            milestone = Milestone.objects.get(pk=milestone_id)
-            milestone.completion_date = request.POST.get('completion_date')
-            milestone.save()
-
-        if method == "DELETE":
-            milestone_id = request.POST.get('milestone_id')
-            milestone = grant.milestones.get(pk=milestone_id)
-            milestone.delete()
-
-        return redirect(reverse('grants:milestones', args=(grant.pk, grant.slug)))
-
-    form = MilestoneForm()
-    milestones = grant.milestones.order_by('due_date')
-
-    params = {
-        'active': 'grant_milestones',
-        'title': _('Grant Milestones'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'grant': grant,
-        'milestones': milestones,
-        'form': form,
-        'keywords': get_keywords(),
-    }
-    return TemplateResponse(request, 'grants/milestones.html', params)
 
 
 @login_required

@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from grants.models import Grant, Milestone
+from grants.models import Grant
 
 
 class GrantForm(forms.ModelForm):
@@ -35,32 +35,3 @@ class GrantForm(forms.ModelForm):
             'cancel_tx_id', 'amount_received', 'token_address', 'contract_address', 'metadata', 'network',
             'required_gas_price', 'admin_profile', 'team_members'
         )
-
-
-class MilestoneForm(forms.ModelForm):
-    """Define the Milestone form logic."""
-
-    class Meta:
-        """Define the metadata for the Milestone model form."""
-
-        model = Milestone
-        fields = ('title', 'description', 'due_date', )
-        widgets = {
-            'title': forms.TextInput(attrs={
-                'class': 'form__input form__input-lg',
-                'placeholder': _('Title')
-            }),
-            'description':
-                forms.Textarea(attrs={
-                    'class': 'form__input form__input-lg',
-                    'placeholder': _('Description')
-                }),
-            'due_date':
-                forms.TextInput(
-                    attrs={
-                        'type': 'text',
-                        'class': 'form__input form__input-lg',
-                        'placeholder': _('Due Date for completion')
-                    }
-                )
-        }
