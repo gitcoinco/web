@@ -3634,7 +3634,8 @@ def hackathon(request, hackathon=''):
 
     # TODO: Refactor post orgs
     orgs = []
-    for bounty in Bounty.objects.filter(event=hackathon_event, network=network).current():
+    prizes = Bounty.objects.filter(event=hackathon_event, network=network).current()
+    for bounty in prizes:
         org = {
             'display_name': bounty.org_display_name,
             'avatar_url': bounty.avatar_url,
@@ -3642,6 +3643,8 @@ def hackathon(request, hackathon=''):
         }
         orgs.append(org)
 
+    participants = HackathonRegistration.objects.filter(hackathon=hackathon_event).count() if profile else 0
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').count()
     orgs = list({v['display_name']:v for v in orgs}.values())
 
     params = {
@@ -3651,6 +3654,9 @@ def hackathon(request, hackathon=''):
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
+        'total_prizes': prizes.count(),
+        'total_participants': participants,
+        'total_projects': projects,
     }
 
     # fetch sponsors for the hackathon
@@ -3850,6 +3856,10 @@ def hackathon_projects(request, hackathon='', specify_project=''):
     except EmptyPage:
         projects_paginated = projects_paginator.page(projects_paginator.num_pages)
 
+    prizes = Bounty.objects.filter(event=hackathon_event).current().count()
+    participants = HackathonRegistration.objects.filter(hackathon=hackathon_event).count() if profile else 0
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').count()
+
     params = {
         'active': 'hackathon_onboard',
         'title': title,
@@ -3861,7 +3871,10 @@ def hackathon_projects(request, hackathon='', specify_project=''):
         'projects': projects_paginated,
         'order_by': order_by,
         'filters': filters,
-        'query': q.split
+        'query': q.split,
+        'total_participants': participants,
+        'total_projects': projects,
+        'total_prizes': prizes
     }
 
     return TemplateResponse(request, 'dashboard/hackathon/projects.html', params)

@@ -111,11 +111,20 @@
       }
     </style>
       <style>
+        @media screen and (max-width: 767.98px) {
+            .hackathon-banner {
+                height: 8em !important;
+            }
+            .navigation {
+                margin: 0px !important;
+            }
+        }
+
         .hackathon-banner {
           background: {% firstof hackathon.background_color or 'white' %};
           color: {% firstof hackathon.text_color or 'black' %};
           height: 225px;
-          background-image: url("/static/wallpapers/V3.png");
+          background-image: url({{ hackathon.banner.url|default:"/static/wallpapers/V3.png" }});
         }
 
         .hackathon-text {
@@ -153,25 +162,22 @@
     </div>
 
     <div class="offset-2 navigation">
-          {% if hackathon.town_square_link %}
-            <a href="/{{hackathon.town_square_link}}" class="btn ml-2 mr-4">
-              Prizes (98)
-            </a>
-          {% endif %}
+          <a href="{% url 'hackathon' hackathon.slug  %}" class="btn ml-2 mr-4">
+            Prizes {%  if total_prizes  %}({{ total_prizes }}){% endif %}
+          </a>
           {% if hackathon.town_square_link %}
             <a href="/{{hackathon.town_square_link}}" class="btn mr-4">
               SW3 Town Square
             </a>
           {% endif %}
-
-          {% if hackathon.quest_link %}
-            <a href="{{hackathon.quest_link}}" class="btn mr-4">
-            Participants (134)
-          </a>
+          {% if total_participants %}
+            <a href="" class="btn mr-4">
+            Participants ({{ total_participants }})
+            </a>
           {% endif %}
           {% if hackathon.show_results %}
             <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn mr-4 active">
-            Projects (57)
+            Projects {%  if total_projects  %}({{ total_projects }}){% endif %}
             </a>
           {% endif %}
           {% if hackathon.end_date|timesince <= "1 min" %}
@@ -202,17 +208,15 @@
               {% endif %}
             </div>
             <div class="col-12 col-md-3">
-              <div class="form-group row">
-                <label for="inputPassword" class="col-sm-6 col-form-label">Filter by sponsor:</label>
-                <div class="col-sm-6">
-                  <select name="sponsor" id="sponsor" class="form-control">
+                <div class="d-flex justify-content-center">
+                <label for="sponsor" class="col-form-label">Filter by sponsor:</label>
+                  <select name="sponsor" id="sponsor" class="form-control" style="width: fit-content; margin-left: 10px">
                     <option value="">All</option>
                     {% for sponsor_item in sponsors_list %}
                       <option value="{{sponsor_item.org_name}}" {% if sponsor_item.org_name == sponsor %}selected {% endif %}>{{sponsor_item.org_name}}</option>
                     {% endfor%}
                   </select>
                 </div>
-              </div>
             </div>
             <div class="col-12 col-md-3 text-md-center">
               <a href="{% url 'hackathon_projects' hackathon.slug %}" class="{% ifequal filters '' %}underline{% endifequal %}">See all</a> |

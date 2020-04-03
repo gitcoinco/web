@@ -41,11 +41,20 @@
       <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
 
       <style>
+        @media screen and (max-width: 767.98px) {
+            .hackathon-banner {
+                height: 8em !important;
+            }
+            .navigation {
+                margin: 0px !important;
+            }
+        }
+
         .hackathon-banner {
           background: {% firstof hackathon.background_color or 'white' %};
           color: {% firstof hackathon.text_color or 'black' %};
           height: 225px;
-          background-image: url("/static/wallpapers/V3.png");
+          background-image: url({{ hackathon.banner.url|default:"/static/wallpapers/V3.png" }});
         }
 
         .hackathon-text {
@@ -85,32 +94,28 @@
         </div>
       </div>
       <div class="offset-2 navigation">
-          {% if hackathon.town_square_link %}
-            <a href="/{{hackathon.town_square_link}}" class="btn ml-2 mr-4 active">
-              Prizes (98)
-            </a>
-          {% endif %}
+          <a href="#" class="btn ml-2 mr-4 active">
+            Prizes {%  if total_prizes  %}({{ total_prizes }}){% endif %}
+          </a>
           {% if hackathon.town_square_link %}
             <a href="/{{hackathon.town_square_link}}" class="btn mr-4">
               SW3 Town Square
             </a>
           {% endif %}
-
-          {% if hackathon.quest_link %}
-            <a href="{{hackathon.quest_link}}" class="btn mr-4">
-            Participants (134)
-          </a>
+          {% if total_participants %}
+            <a href="" class="btn mr-4">
+            Participants ({{ total_participants }})
+            </a>
           {% endif %}
           {% if hackathon.show_results %}
             <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn mr-4">
-            Projects (57)
+            Projects {%  if total_projects  %}({{ total_projects }}){% endif %}
             </a>
           {% endif %}
           {% if hackathon.end_date|timesince <= "1 min" %}
             <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn mr-3">Guide</a>
           {% endif %}
         </div>
-
     {% else %}
       {% include 'dashboard/ftux.html' %}
     {% endif %}
