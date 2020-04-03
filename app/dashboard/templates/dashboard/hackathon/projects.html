@@ -90,10 +90,12 @@
         max-height: 70px;
       }
       .looking-team {
-        background-color: rgba(62, 0, 255, 0.05);
-        border-radius: 8px;
         height: 84.58px;
         padding: 11px 15px;
+      }
+      .looking-team-background {
+        background-color: rgba(62, 0, 255, 0.05);
+        border-radius: 8px;
       }
       .info-card-title {
         font-weight: bold;
@@ -274,11 +276,13 @@
                         </div>
                       </div>
 
-                      <div class="my-3 looking-team">
+                      <div class="my-3 looking-team {% if project.looking_members %}looking-team-background{% endif %}">
+                        {% if project.looking_members %}
                         <h5 class="info-card-title uppercase">Looking for team members</h5>
                         <p class="info-card-desc">
-                          “We’re looking for a React Developer to help us build cool stuff on Bancor protocol”
+                          “{{ project.message }}”
                         </p>
+                        {% endif %}
                       </div>
 
                       <div class="font-smaller-2 mt-4">
