@@ -40,7 +40,7 @@ THRESHOLD_HEALTH = 20.0
 
 TOTAL_POT_TECH = 101000.0
 TOTAL_POT_MEDIA = 50000.0
-TOTAL_POT_HEALTH = 10000.0
+TOTAL_POT_HEALTH = 100000.0
 
 '''
     Helper function that translates existing grant data structure
