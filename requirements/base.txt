@@ -28,7 +28,7 @@ slackclient==2.0.0
 eth-tester
 websockets
 web3==5.7.0
-eth-abi==2.0.0
+eth-abi
 mailchimp3==3.0.7
 django_chartit==0.2.9
 MechanicalSoup==0.9.0.post4
@@ -41,8 +41,6 @@ google-api-python-client
 django-environ==0.4.5
 ipfshttpclient
 eth-utils==1.8.4
-eth-testrpc==1.3.5
-  rlp>=0.4.7
 jsondiff==1.1.1
 social-auth-app-django==3.1.0
 django-ipware==2.0.2
@@ -85,7 +83,7 @@ Wand==0.4.4
 raven==6.9.0
 sentry-sdk
 websocket-client
-bleach==2.1
+bleach==3.1.4
 python-magic
 django-oauth-toolkit
 mattermostdriver
