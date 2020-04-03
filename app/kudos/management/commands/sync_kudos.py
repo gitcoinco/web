@@ -169,7 +169,7 @@ class Command(BaseCommand):
         catchup = options['catchup']
 
         kudos_contract = KudosContract(network, sockets=True)
-        # kudos_contract._w3.middleware_stack.add(local_filter_middleware())
+        # kudos_contract._w3.middleware_onion.add(local_filter_middleware())
 
         # Handle the filter sync
         if syncmethod == 'filter':

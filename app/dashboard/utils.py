@@ -273,18 +273,18 @@ def get_web3(network, sockets=False):
     if network in ['mainnet', 'rinkeby', 'ropsten']:
         if sockets:
             if settings.INFURA_USE_V3:
-                provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.INFURA_V3_PROJECT_ID}')
+                provider = WebsocketProvider(f'wss://{network}.infura.io/ws/v3/{settings.WEB3_INFURA_PROJECT_ID}')
             else:
                 provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
         else:
             if settings.INFURA_USE_V3:
-                provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}')
+                provider = HTTPProvider(f'https://{network}.infura.io/v3/{settings.WEB3_INFURA_PROJECT_ID}')
             else:
                 provider = HTTPProvider(f'https://{network}.infura.io')
 
         w3 = Web3(provider)
         if network == 'rinkeby':
-            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+            w3.middleware_onion.inject(geth_poa_middleware, layer=0)
         return w3
     elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
@@ -912,7 +912,7 @@ def get_nonce(network, address, ignore_db=False):
     nonce_from_web3 = w3.eth.getTransactionCount(address)
     if ignore_db:
         return nonce_from_web3
-        
+
     # db storage
     key = f"nonce_{network}_{address}"
     view = 'get_nonce'

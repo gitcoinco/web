@@ -35,7 +35,7 @@ from dashboard.utils import (
 from pytz import UTC
 from test_plus.test import TestCase
 from web3.main import Web3
-from web3.providers.rpc import HTTPProvider
+from web3.provider.rpc import HTTPProvider
 
 
 class DashboardUtilsTest(TestCase):
@@ -51,7 +51,7 @@ class DashboardUtilsTest(TestCase):
             assert len(web3_provider.providers) == 1
             assert isinstance(web3_provider.providers[0], HTTPProvider)
             if settings.INFURA_USE_V3:
-                assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io/v3/{settings.INFURA_V3_PROJECT_ID}'
+                assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io/v3/{settings.WEB3_INFURA_PROJECT_ID}'
             else:
                 assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
 

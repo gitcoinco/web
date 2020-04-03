@@ -141,7 +141,7 @@ def preprocess(request):
         'header_msg': header_msg,
         'nav_salt': nav_salt,
         'footer_msg': footer_msg,
-        'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
+        'WEB3_INFURA_PROJECT_ID': settings.WEB3_INFURA_PROJECT_ID,
         'giphy_key': settings.GIPHY_KEY,
         'youtube_key': settings.YOUTUBE_API_KEY,
         'orgs': profile.organizations if profile else [],
