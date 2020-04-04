@@ -105,7 +105,8 @@ $(document).ready(function() {
   
   // Enables Dope Mode
   $('body').toggleClass(localStorage.toggled);
-   $('.toggle-switch').on('click',function(event) {
+
+ $('#dopeSwitch').on("click",function(event) {
   if (localStorage.toggled != 'dark') {
     $('body').toggleClass('dark',  true)
     localStorage.toggled = 'dark';
@@ -116,11 +117,11 @@ $(document).ready(function() {
 
 });
 
-if (!$('body').hasClass('dark', true)) {
-     $('.toggle-switch').prop('checked', true)
-} else {
-     $('.toggle-switch').prop('checked', false)
-}
+  if (!$('body').hasClass('dark', false)) {
+     $('#dopeSwitch').prop('checked', false)
+  } else {
+     $('#dopeSwitch').prop('checked', true)
+  }
 
   // toggles the daily email sender
   $('body').on('change', '#receive_daily_offers_in_inbox', function(e) {
