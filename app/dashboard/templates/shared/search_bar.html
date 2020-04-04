@@ -16,13 +16,9 @@
 {% endcomment %}
 {% load i18n static %}
 <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
-<div class="d-flex {% if not hackathon %}search_bar{% endif %} my-lg-3 mr-lg-4">
+<div class="d-flex search_bar my-lg-3 mx-lg-4">
   <div class="col-4 font-body">
-      {% if hackathon %}
-        <div class="ml-3 ml-lg-0 black em-dash">Open for submission</div>
-      {% else %}
-        <div id="results-count" class="ml-3 ml-lg-0"><span class='num'></span><span class='plus'></span> bounties</div>
-      {% endif %}
+    <div id="results-count" class="ml-3 ml-lg-0"><span class='num'></span><span class='plus'></span> bounties</div>
   </div>
   <div class="col-8 font-caption order_by">
     <div class="heading">{% trans "Sort by" %} </div>
