@@ -131,7 +131,8 @@
                 {% include 'shared/add_kudos.html' with name='enemy2' %}
               </div>
             {% else %}
-              {% include 'shared/add_kudos.html' with name='enemy' %}
+              <input name=enemy type="hidden" value=3>
+              <!-- {% include 'shared/add_kudos.html' with name='enemy' %} -->
             {% endif %}
           </div>
           <div class="form-group">
@@ -146,7 +147,8 @@
                 {% include 'shared/add_kudos.html' with name='reward2' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
               </div>
             {% else %}
-              {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
+              <input name=reward type="hidden" value=3>
+              <!-- {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %} -->
             {% endif %}
           </div>
           <div class="form-group">
@@ -193,6 +195,7 @@
               <label class="form__label" for="seconds_to_respond[]">{% trans "Seconds to Respond" %}</label>
               <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="How many seconds will the user have to respond to this question? Recommending starting point: 30"></i>
               <input type="number" name="seconds_to_respond[]" class="form__input" placeholder='Seconds To Respond' value="{{question.seconds_to_respond}}" min="0" required>
+              {% if question.question_type == 'quiz_question' %}
               <label class="form__label" for="question[]">{% trans "Question Text" %}</label>
               <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
                 <p>
@@ -202,7 +205,8 @@
                   In <strong>boss fight questions</strong> the text of your question will be updated automatically.
                 </p>
               "></i>
-              <input type="text" name="question[]" class="form__input" placeholder='Does Ethereum foo the bar?' value="{{question.question}}" required>
+              {% endif %}
+              <input {% if question.question_type == 'boss_fight_question' %}type="hidden"{% else %}type="text"{% endif %} name="question[]" class="form__input" placeholder='Does Ethereum foo the bar?' value="{{question.question}}" required>
               {% for response in question.responses %}
               <span>
                 <hr>
@@ -224,15 +228,35 @@
                     </select>
                   </div>
                   <span>
-                    <label class="form__label" for="points">{% trans "Insert the code for the boss fight" %}</label>
-                    <input type="hidden" name="answer_correct[]" class="form__input" value="YES">
-                    <textarea name="answer[]" class="form__input" cols="50" rows="10" required>{{response.answer}}</textarea>
+                    <label class="form__label" for="points">{% trans "Insert your sample function for the boss fight" %}</label>
+                    <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
+                        <p>
+                          Here you have to write a <strong>sample function</strong> that players can use to win the boss fight question.
+                        </p>
+                        <p>
+                          <strong>Note: </strong> players will not need to repeat exactly what you write here, but a sample function is required
+                          to continue to create the quest. Write it and follow instructions in the callout below the following textarea.
+                        </p>
+                      "></i>
+                    <textarea id="code-battle-quest-boss-fight-textarea" class="form__input" cols="50" rows="10" required>
+                      {{response.answerTokenized.0}}
+                    </textarea>
+                    <input type="hidden" id="code-validation-output-test-function-edit" value="{{response.answerTokenized.1}}"/>
+                    <div id="code-validation-output" class="card text-white bg-success mb-3">
+                      <div id="code-validation-output-title" class="card-header">Start writing your code!</div>
+                      <div class="card-body bg-white text-dark">
+                        <p id="code-validation-output-text" class="card-text">
+                          Fill up the textarea above with your code. You are allowed to insert only one function.
+                          You'll see outputs of validation of your code here.
+                        </p>
+                      </div>
+                    </div>
                   </span>
                 {% endif %}
                 <hr>
               </span>
               {% endfor %}
-              <a href="#" class="add_answer">[Add Answer]</a>
+              {% if question.question_type != 'boss_fight_question' %}<a href="#" class="add_answer">[Add Answer]</a>{% endif %}
               <input type="hidden" name="answer[]" value="_DELIMITER_">
               <input type="hidden" name="answer_correct[]" value="_DELIMITER_">
               <input type="hidden" name="answer_language[]" value="_DELIMITER_">
@@ -284,7 +308,7 @@
 {% endblock %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/pages/quests.new.js" %}"></script>
-<script src="{% static "v2/js/kudos-search.js" %}"></script>
+<!-- <script src="{% static "v2/js/kudos-search.js" %}"></script> -->
 <script src="{% static "v2/js/lib/acorn.js" %}"></script>
 <script src="{% static "v2/js/lib/lodash.js" %}"></script>
 <script>

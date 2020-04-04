@@ -84,6 +84,7 @@ def editquest(request, pk=None):
 
     #handle submission
     if package:
+        logger.critical(package)
         questions = [{
             'question': ele,
             'seconds_to_respond': 30,
@@ -118,7 +119,8 @@ def editquest(request, pk=None):
                 questions[answer_idx]['responses'].append({
                     'answer': answer,
                     'correct': bool(answer_correct[counter] == "YES"),
-                    'language': answer_language[counter]
+                    'language': answer_language[counter],
+                    'answerTokenized': answer.split("---BOSS-FIGHT-ANSWER-DELIMITER---")
                 })
             counter += 1
 

@@ -10,7 +10,6 @@ function debounce(fn, time){
 }
 
 function updateCodeValidationOutput(type, title, text, otherInfo) {
-  console.log(otherInfo);
   const codeValidationOutput = $('#code-validation-output');
   const codeValidationOutputTitle = $('#code-validation-output-title');
   const codeValidationOutputText = $('#code-validation-output-text');
@@ -32,7 +31,15 @@ function updateCodeValidationOutput(type, title, text, otherInfo) {
         </strong>
         parameters.
       </p>
-      <p> Write your test function in here and click on the "evaluate" button </p>
+      <p> Write your test function in the following textarea and click on the "evaluate" button
+        <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
+          <p>
+            This is the test function that will be evaluated to check the function that players will write
+            to win the boss fight question. If players functions return the same results you have here, then they won
+            the boss fight question.
+          </p>
+        "></i>
+      </p>
       <p>
         <input type="hidden" name="answer_correct[]" class="form__input" value="YES">
         <input id="boss-fight-answer" type="hidden" name="answer[]" class="form__input" value="YES">
@@ -40,27 +47,41 @@ function updateCodeValidationOutput(type, title, text, otherInfo) {
       </p>
       <p><button class="btn btn-primary" id="evaluate-code">Evaluate</button></p>
       <p id="evaluation-result-text"></p>`;
-    let questionText = `Write a function named "${otherInfo.name}" that accepts ${otherInfo.paramsNumber} parameters, `;
     codeValidationOutputText.html(newText);
-    $('#evaluate-code').click(function (e) {
-      e.preventDefault();
-      const program = `
-        ${document.getElementById('code-battle-quest-boss-fight-textarea').value}
-        ${document.getElementById('code-validation-test-function').value}
-      `;
-      try {
-        const evaluationResult = eval(program);
-        questionText = `${questionText}so that calling "${document.getElementById('code-validation-test-function').value}" `;
-        questionText = `${questionText}will return "${evaluationResult}"`
-        $('#evaluation-result-text').html(`Great, everything seems to work properly. The text of your question will be: <br/> <i><strong class="text-primary">${questionText}</strong></i>.`);
-        $($('.boss_fight_question')[0]).find('input[name="question[]"]').val(questionText);
-        $('#boss-fight-answer').val(`${document.getElementById('code-validation-test-function').value}---BOSS-FIGHT-ANSWER-DELIMITER---${evaluationResult}`);
-        // $(evaluationResultText).insertAfter(e.target);
-      } catch (err) {
-        _alert(err);
-      }
-    });
+    $('[data-toggle="tooltip"]').bootstrapTooltip();
+    $('#evaluate-code').click({
+      name: otherInfo.name,
+      paramsNumber: otherInfo.paramsNumber,
+    }, evaluateTestFunction);
+     // do stuffs on boss fight question when in "edit quest" page
+    if (document.getElementById('code-validation-output-test-function-edit')) {
+      const testFunctionEditMode = $('#code-validation-output-test-function-edit').val();
+      $('#code-validation-test-function').text(testFunctionEditMode);
+      $('#evaluate-code').trigger('click');
+      window.setTimeout(function () { $('#code-validation-output-test-function-edit').remove()}, 5000);
+    }
     return true;
+  }
+};
+
+function evaluateTestFunction(e) {
+  e.preventDefault();
+  const name = e.data.name;
+  const paramsNumber = e.data.paramsNumber
+  let questionText = `Write a function named "${name}" that accepts ${paramsNumber} parameters, `;
+  const program = `
+    ${document.getElementById('code-battle-quest-boss-fight-textarea').value}
+    ${document.getElementById('code-validation-test-function').value}
+  `;
+  try {
+    const evaluationResult = eval(program);
+    questionText = `${questionText}so that calling "${document.getElementById('code-validation-test-function').value}" `;
+    questionText = `${questionText}will return "${evaluationResult}"`
+    $('#evaluation-result-text').html(`Great, everything seems to work properly. The text of your question will be: <h5 class="text-primary" style="margin-top: 17px; font-weight:bold;">${questionText}</h5>`);
+    $($('.boss_fight_question')[0]).find('input[name="question[]"]').val(questionText);
+    $('#boss-fight-answer').val(`${document.getElementById('code-battle-quest-boss-fight-textarea').value}---BOSS-FIGHT-ANSWER-DELIMITER---${document.getElementById('code-validation-test-function').value}---BOSS-FIGHT-ANSWER-DELIMITER---${evaluationResult}`);
+  } catch (err) {
+    _alert(err);
   }
 };
 
@@ -70,11 +91,14 @@ function realTimeCodeValidation(e) {
     const codeBody = parseResult.body;
     if (codeBody.length === 1) {
       const funct = _.find(codeBody, { type: "FunctionDeclaration" });
+      if (!funct) {
+        updateCodeValidationOutput('error', 'No functions found!', 'You have to declare your sample function for the boss fight question.');
+      }
       const otherInfo = {
         name: funct.id.name,
         paramsNumber: 0,
       }
-      updateCodeValidationOutput('ok', 'Great!', 'Your code seems to be valid', otherInfo);
+      updateCodeValidationOutput('ok', 'Great!', 'Your code seems to be valid.<br/>', otherInfo);
       const functBody = funct.body;
       const functParams = funct.params;
 
@@ -82,7 +106,7 @@ function realTimeCodeValidation(e) {
         updateCodeValidationOutput('error', 'No nested functions!', 'Currently, nested functions are not allowed');
       } else if (functParams.length > 0) {
         otherInfo.paramsNumber = functParams.length;
-        updateCodeValidationOutput('ok', 'Great!', 'Your code seems to be valid', otherInfo);
+        updateCodeValidationOutput('ok', 'Great!', 'Your code seems to be valid.<br/>', otherInfo);
       }
 
     } else if (codeBody.length > 1) {
@@ -138,12 +162,21 @@ $(document).ready(function() {
       </select>
     </div>
     <span>
-      <label class="form__label" for="points">${gettext('Insert the code for the boss fight')}</label>
+      <label class="form__label" for="points">${gettext('Insert your sample function for the boss fight')}</label>
+      <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="
+        <p>
+          Here you have to write a <strong>sample function</strong> that players can use to win the boss fight question.
+        </p>
+        <p>
+          <strong>Note: </strong> players will not need to repeat exactly what you write here, but a sample function is required
+          to continue to create the quest. Write it and follow instructions in the callout below the following textarea.
+        </p>
+      "></i>
       <textarea id="code-battle-quest-boss-fight-textarea" class="form__input" cols="50" rows="10" required></textarea>
     </span>
     <div id="code-validation-output" class="card text-white bg-success mb-3">
       <div id="code-validation-output-title" class="card-header">Start writing your code!</div>
-      <div class="card-body">
+      <div class="card-body bg-white text-dark">
         <p id="code-validation-output-text" class="card-text">Fill up the textarea above with your code. You are allowed to insert only one function. You'll see outputs of validation of your code here.</p>
       </div>
     </div>
@@ -156,6 +189,13 @@ $(document).ready(function() {
     $(question_type_select_template).insertBefore(seconds_to_respond_label);
   }
 
+  // do stuffs on boss fight question when in "edit quest" page
+  const textArea = document.getElementById('code-battle-quest-boss-fight-textarea');
+  if (textArea) {
+    $(textArea).keyup(debounce(realTimeCodeValidation, 250));
+    textArea.dispatchEvent(new KeyboardEvent('keyup', { 'key': 'f' }));
+  }
+
   /**
    * Controllers fot questions and answers in code battle quest style
    */
@@ -164,7 +204,12 @@ $(document).ready(function() {
     e.preventDefault();
     // creates a new question battle code clone
     const new_question_code_battle = question_code_battle_template.clone();
-    $(new_question_code_battle).find('input[name="question[]"]').val('').prop('disabled', true);
+
+    if (e.target.value === 'boss_fight_question') {
+      $(new_question_code_battle).find('input[name="question[]"]').val('').attr('type', 'hidden');
+      $(new_question_code_battle).find('label[for="question[]"]').next('i').remove();
+      $(new_question_code_battle).find('label[for="question[]"]').remove();
+    }
 
     // quiz type selected
     if (e.target.value === 'quiz_question') {
