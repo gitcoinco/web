@@ -10,6 +10,7 @@ from django.utils.text import slugify
 # Create your models here.
 from economy.models import SuperModel
 
+
 num_backgrounds = 33
 
 
@@ -239,14 +240,17 @@ class Quest(SuperModel):
     def questions_safe_code_battle(self, idx):
         # strips out all correctness repsonses so that the client may see the question
         # without being able to see the answer
-        # if the question is a boss_fight_question in code_battle style, it removes the answers array entirely
+        # if the question is a boss_fight_question in code_battle style, it removes the sample function from the correct answer
         try:
             question = self.questions[idx]
             num_responses = question['responses']
             for i in range(0, len(num_responses)):
-                del question['responses'][i]['correct']
-            if question['question_type'] == 'boss_fight_question':
-                del question['responses']
+                if question['question_type'] != 'boss_fight_question':
+                    del question['responses'][i]['correct']
+                else:
+                    del question['responses'][i]['correct']
+                    del question['responses'][i]['answer']
+                    del question['responses'][i]['answerTokenized'][0]
 
             return question
         except:

@@ -20,7 +20,26 @@
 <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
 <link rel="stylesheet" href="{% static 'v2/css/jquery-ui.css' %}" />
 <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
-
+<style>
+   #hints-boss-fight-answer-container {
+     margin-top: 20px;
+   }
+   .hints-color-red *{
+     color: red;
+   }
+   .hints-color-white *{
+     color: white;
+   }
+   #hints-concierge-img {
+     height: 40px;
+   }
+   #header {
+     text-transform: none;
+   }
+   .answer * {
+     text-transform: none;
+   }
+</style>
 
 {% if not hidden and is_owner_or_staff %}
 <div class="alpha-warning font-caption mb-0" style=" text-align: right;">
@@ -109,6 +128,9 @@
     </div>
 
   </div>
+  <script src="{% static "v2/js/lib/acorn.js" %}"></script>
+  <script src="{% static "v2/js/lib/walk.js" %}"></script>
+  <script src="{% static "v2/js/lib/lodash.js" %}"></script>
   <script>
     document.kudos_reward = {
       'name': '{{quest.kudos_reward.ui_name}}',

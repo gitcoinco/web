@@ -163,7 +163,7 @@
           </div>
           <div class="questions-container">
           {% for question in questions %}
-            <div class="form-group question pl-3">
+            <div class="form-group question {% if question.question_type == 'boss_fight_question' %} boss_fight_question {% endif %} pl-3">
               <a href="#" class="float-right close_question">X</a>
               <input type="hidden" name="question_type[]" class="form__input question_type" value="{{question.question_type}}" required>
               <label class="form__label" for="points">{% trans "Question" %}</label>

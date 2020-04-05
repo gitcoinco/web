@@ -53,7 +53,6 @@ def details(request, quest):
     # process form submission
     try:
         payload = json.loads(request.body)
-        logging.critical(payload)
         qn = payload.get('question_number')
         can_continue = True
         did_win = False
@@ -65,15 +64,16 @@ def details(request, quest):
             else:
                 qa = get_active_attempt_if_any(request.user, quest, state=(qn-1))
                 this_question = quest.questions[qn-1]
-                correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']] if this_question['question_type'] != 'boss_fight_question' else [re.sub(r"[\n\t\s]*", "", ele['answer']) for ele in this_question['responses'] if ele['correct']]
-                their_answers = [unescape(ele) for ele in payload.get('answers')] if this_question['question_type'] != 'boss_fight_question' else [re.sub(r"[\n\t\s]*", "", unescape(ele)) for ele in payload.get('answers')]
+                correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']] if this_question['question_type'] != 'boss_fight_question' else [ele['answerTokenized'][2] for ele in this_question['responses'] if ele['correct']] # [re.sub(r"[\n\t\s]*", "", ele['answer']) for ele in this_question['responses'] if ele['correct']]
+                their_answers = [unescape(ele) for ele in payload.get('answers')] if this_question['question_type'] != 'boss_fight_question' else [unescape(ele) for ele in payload.get('answers')] # else [re.sub(r"[\n\t\s]*", "", unescape(ele)) for ele in payload.get('answers')]
+                logging.critical(their_answers)
+                logging.critical(correct_answers)
                 this_time_per_answer = time_per_answer
                 answer_level_seconds_to_respond = payload.get('seconds_to_respond', None)
                 if answer_level_seconds_to_respond:
                     this_time_per_answer = answer_level_seconds_to_respond
                 is_out_of_time = (timezone.now() - qa.modified_on).seconds > this_time_per_answer + time_per_answer_buffer
                 did_they_do_correct = set(correct_answers) == set(their_answers) or (this_question.get('any_correct', False) and len(their_answers))
-                logging.critical(did_they_do_correct)
                 can_continue = did_they_do_correct and not is_out_of_time
                 if can_continue:
                     qa.state += 1

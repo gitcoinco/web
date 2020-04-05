@@ -1,3 +1,107 @@
+/* function debounce(fn, time){
+  let timeout;
+
+  return function() {
+    const functionCall = () => fn.apply(this, arguments);
+
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  }
+} */
+
+function updateHints(type, title, text, otherInfo) {
+  const hintsContainer = $('#hints-boss-fight-answer-container');
+  const hintsTitle = $('#hints-boss-fight-answer-title');
+  const hintsText = $('#hints-boss-fight-answer-text');
+  hintsTitle.html(title);
+  hintsText.html(text);
+
+  if (type === 'error') {
+    hintsContainer.addClass('hints-color-red').removeClass('hints-color-white');
+  } else if (type === 'ok') {
+    hintsContainer.addClass('hints-color-white').removeClass('hints-color-red');
+    return true;
+  }
+};
+
+function realTimeCodeValidation(e) {
+  try {
+    let canContinue = true;
+    const parseResult = acorn.parse(e.target.value, /* {
+      onToken: function (t) {
+        console.log(t);
+      }
+    } */);
+    /* var tokens = [...acorn.tokenizer(e.target.value)];
+    for (let i = 0; i <= tokens.length; i++) {
+      if (tokens[i].value === 'return' && tokens[i + 1]) {
+        const nextToken = tokens[i + 1];
+        if (nextToken.value === e.data.testResult) {
+          updateHints('error', 'DO NOT TRY TO CHEAT HIM!', `He will destroy you if you try to cheat him ... Are you using a simple "return ${nextToken.value}"? Come on, use your function arguments!`);
+          canContinue = false;
+        }
+      }
+    } */
+
+
+    // things that must be avoided by players
+    acorn.walk.simple(parseResult, {
+      /* Function(node) {
+        console.log(node);
+      }, */
+      ReturnStatement(node) {
+        if (node.argument.value === e.data.testResult) {
+          updateHints('error', 'DO NOT TRY TO USE SIMPLE WEAPONS TO HIM!', `He will destroy you if you use that sample return statement ... Come on do something cleaver (i.e. use your function arguments)!`);
+          canContinue = false;
+        }
+      },
+    });
+    if (!canContinue) {
+      return false;
+    }
+
+    const codeBody = parseResult.body;
+    if (codeBody.length === 1) {
+      const codeTextArea = $('#boss-fight-question').val();
+      const program = `${codeTextArea}${e.data.testFunction}`;
+
+      const funct = _.find(codeBody, { type: "FunctionDeclaration" });
+      const functParams = funct.params;
+      const functName = funct.id.name;
+      if (functParams.length !== Number(e.data.testParams)) {
+        updateHints('error', 'Wrong Code!', `No no no! Your function accepts ${functParams.length} params, not exactly what you need to defeat the boss! Read carefully the question and fix it! Come on!`);
+        return false;
+      }
+      if (functName !== e.data.testFunctName) {
+        updateHints('error', 'Wrong Code!', `No no no! Your function name is "${functName}", not exactly what you need to defeat the boss! Read carefully the question and fix it! Come on!`);
+        return false;
+      }
+      try {
+        const evaluationResults = eval(program);
+        $('#boss-fight-question-answer').val(evaluationResults);
+        if (evaluationResults === e.data.testResult) {
+          updateHints('ok', 'Great!', 'Your code can defeat the boss! Submit it and smash the boss\' mouth');
+          return true;
+        } else {
+          updateHints('error', 'Wrong Code!', `No no no! Your code returns "${evaluationResults}", not exactly what you need to defeat the boss! Fix it! Hurry up!`);
+          return false;
+        }
+      } catch (err) {
+        updateHints('error', 'Wrong Code!', 'Hey! Your code is not the correct one to defeat the boss! Fix it! Hurry up!');
+        return false;
+      }
+    } else {
+      updateHints('error', 'Strange Code!', 'Hey this will not work! Are you sure that all your code is wrapped in only one function? Fix your code! Hurry up!');
+      return false;
+    }
+  } catch (err) {
+    // console.log(err);
+    if (err.name === 'SyntaxError') {
+      updateHints('error', 'Syntax Error!', 'Hey this will not work! Fix it! Hurry up!');
+      return false;
+    }
+  }
+};
 
 var start_quiz = async function() {
   document.quiz_started = true;
@@ -16,10 +120,10 @@ var start_quiz = async function() {
     // if the question is not of type boss_fight_question get the answers
     // if the question is of type boss_fight_question extracts and trims the code before sending it to the server
     for (var d = 0; d < $('.answer.selected').length; d += 1) {
-      if ($('.answer.selected')[d].id !== 'boss-fight-question') {
+      if ($('.answer.selected')[d].id !== 'boss-fight-question-answer') {
         answers[d] = $('.answer.selected a')[d].innerHTML;
       } else {
-        answers.push($('textarea#boss-fight-question').val());
+        answers.push($('#boss-fight-question-answer').val());
       }
     }
     var response = await post_state({
@@ -73,7 +177,16 @@ var start_quiz = async function() {
         html += '<li class=answer>(' + (i + 1) + ') <a href=#>' + ele + '</a></li>';
       }
     } else {
-      html += '<textarea id="boss-fight-question" class="answer selected" placeholder="Insert the code to fight the boss" cols="71" rows="20"></textarea>';
+      html += '<textarea id="boss-fight-question" placeholder="Insert the code to fight the boss" cols="71" rows="20"></textarea>';
+      html += '<input id="boss-fight-question-answer" class="answer selected" type="hidden" />';
+      html += `<div id="hints-boss-fight-answer-container" class="hints-color-white">
+        <h6>
+          <img id="hints-concierge-img" src="/static/v2/images/quests/enemies/helpful_guide.svg">
+          <span id="hints-boss-fight-answer-title">
+          Hurry up! Start writing your code, I will give you some helpful hint here!</span>
+          <span id="hints-boss-fight-answer-text"></span>
+        </h6>
+      </div>`
     }
 
 
@@ -85,6 +198,23 @@ var start_quiz = async function() {
     await $('#cta_button a').html('Submit Response 📨');
     await $('#header').html(question);
     await $('#desc').html(html);
+
+    // do stuffs when the question is the boss fight question
+    const textArea = document.getElementById('boss-fight-question');
+    if (textArea) {
+      const testFunction = possible_answers[0].answerTokenized[0];
+      const testResult = possible_answers[0].answerTokenized[1];
+      const testParams = possible_answers[0].answerTokenized[2];
+      const testFunctName = possible_answers[0].answerTokenized[3];
+      $(textArea).keyup({
+        testFunction: testFunction,
+        testResult: testResult,
+        testParams: testParams,
+        testFunctName: testFunctName,
+      }, realTimeCodeValidation);
+    }
+
+
     await $('#header').removeClass('hidden').fadeIn();
     await $('#desc').removeClass('hidden').fadeIn();
     await $('#cta_button').removeClass('hidden').fadeIn();
@@ -389,7 +519,6 @@ $(document).ready(function() {
   });
 
   if (document.quest) {
-    console.log(document.quest);
     start_quest();
   }
 

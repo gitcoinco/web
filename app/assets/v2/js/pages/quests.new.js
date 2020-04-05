@@ -74,12 +74,18 @@ function evaluateTestFunction(e) {
     ${document.getElementById('code-validation-test-function').value}
   `;
   try {
-    const evaluationResult = eval(program);
+    let evaluationResult = eval(program);
+    if (typeof evaluationResult === "object" || evaluationResult instanceof Array) {
+      // throw new Error('Sorry, function returning array and objects are currently not supported');
+      // evaluationResult = JSON.stringify(evaluationResult)
+    } else if (evaluationResult instanceof Array) {
+      // evaluationResult = `[${evaluationResult}]`;
+    }
     questionText = `${questionText}so that calling "${document.getElementById('code-validation-test-function').value}" `;
     questionText = `${questionText}will return "${evaluationResult}"`
     $('#evaluation-result-text').html(`Great, everything seems to work properly. The text of your question will be: <h5 class="text-primary" style="margin-top: 17px; font-weight:bold;">${questionText}</h5>`);
     $($('.boss_fight_question')[0]).find('input[name="question[]"]').val(questionText);
-    $('#boss-fight-answer').val(`${document.getElementById('code-battle-quest-boss-fight-textarea').value}---BOSS-FIGHT-ANSWER-DELIMITER---${document.getElementById('code-validation-test-function').value}---BOSS-FIGHT-ANSWER-DELIMITER---${evaluationResult}`);
+    $('#boss-fight-answer').val(`${document.getElementById('code-battle-quest-boss-fight-textarea').value}---BOSS-FIGHT-ANSWER-DELIMITER---${document.getElementById('code-validation-test-function').value}---BOSS-FIGHT-ANSWER-DELIMITER---${evaluationResult}---BOSS-FIGHT-ANSWER-DELIMITER---${paramsNumber}---BOSS-FIGHT-ANSWER-DELIMITER---${name}`);
   } catch (err) {
     _alert(err);
   }
