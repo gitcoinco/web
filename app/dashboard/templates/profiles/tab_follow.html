@@ -19,29 +19,56 @@
         <div class="avatar-container col-1 justify-content-center hide_min_viewport">
           <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.profile.handle }}" alt="">
         </div>
-        <div class="tab-projects__item-details col-2 d-flex flex-column bounty-detail">
-          <div class="d-flex">
-            <div class="font-weight-semibold font-subheader">{{user.profile.handle}}</div>
+        <div class="tab-projects__item-details col-3 d-flex flex-column bounty-detail">
+          <div class="d-flex flex-column">
+            <div class="font-weight-semibold font-header">{{user.profile.name}}</div>
+            <div class="text-highlight-gc-blue  font-smaller-1">{{user.profile.handle}}</div>
           </div>
         </div>
-        <div class="mb-0 mt-1 col-2">
+        <div class="mb-0 mt-1 col-5 d-flex flex-row align-items-center">
+        <div style="height: fit-content">
+          <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 mr-5 font-smaller-5 position-relative quick-link {% if not user.profile.email %} disabled  btn-gc-grey {% else %} btn-outline-gc-blue{% endif %}" href="mailto:{{user.profile.email}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ user.profile.handle }}'s Email">
+            <i class="far fa-envelope"></i>
+          </a>
+        </div>
+        <div class="mr-5"  style="height: fit-content">
           <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" data-openchat="{{user.profile}}">
             <i class="fas fa-comment-dots" data-placement="bottom" data-toggle="tooltip" data-html="true"
               title="Chat @{{ user.profile.handle }}">
             </i>
           </button>
         </div>
-        <div class="mb-0 mt-1 col-2">
-          <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="mailto:{{user.profile.data.email}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ user.profile.handle }}'s Email">
-            <i class="far fa-envelope"></i>
-          </a>
+        <div class="d-flex align-items-center" style="height: fit-content">
+          {% with followers=user.mutual_following %}
+            {% if followers|length == 1 %}
+                <div style="width: 60px">
+                    <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ followers.0.org.handle }}" alt="">
+                </div>
+                <p class="text-muted font-smaller-4 my-0">Followed by {{ followers.0.org.handle }}</p>
+            {% endif %}
+            {% if followers|length == 2 %}
+                <div style="width: 60px" class="d-flex flex-row align-items-center">
+                    <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px " src="/dynamic/avatar/{{ followers.0.org.handle }}" alt="">
+                    <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ followers.1.org.handle }}" alt="">
+                </div>
+                <p class="text-muted font-smaller-4 my-0">Followed by {{ followers.0.org.handle  }} and {{ followers.1.org.handle }}</p>
+            {% endif %}
+            {% if followers|length >= 3 %}
+                <div style="width: 60px" class="d-flex flex-row align-items-center">
+                    <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px" src="/dynamic/avatar/{{ followers.0.org.handle }}" alt="">
+                    <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px" src="/dynamic/avatar/{{ followers.1.org.handle }}" alt="">
+                    <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ followers.2.org.handle }}" alt="">
+                </div>
+                <p class="text-muted font-smaller-4 my-0">Followed by {{ followers.0.org.handle  }}, {{ followers.1.org.handle }} and {{ followers|length|add:-2}} others you follow</p>
+            {% endif %}
+          {% endwith %}
+        </div>
         </div>
         <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
-          {% if is_on_tribe %}
-            <button class="btn btn-outline-gc-green btn-sm m-2 px-2 font-caption" data-jointribe="{{user.profile.handle}}">Following<i class="fas fa-user font-smaller-4 ml-2"></i></button>
+          {% if user.mutual_follow %}
+            <button class="btn btn-sm m-2 px-4 font-caption py-1 font-weight-bold btn-outline-gc-green" style="border-width: 2px !important;" data-tribe="{{user.profile.handle}}">Following</button>
           {% else %}
-            <!-- If logged in user doesnt follow who ever is here, show blue follow button-->
-            <button class="btn btn-gc-blue btn-sm m-2 px-2 font-caption" data-jointribe="{{user.profile.handle}}">Follow<i class="fas fa-user-plus font-smaller-4 ml-2"></i></button>
+            <button class="btn btn-sm m-2 px-4 font-caption py-1 font-weight-bold btn-gc-blue" style="border-width: 2px !important;" data-tribe="{{user.profile.handle}}">Follow</button>
           {% endif %}
         </div>
       </div>
@@ -52,22 +79,56 @@
       {% for user in following %}
       <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
         <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-          <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.profile.handle }}" alt="">
+          <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.org.handle }}" alt="">
         </div>
-        <div class="tab-projects__item-details col-2 d-flex flex-column bounty-detail">
-          <div class="d-flex">
-            <div class="font-weight-semibold font-subheader">{{user.profile.handle}}</div>
+        <div class="tab-projects__item-details col-3 d-flex flex-column bounty-detail">
+          <div class="d-flex flex-column">
+            <div class="font-weight-semibold font-header">{{user.org.name}}</div>
+            <div class="text-highlight-gc-blue  font-smaller-1">{{user.org.handle}}</div>
           </div>
         </div>
-        <div class="mb-0 mt-1">
-          <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" data-openchat="{{user.profile}}">
-            <i class="fas fa-comment-dots" data-placement="bottom" data-toggle="tooltip" data-html="true"
-              title="Chat @{{ user.profile.handle }}">
+        <div class="mb-0 mt-1 col-5 d-flex flex-row align-items-center">
+        <div style="height: fit-content">
+          <a class="btn btn-sm flex-grow-1 mr-5 font-smaller-5 position-relative quick-link {% if not user.org.email %} disabled  btn-gc-grey {% else %} btn-outline-gc-blue{% endif %}" href="mailto:{{user.org.email}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ user.org.handle }}'s Email">
+            <i class="far fa-envelope"></i>
+          </a>
+        </div>
+        <div class="mr-5" style="height: fit-content">
+          <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" data-openchat="{{user.org}}">
+            <i class="fas fa-comment-dots" data-p lacement="bottom" data-toggle="tooltip" data-html="true"
+              title="Chat @{{ user.org.handle }}">
             </i>
           </button>
         </div>
-        <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
-          {% include 'profiles/follow.html' %}
+        <div class="d-flex align-items-center" style="height: fit-content">
+          {%  with followers=user.mutual_follower %}
+            {% if followers|length == 1 %}
+                <div style="width: 60px">
+                    <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ followers.0.profile.handle }}" alt="">
+                </div>
+                <p class="text-muted font-smaller-4 my-0">Followed by {{ followers.0.profile.handle }}</p>
+            {% endif %}
+            {% if followers|length == 2 %}
+                <div style="width: 60px" class="d-flex flex-row align-items-center">
+                    <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px " src="/dynamic/avatar/{{ followers.0.profile.handle }}" alt="">
+                    <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ followers.1.profile.handle }}" alt="">
+                </div>
+                <p class="text-muted font-smaller-4 my-0">Followed by {{ followers.0.profile.handle  }} and {{ followers.1.profile.handle }}</p>
+            {% endif %}
+            {% if followers|length >= 3 %}
+                <div style="width: 60px" class="d-flex flex-row align-items-center">
+                    <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px" src="/dynamic/avatar/{{ followers.0.profile.handle }}" alt="">
+                    <img class="rounded-circle" style="height: 25px; width: 25px; margin-right: -12px" src="/dynamic/avatar/{{ followers.1.profile.handle }}" alt="">
+                    <img class="rounded-circle" style="height: 25px; width: 25px;" src="/dynamic/avatar/{{ followers.2.profile.handle }}" alt="">
+                </div>
+                <p class="text-muted font-smaller-4 my-0">Followed by {{ followers.0.profile.handle  }}, {{ followers.1.profile.handle }} and {{ followers|length|add:-2}} others you follow</p>
+            {% endif %}
+          {% endwith %}
+        </div>
+
+        </div>
+        <div class="col-12 col-md-3 col-lg-3 font-caption my-auto text-right">
+          <button class="btn btn-sm m-4 px-4 font-caption py-1 font-weight-bold btn-outline-gc-green" style="border-width: 2px !important;" data-tribe="{{user.org.handle}}">Following</button>
         </div>
       </div>
       {% endfor %}

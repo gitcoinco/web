@@ -4881,3 +4881,18 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
+
+    @property
+    def mutual_follow(self):
+        return TribeMember.objects.filter(profile=self.org, org=self.profile).exists()
+
+    @property
+    def mutual_follower(self):
+        tribe_following = TribeMember.objects.filter(profile=self.profile).values('org')
+        return TribeMember.objects.filter(org=self.org, profile__in=tribe_following).exclude(profile=self.profile)
+
+    @property
+    def mutual_following(self):
+        tribe_following = TribeMember.objects.filter(org=self.profile).values('profile')
+        print(tribe_following)
+        return TribeMember.objects.filter(org__in=tribe_following, profile=self.org)

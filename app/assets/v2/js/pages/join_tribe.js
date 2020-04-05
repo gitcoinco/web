@@ -83,3 +83,61 @@ const tribeLeader = () => {
 };
 
 tribeLeader();
+
+const newManageTribe = () => {
+  $('[data-tribe]').each(function(index, elem) {
+    $(elem).mouseenter(function(e) {
+      if ($(elem).hasClass('btn-outline-gc-green')) {
+        $(elem).addClass('btn-gc-outline-red').text('Unfollow');
+        $(elem).removeClass('btn-outline-gc-green');
+      }
+    }).mouseleave(function(e) {
+      if ($(elem).hasClass('btn-gc-outline-red')) {
+        $(elem).removeClass('btn-gc-outline-red');
+        $(elem).addClass('btn-outline-gc-green').text('Following');
+      }
+    });
+
+    $(elem).focus(function(e) {
+      if ($(elem).hasClass('btn-outline-gc-green')) {
+        $(elem).addClass('btn-gc-outline-red').text('Unfollow');
+        $(elem).removeClass('btn-outline-gc-green');
+      }
+    }).focusout(function(e) {
+      if ($(elem).hasClass('btn-gc-outline-red')) {
+        $(elem).removeClass('btn-gc-outline-red');
+        $(elem).addClass('btn-outline-gc-green').text('Following');
+      }
+    });
+
+    $(elem).on('click', function(e) {
+      if (!document.contxt.github_handle) {
+        e.preventDefault();
+        _alert('Please login first.', 'error');
+        return;
+      }
+
+      $(elem).attr('disabled', true);
+      e.preventDefault();
+      const tribe = $(elem).data('tribe');
+      const url = `/tribe/${tribe}/join/`;
+      const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+
+      $.when(sendJoin).then(function(response) {
+        $(elem).attr('disabled', false);
+        $(elem).attr('member', response.is_member);
+        if (response.is_member) {
+          console.log('Is member')
+          $(elem).addClass('btn-outline-gc-green').removeClass([ 'btn-gc-blue', 'btn-gc-outline-red' ]).text('Following');
+        } else {
+          console.log('no member')
+          $(elem).removeClass([ 'btn-outline-gc-green', 'btn-gc-outline-red' ]).addClass('btn-gc-blue').text('Follow');
+        }
+      }).fail(function(error) {
+        $(elem).attr('disabled', false);
+      });
+    });
+  });
+};
+
+newManageTribe();
