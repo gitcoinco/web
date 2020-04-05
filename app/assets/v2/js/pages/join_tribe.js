@@ -127,10 +127,8 @@ const newManageTribe = () => {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
         if (response.is_member) {
-          console.log('Is member')
           $(elem).addClass('btn-outline-gc-green').removeClass([ 'btn-gc-blue', 'btn-gc-outline-red' ]).text('Following');
         } else {
-          console.log('no member')
           $(elem).removeClass([ 'btn-outline-gc-green', 'btn-gc-outline-red' ]).addClass('btn-gc-blue').text('Follow');
         }
       }).fail(function(error) {

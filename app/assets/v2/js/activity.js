@@ -664,7 +664,7 @@ $(document).ready(function() {
             </a>
           </div>
           `;
-        }app/dashboard/templates/profiles/tab_follow.html
+        }
         let html = `
         ${show_more_box}
         <div class="row comment_row mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
