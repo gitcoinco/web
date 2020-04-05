@@ -4096,17 +4096,73 @@ def hackathon_registration(request):
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
-    
-    events = {
-        'current': HackathonEvent.objects.current().filter(visible=True).order_by('start_date'),
-        'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
-        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
-    }
+
+    current_hackathon_event = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
+    upcoming_hackathon_event = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
+    finished_hackathon_event = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
+
+    network = get_default_network()
+
+    tabs = [
+        ('current', current_hackathon_event.count()),
+        ('upcoming', upcoming_hackathon_event.count()),
+        ('finished', finished_hackathon_event.count()),
+    ]
+
+    hackathon_events = []
+    tribes = []
+
+    if current_hackathon_event.count():
+        for event in current_hackathon_event:
+            event_bounties = Bounty.objects.filter(event=event, network=network)
+
+            hackathon_events.append({
+                'title': 'current',
+                'hackathon': event,
+                'value_in_usdt': sum(
+                    prize_usdt.value_in_usdt_now
+                    for prize_usdt
+                    in event_bounties
+                ),
+                'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
+            })
+
+    if upcoming_hackathon_event.count():
+        for event in upcoming_hackathon_event:
+            event_bounties = Bounty.objects.filter(event=event, network=network)
+
+            hackathon_events.append({
+                'title': 'upcoming',
+                'hackathon': event,
+                'value_in_usdt': sum(
+                    prize_usdt.value_in_usdt_now
+                    for prize_usdt
+                    in event_bounties
+                ),
+                'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
+            })
+
+    if finished_hackathon_event.count():
+        for event in finished_hackathon_event:
+            event_bounties = Bounty.objects.filter(event=event, network=network)
+
+            hackathon_events.append({
+                'title': 'finished',
+                'hackathon': event,
+                'value_in_usdt': sum(
+                    prize_usdt.value_in_usdt_now
+                    for prize_usdt
+                    in event_bounties
+                ),
+                'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
+            })
+
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
-        'events': events,
+        'tabs': tabs,
+        'events': hackathon_events,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 

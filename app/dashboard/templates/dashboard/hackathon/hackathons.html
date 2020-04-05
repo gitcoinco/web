@@ -57,9 +57,9 @@
       <div id="tabs" class="row my-4">
         <div class="container">
           <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-            {% for title, hackathons in events.items %}
+            {% for title, count in tabs %}
               <li class="nav-item">
-                <a class="nav-link nav-line {% if title == 'current' %}active{% endif %}" href="#" data-href="{{ title }}" style="{% if title == 'current' %}font-weight: 700;{% endif %}">{{ title|title }} ({{ hackathons|length }})</a>
+                <a class="nav-link nav-line {% if title == 'current' %}active{% endif %}" href="#" data-href="{{ title }}" style="{% if title == 'current' %}font-weight: 700;{% endif %}">{{ title|title }} ({{ count }})</a>
               </li>
             {% endfor %}
           </ul>
@@ -67,9 +67,8 @@
       </div>
 
       <div class="row my-4">
-      {% for title, hackathons in events.items %}
-      {% if hackathons|length %}
-        {% for hackathon in hackathons %}
+      {% if events|length %}
+        {% for event in events %}
         <style>
           #{{event.hackathon.slug}} .card-img-top {
             background: {% firstof event.hackathon.background_color or 'rgb(25, 0, 63)' %};
@@ -77,9 +76,9 @@
         </style>
 
 
-        <div class="col-xs-12 col-sm-6 col-lg-4 hackathon-list {{ title }} {% if title != 'current' %}hidden{% endif %}">
-          <div class="card mb-5" id="{{hackathon.slug}}">
-            {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+        <div class="col-xs-12 col-sm-6 col-lg-4 hackathon-list {{ event.title }} {% if event.title != 'current' %}hidden{% endif %}">
+          <div class="card mb-5" id="{{event.hackathon.slug}}">
+            {% firstof event.hackathon.logo_svg or event.hackathon.logo as logo %}
             {% if logo %}
               <img class="card-img-top" width="364" src="{{ MEDIA_URL }}{{ logo }}" alt="Hackathon logo" />
             {% else %}
@@ -115,7 +114,6 @@
         </div>
         {% endfor %}
       {% endif %}
-      {% endfor %}
       </div>
 
 
