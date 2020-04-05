@@ -16,13 +16,10 @@
         "BTC":"0 BTC"
   },
   "links": {
-    "blog": "-",
     "twitter": "https://twitter.com/chainpayproject",
     "telegram": "https://t.me/chainpay_official",
     "github": "https://github.com/ChainPay-Cryptocurrency",
     "facebook": "https://www.facebook.com/chainpayofficial",
-    "reddit": "-",
-    "slack": "-",
     "medium": "https://medium.com/@chainpay"
   }
 }
