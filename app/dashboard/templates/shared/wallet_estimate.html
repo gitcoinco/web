@@ -55,7 +55,7 @@
   </div>
   <div class="metamask_recc">
     <label class="form__label" for="gasPrice">{% trans "Gas Price (gwei)" %}</label>
-    <input max=100 min=0 name='gasPrice' id='gasPrice' class="form__input" type="number" value="{{recommend_gas_price | floatformat:1}}" step="0.1" />
+    <input max=100 min=0 name='gasPrice' id='gasPrice' class="form__input" type="number" value="{{recommend_gas_price | floatformat:1}}" step="0.001" />
   </div>
   <div class="mt-3">
     <strong>{% trans "Help" %}:</strong>

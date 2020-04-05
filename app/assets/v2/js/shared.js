@@ -1028,15 +1028,6 @@ var actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-window.addEventListener('load', function() {
-  const listen = function() {
-    listen_for_web3_changes(true);
-  };
-
-  listen();
-  setInterval(listen, 5000);
-});
-
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
   const denomination = $('#token option:selected').text();
@@ -1387,7 +1378,10 @@ const updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
-  window.location.search = params.toString();
+  if (key != 'category') {
+    params.set('category', '');
+  }
+  window.location.href = '/grants/?' + decodeURIComponent(params.toString());
 };
 
 /**

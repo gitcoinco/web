@@ -1,3 +1,4 @@
+
 const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
 const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
@@ -21,22 +22,28 @@ $(document).ready(function() {
     const result = fetchData(endpoint);
 
     $.when(result).then(function(response) {
+      $('.pick-gif').remove();
 
       for (let i = 0; i < response.data.length; i++) {
         let item = response.data[i];
         let downsize = item.images.original.webp;
         let preview = item.images.fixed_width_downsampled.webp;
 
-        $('.gif-grid').append('<img class="pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
+        $('.gif-grid').append('<img width="300" class="pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
       }
       $('.pick-gif').on('click', selectGif);
     });
   }
 
-  $('.click-gif').on('click', function(e) {
-    e.preventDefault();
-    $(this).toggleClass('selected');
-    $('#status .gif-inject-target').toggleClass('show');
+  $('#btn_gif').on('click', function(e) {
+    window.setTimeout(function() {
+      $('#search-gif').focus();
+      console.log($('#search-gif'));
+    }, 100);
+
+    if (!$('.pick-gif').length) {
+      injectGiphy('latest');
+    }
   });
 
   $('#search-gif').on('input', function(e) {
@@ -44,6 +51,9 @@ $(document).ready(function() {
     const query = e.target.value;
 
     injectGiphy(query);
+    if (!query) {
+      injectGiphy('latest');
+    }
   });
 
   if (button) {
@@ -233,6 +243,8 @@ $(document).ready(function() {
 
   });
 
+  $('#textarea').autogrow();
+
   // handle video button
   $('body').on('click', '#video-button', function(e) {
     e.preventDefault();
@@ -263,6 +275,7 @@ $(document).ready(function() {
       }
     });
 
+
   });
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
@@ -280,7 +293,7 @@ $(document).ready(function() {
         $('#char_count').text(len + '/' + max_len);
       }
     };
-    
+
     update_max_len();
     localStorage.setItem(lskey, $(this).val());
     if ($(this).val().trim().length > max_len) {
@@ -305,7 +318,7 @@ $(document).ready(function() {
     const data = new FormData();
     const message = $('#textarea');
     const the_message = message.val().trim();
-    const ask = $('.activity_type_selector .active input').val();
+    const ask = $('.activity_type_selector input:checked').val();
 
     data.append('ask', ask);
     data.append('data', the_message);
@@ -315,7 +328,7 @@ $(document).ready(function() {
       data.append('has_video', $('#video_container').length);
       data.append('video_gfx', $('#video_container').data('gfx'));
     }
-    
+
     message.val('');
     localStorage.setItem(lskey, '');
     data.append(
@@ -407,7 +420,6 @@ $(document).ready(function() {
       .catch(err => fail_callback());
   }
 
-  injectGiphy('latest');
 });
 window.addEventListener('DOMContentLoaded', function() {
   var button = document.querySelector('#emoji-button');
@@ -417,7 +429,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
   if (button && picker) {
     picker.on('emoji', function(emoji) {
-      document.querySelector('textarea').value += emoji;
+      document.querySelector('#textarea').value += emoji;
     });
 
     button.addEventListener('click', function() {
