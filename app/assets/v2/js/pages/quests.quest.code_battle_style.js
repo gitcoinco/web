@@ -180,12 +180,12 @@ var start_quiz = async function() {
       html += '<textarea id="boss-fight-question" placeholder="Insert the code to fight the boss" cols="71" rows="20"></textarea>';
       html += '<input id="boss-fight-question-answer" class="answer selected" type="hidden" />';
       html += `<div id="hints-boss-fight-answer-container" class="hints-color-white">
-        <h6>
+        <p>
           <img id="hints-concierge-img" src="/static/v2/images/quests/enemies/helpful_guide.svg">
           <span id="hints-boss-fight-answer-title">
-          Hurry up! Start writing your code, I will give you some helpful hint here!</span>
+          Hurry up! Start writing your code, I will give you helpful hints here!</span>
           <span id="hints-boss-fight-answer-text"></span>
-        </h6>
+        </p>
       </div>`
     }
 
