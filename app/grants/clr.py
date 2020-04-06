@@ -644,7 +644,7 @@ def grants_transaction_validator(list_contributions):
     PROVIDER = "wss://mainnet.infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
     w3 = Web3(Web3.WebsocketProvider(PROVIDER))
     check_transaction = lambda txid: w3.eth.getTransaction(txid)
-    check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} txid: {transaction_tax[:10]} -> status: 0 False - amount was off by 0.001 {bcolors.ENDC}")
+    check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} txid: {transaction_tax} -> status: 0 False - amount was off by 0.001 {bcolors.ENDC}")
     check_token = lambda token_address: len(token_address) == 42
     check_contract = lambda token_address, abi : w3.eth.contract(token_address, abi=abi)
     check_event_transfer =  lambda contract_address, search, txid : w3.eth.filter({ "address": contract_address, "topics": [search, txid]})
@@ -690,10 +690,10 @@ def grants_transaction_validator(list_contributions):
             if transaction.value > 0.001:
                 amount = w3.fromWei(transaction.value, 'ether')
                 print(
-                    f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax[:10]} {amount} ETH -> status: 1 {bcolors.ENDC}")
+                    f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax} {amount} ETH -> status: 1 {bcolors.ENDC}")
             else:
                 print(
-                    f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
+                    f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
 
     def transaction_status(transaction, txid):
         """This function is core for check grants transaction list"""
@@ -709,7 +709,7 @@ def grants_transaction_validator(list_contributions):
         human_readable_value = Decimal(int(contract_value)) / Decimal(10 ** decimals) if decimals else None
         if (transfer_event or deposit_event or approve_event):
             print(
-                f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
+                f"{bcolors.OKGREEN} {index_element} txid: {txid} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
 
         else:
             transaction_eth(txid)
@@ -744,14 +744,16 @@ def grants_transaction_validator(list_contributions):
                         print ("\t↳", end='')
                         check_transaction_contract(rtx)
 
-
                 except Exception as e:
+                    print('------------------------------')
                     print (e)
                     transaction_eth(transaction_tax)
-
+                    print('------------------------------')
 
                 except BadFunctionCallOutput as e:
+                    print('------------------------------')
                     print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]}  -> status: 0  {e} {bcolors.ENDC}")
+                    print('------------------------------')
 
 
 
