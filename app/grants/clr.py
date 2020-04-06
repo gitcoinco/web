@@ -43,6 +43,13 @@ from hexbytes import HexBytes
 from time import sleep
 from dashboard.utils import get_web3
 
+## web3 Exceptions
+class TransactionNotFound(Exception):
+    """
+    Raised when a tx hash used to lookup a tx in a jsonrpc call cannot be found.
+    """
+    pass
+
 # ERC20 / ERC721 tokens
 # Transfer(address,address,uint256)
 # Deposit(address, uint256)
@@ -675,6 +682,19 @@ def grants_transaction_validator(list_contributions):
         else:
             return "dropped"
 
+    def transaction_eth(transaction_tax):
+        transaction_receipt = w3.eth.getTransactionReceipt(transaction_tax)
+        if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
+            transaction_hash = transaction_receipt.transactionHash.hex()
+            transaction = check_transaction(transaction_hash)
+            if transaction.value > 0.001:
+                amount = w3.fromWei(transaction.value, 'ether')
+                print(
+                    f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax[:10]} {amount} ETH -> status: 1 {bcolors.ENDC}")
+            else:
+                print(
+                    f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
+
     def transaction_status(transaction, txid):
         """This function is core for check grants transaction list"""
         contract_address = transaction.to
@@ -691,7 +711,21 @@ def grants_transaction_validator(list_contributions):
             print(
                 f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
 
+        else:
+            transaction_eth(txid)
 
+    def check_transaction_contract(transaction_tax):
+        transaction = check_transaction(transaction_tax)
+        if transaction is not None:
+            token_address = check_token(transaction.to)
+            if token_address is not False and not token_address == '0x0000000000000000000000000000000000000000':
+                transaction_status(transaction, transaction_tax)
+            else:
+                transaction_eth(transaction_tax)
+
+        else:
+            print(
+                f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
 
 
     for index_transaction, index_valid in enumerate(df):
@@ -699,38 +733,26 @@ def grants_transaction_validator(list_contributions):
             if check_value is not None and not isinstance(check_value, float) and not isinstance(check_value, decimal.Decimal) and len(check_value) == 66:
                 transaction_tax = check_value
                 try:
-                    transaction = check_transaction(transaction_tax)
-                    if transaction is not None:
-                        token_address = check_token(transaction.to)
-                        if token_address is not False and not token_address == '0x0000000000000000000000000000000000000000':
-                            transaction_status(transaction, transaction_tax)
-                    else:
-                        print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
+                    check_transaction_contract(transaction_tax)
 
-                except Exception as e:
-                    print(e)
+                except TransactionNotFound:
                     rtx = getReplacedTX(transaction_tax)
                     if rtx == "dropped":
                         print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
                     else:
                         print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} False, replaced with tx: {rtx[:10]} -> status: 0 - tx failed {bcolors.ENDC}")
                         print ("\t↳", end='')
-                        transaction_status(transaction, rtx)
+                        check_transaction_contract(rtx)
+
 
                 except Exception as e:
-                    print(e)
-                    transaction_receipt = w3.eth.getTransactionReceipt(transaction_tax)
-                    if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
-                        transaction_hash = transaction_receipt.transactionHash.hex()
-                        transaction = check_transaction(transaction_hash)
-                        if transaction.value > 0.001:
-                            amount = w3.fromWei(transaction.value, 'ether')
-                            print (f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax[:10]} {amount} ETH -> status: 1 {bcolors.ENDC}")
-                        else:
-                            print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]} -> status: 0 - amount was off by 0.001 {bcolors.ENDC}")
+                    print (e)
+                    transaction_eth(transaction_tax)
 
 
                 except BadFunctionCallOutput as e:
                     print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]}  -> status: 0  {e} {bcolors.ENDC}")
+
+
 
 
