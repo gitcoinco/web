@@ -75,9 +75,9 @@ function requestFunds(username, amount, comments, tokenAddress, tokenName, succe
     body: formData
   }).then(function(json) {
     _alert('The funder has been notified', 'success');
-    success_callback()
-  }).catch(function (error) {
+    success_callback();
+  }).catch(function(error) {
     _alert('Something goes wrong, try later.', 'error');
-    failure_callback()
+    failure_callback();
   });
 }
