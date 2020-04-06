@@ -14,7 +14,7 @@ def find_txn_on_celo_explorer(fulfillment, network='mainnet'):
     payeeAddress = fulfillment.fulfiller_address
 
     # TODO: UPDATE WITH MAINNET URL. Using alfajores until then
-    blockscout_url = f'https://alfajores-blockscout.celo-testnet.org/api?module=account&action=txlist&address={funderAddress}'
+    blockscout_url = f'https://alfajores-blockscout.celo-testnet.org/api?module=account&action=tokentx&address={funderAddress}'
 
     blockscout_response = requests.get(blockscout_url).json()
     if blockscout_response['message'] and blockscout_response['result']:
@@ -22,7 +22,7 @@ def find_txn_on_celo_explorer(fulfillment, network='mainnet'):
             if (
                 txn['from'] == funderAddress.lower() and
                 txn['to'] == payeeAddress.lower() and
-                float(txn['value']) >= float(amount) and
+                float(txn['value']) == float(amount) and
                 not txn_already_used(txn['hash'], token_name)
             ):
                 return txn
