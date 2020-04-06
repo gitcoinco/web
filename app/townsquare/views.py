@@ -10,6 +10,7 @@ from django.utils import timezone
 
 import metadata_parser
 from app.redis_service import RedisService
+from bounty_requests.models import BountyRequest
 from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants, \
     TribeMember
 from kudos.models import Token
@@ -344,6 +345,13 @@ def town_square(request):
             'is_townsquare': True,
             'trending_only': bool(trending_only),
         }
+
+        if 'tribe:' in tab:
+            key = tab.split(':')[1]
+            profile = Profile.objects.get(handle=key.lower())
+            # if profile.is_org:
+            context['tribe'] = profile
+
         return TemplateResponse(request, 'townsquare/index.html', context)
 
     tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
@@ -393,11 +401,15 @@ def town_square(request):
         profile = Profile.objects.get(handle=key.lower())
         if profile.is_org:
             context['tribe'] = profile
+            suggested_bounties = BountyRequest.objects.filter(tribe=profile, status='o').order_by('created_on')
+            if suggested_bounties:
+                context['suggested_bounties'] = suggested_bounties
 
     response = TemplateResponse(request, 'townsquare/index.html', context)
     if request.GET.get('tab'):
         if ":" not in request.GET.get('tab'):
             response.set_cookie('tab', request.GET.get('tab'))
+
     return response
 
 

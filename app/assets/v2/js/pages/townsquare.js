@@ -171,6 +171,7 @@ $(document).ready(function() {
       $('#right_sidebar').html($(response).find('#right_sidebar').html());
       $('#left_sidebar').html($(response).find('#left_sidebar').html());
       $('#top_bar').html($(response).find('#top_bar').html());
+      $('#tribe_header').html($(response).find('#tribe_header').html());
       // bind more actions
       joinTribe();
       // collapse menu items

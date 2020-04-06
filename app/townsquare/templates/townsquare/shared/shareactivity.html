@@ -6,10 +6,14 @@
                   <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
                     <div class="status-avatar px-3">
                       <img class="avatar rounded-circle" src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% endif %}{% endif %}"/>
-                      {% if row.secondary_avatar_url %}
+                      {% if row.secondary_avatar_url  %}
                         <img class="avatar my-auto rounded-circle secondary_avatar" src="{{row.secondary_avatar_url}}" />
                       {% elif row.other_profile %}
                         <img class="avatar my-auto rounded-circle secondary_avatar" src="/dynamic/avatar/{{ row.other_profile.handle }}" />
+                      {% elif tribe %}
+                        <div class="position-relative">
+                          <img class="avatar rounded-circle my-auto secondary_avatar" src="/dynamic/avatar/{{ tribe.handle }}" />
+                        </div>
                       {% endif %}
                     </div>
                     <textarea

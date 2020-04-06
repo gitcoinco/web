@@ -115,7 +115,7 @@
           {% elif tab == 'orgs' %}
             {% include 'profiles/tab_orgs.html' %}
           {% elif tab == 'tribe' %}
-            {% include 'profiles/tab_tribe.html' %}
+            {% include 'profiles/tab_tribe.html' with show_bio=True %}
           {% elif tab == 'people' %}
             {% include 'profiles/tab_people.html' %}
           {% elif tab == 'activity' %}

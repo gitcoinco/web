@@ -1052,3 +1052,45 @@ body.green.offer_view .announce {
 .promo .close-promo i {
   font-weight: 100;
 }
+
+.basic {
+  background-image: url("/static/v2/images/header-bg.png");
+}
+
+.navigation {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+}
+
+.navigation a {
+  font-weight: 500;
+  padding: 0;
+}
+
+.navigation a.active {
+  font-weight: bold;
+  color: #0b0d9d;
+  border-bottom: 4px solid #0b0d9d;
+}
+
+.status-avatar .secondary_avatar {
+  position: absolute;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  max-width: 1.5rem;
+  min-height: 1.5rem;
+  top: -1.1rem;
+  right: -9px;
+}
+
+#tribe_header img {
+  height:  9.063rem;
+}
+
+#tribe_header .tribe-name {
+  font-size: 2.7rem;
+  color: white;
+}
+

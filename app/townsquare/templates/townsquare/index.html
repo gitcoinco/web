@@ -34,7 +34,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container-fluid header sticky-top">
       {% include 'home/nav.html' %}
     </div>
-    <div class="townsquare_main container-fluid">
+    <div class="townsquare_main">
+    {% if tribe %}
+      <div id="tribe_header" class="col-12 m-0 p-0" >
+        <div class="d-flex flex-column justify-content-center align-items-center {% if not tribe.profile_wallpaper %}basic {% endif %}" style="height: 266px; {% if tribe.profile_wallpaper %} background-image: url( {{ tribe.profile_wallpaper }} ) {% endif %}">
+          <img src="/dynamic/avatar/{{ tribe.handle }}" alt="{{ tribe.name }}" class=" m-0" />
+          <h4 class="tribe-name font-weight-semibold p-0 text-capitalize m-0">{{ tribe.name }}</h4>
+        </div>
+
+        <div class="navigation d-flex justify-content-center">
+          <a href="#" class="btn mr-4 active">
+              MMTownsquare
+          </a>
+          <button class="btn mr-4" data-openchat="{{tribe}}">
+            Chat
+          </button>
+          <a href="{% url 'hackathon' tribe.handle %}" class="btn mr-4">
+            Hackathons
+          </a>
+          <a href="{% url 'profile_by_tab' tribe.handle 'people' %}" class="btn mr-4">
+            People
+          </a>
+        </div>
+    {% endif %}
+      <div class="container-fluid">
       {% if is_staff and admin_link %}
       <div class="alpha-warning font-caption mb-0">
         <span class="font-weight-bold">Staff only</span>
@@ -137,9 +160,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
             <div class="actions_container col-12 col-md-4 col-lg-3">
             <div id=right_sidebar>
-              {% if SHOW_DRESSING %}
-
-                {% include 'townsquare/shared/tribe.html' %}
+            {% if SHOW_DRESSING %}
+              {% if tribe %}
+                {% include 'townsquare/shared/tribe.html' with show_info=True %}
+              {% else %}
                 {% include 'townsquare/shared/reflink.html' %}
 
                 <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
@@ -172,13 +196,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   {% include 'townsquare/shared/matchround.html' %}
                 {% endif %}
+              {% endif %}
                 </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
+    </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/activity_scripts.html' %}
