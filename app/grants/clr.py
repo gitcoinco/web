@@ -637,18 +637,30 @@ def grants_transaction_validator(list_contributions):
     else:
         df = pd.read_csv(list_contributions, sep=" ")
 
+
     from web3 import Web3
     from web3.exceptions import BadFunctionCallOutput
     import decimal
 
-    PROVIDER = "wss://mainnet.infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
-    w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+    PROVIDER = Web3.WebsocketProvider("wss://mainnet.infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID)
+    w3 = Web3(PROVIDER)
+
     check_transaction = lambda txid: w3.eth.getTransaction(txid)
     check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} txid: {transaction_tax[:10]} -> status: 0 False - amount was off by 0.001 {bcolors.ENDC}")
     check_token = lambda token_address: len(token_address) == 42
-    check_contract = lambda token_address, abi : w3.eth.contract(token_address, abi=abi)
-    check_event_transfer =  lambda contract_address, search, txid : w3.eth.filter({ "address": contract_address, "topics": [search, txid]})
+    check_contract = lambda token_address, abi : w3.eth.contract(w3.toChecksumAddress(token_address), abi=abi)
     get_decimals = lambda contract : int(contract.functions.decimals().call())
+
+    # check event filter
+    def check_event_transfer(contract_address, search, txid):
+        p = w3.eth.getTransactionReceipt(txid)
+        if p is not None:
+            for x in p.logs:
+                if (x.address == contract_address) and (x.topics[0].hex() == search):
+                    return True
+            return False
+
+
 
     # Colors for Console.
     class bcolors:
@@ -687,7 +699,7 @@ def grants_transaction_validator(list_contributions):
         if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
             transaction_hash = transaction_receipt.transactionHash.hex()
             transaction = check_transaction(transaction_hash)
-            if transaction.value > 0.001:
+            if transaction is not None and transaction.value > 0.001:
                 amount = w3.fromWei(transaction.value, 'ether')
                 print(
                     f"{bcolors.OKGREEN} {index_element} txid: {transaction_tax[:10]} {amount} ETH -> status: 1 {bcolors.ENDC}")
@@ -707,9 +719,11 @@ def grants_transaction_validator(list_contributions):
         contract_value = contract.decode_function_input(transaction.input)[1]['_value']
         contract_symbol = get_symbol(contract)
         human_readable_value = Decimal(int(contract_value)) / Decimal(10 ** decimals) if decimals else None
-        if (transfer_event or deposit_event or approve_event):
+        if transfer_event or deposit_event:
             print(
                 f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
+        elif approve_event is not None:
+            print (f"{bcolors.OKBLUE} {index_element} txid: {txid[:10]} Approval event {bcolors.ENDC}")
 
         else:
             transaction_eth(txid)
@@ -752,7 +766,3 @@ def grants_transaction_validator(list_contributions):
 
                 except BadFunctionCallOutput as e:
                     print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]}  -> status: 0  {e} {bcolors.ENDC}")
-
-
-
-
