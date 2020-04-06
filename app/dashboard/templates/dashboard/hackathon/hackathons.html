@@ -39,6 +39,42 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav_hackathons.html' %}
 
+      {% if featured %}
+      <div class="row justify-content-center my-3">
+        <div class="col-12 col-lg-7 mb-lg-n3 my-3">
+          <div class="box-cta rounded mb-lg-n3">
+            <div class="container">
+              <div class="row">
+              <div class="col-6 col-lg-6 mt-5">
+                <div class="row">
+                  <p class="font-bigger-2">Register now for</p>
+                  <h2>{{ featured.name }}</h2>
+                </div>
+                <div class="row mt-4">
+                  <a class="btn btn-gc-green text-center mr-2" href="{% url 'hackathon_onboard' featured.slug %}">Register</a>
+                  {% if featured_conversation %}
+                  <a class="btn button--primary shadow-none text-white" href="/townsquare?tab={{ featured_conversation }}">Join Conversation</a>
+                  {% endif %}
+                </div>
+              </div>
+              {% firstof featured.logo_svg or featured.logo as logo %}
+              {% if logo %}
+              <div class="col-2 col-lg-2" style="margin-left:4rem!important">
+                  <img width="256" src="{{MEDIA_URL}}{{logo}}" alt="Featured hackathon logo" />
+              </div>
+              {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="col-3 col-lg-3 mb-lg-n3 my-5">
+          <div class="box-cta rounded mb-lg-n3">
+            <h3 class="my-2">Planning a hackathon for companies?</h3>
+            <a href="https://hackathons.gitcoin.co/contact/" class="btn button--primary mt-5 mb-5 mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">Get Involved</a>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="container">

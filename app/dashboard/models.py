@@ -4484,6 +4484,8 @@ class HackathonEvent(SuperModel):
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
+    is_featured = models.BooleanField(help_text=_('Feature this hackathon on the hackathon list page.'), default=False)
+
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
 
@@ -4555,6 +4557,7 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+
 # method for updating
 @receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
 def psave_hackathonevent(sender, instance, **kwargs):
@@ -4573,7 +4576,11 @@ def psave_hackathonevent(sender, instance, **kwargs):
                 "visible_to":None,
                 'img_url': instance.logo.url if instance.logo else None,
             }
-            )
+        )
+
+    # only one hackathon event can have the is_featured boolean set to true
+    HackathonEvent.objects.filter(is_featured=True).exclude(pk=instance.pk).update(is_featured=False)
+
 
 
 class HackathonSponsor(SuperModel):
