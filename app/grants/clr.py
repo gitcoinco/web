@@ -693,6 +693,7 @@ def grants_transaction_validator(list_contributions):
 
 
 
+
     for index_transaction, index_valid in enumerate(df):
         for index_element, check_value in enumerate(df[index_valid]):
             if check_value is not None and not isinstance(check_value, float) and not isinstance(check_value, decimal.Decimal) and len(check_value) == 66:
@@ -731,6 +732,5 @@ def grants_transaction_validator(list_contributions):
 
                 except BadFunctionCallOutput as e:
                     print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]}  -> status: 0  {e} {bcolors.ENDC}")
-
 
 
