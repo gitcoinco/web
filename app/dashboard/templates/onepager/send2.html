@@ -80,10 +80,10 @@
     <div>
       <br>
       {% trans "Amount of" %}
-      <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" >
+      <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" data-token="{{ fund_request.token_name }}">
         <option value="0x0">ETH</option>
       </select>
-      <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
+      <input name="amount" type="text" placeholder="1.1" id="amount" value="{{ fund_request.amount }}" style="width: 170px; display: inline;">
     </div>
     <div id="usd_amount"> &nbsp;</div>
     <div id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></div><br>
