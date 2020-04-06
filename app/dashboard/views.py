@@ -4127,6 +4127,16 @@ def get_hackathons(request):
                 'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
             })
 
+            if event_bounties.current().count():
+                for bounty in event_bounties.current():
+                    for tribe in Profile.objects.filter(handle=bounty.org_name, is_org=True):
+                        tribes.append({
+                        'display_name': bounty.org_display_name,
+                        'logo_path': bounty.avatar_url,
+                        'members': tribe.follower_count,
+                        'path': tribe.absolute_url
+                        })
+
     if upcoming_hackathon_event.count():
         for event in upcoming_hackathon_event:
             event_bounties = Bounty.objects.filter(event=event, network=network)
@@ -4163,6 +4173,7 @@ def get_hackathons(request):
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'tabs': tabs,
         'events': hackathon_events,
+        'tribes': tribes,
     }
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 
