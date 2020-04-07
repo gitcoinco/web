@@ -1,0 +1,20 @@
+﻿{
+  "symbol": "ELS",
+  "address": "0x7686AF313F6339f9A1d5A9f687998565141439D4",
+  "overview": {
+    "en": "An independent, decentralized governance mechanism to stimulate and coordinate development. An open, intelligent privacy blockchain with an atomic interoperability multi-chain architecture. A service and ecosystem around decentralized financial service providers, ELS projects, distributed applications.",
+    "zh": "一个独立的，去中心化的治理机制，激励和协调的发展。一个开放的，具备原子交换互操作性多链架构的智能隐私区块链。一个围绕去中心化金融服务提供商、ELS项目，分布式应用的服务和生态系统。"
+  },
+  "email": "DemonElves@outlook.com",
+  "website": "https://DemonElves.com/",
+  "whitepaper": "https://cdn.jsdelivr.net/gh/DemonElves/js@1.0/disk/els_white%20paper1_0.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-03-27",
+  "initial_price": {
+      "USD": "0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ElvesDemon",
+    "telegram": "https://t.me/DemonElves"
+  }
+}
