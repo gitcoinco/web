@@ -1,0 +1,25 @@
+{
+  "symbol": "CPAY",
+  "address": "0x5825fBa40871aaaCba45E4b34629abB86520B807",
+  "overview":{
+        "en": "Chain Pay The largest decentralized payment system provides a digital asset ecosystem that empowers you to control your own money.",
+        "zh": ""
+  },
+  "email": "admin@chainpay.asia",
+  "website": "https://chainpay.asia/",
+  "whitepaper": "https://chainpay.asia/public/whitepaper/ChainPay.v1.1.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-01-20",
+  "initial_price":{
+        "ETH":"0 ETH",
+        "USD":"0 USD",
+        "BTC":"0 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/chainpayproject",
+    "telegram": "https://t.me/chainpay_official",
+    "github": "https://github.com/ChainPay-Cryptocurrency",
+    "facebook": "https://www.facebook.com/chainpayofficial",
+    "medium": "https://medium.com/@chainpay"
+  }
+}
