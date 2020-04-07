@@ -4530,6 +4530,7 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    banner = models.ImageField(null=True, blank=True)
     background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner, default to white')
     text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
@@ -4688,6 +4689,12 @@ class HackathonProject(SuperModel):
         choices=PROJECT_STATUS,
         blank=True
     )
+    message = models.CharField(
+        max_length=150,
+        blank=True,
+        default=''
+    )
+    looking_members = models.BooleanField(default=False)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
