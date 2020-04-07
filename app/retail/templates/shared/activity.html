@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize i18n static %}
+{% load humanize i18n static markdown %}
 <div class="box bg-white d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
   {% if row.activity_type == 'new_bounty' %}
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
@@ -222,7 +222,7 @@
           </a>
         {% endif %}
       :
-        <span>{{ row.metadata.title }}</span>
+        <span>{{ row.metadata.title | markdown | safe }}</span>
       {% elif row.activity_type == 'consolidated_leaderboard_rank'  or row.activity_type == 'consolidated_mini_clr_payout' %}
         {{row.metadata.copy|safe}}
 
