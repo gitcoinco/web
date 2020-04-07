@@ -59,9 +59,9 @@
       <h4 class="m-0 p-0">Description</h4>
       <div id="editor">
         {% if grant.description_rich %}
-          {{ grant.description_rich }}
+          {{ grant.description_rich | markdown | safe }}
         {% else %}
-          {{ grant.description }}
+          {{ grant.description | markdown | safe }}
         {% endif %}
       </div>
     </div>
