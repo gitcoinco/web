@@ -224,28 +224,28 @@
     </div>
 
 
-    {% if grant.categories and grant.categories.all %}
-      {% if not is_team_member or grant_is_inactive %}
+    {% if not is_team_member or grant_is_inactive %}
+      {% if grant.categories and grant.categories.all %}
         <div class="mb-2 mt-3 font-body">
           <p class="sub-title mb-1">{% trans "CATEGORIES" %}</p>
           {% for category in grant.categories.all %}
             <span class="btn btn-outline-gc-green py-1 font-weight-bold font-smaller-4">{{ category.category|title }}</span>
           {% endfor %}
         </div>
-      {% else %}
-        <p class="hidden" id="grant-type">{{ grant.grant_type }}</p>
-
-        <div id="edit-grant-category" class="mt-4 mb-2 font-body grant-item-multiselect">
-          <p class="sub-title mb-1">{% trans "CATEGORIES" %}</p>
-          <div class="form__select2">
-            <select id="grant-categories" class="form__input" name="grant-categories" multiple="multiple" disabled>
-              {% for category in grant.categories.all %}
-              <option value="{{ category.id }}" selected="selected">{{ category.category|title }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
       {% endif %}
+    {% else %}
+      <p class="hidden" id="grant-type">{{ grant.grant_type }}</p>
+
+      <div id="edit-grant-category" class="mt-4 mb-2 font-body grant-item-multiselect">
+        <p class="sub-title mb-1">{% trans "CATEGORIES" %}</p>
+        <div class="form__select2">
+          <select id="grant-categories" class="form__input" name="grant-categories" multiple="multiple" disabled>
+            {% for category in grant.categories.all %}
+            <option value="{{ category.id }}" selected="selected">{{ category.category|title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
     {% endif %}
 
     <div class="grant-item__member grant-item-multiselect my-4 font-body">

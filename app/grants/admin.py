@@ -81,7 +81,7 @@ class GrantAdmin(GeneralAdmin):
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories'
+        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -274,6 +274,7 @@ class PhantomFundingAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     list_display = ['id', 'github_created_on', 'from_ip_address', '__str__']
+    raw_id_fields = ['profile', 'grant']
 
     def github_created_on(self, instance):
         from django.contrib.humanize.templatetags.humanize import naturaltime

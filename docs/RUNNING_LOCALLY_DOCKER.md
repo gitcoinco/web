@@ -218,6 +218,17 @@ make superuser # docker-compose exec web python3 app/manage.py createsuperuser
 open http://localhost:8000/_administration
 ```
 
+#### Docker for-mac troubleshooting
+
+
+`Q: When building with docker on my mac, CPU usage is high and device is overheating what should I do?`
+
+Problems regarding docker and high CPU usage seem to be common on mac. One community user found that going to the resources section on Docker desktop and lowering CPU cores and disk image size to minimum improves this issue.
+
+```
+For more troubleshooting tips on this problem consult the docker for-mac repo issues [https://github.com/docker/for-mac/issues?q=cpu](https://github.com/docker/for-mac/issues?q=cpu)
+```
+
 #### Fix local test issues
 
 `Q: How can I attempt automatic remediation of eslint and isort test failures?`
