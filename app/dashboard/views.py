@@ -4088,9 +4088,9 @@ def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
     events = {
-        'current': HackathonEvent.objects.current().filter(visible=True).order_by('-start_date'),
-        'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date'),
-        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
+        'current': HackathonEvent.objects.current().filter(visible=True).order_by('start_date'),
+        'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
+        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('start_date'),
     }
     params = {
         'active': 'hackathons',
