@@ -152,6 +152,9 @@ $(document).ready(function() {
   $('#js-token').change(function(e) {
     const val = $(this).val();
     const is_eth = val == '0x0000000000000000000000000000000000000000';
+    if(val == '0xdac17f958d2ee523a2206206994597c13d831ec7'){
+      _alert("WARNING: USDT is not well supported, it is recommended to use $USDC or $DAI instead.", 'error', 2000);
+    }
 
     if (is_eth && $('#recurring_or_not').val() == 'recurring') {
       _alert('Sorry but this token is not supported for recurring donations', 'error', 1000);
