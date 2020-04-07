@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/gitcoinco/web#readme",
   "devDependencies": {
-    "cypress": "^3.8.3",
+    "cypress": "^3.4.1",
     "eslint": "^5.16.0",
     "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.2.0"
