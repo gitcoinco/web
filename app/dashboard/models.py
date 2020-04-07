@@ -4838,6 +4838,7 @@ class PortfolioItem(SuperModel):
     tags = ArrayField(models.CharField(max_length=50), default=list, blank=True)
     link = models.URLField(null=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='portfolio_items', on_delete=models.CASCADE, db_index=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.title} by {self.profile.handle}"

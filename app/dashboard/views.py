@@ -539,12 +539,11 @@ def unrated_bounties(request):
 @require_POST
 def remove_portfolio(request):
     portfolio_id = int(request.POST.get('portfolio_id'))
-    handle = request.user.profile.handle
 
     try:
-        profile = profile_helper(handle, True)
         portfolio_item = PortfolioItem.objects.get(id = portfolio_id)
-        portfolio_item.delete()
+        portfolio_item.is_active = False
+        portfolio_item.save()
         return JsonResponse({
             'status': 200,
         })
@@ -2664,7 +2663,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             portfolio_item.profile = request.user.profile
             portfolio_item.id = portfolio_id
             portfolio_item.link = request.POST.get('URL')
-            portfolio_item.tags = request.POST.get('tags').split(',')
+            portfolio_item.tags = request.POST.get('tags').split(',') if request.POST.get('tags') else None
             portfolio_item.save()
             messages.info(request, 'Portfolio been updated.')
         else:
