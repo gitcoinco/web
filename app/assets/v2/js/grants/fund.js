@@ -153,7 +153,7 @@ $(document).ready(function() {
     const val = $(this).val();
     const is_eth = val == '0x0000000000000000000000000000000000000000';
     if(val == '0xdac17f958d2ee523a2206206994597c13d831ec7'){
-      _alert("WARNING: USDT is not well supported, it is recommended to use $USDC or $DAI instead.", 'error', 2000);
+      _alert("WARNING: USDT is not well supported, it is recommended to use $USDC or $DAI instead. <a target=new href=https://twitter.com/owocki/status/1247546241862348801>More info here</a>", 'error', 2000);
     }
 
     if (is_eth && $('#recurring_or_not').val() == 'recurring') {
