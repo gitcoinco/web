@@ -364,7 +364,7 @@ $(document).ready(function() {
         console.log('grant amount: ' + grant_amount);
         console.log('gitcoin grant amount: ' + gitcoin_grant_amount);
         // don't need to approve for gitcoin_grant_amount since we will directly transfer it
-        realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + 1);
+        realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + approve_buffer);
       }
 
       let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
