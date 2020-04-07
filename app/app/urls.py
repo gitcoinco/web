@@ -112,6 +112,7 @@ urlpatterns = [
     url('mailing_list/hunters/', dashboard.views.hunters_mailing_list),
     url(r'^api/user/me', dashboard.views.oauth_connect, name='oauth_connect'),
     # api views
+    url(r'^api/v0.1/profile/remove_profile_portfolio', dashboard.views.remove_portfolio, name='remove_profile_portfolio'),
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/profile/(.*)?/activity.json', dashboard.views.profile_activity, name='profile_activity'),
     url(r'^api/v0.1/profile/(.*)?/earnings.csv', dashboard.views.profile_earnings, name='profile_earnings'),

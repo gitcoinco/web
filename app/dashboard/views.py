@@ -535,6 +535,23 @@ def unrated_bounties(request):
         'unrated': unrated_count,
     }, status=200)
 
+@csrf_exempt
+@require_POST
+def remove_portfolio(request):
+    portfolio_id = int(request.POST.get('portfolio_id'))
+    handle = request.user.profile.handle
+
+    try:
+        profile = profile_helper(handle, True)
+        portfolio_item = PortfolioItem.objects.get(id = portfolio_id)
+        portfolio_item.delete()
+        return JsonResponse({
+            'status': 200,
+        })
+    except (ProfileNotFoundException, ProfileHiddenException):
+        return JsonResponse({
+            'errors:' ['An error occured. Please try again.']
+        }, status=500)
 
 @csrf_exempt
 @require_POST
@@ -2640,21 +2657,32 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'portfolio':
         title = request.POST.get('project_title')
-        if title:
-            if request.POST.get('URL')[0:4] != "http":
-                messages.error(request, 'Invalid link.')
-            elif not request.POST.get('URL')[0:4]:
-                messages.error(request, 'Please enter some tags.')
-            elif not request.user.is_authenticated or request.user.profile.pk != profile.pk:
-                messages.error(request, 'Not Authorized')
-            else:
-                PortfolioItem.objects.create(
-                    profile=request.user.profile,
-                    title=title,
-                    link=request.POST.get('URL'),
-                    tags=request.POST.get('tags').split(','),
-                    )
-                messages.info(request, 'Portfolio Item added.')
+        portfolio_id = request.POST.get('id')
+        if portfolio_id:
+            portfolio_item = PortfolioItem.objects.get(id = portfolio_id)
+            portfolio_item.title = title
+            portfolio_item.profile = request.user.profile
+            portfolio_item.id = portfolio_id
+            portfolio_item.link = request.POST.get('URL')
+            portfolio_item.tags = request.POST.get('tags').split(',')
+            portfolio_item.save()
+            messages.info(request, 'Portfolio been updated.')
+        else:
+            if title:
+                if request.POST.get('URL')[0:4] != "http":
+                    messages.error(request, 'Invalid link.')
+                elif not request.POST.get('URL')[0:4]:
+                    messages.error(request, 'Please enter some tags.')
+                elif not request.user.is_authenticated or request.user.profile.pk != profile.pk:
+                    messages.error(request, 'Not Authorized')
+                else:
+                    PortfolioItem.objects.create(
+                        profile=request.user.profile,
+                        title=title,
+                        link=request.POST.get('URL'),
+                        tags=request.POST.get('tags').split(','),
+                        )
+                    messages.info(request, 'Portfolio Item added.')
     elif tab == 'earnings':
         context['earnings'] = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False).order_by('-created_on')
     elif tab == 'spent':

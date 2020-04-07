@@ -17,7 +17,7 @@
   </div>
 {% endif %}
 
-
+{% csrf_token %}
 {% if is_my_profile %}
   <div class="py-3 mt-3">
     <div class="py-1">
@@ -42,11 +42,13 @@
                 <label class="form__label" for="tags">Tags (comma seperated)</label>
                 <input name="tags" id="tags" class="form__input" type="text" placeholder="python, javascript" value="">
               </div>
+              <input name="id" id="id" type="hidden">
               <div class="col-12 col-md-3 pt-3">
                 <input class="mt-4 btn btn-gc-blue btn-sm font-caption font-weight-semibold"  type="submit" name="submit" id="submit" value="Add Project">
               </div>
             </div>
           </div>
+        </form>
       </div>
     </div>
   </div>
@@ -84,9 +86,11 @@
       <img class="rounded mr-3" src="{% avatar_url profile.handle %}" alt="">
       <div class="tab-projects__item-details" style="width: 70%">
         <div class="d-flex">
-          <h5 class="font-weight-semibold">{{pi.title}}</h5>&nbsp;
+          <h5 class="font-weight-semibold" id="portfolio_title">{{pi.title}}</h5>&nbsp;
           <small class="align-self-center">{{pi.created_on|naturaltime}}</small>
         </div>
+        <input type="hidden" id="portfolio_url" value="{{pi.link}}">
+        <input type="hidden" id="portfolio_tags" value='{{pi.tags|join:", "}}''>
         <div class="tag-list">
           {% for keyword in pi.tags %}
             <small class="tag-list__item">{{keyword}}</small>
@@ -95,8 +99,12 @@
       </div>
       <div class="float-right">
         {% if pi.link %}
-          <a class="btn btn-gc-blue btn-sm m-2" href="{{pi.link}}">View Work &gt;</a>
-        {% endif %}
+          <a class="btn btn-gc-blue btn-sm" href="{{pi.link}}">View Work &gt;</a>
+          {% if is_my_profile %}
+            <button type="button" data-id="{{pi.id}}" id="edit-portfolio-item" class="btn btn-gc-blue btn-sm">Edit Work</button>
+            <button type="button" data-id="{{pi.id}}" id="remove-portfolio-item" class="btn btn-gc-blue btn-sm">Delete</button>
+          {% endif %}
+          {% endif %}
       </div>
     </div>
   {% endfor %}

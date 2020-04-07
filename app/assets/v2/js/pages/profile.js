@@ -218,4 +218,51 @@ $(document).ready(function() {
       }
     });
   });
+
+  $('body').each(function(index) {
+  $(this).on('click', '.tab-projects__item #edit-portfolio-item', function() {
+    var id = this.getAttribute("data-id")
+    var portfolio_url = $('#portfolio_url').val()
+    var portfolio_title = $('#portfolio_title').text()
+    var portfolio_tags = $('#portfolio_tags').val()
+    $("#id").val(id)
+    $("#project_title").val(portfolio_title)
+    $("#URL").val(portfolio_url)
+    $("#tags").val(portfolio_tags)
+    $("#submit").val("Update changes")
+  });
+
+  $('.tab-projects__item').each(function(index) {
+    $(this).on('click', '#remove-portfolio-item', function() {
+      var portfolio_id = this.getAttribute("data-id");
+      var csrf_token = $('input[name="csrfmiddlewaretoken"]').attr('value')
+      $.ajax({
+        type: 'POST',
+        url: "/api/v0.1/profile/remove_profile_portfolio",
+        data: {
+          method: "delete",
+          portfolio_id,
+          csrfmiddlewaretoken: csrf_token
+        },
+        success: function(data) {
+          if (data.status === 200) {
+            location.reload();
+            _alert(
+              { message: gettext('Portfolio item has been removed.') },
+              'success'
+            );
+          } else {
+            _alert(
+              { message: gettext('An error occurred. Please try again.') },
+              'error'
+            );
+          }
+        },
+        error: function(xhr, status, error) {
+          // you know what to do!
+        }
+      })
+    })
+  });
+});
 }(jQuery));
