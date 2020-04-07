@@ -20,7 +20,7 @@ def find_txn_on_etc_explorer(fulfillment, network='mainnet'):
             if (
                 txn['from'] == funderAddress.lower() and
                 txn['to'] == payeeAddress.lower() and
-                float(txn['value']) >= float(amount) and
+                float(txn['value']) == float(amount) and
                 not txn_already_used(txn['hash'], token_name)
             ):
                 return txn
