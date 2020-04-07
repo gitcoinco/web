@@ -227,7 +227,7 @@ Problems regarding docker and high CPU usage seem to be common on mac. One commu
 
 ```
 For more troubleshooting tips on this problem consult the docker for-mac repo issues [https://github.com/docker/for-mac/issues?q=cpu](https://github.com/docker/for-mac/issues?q=cpu)
-````
+```
 
 #### Fix local test issues
 

@@ -5,7 +5,7 @@
  */
 
 window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 1000);
+  setInterval(listen_for_web3_changes, 5000);
 });
 
 const ethFulfillBounty = data => {
