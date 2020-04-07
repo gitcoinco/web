@@ -8,8 +8,6 @@
       placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
       data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
       style="height: 70px;"
-      v-model="name"
-      @keyup="renderMarkdown"
     ></textarea>
     <input type="hidden" name="what" value="{{what}}:{{whatid}}">
     <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
@@ -77,9 +75,6 @@
     <div class="row ml-2" style=" ">
         <img id="preview-img" class="m-auto" style="max-width: 80%; max-height: 350px;" src="">
     </div>
-  </div>
-  <div id="preview-markdown" class="mt-1 mb-2" style="top: initial; left: initial;">
-    {{ markdown }}
   </div>
 </div>
 <input type="hidden" name="what" value="{{what}}:{{whatid}}">

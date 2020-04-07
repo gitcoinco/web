@@ -273,5 +273,4 @@ $(document).ready(() => {
   });
   $('.select2-selection__choice').removeAttr('title');
 
-  markdownGrants();
 });
