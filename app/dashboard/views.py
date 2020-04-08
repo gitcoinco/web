@@ -964,7 +964,8 @@ def users_fetch(request):
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
-    if hackathon:
+    if hackathon and HackathonEvent.objects.filter(slug__iexact=hackathon).exists():
+        hackathon_event = HackathonEvent.objects.get(slug__iexact=hackathon)
         users = HackathonProject.objects.filter(hackathon__slug__iexact=hackathon).values_list('profiles', flat=True).distinct()
         profile_list = profile_list.filter(id__in=list(users))
 
@@ -1081,6 +1082,19 @@ def users_fetch(request):
         if user.data:
             user_data = user.data
             profile_json['blog'] = user_data['blog']
+
+        if hackathon:
+            projects = HackathonProject.objects.filter(profiles=user, hackathon=hackathon_event)
+
+            if projects.exists():
+                project = projects.first()
+                if project.looking_members:
+                    profile_json['status'] = 'looking-team-member'
+                    profile_json['message'] = project.message
+                profile_json['project'] = {
+                    'logo': project.logo.url if project.logo else hackathon_event.logo.url,
+                    'name': project.name
+                }
 
         all_users.append(profile_json)
 
