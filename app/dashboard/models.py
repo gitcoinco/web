@@ -2079,8 +2079,6 @@ class Activity(SuperModel):
         ('new_grant_contribution', 'Contributed to Grant'),
         ('new_grant_subscription', 'Subscribed to Grant'),
         ('killed_grant_contribution', 'Cancelled Grant Contribution'),
-        ('new_milestone', 'New Milestone'),
-        ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
         ('created_kudos', 'Created Kudos'),
         ('receive_kudos', 'Receive Kudos'),
