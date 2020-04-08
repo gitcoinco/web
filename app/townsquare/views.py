@@ -284,7 +284,7 @@ def get_suggested_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
         handles = TribeMember.objects.filter(profile=request.user.profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-created_on')[:5]
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-follower_count')[:5]
 
         for profile in tribes:
             handle = profile.handle
@@ -297,7 +297,7 @@ def get_suggested_tribes(request):
                 'avatar_url': f'/dynamic/avatar/{handle}',
                 'follower_count': profile.tribe_members.all().count()
             }
-            following_tribes = [tribe] + following_tribes
+            following_tribes = following_tribes + [tribe]
     return following_tribes
 
 
