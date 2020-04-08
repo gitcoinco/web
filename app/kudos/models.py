@@ -417,10 +417,13 @@ def postsave_token(sender, instance, created, **kwargs):
     if created:
         if instance.pk and instance.gen == 1 and not instance.hidden:
             from dashboard.models import Activity, Profile
+            gcb = Profile.objects.filter(handle='gitcoinbot').first()
+            if not gcb:
+                return
             kwargs = {
                 'activity_type': 'created_kudos',
                 'kudos': instance,
-                'profile': Profile.objects.filter(handle='gitcoinbot').first(),
+                'profile': gcb,
                 'metadata': {
                 }
             }

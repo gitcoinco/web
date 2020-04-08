@@ -297,7 +297,7 @@ def tipee_address(request, handle):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='15/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_3(request):
     """Handle the third stage of sending a tip (the POST).
 

@@ -38,6 +38,12 @@ $(document).ready(function() {
     }
   });
 
+  $('body').on('click', '.close-promo', function(e) {
+    e.preventDefault();
+    $('.promo').remove();
+    localStorage.setItem('hide_promo', true);
+  });
+
   $('body').on('click', '.top_offer', function(e) {
     document.location = $(this).find('a.btn').attr('href');
   });
@@ -176,10 +182,13 @@ $(document).ready(function() {
           $(this).click();
         }
       });
+      const hide_promo = localStorage.getItem('hide_promo');
 
+      if (!hide_promo) {
+        $('.promo').removeClass('hidden');
+      }
     });
   };
 
   load_dressing();
-
 }(jQuery));

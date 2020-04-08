@@ -1,4 +1,7 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+});
 
 $(document).ready(function() {
 
@@ -471,8 +474,10 @@ $(document).ready(function() {
 
 
   // like activity
-  $(document).on('click', '.like_activity, .flag_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity', function(e) {
     e.preventDefault();
+    const current_tab = getURLParams('tab');
+
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
       return;
@@ -488,12 +493,14 @@ $(document).ready(function() {
 
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
+      $(this).find('i').removeClass('far').addClass('fas');
     } else { // unlike
       $(this).find('span.action').removeClass('open');
       $(this).data('state', $(this).data('negative'));
       $(this).removeClass('animate-sparkle');
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
+      $(this).find('i').removeClass('fas').addClass('far');
     }
 
     // remote post
@@ -505,11 +512,16 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
     var parent = $(this).parents('.activity.box');
+    var self = $(this);
 
     parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
       parent.find('.loading').addClass('hidden');
+
+      if (!is_unliked && current_tab === 'my_favorites') {
+        self.parentsUntil('.activity_stream').remove();
+      }
     }).fail(function() {
       parent.find('.error').removeClass('hidden');
     });
@@ -586,6 +598,7 @@ $(document).ready(function() {
     if (getParam('tab') && getParam('tab').indexOf('activity:') != -1) {
       hide_after_n_comments = 100;
     }
+    const limit_hide_option = 10;
     // remote post
     var params = {
       'method': 'comment'
@@ -641,12 +654,13 @@ $(document).ready(function() {
         var show_more_box = '';
         var is_hidden = (num_comments - i) >= hide_after_n_comments && override_hide_comments != true;
         var is_first_hidden = i == 0 && num_comments >= hide_after_n_comments && override_hide_comments != true;
+        const show_all_option = num_comments > limit_hide_option;
 
         if (is_first_hidden) {
           show_more_box = `
-          <div class="row mx-auto show_more d-block text-center">
+          <div class="row mx-auto ${ show_all_option ? 'show_all' : 'show_more'} d-block text-center">
             <a href="#" class="text-black-60 font-smaller-5">
-              Show More
+            ${ show_all_option ? 'See all comments' : `Show More (<span class="comment-count">${num_comments - hide_after_n_comments}</span>)`}
             </a>
           </div>
           `;
@@ -781,14 +795,27 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.show_more', function(e) {
     e.preventDefault();
-    var num_to_unhide_at_once = 3;
+    const num_to_unhide_at_once = 3;
 
     for (var i = 0; i < num_to_unhide_at_once; i++) {
       get_hidden_comments($(this)).last().removeClass('hidden');
     }
     if (get_hidden_comments($(this)).length == 0) {
       $(this).remove();
+    } else {
+      $(this).find('.comment-count').text(get_hidden_comments($(this)).length);
     }
+  });
+
+  $(document).on('click', '.show_all', function(e) {
+    e.preventDefault();
+    const hiddenComments = get_hidden_comments($(this));
+
+    for (let i = 0; i < hiddenComments.length; i++) {
+      hiddenComments[i].classList.remove('hidden');
+    }
+
+    $(this).remove();
   });
 
   // post comment activity
@@ -861,6 +888,19 @@ $(document).ready(function() {
     }, 300);
   });
 
+  $(document).on('click', '.fund_issue', function(e) {
+    e.preventDefault();
+    const url = $(this).data('url');
+
+    copyToClipboard(url);
+    _alert('Link copied to clipboard.', 'success', 1000);
+    $(this).addClass('open');
+    const $target = $(this);
+
+    setTimeout(function() {
+      $target.removeClass('open');
+    }, 300);
+  });
 
   // auto open new comment threads
   setInterval(function() {

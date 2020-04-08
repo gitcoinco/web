@@ -86,6 +86,7 @@ from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
 from .export import (
@@ -96,7 +97,7 @@ from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
 from .models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
+    Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
     SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
@@ -106,9 +107,9 @@ from .notifications import (
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_etc_txn_status,
-    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty,
-    record_user_action_on_interest, release_bounty_to_the_public, sync_etc_payout, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
+    get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
+    release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -145,19 +146,6 @@ def org_perms(request):
             {'error': _('You must be authenticated via github to use this feature!')},
              status=401)
     return JsonResponse({'orgs': response_data}, safe=False)
-
-
-@staff_member_required
-def manual_sync_etc_payout(request, fulfillment_id):
-    fulfillment = BountyFulfillment.objects.get(pk=str(fulfillment_id))
-    if fulfillment.payout_status == 'done':
-        return JsonResponse(
-            {'error': _('Bounty payout already confirmed'),
-             'success': False},
-            status=401)
-
-    sync_etc_payout(fulfillment)
-    return JsonResponse({'success': True}, status=200)
 
 
 def record_user_action(user, event_name, instance):
@@ -253,7 +241,7 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
+def create_new_interest_helper(bounty, user, issue_message):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
@@ -261,8 +249,7 @@ def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
         profile_id=profile_id,
         issue_message=issue_message,
         pending=approval_required,
-        acceptance_date=acceptance_date,
-        signed_nda=signed_nda,
+        acceptance_date=acceptance_date
     )
     record_bounty_activity(bounty, user, 'start_work' if not approval_required else 'worker_applied', interest=interest)
     bounty.interested.add(interest)
@@ -381,12 +368,7 @@ def new_interest(request, bounty_id):
             status=401)
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
-        signed_nda = None
-        if request.POST.get("signed_nda"):
-            signed_nda = BountyDocuments.objects.filter(
-                pk=request.POST.get("signed_nda")
-            ).first()
-        interest = create_new_interest_helper(bounty, request.user, issue_message, signed_nda)
+        interest = create_new_interest_helper(bounty, request.user, issue_message)
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
@@ -2524,32 +2506,6 @@ def invalid_file_response(uploaded_file, supported):
 
     return response
 
-@csrf_exempt
-@require_POST
-def bounty_upload_nda(request):
-    """ Save Bounty related docs like NDA.
-
-    Args:
-        bounty_id (int): The bounty id.
-    """
-    uploaded_file = request.FILES.get('docs', None)
-    error_response = invalid_file_response(
-        uploaded_file, supported=['application/pdf',
-                                  'application/msword',
-                                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
-    if not error_response:
-        bountydoc = BountyDocuments.objects.create(
-            doc=uploaded_file,
-            doc_type=request.POST.get('doc_type', None)
-        )
-        response = {
-            'status': 200,
-            'bounty_doc_id': bountydoc.pk,
-            'message': 'NDA saved'
-        }
-
-    return JsonResponse(error_response) if error_response else JsonResponse(response)
-
 
 def get_profile_tab(request, profile, tab, prev_context):
 
@@ -3009,6 +2965,22 @@ def sync_web3(request):
                         max_tries_attempted = counter > 3
                     if new_bounty:
                         url = new_bounty.url
+                        try:
+                            fund_ables = Activity.objects.filter(activity_type='status_update',
+                                                                 bounty=None,
+                                                                 metadata__fund_able=True,
+                                                                 metadata__resource__contains={
+                                                                     'provider': issue_url
+                                                                 })
+                            if fund_ables.exists():
+                                comment = f'New Bounty created {new_bounty.get_absolute_url()}'
+                                activity = fund_ables.first()
+                                activity.bounty = new_bounty
+                                activity.save()
+                                Comment.objects.create(profile=new_bounty.bounty_owner_profile, activity=activity, comment=comment)
+                        except Activity.DoesNotExist as e:
+                            print(e)
+
                 result = {
                     'status': '200',
                     'msg': "success",
@@ -3316,6 +3288,13 @@ def new_bounty(request):
             params['coupon_code'] = coupon.code
         else:
             params['expired_coupon'] = True
+
+    activity_ref = request.GET.get('activity', False)
+    try:
+        activity_id = int(activity_ref)
+        params['activity'] = Activity.objects.get(id=activity_id)
+    except (ValueError, Activity.DoesNotExist):
+        pass
 
     return TemplateResponse(request, 'bounty/fund.html', params)
 
@@ -3899,6 +3878,8 @@ def hackathon_save_project(request):
     bounty_id = request.POST.get('bounty_id')
     profiles = request.POST.getlist('profiles[]')
     logo = request.FILES.get('logo')
+    looking_members = request.POST.get('looking-members', '') == 'on'
+    message = request.POST.get('looking-members-message', '')[:150]
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
 
@@ -3919,7 +3900,9 @@ def hackathon_save_project(request):
         'logo': request.FILES.get('logo'),
         'bounty': bounty_obj,
         'summary': clean(request.POST.get('summary'), strip=True),
-        'work_url': clean(request.POST.get('work_url'), strip=True)
+        'work_url': clean(request.POST.get('work_url'), strip=True),
+        'looking_members': looking_members,
+        'message': message,
     }
 
     try:
@@ -4682,10 +4665,6 @@ def create_bounty_v1(request):
     bounty.value_true = request.POST.get("amount", 0)
     bounty.bounty_owner_address = request.POST.get("bounty_owner_address", 0)
 
-    ''' ETC-TODO
-    bounty.unsigned_nda = request.POST.get("unsigned_nda")
-    '''
-
     current_time = timezone.now()
 
     bounty.web3_created = current_time
@@ -4752,6 +4731,23 @@ def create_bounty_v1(request):
         logger.error(e)
 
     bounty.save()
+
+    # save again so we have the primary key set and now we can set the
+    # standard_bounties_id
+
+    bounty.save()
+
+    activity_ref = request.POST.get('activity', False)
+    if activity_ref:
+        try:
+            comment = f'New Bounty created {bounty.get_absolute_url()}'
+            activity_id = int(activity_ref)
+            activity = Activity.objects.get(id=activity_id)
+            activity.bounty = bounty
+            activity.save()
+            Comment.objects.create(profile=bounty.bounty_owner_profile, activity=activity, comment=comment)
+        except (ValueError, Activity.DoesNotExist) as e:
+            print(e)
 
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
@@ -5033,7 +5029,7 @@ def payout_bounty_v1(request, fulfillment_id):
     fulfillment.token_name = token_name
     fulfillment.save()
 
-    sync_etc_payout(fulfillment)
+    sync_payout(fulfillment)
 
     response = {
         'status': 204,
