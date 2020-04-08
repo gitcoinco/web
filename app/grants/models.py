@@ -297,6 +297,10 @@ class Grant(SuperModel):
         blank=True,
     )
     categories = models.ManyToManyField(GrantCategory, blank=True)
+    twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
+    twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
+    twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
+    twitter_handle_2_follower_count = models.PositiveIntegerField(blank=True, default=0)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -315,7 +319,7 @@ class Grant(SuperModel):
     def updateActiveSubscriptions(self):
         """updates the active subscriptions list"""
         handles = []
-        for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
+        for handle in Subscription.objects.filter(grant=self, active=True, is_postive_vote=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
 

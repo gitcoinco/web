@@ -33,11 +33,9 @@
             <a data-type="type" data-value="about" class="mr-1 px-1 {% if type == 'about' %}selected{% endif %}">
               About
             </a>
-            {% if is_alpha_tester %}
               <a data-type="type" data-value="stats" class="mr-1 px-1 {% if type == 'stats' %}selected{% endif %}">
                 Stats
               </a>
-            {% endif %}
             <a data-type="type" data-value="activity" class="mr-1 px-1 {% if type == 'activity' %}selected{% endif %}">
               Activity
             </a>
@@ -48,9 +46,6 @@
             {% endif %}
             <a data-type="type" target="new"href='/wiki/grants' class="mr-1 px-1 ">
               FAQ <i class="fas fa-external-link-alt"></i>
-            </a>
-            <a data-type="type" target="new" href='https://gitcoin.co/leaderboard/payers?cadence=weekly&keyword=all&product=grants' class="mr-1 px-1 ">
-              Leaderboard <i class="fas fa-external-link-alt"></i>
             </a>
           </ul>
         </div>

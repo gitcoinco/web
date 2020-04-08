@@ -7,13 +7,13 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 30 1 * * * cd gitcoin/coin; bash scripts/backup.bash >> /var/log/gitcoin/backup.log  2>&1
 
 ## GITCOIN WEB3 STUFF
-##TODO: Re-enable this when Gitcoin GETH URL is synced.
 1 */6 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_recent_bounties mainnet  >> /var/log/gitcoin/sync_geth.log  2>&1
 */3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth mainnet -5 0  >> /var/log/gitcoin/sync_geth_aggressive.log  2>&1
 15 1 */4 * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_all_bounties mainnet  >> /var/log/gitcoin/sync_geth_weekly.log  2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_listener mainnet  >> /var/log/gitcoin/sync_listener.log  2>&1
 12 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth rinkeby -200 0  >> /var/log/gitcoin/sync_geth_rinkeby.log  2>&1
 */5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash subminer mainnet --live  >> /var/log/gitcoin/subminer_mainnet.log  2>&1
+*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_pending_fulfillments >> /var/log/gitcoin/sync_pending_fulfillments.log  2>&1
 
 ## HACKATHON
 1,30 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash setup_hackathon_event_chat >> /var/log/gitcoin/setup_hackathon_event_chat.log 2>&1
@@ -25,7 +25,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## TOWN SQUARE
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_rankings >> /var/log/gitcoin/create_rankings.log 2>&1
-1 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash payout_mini_clr finalize 10 0 >> /var/log/gitcoin/payout_mini_clr.log 2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_user_presence && sleep 10 bash scripts/run_management_command_if_not_already_running.bash get_user_presence && sleep 10 && bash scripts/run_management_command_if_not_already_running.bash get_user_presence >> /var/log/gitcoin/get_user_presence.log 2>&1
 
 ## TOOLING
@@ -81,6 +80,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 #0 0 1 */3 * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash send_quarterly_stats --live  >> /var/log/gitcoin/send_quarterly_stats.log  2>&1
 00 10 * * 5 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_leaderboard_to_slack  >> /var/log/gitcoin/post_leaderboard_to_slack.log  2>&1
 0 9 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash no_applicants_email  >> /var/log/gitcoin/no_applicants_email.log 2>&1
+0 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_grant_twitter_info  >> /var/log/gitcoin/pull_grant_twitter_info.log 2>&1
+0 11 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_search_index  >> /var/log/gitcoin/create_search_index.log 2>&1
 
 
 ## PERFTOOLS

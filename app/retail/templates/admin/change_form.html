@@ -9,7 +9,8 @@
         {% elif 'dashboard/activity' in request.build_absolute_uri %}
             <input type="submit" value="Make Into Nano Bounty" name="_make_nano_bounty" value="1">
         {% elif 'townsquare/offer/' in request.build_absolute_uri %}
-            <input type="submit" value="Schedule" name="_schedule_offer" value="1">
+            <input type="submit" value="Schedule Offer" name="_schedule_offer" value="1">
+            <input type="submit" value="Copy Offer" name="_copy_offer" value="1">
         {% elif 'dashboard/tip/' in request.build_absolute_uri %}
             <input type="submit" value="Reset Tip Redemption Status" name="_reset_tip_redemption" value="1">
         {% elif 'economy/token/' in request.build_absolute_uri %}
