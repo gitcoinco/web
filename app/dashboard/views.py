@@ -3651,7 +3651,6 @@ def get_kudos(request):
 def hackathon_participants(request, hackathon=''):
     """Display hackathon participants."""
 
-    print(hackathon)
     try:
         hackathon = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
