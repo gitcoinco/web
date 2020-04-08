@@ -3891,6 +3891,8 @@ def hackathon_save_project(request):
     bounty_id = request.POST.get('bounty_id')
     profiles = request.POST.getlist('profiles[]')
     logo = request.FILES.get('logo')
+    looking_members = request.POST.get('looking-members', '') == 'on'
+    message = request.POST.get('looking-members-message', '')[:150]
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
 
@@ -3911,7 +3913,9 @@ def hackathon_save_project(request):
         'logo': request.FILES.get('logo'),
         'bounty': bounty_obj,
         'summary': clean(request.POST.get('summary'), strip=True),
-        'work_url': clean(request.POST.get('work_url'), strip=True)
+        'work_url': clean(request.POST.get('work_url'), strip=True),
+        'looking_members': looking_members,
+        'message': message,
     }
 
     try:
@@ -4738,6 +4742,11 @@ def create_bounty_v1(request):
                 bounty.coupon_code = coupon
     except Exception as e:
         logger.error(e)
+
+    bounty.save()
+
+    # save again so we have the primary key set and now we can set the
+    # standard_bounties_id
 
     bounty.save()
 

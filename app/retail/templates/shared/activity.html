@@ -198,7 +198,6 @@
 
           {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
           <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
-          
           <p class='num_participants m-0 p-0' data-roomname="+roomName+">
             <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
               •
@@ -300,10 +299,9 @@
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
             <a href=# data-action='favorite' data-toggle="tooltip" title="Mark as favorite this activity" data-affirmative=favorite
-              data-negative=unfavorite data-state="{% if row.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
-              class="favorite_activity mr-2 dropdown-item px-3 font-smaller-5"
-            >
-              {% if row.favorite %}
+              data-negative=unfavorite data-state="{% if row.metadata.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
+              class="favorite_activity mr-2 dropdown-item px-3 font-smaller-5">
+              {% if row.metadata.favorite %}
                   <i class="fas fa-star mr-2"></i>
               {% else %}
                   <i class="far fa-star mr-2"></i>

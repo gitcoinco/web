@@ -208,7 +208,7 @@ def create_channel(self, options, bounty_id=None, retry: bool = True) -> None:
         except ConnectionError as exc:
             logger.info(str(exc))
             logger.info("Retrying connection")
-            self.retry(30)
+            self.retry(countdown=30)
         except Exception as e:
             print("we got an exception when creating a channel")
             logger.error(str(e))
@@ -308,7 +308,7 @@ def add_to_channel(self, channel_details, chat_user_ids: list, retry: bool = Tru
     except ConnectionError as exc:
         logger.info(str(exc))
         logger.info("Retrying connection")
-        self.retry(30)
+        self.retry(countdown=30)
     except Exception as e:
         logger.error(str(e))
 
@@ -342,7 +342,7 @@ def create_user(self, options, params, profile_handle='', retry: bool = True):
         except ConnectionError as exc:
             logger.info(str(exc))
             logger.info("Retrying connection")
-            self.retry(30)
+            self.retry(countdown=30)
         except Exception as e:
             logger.error(str(e))
             return None
@@ -382,6 +382,6 @@ def patch_chat_user(self, query_opts, update_opts, retry: bool = True) -> None:
 
             logger.info(str(exc))
             logger.info("Retrying connection")
-            self.retry(30)
+            self.retry(countdown=30)
         except Exception as e:
             logger.error(str(e))
