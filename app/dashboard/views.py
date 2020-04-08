@@ -86,9 +86,9 @@ from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
-from townsquare.models import Comment
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
     ProfileExportSerializer, filtered_list_data,
