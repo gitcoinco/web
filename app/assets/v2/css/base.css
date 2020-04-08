@@ -1545,25 +1545,6 @@ div.busyOverlay {
   border-radius: 100px;
 }
 
-.cta-blue {
-  background: #0D0764;
-  color: white;
-  padding: 1.8rem;
-  border-radius: 0.2rem;
-}
-
-.privaterepo-instructions {
-  color: grey;
-  padding-top: 1rem;
-}
-
-@media (min-width: 768px) {
-  .privaterepo-instructions {
-    width: 75%;
-  }
-
-}
-
 .g-modal .modal-header,
 .g-modal .modal-footer {
   border: none;
