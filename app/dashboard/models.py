@@ -4480,6 +4480,7 @@ class Sponsor(SuperModel):
     name = models.CharField(max_length=255, help_text='sponsor Name')
     logo = models.ImageField(help_text='sponsor logo', blank=True)
     logo_svg = models.FileField(help_text='sponsor logo svg', blank=True)
+    tribe = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name
@@ -4932,6 +4933,10 @@ class Question(SuperModel):
     created_on = models.DateField(auto_now=True)
     updated_at = models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return f'Question.{self.id} {self.text}'
+
+
 
 class Option(SuperModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, blank=True, null=True)
@@ -4939,9 +4944,12 @@ class Option(SuperModel):
     created_on = models.DateField(auto_now=True)
     updated_at = models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return f'Option.{self.id} {self.text}'
+
 
 class Answer(SuperModel):
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, unique=False)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     question = models.ForeignKey(Question, on_delete=models.SET_NULL, null=True, blank=True)
     open_response = models.CharField(max_length=350, blank=True, null=True)
     choice = models.ForeignKey(Option, on_delete=models.CASCADE, null=True, blank=True)

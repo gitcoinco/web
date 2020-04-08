@@ -101,7 +101,7 @@ from .models import (
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
     SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
-)
+    Poll, Question, Answer, Option)
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
@@ -3734,6 +3734,10 @@ def hackathon_onboard(request, hackathon=''):
                 sponsor_obj = {
                     'name': sponsor.name,
                 }
+                if sponsor.tribe:
+                    sponsor_obj['members'] = TribeMember.objects.filter(profile=sponsor.tribe).count()
+                    sponsor_obj['handle'] = sponsor.tribe.handle
+
                 if sponsor.logo_svg:
                     sponsor_obj['logo'] = sponsor.logo_svg.url
                 elif sponsor.logo:
@@ -3758,8 +3762,13 @@ def hackathon_onboard(request, hackathon=''):
         'hackathon': hackathon_event,
         'referer': referer,
         'is_registered': is_registered,
-        'sponsors': sponsors
+        'sponsors': sponsors,
+        'onboard': True
     }
+
+    if Poll.objects.filter(hackathon=hackathon_event).exists():
+        params['poll'] = Poll.objects.filter(hackathon=hackathon_event).order_by('created_on').last()
+
     return TemplateResponse(request, 'dashboard/hackathon/onboard.html', params)
 
 
@@ -4048,6 +4057,7 @@ def hackathon_registration(request):
 
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
+    poll = request.POST.get('poll')
     email = request.user.email
 
     if not profile:
@@ -4067,6 +4077,27 @@ def hackathon_registration(request):
             hackathon_chat_sync.delay(hackathon_event.id, profile.handle)
         except Exception as e:
             logger.error('Error while adding to chat', e)
+
+        if poll:
+            poll = json.loads(poll)
+            set_questions = {}
+            for entry in poll:
+                try:
+                    question = Question.objects.get(id=int(entry['name']))
+                    option = Option.objects.get(id=int(entry['value']))
+
+                    try:
+                        Answer.objects.get(user=request.user, question=question, choice=option)
+                    except Answer.DoesNotExist:
+                        Answer.objects.create(user=request.user, question=question, choice=option)
+
+                    values = set_questions.get(entry['name'], []) or []
+                    values.append(int(entry['value']))
+                    set_questions[entry['name']] = values
+                except Question.DoesNotExist as e:
+                    logger.error(str(e))
+            for (question, choices) in set_questions.items():
+                Answer.objects.exclude(user=request.user, question__id=int(question), choice__in=choices).delete()
 
     except Exception as e:
         logger.error('Error while saving registration', e)
