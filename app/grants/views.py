@@ -73,7 +73,7 @@ clr_round = 5
 clr_active = True
 show_clr_card = True
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
-round_end = timezone.datetime(2020, 4, 7, 17, 0)
+round_end = timezone.datetime(2020, 4, 10, 10, 0)
 round_types = ['media', 'tech', 'health']
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]

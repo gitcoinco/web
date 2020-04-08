@@ -109,7 +109,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash process_faucet_requests  >> /var/log/gitcoin/process_faucet_requests.log  2>&1
 1 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash create_pagerank  > /var/log/gitcoin/create_pagerank.log  2>&1
 
-1 */15 * * * cd gitcoin/coin; bash scripts/run_management_command.bash grant_vitalik_shuffle  > /var/log/gitcoin/grant_vitalik_shuffle.log  2>&1
+1 */4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash grant_vitalik_shuffle  > /var/log/gitcoin/grant_vitalik_shuffle.log  2>&1
 3 */8 * * * cd gitcoin/coin; bash scripts/run_management_command.bash re_rank_quests  > /var/log/gitcoin/re_rank_quests.log  2>&1
 
 

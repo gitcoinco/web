@@ -2424,32 +2424,32 @@ def profile_backup(request):
         'tips', '_tips.private_fields', 'feedbacks', '_feedbacks.private_items',
         'custom_avatars'] + list(profile_data.keys())
 
-    if model == 'custom avatar':
-        # custom avatar
+    if model == 'custom avatar': # custom avatar
         custom_avatars = get_custom_avatars(profile)
         data['custom_avatars'] = CustomAvatarExportSerializer(custom_avatars, many=True).data
-    else:
-        data = profile_data
-        # grants
+    elif model == 'grants': # grants
         data["grants"] = GrantExportSerializer(profile.get_my_grants, many=True).data
-        # portfolio, active work, bounties
-        portfolio_bounties = profile.fulfilled.filter(bounty__network='mainnet', bounty__current_bounty=True)
+    elif model == 'portfolio': # portfolio, active work
+        portfolio_bounties = profile.get_fulfilled_bounties()
         active_work = Bounty.objects.none()
         interests = profile.active_bounties
         for interest in interests:
             active_work = active_work | Bounty.objects.filter(interested=interest, current_bounty=True)
         data["portfolio"] = BountyExportSerializer(portfolio_bounties, many=True).data
         data["active_work"] = BountyExportSerializer(active_work, many=True).data
+    elif model == 'bounties': # bounties
         data["bounties"] = BountyExportSerializer(profile.bounties, many=True).data
-        # activities
+    elif model == 'activities': # activities
         data["activities"] = ActivityExportSerializer(profile.activities, many=True).data
-        # tips
+    elif model == 'tips': # tips
         data['tips'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=False)
         data['_tips.private_fields'] = filtered_list_data('tip', profile.tips, private_items=None, private_fields=True)
-        # feedback
+    elif model == 'feedback': # feedback
         feedbacks = FeedbackEntry.objects.filter(receiver_profile=profile).all()
         data['feedbacks'] = filtered_list_data('feedback', feedbacks, private_items=False, private_fields=None)
         data['_feedbacks.private_items'] = filtered_list_data('feedback', feedbacks, private_items=True, private_fields=None)
+    else:
+        data = profile_data
 
     response = {
         'status': 200,
@@ -4071,9 +4071,9 @@ def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
     events = {
-        'current': HackathonEvent.objects.current().filter(visible=True).order_by('-start_date'),
-        'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date'),
-        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
+        'current': HackathonEvent.objects.current().filter(visible=True).order_by('start_date'),
+        'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
+        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('start_date'),
     }
     params = {
         'active': 'hackathons',
