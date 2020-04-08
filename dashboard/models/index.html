@@ -3143,19 +3143,6 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Bounty.unsigned_nda">unsigned_nda</h3>
-
-<p>Accessor to the related object on the forward side of a many-to-one or
-one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
-<h3 id="dashboard.models.Bounty.unsigned_nda_id">unsigned_nda_id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Bounty.value_in_eth">value_in_eth</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -3732,73 +3719,6 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h2 id="dashboard.models.BountyDocuments">BountyDocuments</h2>
-
-<pre><code class="python">BountyDocuments(self, *args, **kwargs)
-</code></pre>
-
-<p>BountyDocuments(id, created_on, modified_on, doc, doc_type)
-<h3 id="dashboard.models.BountyDocuments.bounty">bounty</h3></p>
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
-<h3 id="dashboard.models.BountyDocuments.doc">doc</h3>
-
-<p>The descriptor for the file attribute on the model instance. Return a
-FieldFile when accessed so you can write code like::</p>
-<pre><code>&gt;&gt;&gt; from myapp.models import MyModel
-&gt;&gt;&gt; instance = MyModel.objects.get(pk=1)
-&gt;&gt;&gt; instance.file.size
-</code></pre>
-<p>Assign a file object on assignment so you can do::</p>
-<pre><code>&gt;&gt;&gt; with open('/path/to/hello.world', 'r') as f:
-...     instance.file = File(f)
-</code></pre>
-<h3 id="dashboard.models.BountyDocuments.doc_type">doc_type</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.BountyDocuments.get_next_by_created_on">_method</h3>
-
-<pre><code class="python">BountyDocuments._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
-</code></pre>
-
-<h3 id="dashboard.models.BountyDocuments.get_next_by_modified_on">_method</h3>
-
-<pre><code class="python">BountyDocuments._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
-</code></pre>
-
-<h3 id="dashboard.models.BountyDocuments.get_previous_by_created_on">_method</h3>
-
-<pre><code class="python">BountyDocuments._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
-</code></pre>
-
-<h3 id="dashboard.models.BountyDocuments.get_previous_by_modified_on">_method</h3>
-
-<pre><code class="python">BountyDocuments._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
-</code></pre>
-
-<h3 id="dashboard.models.BountyDocuments.id">id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.BountyDocuments.interest">interest</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h2 id="dashboard.models.SendCryptoAssetQuerySet">SendCryptoAssetQuerySet</h2>
 
 <pre><code class="python">SendCryptoAssetQuerySet(self, model=None, query=None, using=None, hints=None)
@@ -4255,19 +4175,6 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 </code></pre>
 <p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
 <h3 id="dashboard.models.Interest.profile_id">profile_id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Interest.signed_nda">signed_nda</h3>
-
-<p>Accessor to the related object on the forward side of a many-to-one or
-one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
-<h3 id="dashboard.models.Interest.signed_nda_id">signed_nda_id</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
