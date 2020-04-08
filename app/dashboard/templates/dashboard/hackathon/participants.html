@@ -84,9 +84,9 @@
             max-height: 185px;
             width: 100%;
             max-width: 100%;
-            background-color: #090E60;
+            background-color: {{ hackathon.background_color|default:'#090E60'}};
             border-radius: 10px;
-            color: white;
+            color: {{ hackathon.text_color|default:'white'}};
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -124,7 +124,7 @@
      class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
     <div class="offset-2 hackathon-text pl-4">
         <div class="">
-            <p class="hackathon-title title font-weight-bold mb-0">GITCOIN VIRTUAL HACKATHON</p>
+            <p class="hackathon-title title font-weight-bold mb-0 uppercase">{{ hackathon.name }}</p>
         </div>
         <p class="mb-1">
             {% if hackathon.end_date|timeuntil >= "1 min" %}
@@ -168,7 +168,7 @@
                     <div class="col logo-container">
                         <div class="hackathon-logo mb-1">
                             {% if hackathon.logo_svg %}
-                                <img class="d-none d-md-block mx-auto mb-5 mw-100" src="{{ hackathon.logo_svg.url }}"
+                                <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo_svg.url }}"
                                      alt="Hackathon logo"/>
                             {% elif hackathon.logo %}
                                 <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo.url }}"
@@ -183,11 +183,12 @@
                         </a>
                     </div>
                     <div class="col">
+                        {% if display_filters %}
+
                         <div class="col-12 subheading left-ribbon">
                             {% trans "Filter participants" %}
                         </div>
                         <div class="col-12 options" id="list-orgs">
-                          {% if display_filters %}
                             <div class="form__radio option mb-2">
                                 <input name="org" id="any_org" type="radio" value="any" checked="">
                                 <label class="filter-label" for="any_org">All</label>
@@ -204,8 +205,8 @@
                                 <input name="org" id="hack" type="radio" value="hack">
                                 <label class="filter-label" for="hack">Ready to hack</label>
                             </div>
-                          {% endif %}
                         </div>
+                       {% endif %}
                     </div>
                 </form>
             </div>

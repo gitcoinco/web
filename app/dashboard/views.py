@@ -3650,12 +3650,16 @@ def get_kudos(request):
 
 def hackathon_participants(request, hackathon=''):
     """Display hackathon participants."""
+    network = get_default_network()
 
     try:
         hackathon = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
+    participants = HackathonRegistration.objects.filter(hackathon=hackathon).count() if profile else 0
+    projects = HackathonProject.objects.filter(hackathon=hackathon).exclude(status='invalid').count()
+    prizes = Bounty.objects.filter(event=hackathon, network=network).current()
 
     params = {
         'hackathon': hackathon,
@@ -3664,7 +3668,10 @@ def hackathon_participants(request, hackathon=''):
         'meta_title': "",
         'meta_description': "",
         'keywords': [],
-        'display_filters': False
+        'display_filters': False,
+        'total_prizes': prizes.count(),
+        'total_participants': participants,
+        'total_projects': projects,
     }
 
     return TemplateResponse(request, 'dashboard/hackathon/participants.html', params)
