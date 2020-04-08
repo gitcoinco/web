@@ -97,7 +97,7 @@ from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
 from .models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
+    Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
     SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
@@ -241,7 +241,7 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
+def create_new_interest_helper(bounty, user, issue_message):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
@@ -249,8 +249,7 @@ def create_new_interest_helper(bounty, user, issue_message, signed_nda=None):
         profile_id=profile_id,
         issue_message=issue_message,
         pending=approval_required,
-        acceptance_date=acceptance_date,
-        signed_nda=signed_nda,
+        acceptance_date=acceptance_date
     )
     record_bounty_activity(bounty, user, 'start_work' if not approval_required else 'worker_applied', interest=interest)
     bounty.interested.add(interest)
@@ -369,12 +368,7 @@ def new_interest(request, bounty_id):
             status=401)
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
-        signed_nda = None
-        if request.POST.get("signed_nda"):
-            signed_nda = BountyDocuments.objects.filter(
-                pk=request.POST.get("signed_nda")
-            ).first()
-        interest = create_new_interest_helper(bounty, request.user, issue_message, signed_nda)
+        interest = create_new_interest_helper(bounty, request.user, issue_message)
         if interest.pending:
             start_work_new_applicant(interest, bounty)
 
@@ -2511,32 +2505,6 @@ def invalid_file_response(uploaded_file, supported):
         '''
 
     return response
-
-@csrf_exempt
-@require_POST
-def bounty_upload_nda(request):
-    """ Save Bounty related docs like NDA.
-
-    Args:
-        bounty_id (int): The bounty id.
-    """
-    uploaded_file = request.FILES.get('docs', None)
-    error_response = invalid_file_response(
-        uploaded_file, supported=['application/pdf',
-                                  'application/msword',
-                                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
-    if not error_response:
-        bountydoc = BountyDocuments.objects.create(
-            doc=uploaded_file,
-            doc_type=request.POST.get('doc_type', None)
-        )
-        response = {
-            'status': 200,
-            'bounty_doc_id': bountydoc.pk,
-            'message': 'NDA saved'
-        }
-
-    return JsonResponse(error_response) if error_response else JsonResponse(response)
 
 
 def get_profile_tab(request, profile, tab, prev_context):
@@ -4696,10 +4664,6 @@ def create_bounty_v1(request):
     bounty.web3_type = request.POST.get("web3_type", '')
     bounty.value_true = request.POST.get("amount", 0)
     bounty.bounty_owner_address = request.POST.get("bounty_owner_address", 0)
-
-    ''' ETC-TODO
-    bounty.unsigned_nda = request.POST.get("unsigned_nda")
-    '''
 
     current_time = timezone.now()
 
