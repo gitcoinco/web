@@ -15,7 +15,8 @@ from .models import SearchResult, search
 logger = logging.getLogger(__name__)
 
 
-def search(request):
+@ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
+def get_search(request):
     keyword = request.GET.get('term', '')
 
     # attempt elasticsearch first
