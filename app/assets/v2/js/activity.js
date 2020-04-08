@@ -536,45 +536,91 @@ $(document).ready(function() {
       return;
     }
 
-    // user input
-    var comment = $parent.parents('.box').find('.comment_container textarea').val().trim();
+    if ($('.editableComment')[0]) {
+      // edited content
+      const comment = $parent.parents('.box').find('.editableComment').val();
 
-    // validation
-    if (!comment) {
-      return;
-    }
+      $('.editableComment').prop('disabled', true);
 
-    $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
-    $('.post_comment').prop('disabled', true);
+      // validation
+      if (!comment) {
+        $('.editableComment').prop('disabled', false);
+        return;
+      }
 
-    $parent.parents('.activity.box').find('.loading').removeClass('hidden');
-    var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
-    // increment number
-    var num = $parent.find('span.num').html();
+      $parent.parents('.activity.box').find('.loading').removeClass('hidden');
 
-    num = parseInt(num) + 1;
-    $parent.find('span.num').html(num);
-
-    // remote post
-    var params = {
-      'method': 'comment',
-      'comment': comment,
-      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-    };
-    var url = '/api/v0.1/activity/' + $parent.data('pk');
-
-    $.post(url, params, function(response) {
-      var success_callback = function($parent) {
-        $parent.parents('.box').find('.comment_container textarea').val('');
-        $parent.find('textarea').focus();
-
+      const has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
+      const num = $parent.find('span.num').html();
+      const comment_id = $('.editableComment').parent().closest('.comment_row').data('id');
+      const url = '/api/v0.1/comment/' + comment_id;
+      const params = {
+        'method': 'EDIT',
+        'comment': comment,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
       };
-      var override_hide_comments = !has_hidden_comments;
 
-      view_comments($parent, allow_close_comment_container, success_callback, override_hide_comments);
-    }).done(function() {
-      // pass
-    })
+      $.post(url, params, function(response) {
+        const success_callback = function($parent) {
+          $.noop(); // do nothing
+        };
+
+        view_comments($parent, allow_close_comment_container, success_callback);
+      }).always(function() {
+        $parent.parents('.activity.box').find('.loading').addClass('hidden');
+        $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
+        $('.editableComment').prop('disabled', false);
+        $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', false).removeClass('hidden');
+        $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+          .find('#container-post_comment')
+          .find('*').prop('disabled', false).removeClass('hidden');
+        // TODO: automatically cancel editing when another edit_comment button is clicked
+        $('.edit_comment').prop('disabled', false);
+      });
+    } else {
+      // user input
+      const comment = $parent.parents('.box').find('.comment_container textarea').val().trim();
+
+      $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
+      $('.post_comment').prop('disabled', true);
+
+      // validation
+      if (!comment) {
+        $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
+        $('.post_comment').prop('disabled', false);
+        return;
+      }
+
+
+      $parent.parents('.activity.box').find('.loading').removeClass('hidden');
+      const has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
+
+      // increment number
+      let num = $parent.find('span.num').html();
+
+      num = parseInt(num) + 1;
+      $parent.find('span.num').html(num);
+
+      // remote post
+      const params = {
+        'method': 'comment',
+        'comment': comment,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+      };
+      const url = '/api/v0.1/activity/' + $parent.data('pk');
+
+      $.post(url, params, function(response) {
+        const success_callback = function($parent) {
+          $parent.parents('.box').find('.comment_container textarea').val('');
+          $parent.find('textarea').focus();
+
+        };
+        const override_hide_comments = !has_hidden_comments;
+
+        view_comments($parent, allow_close_comment_container, success_callback, override_hide_comments);
+      }).done(function() {
+        // pass
+      })
       .fail(function() {
         $parent.parents('.activity.box').find('.error').removeClass('hidden');
       })
@@ -583,6 +629,7 @@ $(document).ready(function() {
         $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
         $('.post_comment').prop('disabled', false);
       });
+    }
   };
 
   // converts an object to a dict
@@ -638,6 +685,7 @@ $(document).ready(function() {
         const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         const show_tip = true;
         const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
+        const is_edited = typeof comment['is_edited'] !== 'undefined' ? comment['is_edited'] : false;
         var sorted_match_curve_html = '';
 
         if (comment['sorted_match_curve']) {
@@ -646,6 +694,7 @@ $(document).ready(function() {
 
           for (let j = 0; j < match_curve.length; j++) {
             let ele = match_curve[j];
+
 
             sorted_match_curve_html += '<li>';
             sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 1000) / 1000} in matching.`;
@@ -708,11 +757,14 @@ $(document).ready(function() {
               </span>
               <span class='float-right'>
                 <span class="d-none d-sm-inline grey font-smaller-5 text-right">
-                  ${timeAgo}
+                  ${timeAgo} ${is_edited ? '(edited)' : ''}
                 </span>
-                <span class="font-smaller-5 mt-1" style="display: block; text-align: right;">
+                <span class="comment_options font-smaller-5 mt-1" style="display: block; text-align: right;">
                   ${is_comment_owner ?
     `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
+    : ''}
+    ${is_comment_owner ?
+    `<i data-pk=${comment['id']} class="edit_comment fas fa-edit font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
     : ''}
                   ${show_tip ? `
                   <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
@@ -736,7 +788,7 @@ $(document).ready(function() {
       }
 
       const post_comment_html = `
-        <div class="row py-2 mx-auto">
+        <div id="container-post_comment" class="row py-2 mx-auto">
           <div class="col-sm-1 mt-1 activity-avatar d-none d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
@@ -837,6 +889,59 @@ $(document).ready(function() {
     post_comment($target, false);
   });
 
+
+  // cancel editing comment
+  $(document).on('click', '.cancel_edit', function(e) {
+    e.preventDefault();
+    const comment_id = $(this).data('id');
+    const editableContainer = $('#editableContainer');
+
+    const url = '/api/v0.1/comment/' + comment_id;
+    const params = {
+      'method': 'GET_COMMENT'
+    };
+
+    $.get(url, params, function(response) {
+      let the_comment = response['comment'];
+
+      the_comment = urlify(the_comment);
+      the_comment = linkify(the_comment);
+      the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
+
+      editableContainer.replaceWith(`<div class="activity_comments_main_comment">${the_comment}</div>`);
+
+    }).always(function() {
+      $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', false).removeClass('hidden');
+      $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+        .find('#container-post_comment')
+        .find('*').prop('disabled', false).removeClass('hidden');
+      // TODO: automatically cancel editing when another edit_comment button is clicked
+      $('.edit_comment').prop('disabled', false);
+    });
+  });
+
+
+  $(document).on('click', '.edit_comment', function(e) {
+    e.preventDefault();
+    let comment_id = $(this).data('pk');
+    let commentContainer = $(`.comment_row[data-id="${comment_id}"] .activity_comments_main_comment`);
+    let content = commentContainer.html().replace(/<br>/g, '\n').trim();
+    let editableContainer = $(`<div id="editableContainer" class="col-12 col-sm-12 text-right"><textarea class="form-control bg-lightblue font-caption editableComment" cols="80" rows="3" data-id="${comment_id}">${content}</textarea><a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold cancel_edit" data-id="${comment_id}">CANCEL</a></div>`);
+
+    $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', true).addClass('hidden');
+    $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+      .find('#container-post_comment')
+      .find('*').prop('disabled', true).addClass('hidden');
+
+    commentContainer.replaceWith(editableContainer);
+
+    $(`#editableContainer textarea[data-id="${comment_id}`).focus();
+
+    // TODO: automatically cancel editing when another edit_comment button is clicked
+    $('.edit_comment').prop('disabled', true);
+  });
+
+
   $(document).on('click', '.delete_comment', function(e) {
     e.preventDefault();
     const comment_id = $(this).data('pk');
@@ -866,11 +971,41 @@ $(document).ready(function() {
   });
 
 
-  $(document).on('keypress', '.enter-activity-comment', function(e) {
+  $(document).on('keyup keydown keypress', '.enter-activity-comment, .editableComment', function(e) {
     if (e.which == 13 && !e.shiftKey) {
       const $target = $(this).parents('.activity.box').find('.comment_activity');
 
       post_comment($target, false);
+    }
+
+    if (e.key === 'Escape' && typeof $('.editableComment')[0] != 'undefined') {
+      const comment_id = $(this).data('id');
+      const editableContainer = $('#editableContainer');
+
+      const url = '/api/v0.1/comment/' + comment_id;
+      const params = {
+        'method': 'GET_COMMENT'
+      };
+
+      $.get(url, params, function(response) {
+        let the_comment = response['comment'];
+
+        the_comment = urlify(the_comment);
+        the_comment = linkify(the_comment);
+        the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
+
+        editableContainer.replaceWith(`<div class="activity_comments_main_comment">${the_comment}</div>`);
+
+      }).always(function() {
+        $(`.comment_row[data-id="${comment_id}"] .comment_options`)
+          .prop('disabled', false)
+          .removeClass('hidden');
+        $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+          .find('#container-post_comment')
+          .find('*').prop('disabled', false).removeClass('hidden');
+        // TODO: automatically cancel editing when another edit_comment button is clicked
+        $('.edit_comment').prop('disabled', false);
+      });
     }
   });
 
@@ -960,4 +1095,3 @@ window.addEventListener('scroll', throttle(function() {
     $('.infinite-more-link').click();
   }
 }, 500));
-

@@ -470,6 +470,8 @@ def api(request, activity_id):
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['sorted_match_curve'] = comment.profile.matchranking_this_round.sorted_match_curve if comment.profile.matchranking_this_round else None
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            if comment.is_edited:
+                comment_dict['is_edited'] = comment.is_edited
             response['comments'].append(comment_dict)
         for key, val in results.items():
             if settings.DEBUG:
@@ -596,6 +598,28 @@ def comment_v1(request, comment_id):
         response = {
             'status': 204,
             'message': 'comment successfully deleted'
+        }
+        return JsonResponse(response)
+
+    if method == 'EDIT':
+        content = request.POST.get('comment')
+        title = request.POST.get('comment')
+
+        comment.comment = content
+        comment.is_edited = True
+        comment.save()
+        response = {
+            'status': 203,
+            'message': 'comment successfully updated'
+        }
+        return JsonResponse(response)
+
+    # no perms needed responses go here
+    if request.GET.get('method') == 'GET_COMMENT':
+        response = {
+            'status': 202,
+            'message': 'comment successfully retrieved',
+            'comment': comment.comment,
         }
         return JsonResponse(response)
 
