@@ -17,19 +17,29 @@
 '''
 
 
+from datetime import timedelta
+
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from dashboard.models import BountyFulfillment
-from dashboard.utils import sync_etc_payout
+from dashboard.utils import sync_payout
 
 
 class Command(BaseCommand):
 
-    help = 'checks if payments are confirmed for ETC bounties that have been paid out'
+    help = 'checks if pending fulfillments are confirmed on the tokens explorer'
 
     def handle(self, *args, **options):
-        fulfillments_to_check = BountyFulfillment.objects.filter(
-             payout_status='pending', token_name='ETC'
+        pending_fulfillments = BountyFulfillment.objects.filter(
+            payout_status='pending'
         )
-        for fulfillment in fulfillments_to_check.all():
-            sync_etc_payout(fulfillment)
+
+        timeout_period = timezone.now() - timedelta(minutes=5)
+
+        pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
+
+        fulfillments = pending_fulfillments.filter(created_on__lte=timeout_period)
+
+        for fulfillment in fulfillments.all():
+            sync_payout(fulfillment)

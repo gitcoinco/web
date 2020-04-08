@@ -243,10 +243,6 @@ textarea.editable {
   padding-top: 0 !important;
 }
 
-.milestones-list li:last-child {
-  padding-bottom: 0 !important;
-}
-
 .disable-tooltip {
   pointer-events: none;
 }
