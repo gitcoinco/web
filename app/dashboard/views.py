@@ -539,14 +539,16 @@ def unrated_bounties(request):
 @require_POST
 def remove_portfolio(request):
     portfolio_id = int(request.POST.get('portfolio_id'))
+    profile = request.user.profile
 
     try:
         portfolio_item = PortfolioItem.objects.get(id = portfolio_id)
-        portfolio_item.is_active = False
-        portfolio_item.save()
-        return JsonResponse({
-            'status': 200,
-        })
+        if profile == portfolio_item:
+            portfolio_item.is_active = False
+            portfolio_item.save()
+            return JsonResponse({
+                'status': 200,
+            })
     except (ProfileNotFoundException, ProfileHiddenException):
         return JsonResponse({
             'errors:' ['An error occured. Please try again.']
