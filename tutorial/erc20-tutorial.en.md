@@ -64,7 +64,7 @@ git checkout xxx-token
   *0xf90f1648926005A8bb3ed8ec883164De7F768743.json* [Checksum tool](https://ethsum.netlify.com/)
 
 
-5. Please ensure to use UTF-8 encoding in the json file to avoid Travis-CI build error. Please check the template file to fill in the complete token information: [$template.json](../erc20/$template.json)
+5. Please ensure to use UTF-8 encoding in the json file to avoid Travis-CI build error.The contract address in the json also needs to use **checksum**.Please check the template file to fill in the complete token information: [$template.json](../erc20/$template.json)
 
 
 6. Add the token logo to images directory, name it by the token contract address with **checksum** .
@@ -113,4 +113,4 @@ If you can't search via the contract address, please check if there is no succes
 
 ## Copyright
 
-2019&copy;imToken PTE. LTD.
+2020&copy;imToken PTE. LTD.
