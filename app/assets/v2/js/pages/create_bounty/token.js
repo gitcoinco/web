@@ -29,7 +29,7 @@ createBounty = data => {
   const tokenAddress = data.denomination;
   const token = tokenAddressToDetails(tokenAddress);
 
-  if (metadata.tokenName == 'ETC') {
+  if (qr_tokens.includes(metadata.tokenName)) {
     is_featured = 'True';
     coupon_code = null;
     fee_amount = 0;
@@ -76,7 +76,7 @@ createBounty = data => {
     'eventTag': metadata.eventTag,
     'auto_approve_workers': data.auto_approve_workers ? 'True' : 'False',
     'web3_type': 'qr',
-    'activity': data.activity
+    'activity': data.activity,
     'bounty_owner_address': data.funderAddress
   };
 
