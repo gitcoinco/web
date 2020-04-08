@@ -59,7 +59,7 @@ git checkout xxx-token
  举例：
  *0xf90f1648926005A8bb3ed8ec883164De7F768743.json* [Checksum 转化工具](https://ethsum.netlify.com/)
 
-5. json 文件请使用 UTF-8 编码，否则 Travis-CI 会构建失败。请参照模版文件补充完整的代币资料：[$template.json](../erc20/$template.json)
+5. json 文件请使用 UTF-8 编码，否则 Travis-CI 会构建失败。json中的合约地址也需要使用**checksum**。请参照模版文件补充完整的代币资料：[$template.json](../erc20/$template.json)
    
 6. 代币 Logo 放到 images 目录里，图片名称也是使用 **checksum** 代币合约地址命名
    
@@ -96,4 +96,4 @@ https://github.com/consenlabs/token-profile/issues/3565
 
 ## Copyright
 
-2019&copy;imToken PTE. LTD.
+2020&copy;imToken PTE. LTD.
