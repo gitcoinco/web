@@ -724,7 +724,6 @@ if settings.DEBUG:
 
         # For django versions before 2.0:
         # url(r'^__debug__/', include(debug_toolbar.urls)),
-
     ] + urlpatterns
 
 LOGIN_REDIRECT_URL = '/login'

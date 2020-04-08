@@ -25,8 +25,18 @@ def search(request):
     try:
         all_result_sets = search(keyword)
         return_results = [ele['_source'] for ele in all_result_sets['hits']['hits']]
+
+        if request.user.is_authenticated:
+            data = {'keyword': keyword}
+            SearchHistory.objects.update_or_create(
+                search_type='sitesearch',
+                user=request.user,
+                data=data,
+                ip_address=get_ip(request)
+            )
+
     except Exception as e:
-        print(e)
+        logger.exception(e)
     finally:
         if not settings.DEBUG or len(return_results):
             return HttpResponse(json.dumps(return_results), mimetype)
