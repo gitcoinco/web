@@ -1,3 +1,7 @@
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+});
+
 const rateUser = (elem) => {
   let userSelected = $(elem).select2('data')[0].text;
 

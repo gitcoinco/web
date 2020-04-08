@@ -19,7 +19,7 @@
 
 from django.core.management.base import BaseCommand
 
-from dashboard.models import Bounty
+from dashboard.models import BountyFulfillment
 from dashboard.utils import sync_etc_payout
 
 
@@ -28,8 +28,8 @@ class Command(BaseCommand):
     help = 'checks if payments are confirmed for ETC bounties that have been paid out'
 
     def handle(self, *args, **options):
-        bounties_to_check = Bounties.objects.filter(
-            payout_tx_id=None, bounty_state='done', token_name='ETC',
-            network='ETC')
-        for bounty in bounties_to_check.all():
-            sync_etc_payout(bounty)
+        fulfillments_to_check = BountyFulfillment.objects.filter(
+             payout_status='pending', token_name='ETC'
+        )
+        for fulfillment in fulfillments_to_check.all():
+            sync_etc_payout(fulfillment)

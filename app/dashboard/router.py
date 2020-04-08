@@ -38,14 +38,15 @@ logger = logging.getLogger(__name__)
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
     """Handle serializing the BountyFulfillment object."""
-
+    profile = ProfileSerializer()
     class Meta:
         """Define the bounty fulfillment serializer metadata."""
 
         model = BountyFulfillment
-        fields = ('fulfiller_address',
-                  'fulfiller_github_username', 'fulfiller_name',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
+        fields = ('pk', 'fulfiller_address',
+                  'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata',
+                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url',
+                  'payout_tx_id', 'payout_amount', 'token_name', 'payout_status')
 
 
 class BountyDocumentsSerializer(serializers.ModelSerializer):
@@ -110,7 +111,7 @@ class ActivitySerializer(serializers.ModelSerializer):
         """Define the activity serializer metadata."""
 
         model = Activity
-        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip', 'kudos')
+        fields = ('activity_type', 'pk', 'created', 'profile', 'metadata', 'bounty', 'tip', 'kudos')
 
 
 class InterestSerializer(serializers.ModelSerializer):
@@ -122,7 +123,7 @@ class InterestSerializer(serializers.ModelSerializer):
     class Meta:
         """Define the Interest serializer metadata."""
         model = Interest
-        fields = ('profile', 'created', 'pending', 'signed_nda', 'issue_message')
+        fields = ('pk', 'profile', 'created', 'pending', 'signed_nda', 'issue_message')
 
 
 # Serializers define the API representation.
@@ -224,8 +225,8 @@ class BountySerializerCheckIn(BountySerializer):
         )
 
 
-class BountyViewSet(viewsets.ModelViewSet):
-    """Handle the Bounty view behavior."""
+class BountiesViewSet(viewsets.ModelViewSet):
+    """Handle Bounties view behavior."""
     queryset = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'activities', 'unsigned_nda', 'event') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
@@ -282,7 +283,7 @@ class BountyViewSet(viewsets.ModelViewSet):
             handle = self.request.query_params.get('reserved_for_user_handle', '')
             if handle:
                 try:
-                    profile = Profile.objects.filter(handle__iexact=handle).first()
+                    profile = Profile.objects.filter(handle=handle.lower()).first()
                     queryset = queryset.filter(bounty_reserved_for_user=profile)
                 except:
                     logger.warning(f'reserved_for_user_handle: Unknown handle: ${handle}')
@@ -361,7 +362,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         # Retrieve all interested bounties by profile handle
         if 'interested_github_username' in param_keys:
             queryset = queryset.filter(
-                interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
+                interested__profile__handle=self.request.query_params.get('interested_github_username').lower()
             )
 
         # Retrieve all mod bounties.
@@ -450,16 +451,56 @@ class BountyViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class BountyViewSetSlim(BountyViewSet):
+class BountiesViewSetSlim(BountiesViewSet):
     queryset = Bounty.objects.all().order_by('-web3_created')
     serializer_class = BountySerializerSlim
 
-class BountyViewSetCheckIn(BountyViewSet):
+class BountiesViewSetCheckIn(BountiesViewSet):
     queryset = Bounty.objects.all().order_by('standard_bounties_id')
     serializer_class = BountySerializerCheckIn
 
+
+class BountyViewSet(viewsets.ModelViewSet):
+    """API response for an individual bounty by url"""
+
+    queryset = Bounty.objects.prefetch_related(
+        'fulfillments', 'fulfillments__profile', 'interested', 'interested__profile', 'activities',
+        'unsigned_nda', 'event'
+    )
+    serializer_class = BountySerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+    def get_queryset(self):
+        """Constructs queryset for an individual bounty
+
+        Returns:
+            QuerySet: The Bounty queryset.
+
+        """
+
+        param_keys = self.request.query_params.keys()
+
+        queryset = Bounty.objects.prefetch_related(
+            'fulfillments', 'interested', 'interested__profile', 'activities',
+            'unsigned_nda', 'event'
+        )
+
+        queryset = queryset.current()
+
+        if 'github_url' in param_keys:
+            url = self.request.query_params.get('github_url')
+            queryset = queryset.filter(github_url=url)
+
+        queryset = queryset.order_by('-web3_created')
+        queryset = queryset.distinct()
+
+        return queryset
+
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'bounties/slim', BountyViewSetSlim)
-router.register(r'bounties', BountyViewSet)
-router.register(r'checkin', BountyViewSetCheckIn)
+router.register(r'bounties/slim', BountiesViewSetSlim)
+router.register(r'bounties', BountiesViewSet)
+router.register(r'checkin', BountiesViewSetCheckIn)
+
+router.register(r'bounty', BountyViewSet)

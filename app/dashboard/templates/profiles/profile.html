@@ -65,9 +65,6 @@
           {% if not hidden %}
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% include 'profiles/header_avatar.html' %}
-              {% if is_alpha_tester %}
-                {% include 'profiles/header_sync_profile.html' %}
-              {% endif %}
               {% include 'profiles/header_details.html' %}
             </div>
             
@@ -119,11 +116,13 @@
     <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
     <script src="{% static "v2/js/pages/tribe_title.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
-    <script src="{% static "v2/js/profile-backup.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
+    <script src="{% static "v2/js/lib/jitsi.js" %}"></script>
+    <script src="{% static "v2/js/lib/jquery.autogrow.js" %}"></script>
     <script src="{% static "v2/js/activity.js" %}"></script>
+    <script src="{% static "v2/js/3box.min.js" %}"></script>
     <script>
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;
@@ -132,6 +131,5 @@
         window.profile_automatic_backup = true;
       {% endif %}
     </script>
-    <script src="https://unpkg.com/3box/dist/3box.min.js"></script>
   </body>
 </html>

@@ -433,6 +433,7 @@ var update_fulfiller_list = function(bounty_pk) {
   });
   return fulfillers;
 };
+// ETC TODO END
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -692,11 +693,15 @@ const randomElement = array => {
 };
 
 /* eslint-disable no-lonely-if */
-var currentNetwork = function(network) {
+var currentNetwork = function(network, no_ui_updates) {
 
   $('.navbar-network').removeClass('hidden');
 
   document.web3network = network;
+  if (typeof no_ui_updates != 'undefined') {
+    return;
+  }
+
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
     if (network == 'mainnet') {
       $('#current-network').text('Main Ethereum Network');
@@ -929,7 +934,7 @@ function getNetwork(id) {
 }
 
 // figure out what version of web3 this is, whether we're logged in, etc..
-var listen_for_web3_changes = async function() {
+var listen_for_web3_changes = async function(no_ui_updates) {
   reloadCbAddress();
   if (document.location.pathname.indexOf('grants') === -1) {
     if (!document.listen_for_web3_iterations) {
@@ -939,13 +944,13 @@ var listen_for_web3_changes = async function() {
     }
 
     if (typeof web3 == 'undefined') {
-      currentNetwork();
+      currentNetwork(undefined, no_ui_updates);
       trigger_form_hooks();
     } else if (typeof web3.eth == 'undefined') {
-      currentNetwork('locked');
+      currentNetwork('locked', no_ui_updates);
       trigger_form_hooks();
     } else if (typeof cb_address == 'undefined' || !cb_address) {
-      currentNetwork('locked');
+      currentNetwork('locked', no_ui_updates);
       trigger_form_hooks();
     } else {
       is_metamask_unlocked = true;
@@ -961,11 +966,11 @@ var listen_for_web3_changes = async function() {
 
       web3.version.getNetwork(function(error, netId) {
         if (error) {
-          currentNetwork();
+          currentNetwork(undefined, no_ui_updates);
         } else {
           var network = getNetwork(netId);
 
-          currentNetwork(network);
+          currentNetwork(network, no_ui_updates);
           trigger_form_hooks();
         }
       });
@@ -1022,12 +1027,6 @@ var actions_page_warn_if_not_on_same_network = function() {
 };
 
 attach_change_element_type();
-
-if (typeof is_bounties_network == 'undefined' || is_bounties_network) {
-  window.addEventListener('load', function() {
-    setInterval(listen_for_web3_changes, 1000);
-  });
-}
 
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
@@ -1379,7 +1378,10 @@ const updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
-  window.location.search = params.toString();
+  if (key != 'category') {
+    params.set('category', '');
+  }
+  window.location.href = '/grants/?' + decodeURIComponent(params.toString());
 };
 
 /**

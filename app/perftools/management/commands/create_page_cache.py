@@ -22,15 +22,162 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
+from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
+from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
+from dashboard.models import Profile
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
 
+
+def create_top_grant_spenders_cache():
+    from marketing.models import Stat
+    from grants.views import next_round_start, round_types
+    from grants.models import Grant, Contribution
+    for round_type in round_types:
+        contributions = Contribution.objects.filter(
+            success=True,
+            created_on__gt=next_round_start,
+            subscription__grant__grant_type=round_type
+            ).values_list('subscription__contributor_profile__handle', 'subscription__amount_per_period_usdt')
+
+        count_dict = {ele[0]:0 for ele in contributions}
+        sum_dict = {ele[0]:0 for ele in contributions}
+        for ele in contributions:
+            if ele[1]:
+                count_dict[ele[0]] += 1
+                sum_dict[ele[0]] += ele[1]
+
+        from_date = timezone.now()
+        for key, val in count_dict.items():
+            if val:
+                #print(key, val)
+                Stat.objects.create(
+                    created_on=from_date,
+                    key="count_" + round_type + "_" + key,
+                    val=val,
+                    )
+
+        for key, val in sum_dict.items():
+            if val:
+                #print(key, val)
+                Stat.objects.create(
+                    created_on=from_date,
+                    key="sum_" + round_type + "_" + key,
+                    val=val,
+                    )
+
+
+
+def fetchPost(qt='2'):
+    import requests
+    """Fetch last post from wordpress blog."""
+    url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
+    last_posts = requests.get(url=url).json()
+    return last_posts
+
+def create_hidden_profiles_cache():
+
+    handles = list(Profile.objects.all().hidden().values_list('handle', flat=True))
+
+    view = 'hidden_profiles'
+    keyword = 'hidden_profiles'
+    with transaction.atomic():
+        JSONStore.objects.filter(view=view).all().delete()
+        data = handles
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=data,
+            )
+
+
+def create_tribes_cache():
+
+    _tribes = Profile.objects.filter(is_org=True).order_by('-follower_count')[:8]
+
+    tribes = []
+
+    for _tribe in _tribes:
+        tribe = {
+            'name': _tribe.handle,
+            'img': _tribe.avatar_url,
+            'followers_count': _tribe.follower_count
+        }
+        tribes.append(tribe)
+
+    view = 'tribes'
+    keyword = 'tribes'
+    with transaction.atomic():
+        JSONStore.objects.filter(view=view).all().delete()
+        data = tribes
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=data,
+            )
+
+
+def create_post_cache():
+    data = fetchPost()
+    view = 'posts'
+    keyword = 'posts'
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    data = json.loads(json.dumps(data, cls=EncodeAnything))
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=data,
+        )
+
+
+def create_avatar_cache():
+    from avatar.models import AvatarTheme, CustomAvatar
+    for at in AvatarTheme.objects.all():
+        at.popularity = at.popularity_cheat_by
+        if at.name == 'classic':
+            at.popularity += CustomAvatar.objects.filter(active=True, config__icontains='"Ears"').count()
+        elif at.name == 'unisex':
+            at.popularity += CustomAvatar.objects.filter(active=True, config__theme=["3d"]).count()
+            at.popularity += CustomAvatar.objects.filter(active=True, config__icontains='hairTone').exclude(config__icontains="theme").count()
+        else:
+            at.popularity += CustomAvatar.objects.filter(active=True, config__theme=[at.name]).count()
+        at.save()
+
+
+def create_activity_cache():
+    from django.utils import timezone
+    from dashboard.models import Activity
+    hours = 24 if not settings.DEBUG else 1000
+
+    print('activity.1')
+    view = 'activity'
+    keyword = '24hcount'
+    data = Activity.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
+    JSONStore.objects.filter(view=view, key=keyword).all().delete()
+    JSONStore.objects.create(
+        view=view,
+        key=keyword,
+        data=json.loads(json.dumps(data, cls=EncodeAnything)),
+        )
+
+    print('activity.2')
+    from retail.views import get_specific_activities
+    from townsquare.views import tags
+    for tag in tags:
+        keyword = tag[2]
+        data = get_specific_activities(keyword, False, None, None).filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
+        JSONStore.objects.filter(view=view, key=keyword).all().delete()
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=json.loads(json.dumps(data, cls=EncodeAnything)),
+            )
 
 def create_grants_cache():
     from grants.utils import generate_leaderboard
@@ -113,8 +260,14 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_results_cache()
+        create_top_grant_spenders_cache()
         if not settings.DEBUG:
+            create_hidden_profiles_cache()
+            create_tribes_cache()
+            create_activity_cache()
+            create_post_cache()
+            create_results_cache()
+            create_avatar_cache()
             create_quests_cache()
             create_grants_cache()
             create_contributor_landing_page_context()

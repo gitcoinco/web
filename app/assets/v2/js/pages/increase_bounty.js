@@ -1,4 +1,8 @@
 /* eslint-disable no-lonely-if */
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+});
+
 load_tokens();
 
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;

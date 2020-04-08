@@ -1,3 +1,7 @@
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+});
+
 $(document).ready(function() {
   if (!caseInsensitiveCompare($('#bounty_owner').html(), document.contxt.github_handle)) {
     $('.metamask-banner').hide();

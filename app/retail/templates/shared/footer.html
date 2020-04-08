@@ -63,7 +63,7 @@
             <a href="{% url "kudos_main" %}">{% trans "Kudos" %}</a>
             <a href="{% url "grants:grants" %}">{% trans "Grants" %}</a>
             <a href="{% url "quests_index" %}">{% trans "Quests" %}</a>
-            <a href="{% url "labs" %}">{% trans "Labs" %}</a>
+            <a href="{% url "avatar_landing" %}">{% trans "Avatar Builder" %}</a>
           </div>
           <div class="sitenav">
             <h5>{% trans "Business" %}</h5>
@@ -80,7 +80,8 @@
               Chat 
             </a>
             <a href="{% url "activity" %}">{% trans "Activity Feed" %}</a>
-            <a href="{% url "help" %}">{% trans "Help" %}</a>
+            <a href="/wiki/">{% trans "Wiki" %}</a>
+            <a href="/wiki/help">{% trans "Help" %}</a>
             <a href="https://store.gitcoin.co/">{% trans "Store" %}</a>
           </div>
           <div class="sitenav">

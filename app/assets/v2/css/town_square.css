@@ -1,4 +1,10 @@
+#mobile_nav_toggle{
+  display: none !important;
+}
 .follow_button[member=true]{
+  display: none;
+}
+.follow_tribe i {
   display: none;
 }
 .tooltip-inner {
@@ -276,7 +282,7 @@
   background-image:radial-gradient(#0fde9c, #0fce7c 70%);
 }
 
-.offer_container {
+.offer_container, .promo {
   background: var(--gc-dark-violet);
   padding: 1em;
   color: white;
@@ -371,7 +377,10 @@ a.offer_container.animate:hover .prize-gift::after {
   color: #a58484;
   text-shadow: 0 2px 0px #a58484;
 }
-
+.empty {
+  background-color: #ddd;
+  color: #808080;
+}
 .empty .prize-gift {
   color: grey;
   text-shadow: 0 2px 0px grey;
@@ -810,6 +819,10 @@ body.green.offer_view .announce {
   text-align: left;
 }
 
+.clr_container .font-caption {
+  font-size: 0.65rem;
+}
+
 .clr_container td {
   padding: 6px;
 }
@@ -878,8 +891,14 @@ body.green.offer_view .announce {
   font-size: 0.9rem;
   color: #626365;
   text-transform: uppercase;
+  cursor: pointer;
 }
-
+.townsquare_block-header::after {
+  content: ""
+}
+.townsquare_block-header.closed::after {
+  content: "^"
+}
 #status .btn-group-toggle .btn-radio {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
@@ -908,9 +927,9 @@ body.green.offer_view .announce {
 
 .activity_stream .activity_comments .comment_container.filled
 .activity-avatar img {
-  height: 30px;
-  width: 30px;
-  max-width: 30px;
+  height: 40px;
+  width: 40px;
+  max-width: 40px;
   border-radius: 50%;
 }
 
@@ -971,4 +990,65 @@ body.green.offer_view .announce {
   width: 20px;
   height: 20px;
   margin-right: 4px;
+}
+
+@media (max-width: 768px) {
+  #mobile_nav_toggle{
+    display: block !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  #_hj_feedback_container{
+    display:none !important;
+  }
+  .townsquare_header li.nav-item{
+    display:inline-block;
+  }
+}
+
+
+.promo .logo {
+  height: 55px;
+  width: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promo {
+  background-image: url("/static/v2/images/tribes/promo-decoration.svg");
+  background-color: var(--gc-blue);
+  background-size: cover;
+}
+.promo .promo-text {
+  font-size: 0.9em;
+}
+
+.promo .action {
+  background-color: #101061;
+  color: white;
+  border-radius: 0;
+}
+
+.promo p {
+  margin-bottom: 0;
+}
+
+.promo .action:hover {
+  background-color: #101061;
+  filter: brightness(130%);
+}
+
+.promo .close-promo {
+  position: absolute;
+  top: 6px;
+  right: 29px;
+  font-size: 16px;
+  color: white;
+  opacity: 1;
+}
+
+.promo .close-promo i {
+  font-weight: 100;
 }

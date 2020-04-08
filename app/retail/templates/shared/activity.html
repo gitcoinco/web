@@ -24,10 +24,10 @@
     </div>
   {% endif %}
   <div class="activity_main row">
-    <div class="col-2">
+    <div class="col-2 p-0">
       <div class="activity-avatar">
         <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
-          <img class="avatar rounded-circle" src="{% if row.profile.active_avatar %}{{ row.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{{row.profile.handle}}{% endif %}"/>
+          <img class="avatar rounded-circle" src="/dynamic/avatar/{{row.profile.handle}}"/>
         </a>
         <div class="position-relative">
           {% if row.secondary_avatar_url %}
@@ -37,12 +37,21 @@
           {% endif %}
         </div>
       </div>
-      <div class="pt-2">
-        {% for org in row.profile.organizations %}
-          <span>
-            <img data-toggle="tooltip" title="Member of @{{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 15px; height: 15px;" />
-          </span>
-        {% endfor %}
+      <div class="pt-0 text-center">
+         {% if row.metadata.staff %}
+            <span class="staff_tag">
+              Staff
+            </span>
+            <BR>
+         {% endif %}
+
+        {% if row.profile.organizations|length %}
+          <div>
+            {% for org in row.profile.organizations %}
+                <img data-toggle="tooltip" title="Member of @{{org}}" src="/dynamic/avatar/{{ org }}" style="border-radius: 15px; width: 15px; height: 15px;" />
+            {% endfor %}
+          </div>
+        {% endif %}
         {% if row.profile.data.type == 'Organization'%}
           {% if row.profile.handle not in my_tribes|join:"," %}
             <div style="text-align:center"><a href=# class="align-middle btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>Join Tribe</a></div>
@@ -50,12 +59,20 @@
         {% endif %}
       </div>
     </div>
-    <div class="col-10 col-sm-8 pl-4 px-sm-0 activity_detail">
+    <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
       <div>
+         {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
          <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
+
+         {% if row.hackathonevent %}
+            <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" class="tag">
+              via {{ row.hackathonevent.name }}
+            </a>
+         {% endif %}
         </span>
+
         {% if row.profile.match_this_round %}
           <span class="tip_activity" data-pk="{{row.pk}}" data-username="{{row.profile.handle}}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; padding: 2px; font-size: 10px;"
             data-placement="bottom" data-toggle="tooltip" data-html="true"
@@ -76,7 +93,12 @@
             @{{ row.metadata.to_username }}
           </a>
         {% elif row.activity_type == 'mini_clr_payout' %}
-          {% trans "got a distribution of" %} of <strong>${{row.metadata.amount|floatformat:2}}<strong>
+          {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
+        {% elif row.activity_type == 'created_kudos' %}
+          a new kudos has been minted:
+          <a href="{{ row.kudos.external_url }}">
+            {{ row.kudos.ui_name }}
+          </a>
         {% elif row.activity_type == 'new_kudos' %}
           {% trans "sent a" %}
           Kudos
@@ -85,10 +107,10 @@
             <a href="/profile/{{ row.metadata.to_username|cut:'@' }}">
               {{ row.metadata.to_username }}
             </a>
-          {% elif row.kudos %}
+          {% elif row.kudos_transfer and row.kudos_transfer.username %}
             {% trans "to" %}
-            <a href="/profile/{{ row.kudos.username|cut:'@' }}">
-              {{ row.kudos.username }}
+            <a href="/profile/{{ row.kudos_transfer.username|cut:'@' }}">
+              {{ row.kudos_transfer.username }}
             </a>
           {% endif %}
         {% elif row.activity_type == 'receive_kudos' %}
@@ -112,6 +134,12 @@
           </a>
         {% elif row.activity_type == 'joined' %}
           {% trans "joined Gitcoin" %}
+        {% elif row.activity_type == 'hackathon_registration' %}
+          {% trans "registered for " %}
+          <a href="/{{row.hackathonevent.relative_url}}">
+            {{row.hackathonevent.name}}
+          </a>
+
         {% elif row.activity_type == 'update_grant' %}
           {% trans "updated" %}
           <a href="{{ row.metadata.grant_url }}" >
@@ -121,6 +149,16 @@
           {% trans "cancelled" %}
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
+          </a>
+        {% elif row.activity_type == 'negative_contribution' %}
+          {% trans "has observed an anonymous negative contribution to" %}
+          <a href="{{ row.metadata.grant_url }}" >
+            {{ row.metadata.title }}
+          </a>
+        {% elif row.activity_type == 'flagged_grant' %}
+           has observed a new Flag <i class="far fa-flag"></i> for
+          <a href="{{ row.grant.url }}" >
+            {{ row.grant.title }}
           </a>
         {% elif row.activity_type == 'new_grant_contribution' %}
           {% trans "contributed to" %}
@@ -147,22 +185,36 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
+          {% if row.metadata.num_tx_approved %}
+            for {{row.metadata.num_tx_approved}} CLR round{{row.metadata.num_tx_approved|pluralize}}
+          {% endif %}
         {% elif row.activity_type == 'killed_grant_contribution' %}
           {% trans "unsubscribed from" %}
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
-        {% elif row.activity_type == 'status_update' %}
+        {% elif row.activity_type == 'status_update' or  row.activity_type == 'silent_status_update' %}
           <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
+
+          {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
+          <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
+          <p class='num_participants m-0 p-0' data-roomname="+roomName+">
+            <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
+              •
+            </p>
+            <span class="participants_count">{{row.video_participants_count}}</span> users on call
+          </p>
+          {% endif %}
+
         {% elif row.activity_type == 'wall_post' %}
           &gt;
         {% if row.grant %}
           <a href="{{ row.grant.url }}">
             {{ row.grant.title }}
           </a>
-        {% elif row.kudos_data %}
-          <a href="{{ row.kudos_data.url }}">
-            {{ row.kudos_data.ui_name }}
+        {% elif row.kudos %}
+          <a href="{{ row.kudos.url }}">
+            {{ row.kudos.ui_name }}
           </a>
         {% elif row.other_profile %}
           <a href="{{ row.other_profile.url }}">
@@ -170,25 +222,32 @@
           </a>
         {% endif %}
       :
-        <b>{{ row.metadata.title }}</b>
+        <span>{{ row.metadata.title }}</span>
+      {% elif row.activity_type == 'consolidated_leaderboard_rank'  or row.activity_type == 'consolidated_mini_clr_payout' %}
+        {{row.metadata.copy|safe}}
+
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
       {% elif row.activity_type == 'new_bounty' %}
-        {{ row.urled_title | safe }}
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'start_work' %}
-        <span>{% trans "started work: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "started work: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'stop_work' %}
-        <span>{% trans "stopped work: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "stopped work: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'killed_bounty' %}
-        <span>{% trans "canceled bounty: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "canceled bounty: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'increased_bounty' %}
-        <span>{% trans "increased funding: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "increased funding: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'updated_avatar' %}
         <span>{% trans "updated their avatar" %}</span>
       {% elif row.activity_type == 'unknown_event' %}
-        <span>{% trans "made an update to: " %}</span>{{ row.urled_title | safe }}
+        <span>{% trans "made an update to: " %}</span>
+        <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% else %}
-        {{ row.i18n_name }}
         {{row.humanized_activity_type }}
         {% if row.bounty %}
           : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
@@ -213,20 +272,20 @@
                 <span class="amount grey">{{ row.tip_count_eth|floatformat:3}}</span>
               </a>
 
-            <a href=# title="{{row.likes_title}}Click to {% if row.liked %}unlike{% else %}like{%endif%} feed item."
-              data-affirmative=liked data-negative=unliked data-state="{% if row.liked %}liked{% else %}unliked{%endif%}"
+            <a href=# title="{{row.metadata.likes_title}}Click to {% if row.metadata.liked %}unlike{% else %}like{%endif%} feed item."
+              data-affirmative=liked data-negative=unliked data-state="{% if row.metadata.liked %}liked{% else %}unliked{%endif%}"
               data-pk={{row.pk}} class="like_activity mr-2" data-action='like' data-toggle="tooltip"
             >
-              <span class="action {% if row.liked %}open{%endif%}">
+              <span class="action {% if row.metadata.liked %}open{%endif%}">
                 <i class="far fa-heart grey"></i>
               </span>
-              <span class="num grey">{{row.likes}}</span>
+              <span class="num grey">{{row.likes.count}}</span>
             </a>
 
             <a href=# data-pk={{row.pk}} class="comment_activity mr-2" data-toggle="tooltip"
-              title="Comment on this feed item." {% if row.comments %} data-open="true" {% endif %} >
+              title="Comment on this feed item." {% if row.comments.count %} data-open="true" {% endif %} >
               <span class="action"><i class="far fa-comment grey"></i></span>
-              <span class="num grey">{{row.comments}}</span>
+              <span class="num grey">{{row.comments.count}}</span>
             </a>
           </span>
 
@@ -239,29 +298,45 @@
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
+            <a href=# data-action='favorite' data-toggle="tooltip" title="Mark as favorite this activity" data-affirmative=favorite
+              data-negative=unfavorite data-state="{% if row.metadata.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
+              class="favorite_activity mr-2 dropdown-item px-3 font-smaller-5">
+              {% if row.metadata.favorite %}
+                  <i class="fas fa-star mr-2"></i>
+              {% else %}
+                  <i class="far fa-star mr-2"></i>
+              {%endif%} Favorite
+            </a>
             <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
               data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
               class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"
             >
               <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
             </a>
-            {% if row.profile.handle == github_handle %}
-            <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
-              <i class="fas fa-trash mr-2"></i> Delete
-            </a>
+            {% if row.metadata.fund_able and not row.bounty  %}
+              <a class="mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Create new bounty." href='/funding/new?type=public&activity={{ row.id }}&url={{ row.metadata.resource.provider }}'>
+                <i class="fab fa-ethereum mr-2"></i> Fund Issue
+              </a>
+            {% endif %}
+            {% if row.profile.handle|lower == github_handle|lower %}
+              <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
+                <i class="fas fa-trash mr-2"></i> Delete
+              </a>
             {% endif %}
           </div>
 
-          {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
-            {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name %}
+          {% if row.show_token_info %}
+            {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name or row.bounty %}
               <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">
-                  {% if row.value_in_token_disp %}
-                    <span class="value_in_token_disp">{{ row.value_in_token_disp }} {{row.token_name}}</span>
+                  {% if row.bounty %}
+                    <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
+                  {% elif row.value_in_token_disp %}
+                    <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
                   {% elif row.metadata.value_in_eth %}
-                    <span class="value_in_eth">{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
                   {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                    <span class="value_in_token">{{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{row.metadata.value_in_token  | floatformat:2}}  {{row.metadata.token_name}}</span>
                   {% endif %}
                 </p>
               </div>
@@ -296,21 +371,35 @@
       </div>
       <div class="mt-3 text-right pr-3 activity-img">
         {% if row.kudos %}
-          <a href="{{row.kudos_data.url}}">
-            <img src="{% static row.kudos_data.image %}" alt="{% static row.kudos_data.name %}" class="mw-100">
+          <a href="{{row.kudos.external_url}}">
+            <img src="{{row.kudos.preview_img_url}}" alt="{{row.kudos.ui_name }}" class="mw-100">
           </a>
         {% elif row.activity_type == 'leaderboard_rank' %}
           <img src="{% static "/v2/images/kudos/money.svg" %}" alt="" class="w-100 mw-100">
         {% elif row.metadata.quest_reward %}
-          <img src="{{row.metadata.quest_reward}}" alt="" class="mw-100">
+          <a href="{{row.metadata.quest_url}}">
+            <img src="{{row.metadata.quest_reward}}" alt="" class="mw-100">
+          </a>
         {% else %}
           <i class="{{ row.icon }} last-icon"></i>
         {% endif %}
       </div>
     </div>
   </div>
-
-  {% if row.metadata.resource.type == 'gif' %}
+  {% if row.metadata.poll_choices %}
+  <div class="poll_choices {% if row.metadata.poll_answered %}answered{%endif%}">
+    {% for ele in row.metadata.poll_choices %}
+      <div data-vote="{{ forloop.counter0 }}" class=" vote {% if row.metadata.poll_answered == ele.i %}answer{%endif%}">
+        <p>
+          {{ele.question}}
+        <span>
+          {{ele.answers|length}}
+        </span>
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+  {% elif row.metadata.resource.type == 'gif' %}
   <div class="mt-1 mb-2" >
     <div class="row align-items-center bg-light">
         <img class="attachment" loading="lazy" data-src="{{ row.metadata.resource.id }}">

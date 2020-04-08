@@ -51,6 +51,7 @@ ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
+YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -93,12 +94,12 @@ INSTALLED_APPS = [
     'health_check.contrib.s3boto3_storage',
     'app',
     'avatar',
-    'chat',
     'retail',
     'rest_framework',
     'marketing',
     'economy',
     'dashboard',
+    'chat',
     'quests',
     'enssubdomain',
     'faucet',
@@ -127,6 +128,17 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'townsquare',
     'compliance',
+    'django_nyt.apps.DjangoNytConfig',
+    'mptt',
+    'sekizai',
+    'sorl.thumbnail',
+    'wiki.apps.WikiConfig',
+    'wiki.plugins.attachments.apps.AttachmentsConfig',
+    'wiki.plugins.notifications.apps.NotificationsConfig',
+    'wiki.plugins.images.apps.ImagesConfig',
+    'wiki.plugins.macros.apps.MacrosConfig',
+    'debug_toolbar',
+
 ]
 
 MIDDLEWARE = [
@@ -167,6 +179,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
             'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
+            "sekizai.context_processors.sekizai",
         ],
     },
 }]
@@ -206,6 +219,22 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'auth.User'
 
+# adds django debug toolbar
+if DEBUG:
+    INTERNAL_IPS = [
+        # ...
+        '127.0.0.1',
+        'localhost',
+        # ...
+    ]
+    def callback(request):
+        return True
+    SHOW_TOOLBAR_CALLBACK = callback
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK" : callback,
+    }
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+    
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
@@ -548,12 +577,20 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Etherscan API
+ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='')
+
+# Kudos revenue account
+KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
+
 # Chat
 CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
 CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
+CHAT_SERVER_URL = env('CHAT_SERVER_URL', default='chat')  # location of where mattermost is hosted
 CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
 GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
 GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
+GITCOIN_LEADERBOARD_CHANNEL_ID = env('GITCOIN_LEADERBOARD_CHANNEL_ID', default='')
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
@@ -599,6 +636,12 @@ TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='')  # TODO
 TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')  # TODO
 TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')  # TODO
 TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
+
+DISPUTES_TWITTER_CONSUMER_KEY = env('DISPUTES_TWITTER_CONSUMER_KEY', default='')  # TODO
+DISPUTES_TWITTER_CONSUMER_SECRET = env('DISPUTES_TWITTER_CONSUMER_SECRET', default='')  # TODO
+DISPUTES_TWITTER_ACCESS_TOKEN = env('DISPUTES_TWITTER_ACCESS_TOKEN', default='')  # TODO
+DISPUTES_TWITTER_ACCESS_SECRET = env('DISPUTES_TWITTER_ACCESS_SECRET', default='')  # TODO
+
 
 # Slack Integration
 # optional: only needed if you slack things
@@ -711,7 +754,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -743,6 +786,10 @@ ENABLE_DDTRACE = env.bool('ENABLE_DDTRACE', default=False)
 if ENABLE_DDTRACE:
     INSTALLED_APPS += ['ddtrace.contrib.django']
 
+WIKI_ACCOUNT_HANDLING = True
+WIKI_ACCOUNT_SIGNUP_ALLOWED = True
+WIKI_CACHE_TIMEOUT = True
+
 # Sending an email when a bounty is funded below a threshold
 LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
 
@@ -759,3 +806,8 @@ MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=6
 MINICLR_ADDRESS = env('MINICLR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
+AVATAR_ADDRESS = env('AVATAR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+AVATAR_PRIVATE_KEY = env('AVATAR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+
+
+ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')

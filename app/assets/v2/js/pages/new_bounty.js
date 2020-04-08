@@ -1,7 +1,62 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 /* eslint-disable no-lonely-if */
+document.web3network = 'mainnet';
 load_tokens();
+// listen_for_web3_changes();
+
+const qr_tokens = ['ETC'];
+
+
+const updateOnNetworkOrTokenChange = () => {
+  const tokenName = $('select[name=denomination]').select2('data')[0] &&
+    $('select[name=denomination]').select2('data')[0].text;
+
+  if (!tokenName) {
+    // tokens haven't loaded yet
+  } else if (qr_tokens.includes(tokenName)) {
+    document.web3network = 'mainnet';
+
+    $('#navbar-network-banner').hide();
+    $('.navbar-network').hide();
+
+    $('.funder-address-container').show();
+    $('#funderAddress').attr('required', true);
+
+    $('.web3-alert').hide();
+
+  } else {
+    listen_for_web3_changes();
+
+    $('#navbar-network-banner').show();
+    $('.navbar-network').show();
+
+    $('.funder-address-container').hide();
+    $('#funderAddress').removeAttr('required');
+    $('#funderAddress').val('');
+
+    $('.web3-alert').show();
+    if (!document.web3network) {
+      $('.web3-alert').html('To continue, please setup a web3 wallet.');
+      $('.web3-alert').addClass('wallet-not-connected');
+    } else if (document.web3network == 'locked') {
+      $('.web3-alert').html('To continue, please unlock your web3 wallet');
+      $('.web3-alert').addClass('wallet-not-connected');
+    } else if (document.web3network == 'rinkeby') {
+      $('.web3-alert').html(`connected to address <b>${web3.eth.coinbase}</b> on rinkeby`);
+      $('.web3-alert').addClass('wallet-success');
+    } else {
+      $('.web3-alert').html(`connected to address <b>${web3.eth.coinbase}</b> on mainnet`);
+      $('.web3-alert').addClass('wallet-success');
+    }
+  }
+};
+
+window.addEventListener('load', function() {
+  setTimeout(() => {
+    setInterval(updateOnNetworkOrTokenChange, 1000);
+  }, 5000);
+});
 
 var localStorage = window.localStorage ? window.localStorage : {};
 const quickstartURL = document.location.origin + '/bounty/quickstart';
@@ -364,9 +419,17 @@ $(function() {
   var triggerDenominationUpdate = function(e) {
     setUsdAmount();
     handleTokenAuth();
-    const token_val = $('select[name=denomination]').val();
-    const tokendetails = tokenAddressToDetails(token_val);
-    var token = tokendetails['name'];
+
+    updateOnNetworkOrTokenChange();
+
+    const token_address = $('select[name=denomination]').val();
+    const tokenName = $('select[name=denomination]').select2('data')[0].text;
+
+    const tokendetails = qr_tokens.includes(tokenName) ?
+      tokenAddressToDetailsByNetwork(token_address, 'mainnet') :
+      tokenAddressToDetails(token_address);
+
+    const token = tokendetails['name'];
 
     updateViewForToken(token);
 
@@ -376,9 +439,13 @@ $(function() {
   };
 
   $('select[name=denomination]').change(triggerDenominationUpdate);
+
   waitforWeb3(function() {
-    setTimeout(function() {
-      triggerDenominationUpdate();
+    let denominationId = setInterval(function() {
+      if ($('select[name=denomination]').val()) {
+        triggerDenominationUpdate();
+        clearInterval(denominationId);
+      }
     }, 1000);
   });
 
@@ -748,7 +815,8 @@ const transformBountyData = form => {
     releaseAfter: releaseAfter !== 'Release To Public After' ? releaseAfter : '',
     tokenName: token['name'],
     invite: inviteContributors,
-    bounty_categories: data.bounty_categories
+    bounty_categories: data.bounty_categories,
+    activity: data.activity
   };
 
   data.metadata = metadata;

@@ -29,7 +29,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 from cacheops import CacheMiss, cache
-from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, Stat
+from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, ManualStat, Stat
 from requests_oauthlib import OAuth2Session
 
 programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'rust', 'html', 'design', 'java']
@@ -105,7 +105,9 @@ def get_bounty_history_at_date(statuses, date, keyword):
         base_stats = Stat.objects.filter(
             key__in=keys,
             ).order_by('-pk')
-        return base_stats.filter(created_on__lte=date).first().val
+        amount = base_stats.filter(created_on__lte=date).first().val
+        amount += sum(ManualStat.objects.filter(key='bounty_gmv', date__lt=date).values_list('val', flat=True))
+        return amount
     except Exception as e:
         print(e)
         return 0
@@ -117,15 +119,18 @@ def get_grants_history_at_date(date, keyword):
         base_stats = Stat.objects.filter(
             key='grants',
             ).order_by('-pk')
-        return base_stats.filter(created_on__lte=date).first().val
+        amount = base_stats.filter(created_on__lte=date).first().val
+        amount += sum(ManualStat.objects.filter(key='grants_gmv', date__lt=date).values_list('val', flat=True))
+        return amount
     except Exception as e:
         print(e)
         return 0
 
 
 def get_kudos_history_at_date(date, keyword):
-    return get_cryptoasset_history_at_date(date, keyword, 'kudos')
-
+    amount = get_cryptoasset_history_at_date(date, keyword, 'kudos')
+    amount += sum(ManualStat.objects.filter(key='kudos_gmv', date__lt=date).values_list('val', flat=True))
+    return amount
 
 def get_ecosystem_history_at_date(date, keyword):
     date = date.replace(tzinfo=None)
@@ -140,11 +145,11 @@ def get_ecosystem_history_at_date(date, keyword):
         amount += 184043 + 24033
     if date > timezone.datetime(2018, 12, 23):
         amount += 51087.23
+    amount += sum(ManualStat.objects.filter(key='ecosystem_gmv', date__lt=date).values_list('val', flat=True))
     return amount
 
 
 def get_codefund_history_at_date(date, keyword):
-    from marketing.models import ManualStat
     date = date.replace(tzinfo=None)
     amount = 0
     # July => Feb 2019
@@ -185,7 +190,9 @@ def get_codefund_history_at_date(date, keyword):
 
 
 def get_tip_history_at_date(date, keyword):
-    return get_cryptoasset_history_at_date(date, keyword, 'tips')
+    amount = get_cryptoasset_history_at_date(date, keyword, 'tips')
+    amount += sum(ManualStat.objects.filter(key='tip_gmv', date__lt=date).values_list('val', flat=True))
+    return amount
 
 
 def get_cryptoasset_history_at_date(date, keyword, key):

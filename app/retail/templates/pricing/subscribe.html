@@ -167,6 +167,11 @@
   <script src="{% static 'v2/js/lib/animate-number.min.js' %}"></script>
 
   <script>
+
+    window.addEventListener('load', function() {
+      setInterval(listen_for_web3_changes, 5000);
+    });
+
     $(document).ready(function() {
 
       if(getParam('pack') == 'annual')

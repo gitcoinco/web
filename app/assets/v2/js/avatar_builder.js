@@ -341,6 +341,7 @@ function setOptionHelper(option, value, target) {
   if (complete) {
     $('#complete-notification').removeClass('d-none');
     $('#save-button').removeAttr('disabled');
+    $('#upload-button').removeAttr('disabled');
   }
 }
 
@@ -392,7 +393,7 @@ function randomAvatar(sections, optionalSections) {
             htmlComponent = $(`#avatar-option-${componentName}-${part}`)[0];
             setOptionHelper(componentName, JSON.stringify(option), htmlComponent);
           });
-          
+
           break;
         default:
           htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
@@ -401,10 +402,10 @@ function randomAvatar(sections, optionalSections) {
       }
     }
   });
-  
+
 }
 
-function saveAvatar() {
+function saveAvatar(onSuccess) {
   $(document).ajaxStart(function() {
     loading_button($('#save-avatar'));
     $('#do-later').attr('disabled', 'disabled');
@@ -423,8 +424,12 @@ function saveAvatar() {
     dataType: 'json',
     contentType: 'application/json; charset=utf-8',
     success: function(response) {
-      _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
-      changeStep(1);
+      if (onSuccess) {
+        onSuccess;
+      } else {
+        _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
+        changeStep(1);
+      }
     },
     error: function(response) {
       let text = gettext('Error occurred while saving. Please try again.');
@@ -436,6 +441,28 @@ function saveAvatar() {
       _alert({ message: text}, 'error');
     }
   });
+}
+
+function uploadAvatars() {
+
+  saveAvatar(() => {
+    _alert({ message: gettext('The avatar has been saved to GitCoin profile. Now upload to 3Box...') }, 'success');
+    if (window.syncTo3Box) {
+      syncTo3Box({
+        onLoading,
+        model: 'custom avatar'
+      });
+    }
+  });
+
+  const onLoading = (loading) => {
+    if (loading) {
+      loading_button($('#save-avatar'));
+      $('#do-later').attr('disabled', 'disabled');
+    } else {
+      unloading_button($('#save-avatar'));
+    }
+  };
 }
 
 changeSection('Head');

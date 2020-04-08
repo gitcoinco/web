@@ -12,7 +12,7 @@ djangorestframework==3.9.1
 gitterpy
 gunicorn
 matplotlib
-markdown==2.6.11
+Markdown==3.2.1
 reportlab==3.5.6
 requests
 requests_oauthlib
@@ -91,3 +91,7 @@ ddtrace
 metadata-parser==0.10.0
 redis==3.3.11
 pandas
+wiki
+django-bulk-update
+elasticsearch
+

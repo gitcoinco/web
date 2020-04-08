@@ -125,6 +125,7 @@ def get_prize_url_if_redeemable(user, quest):
     btcs = BulkTransferCoupon.objects.filter(
         token=quest.kudos_reward,
         tag='quest',
+        comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
         metadata__recipient=user.profile.pk,
         num_uses_remaining__gt=0,
         )
@@ -185,6 +186,7 @@ def process_win(request, qa):
     btcs = BulkTransferCoupon.objects.filter(
         token=quest.kudos_reward,
         tag='quest',
+        comments_to_put_in_kudos_transfer=f"Congrats on beating the '{quest.title}' Gitcoin Quest",
         metadata__recipient=request.user.profile.pk)
     btc = None
     if btcs.exists():

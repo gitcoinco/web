@@ -27,6 +27,7 @@ from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.models import Grant
+from grants.views import clr_active
 from marketing.mails import warn_subscription_failed
 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -157,6 +158,9 @@ class Command(BaseCommand):
                 next_contribution_date__lt=timezone.now(),
                 num_tx_processed__lt=F('num_tx_approved')
             )
+            if not clr_active:
+                subs = subs.exclude(frequency_unit='roundup') #dont process grant subscriptions until next round
+
             logger.info(" - %d has %d subs ready for execution", grant.pk, subs.count())
 
             for subscription in subs:

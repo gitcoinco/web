@@ -166,7 +166,7 @@
             </div>
             <div class="col-12 mt-2">
               <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
-              <div class="bounty-text" id="issue_description"></div>
+              <div class="bounty-text text-body issue_description" id="issue_description"></div>
             </div>
             <div class="col-12">
               <div id="issue_keywords"></div>
@@ -505,8 +505,8 @@
     <script>
       const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
       document.issueURL = '{{ issueURL }}';
-                                                                                                
-      // ETC-TODO: remove network + std bounties for ETC                                                                                                     
+
+      // ETC-TODO: remove network + std bounties for ETC
       document.issueNetwork = '{{ network }}';
       document.issue_stdbounties_id = '{{ stdbounties_id }}';
 

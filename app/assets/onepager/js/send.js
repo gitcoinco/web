@@ -178,7 +178,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
     return;
   }
   // setup
-  var fromAccount = web3.eth.accounts[0];
+  var fromAccount = web3.eth.accounts[0] ? web3.eth.accounts[0] : document.web3_address;
 
   if (typeof fromAccount == 'undefined') {
     _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
@@ -318,21 +318,19 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
           web3.eth.sendTransaction({
             from: fromAccount,
             to: destinationAccount,
-            value: amountInDenom,
-            gasPrice: web3.toHex(get_gas_price())
+            value: amountInDenom
           }, post_send_callback);
         } else {
           var send_erc20 = function() {
             var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-            token_contract.transfer(destinationAccount, amountInDenom, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
+            token_contract.transfer(destinationAccount, amountInDenom, {}, post_send_callback);
           };
           var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
             web3.eth.sendTransaction({
               to: destinationAccount,
-              value: gas_money,
-              gasPrice: web3.toHex(get_gas_price())
+              value: gas_money
             }, send_erc20);
           };
 

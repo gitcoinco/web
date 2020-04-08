@@ -1,0 +1,704 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <meta name="title" content="{{ card_title }} Bug Bounty | Gitcoin">
+    <meta name="description" content="{{ card_desc | truncatechars:200 }}">
+    {% if canonical_url %}
+      <link rel="canonical" href="{{ canonical_url }}">
+    {% endif %}
+    <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+  </head>
+
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+
+    <div class="container min-vh-100" id="gc-bounty-detail" v-cloak>
+
+      <div class="row">
+        <loading-screen class="position-absolute" v-show="loadingState == 'loading'"></loading-screen>
+
+        <div class="col-12 pt-3 text-center" v-if="contxt.is_staff && loadingState == 'resolved'">
+          <span class="text-black-70 my-2 font-caption">
+            <i class="fas fa-user-secret mr-2"></i>
+            Admin Actions
+          </span>
+          <a v-for="link in quickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
+          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="contactFunder()">Contact Funder</button>
+          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="overrideStatus()">Override Status</button>
+          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="snoozeeGitbot()">Snooze Gitcoinbot</button>
+        </div>
+        <div class="col-12" v-if="loadingState === 'resolved'">
+          {% if event_tag %}
+            <a href="/hackathon/{{ event_tag }}" class="btn btn-link font-body mt-3">
+              <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Hackathon Explorer" %}
+            </a>
+          {% else %}
+            <a href="{% url 'explorer' %}" class="btn btn-link font-body mt-3">
+              <i class="fas fa-chevron-left font-caption"></i> {% trans "Back to Issue Explorer" %}
+            </a>
+          {% endif %}
+          <div class="row align-items-center mt-4 mb-3">
+            <div class="col-md-2 col-xl-1 text-center mb-2 mb-md-0">
+              <a :href="`/profile/${bounty.org_name}`" v-show="bounty.avatar_url"><img :class="`avatar avatar-big ${bounty.github_org_name}`" :src="[[bounty.avatar_url]]"></a>
+            </div>
+            <div class="col-md-10">
+              <div v-if="bounty.event" class="font-subheader hackathon-alt text-center text-lg-left" id="event_name">
+                Hackathon: [[bounty.event.name]]
+              </div>
+              <h4 id="title" class="font-title p-0 text-center text-lg-left">[[bounty.title]]</h4>
+              <div class="text-center text-lg-left">
+                <div class="tags font-caption d-inline-flex d-md-flex">
+                  <div class="tag token" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">${bounty.value_true} ${bounty.token_name} in funding from original funder.</div>`'>
+                    <p class="inner-tooltip">
+
+                      <span id="value_in_token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                    </p>
+                  </div>
+                  <div id="value_in_usdt_wrapper" class="tag usd ml-3" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">The funding in this bounty adds up to $${bounty.value_in_usdt_now} USD </div>`'>
+                    <p class="inner-tooltip">
+                      <span id="value_in_usdt">[[bounty.value_in_usdt_now]]</span>
+                      <span>USD</span>
+                    </p>
+                  </div>
+                  <div class="d-inline-block font-subheader ml-3" id="bounty_categories">
+                    <template v-for="category in bounty.bounty_categories">
+                      <span class="badge badge-secondary mr-1" v-if="category === 'frontend'"><i class="fas fa-laptop-code"></i> Front End</span>
+                      <span class="badge badge-secondary mr-1" v-else-if="category === 'backend'"><i class="fas fa-code"></i> Back End</span>
+                      <span class="badge badge-secondary mr-1" v-else-if="category === 'design'"><i class="fas fa-pencil-ruler"></i> Design</span>
+                      <span class="badge badge-secondary mr-1" v-else-if="category === 'documentation'"><i class="fas fa-file-alt"></i> Documentation</span>
+                      <span class="badge badge-secondary mr-1" v-else="category === 'other'"><i class="fas fa-briefcase"></i> Other</span>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12" v-if="bounty.network !== 'mainnet'">
+              <span class="font-caption text-center" id="network">WARNING: this is a [[bounty.network]] network bounty, and is NOT real money.
+              To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.</span>
+            </div>
+            <div class="col-12 text-center text-lg-left my-3 my-lg-0">
+              <div id="status" class="font-weight-semibold">[[ bounty.status ]]</div>
+            </div>
+          </div>
+          <div id="bounty-info-row" class="row font-body bounty-info">
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.expires_date" :title="bounty.expires_date | momentFormat" id="expires_date">
+                [[ bounty.expires_date | moment ]]
+              </time>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading">{% trans "Opened" %} </span>
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.web3_created" :title="bounty.web3_created | momentFormat" id="web3_created">
+                [[ bounty.web3_created | moment ]]
+              </time>
+            </div>
+            <div v-if="bounty.bounty_type" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_type">[[ bounty.bounty_type ]]</span>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" id="auto_approve_workers_wrapper" v-if="bounty.permission_type === 'approval'">
+              <span class="bounty-info-heading">{% trans "Workers Auto Approve" %} </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="admin_override_suspend_auto_approval">[[ bounty.admin_override_suspend_auto_approval ? 'Off' : 'On' ]]</span>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading mr-1" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>
+                {% trans "Project Type" %} <i class="fas fa-info-circle"></i>
+              </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_type" data-toggle="tooltip" data-html="true" title='{% include "shared/project_type_tooltip.html" %}'>[[ bounty.project_type ]]
+              </span>
+            </div>
+
+            <div v-if="bounty.project_length" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.project_length">
+              <span class="bounty-info-heading">{% trans "Time Commitment" %}</span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="project_length">[[ bounty.project_length ]]</span>
+            </div>
+            <div v-if="bounty.experience_level" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="experience_level">[[ bounty.experience_level ]]</span>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between">
+              <span class="bounty-info-heading" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %} <i class="fas fa-info-circle"></i></span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="permission_type" data-toggle="tooltip" data-html="true" title='{% include "shared/permissions_type_tooltip.html" %}'>[[ bounty.permission_type ]]</span>
+            </div>
+            <div id="fulfillment_accepted_on_wrapper" class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.fulfillment_accepted_on">
+              <span class="bounty-info-heading">{% trans "Accepted" %} </span>
+              <time class="bounty-info-text pr-sm-3 pr-md-5" :datetime="bounty.fulfillment_accepted_on" :title="bounty.fulfillment_accepted_on | momentFormat" id="fulfillment_accepted_on">
+                [[ bounty.fulfillment_accepted_on | moment ]]
+              </time>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-between" v-if="bounty.reserved_for_user_handle">
+              <span class="bounty-info-heading" id="bounty_reserved_for_label">{% trans "Reserved For" %} </span>
+              <span class="bounty-info-text pr-sm-3 pr-md-5" id="bounty_reserved_for">[[ bounty.reserved_for_user_handle ]]</span>
+            </div>
+          </div>
+
+          {% if is_bounties_network %}
+            <div class="row">
+              <div class="col-12 notif-info mt-4 font-caption" id="funder_notif_info" v-if="isOwner">
+                {% trans "Funder Address:" %} <span id="bounty_funded_by">[[ bounty.bounty_owner_address ]]</span>
+                <span class="bounty-notification ml-2" v-if="!isOwnerAddress">
+                  <i class="far fa-bell mr-2"></i> Ready to Pay? Set Your Metamask to this address! <img src="{% static 'v2/images/metamask.svg' %}"  class="ml-2">
+                </span>
+              </div>
+            </div>
+          {% endif %}
+          <div class="row">
+            <div id="right_actions" class="col-12 d-block bounty-actions mt-4 pt-2 pb-1 text-center text-lg-left" v-if="bounty.action_urls">
+              <template v-if="isOwner">
+                <div id="bounty_actions" class="d-inline-block" v-if="is_bounties_network">
+                  <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Payout the bounty to one or more submitters.">
+                    <i class="fab fa-ethereum mr-2"></i> {% trans "Payout Bounty" %}
+                  </a>
+                  <a :href="bounty.action_urls.increase" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" title="Help by funding or promoting this issue">
+                    {% trans "Increase Funding" %}
+                  </a>
+                </div>
+                <div v-else-if="hasAcceptedFulfillments().length && bounty.status != 'done' " class="d-inline-block">
+                  <a class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption text-white" @click="closeBounty()" title="This bounty can be closed since it's been paid out">
+                    <i class="fas fa-check mr-2"></i>
+                    {% trans "Close Bounty" %}
+                  </a>
+                </div>
+              </template>
+
+              <template v-if="checkInterest()">
+                <a :href="bounty.action_urls.fulfill" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Submit work for the funder to review" v-if="checkApproved() && !checkFulfilled()">
+                  Submit Work
+                </a>
+                <button v-if="canStopWork(contxt.github_handle)" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="stopWork()">
+                  Stop Work
+                </button>
+              </template>
+              <template v-else-if="bounty.is_open && !isOwner">
+                <button class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" @click="show_interest_modal()" v-if="bounty.permission_type === 'approval'">
+                  Express Interest
+                </button>
+                <button @click="show_interest_modal()" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" v-else>
+                  Start Work
+                </button>
+              </template>
+              <div id="github_actions" class="d-inline-block">
+                <a :href="bounty.github_url" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" target="_blank">
+                  <i class="fab fa-github mr-2"></i> {% trans "View On Github" %}
+                </a>
+                <a class="modal-link btn btn-outline-gc-blue btn-sm px-3 font-caption" href="" data-toggle="modal" data-target=".share-modal">
+                  <i class="fas fa-share-alt mr-2"></i>
+                  <span>Share</span>
+                </a>
+              </div>
+              <div class="dropdown show float-right" v-if="isOwner">
+                <a class="btn btn-link btn-sm blue dropdown-toggle font-caption" href="#" role="button"
+                  id="bounty-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% trans "Bounty Options" %}
+                </a>
+                <div id="bounty-options-link" class="dropdown-menu font-caption shadow-sm" aria-labelledby="bounty-options">
+                  <a class="dropdown-item p-2" @click="syncGhIssue()">
+                    <i class="fas fa-sync mr-2"></i>
+                    Sync Issue
+                  </a>
+                  <a class="dropdown-item p-2" :href="`/bounty/change/${bounty.pk}`" v-if="isOwner">
+                    <i class="fas fa-edit mr-2"></i>
+                    Update Details
+                  </a>
+                  <a class="dropdown-item p-2" :href="bounty.action_urls.invoice">
+                    <i class="fas fa-file-alt mr-2"></i>
+                    Show Invoice
+                  </a>
+                  <button class="dropdown-item p-2" @click="show_extend_deadline_modal()">
+                    <i class="fas fa-calendar-plus mr-2"></i>
+                    Extend Deadline
+                  </button>
+                  <a class="dropdown-item p-2" :href="`${bounty.url}?trigger_remarket=1`" v-if="bounty.can_remarket">
+                    <i class="fas fa-bullhorn mr-2"></i>
+                    Remarket Issue
+                  </a>
+                  <a class="dropdown-item p-2" :href="bounty.action_urls.cancel">
+                    <i class="fas fa-times mr-2"></i>
+                    Cancel Bounty
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-12 mt-2">
+              <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
+              <div class="issue_description" :inner-html.prop="bounty.issue_description | markdownit"></div>
+            </div>
+            <div class="col-12">
+              <div id="issue_keywords">
+                <div v-if="bounty.keywords" class="">
+                  <template v-for="keyword in bounty.keywords.split(',')">
+                    <a class="tag keyword" :href="`/explorer/?q=${keyword.trim()}`">[[ keyword ]]</a>[[ ' ' ]]
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" v-if="bounty.fulfillments && bounty.fulfillments.length">
+            <div class="col-12">
+              <div class="border my-5 px-4 pt-4">
+                <h5 class="font-body font-weight-semibold">{% trans "SUBMISSIONS" %}</h5>
+                <div v-for="fulfillment in bounty.fulfillments" :key="fulfillment.pk" class="my-4 row font-body">
+                  <div class="col-md-2 col-lg-1 text-center text-md-left">
+                    <a :href="`/profile/${fulfillment.profile.handle}`" v-show="fulfillment.profile.avatar_url">
+                      <img class="avatar" :src="[[fulfillment.profile.avatar_url]]">
+                    </a>
+                  </div>
+                  <div class="col-md-4 my-auto text-center text-md-left">
+                    <a :href="`/profile/${fulfillment.profile.handle}`" class="user-popover" :data-username="[[ fulfillment.profile.handle ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ fulfillment.profile.handle ]]
+                    </a>
+                    <div class="font-smaller-4" v-if="fulfillment.fulfiller_address">
+                      <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.fulfiller_address}` : `https://classic.etccoopexplorer.com/address/${fulfillment.fulfiller_address}` }`" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a>
+                      <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.fulfiller_address)">
+                        <i class="far fa-clipboard-check"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
+                    <time class="text-black-60 text-capitalize" :datetime="fulfillment.created_on" :title="fulfillment.created_on | momentFormat">
+                      [[ fulfillment.created_on | moment ]]
+                    </time>
+                  </div>
+                  <div class="col-md-3 col-lg-3 my-auto text-center">
+                    <template v-if="isOwner">
+                      <template v-if="fulfillment.payout_status == 'done'">
+                        <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
+                        </span>
+                        <p class="font-smaller-4 my-0">
+                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
+                      </template>
+
+                      <template v-else-if="fulfillment.payout_status == 'pending'">
+                        <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
+                        </button>
+                        <p class="font-smaller-4 my-0">
+                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
+                      </template>
+
+                      <button v-else data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" class="btn btn-sm btn-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                        <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
+                      </button>
+                    </template>
+
+                    <template v-else>
+                      <div v-if="fulfillment.payout_status == 'done'">
+                        <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
+                        </span>
+                        <p class="font-smaller-4 my-0">
+                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                            <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
+                      </div>
+                      <div v-else-if="fulfillment.payout_status == 'pending'">
+                        <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
+                        </button>
+                        <p class="font-smaller-4 my-0">
+                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
+                      </div>
+                    </template>
+
+                  </div>
+                  <div class="col-12">
+                    <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto">
+                      <i class="far fa-link mr-1"></i>
+                      <span class="font-weight-bold mb-2">PR:</span>
+                      <a :href="fulfillment.fulfiller_github_url" target="_blank">
+                        [[ fulfillment.fulfiller_github_url ]]
+                      </a>
+                      <p class="mb-0" v-if="fulfillment.fulfiller_metadata.data.payload.fulfiller && fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked">
+                        <i class="far fa-clock font-caption mr-1"></i>
+                        <span class="font-weight-bold">Hours worked:</span>
+                        [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
+                      </p>
+                      <modal :id="`payoutModal${fulfillment.pk}`" ref="payout-modal">
+                        <div slot="body">
+                          <div class="text-center">
+                            <p class="alert-warning py-2 font-smaller-4 mb-0" v-if="bounty.amount_paid && bounty.amount_paid > bounty.value_true">
+                              <template v-if="inputAmount == 0">
+                                You've paid [[ bounty.amount_paid - bounty.value_true ]] [[ bounty.token_name ]] more than the bounty amount.
+                              </template>
+                              <template v-else>
+                                You are paying [[ bounty.amount_paid - bounty.value_true ]] [[ bounty.token_name ]] more than the bounty amount.
+                              </template>
+                            </p>
+
+                            <p class="pt-3 mb-3 font-title">
+                              Payout [[ fulfillment.profile.handle ]]
+                            </p>
+
+                            <p v-if="bounty.bounty_owner_address">
+                              <span class="d-block">Scan QR code using address</span>
+                              <span class="font-subheader font-weight-semibold">[[bounty.bounty_owner_address]]</span>
+                            </p>
+
+                            <p class="payout-input-amount-container font-weight-semibold ">
+                              <input type="number" class="mb-4 font-bigger-4 text-center" v-model="inputAmount" v-on:input="totalAmountPaid(inputAmount)" min="0" name="" id="">
+                              <span class="font-body">[[ bounty.token_name ]]</span>
+                            </p>
+
+                            <qrcode :string="`ethereum:${fulfillment.fulfiller_address}`"></qrcode>
+                            <small class="d-block my-3">Scan the QR code above with your ETC Wallet to payout</small>
+                            <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
+                              @click="fulfillmentComplete(fulfillment.pk, inputAmount, $event)"
+                            >
+                              I have Scanned & Paid
+                            </button>
+                          </div>
+                        </div>
+                      </modal>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" v-if="bounty.interested && bounty.interested.length">
+            <div class="col-12">
+              <div class="border my-5 px-4 pt-4">
+                <h5 class="font-body font-weight-semibold">{% trans "APPLICANTS" %}</h5>
+                <div v-for="interest in bounty.interested" :key="interest.pk" class="my-4 row font-body">
+                  <div class="col-md-2 col-lg-1 text-center text-md-leftr">
+                    <a :href="`/profile/${interest.profile.handle}`" v-show="interest.profile.avatar_url">
+                      <img class="avatar" :src="[[interest.profile.avatar_url]]">
+                    </a>
+                  </div>
+                  <div class="col-md-4 my-auto text-center text-md-left">
+                    <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-username="[[ interest.profile.handle ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ interest.profile.handle ]]
+                    </a>
+
+                  </div>
+                  <div class="col-md-3 col-lg-4 my-auto text-center text-md-left">
+                    <time class="text-black-60 text-capitalize" :datetime="interest.created" :title="interest.created | momentFormat">
+                      [[ interest.created | moment ]]
+                    </time>
+                  </div>
+                  <div class="col-md-3 col-lg-3 my-auto text-center">
+                    <template v-if="interest.pending && isOwner">
+                      <a :href="`${bounty.url}?mutate_worker_action=approve&worker=${interest.profile.handle}`" title="Approve worker" class="btn btn-sm btn-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                        <i class="fas fa-check mr-1 font-caption"></i> Approve
+                      </a>
+                      <a :href="`${bounty.url}?mutate_worker_action=reject&worker=${interest.profile.handle}`" title="Reject worker" class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold">
+                        <i class="fas fa-times mr-1 font-caption"></i> Reject
+                      </a>
+                    </template>
+                    <template v-else-if="isOwner && canStopWork(interest.profile.handle)">
+                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork(isOwner)">
+                        <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Worker
+                      </button>
+                    </template>
+                    <template v-if="interest.profile.handle === contxt.github_handle && canStopWork(interest.profile.handle)">
+                      <button class="btn btn-sm btn-outline-gc-blue m-2 px-3 font-smaller-2 font-weight-semibold" @click="stopWork()">
+                        <i class="far fa-hand-paper mr-1 font-caption"></i> Stop Work
+                      </button>
+                    </template>
+                  </div>
+                  <div class="col-md-12 my-auto text-center text-md-left">
+                    <div class="bg-lightblue py-3 px-4 rounded mt-3 mb-0 w-100 overflow-auto" style="max-height: 8rem;">
+                      <p class="font-weight-bold mb-2">Work Plan</p>
+                      <p class="mb-0">
+                        [[ interest.issue_message]]
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" v-if="bounty.activities && bounty.activities.length">
+            <div class="col-12">
+              <div class="border my-5 px-4 pt-4">
+                <h5 class="font-body font-weight-semibold">{% trans "ALL  ACTIVITY" %}</h5>
+                <div v-for="activity in sortedActivity" :key="activity.pk" class="my-4 row font-body">
+                  <div class="col-md-2 col-lg-1 text-center text-md-left">
+                    <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url">
+                      <img class="avatar" :src="[[activity.profile.avatar_url]]">
+                    </a>
+                  </div>
+                  <div class="col-lg-3 col-md-3 my-auto text-center text-md-left">
+                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-username="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">
+                      [[ activity.profile.handle ]]
+                    </a>
+                  </div>
+                  <div class="col-md-4 col-lg-3 my-auto text-center text-md-left">
+                    [[ activity.activity_type | stringReplace ]]
+                    <template v-if="activity.activity_type === 'new_bounty'">
+                      <span class="tag token">
+                        <template v-if="activity.metadata.new_bounty">
+                          [[ activity.metadata.new_bounty.token_value ]]
+                          [[ activity.metadata.new_bounty.token_name ]]
+                        </template>
+                        <template v-else>
+                          [[ activity.metadata.token_value ]]
+                          [[ activity.metadata.token_name ]]
+                        </template>
+                      </span>
+                    </template>
+                    <template v-if="activity.activity_type === 'increased_bounty'">
+                      to <span class="tag token">[[ activity.metadata.token_value ]] [[ activity.metadata.token_name ]]</span>
+                    </template>
+                    <div v-if="activity.activity_type === 'new_kudos'">
+                      show value
+                    </div>
+                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-username="[[ activity.metadata.worker_handle ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ activity.metadata.worker_handle ]]
+                    </a>
+                  </div>
+                  <div class="col-md-3 col-lg-5 my-auto text-center text-md-left">
+                    <time class="text-black-60 text-capitalize" :datetime="activity.created" :title="activity.created |momentFormat">
+                      [[ activity.created | moment ]]
+                    </time>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="border my-3 px-4 py-3">
+                <h5 class="bounty-heading mt-0 mb-3">{% trans "Funder" %}</h5>
+                <div class="row">
+                  <div class="col-md-2 col-lg-1 text-center text-md-left my-auto">
+                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" v-show="bounty.bounty_owner_github_username">
+                      <img class="avatar" :src="'/dynamic/avatar/' + bounty.bounty_owner_github_username">
+                    </a>
+                  </div>
+                  <div class="col-md-10 col-lg-9 my-auto text-center text-md-left">
+                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" class="user-popover" :data-username="[[ bounty.bounty_owner_github_username ]]"
+                      data-html="true" data-toggle="popover" data-container="body"
+                    >
+                      [[ bounty.bounty_owner_github_username ]]
+                    </a>
+
+                    <div class="font-caption text-black-70">
+                      <span class="font-weight-semibold">{% trans "Email" %} :</span>
+                      <span>[[ bounty.bounty_owner_email ]]</span>
+                    </div>
+
+                    <div v-if="is_bounties_network" class="font-caption text-black-70">
+                      <span>{% trans "Address" %} :</span>
+                      <span>[[ bounty.bounty_owner_address ]]</span>
+                      <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(bounty.bounty_owner_address)">
+                        <i class="far fa-clipboard-check font-caption"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            {% if prize_projects %}
+              <div class="col-12">
+                <h5 class="bounty-heading">{% trans "Projects" %}</h5>
+                <div class="row">
+                  {% for project in prize_projects %}
+                    <div class="col-12 col-md-4">
+
+                      <div class="card m-3 p-1">
+                        {% for profile in project.profiles.all %}
+                          {% if profile_id == profile.id %}
+                            <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+                          {% endif %}
+                        {% endfor %}
+                        {% if project.logo %}
+                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
+                        {% else %}
+                          <img class="card-project-logo mx-auto mt-2 mw-100 rounded border" height="65" width="65" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
+                        {% endif %}
+
+                        <div class="text-center mt-2">
+                          <a href="{{project.work_url}}" target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
+                          <div class="mb-2">
+                            <b class="text-muted font-smaller-2">Team Members</b>
+                            <div class="mt-1">
+                              {% for profile in project.profiles.all %}
+                                <a href="{% url 'profile' profile %}" class="">
+                                  <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
+                                </a>
+                              {% endfor %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+        </div>
+        <div v-if="loadingState == 'empty'">
+          empty waiting
+        </div>
+        <div v-if="loadingState == 'notfound'" class="d-block mx-auto text-center m-5">
+          <div class=" nonefound">
+            <img src="{% static "v2/images/shrug_bot.png" %}" alt="Shrug bot" class="mw-100" width="250">
+            <h3>{% trans "No funded issue found." %}</h3>
+            <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
+            <br>
+            <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
+            <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %}Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div id="modal" class="modal fade share-modal" tabindex="-1" role="dialog" aria-labelledby="shareModal" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+      </div>
+    </div>
+
+    <div id="modalInterest" class="modal fade interest-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="row loading justify-content-center align-items-center loading_img">
+            <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modalExtend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-dialog ">
+          <div class="modal-content py-3">
+            <div class="row loading justify-content-center align-items-center loading_img">
+              <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ...">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+      <h2>{{ noscript.title }}</h2>
+      <h3>{{ noscript.org_name }}</h3>
+      <h3>{{ noscript.keywords }}</h3>
+      <p>{{ noscript.issue_description_text }}</p>
+    </noscript>
+
+    <script>
+      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
+      document.issueURL = '{{ issueURL }}';
+
+      // ETC-TODO: remove network + std bounties for ETC
+      document.issueNetwork = '{{ network }}';
+      document.issue_stdbounties_id = '{{ stdbounties_id }}';
+
+      {% if event_tag %}
+        document.eventTag = '{{ event_tag }}';
+      {% endif %}
+    </script>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/current_profile.html' %}
+
+    <script src="{% static "v2/js/lib/highlight.js" %}"></script>
+    <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
+
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/amounts.js" %}"></script>
+    <script src="{% static "v2/js/clipboard.js" %}"></script>
+    <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
+
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]',
+        template: '<div class="no-tooltip" role="tooltip"><div class="tooltip-inner"></div></div>'
+      });
+      $('[data-toggle="popover"]').popover()
+      $('body').on('mouseover', '[data-username]', function(e) {
+        openContributorPopOver($(this).data('username'), $(this));
+      });
+
+      // $('body').on('mouseout', '[data-username]', function(e) {
+      //   $(this).popover('dispose');
+      // });
+
+      $('body').on('show.bs.popover', '[data-username]', function () {
+        $('body [data-username]').not(this).popover('hide');
+      })
+
+      const csrftoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
+    </script>
+    <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
+    <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
+    <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
+    <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
+    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+    <script src="{% static "v2/js/user_popover.js" %}"></script>
+    <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+    <script src="{% static "v2/js/ipfs.js" %}"></script>
+    <script src="{% static "v2/js/user-search.js" %}"></script>
+    <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+    {% for message in messages %}
+      {% if message.tags == 'success'%}
+      <script>
+        var promptPrivateInstructions = true;
+      </script>
+      {% endif %}
+
+    {% endfor %}
+  </body>
+
+</html>

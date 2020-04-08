@@ -3,6 +3,11 @@
  * Data is stored on IPFS + the data is stored in
  * standard bounties contract on the ethereum blockchain
  */
+
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+});
+
 const ethCancelBounty = data => {
 
   if (is_bounties_network) {

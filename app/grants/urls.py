@@ -20,13 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    grant_categories, grant_details, grant_fund, grant_new, grant_new_v0, grants, invoice, leaderboard, milestones,
-    new_matching_partner, profile, quickstart, subscription_cancel,
+    flag, grant_categories, grant_details, grant_fund, grant_new, grant_new_v0, grants, grants_addr_as_json,
+    grants_stats_view, invoice, leaderboard, milestones, new_matching_partner, predict_clr_v1, profile, quickstart,
+    subscription_cancel,
 )
 
 app_name = 'grants'
 urlpatterns = [
     path('', grants, name='grants'),
+    path('stats/', grants_stats_view, name='grants_stats'),
+    path('grants.json', grants_addr_as_json, name='grants_json'),
+    path('flag/<int:grant_id>', flag, name='grantflag'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     re_path(r'^new', grant_new, name='new'),
@@ -48,4 +52,5 @@ urlpatterns = [
         invoice,
         name='contribution_invoice'
     ),
+    path('api/v1/<int:grant_id>/predict-clr', predict_clr_v1, name='predict_clr_v1')
 ]

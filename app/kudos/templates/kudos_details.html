@@ -12,7 +12,6 @@
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <header class="header">
       {% include 'shared/kudos_nav.html' %}
-      <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container pb-5">
         {% include 'shared/kudos_searchbar.html' %}
       </div>
@@ -38,7 +37,7 @@
           </div>
           <div id="kudos-image" class="sticky-top w-100">
             {% include 'shared/kudos_levitate.html' %}
-            <img src="{{ kudos.static_image }}" alt="{{ kudos.ui_name }}" class="w-100">
+            <img src="{{ kudos.preview_img_url }}" alt="{{ kudos.ui_name }}" class="w-100">
           </div>
         </div>
         <div class="col-md-6 col-lg-5 kudos-details">
@@ -115,8 +114,14 @@
               {% if send_enabled %}
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% if kudos.quests_reward %}
+                <BR>
+                <BR>
+                {% if reward_for|length %}
+                or: 
+                {% endif %}
                 {% for quest in reward_for %}
-                  <a class="btn btn-gc-blue m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
+                  <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
+                  <BR>
                 {% endfor %}
               {% endif %}
               {% else %}

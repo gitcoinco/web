@@ -16,14 +16,10 @@
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
 <div class="px-lg-5">
-  <div id="grant-profile-tabs" class="tab-container font-body mt-5 mb-4">
-
-    <button type="button" id="nav-activity" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
-      {% trans "ACTIVITY" %}
-    </button>
+  <div id="grant-profile-tabs" class="tab-container font-body mt-2 mb-2">
 
     <button type="button" id="nav-description" href="{{grant.url}}?tab=description" class="section-tab {% if tab == "description" %} active {% endif %}">
-      {% trans "DESCRIPTION" %}
+      {% trans "SUMMARY" %}
     </button>
 
     <button type="button" id="nav-transactions" href="{{grant.url}}?tab=transactions" class="section-tab {% if tab == "transactions" %} active {% endif %}">
@@ -33,11 +29,6 @@
 
     <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
       {% trans "STATS" %}
-    </button>
-
-    <button type="button" id="nav-summary" href="{{grant.url}}?tab=updates" class="section-tab {% if tab == "updates" %} active {% endif %}">
-      {% trans "UPDATES" %}
-      <span class="nav-badge">({{ updates|length }})</span>
     </button>
 
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
@@ -52,9 +43,9 @@
     {% if tab == "activity" %}
     <div id="section-nav-activity" class="tab-section active">
       {% if is_team_member %}
-        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000  %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
       {% else %}
-        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
       {% endif %}
       <div id="activities" class="activity_stream container px-0">
         {% include 'shared/activity_container.html' %}
@@ -65,6 +56,7 @@
 
     {% if tab == "description" %}
     <div id="section-nav-description" class="tab-section active">
+      <h4 class="m-0 p-0">Description</h4>
       <div id="editor">
         {% if grant.description_rich %}
           {{ grant.description_rich }}
@@ -73,6 +65,15 @@
         {% endif %}
       </div>
     </div>
+      <h4 class="m-0 p-0">Activity Feed</h4>
+      {% if is_team_member %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+      {% else %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+      {% endif %}
+      <div id="activities" class="activity_stream container px-0">
+        {% include 'shared/activity_container.html' %}
+      </div>
     {% endif %}
 
     {% if tab == "transactions" %}

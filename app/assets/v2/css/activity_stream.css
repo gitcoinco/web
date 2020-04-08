@@ -5,8 +5,22 @@
   background-color: #ecf0f4;
   border: 0px solid;
 }
+.click_here_to_join_video{
+  width: 100%;
+  cursor: pointer;
+  min-height: 250px;
+}
+.click_here_to_join_video iframe{
+  min-height: 250px;
+}
+.click_here_to_join_video img{
+  width: 100%;
+}
 .after_copy{
   font-size: 12px;
+}
+.activity_stream{
+  margin-bottom: 50px;
 }
 .activity_stream .content{
   cursor: pointer;
@@ -94,7 +108,10 @@ a .sup {
 
 .comment_container img {
   border-radius: 20px;
-  max-width: 20px;
+  max-width: 40px;
+}
+.activity_stream .content img{
+  max-height: 100px;
 }
 
 .comment_container li{
@@ -147,10 +164,16 @@ a .sup {
 .copy_activity:hover {
   text-decoration: none;
 }
-
+.funder-avatar,
+.activity-avatar {
+  text-align: center;
+}
+.activity_stream .activity-avatar{
+  margin-top: -10px;
+}
 .activity_stream .avatar {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 4.5rem;
+  height: 4.5rem;
   min-height: 2.5rem;
   margin: 0px auto;
   border-radius: 50px;
@@ -176,11 +199,6 @@ a .sup {
   min-height: 2rem;
 }
 
-.funder-avatar,
-.activity-avatar {
-  text-align: center;
-}
-
 .last-icon {
   font-size: 1.25rem;
   color: #0D0764;
@@ -190,12 +208,96 @@ a .sup {
   display: inline-block;
 }
 
+.click-gif.selected,
+#poll-button.selected,
+#video-button.selected{
+  color: black;
+}
+#video_container{
+  background-color: white;
+  text-align: center;
+}
+#video_container img{
+  width: 75%;
+  margin: 0px auto;
+}
+iframe.popout{
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  width: 25% !important;
+  height: 25% !important;
+  z-index: 1;
+}
+
+#poll_container input{
+  display: block;
+  width: 100%;
+  margin-top: 2em;
+  margin-bottom: 2em
+}
+.poll_choices div.vote{
+  border: 1px solid black;
+  background-color: #f5f5f9;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+.poll_choices.answered div.vote{
+  border: 1px solid #e9e9e9;
+  background-color: #f9f9f9;
+  cursor: default;
+}
+.poll_choices div span{
+  display: none;
+}
+.poll_choices.answered div span{
+  display: inline-block;
+  font-style: italic;
+}
+.poll_choices div p{
+  padding: 3px 10px;
+  margin: 0px;
+}
+.poll_choices div.answer{
+  border: 3px solid black;
+  background-color: #f0f0f0;
+}
+
+.activity_stream .activity_detail .tag{
+  background-color: #e7f0fa;
+  color: var(--gc-blue);
+  font-size: 10px;
+  list-style: none;
+  padding: 5px;
+}
+.staff_tag
+{
+  background-color: #eEbAEE;
+  border-radius: 5px;
+  color: #8E2ABE;
+  font-size: 10px;
+  list-style: none;
+  padding: 5px;
+}
+
 .bounty_removed_by_funder .activity-tags .tag,
 .bounty_removed_by_staff .activity-tags .tag,
 .bounty_abandonment_escalation_to_mods .activity-tags .tag,
 .bounty_abandonment_warning .activity-tags .tag,
 .activity.new_kudos .activity-tags .tag {
   display: none;
+}
+
+.infinite-more-link{
+  position: absolute;
+  bottom: 10px;
+  text-align: center;
+  width: 50%;
+  background-color: white;
+  border: 1px solid;
+  margin-left: 25%;
 }
 
 @media (min-width: 768px) {
@@ -207,8 +309,16 @@ a .sup {
     left: -10px;
   }
 }
-
 @media (max-width: 767.98px) {
+
+  .activity_stream .activity-avatar{
+    margin-top: 0px;
+  }
+  .activity_stream .avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    min-height: 2.5rem;
+  }
   .comment_container.filled{
     text-align: center;
     margin: 0px auto;
@@ -221,6 +331,19 @@ a .sup {
   #activities .organizations{
     text-align: center;
     margin: 0px auto;
+  }
+}
+@media (max-width: 1100px) {
+  .activity_stream .avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .activity_stream .avatar {
+    width: 4rem;
+    height: 4rem;
   }
 }
 

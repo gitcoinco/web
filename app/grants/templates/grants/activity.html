@@ -135,6 +135,16 @@
           {% endfor %}
         </div>
       {% endif %}
+      {% if negative_contributions %}
+        <div id="cancelled-subscriptions">
+          <p class="font-body font-weight-semibold subtitle mb-0">
+            <i class="g-icon g-icon__dot-circle mr-2"></i> {% trans "Negative Contributions" %} ({{negative_contributions|length}})
+            {% for transaction in negative_contributions %}
+              {% include 'grants/transaction.html' with anonymous=1 %}
+            {% endfor %}
+          </p>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>
