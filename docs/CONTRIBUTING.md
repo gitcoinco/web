@@ -110,7 +110,7 @@ Fork the project [on GitHub](https://github.com/gitcoinco/web) and clone your
 fork locally.
 
 ```shell
-git clone git@github.com:username/web.git
+git clone git@github.com:wizzfile/web.git
 cd web
 git remote add upstream https://github.com/gitcoinco/web.git
 git fetch upstream
