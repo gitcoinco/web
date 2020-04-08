@@ -34,6 +34,9 @@ from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, BlockedUser, Bounty, BountyFulfillment, Profile, UserAction
+from dashboard.sync.celo import sync_celo_payout
+from dashboard.sync.etc import sync_etc_payout
+from dashboard.sync.zil import sync_zil_payout
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -473,67 +476,15 @@ def has_tx_mined(txid, network):
         return False
 
 
-def etc_txn_already_used(t):
-    return BountyFulfillment.objects.filter(
-        payout_tx_id = t['hash'],
-        token_name='ETC'
-    ).exists()
+def sync_payout(fulfillment):
+    token_name = fulfillment.token_name
 
-
-def search_for_etc_bounty_payout(fulfillment, network='mainnet'):
-    if fulfillment.token_name != 'ETC':
-        return None
-
-    funderAddress = fulfillment.bounty.bounty_owner_address
-    amount = fulfillment.payout_amount
-    payeeAddress = fulfillment.fulfiller_address
-
-    blockscout_url = f'https://blockscout.com/etc/{network}/api?module=account&action=txlist&address={funderAddress}'
-    blockscout_response = requests.get(blockscout_url).json()
-    if blockscout_response['message'] and blockscout_response['result']:
-        for txn in blockscout_response['result']:
-            if (
-                txn['from'] == funderAddress.lower() and
-                txn['to'] == payeeAddress.lower() and
-                float(txn['value']) >= float(amount) and
-                not etc_txn_already_used(txn)
-            ):
-                return txn
-    return None
-
-
-def get_etc_txn_status(txnid, network='mainnet'):
-    if not txnid:
-        return None
-
-    blockscout_url = f'https://blockscout.com/etc/{network}/api?module=transaction&action=gettxinfo&txhash={txnid}'
-    blockscout_response = requests.get(blockscout_url).json()
-
-    if blockscout_response['status'] and blockscout_response['result']:
-
-        response = {
-            'blockNumber': int(blockscout_response['result']['blockNumber']),
-            'confirmations': int(blockscout_response['result']['confirmations'])
-        }
-
-        if response['confirmations'] > 0:
-            response['has_mined'] = True
-        else:
-            response['has_mined'] = False
-        return response
-
-    return None
-
-
-def sync_etc_payout(fulfillment):
-    txn = search_for_etc_bounty_payout(fulfillment)
-    if txn:
-        fulfillment.payout_tx_id = txn['hash']
-        if get_etc_txn_status(fulfillment.payout_tx_id).get('has_mined'):
-            fulfillment.payout_status = 'done'
-            fulfillment.accepted_on = timezone.now()
-            fulfillment.accepted = True
-        fulfillment.save()
+    if token_name == 'ETC':
+        sync_etc_payout(fulfillment)
+    elif token_name == 'cUSD' or token_name == 'cGLD':
+        sync_celo_payout(fulfillment)
+    elif token_name == 'ZIL':
+        sync_zil_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
