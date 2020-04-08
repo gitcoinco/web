@@ -82,7 +82,7 @@
           <div style="padding-left: 3rem; padding-right: 3rem;">
             <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="/dynamic/avatar/{{ tribe }}" width="64" height="64">
             <div><b>{{ tribe }}</b></div>
-            <div>{{ tribe.follower_count }}{% trans "members" %}</div>
+            <div>{{ tribe.follower_count }} {% trans "members" %}</div>
           </div>
           {% endfor %}
         </div>
@@ -101,7 +101,7 @@
               <div><b>{{ tribe }}</b></div>
               <div>
                 <img style="width: 2%; margin-bottom: .1rem;" src="{% static "v2/images/user.png" %}" alt="Gitcoin" title="Gitcoin user">
-                {{ tribe.follower_count }}{% trans "members" %}</div>
+                {{ tribe.follower_count }} {% trans "members" %}</div>
             </div>
           {% endfor %}
         </div>
