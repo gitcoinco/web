@@ -2107,6 +2107,84 @@ def profile_details(request, handle):
     return JsonResponse(response, safe=False)
 
 
+def user_card(request, handle):
+    """Display profile keywords.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
+    # bounties = Bounty.objects.current().prefetch_related(
+    #     'fulfillments',
+    #     'interested',
+    #     'interested__profile',
+    #     ).filter(
+    #         interested__profile=profile,
+    #         network=network,
+    #     ).filter(
+    #         interested__status='okay'
+    #     ).filter(
+    #         interested__pending=False
+    #     ).filter(
+    #         idx_status='done'
+    #     ).distinct('pk')[:3]
+
+    # _bounties = []
+    # _orgs = []
+    # if bounties :
+    #     for bounty in bounties:
+
+    #         _bounty = {
+    #             'title': bounty.title,
+    #             'id': bounty.id,
+    #             'org': bounty.org_name,
+    #             'rating': [feedback.rating for feedback in bounty.feedbacks.all().distinct('bounty_id')],
+    #         }
+    #         _org = bounty.org_name
+    #         _orgs.append(_org)
+    #         _bounties.append(_bounty)
+    profile_dict = profile.as_dict
+    followers = TribeMember.objects.filter(org=profile).count()
+    following = TribeMember.objects.filter(profile=profile).count()
+    response = {
+        # 'avatar': profile.avatar_url,
+        # 'handle': profile.handle,
+        # 'contributed_to': _orgs,
+        # 'orgs' : profile.organizations,
+        # 'profile' : profile.as_representation,
+        'profile' : {
+            'avatar_url': profile.avatar_url,
+            'handle': profile.handle,
+            'orgs' : profile.organizations,
+            'created_on' : profile.created_on,
+            'keywords' : profile.keywords,
+            'data': profile.data
+        },
+        'profile_dict':profile_dict,
+        'stats': {
+            # 'total_grant_created': profile.total_grant_created,
+            'position': profile.get_contributor_leaderboard_index(),
+            'completed_bounties': profile.completed_bounties,
+            'success_rate': profile.success_rate,
+            'earnings': profile.get_eth_sum(),
+            'followers':followers,
+            'following':following,
+        }
+    }
+
+    return JsonResponse(response, safe=False)
+
+
 def profile_keywords(request, handle):
     """Display profile details.
 
