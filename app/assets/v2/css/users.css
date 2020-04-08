@@ -1,3 +1,8 @@
+
+.sidebar-container .container {
+  background-color: #ffffff;
+}
+
 .grid-4 {
   display: grid;
   grid-template-columns: repeat(1, 1fr);

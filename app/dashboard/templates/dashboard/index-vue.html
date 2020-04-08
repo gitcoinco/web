@@ -26,13 +26,17 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/featured-bounties.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %}>
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-    <link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.css" />
+    <link rel="stylesheet" href='{% static "v2/css/dashboard.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/featured-bounties.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/users.css" %}' />
+    <link rel="stylesheet" href='{% static "v2/css/rating.css" %}' />
+    <link rel="stylesheet" href='{% static "v2/css/scroll-carousel.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/town_square.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/hackathons/explorer.css" %}'/>
 
     <style type="text/css">
       @media only screen and (max-width : 320px) {
@@ -47,7 +51,7 @@
 
       .chatWrapper iframe {
         width: 100%;
-        height: 93vh;
+        height: 50vh;
       }
 
       form .col:first-child {
@@ -81,6 +85,26 @@
         top: 1em;
         filter: drop-shadow(0 0.3rem 0.2rem rgba(0,0,0,0.25));
         width: 4em;
+      }
+
+      #sponsor_sidebar .b-avatar {
+        position: relative;
+        left: 3rem;
+        top: 2.5rem;
+      }
+
+      .b-avatar img {
+        height: 100%;
+        width: 100%;
+      }
+
+      #sponsor_sidebar {
+        background-color: #F9F9F9;
+        height: 100%;
+      }
+
+      #sponsor_sidebar .media-body {
+        background-color:#ffffff;
       }
 
       .card-project-logo {
@@ -117,795 +141,798 @@
         position:absolute;
         bottom:0;
       }
-    </style>
 
-    {% if hackathon %}
-      <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
-      <style>
-        .hackathon-banner {
-          background: {% firstof hackathon.background_color or 'white' %};
-          color: {% firstof hackathon.text_color or 'black' %};
-          height: 225px;
-          background-image: url("/static/wallpapers/V3.png");
-        }
+      .hackathon-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+        height: 225px;
+        background-image: url('/static/wallpapers/V3.png');
+      }
 
-        .hackathon-text {
-            color: white;
+      .bounty_row img.avatar {
+        max-width: 50px;
+      }
+
+      .hackathon-text {
+          color: white;
+      }
+      .hackathon-title {
+          font-size: 1.4rem;
+      }
+      .hackathon-countdown {
+          font-size: 1rem;
+      }
+      .bounty_row {
+        background-color: white;
+        margin-bottom: 15px;
+        border-radius: 4px;
+      }
+      .hack-logo-wrapper {
+          position:absolute;
+          max-width: 185px;
+          top: -165px;
+          left: 5%;
+      }
+      .townsquare_header {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      .hackathon-logo {
+          height: 185px;
+          max-height: 185px;
+          width: 185px;
+          max-width: 185px;
+          background-color: #090E60;
+          border-radius: 10px;
+          color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+      }
+      .hackathon-logo img {
+          height: 115px;
+      }
+      .register {
+        width: 100%;
+      }
+
+      .feed_container_child {
+        width: 100%;
+        height:800px;
+        overflow-y: scroll;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;
+      }
+
+      .feed_container_child::-webkit-scrollbar { /* WebKit */
+          width: 0;
+          height: 0;
+      }
+
+      .card-bg {
+        background-color: #0C1A27;
+        padding: 1.8em;
+        background-size: cover;
+      }
+
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 5rem 3rem;
+      }
+
+      .card-project {
+        /* padding: 2em; */
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      }
+
+      .card-badge {
+        right: 1em;
+        top: 1em;
+        filter: drop-shadow(0 0.3rem 0.2rem rgba(0,0,0,0.25));
+        width: 4em;
+      }
+
+      .card-project-logo {
+        object-fit: contain;
+      }
+
+      @media (min-width: 768px) {
+        .project-grid {
+          grid-template-columns: repeat(2, 1fr);
         }
-        .hackathon-title {
-            font-size: 1.4rem;
+      }
+
+      @media (min-width: 992px) {
+        .project-grid {
+          grid-template-columns: repeat(2, 1fr);
         }
-        .hackathon-countdown {
-            font-size: 1rem;
+      }
+
+      @media (min-width: 1200px) {
+        .project-grid {
+          grid-template-columns: repeat(3, 1fr);
         }
-        .bounty_row {
-          background-color: white;
-          margin-bottom: 15px;
-          border-radius: 4px;
-        }
-        .hack-logo-wrapper {
-            position:relative;
-            max-width: 185px;
-            z-index: 1;
-            top: 60px;
-            left: 60px;
-        }
-        .hackathon-logo {
-            height: 185px;
-            max-height: 185px;
-            width: 185px;
-            max-width: 185px;
-            background-color: #090E60;
-            border-radius: 10px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .hackathon-logo img {
-            height: 115px;
-        }
-        .register {
-          width: 100%
-        }
+      }
+      .page-link-gc {
+        color: #3e24fb;
+      }
+      .page-item.active .page-link-gc {
+        background-color: #3e24fb;
+        border-color: #3e24fb;
+      }
+      .controls .form-control, .controls .btn, .controls label {
+        font-size: 0.7rem;
+      }
+      .summary {
+        height: 70px;
+        max-height: 70px;
+      }
+      .looking-team {
+        background-color: rgba(62, 0, 255, 0.05);
+        border-radius: 8px;
+        height: 84.58px;
+        padding: 11px 15px;
+      }
+      .info-card-title {
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 22px;
+        letter-spacing: 1px;
+        color: #3E00FF;
+      }
+      .info-card-desc {
+        font-style: italic;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 18px;
+        color: #666666;
+      }
       </style>
-    {% endif %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header sticky-top dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% if type != 'hackathon' %}
-        {% include 'shared/nav.html' %}
-      {% else %}
-        {% include 'shared/nav_hackathons.html' %}
-      {% endif %}
+      {% include 'shared/nav_hackathons.html' %}
     </div>
-    {% if hackathon %}
-      {% if is_staff %}
-      <div class="alpha-warning font-caption mb-0">
-        <span class="font-weight-bold">Staff only</span>
-        <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
-  </div>
-      {% endif %}
-    {% else %}
-      {% include 'dashboard/ftux.html' %}
+    {% if is_staff %}
+    <div class="alpha-warning font-caption mb-0">
+      <span class="font-weight-bold">Staff only</span>
+      <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+    </div>
     {% endif %}
-    <div class="row">
+    
+    <div class="row" style="min-height:600px;">
+      <b-spinner></b-spinner>
       <div id="dashboard-content" class="container-fluid no-gutter" style="">
-        <div id="dashboard-vue-app" v-cloak>
-
-        <div id="{{ hackathon.identifier }}" class="d-flex justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
-          <div class="col-2">
-            <div class="hack-logo-wrapper">
-              <div class=" mb-1 hackathon-logo hidden-mobile">
-            {% if hackathon.logo_svg %}
-              <img class="d-none d-md-block mx-auto mb-5 mw-100" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
-            {% elif hackathon.logo %}
-              <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
-            {% endif %}
-              <img class="d-none d-md-block mx-auto mb-1 mw-100" src="https://placekitten.com/150/150" />
-              <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
-
+        <div id="dashboard-vue-app" class="row" v-cloak>
+          <div :id="hackathonObj.identifier" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
+            <div class="offset-lg-2 col-lg-10 col-12 hackathon-text pl-4">
+              <div class="">
+                <p class="hackathon-title title font-weight-bold mb-0">[[ hackathonObj.name ]]</p>
               </div>
-              <a href="/{{hackathon.town_square_link}}" class="btn btn-gc-blue mt-2 register col-xs-12">
-                Register
-              </a>
+              <p class="mb-1">
+                  <small v-if="timeuntil >= '1 min'" class="hackathon-countdown text-uppercase">Ends in [[ timeuntil]] </small>
+              </p>
             </div>
           </div>
-          <div class="offset-lg-2 col-lg-10 col-12 hackathon-text pl-4">
-            <div class="">
-              <p class="hackathon-title title font-weight-bold mb-0">GITCOIN VIRTUAL HACKATHON</p>
-            </div>
-            <p class="mb-1">
-              {% if hackathon.end_date|timeuntil >= "1 min" %}
-                <small class="hackathon-countdown text-uppercase">Ends in {{hackathon.end_date|timeuntil}}</small>
-              {% endif %}
-            </p>
-          </div>
-        </div>
-        <div class="col-12 body px-4 hackathon-explorer">
-          <b-tabs justified nav-wrapper-class=" col-7 offset-2" align="left" content-class="row px-4 mt-4 light-blue" class="col-12">
-            <b-tab class="col-12 col-lg-9" active-nav-item-class="active" title-item-class="navigation" title="About">
-              <div class="container-fluid  pb-5">
-                <div class="container bg-white rounded">
-                  <div class="row p-5">
-                    <div class="col-12">
-                        <span>Gitcoin Virtual Hackathon</span>
-                        <h1 class="text-uppercase gc-letter-spacing">
-                          {{ hackathon.name }}
-                        </h1>
-                        <p>
-                          {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
-                        </p>
-                        {% if hackathon.end_date|timesince >= "1 min" %}
-                          <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
-                        {% endif %}
-                        {% if not github_handle %}
-                          <div class="text-center">
-                            <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                              onclick="dataLayer.push({'event': 'login'});">
-                              <i class="fab fa-github"></i>
-                              <span>{% trans "Register with GitHub for Hackathon" %}</span>
-                            </a>
-                            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                          </div>
-                        {% else %}
-                          {% if not is_registered %}
-                            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                            <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
-                          {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
-                            <p>Explore Web3 and be prepared via sponsors Quests</p>
-                            <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                          {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
-                            <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
-                          {% else %}
-                            <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                            <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                          {% endif %}
-                        {% endif %}
-                      </div>
-                    </div>
-
-                </div>
-
-                <div class="container bg-white mt-4 rounded">
-                  <div class="row p-5">
-                    <div class="col-12">
-                      {% if is_staff %}
-                        <div class="">
-                          <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
-                          <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
-                        </div>
-                      {% endif %}
-                      <div class="editor-container ">
-                        <div id="description-hackathon" class="gc-editor description-hackathon">{{hackathon.description | safe}}</div>
-                      </div>
-                    </div>
+          <div class="col-9 body px-4 hackathon-explorer">
+            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="offset-md-4" nav-wrapper-class="col-12 col-md-8" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
+              <template v-slot:tabs-start>
+                <div class="hack-logo-wrapper">
+                  <div class="mb-1 hackathon-logo hidden-mobile">
+                  <img v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-5 mw-100" :src="hackathonObj.logo_svg.url" alt="Hackathon logo"/>
+                  <img v-else-if="hackathonObj.logo_url" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo_url" alt="Hackathon logo"/>
+                  <img class="d-none d-md-block mx-auto mb-1 mw-100" src="https://placekitten.com/150/150" />
+                  <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
                   </div>
-
-                  <div class="row px-5">
-                    <div class="col-12">
-                      <h4 class="text-uppercase font-weight-bolder text-left">How does the Hackathon work?</h4>
-                    </div>
-                  </div>
-
-                  <div class="row px-5 my-5">
-                    <div class="col-12 col-md-5">
-                        <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans "Check out the Prizes" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            Visit the <a target="_blank" href="{{ hackathon_url }}#bounties">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-                  <div class="row px-5 my-5">
-                    <div class="col-12 col-md-5">
-                        <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://chat.gitcoin.co/hackathons">Click here to join the party!</a>.
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-                  <div class="row px-5 my-5">
-                    <div class="col-12 col-md-5">
-                        <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-                  <div class="row px-5 my-5">
-                    <div class="col-12 col-md-5">
-                        <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans "BUIDL!" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            Build your cool ideas and make your vision come true with your team!
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-                  <div class="row my-4 px-5">
-                    <div class="col-12 col-md-5">
-                      <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            When your project is completed, submit your work by clicking the “Submit Work” button on the prize page/
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-
-                  <div class="row px-5 pb-5">
-                    <div class="col-12">
-                      <p class="font-weight-bolder text-uppercase h4 text-left mb-4">
-                        JOIN THE HACKATHON
-                      </p>
-                      {% if not github_handle %}
-                        <div class="text-center">
-                          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                            onclick="dataLayer.push({'event': 'login'});">
-                            <i class="fab fa-github"></i>
-                            <span>{% trans "Register with GitHub for Hackathon" %}</span>
-                          </a>
-                          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                        </div>
-                      {% else %}
-                        {% if not is_registered %}
-                          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                          <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
-                        {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
-                          <p>Explore Web3 and be prepared via sponsors Quests</p>
-                          <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                        {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
-                          <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
-                        {% else %}
-                          <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                          <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                        {% endif %}
-                      {% endif %}
-                    </div>
-                  </div>
-                </div>
-
-                {% if sponsors %}
-                <div class="container bg-white my-4 py-2 rounded">
-                      <div class="row px-5">
-                        <div class="col-12 sponsors mt-5 mb-3">
-                          <p class="font-weight-bolder h4 text-left mb-4">SUPPORTED BY</p>
-                          {% if sponsors.sponsors_gold %}
-                            <div class="d-flex flex-wrap mb-4">
-                              {% for sponsor in sponsors.sponsors_gold %}
-                                <div class="sponsors-gold my-auto mx-2">
-                                  <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                                </div>
-                              {% endfor %}
-                            </div>
-                          {% endif %}
-
-                          {% if sponsors.sponsors_silver %}
-                            <div class="d-flex flex-wrap mb-4">
-                              {% for sponsor in sponsors.sponsors_silver %}
-                                <div class="sponsors-silver my-auto mx-2">
-                                  <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                                </div>
-                              {% endfor %}
-                            </div>
-                          {% endif %}
-                        </div>
-                      </div>
-                    </div>
-                {% endif %}
-              </div>
-            </b-tab>
-            <b-tab class="col-12 col-lg-9" active-tab-item-class="active" title-item-class="navigation" title="Prizes (98)">
-              <div id="prizes" class="row">
-                <div class="col-12 col-lg-2 d-lg-block" style="background: #F2F6F9; margin-left:2%">
-                  <div class="mt-4 invisible" id="sidebar_container">
-                    {% if hackathon %}
-                      {% include 'dashboard/sidebar_search_hackathon.html' %}
-                    {% else %}
-                      {% include 'dashboard/sidebar_search.html' %}
-                    {% endif %}
-                  </div>
-                </div>
-                <div class="col-12 col-lg-7 p-2">
-                  <div class="px-2" id="bounties">
-                    <div id="dashboard-title" class="hidden">
-                      {% if not hackathon %}
-                      <div class="my-3 mx-3">
-                        <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
-                      </div>
-                      {% endif %}
-                      {% include 'shared/search_bar.html' %}
-                    </div>
-                  </div>
-                  <div class="row loading justify-content-center align-items-center loading_img">
-                    <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
-                  </div>
-                  <div class="row nonefound mx-auto" style="display:none;">
-                {% if hackathon %}
-                  <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
-                  <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                  <p>
-                    <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
-                  </p>
-                  {% include 'shared/hackathon_sponsors.html' %}
-
-                {% else %}
-                  <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                  <h3>{% trans "No results found." %}</h3>
-                  <p>{% trans "Request an organisation to fund an issue" %}</p>
-                  <div class="mt-3">
-                    <a class="button button--primary py-2 font-weight-semibold" role="button" href="/requests">
-                      {% trans "REQUEST BOUNTY" %}
-                    </a>
-                  </div>
-                {% endif %}
-              </div>
-                  {% include 'dashboard/featured_bounties.html' %}
-                </div>
-              </div>
-            </b-tab>
-            <b-tab class="col-12 col-lg-9" active-nav-item-class="active" title-item-class="navigation" title="Projects (57)">
-
-            <div class="container-fluid">
-            {% if hackathon.end_date|timeuntil >= "1 min" and not projects%}
-              <p class="p-3 mt-3 alert-warning">This hackathon event is running until {{hackathon.end_date}}, please check again later.</p>
-            {% endif %}
-              <form action="{% url 'hackathon_projects' hackathon.slug %}" method="get" id="filter-form" class="row py-3">
-                <div class="col-12 col-md-3">
-                  <div class="input-group">
-                    <input type="text" class="form-control" name="q" id="project-search" placeholder="{% trans 'Search Projects' %}" value="{{query|join:' '}}">
-                    <div class="input-group-append">
-                      <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-dark clear-search {% if not query %}hidden{% endif %}"><i class="fas fa-times"></i></a>
-                      <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
-                    </div>
-                  </div>
-                  {% if query %}
-                    <small>Results for: {% for q in query %}{{ q }} {% endfor %}</small>
-                  {% endif %}
-                </div>
-                <div class="col-12 col-md-3">
-                  <div class="form-group row">
-                    <label for="sponsor" class="col-sm-6 col-form-label">Filter by sponsor:</label>
-                    <div class="col-sm-6">
-                      <select name="sponsor" id="sponsor" class="form-control">
-                        <option value="">All</option>
-                        {% for sponsor_item in sponsors_list %}
-                          <option value="{{sponsor_item.org_name}}" {% if sponsor_item.org_name == sponsor %}selected {% endif %}>{{sponsor_item.org_name}}</option>
-                        {% endfor%}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12 col-md-3 text-md-center">
-                  <a href="{% url 'hackathon_projects' hackathon.slug %}" class="{% ifequal filters '' %}underline{% endifequal %}">See all</a> |
-                  <a href="{% url 'hackathon_projects' hackathon.slug %}?filters=winners" class="{% ifequal filters 'winners' %}underline{% endifequal %}">See winners</a>
-                </div>
-                <div class="col-12 col-md-3 text-md-right">
-                  Order by:
-                  <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=-created_on" class="{% ifequal order_by '-created_on' %}underline{% endifequal %}">Newest</a> |
-                  <a href="{% url 'hackathon_projects' hackathon.slug %}?order_by=created_on" class="{% ifequal order_by 'created_on' %}underline{% endifequal %}">Oldest</a>
-                </div>
-              </form>
-              <div class="row py-5">
-                <div class="col-12">
-                  <div class="project-grid">
-                    {% for project in projects %}
-                      <div class="card card-project">
-                        {% if project.badge %}
-                          <img class="position-absolute card-badge" width="50" src="{{project.badge}}" alt="badge" />
-                        {% endif %}
-
-                        {% for profile in project.profiles.all %}
-                          {% if profile_id == profile.id %}
-                            <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
-                          {% endif %}
-                        {% endfor %}
-
-
-                        <div class="card-bg rounded-top" style="background-image: url({% firstof project.profiles.first.profile_wallpaper or '/static/wallpapers/burst-pink.png' %})">
-                          {% if project.logo %}
-                            <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{MEDIA_URL}}{{project.logo}}" alt="Hackathon logo" />
-                          {% else %}
-                            <img class="card-project-logo m-auto mw-100 rounded shadow" height="200" width="200" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
-                          {% endif %}
-                        </div>
-                        <div class="card-body">
-                          <h5 class="card-title text-uppercase">{{ project.name }}</h5>
-                          <a href="{{project.work_url}}" target="_blank" class="font-weight-bold card-subtitle">Project Home</a>
-                          <div class="my-2">
-                            <b class="text-muted">Project Summary</b>
-                            <p>
-                              {{project.summary | truncatechars:90}}
-                            </p>
-                          </div>
-                          <div class="mb-2">
-                            <b class="text-muted">Team Members</b>
-                            <div class="mt-1">
-                              {% for profile in project.profiles.all %}
-                                <a href="{% url 'profile' profile %}" class="">
-                                  <img src="{{profile.avatar_url}}" alt="{{profile}}" title="@{{profile}}" width="30" height="30" class="rounded-circle">
-                                </a>
-                              {% endfor %}
-                            </div>
-                          </div>
-                          <div class="mb-2">
-                            <a href="{{project.bounty.url}}">Prize Bounty</a>
-                          </div>
-                          <div class="font-smaller-2">
-                            <b class="text-muted">Sponsor</b>
-                            <img class="" width="20" src="{{ project.bounty.avatar_url }}" alt="{{project.bounty.org_name}}" />
-                            <a href="{% url 'profile' project.bounty.org_name %}">{{project.bounty.org_name}}</a>
-                          </div>
-                        </div>
-                      </div>
-                    {% endfor %}
-                  </div>
-                  {% if not projects and query %}
-                    <h4>Nothing found</h4>
-                  {% elif not projects %}
-                    <h4>No projects submitted yet</h4>
-                  {% endif %}
-                  {% if projects.has_other_pages %}
-                    <nav aria-label="Page navigation example">
-                      <ul class="pagination justify-content-center mt-5">
-                        {% if projects.has_previous %}
-                          <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.previous_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Previous</a></li>
-                        {% else %}
-                          <li class="page-item disabled"><span class="page-link page-link-gc">Previous</span></li>
-                        {% endif %}
-                        {% for i in projects.paginator.page_range %}
-                          {% if projects.number == i %}
-                            <li class="page-item active" aria-current="page">
-                              <span class="page-link page-link-gc">{{ i }}<span class="sr-only">(current)</span></span>
-                            </li>
-                          {% else %}
-                            <li class="page-item"><a class="page-link page-link-gc" href="?page={{ i }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">{{ i }}</a></li>
-                          {% endif %}
-                        {% endfor %}
-                        {% if projects.has_next %}
-                          <li class="page-item"><a class="page-link page-link-gc" href="?page={{ projects.next_page_number }}&order_by={{order_by}}&filters={{filters}}&q={{query|join:'+'}}&sponsor={{sponsor}}">Next</a></li>
-                        {% else %}
-                          <li class="page-item disabled"><span class="page-link page-link-gc">Next</span></li>
-                        {% endif %}
-                      </ul>
-                    </nav>
-                  {% endif %}
-                </div>
-
-              </div>
-            </div>
-          </b-tab>
-            <b-tab class="col-12 col-lg-9" active-tab-item-class="active" title-item-class="navigation" title="Townsquare" active>
-              <div class="row townsquare_header">
-                <div class="col-12 col-lg-2 d-lg-block" style="margin-left:5.5%">
-                  <div id=left_sidebar>
-                    {% if SHOW_DRESSING %}
-                      <div class="townsquare_left-sidebar feed_container">
-                        <div class="townsquare_block-header" data-target="search-area" >
-                          Search
-                        </div>
-                        <div class="search font-caption mb-2 text-left" id="search-area">
-                          <div class="search-area">
-                            <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
-                          </div>
-                          <div class="mt-2">
-
-                            <div class="checkbox_container">
-                              <input name="trending" id="trending" type="checkbox" value="0" {% if trending_only %}checked=checked{%endif%} />
-                              <!-- <span class="checkbox"></span> -->
-                              <label for=trending>{% trans "Trending Only" %}</label>
-                            </div>
-                          </div>
-                        </div>
-                      {% include 'townsquare/shared/feednav.html' %}
-                      </div>
-                    {% endif %}
-                  </div>
-                </div>
-                <div class="feed_container col-12 col-lg-6">
-                  {% csrf_token %}
-                  {% include 'townsquare/shared/shareactivity.html' %}
-
-                  <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
-                    <span id=activity_subheader>
-                      <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
-                      <br>
-                      <span>
-                        {{card_desc}}
-                      </span>
-                    </span>
-                    {% include 'shared/activity_container.html' %}
-                  </div>
-                </div>
-                <div class="actions_container col-12 col-md-2 offset-1">
-              <div id="right_sidebar">
-                {% if SHOW_DRESSING %}
-
-                {% include 'townsquare/shared/reflink.html' %}
-
-                <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
-                Actions <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
-                <strong>Gitcoin Actions</strong> are a way to introduce entropy into your learning routine.  Gitcoin will select the best educational, networking, or (sometimes)monetary or reputational opportunities and put them in front of you on a daily, weekly, monthly, and (sometimes) secret basis!
-                <br>
-                <br>
-                Come to Gitcion daily to discover today's daily action!
-                "></i>
-                </div>
-                  <div id=actions>
-                    <div class="offer_coming font-caption">
-                      <div class="checkbox_container">
-                        <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
-                        <span class="checkbox"></span>
-                        <div class="filter-label ml-1">
-                          <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
-                        </div>
-                      </div>
-                    </div>
-
-                  {% include 'townsquare/shared/offers.html' %}
-
-                  <a href="/action/new" class="font-smaller-2 mb-2">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                    Create Action
+                  <a :href="`/hackathon/onboard/${hackathonObj.slug}`" class="btn register btn-gc-blue mt-2" v-if="!is_registered">
+                    Register
                   </a>
-                  <hr>
                 </div>
-
-                  {% include 'townsquare/shared/matchround.html' %}
-                {% endif %}
-                </div>
-            </div>
-
-              </div>
-            </b-tab>
-            <b-tab class="col-12 col-lg-9" active-tab-item-class="active" title-item-class="navigation" title="Chat">
-              <div class="row">
-                <div class="chatWrapper col-12 col-7-lg">
-                  <iframe frameborder="0" src="{{ chat_url }}/hackathons/channels/{{ hackathon.chat_channel_id }}" allowfullscreen></iframe>
-                </div>
-              </div>
-            </b-tab>
-            <b-tab class="col-12 col-lg-9" active-nav-item-class="active" title-item-class="navigation" title="Learn">
-              <div class="container-fluid  pb-5">
-                <div class="container bg-white rounded">
-                  <div class="row p-5">
-                    <div class="col-12">
-                        <span>Gitcoin Virtual Hackathon</span>
-                        <h1 class="text-uppercase gc-letter-spacing">
-                          {{ hackathon.name }}
-                        </h1>
-                        <p>
-                          {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
-                        </p>
-                        {% if hackathon.end_date|timesince >= "1 min" %}
-                          <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
-                        {% endif %}
-                        {% if not github_handle %}
-                          <div class="text-center">
-                            <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                              onclick="dataLayer.push({'event': 'login'});">
-                              <i class="fab fa-github"></i>
-                              <span>{% trans "Register with GitHub for Hackathon" %}</span>
-                            </a>
-                            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+              </template>
+              <b-tab class="col-12" active-tab-item-class="active" title-item-class="navigation">
+                <template v-slot:title>
+                  Townsquare
+                </template>
+                <div class="row townsquare_header">
+                  <div class="col-12 col-lg-2 d-lg-block" style="margin-left:5.5%">
+                    <div id=left_sidebar>
+                      {% if SHOW_DRESSING %}
+                        <div class="townsquare_left-sidebar">
+                          <div class="townsquare_block-header" data-target="search-area" >
+                            Search
                           </div>
-                        {% else %}
-                          {% if not is_registered %}
-                            <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                            <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
-                          {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
-                            <p>Explore Web3 and be prepared via sponsors Quests</p>
-                            <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                          {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
-                            <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
-                          {% else %}
-                            <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                            <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                          {% endif %}
-                        {% endif %}
-                      </div>
-                    </div>
+                          <div class="search font-caption mb-2 text-left" id="search-area">
+                            <div class="search-area">
+                              <input type="search" class="form__input w-100" id="keyword" name="keyword" placeholder="Search 🔎" value="{{search}}" style="width: 100px;">
+                            </div>
+                            <div class="mt-2">
 
-                </div>
-
-                <div class="container bg-white mt-4 rounded">
-                  <div class="row p-5">
-                    <div class="col-12">
-                      {% if is_staff %}
-                        <div class="">
-                          <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
-                          <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
+                              <div class="checkbox_container">
+                                <input name="trending" id="trending" type="checkbox" value="0" {% if trending_only %}checked=checked{%endif%} />
+                                <!-- <span class="checkbox"></span> -->
+                                <label for=trending>{% trans "Trending Only" %}</label>
+                              </div>
+                            </div>
+                          </div>
+                        {% include 'townsquare/shared/feednav.html' %}
                         </div>
                       {% endif %}
-                      <div class="editor-container ">
-                        <div id="description-hackathon" class="gc-editor description-hackathon">{{hackathon.description | safe}}</div>
+                    </div>
+                  </div>
+                  <div class="feed_container col-12 col-lg-6">
+                    <div class="feed_container_child">
+                      {% csrf_token %}
+                      {% include 'townsquare/shared/shareactivity.html' %}
+
+                      <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+                        <span id=activity_subheader>
+                          <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+                          <br>
+                          <span>
+                            {{card_desc}}
+                          </span>
+                        </span>
+                        {% include 'shared/activity_container.html' %}
                       </div>
                     </div>
                   </div>
+                  <div class="actions_container col-12 col-md-2 offset-1">
+                <div id="right_sidebar">
+                  {% if SHOW_DRESSING %}
 
-                  <div class="row px-5">
-                    <div class="col-12">
-                      <h4 class="text-uppercase font-weight-bolder text-left">How does the Hackathon work?</h4>
-                    </div>
-                  </div>
+                  {% include 'townsquare/shared/reflink.html' %}
 
-                  <div class="row px-5 my-5">
-                    <div class="col-12 col-md-5">
-                        <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans "Check out the Prizes" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            Visit the <a target="_blank" href="{{ hackathon_url }}#bounties">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
-                          </p>
-                        {% endblocktrans %}
-                    </div>
+                  <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
+                  Actions <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
+                  <strong>Gitcoin Actions</strong> are a way to introduce entropy into your learning routine.  Gitcoin will select the best educational, networking, or (sometimes)monetary or reputational opportunities and put them in front of you on a daily, weekly, monthly, and (sometimes) secret basis!
+                  <br>
+                  <br>
+                  Come to Gitcion daily to discover today's daily action!
+                  "></i>
                   </div>
-                  <div class="row px-5 my-5">
-                    <div class="col-12 col-md-5">
-                        <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://chat.gitcoin.co/hackathons">Click here to join the party!</a>.
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-                  <div class="row px-5 my-5">
-                    <div class="col-12 col-md-5">
-                        <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-                  <div class="row px-5 my-5">
-                    <div class="col-12 col-md-5">
-                        <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans "BUIDL!" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            Build your cool ideas and make your vision come true with your team!
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-                  <div class="row my-4 px-5">
-                    <div class="col-12 col-md-5">
-                      <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
-                    </div>
-                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-                        <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
-                        {% blocktrans %}
-                          <p class="">
-                            When your project is completed, submit your work by clicking the “Submit Work” button on the prize page/
-                          </p>
-                        {% endblocktrans %}
-                    </div>
-                  </div>
-
-                  <div class="row px-5 pb-5">
-                    <div class="col-12">
-                      <p class="font-weight-bolder text-uppercase h4 text-left mb-4">
-                        JOIN THE HACKATHON
-                      </p>
-                      {% if not github_handle %}
-                        <div class="text-center">
-                          <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                            onclick="dataLayer.push({'event': 'login'});">
-                            <i class="fab fa-github"></i>
-                            <span>{% trans "Register with GitHub for Hackathon" %}</span>
-                          </a>
-                          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
+                    <div id=actions>
+                      <div class="offer_coming font-caption">
+                        <div class="checkbox_container">
+                          <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                          <span class="checkbox"></span>
+                          <div class="filter-label ml-1">
+                            <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
+                          </div>
                         </div>
+                      </div>
+
+                    {% include 'townsquare/shared/offers.html' %}
+
+                    <a href="/action/new" class="font-smaller-2 mb-2">
+                      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                      Create Action
+                    </a>
+                    <hr>
+                  </div>
+
+                    {% include 'townsquare/shared/matchround.html' %}
+                  {% endif %}
+                  </div>
+              </div>
+
+                </div>
+              </b-tab>
+              <b-tab class="col-12" active-tab-item-class="active" title-item-class="navigation" title="Chat">
+                <template>
+                  <div class="row">
+                    <div class="chatWrapper col-12">
+                      <iframe frameborder="0" :src="`${chatURL}/hackathons/channels/${hackathonObj.chat_channel_id}`" allowfullscreen></iframe>
+                    </div>
+                  </div>
+                </template>
+              </b-tab>
+              <b-tab class="col-12" active-tab-item-class="active" title-item-class="navigation" title="Prizes (98)">
+                <div id="prizes" class="row">
+                  <div class="col-12 col-md-2 d-lg-block" style="background: #F2F6F9; margin-left:2%">
+                    <div class="mt-4 invisible" id="sidebar_container">
+                      {% if hackathon %}
+                        {% include 'dashboard/sidebar_search_hackathon.html' %}
                       {% else %}
-                        {% if not is_registered %}
-                          <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                          <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
-                        {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
-                          <p>Explore Web3 and be prepared via sponsors Quests</p>
-                          <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                        {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
-                          <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
-                        {% else %}
-                          <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                          <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                        {% endif %}
+                        {% include 'dashboard/sidebar_search.html' %}
                       {% endif %}
                     </div>
                   </div>
+                  <div class="col-12 col-md-9 p-2 ml-4">
+                    <div class="px-2" id="bounties">
+                      <div id="dashboard-title" class="hidden">
+                        {% if not hackathon %}
+                        <div class="my-3 mx-3">
+                          <h1 class="font-bigger-1">Issue Explorer - Freelance Code Bounties</h1>
+                        </div>
+                        {% endif %}
+                        {% include 'shared/search_bar.html' %}
+                      </div>
+                    </div>
+                    <div class="row loading justify-content-center align-items-center loading_img">
+                      <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
+                    </div>
+                    <div class="row nonefound mx-auto" style="display:none;">
+                  {% if hackathon %}
+                    <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                    <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                    <p>
+                      <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
+                    </p>
+                    {% include 'shared/hackathon_sponsors.html' %}
+
+                  {% else %}
+                    <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                    <h3>{% trans "No results found." %}</h3>
+                    <p>{% trans "Request an organisation to fund an issue" %}</p>
+                    <div class="mt-3">
+                      <a class="button button--primary py-2 font-weight-semibold" role="button" href="/requests">
+                        {% trans "REQUEST BOUNTY" %}
+                      </a>
+                    </div>
+                  {% endif %}
                 </div>
-
-                {% if sponsors %}
-                <div class="container bg-white my-4 py-2 rounded">
-                      <div class="row px-5">
-                        <div class="col-12 sponsors mt-5 mb-3">
-                          <p class="font-weight-bolder h4 text-left mb-4">SUPPORTED BY</p>
-                          {% if sponsors.sponsors_gold %}
-                            <div class="d-flex flex-wrap mb-4">
-                              {% for sponsor in sponsors.sponsors_gold %}
-                                <div class="sponsors-gold my-auto mx-2">
-                                  <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                                </div>
-                              {% endfor %}
+                    {% include 'dashboard/featured_bounties.html' %}
+                  </div>
+                </div>
+              </b-tab>
+              <b-tab class="col-12" active-nav-item-class="active" title-item-class="navigation" title="Projects (57)" lazy>
+                  <project-directory inline-template>
+                    <div class="">
+                      <div class="sidebar-container flex-column flex-lg-row">
+                        <transition name="fade">
+                          <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
+                            <div class="pb-4 border-bottom form-group">
+                              <label for="search_projects" class="font-weight-bold">Search</label>
+                              <div class="d-flex flex-grow-1" id="search_projects">
+                                <form class="form-inline my-2 flex-fill justify-content-center">
+                                  <div class="input-group w-100">
+                                    <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                    <div class="input-group-append">
+                                      <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
                             </div>
-                          {% endif %}
-
-                          {% if sponsors.sponsors_silver %}
-                            <div class="d-flex flex-wrap mb-4">
-                              {% for sponsor in sponsors.sponsors_silver %}
-                                <div class="sponsors-silver my-auto mx-2">
-                                  <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                                </div>
-                              {% endfor %}
+                            <div class="pb-4 border-bottom form-group">
+                              <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
+                              <div id="project_sponsors" class="form__select2">
+                                <select2 v-model.trim="params.sponsors" data-minimum-results-for-search="Infinity" class="form-control">
+                                  <option value="" selected="true">All</option>
+                                  <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
+                                    [[ option.display_name ]]
+                                  </option>
+                                </select2>
+                              </div>
                             </div>
-                          {% endif %}
+                            <div class="g-multiselect pb-4 border-bottom form-group">
+                              <label for="skills" class="font-weight-bold">Skills</label>
+                              <div class="form__select2">
+                                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                                  <option disabled value="0">Select one</option>
+                                </select2>
+                              </div>
+                            </div>
+                            <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
+                            <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                              <span class="font-weight-bold">[[ numProjects ]]</span> projects found
+                            </p>
+                          </nav>
+                        </transition>
+                        <div class="container pt-4" @scroll.passive="onScroll($event)">
+                          <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                          <div class="py-5 mt-4">
+                          <div v-if="noResults" class="text-center">
+                            <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                            <p class="mt-4 font-weight-bold mb-0">No projects found</p>
+                            <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
+                          </div>
+                          <div class="grid-4">
+                            <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
+                              <div class="card card-project">
+                                  <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
+
+                                  <button v-if="project" onclick="@projectModal(project.bounty, project.pk)" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
+
+
+                                  <div class="card-bg rounded-top" style="">
+                                    <!--<img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />-->
+                                    <!--<img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.logo" alt="Bounty Logo" />-->
+                                  </div>
+                                  <div class="card-body">
+                                  <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+                                  <div class="my-2">
+                                    <p class="text-left text-muted font-smaller-1 summary">
+                                      [[ project.summary ]]
+                                    </p>
+                                    <div class="text-left">
+                                      <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">Project Home</a>
+                                      <a :href="project.work_url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">Prize Bounty</a>
+                                    </div>
+                                  </div>
+
+                                  <div class="my-3 mb-2 text-left">
+                                    <b class="font-weight-bold font-smaller-3">Team Members</b>
+                                    <div class="mt-1">
+                                        <a v-for="profile in project.profiles" href="{% url 'profile' profile %}" class="">
+                                          <!--<img :src="`${profile.avatar_url}`" :alt="`@${profile}`" :title="`@${profile}`" width="30" height="30" class="rounded-circle">-->
+                                        </a>
+                                    </div>
+                                  </div>
+
+                                  <div class="my-3 looking-team">
+                                    <h5 class="info-card-title uppercase">Looking for team members</h5>
+                                    <p class="info-card-desc">
+                                      “We’re looking for a React Developer to help us build cool stuff on Bancor protocol”
+                                    </p>
+                                  </div>
+
+                                  <div class="font-smaller-2 mt-4">
+                                    <b class="font-weight-bold">Sponsored by</b>
+                                    <!--<img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />-->
+                                    <!--<a href="">[[ project.bounty.org_name ]]</a>-->
+                                  </div>
+                                </div>
+                                </div>
+                            </div>
+                          </div>
+                          <loading-screen v-if="isLoading"></loading-screen>
+                        </div>
                         </div>
                       </div>
                     </div>
-                {% endif %}
-              </div>
-            </b-tab>
-            <b-tab class="col-12 col-lg-9" active-nav-item-class="active" title-item-class="navigation" title="Participants (134)">Participant View Here</b-tab>
-            <div class="col-12 col-md-2 offset-1">
-              <div id="sponsor_sidebar">
-                <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="sponsor_tribes">
-                  Sponsor Tribes
-                </div>
-                <div id="sponsor_tribes">
-                  <div class="offer_coming font-caption">
-                    <div class="checkbox_container">
-                      <span class="checkbox"></span>
-                      <div class="filter-label ml-1">
-                        Sponsor Tribes follow widget here
+                  </project-directory>
+              </b-tab>
+              <b-tab class="col-12" active-nav-item-class="active" title-item-class="navigation" title="Participants (134)" lazy>
+                <user-directory inline-template>
+                  <div>
+                    <div class="sidebar-container flex-column flex-lg-row">
+                    <transition name="fade">
+                      <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
+                        <div class="pb-4 border-bottom form-group">
+                          <label for="search" class="font-weight-bold">Search</label>
+                          <div class="d-flex flex-grow-1" id="search">
+                            <form class="form-inline my-2 flex-fill justify-content-center">
+                              <div class="input-group w-100">
+                                <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                <div class="input-group-append">
+                                  <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                        <div class="pb-4 border-bottom form-group">
+                          <label for="persona" class="font-weight-bold">Persona</label>
+                          <div class="form__select2">
+                            <select2 v-model="params.persona" data-minimum-results-for-search="Infinity" class="form-control">
+                              <option value="" selected="true">All</option>
+                              <option value="funder">Funder</option>
+                              <option value="coder">Coder</option>
+                            </select2>
+                          </div>
+                        </div>
+                        <div class="pb-4 border-bottom form-group">
+                          <label for="leaderboard_rank" class="font-weight-bold">Leaderboard Rank</label>
+                          <div class="form__select2">
+                            <select2 v-model.trim="params.leaderboard_rank" data-tags="true" class="form-control">
+                              <option value="" selected="true">All</option>
+                              <option value="1,5">1,5</option>
+                              <option value="5,10">5,10</option>
+                              <option value="10,15">10,15</option>
+                              <option value="15,20">15,20</option>
+                              <option value="20,25">20,25</option>
+                            </select2>
+                          </div>
+                        </div>
+                        <div  v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
+                          <label for="skills" class="font-weight-bold">Skills</label>
+                          <div class="form__select2">
+                            <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                              <option disabled value="0">Select one</option>
+                            </select2>
+                          </div>
+                        </div>
+                        <div v-if="persona != 'tribe'" class="pb-4 border-bottom form-group">
+                          <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
+                          <div class="form__select2">
+                            <select2 v-model.trim="params.bounties_completed" data-tags="true" class="form-control">
+                              <option value="" selected="true">All</option>
+                              <option value="0,5">0,5</option>
+                              <option value="5,10">5,10</option>
+                              <option value="10,15">10,15</option>
+                              <option value="15,20">15,20</option>
+                            </select2>
+                          </div>
+                        </div>
+                        <div v-if="persona != 'tribe'" class="pb-2 border-bottom form-group">
+                          <div class="w-100 p-2">
+                            <fieldset class="">
+                              <label for="" class="font-weight-bold">Star Rating</label>
+                              <div class="rating font-smaller-4">
+                                <input type="radio" id="rating-5" name="rating" value="5" v-model="params.rating" />
+                                <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
+                                <input type="radio" id="rating-4" name="rating" value="4" v-model="params.rating" />
+                                <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
+                                <input type="radio" id="rating-3" name="rating" value="3" v-model="params.rating" />
+                                <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
+                                <input type="radio" id="rating-2" name="rating" value="2" v-model="params.rating" />
+                                <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
+                                <input type="radio" id="rating-1" name="rating" value="1" v-model="params.rating" />
+                                <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
+                              </div>
+                            </fieldset>
+                          </div>
+                        </div>
+                        <div v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
+                          <label for="organisations" class="font-weight-bold">Tribe</label>
+                          <div class="font-smaller">
+                            <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
+                          </div>
+                        </div>
+                        <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
+                        {% if is_staff %}
+                          <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                            <span class="font-weight-bold">[[ numUsers ]]</span> users found
+                          </p>
+                          <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                            Invite all to bounty
+                          </button>
+                        {% endif %}
+                      </nav>
+                    </transition>
+                    <div class="container pt-4" @scroll.passive="onScroll($event)">
+                      <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                      <div class="py-5 mt-4">
+                        <div v-if="noResults" class="text-center">
+                          <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                          <p class="mt-4 font-weight-bold mb-0">No users found</p>
+                          <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
+                        </div>
+                        <div class="grid-4">
+                          <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
+                            <div class="d-flex flex-column py-1 bg-lightblue">
+                              <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                              <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
+                                <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
+                                  <i class="fab fa-ethereum mr-2"></i>
+                                  Fund Bounty
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a :href="`/profile/${ user.handle }`" class="dropdown-item p-2" target="_blank">
+                                  <i class="fas fa-user mr-2"></i>
+                                  View profile
+                                </a>
+                              </div>
+                              <a :href="`/profile/${ user.handle }`" class="mx-auto">
+                                <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`" alt="${user.handle} Avatar"/>
+                              </a>
+                              <h5 class="text-center card-user_name">
+                                [[ user.name || user.handle ]]
+                                <span v-if="user.verification">
+                                  <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
+                                </span>
+                              </h5>
+                              <a :href="`/profile/${ user.handle }`" class="text-center d-block">
+                                @[[ user.handle ]]
+                              </a>
+                              <div v-if="!user.is_org" class="card-user_stars text-center my-2">
+                                <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
+                                ([[ user.avg_rating.total_rating ]] ratings)
+                              </div>
+                              <small class="text-center pb-1" v-if="user.previously_worked">
+                                <i class="far fa-handshake mr-1"></i>Worked with you
+                              </small>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-between">
+                              <!-- TRIBE -->
+                              <template v-if="user.is_org">
+                                <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
+                                </div>
+                                <div class="text-left">
+                                  <span v-if="user.rank_org > 0"><b>#[[ user.rank_org ]]</b> Tribe</span>
+                                </div>
+                                <div class="text-left">
+                                  <p class="mb-0">
+                                    <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                    <b>[[ user.follower_count ]]</b> followers
+                                  </p>
+                                  <p class="mb-0">
+                                    <i class="fas fa-trophy font-smaller-4 mr-1"></i>
+                                    <b>[[ user.count_bounties_on_repo ]]</b> Bounties Funded
+                                    (<b>[[ user.sum_eth_on_repos ]] ETH</b>)
+                                  </p>
+                                </div>
+                              </template>
+
+                              <!-- User : Funder / Contributor-->
+                              <template v-else>
+                                <div v-if="user.keywords" class="text-center">
+                                  <template v-for="keyword in user.keywords">
+                                    <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
+                                  </template>
+                                </div>
+                                <div class="text-center my-1 font-smaller-1">
+                                  <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
+                                    <i class="fab fa-github"></i>
+                                  </a>
+                                  <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
+                                    <i class="fas fa-home"></i>
+                                  </a>
+                                  <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
+                                    <i class="fab fa-linkedin-in"></i>
+                                  </a>
+                                </div>
+                                <div class="text-center" id="job_status" v-if="user.show_job_status">
+                                  <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                                    <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
+                                  </a>
+                                </div>
+                                <div class="text-left">
+                                  <p class="mb-0">
+                                    <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                    <b>[[ user.follower_count ]]</b> followers
+                                  </p>
+                                  <p v-if="!isFunder" class="mb-0">
+                                    <b>[[ user.work_done ]]</b> bounties completed
+                                  </p>
+                                  <p class="mb-0">
+                                    <span v-if="user.position_contributor > 0">
+                                      <b>#[[ user.position_contributor ]]</b> contributor
+                                    </span>
+                                    <span v-if="user.position_funder > 0">
+                                      <b>#[[ user.position_funder ]]</b> funder
+                                    </span>
+                                  </p>
+                                </div>
+                                <div class="text-center mt-2">
+                                  <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-gc-blue font-caption font-weight-semibold button--full" @click="openBounties(user)">Invite to Bounty</button>
+                                </div>
+                              </template>
+
+                              <div class="text-center mt-2">
+                                <button v-if="user.is_following" @click="joinTribe(user, $event)"
+                                  class="btn btn-sm btn-gc-pink font-caption font-weight-semibold button--full"
+                                >
+                                  <i class="fas fa-user-minus mr-1"></i>
+                                  Unfollow
+                                </button>
+                                <button v-else @click="joinTribe(user, $event)"
+                                  class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
+                                >
+                                  <i class="fas fa-user-plus mr-1"></i>
+                                  Follow
+                                </button>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                        <loading-screen v-if="isLoading"></loading-screen>
                       </div>
                     </div>
+                      <modal ref="user-modal" id="userModal">
+                      <div slot="header" v-if="userSelected.handle">
+                        <div class="d-flex flex-column align-items-center">
+                          <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
+                          <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`" alt="Avatar"/>
+                          <span>[[ userSelected.name ]]</span>
+                          <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
+                            [[ userSelected.handle ]]
+                          </a>
+                        </div>
+                      </div>
+                      <div slot="body" v-if="userSelected.handle">
+                        <div v-if="funderBounties.length">
+                          <div class="my-2 text-center">
+                            <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
+                          </div>
+                          <div class="bounties-box">
+                            <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                              <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
+                              <p class="line-clamp font-smaller-2 my-0 mx-2">
+                                [[ bounty.title ]]
+                              </p>
+                              <div class="ml-auto flex-shrink-0">
+                                <span class="tag token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
+                                <span class="tag usd">[[ bounty.value_in_usdt_now ]] USD</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div v-else class="text-center font-subheader mt-4">
+                          <p class="font-weight-semibold">You've got NO open bounties</p>
+                          <p class="font-body">
+                            <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
+                            to invite [[ userSelected.handle ]]
+                          </p>
+                        </div>
+                      </div>
+                      <div slot="footer" class="d-flex align-items-center flex-fill">
+                        <a v-if="bountySelected" :href="bountySelected.url" target="_blank" class="mr-5">view bounty</a>
+                        <div class="ml-auto">
+                          <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
+                          <button  v-if="funderBounties.length" class="btn btn-gc-blue" :disabled="!bountySelected" @click="sendInvite(bountySelected, userSelected.id)">Invite</button>
+                        </div>
+                      </div>
+                    </modal>
+                      {% if is_staff %}
+                      <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
+                          <div slot="header">
+                            <div class="d-flex flex-column align-items-center">
+                              <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
+                            </div>
+                          </div>
+                          <div slot="body">
+                            <div class="form-group">
+                              <label class="font-weight-semibold">Github Issue URL</label>
+                              <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
+                            </div>
+                            <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
+                            <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
+                              <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
+                              [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
+                              <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
+                              [[issueDetails.issue_description_text]]
+                            </div>
+                            <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
+                            <div class="alert-warning p-3" v-if="errorIssueDetails">
+                              [[errorIssueDetails]]
+                            </div>
+                          </div>
+                          <div slot="footer" class="d-flex align-items-center flex-fill">
+                            <div class="ml-auto">
+                              <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
+                              <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+                            </div>
+                          </div>
+                        </modal>
+                      {% endif %}
+                    </div>
                   </div>
-              </div>
+                </user-directory>
+              </b-tab>
+            </b-tabs>
+          </div>
+          <div class="col-12 col-md-3">
+            <div id="sponsor_sidebar">
+              <div class="p-4">
+                <div class="offset-1">
+                  <h5>Sponsor Tribes</h5>
+                </div>
+                <ul class="list-unstyled">
+                  <b-media v-for="sponsor in hackathonSponsors" tag="li" class="p-3">
+                    <template v-slot:aside>
+                      <b-avatar :src="sponsor.avatar_url" size="64" :alt="sponsor.org_name"></b-avatar>
+                    </template>
+                    <div class="row px-5 py-3">
+                      <div class="col-6 offset-2">
+                        <h5 class="mt-0 mb-1">[[ sponsor.org_name ]]</h5>
+                      </div>
+                      <div class="col-2 offset-2"><b-button variant="outline-primary" class="btn-outline-gc-blue">follow</b-button></div>
+                      <div class="col-8 offset-1">
+                      <ul class="list-unstyled" class="mb-0">
+                        <li>#5 Tribe</li>
+                        <li><b-icon icon="person"></b-icon>26 Followers</li>
+                        <li><b-icon icon="trophy"></b-icon># Bounties Funded</li>
+                      </ul>
+                      </div>
+                    </div>
+                  </b-media>
+                </ul>
               </div>
             </div>
-          </b-tabs>
+          </div>
         </div>
       </div>
     </div>
-    </div>
-
     <div class="row bottom_notification font-caption">
       {{footer_msg|safe}}
     </div>
@@ -923,22 +950,34 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-
-    <script>
-      document.keywords = {{keywords | safe}};
-
-      {% if hackathon %}
-        document.hackathon = "{{ hackathon.slug | safe }}";
-        if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
-      {% endif %}
+    <script type="text/x-template" id="select2-template">
+      <select>
+        <slot></slot>
+      </select>
     </script>
-    <script src="/dynamic/js/tokens_dynamic.js"></script>
-    <script src="{% static "v2/js/activity.js" %}"></script>
-    <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
-    <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
+    <script src='{% static "v2/js/vue-components.js" %}'></script>
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.keywords = {{ keywords | safe }};
+      document.is_registered = "{{is_registered | safe}}";
+      window.localStorage['tab'] = 'hackathon:{{hackathon.id | safe}}';
+      document.hackathon = "{{ hackathon.slug | safe }}";
+      document.hackathonObj = JSON.parse({{ hackathon_obj | safe }});
+      document.hackathon_id = "{{ hackathon.id| safe }}";
+      document.hackathonSponsors = {{ orgs | safe}};
+      document.activePanel = parseInt({{panel | safe}});
+      document.chatURL = "{{ chat_url | safe}}";
+      document.timeuntil = "{{ hackathon.end_date | timeuntil }}";
+      if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
+    </script>
+    <script src='{% static "v2/js/pages/dashboard.js" %}'></script>
     {% include 'shared/activity_scripts.html' %}
-    <script src="{% static "v2/js/status.js" %}"></script>
-    <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
-    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
+    <script src='{% static "v2/js/status.js" %}'></script>
+    <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
+    <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
+    <script src='{% static "v2/js/users.js" %}'></script>
   </body>
 </html>

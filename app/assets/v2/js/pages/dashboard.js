@@ -1,6 +1,14 @@
 /* eslint-disable no-loop-func */
 (function($) {
 
+  let hackathonProjects = []
+  let projectsPage = 1;
+  let hackathonSponsors = document.hackathonSponsors;
+  let projectsNumPages = '';
+  let projectsHasNext = false;
+  let numProjects = '';
+  let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_id : '';
+
   var filters = [
     'experience_level',
     'project_length',
@@ -106,10 +114,11 @@
     }
     let _filters = filters.slice();
 
-    _filters.push('keywords', 'order_by', 'org');
+    _filters.push('keywords', 'order_by', 'org', 'tab');
     if (document.hackathon) {
       resetFilters(true);
-      filters.push('org');
+      filters.push('org', 'tab');
+
     }
     _filters.forEach(filter => {
       if (getParam(filter)) {
@@ -466,10 +475,8 @@
 
   var addPopover = () => {
     // $('[data-toggle="popover"]').popover();
-    console.log("pops enabled");
-
-    $('body').popover({
-      selector: '.bounty_row',
+    console.log('pops enabled');
+    $('.bounty_row').popover({
       html: true,
       trigger: 'hover',
       placement: 'auto',
@@ -518,10 +525,10 @@
       toggleAny(event);
 
       const org = $("input[name='org']:checked").val();
-
+      console.log("we're here")
       localStorage['org'] = org === 'any' ? '' : org;
       localStorage['order_by'] = $('#sort_option').val();
-      window.history.pushState('', '', window.location.pathname + '?' + buildURI(['org']));
+      window.history.pushState('', '', window.location.pathname + '?' + buildURI([ 'org', 'tab' ]));
     }
 
     if (!append) {
@@ -798,33 +805,33 @@
     });
 
     if (localStorage['referrer'] === 'onboard' && !document.hackathon) {
-    $('#sidebar_container').addClass('invisible');
-    $('#dashboard-title').addClass('hidden');
-    $('#onboard-dashboard').removeClass('hidden');
-    $('#onboard-footer').removeClass('hidden');
-    resetFilters(true);
-    $('input[name=idx_status][value=open]').prop('checked', true);
-    $('.search-area input[type=text]').text(getURLParams('q'));
+      $('#sidebar_container').addClass('invisible');
+      $('#dashboard-title').addClass('hidden');
+      $('#onboard-dashboard').removeClass('hidden');
+      $('#onboard-footer').removeClass('hidden');
+      resetFilters(true);
+      $('input[name=idx_status][value=open]').prop('checked', true);
+      $('.search-area input[type=text]').text(getURLParams('q'));
 
-    $('#onboard-alert').on('click', function(e) {
+      $('#onboard-alert').on('click', function(e) {
 
-      if (!$('.no-results').hasClass('hidden'))
-        $('.nonefound').css('display', 'block');
+        if (!$('.no-results').hasClass('hidden'))
+          $('.nonefound').css('display', 'block');
 
-      $('.bounty_row').each(function(index) {
-        $(this).removeClass('hidden');
+        $('.bounty_row').each(function(index) {
+          $(this).removeClass('hidden');
+        });
+
+        $('#onboard-dashboard').addClass('hidden');
+        $('#onboard-footer').addClass('hidden');
+        $('#sidebar_container').removeClass('invisible');
+        $('#dashboard-title').removeClass('hidden');
+        $('#dashboard-content').removeClass('hidden');
+
+        localStorage['referrer'] = '';
+        e.preventDefault();
       });
-
-      $('#onboard-dashboard').addClass('hidden');
-      $('#onboard-footer').addClass('hidden');
-      $('#sidebar_container').removeClass('invisible');
-      $('#dashboard-title').removeClass('hidden');
-      $('#dashboard-content').removeClass('hidden');
-
-      localStorage['referrer'] = '';
-      e.preventDefault();
-    });
-  } else {
+    } else {
       $('#dashboard-content').removeClass('hidden');
       $('#onboard-dashboard').addClass('hidden');
       $('#onboard-footer').addClass('hidden');
@@ -836,21 +843,164 @@
 
 
   $(function() {
+    Vue = Vue.extend({
+      delimiters: [ '[[', ']]' ]
+    });
+    Vue.component('project-directory', {
+      delimiters: [ '[[', ']]' ],
+      methods: {
+        fetchProjects: function(newPage) {
+          let vm = this;
 
+          vm.isLoading = true;
+          vm.noResults = false;
+
+          if (newPage) {
+            vm.projectsPage = newPage;
+          }
+          vm.params.page = vm.projectsPage;
+          vm.params.hackathon = hackathonId;
+          if (vm.searchTerm) {
+            vm.params.search = vm.searchTerm;
+          } else {
+            delete vm.params['search'];
+          }
+
+          let searchParams = new URLSearchParams(vm.params);
+
+          let apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
+
+          var getProjects = fetchData (apiUrlProjects, 'GET');
+
+          $.when(getProjects).then(function(response) {
+            vm.hackathonProjects = [];
+            response.data.forEach(function(item) {
+              vm.hackathonProjects.push(item);
+            });
+
+            vm.projectsNumPages = response.num_pages;
+            vm.projectsHasNext = response.has_next;
+            vm.numProjects = response.count;
+            if (vm.projectsHasNext) {
+              vm.projectsPage = ++vm.projectsPage;
+
+            } else {
+              vm.projectsPage = 1;
+            }
+
+            if (vm.hackathonProjects.length) {
+              vm.noResults = false;
+            } else {
+              vm.noResults = true;
+            }
+            vm.isLoading = false;
+          });
+        },
+        searchProjects: function() {
+          let vm = this;
+
+          vm.hackathonProjects = [];
+
+          vm.fetchProjects(1);
+
+        }
+      },
+      data: () => ({
+        hackathonSponsors,
+        hackathonProjects,
+        projectsPage,
+        hackathonId,
+        projectsNumPages,
+        projectsHasNext,
+        numProjects,
+        media_url,
+        searchTerm: null,
+        bottom: false,
+        params: {},
+        isFunder: false,
+        showModal: false,
+        showFilters: true,
+        skills: document.keywords || [],
+        selectedSkills: [],
+        noResults: false,
+        isLoading: true,
+        hideFilterButton: false
+      }),
+      mounted() {
+        this.fetchProjects();
+        this.$watch('params', function(newVal, oldVal) {
+          this.searchProjects();
+        }, {
+          deep: true
+        });
+      },
+      created() {
+        // this.extractURLFilters();
+      },
+      beforeMount() {
+        window.addEventListener('scroll', () => {
+          this.bottom = this.bottomVisible();
+        }, false);
+      },
+      beforeDestroy() {
+        window.removeEventListener('scroll', () => {
+          this.bottom = this.bottomVisible();
+        });
+      }
+    });
     var app = new Vue({
+      delimiters: [ '[[', ']]' ],
       el: '#dashboard-vue-app',
       updated: () => {
         addPopover();
       },
       mounted: () => {
-        set_sidebar_defaults();
-        reset_offset();
-        refreshBounties(null, 0, false);
-        initDOM();
-        addPopover();
+        setTimeout(() => {
+          set_sidebar_defaults();
+          reset_offset();
+          refreshBounties(null, 0, false);
+          initDOM();
+          addPopover();
+        }, 0);
+      },
+      methods: {
+        tabChange: (input) => {
+          let vm = this;
+
+          console.log(vm.activePanel);
+          console.log(vm.hackathonObj);
+          addPopover();
+
+          switch (input) {
+            default:
+            case 0:
+              newPathName = 'townsquare';
+              break;
+            case 1:
+              newPathName = 'chat';
+              break;
+            case 2:
+              newPathName = 'prizes';
+              break;
+            case 3:
+              newPathName = 'projects';
+              break;
+            case 4:
+              newPathName = 'participants';
+              break;
+          }
+          let newUrl = `/hackathon/${vm.hackathonObj['slug']}/${newPathName}/${window.location.search}`;
+
+          history.pushState({}, `${vm.hackathonObj['slug']} - ${newPathName}`, newUrl);
+        }
       },
       data: () => ({
-        message: 'Hello World'
+        is_registered: document.is_registered,
+        activePanel: document.activePanel,
+        hackathonObj: document.hackathonObj,
+        hackathonSponsors: document.hackathonSponsors,
+        chatURL: document.chatURL,
+        timeuntil: document.timeuntil
       })
     });
   });

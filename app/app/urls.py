@@ -207,11 +207,11 @@ urlpatterns = [
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # Hackathons / special events
-    url(r'^hackathon/<str:hackathon>/(?P<tab>\w+)/$', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon/<str:hackathon>/<str:panel>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
-    path('hackathon/projects/<str:hackathon>/', dashboard.views.hackathon_projects, name='hackathon_projects'),
-    path('hackathon/projects/<str:hackathon>', dashboard.views.hackathon_projects, name='hackathon_projects2'),
+    path('hackathon/<str:hackathon>/projects/', dashboard.views.hackathon_projects, name='hackathon_projects'),
+    path('hackathon/<str:hackathon>/projects/', dashboard.views.hackathon_projects, name='hackathon_projects2'),
     path(
         'hackathon/projects/<str:hackathon>/<str:project>', dashboard.views.hackathon_project, name='hackathon_project'
     ),
@@ -227,8 +227,10 @@ urlpatterns = [
         name='hackathon_edit_project'
     ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
-    re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
-    re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
+    # re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
+    # re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
+    url(r'^hackathon/<str:hackathon>/?$/?', dashboard.views.hackathon, name='hackathon'),
+    url(r'^hackathon/<str:hackathon>/<str:panel>/?$/?', dashboard.views.hackathon, name='hackathon'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
     re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons3'),
@@ -687,6 +689,9 @@ urlpatterns = [
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
+
+    #projets
+    url(r'^api/v0.1/projects_fetch/', dashboard.views.projects_fetch, name='projects_fetch'),
 
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),

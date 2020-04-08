@@ -4687,6 +4687,14 @@ class HackathonProject(SuperModel):
     def get_absolute_url(self):
         return self.url()
 
+from rest_framework import serializers
+
+class HackathonProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HackathonProject
+        fields = ('chat_channel_id', 'status', 'badge', 'bounty', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo')
+        depth = 1
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
