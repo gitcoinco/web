@@ -46,6 +46,7 @@ from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
+from .abi import erc20_abi
 from .notifications import maybe_market_to_slack
 
 logger = logging.getLogger(__name__)
@@ -863,7 +864,7 @@ def get_nonce(network, address, ignore_db=False):
     nonce_from_web3 = w3.eth.getTransactionCount(address)
     if ignore_db:
         return nonce_from_web3
-        
+
     # db storage
     key = f"nonce_{network}_{address}"
     view = 'get_nonce'
@@ -998,3 +999,33 @@ def get_url_first_indexes():
 
 def get_custom_avatars(profile):
     return CustomAvatar.objects.filter(profile=profile).order_by('-id')
+
+
+def trim_null_address(address):
+    if address == '0x0000000000000000000000000000000000000000':
+        return '0x0'
+    else:
+        return address
+
+
+def get_token_recipient_senders(recipient_address, token_addres):
+    w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+    contract = w3.eth.contract(
+        address=token_address,
+        abi=erc20_abi,
+    )
+
+    balance = contract.functions.balanceOf(recipient_address).call()
+
+    if balance == 0:
+        return []
+
+    transfers = contract.events.Transfer.getLogs(
+        fromBlock=0,
+        toBlock="latest",
+        argument_filters={"to": recipient_address})
+
+    return [
+        trim_null_address(transfer.args['from'])
+        for transfer in transfers
+    ]
