@@ -2455,17 +2455,6 @@ FieldFile when accessed so you can write code like::</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="grants.models.Grant.milestones">milestones</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="grants.models.Grant.monthly_amount_subscribed">monthly_amount_subscribed</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2560,17 +2549,6 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="grants.models.Grant.updates">updates</h3>
-
-<p>Accessor to the related objects manager on the reverse side of a
-many-to-one relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
-<p>Most of the implementation is delegated to a dynamically defined manager
-class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="grants.models.Grant.url">url</h3>
 
 <p>Return grants url.
@@ -2588,130 +2566,7 @@ object the first time, the query is executed.</p>
 </code></pre>
 
 <p>updates the active subscriptions list
-<h2 id="grants.models.Milestone">Milestone</h2></p>
-<pre><code class="python">Milestone(self, *args, **kwargs)
-</code></pre>
-
-<p>Define the structure of a Grant Milestone
-<h3 id="grants.models.Milestone.completion_date">completion_date</h3></p>
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Milestone.description">description</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Milestone.due_date">due_date</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Milestone.get_next_by_created_on">_method</h3>
-
-<pre><code class="python">Milestone._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Milestone.get_next_by_due_date">_method</h3>
-
-<pre><code class="python">Milestone._method(self, *, field=&lt;django.db.models.fields.DateField: due_date&gt;, is_next=True, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Milestone.get_next_by_modified_on">_method</h3>
-
-<pre><code class="python">Milestone._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Milestone.get_previous_by_created_on">_method</h3>
-
-<pre><code class="python">Milestone._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Milestone.get_previous_by_due_date">_method</h3>
-
-<pre><code class="python">Milestone._method(self, *, field=&lt;django.db.models.fields.DateField: due_date&gt;, is_next=False, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Milestone.get_previous_by_modified_on">_method</h3>
-
-<pre><code class="python">Milestone._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Milestone.grant">grant</h3>
-
-<p>Accessor to the related object on the forward side of a many-to-one or
-one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
-<h3 id="grants.models.Milestone.grant_id">grant_id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Milestone.id">id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Milestone.title">title</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h2 id="grants.models.UpdateQuerySet">UpdateQuerySet</h2>
-
-<pre><code class="python">UpdateQuerySet(self, model=None, query=None, using=None, hints=None)
-</code></pre>
-
-<p>Define the Update default queryset and manager.
-<h2 id="grants.models.Update">Update</h2></p>
-<pre><code class="python">Update(self, *args, **kwargs)
-</code></pre>
-
-<p>Define the structure of a Grant Update.
-<h3 id="grants.models.Update.description">description</h3></p>
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Update.get_next_by_created_on">_method</h3>
-
-<pre><code class="python">Update._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Update.get_next_by_modified_on">_method</h3>
-
-<pre><code class="python">Update._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Update.get_previous_by_created_on">_method</h3>
-
-<pre><code class="python">Update._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Update.get_previous_by_modified_on">_method</h3>
-
-<pre><code class="python">Update._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
-</code></pre>
-
-<h3 id="grants.models.Update.grant">grant</h3>
-
-<p>Accessor to the related object on the forward side of a many-to-one or
-one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
-<p>In the example::</p>
-<pre><code>class Child(Model):
-    parent = ForeignKey(Parent, related_name='children')
-</code></pre>
-<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
-<h3 id="grants.models.Update.grant_id">grant_id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Update.id">id</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="grants.models.Update.title">title</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h2 id="grants.models.SubscriptionQuerySet">SubscriptionQuerySet</h2>
-
+<h2 id="grants.models.SubscriptionQuerySet">SubscriptionQuerySet</h2></p>
 <pre><code class="python">SubscriptionQuerySet(self, model=None, query=None, using=None, hints=None)
 </code></pre>
 
