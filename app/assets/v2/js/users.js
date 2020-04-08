@@ -7,7 +7,7 @@ let numUsers = '';
 
 Vue.mixin({
   methods: {
-    fetchUsers: function(newPage) {
+    fetchUsers: function(newPage, hackathon) {
       let vm = this;
 
       vm.isLoading = true;
@@ -17,7 +17,9 @@ Vue.mixin({
         vm.usersPage = newPage;
       }
       vm.params.page = vm.usersPage;
-
+      if (!!hackathon) {
+        vm.params.hackathon = hackathon;
+      }
       if (vm.searchTerm) {
         vm.params.search = vm.searchTerm;
       } else {
@@ -34,9 +36,7 @@ Vue.mixin({
         delete vm.params['organisation'];
         delete vm.params['skills'];
       }
-
       let searchParams = new URLSearchParams(vm.params);
-
       let apiUrlUsers = `/api/v0.1/users_fetch/?${searchParams.toString()}`;
 
       if (vm.hideFilterButton) {

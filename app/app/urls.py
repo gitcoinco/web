@@ -228,7 +228,9 @@ urlpatterns = [
     ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
     re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
+    re_path(r'^hackathon/(.*)/participants/?', dashboard.views.hackathon_participants, name='hackathon_participants'),
     re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
+
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
     re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons3'),

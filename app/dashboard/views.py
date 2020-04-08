@@ -937,7 +937,7 @@ def users_fetch(request):
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
     organisation = request.GET.get('organisation', '')
-
+    hackathon = request.GET.get('hackathon', '')
     user_id = request.GET.get('user', None)
     if user_id:
         current_user = User.objects.get(id=int(user_id))
@@ -963,6 +963,11 @@ def users_fetch(request):
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+
+    if hackathon:
+        users = HackathonProject.objects.filter(hackathon__slug__iexact=hackathon).values_list('profiles', flat=True).distinct()
+        profile_list = profile_list.filter(id__in=list(users))
+
 
     show_banner = None
 
@@ -1045,7 +1050,7 @@ def users_fetch(request):
 
         follower_count = followers.count()
         profile_json['follower_count'] = follower_count
-
+        print(user)
         if user.is_org:
             profile_dict = user.__dict__
             profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
@@ -3641,6 +3646,29 @@ def get_kudos(request):
         raise Http404
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def hackathon_participants(request, hackathon=''):
+    """Display hackathon participants."""
+
+    print(hackathon)
+    try:
+        hackathon = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+    except HackathonEvent.DoesNotExist:
+        return redirect(reverse('get_hackathons'))
+
+
+    params = {
+        'hackathon': hackathon,
+        'active': 'users',
+        'title': 'Users',
+        'meta_title': "",
+        'meta_description': "",
+        'keywords': [],
+        'display_filters': False
+    }
+
+    return TemplateResponse(request, 'dashboard/hackathon/participants.html', params)
 
 
 def hackathon(request, hackathon=''):
