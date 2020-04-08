@@ -107,9 +107,9 @@ from .notifications import (
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_etc_txn_status,
-    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty,
-    record_user_action_on_interest, release_bounty_to_the_public, sync_etc_payout, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
+    get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
+    release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -146,19 +146,6 @@ def org_perms(request):
             {'error': _('You must be authenticated via github to use this feature!')},
              status=401)
     return JsonResponse({'orgs': response_data}, safe=False)
-
-
-@staff_member_required
-def manual_sync_etc_payout(request, fulfillment_id):
-    fulfillment = BountyFulfillment.objects.get(pk=str(fulfillment_id))
-    if fulfillment.payout_status == 'done':
-        return JsonResponse(
-            {'error': _('Bounty payout already confirmed'),
-             'success': False},
-            status=401)
-
-    sync_etc_payout(fulfillment)
-    return JsonResponse({'success': True}, status=200)
 
 
 def record_user_action(user, event_name, instance):
@@ -5078,7 +5065,7 @@ def payout_bounty_v1(request, fulfillment_id):
     fulfillment.token_name = token_name
     fulfillment.save()
 
-    sync_etc_payout(fulfillment)
+    sync_payout(fulfillment)
 
     response = {
         'status': 204,
