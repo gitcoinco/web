@@ -660,7 +660,7 @@ $(document).ready(function() {
           show_more_box = `
           <div class="row mx-auto ${ show_all_option ? 'show_all' : 'show_more'} d-block text-center">
             <a href="#" class="text-black-60 font-smaller-5">
-            ${ show_all_option ? 'See all comments' : `Show More (<span class="comment-count">${num_comments - hide_after_n_comments}</span>)`}
+            ${ show_all_option ? 'See all comments' : `Show More (<span class="comment-count">${num_comments - hide_after_n_comments + 1}</span>)`}
             </a>
           </div>
           `;

@@ -52,59 +52,6 @@
   text-align: left;
 }
 
-#bg-selector {
-  height: 4em;
-  width: 100%;
-  padding: 0.5em;
-  overflow: auto;
-  white-space: nowrap;
-}
-
-.bg-thumbnail {
-  display: inline-block;
-  height: 2.35em;
-  width: 2em;
-  margin-left:0.2em;
-  margin-right: 0.2em;
-}
-
-.bg-icon {
-  width:100%;
-  cursor: pointer;
-}
-
-.status_background {
-  width:100%;
-}
-
-.status_background_container {
-  margin-top: 1em;
-  position: relative;
-}
-
-.image-text-container {
-  padding:1.5em;
-  text-align: center;
-  width: 100%;
-  text-overflow: wrap;
-  color: white;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 18pt;
-  font-weight: bold;
-}
-
-
-.selector-bar {
-  background-color: #3E00FF;
-  height: 0.15em;
-  width: 100%;
-  margin-top: 0.2em;
-  border-radius: 0.075em;
-}
-
 .action {
   padding: 3px;
   border-radius: 5px;
@@ -125,6 +72,7 @@ a .sup {
 
 .tip_activity,
 .action:hover {
+  background-color: #fafafa;
   cursor: pointer;
 }
 
@@ -205,7 +153,7 @@ a .sup {
 }
 
 
-.tip_activity {
+.tip_activity{
   color: black;
 }
 

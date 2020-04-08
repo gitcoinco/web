@@ -194,21 +194,18 @@
             {{ row.metadata.title }}
           </a>
         {% elif row.activity_type == 'status_update' or  row.activity_type == 'silent_status_update' %}
-          {% if row.metadata.resource.type != 'background' %}
-            <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
+          <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
 
-            {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
-            <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
-
-            <p class='num_participants m-0 p-0' data-roomname="+roomName+">
-              <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
-                •
-              </p>
-              <span class="participants_count">{{row.video_participants_count}}</span> users on call
+          {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
+          <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
+          <p class='num_participants m-0 p-0' data-roomname="+roomName+">
+            <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
+              •
             </p>
-
-            {% endif %}
+            <span class="participants_count">{{row.video_participants_count}}</span> users on call
+          </p>
           {% endif %}
+
         {% elif row.activity_type == 'wall_post' %}
           &gt;
         {% if row.grant %}
@@ -295,36 +292,59 @@
           <button class="btn-clean" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-ellipsis-h"></i>
           </button>
-        <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
-          <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
-            <i class="fas fa-link mr-2"></i> Copy Link
-          </a>
-          <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
-            data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
-            class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"
-          >
-            <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
-          </a>
-          {% if row.profile.handle|lower == github_handle|lower %}
-          <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
-            <i class="fas fa-trash mr-2"></i> Delete
-          </a>
-          {% endif %}
-        </div>
 
-        {% if row.show_token_info %}
-          {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name or row.bounty %}
-            <div class="tag token mr-2">
+
+          <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
+            <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
+              <i class="fas fa-link mr-2"></i> Copy Link
+            </a>
+            <a href=# data-action='favorite' data-toggle="tooltip" title="Mark as favorite this activity" data-affirmative=favorite
+              data-negative=unfavorite data-state="{% if row.metadata.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
+              class="favorite_activity mr-2 dropdown-item px-3 font-smaller-5">
+              {% if row.metadata.favorite %}
+                  <i class="fas fa-star mr-2"></i>
+              {% else %}
+                  <i class="far fa-star mr-2"></i>
+              {%endif%} Favorite
+            </a>
+            <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
+              data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
+              class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"
+            >
+              <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
+            </a>
+            {% if row.metadata.fund_able and not row.bounty  %}
+              <a class="mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Create new bounty." href='/funding/new?type=public&activity={{ row.id }}&url={{ row.metadata.resource.provider }}'>
+                <i class="fab fa-ethereum mr-2"></i> Fund Issue
+              </a>
+            {% endif %}
+            {% if row.profile.handle|lower == github_handle|lower %}
+              <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
+                <i class="fas fa-trash mr-2"></i> Delete
+              </a>
+            {% endif %}
+          </div>
+
+          {% if row.show_token_info %}
+            {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name or row.bounty %}
+              <div class="tag token mr-2">
+                <p class="font-smaller-6 mb-0">
+                  {% if row.bounty %}
+                    <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
+                  {% elif row.value_in_token_disp %}
+                    <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
+                  {% elif row.metadata.value_in_eth %}
+                    <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
+                  {% elif row.metadata.value_in_token and row.metadata.token_name %}
+                    <span class="value_in_token">{{row.metadata.value_in_token  | floatformat:2}}  {{row.metadata.token_name}}</span>
+                  {% endif %}
+                </p>
+              </div>
+            {% endif %}
+          {% if row.value_in_usdt_now %}
+            <div class="tag usd mr-2">
               <p class="font-smaller-6 mb-0">
-                {% if row.bounty %}
-                  <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
-                {% elif row.value_in_token_disp %}
-                  <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
-                {% elif row.metadata.value_in_eth %}
-                  <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
-                {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                  <span class="value_in_token">{{row.metadata.value_in_token  | floatformat:2}}  {{row.metadata.token_name}}</span>
-                {% endif %}
+                <span>{{ row.value_in_usdt_now }} USD</span>
               </p>
             </div>
           {% endif %}
@@ -340,9 +360,10 @@
           <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
           <i class="fas fa-exclamation-triangle error red hidden"></i>
         {% endif %}
+
       </div>
     </div>
-    <div class="d-none d-sm-inline col-sm-4 pl-0">
+    <div class="d-none d-sm-inline col-sm-2 pl-0">
       <div class="activity_time font-smaller-5 text-right">
         {% if not hide_date %}
           {{ row.created_human_time }}
@@ -364,16 +385,6 @@
         {% endif %}
       </div>
     </div>
-    {% if row.metadata.resource.type == 'background' %}
-      <div class="status_background_container">
-        <img class="status_background" src="/static/status_backgrounds/{{row.metadata.resource.id}}.png" />
-        <div class="image-text-container">
-          <p style="margin: 0pt;">
-            {{row.metadata.title}}
-          </p>
-        </div>
-      </div>
-    {% endif %}
   </div>
   {% if row.metadata.poll_choices %}
   <div class="poll_choices {% if row.metadata.poll_answered %}answered{%endif%}">

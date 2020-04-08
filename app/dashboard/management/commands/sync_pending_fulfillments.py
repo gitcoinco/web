@@ -35,11 +35,11 @@ class Command(BaseCommand):
             payout_status='pending'
         )
 
-        timeout_period = timezone.now() - timedelta(minutes=5)
+        timeout_period = timezone.now() - timedelta(minutes=6)
 
         pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
 
-        fulfillments = pending_fulfillments.filter(created_on__lte=timeout_period)
+        fulfillments = pending_fulfillments.filter(payout_status='pending')
 
         for fulfillment in fulfillments.all():
             sync_payout(fulfillment)
