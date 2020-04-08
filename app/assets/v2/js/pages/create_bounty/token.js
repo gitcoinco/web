@@ -70,7 +70,6 @@ createBounty = data => {
     'fee_amount': fee_amount,
     'fee_tx_id': fee_tx_id,
     'coupon_code': coupon_code,
-    'unsigned_nda': '', // ETC-TODO
     'privacy_preferences': JSON.stringify(privacy_preferences),
     'attached_job_description': hiring.jobDescription,
     'eventTag': metadata.eventTag,

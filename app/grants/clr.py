@@ -38,9 +38,9 @@ THRESHOLD_TECH = 20.0
 THRESHOLD_MEDIA = 20.0
 THRESHOLD_HEALTH = 20.0
 
-TOTAL_POT_TECH = 100000.0
+TOTAL_POT_TECH = 101000.0
 TOTAL_POT_MEDIA = 50000.0
-TOTAL_POT_HEALTH = 10000.0
+TOTAL_POT_HEALTH = 100000.0
 
 '''
     Helper function that translates existing grant data structure
@@ -173,57 +173,13 @@ def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
 
     bigtot = 0
     # find normalization factor
-    # for x in totals:
-    #     bigtot += x['clr_amount']
-    # normalization_factor = bigtot / total_pot
-    # # modify totals
-    # for x in totals:
-    #     x['clr_amount'] = x['clr_amount'] / normalization_factor
+    for x in totals:
+        bigtot += x['clr_amount']
+    normalization_factor = bigtot / total_pot
+    # modify totals
+    for x in totals:
+        x['clr_amount'] = x['clr_amount'] / normalization_factor
     return bigtot, totals
-
-
-# TODO: REMOVE IF ABOVE FUNCTION IS STABLE
-# def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
-#     # calculate final totals
-#     # print(f'+ve {len(totals_pos)} {totals_pos}')
-#     # print(f'-ve {len(totals_neg)} {totals_neg}')
-#     totals = []
-#     if len(totals_neg) == 0:
-#         totals = totals_pos
-#     elif len(totals_pos) == 0:
-#         totals = [{'id': x['id'], 'clr_amount': 0 } for x in totals_neg]
-#     else:
-#         for x in totals_pos:
-#             for y in totals_neg:
-#                 if x['id'] == y['id']:
-#                     if x['clr_amount'] == 0 or x['clr_amount'] < y['clr_amount']:
-#                         totals.append({
-#                             'id': x['id'],
-#                             'clr_amount': 0
-#                         })
-#                     else:
-#                         totals.append({
-#                             'id': x['id'],
-#                             'clr_amount': (math.sqrt(x['clr_amount']) - math.sqrt(y['clr_amount']))**2
-#                         })
-
-#         pos_grant_ids = [x['id'] for x in totals_pos]
-#         neg_grants_ids = [x['id'] for x in totals_neg]
-
-#         [totals.append({'id': x['id'], 'clr_amount': x['clr_amount']}) for x in totals_pos if x['id'] not in neg_grants_ids]
-#         [totals.append({'id': x['id'], 'clr_amount': 0 }) for x in totals_neg if x['id'] not in pos_grant_ids]
-
-#     bigtot = 0
-#     # find normalization factor
-#     # for x in totals:
-#     #     bigtot += x['clr_amount']
-#     # normalization_factor = bigtot / total_pot
-
-#     # # modify totals
-#     # for x in totals:
-#     #     x['clr_amount'] = x['clr_amount'] / normalization_factor
-
-#     return bigtot, totals
 
 
 '''

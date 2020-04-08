@@ -225,10 +225,10 @@ class TipExportSerializer(serializers.ModelSerializer):
         return instance.expires_date.isoformat()
 
     def get_sender(self, instance):
-        return instance.sender_profile.handle
+        return instance.sender_profile.handle if instance.sender_profile else ''
 
     def get_recipient(self, instance):
-        return instance.recipient_profile.handle
+        return instance.recipient_profile.handle if instance.recipient_profile else ''
 
 class FeedbackExportSerializer(serializers.ModelSerializer):
     bounty_url = serializers.SerializerMethodField()
@@ -256,10 +256,10 @@ class FeedbackExportSerializer(serializers.ModelSerializer):
         return instance.created_on.isoformat()
 
     def get_sender(self, instance):
-        return instance.sender_profile.handle
+        return instance.sender_profile.handle if instance.sender_profile else ''
 
     def get_receiver(self, instance):
-        return instance.receiver_profile.handle
+        return instance.receiver_profile.handle if instance.receiver_profile else ''
 
     def get_comment(self, instance):
         return instance.anonymized_comment

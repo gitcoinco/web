@@ -217,8 +217,7 @@ class Bounty(SuperModel):
         ('approval', 'approval'),
     ]
     REPO_TYPES = [
-        ('public', 'public'),
-        ('private', 'private'),
+        ('public', 'public')
     ]
     PROJECT_TYPES = [
         ('traditional', 'traditional'),
@@ -336,7 +335,7 @@ class Bounty(SuperModel):
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
     bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
-    repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
+    repo_type = models.CharField(max_length=10, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
@@ -346,7 +345,6 @@ class Bounty(SuperModel):
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     coupon_code = models.ForeignKey('dashboard.Coupon', blank=True, null=True, related_name='coupon', on_delete=models.SET_NULL)
-    unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='bounty', on_delete=models.SET_NULL)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -1437,12 +1435,6 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
-class BountyDocuments(SuperModel):
-
-    doc = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('Bounty documents.'))
-    doc_type = models.CharField(max_length=50)
-
-
 class SendCryptoAssetQuerySet(models.QuerySet):
     """Handle the manager queryset for SendCryptoAsset."""
 
@@ -1934,7 +1926,6 @@ class Interest(SuperModel):
         max_length=7,
         help_text=_('Whether or not the interest requires review'),
         verbose_name=_('Needs Review'))
-    signed_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='interest', on_delete=models.SET_NULL)
 
     # Interest QuerySet Manager
     objects = InterestQuerySet.as_manager()

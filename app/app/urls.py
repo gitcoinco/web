@@ -149,7 +149,6 @@ urlpatterns = [
     ),
     url(r'^api/v0.1/org_perms', dashboard.views.org_perms, name='org_perms'),
     url(r'^api/v0.1/bulk_invite', dashboard.views.bulk_invite, name='bulk_invite'),
-    url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
@@ -381,8 +380,6 @@ urlpatterns = [
     # brochureware views
     re_path(r'^home/?$', retail.views.index, name='home'),
     re_path(r'^landing/?$', retail.views.index, name='landing'),
-    re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
-    re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^jobs/?', retail.views.jobs, name='jobs'),

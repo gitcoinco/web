@@ -28,7 +28,7 @@ from dashboard.utils import sync_payout
 
 class Command(BaseCommand):
 
-    help = 'checks if payments are confirmed for cross-chain tokens bounties that have been paid out'
+    help = 'checks if pending fulfillments are confirmed on the tokens explorer'
 
     def handle(self, *args, **options):
         pending_fulfillments = BountyFulfillment.objects.filter(
