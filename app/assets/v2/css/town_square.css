@@ -1135,6 +1135,10 @@ body.green.offer_view .announce {
   background-color: #2b3358!important;
 }
 
+.dark .empty {
+  background-color: #201a40;
+}
+
 .promo .logo {
   height: 55px;
   width: 65px;
