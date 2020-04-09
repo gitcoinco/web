@@ -40,9 +40,15 @@ $(document).ready(() => {
 
     etherscanUrlConvert(links, _network);
   });
+  
+  window.addEventListener('scroll', function() {
+    if ($('.activity_stream').length && $('.activity_stream').isInViewport()) {
+      $('#skip').addClass('hidden');
+    } else {
+      $('#skip').removeClass('hidden');
+    }
 
-
-
+  });
 
 });
 
@@ -113,27 +119,3 @@ window.addEventListener('scroll', function() {
   }
 
 });
-
-
-//const markdownGrants = () => {
-//
-//  let markdowned = window.markdownit();
-//
-//  let md = new Vue({
-//    el: "#status",
-//      data: {
-//        name: "",
-//        markdown: ""
-//      },
-//      methods: {
-//        renderMarkdown: function () {
-//          this.markdown = markdowned.render(this.name);
-//          $("#preview-markdown").html(markdowned.render(this.name));
-//        }
-//      }
-//  })
-//
-//  md.renderMarkdown()
-//
-//};
-

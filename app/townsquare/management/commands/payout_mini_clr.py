@@ -95,7 +95,6 @@ class Command(BaseCommand):
             if num_handles != num_rankings:
                 print(f"cannot payout; there are duplicate profile handles. {num_handles} handles + {num_rankings} rankings")
                 return
-            return
 
             for ranking in rankings:
 

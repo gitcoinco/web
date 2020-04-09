@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2020 Gitcoin Core
+    Copyright (C) 2019 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,21 +15,18 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-
-
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
-from dashboard.models import BountyFulfillment
-from dashboard.utils import sync_etc_payout
+from search.models import SearchResult
 
 
 class Command(BaseCommand):
 
-    help = 'checks if payments are confirmed for ETC bounties that have been paid out'
+    help = 'uploads latest search results into elasticsearch'
 
     def handle(self, *args, **options):
-        fulfillments_to_check = BountyFulfillment.objects.filter(
-             payout_status='pending', token_name='ETC'
-        )
-        for fulfillment in fulfillments_to_check.all():
-            sync_etc_payout(fulfillment)
+        then = timezone.now() - timezone.timedelta(hours=1)
+        for sr in SearchResult.objects.filter(modified_on__gt=then):
+            print(sr.pk)
+            sr.put_on_elasticsearch()
