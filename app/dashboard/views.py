@@ -2124,44 +2124,17 @@ def user_card(request, handle):
     else:
         network = 'rinkeby'
 
-    # bounties = Bounty.objects.current().prefetch_related(
-    #     'fulfillments',
-    #     'interested',
-    #     'interested__profile',
-    #     ).filter(
-    #         interested__profile=profile,
-    #         network=network,
-    #     ).filter(
-    #         interested__status='okay'
-    #     ).filter(
-    #         interested__pending=False
-    #     ).filter(
-    #         idx_status='done'
-    #     ).distinct('pk')[:3]
+    if request.user.is_authenticated:
+        is_following = True if TribeMember.objects.filter(profile=request.user.profile, org=profile).count() else False
+    else:
+        is_following = False
 
-    # _bounties = []
-    # _orgs = []
-    # if bounties :
-    #     for bounty in bounties:
-
-    #         _bounty = {
-    #             'title': bounty.title,
-    #             'id': bounty.id,
-    #             'org': bounty.org_name,
-    #             'rating': [feedback.rating for feedback in bounty.feedbacks.all().distinct('bounty_id')],
-    #         }
-    #         _org = bounty.org_name
-    #         _orgs.append(_org)
-    #         _bounties.append(_bounty)
     profile_dict = profile.as_dict
     followers = TribeMember.objects.filter(org=profile).count()
     following = TribeMember.objects.filter(profile=profile).count()
     response = {
-        # 'avatar': profile.avatar_url,
-        # 'handle': profile.handle,
-        # 'contributed_to': _orgs,
-        # 'orgs' : profile.organizations,
-        # 'profile' : profile.as_representation,
+        'is_authenticated': request.user.is_authenticated,
+        'is_following': is_following,
         'profile' : {
             'avatar_url': profile.avatar_url,
             'handle': profile.handle,
@@ -2170,16 +2143,7 @@ def user_card(request, handle):
             'keywords' : profile.keywords,
             'data': profile.data
         },
-        'profile_dict':profile_dict,
-        'stats': {
-            # 'total_grant_created': profile.total_grant_created,
-            'position': profile.get_contributor_leaderboard_index(),
-            'completed_bounties': profile.completed_bounties,
-            'success_rate': profile.success_rate,
-            'earnings': profile.get_eth_sum(),
-            'followers':followers,
-            'following':following,
-        }
+        'profile_dict':profile_dict
     }
 
     return JsonResponse(response, safe=False)

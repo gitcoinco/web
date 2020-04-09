@@ -1,18 +1,16 @@
-$('body').on('mouseover', '[data-username][data-toggle="popover"]', function(e) {
-  openContributorPopOver($(this).data('username'), $(this));
+$('body').on('mouseover', '[data-usercard]', function(e) {
+  openContributorPopOver($(this).data('usercard'), $(this));
 });
 
-$('body').on('show.bs.popover', '[data-username][data-toggle="popover"]', function () {
-  $('body [data-username][data-toggle="popover"]').not(this).popover('hide');
-})
-
+$('body').on('show.bs.popover', '[data-usercard]', function() {
+  $('body [data-usercard]').not(this).popover('hide');
+});
 
 let popoverData = [];
 let controller = null;
 
-const renderPopOverData = data => {
+const renderPopOverData = function(data) {
   const unique_orgs = data.profile.orgs ? Array.from(new Set(data.profile.orgs)) : [];
-  // const unique_orgs = data.profile.organizations ? Object.keys(data.profile.organizations) : [];
   let orgs = unique_orgs && unique_orgs.map((_organization, index) => {
     if (index < 5) {
       return `<img src="/dynamic/avatar/${_organization}" alt="${_organization}"
@@ -21,15 +19,19 @@ const renderPopOverData = data => {
     return `<span class="m-1">+${data.orgs.length - 5}</span>`;
   }).join(' ');
 
-  function percentCalc(value, total){
+  function percentCalc(value, total) {
     let result = value * 100 / total;
-    return isNaN(result) ? 0 : result
+
+    return isNaN(result) ? 0 : result;
   }
+
   let dashoffset = 25;
+
   function calcDashoffset(thispercentage) {
-    let oldOffset = dashoffset; //25 , 85
-    accumulate += thispercentage //40 , 60
-    dashoffset =  (100 - accumulate) + 25 //= 85 , 65
+    let oldOffset = dashoffset;
+
+    accumulate += thispercentage;
+    dashoffset = (100 - accumulate) + 25;
     return oldOffset;
   }
 
@@ -46,69 +48,45 @@ const renderPopOverData = data => {
       'colorlight': colorlight,
       'dashoffset': calcDashoffset(percentCalc(prodTotal, total)),
       'strings': stringsOverwrite
-    }
+    };
   }
 
   let tips_total = data.profile_dict.total_tips_sent + data.profile_dict.total_tips_received;
   let bounties_total = data.profile_dict.funded_bounties_count + data.profile_dict.count_bounties_completed;
   let grants_total = data.profile_dict.total_grant_created + data.profile_dict.total_grant_contributions;
   let total = tips_total + bounties_total + grants_total;
-  let accumulate  = 0;
+  let accumulate = 0;
   let tips_total_percent = objSetup(
     data.profile_dict.total_tips_sent,
     data.profile_dict.total_tips_received,
     total,
     '#89CD69',
     '#BFE1AF',
-    {'type': 'Tips', 'sent': 'Sent', 'received':'Received'}
-  )
+    {'type': 'Tips', 'sent': 'Sent', 'received': 'Received'}
+  );
   let bounties_total_percent = objSetup(
     data.profile_dict.funded_bounties_count,
     data.profile_dict.count_bounties_completed,
     total,
     '#8E98FF',
     '#ADB4FF',
-    {'type': 'Bounties', 'sent': 'Created', 'received':'Worked'}
-  )
+    {'type': 'Bounties', 'sent': 'Created', 'received': 'Worked'}
+  );
   let grants_total_percent = objSetup(
     data.profile_dict.total_grant_created,
     data.profile_dict.total_grant_contributions,
     total,
     '#FF83FA',
     '#FFB2FC',
-    {'type': 'Grants', 'sent': 'Fund', 'received':'Contrib'}
-  )
+    {'type': 'Grants', 'sent': 'Fund', 'received': 'Contrib'}
+  );
 
-  let mount_graph = [tips_total_percent, bounties_total_percent, grants_total_percent]
+  let mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
   let graphs = mount_graph.map((graph) => {
     return `<circle class="donut-segment" cx="21" cy="21" r="19" fill="transparent" stroke="${graph.color}" stroke-width="3" stroke-dasharray="${graph.percent} ${100 - graph.percent}" stroke-dashoffset="${graph.dashoffset}"></circle>`;
-  })
+  });
 
-
-  // const bounties = data.related_bounties && data.related_bounties.map(bounty => {
-  //   const title = bounty.title <= 30 ? bounty.title : bounty.title.slice(0, 27) + '...';
-
-  //   let ratings = [];
-
-  //   if (bounty.rating && bounty.rating[0] > 0) {
-  //     for (let i = 0; i < 5; i++) {
-  //       ratings.push(`<i class="far fa-star ${ i <= bounty.rating[0] ? 'fas' : ''} "></i>`);
-  //     }
-  //   }
-
-  //   return `<li>
-  //     <span class="font-weight-semibold bounty-title">${title}</span>
-  //     <span class="bounty-org">by ${bounty.org}</span>
-  //     ${ratings.length > 0 ?
-  //   `<span class="static-stars float-right">
-  //       ${ratings.join(' ')}
-  //     </span>` : ''}
-  //   </li>`;
-  // }).join(' ');
-
-  // <circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#98A1FF" stroke-width="3" stroke-dasharray="40 60" stroke-dashoffset="25"></circle>
-
-  const renderAvatarData = function(){
+  const renderAvatarData = function() {
     return `
     <svg width="100%" height="100%" viewBox="0 0 42 42" class="user-card_donut-chart">
       <circle class="donut-ring" cx="21" cy="21" r="19" fill="transparent" stroke="#d2d3d4" stroke-width="3"></circle>
@@ -150,7 +128,12 @@ const renderPopOverData = data => {
     `;
   };
 
-
+  const followBtn = function(data) {
+    if (data.is_following) {
+      return `<button class="btn btn-gc-blue btn-sm px-2 font-caption" data-follow="${data.profile.handle}">Unfollow <i class="fas fa-user-minus font-smaller-4"></i></button>`;
+    }
+    return `<button class="btn btn-gc-blue btn-sm px-2 font-caption" data-follow="${data.profile.handle}">Follow <i class="fas fa-user-plus font-smaller-4"></i></button>`;
+  };
 
   return `
     <div class="popover-bounty__content">
@@ -162,28 +145,25 @@ const renderPopOverData = data => {
           </div>
         </div>
         <div>
-          <button class="btn btn-gc-blue btn-sm px-2 font-caption" data-jointribe="${data.profile.handle}">Follow<i class="fas fa-user-plus font-smaller-4 ml-2"></i></button>
+          ${data.is_authenticated && data.profile.handle !== document.contxt.github_handle ? followBtn(data) : ''}
         </div>
       </div>
       <p class="d-block font-body my-auto">${data.profile.data.name || data.profile.handle}</p>
       <a href="/${data.profile.handle}" class="font-body font-weight-semibold">@${data.profile.handle}</a>
 
-      <div class="font-smaller-1">
-        ${data.profile.keywords.map((keyword, index) => {
-          if (index < 5) {
-            return `<span class="badge badge--bluelight">${keyword}</span>`;
-          }
-          return `<span class="badge badge--bluelight">+${data.profile.keywords.length - 5}</span>`;
-        }).join(' ')}
-      </div>
+      <div class="font-smaller-1">${data.profile.keywords.map(
+    (keyword, index) => {
+      if (index < 5) {
+        return `<span class="badge badge--bluelight">${keyword}</span>`;
+      }
+      return `<span class="badge badge--bluelight">+${data.profile.keywords.length - 5}</span>`;
+    }).join(' ')}</div>
       <div class="d-flex justify-content-between">
         <span class="text-black-60">
           Joined <time class="" datetime="${data.profile.created_on}" title="${data.profile.created_on}">${moment.utc(data.profile.created_on).fromNow()}</time>
         </span>
-        <span>${data.profile_dict.scoreboard_position_funder ? `#${data.profile_dict.scoreboard_position_funder} <span class="text-black-60">Funder</span>` : data.profile_dict.scoreboard_position_contributor ? `#${data.profile_dict.scoreboard_position_contributor} <span class="text-black-60">Contributor</span>` : ''  }</span>
+        <span>${data.profile_dict.scoreboard_position_funder ? `#${data.profile_dict.scoreboard_position_funder} <span class="text-black-60">Funder</span>` : data.profile_dict.scoreboard_position_contributor ? `#${data.profile_dict.scoreboard_position_contributor} <span class="text-black-60">Contributor</span>` : '' }</span>
       </div>
-
-
 
       <div class="d-flex flex-wrap justify-content-between">
       ${mount_graph.map((graph)=> renderPie(graph)).join(' ')}
@@ -193,16 +173,33 @@ const renderPopOverData = data => {
         <span class="mr-3"><b class="font-smaller-1">${data.stats.followers}</b> <span class="text-black-60">Followers</span></span>
         <span><b class="font-smaller-1">${data.stats.following}</b> <span class="text-black-60">Following</span></span>
       </div>
-
-
-
     </div>
   `;
 };
 
+const cb = (handle, elem, response) => {
+  $(elem).attr('disabled', false);
+  popoverData.filter(item => item[handle])[0][handle].is_following = response.is_member;
+  response.is_member ? $(elem).html('Unfollow <i class="fas fa-user-minus font-smaller-4"></i>') : $(elem).html('Follow <i class="fas fa-user-plus font-smaller-4"></i>');
+};
+
+const addFollowAction = () => {
+  $('[data-follow]').each(function(index, elem) {
+    $(elem).on('click', function(e) {
+      $(elem).attr('disabled', true);
+
+      const handle = $(elem).data('follow');
+      const error = () => {
+        $(elem).attr('disabled', false);
+      };
+
+      followRequest(handle, elem, cb, error);
+    });
+
+  });
+};
 
 function openContributorPopOver(contributor, element) {
-  console.log(contributor, element)
 
   const contributorURL = `/api/v0.1/user_card/${contributor}`;
 
@@ -228,10 +225,10 @@ function openContributorPopOver(contributor, element) {
   }
 }
 
-function setupPopover (element, data){
+function setupPopover(element, data) {
   element.popover({
-    sanitizeFn: function (content) {
-      return DOMPurify.sanitize(content)
+    sanitizeFn: function(content) {
+      return DOMPurify.sanitize(content);
     },
     placement: 'auto',
     // container: element,
@@ -243,7 +240,9 @@ function setupPopover (element, data){
         <h3 class="popover-header"></h3>
         <div class="popover-body"></div>
       </div>`,
-    content: renderPopOverData(data),
+    content: function() {
+      return renderPopOverData(data);
+    },
     html: true
   }).on('mouseenter', function() {
     var _this = this;
@@ -262,6 +261,7 @@ function setupPopover (element, data){
     }, 100);
   });
   $(element).popover('show');
-  joinTribe();
+
+  addFollowAction();
 
 }
