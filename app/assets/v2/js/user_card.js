@@ -13,10 +13,12 @@ const renderPopOverData = function(data) {
   const unique_orgs = data.profile.orgs ? Array.from(new Set(data.profile.orgs)) : [];
   let orgs = unique_orgs && unique_orgs.map((_organization, index) => {
     if (index < 5) {
-      return `<img src="/dynamic/avatar/${_organization}" alt="${_organization}"
-        class="rounded-circle" width="24" height="24">`;
+      return `<a href="/${_organization}" class="link-current" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="${_organization}">
+        <img src="/dynamic/avatar/${_organization}" alt="${_organization}" class="rounded-circle border" width="24" height="24">
+        </a>`;
+    } else if (index < 6) {
+      return `<span class="m-1">+${data.orgs.length - 5}</span>`;
     }
-    return `<span class="m-1">+${data.orgs.length - 5}</span>`;
   }).join(' ');
 
   function percentCalc(value, total) {
@@ -83,17 +85,17 @@ const renderPopOverData = function(data) {
 
   let mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
   let graphs = mount_graph.map((graph) => {
-    return `<circle class="donut-segment" cx="21" cy="21" r="19" fill="transparent" stroke="${graph.color}" stroke-width="3" stroke-dasharray="${graph.percent} ${100 - graph.percent}" stroke-dashoffset="${graph.dashoffset}"></circle>`;
-  });
+    return `<circle class="donut-segment" cx="50%" cy="50%" r="38%" fill="transparent" stroke="${graph.color}" stroke-width="8%" stroke-dasharray="${graph.percent} ${100 - graph.percent}" stroke-dashoffset="${graph.dashoffset}"></circle>`;
+  }).join(' ');
 
   const renderAvatarData = function() {
     return `
     <svg width="100%" height="100%" viewBox="0 0 42 42" class="user-card_donut-chart">
-      <circle class="donut-ring" cx="21" cy="21" r="19" fill="transparent" stroke="#d2d3d4" stroke-width="3"></circle>
+      <circle stroke-width="8%" stroke="#d2d3d4" fill="transparent" r="38%" cy="50%" cx="50%" class="donut-ring"></circle>
       ${graphs}
       <defs>
         <clipPath id="myCircle">
-          <circle cx="21" cy="21" r="18" fill="#FFFFFF" />
+          <circle cx="50%" cy="50%" r="34%" fill="#FFFFFF" />
         </clipPath>
       </defs>
 
@@ -151,18 +153,42 @@ const renderPopOverData = function(data) {
       <p class="d-block font-body my-auto">${data.profile.data.name || data.profile.handle}</p>
       <a href="/${data.profile.handle}" class="font-body font-weight-semibold">@${data.profile.handle}</a>
 
-      <div class="font-smaller-1">${data.profile.keywords.map(
+      <div class="my-2">
+        <button class="btn btn-outline-gc-blue btn-sm font-smaller-5" data-openchat="${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Chat @${data.profile.handle}">
+          <i class="fas fa-fw fa-comment-dots"></i>
+        </button>
+
+        <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="/tip?username=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Tip @${data.profile.handle}">
+          <i class="fab fa-fw fa-ethereum"></i>
+        </a>
+
+        <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="/kudos/send?username=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Kudos @${data.profile.handle}">
+          <i class="fas fa-fw fa-dice-d6"></i>
+        </a>
+
+        <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="/users?invite=${data.profile.handle}" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="Invite @${data.profile.handle} to Bounty">
+          <i class="fas fa-fw fa-envelope-open-text"></i>
+        </a>
+        |
+        <a class="btn btn-outline-gc-blue btn-sm font-smaller-5" href="https://github.com/${data.profile.handle}?tab=repositories" target="_blank" rel="noopener noreferrer" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="@${data.profile.handle} on Github">
+          <i class="fab fa-fw fa-github"></i>
+        </a>
+      </div>
+
+      <div class="font-smaller-1 my-2">${data.profile.keywords.map(
     (keyword, index) => {
       if (index < 5) {
-        return `<span class="badge badge--bluelight">${keyword}</span>`;
+        return `<span class="badge badge--bluelight p-1">${keyword}</span>`;
+      } else if (index < 6) {
+        return `<span class="badge badge--bluelight p-1">+${data.profile.keywords.length - 5}</span>`;
       }
-      return `<span class="badge badge--bluelight">+${data.profile.keywords.length - 5}</span>`;
     }).join(' ')}</div>
-      <div class="d-flex justify-content-between">
+      <div class="d-flex justify-content-between mb-2">
         <span class="text-black-60">
           Joined <time class="" datetime="${data.profile.created_on}" title="${data.profile.created_on}">${moment.utc(data.profile.created_on).fromNow()}</time>
         </span>
-        <span>${data.profile_dict.scoreboard_position_funder ? `#${data.profile_dict.scoreboard_position_funder} <span class="text-black-60">Funder</span>` : data.profile_dict.scoreboard_position_contributor ? `#${data.profile_dict.scoreboard_position_contributor} <span class="text-black-60">Contributor</span>` : '' }</span>
+        ${data.profile_dict.scoreboard_position_funder ? `<span>#${data.profile_dict.scoreboard_position_funder} <span class="text-black-60">Funder</span></span>` : '' }
+        ${data.profile_dict.scoreboard_position_contributor ? `<span>#${data.profile_dict.scoreboard_position_contributor} <span class="text-black-60">Contributor</span></span>` : '' }
       </div>
 
       <div class="d-flex flex-wrap justify-content-between">
@@ -248,14 +274,14 @@ function setupPopover(element, data) {
     var _this = this;
 
     $(this).popover('show');
-    $('.popover').on('mouseleave', function() {
+    $('.popover-user-card').on('mouseleave', function() {
       $(_this).popover('hide');
     });
   }).on('mouseleave', function() {
     var _this = this;
 
     setTimeout(function() {
-      if (!$('.popover:hover').length) {
+      if (!$('.popover-user-card:hover').length) {
         $(_this).popover('hide');
       }
     }, 100);
