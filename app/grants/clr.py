@@ -645,11 +645,28 @@ def grants_transaction_validator(list_contributions):
     PROVIDER = Web3.WebsocketProvider("wss://mainnet.infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID)
     w3 = Web3(PROVIDER)
 
+
     check_transaction = lambda txid: w3.eth.getTransaction(txid)
     check_amount = lambda amount: int(amount[75:], 16) if len(amount) == 138 else print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_transaction} txid: {transaction_tax[:10]} -> status: 0 False - amount was off by 0.001 {bcolors.ENDC}")
     check_token = lambda token_address: len(token_address) == 42
     check_contract = lambda token_address, abi : w3.eth.contract(w3.toChecksumAddress(token_address), abi=abi)
     get_decimals = lambda contract : int(contract.functions.decimals().call())
+
+
+    # get getBlockNumberGrants
+    last_txid = df['tx_id1'].iloc[0]
+    first_txid = df['tx_id1'].iloc[-1]
+
+    def getBlockNumberGrants(txid):
+        try:
+                b = w3.eth.getTransaction(txid)
+                return b.blockNumber
+
+        except Exception as e:
+            print(e)
+
+    first_block = getBlockNumberGrants(first_txid)
+    last_block = getBlockNumberGrants(last_txid)
 
     # check event filter
     def check_event_transfer(contract_address, search, txid):
@@ -660,6 +677,40 @@ def grants_transaction_validator(list_contributions):
                     return True
             return False
 
+
+    def check_address_transfer(contract_address, address, txid):
+        p = w3.eth.getTransactionReceipt(txid)
+        if p is not None:
+            for index, x in enumerate(p.logs):
+                if x.topics[index].hex() == address:
+                    return True
+
+    def trim_null_address(address):
+        if address == '0x0000000000000000000000000000000000000000':
+            return '0x0'
+        else:
+            return address
+
+    def get_token_recipient_senders(first_block, last_block, recipient_address,  token_address):
+        contract = w3.eth.contract(
+            address=token_address,
+            abi=erc20_abi,
+        )
+
+        balance = contract.functions.balanceOf(recipient_address).call()
+
+        if balance == 0:
+            return []
+
+        transfers = contract.events.Transfer.getLogs(
+            fromBlock=last_block,
+            toBlock=first_block,
+            argument_filters={"to": recipient_address})
+
+        return [
+            trim_null_address(transfer.args['from'])
+            for transfer in transfers
+        ]
 
 
     # Colors for Console.
@@ -694,6 +745,21 @@ def grants_transaction_validator(list_contributions):
         else:
             return "dropped"
 
+
+    def get_match_address(address_recipient):
+        # match address recipient on transactions data
+        '''
+            get_match_address(address_recipient)
+            match address recipient on transactions data
+
+            1) get the recipient's address
+            2) check with transactions in the grant period
+            3) if I find an address in the list, I display that address.
+        '''
+        for address in address_recipient:
+            if df.loc[df['from address'] == address]:
+               print (f"{bcolors.WARNING} {address} {bcolors.ENDC}")
+
     def transaction_eth(transaction_tax):
         transaction_receipt = w3.eth.getTransactionReceipt(transaction_tax)
         if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
@@ -720,8 +786,10 @@ def grants_transaction_validator(list_contributions):
         contract_symbol = get_symbol(contract)
         human_readable_value = Decimal(int(contract_value)) / Decimal(10 ** decimals) if decimals else None
         if transfer_event or deposit_event:
-            print(
-                f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
+             recipient = w3.eth.getTransaction(txid)
+             match_address = get_token_recipient_senders(first_block, last_block, recipient['from'], contract_address)
+             get_match_address(match_address)
+             print(f"{bcolors.OKGREEN} {index_element} txid: {txid[:10]} amount: {human_readable_value} {contract_symbol}   -> status: 1{bcolors.ENDC}")
         elif approve_event is not None:
             print (f"{bcolors.OKBLUE} {index_element} txid: {txid[:10]} Approval event {bcolors.ENDC}")
 
@@ -766,3 +834,7 @@ def grants_transaction_validator(list_contributions):
 
                 except BadFunctionCallOutput as e:
                     print (f"{bcolors.FAIL}{bcolors.UNDERLINE} {index_element} txid: {transaction_tax[:10]}  -> status: 0  {e} {bcolors.ENDC}")
+
+
+
+
