@@ -4100,6 +4100,7 @@ def get_hackathons(request):
     current_hackathon_event = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
     upcoming_hackathon_event = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
     finished_hackathon_event = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
+    all_hackathon_events = [event for event in HackathonEvent.objects.filter(visible=True)]
 
     network = get_default_network()
 
@@ -4127,6 +4128,15 @@ def get_hackathons(request):
                 'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
             })
 
+            """Popluate tribes for tribes section.
+
+            if a hackathon is ongoing, show tribes that have bounties listed.
+            
+            TODO: if no hackathon is ongoing, default to tribes who participated in
+            the most number of hackathons.
+            TODO: if no hackathon going, show tribes that most recently
+            listed their bounties.
+            """
             if event_bounties.current().exists():
                 for bounty in event_bounties.current():
                     for tribe in Profile.objects.filter(handle=bounty.org_name, is_org=True):
