@@ -29,7 +29,7 @@ from .models import (
     HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
     RefundFeeRequest, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
     UserVerificationModel,
-)
+    FundRequest)
 
 
 class BountyEventAdmin(admin.ModelAdmin):
@@ -453,6 +453,13 @@ class TribeMemberAdmin(admin.ModelAdmin):
     list_display = ['pk', 'profile', 'org', 'leader', 'status']
 
 
+class FundRequestAdmin(admin.ModelAdmin):
+    list_display = ['profile', 'requester', 'token_name', 'amount',
+                    'comments', 'tip', 'created_on']
+    ordering = ['-id']
+    raw_id_fields = ['profile', 'requester', 'tip']
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -486,3 +493,4 @@ admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
+admin.site.register(FundRequest, FundRequestAdmin)

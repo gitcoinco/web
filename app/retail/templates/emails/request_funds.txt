@@ -2,6 +2,9 @@
 🕑️ {% trans "Request funds" %} 🕑️
 
 {{request.requester.handle}} {% blocktrans %} request funds worth {{amount}} {{tokenName}}{% endblocktrans %}
+{% if address %}
+Recipient Address: {{ address }}
+{% endif %}
 
 {% if comments %}
 The request had the following comments:

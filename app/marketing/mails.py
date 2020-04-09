@@ -1503,9 +1503,10 @@ def bounty_request_feedback(profile):
 
 
 def fund_request_email(request, to_emails, is_new=False):
+    token_name = request.token_name if request.network == 'ETH' else request.network
     subject = gettext("🕐 New Request funds from {} ({} {})").format(request.requester.handle,
                                                                      request.amount,
-                                                                     request.token_name)
+                                                                     token_name)
     for to_email in to_emails:
         cur_language = translation.get_language()
         try:

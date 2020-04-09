@@ -267,7 +267,8 @@ def render_request_amount_email(to_email, request, is_new):
     params = {
         'link': link,
         'amount': request.amount,
-        'tokenName': request.token_name,
+        'tokenName': request.token_name if request.network == 'ETH' else request.network,
+        'address': request.address,
         'comments': request.comments,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'email_type': 'request',

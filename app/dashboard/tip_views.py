@@ -68,14 +68,21 @@ def request_money(request):
         token_name = request.POST.get('tokenName')
         amount = request.POST.get('amount')
         comments = request.POST.get('comments')
+        network = request.POST.get('network')
+        address = request.POST.get('address')
         token_address = request.POST.get('tokenAddress')
         profiles = Profile.objects.filter(handle=username.lower())
+
+        if network != 'ETH':
+            token_name = ''
 
         if profiles.exists():
             profile = profiles.first()
             kwargs = {
                 'profile': profile,
                 'token_name': token_name,
+                'network': network,
+                'address': address,
                 'amount': amount,
                 'comments': comments,
                 'requester': request.user.profile,

@@ -64,14 +64,19 @@
   .terms {
     margin-top: 0.75rem;
   }
+
+  .amount > span {
+    margin: 0;
+      width: 100% !important;
+  }
 </style>
 <div>
   <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
 </div>
-<section id="main">
+<section id="main" style="padding-top: 1.5rem; margin-top: 1.5rem;">
   <header>
     <span class="avatar">
-      <a href="{% url "tip" %}">
+      <a href="{% url "request_money" %}">
         <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" alt="Helmet" />
       </a>
     </span>
@@ -80,32 +85,45 @@
     <h1>{% trans "Request money." %}</h1>
     {% csrf_token %}
     <div>
-      <br>
-      <div class="pb-1 to_name">
-        <label>{% trans "To Github Username" %}:</label> <br>
+      <div class="pb-1 my-3 to_name">
+        <label class="mb-3 ">{% trans "To Github Username" %}</label>
         <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;">
           {% if user_json %}
           <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ user_json.preferred_payout_address }}">{{ user_json.text }}</option>
           {% endif %}
         </select>
       </div>
-      {% trans "Amount of" %}
-      <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" >
-        <option value="0x0">ETH</option>
-      </select>
-      <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
+      <div class="my-3 pb-1 network d-flex align-items-center">
+        <label class="my-0 pl-0 col-3 text-left" style="height: 100%">{% trans "Network" %}</label>
+        <select id="network" class="mt-1 custom-select">
+          <option value="ETH">Ethereum</option>
+          <option value="ETC">ETC</option>
+          <option value="BCH">Bitcoin Cash</option>
+          <option value="BTC">Bitcoin</option>
+          <option value="SIA">Sia</option>
+        </select>
+      </div>
+      <div class="my-3 pb-1 amount d-flex align-items-center justify-content-between">
+        <label class="my-0 pl-0 col-3 text-left" style="height: 100%">{% trans "Amount of" %}</label>
+        <select class="col-4" id="token" class="mt-1 custom-select">
+          <option value="0x0">ETH</option>
+        </select>
+        <input class="ml-3 col-4" name="amount" type="text" placeholder="1.1" id="amount" value="">
+      </div>
+      <div class="pb-1 my-3 address">
+        <label>{% trans "Address" %}:</label> <br>
+        <input name="address" type="text" id="address" value="">
+      </div>
+      <div class="my-2 comments">
+        {% trans "Comments" %}:
+        <textarea id="comments"></textarea>
+      </div>
+      <div class="terms pb-1">
+        <input type="checkbox" id="tos" value="1" >
+        <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
+      </div>
+      <a href="#" id="request" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
     </div>
-    <div id="usd_amount"> &nbsp;</div>
-    <div>
-      {% trans "Comments" %}:
-      <textarea id="comments"></textarea>
-    </div>
-    <div class="terms pb-1">
-      <input type="checkbox" id="tos" value="1" >
-      <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
-    </div>
-    <a href="#" id="request" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
-    <br>
   </div>
 </section>
 

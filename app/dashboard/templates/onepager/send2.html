@@ -80,9 +80,16 @@
     <div>
       <br>
       {% trans "Amount of" %}
-      <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" data-token="{{ fund_request.token_name }}">
-        <option value="0x0">ETH</option>
-      </select>
+        {% if fund_request.network == 'ETH' %}
+        <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" data-token="{{ fund_request.token_name }}">
+          <option value="0x0">ETH</option>
+        </select>
+        {% else %}
+        <select style="width:100px; margin-bottom: 10px; display: inline;">
+            <option value="{{ fund_request.network }}">{{ fund_request.network }}</option>
+        </select>
+        <input style="width:100px; margin-bottom: 10px; display: inline;" value="{{ fund_request.address }}">
+        {% endif %}
       <input name="amount" type="text" placeholder="1.1" id="amount" value="{{ fund_request.amount }}" style="width: 170px; display: inline;">
     </div>
     <div id="usd_amount"> &nbsp;</div>
@@ -91,7 +98,7 @@
       <label>{% trans "To Github Username" %}:</label> <br>
       <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;">
         {% if user_json %}
-        <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ user_json.preferred_payout_address }}">{{ user_json.text }}</option>
+        <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ fund_request.address|default:user_json.preferred_payout_address }}">{{ user_json.text }}</option>
         {% endif %}
       </select>
     </div>

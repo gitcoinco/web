@@ -43,6 +43,9 @@
     <h1>🕑️ {% trans "Request funds" %} 🕑️</h1>
     <h3>
         {{request.requester.handle}} {% blocktrans %} request funds worth {{amount}} {{tokenName}}{% endblocktrans %}
+        {% if address %}
+        Recipient Address: {{ address }}
+        {% endif %}
         {{tip.created_on | naturaltime}}.
     </h3>
   </div>

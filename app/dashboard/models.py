@@ -1782,6 +1782,8 @@ class FundRequest(SuperModel):
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments = models.TextField(default='', blank=True)
     tip = models.OneToOneField(Tip, on_delete=models.CASCADE, null=True)
+    network = models.CharField(max_length=255, default='')
+    address = models.CharField(max_length=255, default='')
     created_on = models.DateTimeField(auto_now_add=True)
 
 
