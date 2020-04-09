@@ -160,7 +160,9 @@ def get_sidebar_tabs(request):
     }
     tabs = tabs + [connect]
 
-    hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now() + timezone.timedelta(days=10), end_date__gt=timezone.now())
+    start_date = timezone.now() + timezone.timedelta(days=10)
+    end_date = timezone.now() - timezone.timedelta(days=7)
+    hackathons = HackathonEvent.objects.filter(start_date__lt=start_date, end_date__gt=end_date)
     if hackathons.count():
         for hackathon in hackathons:
             connect = {
