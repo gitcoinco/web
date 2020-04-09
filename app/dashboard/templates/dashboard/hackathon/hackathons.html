@@ -90,7 +90,7 @@
                   <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue">Join</a>
                   {% endif %}
                   {% if hackathon.start_date|timesince >= "1 min" %}
-                  <a href="{% url 'hackathon' hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
+                  <a href="{% url 'hackathon_prizes' hackathon.slug %}" class="btn btn-gc-blue">Prizes</a>
                   {% endif %}
                   {% if hackathon.show_results %}
                     <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue">Projects</a>

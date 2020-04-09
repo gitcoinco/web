@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n static %}
 
-<div class="sidebar_search font-body">
+<div class="{% if not hackathon %}sidebar_search{% endif %} font-body">
   <p id="expand" class="text-right font-caption font-weight-semibold mb-0">
     {% trans "Expand Filter" %}
     <i class="fas fa-chevron-down"></i>

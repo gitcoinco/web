@@ -3667,7 +3667,7 @@ def get_kudos(request):
     return HttpResponse(data, mimetype)
 
 
-def hackathon(request, hackathon='', panel='townsquare'):
+def hackathon(request, hackathon='', panel='prizes'):
     """Handle rendering of HackathonEvents. Reuses the dashboard template."""
 
     try:
@@ -3691,16 +3691,20 @@ def hackathon(request, hackathon='', panel='townsquare'):
 
     is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                          hackathon=hackathon_event) if request.user and request.user.profile else None
+
+    if not is_registered:
+        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+
     from townsquare.views import get_tags
     view_tags = get_tags(request)
 
-    if panel == "townsquare":
+    if panel == "prizes":
         active_tab = 0
-    elif panel == "chat":
+    elif panel == "townsquare":
         active_tab = 1
-    elif panel == "prizes":
-        active_tab = 2
     elif panel == "projects":
+        active_tab = 2
+    elif panel == "chat":
         active_tab = 3
     elif panel == "participants":
         active_tab = 4
@@ -3711,7 +3715,6 @@ def hackathon(request, hackathon='', panel='townsquare'):
         class Meta:
             model = HackathonEvent
             fields = "__all__"
-            depth = 1
 
     from rest_framework.renderers import JSONRenderer
     from django.core.serializers.json import DjangoJSONEncoder
