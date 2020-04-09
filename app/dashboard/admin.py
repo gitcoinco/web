@@ -454,8 +454,9 @@ class TribeMemberAdmin(admin.ModelAdmin):
 
 
 class FundRequestAdmin(admin.ModelAdmin):
-    list_display = ['profile', 'requester', 'token_name', 'amount',
-                    'comments', 'tip', 'created_on']
+    list_display = ['id', 'profile', 'requester', 'network', 'token_name', 'amount',
+                    'comments', 'address', 'tip', 'created_on']
+    readonly_fields = ['id']
     ordering = ['-id']
     raw_id_fields = ['profile', 'requester', 'tip']
 
