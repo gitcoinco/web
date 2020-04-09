@@ -1139,6 +1139,10 @@ body.green.offer_view .announce {
   background-color: #201a40;
 }
 
+.dark #reflink {
+  background-color: #201a40;
+}
+
 .promo .logo {
   height: 55px;
   width: 65px;
