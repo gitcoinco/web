@@ -14,11 +14,11 @@ class Command(BaseCommand):
         network = 'mainnet'
 
         contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network=network)
+        #contributions = contributions.filter(subscription__grant__pk=547)
+        #contributions = contributions.filter(pk=18892)
         inputs = []
         pp = pprint.PrettyPrinter(indent=4)
         for contribution in contributions:
-            tx_list = [contribution.tx_id, contribution.split_tx_id]
-            token_address = contribution.subscription.token_address
-            response = grants_transaction_validator(tx_list, token_address, network)
+            response = grants_transaction_validator(contribution)
             print('---------------------------------')
             pp.pprint(response)
