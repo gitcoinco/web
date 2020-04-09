@@ -72,6 +72,16 @@
                 </small>
               </div>
               <div class="form-group">
+                <div class="form__checkbox d-inline-block">
+                  <input name='looking-members' id='looking-members' type="checkbox" {% if project_selected.looking_members %}checked{% endif %}>
+                  <label class="form__label" for="looking-members">Looking for team members</label>
+                </div>
+                <div>
+                  <small for="looking-members-message">Enter short message, 150 characters</small>
+                  <input type="text" class="form-control" maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
+                </div>
+              </div>
+              <div class="form-group">
                 <label for="work_url">Project Repo or PR</label>
                 <input type="url" class="form-control" name="work_url" id="work_url" value="{{project_selected.work_url}}" placeholder="https://github.com/gitcoinco/web" required>
               </div>
@@ -111,6 +121,16 @@
                 <small id="profilesHelp" class="form-text text-muted">
                   Search Gitcoin usernames.
                 </small>
+              </div>
+              <div class="form-group">
+                <div class="form__checkbox d-inline-block">
+                  <input name='looking-members' id='looking-members' type="checkbox" {% if project_selected.looking_members %}checked{% endif %}>
+                  <label class="form__label" for="looking-members">Looking for team members</label>
+                </div>
+                <div>
+                  <small for="looking-members-message">Enter short message, 150 characters</small>
+                  <input type="text" class="form-control" maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
+                </div>
               </div>
               <div class="form-group">
                 <label for="work_url">Project Repo or PR</label>

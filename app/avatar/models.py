@@ -262,6 +262,19 @@ def psave_avatar(sender, instance, **kwargs):
     Activity.objects.create(profile=instance.profile, activity_type='updated_avatar', metadata=metadata)
 
 
+class AvatarTextOverlayInput(SuperModel):
+
+    active = models.BooleanField(default=False, db_index=True)
+    text = models.TextField(default='', blank=True)
+    coment = models.TextField(default='', blank=True)
+    num_uses_total = models.IntegerField(default=0)
+    num_uses_remaining = models.IntegerField(default=0)
+    current_uses = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.pk} / {self.text} / {self.coment}"
+
+
 class AvatarTheme(SuperModel):
     """Store diff avatar theme types."""
 

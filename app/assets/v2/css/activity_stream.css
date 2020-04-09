@@ -227,6 +227,7 @@ iframe.popout{
   bottom: 0px;
   width: 25% !important;
   height: 25% !important;
+  z-index: 1;
 }
 
 #poll_container input{
@@ -298,9 +299,6 @@ iframe.popout{
   border: 1px solid;
   margin-left: 25%;
 }
-.dropdown-menu.gif-inject-target.show{
-  margin-top: -185px;
-}
 
 @media (min-width: 768px) {
   .activity_feed_kudos_image{
@@ -312,10 +310,6 @@ iframe.popout{
   }
 }
 @media (max-width: 767.98px) {
-  .dropdown-menu.gif-inject-target.show{
-    margin-top: -150px;
-    margin-left: -300px;
-  }
 
   .activity_stream .activity-avatar{
     margin-top: 0px;

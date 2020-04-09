@@ -107,6 +107,10 @@
         protocol: "{{ ipfs_config.protocol }}",
         root: "{{ ipfs_config.root }}"
       };
+
+      window.addEventListener('load', function() {
+        setInterval(listen_for_web3_changes, 5000);
+      });
     </script>
     <script src="{% static "v2/js/metamask-approval.js" %}"></script>
   </body>

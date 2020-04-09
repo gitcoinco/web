@@ -82,6 +82,9 @@ def get_stat(key):
 
 
 def invite_to_slack(email):
+    # KO 2020/03 disabling slack invites
+    # per https://gitcoincore.slack.com/archives/CB1N0L6F7/p1585245243010100
+    return
     if settings.DEBUG:
         return {}
     sc = SlackClient(settings.SLACK_TOKEN)

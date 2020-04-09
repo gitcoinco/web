@@ -156,6 +156,29 @@ def featured_funded_bounty(from_email, bounty):
         translation.activate(cur_language)
 
 
+def new_grant_flag_admin(flag):
+    from_email = settings.CONTACT_EMAIL
+    to_email = 'kevin@gitcoin.co'
+
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        subject = _("New Grant Flag")
+        body = f"{flag.comments} : {settings.BASE_URL}{flag.admin_url}"
+        if not should_suppress_notification_email(to_email, 'new_grant_flag_admin'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_grant(grant, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
@@ -178,6 +201,8 @@ def new_grant(grant, profile):
 
 
 def new_supporter(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     if not to_email:
@@ -195,6 +220,8 @@ def new_supporter(grant, subscription):
 
 
 def thank_you_for_supporting(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     if not to_email:
@@ -212,6 +239,8 @@ def thank_you_for_supporting(grant, subscription):
 
 
 def support_cancellation(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
@@ -227,6 +256,8 @@ def support_cancellation(grant, subscription):
 
 
 def grant_cancellation(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     cur_language = translation.get_language()
@@ -242,6 +273,8 @@ def grant_cancellation(grant, subscription):
 
 
 def subscription_terminated(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
@@ -257,6 +290,8 @@ def subscription_terminated(grant, subscription):
 
 
 def successful_contribution(grant, subscription, contribution):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
@@ -474,7 +509,7 @@ def grant_update_email(activity):
 
     what = activity.grant.title
     subject = f"📣 Message from @{activity.profile.handle} of Gitcoin Grant: {what}"
-    to_emails = [profile.email for profile in activity.grant.contributors if profile.pk not in activity.grant.metadata.get('unsubscribed_profiles', [])]
+    to_emails = list(set([profile.email for profile in activity.grant.contributors if profile.pk not in activity.grant.metadata.get('unsubscribed_profiles', [])]))
     cur_language = translation.get_language()
     for to_email in to_emails:
         try:
@@ -685,6 +720,48 @@ def notify_deadbeat_quest(quest):
         translation.activate(cur_language)
 
 
+def notify_kudos_minted(token_request):
+    to_email = token_request.profile.email
+    from_email = 'kevin@gitcoin.co'
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Kudos has been minted")
+        body = f"Your kudos '{token_request.name}' has been minted and should be available on https://gitcoin.co/kudos/marketplace soon."
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
+def notify_deadbeat_grants(grants):
+    to_email = 'kevin@gitcoin.co'
+    from_email = to_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"Dead Grants Alert {grants.count()}"
+        body = "\n\n-".join([f"({grant.title}): https://gitcoin.co/{grant.admin_url} " for grant in grants])
+        if not should_suppress_notification_email(to_email, 'sdeadbeat'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_kudos_request(obj):
     to_email = 'founders@gitcoin.co'
     from_email = obj.profile.email
@@ -730,6 +807,8 @@ def warn_account_out_of_eth(account, balance, denomination):
 
 
 def warn_subscription_failed(subscription):
+    if subscription.negative:
+        return
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
@@ -948,8 +1027,7 @@ def weekly_roundup(to_emails=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            html, text, subject = render_new_bounty_roundup(to_email)
-            from_email = settings.CONTACT_EMAIL
+            html, text, subject, from_email, from_name = render_new_bounty_roundup(to_email)
 
             if not html:
                 print("no content")
@@ -962,7 +1040,7 @@ def weekly_roundup(to_emails=None):
                     subject,
                     text,
                     html,
-                    from_name="Vivek and the Gitcoin Team (Gitcoin.co)",
+                    from_name=from_name,
                     categories=['marketing', func_name()],
                 )
             else:

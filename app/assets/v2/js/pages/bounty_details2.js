@@ -169,28 +169,32 @@ Vue.mixin({
         });
       }
     },
-    fulfillmentComplete: function(fulfillment_id, amount) {
-
+    fulfillmentComplete: function(fulfillment_id, amount, event) {
       let vm = this;
-
       const token_name = vm.bounty.token_name;
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
-
       const payload = {
         amount: amount * 10 ** decimals,
         token_name: token_name,
         bounty_owner_address: vm.bounty.bounty_owner_address
       };
-
       const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;
 
+      event.target.disabled = true;
+
       fetchData(apiUrlBounty, 'POST', payload).then(response => {
+        event.target.disabled = false;
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+          vm.fetchBounty();
+          this.$refs['payout-modal'][0].closeModal();
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
         }
+      }).catch(function(error) {
+        event.target.disabled = false;
+        _alert('Unable to make payout bounty. Please try again later', 'error');
       });
     },
     closeBounty: function() {
@@ -505,10 +509,6 @@ var show_interest_modal = function() {
 
   modals.on('show.bs.modal', function() {
     modalBody.load(modalUrl, ()=> {
-      if (document.result['repo_type'] === 'private') {
-        document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
-      }
-
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
 
@@ -524,71 +524,26 @@ var show_interest_modal = function() {
           return false;
         }
 
-        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
+        add_interest(document.result['pk'], {
+          issue_message: msg,
+          discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+        }).then(success => {
+          if (success) {
+            // $(self).attr('href', '/uninterested');
+            // $(self).find('span').text(gettext('Stop Work'));
+            // $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+            appBounty.fetchBounty();
+            modals.bootstrapModal('hide');
 
-        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
-
-          const formData = new FormData();
-
-          formData.append('docs', issueNDA[0]);
-          formData.append('doc_type', 'signed_nda');
-
-          const ndaSend = {
-            url: '/api/v0.1/bountydocument',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            dataType: 'json',
-            contentType: false
-          };
-
-          $.ajax(ndaSend).done(function(response) {
-            if (response.status == 200) {
-              _alert(response.message, 'info');
-              add_interest(document.result['pk'], {
-                issue_message: msg,
-                signed_nda: response.bounty_doc_id,
-                discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-              }).then(success => {
-                if (success) {
-                  $(self).attr('href', '/uninterested');
-                  $(self).find('span').text(gettext('Stop Work'));
-                  $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                  modals.bootstrapModal('hide');
-                }
-              }).catch((error) => {
-                if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-                  return;
-                throw error;
-              });
-            } else {
-              _alert(response.message, 'error');
+            if (document.result.event) {
+              projectModal(document.result.pk);
             }
-          }).fail(function(error) {
-            _alert(error, 'error');
-          });
-        } else {
-          add_interest(document.result['pk'], {
-            issue_message: msg,
-            discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-          }).then(success => {
-            if (success) {
-              // $(self).attr('href', '/uninterested');
-              // $(self).find('span').text(gettext('Stop Work'));
-              // $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-              appBounty.fetchBounty();
-              modals.bootstrapModal('hide');
-
-              if (document.result.event) {
-                projectModal(document.result.pk);
-              }
-            }
-          }).catch((error) => {
-            if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-              return;
-            throw error;
-          });
-        }
+          }
+        }).catch((error) => {
+          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+            return;
+          throw error;
+        });
 
       });
 

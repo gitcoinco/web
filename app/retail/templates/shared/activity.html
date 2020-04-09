@@ -93,7 +93,7 @@
             @{{ row.metadata.to_username }}
           </a>
         {% elif row.activity_type == 'mini_clr_payout' %}
-          {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI<strong> in {{row.metadata.round_description}}
+          {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
           a new kudos has been minted:
           <a href="{{ row.kudos.external_url }}">
@@ -150,6 +150,16 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
+        {% elif row.activity_type == 'negative_contribution' %}
+          {% trans "has observed an anonymous negative contribution to" %}
+          <a href="{{ row.metadata.grant_url }}" >
+            {{ row.metadata.title }}
+          </a>
+        {% elif row.activity_type == 'flagged_grant' %}
+           has observed a new Flag <i class="far fa-flag"></i> for
+          <a href="{{ row.grant.url }}" >
+            {{ row.grant.title }}
+          </a>
         {% elif row.activity_type == 'new_grant_contribution' %}
           {% trans "contributed to" %}
           <a href="{{ row.metadata.grant_url }}" >
@@ -175,6 +185,9 @@
           <a href="{{ row.metadata.grant_url }}" >
             {{ row.metadata.title }}
           </a>
+          {% if row.metadata.num_tx_approved %}
+            for {{row.metadata.num_tx_approved}} CLR round{{row.metadata.num_tx_approved|pluralize}}
+          {% endif %}
         {% elif row.activity_type == 'killed_grant_contribution' %}
           {% trans "unsubscribed from" %}
           <a href="{{ row.metadata.grant_url }}" >
@@ -185,7 +198,6 @@
 
           {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
           <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
-          
           <p class='num_participants m-0 p-0' data-roomname="+roomName+">
             <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
               •
@@ -210,7 +222,7 @@
           </a>
         {% endif %}
       :
-        <b>{{ row.metadata.title }}</b>
+        <span>{{ row.metadata.title }}</span>
       {% elif row.activity_type == 'consolidated_leaderboard_rank'  or row.activity_type == 'consolidated_mini_clr_payout' %}
         {{row.metadata.copy|safe}}
 
@@ -236,7 +248,6 @@
         <span>{% trans "made an update to: " %}</span>
         <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% else %}
-        {{ row.i18n_name }}
         {{row.humanized_activity_type }}
         {% if row.bounty %}
           : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
@@ -287,20 +298,34 @@
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
+            <a href=# data-action='favorite' data-toggle="tooltip" title="Mark as favorite this activity" data-affirmative=favorite
+              data-negative=unfavorite data-state="{% if row.metadata.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
+              class="favorite_activity mr-2 dropdown-item px-3 font-smaller-5">
+              {% if row.metadata.favorite %}
+                  <i class="fas fa-star mr-2"></i>
+              {% else %}
+                  <i class="far fa-star mr-2"></i>
+              {%endif%} Favorite
+            </a>
             <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
               data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
               class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"
             >
               <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
             </a>
-            {% if row.profile.handle == github_handle %}
-            <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
-              <i class="fas fa-trash mr-2"></i> Delete
-            </a>
+            {% if row.metadata.fund_able and not row.bounty  %}
+              <a class="mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Create new bounty." href='/funding/new?type=public&activity={{ row.id }}&url={{ row.metadata.resource.provider }}'>
+                <i class="fab fa-ethereum mr-2"></i> Fund Issue
+              </a>
+            {% endif %}
+            {% if row.profile.handle|lower == github_handle|lower %}
+              <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
+                <i class="fas fa-trash mr-2"></i> Delete
+              </a>
             {% endif %}
           </div>
 
-          {% if row.activity_type in 'new_bounty,increased_bounty,killed_bounty,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund' %}
+          {% if row.show_token_info %}
             {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name or row.bounty %}
               <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">

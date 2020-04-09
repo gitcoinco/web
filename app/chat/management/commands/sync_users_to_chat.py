@@ -59,6 +59,6 @@ class Command(BaseCommand):
 
         except ConnectionError as exec:
             logger.error(str(exec))
-            self.retry(30)
+            self.retry(countdown=30)
         except Exception as e:
             logger.error(str(e))

@@ -128,7 +128,7 @@ def preprocess(request):
         'chat_url': chat_url,
         'chat_id': chat_id,
         'chat_access_token': chat_access_token,
-        'github_handle': request.user.username if user_is_authenticated else False,
+        'github_handle': request.user.username.lower() if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
         'last_chat_status':
@@ -153,7 +153,7 @@ def preprocess(request):
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
         },
-        'chat_persistence_frequency': 60 * 1000,
+        'chat_persistence_frequency': 90 * 1000,
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,

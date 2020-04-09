@@ -73,7 +73,7 @@
 
 
   <div class="form-group mb-5">
-    <h5>  [ALPHA TESTERS ONLY] Backup Profile data to 3box:</h5>
+    <h5>  Backup Profile data to 3box:</h5>
     <div>
       {% if is_alpha_tester %}
         {% include 'profiles/header_sync_profile.html' %}
@@ -246,5 +246,6 @@
 </script>
 <script src="{% static "v2/js/3box-sync.js" %}"></script>
 <script src="{% static "v2/js/pages/profile-backup.js" %}"></script>
+<script src="{% static "v2/js/3box.min.js" %}"></script>
 {{ block.super }}
 {% endblock %}

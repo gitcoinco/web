@@ -909,3 +909,16 @@ div.button-pink {
     transform: scale(0.5);
   }
 }
+
+textarea.status-textarea {
+  padding-right: 4em;
+  min-height: 60px;
+}
+
+.status-menu button {
+  color: #6c757d;
+}
+
+.status-menu button.selected {
+  color: black;
+}

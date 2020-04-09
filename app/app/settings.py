@@ -52,7 +52,7 @@ BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
-
+VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
@@ -137,6 +137,8 @@ INSTALLED_APPS = [
     'wiki.plugins.notifications.apps.NotificationsConfig',
     'wiki.plugins.images.apps.ImagesConfig',
     'wiki.plugins.macros.apps.MacrosConfig',
+    'debug_toolbar',
+
 ]
 
 MIDDLEWARE = [
@@ -217,6 +219,22 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'auth.User'
 
+# adds django debug toolbar
+if DEBUG:
+    INTERNAL_IPS = [
+        # ...
+        '127.0.0.1',
+        'localhost',
+        # ...
+    ]
+    def callback(request):
+        return True
+    SHOW_TOOLBAR_CALLBACK = callback
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK" : callback,
+    }
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+    
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
@@ -619,6 +637,12 @@ TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')  # TODO
 TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')  # TODO
 TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
 
+DISPUTES_TWITTER_CONSUMER_KEY = env('DISPUTES_TWITTER_CONSUMER_KEY', default='')  # TODO
+DISPUTES_TWITTER_CONSUMER_SECRET = env('DISPUTES_TWITTER_CONSUMER_SECRET', default='')  # TODO
+DISPUTES_TWITTER_ACCESS_TOKEN = env('DISPUTES_TWITTER_ACCESS_TOKEN', default='')  # TODO
+DISPUTES_TWITTER_ACCESS_SECRET = env('DISPUTES_TWITTER_ACCESS_SECRET', default='')  # TODO
+
+
 # Slack Integration
 # optional: only needed if you slack things
 SLACK_TOKEN = env('SLACK_TOKEN', default='')  # TODO
@@ -730,7 +754,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -782,3 +806,8 @@ MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=6
 MINICLR_ADDRESS = env('MINICLR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
+AVATAR_ADDRESS = env('AVATAR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+AVATAR_PRIVATE_KEY = env('AVATAR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+
+
+ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')

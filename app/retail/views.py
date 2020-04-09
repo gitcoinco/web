@@ -28,7 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Subquery
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -43,10 +43,9 @@ from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
 from dashboard.notifications import amount_usdt_open_work, open_bounties
+from dashboard.tasks import grant_update_email_task
 from economy.models import Token
-from marketing.mails import (
-    grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email,
-)
+from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -217,126 +216,6 @@ def index(request):
         'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
     }
     return TemplateResponse(request, 'home/index.html', context)
-
-
-@staff_member_required
-def pricing(request):
-
-    plans= [
-        {
-            'type': 'basic',
-            'img': 'v2/images/pricing/basic.svg',
-            'fee': 10,
-            'features': [
-                '1 free <a href="/kudos">Kudos</a>',
-                'Community Support'
-            ],
-            'features_na': [
-                'Job Board Access',
-                'Contributor Stats',
-                'Multi-Seg Wallet',
-                'Featured Bounties',
-                'Job Listing'
-            ]
-        },
-        {
-            'type': 'pro',
-            'img': 'v2/images/pricing/pro.svg',
-            'price': 40,
-            'features': [
-                '5 Free <a href="/kudos">Kudos</a> / mo',
-                'Community Support',
-                'Job Board - Limited',
-                'Contributor Stats'
-            ],
-            'features_na': [
-                'Multi-Seg Wallet',
-                'Featured Bounties',
-                'Job Listings'
-            ]
-        },
-        {
-            'type': 'max',
-            'img': 'v2/images/pricing/max.svg',
-            'price': 99,
-            'features': [
-                '5 Free <a href="/kudos">Kudos</a> / mo',
-                'Community Support',
-                'Job Board Access',
-                'Contributor Stats',
-                'Multi-Sig Wallet',
-                '5 Featured Bounties',
-                '5 Job Listings'
-            ]
-        }
-    ]
-
-    companies = [
-        {
-            'name': 'Market Protocol',
-            'img': 'v2/images/project_logos/market.png'
-        },
-        {
-            'name': 'Consensys',
-            'img': 'v2/images/consensys.svg'
-        },
-        {
-            'name': 'Metamask',
-            'img': 'v2/images/project_logos/metamask.png'
-        },
-        {
-            'name': 'Ethereum Foundation',
-            'img': 'v2/images/project_logos/eth.png'
-        },
-        {
-            'name': 'Truffle',
-            'img': 'v2/images/project_logos/truffle.png'
-        },
-    ]
-
-    context = {
-        'plans': plans,
-        'companies': companies
-    }
-
-    return TemplateResponse(request, 'pricing/plans.html', context)
-
-
-@staff_member_required
-def subscribe(request):
-
-    if request.POST:
-        return TemplateResponse(request, 'pricing/subscribe.html', {})
-
-    from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
-
-    plan = {
-        'type': 'pro',
-        'img': 'v2/images/pricing/sub_pro.svg',
-        'price': 40
-    }
-
-    if request.GET:
-        if 'plan' in request.GET and request.GET['plan'] == 'max':
-            plan = {
-                'type': 'max',
-                'img': 'v2/images/pricing/sub_max.svg',
-                'price': 99
-            }
-        if 'pack' in request.GET and request.GET['pack'] == 'annual':
-            plan['price'] = plan['price'] - plan['price'] / 10
-
-    context = {
-        'plan': plan,
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-    }
-    return TemplateResponse(request, 'pricing/subscribe.html', context)
 
 
 def funder_bounties_redirect(request):
@@ -1179,6 +1058,9 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         relevant_grants = get_my_grants(user.profile) if is_auth else []
     elif what == 'my_threads' and is_auth:
         activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
+    elif what == 'my_favorites' and is_auth:
+        favorites = user.favorites.all().values_list('activity_id')
+        activities = Activity.objects.filter(id__in=Subquery(favorites)).order_by('-created')
     elif 'keyword-' in what:
         keyword = what.split('-')[1]
         relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
@@ -1208,7 +1090,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
                 activities = Activity.objects.none()
     elif 'hackathon:' in what:
         pk = what.split(':')[1]
-        activities = activities.filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
+        activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
@@ -1287,7 +1169,9 @@ def activity(request):
 
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def create_status_update(request):
+    issue_re = re.compile(r'^(?:https?://)?(?:github\.com)/(?:[\w,\-,\_]+)/(?:[\w,\-,\_]+)/issues/(?:[\d]+)')
     response = {}
+
     if request.POST:
         profile = request.user.profile
         title = request.POST.get('data')
@@ -1300,6 +1184,7 @@ def create_status_update(request):
             'metadata': {
                 'title': title,
                 'ask': request.POST.get('ask'),
+                'fund_able': provider and issue_re.match(provider) != None,
                 'resource': {
                     'type': resource,
                     'provider': provider,
@@ -1361,7 +1246,7 @@ def create_status_update(request):
 
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):
-                    grant_update_email(activity)
+                    grant_update_email_task.delay(activity.pk)
                 else:
                     wall_post_email(activity)
 

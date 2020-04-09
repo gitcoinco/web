@@ -61,6 +61,7 @@ $(document).ready(() => {
                   data.signature // contributor_signature
                 ];
 
+                indicateMetamaskPopup();
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
                 ).send({
