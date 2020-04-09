@@ -7,7 +7,7 @@ $(document).ready(function() {
 
   var linkify = function(new_text) {
     new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a data-html="true" data-toggle="popover" data-container="body" data-username="$1" href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a data-usercard="$1" href="/profile/$1">@$1</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
@@ -669,7 +669,7 @@ $(document).ready(function() {
         ${show_more_box}
         <div class="row comment_row mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
           <div class="col-1 activity-avatar my-auto">
-            <a href="/profile/${comment['profile_handle']}" data-html="true" data-toggle="popover" data-container="body" data-username="${comment['profile_handle']}">
+            <a href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
           </div>
@@ -682,7 +682,7 @@ $(document).ready(function() {
                 </span>
               </span>
                 <b>${comment['name']}</b>
-                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}" data-html="true" data-toggle="popover" data-container="body" data-username="${comment['profile_handle']}">
+                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
                 @${comment['profile_handle']}
                 </a></span>
                 ${comment['match_this_round'] ? `
@@ -905,7 +905,7 @@ $(document).ready(function() {
   // auto open new comment threads
   setInterval(function() {
 
-    // $('[data-toggle="popover"]').popover();
+    $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').bootstrapTooltip();
     openChat();
 

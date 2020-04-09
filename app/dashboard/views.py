@@ -2135,13 +2135,20 @@ def user_card(request, handle):
     response = {
         'is_authenticated': request.user.is_authenticated,
         'is_following': is_following,
+        # 'avatar': profile.avatar_url,
+        # 'handle': profile.handle,
+        # 'contributed_to': _orgs,
+        # 'orgs' : profile.organizations,
+        # 'profile' : profile.as_representation,
         'profile' : {
             'avatar_url': profile.avatar_url,
             'handle': profile.handle,
             'orgs' : profile.organizations,
             'created_on' : profile.created_on,
             'keywords' : profile.keywords,
-            'data': profile.data
+            'data': profile.data,
+            'followers':followers,
+            'following':following,
         },
         'profile_dict':profile_dict
     }

@@ -170,8 +170,8 @@ const renderPopOverData = function(data) {
       </div>
 
       <div class="d-flex">
-        <span class="mr-3"><b class="font-smaller-1">${data.stats.followers}</b> <span class="text-black-60">Followers</span></span>
-        <span><b class="font-smaller-1">${data.stats.following}</b> <span class="text-black-60">Following</span></span>
+        <span class="mr-3"><b class="font-smaller-1">${data.profile.followers}</b> <span class="text-black-60">Followers</span></span>
+        <span><b class="font-smaller-1">${data.profile.following}</b> <span class="text-black-60">Following</span></span>
       </div>
     </div>
   `;
