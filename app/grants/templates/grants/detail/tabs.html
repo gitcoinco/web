@@ -18,12 +18,8 @@
 <div class="px-lg-5">
   <div id="grant-profile-tabs" class="tab-container font-body mt-2 mb-2">
 
-    <button type="button" id="nav-activity" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
-      {% trans "ACTIVITY" %}
-    </button>
-
     <button type="button" id="nav-description" href="{{grant.url}}?tab=description" class="section-tab {% if tab == "description" %} active {% endif %}">
-      {% trans "DESCRIPTION" %}
+      {% trans "SUMMARY" %}
     </button>
 
     <button type="button" id="nav-transactions" href="{{grant.url}}?tab=transactions" class="section-tab {% if tab == "transactions" %} active {% endif %}">
@@ -60,6 +56,7 @@
 
     {% if tab == "description" %}
     <div id="section-nav-description" class="tab-section active">
+      <h4 class="m-0 p-0">Description</h4>
       <div id="editor">
         {% if grant.description_rich %}
           {{ grant.description_rich }}
@@ -68,6 +65,15 @@
         {% endif %}
       </div>
     </div>
+      <h4 class="m-0 p-0">Activity Feed</h4>
+      {% if is_team_member %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+      {% else %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+      {% endif %}
+      <div id="activities" class="activity_stream container px-0">
+        {% include 'shared/activity_container.html' %}
+      </div>
     {% endif %}
 
     {% if tab == "transactions" %}
@@ -78,12 +84,6 @@
           {% include 'grants/activity.html' %}
           <span id="grant-network" class="hidden">{{ grant.network }}</span>
         {% endif %}
-      </div>
-    {% endif %}
-
-    {% if tab == "updates" %}
-      <div id="section-nav-summary">
-        {% include 'grants/detail/summary.html' %}
       </div>
     {% endif %}
 

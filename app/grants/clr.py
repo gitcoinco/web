@@ -38,9 +38,9 @@ THRESHOLD_TECH = 20.0
 THRESHOLD_MEDIA = 20.0
 THRESHOLD_HEALTH = 20.0
 
-TOTAL_POT_TECH = 100000.0
+TOTAL_POT_TECH = 101000.0
 TOTAL_POT_MEDIA = 50000.0
-TOTAL_POT_HEALTH = 10000.0
+TOTAL_POT_HEALTH = 100000.0
 
 '''
     Helper function that translates existing grant data structure
@@ -173,57 +173,13 @@ def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
 
     bigtot = 0
     # find normalization factor
-    # for x in totals:
-    #     bigtot += x['clr_amount']
-    # normalization_factor = bigtot / total_pot
-    # # modify totals
-    # for x in totals:
-    #     x['clr_amount'] = x['clr_amount'] / normalization_factor
+    for x in totals:
+        bigtot += x['clr_amount']
+    normalization_factor = bigtot / total_pot
+    # modify totals
+    for x in totals:
+        x['clr_amount'] = x['clr_amount'] / normalization_factor
     return bigtot, totals
-
-
-# TODO: REMOVE IF ABOVE FUNCTION IS STABLE
-# def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
-#     # calculate final totals
-#     # print(f'+ve {len(totals_pos)} {totals_pos}')
-#     # print(f'-ve {len(totals_neg)} {totals_neg}')
-#     totals = []
-#     if len(totals_neg) == 0:
-#         totals = totals_pos
-#     elif len(totals_pos) == 0:
-#         totals = [{'id': x['id'], 'clr_amount': 0 } for x in totals_neg]
-#     else:
-#         for x in totals_pos:
-#             for y in totals_neg:
-#                 if x['id'] == y['id']:
-#                     if x['clr_amount'] == 0 or x['clr_amount'] < y['clr_amount']:
-#                         totals.append({
-#                             'id': x['id'],
-#                             'clr_amount': 0
-#                         })
-#                     else:
-#                         totals.append({
-#                             'id': x['id'],
-#                             'clr_amount': (math.sqrt(x['clr_amount']) - math.sqrt(y['clr_amount']))**2
-#                         })
-
-#         pos_grant_ids = [x['id'] for x in totals_pos]
-#         neg_grants_ids = [x['id'] for x in totals_neg]
-
-#         [totals.append({'id': x['id'], 'clr_amount': x['clr_amount']}) for x in totals_pos if x['id'] not in neg_grants_ids]
-#         [totals.append({'id': x['id'], 'clr_amount': 0 }) for x in totals_neg if x['id'] not in pos_grant_ids]
-
-#     bigtot = 0
-#     # find normalization factor
-#     # for x in totals:
-#     #     bigtot += x['clr_amount']
-#     # normalization_factor = bigtot / total_pot
-
-#     # # modify totals
-#     # for x in totals:
-#     #     x['clr_amount'] = x['clr_amount'] / normalization_factor
-
-#     return bigtot, totals
 
 
 '''
@@ -316,6 +272,7 @@ def calculate_clr_for_donation(grant, amount, positive_grant_contributions, nega
         threshold : int
 '''
 def populate_data_for_clr(clr_type=None, network='mainnet'):
+    import pytz
 
     from_date = timezone.now()
     # get all the eligible contributions and calculate total
@@ -350,6 +307,13 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
 
         # Generate list of profiles who've made +ve and -ve contributions to the grant
         phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
+
+        # filter out new github profiles
+        positive_contribution_ids = [ele.pk for ele in positive_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
+        positive_contributions = positive_contributions.filter(pk__in=positive_contribution_ids)
+        negative_contribution_ids = [ele.pk for ele in negative_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
+        negative_contributions = negative_contributions.filter(pk__in=negative_contribution_ids)
+        phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
 
         positive_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in positive_contributions] + [p.profile_id for p in phantom_funding_profiles]))
         negative_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in negative_contributions]))
@@ -452,6 +416,14 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                         key=_grant.title[0:43] + "_match",
                         val=_grant.clr_prediction_curve[0][1],
                         )
+                    max_twitter_followers = max(_grant.twitter_handle_1_follower_count, _grant.twitter_handle_2_follower_count)
+                    if max_twitter_followers:
+                        Stat.objects.create(
+                            created_on=from_date,
+                            key=_grant.title[0:43] + "_admt1",
+                            val=int(100 * _grant.clr_prediction_curve[0][1]/max_twitter_followers),
+                            )
+
                 if _grant.positive_round_contributor_count:
                     Stat.objects.create(
                         created_on=from_date,

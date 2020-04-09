@@ -36,6 +36,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
@@ -47,10 +48,7 @@ from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.clr import predict_clr_live
-from grants.forms import MilestoneForm
-from grants.models import (
-    Contribution, Flag, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
-)
+from grants.models import Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription
 from grants.utils import get_leaderboard, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -75,10 +73,10 @@ clr_round = 5
 clr_active = True
 show_clr_card = True
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
-round_end = timezone.datetime(2020, 4, 7, 20, 0)
+round_end = timezone.datetime(2020, 4, 10, 10, 0)
 round_types = ['media', 'tech', 'health']
 
-kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12427, 12392, 12307, 12343, 12156, 12164]
+kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
 if not clr_active:
     clr_matching_banners_style = 'results'
@@ -91,12 +89,13 @@ def get_stats(round_type):
         round_type = 'tech'
     created_on = next_round_start
     charts = []
-    minute = 4 if not settings.DEBUG else 60
+    minute = 15 if not settings.DEBUG else 60
     key_titles = [
-        ('_match', 'Estimated Matching Amount', '-positive_round_contributor_count', 'grants' ),
+        ('_match', 'Estimated Matching Amount ($)', '-positive_round_contributor_count', 'grants' ),
         ('_pctrbs', 'Positive Contributors', '-positive_round_contributor_count', 'grants' ),
         ('_nctrbs', 'Negative Contributors', '-negative_round_contributor_count', 'grants' ),
         ('_amt', 'CrowdFund Amount', '-amount_received_in_round', 'grants' ),
+        ('_admt1', 'Estimated Matching Amount (in cents) / Twitter Followers', '-positive_round_contributor_count', 'grants' ),
         ('count_', 'Top Contributors by Num Contributations', '-val', 'profile' ),
         ('sum_', 'Top Contributors by Value Contributed', '-val', 'profile' ),
     ]
@@ -112,10 +111,10 @@ def get_stats(round_type):
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
             startswith = f"{ele[0]}{round_type}_"
-            keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=startswith).values_list('key', flat=True).cache())
+            keys = list(Stat.objects.filter(created_on__gt=created_on, key__startswith=startswith).values_list('key', flat=True))
         charts.append({
             'title': f"{title} Over Time ({round_type.title()} Round)",
-            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=minute).cache(),
+            'db': Stat.objects.filter(key__in=keys, created_on__gt=created_on, created_on__minute__lt=minute),
             })
     results = []
     counter = 0
@@ -212,6 +211,17 @@ def grants_addr_as_json(request):
     response = list(set(_grants.values_list('title', 'admin_address')))
     return JsonResponse(response, safe=False)
 
+@cache_page(60 * 60)
+def grants_stats_view(request):
+    cht, chart_list = get_stats(request.GET.get('category'))
+    params = { 
+        'cht': cht,
+        'chart_list': chart_list,
+        'round_types': round_types,
+    }
+    response =  TemplateResponse(request, 'grants/shared/landing_stats.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 def grants(request):
     """Handle grants explorer."""
@@ -329,8 +339,6 @@ def grants(request):
         title = f"Round {clr_round} Stats"
     cht = []
     chart_list = ''
-    if grant_type == 'stats':
-        cht, chart_list = get_stats(category) 
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -385,7 +393,9 @@ def grants(request):
             logger.debug(e)
             pass
 
-    return TemplateResponse(request, 'grants/index.html', params)
+    response = TemplateResponse(request, 'grants/index.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 def add_form_categories_to_grant(form_category_ids, grant, grant_type):
     form_category_ids = [int(i) for i in form_category_ids if i != '']
@@ -401,15 +411,13 @@ def add_form_categories_to_grant(form_category_ids, grant, grant_type):
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
-    tab = request.GET.get('tab', 'activity')
+    tab = request.GET.get('tab', 'description')
     profile = get_profile(request)
     add_cancel_params = False
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates', 'team_members').get(
+        grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
             pk=grant_id, slug=grant_slug
         )
-        milestones = grant.milestones.order_by('due_date')
-        updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
 
@@ -454,14 +462,6 @@ def grant_details(request, grant_id, grant_slug):
             for sub in subscriptions:
                 subscription_terminated(grant, sub)
             record_grant_activity_helper('killed_grant', grant, profile)
-        elif 'input-title' in request.POST:
-            update_kwargs = {
-                'title': request.POST.get('input-title', ''),
-                'description': request.POST.get('description', ''),
-                'grant': grant
-            }
-            Update.objects.create(**update_kwargs)
-            record_grant_activity_helper('update_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
@@ -514,8 +514,6 @@ def grant_details(request, grant_id, grant_slug):
         'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
-        'updates': updates,
-        'milestones': milestones,
         'keywords': get_keywords(),
         'target': f'/activity?what=grant:{grant.pk}',
         'activity_count': activity_count,
@@ -598,6 +596,8 @@ def grant_new(request):
                 'contract_version': request.POST.get('contract_version', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
+                'twitter_handle_1': request.POST.get('handle1', ''),
+                'twitter_handle_2': request.POST.get('handle2', ''),
                 'metadata': receipt,
                 'admin_profile': profile,
                 'logo': logo,
@@ -752,52 +752,6 @@ def grant_new_v0(request):
     }
 
     return TemplateResponse(request, 'grants/newv0.html', params)
-
-
-
-@login_required
-def milestones(request, grant_id, grant_slug):
-    profile = get_profile(request)
-    grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
-
-    if not is_grant_team_member(grant, profile):
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
-    if request.method == "POST":
-        method = request.POST.get('method')
-
-        if method == "POST":
-            form = MilestoneForm(request.POST)
-            milestone = form.save(commit=False)
-            milestone.grant = grant
-            milestone.save()
-
-        if method == "PUT":
-            milestone_id = request.POST.get('milestone_id')
-            milestone = Milestone.objects.get(pk=milestone_id)
-            milestone.completion_date = request.POST.get('completion_date')
-            milestone.save()
-
-        if method == "DELETE":
-            milestone_id = request.POST.get('milestone_id')
-            milestone = grant.milestones.get(pk=milestone_id)
-            milestone.delete()
-
-        return redirect(reverse('grants:milestones', args=(grant.pk, grant.slug)))
-
-    form = MilestoneForm()
-    milestones = grant.milestones.order_by('due_date')
-
-    params = {
-        'active': 'grant_milestones',
-        'title': _('Grant Milestones'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'grant': grant,
-        'milestones': milestones,
-        'form': form,
-        'keywords': get_keywords(),
-    }
-    return TemplateResponse(request, 'grants/milestones.html', params)
 
 
 @login_required

@@ -1028,15 +1028,6 @@ var actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-window.addEventListener('load', function() {
-  const listen = function() {
-    listen_for_web3_changes(true);
-  };
-
-  listen();
-  setInterval(listen, 5000);
-});
-
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
   const denomination = $('#token option:selected').text();

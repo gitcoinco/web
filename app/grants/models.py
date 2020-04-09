@@ -297,6 +297,10 @@ class Grant(SuperModel):
         blank=True,
     )
     categories = models.ManyToManyField(GrantCategory, blank=True)
+    twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
+    twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
+    twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
+    twitter_handle_2_follower_count = models.PositiveIntegerField(blank=True, default=0)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -315,7 +319,7 @@ class Grant(SuperModel):
     def updateActiveSubscriptions(self):
         """updates the active subscriptions list"""
         handles = []
-        for handle in Subscription.objects.filter(grant=self, active=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
+        for handle in Subscription.objects.filter(grant=self, active=True, is_postive_vote=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
 
@@ -455,65 +459,6 @@ class Grant(SuperModel):
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
-
-
-class Milestone(SuperModel):
-    """Define the structure of a Grant Milestone"""
-
-    title = models.CharField(max_length=255, help_text=_('The Milestone title.'))
-    description = models.TextField(help_text=_('The Milestone description.'))
-    due_date = models.DateField(help_text=_('The requested Milestone completion date.'))
-    completion_date = models.DateField(
-        default=None,
-        blank=True,
-        null=True,
-        help_text=_('The Milestone completion date.'),
-    )
-    grant = models.ForeignKey(
-        'Grant',
-        related_name='milestones',
-        on_delete=models.CASCADE,
-        null=True,
-        help_text=_('The associated Grant.'),
-    )
-
-    def __str__(self):
-        """Return the string representation of a Milestone."""
-        return (
-            f" id: {self.pk}, title: {self.title}, description: {self.description}, "
-            f"due_date: {self.due_date}, completion_date: {self.completion_date}, grant: {self.grant_id}"
-        )
-
-
-class UpdateQuerySet(models.QuerySet):
-    """Define the Update default queryset and manager."""
-
-    pass
-
-
-class Update(SuperModel):
-    """Define the structure of a Grant Update."""
-    title = models.CharField(
-        default='',
-        max_length=255,
-        help_text=_('The title of the Grant.')
-    )
-    description = models.TextField(
-        default='',
-        blank=True,
-        help_text=_('The description of the Grant.')
-    )
-    grant = models.ForeignKey(
-        'grants.Grant',
-        related_name='updates',
-        on_delete=models.CASCADE,
-        null=True,
-        help_text=_('The associated Grant.'),
-    )
-
-    def __str__(self):
-        """Return the string representation of this object."""
-        return self.title
 
 
 class SubscriptionQuerySet(models.QuerySet):

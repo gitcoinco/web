@@ -16,17 +16,10 @@ for obj in old_grant.phantom_funding.all():
     obj.grant = new_grant
     obj.save()
 
-for obj in old_grant.milestones.all():
-    obj.grant = new_grant
-    obj.save()
-
 for obj in old_grant.activities.all():
     obj.grant = new_grant
     obj.save()
 
-for obj in old_grant.updates.all():
-    obj.grant = new_grant
-    obj.save()
 
 for obj in old_grant.clr_matches.all():
     obj.grant = new_grant
