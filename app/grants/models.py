@@ -1160,6 +1160,20 @@ class Contribution(SuperModel):
     )
     match = models.BooleanField(default=True, help_text=_('Whether or not this contribution should be matched.'))
 
+
+    originated_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The origination address of the funds used in this txn'),
+    )
+    validator_passed = models.BooleanField(default=False, help_text=_('Whether or not the backend validator passed.'))
+    validator_comment = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The why or why not validator passed'),
+    )
+
+
     def __str__(self):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime

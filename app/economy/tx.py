@@ -13,6 +13,12 @@ from dashboard.utils import get_tx_status
 from django.utils import timezone
 from dashboard.abi import erc20_abi
 from web3 import HTTPProvider
+import time
+
+
+def maybeprint(_str, _str2=None, _str3=None):
+    pass
+    #print(_str)
 
 ## web3 Exceptions
 class TransactionNotFound(Exception):
@@ -86,7 +92,7 @@ def transaction_status(transaction, txid):
     except BadFunctionCallOutput as e:
         pass
     except Exception as e:
-        print(89, e)
+        maybeprint(89, e)
 
 
 def check_transaction_contract(transaction_tax):
@@ -108,6 +114,7 @@ def grants_transaction_validator(contribution):
         'comment': 'Default'
     }
     token_originators = []
+
     for tx in tx_list:
 
         if not tx:
@@ -115,20 +122,24 @@ def grants_transaction_validator(contribution):
 
         # check for dropped and replaced txn
         status, timestamp = get_tx_status(tx, network, timezone.now())
+        maybeprint(120, round(time.time(),2))
         if status in ['pending', 'dropped', 'unknown', '']:
             new_tx = getReplacedTX(tx)
             if new_tx:
                 tx = new_tx
                 status, timestamp = get_tx_status(tx, network, timezone.now())
 
+        maybeprint(127, round(time.time(),2))
         # check for txfrs
         if status == 'success':
 
             # check if it was an ETH transaction
+            maybeprint(132, round(time.time(),2))
             transaction_receipt = w3.eth.getTransactionReceipt(tx)
             from_address = transaction_receipt['from']
             # todo save back to the txn if needed?
             if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
+                maybeprint(138, round(time.time(),2))
                 transaction_hash = transaction_receipt.transactionHash.hex()
                 transaction = check_transaction(transaction_hash)
                 if transaction.value > 0.001:
@@ -140,8 +151,11 @@ def grants_transaction_validator(contribution):
                         'token_amount_decimal': Decimal(transaction.value / 10 **18),
                         'decimals': 18,
                         }
-                token_originators = get_token_originators(from_address, '0x0', from_address=None, return_what='originators')
+                maybeprint(148, round(time.time(),2))
+                if not token_originators:
+                    token_originators = get_token_originators(from_address, '0x0', from_address=None, return_what='originators')
 
+            maybeprint(150, round(time.time(),2))
             # check if it was an ERC20 transaction
             if contribution.subscription.contributor_address and \
                 contribution.subscription.grant.admin_address and \
@@ -151,11 +165,16 @@ def grants_transaction_validator(contribution):
                 recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
                 token_address = Web3.toChecksumAddress(contribution.subscription.token_address)
 
+                maybeprint(160, round(time.time(),2))
                 # get token transfers
-                transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers')
-                if transfers:
-                    token_transfer = transfers
-                token_originators = get_token_originators(from_address, token_address, from_address=None, return_what='originators')
+                if not token_transfer:
+                    transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers')
+                    if transfers:
+                        token_transfer = transfers
+                maybeprint(169, round(time.time(),2))
+                if not token_originators:
+                    token_originators = get_token_originators(from_address, token_address, from_address=None, return_what='originators')
+                maybeprint(170, round(time.time(),2))
 
 
         # log transaction and and any xfr
@@ -229,28 +248,28 @@ headers = {'Authorization': f'Bearer {auth}'}
 def get_token_originators(to_address, token, from_address='', return_what='transfers'):
     address = to_address
 
-    is_address = requests.get('https://api.aleth.io/v1/accounts/' + address, headers=headers).status_code
+    #is_address = requests.get('https://api.aleth.io/v1/accounts/' + address, headers=headers).status_code
 
-    if is_address != requests.codes.ok:
-        raise ValueError('Address provided is not valid.')
+    #if is_address != requests.codes.ok:
+    #    raise ValueError('Address provided is not valid.')
 
-    is_token = requests.get(
-        'https://api.aleth.io/v1/tokens/' + (token),
-        headers=headers
-    ).status_code
+    #is_token = requests.get(
+    #    'https://api.aleth.io/v1/tokens/' + (token),
+    #    headers=headers
+    #).status_code
 
-    if is_token != requests.codes.ok and token != '0x0':
-        raise ValueError('Token provided is not valid.')
+    #if is_token != requests.codes.ok and token != '0x0':
+    #    raise ValueError('Token provided is not valid.')
 
-    balance = 0
-    try:
-        url = 'https://api.aleth.io/v1/token-balances?filter[account]=' + address + '&filter[token]=' + token
-        balance = requests.get(url, headers=headers).json()['data'][0]['attributes']['balance']
-
+    #balance = 0
+    #try:
+        #url = 'https://api.aleth.io/v1/token-balances?filter[account]=' + address + '&filter[token]=' + token
+        #balance = requests.get(url, headers=headers).json()['data'][0]['attributes']['balance']
+    #    pass
         #if balance == 0:
         #    raise ValueError('No balance of token at address provided.')
-    except Exception as e:
-        print(250, e)
+    #except Exception as e:
+    #    maybeprint(250, e)
 
     endpoint = 'token-transfers' if token != '0x0' else 'ether-transfers'
     url = f'https://api.aleth.io/v1/{endpoint}?filter[to]=' + address + '&filter[token]=' + token + '&page%5Blimit%5D=100'
@@ -263,6 +282,8 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
         url,
         headers=headers
     ).json()
+    if transfers.get('message') == 'API rate limit exceeded. Please upgrade your account.':
+        raise Exception("RATE LIMIT EXCEEDED")
     # TODO - pull more than one page in case there are many transfers.
 
     if return_what == 'transfers':
@@ -284,21 +305,21 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
         originators = []
         for tx in transfers.get('data', {}):
             if tx.get('type') == 'TokenTransfer':
-                url = f'https://api.aleth.io/v1/{endpoint}/' + tx['id'] + '/originator'
-                response = requests.get(url, headers=headers).json()
-                response = response['data']['id']
-                originators.append(response)
-
-            if tx.get('type') == 'EtherTransfer':
-                txid = tx.get('relationships').get('transaction').get('data').get('id')
-                url = f'https://api.aleth.io/v1/transactions/{txid}/'
-                response = requests.get(url, headers=headers).json()
-                response = response['data']['relationships']['from']['data']['id']
+                response = tx['relationships']['from']['data']['id']
+                # hack to save time
                 if response != to_address:
+                    return [response]
+                #originators.append(response)
+
+            if tx.get('type') == 'EtherTransfer' and int(tx.get('value', 0)) > 0:
+                response = tx['relationships']['originator']['data']['id']
+                if response != to_address:
+                    # hack to save time
+                    return [response]
                     originators.append(response)
 
         return list(set(originators))
     except Exception as e:
-        print('284', e)
+        maybeprint('284', e)
         return []
 
