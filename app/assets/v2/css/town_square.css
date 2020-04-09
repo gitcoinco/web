@@ -1006,6 +1006,11 @@ body.green.offer_view .announce {
 
 /* Toggle Switch Dope Mode */
 
+#dopeSwitch {
+  position: relative;
+  display: inline-block;
+}
+
 .dark {
   background-color: rgb(23, 7, 61);
 }
