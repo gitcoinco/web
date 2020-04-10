@@ -38,8 +38,8 @@ from dashboard.models import Activity, BlockedUser, Bounty, BountyFulfillment, P
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.zil import sync_zil_payout
-from eth_utils import keccak, to_checksum_address, to_hex
 from eth_abi import decode_single, encode_single
+from eth_utils import keccak, to_checksum_address, to_hex
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfshttpclient.exceptions import CommunicationError
