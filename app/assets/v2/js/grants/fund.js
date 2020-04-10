@@ -360,8 +360,8 @@ $(document).ready(function() {
 
       let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
       let realApproval;
-
       const approve_buffer = 100000;
+      
       if (data.contract_version == 1 || data.num_periods == 1) {
 
         realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + approve_buffer);
