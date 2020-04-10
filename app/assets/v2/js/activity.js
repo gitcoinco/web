@@ -1,6 +1,7 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
 });
 
 $(document).ready(function() {
