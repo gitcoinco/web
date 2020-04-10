@@ -6,8 +6,8 @@
               <p class="p-3 font-header">
                 <strong style="font-size: 24px;">$250k matching going on now.</strong>
                 <BR>
-                Matching ends on {{round_end|date:'Y-m-d'}} 
-                (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so get started today!
+                Matching ends on {{round_end|date:'Y-m-d'}} at noon EST.
+                <span style="display:none">(<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so get started today!</span>
               </p>
               <div class="float-right">
               <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
