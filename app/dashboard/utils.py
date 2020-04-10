@@ -1042,12 +1042,6 @@ def get_token_recipient_senders(network, recipient_address, token_address):
         abi=erc20_abi,
     )
 
-    balance = contract.functions.balanceOf(recipient_address).call()
-
-    if balance == 0:
-        return []
-
-
     # TODO: This can be made less brittle/opaque
     # see usage of contract.events.Transfer.getLogs in
     # commit 99a44cd3036ace8fcd886ed1e96747528f105d10

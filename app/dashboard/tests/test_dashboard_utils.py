@@ -310,3 +310,10 @@ class DashboardUtilsTest(TestCase):
             return is_address(address) or address == "0x0"
 
         assert all(validate(address) for address in addresses)
+
+        empty_addresses = get_token_recipient_senders(
+            'rinkeby',
+            token_address="0x8ad3aA5d5ff084307d28C8f514D7a193B2Bfe725",
+            recipient_address="0x57b4Af69127C69ec3248886bBa6deBAB7994695a")
+
+        assert len(empty_addresses) == 0
