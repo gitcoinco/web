@@ -7,7 +7,7 @@ $(document).ready(function() {
 
   var linkify = function(new_text) {
     new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a data-usercard="$1" href="/profile/$1">@$1</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
@@ -58,9 +58,9 @@ $(document).ready(function() {
     const $target = $(this).parents('.activity_detail_content');
     const html = `
     <p class='float-right p-0 m-0 video_options_container'>
-    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> | 
-    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> | 
-    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> | 
+    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> |
+    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> |
+    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> |
     <a href=# class=' leave_video_call'>Leave Video Call <i class="far fa-times-circle"></i></a>
     </p>`;
 
@@ -669,7 +669,7 @@ $(document).ready(function() {
         ${show_more_box}
         <div class="row comment_row mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
           <div class="col-1 activity-avatar my-auto">
-            <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
+            <a href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
           </div>
@@ -680,9 +680,9 @@ $(document).ready(function() {
                 <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
                   •
                 </span>
-              </span>          
+              </span>
                 <b>${comment['name']}</b>
-                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
+                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
                 @${comment['profile_handle']}
                 </a></span>
                 ${comment['match_this_round'] ? `
@@ -950,7 +950,7 @@ function throttle(fn, wait) {
     }
   };
 }
-  
+
 
 window.addEventListener('scroll', throttle(function() {
   var offset = 800;
