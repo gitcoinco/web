@@ -922,8 +922,7 @@ def projects_fetch(request):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
-    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related(
-        'profiles').order_by(order_by).select_related('bounty')
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by)
 
     if q:
         projects = projects.filter(
@@ -933,11 +932,15 @@ def projects_fetch(request):
         )
 
     if sponsor:
-        projects_sponsor = []
-        for project in projects:
-            if sponsor == project.bounty.org_name:
-                projects_sponsor.append(project)
-        projects = projects_sponsor
+        print(sponsor)
+        projects = projects.filter(
+            Q(bounty__github_url__icontains=sponsor)
+        )
+
+    if skills:
+        projects = projects.filter(
+            Q(profiles__keywords__icontains=skills)
+        )
 
     if filters == 'winners':
         projects = projects.filter(
@@ -953,18 +956,15 @@ def projects_fetch(request):
     except EmptyPage:
         projects_paginated = projects_paginator.page(projects_paginator.num_pages)
 
-    # projects_data = HackathonProjectSerializer(projects)
-    # print(projects_data)
-
-    # from rest_framework.renderers import JSONRenderer
-
+    projects_data = HackathonProjectSerializer(projects.all(), many=True)
 
     params = {
-        'data': list(projects.values())
+        'data': projects_data.data
     }
     params['has_next'] = projects_paginator.page(page).has_next()
     params['count'] = projects_paginator.count
     params['num_pages'] = projects_paginator.num_pages
+
     return JsonResponse(params, status=200, safe=False)
 
 @require_GET
@@ -3719,7 +3719,7 @@ def hackathon(request, hackathon='', panel='prizes'):
     from rest_framework.renderers import JSONRenderer
     from django.core.serializers.json import DjangoJSONEncoder
     hackathon_json = JSONRenderer().render(HackathonEventSerializer(hackathon_event).data)
-    print(hackathon_json)
+
     params = {
         'active': 'dashboard',
         'type': 'hackathon',

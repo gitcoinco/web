@@ -300,7 +300,7 @@
     </div>
     {% endif %}
     
-    <div id="dashboard-content" class="container-fluid no-gutter" style="">
+    <div id="dashboard-content" class="container-fluid no-gutter" style="min-height:600px;">
         <div id="dashboard-vue-app" class="row" v-cloak>
           <div :id="hackathonObj.identifier" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
             <div class="offset-lg-2 col-lg-10 col-12 hackathon-text pl-4">
@@ -418,7 +418,7 @@
                 <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
-                      Projects
+                      {% trans "Projects" %}
                       <span class="nav-badge d-none">[[ hackathonProjects.length ]]</span>
                     </div>
                   </template>
@@ -441,7 +441,7 @@
                           <div class="pb-4 border-bottom form-group">
                             <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
                             <div id="project_sponsors" class="form__select2">
-                              <select2 v-model.trim="params.sponsors" data-minimum-results-for-search="Infinity" class="form-control">
+                              <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
                                 <option value="" selected="true">All</option>
                                 <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
                                   [[ option.display_name ]]
@@ -450,7 +450,7 @@
                             </div>
                           </div>
                           <div class="g-multiselect pb-4 border-bottom form-group">
-                            <label for="skills" class="font-weight-bold">Skills</label>
+                            <label for="skills" class="font-weight-bold">Member Skills</label>
                             <div class="form__select2">
                               <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
                                 <option disabled value="0">Select one</option>
@@ -476,12 +476,9 @@
                             <div class="card card-project">
                                 <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
 
-                                <button v-if="project" onclick="@projectModal(project.bounty, project.pk)" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
-
-
                                 <div class="card-bg rounded-top" style="">
-                                  <!--<img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />-->
-                                  <!--<img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.logo" alt="Bounty Logo" />-->
+                                  <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
+                                  <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
                                 </div>
                                 <div class="card-body">
                                 <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
@@ -491,15 +488,15 @@
                                   </p>
                                   <div class="text-left">
                                     <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                    <a :href="project.work_url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
                                   </div>
                                 </div>
 
                                 <div class="my-3 mb-2 text-left">
                                   <b class="font-weight-bold font-smaller-3">Team Members</b>
                                   <div class="mt-1">
-                                      <a v-for="profile in project.profiles" href="{% url 'profile' profile %}" class="">
-                                        <!--<img :src="`${profile.avatar_url}`" :alt="`@${profile}`" :title="`@${profile}`" width="30" height="30" class="rounded-circle">-->
+                                      <a v-for="profile in project.profiles" :href=`/profile/${profile.handle}` class="">
+                                        <b-img-lazy :src="profile.avatar_url" :alt=`"@${profile.handle}"` :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
                                       </a>
                                   </div>
                                 </div>
@@ -513,8 +510,8 @@
 
                                 <div class="font-smaller-2 mt-4">
                                   <b class="font-weight-bold">Sponsored by</b>
-                                  <!--<img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />-->
-                                  <!--<a href="">[[ project.bounty.org_name ]]</a>-->
+                                  <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
+                                  <a href="">[[ project.bounty.org_name ]]</a>
                                 </div>
                               </div>
                               </div>

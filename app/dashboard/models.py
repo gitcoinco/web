@@ -4622,7 +4622,6 @@ class HackathonSponsor(SuperModel):
     )
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
 
-
 class HackathonProject(SuperModel):
     PROJECT_STATUS = [
         ('invalid', 'invalid'),
@@ -4689,7 +4688,12 @@ class HackathonProject(SuperModel):
 
 from rest_framework import serializers
 
+from .router import BountySerializer
+
 class HackathonProjectSerializer(serializers.ModelSerializer):
+    bounty = BountySerializer()
+    profiles = ProfileSerializer(many=True)
+
     class Meta:
         model = HackathonProject
         fields = ('chat_channel_id', 'status', 'badge', 'bounty', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo')
