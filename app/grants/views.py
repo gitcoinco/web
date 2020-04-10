@@ -70,8 +70,14 @@ matching_live = '(💰$250K Match LIVE!) '
 matching_live_tiny = '💰'
 total_clr_pot = 250000
 clr_round = 5
-clr_active = True
+clr_active = False
 show_clr_card = True
+# Round Schedule
+# from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
+# Round 5 - March 23th — April 7th 2020
+# Round 6 - June 15th — June 29th 2020
+# Round 7 - September 14th — September 28th 2020
+
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 round_end = timezone.datetime(2020, 4, 10, 10, 0)
 round_types = ['media', 'tech', 'health']
@@ -503,7 +509,7 @@ def grant_details(request, grant_id, grant_slug):
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
         'tab': tab,
-        'title': matching_live_tiny + " Grants | " + grant.title,
+        'title': matching_live_tiny + grant.title + " | Grants",
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
