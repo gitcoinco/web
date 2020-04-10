@@ -309,7 +309,6 @@ def get_profile_from_referral_code(code):
 
 def get_bounty_invite_url(inviter, bounty_id):
     """Returns a unique url for each bounty and one who is inviting
-
     Returns:
         A unique string for each bounty
     """
@@ -1035,14 +1034,15 @@ def _extract_sender_address_from_log(log):
     return decode_single("address", log['topics'][1])
 
 
-def get_token_recipient_senders(recipient_address, token_address):
-    w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+def get_token_recipient_senders(network, recipient_address, token_address):
+    w3 = get_web3(network)
+
     contract = w3.eth.contract(
         address=token_address,
         abi=erc20_abi,
     )
 
-    balance = contract.functions.balanceOf(recipient_address).call() > 0
+    balance = contract.functions.balanceOf(recipient_address).call()
 
     if balance == 0:
         return []

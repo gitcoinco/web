@@ -302,10 +302,11 @@ class DashboardUtilsTest(TestCase):
     @staticmethod
     def test_get_token_recipient_senders():
         addresses = get_token_recipient_senders(
+            'rinkeby',
             token_address="0x8ad3aA5d5ff084307d28C8f514D7a193B2Bfe725",
             recipient_address="0x03bCeC53fD1a2617a3B064eE8fE4f4c4aacc765B")
 
         def validate(address):
-            is_address(address) or address == "0x0"
+            return is_address(address) or address == "0x0"
 
         assert all(validate(address) for address in addresses)
