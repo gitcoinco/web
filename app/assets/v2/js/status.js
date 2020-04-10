@@ -243,7 +243,7 @@ $(document).ready(function() {
 
   });
 
-  $('#textarea').autogrow();
+  $('#textarea').autogrow({vertical: true, horizontal: true});
 
   // handle video button
   $('body').on('click', '#video-button', function(e) {

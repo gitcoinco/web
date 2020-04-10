@@ -3685,7 +3685,9 @@ def hackathon(request, hackathon='', panel='prizes'):
         org = {
             'display_name': sponsor_profile.name,
             'avatar_url': sponsor_profile.avatar_url,
-            'org_name': sponsor_profile.handle
+            'org_name': sponsor_profile.handle,
+            'follower_count': sponsor_profile.tribe_members.all().count(),
+            'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
         }
         orgs.append(org)
 
@@ -3718,7 +3720,9 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     from rest_framework.renderers import JSONRenderer
     from django.core.serializers.json import DjangoJSONEncoder
+    from townsquare.views import get_following_tribes
     hackathon_json = JSONRenderer().render(HackathonEventSerializer(hackathon_event).data)
+    following_tribes = get_following_tribes(request)
 
     params = {
         'active': 'dashboard',
@@ -3736,6 +3740,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'SHOW_DRESSING': False,
         'use_pic_card': True,
         'projects': [],
+        'banner': f"/media/{hackathon_event.banner}" if hackathon_event.banner else None,
         'panel': active_tab
     }
 

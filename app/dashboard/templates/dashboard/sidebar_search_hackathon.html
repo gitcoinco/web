@@ -28,7 +28,6 @@
   <form>
     <div class="col">
 
-    {%  if not no_filter %}
     {% if hackathon %}
       <div class="col-12 subheading left-ribbon">
         {% trans "Hackathon Sponsors" %}
@@ -55,27 +54,6 @@
         {% endfor %}
       </div>
     </div>
-
-    <div class="col" id="network-filter" style="display: hidden;">
-      <div class="col-12 subheading">{% trans "Network" %}</div>
-      <div class="col-12 options">
-        <div class="checkbox_container">
-          <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=rinkeby>{% trans "Rinkeby" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=mainnet>{% trans "Mainnet" %}</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="col" id="network-filter" style="display: hidden;">
       <div class="col-12 subheading">{% trans "Network" %}</div>
       <div class="col-12 options">

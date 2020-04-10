@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 (function($) {
 
-  let hackathonProjects = []
+  let hackathonProjects = [];
   let projectsPage = 1;
   let hackathonSponsors = document.hackathonSponsors;
   let projectsNumPages = '';
@@ -31,7 +31,7 @@
 
   var localStorage;
 
-  var explorer = { };
+  var explorer = {};
 
   try {
     localStorage = window.localStorage;
@@ -90,8 +90,8 @@
   const scrub = value => value.replace(/[!@#$%^&*(),.?":{}|<>]+/g, '');
 
   /**
- * Fetches all filters options from the URI
- */
+   * Fetches all filters options from the URI
+   */
   var getActiveFilters = function() {
 
     if (window.location.search) {
@@ -113,8 +113,8 @@
   };
 
   /**
- * Build URI based on selected filter
- */
+   * Build URI based on selected filter
+   */
   var buildURI = function(custom_filters) {
     let uri = '';
     let _filters = [];
@@ -136,8 +136,8 @@
   };
 
   /**
- * Updates localStorage with selected filters
- */
+   * Updates localStorage with selected filters
+   */
   var save_sidebar_latest = function() {
     localStorage['order_by'] = $('#sort_option').val();
 
@@ -227,10 +227,10 @@
       return;
     }
     if (event.target.value === 'any') {
-    // Deselect other filters when 'any' is selected
+      // Deselect other filters when 'any' is selected
       $('input[name="' + key + '"][value!=any]').prop('checked', false);
     } else {
-    // Deselect option 'any' when another filter is selected
+      // Deselect option 'any' when another filter is selected
       anyOption.prop('checked', false);
     }
   };
@@ -251,7 +251,7 @@
       localStorage['keywords'] = value;
     }
     $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(value) + '\')"></i></a>');
+      '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(value) + '\')"></i></a>');
   };
 
   var addTechStackOrgFilters = function(value) {
@@ -271,7 +271,7 @@
     }
 
     $('.filter-tags').append('<a class="filter-tag keywords"><span>' + scrub(value) + '</span>' +
-    '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(value) + '\')"></i></a>');
+      '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(value) + '\')"></i></a>');
   };
 
   var getFilters = function() {
@@ -281,7 +281,7 @@
       $.each($('input[name="' + filter + '"]:checked'), function() {
         if ($(this).attr('val-ui')) {
           _filters.push('<a class="filter-tag ' + filter + '"><span>' + $(this).attr('val-ui') + '</span>' +
-          '<i class="fas fa-times" onclick="removeFilter(\'' + filter + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+            '<i class="fas fa-times" onclick="removeFilter(\'' + filter + '\', \'' + $(this).attr('value') + '\')"></i></a>');
         }
       });
     });
@@ -289,14 +289,14 @@
     if (localStorage['keywords']) {
       localStorage['keywords'].split(',').forEach(function(v, k) {
         _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(v) + '\')"></i></a>');
+          '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + scrub(v) + '\')"></i></a>');
       });
     }
 
     if (localStorage['org']) {
       localStorage['org'].split(',').forEach(function(v, k) {
         _filters.push('<a class="filter-tag keywords"><span>' + scrub(v) + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(v) + '\')"></i></a>');
+          '<i class="fas fa-times" onclick="removeFilter(\'org\', \'' + scrub(v) + '\')"></i></a>');
       });
     }
 
@@ -325,7 +325,7 @@
     filters.forEach((filter) => {
       var active_filters = [];
 
-      $.each ($('input[name="' + filter + '"]:checked'), function() {
+      $.each($('input[name="' + filter + '"]:checked'), function() {
         if ($(this).val()) {
           active_filters.push($(this).val());
         }
@@ -371,8 +371,8 @@
       }
 
       if (val && val !== 'any' &&
-      filter !== 'bounty_filter' &&
-      filter !== 'bounty_owner_address') {
+        filter !== 'bounty_filter' &&
+        filter !== 'bounty_owner_address') {
         if (!uri.endsWith('?'))
           uri += '&';
         uri += filter + '=' + val;
@@ -458,8 +458,6 @@
 
 
   var addPopover = () => {
-    // $('[data-toggle="popover"]').popover();
-    console.log('pops enabled');
     $('.bounty_row').popover({
       html: true,
       trigger: 'hover',
@@ -476,8 +474,6 @@
     document.done_loading_results = false;
     document.offset = 0;
   };
-
-  let organizations = [];
 
   var refreshBounties = function(event, offset, append) {
 
@@ -509,7 +505,7 @@
       toggleAny(event);
 
       const org = $("input[name='org']:checked").val();
-      console.log("we're here")
+
       localStorage['org'] = org === 'any' ? '' : org;
       localStorage['order_by'] = $('#sort_option').val();
       window.history.pushState('', '', window.location.pathname + '?' + buildURI([ 'org', 'tab' ]));
@@ -586,7 +582,7 @@
       }
     }).fail(function() {
       if (explorer.bounties_request.readyState !== 0)
-        _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
     }).always(function() {
       $('.loading').css('display', 'none');
       addPopover();
@@ -613,7 +609,7 @@
       }
     }).fail(function() {
       if (explorer.bounties_request.readyState !== 0)
-        _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+        _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
     }).always(function() {
       $('.loading').css('display', 'none');
       addPopover();
@@ -622,9 +618,9 @@
 
 
   /**
- * removed all filters from the sidebar search
- * resetKeyword : boolean
- */
+   * removed all filters from the sidebar search
+   * resetKeyword : boolean
+   */
   var resetFilters = function(resetKeyword) {
     filters.forEach((filter) => {
       var tag = ($('input[name="' + filter + '"][value]'));
@@ -718,7 +714,7 @@
           $('.close-icon').hide();
         }
       })
-    // don't navigate away from the field on tab when selecting an item
+      // don't navigate away from the field on tab when selecting an item
       .on('keydown', function(event) {
         if (event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete('instance').menu.active) {
           event.preventDefault();
@@ -727,11 +723,11 @@
       .autocomplete({
         minLength: 0,
         source: function(request, response) {
-        // delegate back to autocomplete, but extract the last term
+          // delegate back to autocomplete, but extract the last term
           response($.ui.autocomplete.filter(document.keywords, extractLast(request.term)));
         },
         focus: function() {
-        // prevent value inserted on focus
+          // prevent value inserted on focus
           return false;
         },
         select: function(event, ui) {
@@ -837,18 +833,25 @@
 
         vm.hackathonSponsrs.map((n) => {
           tribesData[n.org_name] = n;
-        })
-        vm.tribesData = tribesData;
+        });
+        this.tribesData = tribesData;
       },
       methods: {
-        followTribe: (tribe) => {
+        followTribe: function(tribe, event) {
+          event.preventDefault();
           let vm = this;
           let sponsorLocal = vm.tribesData[tribe];
 
+          const url = `/tribe/${tribe}/join/`;
+          const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
 
-          let apiFollowUrl = `/api/v0.1/projects_fetch/?${sponsorLocal.org_name.toString()}`;
+          $.when(sendJoin).then((response) => {
 
-          var followTribeRequest = fetchData (apiFollowUrl, 'GET');
+            vm.tribesData[tribe].follower_count = response.is_member ? sponsorLocal.follower_count + 1 : sponsorLocal.follower_count - 1;
+
+          }).fail((error) => {
+            console.log(error);
+          });
         }
       },
       data: () => ({
@@ -880,7 +883,7 @@
 
           let apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
 
-          var getProjects = fetchData (apiUrlProjects, 'GET');
+          var getProjects = fetchData(apiUrlProjects, 'GET');
 
           $.when(getProjects).then(function(response) {
             vm.hackathonProjects = [];
@@ -963,6 +966,7 @@
       el: '#dashboard-vue-app',
       updated: () => {
         addPopover();
+        // $('#textarea').autogrow();
       },
       mounted: () => {
         setTimeout(() => {
@@ -974,12 +978,11 @@
         }, 0);
       },
       methods: {
-        tabChange: (input) => {
+        tabChange: function(input) {
           let vm = this;
 
-          console.log(vm.activePanel);
-          console.log(vm.hackathonObj);
           addPopover();
+
 
           switch (input) {
             default:

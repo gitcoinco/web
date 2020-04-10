@@ -142,7 +142,7 @@
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
         height: 225px;
-        background-image: url('/static/wallpapers/V3.png');
+        background-image: url('{% firstof banner or "/static/wallpapers/V3.png" %}');
       }
 
       .bounty_row img.avatar {
@@ -873,13 +873,12 @@
                           <h5 class="mt-0 mb-1">[[ sponsor.org_name ]]</h5>
                         </div>
                         <div class="col-2 offset-2">
-                          <b-button variant="outline-primary" class="btn-outline-gc-blue">follow</b-button>
+                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" class="btn-outline-gc-blue">follow</b-button>
                         </div>
                         <div class="col-8 offset-1">
                           <ul class="list-unstyled" class="mb-0">
-                            <li>#5 Tribe</li>
-                            <li><b-icon icon="person"></b-icon>26 Followers</li>
-                            <li><b-icon icon="trophy"></b-icon># Bounties Funded</li>
+                            <li><b-icon icon="person-fill"></b-icon>[[ sponsor.follower_count ]] Followers</li>
+                            <li><b-icon icon="trophy"></b-icon>[[ sponsor.bounty_count ]] Bounties Funded</li>
                           </ul>
                         </div>
                       </div>
