@@ -17,9 +17,14 @@ stats = {}
 for contrib in contributions:
     key = contrib.subscription.grant.title
     if key not in stats.keys():
+        match_amount = 0
+        try:
+            match_amount = contrib.subscription.grant.clr_prediction_curve[0][1]
+        except:
+            pass
         stats[key] = {
             'url': "https://gitcoin.co" + contrib.subscription.grant.url,
-            'match_amount': contrib.subscription.grant.clr_prediction_curve[0][1],
+            'match_amount': match_amount,
             'contributions': [],
             'contributions_per_profile': [],
             'contributions_per_originated_address': [],
@@ -37,7 +42,7 @@ for key, pkg in stats.items():
     print(
         pkg['url'], ",",
         key, ",",
-        len(set(pkg['match_amount'])), ",",
+        ((pkg['match_amount'])), ",",
         len(set(pkg['contributions'])), ",",
         len(set(pkg['contributions_per_profile'])), ",",
         len(set(pkg['contributions_per_originated_address'])), ",",
