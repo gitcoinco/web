@@ -32,12 +32,14 @@ import requests
 from app.utils import sync_profile
 from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
+from cytoolz import compose
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, BlockedUser, Bounty, BountyFulfillment, Profile, UserAction
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.zil import sync_zil_payout
-from eth_utils import to_checksum_address
+from eth_utils import keccak, to_checksum_address, to_hex
+from eth_abi import decode_single, encode_single
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfshttpclient.exceptions import CommunicationError
@@ -1001,31 +1003,65 @@ def get_custom_avatars(profile):
     return CustomAvatar.objects.filter(profile=profile).order_by('-id')
 
 
-def trim_null_address(address):
+def _trim_null_address(address):
     if address == '0x0000000000000000000000000000000000000000':
         return '0x0'
     else:
         return address
 
 
-def get_token_recipient_senders(recipient_address, token_addres):
+def _construct_transfer_filter_params(
+        recipient_address,
+        token_address,):
+
+    event_topic = keccak(text="Transfer(address,address,uint256)")
+
+    # [event, from, to]
+    topics = [
+        to_hex(event_topic),
+        None,
+        to_hex(encode_single('address', recipient_address))
+    ]
+
+    return {
+        "topics": topics,
+        "fromBlock": 0,
+        "toBlock": "latest",
+        "address": token_address,
+    }
+
+
+def _extract_sender_address_from_log(log):
+    return decode_single("address", log['topics'][1])
+
+
+def get_token_recipient_senders(recipient_address, token_address):
     w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
     contract = w3.eth.contract(
         address=token_address,
         abi=erc20_abi,
     )
 
-    balance = contract.functions.balanceOf(recipient_address).call()
+    balance = contract.functions.balanceOf(recipient_address).call() > 0
 
     if balance == 0:
         return []
 
-    transfers = contract.events.Transfer.getLogs(
-        fromBlock=0,
-        toBlock="latest",
-        argument_filters={"to": recipient_address})
 
-    return [
-        trim_null_address(transfer.args['from'])
-        for transfer in transfers
-    ]
+    # TODO: This can be made less brittle/opaque
+    # see usage of contract.events.Transfer.getLogs in
+    # commit 99a44cd3036ace8fcd886ed1e96747528f105d10
+    # after migrating to web3 >= 5.
+    filter_params = _construct_transfer_filter_params(
+        recipient_address,
+        token_address,
+    )
+
+    logs = w3.eth.getLogs(filter_params)
+
+    process_log = compose(
+        _trim_null_address,
+        _extract_sender_address_from_log
+    )
+
+    return [process_log(log) for log in logs]
