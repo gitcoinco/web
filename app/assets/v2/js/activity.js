@@ -741,6 +741,9 @@ $(document).ready(function() {
           </div>
           <div class="col-12 col-sm-11 text-right">
             <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
+            <div class="comment-area position-absolute d-flex flex-wrap" style="width: 3.6em; right: 0; top: 0">
+              <button class="btn btn-sm p-1 emoji_button" data-toggle="tooltip" title="Add an emoji to post." style="bottom: 3.5em; right: 0; top: 0;"><i class="far fa-fw fa-smile"></i></button>
+            </div>
             <a href=# class="btn btn-gc-blue btn-sm mt-= font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
@@ -753,6 +756,23 @@ $(document).ready(function() {
     });
   };
 
+  // add emoji to comment
+  var picker = new EmojiButton({
+    position: 'right-end'
+  });
+
+  $(document).on('click', '.emoji_button', function(e) {
+    e.preventDefault();
+
+    var commentArea = $(this)[0].parentElement.parentElement;
+    var emojiDisplayArea = $(this)[0].parentElement
+
+    picker.pickerVisible ? picker.hidePicker() : picker.showPicker(emojiDisplayArea);
+
+    picker.on('emoji', function(emoji) {
+      commentArea.children[0].value += ` ${emoji} `;
+    });
+  });
 
   // post comment activity
   $(document).on('click', '.comment_container .action.like', function(e) {

@@ -79,6 +79,9 @@ a .sup {
 .action.open {
   background-color: #eeeeee;
 }
+.comment-area{
+  top: 0 !important;
+}
 .comment_container .row{
   max-width: 100%;
 }
