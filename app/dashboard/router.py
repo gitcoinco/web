@@ -21,15 +21,15 @@ import logging
 import time
 from datetime import datetime
 
-from django.db.models import Count, F
+from django.db.models import Count, F,
 
 import django_filters.rest_framework
-from kudos.models import KudosTransfer, Token
+from kudos.models import KudosTransfer, Token,
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, Interest, Profile, ProfileSerializer,
+    Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile, ProfileSerializer,
     SearchHistory,
 )
 
@@ -51,13 +51,13 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
 
 class HackathonEventSerializer(serializers.ModelSerializer):
     """Handle serializing the hackathon object."""
+    sponsor_profiles = ProfileSerializer(many=True)
 
     class Meta:
         """Define the hackathon serializer metadata."""
 
         model = HackathonEvent
-        fields = ('name', 'slug')
-
+        fields = '__all__'
 
 # TODO : REMOVE KudosSerializer
 class KudosSerializer(serializers.ModelSerializer):
@@ -187,6 +187,17 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                 bounty_invite.status = 'completed'
                 bounty_invite.save()
         return bounty
+
+
+class HackathonProjectSerializer(serializers.ModelSerializer):
+    bounty = BountySerializer()
+    profiles = ProfileSerializer(many=True)
+    hackathon = HackathonEventSerializer()
+
+    class Meta:
+        model = HackathonProject
+        fields = ('chat_channel_id', 'status', 'badge', 'bounty', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo')
+        depth = 1
 
 
 class BountySerializerSlim(BountySerializer):

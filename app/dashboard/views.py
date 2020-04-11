@@ -50,7 +50,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -86,7 +85,11 @@ from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from retail.utils import programming_languages, programming_languages_full
+from rest_framework.renderers import JSONRenderer
 from townsquare.models import Comment
+from townsquare.views import get_following_tribes
+from townsquare.views import get_tags
 from web3 import HTTPProvider, Web3
 
 from .export import (
@@ -98,7 +101,7 @@ from .helpers import (
 )
 from .models import (
     Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
-    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonProjectSerializer, HackathonRegistration,
+    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
     SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
@@ -110,6 +113,10 @@ from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
     release_bounty_to_the_public, sync_payout, web3_process_bounty,
+)
+from .router import (
+    HackathonEventSerializer,
+    HackathonProjectSerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -914,6 +921,7 @@ def projects_fetch(request):
     skills = clean(request.GET.get('skills', ''), strip=True)
     filters = clean(request.GET.get('filters', ''), strip=True)
     sponsor = clean(request.GET.get('sponsor', ''), strip=True)
+    # TODO: refactor for pagination
     page = clean(request.GET.get('page', 1))
     hackathon_id = clean(request.GET.get('hackathon', ''))
 
@@ -922,7 +930,7 @@ def projects_fetch(request):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
-    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by)
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
 
     if q:
         projects = projects.filter(
@@ -932,7 +940,6 @@ def projects_fetch(request):
         )
 
     if sponsor:
-        print(sponsor)
         projects = projects.filter(
             Q(bounty__github_url__icontains=sponsor)
         )
@@ -947,23 +954,14 @@ def projects_fetch(request):
             Q(badge__isnull=False)
         )
 
-    projects_paginator = Paginator(projects, 9)
-
-    try:
-        projects_paginated = projects_paginator.page(page)
-    except PageNotAnInteger:
-        projects_paginated = projects_paginator.page(1)
-    except EmptyPage:
-        projects_paginated = projects_paginator.page(projects_paginator.num_pages)
-
     projects_data = HackathonProjectSerializer(projects.all(), many=True)
 
     params = {
-        'data': projects_data.data
+        'data': projects_data.data,
+        'has_next': False,
+        'count': projects.all().count(),
+        'num_pages': 1
     }
-    params['has_next'] = projects_paginator.page(page).has_next()
-    params['count'] = projects_paginator.count
-    params['num_pages'] = projects_paginator.num_pages
 
     return JsonResponse(params, status=200, safe=False)
 
@@ -3697,9 +3695,8 @@ def hackathon(request, hackathon='', panel='prizes'):
     if not is_registered:
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
-    from townsquare.views import get_tags
     view_tags = get_tags(request)
-
+    active_tab = 0
     if panel == "prizes":
         active_tab = 0
     elif panel == "townsquare":
@@ -3711,21 +3708,11 @@ def hackathon(request, hackathon='', panel='prizes'):
     elif panel == "participants":
         active_tab = 4
 
-    from rest_framework import serializers
-
-    class HackathonEventSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = HackathonEvent
-            fields = "__all__"
-
-    from rest_framework.renderers import JSONRenderer
-    from django.core.serializers.json import DjangoJSONEncoder
-    from townsquare.views import get_following_tribes
     hackathon_json = JSONRenderer().render(HackathonEventSerializer(hackathon_event).data)
     following_tribes = get_following_tribes(request)
-
     params = {
         'active': 'dashboard',
+        'prize_count': hackathon_event.get_current_bounties.count(),
         'type': 'hackathon',
         'title': title,
         'target': f'/activity?what=hackathon:{hackathon_event.id}',
@@ -3744,10 +3731,6 @@ def hackathon(request, hackathon='', panel='prizes'):
         'panel': active_tab
     }
 
-
-    # fetch sponsors for the hackathon
-    hackathon_sponsors = HackathonSponsor.objects.filter(hackathon=hackathon_event)
-
     if hackathon_event.identifier == 'grow-ethereum-2019':
         params['card_desc'] = "The ‘Grow Ethereum’ Hackathon runs from Jul 29, 2019 - Aug 15, 2019 and features over $10,000 in bounties"
 
@@ -3759,7 +3742,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         from dashboard.context.hackathon_explorer import eth_hack
         params['sponsors'] = eth_hack
 
-    from retail.utils import programming_languages, programming_languages_full
+
 
     keywords = programming_languages + programming_languages_full
     params['keywords'] = keywords

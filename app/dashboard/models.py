@@ -4602,12 +4602,6 @@ def psave_hackathonevent(sender, instance, **kwargs):
             )
 
 
-class HackathonSponsorProfile(SuperModel):
-    hackathon = models.ForeignKey('HackathonEvent', default=1, on_delete=models.CASCADE)
-    profile = models.ForeignKey('Profile', blank=True, on_delete=models.CASCADE)
-    chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
-
-
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [
         ('G', 'Gold'),
@@ -4621,6 +4615,7 @@ class HackathonSponsor(SuperModel):
         default='G',
     )
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+
 
 class HackathonProject(SuperModel):
     PROJECT_STATUS = [
@@ -4689,15 +4684,6 @@ class HackathonProject(SuperModel):
 from rest_framework import serializers
 
 from .router import BountySerializer
-
-class HackathonProjectSerializer(serializers.ModelSerializer):
-    bounty = BountySerializer()
-    profiles = ProfileSerializer(many=True)
-
-    class Meta:
-        model = HackathonProject
-        fields = ('chat_channel_id', 'status', 'badge', 'bounty', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo')
-        depth = 1
 
 
 class FeedbackEntry(SuperModel):

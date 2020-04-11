@@ -358,11 +358,6 @@ class HackathonSponsorAdmin(admin.ModelAdmin):
 
     list_display = ['pk', 'hackathon', 'sponsor', 'sponsor_type']
 
-class HackathonSponsorProfileAdmin(admin.ModelAdmin):
-    """The admin object for the HackathonSponsor model."""
-
-    list_display = ['pk', 'hackathon', 'profile', 'chat_channel_id']
-
 
 class SponsorAdmin(admin.ModelAdmin):
     """The admin object for the Sponsor model."""
