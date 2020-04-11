@@ -4128,25 +4128,6 @@ def get_hackathons(request):
                 'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
             })
 
-            """Popluate tribes for tribes section.
-
-            if a hackathon is ongoing, show tribes that have bounties listed.
-            
-            TODO: if no hackathon is ongoing, default to tribes who participated in
-            the most number of hackathons.
-            TODO: if no hackathon going, show tribes that most recently
-            listed their bounties.
-            """
-            if event_bounties.current().exists():
-                for bounty in event_bounties.current():
-                    for tribe in Profile.objects.filter(handle=bounty.org_name, is_org=True):
-                        tribes.append({
-                        'display_name': bounty.org_display_name,
-                        'logo_path': bounty.avatar_url,
-                        'members': tribe.follower_count,
-                        'path': tribe.absolute_url
-                        })
-
     if upcoming_hackathon_event.exists():
         for event in upcoming_hackathon_event:
             event_bounties = Bounty.objects.filter(event=event, network=network)
@@ -4176,6 +4157,35 @@ def get_hackathons(request):
                 ),
                 'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
             })
+
+
+    """Popluate tribes for tribes section.
+
+    if there exists current hackathons, then show tribes that have
+    event bounties listed.
+
+    TODO: if there are no current hackathons but there exists upcoming,
+    then show tribes from the most recently active hackthon.
+
+    TODO: if there are no active or upcoming hackathons at all, then
+    show the top four tribes defined by order of which tribe has
+    participated in the most number of hackathons.
+    """
+    if current_hackathon_event.exists():
+        tribe_fields = {
+            (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
+            for bounty
+            in list(Bounty.objects.current().filter(event__isnull=False))
+        }
+
+        for field in tribe_fields:
+            tribes.append({
+                'display_name': field[0],
+                'logo_path': field[1],
+                'members': list(Profile.objects.filter(handle=field[2], is_org=True).values_list('follower_count', flat=True))[0],
+                'path': list(Profile.objects.filter(handle=field[2], is_org=True))[0].absolute_url
+            })
+
 
     params = {
         'active': 'hackathons',
