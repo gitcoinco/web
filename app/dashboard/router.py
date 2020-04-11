@@ -21,16 +21,16 @@ import logging
 import time
 from datetime import datetime
 
-from django.db.models import Count, F,
+from django.db.models import Count, F
 
 import django_filters.rest_framework
-from kudos.models import KudosTransfer, Token,
+from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile, ProfileSerializer,
-    SearchHistory,
+    SearchHistory
 )
 
 logger = logging.getLogger(__name__)
@@ -196,7 +196,7 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HackathonProject
-        fields = ('chat_channel_id', 'status', 'badge', 'bounty', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo')
+        fields = ('chat_channel_id', 'status', 'badge', 'bounty', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message')
         depth = 1
 
 
