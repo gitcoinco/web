@@ -167,7 +167,7 @@
           <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
             {% for title, count in tabs %}
               <li class="nav-item">
-                <a class="nav-link nav-line {% if title == 'current' %}active{% endif %}" href="#" data-href="{{ title }}" style="{% if title == 'current' %}font-weight: 700;{% endif %}">{{ title|title }} ({{ count }})</a>
+                <a class="nav-link nav-line {% if title == default_tab %}active{% endif %}" href="#" data-href="{{ title }}" style="{% if title == default_tab %}font-weight: 700;{% endif %}">{{ title|title }} ({{ count }})</a>
               </li>
             {% endfor %}
           </ul>
@@ -186,7 +186,7 @@
                   }
                 </style>
 
-                <div class="col-xs-12 col-md-9 col-lg-8 col-xl-5 mx-auto hackathon-list {{ event.title }} {% if event.title != 'current' %}hidden{% endif %}">
+                <div class="col-xs-12 col-md-9 col-lg-8 col-xl-5 mx-auto hackathon-list {{ event.title }} {% if event.title != default_tab %}hidden{% endif %}">
 
                   <div class="card flex-row flex-wrap mb-5" id="{{ event.hackathon.slug }}">
 

@@ -4414,6 +4414,13 @@ def get_hackathons(request):
         'tribes': tribes,
     }
 
+    if current_hackathon_event.exists():
+        params['default_tab'] = 'current'
+    elif upcoming_hackathon_event.exists():
+        params['default_tab'] = 'upcoming'
+    else:
+        params['default_tab'] = 'finished'
+
     # template needs a value set for the 'featured' key
     # refactor when no featured hackathon is handled
     params['featured'] = HackathonEvent.objects.filter(is_featured=True)[0] if \
