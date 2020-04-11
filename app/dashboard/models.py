@@ -4681,11 +4681,6 @@ class HackathonProject(SuperModel):
     def get_absolute_url(self):
         return self.url()
 
-from rest_framework import serializers
-
-from .router import BountySerializer
-
-
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
         'dashboard.Bounty',
