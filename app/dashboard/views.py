@@ -4371,10 +4371,10 @@ def get_hackathons(request):
     if there exists current hackathons, then show tribes that have
     event bounties listed.
 
-    TODO: if there are no current hackathons but there exists upcoming,
+    if there are no current hackathons but there exists upcoming hackathons,
     then show tribes from the most recently active hackthon.
 
-    TODO: if there are no active or upcoming hackathons at all, then
+    TODO: if there are no current or upcoming hackathons at all, then
     show the top four tribes defined by order of which tribe has
     participated in the most number of hackathons.
     """
@@ -4392,7 +4392,17 @@ def get_hackathons(request):
                 'members': list(Profile.objects.filter(handle=field[2], is_org=True).values_list('follower_count', flat=True))[0],
                 'path': list(Profile.objects.filter(handle=field[2], is_org=True))[0].absolute_url
             })
+    elif upcoming_hackathon_event.exists():
+        most_recent_finished = HackathonEvent.objects.finished().filter(visible=True).order_by('-end_date')[0]
+        prize_sponsors = list(Bounty.objects.current().filter(event=most_recent_finished))
 
+        if prize_sponsors:
+            tribes.append({
+                'display_name': prize_sponsors[0].org_display_name,
+                'logo_path': prize_sponsors[0].avatar_url,
+                'members': list(Profile.objects.filter(handle=prize_sponsors[0].org_name, is_org=True).values_list('follower_count', flat=True))[0],
+                'path': list(Profile.objects.filter(handle=prize_sponsors[0].org_name, is_org=True))[0].absolute_url
+            })
 
     params = {
         'active': 'hackathons',
