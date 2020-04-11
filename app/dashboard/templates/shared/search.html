@@ -1,0 +1,66 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize %}
+
+<div id="gc-search" class="nav-item dropdown gc-search order-md-last">
+  <a href="" class="gc-search__icon nav-link dropdown-toggle" id="searchDropdown" role="button"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-search fa-fw"></i>
+  </a>
+  <div class="dropdown-menu dropdown-menu-right animation slideDownIn gc-search-box" aria-labelledby="searchDropdown">
+    <div class="has-search p-3">
+      <input type="text" class="form-control font-caption" v-model="term" @input="search" placeholder="enter 3 characters to search">
+    </div>
+    <template v-if="Object.keys(results).length">
+      <ul class="nav nav-tabs mt-1 gc-search-nav d-flex justify-content-around" role="tablist">
+        <li class="nav-item" v-for='(source_type, index) in source_types' :key="index">
+          <a class="nav-link nav-line gc-search-tab__title px-1" @click="currentTab = index" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ labels[source_type] ]]
+            <span v-if="typeof results[source_type] !== 'undefined'">([[ results[source_type].length ]])</span>
+            <span v-else>(0)</span>
+          </a>
+        </li>
+      </ul>
+      <div class="tab-content clearfix">
+        <div class="tab-pane" :class="{active: currentTab === index}" v-bind:id="source_type" v-for='(source_type, index) in source_types' :key="index">
+          <ul class="gc-search-result">
+            <template v-if="results && results[source_type]">
+              <li v-for="result in results[source_type]" class="gc-search-result__content p-3" :key="result.id">
+                <a :href="[[ result.url ]]" class="d-flex">
+                  <img class="gc-search__avatar my-auto mr-3" :src="[[ result.img_url ]]" :alt="result.title" />
+                  <div>
+                    <p class="gc-search-result__title font-body mb-0">[[ result.title ]]</p>
+                    <p class="gc-search-result__description font-caption mb-2">[[ result.description | str_limit(75) ]]</p>
+                    <div>
+                      <span class="gc-search__tag font-weight-semibold font-smaller-4 py-1 px-3">
+                        [[ result.source_type | capitalize ]]
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </template>
+            <template v-else>
+              <li class="gc-search-result__content pt-3 gc-search-result__description font-smaller-2 text-center">
+                No matches found!
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
+    </template>
+  </div>
+</div>

@@ -90,3 +90,25 @@ Vue.filter('stringReplace', function(activity_type) {
   return activity_names[activity_type];
 });
 
+
+Vue.filter('str_limit', function(value, size) {
+  if (!value) {
+    return '';
+  }
+
+  value = value.toString();
+  if (value.length <= size) {
+    return value;
+  }
+  return value.substr(0, size) + '...';
+});
+
+
+Vue.filter('capitalize', function(value) {
+  if (!value) {
+    return '';
+  }
+
+  value = value.toString();
+  return value.charAt(0).toUpperCase() + value.slice(1);
+});
