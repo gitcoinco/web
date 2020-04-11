@@ -765,7 +765,7 @@ $(document).ready(function() {
     e.preventDefault();
 
     var commentArea = $(this)[0].parentElement.parentElement;
-    var emojiDisplayArea = $(this)[0].parentElement
+    var emojiDisplayArea = $(this)[0].parentElement;
 
     picker.pickerVisible ? picker.hidePicker() : picker.showPicker(emojiDisplayArea);
 
