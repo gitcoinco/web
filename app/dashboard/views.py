@@ -4097,24 +4097,24 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
-    current_hackathon_event = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
-    upcoming_hackathon_event = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
-    finished_hackathon_event = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
+    current_hackathon_events = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
+    upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
+    finished_hackathon_events = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
     all_hackathon_events = [event for event in HackathonEvent.objects.filter(visible=True)]
 
     network = get_default_network()
 
     tabs = [
-        ('current', current_hackathon_event.count()),
-        ('upcoming', upcoming_hackathon_event.count()),
-        ('finished', finished_hackathon_event.count()),
+        ('current', current_hackathon_events.count()),
+        ('upcoming', upcoming_hackathon_events.count()),
+        ('finished', finished_hackathon_events.count()),
     ]
 
     hackathon_events = []
     tribes = []
 
-    if current_hackathon_event.exists():
-        for event in current_hackathon_event:
+    if current_hackathon_events.exists():
+        for event in current_hackathon_events:
             event_bounties = Bounty.objects.filter(event=event, network=network)
 
             hackathon_events.append({
@@ -4128,8 +4128,8 @@ def get_hackathons(request):
                 'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
             })
 
-    if upcoming_hackathon_event.exists():
-        for event in upcoming_hackathon_event:
+    if upcoming_hackathon_events.exists():
+        for event in upcoming_hackathon_events:
             event_bounties = Bounty.objects.filter(event=event, network=network)
 
             hackathon_events.append({
@@ -4143,8 +4143,8 @@ def get_hackathons(request):
                 'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
             })
 
-    if finished_hackathon_event.exists():
-        for event in finished_hackathon_event:
+    if finished_hackathon_events.exists():
+        for event in finished_hackathon_events:
             event_bounties = Bounty.objects.filter(event=event, network=network)
 
             hackathon_events.append({
@@ -4171,7 +4171,7 @@ def get_hackathons(request):
     show the top four tribes defined by order of which tribe has
     participated in the most number of hackathons.
     """
-    if current_hackathon_event.exists():
+    if current_hackathon_events.exists():
         tribe_fields = {
             (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
             for bounty
@@ -4185,7 +4185,7 @@ def get_hackathons(request):
                 'members': list(Profile.objects.filter(handle=field[2], is_org=True).values_list('follower_count', flat=True))[0],
                 'path': list(Profile.objects.filter(handle=field[2], is_org=True))[0].absolute_url
             })
-    elif upcoming_hackathon_event.exists():
+    elif upcoming_hackathon_events.exists():
         most_recent_finished = HackathonEvent.objects.finished().filter(visible=True).order_by('-end_date')[0]
         prize_sponsors = list(Bounty.objects.current().filter(event=most_recent_finished))
 
@@ -4206,9 +4206,9 @@ def get_hackathons(request):
         'tribes': tribes,
     }
 
-    if current_hackathon_event.exists():
+    if current_hackathon_events.exists():
         params['default_tab'] = 'current'
-    elif upcoming_hackathon_event.exists():
+    elif upcoming_hackathon_events.exists():
         params['default_tab'] = 'upcoming'
     else:
         params['default_tab'] = 'finished'
