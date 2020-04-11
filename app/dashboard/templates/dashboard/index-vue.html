@@ -327,7 +327,7 @@
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Prizes" %}
-                    <span class="nav-badge d-none">(0)</span>
+                    <span class="nav-badge d-none d-sm-inline">({{prize_count}})</span>
                   </div>
                 </template>
                 <div id="prizes" class="row">
@@ -419,7 +419,7 @@
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Projects" %}
-                      <span class="nav-badge d-none">[[ hackathonProjects.length ]]</span>
+                      <span class="nav-badge d-none d-sm-inline">([[ hackathonProjects.length ]])</span>
                     </div>
                   </template>
                   <div class="ml-4">
@@ -501,7 +501,7 @@
                                   </div>
                                 </div>
 
-                                <div class="my-3 looking-team">
+                                <div v-if="project.message" class="my-3 looking-team">
                                   <h5 class="info-card-title uppercase">Looking for team members</h5>
                                   <p class="info-card-desc">
                                     [[ project.message ]]
@@ -544,7 +544,7 @@
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Participants" %}
-                    <span class="nav-badge d-none">([[ users.length ]])</span>
+                    <span class="nav-badge d-none d-sm-inline">([[ users.length ]])</span>
                   </div>
                 </template>
                   <div class="ml-4">
@@ -873,7 +873,7 @@
                           <h5 class="mt-0 mb-1">[[ sponsor.org_name ]]</h5>
                         </div>
                         <div class="col-2 offset-2">
-                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" class="btn-outline-gc-blue">follow</b-button>
+                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" class="btn-outline-gc-blue">[[ sponsor.followed ? "unfollow" : "follow" ]]</b-button>
                         </div>
                         <div class="col-8 offset-1">
                           <ul class="list-unstyled" class="mb-0">
@@ -913,18 +913,20 @@
       </select>
     </script>
     <script src='{% static "v2/js/vue-components.js" %}'></script>
+    {{orgs|json_script:"sponsor-list"}}
+    {{hackathon_obj|json_script:"hackathon-object"}}
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
       });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{ keywords | safe }};
-      document.is_registered = "{{is_registered | safe}}";
+      document.is_registered = {{ is_registered | safe }};
       window.localStorage['tab'] = 'hackathon:{{hackathon.id | safe}}';
       document.hackathon = "{{ hackathon.slug | safe }}";
-      document.hackathonObj = JSON.parse({{ hackathon_obj | safe }});
       document.hackathon_id = "{{ hackathon.id| safe }}";
-      document.hackathonSponsors = {{ orgs | safe}};
+      document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
+      document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
       document.chatURL = "{{ chat_url | safe}}";
       document.timeuntil = "{{ hackathon.end_date | timeuntil }}";

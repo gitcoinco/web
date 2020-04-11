@@ -831,7 +831,7 @@
         let vm = this;
         let tribesData = {};
 
-        vm.hackathonSponsrs.map((n) => {
+        vm.hackathonSponsors.map((n) => {
           tribesData[n.org_name] = n;
         });
         this.tribesData = tribesData;
@@ -843,20 +843,25 @@
           let sponsorLocal = vm.tribesData[tribe];
 
           const url = `/tribe/${tribe}/join/`;
-          const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+          const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': vm.csrf});
 
           $.when(sendJoin).then((response) => {
-
-            vm.tribesData[tribe].follower_count = response.is_member ? sponsorLocal.follower_count + 1 : sponsorLocal.follower_count - 1;
-
+            if (response && response.is_member) {
+              vm.tribesData[tribe].follower_count++;
+              vm.tribesData[tribe].followed = true;
+            } else {
+              vm.tribesData[tribe].follower_count--;
+              vm.tribesData[tribe].followed = false;
+            }
           }).fail((error) => {
             console.log(error);
           });
         }
       },
       data: () => ({
+        csrf: $("input[name='csrfmiddlewaretoken']").val(),
         tribesData: {},
-        hackathonSponsrs: document.hackathonSponsors
+        hackathonSponsors: document.hackathonSponsors
       })
     });
     Vue.component('project-directory', {

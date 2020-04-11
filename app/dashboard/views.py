@@ -3679,12 +3679,21 @@ def hackathon(request, hackathon='', panel='prizes'):
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     orgs = []
+
+    following_tribes = []
+
+    if request.user and request.user.profile:
+        following_tribes = request.user.profile.tribe_members.filter(
+            org__in=hackathon_event.sponsor_profiles.all()
+        ).values_list('org__handle', flat=True)
+
     for sponsor_profile in hackathon_event.sponsor_profiles.all():
         org = {
             'display_name': sponsor_profile.name,
             'avatar_url': sponsor_profile.avatar_url,
             'org_name': sponsor_profile.handle,
             'follower_count': sponsor_profile.tribe_members.all().count(),
+            'followed': True if sponsor_profile.handle in following_tribes else False,
             'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
         }
         orgs.append(org)
@@ -3708,8 +3717,8 @@ def hackathon(request, hackathon='', panel='prizes'):
     elif panel == "participants":
         active_tab = 4
 
-    hackathon_json = JSONRenderer().render(HackathonEventSerializer(hackathon_event).data)
-    following_tribes = get_following_tribes(request)
+
+
     params = {
         'active': 'dashboard',
         'prize_count': hackathon_event.get_current_bounties.count(),
@@ -3719,8 +3728,8 @@ def hackathon(request, hackathon='', panel='prizes'):
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
-        'hackathon_obj': json.dumps(hackathon_json.decode('ascii'), cls=DjangoJSONEncoder),
-        'is_registered': True if len(is_registered) > 0 else False,
+        'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
+        'is_registered': 1 if len(is_registered) > 0 else 0,
         'user': request.user,
         'tags': view_tags,
         'activities': [],
@@ -3742,10 +3751,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         from dashboard.context.hackathon_explorer import eth_hack
         params['sponsors'] = eth_hack
 
-
-
-    keywords = programming_languages + programming_languages_full
-    params['keywords'] = keywords
+    params['keywords'] = programming_languages + programming_languages_full
     params['active'] = 'users'
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
