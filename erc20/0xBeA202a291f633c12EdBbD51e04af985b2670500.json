@@ -1,0 +1,19 @@
+{
+  "symbol": "CoinSmart Token",
+  "address": "0xBeA202a291f633c12EdBbD51e04af985b2670500",
+  "overview":{
+        "en": "CST is CoinSmart platform token",
+        "zh": "CST 是 CoinSmart 平台推出的平台通证"
+  },
+  "email": "master@coinsmart365.com",
+  "website": "https://www.coinsmart365.com/",
+  "whitepaper": "https://business.coinsmart365.com/whitePaper-v1.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-03-23",
+  "initial_price":{
+        "USD":"0.1331 USD",
+  },
+  "links": {
+    "twitter": "https://twitter.com/CstToken",
+  }
+}
