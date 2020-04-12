@@ -38,6 +38,12 @@ body {
   letter-spacing: 0;
 }
 
+.navigation a {
+  width:100% !important;
+  font-weight: 500 !important;
+  padding: 0 !important;
+}
+
 #onboard-footer p a,
 #onboard-dashboard .info p a {
   color: #007BFF;
@@ -342,10 +348,4 @@ div.nav-tabs {
 
 .hackathon-explorer ul.nav-tabs {
   border:0;
-}
-
-.navigation a {
-  width:100% !important;
-  font-weight: 500 !important;
-  padding: 0 !important;
 }
