@@ -145,7 +145,7 @@
         <button disabled type="button" id="save-button" class="button button--primary" onclick="saveAvatar()">
           {% trans "Save Avatar" %}
         </button>
-        <button disabled type="button" id="upload-button" class="button button--primary" onclick="uploadAvatars()">
+        <button disabled type="button" id="upload-button" class="button button--secondary" onclick="uploadAvatars()">
           {% trans "Upload to 3Box" %}
         </button>
         <div>
@@ -181,7 +181,7 @@
         <button type="button" id="save-3d-avatar" class="button button--primary">
           Save Avatar
         </button>
-        <button type="button" id="upload-3d-avatar" class="button button--primary">
+        <button type="button" id="upload-3d-avatar" class="button button--secondary">
           Upload to 3Box
         </button>
         {% if possible_skin_tones|length %}
@@ -216,7 +216,7 @@
         {% endif %}
       <div class="action-buttons">
         {% for category, ids in 3d_avatar_params.by_category.items %}
-          {% if ids|length > 1 %}
+          {% if ids|length > 1 and category %}
             <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>
           {% endif %}
         {% endfor %}

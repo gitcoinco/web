@@ -160,7 +160,9 @@ def get_sidebar_tabs(request):
     }
     tabs = tabs + [connect]
 
-    hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now() + timezone.timedelta(days=10), end_date__gt=timezone.now())
+    start_date = timezone.now() + timezone.timedelta(days=10)
+    end_date = timezone.now() - timezone.timedelta(days=7)
+    hackathons = HackathonEvent.objects.filter(start_date__lt=start_date, end_date__gt=end_date, visible=True)
     if hackathons.count():
         for hackathon in hackathons:
             connect = {
@@ -284,7 +286,7 @@ def get_suggested_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
         handles = TribeMember.objects.filter(profile=request.user.profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-created_on')[:5]
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-follower_count')[:5]
 
         for profile in tribes:
             handle = profile.handle
@@ -297,7 +299,7 @@ def get_suggested_tribes(request):
                 'avatar_url': f'/dynamic/avatar/{handle}',
                 'follower_count': profile.tribe_members.all().count()
             }
-            following_tribes = [tribe] + following_tribes
+            following_tribes = following_tribes + [tribe]
     return following_tribes
 
 

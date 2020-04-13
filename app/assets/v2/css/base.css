@@ -1516,6 +1516,21 @@ div.busyOverlay {
   padding: 1.4em 1.3em 1.3em;
 }
 
+.popover-user-card {
+  background-color: #FFF;
+  padding: 0;
+  width: 100%;
+  max-width: 30em;
+  font-size: 12px;
+}
+
+.user-card_donut-chart {
+  width: 56px;
+}
+.user-card_pie-chart {
+  width: 30px;
+}
+
 .big-popover {
   max-width: 482px;
 }

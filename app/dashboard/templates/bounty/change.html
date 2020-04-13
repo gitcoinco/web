@@ -112,7 +112,12 @@
   document.pk = {{ pk }};
   document.result = {{ result|safe }};
   const token_address = '{{ token_address }}';
-  {% if not is_bounties_network %}
+  {% if is_bounties_network %}
+    window.addEventListener('load', function() {
+      setInterval(listen_for_web3_changes, 5000);
+      listen_for_web3_changes();
+    });
+  {% else %}
     document.web3network = 'mainnet';
   {% endif %}
 </script>

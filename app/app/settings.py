@@ -221,7 +221,8 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'auth.User'
 
 # adds django debug toolbar
-if DEBUG:
+SUPRESS_DEBUG_TOOLBAR = env.bool('SUPRESS_DEBUG_TOOLBAR', default=False)
+if DEBUG and not SUPRESS_DEBUG_TOOLBAR:
     INTERNAL_IPS = [
         # ...
         '127.0.0.1',

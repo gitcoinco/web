@@ -300,7 +300,7 @@ def email_settings(request, key):
             es.email = email
             unsubscribed_email_type = {}
             unsubscribed_email_type[email_type] = True
-            if email_type == 'chat':
+            if email_type == 'chat' and profile:
                 update_chat_notifications(profile, 'email', False)
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
@@ -347,7 +347,7 @@ def email_settings(request, key):
                     if key not in form.keys():
                         form[key] = False
 
-                if form['chat']:
+                if form['chat'] and profile:
                     update_chat_notifications(profile, 'email', False)
 
                 es.build_email_preferences(form)
@@ -370,7 +370,7 @@ def email_settings(request, key):
         'nav': 'home',
         'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
-        'profile': request.user.profile,
+        'profile': request.user.profile if request.user.is_authenticated else None,
         'email_types': ALL_EMAILS,
         'navs': get_settings_navs(request),
         'preferred_language': pref_lang
