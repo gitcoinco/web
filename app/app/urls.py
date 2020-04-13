@@ -227,6 +227,7 @@ urlpatterns = [
         name='hackathon_edit_project'
     ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
+    # TODO: revisit if we need to keep these urls for legacy links
     # re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
     # re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
     url(r'^hackathon/<str:hackathon>/?$/?', dashboard.views.hackathon, name='hackathon'),

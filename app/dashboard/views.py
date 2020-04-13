@@ -3999,6 +3999,16 @@ def hackathon_save_project(request):
         logger.info("Bounty Profile owner not apart of gitcoin")
     profiles_to_connect = [profile.chat_id]
 
+    hackathon_admins = Profile.objects.filter(user__groups__name='hackathon-admin')
+
+    try:
+        for hack_admin in hackathon_admins:
+            if hack_admin.chat_id is '' or hack_admin.chat_id is None:
+                created, hack_admin = associate_chat_to_profile(hack_admin)
+            profiles_to_connect.append(hack_admin.chat_id)
+    except Exception as e:
+        logger.debug('Error with adding admin')
+
     if project_id:
         try:
 

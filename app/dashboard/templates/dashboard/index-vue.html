@@ -26,7 +26,7 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.css" />
+    <link type="text/css" rel="stylesheet" href='{% static "v2/css/bootstrap-vue-icons.min.css" %}' />
     <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/featured-bounties.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
@@ -905,7 +905,7 @@
     {% include 'shared/result.html' %}
     {% include 'shared/featured_bounty_cards.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with vue=True %}
     {% include 'shared/footer.html' %}
     <script type="text/x-template" id="select2-template">
       <select>
@@ -934,7 +934,7 @@
     </script>
     <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>
     {% include 'shared/activity_scripts.html' %}
-    <script src='{% static "v2/js/status.js" %}'></script>
+    <script src='{% static "v2/js/status.js" with no_grow=True %}'></script>
     <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
     <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
     <script src='{% static "v2/js/users.js" %}'></script>
