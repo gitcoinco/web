@@ -971,7 +971,6 @@
       el: '#dashboard-vue-app',
       updated: () => {
         addPopover();
-        // $('#textarea').autogrow();
       },
       mounted: () => {
         setTimeout(() => {

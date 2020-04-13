@@ -26,7 +26,6 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link type="text/css" rel="stylesheet" href='{% static "v2/css/bootstrap-vue-icons.min.css" %}' />
     <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/featured-bounties.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
@@ -877,8 +876,8 @@
                         </div>
                         <div class="col-8 offset-1">
                           <ul class="list-unstyled" class="mb-0">
-                            <li><b-icon icon="person-fill"></b-icon>[[ sponsor.follower_count ]] Followers</li>
-                            <li><b-icon icon="trophy"></b-icon>[[ sponsor.bounty_count ]] Bounties Funded</li>
+                            <li><i class="fas fa-user"></i> [[ sponsor.follower_count ]] Followers</li>
+                            <li><i class="fas fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
                           </ul>
                         </div>
                       </div>

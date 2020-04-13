@@ -243,9 +243,6 @@ $(document).ready(function() {
 
   });
 
-  {% if not no_grow %}
-  $('#textarea').autogrow();
-  {% endif %}
   // handle video button
   $('body').on('click', '#video-button', function(e) {
     e.preventDefault();
