@@ -397,7 +397,6 @@
 
                       {% include 'shared/hackathon_sponsors.html' %}
                     {% endif %}
-
                   </div>
                 </div>
               </b-tab>
@@ -445,15 +444,15 @@
                   </div>
                 </div>
               </b-tab>
-              <project-directory inline-template :disabled="!is_registered">
                 <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Projects" %}
-                      <span class="nav-badge d-none d-sm-inline">([[ hackathonProjects.length ]])</span>
+                      <span class="nav-badge d-none d-sm-inline">({{projects_count}})</span>
                     </div>
                   </template>
-                  <div class="ml-4">
+                  <project-directory inline-template>
+                    <div class="ml-4">
                     <div class="sidebar-container flex-column flex-lg-row">
                       <transition name="fade">
                         <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
@@ -553,8 +552,8 @@
                       </div>
                     </div>
                 </div>
+                  </project-directory>
                 </b-tab>
-              </project-directory>
               <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
@@ -569,15 +568,15 @@
                   </div>
                 </template>
               </b-tab>
-              <user-directory :disabled="!is_registered"  inline-template>
-                <b-tab class="col-12" title-item-class="navigation"lazy>
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Participants" %}
-                    <span class="nav-badge d-none d-sm-inline">([[ users.length ]])</span>
-                  </div>
-                </template>
-                  <div class="ml-4">
+              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation"lazy>
+                  <template v-slot:title>
+                    <div class="mt-4">
+                      {% trans "Participants" %}
+                      <span class="nav-badge d-none d-sm-inline">({{hacker_count}})</span>
+                    </div>
+                  </template>
+                  <user-directory :disabled="!is_registered"  inline-template>
+                    <div class="ml-4">
                     <div class="sidebar-container flex-column flex-lg-row">
                     <transition name="fade">
                       <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
@@ -881,12 +880,12 @@
                       {% endif %}
                     </div>
                   </div>
-                </b-tab>
-              </user-directory>
+                </user-directory>
+              </b-tab>
               <template v-slot:tabs-end>
                 <li role="presentation" class="nav-item navigation"><a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
                   <div class="mt-4">
-                    Guide
+                    {% trans "Guide" %}
                   </div>
                 </a></li>
               </template>
@@ -895,7 +894,7 @@
           <div class="col-12 col-md-3">
             <div id="sponsor_sidebar" class="font-body">
               <div class="sponsor-top"></div>
-              <sponsor-tribes-widget inline-template>
+              <sponsor-tribes-widget v-if="hackathonSponsors.length > 0" inline-template>
                 <div class="p-xl-0 p-4">
                   <div class="offset-1 subheading left-ribbon">
                     {% trans "Sponsor Tribes" %}
@@ -959,10 +958,9 @@
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{ keywords | safe }};
       document.is_registered = JSON.parse(document.getElementById('hackathon-registration').textContent);
-
       window.localStorage['tab'] = 'hackathon:{{hackathon.id | safe}}';
       document.hackathon = "{{ hackathon.slug | safe }}";
-      document.hackathon_id = "{{ hackathon.id| safe }}";
+      document.hackathon_id = "{{ hackathon.id | safe }}";
       document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
