@@ -4100,7 +4100,7 @@ def get_hackathons(request):
     current_hackathon_events = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
     upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
     finished_hackathon_events = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
-    all_hackathon_events = [event for event in HackathonEvent.objects.filter(visible=True)]
+    all_hackathon_events = HackathonEvent.objects.all().filter(visible=True)
 
     network = get_default_network()
 
@@ -4167,7 +4167,7 @@ def get_hackathons(request):
     if there are no current hackathons but there exists upcoming hackathons,
     then show tribes from the most recently active hackthon.
 
-    TODO: if there are no current or upcoming hackathons at all, then
+    if there are no current or upcoming hackathons at all, then
     show the top four tribes defined by order of which tribe has
     participated in the most number of hackathons.
     """
@@ -4175,7 +4175,7 @@ def get_hackathons(request):
         tribe_fields = {
             (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
             for bounty
-            in list(Bounty.objects.current().filter(event__isnull=False))
+            in list(Bounty.objects.current().filter(event__isnull=False, network=network))
         }
 
         for field in tribe_fields:
@@ -4187,7 +4187,7 @@ def get_hackathons(request):
             })
     elif upcoming_hackathon_events.exists():
         most_recent_finished = HackathonEvent.objects.finished().filter(visible=True).order_by('-end_date')[0]
-        prize_sponsors = list(Bounty.objects.current().filter(event=most_recent_finished))
+        prize_sponsors = list(Bounty.objects.current().filter(event=most_recent_finished, network=network))
 
         if prize_sponsors:
             tribes.append({
@@ -4196,6 +4196,40 @@ def get_hackathons(request):
                 'members': list(Profile.objects.filter(handle=prize_sponsors[0].org_name, is_org=True).values_list('follower_count', flat=True))[0],
                 'path': list(Profile.objects.filter(handle=prize_sponsors[0].org_name, is_org=True))[0].absolute_url
             })
+    else:
+        tribe_fields = {
+            (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
+            for bounty in list(Bounty.objects.current()\
+                .filter(event__isnull=False, network=network)
+            )
+        }
+        tribes_hackathon_count = [
+            (
+                {
+                    'display_name': field[0],
+                    'logo_path': field[1],
+                    'members': list(Profile.objects.filter(handle=field[2], is_org=True).values_list('follower_count', flat=True))[0],
+                    'path': list(Profile.objects.filter(handle=field[2], is_org=True))[0].absolute_url
+                },
+                Bounty.objects.current()\
+                    .filter(
+                        funding_organisation=field[0],
+                        network=network,
+                        event__in=list(all_hackathon_events)
+                    )\
+                    .distinct('event')\
+                    .count()
+            )
+            for field in tribe_fields
+        ]
+        sorted_tribes_hackathon_count = sorted(
+            tribes_hackathon_count,
+            key=lambda item: item[1],
+            reverse=True
+        )
+
+        for tribe in sorted_tribes_hackathon_count[:4]:
+            tribes.append(tribe[0])
 
     params = {
         'active': 'hackathons',
@@ -4214,7 +4248,6 @@ def get_hackathons(request):
         params['default_tab'] = 'finished'
 
     # template needs a value set for the 'featured' key
-    # refactor when no featured hackathon is handled
     params['featured'] = HackathonEvent.objects.filter(is_featured=True)[0] if \
         HackathonEvent.objects.filter(is_featured=True).exists() else \
         False
