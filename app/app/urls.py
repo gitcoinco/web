@@ -135,6 +135,7 @@ urlpatterns = [
         name='profile_job_opportunity'
     ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
+    url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
     url(
         r'^api/v0.1/get_suggested_contributors',
@@ -156,7 +157,7 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
-    url(r'^api/v0.1/search/', search.views.search, name='search'),
+    url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
@@ -731,7 +732,6 @@ if settings.DEBUG:
 
         # For django versions before 2.0:
         # url(r'^__debug__/', include(debug_toolbar.urls)),
-
     ] + urlpatterns
 
 LOGIN_REDIRECT_URL = '/login'

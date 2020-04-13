@@ -1,3 +1,5 @@
+import operator
+
 from django.utils import timezone
 
 from grants.models import *
@@ -19,6 +21,42 @@ amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in 
 print("contributions", total)
 print("contributors", contributors)
 print('amount', amount)
+
+# top contributors
+
+all_contributors_by_amount = {}
+all_contributors_by_num = {}
+for contrib in contributions:
+    key = contrib.subscription.contributor_profile.handle
+    if key not in all_contributors_by_amount.keys():
+        all_contributors_by_amount[key] = 0
+        all_contributors_by_num[key] = 0
+
+    all_contributors_by_num[key] += 1
+    all_contributors_by_amount[key] += contrib.subscription.amount_per_period_usdt
+
+all_contributors_by_num = sorted(all_contributors_by_num.items(), key=operator.itemgetter(1))
+all_contributors_by_amount = sorted(all_contributors_by_amount.items(), key=operator.itemgetter(1))
+all_contributors_by_num.reverse()
+all_contributors_by_amount.reverse()
+
+limit = 50
+print("Top Contributors by Num Contributions (Round 5)")
+counter = 0
+for obj in all_contributors_by_num[0:limit]:
+    counter += 1
+    print(counter, obj[0], obj[1])
+
+print("")
+print("=======================")
+print("")
+
+counter = 0
+print("Top Contributors by Amount of Contributions (Round 5)")
+for obj in all_contributors_by_amount[0:limit]:
+    counter += 1
+    print(counter, obj[0], "$" + str(round(obj[1])))
+
 
 
 # new feature stats for round 5 
