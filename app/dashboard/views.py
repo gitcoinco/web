@@ -3741,15 +3741,15 @@ def hackathon(request, hackathon='', panel='prizes'):
             'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
         }
         orgs.append(org)
+
     if hasattr(request.user, 'profile') == False:
         is_registered = False
     else:
         is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                              hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
-        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
-
+    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).all().count()
+    projects_count = HackathonProject.objects.filter(hackathon=hackathon_event).all().count()
     view_tags = get_tags(request)
     active_tab = 0
     if panel == "prizes":
@@ -3774,8 +3774,10 @@ def hackathon(request, hackathon='', panel='prizes'):
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
+        'hacker_count': hacker_count,
+        'projects_count': projects_count,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
-        'is_registered': 1 if len(is_registered) > 0 else 0,
+        'is_registered': 1 if is_registered else 0,
         'user': request.user,
         'tags': view_tags,
         'activities': [],

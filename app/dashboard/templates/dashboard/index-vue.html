@@ -347,25 +347,12 @@
                       <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
                     </div>
                     <div class="row nonefound mx-auto" style="display:none;">
-                  {% if hackathon %}
-                    <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
-                    <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                    <p>
-                      <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
-                    </p>
-                    {% include 'shared/hackathon_sponsors.html' %}
-
-                  {% else %}
-                    <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                    <h3>{% trans "No results found." %}</h3>
-                    <p>{% trans "Request an organisation to fund an issue" %}</p>
-                    <div class="mt-3">
-                      <a class="button button--primary py-2 font-weight-semibold" role="button" href="/requests">
-                        {% trans "REQUEST BOUNTY" %}
-                      </a>
+                      <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                      <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                      <p>
+                        <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
+                      </p>
                     </div>
-                  {% endif %}
-                </div>
                     {% include 'dashboard/featured_bounties.html' %}
                   </div>
                 </div>
@@ -415,15 +402,15 @@
 
                 </div>
               </b-tab>
-              <project-directory inline-template :disabled="!is_registered">
                 <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Projects" %}
-                      <span class="nav-badge d-none d-sm-inline">([[ hackathonProjects.length ]])</span>
+                      <span class="nav-badge d-none d-sm-inline">({{projects_count}})</span>
                     </div>
                   </template>
-                  <div class="ml-4">
+                  <project-directory inline-template>
+                    <div class="ml-4">
                     <div class="sidebar-container flex-column flex-lg-row">
                       <transition name="fade">
                         <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
@@ -523,8 +510,8 @@
                       </div>
                     </div>
                 </div>
+                  </project-directory>
                 </b-tab>
-              </project-directory>
               <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
@@ -539,15 +526,15 @@
                   </div>
                 </template>
               </b-tab>
-              <user-directory :disabled="!is_registered"  inline-template>
-                <b-tab class="col-12" title-item-class="navigation"lazy>
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Participants" %}
-                    <span class="nav-badge d-none d-sm-inline">([[ users.length ]])</span>
-                  </div>
-                </template>
-                  <div class="ml-4">
+              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation"lazy>
+                  <template v-slot:title>
+                    <div class="mt-4">
+                      {% trans "Participants" %}
+                      <span class="nav-badge d-none d-sm-inline">({{hacker_count}})</span>
+                    </div>
+                  </template>
+                  <user-directory :disabled="!is_registered"  inline-template>
+                    <div class="ml-4">
                     <div class="sidebar-container flex-column flex-lg-row">
                     <transition name="fade">
                       <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
@@ -851,14 +838,14 @@
                       {% endif %}
                     </div>
                   </div>
-                </b-tab>
-              </user-directory>
+                  </user-directory>
+              </b-tab>
             </b-tabs>
           </div>
           <div class="col-12 col-md-3">
             <div id="sponsor_sidebar" class="font-body">
               <div class="sponsor-top"></div>
-              <sponsor-tribes-widget inline-template>
+              <sponsor-tribes-widget v-if="hackathonSponsors.length > 0" inline-template>
                 <div class="p-xl-0 p-4">
                   <div class="offset-1 subheading left-ribbon">
                     {% trans "Sponsor Tribes" %}
@@ -926,7 +913,7 @@
 
       window.localStorage['tab'] = 'hackathon:{{hackathon.id | safe}}';
       document.hackathon = "{{ hackathon.slug | safe }}";
-      document.hackathon_id = "{{ hackathon.id| safe }}";
+      document.hackathon_id = "{{ hackathon.id | safe }}";
       document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
