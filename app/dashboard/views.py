@@ -3745,7 +3745,7 @@ def hackathon(request, hackathon='', panel='prizes'):
     is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                          hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    if not is_registered:
+    if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     view_tags = get_tags(request)
