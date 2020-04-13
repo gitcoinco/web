@@ -2198,6 +2198,41 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h2 id="dashboard.models.HackathonEvent_sponsor_profiles">HackathonEvent_sponsor_profiles</h2>
+
+<pre><code class="python">HackathonEvent_sponsor_profiles(self, *args, **kwargs)
+</code></pre>
+
+<p>HackathonEvent_sponsor_profiles(id, hackathonevent, profile)
+<h3 id="dashboard.models.HackathonEvent_sponsor_profiles.hackathonevent">hackathonevent</h3></p>
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.HackathonEvent_sponsor_profiles.hackathonevent_id">hackathonevent_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonEvent_sponsor_profiles.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonEvent_sponsor_profiles.profile">profile</h3>
+
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.HackathonEvent_sponsor_profiles.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h2 id="dashboard.models.HackathonProject_profiles">HackathonProject_profiles</h2>
 
 <pre><code class="python">HackathonProject_profiles(self, *args, **kwargs)
@@ -5491,6 +5526,18 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.hackathonevent_set">hackathonevent_set</h3>
+
+<p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example::</p>
+<pre><code>class Pizza(Model):
+    toppings = ManyToManyField(Topping, related_name='pizzas')
+</code></pre>
+<p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.handle">handle</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -7161,6 +7208,10 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonEvent.default_channels">default_channels</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.HackathonEvent.description">description</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -7282,6 +7333,18 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonEvent.sponsor_profiles">sponsor_profiles</h3>
+
+<p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example::</p>
+<pre><code>class Pizza(Model):
+    toppings = ManyToManyField(Topping, related_name='pizzas')
+</code></pre>
+<p><code>Pizza.toppings</code> and <code>Topping.pizzas</code> are <code>ManyToManyDescriptor</code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.HackathonEvent.sponsors">sponsors</h3>
 
 <p>Accessor to the related objects manager on the forward and reverse sides of
