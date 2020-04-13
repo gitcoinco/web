@@ -26,6 +26,7 @@ import environ
 import raven
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
@@ -289,7 +290,7 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
-        integrations=[DjangoIntegration()]
+        integrations=[DjangoIntegration(), CeleryIntegration()]
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,

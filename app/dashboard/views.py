@@ -50,7 +50,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -86,7 +85,11 @@ from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from retail.utils import programming_languages, programming_languages_full
+from rest_framework.renderers import JSONRenderer
 from townsquare.models import Comment
+from townsquare.views import get_following_tribes
+from townsquare.views import get_tags
 from web3 import HTTPProvider, Web3
 
 from .export import (
@@ -110,6 +113,10 @@ from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
     release_bounty_to_the_public, sync_payout, web3_process_bounty,
+)
+from .router import (
+    HackathonEventSerializer,
+    HackathonProjectSerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -860,7 +867,7 @@ def users_directory(request):
     return TemplateResponse(request, 'dashboard/users.html', params)
 
 
-def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation  ):
+def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = ""):
     if not settings.DEBUG:
         network = 'mainnet'
     else:
@@ -899,10 +906,64 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
             organizations__contains=[organisation.lower()]
         )
         profile_list = (profile_list1 | profile_list2).distinct()
-
+    if hackathon_id:
+        profile_list = profile_list.filter(
+            hackathon_registration__hackathon=hackathon_id
+        )
     return profile_list
 
 
+
+@require_GET
+def projects_fetch(request):
+    q = clean(request.GET.get('search', ''), strip=True)
+    order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
+    skills = clean(request.GET.get('skills', ''), strip=True)
+    filters = clean(request.GET.get('filters', ''), strip=True)
+    sponsor = clean(request.GET.get('sponsor', ''), strip=True)
+    # TODO: refactor for pagination
+    page = clean(request.GET.get('page', 1))
+    hackathon_id = clean(request.GET.get('hackathon', ''))
+
+    try:
+        hackathon_event = HackathonEvent.objects.get(id=hackathon_id)
+    except HackathonEvent.DoesNotExist:
+        hackathon_event = HackathonEvent.objects.last()
+
+    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
+
+    if q:
+        projects = projects.filter(
+            Q(name__icontains=q) |
+            Q(summary__icontains=q) |
+            Q(profiles__handle__icontains=q)
+        )
+
+    if sponsor:
+        projects = projects.filter(
+            Q(bounty__github_url__icontains=sponsor)
+        )
+
+    if skills:
+        projects = projects.filter(
+            Q(profiles__keywords__icontains=skills)
+        )
+
+    if filters == 'winners':
+        projects = projects.filter(
+            Q(badge__isnull=False)
+        )
+
+    projects_data = HackathonProjectSerializer(projects.all(), many=True)
+
+    params = {
+        'data': projects_data.data,
+        'has_next': False,
+        'count': projects.all().count(),
+        'num_pages': 1
+    }
+
+    return JsonResponse(params, status=200, safe=False)
 
 @require_GET
 def users_fetch(request):
@@ -918,6 +979,7 @@ def users_fetch(request):
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
     organisation = request.GET.get('organisation', '')
+    hackathon_id = request.GET.get('hackathon', '')
 
     user_id = request.GET.get('user', None)
     if user_id:
@@ -962,7 +1024,9 @@ def users_fetch(request):
         bounties_completed,
         leaderboard_rank,
         rating,
-        organisation)
+        organisation,
+        hackathon_id
+    )
 
     def previous_worked():
         if current_user.profile.persona_is_funder:
@@ -1030,7 +1094,8 @@ def users_fetch(request):
         if user.is_org:
             profile_dict = user.__dict__
             profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
-            profile_json['sum_eth_on_repos'] = round(profile_dict.get('as_dict').get('sum_eth_on_repos'), 2)
+            sum_eth = profile_dict.get('as_dict').get('sum_eth_on_repos')
+            profile_json['sum_eth_on_repos'] = round(sum_eth if sum_eth is not None else 0, 2)
             profile_json['tribe_description'] = user.tribe_description
             profile_json['rank_org'] = user.rank_org
         else:
@@ -1069,6 +1134,8 @@ def users_fetch(request):
     params['persona'] = persona
 
     # log this search, it might be useful for matching purposes down the line
+
+    # TODO, move this to the worker
     try:
         SearchHistory.objects.update_or_create(
             search_type='users',
@@ -3642,11 +3709,11 @@ def get_kudos(request):
     return HttpResponse(data, mimetype)
 
 
-def hackathon(request, hackathon=''):
+def hackathon(request, hackathon='', panel='prizes'):
     """Handle rendering of HackathonEvents. Reuses the dashboard template."""
 
     try:
-        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
@@ -3655,54 +3722,70 @@ def hackathon(request, hackathon=''):
     if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
-    # TODO: Refactor post orgs
     orgs = []
-    for bounty in Bounty.objects.filter(event=hackathon_event, network=network).current():
+
+    following_tribes = []
+
+    if request.user and request.user.profile:
+        following_tribes = request.user.profile.tribe_members.filter(
+            org__in=hackathon_event.sponsor_profiles.all()
+        ).values_list('org__handle', flat=True)
+
+    for sponsor_profile in hackathon_event.sponsor_profiles.all():
         org = {
-            'display_name': bounty.org_display_name,
-            'avatar_url': bounty.avatar_url,
-            'org_name': bounty.org_name
+            'display_name': sponsor_profile.name,
+            'avatar_url': sponsor_profile.avatar_url,
+            'org_name': sponsor_profile.handle,
+            'follower_count': sponsor_profile.tribe_members.all().count(),
+            'followed': True if sponsor_profile.handle in following_tribes else False,
+            'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
         }
         orgs.append(org)
 
-    orgs = list({v['display_name']:v for v in orgs}.values())
+    is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
+                                                         hackathon=hackathon_event) if request.user and request.user.profile else None
+
+    if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
+        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+
+    view_tags = get_tags(request)
+    active_tab = 0
+    if panel == "prizes":
+        active_tab = 0
+    elif panel == "townsquare":
+        active_tab = 1
+    elif panel == "projects":
+        active_tab = 2
+    elif panel == "chat":
+        active_tab = 3
+    elif panel == "participants":
+        active_tab = 4
+
+
 
     params = {
         'active': 'dashboard',
+        'prize_count': hackathon_event.get_current_bounties.count(),
         'type': 'hackathon',
         'title': title,
+        'target': f'/activity?what=hackathon:{hackathon_event.id}',
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
+        'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
+        'is_registered': 1 if len(is_registered) > 0 else 0,
+        'user': request.user,
+        'tags': view_tags,
+        'activities': [],
+        'SHOW_DRESSING': False,
+        'use_pic_card': True,
+        'projects': [],
+        'banner': f"/media/{hackathon_event.banner}" if hackathon_event.banner else None,
+        'panel': active_tab
     }
 
-    # fetch sponsors for the hackathon
-    hackathon_sponsors = HackathonSponsor.objects.filter(hackathon=hackathon_event)
-    if hackathon_sponsors:
-        sponsors_gold = []
-        sponsors_silver = []
-        for hackathon_sponsor in hackathon_sponsors:
-            sponsor = Sponsor.objects.get(name=hackathon_sponsor.sponsor)
-            sponsor_obj = {
-                'name': sponsor.name,
-            }
-            if sponsor.logo_svg:
-                sponsor_obj['logo'] = sponsor.logo_svg.url
-            elif sponsor.logo:
-                sponsor_obj['logo'] = sponsor.logo.url
-
-            if hackathon_sponsor.sponsor_type == 'G':
-                sponsors_gold.append(sponsor_obj)
-            else:
-                sponsors_silver.append(sponsor_obj)
-
-        params['sponsors'] = {
-            'sponsors_gold': sponsors_gold,
-            'sponsors_silver': sponsors_silver
-        }
-
-        if hackathon_event.identifier == 'grow-ethereum-2019':
-            params['card_desc'] = "The ‘Grow Ethereum’ Hackathon runs from Jul 29, 2019 - Aug 15, 2019 and features over $10,000 in bounties"
+    if hackathon_event.identifier == 'grow-ethereum-2019':
+        params['card_desc'] = "The ‘Grow Ethereum’ Hackathon runs from Jul 29, 2019 - Aug 15, 2019 and features over $10,000 in bounties"
 
     elif hackathon_event.identifier == 'beyondblockchain_2019':
         from dashboard.context.hackathon_explorer import beyondblockchain_2019
@@ -3712,7 +3795,10 @@ def hackathon(request, hackathon=''):
         from dashboard.context.hackathon_explorer import eth_hack
         params['sponsors'] = eth_hack
 
-    return TemplateResponse(request, 'dashboard/index.html', params)
+    params['keywords'] = programming_languages + programming_languages_full
+    params['active'] = 'users'
+
+    return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
 
 def hackathon_onboard(request, hackathon=''):
@@ -3956,6 +4042,16 @@ def hackathon_save_project(request):
     except Exception as e:
         logger.info("Bounty Profile owner not apart of gitcoin")
     profiles_to_connect = [profile.chat_id]
+
+    hackathon_admins = Profile.objects.filter(user__groups__name='hackathon-admin')
+
+    try:
+        for hack_admin in hackathon_admins:
+            if hack_admin.chat_id is '' or hack_admin.chat_id is None:
+                created, hack_admin = associate_chat_to_profile(hack_admin)
+            profiles_to_connect.append(hack_admin.chat_id)
+    except Exception as e:
+        logger.debug('Error with adding admin')
 
     if project_id:
         try:

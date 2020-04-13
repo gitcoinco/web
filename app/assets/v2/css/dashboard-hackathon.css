@@ -8,21 +8,12 @@ body {
   height: 0;
 }
 
-.navigation {
-  height: 60px;
-  display: flex;
-  align-items: center;
-}
 
-.navigation a {
-  font-weight: 500;
-  padding: 0;
+#left_sidebar .townsquare-org-filter {
+  cursor:pointer
 }
-
-.navigation a.active {
-  font-weight: bold;
-  color: #0b0d9d;
-  border-bottom: 4px solid #0b0d9d;
+#left_sidebar .townsquare-org-filter:active {
+  border-bottom: 4px solid #280076 !important;
 }
 
 #onboard-dashboard {
@@ -45,6 +36,12 @@ body {
 #onboard-dashboard h3 {
   text-transform: capitalize;
   letter-spacing: 0;
+}
+
+.navigation a {
+  width:100% !important;
+  font-weight: 500 !important;
+  padding: 0 !important;
 }
 
 #onboard-footer p a,
@@ -253,6 +250,7 @@ body {
   font-weight: 600;
   letter-spacing: 1.7px;
 }
+
 .hackathon-explorer {
   background: rgb(242, 246, 249) !important;
 }
@@ -311,4 +309,43 @@ body {
   font-size: 15px;
   padding-right: 0.5em;
   vertical-align: text-bottom;
+}
+
+.navigation {
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.navigation .nav-link, .navigation .nav-link:hover {
+  color: inherit;
+  border:0;
+}
+
+.navigation .nav-link.active {
+  background-color: transparent !important;
+  font-weight: bold !important;
+  color: #4700FF !important;
+  border-bottom: 4px solid #4700FF !important;
+}
+
+li.navigation > a.nav-link {
+  height: 100%;
+}
+
+
+.sponsor-top {
+  height: 60px;
+  display: flex;
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+div.nav-tabs {
+  background-color:#ffffff;
+  border-left:0;
+}
+
+.hackathon-explorer ul.nav-tabs {
+  border:0;
 }
