@@ -1,9 +1,12 @@
-from django.core.management.base import BaseCommand
-from grants.models import Contribution
-from grants.views import next_round_start, round_end
-from economy.tx import grants_transaction_validator
 import pprint
 import time
+
+from django.core.management.base import BaseCommand
+
+from economy.tx import grants_transaction_validator
+from grants.models import Contribution
+from grants.views import next_round_start, round_end
+
 
 class Command(BaseCommand):
 

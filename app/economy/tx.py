@@ -1,19 +1,19 @@
-from dashboard.abi import erc20_abi
-from bs4 import BeautifulSoup
-from decimal import Decimal
-from hexbytes import HexBytes
-from time import sleep
-from dashboard.utils import get_web3
-from django.conf import settings
-import requests
-from web3 import Web3
-from web3.exceptions import BadFunctionCallOutput
 import decimal
-from dashboard.utils import get_tx_status
-from django.utils import timezone
-from dashboard.abi import erc20_abi
-from web3 import HTTPProvider
+import os
 import time
+from decimal import Decimal
+from time import sleep
+
+from django.conf import settings
+from django.utils import timezone
+
+import requests
+from bs4 import BeautifulSoup
+from dashboard.abi import erc20_abi
+from dashboard.utils import get_tx_status, get_web3
+from hexbytes import HexBytes
+from web3 import HTTPProvider, Web3
+from web3.exceptions import BadFunctionCallOutput
 
 
 def maybeprint(_str, _str2=None, _str3=None):
@@ -239,8 +239,6 @@ def get_token_recipient_senders(recipient_address, token_address):
         for transfer in transfers
     ]
 
-import os
-import requests
 
 auth = settings.ALETHIO_KEY
 headers = {'Authorization': f'Bearer {auth}'}
@@ -323,4 +321,3 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
     except Exception as e:
         maybeprint('284', e)
         return []
-

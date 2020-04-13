@@ -48,4 +48,3 @@ for key, pkg in stats.items():
         len(set(pkg['contributions_per_originated_address'])), ",",
         len(set(pkg['contributions_without_originated_address'])), ",",
         )
- 
