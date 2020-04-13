@@ -3726,7 +3726,7 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     following_tribes = []
 
-    if request.user and request.user.profile:
+    if request.user and hasattr(request.user, 'profile'):
         following_tribes = request.user.profile.tribe_members.filter(
             org__in=hackathon_event.sponsor_profiles.all()
         ).values_list('org__handle', flat=True)
@@ -3741,9 +3741,11 @@ def hackathon(request, hackathon='', panel='prizes'):
             'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
         }
         orgs.append(org)
-
-    is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
-                                                         hackathon=hackathon_event) if request.user and request.user.profile else None
+    if hasattr(request.user, 'profile') == False:
+        is_registered = False
+    else:
+        is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
+                                                             hackathon=hackathon_event) if request.user and request.user.profile else None
 
     if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
