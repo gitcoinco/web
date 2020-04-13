@@ -501,9 +501,9 @@
                                   </div>
                                 </div>
 
-                                <div v-if="project.message" class="my-3 looking-team">
-                                  <h5 class="info-card-title uppercase">Looking for team members</h5>
-                                  <p class="info-card-desc">
+                                <div v-if="project.looking_members || project.message" class="my-3 looking-team">
+                                  <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
+                                  <p v-if="project.message" class="info-card-desc">
                                     [[ project.message ]]
                                   </p>
                                 </div>
@@ -511,7 +511,7 @@
                                 <div class="font-smaller-2 mt-4">
                                   <b class="font-weight-bold">Sponsored by</b>
                                   <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
-                                  <a href="">[[ project.bounty.org_name ]]</a>
+                                  <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
                                 </div>
                               </div>
                               </div>
