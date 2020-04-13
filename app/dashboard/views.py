@@ -2107,6 +2107,50 @@ def profile_details(request, handle):
     return JsonResponse(response, safe=False)
 
 
+def user_card(request, handle):
+    """Display profile keywords.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
+    try:
+        profile = profile_helper(handle, True)
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    if not settings.DEBUG:
+        network = 'mainnet'
+    else:
+        network = 'rinkeby'
+
+    if request.user.is_authenticated:
+        is_following = True if TribeMember.objects.filter(profile=request.user.profile, org=profile).count() else False
+    else:
+        is_following = False
+
+    profile_dict = profile.as_dict
+    followers = TribeMember.objects.filter(org=profile).count()
+    following = TribeMember.objects.filter(profile=profile).count()
+    response = {
+        'is_authenticated': request.user.is_authenticated,
+        'is_following': is_following,
+        'profile' : {
+            'avatar_url': profile.avatar_url,
+            'handle': profile.handle,
+            'orgs' : profile.organizations,
+            'created_on' : profile.created_on,
+            'keywords' : profile.keywords,
+            'data': profile.data,
+            'followers':followers,
+            'following':following,
+        },
+        'profile_dict':profile_dict
+    }
+
+    return JsonResponse(response, safe=False)
+
+
 def profile_keywords(request, handle):
     """Display profile details.
 
@@ -4073,7 +4117,7 @@ def get_hackathons(request):
     events = {
         'current': HackathonEvent.objects.current().filter(visible=True).order_by('start_date'),
         'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
-        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('start_date'),
+        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
     }
     params = {
         'active': 'hackathons',
