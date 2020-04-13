@@ -27,21 +27,23 @@ class Command(BaseCommand):
         pp = pprint.PrettyPrinter(indent=4)
         total = contributions.count()
         for contribution in contributions:
+            try:
+                # get data from API
+                response = grants_transaction_validator(contribution)
+                #print('---------------------------------')
+                #pp.pprint(response)
 
-            # get data from API
-            response = grants_transaction_validator(contribution)
-            #print('---------------------------------')
-            #pp.pprint(response)
+                if len(response['originator']):
+                    contribution.originated_address = response['originator'][0]
+                contribution.validator_passed = response['validation']['passed']
+                contribution.validator_comment = response['validation']['comment']
+                contribution.save()
 
-            if len(response['originator']):
-                contribution.originated_address = response['originator'][0]
-            contribution.validator_passed = response['validation']['passed']
-            contribution.validator_comment = response['validation']['comment']
-            contribution.save()
-
-            #housekeeping
-            counter += 1
-            time_per_row = round((time.time() - start_time) / counter, 2)
-            left = total - counter
-            est_time_left = round(time_per_row * left / 60 / 60, 2)
-            print(f"debug {counter}/{total}: this is taking {time_per_row}s/row. estimated time left: {est_time_left}h")
+                #housekeeping
+                counter += 1
+                time_per_row = round((time.time() - start_time) / counter, 2)
+                left = total - counter
+                est_time_left = round(time_per_row * left / 60 / 60, 2)
+                print(f"debug {counter}/{total}: this is taking {time_per_row}s/row. estimated time left: {est_time_left}h")
+            except Exception as e:
+                print(e)
