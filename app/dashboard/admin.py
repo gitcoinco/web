@@ -26,9 +26,8 @@ from django.utils.safestring import mark_safe
 from .models import (
     Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
     CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
-    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
-    RefundFeeRequest, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
-    UserVerificationModel,
+    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView, SearchHistory,
+    Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
 
 
@@ -309,50 +308,6 @@ class BountyAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
-class RefundFeeRequestAdmin(admin.ModelAdmin):
-    """Setup the RefundFeeRequest admin results display."""
-
-    raw_id_fields = ['bounty', 'profile']
-    ordering = ['-created_on']
-    list_display = ['pk', 'created_on', 'fulfilled', 'rejected', 'link', 'get_bounty_link', 'get_profile_handle',]
-    readonly_fields = ['pk', 'token', 'fee_amount', 'comment', 'address', 'txnId', 'link', 'get_bounty_link',]
-    search_fields = ['created_on', 'fulfilled', 'rejected', 'bounty', 'profile']
-
-    def get_bounty_link(self, obj):
-        bounty = getattr(obj, 'bounty', None)
-        url = bounty.url
-        return mark_safe(f"<a href={url}>{bounty}</a>")
-
-    def get_profile_handle(self, obj):
-        """Get the profile handle."""
-        profile = getattr(obj, 'profile', None)
-        if profile and profile.handle:
-            return mark_safe(
-                f'<a href=/_administration/dashboard/profile/{profile.pk}/change/>{profile.handle}</a>'
-            )
-        if obj.github_username:
-            return obj.github_username
-        return 'N/A'
-
-    get_profile_handle.admin_order_field = 'handle'
-    get_profile_handle.short_description = 'Profile Handle'
-
-    def link(self, instance):
-        """Handle refund fee request specific links.
-
-        Args:
-            instance (RefundFeeRequest): The refund request to build a link for.
-
-        Returns:
-            str: The HTML element for the refund request link.
-
-        """
-        if instance.fulfilled or instance.rejected:
-            return 'n/a'
-        return mark_safe(f"<a href=/_administration/process_refund_request/{instance.pk}>process me</a>")
-    link.allow_tags = True
-
-
 class HackathonSponsorAdmin(admin.ModelAdmin):
     """The admin object for the HackathonSponsor model."""
 
@@ -483,6 +438,5 @@ admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
-admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)

@@ -886,7 +886,7 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#faucet_form').removeClass('hidden');
     }
   }
-  if ($('#admin_faucet_form').length || $('#admin_refund_form').length) {
+  if ($('#admin_faucet_form').length) {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
