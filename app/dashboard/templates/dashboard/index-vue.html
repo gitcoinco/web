@@ -397,126 +397,126 @@
                 </div>
               </b-tab>
               <b-tab class="col-12" title-item-class="navigation" lazy>
-                  <template v-slot:title>
-                    <div class="mt-4">
-                      {% trans "Projects" %}
-                      <span class="nav-badge d-none d-sm-inline">({{projects_count}})</span>
-                    </div>
-                  </template>
-                  <project-directory inline-template>
-                    <div class="ml-4">
-                      <div class="sidebar-container flex-column flex-lg-row">
-                        <transition name="fade">
-                          <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
-                            <div class="pb-4 border-bottom form-group">
-                              <div class="d-flex flex-grow-1" id="search_projects">
-                                <form class="form-inline my-2 flex-fill justify-content-center">
-                                  <div class="input-group w-100">
-                                    <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                                    <div class="input-group-append">
-                                      <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
-                                    </div>
+                <template v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Projects" %}
+                    <span class="nav-badge d-none d-sm-inline">({{projects_count}})</span>
+                  </div>
+                </template>
+                <project-directory inline-template>
+                  <div class="ml-4">
+                    <div class="sidebar-container flex-column flex-lg-row">
+                      <transition name="fade">
+                        <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
+                          <div class="pb-4 border-bottom form-group">
+                            <div class="d-flex flex-grow-1" id="search_projects">
+                              <form class="form-inline my-2 flex-fill justify-content-center">
+                                <div class="input-group w-100">
+                                  <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                  <div class="input-group-append">
+                                    <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
                                   </div>
-                                </form>
-                              </div>
-                            </div>
-                            <div class="pb-4 border-bottom form-group">
-                              <b-form-checkbox v-model="params.lfm" name="check-button" switch>
-                                Looking for Members
-                              </b-form-checkbox>
-                            </div>
-                            <div class="pb-4 border-bottom form-group">
-                            <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
-                            <div id="project_sponsors" class="form__select2">
-                              <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
-                                <option value="" selected="true">All</option>
-                                <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
-                                  [[ option.display_name ]]
-                                </option>
-                              </select2>
+                                </div>
+                              </form>
                             </div>
                           </div>
-                            <div class="g-multiselect pb-4 border-bottom form-group">
-                            <label for="skills" class="font-weight-bold">Member Skills</label>
-                            <div class="form__select2">
-                              <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                                <option disabled value="0">Select one</option>
-                              </select2>
-                            </div>
+                          <div class="pb-4 border-bottom form-group">
+                            <b-form-checkbox v-model="params.lfm" name="check-button" switch>
+                              Looking for Members
+                            </b-form-checkbox>
                           </div>
-                            <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                            <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                            <span class="font-weight-bold">[[ numProjects ]]</span> projects found
-                          </p>
-                          </nav>
-                        </transition>
-                        <div class="container pt-4" @scroll.passive="onScroll($event)">
-                        <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
-                        <div class="mt-4">
-                        <div v-if="noResults" class="text-center">
-                          <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
-                          <p class="mt-4 font-weight-bold mb-0">No projects found</p>
-                          <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                        </div>
-                        <div class="project-grid ml-2">
-                          <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
-                            <div class="card card-project">
-                              <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
-                              <div class="card-bg rounded-top" style="">
-                                <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
-                                <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
-                              </div>
-                              <div class="card-body">
-                                <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
-                                <div class="my-2">
-                                  <p class="text-left text-muted font-smaller-1">
-                                    [[ project.summary | truncate(500) ]]
-                                  </p>
-                                  <div class="text-left">
-                                    <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                    <a :href="project.bounty.url" class="btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                                    <b-dropdown varitant="primary" toggle-class="btn-sm btn btn-gc-blue" split-class="btn-sm btn btn-gc-blue">
-                                     <template v-slot:button-content>
-                                       <i class='fas fa-comment-dots'></i>
-                                     </template>
-                                     <b-dropdown-item-button @click.prevent="openChat(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
-                                       @ [[ profile.handle ]]
-                                     </b-dropdown-item-button>
-                                    </b-dropdown>
-                                  </div>
-                                </div>
-
-                                <div class="my-3 mb-2 text-left">
-                                  <b class="font-weight-bold font-smaller-3">Team Members</b>
-                                  <div class="mt-1">
-                                      <a v-for="profile in project.profiles" :href=`/profile/${profile.handle}` class="">
-                                        <b-img-lazy :src="profile.avatar_url" :alt=`"@${profile.handle}"` :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
-                                      </a>
-                                  </div>
-                                </div>
-
-                                <div v-if="project.looking_members || project.message" class="my-3 looking-team">
-                                  <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
-                                  <p v-if="project.message" class="info-card-desc">
-                                    [[ project.message ]]
-                                  </p>
-                                </div>
-
-                                <div class="font-smaller-2 mt-4">
-                                <b class="font-weight-bold">Sponsored by</b>
-                                <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
-                                <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
-                              </div>
-                              </div>
-                            </div>
+                          <div class="pb-4 border-bottom form-group">
+                          <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
+                          <div id="project_sponsors" class="form__select2">
+                            <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
+                              <option value="" selected="true">All</option>
+                              <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
+                                [[ option.display_name ]]
+                              </option>
+                            </select2>
                           </div>
                         </div>
-                        <loading-screen v-if="isLoading"></loading-screen>
+                          <div class="g-multiselect pb-4 border-bottom form-group">
+                          <label for="skills" class="font-weight-bold">Member Skills</label>
+                          <div class="form__select2">
+                            <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                              <option disabled value="0">Select one</option>
+                            </select2>
+                          </div>
+                        </div>
+                          <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
+                          <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                          <span class="font-weight-bold">[[ numProjects ]]</span> projects found
+                        </p>
+                        </nav>
+                      </transition>
+                      <div class="container pt-4" @scroll.passive="onScroll($event)">
+                      <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                      <div class="mt-4">
+                      <div v-if="noResults" class="text-center">
+                        <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                        <p class="mt-4 font-weight-bold mb-0">No projects found</p>
+                        <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                       </div>
+                      <div class="project-grid ml-2">
+                        <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
+                          <div class="card card-project">
+                            <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
+                            <div class="card-bg rounded-top" style="">
+                              <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
+                              <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
+                            </div>
+                            <div class="card-body">
+                              <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+                              <div class="my-2">
+                                <p class="text-left text-muted font-smaller-1">
+                                  [[ project.summary | truncate(500) ]]
+                                </p>
+                                <div class="text-left">
+                                  <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+                                  <a :href="project.bounty.url" class="btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+                                  <b-dropdown varitant="primary" toggle-class="btn-sm btn btn-gc-blue" split-class="btn-sm btn btn-gc-blue">
+                                   <template v-slot:button-content>
+                                     <i class='fas fa-comment-dots'></i>
+                                   </template>
+                                   <b-dropdown-item-button @click.prevent="openChat(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                     @ [[ profile.handle ]]
+                                   </b-dropdown-item-button>
+                                  </b-dropdown>
+                                </div>
+                              </div>
+
+                              <div class="my-3 mb-2 text-left">
+                                <b class="font-weight-bold font-smaller-3">Team Members</b>
+                                <div class="mt-1">
+                                    <a v-for="profile in project.profiles" :href=`/profile/${profile.handle}` class="">
+                                      <b-img-lazy :src="profile.avatar_url" :alt=`"@${profile.handle}"` :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
+                                    </a>
+                                </div>
+                              </div>
+
+                              <div v-if="project.looking_members || project.message" class="my-3 looking-team">
+                                <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
+                                <p v-if="project.message" class="info-card-desc">
+                                  [[ project.message ]]
+                                </p>
+                              </div>
+
+                              <div class="font-smaller-2 mt-4">
+                              <b class="font-weight-bold">Sponsored by</b>
+                              <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
+                              <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
+                            </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      </div>
+                      <loading-screen v-if="isLoading"></loading-screen>
                     </div>
-                  </project-directory>
+                    </div>
+                    </div>
+                  </div>
+                </project-directory>
               </b-tab>
               <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
                 <template v-slot:title>
@@ -533,14 +533,14 @@
                 </template>
               </b-tab>
               <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation"lazy>
-                  <template v-slot:title>
-                    <div class="mt-4">
-                      {% trans "Participants" %}
-                      <span class="nav-badge d-none d-sm-inline">({{hacker_count}})</span>
-                    </div>
-                  </template>
-                  <user-directory :disabled="!is_registered"  inline-template>
-                    <div class="ml-4">
+                <template v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Participants" %}
+                    <span class="nav-badge d-none d-sm-inline">({{hacker_count}})</span>
+                  </div>
+                </template>
+                <user-directory :disabled="!is_registered"  inline-template>
+                  <div class="ml-4">
                     <div class="sidebar-container flex-column flex-lg-row">
                     <transition name="fade">
                       <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
