@@ -25,6 +25,7 @@ from django.utils import timezone
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
 from grants.models import Contribution, Grant
+from grants.views import clr_active
 from marketing.mails import warn_subscription_failed
 
 
@@ -38,6 +39,10 @@ class Command(BaseCommand):
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
 
     def handle(self, *args, **options):
+        if not clr_active:
+            print('CLR round is not active according to grants.views.clr_active, so cowardly refusing to spend the CPU cycles + exiting instead')
+            return
+
         clr_type = options['clr_type']
         network = options['network']
 
