@@ -1,3 +1,5 @@
+import operator
+
 from django.utils import timezone
 
 from grants.models import *
@@ -33,7 +35,6 @@ for contrib in contributions:
     all_contributors_by_num[key] += 1
     all_contributors_by_amount[key] += contrib.subscription.amount_per_period_usdt
 
-import operator
 all_contributors_by_num = sorted(all_contributors_by_num.items(), key=operator.itemgetter(1))
 all_contributors_by_amount = sorted(all_contributors_by_amount.items(), key=operator.itemgetter(1))
 all_contributors_by_num.reverse()
