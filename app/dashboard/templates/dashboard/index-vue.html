@@ -133,12 +133,6 @@
         bottom:0;
       }
 
-      /* .hackathon-banner {
-        background: {% firstof hackathon.background_color or 'white' %};
-        color: {% firstof hackathon.text_color or 'black' %};
-        height: 225px;
-        background-image: url('{% firstof banner or "/static/wallpapers/V3.png" %}');
-      } */
       .hackathon-banner {
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
@@ -344,7 +338,11 @@
                 </template>
                 <div id="prizes" class="row">
                   <div class="col-12 col-md-2 d-lg-block" style="background: #F2F6F9; margin-left:2%">
+
                     <div class="ml-sm-4 mr-4 mr-sm-0 invisible" id="sidebar_container">
+                      <a :href="`/hackathon/${hackathonObj.slug}/onboard`" class="btn register btn-gc-blue mt-2" v-if="!is_registered">
+                        Register
+                      </a>
                       {% include 'dashboard/sidebar_search_hackathon.html' %}
                     </div>
                   </div>
@@ -405,7 +403,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab class="col-12" title-item-class="navigation">
+              <b-tab :disabled="!is_registered" class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Townsquare" %}
@@ -449,7 +447,7 @@
                   </div>
                 </div>
               </b-tab>
-              <project-directory inline-template>
+              <project-directory inline-template :disabled="!is_registered">
                 <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
@@ -559,7 +557,7 @@
                 </div>
                 </b-tab>
               </project-directory>
-              <b-tab class="col-12" title-item-class="navigation">
+              <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Chat" %}
@@ -573,9 +571,8 @@
                   </div>
                 </template>
               </b-tab>
-              <user-directory inline-template>
-
-              <b-tab class="col-12" title-item-class="navigation"lazy>
+              <user-directory :disabled="!is_registered"  inline-template>
+                <b-tab class="col-12" title-item-class="navigation"lazy>
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Participants" %}
@@ -956,13 +953,15 @@
     <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{orgs|json_script:"sponsor-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
+    {{is_registered|json_script:"hackathon-registration"}}
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
       });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{ keywords | safe }};
-      document.is_registered = {{ is_registered | safe }};
+      document.is_registered = JSON.parse(document.getElementById('hackathon-registration').textContent);
+
       window.localStorage['tab'] = 'hackathon:{{hackathon.id | safe}}';
       document.hackathon = "{{ hackathon.slug | safe }}";
       document.hackathon_id = "{{ hackathon.id| safe }}";
