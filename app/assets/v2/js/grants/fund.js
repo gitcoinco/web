@@ -153,6 +153,10 @@ $(document).ready(function() {
     const val = $(this).val();
     const is_eth = val == '0x0000000000000000000000000000000000000000';
 
+    if (val == '0xdac17f958d2ee523a2206206994597c13d831ec7') {
+      _alert('WARNING: USDT is not well supported, it is recommended to use $USDC or $DAI instead. <a target=new href=https://twitter.com/owocki/status/1247546241862348801>More info here</a>', 'error', 2000);
+    }
+
     if (is_eth && $('#recurring_or_not').val() == 'recurring') {
       _alert('Sorry but this token is not supported for recurring donations', 'error', 1000);
     }
@@ -356,15 +360,16 @@ $(document).ready(function() {
 
       let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
       let realApproval;
-
+      const approve_buffer = 100000;
+      
       if (data.contract_version == 1 || data.num_periods == 1) {
-        const approve_buffer = 100000;
+
         realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + approve_buffer);
       } else if (data.contract_version == 0) {
         console.log('grant amount: ' + grant_amount);
         console.log('gitcoin grant amount: ' + gitcoin_grant_amount);
         // don't need to approve for gitcoin_grant_amount since we will directly transfer it
-        realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + 1);
+        realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + approve_buffer);
       }
 
       let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
@@ -420,6 +425,7 @@ $(document).ready(function() {
 
                 var first = Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false});
                 var second = Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false});
+
                 splitPayment(accounts[0], to_address, gitcoinDonationAddress, first, second);
               } else {
                 if (data.contract_version == 0 && gitcoin_grant_amount > 0) {

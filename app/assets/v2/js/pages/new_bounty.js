@@ -3,10 +3,8 @@
 /* eslint-disable no-lonely-if */
 document.web3network = 'mainnet';
 load_tokens();
-// listen_for_web3_changes();
 
-const qr_tokens = ['ETC'];
-
+const qr_tokens = [ 'ETC', 'cGLD', 'cUSD', 'ZIL' ];
 
 const updateOnNetworkOrTokenChange = () => {
   const tokenName = $('select[name=denomination]').select2('data')[0] &&
@@ -220,49 +218,6 @@ function lastSynced(current, last_sync) {
   return timeDifference(current, last_sync);
 }
 
-const setPrivateForm = () => {
-  $('#description, #title').prop('readonly', false);
-  $('#description, #title').prop('required', true);
-  $('#no-issue-banner').hide();
-  $('#issue-details').removeClass('issue-details-public');
-  $('#issue-details, #issue-details-edit').show();
-  $('#sync-issue').removeClass('disabled');
-  $('#last-synced, #edit-issue, #sync-issue').hide();
-  $('#show_email_publicly').attr('disabled', true);
-  $('#cta-subscription, #private-repo-instructions').removeClass('d-md-none');
-  $('#nda-upload').show();
-  $('#issueNDA').prop('required', true);
-  $('.permissionless').addClass('disabled');
-  $('#permissionless').attr('disabled', true);
-  $('#admin_override_suspend_auto_approval').prop('checked', false);
-  $('#admin_override_suspend_auto_approval').attr('disabled', true);
-  $('#keywords').select2({
-    placeholder: 'Select tags',
-    tags: 'true',
-    allowClear: true,
-    tokenSeparators: [ ',', ' ' ]
-  }).trigger('change');
-};
-
-const setPublicForm = () => {
-  $('#description, #title').prop('readonly', true);
-  $('#no-issue-banner').show();
-  $('#issue-details').addClass('issue-details-public');
-  $('#issue-details, #issue-details-edit').hide();
-  $('#sync-issue').addClass('disabled');
-  $('.js-submit').addClass('disabled');
-  $('#last-synced, #edit-issue , #sync-issue').show();
-  $('#show_email_publicly').attr('disabled', false);
-  $('#cta-subscription, #private-repo-instructions').addClass('d-md-none');
-  $('#nda-upload').hide();
-  $('#issueNDA').prop('required', false);
-  $('.permissionless').removeClass('disabled');
-  $('#permissionless').attr('disabled', false);
-  $('#admin_override_suspend_auto_approval').prop('checked', true);
-  $('#admin_override_suspend_auto_approval').attr('disabled', false);
-  retrieveIssueDetails();
-};
-
 /**
  * Checks if token used to fund bounty is authed.
  */
@@ -272,7 +227,7 @@ const handleTokenAuth = () => {
     const tokenAddress = $('#token option:selected').val();
     let isTokenAuthed = true;
 
-    const authedTokens = [ 'ETH', 'ETC' ];
+    const authedTokens = ['ETH'].concat(qr_tokens);
 
     if (!token) {
       isTokenAuthed = false;
@@ -331,7 +286,7 @@ const tokenAuthAlert = (isTokenAuthed, tokenName) => {
 
 const updateViewForToken = (token_name) => {
 
-  if (token_name == 'ETC') {
+  if (qr_tokens.includes(token_name)) {
     $('.eth-chain').hide();
     FEE_PERCENTAGE = 0;
   } else {
@@ -340,7 +295,6 @@ const updateViewForToken = (token_name) => {
   }
 
 };
-
 
 $(function() {
 
@@ -351,21 +305,9 @@ $(function() {
     });
   });
 
-  let checked = params.get('type');
-
-  if (params.has('type')) {
-
-    $(`.${checked}`).button('toggle');
-
-  } else {
-    params.append('type', 'public');
-    window.history.replaceState({}, '', location.pathname + '?' + params);
-  }
-  toggleCtaPlan(checked);
-
-  $('input[name=repo_type]').change(function() {
-    toggleCtaPlan($(this).val());
-  });
+  params.append('type', 'public');
+  window.history.replaceState({}, '', location.pathname + '?' + params);
+  retrieveIssueDetails();
 
   populateBountyTotal();
 
@@ -481,7 +423,7 @@ $(function() {
     }
   });
 
-  if ($('input[name=issueURL]').val() != '' && !isPrivateRepo) {
+  if ($('input[name=issueURL]').val() != '') {
     retrieveIssueDetails();
   }
 
@@ -560,18 +502,6 @@ $('#issueURL').focusout(function() {
       $('input[name=issueURL]').val('');
       return false;
     }
-  }
-
-  if (isPrivateRepo) {
-    setPrivateForm();
-    var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
-
-    if (validated) {
-      $('.js-submit').addClass('disabled');
-    } else {
-      $('.js-submit').removeClass('disabled');
-    }
-    return;
   }
 
   setInterval(function() {
@@ -656,12 +586,7 @@ $('#submitBounty').validate({
     const token = $('#summary-bounty-token').html();
     const data = transformBountyData(form);
 
-    if (token == 'ETC') {
-      /*
-        TODO:
-        1. TRIGGER DB UPDATE
-        2. REDESIGN METAMASK LOCK NOTIFICATION
-      */
+    if (qr_tokens.includes(token)) {
       createBounty(data);
     } else {
       ethCreateBounty(data);
@@ -740,23 +665,6 @@ const populateBountyTotal = () => {
   $('#summary-total-amount').html(total);
 };
 
-let isPrivateRepo = false;
-
-const toggleCtaPlan = (value) => {
-  if (value === 'private') {
-
-    params.set('type', 'private');
-    isPrivateRepo = true;
-    setPrivateForm();
-  } else {
-
-    params.set('type', 'public');
-    isPrivateRepo = false;
-    setPublicForm();
-  }
-  window.history.replaceState({}, '', location.pathname + '?' + params);
-};
-
 /**
  * generates object with all the data submitted during
  * bounty creation
@@ -773,16 +681,6 @@ const transformBountyData = form => {
       data[this.name] = this.value;
     }
   });
-
-  if (
-    data.repo_type == 'private' &&
-    data.project_type != 'traditional' &&
-    data.permission_type != 'approval'
-  ) {
-    _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
-    unloading_button($('.js-submit'));
-    return;
-  }
 
   disabled.attr('disabled', 'disabled');
   loading_button($('.js-submit'));
@@ -809,13 +707,14 @@ const transformBountyData = form => {
     fundingOrganisation: data.fundingOrganisation,
     eventTag: data.specialEvent ? (data.eventTag || '') : '',
     is_featured: data.featuredBounty,
-    repo_type: data.repo_type,
+    repo_type: 'public',
     featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
     reservedFor: reservedFor ? reservedFor.text : '',
     releaseAfter: releaseAfter !== 'Release To Public After' ? releaseAfter : '',
     tokenName: token['name'],
     invite: inviteContributors,
-    bounty_categories: data.bounty_categories
+    bounty_categories: data.bounty_categories,
+    activity: data.activity
   };
 
   data.metadata = metadata;

@@ -1,10 +1,14 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
+});
 
 $(document).ready(function() {
 
   var linkify = function(new_text) {
     new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a data-usercard="$1" href="/profile/$1">@$1</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
@@ -55,9 +59,9 @@ $(document).ready(function() {
     const $target = $(this).parents('.activity_detail_content');
     const html = `
     <p class='float-right p-0 m-0 video_options_container'>
-    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> | 
-    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> | 
-    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> | 
+    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> |
+    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> |
+    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> |
     <a href=# class=' leave_video_call'>Leave Video Call <i class="far fa-times-circle"></i></a>
     </p>`;
 
@@ -471,8 +475,10 @@ $(document).ready(function() {
 
 
   // like activity
-  $(document).on('click', '.like_activity, .flag_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity', function(e) {
     e.preventDefault();
+    const current_tab = getURLParams('tab');
+
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
       return;
@@ -488,12 +494,14 @@ $(document).ready(function() {
 
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
+      $(this).find('i').removeClass('far').addClass('fas');
     } else { // unlike
       $(this).find('span.action').removeClass('open');
       $(this).data('state', $(this).data('negative'));
       $(this).removeClass('animate-sparkle');
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
+      $(this).find('i').removeClass('fas').addClass('far');
     }
 
     // remote post
@@ -505,11 +513,16 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
     var parent = $(this).parents('.activity.box');
+    var self = $(this);
 
     parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
       parent.find('.loading').addClass('hidden');
+
+      if (!is_unliked && current_tab === 'my_favorites') {
+        self.parentsUntil('.activity_stream').remove();
+      }
     }).fail(function() {
       parent.find('.error').removeClass('hidden');
     });
@@ -586,6 +599,7 @@ $(document).ready(function() {
     if (getParam('tab') && getParam('tab').indexOf('activity:') != -1) {
       hide_after_n_comments = 100;
     }
+    const limit_hide_option = 10;
     // remote post
     var params = {
       'method': 'comment'
@@ -641,12 +655,13 @@ $(document).ready(function() {
         var show_more_box = '';
         var is_hidden = (num_comments - i) >= hide_after_n_comments && override_hide_comments != true;
         var is_first_hidden = i == 0 && num_comments >= hide_after_n_comments && override_hide_comments != true;
+        const show_all_option = num_comments > limit_hide_option;
 
         if (is_first_hidden) {
           show_more_box = `
-          <div class="row mx-auto show_more d-block text-center">
+          <div class="row mx-auto ${ show_all_option ? 'show_all' : 'show_more'} d-block text-center">
             <a href="#" class="text-black-60 font-smaller-5">
-              Show More
+            ${ show_all_option ? 'See all comments' : `Show More (<span class="comment-count">${num_comments - hide_after_n_comments + 1}</span>)`}
             </a>
           </div>
           `;
@@ -655,7 +670,7 @@ $(document).ready(function() {
         ${show_more_box}
         <div class="row comment_row mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
           <div class="col-1 activity-avatar my-auto">
-            <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
+            <a href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
           </div>
@@ -666,9 +681,9 @@ $(document).ready(function() {
                 <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
                   •
                 </span>
-              </span>          
+              </span>
                 <b>${comment['name']}</b>
-                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
+                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
                 @${comment['profile_handle']}
                 </a></span>
                 ${comment['match_this_round'] ? `
@@ -781,14 +796,27 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.show_more', function(e) {
     e.preventDefault();
-    var num_to_unhide_at_once = 3;
+    const num_to_unhide_at_once = 3;
 
     for (var i = 0; i < num_to_unhide_at_once; i++) {
       get_hidden_comments($(this)).last().removeClass('hidden');
     }
     if (get_hidden_comments($(this)).length == 0) {
       $(this).remove();
+    } else {
+      $(this).find('.comment-count').text(get_hidden_comments($(this)).length);
     }
+  });
+
+  $(document).on('click', '.show_all', function(e) {
+    e.preventDefault();
+    const hiddenComments = get_hidden_comments($(this));
+
+    for (let i = 0; i < hiddenComments.length; i++) {
+      hiddenComments[i].classList.remove('hidden');
+    }
+
+    $(this).remove();
   });
 
   // post comment activity
@@ -861,6 +889,19 @@ $(document).ready(function() {
     }, 300);
   });
 
+  $(document).on('click', '.fund_issue', function(e) {
+    e.preventDefault();
+    const url = $(this).data('url');
+
+    copyToClipboard(url);
+    _alert('Link copied to clipboard.', 'success', 1000);
+    $(this).addClass('open');
+    const $target = $(this);
+
+    setTimeout(function() {
+      $target.removeClass('open');
+    }, 300);
+  });
 
   // auto open new comment threads
   setInterval(function() {
@@ -910,7 +951,7 @@ function throttle(fn, wait) {
     }
   };
 }
-  
+
 
 window.addEventListener('scroll', throttle(function() {
   var offset = 800;
