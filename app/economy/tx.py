@@ -303,16 +303,17 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
     # TokenTransfer events, value field
     try:
         originators = []
-        for tx in transfers.get('data', {}):
+        xfrs = transfers.get('data', {})
+        for tx in xfrs:
             if tx.get('type') == 'TokenTransfer':
                 response = tx['relationships']['from']['data']['id']
                 # hack to save time
                 if response != to_address:
                     return [response]
                 #originators.append(response)
-
-            if tx.get('type') == 'EtherTransfer' and int(tx.get('value', 0)) > 0:
-                response = tx['relationships']['originator']['data']['id']
+            value = int(tx.get('attributes', {}).get('value', 0))
+            if tx.get('type') == 'EtherTransfer' and value > 0:
+                response = tx['relationships']['transaction']['data']['id']
                 if response != to_address:
                     # hack to save time
                     return [response]

@@ -16,6 +16,7 @@ class Command(BaseCommand):
 
         contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network=network)
         contributions = contributions.filter(subscription__grant__grant_type='health')
+        contributions = contributions.filter(originated_address='0x0')
         #contributions = contributions.filter(pk=14487)
         inputs = []
         start_time = time.time()
