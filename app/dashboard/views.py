@@ -4301,7 +4301,7 @@ def hackathon_registration(request):
     return JsonResponse({'redirect': redirect})
 
 
-def get_hackathon_events(title, event, network):
+def get_hackathon_event(title, event, network):
     event_bounties = Bounty.objects.filter(event=event, network=network)
 
     return {
@@ -4337,17 +4337,17 @@ def get_hackathons(request):
 
     if current_hackathon_events.exists():
         for event in current_hackathon_events:
-            event_dict = get_hackathon_events('current', event, network)
+            event_dict = get_hackathon_event('current', event, network)
             hackathon_events.append(event_dict)
 
     if upcoming_hackathon_events.exists():
         for event in upcoming_hackathon_events:
-            event_dict = get_hackathon_events('upcoming', event, network)
+            event_dict = get_hackathon_event('upcoming', event, network)
             hackathon_events.append(event_dict)
 
     if finished_hackathon_events.exists():
         for event in finished_hackathon_events:
-            event_dict = get_hackathon_events('finished', event, network)
+            event_dict = get_hackathon_event('finished', event, network)
             hackathon_events.append(event_dict)
 
 
