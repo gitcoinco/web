@@ -57,21 +57,10 @@
         border-top: none;
       }
 
-      .onboard-banner {
-        background: {% firstof hackathon.background_color or 'white' %};
-        color: {% firstof hackathon.text_color or 'black' %};
-      }
-
       .card-bg {
         background-color: #0C1A27;
         padding: 1.8em;
         background-size: cover;
-      }
-
-      .project-grid {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        grid-gap: 5rem 3rem;
       }
 
       .card-project {
@@ -101,6 +90,12 @@
         object-fit: contain;
       }
 
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 5rem 3rem;
+      }
+
       @media (min-width: 768px) {
         .project-grid {
           grid-template-columns: repeat(2, 1fr);
@@ -108,12 +103,6 @@
       }
 
       @media (min-width: 992px) {
-        .project-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (min-width: 1200px) {
         .project-grid {
           grid-template-columns: repeat(3, 1fr);
         }
@@ -200,12 +189,6 @@
         background-size: cover;
       }
 
-      .project-grid {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        grid-gap: 5rem 3rem;
-      }
-
       .card-project {
         /* padding: 2em; */
         text-align: center;
@@ -218,42 +201,16 @@
         filter: drop-shadow(0 0.3rem 0.2rem rgba(0,0,0,0.25));
         width: 4em;
       }
-
-      .card-project-logo {
-        object-fit: contain;
-      }
-
-      @media (min-width: 768px) {
-        .project-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (min-width: 992px) {
-        .project-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (min-width: 1200px) {
-        .project-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-      .page-link-gc {
-        color: #3e24fb;
-      }
-      .page-item.active .page-link-gc {
-        background-color: #3e24fb;
-        border-color: #3e24fb;
-      }
       .controls .form-control, .controls .btn, .controls label {
         font-size: 0.7rem;
       }
+<<<<<<< HEAD
       .summary {
         /* height: 70px; */
         /* max-height: 70px; */
       }
+=======
+>>>>>>> updates for the project-panel, removing redundant css, adding a truncate filter to prevent long running paragraphs
       .looking-team {
         background-color: rgba(62, 0, 255, 0.05);
         border-radius: 8px;
@@ -501,7 +458,7 @@
                           <p class="mt-4 font-weight-bold mb-0">No projects found</p>
                           <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                         </div>
-                        <div class="grid-4">
+                        <div class="project-grid ml-2">
                           <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
                             <div class="card card-project">
                                 <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
@@ -513,8 +470,8 @@
                                 <div class="card-body">
                                 <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
                                 <div class="my-2">
-                                  <p class="text-left text-muted font-smaller-1 summary">
-                                    [[ project.summary ]]
+                                  <p class="text-left text-muted font-smaller-1">
+                                    [[ project.summary | truncate(500) ]]
                                   </p>
                                   <div class="text-left">
                                     <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
