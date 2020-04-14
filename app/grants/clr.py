@@ -271,7 +271,7 @@ def calculate_clr_for_donation(grant, amount, positive_grant_contributions, nega
         total_pot: float
         threshold : int
 '''
-def populate_data_for_clr(clr_type=None, network='mainnet'):
+def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile'):
     import pytz
 
     from_date = timezone.now()
@@ -315,8 +315,8 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
         negative_contributions = negative_contributions.filter(pk__in=negative_contribution_ids)
         phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
 
-        positive_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in positive_contributions] + [p.profile_id for p in phantom_funding_profiles]))
-        negative_contributing_profile_ids = list(set([c.subscription.contributor_profile.id for c in negative_contributions]))
+        positive_contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in positive_contributions] + [p.profile_id for p in phantom_funding_profiles]))
+        negative_contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in negative_contributions]))
 
         # print(f'positive contrib profiles : {positive_contributing_profile_ids}')
         # print(f'negative contrib profiles : {negative_contributing_profile_ids}')
@@ -330,12 +330,16 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
         if len(positive_contributing_profile_ids) > 0:
             for profile_id in positive_contributing_profile_ids:
                 # get sum of contributions per grant for each profile
-                profile_positive_contributions = positive_contributions.filter(subscription__contributor_profile_id=profile_id)
+                if mechanism == 'originated_address':
+                    profile_positive_contributions = positive_contributions.filter(originated_address=profile_id)
+                else:
+                    profile_positive_contributions = positive_contributions.filter(subscription__contributor_profile_id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_positive_contributions if c.subscription.amount_per_period_usdt]))
 
-                phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id, created_on__lte=from_date)
-                if phantom_funding.exists():
-                    sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
+                if mechanism != 'originated_address':
+                    phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id, created_on__lte=from_date)
+                    if phantom_funding.exists():
+                        sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
 
                 positive_summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
 
@@ -348,7 +352,10 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
         # NEGATIVE CONTRIBUTIONS
         if len(negative_contributing_profile_ids) > 0:
             for profile_id in negative_contributing_profile_ids:
-                profile_negative_contributions = negative_contributions.filter(subscription__contributor_profile_id=profile_id)
+                if mechanism == 'originated_address':
+                    profile_negative_contributions = negative_contributions.filter(originated_address=profile_id)
+                else:
+                    profile_negative_contributions = negative_contributions.filter(subscription__contributor_profile_id=profile_id)
                 sum_of_each_negative_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_negative_contributions if c.subscription.amount_per_period_usdt]))
                 negative_summed_contributions.append({str(profile_id): sum_of_each_negative_contributions})
 
@@ -362,11 +369,11 @@ def populate_data_for_clr(clr_type=None, network='mainnet'):
     return (grants, positive_contrib_data, negative_contrib_data, total_pot, threshold)
 
 
-def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainnet'):
+def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainnet', mechanism='profile'):
     # setup
     clr_calc_start_time = timezone.now()
     debug_output = []
-    grants, positive_contrib_data, negative_contrib_data, total_pot, threshold = populate_data_for_clr(clr_type, network)
+    grants, positive_contrib_data, negative_contrib_data, total_pot, threshold = populate_data_for_clr(clr_type, network, mechanism=mechanism)
 
     # print(f'GRANT {len(grants)}')
     # print(f'CONTRIB {len(positive_contrib_data)}')
