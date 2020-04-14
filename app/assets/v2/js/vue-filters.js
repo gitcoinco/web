@@ -90,10 +90,21 @@ Vue.filter('stringReplace', function(activity_type) {
   return activity_names[activity_type];
 });
 
-Vue.filter('truncate', function(value, length = 30, clamp = '...') {
-  if (!value) {
-    return '';
-  }
+
+Vue.filter('truncate', function(text, length, clamp) {
+  text = text || '';
+  clamp = clamp || '...';
+  length = length || 30;
+
+  if (text.length <= length)
+    return text;
+
+  var tcText = text.slice(0, length - clamp.length);
+  var last = tcText.length - 1;
+
+
+  while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0])
+    last -= 1;
 
   value = value.toString();
   if (value.length <= length) {
