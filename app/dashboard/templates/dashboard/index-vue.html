@@ -137,20 +137,25 @@
         bottom:0;
       }
 
-      .hackathon-banner {
+      /* .hackathon-banner {
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
         height: 225px;
         background-image: url('{% firstof banner or "/static/wallpapers/V3.png" %}');
+      } */
+      .hackathon-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+        height: 225px;
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
       }
 
       .bounty_row img.avatar {
         max-width: 50px;
       }
 
-      .hackathon-text {
-          color: white;
-      }
       .hackathon-title {
           font-size: 1.4rem;
       }
@@ -178,9 +183,9 @@
           max-height: 240px;
           width: 240px;
           max-width: 240px;
-          background-color: #090E60;
+          background: {% firstof hackathon.background_color or '#090E60' %};
           border-radius: 10px;
-          color: white;
+          color: {% firstof hackathon.text_color or 'black' %};
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -298,7 +303,7 @@
       <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
     </div>
     {% endif %}
-    
+
     <div id="dashboard-content" class="container-fluid no-gutter" style="min-height:600px;">
         <div id="dashboard-vue-app" class="row" v-cloak>
           <div :id="hackathonObj.identifier" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
