@@ -45,6 +45,9 @@ class Command(BaseCommand):
 
         clr_type = options['clr_type']
         network = options['network']
+        # identity mechanism is profiles for traditional rounds. for experimental rounds, where we saw collusion
+        # make the identity mechanism into funds originated addr
+        # this is a stopgap until a "one identity mechanism to rule them all is round", probably in round 6.
         mechanism = 'profile' if clr_type != 'health' else 'originated_address'
 
         predict_clr(
