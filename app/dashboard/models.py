@@ -4553,7 +4553,7 @@ class HackathonEvent(SuperModel):
             str: The absolute URL for the HackathonEvent.
 
         """
-        return settings.BASE_URL + f'hackathon/onboard/{self.slug}/'
+        return settings.BASE_URL + f'hackathon/{self.slug}/onboard'
 
     @property
     def get_current_bounties(self):
