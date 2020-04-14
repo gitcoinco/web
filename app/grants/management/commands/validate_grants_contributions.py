@@ -2,6 +2,7 @@ import pprint
 import time
 
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from economy.tx import grants_transaction_validator
 from grants.models import Contribution
@@ -12,10 +13,20 @@ class Command(BaseCommand):
 
     help = 'validate grants transactions for this recent round'
 
+    def add_arguments(self, parser):
+        parser.add_argument('type', default='round', type=str, help="the type of sync (all, round, or last_hour)")
+
     def handle(self, *args, **kwargs):
         start = next_round_start
         end = round_end
         network = 'mainnet'
+        if kwargs['type'] == 'all':
+            start = timezone.datetime(1990, 1, 1)
+            end = timezone.now()
+        if kwargs['type'] == 'last_hour':
+            start = timezone.now() - timezone.timedelta(hours=1)
+            end = timezone.now()
+
 
         contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network=network)
         #contributions = contributions.filter(subscription__grant__grant_type='health')
