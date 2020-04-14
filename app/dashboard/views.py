@@ -50,6 +50,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -84,12 +85,11 @@ from marketing.models import EmailSubscriber, Keyword
 from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
-from rest_framework.renderers import JSONRenderer
 from townsquare.models import Comment
-from townsquare.views import get_following_tribes
-from townsquare.views import get_tags
+from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
 
 from .export import (
@@ -109,14 +109,11 @@ from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
+from .router import HackathonEventSerializer, HackathonProjectSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
     release_bounty_to_the_public, sync_payout, web3_process_bounty,
-)
-from .router import (
-    HackathonEventSerializer,
-    HackathonProjectSerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -3726,7 +3723,7 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     following_tribes = []
 
-    if request.user and request.user.profile:
+    if request.user and hasattr(request.user, 'profile'):
         following_tribes = request.user.profile.tribe_members.filter(
             org__in=hackathon_event.sponsor_profiles.all()
         ).values_list('org__handle', flat=True)
@@ -3741,9 +3738,11 @@ def hackathon(request, hackathon='', panel='prizes'):
             'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
         }
         orgs.append(org)
-
-    is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
-                                                         hackathon=hackathon_event) if request.user and request.user.profile else None
+    if hasattr(request.user, 'profile') == False:
+        is_registered = False
+    else:
+        is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
+                                                             hackathon=hackathon_event) if request.user and request.user.profile else None
 
     if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
         return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
