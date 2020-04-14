@@ -863,7 +863,7 @@ def get_nonce(network, address, ignore_db=False):
     nonce_from_web3 = w3.eth.getTransactionCount(address)
     if ignore_db:
         return nonce_from_web3
-        
+
     # db storage
     key = f"nonce_{network}_{address}"
     view = 'get_nonce'
@@ -998,3 +998,47 @@ def get_url_first_indexes():
 
 def get_custom_avatars(profile):
     return CustomAvatar.objects.filter(profile=profile).order_by('-id')
+
+
+def get_hackathon_event(title, event, network):
+    event_bounties = Bounty.objects.filter(event=event, network=network)
+
+    return {
+        'title': title,
+        'hackathon': event,
+        'value_in_usdt': sum(
+            prize_usdt.value_in_usdt_now
+            for prize_usdt
+            in event_bounties
+        ),
+        'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
+    }
+
+
+def get_tribe(display_name, logo_path, handle):
+    return {
+        'display_name': display_name,
+        'logo_path': logo_path,
+        'members': list(Profile.objects.filter(handle=handle, is_org=True).values_list('follower_count', flat=True))[0],
+        'path': list(Profile.objects.filter(handle=handle, is_org=True))[0].absolute_url
+    }
+
+
+def tribe_fields(network):
+    return {
+        (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
+        for bounty in list(Bounty.objects.current()\
+            .filter(event__isnull=False, network=network)
+        )
+    }
+
+# count distinct hackathon events in which a tribe has participated
+def hackathons_funded(funding_organisation, network, hackathons):
+    return Bounty.objects.current()\
+        .filter(
+            funding_organisation=funding_organisation,
+            network=network,
+            event__in=list(hackathons)
+        )\
+        .distinct('event')\
+        .count()
