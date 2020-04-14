@@ -3772,7 +3772,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
-        'is_registered': 1 if len(is_registered) > 0 else 0,
+        'is_registered': json.dumps(True if is_registered else False),
         'user': request.user,
         'tags': view_tags,
         'activities': [],
