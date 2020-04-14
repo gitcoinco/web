@@ -395,27 +395,26 @@
                         {% endfor %}
                       </div>
                     </div>
-                  <div class="feed_container col-12 col-lg-8">
-                    <div class="feed_container_child">
-                      {% csrf_token %}
-                      {% include 'townsquare/shared/shareactivity.html' %}
+                    <div class="feed_container col-12 col-lg-8">
+                      <div class="feed_container_child">
+                        {% csrf_token %}
+                        {% include 'townsquare/shared/shareactivity.html' %}
 
-                      <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
-                        <span id=activity_subheader>
-                          <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
-                          <br>
-                          <span>
-                            {{card_desc}}
+                        <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+                          <span id=activity_subheader>
+                            <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+                            <br>
+                            <span>
+                              {{card_desc}}
+                            </span>
                           </span>
-                        </span>
-                        {% include 'shared/activity_container.html' %}
+                          {% include 'shared/activity_container.html' %}
+                        </div>
                       </div>
                     </div>
+                    <div class="actions_container col-12 col-md-2 offset-1">
+                    </div>
                   </div>
-                  <div class="actions_container col-12 col-md-2 offset-1">
-                  </div>
-              </div>
-
                 </div>
               </b-tab>
               <project-directory inline-template>
@@ -857,6 +856,13 @@
                   </div>
                 </b-tab>
               </user-directory>
+              <template v-slot:tabs-end>
+                <li role="presentation" class="nav-item navigation"><a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
+                  <div class="mt-4">
+                    Guide
+                  </div>
+                </a></li>
+              </template>
             </b-tabs>
           </div>
           <div class="col-12 col-md-3">

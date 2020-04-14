@@ -209,8 +209,12 @@ urlpatterns = [
 
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon/<str:hackathon>', dashboard.views.hackathon, name='hackathon2'),
+    path('hackathon/<str:hackathon>/onboard/', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
     path('hackathon/<str:hackathon>/<str:panel>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/<str:hackathon>/onboard', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
+    path('hackathon/onboard/<str:hackathon>', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
+    path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard3'),
     path('hackathon/<str:hackathon>/projects/', dashboard.views.hackathon_projects, name='hackathon_projects'),
     path('hackathon/<str:hackathon>/prizes/', dashboard.views.hackathon, name='hackathon_prizes'),
     path(
