@@ -42,11 +42,14 @@
       <link rel="stylesheet" href={% static "v2/css/hackathons/explorer.css" %}>
 
       <style>
+
         .hackathon-banner {
           background: {% firstof hackathon.background_color or 'white' %};
           color: {% firstof hackathon.text_color or 'black' %};
           height: 225px;
-          background-image: url("/static/wallpapers/V3.png");
+          {% if hackathon.banner %}
+            background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+          {% endif %}
         }
 
         .hackathon-text {
