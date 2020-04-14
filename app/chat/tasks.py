@@ -108,28 +108,32 @@ def associate_chat_to_profile(profile):
         return False, profile
     except ResourceNotFound as RNF:
         if not profile.chat_id:
-            create_user_response = chat_driver.users.create_user(
-                options={
-                    "email": profile.user.email,
-                    "username": profile.handle,
-                    "first_name": profile.user.first_name,
-                    "last_name": profile.user.last_name,
-                    "nickname": profile.handle,
-                    "auth_data": f'{profile.user.id}',
-                    "auth_service": "gitcoin",
-                    "locale": "en",
-                    "props": {},
-                    "notify_props": chat_notify_default_props(profile),
-                },
-                params={
-                    "tid": settings.GITCOIN_CHAT_TEAM_ID
-                })
-            profile.chat_id = create_user_response['id']
-            chat_driver.teams.add_user_to_team(
-                settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                options={'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                         'user_id': create_user_response['id']}
-            )
+            try:
+                create_user_response = chat_driver.users.create_user(
+                    options={
+                        "email": profile.user.email,
+                        "username": profile.handle,
+                        "first_name": profile.user.first_name,
+                        "last_name": profile.user.last_name,
+                        "nickname": profile.handle,
+                        "auth_data": f'{profile.user.id}',
+                        "auth_service": "gitcoin",
+                        "locale": "en",
+                        "props": {},
+                        "notify_props": chat_notify_default_props(profile),
+                    },
+                    params={
+                        "tid": settings.GITCOIN_CHAT_TEAM_ID
+                    })
+                profile.chat_id = create_user_response['id']
+                chat_driver.teams.add_user_to_team(
+                    settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                    options={'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                             'user_id': create_user_response['id']}
+                )
+            except Exception as e:
+                return False, profile
+
             try:
                 profile_access_tokens = chat_driver.users.get_user_access_token(profile.chat_id)
                 for pat in profile_access_tokens:
@@ -248,6 +252,7 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
                     profiles_to_connect.append(updated_profile.chat_id)
                 else:
                     profiles_to_connect.append(reg.registrant.chat_id)
+            print(profiles_to_connect)
         else:
             profile = Profile.objects.get(handle__iexact=profile_handle)
             if profile.chat_id is '' or profile.chat_id is None:
@@ -261,9 +266,12 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
                 'channel_display_name': f'company-{slugify(hack_sponsor.name)}'[:60],
                 'channel_name': f'company-{hack_sponsor.handle}'[:60]
             })
+            print(new_channel_details)
             channels_to_connect.append(new_channel_details['id'])
 
         for channel_id in channels_to_connect:
+            print("in channels")
+            print(channel_id)
             try:
                 current_channel_members = chat_driver.channels.get_channel_members(channel_id)
             except Exception as e:
@@ -271,6 +279,7 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
             current_channel_users = [member['user_id'] for member in current_channel_members]
             connect = list(set(profiles_to_connect) - set(current_channel_users))
             if len(connect) > 0:
+                print("we're connecting something")
                 add_to_channel.delay({'id': channel_id}, connect)
 
     except Exception as e:
