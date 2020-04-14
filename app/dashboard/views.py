@@ -4301,6 +4301,21 @@ def hackathon_registration(request):
     return JsonResponse({'redirect': redirect})
 
 
+def get_hackathon_events(title, event, network):
+    event_bounties = Bounty.objects.filter(event=event, network=network)
+
+    return {
+        'title': title,
+        'hackathon': event,
+        'value_in_usdt': sum(
+            prize_usdt.value_in_usdt_now
+            for prize_usdt
+            in event_bounties
+        ),
+        'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
+    }
+
+
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
@@ -4322,48 +4337,18 @@ def get_hackathons(request):
 
     if current_hackathon_events.exists():
         for event in current_hackathon_events:
-            event_bounties = Bounty.objects.filter(event=event, network=network)
-
-            hackathon_events.append({
-                'title': 'current',
-                'hackathon': event,
-                'value_in_usdt': sum(
-                    prize_usdt.value_in_usdt_now
-                    for prize_usdt
-                    in event_bounties
-                ),
-                'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
-            })
+            event_dict = get_hackathon_events('current', event, network)
+            hackathon_events.append(event_dict)
 
     if upcoming_hackathon_events.exists():
         for event in upcoming_hackathon_events:
-            event_bounties = Bounty.objects.filter(event=event, network=network)
-
-            hackathon_events.append({
-                'title': 'upcoming',
-                'hackathon': event,
-                'value_in_usdt': sum(
-                    prize_usdt.value_in_usdt_now
-                    for prize_usdt
-                    in event_bounties
-                ),
-                'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
-            })
+            event_dict = get_hackathon_events('upcoming', event, network)
+            hackathon_events.append(event_dict)
 
     if finished_hackathon_events.exists():
         for event in finished_hackathon_events:
-            event_bounties = Bounty.objects.filter(event=event, network=network)
-
-            hackathon_events.append({
-                'title': 'finished',
-                'hackathon': event,
-                'value_in_usdt': sum(
-                    prize_usdt.value_in_usdt_now
-                    for prize_usdt
-                    in event_bounties
-                ),
-                'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
-            })
+            event_dict = get_hackathon_events('finished', event, network)
+            hackathon_events.append(event_dict)
 
 
     """Popluate tribes for tribes section.
