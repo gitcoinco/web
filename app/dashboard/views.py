@@ -3779,7 +3779,6 @@ def hackathon(request, hackathon='', panel='prizes'):
         'SHOW_DRESSING': False,
         'use_pic_card': True,
         'projects': [],
-        'banner': f"/media/{hackathon_event.banner}" if hackathon_event.banner else None,
         'panel': active_tab
     }
 
