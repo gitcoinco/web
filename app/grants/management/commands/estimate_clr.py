@@ -45,12 +45,14 @@ class Command(BaseCommand):
 
         clr_type = options['clr_type']
         network = options['network']
+        mechanism = 'profile' if clr_type != 'health' else 'originated_address'
 
         predict_clr(
             save_to_db=True,
             from_date=timezone.now(),
             clr_type=clr_type,
-            network=network
+            network=network,
+            mechanism=mechanism,
         )
 
         print("finished CLR estimates")

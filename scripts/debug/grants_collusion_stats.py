@@ -18,13 +18,19 @@ for contrib in contributions:
     key = contrib.subscription.grant.title
     if key not in stats.keys():
         match_amount = 0
+        backup_match_amount = 0
         try:
             match_amount = contrib.subscription.grant.clr_prediction_curve[0][1]
+        except:
+            pass
+        try:
+            backup_match_amount = contrib.subscription.grant.backup_clr_prediction_curve[0][1]
         except:
             pass
         stats[key] = {
             'url': "https://gitcoin.co" + contrib.subscription.grant.url,
             'match_amount': match_amount,
+            'backup_match_amount': backup_match_amount,
             'contributions': [],
             'contributions_per_profile': [],
             'contributions_per_originated_address': [],
@@ -37,12 +43,13 @@ for contrib in contributions:
         stats[key]['contributions_without_originated_address'].append(contrib.pk)
 
 
-print("url, title, match amount, contributions, contributors by profile, contributors by originated_address, contributions without originated address")
+print("url, title, match amount, old match amount, contributions, contributors by profile, contributors by originated_address, contributions without originated address")
 for key, pkg in stats.items():
     print(
         pkg['url'], ",",
         key, ",",
         ((pkg['match_amount'])), ",",
+        ((pkg['backup_match_amount'])), ",",
         len(set(pkg['contributions'])), ",",
         len(set(pkg['contributions_per_profile'])), ",",
         len(set(pkg['contributions_per_originated_address'])), ",",
