@@ -4109,6 +4109,35 @@ def get_hackathon_event(title, event, network):
     }
 
 
+def get_tribe(display_name, logo_path, handle):
+    return {
+        'display_name': display_name,
+        'logo_path': logo_path,
+        'members': list(Profile.objects.filter(handle=handle, is_org=True).values_list('follower_count', flat=True))[0],
+        'path': list(Profile.objects.filter(handle=handle, is_org=True))[0].absolute_url
+    }
+
+
+def tribe_fields(network):
+    return {
+        (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
+        for bounty in list(Bounty.objects.current()\
+            .filter(event__isnull=False, network=network)
+        )
+    }
+
+# count distinct hackathon events in which a tribe has participated
+def hackathons_funded(funding_organisation, network, hackathons):
+    return Bounty.objects.current()\
+        .filter(
+            funding_organisation=funding_organisation,
+            network=network,
+            event__in=list(hackathons)
+        )\
+        .distinct('event')\
+        .count()
+
+
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
@@ -4157,55 +4186,30 @@ def get_hackathons(request):
     participated in the most number of hackathons.
     """
     if current_hackathon_events.exists():
-        tribe_fields = {
-            (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
-            for bounty
-            in list(Bounty.objects.current().filter(event__isnull=False, network=network))
-        }
+        for field in tribe_fields(network):
+            tribe_dict = get_tribe(field[0], field[1], field[2])
+            tribes.append(tribe_dict)
 
-        for field in tribe_fields:
-            tribes.append({
-                'display_name': field[0],
-                'logo_path': field[1],
-                'members': list(Profile.objects.filter(handle=field[2], is_org=True).values_list('follower_count', flat=True))[0],
-                'path': list(Profile.objects.filter(handle=field[2], is_org=True))[0].absolute_url
-            })
     elif upcoming_hackathon_events.exists():
-        most_recent_finished = HackathonEvent.objects.finished().filter(visible=True).order_by('-end_date')[0]
-        prize_sponsors = list(Bounty.objects.current().filter(event=most_recent_finished, network=network))
+        most_recent_finished = finished_hackathon_events[0]
+        prize_sponsors = list(Bounty.objects.current()\
+            .filter(event=most_recent_finished, network=network)
+        )
 
         if prize_sponsors:
-            tribes.append({
-                'display_name': prize_sponsors[0].org_display_name,
-                'logo_path': prize_sponsors[0].avatar_url,
-                'members': list(Profile.objects.filter(handle=prize_sponsors[0].org_name, is_org=True).values_list('follower_count', flat=True))[0],
-                'path': list(Profile.objects.filter(handle=prize_sponsors[0].org_name, is_org=True))[0].absolute_url
-            })
-    else:
-        tribe_fields = {
-            (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
-            for bounty in list(Bounty.objects.current()\
-                .filter(event__isnull=False, network=network)
+            tribe_dict = get_tribe(
+                prize_sponsors[0].org_display_name,
+                prize_sponsors[0].avatar_url,
+                prize_sponsors[0].org_name
             )
-        }
+            tribes.append(tribe_dict)
+    else:
         tribes_hackathon_count = [
             (
-                {
-                    'display_name': field[0],
-                    'logo_path': field[1],
-                    'members': list(Profile.objects.filter(handle=field[2], is_org=True).values_list('follower_count', flat=True))[0],
-                    'path': list(Profile.objects.filter(handle=field[2], is_org=True))[0].absolute_url
-                },
-                Bounty.objects.current()\
-                    .filter(
-                        funding_organisation=field[0],
-                        network=network,
-                        event__in=list(all_hackathon_events)
-                    )\
-                    .distinct('event')\
-                    .count()
+                get_tribe(field[0], field[1], field[2]),
+                hackathons_funded(field[0], network, all_hackathon_events)
             )
-            for field in tribe_fields
+            for field in tribe_fields(network)
         ]
         sorted_tribes_hackathon_count = sorted(
             tribes_hackathon_count,
