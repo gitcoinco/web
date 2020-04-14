@@ -23,9 +23,15 @@
   </a>
   <div class="dropdown-menu dropdown-menu-right animation slideDownIn gc-search-box" aria-labelledby="searchDropdown">
     <div class="has-search p-3">
-      <input type="text" class="form-control font-caption" v-model="term" @input="search" placeholder="enter 3 characters to search">
+      <input type="text" class="form-control font-caption" v-model="term" @input="search" placeholder="Search Gitcoin">
     </div>
-    <template v-if="Object.keys(results).length">
+    <template v-if="term.length < 2">
+      <p class="gc-search-result__description font-smaller-2 text-center">
+        Type in [[ 2- term.length]] more characters to get results
+      </p>
+    </template>
+
+    <template v-else-if="Object.keys(results).length">
       <ul class="nav nav-tabs mt-1 gc-search-nav d-flex justify-content-around" role="tablist">
         <li class="nav-item" v-for='(source_type, index) in source_types' :key="index">
           <a class="nav-link nav-line gc-search-tab__title px-1" @click="currentTab = index" :class="{active: currentTab === index}" v-bind:href="'#' + source_type" data-toggle="tab">[[ labels[source_type] ]]
@@ -55,12 +61,23 @@
             </template>
             <template v-else>
               <li class="gc-search-result__content pt-3 gc-search-result__description font-smaller-2 text-center">
-                No matches found!
+                No matches found
               </li>
             </template>
           </ul>
         </div>
       </div>
+    </template>
+
+    <template v-else-if="isLoading">
+      <p class="text-center font-smaller-2 gc-search-result__description mb-0">
+        <i class="font-smaller-1 fas fa-spinner fa-pulse mr-1"></i>
+        Fetching result
+      </p>
+    </template>
+
+    <template v-else>
+      <p class="gc-search-result__description font-smaller-2 text-center">No matches found</p>
     </template>
   </div>
 </div>
