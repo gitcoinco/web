@@ -254,12 +254,25 @@
       .summary {
         height: 70px;
         max-height: 70px;
+        overflow: hidden;
       }
       .looking-team {
         background-color: rgba(62, 0, 255, 0.05);
         border-radius: 8px;
         padding: 11px 15px;
       }
+
+      .looking-container {
+          height: 140px;
+          max-height: 160px;
+          overflow: hidden;
+      }
+
+      .project-title {
+        height: 50px;
+        overflow: hidden;
+      }
+
       .info-card-title {
         font-weight: bold;
         font-size: 12px;
@@ -282,6 +295,17 @@
         li.navigation > a.nav-link {
            font-size:14px;
         }
+      }
+
+      @media (min-width: 1200px) {
+        .grid-3 {
+            display: grid;
+            grid-gap: 5rem 1.2rem;
+            grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .card-project {
+          height: 100%;
       }
       </style>
   </head>
@@ -470,7 +494,7 @@
                           <p class="mt-4 font-weight-bold mb-0">No projects found</p>
                           <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                         </div>
-                        <div class="grid-4">
+                        <div class="grid-3">
                           <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
                             <div class="card card-project">
                                 <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
@@ -480,14 +504,14 @@
                                   <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
                                 </div>
                                 <div class="card-body">
-                                <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+                                <h5 class="card-title font-weight-bold text-left project-title">[[ project.name ]]</h5>
                                 <div class="my-2">
                                   <p class="text-left text-muted font-smaller-1 summary">
                                     [[ project.summary ]]
                                   </p>
-                                  <div class="text-left">
-                                    <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+                                  <div class="text-left ">
+                                    <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-4 font-weight-semibold">View Project</a>
+                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-4 font-weight-semibold">View Bounty</a>
                                   </div>
                                 </div>
 
@@ -500,12 +524,15 @@
                                   </div>
                                 </div>
 
-                                <div v-if="project.looking_members || project.message" class="my-3 looking-team">
-                                  <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
-                                  <p v-if="project.message" class="info-card-desc">
-                                    [[ project.message ]]
-                                  </p>
+                                <div class="looking-container">
+                                  <div v-if="project.looking_members" class="my-3 looking-team">
+                                    <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
+                                    <p v-if="project.message" class="info-card-desc">
+                                      [[ project.message ]]
+                                    </p>
+                                  </div>
                                 </div>
+
 
                                 <div class="font-smaller-2 mt-4">
                                   <b class="font-weight-bold">Sponsored by</b>
