@@ -310,8 +310,8 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
                     return [response]
                 #originators.append(response)
             value = int(tx.get('attributes', {}).get('value', 0))
-            if tx.get('type') == 'EtherTransfer' and value > 0:
-                response = tx['relationships']['transaction']['data']['id']
+            if tx.get('type') == 'EtherTransfer' and value > 0 and token == '0x0':
+                response = tx['relationships']['from']['data']['id']
                 if response != to_address:
                     # hack to save time
                     return [response]
