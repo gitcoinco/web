@@ -243,6 +243,7 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
         profiles_to_connect = []
         if profile_handle is None:
             regs_to_sync = HackathonRegistration.objects.filter(hackathon__id=hackathon_id).select_related('registrant')
+            print(len(regs_to_sync))
             for reg in regs_to_sync:
                 if reg.registrant is None:
                     continue
@@ -252,7 +253,6 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
                     profiles_to_connect.append(updated_profile.chat_id)
                 else:
                     profiles_to_connect.append(reg.registrant.chat_id)
-            print(profiles_to_connect)
         else:
             profile = Profile.objects.get(handle__iexact=profile_handle)
             if profile.chat_id is '' or profile.chat_id is None:
@@ -266,12 +266,9 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
                 'channel_display_name': f'company-{slugify(hack_sponsor.name)}'[:60],
                 'channel_name': f'company-{hack_sponsor.handle}'[:60]
             })
-            print(new_channel_details)
             channels_to_connect.append(new_channel_details['id'])
 
         for channel_id in channels_to_connect:
-            print("in channels")
-            print(channel_id)
             try:
                 current_channel_members = chat_driver.channels.get_channel_members(channel_id)
             except Exception as e:
@@ -280,6 +277,8 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
             connect = list(set(profiles_to_connect) - set(current_channel_users))
             if len(connect) > 0:
                 print("we're connecting something")
+                print(connect)
+                print(len(connect))
                 add_to_channel.delay({'id': channel_id}, connect)
 
     except Exception as e:
