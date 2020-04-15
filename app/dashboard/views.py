@@ -3716,8 +3716,9 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     title = hackathon_event.name.title()
     network = get_default_network()
-    if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
-        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+    hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
+    # if hackathon_not_started:
+        # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     orgs = []
 
@@ -3744,8 +3745,8 @@ def hackathon(request, hackathon='', panel='prizes'):
         is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                              hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
-        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+    # if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
+        # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     view_tags = get_tags(request)
     active_tab = 0
@@ -3772,14 +3773,14 @@ def hackathon(request, hackathon='', panel='prizes'):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
-        'is_registered': 1 if len(is_registered) > 0 else 0,
+        'is_registered': json.dumps(True if is_registered else False),
+        'hackathon_not_started': hackathon_not_started,
         'user': request.user,
         'tags': view_tags,
         'activities': [],
         'SHOW_DRESSING': False,
         'use_pic_card': True,
         'projects': [],
-        'banner': f"/media/{hackathon_event.banner}" if hackathon_event.banner else None,
         'panel': active_tab
     }
 
