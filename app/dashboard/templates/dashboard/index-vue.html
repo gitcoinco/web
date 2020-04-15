@@ -314,7 +314,13 @@
                 <p class="hackathon-title title font-weight-bold mb-0">[[ hackathonObj.name ]]</p>
               </div>
               <p class="mb-1">
-                  <small v-if="timeuntil >= '1 min'" class="hackathon-countdown text-uppercase">Ends in [[ timeuntil]] </small>
+                {% if hackathon.start_date|timesince <= "1 min" %}
+                  <small class="hackathon-countdown text-uppercase">Starts in {{hackathon.start_date | timeuntil}}</small>
+                {% elif hackathon.end_date|timeuntil >= "1 min" %}
+                  <small class="hackathon-countdown text-uppercase">Ends in {{hackathon.end_date|timeuntil}}</small>
+                {% else %}
+                  <small class="hackathon-countdown text-uppercase">Ended Hackathon</small>
+                {% endif %}
               </p>
             </div>
           </div>
@@ -964,7 +970,6 @@
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
       document.chatURL = "{{ chat_url | safe}}";
-      document.timeuntil = "{{ hackathon.end_date | timeuntil }}";
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
     </script>
     <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>
