@@ -89,21 +89,21 @@
   </div>
 
   {% if highlights %}
-    <h3>{% trans "Last Week's Highlights" %}</h3>
+    <h3>{% trans "✨Last Week's Highlights" %}</h3>
     <h5>{% trans "Community Members growing open source" %}</h5>
 
     <div style="text-align: center;">
       {% for highlight in highlights %}
-        <li style="list-style:none; margin-bottom: 5px;">
+        <li style="list-style:none; margin-bottom: 45px;">
           {% if highlight.who_link %}
-            <img style="border-radius: 20px;" src="{% avatar_url highlight.who%}" width=30px height=30px>
+            <img style="border-radius: 20px; vertical-align: middle;" src="{% avatar_url highlight.who%}" width=30px height=30px>
             <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>
           {% else %}
             * <strong>{{ highlight.who }}</strong>
           {% endif %}
-            - {{ highlight.what }}
+            <p style="margin-bottom: 20px; margin-top:5px">{{ highlight.what }}</p>
           {% if highlight.link %}
-            <a href="{{ highlight.link }}">{{ highlight.link_copy }}</a>
+            <a class="button" href="{{ highlight.link }}">{{ highlight.link_copy }}</a>
           {% endif %}
         </li>
       {% endfor %}
