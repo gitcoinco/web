@@ -131,18 +131,19 @@
   </div>
   
   {% if leaderboard %}
-    <h3>{% trans "Who's leading the Leaderboard?" %}</h3>
-    <h5>{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
+  <div style="background-color: #000000; color: #ffffff; width: 110%; margin-left: -5%; padding-top: 15px; padding-bottom:15px">
+    <h3 style="color: #ffffff;">{% trans "🏆Who's leading the Leaderboard?" %}</h3>
+    <h5 style="color: #ffffff;">{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
 
-    <div class="text-left">
+    <div style="color: #ffffff; margin-left: 8%;">
       {% for key, package in leaderboard.items %}
-        <div style="width: 30%; display: inline-block; min-width: 250px;">
-          <h4>{{ package.title }}</h4>
+        <div style="width: 30%; display: inline-block; margin-right: 1em;">
+          <h4 style="text-align: left; margin-bottom: 10px; margin-left: 1em;">{{ package.title }}</h4>
           <ul>
             {% for leaderboard_item in package.items %}
-            <li style="list-style:none; margin-bottom: 5px;">
-              {{ leaderboard_item.rank }}. <img style="border-radius: 20px;" src="{% avatar_url leaderboard_item.profile %}" width=30px height=30px>
-              <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" leaderboard_item.github_username %}">{{ leaderboard_item.github_username }}</a> : ${{ leaderboard_item.amount|floatformat:2 }}
+            <li style="font-size: 0.93em; list-style:none; margin-top: 10px; margin-bottom: 10px; color: #ffffff; text-align: start;">
+              {{ leaderboard_item.rank }} <img style="border-radius: 20px; vertical-align: middle; margin-left: 10px; margin-right: 7px;" src="{% avatar_url leaderboard_item.profile %}" width=25px height=25px>
+              <a style="font-size: 0.99em; color: #ffffff; font-weight: bold; text-decoration: none;" href="{% url "profile" leaderboard_item.github_username %}">{{ leaderboard_item.github_username }}</a> : ${{ leaderboard_item.amount|floatformat:2 }}
             </li>
           {% endfor %}
           </ul>
@@ -154,7 +155,7 @@
     <div style="margin-bottom: 2em;">
       <a class="button" href="{% url "leaderboard" 'quarterly_payers' %}">{% trans "View Leaderboard" %}</a>
     </div>
-    <hr>
+  </div>
   {% endif %}
   <hr>
 
