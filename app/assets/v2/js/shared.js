@@ -1100,6 +1100,27 @@ $(document).ready(function() {
   web3connect.connect().then(function(provider) {
     window.web3 = new Web3(provider);
   });
+
+  const no_provider = `
+    <div id="NO_PROVIDER" class="web3connect-provider-wrapper sc-dnqmqq fAmkgj">
+      <div class="web3connect-provider-container sc-gzVnrw hYEhqi">
+        <div class="web3connect-provider-icon sc-ifAKCX kDyMCM">
+          <i class="font-bigger-4 far fa-clock"></i>
+        </div>
+        <div class="web3connect-provider-name sc-htoDjs gQSZFs">No Provider</div>
+        <div class="web3connect-provider-description sc-bZQynM edfYiu">
+          ETC Chain
+        </div>
+      </div>
+    </div>
+  `
+
+  $('#WEB3_CONNECT_MODAL_ID .web3connect-modal-card').append(no_provider);
+
+  $('#NO_PROVIDER').on('click', () => {
+    localStorage['WEB3_CONNECT_CACHED_PROVIDER'] = `"injected"`;
+    web3connect.toggleModal();
+  });
 });
 
 var setUsdAmount = function() {
