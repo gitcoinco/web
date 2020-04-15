@@ -48,6 +48,10 @@
         }
       }
 
+      .show>.btn-secondary.dropdown-toggle {
+        background-color: var(--gc-blue-hover) !important;
+      }
+
       .chatWrapper iframe {
         width: 100%;
         height: 50vh;
@@ -410,6 +414,12 @@
                             </div>
                           </div>
                           <div class="pb-4 border-bottom form-group">
+                            <div class="pb-4 border-bottom form-group">
+                              <b-form-checkbox v-model="params.lfm" name="check-button" switch>
+                                Looking for Members
+                              </b-form-checkbox>
+                            </div>
+                          <div class="pb-4 border-bottom form-group">
                             <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
                             <div id="project_sponsors" class="form__select2">
                               <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
@@ -459,7 +469,16 @@
                                   </p>
                                   <div class="text-left">
                                     <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+
+                                    <a :href="project.bounty.url" class="btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+                                    <b-dropdown varitant="primary" toggle-class="btn-sm btn btn-gc-blue" split-class="btn-sm btn btn-gc-blue">
+                                     <template v-slot:button-content>
+                                       <i class='fas fa-comment-dots'></i>
+                                     </template>
+                                     <b-dropdown-item-button @click.prevent="openChat(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                       @ [[ profile.handle ]]
+                                     </b-dropdown-item-button>
+                                    </b-dropdown>
                                   </div>
                                 </div>
 
