@@ -26,6 +26,7 @@ import environ
 import raven
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
@@ -220,7 +221,8 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'auth.User'
 
 # adds django debug toolbar
-if DEBUG:
+SUPRESS_DEBUG_TOOLBAR = env.bool('SUPRESS_DEBUG_TOOLBAR', default=False)
+if DEBUG and not SUPRESS_DEBUG_TOOLBAR:
     INTERNAL_IPS = [
         # ...
         '127.0.0.1',
@@ -288,7 +290,7 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
-        integrations=[DjangoIntegration()]
+        integrations=[DjangoIntegration(), CeleryIntegration()]
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,
@@ -795,6 +797,8 @@ LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
 
 # Gitcoin Bounty Funding Fee settings
 FEE_ADDRESS = env('FEE_ADDRESS', default='')
+
+ALETHIO_KEY = env('ALETHIO_KEY', default='')
 FEE_ADDRESS_PRIVATE_KEY = env('FEE_ADDRESS_PRIVATE_KEY', default='')
 SLIPPAGE = env.float('SLIPPAGE', default=0.05)
 UNISWAP_LIQUIDITY_FEE = env.float('UNISWAP_LIQUDITY_FEE', default=0.003)

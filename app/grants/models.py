@@ -271,6 +271,11 @@ class Grant(SuperModel):
             models.FloatField(),
             size=2,
         ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+    backup_clr_prediction_curve = ArrayField(
+        ArrayField(
+            models.FloatField(),
+            size=2,
+        ), blank=True, default=list, help_text=_('backup 5 point curve to predict CLR donations - used to store a secondary backup of the clr prediction curve, in the case a new identity mechanism is used'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
@@ -1101,6 +1106,20 @@ class Contribution(SuperModel):
     )
     match = models.BooleanField(default=True, help_text=_('Whether or not this contribution should be matched.'))
 
+
+    originated_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The origination address of the funds used in this txn'),
+    )
+    validator_passed = models.BooleanField(default=False, help_text=_('Whether or not the backend validator passed.'))
+    validator_comment = models.CharField(
+        max_length=255,
+        default='0x0',
+        help_text=_('The why or why not validator passed'),
+    )
+
+
     def __str__(self):
         """Return the string representation of this object."""
         from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -1112,6 +1131,13 @@ class Contribution(SuperModel):
         """returns true only IFF a contribution is the first in a sequence of subscriptions."""
         other_contributions_after_this_one = Contribution.objects.filter(subscription=self.subscription, created_on__lt=self.created_on)
         return not other_contributions_after_this_one.exists()
+
+    def identity_identifier(self, mechanism):
+        """Returns the anti sybil identity identiifer for this grant, according to mechanism."""
+        if mechanism == 'originated_address':
+            return self.originated_address
+        else:
+            return subscription.contributor_profile.id
 
     def update_tx_status(self):
         """Updates tx status."""
