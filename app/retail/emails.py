@@ -1158,6 +1158,7 @@ def render_new_bounty_roundup(to_email):
         'invert_footer': False,
         'hide_header': False,
         'highlights': highlights,
+        'kudos_friday': kudos_friday,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
