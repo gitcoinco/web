@@ -1086,7 +1086,7 @@ def users_fetch(request):
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
-            'organizations', 'is_org', 'last_chat_status']}
+            'organizations', 'is_org', 'last_chat_status', 'chat_id']}
 
         profile_json['is_following'] = is_following
 

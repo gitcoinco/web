@@ -712,6 +712,9 @@
                                       <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                                         <i class="fab fa-linkedin-in"></i>
                                       </a>
+                                      <a @click="chatWindow(user);" href="#" v-if="user.chat_id">
+                                        <i class="fas fa-comment-dots"></i>
+                                      </a>
                                     </div>
                                     <div class="text-center" id="job_status" v-if="user.show_job_status">
                                       <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
@@ -761,7 +764,7 @@
                             <loading-screen v-if="isLoading"></loading-screen>
                           </div>
                         </div>
-                          <modal ref="user-modal" id="userModal">
+                        <modal ref="user-modal" id="userModal">
                           <div slot="header" v-if="userSelected.handle">
                             <div class="d-flex flex-column align-items-center">
                               <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
@@ -806,38 +809,38 @@
                             </div>
                           </div>
                         </modal>
-                          {% if is_staff %}
-                          <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
-                              <div slot="header">
-                                <div class="d-flex flex-column align-items-center">
-                                  <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
-                                </div>
+                        {% if is_staff %}
+                        <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
+                            <div slot="header">
+                              <div class="d-flex flex-column align-items-center">
+                                <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
                               </div>
-                              <div slot="body">
-                                <div class="form-group">
-                                  <label class="font-weight-semibold">Github Issue URL</label>
-                                  <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
-                                </div>
-                                <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
-                                <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
-                                  <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
-                                  [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
-                                  <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
-                                  [[issueDetails.issue_description_text]]
-                                </div>
-                                <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
-                                <div class="alert-warning p-3" v-if="errorIssueDetails">
-                                  [[errorIssueDetails]]
-                                </div>
+                            </div>
+                            <div slot="body">
+                              <div class="form-group">
+                                <label class="font-weight-semibold">Github Issue URL</label>
+                                <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
                               </div>
-                              <div slot="footer" class="d-flex align-items-center flex-fill">
-                                <div class="ml-auto">
-                                  <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-                                  <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
-                                </div>
+                              <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
+                              <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
+                                <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
+                                [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
+                                <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
+                                [[issueDetails.issue_description_text]]
                               </div>
-                            </modal>
-                          {% endif %}
+                              <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
+                              <div class="alert-warning p-3" v-if="errorIssueDetails">
+                                [[errorIssueDetails]]
+                              </div>
+                            </div>
+                            <div slot="footer" class="d-flex align-items-center flex-fill">
+                              <div class="ml-auto">
+                                <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
+                                <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+                              </div>
+                            </div>
+                          </modal>
+                        {% endif %}
                       </div>
                     </div>
                   </user-directory>
