@@ -4,8 +4,9 @@ import time
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from grants.models import Contribution, Subscription, Grant
 from dashboard.models import Profile
+from grants.models import Contribution, Grant, Subscription
+
 
 class Command(BaseCommand):
 
