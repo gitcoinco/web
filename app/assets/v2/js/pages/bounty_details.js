@@ -4,6 +4,7 @@
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
 });
 
 const _truthy = function(val) {

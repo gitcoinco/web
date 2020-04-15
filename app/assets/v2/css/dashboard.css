@@ -253,6 +253,9 @@ body {
   font-weight: 600;
   letter-spacing: 1.7px;
 }
+.hackathon-explorer {
+  background: rgb(242, 246, 249) !important;
+}
 
 .hackathon-explorer .hackathon-alt {
   display: none;
