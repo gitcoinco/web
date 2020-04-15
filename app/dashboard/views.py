@@ -3716,8 +3716,9 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     title = hackathon_event.name.title()
     network = get_default_network()
-    if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
-        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+    hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
+    # if hackathon_not_started:
+        # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     orgs = []
 
@@ -3773,6 +3774,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'hackathon': hackathon_event,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
         'is_registered': json.dumps(True if is_registered else False),
+        'prize_blocked': hackathon_not_started and is_registered,
         'user': request.user,
         'tags': view_tags,
         'activities': [],
