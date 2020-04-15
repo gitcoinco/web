@@ -1399,32 +1399,6 @@ class BountySyncRequest(SuperModel):
     processed = models.BooleanField()
 
 
-class RefundFeeRequest(SuperModel):
-    """Define the Refund Fee Request model."""
-    profile = models.ForeignKey(
-        'dashboard.Profile',
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='refund_requests',
-    )
-    bounty = models.ForeignKey(
-        'dashboard.Bounty',
-        on_delete=models.CASCADE
-    )
-    fulfilled = models.BooleanField(default=False)
-    rejected = models.BooleanField(default=False)
-    comment = models.TextField(max_length=500, blank=True)
-    comment_admin = models.TextField(max_length=500, blank=True)
-    fee_amount = models.FloatField()
-    token = models.CharField(max_length=10)
-    address = models.CharField(max_length=255)
-    txnId = models.CharField(max_length=255, blank=True)
-
-    def __str__(self):
-        """Return the string representation of RefundFeeRequest."""
-        return f"bounty: {self.bounty}, fee: {self.fee_amount}, token: {self.token}. Time: {self.created_on}"
-
-
 class Subscription(SuperModel):
 
     email = models.EmailField(max_length=255)
