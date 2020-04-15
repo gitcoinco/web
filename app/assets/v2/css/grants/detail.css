@@ -1,3 +1,6 @@
+.grant-detail #status{
+  color: black;
+}
 .grant_details span.box {
   width: 20px;
   height: 20px;
@@ -238,10 +241,6 @@ textarea.editable {
 
 .update:first-child {
   padding-top: 0 !important;
-}
-
-.milestones-list li:last-child {
-  padding-bottom: 0 !important;
 }
 
 .disable-tooltip {

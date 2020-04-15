@@ -300,7 +300,7 @@ def email_settings(request, key):
             es.email = email
             unsubscribed_email_type = {}
             unsubscribed_email_type[email_type] = True
-            if email_type == 'chat':
+            if email_type == 'chat' and profile:
                 update_chat_notifications(profile, 'email', False)
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
@@ -347,7 +347,7 @@ def email_settings(request, key):
                     if key not in form.keys():
                         form[key] = False
 
-                if form['chat']:
+                if form['chat'] and profile:
                     update_chat_notifications(profile, 'email', False)
 
                 es.build_email_preferences(form)
@@ -370,7 +370,7 @@ def email_settings(request, key):
         'nav': 'home',
         'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
-        'profile': request.user.profile,
+        'profile': request.user.profile if request.user.is_authenticated else None,
         'email_types': ALL_EMAILS,
         'navs': get_settings_navs(request),
         'preferred_language': pref_lang
@@ -804,7 +804,7 @@ def leaderboard(request, key=''):
 
     titles = {
         f'payers': _('Top Funders'),
-        f'earners': _('Top Coders'),
+        f'earners': _('Top Earners'),
         f'orgs': _('Top Orgs'),
         f'tokens': _('Top Tokens'),
         f'keywords': _('Top Keywords'),
@@ -887,12 +887,19 @@ def leaderboard(request, key=''):
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
     product_ui = product.capitalize() if product != 'all' else ''
     page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
+    last_update = items[0].created_on if len(items) else None
+    next_update = last_update + timezone.timedelta(days=7) if last_update else None
+    if next_update and next_update < timezone.now():
+        next_update = timezone.now() + timezone.timedelta(days=1)
+
     context = {
         'items': items[0:limit],
         'nav': 'home',
         'cht': cht,
         'titles': titles,
         'cadence': cadence,
+        'last_update': last_update,
+        'next_update': next_update,
         'product': product,
         'products': ['kudos', 'grants', 'bounties', 'tips', 'all'],
         'selected': title,

@@ -1,7 +1,8 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models, transaction
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
@@ -57,6 +58,8 @@ class Comment(SuperModel):
         on_delete=models.CASCADE, related_name='comments', blank=True, db_index=True)
     comment = models.TextField(default='', blank=True)
     likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
+    likes_handles = ArrayField(models.CharField(max_length=200, blank=True), default=list, blank=True) #handles of users who like this post
+    tip_count_eth = models.DecimalField(default=0, decimal_places=5, max_digits=50)
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"
@@ -70,7 +73,7 @@ class Comment(SuperModel):
         return self.activity.url
 
     @property
-    def tip_count_eth(self):
+    def get_tip_count_eth(self):
         from dashboard.models import Tip
         network = 'rinkeby' if settings.DEBUG else 'mainnet'
         tips = Tip.objects.filter(comments_priv=f"comment:{self.pk}", network=network)
@@ -78,6 +81,13 @@ class Comment(SuperModel):
 
     def get_absolute_url(self):
         return self.url
+
+
+@receiver(pre_save, sender=Comment, dispatch_uid="pre_save_comment")
+def presave_comment(sender, instance, **kwargs):
+    from dashboard.models import Profile
+    instance.likes_handles = list(Profile.objects.filter(pk__in=instance.likes).values_list('handle', flat=True))
+    instance.tip_count_eth = instance.get_tip_count_eth
 
 
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
@@ -133,6 +143,7 @@ class Offer(SuperModel):
     public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
     view_count = models.IntegerField(default=0, db_index=True)
     amount = models.CharField(max_length=50, blank=True)
+    comments_admin = models.TextField(default='', blank=True)
 
     # Offer QuerySet Manager
     objects = OfferQuerySet.as_manager()
@@ -339,6 +350,10 @@ def get_eligible_input_data(mr):
     earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
     tips = list(Tip.objects.send_happy_path().filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
     earnings = earnings.filter(source_id__in=tips)
+    # filter out colluding profiles
+    excluded_profiles = SquelchProfile.objects.filter(active=True).values_list('profile__id', flat=True)
+    earnings = earnings.exclude(to_profile__in=excluded_profiles)
+    earnings = earnings.exclude(from_profile__in=excluded_profiles)
 
     # output
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
@@ -355,3 +370,25 @@ class SuggestedAction(SuperModel):
 
     def __str__(self):
         return f"{self.title} / {self.suggested_donation}"
+
+
+class Favorite(SuperModel):
+    """Model for each favorite."""
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='favorites')
+    activity = models.ForeignKey('dashboard.Activity', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Favorite {self.activity.activity_type}:{self.activity_id} by {self.user}"
+
+
+class SquelchProfile(SuperModel):
+    """Squelches a profile from earning in CLR"""
+
+    profile = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='squelches')
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text='Is squelch applied?', default=True)
+
+    def __str__(self):
+        return f"SquelchProfile {self.profile.handle} => {self.comments}"

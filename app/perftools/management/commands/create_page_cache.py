@@ -25,6 +25,7 @@ from django.db import models, transaction
 from django.db.models import Count, Q
 from django.db.models.query import QuerySet
 from django.forms.models import model_to_dict
+from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
@@ -32,6 +33,45 @@ from dashboard.models import Profile
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
+
+
+def create_top_grant_spenders_cache():
+    from marketing.models import Stat
+    from grants.views import next_round_start, round_types
+    from grants.models import Grant, Contribution
+    for round_type in round_types:
+        contributions = Contribution.objects.filter(
+            success=True,
+            created_on__gt=next_round_start,
+            subscription__grant__grant_type=round_type
+            ).values_list('subscription__contributor_profile__handle', 'subscription__amount_per_period_usdt')
+
+        count_dict = {ele[0]:0 for ele in contributions}
+        sum_dict = {ele[0]:0 for ele in contributions}
+        for ele in contributions:
+            if ele[1]:
+                count_dict[ele[0]] += 1
+                sum_dict[ele[0]] += ele[1]
+
+        from_date = timezone.now()
+        for key, val in count_dict.items():
+            if val:
+                #print(key, val)
+                Stat.objects.create(
+                    created_on=from_date,
+                    key="count_" + round_type + "_" + key,
+                    val=val,
+                    )
+
+        for key, val in sum_dict.items():
+            if val:
+                #print(key, val)
+                Stat.objects.create(
+                    created_on=from_date,
+                    key="sum_" + round_type + "_" + key,
+                    val=val,
+                    )
+
 
 
 def fetchPost(qt='2'):
@@ -43,7 +83,7 @@ def fetchPost(qt='2'):
 
 def create_hidden_profiles_cache():
 
-    handles = list(Profile.objects.hidden().values_list('handle', flat=True))
+    handles = list(Profile.objects.all().hidden().values_list('handle', flat=True))
 
     view = 'hidden_profiles'
     keyword = 'hidden_profiles'
@@ -59,8 +99,7 @@ def create_hidden_profiles_cache():
 
 def create_tribes_cache():
 
-    _tribes = Profile.objects.filter(data__type='Organization').\
-        annotate(follower_count=Count('org')).cache().order_by('-follower_count')[:8]
+    _tribes = Profile.objects.filter(is_org=True).order_by('-follower_count')[:8]
 
     tribes = []
 
@@ -221,8 +260,9 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_hidden_profiles_cache()
+        create_top_grant_spenders_cache()
         if not settings.DEBUG:
+            create_hidden_profiles_cache()
             create_tribes_cache()
             create_activity_cache()
             create_post_cache()

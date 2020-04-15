@@ -17,9 +17,7 @@
 {% load i18n static %}
 {% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
-{% if is_alpha_tester %}
-  <div id=search_container class=""></div>
-{% endif %}
+{% include 'shared/search.html' %}
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"

@@ -30,9 +30,19 @@ from avatar.helpers import add_rgb_array, hex_to_rgb_array, rgb_array_to_hex, su
 from dashboard.utils import create_user_action
 from PIL import Image, ImageOps
 
-from .models import BaseAvatar, CustomAvatar, SocialAvatar
+from .models import AvatarTextOverlayInput, BaseAvatar, CustomAvatar, SocialAvatar
 
 logger = logging.getLogger(__name__)
+
+
+def get_avatar_text_if_any():
+    obj = AvatarTextOverlayInput.objects.filter(num_uses_remaining__gt=0, active=True).first()
+    if obj:
+        obj.num_uses_remaining -= 1
+        obj.current_uses += 1
+        obj.save()
+        return f'<text id="text_injection" opacity="0.3" font-family="Muli" font-size="4" font-weight="normal" fill="#777777"><tspan x="7" y="14">{obj.text}</tspan></text>'
+    return ''
 
 
 def get_avatar_attrs(theme, key):
@@ -54,7 +64,7 @@ def get_avatar_attrs(theme, key):
             ],
             'hair_tones': [
                 'F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC',
-                '0ECF7C'
+                '0ECF7C', 'ca5200'
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_bufficorn.svg',
@@ -76,7 +86,8 @@ def get_avatar_attrs(theme, key):
                 '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair', 'mage_skin'],
             'path': 'assets/v2/images/avatar3d/avatar.svg',
@@ -100,7 +111,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['skin', 'blonde_hair', 'brown_hair', 'brown_hair2', 'dark_hair', 'grey_hair'],
             'path': 'assets/v2/images/avatar3d/avatar_female.svg',
@@ -139,7 +151,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'background_tones': [
                 '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
@@ -158,7 +171,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'background_tones': [
                 '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
@@ -177,7 +191,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'background_tones': [
                 '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
@@ -196,7 +211,8 @@ def get_avatar_attrs(theme, key):
                 '593D26', '392D16'
             ],
             'hair_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'background_tones': [
                 '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
@@ -227,7 +243,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'background_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/tech.svg',
@@ -241,7 +258,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'background_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/landscape.svg',
@@ -255,7 +273,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'background_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/space.svg',
@@ -269,7 +288,8 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'background_tones': [
-                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000'
+                '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC', '0ECF7C', '000000',
+                'ca5200'
             ],
             'tone_maps': ['flat_background'],
             'path': 'assets/v2/images/avatar3d/spring.svg',
@@ -333,6 +353,16 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/mage.svg',
         },
+        'powerrangers': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/powerrangers.svg',
+        },
         'orc_gitcoin': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -342,6 +372,54 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
+        },
+        'PixelBot': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/PixelBot.svg',
+        },
+        'iamthembot': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/iamthembot.svg',
+        },
+        'visible': {
+            'preview_viewbox': {
+                'back': '0 0 350 350',
+                'eye': '120 40 70 70',
+                'accessoire': '0 0 350 350',
+                'body': '0 0 250 250',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/visible.svg',
+        },
+        'curly': {
+            'preview_viewbox': {
+                'back': '0 0 350 350',
+                'skin': '0 0 250 250',
+                'accessory': '220 200 100 100',
+                'mouth': '90 150 100 100',
+                'eyes': '140 140 50 50',
+                'clothes': '0 150 250 250',
+                'hair': '50 50 250 250',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/curly.svg',
         },
         'walle': {
             'preview_viewbox': {
@@ -365,6 +443,56 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/megaman.svg',
+        },
+        'walle2': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/walle2.svg',
+        },
+        'walle3': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/walle3.svg',
+        },
+        'chappie': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/chappie.svg',
+        },
+        'chappie2': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/chappie2.svg',
+        },
+        'megaman2': {
+            'preview_viewbox': {
+                'Background': '0 0 350 350',
+                'Arms': '50 50 250 250',
+                'Ears': '80 30 100 100',
+                'Mouth': '100 50 100 100',
+                'Eyes': '100 50 150 150',
+                'Accessory': '50 50 250 250',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/Mega2.svg',
         },
         'starbot': {
             'preview_viewbox': {
@@ -438,7 +566,7 @@ def get_avatar_attrs(theme, key):
             ],
             'hair_tones': [
                 'F495A8', '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF', '4D22D2', '8E2ABE', '3596EC',
-                '0ECF7C'
+                '0ECF7C', 'ca5200'
             ],
             'tone_maps': ['cj_skin', 'cj_hair'],
             'path': 'assets/v2/images/avatar3d/cartoon_jedi.svg',
@@ -486,7 +614,7 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'hair_tones': [],
             'tone_maps': [],
-            'path': 'assets/v2/images/avatar3d/terminator-3.svg',
+            'path': 'assets/v2/images/avatar3d/terminator-4.svg',
         },
         'barbarian': {
             'preview_viewbox': {
@@ -520,6 +648,15 @@ def get_avatar_attrs(theme, key):
             'hair_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/bender.svg',
+        },
+        'bendy': {
+            'preview_viewbox': {
+                'background': '0 0 250 250',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/bendy.svg',
         },
         'joker': {
             'preview_viewbox': {
@@ -734,9 +871,15 @@ def avatar3d(request):
             elements = []
             tree = ET.parse(file)
             for item in tree.getroot():
-                include_item = item.attrib.get('id') in accept_ids or item.tag in tags
+                include_item = item.attrib.get('id') in accept_ids \
+                    or item.tag in tags or 'gradient' in item.attrib.get('id', '').lower() \
+                    or 'defs' in str(item.tag)
                 if include_item:
                     elements.append(ET.tostring(item).decode('utf-8'))
+            if request.method == 'POST':
+                _ele = get_avatar_text_if_any()
+                if _ele:
+                    elements.append(_ele)
             output = prepend + "".join(elements) + postpend
             tone_maps = get_avatar_attrs(theme, 'tone_maps')
             for _type in tone_maps:

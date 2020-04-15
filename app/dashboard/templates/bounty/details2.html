@@ -353,7 +353,7 @@
                         <span class="font-weight-bold">Hours worked:</span>
                         [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
                       </p>
-                      <modal :id="`payoutModal${fulfillment.pk}`" ref="user-modal">
+                      <modal :id="`payoutModal${fulfillment.pk}`" ref="payout-modal">
                         <div slot="body">
                           <div class="text-center">
                             <p class="alert-warning py-2 font-smaller-4 mb-0" v-if="bounty.amount_paid && bounty.amount_paid > bounty.value_true">
@@ -382,7 +382,7 @@
                             <qrcode :string="`ethereum:${fulfillment.fulfiller_address}`"></qrcode>
                             <small class="d-block my-3">Scan the QR code above with your ETC Wallet to payout</small>
                             <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
-                              @click="fulfillmentComplete(fulfillment.pk, inputAmount)"
+                              @click="fulfillmentComplete(fulfillment.pk, inputAmount, $event)"
                             >
                               I have Scanned & Paid
                             </button>

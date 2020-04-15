@@ -1,6 +1,8 @@
 *.min.js
 
 app/assets/v2/js/event_ethdenver2019/blockies.js
+app/assets/v2/js/lib/authereum.js
+app/assets/v2/js/lib/fortmatic.js
 app/assets/v2/js/lib/ipfs-api.js
 app/assets/v2/js/lib/jquery*.js
 app/assets/v2/js/lib/jsrender.js
@@ -9,6 +11,7 @@ app/assets/v2/js/lib/highlight.js
 app/assets/v2/js/lib/tooltip.js
 app/assets/v2/js/lib/tweenlite.js
 app/assets/v2/js/lib/web3.0.20.7.js
+app/assets/v2/js/lib/web3connect.js
 app/assets/v2/js/abi.js
 
 app/assets/onepager/js/confetti.js
@@ -20,4 +23,5 @@ app/assets/onepager/js/bignumber.js
 
 app/assets/v2/js/lib/emoji-button.js
 app/assets/v2/js/lib/vue.js
+app/assets/v2/js/lib/jitsi.js
 app/assets/v2/js/lib/qrcode.js

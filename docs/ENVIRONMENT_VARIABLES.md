@@ -48,6 +48,13 @@ All of the environment variables used by this application conform to the [`djang
 | --- | --- | --- | --- |
 | INSTALLED_APPS | A list of additional apps to be recognized by Django. | `list` | [] |
 
+## Fortmatic
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| FORTMATIC_LIVE_KEY | The Formatic live (production) API key | `str` | '' |
+| FORTMATIC_TEST_KEY | The Formatic test API key | `str` | '' |
+
 ## Github Authentication
 
 | Variable | Description | Type | Default |

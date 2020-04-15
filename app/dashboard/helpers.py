@@ -34,8 +34,8 @@ from django.utils import timezone
 from app.utils import get_semaphore, sync_profile
 from bounty_requests.models import BountyRequest
 from dashboard.models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites,
-    BountySyncRequest, Coupon, HackathonEvent, UserAction,
+    Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
+    HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
@@ -428,13 +428,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     except BountyRequest.DoesNotExist:
         pass
 
-    # check conditions for private repos
-    if metadata.get('repo_type', None) == 'private' and \
-        bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') != 'approval' and \
-            bounty_payload.get('schemes', {}).get('project_type', 'traditional') != 'traditional':
-            raise UnsupportedSchemaException('The project type or permission does not match for private repo')
-
-
     # Check if we have any fulfillments.  If so, check if they are accepted.
     # If there are no fulfillments, accepted is automatically False.
     # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
@@ -486,11 +479,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         if not latest_old_bounty:
             print("no latest old bounty")
             schemes = bounty_payload.get('schemes', {})
-            unsigned_nda = None
-            if bounty_payload.get('unsigned_nda', None):
-                unsigned_nda = BountyDocuments.objects.filter(
-                    pk=bounty_payload.get('unsigned_nda')
-                ).first()
             bounty_kwargs.update({
                 # info to xfr over from latest_old_bounty as override fields (this is because sometimes
                 # ppl dont login when they first submit issue and it needs to be overridden)
@@ -527,7 +515,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
                 'repo_type': metadata.get('repo_type', 'public'),
-                'unsigned_nda': unsigned_nda,
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
@@ -548,7 +535,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'bounty_owner_email', 'bounty_owner_name', 'github_comments', 'override_status', 'last_comment_date',
                     'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
                     'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
-                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code',
+                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'coupon_code',
                     'admin_override_org_name', 'admin_override_org_logo', 'bounty_state'
                 ],
             )
@@ -556,10 +543,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['bounty_reserved_for_user'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_reserved_for_user'])
             if latest_old_bounty_dict.get('bounty_owner_profile'):
                 latest_old_bounty_dict['bounty_owner_profile'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_owner_profile'])
-            if latest_old_bounty_dict['unsigned_nda']:
-                latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
-                    pk=latest_old_bounty_dict['unsigned_nda']
-                ).first()
             if latest_old_bounty_dict.get('coupon_code'):
                 latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
 
@@ -817,6 +800,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
         dashboard.Activity: The Activity object if user_profile is present or None.
 
     """
+
     user_profile = None
     fulfillment = _fulfillment
     try:
@@ -829,7 +813,8 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                           'bounty_changed']
         if event_name not in funder_actions:
             if not fulfillment:
-                fulfillment = new_bounty.fulfillments.order_by('-pk').first()
+                if new_bounty.fulfillments.exists():
+                    fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             if fulfillment:
