@@ -114,7 +114,7 @@
   {% endif %}
 
   <div>
-    <h3>{% trans "Open Funded Issues" %}</h3>
+    <h3>{% trans "💡Open Funded Issues" %}</h3>
     <h5>{% trans "Grow Open Source &amp; Make Some ETH" %}</h5>
   </div>
 
@@ -122,15 +122,14 @@
     {% include 'emails/bounty.html' with bounty=bounty.obj small=1 primer=bounty.primer %}
   {% endfor %}
 
-  <div class="text-center">
-    <p>{% trans "Don't see anything above that strikes your fancy?" %}</p>
-    <p>{% trans "There are more issues in the Gitcoin Issue Explorer:" %}</p>
+  <div class="text-center" style="width: 75%; margin-left: auto; margin-right: auto;">
+    <p>{% trans "Don't see anything above that strikes your fancy? There are more issues in the Gitcoin Issue Explorer:" %}</p>
 
-    <div style="margin-bottom: 2em;">
-      <a class="button" href="{% url "explorer" %}">{% trans "View Issue Explorer" %}</a>
+    <div style="margin-bottom: 2em; margin-top: 2em;">
+      <a class="button" href="{% url "explorer" %}">{% trans "View Explorer" %}</a>
     </div>
   </div>
-  <hr>
+  
   {% if leaderboard %}
     <h3>{% trans "Who's leading the Leaderboard?" %}</h3>
     <h5>{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
