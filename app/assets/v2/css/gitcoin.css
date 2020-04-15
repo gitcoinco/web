@@ -922,3 +922,7 @@ textarea.status-textarea {
 .status-menu button.selected {
   color: black;
 }
+
+.cursor {
+  cursor: pointer;
+}

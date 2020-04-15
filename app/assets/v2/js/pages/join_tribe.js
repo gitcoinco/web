@@ -100,3 +100,36 @@ const tribeLeader = () => {
 };
 
 tribeLeader();
+
+const hideTribe = () => {
+  $('[data-hidetribe]').each(function(index, element) {
+    $(element).on('click', function() {
+      const tribeId = $(element).data('hidetribe');
+      console.log(tribeId)
+      const removeTribe = fetchData ('/tribes/'+ tribeId, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+      $.when(removeTribe).then(function(response) {
+        $(element).parent('#suggestedTribe').remove();
+        // fetch new tribes
+        fetchFreshTribes()
+      }).fail(function(error){
+        // throw some errors to the user
+        _alert('An error occured. Please try again.', 'error');
+      })
+    })
+  })
+}
+
+hideTribe()
+
+const fetchSuggestedTribes = () => {
+  const url = '/api/v0.1/suggested_tribes';
+  const suggestedTribes = fetchData (url, 'GET', {});
+  $.when(suggestedTribes).then(function(response) {
+    console.log(response)
+  }).fail(function(error){
+    // throw some errors to the user
+    _alert('Failed to load suggested tribes. Please try again', 'error');
+  })
+}
+
+fetchSuggestedTribes()

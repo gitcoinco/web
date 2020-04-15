@@ -129,6 +129,8 @@ urlpatterns = [
     path('api/v0.1/comment/<int:comment_id>', townsquare.views.comment_v1, name='comment_v1'),
     path('api/v0.1/emailsettings/', townsquare.views.emailsettings, name='townsquare_emailsettings'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
+    url(r'^api/v0.1/suggested_tribes', dashboard.views.get_suggested_tribes, name='get_suggested_tribes'),
+    path('api/v0.1/tribes/<int:tribe_id>', townsquare.views.remove_tribe_from_list, name='remove_tribe_from_list'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,

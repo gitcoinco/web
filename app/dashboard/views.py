@@ -100,7 +100,7 @@ from .models import (
     Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
-    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
+    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel, IgnoredSuggestedTribes
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -4504,7 +4504,31 @@ def join_tribe(request, handle):
             status=401
         )
 
+def get_suggested_tribes(request):
+    following_tribes = []
+    if request.user.is_authenticated:
+        user = request.user.profile
+        # handles = TribeMember.objects.filter(profile=request.user.profile).distinct('org').values_list('org__handle', flat=True)
+        ignored_list = IgnoredSuggestedTribes.objects.filter(profile=user)
+        tribes = Profile.objects.filter(is_org=True).exclude(profile_ignored_tribes__in=list(ignored_list)).order_by('-follower_count')[:5]
 
+        # for profile in tribes:
+        #     handle = profile.handle
+        #     last_24_hours_activity = 0  # TODO: integrate this with get_amount_unread
+        #     tribe = {
+        #         'title': handle,
+        #         'slug': f"tribe:{handle}",
+        #         'helper_text': f'Activities from @{handle} since you last checked',
+        #         'badge': last_24_hours_activity,
+        #         'avatar_url': f'/dynamic/avatar/{handle}',
+        #         'follower_count': profile.tribe_members.all().count()
+        #     }
+        print('****** Handles ********')
+        print(ignored_list)
+            # following_tribes = following_tribes + [tribe]
+    return JsonResponse({
+        'message': following_tribes
+    })
 
 
 @csrf_exempt

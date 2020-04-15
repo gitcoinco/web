@@ -173,6 +173,7 @@ $(document).ready(function() {
       $('#top_bar').html($(response).find('#top_bar').html());
       // bind more actions
       joinTribe();
+      hideTribe();
       // collapse menu items
       $('.townsquare_block-header').each(function() {
         let target_id = $(this).data('target');

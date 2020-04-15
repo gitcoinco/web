@@ -11,7 +11,7 @@ from django.utils import timezone
 import metadata_parser
 from app.redis_service import RedisService
 from dashboard.models import (
-    Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
+    Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants, IgnoredSuggestedTribes
 )
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
@@ -302,6 +302,37 @@ def get_suggested_tribes(request):
             following_tribes = following_tribes + [tribe]
     return following_tribes
 
+def remove_tribe_from_list(request, tribe_id):
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request.'
+    }
+    if request.POST:
+        if request.user.is_authenticated:
+            user = request.user.profile
+            try:
+                tribe = Profile.objects.get(pk=tribe_id)
+                already_flagged = IgnoredSuggestedTribes.objects.filter(flagged_by=user, org=tribe).exists()
+                if not already_flagged:
+                    kwargs = {
+                        'org': tribe,
+                        'profile': user,
+                    }
+                    addToIgnoredList = IgnoredSuggestedTribes.objects.create(**kwargs)
+                    addToIgnoredList.save()
+                    response = {
+                        'status': 200,
+                        'message': 'Tribe has been removed.'
+                    }
+                    return JsonResponse(response)
+            except:
+                raise Http404
+        else:
+            response = {
+                'status': 401,
+                'message': 'Login to continue'
+            }
+            return JsonResponse(response)
 
 def get_following_tribes(request):
     following_tribes = []
