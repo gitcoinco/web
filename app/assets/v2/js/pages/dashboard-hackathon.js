@@ -868,7 +868,8 @@
       delimiters: [ '[[', ']]' ],
       methods: {
         openChat: function(handle) {
-          const url = handle ? `https://{chat_url}/hackathons/messages/@${handle}` : 'https://chat.gitcoin.co/';
+          let vm = this;
+          const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
 
           chatWindow = window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
         },
@@ -941,6 +942,7 @@
         projectsHasNext,
         numProjects,
         media_url,
+        chatURL: document.chatURL,
         lfm: false,
         searchTerm: null,
         bottom: false,
