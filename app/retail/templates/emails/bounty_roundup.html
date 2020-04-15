@@ -157,20 +157,20 @@
     </div>
   </div>
   {% endif %}
-  <hr>
 
   {% if kudos_highlights %}
-    <h3>{% trans "Kudos" %}</h3>
+  <div style="background-color: #F7F5FF; width: 110%; margin-left: -5%; padding-top:10px; padding-bottom: 15px;">
+    <h3>{% trans "♥️Kudos" %}</h3>
     <h5>{% trans "Recognition throughout the platform" %}</h5>
-    <div style="text-align: center;">
-      <ul style="text-align: center; padding-left: 20px;">
+    <div>
+      <ul style="padding-left: 20px; margin-left: 2vw;">
         {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
-          <li style="list-style:none; margin: 5px; padding: 15px 30px; min-height: 310px; display: inline-block; float:left; border: 1px solid #cccccc; border-radius: 5px; width: 220px;">
-              <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received <strong>{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
+          <li style="background-color: #ffffff; list-style:none; margin: 5px; padding: 10px 20px; min-height: 170px; display: inline-block; float:left; border: 1px solid #ffffff; border-radius: 3px; width: 125px;">
+              <a style="font-size: 14px; font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received <strong>{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
             <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.pk kudos.kudos_token_cloned_from.name  %}">
 
-              <img style="max-width: 120px;" src="{{ kudos.kudos_token_cloned_from.img_url }}"></a>
+              <img style="max-width: 100px;" src="{{ kudos.kudos_token_cloned_from.img_url }}"></a>
 
             {% if kudos.comments_public %}
               <br>
@@ -186,11 +186,7 @@
     </div>
     <br>
     <br>
-    <hr>
+  </div>
   {% endif %}
-  <hr>
 </div>
-<p>
-  {% trans "You are receiving this email because your email address is on the notification list." %} <a href="{% url "email_settings" subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
-</p>
 {% endblock %}
