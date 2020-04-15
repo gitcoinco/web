@@ -25,6 +25,7 @@ from django.utils import timezone
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
 from grants.models import Contribution, Grant
+from grants.views import clr_active
 from marketing.mails import warn_subscription_failed
 
 
@@ -38,28 +39,31 @@ class Command(BaseCommand):
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
 
     def handle(self, *args, **options):
+        if not clr_active:
+            print('CLR round is not active according to grants.views.clr_active, so cowardly refusing to spend the CPU cycles + exiting instead')
+            return
+
         clr_type = options['clr_type']
         network = options['network']
+        # identity mechanism is profiles for traditional rounds. for experimental rounds, where we saw collusion
+        # make the identity mechanism into funds originated addr
+        # this is a stopgap until a "one identity mechanism to rule them all is round", probably in round 6.
+        mechanism = 'profile' if clr_type != 'health' else 'originated_address'
 
-        clr_prediction_curves = predict_clr(
+        predict_clr(
             save_to_db=True,
             from_date=timezone.now(),
             clr_type=clr_type,
-            network=network
+            network=network,
+            mechanism=mechanism,
         )
 
-        # Uncomment these for debugging and sanity checking
-        # for grant in clr_prediction_curves:
-            #print("CLR predictions for grant {}".format(grant['grant']))
-            #print("All grants: {}".clr_typeformat(grant['grants_clr']))
-            #print("prediction curve: {}\n\n".format(grant['clr_prediction_curve']))
-
-        # sanity check: sum all the estimated clr distributions - should be close to CLR_DISTRIBUTION_AMOUNT
-        clr_data = [g['grants_clr'] for g in clr_prediction_curves]
-
-        # print(clr_data)
-        if clr_data and clr_data[0]:
-            total_clr_funds = sum([each_grant['clr_amount'] for each_grant in clr_data[0]])
-            print("allocated CLR funds:{}".format(total_clr_funds))
-
         print("finished CLR estimates")
+
+        # TOTAL GRANT
+        # grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type=clr_type, link_to_new_grant=None)
+        # total_clr_distributed = 0
+        # for grant in grants:
+        #     total_clr_distributed += grant.clr_prediction_curve[0][1]
+
+        # print(f'Total CLR allocated for {clr_type} - {total_clr_distributed}')

@@ -37,10 +37,13 @@
         width: 100%;
       }
       .onboard-banner {
+        position: relative;
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
       }
-
       #questions-form input[type=checkbox] {
           display:none;
       }
@@ -74,16 +77,16 @@
     <div class="container-fluid header px-0 dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav_hackathons.html' %}
-      <div class="onboard-banner text-center p-4 pb-5">
-        {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-        {% if logo %}
-          <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
-        {% else %}
-          <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
-            {{ hackathon.name }}
-          </div>
-        {% endif %}
-      </div>
+    </div>
+    <div class="onboard-banner text-center p-4 pb-5">
+      {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+      {% if logo %}
+        <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
+      {% else %}
+        <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
+          {{ hackathon.name }}
+        </div>
+      {% endif %}
     </div>
 
     <div class="container-fluid bg-lightblue pb-5">
@@ -137,9 +140,9 @@
                 <p class="pt-4 mb-4">Until then, we recommend a few different ways to prepare:</p>
                 {% endif %}
                 <ul  class="list-unstyled">
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="/townsquare?tab=hackathon:{{ hackathon.id }}&trending=0&personal=0"><i class="mr-1 far fa-circle gc-text-blue"></i> Introduce yourself on Town Square + what you like to build (and earn your first Kudos!)</a></li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="/townsquare?tab=hackathon:{{ hackathon.id }}&trending=0&personal=0"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Introduce yourself on Town Square + what you like to build (and earn your first Kudos!)</a></li>
                     <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> RSVP our 3 workshops</li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors"><i class="mr-1 far fa-circle gc-text-blue"></i> Checkout sponsors below and build your team</a></li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Checkout sponsors below and build your team</a></li>
                     <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Invite your friends to hack and earn a Kudos</li>
                 </ul>
 

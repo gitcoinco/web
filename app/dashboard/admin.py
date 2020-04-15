@@ -380,7 +380,9 @@ class SponsorAdmin(admin.ModelAdmin):
 class HackathonEventAdmin(admin.ModelAdmin):
     """The admin object for the HackathonEvent model."""
 
+    raw_id_fields = ['sponsor_profiles']
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
+    list_filter = ('sponsor_profiles', )
     readonly_fields = ['img', 'explorer_link', 'stats']
 
     def img(self, instance):

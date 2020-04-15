@@ -191,7 +191,7 @@ $(document).ready(function() {
       if (window.syncTo3Box) {
         syncTo3Box({
           onLoading,
-          model: 'custom avatar'
+          models: ['custom avatar']
         });
       }
     });

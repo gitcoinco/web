@@ -4,6 +4,7 @@
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
 });
 
 const _truthy = function(val) {
@@ -696,12 +697,8 @@ var show_interest_modal = function() {
 
   modals.on('show.bs.modal', function() {
     modalBody.load(modalUrl, ()=> {
-      if (document.result['repo_type'] === 'private') {
-        document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
-      }
 
       let actionPlanForm = $('#action_plan');
-      let discord_username = $('#discord_username');
       let issueMessage = $('#issue_message');
 
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
@@ -716,69 +713,24 @@ var show_interest_modal = function() {
           return false;
         }
 
-        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
-
-        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
-
-          const formData = new FormData();
-
-          formData.append('docs', issueNDA[0]);
-          formData.append('doc_type', 'signed_nda');
-
-          const ndaSend = {
-            url: '/api/v0.1/bountydocument',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            dataType: 'json',
-            contentType: false
-          };
-
-          $.ajax(ndaSend).done(function(response) {
-            if (response.status == 200) {
-              _alert(response.message, 'info');
-              add_interest(document.result['pk'], {
-                issue_message: msg,
-                signed_nda: response.bounty_doc_id,
-                discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-              }).then(success => {
-                if (success) {
-                  $(self).attr('href', '/uninterested');
-                  $(self).find('span').text(gettext('Stop Work'));
-                  $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                  modals.bootstrapModal('hide');
-                }
-              }).catch((error) => {
-                if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-                  return;
-                throw error;
-              });
-            } else {
-              _alert(response.message, 'error');
+        add_interest(document.result['pk'], {
+          issue_message: msg,
+          discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+        }).then(success => {
+          if (success) {
+            $(self).attr('href', '/uninterested');
+            $(self).find('span').text(gettext('Stop Work'));
+            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+            modals.bootstrapModal('hide');
+            if (document.result.event) {
+              projectModal(document.result.pk);
             }
-          }).fail(function(error) {
-            _alert(error, 'error');
-          });
-        } else {
-          add_interest(document.result['pk'], {
-            issue_message: msg,
-            discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-          }).then(success => {
-            if (success) {
-              $(self).attr('href', '/uninterested');
-              $(self).find('span').text(gettext('Stop Work'));
-              $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-              modals.bootstrapModal('hide');
-              if (document.result.event) {
-                projectModal(document.result.pk);
-              }
-            }
-          }).catch((error) => {
-            if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-              return;
-            throw error;
-          });
-        }
+          }
+        }).catch((error) => {
+          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+            return;
+          throw error;
+        });
 
       });
 
@@ -787,45 +739,6 @@ var show_interest_modal = function() {
   modals.bootstrapModal('show');
 };
 
-const repoInstructions = () => {
-  let linkToSettings = `https://github.com/${document.result.github_org_name}/${document.result.github_repo_name}/settings/collaboration`;
-
-
-  let modalTmp = `
-  <div class="modal fade g-modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body text-center center-block w-75">
-          <h5>
-            You have successfully approved the contributor to work on your bounty!
-          </h5>
-          <div>
-            <img src="${document.contxt.STATIC_URL}v2/images/repo-instructions.png" class="mw-100 my-4" alt="">
-          </div>
-          <p class="mb-4">Now you need to invite the contributor to your private repo on GitHub You can find it under <b>GitHub repository > Settings > Collaborators</b></p>
-          <div>
-            <img src="${document.contxt.STATIC_URL}v2/images/repo-settings.png" class="mw-100" alt="">
-          </div>
-        </div>
-        <div class="modal-footer justify-content-center">
-          <a href="${linkToSettings}" target="_blank" class="button button--primary"><i class="fab fa-github"></i> Go to Repo Settings</a>
-        </div>
-      </div>
-    </div>
-  </div>`;
-
-  $(modalTmp).bootstrapModal('show');
-
-  $(document, modalTmp).on('hidden.bs.modal', function(e) {
-    $('#exampleModalCenter').remove();
-    $(modalTmp).bootstrapModal('dispose');
-  });
-};
 
 var set_extended_time_html = function(extendedDuration) {
   extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
@@ -1271,8 +1184,7 @@ var do_actions = function(result) {
     const _entry = {
       enabled: true,
       href: github_url,
-      text: (result['repo_type'] === 'private' ? '<i class="fas fa-lock mr-2"></i> ' +
-        gettext('Private Repo') : '<i class="fab fa-github mr-2"></i>' + gettext('View On Github')),
+      text: '<i class="fab fa-github mr-2"></i>' + gettext('View On Github'),
       parent: 'github_actions',
       title: gettext('View issue details and comments on Github')
     };
@@ -1461,9 +1373,6 @@ var pull_bounty_from_api = function() {
           projectModal(document.result.pk);
         }
 
-        if (typeof promptPrivateInstructions !== 'undefined' && result.repo_type === 'private') {
-          repoInstructions();
-        }
         return;
       }
     }
@@ -1531,13 +1440,6 @@ const process_activities = function(result, bounty_activities) {
         }
         return false;
       }) : false;
-    const has_signed_nda = result.interested.length ?
-      result.interested.find(interest => {
-        if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
-          return interest.signed_nda.doc;
-        }
-        return false;
-      }) : false;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
@@ -1588,7 +1490,6 @@ const process_activities = function(result, bounty_activities) {
       age: timeDifference(now, new Date(_activity.created)),
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
-      signed_nda: has_signed_nda,
       issue_message: issue_message,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,

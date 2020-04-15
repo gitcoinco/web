@@ -286,38 +286,6 @@ const ethCreateBounty = data => {
     }
   };
 
-  const uploadNDA = function() {
-    const formData = new FormData();
-
-    formData.append('docs', $('#issueNDA')[0].files[0]);
-    formData.append('doc_type', 'unsigned_nda');
-    const settings = {
-      url: '/api/v0.1/bountydocument',
-      method: 'POST',
-      processData: false,
-      dataType: 'json',
-      contentType: false,
-      data: formData
-    };
-
-    $.ajax(settings).done(function(response) {
-      if (response.status == 200) {
-        _alert(response.message, 'info');
-        ipfsBounty.payload.unsigned_nda = response.bounty_doc_id;
-        if (data.featuredBounty) payFeaturedBounty();
-        else do_bounty();
-      } else {
-        _alert('Unable to upload NDA. ', 'error');
-        unloading_button($('.js-submit'));
-        console.log('NDA error:', response.message);
-      }
-    }).fail(function(error) {
-      _alert('Unable to upload NDA. ', 'error');
-      unloading_button($('.js-submit'));
-      console.log('NDA error:', error);
-    });
-  };
-
   const payFeaturedBounty = function() {
     indicateMetamaskPopup();
     web3.eth.sendTransaction({
@@ -347,18 +315,11 @@ const ethCreateBounty = data => {
   };
 
   function processBounty() {
-    if (
-      $("input[type='radio'][name='repo_type']:checked").val() == 'private' &&
-      $('#issueNDA')[0].files[0]
-    ) {
-      uploadNDA();
-    } else {
-      handleTokenAuth().then(isAuthedToken => {
-        if (isAuthedToken) {
-          data.featuredBounty ? payFeaturedBounty() : do_bounty();
-        }
-      });
-    }
+    handleTokenAuth().then(isAuthedToken => {
+      if (isAuthedToken) {
+        data.featuredBounty ? payFeaturedBounty() : do_bounty();
+      }
+    });
   }
 
   if (check_balance_and_alert_user_if_not_enough(tokenAddress, amountNoDecimal)) {
