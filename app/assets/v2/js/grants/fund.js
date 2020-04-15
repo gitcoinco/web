@@ -10,6 +10,15 @@ let gitcoinDonationAddress;
 
 document.suppress_faucet_solicitation = 1;
 
+var set_form_disabled = function(is_disabled) {
+  if (is_disabled) {
+    $('body').append('<div id=intercept_overlay>&nbsp;</div>');
+  } else {
+    $('#intercept_overlay').remove();
+  }
+};
+
+
 $(document).ready(function() {
 
 
@@ -121,14 +130,6 @@ $(document).ready(function() {
     $(event.currentTarget).removeClass('badge-inactive');
     $(event.currentTarget).addClass('badge-active');
   });
-
-  var set_form_disabled = function(is_disabled) {
-    if (is_disabled) {
-      $('body').append('<div id=intercept_overlay>&nbsp;</div>');
-    } else {
-      $('#intercept_overlay').remove();
-    }
-  };
 
   $('input[name=match_direction]').change(function(e) {
     let direction = $(this).val();
@@ -322,7 +323,7 @@ $(document).ready(function() {
 
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
-            // TODO: Fix tweet modal
+            set_form_disabled(false);
             $('#tweetModal').css('display', 'block');
 
           };
@@ -547,6 +548,7 @@ const signSubscriptionHash = (subscriptionHash) => {
     indicateMetamaskPopup();
     web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
       indicateMetamaskPopup(true);
+      set_form_disabled(false);
       $('#tweetModal').css('display', 'block');
 
       if (signature) {
@@ -650,6 +652,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
   }).on('transactionHash', function(transactionHash) {
     indicateMetamaskPopup(1);
+    set_form_disabled(false);
     $('#tweetModal').css('display', 'block');
     data = {
       'subscription_hash': 'onetime',
@@ -670,7 +673,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
     $('#transaction_url').attr('href', linkURL);
     enableWaitState('#grants_form');
-    // TODO: Fix tweet modal
+    set_form_disabled(false);
     $('#tweetModal').css('display', 'block');
   }).on('confirmation', function(confirmationNumber, receipt) {
     data = {

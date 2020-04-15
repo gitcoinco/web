@@ -81,6 +81,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 00 10 * * 5 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash post_leaderboard_to_slack  >> /var/log/gitcoin/post_leaderboard_to_slack.log  2>&1
 0 9 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash no_applicants_email  >> /var/log/gitcoin/no_applicants_email.log 2>&1
 0 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_grant_twitter_info  >> /var/log/gitcoin/pull_grant_twitter_info.log 2>&1
+0 11 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_search_index  >> /var/log/gitcoin/create_search_index.log 2>&1
 
 
 ## PERFTOOLS
