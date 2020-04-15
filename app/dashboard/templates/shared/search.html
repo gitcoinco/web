@@ -49,7 +49,7 @@
                   <img class="gc-search__avatar my-auto mr-3" :src="[[ result.img_url ]]" :alt="result.title" />
                   <div>
                     <p class="gc-search-result__title font-body mb-0">[[ result.title ]]</p>
-                    <p class="gc-search-result__description font-caption mb-2">[[ result.description | str_limit(75) ]]</p>
+                    <p class="gc-search-result__description font-caption mb-2">[[ result.description | truncate(70) ]]</p>
                     <div>
                       <span class="gc-search__tag font-weight-semibold font-smaller-4 py-1 px-3">
                         [[ result.source_type | capitalize ]]

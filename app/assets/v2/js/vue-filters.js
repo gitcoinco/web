@@ -90,19 +90,17 @@ Vue.filter('stringReplace', function(activity_type) {
   return activity_names[activity_type];
 });
 
-
-Vue.filter('str_limit', function(value, size) {
+Vue.filter('truncate', function(value, length = 30, clamp = '...') {
   if (!value) {
     return '';
   }
 
   value = value.toString();
-  if (value.length <= size) {
+  if (value.length <= length) {
     return value;
   }
-  return value.substr(0, size) + '...';
+  return value.substr(0, length) + clamp;
 });
-
 
 Vue.filter('capitalize', function(value) {
   if (!value) {
