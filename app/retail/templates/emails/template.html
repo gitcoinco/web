@@ -342,7 +342,7 @@
         <p>
           {% trans "Want to change how you receive these emails?" %}
           <br>
-          {% trans "You can" %} <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+          {% trans "You can update your " %} <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "preferences" %}</a> or <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
         </p>
       </div>
     </div>
