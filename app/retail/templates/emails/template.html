@@ -176,6 +176,8 @@
         background-color: #ffc000;
       {% elif email_style == 21 %}
         background-color: #f7ecbc;
+      {% elif email_style == 27 %}
+        background-color: #15053F;
       {% else %}
         background-color: #15003e;
       {% endif %}
@@ -294,6 +296,7 @@
       {% elif email_style == 22 %} <img id="logo" src="{% static "v2/images/emails/email_header22.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 23 %} <img id="logo" src="{% static "v2/images/emails/email_header23.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 24 %} <img id="logo" src="{% static "v2/images/emails/email_header24.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 27 %} <img id="logo" src="{% static "v2/images/emails/email_header27.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% else %}
         <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% endif %}
