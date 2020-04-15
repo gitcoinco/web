@@ -78,7 +78,21 @@
     width: 5%;
     vertical-align: middle;
   }
+  
+  @media screen and (max-width: 599px) {
+    .leaderboard-item-container {
+      margin-left: 2%;
+    }
+  }
 
+  @media screen and (min-width: 600px) {
+  .leaderboard-item {
+    width: 30%;
+  }
+  .leaderboard-item-container {
+    margin-left: 12%;
+  }
+}
 </style>
 
 <div class="roundup">
@@ -162,14 +176,14 @@
     <h3 style="color: #ffffff;">{% trans "🏆Who's leading the Leaderboard?" %}</h3>
     <h5 style="color: #ffffff;">{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
 
-    <div style="color: #ffffff; margin-left: 8%;">
+    <div class="leaderboard-item-container" style="color: #ffffff;">
       {% for key, package in leaderboard.items %}
-        <div style="width: 30%; display: inline-block; margin-right: 1em;">
+        <div class="leaderboard-item" style="display: inline-block; margin-right: 1em;">
           <h4 style="text-align: left; margin-bottom: 10px; margin-left: 1em;">{{ package.title }}</h4>
           <ul>
             {% for leaderboard_item in package.items %}
             <li style="font-size: 0.93em; list-style:none; margin-top: 10px; margin-bottom: 10px; color: #ffffff; text-align: start;">
-              {{ leaderboard_item.rank }} <img style="border-radius: 20px; vertical-align: middle; margin-left: 10px; margin-right: 7px;" src="{% avatar_url leaderboard_item.profile %}" width=25px height=25px>
+              {{ leaderboard_item.rank }} <img style="border-radius: 20px; vertical-align: middle; margin: 0 7px" src="{% avatar_url leaderboard_item.profile %}" width=25px height=25px>
               <a style="font-size: 0.99em; color: #ffffff; font-weight: bold; text-decoration: none;" href="{% url "profile" leaderboard_item.github_username %}">{{ leaderboard_item.github_username }}</a> : ${{ leaderboard_item.amount|floatformat:2 }}
             </li>
           {% endfor %}
