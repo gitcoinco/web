@@ -1164,6 +1164,7 @@ def render_new_bounty_roundup(to_email):
         'sponsor': sponsor,
 		'email_type': 'roundup',
         'email_style': email_style,
+        'hide_bottom_logo': True,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

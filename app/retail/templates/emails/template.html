@@ -307,7 +307,9 @@
     <div class="primary-content text-center">
         {% block content %}
         {% endblock %}
-        <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
+        {% if not hide_bottom_logo %}
+          <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
+        {% endif %}
     </div>
 
   <div id="preferred_payout">
