@@ -951,6 +951,11 @@ def projects_fetch(request):
             Q(badge__isnull=False)
         )
 
+    if filters == 'lfm':
+        projects = projects.filter(
+            Q(looking_members=True)
+        )
+
     projects_data = HackathonProjectSerializer(projects.all(), many=True)
 
     params = {
