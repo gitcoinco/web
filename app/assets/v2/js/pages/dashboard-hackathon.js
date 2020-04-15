@@ -867,6 +867,11 @@
     Vue.component('project-directory', {
       delimiters: [ '[[', ']]' ],
       methods: {
+        openChat: function(handle) {
+          const url = handle ? `https://{chat_url}/hackathons/messages/@${handle}` : 'https://chat.gitcoin.co/';
+
+          chatWindow = window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+        },
         fetchProjects: function(newPage) {
           let vm = this;
 
@@ -878,6 +883,10 @@
           }
           vm.params.page = vm.projectsPage;
           vm.params.hackathon = hackathonId;
+          vm.params.filters = '';
+          if (vm.params.lfm) {
+            vm.params.filters = 'lfm';
+          }
           if (vm.searchTerm) {
             vm.params.search = vm.searchTerm;
           } else {
@@ -932,6 +941,7 @@
         projectsHasNext,
         numProjects,
         media_url,
+        lfm: false,
         searchTerm: null,
         bottom: false,
         params: {},
