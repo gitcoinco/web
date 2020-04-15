@@ -24,7 +24,6 @@ const ethCancelBounty = data => {
 
   const params = data.payload;
 
-  let account = web3.eth.accounts[0];
   const sendForm = fetchData('cancel_reason', 'POST', params);
 
   $.when(sendForm).then(function(payback) {
@@ -68,53 +67,61 @@ const ethCancelBounty = data => {
       errormsg = gettext(
         'No active funded issue found at this address.  Are you sure this is an active funded issue?'
       );
-    } else if (fromAddress != web3.eth.coinbase) {
-      errormsg = gettext(
-        'Only the address that submitted this funded issue may kill the bounty.'
-      );
     }
 
-    if (errormsg) {
-      _alert({ message: errormsg });
-      unloading_button($('.js-submit'));
-      return;
-    }
+    web3.eth.getCoinbase(function(_, coinbase) {
+      if (fromAddress != coinbase) {
+        errormsg = gettext(
+          'Only the address that submitted this funded issue may kill the bounty.'
+        );
+      }
 
-    const final_callback = function(error, result) {
-      indicateMetamaskPopup(true);
-      const next = function() {
-        // setup inter page state
-        localStorage[issueURL] = JSON.stringify({
-          timestamp: timestamp(),
-          dataHash: null,
-          issuer: account,
-          txid: result
-        });
+      if (errormsg) {
+        _alert({ message: errormsg });
+        unloading_button($('.js-submit'));
+        return;
+      }
 
-        _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
-        setTimeout(() => {
-          document.location.href = '/funding/details/?url=' + issueURL;
-        }, 1000);
+      const final_callback = function(error, result) {
+        indicateMetamaskPopup(true);
+        const next = function() {
+          web3.eth.getAccounts(function(_, accounts) {
+            // setup inter page state
+            localStorage[issueURL] = JSON.stringify({
+              timestamp: timestamp(),
+              dataHash: null,
+              issuer: accounts[0],
+              txid: result
+            });
+          });
+
+          _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
+          setTimeout(() => {
+            document.location.href = '/funding/details/?url=' + issueURL;
+          }, 1000);
+        };
+
+        if (error) {
+          console.error('err', error);
+          _alert({ message: gettext('There was an error') });
+          unloading_button($('.js-submit'));
+        } else {
+          next();
+        }
       };
 
-      if (error) {
-        console.error('err', error);
-        _alert({ message: gettext('There was an error') });
-        unloading_button($('.js-submit'));
-      } else {
-        next();
-      }
-    };
-
-    indicateMetamaskPopup();
-    bounty.killBounty(
-      bountyId,
-      {
-        from: web3.eth.accounts[0],
-        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-      },
-      final_callback
-    );
+      indicateMetamaskPopup();
+      web3.eth.getAccounts(function(_, accounts) {
+        bounty.killBounty(
+          bountyId,
+          {
+            from: accounts[0],
+            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+          },
+          final_callback
+        );
+      });
+    });
 
   };
 
