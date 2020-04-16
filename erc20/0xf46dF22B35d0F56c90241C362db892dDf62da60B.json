@@ -6,7 +6,7 @@
         "zh": "UENC是一个以跨链为技术方向的可扩展基础公链，在底层技术和架构上进行优化和创新，支持不同区块链网络之间的价值传递。UENC通过对网络价值传递过程中的用户关注度的不同，对该过程进行分类，构建新的共识，以及通过重构基于DHT的混合式点对点网络，建立高效的节点组合结构，从而快速提升公链交易速度。"
   },
   "website": "http://enchain.cc",
-  "whitepaper": "http://enchain.cc",
+  "whitepaper": "http://47.75.93.221:8003/weimioffice/web/downBaiPishu?lan=cn",
   "state": "NORMAL",
   "published_on": "2018-03",
   "initial_price":{
