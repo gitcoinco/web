@@ -101,7 +101,7 @@ def about(request):
         'title': 'Kudos',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
+        'avatar_url': static('v2/images/twitter_cards/tw_cards-06.png'),
         'card_player_override': 'https://www.youtube.com/embed/EOlMTOzmKKk',
         'card_player_stream_override': static('v2/card/kudos.mp4'),
         'card_player_thumb_override': static('v2/card/kudos.png'),
@@ -147,7 +147,7 @@ def marketplace(request):
         'title': title,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
+        'avatar_url': static('v2/images/twitter_cards/tw_cards-06.png'),
         'listings': listings,
         'network': network
     }
@@ -314,6 +314,7 @@ def send_2(request):
     params = {
         'active': 'send',
         'issueURL': request.GET.get('source'),
+        'avatar_url': static('v2/images/twitter_cards/tw_cards-06.png'),
         'class': 'send2',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': getattr(request.user, 'email', ''),
@@ -825,6 +826,7 @@ def newkudos(request):
         'msg': None,
         'nav': 'kudos',
         'title': "Mint new Kudos",
+        'avatar_url': static('v2/images/twitter_cards/tw_cards-06.png'),
     }
 
     if not request.user.is_authenticated:

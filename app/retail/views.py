@@ -284,6 +284,7 @@ def funder_bounties(request):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'bounties_funder',
+        'avatar_url': static('v2/images/twitter_cards/tw_cards-01.png'),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
@@ -429,6 +430,7 @@ def contributor_bounties(request, tech_stack):
 
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
+        'avatar_url': static('v2/images/twitter_cards/tw_cards-01.png'),
         'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -1698,6 +1700,7 @@ def tribes(request):
         'plans': plans,
         'tribes': tribes,
         'testimonials': testimonials,
+        'avatar_url': static('v2/images/twitter_cards/tw_cards-07.png'),
         'reasons': reasons
     }
 
