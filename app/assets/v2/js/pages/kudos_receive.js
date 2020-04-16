@@ -55,7 +55,9 @@ window.onload = function() {
         _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
       }
     } else if (!$('#forwarding_address').val()) {
-      $('#forwarding_address').val(web3.eth.coinbase);
+      web3.eth.getCoinbase(function(_, coinbase) {
+        $('#forwarding_address').val(coinbase);
+      });
     }
     $('#network').val(document.web3network);
   });

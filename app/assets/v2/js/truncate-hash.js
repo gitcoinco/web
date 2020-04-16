@@ -46,28 +46,39 @@ new truncateHash();
 */
 (function() {
   this.getaddress = function(elem, _address) {
-    const address = !_address ? _address = web3.eth.coinbase : _address;
-
-    if (elem.nodeName == 'INPUT') {
-      elem.value = address;
+    if (_address) {
+      if (elem.nodeName == 'INPUT') {
+        elem.value = _address;
+      } else {
+        elem.textContent = _address;
+        elem.setAttribute('title', _address);
+      }
     } else {
-      elem.textContent = address;
-      elem.setAttribute('title', address);
+      web3.eth.getCoinbase(function(_, address) {
+        if (elem.nodeName == 'INPUT') {
+          elem.value = address;
+        } else {
+          elem.textContent = address;
+          elem.setAttribute('title', address);
+        }
+      });
     }
     new truncateHash();
   };
 
   this.metamaskAddress = function() {
-    try {
-      const currentWallet = web3.eth.coinbase;
-      const elem = document.querySelectorAll('[data-metamask-address]');
-  
+    const elem = document.querySelectorAll('[data-metamask-address]');
+
+    web3.eth.getCoinbase(function(err, currentWallet) {
+      if (err) {
+        console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
+        return;
+      }
+
       for (let i = 0; i < elem.length; ++i) {
         new getaddress(elem[i], currentWallet);
       }
-    } catch (ignore) {
-      console.log('%c error: web3 not defined. ensure metamask is installed & unlocked', 'color: red');
-    }
+    });
   };
 }());
 

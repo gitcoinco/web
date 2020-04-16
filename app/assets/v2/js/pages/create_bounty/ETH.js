@@ -3,7 +3,20 @@
  * Data is stored on IPFS + the data is stored in
  * standard bounties contract on the ethereum blockchain
  */
-const ethCreateBounty = data => {
+
+const promisify = (fun, params=[]) => {
+  return new Promise((resolve, reject) => {
+    fun(...params, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+const ethCreateBounty = async (data) => {
   try {
     bounty_address();
   } catch (exception) {
@@ -96,7 +109,7 @@ const ethCreateBounty = data => {
   // to the node.js package.  github.com/ethereum/web3.js
   const isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
   web3.eth.contract(token_abi).at(tokenAddress);
-  const account = web3.eth.coinbase;
+  const account = await promisify(web3.eth.getCoinbase);
   const amountNoDecimal = amount;
 
   amount = amount * decimalDivisor;
@@ -228,7 +241,7 @@ const ethCreateBounty = data => {
         if (isETH) {
           web3.eth.sendTransaction({
             to: to_address,
-            from: web3.eth.coinbase,
+            from: account,
             value: web3.toWei(fee, 'ether'),
             gasPrice: gas_price
           }, function(error, txnId) {
@@ -290,7 +303,7 @@ const ethCreateBounty = data => {
     indicateMetamaskPopup();
     web3.eth.sendTransaction({
       to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-      from: web3.eth.coinbase,
+      from: web3.account,
       value: web3.toWei(ethFeaturedPrice, 'ether'),
       gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
       gas: web3.toHex(318730),
@@ -330,7 +343,7 @@ const ethCreateBounty = data => {
 
   function check_balance_and_alert_user_if_not_enough(tokenAddress, amount, msg) {
     const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-    const from = web3.eth.coinbase;
+    const from = account;
     const token_details = tokenAddressToDetails(tokenAddress);
     const token_decimals = token_details['decimals'];
     const token_name = token_details['name'];
