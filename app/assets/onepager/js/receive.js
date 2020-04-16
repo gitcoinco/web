@@ -1,3 +1,8 @@
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
+});
+
 /* eslint-disable no-console */
 var combine_secrets = function(secret1, secret2) {
   var shares = [ secret1, secret2 ];

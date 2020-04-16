@@ -1437,7 +1437,7 @@ def slack(request):
             try:
                 validate_email(email)
                 get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
-                response = invite_to_slack(email)
+                response = invite_to_slack(email, True)
 
                 if not response.get('ok'):
                     context['msg'] = response.get('error', _('Unknown error'))
