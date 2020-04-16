@@ -105,15 +105,15 @@ const hideTribe = () => {
   $('[data-hidetribe]').each(function(index, element) {
     $(element).on('click', function() {
       const tribeId = $(element).data('hidetribe');
+      $('#suggested-tribes').remove();
 
       const url = `/tribe/${tribeId}/remove/`;
       const removeTribe = fetchData (url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
 
       $.when(removeTribe).then(function(response) {
-        console.log(response)
-        $(element).parent('#suggestedTribe').remove();
+        $(element).parent('#suggested-tribes').remove();
         // fetch new tribes
-        fetchSuggestedTribes()
+        // fetchSuggestedTribes()
       }).fail(function(error){
         // throw some errors to the user
         _alert('An error occured. Please try again.', 'error');
@@ -125,7 +125,7 @@ const hideTribe = () => {
 hideTribe()
 
 const fetchSuggestedTribes = () => {
-  const url = '/api/v0.1/suggested_tribes';
+  const url = '/api/v0.1/get_suggested_tribes';
   const suggestedTribes = fetchData (url, 'GET', {});
   $.when(suggestedTribes).then(function(response) {
     console.log(response)

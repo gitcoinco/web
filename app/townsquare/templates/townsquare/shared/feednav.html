@@ -60,10 +60,10 @@
                   <div class="townsquare_block-header" data-target="suggested-tribes">
                     Suggested Tribes
                   </div>
-                  <div id="suggested-tribes">
+                  <div id="suggestedTribes">
                     <ul class="nav d-inline-block font-body col-sm-9 pr-2" style="padding-right: 0">
                       {% for tribe in suggested_tribes %}
-                        <li class="nav-item d-flex justify-content-between align-items-center my-3" id="suggestedTribe">
+                        <li class="nav-item d-flex justify-content-between align-items-center my-3">
                           <a href="/profile/{{ tribe.title }}" class="d-flex nav-link nav-line pr-0 mr-0">
                             <img src="{{tribe.avatar_url}}" class="nav_avatar mr-2">
                               <span class="">

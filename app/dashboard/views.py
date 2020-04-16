@@ -4543,20 +4543,21 @@ def get_suggested_tribes(request):
         profile = request.user.profile if hasattr(request.user, 'profile') else None
         ignored_list = profile.ignored_suggested_tribes
         handles = TribeMember.objects.filter(profile=profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).exclude(handle__in=list(ignored_list)).order_by('-follower_count')[:5]
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-follower_count')[:5]
 
         for profile in tribes:
             handle = profile.handle
-            last_24_hours_activity = 0  # TODO: integrate this with get_amount_unread
-            tribe = {
-                'title': handle,
-                'slug': f"tribe:{handle}",
-                'helper_text': f'Activities from @{handle} since you last checked',
-                'badge': last_24_hours_activity,
-                'avatar_url': f'/dynamic/avatar/{handle}',
-                'follower_count': profile.tribe_members.all().count()
-            }
-            following_tribes = following_tribes + [tribe]
+            if handle not in ignored_list:
+                last_24_hours_activity = 0  # TODO: integrate this with get_amount_unread
+                tribe = {
+                    'title': handle,
+                    'slug': f"tribe:{handle}",
+                    'helper_text': f'Activities from @{handle} since you last checked',
+                    'badge': last_24_hours_activity,
+                    'avatar_url': f'/dynamic/avatar/{handle}',
+                    'follower_count': profile.tribe_members.all().count()
+                }
+                following_tribes = following_tribes + [tribe]
     return JsonResponse({
                 'data': following_tribes
             })
