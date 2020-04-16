@@ -100,7 +100,7 @@ from .models import (
     Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
-    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel, IgnoredSuggestedTribes
+    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -4504,31 +4504,62 @@ def join_tribe(request, handle):
             status=401
         )
 
+@csrf_exempt
+@require_POST
+def remove_tribe_from_list(request, handle):
+    if request.user.is_authenticated:
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        try:
+            if handle not in profile.ignored_suggested_tribes:
+                profile.ignored_suggested_tribes.append(handle)
+                profile.save()
+                return JsonResponse({
+                    'status': 200,
+                    'message': 'Tribe has been removed.'
+                }, 
+                    status=200
+                )
+            else:
+                return JsonResponse({
+                    'status': 200,
+                    'message': 'Tribe has already been removed.'
+                })
+        except Profile.DoesNotExist:
+            return JsonResponse({
+                'status': 404,
+                'message': 'Tribe does not exist'
+            },
+                status=404
+            )
+    else:
+        return JsonResponse(
+            { 'error': _('You must be authenticated via github to use this feature!') },
+            status=401
+        )
+
 def get_suggested_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
-        user = request.user.profile
-        # handles = TribeMember.objects.filter(profile=request.user.profile).distinct('org').values_list('org__handle', flat=True)
-        ignored_list = IgnoredSuggestedTribes.objects.filter(profile=user)
-        tribes = Profile.objects.filter(is_org=True).exclude(profile_ignored_tribes__in=list(ignored_list)).order_by('-follower_count')[:5]
+        profile = request.user.profile if hasattr(request.user, 'profile') else None
+        ignored_list = profile.ignored_suggested_tribes
+        handles = TribeMember.objects.filter(profile=profile).distinct('org').values_list('org__handle', flat=True)
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).exclude(handle__in=list(ignored_list)).order_by('-follower_count')[:5]
 
-        # for profile in tribes:
-        #     handle = profile.handle
-        #     last_24_hours_activity = 0  # TODO: integrate this with get_amount_unread
-        #     tribe = {
-        #         'title': handle,
-        #         'slug': f"tribe:{handle}",
-        #         'helper_text': f'Activities from @{handle} since you last checked',
-        #         'badge': last_24_hours_activity,
-        #         'avatar_url': f'/dynamic/avatar/{handle}',
-        #         'follower_count': profile.tribe_members.all().count()
-        #     }
-        print('****** Handles ********')
-        print(ignored_list)
-            # following_tribes = following_tribes + [tribe]
+        for profile in tribes:
+            handle = profile.handle
+            last_24_hours_activity = 0  # TODO: integrate this with get_amount_unread
+            tribe = {
+                'title': handle,
+                'slug': f"tribe:{handle}",
+                'helper_text': f'Activities from @{handle} since you last checked',
+                'badge': last_24_hours_activity,
+                'avatar_url': f'/dynamic/avatar/{handle}',
+                'follower_count': profile.tribe_members.all().count()
+            }
+            following_tribes = following_tribes + [tribe]
     return JsonResponse({
-        'message': following_tribes
-    })
+                'data': following_tribes
+            })
 
 
 @csrf_exempt

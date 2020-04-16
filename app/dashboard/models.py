@@ -2587,7 +2587,7 @@ class Profile(SuperModel):
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations_fk = models.ManyToManyField('dashboard.Profile', blank=True)
     profile_organizations = models.ManyToManyField(Organization, blank=True)
-    profile_ignored_tribes = models.ManyToManyField('dashboard.IgnoredSuggestedTribes', blank=True)
+    ignored_suggested_tribes = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     repos = models.ManyToManyField(Repo, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
@@ -2755,10 +2755,6 @@ class Profile(SuperModel):
         if not self.is_org:
             return TribeMember.objects.filter(profile=self).exclude(status='rejected').exclude(profile__user=None)
         return TribeMember.objects.filter(org=self).exclude(status='rejected').exclude(profile__user=None)
-
-    @property
-    def ignored_suggested_tribes(self):
-        return IgnoredSuggestedTribes.objects.exclude(profile__user=None)
 
     @property
     def ref_code(self):
@@ -4898,7 +4894,3 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
-
-class IgnoredSuggestedTribes(SuperModel):
-    profile = models.ForeignKey('dashboard.Profile', related_name='flagged_by', on_delete=models.CASCADE)
-    org = models.ForeignKey('dashboard.Profile', related_name='ignored_tribes', on_delete=models.CASCADE, null=True, blank=True)

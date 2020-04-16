@@ -130,7 +130,6 @@ urlpatterns = [
     path('api/v0.1/emailsettings/', townsquare.views.emailsettings, name='townsquare_emailsettings'),
     url(r'^api/v0.1/activity', retail.views.create_status_update, name='create_status_update'),
     url(r'^api/v0.1/suggested_tribes', dashboard.views.get_suggested_tribes, name='get_suggested_tribes'),
-    path('api/v0.1/tribes/<int:tribe_id>', townsquare.views.remove_tribe_from_list, name='remove_tribe_from_list'),
     url(
         r'^api/v0.1/profile/(.*)?/jobopportunity',
         dashboard.views.profile_job_opportunity,
@@ -417,6 +416,7 @@ urlpatterns = [
     re_path(r'^tribes', retail.views.tribes, name='tribes'),
     path('tribe/<str:handle>/join/', dashboard.views.join_tribe, name='join_tribe'),
     path('tribe/<str:handle>/save/', dashboard.views.save_tribe, name='save_tribe'),
+    path('tribe/<str:handle>/remove/', dashboard.views.remove_tribe_from_list, name='remove_tribe_from_list'),
     path('tribe/title/', dashboard.views.set_tribe_title, name='set_tribe_title'),
     path('tribe/leader/', dashboard.views.tribe_leader, name='tribe_leader'),
 
