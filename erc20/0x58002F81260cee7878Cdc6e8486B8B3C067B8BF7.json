@@ -1,0 +1,21 @@
+{
+  "symbol": "SOT",
+  "address": "0x58002F81260cee7878Cdc6e8486B8B3C067B8BF7",
+   "overview":{
+      "en": "Singapore Open token is committed to providing a safe, convenient and efficient digital asset platform for the public. By connecting the digital currency with the real world, everyone can use your digital assets conveniently anytime, anywhere, enrich the application scenarios of blockchain technology and digital currency, and promote its service to business progress and social development",
+      "zh": "Singapore Open Token致力于为大众提供一个安全、便捷、高效的数字资产平台，通过打通数字货 币与实体世界的连接，让每一个人随时随地便捷的使用你的数字资产，丰富区块链技术 和数字货币的应用场景，推动其服务于商业进步和社会发展"
+    },
+  "email": "492703106@qq.com",
+  "website": "http://www.sotopen.vip",
+  "whitepaper": "http://q7yfdtncu.bkt.clouddn.com/SOT%E7%99%BD%E7%9A%AE%E4%B9%A6%E7%A1%AE%E5%AE%9A%E7%89%88.pdf",
+  "published_on": "2018-03-01",
+  "state": "NORMAL",
+  "initial_price":{
+    "ETH":"0.00166666 ETH",
+    "USD":"0.7 USD",
+    "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "facebook": "https://facebook.com/sot.token.1"
+  }
+}
