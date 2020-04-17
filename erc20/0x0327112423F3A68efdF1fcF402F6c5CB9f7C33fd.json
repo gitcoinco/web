@@ -1,0 +1,27 @@
+
+{
+    "symbol": "BTC++",
+    "address": "0x0327112423F3A68efdF1fcF402F6c5CB9f7C33fd",
+    "overview":{
+          "en": "BTC on Ethereum diversified",
+          "zh": ""
+    },
+    "email": "piedao@protonmail.com",
+    "website": "https://piedao.org",
+    "state": "NORMAL",
+    "published_on": "2020-04-08",
+    "initial_price":{
+          "ETH":"42.81587524 ETH",
+          "USD":"7287 USD",
+          "BTC":"1 BTC"
+    },
+    "links": {
+      "blog": "https://medium.com/piedao",
+      "twitter": "https://twitter.com/PieDAO_DeFi",
+      "telegram": "https://t.me/piedao",
+      "github": "https://github.com/pie-dao",
+      "reddit": "https://www.reddit.com/r/PieDAO",
+      "medium": "https://medium.com/piedao",
+      "discord": "https://piedao.org/discord"
+    }
+}
