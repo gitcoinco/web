@@ -11,7 +11,7 @@ app/assets/v2/js/lib/highlight.js
 app/assets/v2/js/lib/tooltip.js
 app/assets/v2/js/lib/tweenlite.js
 app/assets/v2/js/lib/web3.0.20.7.js
-app/assets/v2/js/lib/web3modal.min.js
+app/assets/v2/js/lib/web3connect.js
 app/assets/v2/js/abi.js
 
 app/assets/onepager/js/confetti.js

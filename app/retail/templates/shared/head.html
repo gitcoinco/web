@@ -78,6 +78,9 @@
 {% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
 {% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
 <script async src="{% static "v2/js/metamask-approval.js" %}"></script>
+<script src="{% static "v2/js/lib/web3connect.js" %}"></script>
+<script src="{% static "v2/js/lib/authereum.js" %}"></script>
+<script src="{% static "v2/js/lib/fortmatic.js" %}"></script>
 
 {% if env == 'prod' %}
 <!-- Hotjar Tracking Code for gitcoin.co -->
