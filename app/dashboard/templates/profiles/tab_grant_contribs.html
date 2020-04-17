@@ -29,28 +29,28 @@
 
     {% for subscription in profile.grant_contributor.all %}
       <div class="py-3 mx-sm-0 px-lg-0 row subscription-history bounty_row">
-        <div class="col-2 col-md-2 px-0 justify-content-center special_tag">
-          <img class="avatar" style="max-width: 70px;" src="{% if subscription.grant.logo and subscription.grant.logo.url %}{{ subscription.grant.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=subscription.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+        <div class="col-1 col-md-1 px-0 justify-content-center special_tag">
+          <img class="avatar" style="max-width: 70px" src="{% if subscription.grant.logo and subscription.grant.logo.url %}{{ subscription.grant.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=subscription.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
         </div>
-        <div class="col-5 col-md-4 my-auto">
+        <div class="col-4 col-md-4 my-auto">
           <div class="title font-body">
             {% if not subscription.active %}<strike>{% endif %}
             <a href="{{ subscription.grant.url }}">{{ subscription.grant.title }}</a>
           </div>
         </div>
-        <div class="col-5 col-md-4 my-auto">
+        <div class="col-3 col-md-3 my-auto">
           <div class="font-body">
-            {{ subscription.amount_per_period|floatformat }} {{ subscription.token_symbol }} (${{ subscription.amount_per_period_usdt|floatformat}}) per round
+            {{ subscription.amount_per_period|floatformat }} {{ subscription.token_symbol }} (${{ subscription.amount_per_period_usdt|floatformat}}) per round &times; {{ subscription.num_tx_approved|floatformat }}
             {% if not subscription.active %}</strike>{% endif %}
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-md-2 my-auto">
+        <div class="col-1 col-sm-1 col-md-2 my-auto">
           <div class="info font-caption mt-4 mt-md-0 text-center text-sm-left">
             <span class="font-weight-semibold">Goal: </span> {{ subscription.grant.amount_goal}}<br>
             <span class="font-weight-semibold">Received:</span> {{ subscription.grant.amount_received }}<br>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-md-2 my-auto">
+        <div class="col-2 col-sm-2 col-md-2 my-auto">
           <div class="info font-caption mt-sm-4 mt-md-0 text-center text-sm-left">
             <span class="font-weight-semibold">Contributons Count:</span> {{ subscription.grant.contribution_count }} <br>
             <span class="font-weight-semibold">Contributors Count:</span> {{ subscription.grant.contributor_count }}
