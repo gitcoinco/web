@@ -70,7 +70,6 @@ def request_money(request):
         comments = request.POST.get('comments')
         network = request.POST.get('network')
         address = request.POST.get('address')
-        token_address = request.POST.get('tokenAddress')
         profiles = Profile.objects.filter(handle=username.lower())
 
         if network != 'ETH':
