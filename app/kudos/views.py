@@ -128,17 +128,6 @@ def marketplace(request):
     if q:
         title = f'{q.title()} Kudos'
         token_list = token_list.keyword(q)
-        # log this search, it might be useful for matching purposes down the line
-        try:
-            SearchHistory.objects.update_or_create(
-                search_type='kudos',
-                user=request.user,
-                data=request.GET,
-                ip_address=get_ip(request)
-            )
-        except Exception as e:
-            logger.debug(e)
-            pass
 
     listings = token_list.order_by(order_by).cache()
     context = {
