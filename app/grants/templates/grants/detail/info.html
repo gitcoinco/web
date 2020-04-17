@@ -178,13 +178,6 @@
 
     <div class="mt-2 pt-2">
       <!-- FUNDING AMOUNT-->
-      {% if is_team_member %}
-        <div id="edit-amount_goal" class="my-2 hidden">
-          <p class="sub-title mb-0">{% trans "Monthly Amount sought in DAI" %}</p>
-          <input id="amount_goal" class="p-0 m-0 inline-edit" value="{{ grant.amount_goal }}" disabled>
-        </div>
-      {% endif %}
-
 
       <div class="row progress-container  {% if clr_active %} mb-2 {% endif %} {% if not is_team_member %} mt-4 {% endif %}">
         <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-xl-0 ">
@@ -195,7 +188,6 @@
             <p class="font-title mb-0 font-weight-bold">
               {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
             </p>
-            <p>of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal</p>
           {% endif %}
         </div>
 

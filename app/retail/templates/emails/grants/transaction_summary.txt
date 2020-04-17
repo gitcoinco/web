@@ -22,16 +22,10 @@
 
 {% trans "View Transaction" %}
 
-{% trans "Total Funds" %}
 
-{{ grant.percentage_done }}
+{% trans "Amount Received" %}
 
 {{ grant.amount_received }} {% trans "DAI" %}
 
-{% trans "Current" %}
-
-{{ grant.amount_goal }} {% trans "DAI" %}
-
-{% trans "Goal" %}
 
 {% trans "View Grant" %} {{ grant.reference_url }}

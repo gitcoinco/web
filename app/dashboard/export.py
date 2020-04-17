@@ -104,7 +104,7 @@ class GrantExportSerializer(serializers.ModelSerializer):
         model = Grant
         fields = ('id', 'active', 'grant_type', 'title', 'slug',
                   'description', 'description_rich', 'reference_url', 'logo',
-                  'admin_address', 'contract_owner_address', 'amount_goal',
+                  'admin_address', 'contract_owner_address',
                   'monthly_amount_subscribed', 'amount_received', 'token_address',
                   'token_symbol', 'contract_address', 'network',
                   'org', 'created_at', 'url', 'contribution_count', 'contributor_count'
