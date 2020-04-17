@@ -72,6 +72,11 @@
 
 <script>
 document.gas_price = {{gas_price}};
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
+});
+
 </script>
 <script src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>

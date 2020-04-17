@@ -214,5 +214,5 @@ $(document).ready(function() {
   };
 
   setInterval(listen_web3_1_changes, 5000);
-
+  listen_web3_1_changes();
 });

@@ -4,6 +4,7 @@
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
 });
 
 const _truthy = function(val) {
@@ -563,14 +564,14 @@ waitforWeb3(function() {
 
     if (typeof document.lastCoinbase == 'undefined') {
 
-      try {
-        // invoke infura synchronous call, if it fails metamask is locked
-        document.lastCoinbase = web3.eth.coinbase;
-      } catch (error) {
-        document.lastCoinbase = null;
-        // catch error so sentry doesn't alert on metamask call failure
-        console.log('web3.eth.coinbase could not be loaded');
-      }
+      web3.eth.getCoinbase(function(error, coinbase) {
+        if (error) {
+          console.log('web3.eth.coinbase could not be loaded');
+          document.lastCoinbase = null;
+          return;
+        }
+        document.lastCoinbase = coinbase;
+      });
       return;
     }
 
