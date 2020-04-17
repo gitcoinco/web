@@ -78,6 +78,7 @@ var loading_button = function(button) {
 var cb_address;
 var reloadCbAddress = function() {
   web3.eth.getCoinbase(function(error, result) {
+    console.log(error, result)
     if (!error) {
       cb_address = result;
     } else {
