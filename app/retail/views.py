@@ -73,8 +73,6 @@ def get_activities(tech_stack=None, num_activities=15):
 
 
 def index(request):
-    top_tribes = Profile.objects.filter(is_org=True).annotate(followers=Count('follower')).order_by('-followers')[:8]
-    
     products = [
         {
             'group' : 'grow_oss',
@@ -216,7 +214,6 @@ def index(request):
         'hide_newsletter_consent': True,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
         'title': _('Grow Open Sou*rce: Get crowdfunding and find freelance developers for your software projects, paid in crypto'),
-        'top_tribes': top_tribes,
     }
     return TemplateResponse(request, 'home/index.html', context)
 
@@ -1588,49 +1585,8 @@ def increase_funding_limit_request(request):
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
 
-@staff_member_required
 def tribes(request):
-    plans= [
-        {
-            'type': 'lite',
-            'img': static('v2/images/tribes/landing/plan-lite.svg'),
-            'price': '10k',
-            'features': [
-                '1 Hackthon Credit'
-            ],
-            'features_na': [
-                'Access to Gitcoin Pro Tools'
-            ]
-        },
-        {
-            'type': 'pro',
-            'img': static('v2/images/tribes/logo.svg'),
-            'discount': '40%',
-            'price': '6k',
-            'features': [
-                {
-                    'title': '3 Hackathon Credits',
-                    'info': '18k year total'
-                },
-                'Access to Gitcoin Pro Tools'
-            ]
-        },
-        {
-            'type': 'launch',
-            'img': static('v2/images/tribes/landing/plan-launch.svg'),
-            'price': '4k',
-            'features': [
-                {
-                    'title': '5 Hackathon Credits',
-                    'info': '20k year total'
-                },
-                'Access to Gitcoin Pro Tools'
-            ]
-        }
-    ]
-
-    tribes = JSONStore.objects.get(view='tribes', key='tribes').data
-
+    top_tribes = Profile.objects.filter(is_org=True).annotate(followers=Count('follower')).order_by('-followers')[:8]
     testimonials = [
         {
             'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
@@ -1657,51 +1613,120 @@ def tribes(request):
     reasons = [
         {
             'title': 'Hackathon',
-            'img': static('v2/images/tribes/landing/hackathon.svg'),
+            'img': static('v2/images/bulb.svg'),
             'info': 'See meaningful projects come to life on your dapp'
         },
         {
             'title': 'Suggest Bounty',
-            'img': static('v2/images/tribes/landing/suggest.svg'),
+            'img': static('v2/images/pencil.svg'),
             'info': 'Get bottoms up ideas from passionate contributors'
         },
         {
-            'title': 'Grow Tribe',
-            'img': static('v2/images/tribes/landing/grow.svg'),
-            'info': 'Work seamlessly with your core contributors'
+            'title': 'Quadratic Funding',
+            'img': static('v2/images/funding.svg'),
+            'info': 'Incentivize your tribe with mini quadratic funding'
         },
         {
             'title': 'Workshops',
-            'img': static('v2/images/tribes/landing/workshop.svg'),
+            'img': static('v2/images/workshops.svg'),
             'info': 'Host workshops and learn together'
         },
         {
             'title': 'Chat',
-            'img': static('v2/images/tribes/landing/chat.svg'),
+            'img': static('v2/images/Chat.svg'),
             'info': 'Direct connection to your trusted tribe'
         },
         {
             'title': 'Town Square',
-            'img': static('v2/images/tribes/landing/townsquare.svg'),
-            'info': 'Broadcast your priorities and engagey our tribe'
+            'img': static('v2/images/townsquare.svg'),
+            'info': 'Engage the members of your tribe'
         },
         {
             'title': 'Payout/Fund',
-            'img': static('v2/images/tribes/landing/payout.svg'),
+            'img': static('v2/images/payout.svg'),
             'info': 'Easily co-manage hackathons with your team'
         },
         {
             'title': 'Stats Report',
-            'img': static('v2/images/tribes/landing/stats.svg'),
+            'img': static('v2/images/report.svg'),
             'info': 'See how your hackathons are performing'
+        },
+        {
+            'title': 'Kudos',
+            'img': static('v2/images/kudos.svg'),
+            'info': 'Show appreciation to your tribe members'
         }
     ]
 
+    press = [
+        {
+            'link': 'https://twit.tv/shows/floss-weekly/episodes/474',
+            'img': 'v2/images/press/floss_weekly.jpg'
+        },
+        {
+            'link': 'https://epicenter.tv/episode/257/',
+            'img': 'v2/images/press/epicenter.jpg'
+        },
+        {
+            'link': 'http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000',
+            'img': 'v2/images/press/ibtimes.jpg'
+        },
+        {
+            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'img': 'v2/images/press/forbes.jpg'
+        },
+        {
+            'link': 'https://unhashed.com/cryptocurrency-news/gitcoin-introduces-collectible-kudos-rewards/',
+            'img': 'v2/images/press/unhashed.jpg'
+        },
+        {
+            'link': 'https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/',
+            'img': 'v2/images/press/coindesk.png'
+        },
+        {
+            'link': 'https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/',
+            'img': 'v2/images/press/se_daily.png'
+        },
+        {
+            'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
+            'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
+        }
+    ]
+
+    articles = [
+        {
+            'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
+            'img': static("v2/images/medium/1.png"),
+            'title': _('Progressive Elaboration of Scope on Gitcoin'),
+            'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
+            'alt': 'gitcoin scope'
+        },
+        {
+            'link': 'https://gitcoin.co/blog/commit-reveal-scheme-on-ethereum/',
+            'img': static("v2/images/medium/2.png"),
+            'title': _('Commit Reveal Scheme on Ethereum'),
+            'description': _('Hiding Actions and Generating Random Numbers'),
+            'alt': 'commit reveal scheme'
+        },
+        {
+            'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
+            'img': static("v2/images/medium/3.png"),
+            'title': _('Announcing Open Kudos'),
+            'description': _('Our vision for integrating Kudos in any (d)App'),
+            'alt': 'open kudos'
+        }
+    ]
     context = {
-        'plans': plans,
         'tribes': tribes,
         'testimonials': testimonials,
-        'reasons': reasons
+        'reasons': reasons,
+        'articles': articles,
+        'press': press,
+        'top_tribes': top_tribes
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)
