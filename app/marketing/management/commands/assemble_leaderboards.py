@@ -79,6 +79,7 @@ counts = default_ranks()
 
 
 def profile_to_location(handle):
+    return [] # temporary stopgap because we think thaat this part of the job was crushing the cronox
     timeout = 60 * 20
     key_salt = '1'
     key = f'profile_to_location{handle}_{key_salt}'
