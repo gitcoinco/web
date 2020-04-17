@@ -376,6 +376,29 @@ def handle_location_request(request):
     return geolocation_data, ip_address
 
 
+geoIPobject = None
+geoIPCountryobject = None
+
+def get_geoIP_singleton():
+    global geoIPobject
+    if not geoIPobject:
+        geoIPobject = GeoIP2()
+        print("loaded geoIP singleton from DISK")
+    else:
+        print("loaded geoIP singleton from CACHE")
+    return geoIPobject
+
+def get_geoIP_country_singleton():
+    global geoIPCountryobject
+    db = f'{settings.GEOIP_PATH}GeoLite2-Country.mmdb'
+    if not geoIPCountryobject:
+        geoIPCountryobject = geoip2.database.Reader(db)
+        print("loaded geoIPCountry singleton FROM DISK")
+    else:
+        print("loaded geoIPCountry singleton FROM CACHE")
+    return geoIPCountryobject
+
+
 def get_location_from_ip(ip_address):
     """Get the location associated with the provided IP address.
 
@@ -391,7 +414,7 @@ def get_location_from_ip(ip_address):
         return city
 
     try:
-        geo = GeoIP2()
+        geo = get_geoIP_singleton()
         try:
             city = geo.city(ip_address)
         except AddressNotFoundError:
@@ -401,17 +424,15 @@ def get_location_from_ip(ip_address):
     return city
 
 
-def get_country_from_ip(ip_address, db=None):
+def get_country_from_ip(ip_address):
     """Get the user's country information from the provided IP address."""
     country = {}
-    if db is None:
-        db = f'{settings.GEOIP_PATH}GeoLite2-Country.mmdb'
 
     if not ip_address:
         return country
 
     try:
-        reader = geoip2.database.Reader(db)
+        reader = get_geoIP_country_singleton()
         country = reader.country(ip_address)
     except AddressNotFoundError:
         pass
