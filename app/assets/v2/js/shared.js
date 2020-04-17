@@ -77,7 +77,7 @@ var loading_button = function(button) {
 
 var cb_address;
 var reloadCbAddress = function() {
-  if(typeof web3 == 'undefined'){
+  if (typeof web3 == 'undefined') {
     return;
   }
   web3.eth.getCoinbase(function(error, result) {

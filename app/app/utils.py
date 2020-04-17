@@ -383,9 +383,6 @@ def get_geoIP_singleton():
     global geoIPobject
     if not geoIPobject:
         geoIPobject = GeoIP2()
-        print("loaded geoIP singleton from DISK")
-    else:
-        print("loaded geoIP singleton from CACHE")
     return geoIPobject
 
 def get_geoIP_country_singleton():
@@ -393,9 +390,6 @@ def get_geoIP_country_singleton():
     db = f'{settings.GEOIP_PATH}GeoLite2-Country.mmdb'
     if not geoIPCountryobject:
         geoIPCountryobject = geoip2.database.Reader(db)
-        print("loaded geoIPCountry singleton FROM DISK")
-    else:
-        print("loaded geoIPCountry singleton FROM CACHE")
     return geoIPCountryobject
 
 
