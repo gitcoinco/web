@@ -3,20 +3,26 @@
 }
 
 .banner {
-    background-image: url(/static/v2/images/tribes-bg.png);
-    background-size: contain;
-    padding: 0;
-    height: 98vh;
-    width: 100%;
-    background-position: center;
-    background-color: #0C0B1B;
-    overflow: hidden;
-
+  background-image: url(/static/v2/images/tribes-bg.png);
+  background-size: contain;
+  padding: 0;
+  height: 98vh;
+  width: 100%;
+  background-position: center;
+  background-color: #0C0B1B;
+  overflow: hidden;
 }
 
 .dark-section {
   background-color: #170640;
   color: white;
+}
+
+.section-title {
+  color: #121315;
+  font-size: 2.5rem;
+  display: inline-block;
+  border-bottom: 0.68rem solid #121315;
 }
 
 .dark-section .section-title {
@@ -29,13 +35,6 @@
   margin-left: auto;
   margin-right: auto;
 }
-
-.testimonial-card:first-child {
-  margin-left: -25%;
-}
-.testimonial-card:last-child {
-  margin-right: -25%;
-}
 .testimonial-card {
   margin-top: 24px;
   border: 4px solid #3E00FF;
@@ -43,8 +42,12 @@
   height: 30rem;
   width: 38rem;
 }
-
-
+.testimonial-card:first-child {
+  margin-left: -25%;
+}
+.testimonial-card:last-child {
+  margin-right: -25%;
+}
 .card-description {
   width: 60%;
   margin-left: auto;
@@ -76,20 +79,11 @@
 .avatar {
   max-width: 6rem;
   max-height: 6rem;
-  margin-right: auto;
   margin-left: auto;
   border-radius: 50%;
   border: 3px solid #3E00FF;
   margin-right: -25px;
 }
-
-.section-title {
-  color: #121315;
-  font-size: 2.5rem;
-  display: inline-block;
-  border-bottom: 0.68rem solid #121315;
-}
-
 
 .tribe-points {
   list-style: none;
@@ -113,7 +107,7 @@
   padding-right: 30px;
 }
 .tribes {
-    background-color: #EFF3F6 !important;
+  background-color: #EFF3F6 !important;
 }
 .issue span {
   color: #3E00FF;
@@ -637,17 +631,16 @@ figure:hover::before {
     grid-gap: 16px;
     grid-template-columns: repeat(2, 1fr);
   }
-
+  .testimonial-card {
+    margin-left: 5%;
+    margin-right: 5%;
+    height: 300px;
+  }
   .testimonial-card:first-child {
     margin-left: -60%;
   }
   .testimonial-card:last-child {
     margin-right: -60%;
-  }
-  .testimonial-card {
-    margin-left: 5%;
-    margin-right: 5%;
-    height: 300px;
   }
   .card-description {
     width: 80%;
