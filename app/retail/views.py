@@ -41,7 +41,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants, \
+    TribeMember
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
@@ -72,7 +73,8 @@ def get_activities(tech_stack=None, num_activities=15):
 
 
 def index(request):
-
+    top_tribes = Profile.objects.filter(is_org=True).annotate(followers=Count('follower')).order_by('-followers')[:8]
+    
     products = [
         {
             'group' : 'grow_oss',
@@ -213,7 +215,8 @@ def index(request):
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
-        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
+        'title': _('Grow Open Sou*rce: Get crowdfunding and find freelance developers for your software projects, paid in crypto'),
+        'top_tribes': top_tribes,
     }
     return TemplateResponse(request, 'home/index.html', context)
 

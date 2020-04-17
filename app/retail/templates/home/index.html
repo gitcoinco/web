@@ -31,238 +31,158 @@
 
     <div class="container-fluid banner header text-white">
       <div class="row">
-        <div class="col-12 col-md-8 col-xl-5 pl-lg-5 mx-auto pt-5">
-          <h2 class="font-title-xl text-center font-weight-bold banner__h2">
-            Crowdfunding and Freelance Developers for Open Source Software Projects
+        <div class="col-12 col-md-9 col-xl-6  mx-auto pt-2">
+          <h2 class="text-center font-weight-bold banner__h2 mt-md-5">
+            Build meaningful relationships with top
+              developers and work on awesome projects in
+              an <span class="gc-text-green">open source tribe</span>.
           </h2>
 
           <div class="buttons text-center mt-5">
-            <a id="fund-issue" href="/townsquare" class="btn button--primary mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">
-              Explore Gitcoin
-            </a>
-            <a class="btn btn-outline-white mx-2 shadow-none py-2 px-4 font-weight-semibold" href="{% url "products" %}">
-              See our Products
+            <a id="fund-issue" href="/townsquare" class="btn button--primary shadow-none py-2 px-4 text-white font-weight-semibold ml-3" >
+              Get started
             </a>
           </div>
         </div>
       </div>
       <div class="row justify-content-center">
         <div class="col-8 text-center">
-          <img src="{% static "v2/images/home/bg-index.png" %}" class="mw-100" alt="">
-        </div>
-      </div>
-      <div class="row justify-content-center">
-        <div class="col-12 col-lg-5 mb-lg-n5">
-          <div class="box-cta box-cta__left mb-lg-n5">
-            <h2 class="text-highlight-green box-cta__title">FOR BUILDERS /
-            PROJECT MANAGERS</h2>
-            <p>Leverage our global, on-demand workforce. Find expert freelance developers to design, test, code, and build your project teams today.</p>
-            <p>Save time via direct Github integration.</p>
-            <p>Crowdfund for your open source startup or project to increase your budget and bring in more developers.</p>
-            <a href="{% url 'new_funding_short' %}" class="btn btn-outline-white mr-2">Fund an Issue / Project</a>
-            <a href="{% url 'grants:grants' %}" class="btn btn-outline-white">Grants</a>
-          </div>
-        </div>
-        <div class="col-12 col-lg-5 mb-lg-n5">
-          <div class="box-cta box-cta__right mb-lg-n5">
-            <h2 class="text-highlight-green box-cta__title">FOR CODERS /
-                SOFTWARE DEVELOPERS</h2>
-            <p>Get paid in crypto for freelance jobs, building features, and solving bug bounties!</p>
-            <p>Work with top open source projects and get paid out fast.</p>
-            <a href="{% url 'explorer' %}" class="btn btn-outline-white mr-2">Explore Bounties</a>
-            <a href="{% url 'get_hackathons' %}" class="btn btn-outline-white">Join Virtual Hackathons</a>
-          </div>
         </div>
       </div>
     </div>
 
-    <div class="container">
-      <div class="row py-5 my-5">
-        <div class="col-12 col-md-6 issue g-fadein" data-fade-duration=1000 data-fade-direction="left">
-          <p class="font-title pt-5 mt-4 font-weight-semibold">
-            The weight of <span>maintaining open source</span> <br>falls on the
-            shoulders of <span class="mt-4">0.01% of developers</span>.
+    <div class="container how-it-works">
+      <div class="row py-5">
+        <div class="col-12 issue text-center" >
+          <p class="font-weight-bold text-center section-title pt-2 text-capitalize pb-2 mb-5">
+            How it works
           </p>
-          <p class="my-4 font-title font-weight-semibold">
-            This is not sustainable. This is not right.
-          </p>
-          <p class="font-weight-bold font-title-xl pt-2">
-            This is why we built Gitcoin.
-          </p>
-        </div>
-
-        <div class="col-12 col-md-6">
-          {% include 'shared/tree.html' %}
+            <img src="{% static 'v2/images/how-works-mobile.svg' %}" class="mt-5 show_on_mobile" alt="How tribes works?">
+            <img src="{% static 'v2/images/how-works.svg' %}" class="mt-5 hide_on_mobile" alt="How tribes works?">
         </div>
       </div>
     </div>
     <div class="container-fluid py-5 mt-5 landing__newsletter bg-light">
       {% include 'shared/newsletter.html' %}
     </div>
-    <img class="w-100 mb-5" src="{% static "v2/images/home/story.svg" %}" />
 
 
 
-    <div id="optimize_oss" class="mt-5 pt-4 optimize_oss">
-      <div class="container pt-0 pb-5">
-        <div class="row">
-          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
-            <h2 class="font-bigger-4 mb-3">
-              {% trans "Tools to optimize the oss life cycle for users, contributors, and maintainers" %}
-            </h2>
-            <p class="mb-4">{% blocktrans %}Gitcoin grows open source through a suite of products, capturing and retaining
-              contributor value through an on-demand bounty marketplace and recurring funding, and
-              sustains open source projects through ethical advertising. Our suite of products meet
-              open source contributors where they are, from the start of a project, to later lifecycles
-              of project maintenance and appreciation.{% endblocktrans %}
-            </p>
-            <a class="font-weight-semibold mt-1" href="{% url "products" %}" target="_blank">
-              {% trans "See how our products are growing open source" %}
-            </a>
-
-            <div class="row mx-0 watch font-weight-semibold">
-              <div class="col-12 mt-5 mb-2 pl-0">
-                <p class=" font-body">{% trans "WATCH" %}</p>
-                {% include "shared/video_preview_block.html" with index="1" title="Open Source Sustainability. What is broken?" url="https://www.youtube.com/embed/b6LSf-zQnlI?autoplay=1" %}
-              </div>
-            </div>
-
-            <div class="modal fade" id="playVideo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/b6LSf-zQnlI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <div class="text-center col-12 offset-lg-1 col-md-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
-            <figure>
-                <img class="optimize-img text-center px-3 w-100" src="{% static "v2/images/home/optimize_oss.svg" %}"
-                alt="optimize_oss lifecyle with gitcoin" />
-            </figure>
-          </div>
+    <div class="d-flex justify-content-center dark-section pt-5 pb-5">
+      <div class="row py-5 d-flex justify-content-center">
+        <div class="col-10 text-center">
+          <p class="font-weight-bold text-center section-title pt-2 text-capitalize pb-2 mb-5">
+            Why tribes?
+          </p>
+          <ul class="tribe-points mt-5 mb-5">
+              <li>
+                  <img src="{% static 'v2/images/bulb.svg' %}" alt="Hackathon">
+                  <h4 class="font-weight-bold">Hackathon</h4>
+                  <p class="">See meaningful projects come to life on your dapp</p>
+              </li>
+              <li>
+                  <img src="{% static 'v2/images/pencil.svg' %}" alt="Suggest bounty">
+                  <h4 class="font-weight-bold">Suggent bounty</h4>
+                  <p class="">Get bottoms up ideas from passionate contributors</p>
+              </li>
+              <li>
+                  <img src="{% static 'v2/images/funding.svg' %}" alt="Quadratic funding">
+                  <h4 class="font-weight-bold">Quadratic Funding</h4>
+                  <p class="">Incentivize your tribe with mini quadratic funding</p>
+              </li>
+              <li>
+                  <img src="{% static 'v2/images/workshops.svg' %}" alt="Workshops">
+                  <h4 class="font-weight-bold">Workshops</h4>
+                  <p class="">Host workshops and learn together</p>
+              </li>
+              <li>
+                  <img src="{% static 'v2/images/Chat.svg' %}" alt="Chat">
+                  <h4 class="font-weight-bold">Chat</h4>
+                  <p class="">Direct connection to your trusted tribe</p>
+              </li>
+              <li>
+                  <img src="{% static 'v2/images/townsquare.svg' %}" alt="Town Square">
+                  <h4 class="font-weight-bold">Town Square</h4>
+                  <p class="">Engage the members of your tribe</p>
+              </li>
+              <li>
+                  <img src="{% static 'v2/images/payout.svg' %}" alt="Payout">
+                  <h4 class="font-weight-bold">Payout/Fund</h4>
+                  <p class="">Easily co-manage hackathons with your team</p>
+              </li>
+              <li>
+                  <img src="{% static 'v2/images/report.svg' %}" alt="Stats reports">
+                  <h4 class="font-weight-bold">Stats Reports</h4>
+                  <p class="">See how your hackathons are performing</p>
+              </li>
+              <li>
+                  <img src="{% static 'v2/images/kudos.svg' %}" alt="Hackathon">
+                  <h4 class="font-weight-bold">Kudos</h4>
+                  <p class="">Show appreciation to your tribe members</p>
+              </li>
+          </ul>
         </div>
       </div>
     </div>
 
-    <div class="col-12 col-md-6 offset-md-3 text-center">
-      <p class="font-title mt-5">
-        <span>{% trans "Our products help create a world where the" %}</span> <br>
-        <span>{% trans "OSS lifecycle looks like this." %}</span>
-      </p>
-    </div>
 
-    <div class="products" id="products">
-      <img class="text-center px-3 bot-circle" src="{% static "v2/images/home/bot-circle.svg" %}"
-        alt="gitcoin logo" />
-      <div class="container pt-0 pb-5">
-        <div class="row">
-          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="left">
-            <h4 class="font-title mb-4">{% trans "Grow OSS" %}</h4>
-            {% for groups in products %}
-              {% if groups.group == 'grow_oss' %}
-                {% for product in groups.products %}
-                  <div class="col-12 product">
-                    <h2 class="font-bigger-4 mb-3">
-                      <img src="{{ product.img }}"> {{ product.name }}
-                    </h2>
-                    <p>{{ product.description }}</p>
-                    <a href="{{ product.link }}">
-                      {% trans "Learn more" %}
-                      <i class="ml-2 fas fa-chevron-right"></i>
-                    </a>
-                  </div>
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-          </div>
-          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
-            <h4 class="font-title mb-4">{% trans "Maintain OSS" %}</h4>
-            {% for groups in products %}
-              {% if groups.group == 'maintain_oss' %}
-                {% for product in groups.products %}
-                  <div class="col-12 product">
-                    <h2 class="font-bigger-4 mb-3">
-                      <img src="{{ product.img }}"> {{ product.name }}
-                    </h2>
-                    <p>{{ product.description }}</p>
-                    <a href="{{ product.link }}">
-                      {% trans "Learn more" %}
-                      <i class="ml-2 fas fa-chevron-right"></i>
-                    </a>
-                  </div>
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-          </div>
-          <div class="col-12 col-md-6 col-lg-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
-            <h4 class="font-title mb-4">{% trans "Build  Relationships" %}</h4>
-            {% for groups in products %}
-              {% if groups.group == 'build_oss' %}
-                {% for product in groups.products %}
-                  <div class="col-12 product">
-                    <h2 class="font-bigger-4 mb-3">
-                      <img src="{{ product.img }}"> {{ product.name }}
-                    </h2>
-                    <p>{{ product.description }}</p>
-                    <a href="{{ product.link }}">
-                      {% trans "Learn more" %}
-                      <i class="ml-2 fas fa-chevron-right"></i>
-                    </a>
-                  </div>
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
-          </div>
+    <div class="bg-white py-4 pt-5 pb-4 rounded tribes">
+    <div class="d-flex justify-content-center mb-5 mt-5">
+      <div class="col-xs-12 col-md-9 tribes mb-3 text-center">
+        <p class="font-weight-bold text-center section-title pt-2 text-capitalize pb-2 mb-5">
+            Top tribes
+          </p>
 
-          <div class="col-12 text-center mt-5">
-            <a class="btn btn-gc-green text-center font-weight-semibold py-2" href="{% url "products" %}">
-              {% trans "Learn about our products" %}
-            </a>
+          <div class="d-flex flex-wrap mb-4 tribes-grid">
+            {% for tribe in top_tribes %}
+              <a href="{% url 'profile' tribe.handle %}" class="col-xs-6 col-md-3  mt-5 mb-3 text-center black text-black-70">
+                <img src="/dynamic/avatar/{{ tribe.handle }}" height="114" alt="{{tribe.name}}" class="{{tribe.name}}">
+                <h4 class="font-header font-weight-bolder font-bigger-2 p-0 mt-3 mb-0 ">{{tribe.name}}</h4>
+                <span class="font-smaller-1 font-weight-semibold mt-3">{% if tribe.followers  %}<i class="fas fa-user"></i>  {{tribe.followers}} members{% endif %}</span>
+              </a>
+            {% endfor %}
           </div>
-        </div>
       </div>
     </div>
-    <div id="realign" class="realign">
-      <div class="container py-5" >
-        <div class="row mt-5">
-          <div class="col-12 col-md-8 col-lg-6 g-fadein" data-fade-duration=1000 data-fade-direction="left">
-            <h2 class="font-bigger-4 mb-3">{% trans "Realign open source incentives" %}</h2>
-            <p>
-              {% blocktrans %}Open source contributors provide value that is often not
-              rewarded or captured. Open source maintainers burn out and stop working
-              on their OSS projects because they lose or can’t find funding, are under
-              pressure to retain developer talent, or simply don’t have the resources
-              or time to fully devote themselves.{% endblocktrans %}
-            </p>
-            <p>
-              {% blocktrans %}We're proudly built on Ethereum, an open source blockchain which
-              allows us to make payments across the world in an open fashion.<br>
-              Gitcoin is the one stop shop solution for making OSS contributions
-              self-sustaining.{% endblocktrans %}
-            </p>
-            <a class="font-weight-semibold" href="{% url "results" %}">{% trans "Learn more" %}</a>
-          </div>
-          <div class="col-12 offset-lg-1 col-md-4 text-center g-fadein" data-fade-duration=1000 data-fade-direction="right">
-            {% include 'shared/compass.html' %}
-          </div>
-          <div class="col-12">
-            <div class="row mx-0 watch font-weight-semibold">
-              <p class="col-12 mt-4 mb-2 pl-0 font-body">{% trans "WATCH" %}</p>
-              <div class="video-row">
-                {% include "shared/video_preview_block.html" with index="2" title="How do you define Sustainability?" url="https://www.youtube.com/embed/i2JKN_6iuiw?autoplay=1" %}
-                {% include "shared/video_preview_block.html" with index="3" title="World with Open Source Sustainability" url="https://www.youtube.com/embed/oe7oD8ThKx8?autoplay=1" %}
-              </div>
+    </div>
+
+    <div class="testimonials overflow-hidden mt-5 mb-5 pt-5 pb-5 d-flex justify-content-between">
+        <div class="testimonial-card text-center">
+            <div class="overlap-line">
+              <img class="avatar" src="{% static 'v2/images/tommycox.png' %}" alt="">
             </div>
-          </div>
+            <div>
+              <h4 class="font-weight-bold gc-text-blue font-title-xl">VirajA</h4>
+              <p>Hacker</p>
+            </div>
+            <p class="card-description">I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!</p>
         </div>
-      </div>
+        <div class="testimonial-card text-center">
+            <div class="overlap-line">
+              <img class="avatar" src="{% static 'v2/images/sam.png' %}" alt="">
+              <img class="avatar" src="/dynamic/avatar/arweave" alt="">
+            </div>
+            <div>
+              <h4 class="font-weight-bold gc-text-blue font-title-xl">Sam Williams</h4>
+              <p class="font-weight-semibold font-title">CEO, Arweave</p>
+            </div>
+            <p class="card-description">Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.</p>
+        </div>
+        <div class=" testimonial-card text-center">
+            <div class="overlap-line">
+              <img class="avatar" src="{% static 'v2/images/scott.png' %}" alt="">
+              <img class="avatar" src="/dynamic/avatar/portis" alt="">
+            </div>
+            <div>
+              <h4 class="font-weight-bold gc-text-blue font-title-xl">Scott Gralnick</h4>
+              <p>Co-Founder, Portis</p>
+            </div>
+            <p class="card-description">Relationships with developers” is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.</p>
+        </div>
     </div>
+
     <div id="press" class="press">
-      <div class="container py-5">
+      <div class="container py-5 press-mobile">
         <div class="row">
           <h2 class="col-12 mb-4 font-title-lg">{% trans "What are people saying?" %}</h2>
           {% for article in press %}
