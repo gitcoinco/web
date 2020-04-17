@@ -1,9 +1,22 @@
 $('body').on('mouseover', '[data-usercard]', function(e) {
   openContributorPopOver($(this).data('usercard'), $(this));
+}).on('mouseleave', '[data-usercard]', function() {
+  var _this = this;
+
+  setTimeout(function(_this) {
+    if (!$('.popover-user-card:hover').length) {
+      $(_this).popover('hide');
+    }
+  }, 100);
 });
 
 $('body').on('show.bs.popover', '[data-usercard]', function() {
   $('body [data-usercard]').not(this).popover('hide');
+  setTimeout(function() {
+    if (!$('.popover-user-card:hover').length) {
+      $(this).popover('hide');
+    }
+  }, 100);
 });
 
 let popoverData = [];
@@ -241,7 +254,9 @@ function openContributorPopOver(contributor, element) {
       .then(response => {
         popoverData.push({ [contributor]: response });
         controller = null;
-        setupPopover(element, response);
+        if (element.is(':hover')) {
+          setupPopover(element, response);
+        }
       })
       .catch(err => {
         return console.warn({ message: err });
@@ -257,7 +272,6 @@ function setupPopover(element, data) {
       return DOMPurify.sanitize(content);
     },
     placement: 'auto',
-    // container: element,
     trigger: 'manual',
     delay: { 'show': 200, 'hide': 500 },
     template: `
@@ -289,5 +303,4 @@ function setupPopover(element, data) {
   $(element).popover('show');
 
   addFollowAction();
-
 }
