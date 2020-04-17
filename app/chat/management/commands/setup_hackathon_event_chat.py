@@ -35,7 +35,7 @@ class Command(BaseCommand):
             today = timezone.now()
 
             hackathons_to_sync = HackathonEvent.objects.filter(
-                start_date__lte=today,
+                visible=True,
                 end_date__gte=today
             )
 
