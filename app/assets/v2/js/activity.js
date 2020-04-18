@@ -759,13 +759,13 @@ $(document).ready(function() {
   };
 
   // add emoji to comment
-  let textArea = '';
+  let activityCommentTextArea = '';
   var picker = new EmojiButton({
     position: 'right-end'
   });
 
   picker.on('emoji', function(emoji) {
-    textArea.value += ` ${emoji} `;
+    activityCommentTextArea.value += ` ${emoji} `;
   });
 
   $(document).on('click', '.emoji_button', function(e) {
@@ -774,7 +774,7 @@ $(document).ready(function() {
     const emojiContainer = $(this).parents('.emoji-container')[0];
 
     picker.pickerVisible ? picker.hidePicker() : picker.showPicker(emojiContainer);
-    textArea = commentArea.children[0];
+    activityCommentTextArea = commentArea.children[0];
   });
 
   // post comment activity
