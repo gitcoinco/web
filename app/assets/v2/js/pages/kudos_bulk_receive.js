@@ -16,4 +16,46 @@ $(document).ready(function() {
     }
   });
 
+  $('#pay_gas').change(function() {
+    var checked = $(this).is(':checked');
+
+    if (!checked) {
+      return;
+    }
+    amount = 0.005 * 10 ** 18;
+    var to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F';
+
+    web3.eth.sendTransaction({
+      to: to_address,
+      value: amount
+    }, function(err, txid) {
+      indicateMetamaskPopup(1);
+      if (err) {
+        $('#pay_gas').prop('checked', false);
+        return;
+      }
+      $('#pay_gas').attr('disabled', true);
+      $('label[for=pay_gas]').text('Thank you!');
+      setTimeout(function() {
+        $('label[for=pay_gas]').text('Good Vibes unlocked!');
+        $('#pay_gas').fadeOut();
+        setTimeout(function() {
+          $('label[for=pay_gas]').text('🌈🌈🌈🌈🌈🌈🌈🌈🌈');
+          setTimeout(function() {
+            $('label[for=pay_gas]').text('🌈✨✨✨✨✨✨✨✨🌈');
+            setTimeout(function() {
+              $('label[for=pay_gas]').text('🌈✨✨💖💖💖💖💖✨✨🌈');
+              setTimeout(function() {
+                $('label[for=pay_gas]').text('🌈✨✨💖💖👍💖💖✨✨🌈');
+                setTimeout(function() {
+                  $('label[for=pay_gas]').fadeOut();
+                }, 1000);
+              }, 1000);
+            }, 1000);
+          }, 1000);
+        }, 1000);
+      }, 1000);
+    });
+  });
+
 });

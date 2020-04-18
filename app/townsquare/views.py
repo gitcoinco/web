@@ -373,6 +373,8 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'max_length': max_length,
+        'max_length_offset': max_length_offset,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
