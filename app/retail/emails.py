@@ -1015,7 +1015,7 @@ def render_new_bounty_roundup(to_email):
         email_style = 2
     else:
         offset = 2
-        email_style = 27
+        email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
 <h3>New Kudos This Month</h3>
