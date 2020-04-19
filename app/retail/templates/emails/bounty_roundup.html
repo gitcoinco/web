@@ -26,6 +26,7 @@
     line-height: 20px;
   }
   .intro li{
+    margin-top: 15px;
     margin-bottom: 15px;
   }
   .kudos img{
@@ -36,6 +37,7 @@
     margin-top: 10px;
   }
   
+  .intro a{
     color: #3E00FF;
   }
   ul{
@@ -55,6 +57,11 @@
     height: 5%;
     width: 5%;
     vertical-align: middle;
+  }
+
+  .leaderboard-item-container li,
+  .leaderboard-item-container a{
+      color: #ffffff;
   }
   
   @media screen and (max-width: 599px) {
@@ -113,7 +120,7 @@
 
     <div style="text-align: center;">
       {% for highlight in highlights %}
-        <li style="list-style:none; margin-bottom: 45px;">
+        <li style="list-style:none;">
           {% if highlight.who_link %}
             <img style="border-radius: 20px; vertical-align: middle;" src="{% avatar_url highlight.who%}" width=30px height=30px>
             <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>
@@ -142,9 +149,9 @@
   {% endfor %}
 
   <div class="text-center" style="width: 75%; margin-left: auto; margin-right: auto;">
-    <p>{% trans "Don't see anything above that strikes your fancy? There are more issues in the Gitcoin Issue Explorer:" %}</p>
+    <p style="margin-top: 3em;">{% trans "Don't see anything above that strikes your fancy? There are more issues in the Gitcoin Issue Explorer:" %}</p>
 
-    <div style="margin-bottom: 2em; margin-top: 2em;">
+    <div style="margin-bottom: 2em; margin-top: 1.5em;">
       <a class="button" href="{% url "explorer" %}">{% trans "View Explorer" %}</a>
     </div>
   </div>
@@ -154,15 +161,15 @@
     <h3 style="color: #ffffff;">{% trans "🏆Who's leading the Leaderboard?" %}</h3>
     <h5 style="color: #ffffff;">{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
 
-    <div class="leaderboard-item-container" style="color: #ffffff;">
+    <div class="leaderboard-item-container">
       {% for key, package in leaderboard.items %}
         <div class="leaderboard-item" style="display: inline-block; margin-right: 1em;">
           <h4 style="text-align: left; margin-bottom: 10px; margin-left: 1em;">{{ package.title }}</h4>
           <ul>
             {% for leaderboard_item in package.items %}
-            <li style="font-size: 0.93em; list-style:none; margin-top: 10px; margin-bottom: 10px; color: #ffffff; text-align: start;">
+            <li style="font-size: 0.93em; list-style:none; margin-top: 10px; margin-bottom: 10px; text-align: start;">
               {{ leaderboard_item.rank }} <img style="border-radius: 20px; vertical-align: middle; margin: 0 7px" src="{% avatar_url leaderboard_item.profile %}" width=25px height=25px>
-              <a style="font-size: 0.99em; color: #ffffff; font-weight: bold; text-decoration: none;" href="{% url "profile" leaderboard_item.github_username %}">{{ leaderboard_item.github_username }}</a> : ${{ leaderboard_item.amount|floatformat:2 }}
+              <a style="font-size: 0.99em; font-weight: bold; text-decoration: none;" href="{% url "profile" leaderboard_item.github_username %}">{{ leaderboard_item.github_username }}</a> : ${{ leaderboard_item.amount|floatformat:2 }}
             </li>
           {% endfor %}
           </ul>
