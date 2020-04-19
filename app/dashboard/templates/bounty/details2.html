@@ -36,9 +36,6 @@
             Admin Actions
           </span>
           <a v-for="link in quickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
-          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="contactFunder()">Contact Funder</button>
-          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="overrideStatus()">Override Status</button>
-          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="snoozeeGitbot()">Snooze Gitcoinbot</button>
         </div>
         <div class="col-12" v-if="loadingState === 'resolved'">
           {% if event_tag %}
@@ -273,7 +270,7 @@
                       [[ fulfillment.profile.handle ]]
                     </a>
                     <div class="font-smaller-4" v-if="fulfillment.fulfiller_address">
-                      <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.fulfiller_address}` : `https://classic.etccoopexplorer.com/address/${fulfillment.fulfiller_address}` }`" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a>
+                      <a :href="getAddressURL(fulfillment.token_name, fulfillment.fulfiller_address)" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a>
                       <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.fulfiller_address)">
                         <i class="far fa-clipboard-check"></i>
                       </button>
@@ -291,7 +288,7 @@
                           <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                         </span>
                         <p class="font-smaller-4 my-0">
-                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
@@ -303,16 +300,26 @@
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
                         <p class="font-smaller-4 my-0">
-                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
                         </p>
                       </template>
 
-                      <button v-else data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" class="btn btn-sm btn-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
-                        <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
-                      </button>
+                      <template v-else>
+                        <template v-if="fulfillment.payout_status == 'expired'">
+                          <span class="font-smaller-1 position-relative" style="top: 2px" data-html="true" data-toggle="tooltip"
+                            title="<div class='tooltip-info text-left'><p class='font-smaller-1 font-weight-semibold mb-1'>We couldn't find the transaction on chain</p><p class='mb-0 font-smaller-2'>Please ensure the payment has been made and click on payout bounty </p></div>">
+                            <i class="fas fa-exclamation-triangle text-danger mr-3"></i>
+                          </span>
+                        </template>
+
+                        <button data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" class="btn btn-sm btn-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
+                          <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
+                        </button>
+                      </template>
+
                     </template>
 
                     <template v-else>
@@ -321,7 +328,7 @@
                           <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                         </span>
                         <p class="font-smaller-4 my-0">
-                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                             <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
@@ -332,7 +339,7 @@
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
                         <p class="font-smaller-4 my-0">
-                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
@@ -371,7 +378,7 @@
 
                             <p v-if="bounty.bounty_owner_address">
                               <span class="d-block">Scan QR code using address</span>
-                              <span class="font-subheader font-weight-semibold">[[bounty.bounty_owner_address]]</span>
+                              <a :href="getAddressURL(bounty.token_name, bounty.bounty_owner_address)" target="_blank" class="font-subheader font-weight-semibold">[[bounty.bounty_owner_address]]</a>
                             </p>
 
                             <p class="payout-input-amount-container font-weight-semibold ">
@@ -664,16 +671,13 @@
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]',
-        template: '<div class="no-tooltip" role="tooltip"><div class="tooltip-inner"></div></div>'
+        template: '<div class="no-tooltip" role="tooltip"><div class="tooltip-inner font-smaller-2"></div></div>'
       });
+
       $('[data-toggle="popover"]').popover()
       $('body').on('mouseover', '[data-username]', function(e) {
         openContributorPopOver($(this).data('username'), $(this));
       });
-
-      // $('body').on('mouseout', '[data-username]', function(e) {
-      //   $(this).popover('dispose');
-      // });
 
       $('body').on('show.bs.popover', '[data-username]', function () {
         $('body [data-username]').not(this).popover('hide');
