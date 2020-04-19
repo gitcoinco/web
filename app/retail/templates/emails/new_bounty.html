@@ -39,12 +39,14 @@ This action expires at end of day, so act soon!
   {% include 'emails/quest_small.html' with quest=quest count=forloop.counter %}
 {% endfor %}
 
-<h1>{{ bounties|length }} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{% endif %}</h1>
-<h3>{% trans "Matching your profile" %}</h3>
+<div style="margin-bottom: 5em;">
+  <h3 class="no-subtitle">{% trans "💰Start Earning!" %}</h3>
 
-{% for bounty in bounties %}
-  {% include 'emails/bounty_small.html' with bounty=bounty count=forloop.counter  %}
-{% endfor %}
+  {% for bounty in bounties %}
+    {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1%}
+  {% endfor %}
+
+</div>
 
 {% if old_bounties %}
 
