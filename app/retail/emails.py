@@ -518,11 +518,19 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-    email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
+    from dashboard.models import Profile
+    from inbox.models import Notification
     sub = get_or_save_email_subscriber(to_email, 'internal')
     email_style = 26
+
+    # Get notifications count from the Profile.User of to_email
+    profile = Profile.objects.filter(email__iexact=to_email).last()
+    from_date = from_date + timedelta(days=1)
+    to_date = from_date - timedelta(days=days_ago)
+    notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
+
     upcoming_events = [{
         'event': upcoming_grant,
         'title': upcoming_grant.title,
@@ -551,6 +559,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'quest_of_the_day': quest_of_the_day,
         'upcoming_events': upcoming_events,
         'activities': latest_activities,
+        'notifications_count': notifications_count,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
