@@ -906,6 +906,10 @@ def trending_quests():
         ).order_by('-recent_attempts').all()[0:10]
     return quests
 
+def quest_of_the_day():
+    quest = trending_quests()[0]
+    return quest
+
 @staff_member_required
 def new_bounty_daily_preview(request):
     profile = request.user.profile
