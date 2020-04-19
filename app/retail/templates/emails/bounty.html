@@ -56,7 +56,16 @@
       {% else %}
         * <strong>{{ bounty.org_name }}</strong>
       {% endif %}
-        <p style="margin-bottom: 10px; margin-top:0">{{ primer }}</p>
+        <p style="margin-bottom: 10px; margin-top:0">
+          {% if primer %}
+            {{ primer }}
+          {% elif bounty.title %}
+            {% if bounty.value_true and bounty.token_name %}
+              ({{ bounty.value_true|floatformat }} {{ bounty.token_name }}) - 
+            {% endif %}
+            {{ bounty.title }}
+          {% endif %}
+        </p>
       </li>
       
       {% if not small %}
