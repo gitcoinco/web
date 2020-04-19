@@ -35,7 +35,6 @@ window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
-    var account = web3.eth.accounts[0];
 
     if (getParam('source')) {
       $('#issueURL').html(getParam('source'));
@@ -220,68 +219,75 @@ window.onload = function() {
           errormsg = gettext('No active funding found at this address.  Are you sure this is an active funded issue?');
         } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
           errormsg = gettext('No claimee found for this bounty.');
-        } else if (fromAddress != web3.eth.coinbase) {
-          errormsg = gettext('You can only process a funded issue if you submitted it initially.');
         }
 
-        if (errormsg) {
-          _alert({ message: errormsg }, 'error');
-          unloading_button($('.submitBounty'));
-          return;
-        }
+        web3.eth.getCoinbase(function(_, coinbase) {
+          if (fromAddress != coinbase) {
+            errormsg = gettext('You can only process a funded issue if you submitted it initially.');
+          }
 
-        var final_callback = function(error, result) {
-          indicateMetamaskPopup();
-          var next = function() {
-            // setup inter page state
-            localStorage[issueURL] = JSON.stringify({
-              'timestamp': timestamp(),
-              'dataHash': null,
-              'issuer': account,
-              'txid': result
-            });
+          if (errormsg) {
+            _alert({ message: errormsg }, 'error');
+            unloading_button($('.submitBounty'));
+            return;
+          }
 
-            _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
+          var final_callback = function(error, result) {
+            indicateMetamaskPopup();
+            var next = function() {
+              web3.eth.getAccounts(function(_, accounts) {
+                // setup inter page state
+                localStorage[issueURL] = JSON.stringify({
+                  'timestamp': timestamp(),
+                  'dataHash': null,
+                  'issuer': accounts[0],
+                  'txid': result
+                });
+              });
 
-            var finishedComment = function() {
-              _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
-              setTimeout(() => {
-                document.location.href = '/funding/details?url=' + issueURL;
-              }, 1000);
+              _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
+
+              var finishedComment = function() {
+                _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
+                setTimeout(() => {
+                  document.location.href = '/funding/details?url=' + issueURL;
+                }, 1000);
+              };
+
+              finishedComment();
             };
 
-            finishedComment();
+            if (error) {
+              _alert({ message: gettext('There was an error') }, 'error');
+              console.error(error);
+              unloading_button($('.submitBounty'));
+            } else {
+              next();
+            }
+          };
+          // just sent payout
+          var send_payout = function() {
+            web3.eth.getAccounts(function(_, accounts) {
+              bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)), from: accounts[0]}, final_callback);
+            });
           };
 
-          if (error) {
-            _alert({ message: gettext('There was an error') }, 'error');
-            console.error(error);
-            unloading_button($('.submitBounty'));
+          // send both tip and payout
+          var send_tip_and_payout_callback = function() {
+            indicateMetamaskPopup();
+            if ($('#tipPercent').val() > 0) {
+              attach_and_send_tip(send_payout);
+            } else {
+              send_payout();
+            }
+          };
+
+          if ($('.kudos-search').select2('data')[0].id) {
+            attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
           } else {
-            next();
+            send_tip_and_payout_callback();
           }
-        };
-        // just sent payout
-        var send_payout = function() {
-          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)), from: web3.eth.accounts[0]}, final_callback);
-        };
-
-        // send both tip and payout
-        var send_tip_and_payout_callback = function() {
-          indicateMetamaskPopup();
-          if ($('#tipPercent').val() > 0) {
-            attach_and_send_tip(send_payout);
-          } else {
-            send_payout();
-          }
-        };
-
-        if ($('.kudos-search').select2('data')[0].id) {
-          attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
-        } else {
-          send_tip_and_payout_callback();
-        }
-
+        });
       };
       // Get bountyId from the database
 

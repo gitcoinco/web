@@ -8,15 +8,30 @@ load_tokens();
 
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
-const is_funder = () => {
-  if (web3 && web3.eth && web3.coinbase)
-    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;
+const promisify = (fun, params = []) => {
+  return new Promise((resolve, reject) => {
+    fun(...params, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+const is_funder = async() => {
+  if (web3 && web3.eth && web3.coinbase) {
+    const coinbase = await promisify(web3.eth.getCoinbase);
+
+    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == coinbase;
+  }
   return document.is_funder_github_user_same;
 };
 
-$(document).ready(function() {
+$(document).ready(async function() {
 
-  if (!is_funder()) {
+  if (!await is_funder()) {
     $('#total-section').hide();
     $('#fee-section').hide();
   }
@@ -24,8 +39,8 @@ $(document).ready(function() {
   populateBountyTotal();
   waitforWeb3(actions_page_warn_if_not_on_same_network);
 
-  waitforWeb3(function() {
-    if (!is_funder()) {
+  waitforWeb3(async function() {
+    if (!await is_funder()) {
       $('input, select').removeAttr('disabled');
       $('#increase_funding_explainer').html("Your transaction is secured by the Gitcoin's crowdfunding technology on the Ethereum blockchain. Learn more here.");
     }
@@ -52,7 +67,7 @@ $(document).ready(function() {
   });
 
   // submit bounty button click
-  $('#increaseFunding').on('click', function(e) {
+  $('#increaseFunding').on('click', async function(e) {
     try {
       bounty_address();
     } catch (exception) {
@@ -108,7 +123,7 @@ $(document).ready(function() {
     var decimalDivisor = Math.pow(10, decimals);
     var tokenName = token['name'];
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-    var account = web3.eth.coinbase;
+    var account = await promisify(web3.eth.getCoinbase);
 
     amount = amount * decimalDivisor;
     // Create the bounty object.
@@ -226,7 +241,7 @@ $(document).ready(function() {
         if (isETH) {
           web3.eth.sendTransaction({
             to: to_address,
-            from: web3.eth.coinbase,
+            from: account,
             value: web3.toWei(fee, 'ether'),
             gasPrice: gas_price
           }, function(error, txnId) {
