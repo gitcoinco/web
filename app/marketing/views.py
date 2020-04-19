@@ -42,7 +42,7 @@ from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from chat.tasks import update_chat_notifications
-from dashboard.models import Profile, TokenApproval
+from dashboard.models import Profile, TokenApproval, HackathonEvent
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -992,6 +992,11 @@ def upcoming_grant():
     cutoff_date = timezone.now() - timezone.timedelta(days=7)
     grant = Grant.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:5][0]
     return grant
+
+def upcoming_hackathon():
+    cutoff_date = timezone.now() - timezone.timedelta(days=7)
+    hackathon = HackathonEvent.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:5][0]
+    return hackathon
 
 @staff_member_required
 def new_bounty_daily_preview(request):
