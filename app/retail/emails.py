@@ -517,7 +517,7 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -529,7 +529,15 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'url': upcoming_grant.url,
         'date': upcoming_grant.next_clr_calc_date.strftime("%Y-%d-%m")
     },
+        {
+        'event': upcoming_hackathon,
+        'title': upcoming_hackathon.name,
+        'image_url': upcoming_hackathon.logo.url,
+        'url': upcoming_hackathon.url,
+        'date': upcoming_hackathon.start_date.strftime("%Y-%d-%m")
+    },
     ]
+
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
@@ -1222,12 +1230,13 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    from marketing.views import quest_of_the_day, upcoming_grant
+    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     quest = quest_of_the_day()
     grant = upcoming_grant()
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest, upcoming_grant=grant)
+    hackathon = upcoming_hackathon()
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=hackathon)
     return HttpResponse(response_html)
 
 
