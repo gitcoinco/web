@@ -137,9 +137,7 @@ This action expires at end of day, so act soon!
 {% endif %}
 
 <p>
-  {% if keywords %}
-  {% trans "You are receiving this email because your email preferences matched with these keywords:" %} {{ keywords }}.  <a href="{% url 'email_settings' subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
-  {% endif %}
+  {% trans "You are receiving this email because your email address is on the notification list" %}.  <a href="{% url 'email_settings' subscriber.priv %}" style="text-decoration: underline;">{% trans "Manage Email Settings" %}</a>.
 </p>
 
 {% endblock %}
