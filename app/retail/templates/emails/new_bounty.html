@@ -19,6 +19,29 @@
 
 {% block content %}
 
+<style>
+  .event-img {
+    width: 45%;
+    height: 35%;
+    margin-top: 40px;
+  }
+
+  .upcoming-events-container h4 {
+    padding: 0;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 1.2em;
+  }
+  
+  .upcoming-events-container p,
+  .upcoming-events-container a {
+    margin: 0;
+    color: #ffffff;
+    display: block;
+    font-weight: 300;
+  }
+
+</style>
 {% if show_action %}
 
 <h1>1 New Daily Action</h1>
@@ -33,11 +56,24 @@ This action expires at end of day, so act soon!
 
 <HR>
 {% endif %}
-<h1>{{ trending_quests|length }} {% trans "Trending Quests" %}</h1>
 
-{% for quest in trending_quests %}
-  {% include 'emails/quest_small.html' with quest=quest count=forloop.counter %}
-{% endfor %}
+{% if upcoming_events %}
+  <div style="background-color: #000000; color: #ffffff; width: 110%; margin-left: -5%; margin-top: 30px; padding-top: 15px; padding-bottom:15px">
+    <h3 style="color: #ffffff;">{% trans "⏰Save The Date" %}</h3>
+    <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
+
+    <div class="upcoming-events-container">
+      {% for event in upcoming_events %}
+        <img class="event-img" src="{{event.image_url}}">
+        <h4 style="">{{event.title}}</h4>
+        <p>{{event.date}}</p>
+        <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
+      {% endfor %}
+    </div>
+    <br>
+    <br>
+  </div>
+{% endif %}
 
 {% if quest_of_the_day %}
   <h3 class="no-subtitle" style="margin-top: 50px">{% trans "🎯Quest of The Day" %}</h3>

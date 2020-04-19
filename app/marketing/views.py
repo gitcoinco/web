@@ -52,6 +52,7 @@ from marketing.management.commands.new_bounties_email import get_bounties_for_ke
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
 from quests.models import Quest
+from grants.models import Grant
 from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
@@ -986,6 +987,11 @@ def trending_quests():
 def quest_of_the_day():
     quest = trending_quests()[0]
     return quest
+
+def upcoming_grant():
+    cutoff_date = timezone.now() - timezone.timedelta(days=7)
+    grant = Grant.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:5][0]
+    return grant
 
 @staff_member_required
 def new_bounty_daily_preview(request):
