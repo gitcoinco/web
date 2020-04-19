@@ -522,7 +522,11 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     from dashboard.models import Profile
     from inbox.models import Notification
     sub = get_or_save_email_subscriber(to_email, 'internal')
-    email_style = 26
+    if settings.DEBUG and False:
+        # for debugging email styles
+        email_style = 26
+    else:
+        email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
 
     # Get notifications count from the Profile.User of to_email
     profile = Profile.objects.filter(email__iexact=to_email).last()
