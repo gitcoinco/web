@@ -82,6 +82,7 @@ This action expires at end of day, so act soon!
       {% include 'shared/activity_container.html' with hide_loading=1 %}
     </div>
     <div style="text-align: center;">
+      <p style="margin-bottom: 45px;">You have <a href="{% url 'inbox:inbox_view' %}" style="font-weight: bold;">{{ notifications_count }} unread notifications</a>. Check them out to see the latest comments on your post!</p>
       {% include 'emails/shared_activities_actions.html' with action='custom' action_copy='View More' action_url='/townsquare' %}
   </div>
   </div>
