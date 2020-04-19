@@ -521,6 +521,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quest
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
+    email_style = 26
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
