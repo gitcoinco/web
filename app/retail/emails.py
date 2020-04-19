@@ -576,7 +576,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_ago)
 
-    notifications = Notification.objects.filter(to_user=profile.id, is_read=False, created_on__range=[to_date, from_date]).count()
+    notifications = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
 
     params = {
         'subscriber': subscriber,
@@ -1162,7 +1162,7 @@ def weekly_recap(request):
 
 @staff_member_required
 def unread_notification_email_weekly_roundup(request):
-    response_html, _ = render_unread_notification_email_weekly_roundup('mark.beacom@consensys.net')
+    response_html, _, _ = render_unread_notification_email_weekly_roundup('sebastian.tharakan97@gmail.com')
     return HttpResponse(response_html)
 
 @staff_member_required
