@@ -210,6 +210,12 @@ class Command(BaseCommand):
                     )
                 print(f"ingested {subscription.pk} / {contrib.pk}")
 
+                if is_real_payout:
+                    match.payout_contribution = contrib
+                else:
+                    match.test_payout_contribution = contrib
+                match.save()
+
                 metadata = {
                     'id': subscription.id,
                     'value_in_token': str(subscription.amount_per_period),

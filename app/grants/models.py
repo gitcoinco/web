@@ -1230,6 +1230,14 @@ class CLRMatch(SuperModel):
         help_text=_('The test payout txid'),
     )
     test_payout_tx_date = models.DateTimeField(null=True, blank=True)
+    test_payout_contribution = models.ForeignKey(
+        'grants.Contribution',
+        related_name='test_clr_match_payouts',
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Contribution for the test payout')
+    )
+
     ready_for_payout = models.BooleanField(default=False, help_text=_('Ready for regular payout or not'))
     payout_tx = models.CharField(
         max_length=255,
@@ -1237,6 +1245,13 @@ class CLRMatch(SuperModel):
         help_text=_('The test payout txid'),
     )
     payout_tx_date = models.DateTimeField(null=True, blank=True)
+    payout_contribution = models.ForeignKey(
+        'grants.Contribution',
+        related_name='clr_match_payouts',
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Contribution for the payout')
+    )
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
 
 
