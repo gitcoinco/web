@@ -1,0 +1,14 @@
+{
+  "symbol": "STN",
+  "address": "0x7F99701eA050ca1f5a9315FCAaa5095ec7487835",
+  "overview":{
+        "en": "Star network aims to use blockchain technology to improve the economic form of the whole pan entertainment industry from the bottom. Through decentralized design, users in the ecosystem can hold Token Mode Based on blockchain and smart contract, which does not need to go through intermediate links, making the global digital entertainment content easier to spread.",
+        "zh": "Star Network旨在利用区块链技术从底层改进整个泛娱乐产业的经济形态， 通过去中心化的设计，让生态内的用户持有基于区块链和智能合约的Token方式，不需要经过中间环节，让全球数字娱乐内容更容易传播。 "
+  },
+  "website": "http://www.starnetwork.pro",
+  "whitepaper": "http://http://www.starnetwork.pro/download/STN.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-03-29",
+  "links": {
+  }
+}
