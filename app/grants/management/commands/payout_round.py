@@ -45,7 +45,7 @@ class Command(BaseCommand):
         parser.add_argument('what', 
             default='finalize',
             type=str,
-            help="what do we do? (finalize, payout_test, payout_dai)"
+            help="what do we do? (finalize, payout_test, payout_dai, prepare_final_payout)"
             )
 
 
@@ -96,7 +96,21 @@ class Command(BaseCommand):
                 if needs_kyc:
                     grant_match_distribution_kyc(match)
 
-            # create CLR Match Objects
+
+        # payout rankings (round must be finalized first)
+        if what in ['prepare_final_payout']:
+            payout_matches = scheduled_matches.exclude(test_payout_tx='').filter(ready_for_payout=False)
+            payout_matches_amount = sum(sm.amount for sm in payout_matches)
+            print(f"there are {payout_matches.count()} UNPAID Match Payments already created worth ${round(payout_matches_amount,2)} {network} DAI")
+            print('------------------------------')
+            user_input = input("continue? (y/n) ")
+            if user_input != 'y':
+                return
+            for match in payout_matches:
+                match.ready_for_payout=True
+                match.save()
+            print('promoted')
+
 
         # payout rankings (round must be finalized first)
         if what in ['payout_test', 'payout_dai']:
