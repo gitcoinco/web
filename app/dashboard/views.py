@@ -3623,7 +3623,7 @@ def hackathon(request, hackathon='', panel='prizes'):
             'org_name': sponsor_profile.handle,
             'follower_count': sponsor_profile.tribe_members.all().count(),
             'followed': True if sponsor_profile.handle in following_tribes else False,
-            'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
+            'bounty_count': sponsor_profile.bounties.count()
         }
         orgs.append(org)
     if hasattr(request.user, 'profile') == False:
