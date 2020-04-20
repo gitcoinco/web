@@ -30,7 +30,7 @@ const renderPopOverData = function(data) {
         <img src="/dynamic/avatar/${_organization}" alt="${_organization}" class="rounded-circle border" width="24" height="24">
         </a>`;
     } else if (index < 6) {
-      return `<span class="m-1">+${data.orgs.length - 5}</span>`;
+      return `<span class="m-1">+${unique_orgs.length - 5}</span>`;
     }
   }).join(' ');
 
