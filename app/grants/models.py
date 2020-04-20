@@ -329,6 +329,13 @@ class Grant(SuperModel):
         self.activeSubscriptions = handles
 
     @property
+    def clr_match_estimate_this_round(self):
+        try:
+            return self.clr_prediction_curve[0][1]
+        except:
+            return 0
+
+    @property
     def contributions(self):
         pks = []
         for subscription in self.subscriptions.all():
@@ -1216,6 +1223,22 @@ class CLRMatch(SuperModel):
         null=False,
         help_text=_('The associated Grant.'),
     )
+    ready_for_test_payout = models.BooleanField(default=False, help_text=_('Ready for test payout or not'))
+    test_payout_tx = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text=_('The test payout txid'),
+    )
+    test_payout_tx_date = models.DateTimeField(null=True, blank=True)
+    ready_for_payout = models.BooleanField(default=False, help_text=_('Ready for regular payout or not'))
+    payout_tx = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text=_('The test payout txid'),
+    )
+    payout_tx_date = models.DateTimeField(null=True, blank=True)
+    comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
+
 
     def __str__(self):
         """Return the string representation of a Grant."""

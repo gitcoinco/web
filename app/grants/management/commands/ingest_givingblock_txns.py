@@ -4,7 +4,7 @@ import time
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Profile
+from dashboard.models import Profile, Activity
 from grants.models import Contribution, Grant, Subscription
 
 
@@ -70,6 +70,26 @@ class Command(BaseCommand):
                         validator_comment=validator_comment,
                         )
                     print(f"ingested {subscription.pk} / {contrib.pk}")
+
+                    metadata = {
+                        'id': subscription.id,
+                        'value_in_token': str(subscription.amount_per_period),
+                        'value_in_usdt_now': str(round(subscription.amount_per_period_usdt,2)),
+                        'token_name': subscription.token_symbol,
+                        'title': subscription.grant.title,
+                        'grant_url': subscription.grant.url,
+                        'num_tx_approved': subscription.num_tx_approved,
+                        'category': 'grant',
+                    }
+                    kwargs = {
+                        'profile': profile,
+                        'subscription': subscription,
+                        'grant': subscription.grant,
+                        'activity_type': 'new_grant_contribution',
+                        'metadata': metadata,
+                    }
+
+                    Activity.objects.create(**kwargs)
 
                 except Exception as e:
                     print(e)
