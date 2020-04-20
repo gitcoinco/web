@@ -42,7 +42,6 @@ class ProfileExportSerializer(serializers.BaseSerializer):
             '_locations': instance.locations,
             'organizations': instance.get_who_works_with(network=None),
             '_email': instance.email,
-            '_gitcoin_discord_username': instance.gitcoin_discord_username,
             '_pref_lang_code': instance.pref_lang_code,
             '_preferred_payout_address': instance.preferred_payout_address,
             'persona': instance.selected_persona or instance.dominant_persona,
