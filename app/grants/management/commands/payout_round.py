@@ -25,15 +25,17 @@ from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from grants.models import Grant, CLRMatch, Subscription, Contribution
+from dashboard.abi import erc20_abi as abi
 from dashboard.models import Activity, Earning, Profile
 from dashboard.utils import get_tx_status, get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from grants.models import CLRMatch, Contribution, Grant, Subscription
+from grants.views import clr_active, clr_round, next_round_start, round_end
+from marketing.mails import (
+    grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
+)
 from web3 import HTTPProvider, Web3
-from grants.views import clr_active, next_round_start, round_end, clr_round
-from marketing.mails import grant_match_distribution_final_txn, grant_match_distribution_test_txn, grant_match_distribution_kyc
 
-from dashboard.abi import erc20_abi as abi
 
 class Command(BaseCommand):
 

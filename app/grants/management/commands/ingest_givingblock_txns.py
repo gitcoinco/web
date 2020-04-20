@@ -4,7 +4,7 @@ import time
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Profile, Activity
+from dashboard.models import Activity, Profile
 from grants.models import Contribution, Grant, Subscription
 
 

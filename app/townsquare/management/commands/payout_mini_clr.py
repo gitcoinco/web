@@ -25,13 +25,13 @@ from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from dashboard.abi import erc20_abi as abi
 from dashboard.models import Activity, Earning, Profile
 from dashboard.utils import get_tx_status, get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from townsquare.models import MatchRound
 from web3 import HTTPProvider, Web3
 
-from dashboard.abi import erc20_abi as abi
 
 class Command(BaseCommand):
 

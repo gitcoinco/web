@@ -379,11 +379,13 @@ def handle_location_request(request):
 geoIPobject = None
 geoIPCountryobject = None
 
+
 def get_geoIP_singleton():
     global geoIPobject
     if not geoIPobject:
         geoIPobject = GeoIP2()
     return geoIPobject
+
 
 def get_geoIP_country_singleton():
     global geoIPCountryobject

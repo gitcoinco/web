@@ -905,7 +905,7 @@ Full Name:
 Physical Address:
 (Only if you’re a US Citizen) Social Security Number:
 Proof of physical address (utility bill, or bank statement)
-Proof of idenetity (government issued ID)
+Proof of identity (government issued ID)
 
 Thanks,
 Gitcoin Grants KYC Team
