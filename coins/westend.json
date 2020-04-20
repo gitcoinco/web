@@ -1,6 +1,6 @@
 {
   "symbol": "WND",
-  "address": "address_westend",
+  "address": "westend",
   "overview":{
         "en": "Westend testnet token",
         "zh": "Westend 测试网通证"

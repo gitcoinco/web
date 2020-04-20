@@ -1,6 +1,6 @@
 {
   "symbol": "DOT",
-  "address": "address_polkadot",
+  "address": "polkadot",
   "overview":{
         "en": "It consists of many parachains with potentially differing characteristics which can make it easier to achieve anonymity or formal verification",
         "zh": "Polkadot是一个由多条区块链，异构组成的区块链集合。"
