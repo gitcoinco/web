@@ -886,6 +886,7 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
 
 def grant_match_distribution_kyc(match):
     to_email = match.grant.admin_profile.email
+    cc_emails = [profile.email for profile in match.grant.team_members.all()]
     from_email = 'kyc@gitcoin.co'
     cur_language = translation.get_language()
     rounded_amount = round(match.amount, 2)
@@ -912,22 +913,23 @@ Gitcoin Grants KYC Team
 </pre>
 
         """
-        if not should_suppress_notification_email(to_email, 'admin'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                '',
-                body,
-                from_name=_("Gitcoin Grants"),
-                categories=['admin', func_name()],
-            )
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
     finally:
         translation.activate(cur_language)
 
 
 def grant_match_distribution_test_txn(match):
     to_email = match.grant.admin_profile.email
+    cc_emails = [profile.email for profile in match.grant.team_members.all()]
     from_email = 'kyc@gitcoin.co'
     cur_language = translation.get_language()
     rounded_amount = round(match.amount, 2)
@@ -942,7 +944,7 @@ def grant_match_distribution_test_txn(match):
     # "NO SCHWAG FOR U!"
     try:
         setup_lang(to_email)
-        subject = f"💰 Grants Round {match.round_number} Match Distribution (Email 1 of 2)"
+        subject = f"💰 Grants Round {match.round_number} Match Distribution: {rounded_amount} DAI (Email 1 of 2)"
         body = f"""
 <pre>
 Hello @{match.grant.admin_profile.handle},
@@ -966,21 +968,22 @@ Kevin, Scott, Vivek and the Gitcoin Community
 </pre>
 
         """
-        if not should_suppress_notification_email(to_email, 'admin'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                '',
-                body,
-                from_name=_("Gitcoin Grants"),
-                categories=['admin', func_name()],
-            )
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
     finally:
         translation.activate(cur_language)
 
 def grant_match_distribution_final_txn(match):
     to_email = match.grant.admin_profile.email
+    cc_emails = [profile.email for profile in match.grant.team_members.all()]
     from_email = 'kyc@gitcoin.co'
     cur_language = translation.get_language()
     rounded_amount = round(match.amount, 2)
@@ -1008,16 +1011,16 @@ Kevin, Scott, Vivek and the Gitcoin Community
 </pre>
 
         """
-        if not should_suppress_notification_email(to_email, 'admin'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                '',
-                body,
-                from_name=_("Gitcoin Grants"),
-                categories=['admin', func_name()],
-            )
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
     finally:
         translation.activate(cur_language)
 
