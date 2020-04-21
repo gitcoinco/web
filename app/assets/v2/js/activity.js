@@ -620,11 +620,9 @@ $(document).ready(function() {
         view_comments($parent, allow_close_comment_container, success_callback, override_hide_comments);
       }).done(function() {
         // pass
-      })
-      .fail(function() {
+      }).fail(function() {
         $parent.parents('.activity.box').find('.error').removeClass('hidden');
-      })
-      .always(function() {
+      }).always(function() {
         $parent.parents('.activity.box').find('.loading').addClass('hidden');
         $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
         $('.post_comment').prop('disabled', false);
