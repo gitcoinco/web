@@ -933,11 +933,11 @@ def grant_match_distribution_test_txn(match):
     cur_language = translation.get_language()
     rounded_amount = round(match.amount, 2)
     token_name = f"CLR{match.round_number}"
-    coupon = "Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 25% off with coupon code {settings.GRANTS_COUPON_25_OFF}"
+    coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 25% off with coupon code {settings.GRANTS_COUPON_25_OFF}"
     if match.amount > 100:
-        coupon = "Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 50% off with coupon code {settings.GRANTS_COUPON_50_OFF}"
+        coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 50% off with coupon code {settings.GRANTS_COUPON_50_OFF}"
     if match.amount > 1000:
-        coupon = "Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 100% off with coupon code {settings.GRANTS_COUPON_100_OFF}"
+        coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 100% off with coupon code {settings.GRANTS_COUPON_100_OFF}"
     # NOTE: IF YOURE A CLEVER BISCUT AND FOUND THIS BY READING OUR CODEBASE, 
     # THEN GOOD FOR YOU!  HERE IS A 100% OFF COUPON CODE U CAN USE (LIMIT OF 1 FOR THE FIRST PERSON
     # TO FIND THIS EASTER EGG) : GRANTS-ROUND-5-HAXXOR
