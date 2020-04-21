@@ -4085,6 +4085,19 @@ def hackathon_registration(request):
     except Exception as e:
         logger.error('Error while saving registration', e)
 
+    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
+    mailchimp_data = {
+            'email_address': email,
+            'status_if_new': 'subscribed',
+            'status': 'subscribed',
+
+            'merge_fields': {
+                'HANDLE': profile.handle,
+                'HACKATHON': hackathon,
+            },
+        }
+
+    user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
 
     try:
         client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
