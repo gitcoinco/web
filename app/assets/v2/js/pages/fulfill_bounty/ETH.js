@@ -3,6 +3,12 @@
  * Data is stored on IPFS + the data is stored in
  * standard bounties contract on the ethereum blockchain
  */
+
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
+});
+
 const ethFulfillBounty = data => {
   if (is_bounties_network) {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
@@ -25,7 +31,6 @@ const ethFulfillBounty = data => {
 
   localStorage['githubUsername'] = githubUsername;
 
-  const account = web3.eth.coinbase;
   let bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
   ipfs.ipfsApi = IpfsApi(ipfsConfig);
@@ -74,11 +79,13 @@ const ethFulfillBounty = data => {
         const web3Callback = function(error, result) {
           indicateMetamaskPopup(true);
           const next = function() {
-            localStorage[issueURL] = JSON.stringify({
-              timestamp: timestamp(),
-              dataHash: null,
-              issuer: account,
-              txid: result
+            web3.eth.getCoinbase(function(_, account) {
+              localStorage[issueURL] = JSON.stringify({
+                timestamp: timestamp(),
+                dataHash: null,
+                issuer: account,
+                txid: result
+              });
             });
 
             if (eventTag) {
@@ -123,15 +130,17 @@ const ethFulfillBounty = data => {
           const bountyId = result['standard_bounties_id'];
 
           indicateMetamaskPopup();
-          bounty.fulfillBounty(
-            bountyId,
-            document.ipfsDataHash,
-            {
-              from: web3.eth.accounts[0],
-              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-            },
-            web3Callback
-          );
+          web3.eth.getAccounts(function(_, accounts) {
+            bounty.fulfillBounty(
+              bountyId,
+              document.ipfsDataHash,
+              {
+                from: accounts[0],
+                gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+              },
+              web3Callback
+            );
+          });
         });
       }
     }

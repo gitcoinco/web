@@ -23,12 +23,12 @@ const ratingModal = (bountyId, receiver, elem) => {
 
       $.when(sendRating).then(response => {
         if (!response.success) {
-          return _alert(response.msg, 'error');
+          return _alert(response.msg, 'error', 500);
         }
         elem.closest('fieldset').attr('disabled', true);
 
         $('#modalRating').bootstrapModal('hide');
-        return _alert({message: gettext('Thanks for your feedback.')}, 'info');
+        return _alert({message: gettext('Thanks for your feedback.')}, 'info', 500);
       });
     });
   });

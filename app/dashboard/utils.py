@@ -30,9 +30,13 @@ from django.utils import timezone
 import ipfshttpclient
 import requests
 from app.utils import sync_profile
+from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
+from dashboard.models import Activity, BlockedUser, Bounty, BountyFulfillment, Profile, UserAction
+from dashboard.sync.celo import sync_celo_payout
+from dashboard.sync.etc import sync_etc_payout
+from dashboard.sync.zil import sync_zil_payout
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -472,25 +476,15 @@ def has_tx_mined(txid, network):
         return False
 
 
-def get_etc_txn_status(txnid, network='mainnet'):
-    if not txnid:
-        return False
+def sync_payout(fulfillment):
+    token_name = fulfillment.token_name
 
-    blockscout_url = f'https://blockscout.com/etc/mainnet/api?module=transaction&action=gettxinfo&txhash={txnid}'
-    blockscout_response = requests.get(blockscout_url).json()
-
-    if blockscout_response['status'] and blockscout_response['result']:
-        response = {
-            'blockNumber': int(blockscout_response['result']['blockNumber']),
-            'confirmations': int(blockscout_response['result']['confirmations'])
-        }
-        if response['confirmations'] > 0:
-            response['has_mined'] = True
-        else:
-            response['has_mined'] = False
-        return response
-
-    return False
+    if token_name == 'ETC':
+        sync_etc_payout(fulfillment)
+    elif token_name == 'cUSD' or token_name == 'cGLD':
+        sync_celo_payout(fulfillment)
+    elif token_name == 'ZIL':
+        sync_zil_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -735,7 +729,7 @@ def release_bounty_lock(standard_bounty_id):
     release_semaphore(ns)
 
 
-def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None, disable_cache=False, full_profile=False):
     """Define the profile helper.
 
     Args:
@@ -756,8 +750,11 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
     if current_profile and current_profile.handle == handle:
         return current_profile
 
+    base = Profile.objects if not full_profile else Profile.objects_full
     try:
-        profile = Profile.objects.get(handle__iexact=handle)
+        if disable_cache:
+            base = base.nocache()
+        profile = base.get(handle=handle.lower())
     except Profile.DoesNotExist:
         profile = sync_profile(handle)
         if not profile:
@@ -766,7 +763,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
         # Handle edge case where multiple Profile objects exist for the same handle.
         # We should consider setting Profile.handle to unique.
         # TODO: Should we handle merging or removing duplicate profiles?
-        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        profile = base.filter(handle=handle.lower()).latest('id')
         logging.error(e)
 
     if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
@@ -831,7 +828,7 @@ def is_blocked(handle):
         return True
 
     # check banned country list
-    profiles = Profile.objects.filter(handle__iexact=handle)
+    profiles = Profile.objects.filter(handle=handle.lower())
     if profiles.exists():
         profile = profiles.first()
         last_login = profile.actions.filter(action='Login').order_by('pk').last()
@@ -854,7 +851,7 @@ def is_blocked(handle):
     return False
 
 
-def get_nonce(network, address):
+def get_nonce(network, address, ignore_db=False):
     # this function solves the problem of 2 pending tx's writing over each other
     # by checking both web3 RPC *and* the local DB for the nonce
     # and then using the higher of the two as the tx nonce
@@ -864,7 +861,9 @@ def get_nonce(network, address):
 
     # web3 RPC node: nonce
     nonce_from_web3 = w3.eth.getTransactionCount(address)
-
+    if ignore_db:
+        return nonce_from_web3
+        
     # db storage
     key = f"nonce_{network}_{address}"
     view = 'get_nonce'
@@ -996,3 +995,6 @@ def get_url_first_indexes():
         urls.append(url)
 
     return set(urls)
+
+def get_custom_avatars(profile):
+    return CustomAvatar.objects.filter(profile=profile).order_by('-id')

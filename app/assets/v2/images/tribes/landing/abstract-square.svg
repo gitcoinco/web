@@ -1,16 +1,1 @@
-
-<svg width="321px" height="511px" viewBox="0 0 321 511" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.3">
-        <g id="Artboard" transform="translate(-60.000000, -2273.000000)" stroke-width="4">
-            <g id="Participate-today-BG" transform="translate(60.000000, 1921.000000)">
-                <g id="Group-9" transform="translate(0.000000, 354.000000)">
-                    <polygon id="Stroke-3" stroke="#25E899" points="170 361.317431 49.5 247.698165 170 134.078899 290.5 247.698165"></polygon>
-                    <g id="Group-8" transform="translate(0.500000, 0.636697)" stroke="#444444">
-                        <polyline id="Stroke-4" points="10.4440809 146.307611 166.573282 0.083238112 313.824459 139.830325"></polyline>
-                        <polyline id="Stroke-6" points="0.976205263 346.78324 166.089301 504.962336 318.60377 360.94053"></polyline>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="321" height="511" xmlns="http://www.w3.org/2000/svg"><g stroke="#fff" stroke-width="4" fill="none" fill-rule="evenodd" opacity=".3"><path d="M170 363.317L49.5 249.698 170 136.078l120.5 113.62z"/><path d="M10.944 148.944L167.074 2.72l147.25 139.747M1.476 349.42L166.59 507.599l152.515-144.022"/></g></svg>

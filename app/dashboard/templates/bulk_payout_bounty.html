@@ -110,13 +110,13 @@
                     <label class="filter-label w-auto pl-3" for=pay_with_bounty>
                       <div class="position-relative">
                         Pay using bounty funds
-                        <i class="fa fa-info-circle gc-blue-text font-caption ml-1" data-toggle="tooltip" data-placement="right" data-html="true" title="
+                        <i class="fa fa-info-circle gc-text-blue font-caption ml-1" data-toggle="tooltip" data-placement="right" data-html="true" title="
                           <p class='font-body font-weight-bold ml-2 pt-3'>PAY USING BOUNTY FUNDS</p>
                           <ul>
                             <li><strong>Payment Source:</strong>Bounty Funds</li>
                             <li><strong>Bounty Status after payment:</strong> COMPLETED
                             <li>If you choose to exceed {{ bounty.value_true }} {{ bounty.token_name }}, the remainder amount would be deducted from your
-                              metamask wallet and paid out using Gitcoin Tips</li>
+                              web3 wallet and paid out using Gitcoin Tips</li>
                             <li>Bounty will be closed once this mode of payment is chosen</li>
                             <li class='font-italic'>
                               Ensure you have enough {{ bounty.token_name }} if you decide to payout
@@ -133,10 +133,10 @@
                     <label class="filter-label w-auto pl-3" for=pay_with_wallet>
                       <div class="position-relative">
                         Pay from wallet
-                        <i class="fa fa-info-circle font-caption ml-1 gc-blue-text" data-toggle="tooltip" data-placement="right" data-html="true" title="
+                        <i class="fa fa-info-circle font-caption ml-1 gc-text-blue" data-toggle="tooltip" data-placement="right" data-html="true" title="
                           <p class='font-body font-weight-bold ml-2 pt-3'>PAY USING WALLET</p>
                           <ul>
-                            <li><strong>Payment Source:</strong> Your metamask wallet (using Gitcoin Tips)
+                            <li><strong>Payment Source:</strong> Your web3 wallet (using Gitcoin Tips)
                             <li><strong>Bounty Status after payment:</strong> OPEN (enables multiple payouts at different points in time)
                             <li><strong>Bounty Funds:</strong> Will not be used as the entire amount would come from your wallet</li>
                             <li class='font-italic'>Ensure you have enough tokens in your wallet before using this mode</li>
@@ -150,7 +150,7 @@
 
                 <div class="w-100 my-4 pt-3">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
-                  <label class="float-right gc-blue-text font-weight-semibold">
+                  <label class="float-right gc-text-blue font-weight-semibold">
                     {% trans "Where is my Eth going? " %}
                     <i class="fa fa-info-circle font-caption ml-1" data-toggle="tooltip" data-placement="right" data-html="true" title="
                       <p class='font-weight-bold ml-2 pt-3'>WHERE IS MY {{ bounty.token_name }} GOING?</p>
@@ -202,7 +202,7 @@
                   </div>
 
                   <div class="my-5 py-4 px-3 preview_payment">
-                    <h5 class="font-weight-semibold font-header gc-green-text">{% trans 'Payout Preview' %}</h5>
+                    <h5 class="font-weight-semibold font-header gc-text-green">{% trans 'Payout Preview' %}</h5>
                     <p class="mb-1 summary_bounty_info">
                       Payout from bounty funds:
                       <span id="summary_bounty_amount" class="font-weight-bold"></span>
@@ -216,7 +216,7 @@
                     </p>
 
                     <p class="my-3 font-weight-bold">
-                      You will have to approve <span id="metamask-txn-count">0</span> Metamask transactions:
+                      You will have to approve <span id="metamask-txn-count">0</span> wallet transactions:
                     </p>
 
                     {% if bounty.additional_funding_summary %}

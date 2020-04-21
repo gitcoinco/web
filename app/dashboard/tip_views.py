@@ -109,6 +109,15 @@ def receive_tip_v3(request, key, txid, network):
     these_tips = Tip.objects.filter(web3_type='v3', txid=txid, network=network)
     tips = these_tips.filter(metadata__reference_hash_for_receipient=key) | these_tips.filter(metadata__reference_hash_for_funder=key)
     tip = tips.first()
+    if not tip:
+        messages.error(request, 'This tip was not found')
+        return redirect('/')
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
     is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower() or not tip.username
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
     did_fail = False
@@ -116,11 +125,6 @@ def receive_tip_v3(request, key, txid, network):
         tip.update_tx_status()
         did_fail = tip.tx_status in ['dropped', 'unknown', 'na', 'error']
 
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
-        request.user, 'profile', None
-    ):
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
     num_redemptions = tip.metadata.get("num_redemptions", 0)
     max_redemptions = tip.metadata.get("max_redemptions", 0)
     is_redeemable = not (tip.receive_txid and (num_redemptions >= max_redemptions)) and is_authed
@@ -157,7 +161,7 @@ def receive_tip_v3(request, key, txid, network):
             # tip.username
             # tip.metadata.max_redemptions
             # tip.metadata.override_send_amount
-            # tip.amount to the amount you want to send 
+            # tip.amount to the amount you want to send
             # ,"override_send_amount":1,"max_redemptions":29
 
             num_redemptions += 1
@@ -225,6 +229,7 @@ def send_tip_4(request):
             metadata__address=destinationAccount,
             metadata__salt=params['salt'],
             )
+
     is_authenticated_for_this_via_login = (tip.from_username and tip.from_username == from_username)
     is_authenticated_for_this_via_ip = tip.ip == get_ip(request)
     is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
@@ -248,6 +253,10 @@ def send_tip_4(request):
             tip=tip,
             )
     tip.save()
+    tip.trigger_townsquare()
+
+    from townsquare.tasks import calculate_clr_match
+    calculate_clr_match.delay()
 
     # notifications
     maybe_market_tip_to_github(tip)
@@ -262,9 +271,9 @@ def send_tip_4(request):
 
 def get_profile(handle):
     try:
-        to_profile = Profile.objects.get(handle__iexact=handle)
+        to_profile = Profile.objects.get(handle=handle.lower())
     except Profile.MultipleObjectsReturned:
-        to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
+        to_profile = Profile.objects.filter(handle=handle.lower()).order_by('-created_on').first()
     except Profile.DoesNotExist:
         to_profile = None
     return to_profile
@@ -288,7 +297,7 @@ def tipee_address(request, handle):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='15/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_3(request):
     """Handle the third stage of sending a tip (the POST).
 
@@ -353,7 +362,7 @@ def send_tip_3(request):
         from_email=params['from_email'],
         from_username=from_username,
         username=params['username'],
-        network=params['network'],
+        network=params.get('network', 'unknown'),
         tokenAddress=params['tokenAddress'],
         from_address=params['from_address'],
         is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
@@ -412,16 +421,17 @@ def send_tip_2(request):
 
     user = {}
     if username:
-        profiles = Profile.objects.filter(handle__iexact=username)
+        profiles = Profile.objects.filter(handle=username.lower())
 
         if profiles.exists():
             profile = profiles.first()
             user['id'] = profile.id
             user['text'] = profile.handle
+            user['avatar_url'] = profile.avatar_url
 
             if profile.avatar_baseavatar_related.exists():
-                user['avatar_id'] = profile.avatar_baseavatar_related.first().pk
-                user['avatar_url'] = profile.avatar_baseavatar_related.first().avatar_url
+                user['avatar_id'] = profile.avatar_baseavatar_related.filter(active=True).first().pk
+                user['avatar_url'] = profile.avatar_baseavatar_related.filter(active=True).first().avatar_url
                 user['preferred_payout_address'] = profile.preferred_payout_address
 
     params = {

@@ -6,10 +6,13 @@ $(document).ready(function() {
   });
 
   $('#skin_tones li:nth-child(1)').addClass('selected');
+  $('#background_tones li:nth-child(1)').addClass('selected');
   $('#hair_tones li:nth-child(1)').addClass('selected');
+  $('.tdselection:first-child').addClass('selected');
   document.td_ids = [];
   document.skin_tone = $('#skin_tones li.selected').data('tone');
   document.hair_tone = $('#hair_tones li.selected').data('tone');
+  document.background_tone = $('#background_tones li.selected').data('tone');
 
   var get_avatar_url = function() {
     var url = '/avatar/view3d?';
@@ -17,12 +20,26 @@ $(document).ready(function() {
     for (var i = 0; i < document.td_ids.length; i += 1) {
       url += '&ids[]=' + document.td_ids[i];
     }
-    url += '&skinTone=' + document.skin_tone;
-    url += '&hairTone=' + document.hair_tone;
+    var st = document.skin_tone;
+    var ht = document.hair_tone;
+    var bt = document.background_tone;
+
+    if (typeof st == 'undefined') {
+      st = '';
+    }
+    if (typeof ht == 'undefined') {
+      ht = '';
+    }
+    if (typeof bt == 'undefined') {
+      bt = '';
+    }
+    url += '&skinTone=' + st;
+    url += '&hairTone=' + ht;
+    url += '&backgroundTone=' + bt;
     var theme = getParam('theme');
 
     if (!theme) {
-      theme = '3d';
+      theme = 'unisex';
     }
     url += '&theme=' + theme;
     return url;
@@ -56,7 +73,20 @@ $(document).ready(function() {
   var update_all_options = function() {
     $('#tdavatartarget').attr('src', get_avatar_url());
     $('.tdselection').each(function() {
-      var new_url = $(this).data('src') + '&skinTone=' + document.skin_tone + '&hairTone=' + document.hair_tone;
+      var st = document.skin_tone;
+      var ht = document.hair_tone;
+      var bt = document.background_tone;
+
+      if (typeof st == 'undefined') {
+        st = '';
+      }
+      if (typeof ht == 'undefined') {
+        ht = '';
+      }
+      if (typeof bt == 'undefined') {
+        bt = '';
+      }
+      var new_url = $(this).data('src') + '&skinTone=' + st + '&hairTone=' + ht + '&backgroundTone=' + bt;
 
       $(this).data('altsrc', new_url);
       $(this).attr('src', '');
@@ -75,6 +105,15 @@ $(document).ready(function() {
   });
 
 
+  $('#background_tones li').click(function(e) {
+    e.preventDefault();
+    $(this).parents('#background_tones').find('.selected').removeClass('selected');
+    $(this).addClass('selected');
+    document.background_tone = $(this).data('tone');
+    update_all_options();
+  });
+
+
   $('#random-3d-avatar-button').click(function(e) {
     e.preventDefault();
     $('.select_avatar_type').each(function() {
@@ -84,6 +123,7 @@ $(document).ready(function() {
     });
     $('#skin_tones li').random().click();
     $('#hair_tones li').random().click();
+    $('#background_tones li').random().click();
   });
 
 
@@ -103,8 +143,9 @@ $(document).ready(function() {
       }
     });
   });
+  $('.select_avatar_type:first').click(); // set default tab
 
-  function save3DAvatar() {
+  function save3DAvatar(onSuccess) {
     $(document).ajaxStart(function() {
       loading_button($('#save-3d--avatar'));
     });
@@ -121,8 +162,12 @@ $(document).ready(function() {
       dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       success: function(response) {
-        _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
-        changeStep(1);
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
+          changeStep(1);
+        }
       },
       error: function(response) {
         let text = gettext('Error occurred while saving. Please try again.');
@@ -139,6 +184,29 @@ $(document).ready(function() {
     save3DAvatar();
   });
 
+  function upload3DAvatars() {
+
+    save3DAvatar(() => {
+      _alert({ message: gettext('The avatar has been saved to GitCoin profile. Now upload to 3Box...') }, 'success');
+      if (window.syncTo3Box) {
+        syncTo3Box({
+          onLoading,
+          models: ['custom avatar']
+        });
+      }
+    });
+
+    const onLoading = (loading) => {
+      if (loading) {
+        loading_button($('#save-3d--avatar'));
+      } else {
+        unloading_button($('#save-3d-avatar'));
+      }
+    };
+  }
+  $('#upload-3d-avatar').click(function() {
+    upload3DAvatars();
+  });
 
   jQuery.fn.random = function() {
     var randomIndex = Math.floor(Math.random() * this.length);

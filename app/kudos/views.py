@@ -46,6 +46,7 @@ from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
+from kudos.tasks import redeem_bulk_kudos
 from kudos.utils import kudos_abi
 from marketing.mails import new_kudos_request
 from ratelimit.decorators import ratelimit
@@ -72,9 +73,9 @@ def get_profile(handle):
         obj: The profile model object.
     """
     try:
-        to_profile = Profile.objects.get(handle__iexact=handle)
+        to_profile = Profile.objects.get(handle=handle.lower())
     except Profile.MultipleObjectsReturned:
-        to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
+        to_profile = Profile.objects.filter(handle=handle.lower()).order_by('-created_on').first()
     except Profile.DoesNotExist:
         to_profile = None
     return to_profile
@@ -96,7 +97,7 @@ def about(request):
     context = {
         'is_outside': True,
         'active': 'about',
-        'activities': [a.view_props for a in activities],
+        'activities': activities,
         'title': 'Kudos',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
@@ -289,6 +290,22 @@ def send_2(request):
     if _id and not str(_id).isdigit():
         raise Http404
 
+    username = request.GET.get('username', None)
+    user = {}
+
+    if username:
+        profiles = Profile.objects.filter(handle=username.lower())
+
+        if profiles.exists():
+            profile = profiles.first()
+            user['id'] = profile.id
+            user['text'] = profile.handle
+
+            if profile.avatar_baseavatar_related.exists():
+                user['avatar_id'] = profile.avatar_baseavatar_related.first().pk
+                user['avatar_url'] = profile.avatar_baseavatar_related.first().avatar_url
+                user['preferred_payout_address'] = profile.preferred_payout_address
+
     kudos = Token.objects.filter(pk=_id).first()
     if kudos and not kudos.send_enabled_for(request.user):
         messages.error(request, f'This kudos is not available to be sent.')
@@ -305,7 +322,12 @@ def send_2(request):
         'card_desc': _('Send a Kudos to any github user at the click of a button.'),
         'numbers': range(1,100),
         'kudos': kudos,
+        'username': username,
     }
+
+    if user:
+        params['user_json'] = user
+
     return TemplateResponse(request, 'transaction/send.html', params)
 
 
@@ -491,9 +513,9 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     }
     try:
         github_handle = github_handle.lstrip('@')
-        kwargs['profile'] = Profile.objects.get(handle=github_handle)
+        kwargs['profile'] = Profile.objects.get(handle=github_handle.lower())
     except Profile.MultipleObjectsReturned:
-        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+        kwargs['profile'] = Profile.objects.filter(handle=github_handle.lower()).first()
     except Profile.DoesNotExist:
         logger.warning(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
         return
@@ -529,9 +551,9 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
     }
 
     try:
-        kwargs['profile'] = Profile.objects.get(handle__iexact=github_handle)
+        kwargs['profile'] = Profile.objects.get(handle=github_handle.lower())
     except Profile.MultipleObjectsReturned:
-        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+        kwargs['profile'] = Profile.objects.filter(handle=github_handle.lower()).first()
     except Profile.DoesNotExist:
         logging.error(f"error in record_kudos_activity: profile with github name {github_handle} not found")
         return
@@ -662,15 +684,17 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
     private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
     kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
     gas_price_confirmation_time = 1 if not coupon.sender_address else 60
+    gas_price_multiplier = 1.5 if not coupon.sender_address else 1
     kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
     contract = w3.eth.contract(Web3.toChecksumAddress(kudos_contract_address), abi=kudos_abi())
     nonce = w3.eth.getTransactionCount(kudos_owner_address)
+    gas_price = int(int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9) * gas_price_multiplier)
     tx = contract.functions.clone(address, coupon.token.token_id, 1).buildTransaction({
         'nonce': nonce,
         'gas': 500000,
-        'gasPrice': int(recommend_min_gas_price_to_confirm_in_time(gas_price_confirmation_time) * 10**9),
+        'gasPrice': gas_price,
         'value': int(coupon.token.price_finney / 1000.0 * 10**18),
     })
 
@@ -678,6 +702,11 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
         error = f'Your github profile is too new.  Cannot receive kudos.'
         return None, error, None
     else:
+
+        if profile.bulk_transfer_redemptions.filter(coupon=coupon).exists():
+            error = f'You have already redeemed this kudos.'
+            return None, error, None
+
 
         signed = w3.eth.account.signTransaction(tx, private_key)
         retry_later = False
@@ -710,6 +739,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
                 receive_txid=txid,
                 tx_status='pending',
                 receive_tx_status='pending',
+                receive_address=address,
             )
 
             # save to DB
@@ -737,8 +767,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
             maybe_market_kudos_to_email(kudos_transfer)
 
             if retry_later:
-                from kudos.tasks import redeem_bulk_kudos
-                redeem_bulk_kudos.delay(kudos_transfer.id, signed.rawTransaction.hex())
+                redeem_bulk_kudos.delay(kudos_transfer.id)
 
     return True, None, kudos_transfer
 
@@ -829,6 +858,7 @@ def newkudos(request):
                 description=request.POST['description'],
                 priceFinney=request.POST['priceFinney'],
                 artist=request.POST['artist'],
+                bounty_url=request.POST['bounty_url'],
                 platform=request.POST['platform'],
                 numClonesAllowed=request.POST['numClonesAllowed'],
                 tags=request.POST['tags'].split(","),
@@ -839,6 +869,7 @@ def newkudos(request):
                 metadata={
                     'ip': get_ip(request),
                     'email': request.POST.get('email'),
+                    'pay_gas': request.POST.get('pay_gas', 0),
                     }
                 )
             new_kudos_request(obj)

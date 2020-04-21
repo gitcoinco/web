@@ -19,8 +19,6 @@ def start():
     Grant.objects.all().delete()
     Subscription.objects.all().delete()
     Activity.objects.all().delete()
-    yield
-    Profile.objects.all().delete()
     Token.objects.create(symbol="E18R", address='0xFc1079D41D56D78e9FA2a857991F41D777104c74', network="mainnet")
 
 def test_close_enough():

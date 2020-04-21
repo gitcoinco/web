@@ -3,10 +3,10 @@
 
   <div class="tab-projects d-flex flex-column mb-4">
     <h3 class="font-body mb-3">Core Team</h3>
-    {% if profile.team|length == 0 %}
+    {% if team|length == 0 %}
       <p class="text-center">No Members</p>
     {% endif %}
-    {% for org in profile.team %}
+    {% for org in team %}
       <div class="tab-projects__item d-flex mb-0 {% cycle 'odd' 'even' %} py-2 my-auto">
         <div class="activity-avatar ml-5">
           <img height="24" width="24" class="avatar secondary_avatar rounded-circle align-self-end" src="{% avatar_url org %}" />

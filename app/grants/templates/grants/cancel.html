@@ -38,7 +38,6 @@
       </div>
     </div>
 
-    {% include 'grants/shared/alpha.html' %}
     {% include 'grants/shared/waiting_state.html' %}
 
     <div class="row">
@@ -50,10 +49,8 @@
     <div class="row" id="grants_form">
 
       <div class="col-12 text-center mt-md-3">
-        <h2 class="font-title-lg my-5">{% trans "Cancel Contribution" %}</h2>
+        <h2 class="font-title-lg my-5">Cancel Contribution for {{ grant.title }}</h2>
       </div>
-
-      {% include 'grants/banner.html' %}
 
       <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-5 mt-5 font-subheader mx-0 mx-md-auto row">
 
@@ -66,7 +63,7 @@
           </p>
           <p>
             <i class="fas fa-circle mr-2"></i>
-            {% trans " Note: You will have to approve 2 transactions via MetaMask on submit." %}
+            {% trans " Note: You will have to approve 2 transactions via your web3 wallet on submit." %}
           </p>
         </div>
 

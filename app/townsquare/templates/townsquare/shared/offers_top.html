@@ -1,0 +1,38 @@
+      {% if offers_by_category.top.offers %}
+      <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
+        <div class="row top_offers pb-2">
+          <div class="container py-0 ">
+            <div class="my-1">
+
+              <div class="row mx-md-3">
+                <div class="col-12">
+                  <h4 class="pt-3 font-weight-semibold font-header text-left">Nano-Bounties</h4>
+                </div>
+                {% for nb in offers_by_category.top.offers|slice:3 %}
+                  <div class="top_offer row mx-auto mx-md-0 mb-3 mb-sm-0">
+                    <div class="col-12 decline-container">
+                      <a class="decline float-right" href="{{nb.decline_url}}">
+                        <i class="fas fa-times"></i>
+                      </a>
+                    </div>
+
+                    <div class="col-2">
+                      <img class="rounded-circle" src=dynamic/avatar/{{nb.created_by.handle}}>
+                    </div>
+
+                    <div class="col-10 pl-1">
+                      <h5 class="font-weight-semibold font-subheader mb-1">{{nb.title}}</h5>
+                      <p class="font-body">{{nb.desc}}</p>
+                      <div class="float-right">
+                        <span class="tag">{{nb.amount}}</span>
+                        <a class="btn btn-gc-blue btn-sm font-smaller-6 font-weight-bold text-uppercase" href="{{nb.go_url}}">VIEW</a>
+                      </div>
+                    </div>
+
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}

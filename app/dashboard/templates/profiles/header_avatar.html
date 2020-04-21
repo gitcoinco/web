@@ -4,7 +4,7 @@
     <a href="{% url "onboard" "profile" %}?steps=avatar">
   {% endif %}
 
-  <img class="profile-header__avatar" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
+  <img class="profile-header__avatar" src="/dynamic/avatar/{{profile.handle}}" />
 
   {% if is_editable %}
     <div class="avatar_edit d-md-block d-sm-none">

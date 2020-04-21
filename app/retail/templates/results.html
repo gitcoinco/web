@@ -100,7 +100,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{% trans "21,418" %}</h3>
+            <h3 class="single-stat__title">{{mau|floatformat:0|intcomma}}</h3>
             <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
@@ -512,7 +512,7 @@
         <div class="row mt-5 pb-5 text-center">
           <div class="col">
             <p class="mt-2 mb-5"> {% trans "Want to learn more about where our little web3 pirate ship is going?" %} </p>
-            <a class="button button--primary" role="button" href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">{% trans "Get Mesh-ey; Read our Vision" %}</a>
+            <a class="button button--primary" role="button" href="https://gitcoin.co/blog/open-source-money-will-buidl-the-open-source-ecosystem/">{% trans "Get Mesh-ey; Read our Vision" %}</a>
           </div>
         </div>
       </div>

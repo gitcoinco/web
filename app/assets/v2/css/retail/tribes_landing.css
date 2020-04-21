@@ -3,32 +3,15 @@
   color: white;
 }
 
-.gc-green-text {
-  color: #0FCE7C;
-}
-
 .tribes-landing .title {
-  border-bottom: 5px solid;
-}
-
-.companies img {
-  height: 3.5rem;
-  transition: transform .25s;
-}
-
-.companies img:last-child {
-  margin-bottom: 0!important;
-}
-
-.companies img:hover {
-  transform: scale(1.25);
+  border-bottom: 7px solid;
 }
 
 .features {
   max-width: 20rem;;
 }
 
-img {
+.tribes-landing img {
   max-width: 100%;
 }
 
@@ -47,41 +30,68 @@ img {
   top: 1px;
 }
 
+.plan {
+  min-height: 3rem;
+}
+
 .plan-header img {
   height: 120px;
 }
 
-.testimonial-section {
-  background: #000;
+.why-section {
+  background: #170640;
   color: #fff;
 }
 
-.testimonial-section .square-1 {
-  top: 2rem;
+.why-section .square-1 {
+  top: -9rem;
   right: 0;
+  opacity: 0.2;
 }
 
-.testimonial-section .square-2 {
+.why-section .square-2 {
   height: 25rem;
+  top: 25rem;
+  opacity: 0.3;
 }
 
-.testimonial-section .stats {
-  font-size: 3rem;
+.why-section .reasons img {
+  height: 2.2rem;
+}
+
+.zoom-on-hover {
+  transition: all .3s;
+}
+
+.zoom-on-hover:hover {
+  transform: scale(1.15);
+}
+
+.testimonial-section {
+  background: #F0F2F8;
 }
 
 .testimonial-section .testimonial-box {
-  border: 5px solid #0FCE7C;
+  border: 3px solid #3E00FF;
   border-radius: 5px;
 }
 
 .testimonial-section .testimonial-box  .img-container {
-  border: 6px solid #0FCE7C;
-  height: 4rem;
-  width: 4rem;
+  border: 2px solid #3E00FF;
+  height: 5rem;
+  width: 5rem;
+  top: -7px;
+  position: relative;
+  background: #fff;
 }
 
 .testimonial-section .testimonial-box .img-container.org-container {
   left: -1rem;
+}
+
+.testimonial-section .testimonial-box .img-container.org-container img {
+  left: -2px;
+  top: 6px;
 }
 
 .testimonial-section .quote-container {
@@ -89,11 +99,39 @@ img {
 }
 
 .testimonial-section .quote-text {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
+}
+
+.testimonial-section img {
+  max-width: 5rem;
+  top: -5px;
+  background: white;
 }
 
 .testimonial-section .testimonial-photo-container {
   top: -2rem;
   left: 0;
   right: 0;
+}
+
+#pro,
+#pro h3,
+#pro h2,
+#pro .plan-header span {
+  background-color: #170640;
+  color: white;
+}
+
+.ribbon-green span {
+  background: #0FCE7C;
+}
+
+.tribes-section img {
+  height: 5rem;
+}
+
+@media (min-width:1200px) and (max-width: 1500px) {
+  #plans-container {
+    min-width: 100% !important;
+  }
 }

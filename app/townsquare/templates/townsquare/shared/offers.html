@@ -1,0 +1,36 @@
+{% load humanize static i18n %}
+              {% for type, item in offers_by_category.items %}
+                {% if item.offer %}
+                  <a class="offer_container {{type}} animate mb-4 align-items-center" href="{{item.offer.view_url}}">
+                    <span class="prize-gift">
+                      <i class="fa-2x fa-fw fa-gift fas"></i>
+                    </span>
+                    <div class="d-flex flex-column flex-fill ml-3">
+                      <h4 class="p-0 offer_container_type">{{type|title}} Action</h4>
+                      <div class="font-caption font-smaller-5 text-left">
+                        <span class="">
+                          <i class="fas fa-hourglass-end mr-1"></i>
+                          Expires <span class="{{type}} timer m-0" data-time="{{item.offer.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}">in {{item.offer.valid_to|naturaltime}}</span>
+                        </span>
+                        <button class="btn btn-block btn-gc-blue btn-sm mt-2">View Action</button>
+                      </div>
+                    </div>
+                  </a>
+                {% else %}
+                  <div class="offer_container {{type}} empty mb-4 align-items-center">
+                    <span class="prize-gift">
+                      <i class="fa-2x fa-fw fa-gift fas"></i>
+                    </span>
+                    <div class="d-flex flex-column flex-fill ml-3">
+                      <h4 class="p-0 offer_container_type">{{type|title}} Action</h4>
+                      <div class="font-caption font-smaller-5 text-left">
+                        <span class="">
+                          <i class="fas fa-hourglass-end mr-1"></i>
+                          Available
+                          <span class="{{type}} timer m-0" data-time-future="true" data-time="{{item.time|date:'c'}}" data-base_time="{{now|date:'c'}}">{{item.time|naturaltime}}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}

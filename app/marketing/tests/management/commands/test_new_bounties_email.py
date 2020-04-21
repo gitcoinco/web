@@ -43,7 +43,7 @@ class TestNewBountiesEmail(TestCase):
             bounty_owner_email='john@bar.com',
             current_bounty=True,
             network='mainnet',
-            bounty_reserved_for_user=Profile.objects.filter(handle__iexact='fred').first(),
+            bounty_reserved_for_user=Profile.objects.filter(handle='fred').first(),
         )
 
         Bounty.objects.create(

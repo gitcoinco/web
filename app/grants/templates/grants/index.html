@@ -17,294 +17,48 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <head>
     <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
     {% include 'shared/head.html' with slim=1 %}
-    {% include 'shared/cards.html' %}
+    {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   </head>
-  <body class="interior {{ active }} grant g-font-muli">
+  <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header dash" style="background-image: url('/static/v2/images/bg/{{bg}}');">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
 
-      <div class="container py-5 ">
-        <div class="grants-hero white my-5">
-          <div class="row">
-            <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
-              <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/eVgEWSPFR2o?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-              </div>
-            </div>
-            <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
-              <h1 class="font-title-xl font-weight-semibold">{% trans 'Get Substantial Sustainable Funding for Your Projects' %}</h1>
-              <p class="my-4 pt-1 font-header">
-                {% blocktrans %}
-                Gitcoin Grants <a target="_blank" rel="noopener noreferrer" href="https://vitalik.ca/general/2019/10/24/gitcoin.html">provides matching funds</a> + <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">monthly subscription</a> for
-                your favorite OSS maintainers, media outlets, and more. <br/><br/>
-                Show your support.
-                {% endblocktrans %}
-              </p>
-              <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
-                <img class="mr-1 white-icon" src="{% static "v2/images/grants/icons/white.svg" %}">
-                {% trans 'Create a Grant' %}
-              </a>
-            </div>
-          </div>
+
+      {% include 'grants/shared/landing_hero.html' %}
+      <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
+        <div style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
+      {% include 'grants/shared/landing_navbar.html' %}
+      {% include 'grants/shared/landing_clr.html' %}
+      {% if type == 'activity' %}
+        {% include 'grants/shared/landing_activity.html' %}
+      {% elif type == 'about' %}
+        {% include 'grants/shared/landing_announce.html' %}
+      {% elif type == 'stats' %}
+        <div id="insert_iframe">
         </div>
-      </div>
-    </div>
-
-
-      <div class="container-fluid py-4 grants-results">
-        <div class="container">
-          <strong>Gitcoin Grants</strong> has facilitated the distribution of <strong>${{grant_amount}}</strong> to community public goods since it's launch in January 2019.
-          <a class="font-body" href="/results">See more results</a>.
-          <br>
-          <img src="{% static 'v2/images/grants/robots.png' %}" style="max-width: 100px;" class="pt-3" />
-
+        <script>
+          var insert_iframe = function(){
+            if(typeof $ != 'undefined'){
+              $('#insert_iframe').html('<iframe src="/grants/stats/?category={{selected_category}}" style="width: 100%; height: 100%; min-height: 1000px;">')
+            } else {
+            setTimeout(insert_iframe, 100);
+            }
+          };
+          setTimeout(insert_iframe, 100);
+        </script>
+      {% else %}
+        {% include 'grants/shared/landing_subnav.html' %}
+        {% include 'grants/shared/landing_grants.html' %}
+      {% endif %}
         </div>
       </div>
 
-      <div class="container-fluid pt-0 pb-5 grants-matching">
-        <div class="container">
-          <div class="col-md-12 font-smaller-1 text-center pt-2">
-            <p class="mb-1 font-weight-semibold">
-              $200k Round 4 is has now closed.
-            </p>
-            <p class="mb-1">
-              From <strong>1/6 through 1/21 at 16:59 PST</strong> we were matching contributions with quadratic funding.
-              <a href="https://gitcoin.co/blog/gitcoin-grants-2020/">More details here</a>
-            </p>
-            <p class="mb-1">
-              Gitcoin Grants is the largest pilot for Quadratic Funding around!
-              Want to help fund open source in the 'mathematically optimal' way?
-            </p>
-            <p class="hidden">
-              <a href="https://twitter.com/owocki/status/1217993123311177728">Update 2020/1/17 - Statement on Quid Pro Quos on Gitcoin Grants</a>
-            </p>
-            <p class="mb-1">
-              The next CLR Round is  <strong>tentatively scheduled for March</strong>.  Want to be involved?  Click on the 'be a matching partner' button below.
-            </p>
 
-            {% if not user.is_authenticated %}
-              <a class="btn btn-gc-blue font-body font-weight-semibold" href="mailto:founders@gitcoin.co">
-                {% trans 'Become a Matching Partner' %}
-              </a>
-            {% else %}
-              <div class="btn btn-gc-blue font-subtitle font-weight-semibold" onclick="processPayment()">
-                {% trans 'Become a Matching Partner' %}
-              </div>
-            {% endif %}
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid py-4 grants-search">
-      <div class="container">
-        <form method="POST" id="search_form">
-          {% csrf_token %}
-
-          {% if is_staff %}
-            <div class="row font-caption font-weight-semibold">
-              <div class="col-12"r>
-                {% trans "[ Admin ] Choose Network :" %}
-                <span class="network-container">
-                  <select name="network" id="network">
-                    <option value="mainnet">Mainnet</option>
-                    <option value="rinkeby">Rinkeby</option>
-                  </select>
-                </span>
-              </div>
-            </div>
-          {% endif %}
-
-          <div class="row justify-content-center">
-            <div class="col-12 col-lg-9">
-              <ul class="grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
-                {% for grant_type in grant_types %}
-                  <a data-type="type" data-value="{{grant_type.keyword}}" class="mr-3 px-2 {% if type == grant_type.keyword %}selected{% endif %}">
-                    {{grant_type.label}} ({{grant_type.count}})
-                  </a>
-                {% endfor %}
-              </ul>
-            </div>
-
-            <div class="col-12 col-lg-3 pl-lg-0 mt-4 mt-lg-0 search position-relative">
-              <input type="search" class="form__input" id="keyword" name="keyword" placeholder="Search Grants">
-              <button class="position-absolute">
-                <i class="ml-2 fas fa-search"></i>
-              </button>
-            </div>
-          </div>
-
-          {% if current_partners or past_partners %}
-            <div class="row grant-partners text-white my-5">
-              <div class="col-12 col-md-9">
-                {% if current_partners %}
-                  <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
-                    {{ type }} GRANTS CLR MATCHING ROUND {{clr_round}}
-                  </h2>
-                  <p class="px-4">Jan 6, 2020 - Jan 21, 2020</p>
-                {% else %}
-                  <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
-                    GRANTS CLR {{ clr_round|add:"1" }} ( COMING SOON )
-                  </h2>
-                {% endif %}
-              </div>
-              <div class="col-12 col-md-3 total_active_fund">
-                {% if current_partners %}
-                  <p class="pt-4 mb-0 font-weight-semibold">${{current_partners_fund|floatformat|intcomma}}</p>
-                {% endif %}
-              </div>
-              <div class="col-12">
-                <ul class="nav nav-tabs my-0 font-smaller-1 px-4" role="tablist">
-                  {% if current_partners %}
-                    <li class="nav-item">
-                      <a class="nav-link nav-line active px-0 pb-1" id="currentpartners-tab"
-                        data-toggle="tab" href="#currentpartners" role="tab" class="text-white"
-                        aria-controls="currentpartners" aria-selected="true">
-                        Sponsors
-                      </a>
-                    </li>
-                  {% endif %}
-                  {% if past_partners %}
-                    <li class="nav-item font-caption position-relative" style="top: 1px;">
-                      <a class="nav-link nav-line mx-0 pb-1" id="pastpartners-tab" data-toggle="tab"
-                        href="#pastpartners" role="tab" aria-controls="pastpartners" class="text-white"
-                        aria-selected="false"
-                      >
-                        Past Sponsors
-                      </a>
-                    </li>
-                  {% endif %}
-                </ul>
-
-                <div class="tab-content px-4">
-                  {% if current_partners %}
-                    <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
-                      {% for current_partner in current_partners %}
-                        <div class="text-center px-3" style="display: inline-block; padding: 10px;">
-                          <a href="/profile/{{current_partner.profile.handle}}">
-                            <img src="/dynamic/avatar/{{current_partner.profile.handle}}">
-                          </a>
-                          <p class="font-body mt-2 mb-1">
-                            <a class="text-white" href="/profile/{{current_partner.profile.handle}}">
-                              @{{current_partner.profile.handle}}
-                            </a>
-                          </p>
-                          <p class="font-caption font-weight-semibold">
-                            ${{current_partner.amount|floatformat|intcomma}}
-                          </p>
-                        </div>
-                      {% endfor %}
-                    </div>
-                  {% endif %}
-
-                  {% if past_partners %}
-                    <div class="tab-pane fade {% if not current_partners %}show active{% endif %}" id="pastpartners"
-                      role="tabpanel" aria-labelledby="pastpartners-tab"
-                    >
-                      {% for past_partner in past_partners %}
-                        <div class="text-center px-3" style="display: inline-block; padding: 10px;">
-                          <a class="text-white" href="/profile/{{past_partner.profile.handle}}">
-                            <img src="/dynamic/avatar/{{past_partner.profile.handle}}">
-                          </a>
-                          <p class="font-body mt-2 mb-1">
-                            <a class="text-white" href="/profile/{{current_partner.profile.handle}}">
-                              @{{past_partner.profile.handle}}
-                            </a>
-                          </p>
-                          <p class="font-caption font-weight-semibold">
-                            ${{past_partner.amount|floatformat|intcomma}}
-                          </p>
-                        </div>
-                      {% endfor %}
-                    </div>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-          {% endif %}
-
-          <div class="row mt-5">
-
-            <div class="col-12 col-xl-8">
-              <ul class="grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-center text-xl-left font-body font-weight-semibold">
-                {% for category in nav_options %}
-                  <a  data-type="keyword" data-value="{{category.keyword}}" class="mr-3 mr-md-2 mr-lg-3 {% if keyword == category.keyword %}selected{% endif %}"  >
-                    {{category.label}}
-                  </a>
-                {% endfor %}
-              </ul>
-            </div>
-
-            <div class="col-12 col-xl-4 mt-2 mt-xl-0 font-caption text-center text-xl-right font-weight-semibold order_by sort_container">
-              <div class="heading">{% trans "Sort by" %}</div>
-              <select name="sort_option" id="sort_option">
-                <option value="weighted_shuffle">{% trans "Weighted Shuffle" %}</option>
-                <option value="match_pledge_amount_1">{% trans "Round 4 - $1 Contrib Matching Amount" %}</option>
-                <option value="match_pledge_amount_10">{% trans "Round 4 - $10 Contrib Matching Amount" %}</option>
-                <option value="match_pledge_amount_100">{% trans "Round 4 - $100 Contrib Matching Amount" %}</option>
-                <option value="match_pledge_amount_1000">{% trans "Round 4 - $1k Contrib Matching Amount" %}</option>
-                <option value="-clr_prediction_curve__0__1">{% trans "Round 4 - CLR Match Estimate: Highest" %}</option>
-                <option value="clr_prediction_curve__0__1">{% trans "Round 4 - CLR Match Estimate: Lowest" %}</option>
-                <option value="-clr_matching">{% trans "Rounds 1 & 2 - Total CLR Match: Highest" %}</option>
-                <option value="clr_matching">{% trans "Rounds 1 & 2 - Total CLR Match: Lowest" %}</option>
-                <option value="-created_on">{% trans "Created: Recent" %}</option>
-                <option value="created_on">{% trans "Created: Oldest" %}</option>
-                <option value="-amount_goal">{% trans "Goal: Highest" %}</option>
-                <option value="amount_goal">{% trans "Goal: Lowest" %}</option>
-                <option value="-amount_received">{% trans "Amount Raised: Highest" %}</option>
-                <option value="amount_received">{% trans "Amount Raised: Lowest" %}</option>
-                <option value="-contribution_count">{% trans "Most Contributions" %}</option>
-                <option value="-contributor_count">{% trans "Most Contributors" %}</option>
-              </select>
-            </div>
-
-          </div>
-
-        </form>
-      </div>
-    </div>
-    <div class="container-fluid grants-container">
-      <div class="container">
-        {% if grants %}
-          <div class="infinite-container row">
-            {% for grant in grants %}
-              <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item">
-                {% include 'grants/card/index.html' %}
-              </div>
-            {% endfor %}
-          </div>
-          {% if grants.has_next %}
-            <p class="mb-0 text-center py-4">
-              <a class="infinite-more-link text-center text-black-70 cursor-pointer"
-                href="?network={{network}}&type={{type}}&keyword={{keyword}}&sort_option={{sort}}&page={{ grants.next_page_number }}"
-              >
-                <i class="fas fa-spinner fa-spin mr-2"></i>
-                Collecting more exciting grants
-              </a>
-            </p>
-          {% endif %}
-        {% else %}
-          <div class="col-12 mb-3 mx-auto col-md-6 text-center">
-            <img class="obiwan my-4" src="{% static "v2/images/obiwan-bot.svg" %}">
-            <h1 class="font-title-lg font-weight-semibold mt-4 mb-2">{% trans "This is not the grant you’re looking for." %}</h1>
-            <p class="font-subheader text">
-              {% trans "We couldn't match with any grants on Gitcoin." %}</br>
-              {% trans "Please try another search term or browse for a grant." %}
-            </p>
-          </div>
-          <div class="col-12 pt-4 pb-2 mx-auto text-center">
-            <a class="button-lg btn-gc btn-gc-blue py-3 px-5 font-weight-semibold" href="{% url 'grants:grants' %}">
-              {% trans "Browse Grants" %}
-            </a>
-          </div>
-        {% endif %}
-      </div>
-    </div>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
@@ -321,10 +75,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/grants/index.js" %}"></script>
   <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
   <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
-  <script src="{% static "v2/js/grants/newMatchingPartner.js" %}"></script>
-  <script>
-    var infinite = new Waypoint.Infinite({
-      element: $('.infinite-container')[0]
-    });
-  </script>
+  {% if type == 'activity' %}
+    {% include 'shared/activity_scripts.html' %}
+  {% else %}
+    <script>
+      var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container')[0]
+      });
+    </script>
+  {% endif %}
+
+  
 </html>

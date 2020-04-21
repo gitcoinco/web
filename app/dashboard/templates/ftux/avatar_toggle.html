@@ -1,5 +1,21 @@
-      <select id=theme>
+{% load humanize %}
+      <h2 class="mb-4">1. Choose Avatar Mode</h2>
+       <div id="theme">
         {% for option in avatar_options %}
-          <option value="{{option.1}}" {% if option.0 == theme %} selected="selected" {% endif %} >{{option.0}}</option>
+          <a class="avatar_builder {% if option.name == theme %}selected {% endif %}" href='{{option.url}}'>
+            <img src='{{option.img_url}}' data-toggle="tooltip" title="Created {{option.created_on|naturaltime}} | {{option.popularity}} active avatars" data-html="true" >
+            <p class="title m-0 p-0">{{option.humanized_name}}</p>
+            <p class="desc">{{option.popularity}} active</p>
+          </a>
         {% endfor %}
-      </select>
+       </div>
+      <h2 class="mt-2 mb-2">2. Build Avatar</h2>
+      <div class="mb-2">
+        {% for option in avatar_options %}
+          {% if option.artist_bio and theme == option.name %}
+            <span>
+              ( <strong>About the artist</strong>: {{option.artist_bio|safe}} )
+            </span>
+          {% endif %}
+        {% endfor %}
+      </div>

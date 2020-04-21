@@ -1,0 +1,17 @@
+[
+  {
+  "model": "oauth2_provider.application",
+  "pk": 1,
+  "fields": {
+    "created": "2020-02-29 21:30:30Z",
+    "updated": "2020-02-29 21:30:30Z",
+    "client_id": "VkHFfFlxnVCMYtYCWRxphbvPQUJjmER4cWtwqe7Q",
+    "client_secret": "xhLXNqXnOlkUiGCDFJLxQJjPb3CltLZNFZtzOsLgFfvwbYY60kYWRRBmqyjzfrnNyT6WWdIbfQEPpU854K2UiofmXtybFD1QkfIR9VVQyK3ttJpET7GormIBjK9CQRap",
+    "redirect_uris": "http://localhost:8065/login/gitcoin/complete http://localhost:8065/signup/gitcoin/complete http://localhost:8065/oauth/gitcoin/complete",
+    "client_type": "confidential",
+    "authorization_grant_type": "authorization-code",
+    "skip_authorization": true,
+    "user_id": null,
+    "name": "Gitcoin Chat"
+  }
+}]

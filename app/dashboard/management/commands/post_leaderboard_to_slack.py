@@ -33,19 +33,20 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-def post_to_slack(channel, msg):
+def post_to_chat(channel, msg):
     try:
-        token = settings.SLACK_TOKEN
-        sc = SlackClient(token)
-        sc.api_call(
-            "chat.postMessage",
-            channel=channel,
-            text=msg,
-            icon_url=settings.GITCOIN_SLACK_ICON_URL,
-            mrkdwn=True,
-            username="gitcoinbot"
-        )
-        return True
+        from chat.tasks import get_driver
+        chat_driver = get_driver()
+
+        response = chat_driver.posts.create_post({
+            'channel_id': channel,
+            'message': msg
+        })
+
+        if 'message' in response:
+            return False
+
+        return False
     except Exception as e:
         print(e)
         return False
@@ -58,12 +59,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         #config
         num_items = 7
-        channel = 'community-general' if not settings.DEBUG else 'testkevin'
+        channel = settings.GITCOIN_LEADERBOARD_CHANNEL_ID if not settings.DEBUG else ''
 
         num_to_emoji = {
-            1: 'first_place_medal',
-            2: 'second_place_medal',
-            3: 'third_place_medal',
+            1: '1st_place_medal',
+            2: '2nd_place_medal',
+            3: '3rd_place_medal',
         }
 
         titles = {
@@ -88,7 +89,7 @@ class Command(BaseCommand):
                 counter += 1
         msg += "\n :chart_with_upwards_trend:  View Leaderboard: https://gitcoin.co/leaderboard "
         msg += "\n=========================================\n If you are in the top 3 in any category, DM @owocki for some Gitcoin schwag !! "
-        msg += "\n=========================================\n\n :four_leaf_clover: Good luck and see you next week! \n\n:love_gitcoin: ~gitcoinbot "
+        msg += "\n=========================================\n\n :four_leaf_clover: Good luck and see you next week! \n\n:love_gitcoin: #gitcoinbot "
         print(msg)
-        success = post_to_slack(channel, msg)
+        success = post_to_chat(channel, msg)
         print(success)

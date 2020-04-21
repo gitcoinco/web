@@ -17,7 +17,11 @@
 {% endcomment %}
 {% load static %}
 <meta name="twitter:domain" content="gitcoin.co" />
-<meta name="twitter:card" content="summary" />
+{% if card_type %}
+    <meta name="twitter:card" content="{{card_type}}" />
+{% else %}
+    <meta name="twitter:card" content="summary" />
+{% endif %}
 <meta name="twitter:site" content="@gitcoin" />
 {% if card_title %}
     <meta name="twitter:title" content="{{card_title}}" />
@@ -35,8 +39,8 @@
 {% if avatar_url %}
     <meta name="twitter:image" content="{{avatar_url}}" />
     <meta property="twitter:image" content="{{avatar_url}}" />
-    <meta name="twitter:image:width" content="215" />
-    <meta name="twitter:image:height" content="215" />
+    <meta name="twitter:image:width" content="{% if avatar_width %}{{avatar_width}}{%else%}215{%endif%}" />
+    <meta name="twitter:image:height" content="{% if avatar_height %}{{avatar_height}}{%else%}215{%endif%}" />
 {% else %}
     <meta name="twitter:image" content="{% static "v2/images/helmet.png" %}" />
     <meta name="twitter:image:width" content="238" />

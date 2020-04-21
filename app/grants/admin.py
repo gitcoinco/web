@@ -22,13 +22,40 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update
+from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
 
     ordering = ['-id']
+
+
+class FlagAdmin(admin.ModelAdmin):
+    """Define the FlagAdmin administration layout."""
+
+    ordering = ['-id']
+    raw_id_fields = ['profile', 'grant']
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_tweet" in request.POST:
+            import twitter
+            from django.conf import settings
+            # TODO : get @gicoindisputes out of twitter jail
+            api = twitter.Api(
+                consumer_key=settings.DISPUTES_TWITTER_CONSUMER_KEY,
+                consumer_secret=settings.DISPUTES_TWITTER_CONSUMER_SECRET,
+                access_token_key=settings.DISPUTES_TWITTER_ACCESS_TOKEN,
+                access_token_secret=settings.DISPUTES_TWITTER_ACCESS_SECRET,
+            )
+            new_tweet = f"{settings.BASE_URL}{obj.grant.url} : {obj.comments}"[0:280]
+            result = api.PostUpdate(new_tweet).AsDict()
+            obj.processed = True
+            obj.tweet = f"https://twitter.com/{result['user']['screen_name']}/statuses/{result['id']}"
+            obj.save()
+        return redirect(obj.admin_url)
+
 
 
 class MatchPledgeAdmin(admin.ModelAdmin):
@@ -52,7 +79,7 @@ class GrantAdmin(GeneralAdmin):
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata'
+        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
@@ -62,6 +89,8 @@ class GrantAdmin(GeneralAdmin):
     ]
     list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
+    search_fields = ['amount_goal', 'description', 'admin_profile__handle']
+
 
     # Custom Avatars
     def logo_svg_asset(self, instance):
@@ -104,13 +133,13 @@ class GrantAdmin(GeneralAdmin):
 
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
-        eles = []
+        eles = []   
 
-        for ele in instance.subscriptions.all().order_by('pk'):
-            html = f"<a href='{ele.admin_url}'>{ele}</a>"
+        for i in [True, False]:
+            html = f"<h3>Success {i}</h3>"
             eles.append(html)
-            for sub_ele in ele.subscription_contribution.all().order_by('pk'):
-                html = f" - <a href='{sub_ele.admin_url}'>{sub_ele}</a>"
+            for ele in instance.contributions.order_by('-subscription__amount_per_period_usdt'):
+                html = f" - <a href='{ele.admin_url}'>{ele}</a>"
                 eles.append(html)
 
         return mark_safe("<BR>".join(eles))
@@ -191,6 +220,7 @@ class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
     list_display = ['id', 'github_created_on', 'from_ip_address', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
+    readonly_fields = ['etherscan_links']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
@@ -218,18 +248,10 @@ class ContributionAdmin(GeneralAdmin):
         return " , ".join(visits)
 
 
-class MilestoneAdmin(admin.ModelAdmin):
-    """Define the Milestone administration layout."""
-
-    ordering = ['-id']
-    list_display =['pk', 'grant', 'title', 'created_on']
-
-
-class UpdateAdmin(admin.ModelAdmin):
-    """Define the Update administration layout."""
-
-    ordering = ['-id']
-    list_display =['pk', 'grant', 'title', 'created_on']
+    def etherscan_links(self, instance):
+        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id}</a><BR>"
+        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
+        return mark_safe(html)
 
 
 class PhantomFundingAdmin(admin.ModelAdmin):
@@ -237,6 +259,7 @@ class PhantomFundingAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     list_display = ['id', 'github_created_on', 'from_ip_address', '__str__']
+    raw_id_fields = ['profile', 'grant']
 
     def github_created_on(self, instance):
         from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -253,8 +276,7 @@ class PhantomFundingAdmin(admin.ModelAdmin):
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
+admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, GeneralAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
-admin.site.register(Milestone, MilestoneAdmin)
-admin.site.register(Update, UpdateAdmin)
