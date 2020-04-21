@@ -1523,15 +1523,15 @@ def increase_funding_limit_request(request):
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
 
 
-def tribes(request):
-    top_tribes = Profile.objects.filter(is_org=True).annotate(followers=Count('follower')).order_by('-followers')[:8]
+def tribes_home(request):
+    tribes = Profile.objects.filter(is_org=True).annotate(followers=Count('follower')).order_by('-followers')[:8]
 
     context = {
         'testimonials': testimonials(),
         'reasons': reasons(),
         'articles': articles(),
         'press': press(),
-        'top_tribes': top_tribes
+        'tribes': tribes
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)

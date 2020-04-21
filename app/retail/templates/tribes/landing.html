@@ -97,7 +97,7 @@
           </p>
 
           <div class="d-flex flex-wrap mb-4 tribes-grid">
-            {% for tribe in top_tribes %}
+            {% for tribe in tribes %}
               <a href="{% url 'profile' tribe.handle %}" class="col-xs-6 col-md-3  mt-5 mb-3 text-center black text-black-70">
                 <img src="/dynamic/avatar/{{ tribe.handle }}" height="114" alt="{{tribe.name}}" class="{{tribe.name}}">
                 <h4 class="font-header font-weight-bolder font-bigger-2 p-0 mt-3 mb-0 ">{{tribe.name}}</h4>
