@@ -45,20 +45,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div id=top_bar>
         {% if SHOW_DRESSING %}
 
-        {% if not profile_id %}
-          <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
-          <div class="container">
-            <div class="row">
-              <div class="col pt-2">
-                <div class="alert bs-alert alert-info mb-0 w-90 mt-2" role="alert">
-                  <i class="fas fa-info mr-3"></i>
-                  What is Gitcoin? - <a class="font-weight-bold" href="/landing">Learn More <i class="fas fa-share-square"></i> </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        {% endif %}
-
         {% include 'townsquare/shared/offers_top.html' %}
         {% include 'townsquare/shared/announcements.html' %}
 
