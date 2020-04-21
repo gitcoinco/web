@@ -56,7 +56,7 @@ from retail.helpers import get_ip
 from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
-from .utils import programming_languages
+from .utils import programming_languages, articles, press, testimonials, reasons
 
 logger = logging.getLogger(__name__)
 
@@ -142,74 +142,11 @@ def index(request):
         }
     ]
 
-    press = [
-        {
-            'link': 'https://twit.tv/shows/floss-weekly/episodes/474',
-            'img' : 'v2/images/press/floss_weekly.jpg'
-        },
-        {
-            'link': 'https://epicenter.tv/episode/257/',
-            'img' : 'v2/images/press/epicenter.jpg'
-        },
-        {
-            'link': 'http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000',
-            'img': 'v2/images/press/ibtimes.jpg'
-        },
-        {
-            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
-            'img': 'v2/images/press/forbes.jpg'
-        },
-        {
-            'link': 'https://unhashed.com/cryptocurrency-news/gitcoin-introduces-collectible-kudos-rewards/',
-            'img': 'v2/images/press/unhashed.jpg'
-        },
-        {
-            'link': 'https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/',
-            'img': 'v2/images/press/coindesk.png'
-        },
-        {
-            'link': 'https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/',
-            'img': 'v2/images/press/se_daily.png'
-        },
-        {
-            'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
-            'img': 'v2/images/press/ethnews.jpg'
-        },
-        {
-            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
-            'img': 'v2/images/press/hosting-advice.png'
-        }
-    ]
-
-    articles = [
-        {
-            'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
-            'img': static("v2/images/medium/1.png"),
-            'title': _('Progressive Elaboration of Scope on Gitcoin'),
-            'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
-            'alt': 'gitcoin scope'
-        },
-        {
-            'link': 'https://gitcoin.co/blog/commit-reveal-scheme-on-ethereum/',
-            'img': static("v2/images/medium/2.png"),
-            'title': _('Commit Reveal Scheme on Ethereum'),
-            'description': _('Hiding Actions and Generating Random Numbers'),
-            'alt': 'commit reveal scheme'
-        },
-        {
-            'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
-            'img': static("v2/images/medium/3.png"),
-            'title': _('Announcing Open Kudos'),
-            'description': _('Our vision for integrating Kudos in any (d)App'),
-            'alt': 'open kudos'
-        }
-    ]
-
     context = {
         'products': products,
         'know_us': know_us,
-        'press': press,
-        'articles': articles,
+        'press': press(),
+        'articles': articles(),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
@@ -1585,147 +1522,15 @@ def increase_funding_limit_request(request):
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
 
+
 def tribes(request):
     top_tribes = Profile.objects.filter(is_org=True).annotate(followers=Count('follower')).order_by('-followers')[:8]
-    testimonials = [
-        {
-            'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
-            'author': 'VirajA',
-            'designation': 'Hacker',
-            'photo': static('v2/images/tribes/landing/viraj.png')
-        },
-        {
-            'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
-            'author': 'Sam Williams',
-            'designation': 'CEO, Arweave',
-            'photo':  static('v2/images/tribes/landing/sam.jpg'),
-            'org_photo': static('v2/images/project_logos/arweave.svg')
-        },
-        {
-            'text': 'Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
-            'author': 'Scott Gralnick',
-            'designation': 'Co-Founder, Portis',
-            'photo': static('v2/images/tribes/landing/scott.png'),
-            'org_photo': static('v2/images/project_logos/portis.png')
-        }
-    ]
 
-    reasons = [
-        {
-            'title': 'Hackathon',
-            'img': static('v2/images/bulb.svg'),
-            'info': 'See meaningful projects come to life on your dapp'
-        },
-        {
-            'title': 'Suggest Bounty',
-            'img': static('v2/images/pencil.svg'),
-            'info': 'Get bottoms up ideas from passionate contributors'
-        },
-        {
-            'title': 'Quadratic Funding',
-            'img': static('v2/images/funding.svg'),
-            'info': 'Incentivize your tribe with mini quadratic funding'
-        },
-        {
-            'title': 'Workshops',
-            'img': static('v2/images/workshops.svg'),
-            'info': 'Host workshops and learn together'
-        },
-        {
-            'title': 'Chat',
-            'img': static('v2/images/Chat.svg'),
-            'info': 'Direct connection to your trusted tribe'
-        },
-        {
-            'title': 'Town Square',
-            'img': static('v2/images/townsquare.svg'),
-            'info': 'Engage the members of your tribe'
-        },
-        {
-            'title': 'Payout/Fund',
-            'img': static('v2/images/payout.svg'),
-            'info': 'Easily co-manage hackathons with your team'
-        },
-        {
-            'title': 'Stats Report',
-            'img': static('v2/images/report.svg'),
-            'info': 'See how your hackathons are performing'
-        },
-        {
-            'title': 'Kudos',
-            'img': static('v2/images/kudos.svg'),
-            'info': 'Show appreciation to your tribe members'
-        }
-    ]
-
-    press = [
-        {
-            'link': 'https://twit.tv/shows/floss-weekly/episodes/474',
-            'img': 'v2/images/press/floss_weekly.jpg'
-        },
-        {
-            'link': 'https://epicenter.tv/episode/257/',
-            'img': 'v2/images/press/epicenter.jpg'
-        },
-        {
-            'link': 'http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000',
-            'img': 'v2/images/press/ibtimes.jpg'
-        },
-        {
-            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
-            'img': 'v2/images/press/forbes.jpg'
-        },
-        {
-            'link': 'https://unhashed.com/cryptocurrency-news/gitcoin-introduces-collectible-kudos-rewards/',
-            'img': 'v2/images/press/unhashed.jpg'
-        },
-        {
-            'link': 'https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/',
-            'img': 'v2/images/press/coindesk.png'
-        },
-        {
-            'link': 'https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/',
-            'img': 'v2/images/press/se_daily.png'
-        },
-        {
-            'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
-            'img': 'v2/images/press/ethnews.jpg'
-        },
-        {
-            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
-            'img': 'v2/images/press/hosting-advice.png'
-        }
-    ]
-
-    articles = [
-        {
-            'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
-            'img': static("v2/images/medium/1.png"),
-            'title': _('Progressive Elaboration of Scope on Gitcoin'),
-            'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
-            'alt': 'gitcoin scope'
-        },
-        {
-            'link': 'https://gitcoin.co/blog/commit-reveal-scheme-on-ethereum/',
-            'img': static("v2/images/medium/2.png"),
-            'title': _('Commit Reveal Scheme on Ethereum'),
-            'description': _('Hiding Actions and Generating Random Numbers'),
-            'alt': 'commit reveal scheme'
-        },
-        {
-            'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
-            'img': static("v2/images/medium/3.png"),
-            'title': _('Announcing Open Kudos'),
-            'description': _('Our vision for integrating Kudos in any (d)App'),
-            'alt': 'open kudos'
-        }
-    ]
     context = {
-        'tribes': tribes,
-        'testimonials': testimonials,
-        'reasons': reasons,
-        'articles': articles,
-        'press': press,
+        'testimonials': testimonials(),
+        'reasons': reasons(),
+        'articles': articles(),
+        'press': press(),
         'top_tribes': top_tribes
     }
 
