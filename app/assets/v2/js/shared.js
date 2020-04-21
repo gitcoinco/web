@@ -692,8 +692,8 @@ const randomElement = array => {
 };
 
 $('#change-wallet').click(function(_) {
-  web3connect.clearCachedProvider();
-  web3connect.connect().then(function(provider) {
+  web3Modal.clearCachedProvider();
+  web3Modal.connect().then(function(provider) {
     window.web3 = new Web3(provider);
   });
 });
@@ -725,11 +725,11 @@ var currentNetwork = function(network, no_ui_updates) {
       $('#navbar-network-banner').removeClass('network-banner--warning');
       $('#navbar-network-banner').addClass('hidden');
 
-      if (web3connect.cachedProvider === 'authereum') {
+      if (web3Modal.cachedProvider === 'authereum') {
         $('#current-network').text('Main Ethereum Network (Authereum)');
         $('#go-to-wallet').removeClass('hidden');
         $('#go-to-wallet').attr('href', 'https://authereum.com/account');
-      } else if (web3connect.cachedProvider === 'fortmatic') {
+      } else if (web3Modal.cachedProvider === 'fortmatic') {
         $('#current-network').text('Main Ethereum Network (Fortmatic)');
         $('#go-to-wallet').removeClass('hidden');
         $('#go-to-wallet').attr('href', 'https://app.zerion.io/' + cb_address + '/overview');
@@ -743,7 +743,7 @@ var currentNetwork = function(network, no_ui_updates) {
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
-      } else if (network == 'locked' && web3connect.cachedProvider === 'injected') {
+      } else if (network == 'locked' && web3Modal.cachedProvider === 'injected') {
         if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
@@ -778,11 +778,11 @@ var currentNetwork = function(network, no_ui_updates) {
       $('#navbar-network-banner').removeClass('network-banner--warning');
       $('#navbar-network-banner').addClass('hidden');
 
-      if (web3connect.cachedProvider === 'authereum') {
+      if (web3Modal.cachedProvider === 'authereum') {
         $('#current-network').text('Rinkeby Network (Authereum)');
         $('#go-to-wallet').removeClass('hidden');
         $('#go-to-wallet').attr('href', 'https://rinkeby.authereum.com/account');
-      } else if (web3connect.cachedProvider === 'fortmatic') {
+      } else if (web3Modal.cachedProvider === 'fortmatic') {
         $('#current-network').text('Rinkeby Network (Fortmatic)');
         $('#go-to-wallet').removeClass('hidden');
         $('#go-to-wallet').attr('href', 'https://rinkeby.etherscan.io/address/' + cb_address);
@@ -796,7 +796,7 @@ var currentNetwork = function(network, no_ui_updates) {
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
-      } else if (network == 'locked' && web3connect.cachedProvider === 'injected') {
+      } else if (network == 'locked' && web3Modal.cachedProvider === 'injected') {
         if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
@@ -1018,7 +1018,7 @@ var listen_for_web3_changes = async function(no_ui_updates) {
     }
   }
 
-  if (web3connect.cachedProvider === 'injected' && window.ethereum && !document.has_checked_for_ethereum_enable) {
+  if (web3Modal.cachedProvider === 'injected' && window.ethereum && !document.has_checked_for_ethereum_enable) {
     if (window.ethereum._metamask) {
       document.has_checked_for_ethereum_enable = true;
       is_metamask_approved = await window.ethereum._metamask.isApproved();
@@ -1069,7 +1069,7 @@ var actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-Web3Connect.default.providers.push({
+Web3Modal.providers.push({
   id: 'injected',
   name: 'QRcode',
   logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' fill='none'%3E%3Cpath fill='url(%23paint0_radial)' fill-rule='evenodd' d='M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z' clip-rule='evenodd'/%3E%3Cpath fill='%23fff' d='M165 243v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zM269 165h78v78h-78v-78zm61.75 61.75v-45.5h-45.5v45.5h45.5zM165 347v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zm13 13h19.5v19.5h-19.5v-19.5zm0-104h19.5v19.5h-19.5v-19.5zm123.5 19.5h-19.5v-19.5h19.5v19.5zM334 269h13v52h-52v-13h-13v39h-13v-78h39v13h26v-13zm0 65h13v13h-13v-13zm-26 0h13v13h-13v-13z'/%3E%3Cdefs%3E%3CradialGradient id='paint0_radial' cx='0' cy='0' r='1' gradientTransform='translate(9.283 256) scale(502.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%237C89FF'/%3E%3Cstop offset='1' stop-color='%231E34FF'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E",
@@ -1086,7 +1086,8 @@ $(document).ready(function() {
   if (!document.contxt.github_handle) {
     return;
   }
-  const Web3Connect = window.Web3Connect.default;
+  // const Web3Modal = window.Web3Modal.default;
+  const Web3Modal = window.Web3Modal.default;
   // Determine if we're on prod or not
   const isProd = document.location.href.startsWith('https://gitcoin.co');
   const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
@@ -1103,19 +1104,20 @@ $(document).ready(function() {
   };
   const network = isProd ? 'mainnet' : 'rinkeby';
 
-  window.web3connect = new Web3Connect.Core({
+  window.web3Modal = new Web3Modal({
     network,
     cacheProvider: true,
     providerOptions
   });
 
+  // const provider = await web3Modal.connect();
   function qrcodeConnect() {
     localStorage['WEB3_CONNECT_CACHED_PROVIDER'] = '"injected"';
-    web3connect.toggleModal();
+    web3Modal.toggleModal();
   }
 
-  window.web3connect.providers.push({name: 'QRcode', onClick: qrcodeConnect});
-  web3connect.connect().then(function(provider) {
+  window.web3Modal.providers.push({name: 'QRcode', onClick: qrcodeConnect});
+  web3Modal.connect().then(function(provider) {
     window.web3 = new Web3(provider);
   });
 
@@ -1554,7 +1556,7 @@ const caseInsensitiveCompare = (val1, val2) => {
  */
 const indicateMetamaskPopup = (closePopup) => {
   // Don't show popup if user is not using Metamask
-  if (web3connect.cachedProvider !== 'injected') {
+  if (web3Modal.cachedProvider !== 'injected') {
     return;
   }
 
