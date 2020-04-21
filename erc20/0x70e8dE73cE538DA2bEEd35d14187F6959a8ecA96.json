@@ -1,0 +1,19 @@
+{
+    "symbol": "XSGD",
+    "address": "0x70e8dE73cE538DA2bEEd35d14187F6959a8ecA96",
+    "overview": {
+      "en": "StraitsX is the stablecoin initiative for Southeast Asia."
+    },
+    "email": "straitsx@xfers.com",
+    "website": "https://www.xfers.com/sg/stablecoin/",
+    "state": "NORMAL",
+    "published_on": "2020-04-15",
+    "initial_price": {},
+    "links": {
+      "blog": "https://medium.com/xfers-sg",
+      "twitter": "https://twitter.com/xfers",
+      "github": "https://github.com/Xfers/StraitsX-tokens",
+      "facebook": "https://www.facebook.com/xfers",
+      "medium": "https://medium.com/xfers-sg"
+    }
+}
