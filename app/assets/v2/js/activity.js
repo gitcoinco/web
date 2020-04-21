@@ -741,10 +741,8 @@ $(document).ready(function() {
           </div>
           <div class="comment-area col-12 col-sm-11 text-right">
             <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
-            <div class="emoji-container position-absolute d-flex flex-wrap">
-              <button class="btn btn-sm p-1 emoji_button" data-toggle="tooltip" title="Add an emoji to post.">
-                <i class="far fa-fw fa-smile"></i>
-              </button>
+            <div class="emoji-container position-absolute d-flex flex-wrap" style="width: 3.6em; right: 0; top: 0">
+              <button class="btn btn-sm p-1 emoji_button" data-toggle="tooltip" title="Add an emoji to post." style="bottom: 3.5em; right: 0; top: 0;"><i class="far fa-fw fa-smile"></i></button>
             </div>
             <a href=# class="btn btn-gc-blue btn-sm mt-= font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
@@ -770,8 +768,8 @@ $(document).ready(function() {
 
   $(document).on('click', '.emoji_button', function(e) {
     e.preventDefault();
-    const commentArea = $(this).parents('.comment-area')[0];
-    const emojiContainer = $(this).parents('.emoji-container')[0];
+    var commentArea = $(this).parents('.comment-area')[0];
+    var emojiContainer = $(this).parents('.emoji-container')[0];
 
     picker.pickerVisible ? picker.hidePicker() : picker.showPicker(emojiContainer);
     activityCommentTextArea = commentArea.children[0];
