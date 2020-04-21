@@ -86,12 +86,6 @@
         width: 4em;
       }
 
-      #sponsor_sidebar .b-avatar {
-        position: relative;
-        left: 3rem;
-        top: 2.5rem;
-      }
-
       .b-avatar img {
         height: 100%;
         width: 100%;
@@ -124,9 +118,11 @@
           grid-template-columns: repeat(3, 1fr);
         }
       }
+
       .page-link-gc {
         color: #3e24fb;
       }
+
       .page-item.active .page-link-gc {
         background-color: #3e24fb;
         border-color: #3e24fb;
@@ -137,63 +133,74 @@
         bottom:0;
       }
 
-      .hackathon-banner {
+      /* .hackathon-banner {
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
         height: 225px;
         background-image: url('{% firstof banner or "/static/wallpapers/V3.png" %}');
+      } */
+      .hackathon-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+        height: 225px;
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
       }
 
       .bounty_row img.avatar {
         max-width: 50px;
       }
 
-      .hackathon-text {
-          color: white;
-      }
       .hackathon-title {
           font-size: 1.4rem;
       }
+
       .hackathon-countdown {
           font-size: 1rem;
       }
+
       .bounty_row {
         background-color: white;
         margin-bottom: 15px;
         border-radius: 4px;
       }
+
       .hack-logo-wrapper {
           position: absolute;
           max-width: 240px;
           top: -200px;
           left: -32%;
       }
+
       .townsquare_header {
         width: 100%;
         height: 100%;
         overflow: hidden;
       }
+
       .hackathon-logo {
-          height: 240px;
-          max-height: 240px;
-          width: 240px;
-          max-width: 240px;
-          background-color: #090E60;
-          border-radius: 10px;
-          color: white;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
+        height: 240px;
+        max-height: 240px;
+        width: 240px;
+        max-width: 240px;
+        background: {% firstof hackathon.background_color or '#090E60' %};
+        border-radius: 10px;
+        color: {% firstof hackathon.text_color or 'black' %};
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
+
       .hackathon-logo img {
-          height: 185px;
+        height: 185px;
+        object-fit: contain;
       }
+
       .register {
         width: 100%;
       }
-
-
 
       .card-bg {
         background-color: #0C1A27;
@@ -322,7 +329,7 @@
       <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
     </div>
     {% endif %}
-    
+
     <div id="dashboard-content" class="container-fluid no-gutter" style="min-height:600px;">
         <div id="dashboard-vue-app" class="row" v-cloak>
           <div :id="hackathonObj.identifier" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
@@ -331,7 +338,13 @@
                 <p class="hackathon-title title font-weight-bold mb-0">[[ hackathonObj.name ]]</p>
               </div>
               <p class="mb-1">
-                  <small v-if="timeuntil >= '1 min'" class="hackathon-countdown text-uppercase">Ends in [[ timeuntil]] </small>
+                {% if hackathon.start_date|timesince <= "1 min" %}
+                  <small class="hackathon-countdown text-uppercase">Starts in {{hackathon.start_date | timeuntil}}</small>
+                {% elif hackathon.end_date|timeuntil >= "1 min" %}
+                  <small class="hackathon-countdown text-uppercase">Ends in {{hackathon.end_date|timeuntil}}</small>
+                {% else %}
+                  <small class="hackathon-countdown text-uppercase">Hackathon Over</small>
+                {% endif %}
               </p>
             </div>
           </div>
@@ -340,7 +353,7 @@
               <template v-slot:tabs-start>
                 <div class="hack-logo-wrapper d-none d-md-block">
                   <div class="mb-1 hackathon-logo">
-                    <b-img-lazy v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo_svg.url" alt="Hackathon logo"></b-img-lazy>
+                    <b-img-lazy v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo_svg" alt="Hackathon logo"></b-img-lazy>
                     <b-img-lazy v-else-if="hackathonObj.logo" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo" alt="Hackathon logo"></b-img-lazy>
                     <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
                   </div>
@@ -360,35 +373,59 @@
                     </div>
                   </div>
                   <div class="col-12 col-md-9 p-2 ml-sm-4">
-                    <div class="px-2" id="bounties">
-                      <div id="dashboard-title" class="hidden">
-                        {% include 'shared/search_bar.html' %}
+                    {% if not hackathon_not_started %}
+                      <div class="px-2" id="bounties">
+                        <div id="dashboard-title" class="hidden">
+                          {% include 'shared/search_bar.html' %}
+                        </div>
                       </div>
-                    </div>
-                    <div class="row loading justify-content-center align-items-center loading_img">
-                      <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
-                    </div>
-                    <div class="row nonefound mx-auto" style="display:none;">
-                  {% if hackathon %}
-                    <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
-                    <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                    <p>
-                      <a href="{% url "quests_index" %}">Explore Web3 via Gitcoin Quests to prepare</a>
-                    </p>
-                    {% include 'shared/hackathon_sponsors.html' %}
+                      <div class="row loading justify-content-center align-items-center loading_img">
+                        <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
+                      </div>
+                      <div class="row nonefound mx-auto" style="display:none;">
+                        {% if hackathon %}
+                          <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                          <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
 
-                  {% else %}
-                    <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                    <h3>{% trans "No results found." %}</h3>
-                    <p>{% trans "Request an organisation to fund an issue" %}</p>
-                    <div class="mt-3">
-                      <a class="button button--primary py-2 font-weight-semibold" role="button" href="/requests">
-                        {% trans "REQUEST BOUNTY" %}
-                      </a>
-                    </div>
-                  {% endif %}
-                </div>
-                    {% include 'dashboard/featured_bounties.html' %}
+                          {% if hackathon.quest_link %}
+                            <p>Explore Web3 and be prepared via sponsors Quests</p>
+                            <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+                          {% elif hackathon.start_date|timesince <= "1 min" %}
+                            <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                            <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                          {% endif %}
+
+                          {% include 'shared/hackathon_sponsors.html' %}
+
+                        {% else %}
+                          <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                          <h3>{% trans "No results found." %}</h3>
+                          <p>{% trans "Request an organisation to fund an issue" %}</p>
+                          <div class="mt-3">
+                            <a class="button button--primary py-2 font-weight-semibold" role="button" href="/requests">
+                              {% trans "REQUEST BOUNTY" %}
+                            </a>
+                          </div>
+                        {% endif %}
+                      </div>
+                      {% include 'dashboard/featured_bounties.html' %}
+                    {% else %}
+                      <div class="text-center mx-auto">
+                        <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                        <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+
+                        {% if hackathon.quest_link %}
+                          <p>Explore Web3 and be prepared via sponsors Quests</p>
+                          <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
+                        {% else %}
+                          <p>Explore Web3 via Gitcoin Quests to prepare</p>
+                          <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
+                        {% endif %}
+                      </div>
+
+                      {% include 'shared/hackathon_sponsors.html' %}
+                    {% endif %}
+
                   </div>
                 </div>
               </b-tab>
@@ -414,27 +451,26 @@
                         {% endfor %}
                       </div>
                     </div>
-                  <div class="feed_container col-12 col-lg-8">
-                    <div class="feed_container_child">
-                      {% csrf_token %}
-                      {% include 'townsquare/shared/shareactivity.html' %}
+                    <div class="feed_container col-12 col-lg-8">
+                      <div class="feed_container_child">
+                        {% csrf_token %}
+                        {% include 'townsquare/shared/shareactivity.html' %}
 
-                      <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
-                        <span id=activity_subheader>
-                          <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
-                          <br>
-                          <span>
-                            {{card_desc}}
+                        <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+                          <span id=activity_subheader>
+                            <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+                            <br>
+                            <span>
+                              {{card_desc}}
+                            </span>
                           </span>
-                        </span>
-                        {% include 'shared/activity_container.html' %}
+                          {% include 'shared/activity_container.html' %}
+                        </div>
                       </div>
                     </div>
+                    <div class="actions_container col-12 col-md-2 offset-1">
+                    </div>
                   </div>
-                  <div class="actions_container col-12 col-md-2 offset-1">
-                  </div>
-              </div>
-
                 </div>
               </b-tab>
               <project-directory inline-template>
@@ -879,6 +915,13 @@
                   </div>
                 </b-tab>
               </user-directory>
+              <template v-slot:tabs-end>
+                <li role="presentation" class="nav-item navigation"><a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
+                  <div class="mt-4">
+                    Guide
+                  </div>
+                </a></li>
+              </template>
             </b-tabs>
           </div>
           <div class="col-12 col-md-3">
@@ -890,18 +933,17 @@
                     {% trans "Sponsor Tribes" %}
                   </div>
                   <ul class="list-unstyled">
-                    <b-media v-for="sponsor in tribesData" tag="li"  class="p-3">
+                    <b-media v-for="sponsor in tribesData" tag="li"  class="bg-white rounded m-4" vertical-align="center">
                       <template v-slot:aside>
-                        <b-avatar :src="sponsor.avatar_url" size="64" :alt="sponsor.org_name"></b-avatar>
+                        <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-n3"></b-avatar>
                       </template>
-                      <div class="row px-5 py-3">
-                        <div class="col-6 offset-2">
-                          <h5 class="mt-0 mb-1">[[ sponsor.org_name ]]</h5>
+                      <div class="py-3 pr-3">
+                        <div class="d-flex justify-content-between">
+                          <a class="mb-1 font-bigger-1 text-truncate w-50" :href="`/profile/${sponsor.org_name}`">[[ sponsor.display_name ]]</a>
+                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" class="btn-sm btn-outline-gc-blue">[[ sponsor.followed ? "unfollow" : "follow" ]]</b-button>
                         </div>
-                        <div class="col-2 offset-2">
-                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" class="btn-outline-gc-blue">[[ sponsor.followed ? "unfollow" : "follow" ]]</b-button>
-                        </div>
-                        <div class="col-8 offset-1">
+
+                        <div class="">
                           <ul class="list-unstyled" class="mb-0">
                             <li><i class="fas fa-fw fa-user"></i> [[ sponsor.follower_count ]] Followers</li>
                             <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
@@ -955,7 +997,6 @@
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
       document.chatURL = "{{ chat_url | safe}}";
-      document.timeuntil = "{{ hackathon.end_date | timeuntil }}";
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
     </script>
     <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>

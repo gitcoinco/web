@@ -50,6 +50,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+
 import magic
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
@@ -84,12 +85,11 @@ from marketing.models import EmailSubscriber, Keyword
 from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
-from rest_framework.renderers import JSONRenderer
 from townsquare.models import Comment
-from townsquare.views import get_following_tribes
-from townsquare.views import get_tags
+from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
 
 from .export import (
@@ -102,21 +102,18 @@ from .helpers import (
 from .models import (
     Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, RefundFeeRequest,
-    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
+    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView, SearchHistory,
+    Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
+from .router import HackathonEventSerializer, HackathonProjectSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
     release_bounty_to_the_public, sync_payout, web3_process_bounty,
-)
-from .router import (
-    HackathonEventSerializer,
-    HackathonProjectSerializer
 )
 
 logger = logging.getLogger(__name__)
@@ -1594,119 +1591,6 @@ def cancel_bounty(request):
     params['is_bounties_network'] = bounty.is_bounties_network
 
     return TemplateResponse(request, 'bounty/cancel.html', params)
-
-
-def refund_request(request):
-    """Request refund for bounty
-
-    Args:
-        pk (int): The primary key of the bounty to be cancelled.
-
-    Raises:
-        Http404: The exception is raised if no associated Bounty is found.
-
-    Returns:
-        TemplateResponse: The request refund view.
-
-    """
-
-    if request.method == 'POST':
-        is_authenticated = request.user.is_authenticated
-        profile = request.user.profile if is_authenticated and hasattr(request.user, 'profile') else None
-        bounty = Bounty.objects.get(pk=request.GET.get('pk'))
-
-        if not profile or not bounty or profile.username != bounty.bounty_owner_github_username :
-            return JsonResponse({
-                'message': _('Only bounty funder can raise this request!')
-            }, status=401)
-
-        comment = escape(strip_tags(request.POST.get('comment')))
-
-        review_req = RefundFeeRequest.objects.create(
-            profile=profile,
-            bounty=bounty,
-            comment=comment,
-            token=bounty.token_name,
-            address=bounty.bounty_owner_address,
-            fee_amount=bounty.fee_amount
-        )
-
-        # TODO: Send Mail
-
-        return JsonResponse({'message': _('Request Submitted.')}, status=201)
-
-    bounty = handle_bounty_views(request)
-
-    if RefundFeeRequest.objects.filter(bounty=bounty).exists():
-        params = get_context(
-            ref_object=bounty,
-            active='refund_request',
-            title=_('Request Bounty Refund'),
-        )
-        params['duplicate'] = True
-        return TemplateResponse(request, 'bounty/refund_request.html', params)
-
-    params = get_context(
-        ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
-        active='refund_request',
-        title=_('Request Bounty Refund'),
-    )
-
-    return TemplateResponse(request, 'bounty/refund_request.html', params)
-
-
-@staff_member_required
-def process_refund_request(request, pk):
-    """Request refund for bounty
-
-    Args:
-        pk (int): The primary key of the bounty to be cancelled.
-
-    Raises:
-        Http404: The exception is raised if no associated Bounty is found.
-
-    Returns:
-        TemplateResponse: Admin view for request refund view.
-
-    """
-
-    try :
-       refund_request =  RefundFeeRequest.objects.get(pk=pk)
-    except RefundFeeRequest.DoesNotExist:
-        raise Http404
-
-    if refund_request.fulfilled:
-        messages.info(request, 'refund request already fulfilled')
-        return redirect(reverse('admin:index'))
-
-    if refund_request.rejected:
-        messages.info(request, 'refund request already rejected')
-        return redirect(reverse('admin:index'))
-
-    if request.POST:
-
-        if request.POST.get('fulfill'):
-            refund_request.fulfilled = True
-            refund_request.txnId = request.POST.get('txnId')
-            messages.success(request, 'fulfilled')
-
-        else:
-            refund_request.comment_admin = request.POST.get('comment')
-            refund_request.rejected = True
-            messages.success(request, 'rejected')
-
-        refund_request.save()
-        messages.info(request, 'Complete')
-        # TODO: send mail
-        return redirect('admin:index')
-
-    context = {
-        'obj': refund_request,
-        'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
-    }
-
-    return TemplateResponse(request, 'bounty/process_refund_request.html', context)
 
 
 def helper_handle_admin_override_and_hide(request, bounty):
@@ -3719,14 +3603,15 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     title = hackathon_event.name.title()
     network = get_default_network()
-    if timezone.now() < hackathon_event.start_date and not request.user.is_staff:
-        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+    hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
+    # if hackathon_not_started:
+        # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     orgs = []
 
     following_tribes = []
 
-    if request.user and request.user.profile:
+    if request.user and hasattr(request.user, 'profile'):
         following_tribes = request.user.profile.tribe_members.filter(
             org__in=hackathon_event.sponsor_profiles.all()
         ).values_list('org__handle', flat=True)
@@ -3741,12 +3626,14 @@ def hackathon(request, hackathon='', panel='prizes'):
             'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
         }
         orgs.append(org)
+    if hasattr(request.user, 'profile') == False:
+        is_registered = False
+    else:
+        is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
+                                                             hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
-                                                         hackathon=hackathon_event) if request.user and request.user.profile else None
-
-    if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
-        return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+    # if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
+        # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
 
     view_tags = get_tags(request)
     active_tab = 0
@@ -3773,14 +3660,14 @@ def hackathon(request, hackathon='', panel='prizes'):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
-        'is_registered': 1 if len(is_registered) > 0 else 0,
+        'is_registered': json.dumps(True if is_registered else False),
+        'hackathon_not_started': hackathon_not_started,
         'user': request.user,
         'tags': view_tags,
         'activities': [],
         'SHOW_DRESSING': False,
         'use_pic_card': True,
         'projects': [],
-        'banner': f"/media/{hackathon_event.banner}" if hackathon_event.banner else None,
         'panel': active_tab
     }
 

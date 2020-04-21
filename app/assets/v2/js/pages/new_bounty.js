@@ -238,16 +238,17 @@ const handleTokenAuth = () => {
       resolve(isTokenAuthed);
     } else {
       const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-      const from = web3.eth.coinbase;
       const to = bounty_address();
 
-      token_contract.allowance.call(from, to, (error, result) => {
+      web3.eth.getCoinbase(function(_, from) {
+        token_contract.allowance.call(from, to, (error, result) => {
 
-        if (error || result.toNumber() == 0) {
-          isTokenAuthed = false;
-        }
-        tokenAuthAlert(isTokenAuthed, tokenName);
-        resolve(isTokenAuthed);
+          if (error || result.toNumber() == 0) {
+            isTokenAuthed = false;
+          }
+          tokenAuthAlert(isTokenAuthed, tokenName);
+          resolve(isTokenAuthed);
+        });
       });
     }
   });

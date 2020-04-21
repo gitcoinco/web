@@ -74,7 +74,7 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
-  } else if (!web3.eth.coinbase) {
+  } else if (!web3.eth.getCoinbase) {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
@@ -87,11 +87,13 @@ onboard.watchMetamask = function() {
       $('#metamask-video').show();
     }
   } else {
-    $('.step #metamask').html(
-      '<div class="unlocked"><img src="' + static_url + 'v2/images/metamask.svg"><span class="mr-1">' +
-      gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div><div class="font-body mt-3"><div class=col><label for=eth_address>' +
-      gettext('Ethereum Payout Address') + '</label></div><div class="col"><input class="w-100 text-center" type=text id=eth_address name=eth_address placeholder="' +
-      gettext('Ethereum Payout Address') + '"" value=' + web3.eth.coinbase + '></div></div>');
+    web3.eth.getCoinbase(function(_, coinbase) {
+      $('.step #metamask').html(
+        '<div class="unlocked"><img src="' + static_url + 'v2/images/metamask.svg"><span class="mr-1">' +
+        gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div><div class="font-body mt-3"><div class=col><label for=eth_address>' +
+        gettext('Ethereum Payout Address') + '</label></div><div class="col"><input class="w-100 text-center" type=text id=eth_address name=eth_address placeholder="' +
+        gettext('Ethereum Payout Address') + '"" value=' + coinbase + '></div></div>');
+    });
     if (current === 1) {
       document.alreadyFoundMetamask = true;
       $('.controls').show();

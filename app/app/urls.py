@@ -209,8 +209,12 @@ urlpatterns = [
 
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon/<str:hackathon>', dashboard.views.hackathon, name='hackathon2'),
+    path('hackathon/<str:hackathon>/onboard/', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
     path('hackathon/<str:hackathon>/<str:panel>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/<str:hackathon>/onboard', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
+    path('hackathon/onboard/<str:hackathon>', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
+    path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard3'),
     path('hackathon/<str:hackathon>/projects/', dashboard.views.hackathon_projects, name='hackathon_projects'),
     path('hackathon/<str:hackathon>/prizes/', dashboard.views.hackathon, name='hackathon_prizes'),
     path(
@@ -264,7 +268,6 @@ urlpatterns = [
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
-    path('issue/refund_request', dashboard.views.refund_request, name='refund_request'),
     path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
     path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
     path(
@@ -569,11 +572,6 @@ urlpatterns = [
         r'^_administration/process_faucet_request/(.*)$',
         faucet.views.process_faucet_request,
         name='process_faucet_request'
-    ),
-    re_path(
-        r'^_administration/process_refund_request/(.*)$',
-        dashboard.views.process_refund_request,
-        name='process_refund_request'
     ),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'

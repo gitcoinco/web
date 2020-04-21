@@ -1017,8 +1017,7 @@
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
         hackathonProjects: [],
-        chatURL: document.chatURL,
-        timeuntil: document.timeuntil
+        chatURL: document.chatURL
       })
     });
   });
