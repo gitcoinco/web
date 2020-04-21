@@ -64,7 +64,7 @@ class Command(BaseCommand):
 
         # get data
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
-        grants = Grant.objects.filter(active=True, network='mainnet', link_to_new_grant__isnull=False)
+        grants = Grant.objects.filter(active=True, network='mainnet', link_to_new_grant__isnull=True)
 
         # finalize rankings
         if what == 'finalize':
