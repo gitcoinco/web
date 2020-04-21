@@ -1234,6 +1234,7 @@ class CLRMatch(SuperModel):
         'grants.Contribution',
         related_name='test_clr_match_payouts',
         null=True,
+        blank=True,
         on_delete=models.SET_NULL,
         help_text=_('Contribution for the test payout')
     )
@@ -1249,6 +1250,7 @@ class CLRMatch(SuperModel):
         'grants.Contribution',
         related_name='clr_match_payouts',
         null=True,
+        blank=True,
         on_delete=models.SET_NULL,
         help_text=_('Contribution for the payout')
     )
