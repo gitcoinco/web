@@ -93,7 +93,7 @@
             @{{ row.metadata.to_username }}
           </a>
         {% elif row.activity_type == 'mini_clr_payout' %}
-          {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
+          {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
           a new kudos has been minted:
           <a href="{{ row.kudos.external_url }}">
