@@ -939,9 +939,9 @@ def grant_match_distribution_test_txn(match):
         coupon = "Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 50% off with coupon code {settings.GRANTS_COUPON_50_OFF}"
     if match.amount > 1000:
         coupon = "Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 100% off with coupon code {settings.GRANTS_COUPON_100_OFF}"
-    # NOTE: WE WILL SCREEN AND APPROVE ANY ORDERS TO THE STORE, SO IF YOURE A CLEVER BISCOUT
-    # AND FOUND THIS BY READING OUR CODEBASE, THEN GOOD FOR YOU BUT (ENTER SEINFELD SOUPNNAAZZII VOICE )
-    # "NO SCHWAG FOR U!"
+    # NOTE: IF YOURE A CLEVER BISCUT AND FOUND THIS BY READING OUR CODEBASE, 
+    # THEN GOOD FOR YOU!  HERE IS A 100% OFF COUPON CODE U CAN USE (LIMIT OF 1 FOR THE FIRST PERSON
+    # TO FIND THIS EASTER EGG) : GRANTS-ROUND-5-HAXXOR
     try:
         setup_lang(to_email)
         subject = f"💰 Grants Round {match.round_number} Match Distribution: {rounded_amount} DAI (Email 1 of 2)"
