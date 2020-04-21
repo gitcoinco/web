@@ -22,9 +22,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import (
-    CLRMatch, Contribution, Flag, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
-)
+from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -255,19 +253,6 @@ class ContributionAdmin(GeneralAdmin):
         html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
         return mark_safe(html)
 
-class MilestoneAdmin(admin.ModelAdmin):
-    """Define the Milestone administration layout."""
-
-    ordering = ['-id']
-    list_display =['pk', 'grant', 'title', 'created_on']
-
-
-class UpdateAdmin(admin.ModelAdmin):
-    """Define the Update administration layout."""
-
-    ordering = ['-id']
-    list_display =['pk', 'grant', 'title', 'created_on']
-
 
 class PhantomFundingAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
@@ -295,5 +280,3 @@ admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, GeneralAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
-admin.site.register(Milestone, MilestoneAdmin)
-admin.site.register(Update, UpdateAdmin)

@@ -41,28 +41,7 @@
         <div id="about-section" class="pt-2 bg-white rounded p-5">
           <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
           <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers! </p>
-          <div class="my-4">
-            <p class="font-caption letter-spacing text-black-60 text-uppercase">Github Repo Type</p>
-            <div class="btn-group-toggle" data-toggle="buttons">
-              <label class="btn btn-radio public mr-2 font-weight-bold py-2 px-4 active">
-                <input type="radio" name="repo_type" id="public_repo" value="public" autocomplete="off" checked><i class="fas fa-book mr-2"></i> {% trans "Public" %}
-              </label>
-              <label class="btn btn-radio private font-weight-bold py-2 px-4 ">
-                <input type="radio" name="repo_type" id="private_repo" value="private" autocomplete="off"><i class="fas fa-lock mr-2"></i> {% trans "Private" %}
-              </label>
-            </div>
-            <div id="private-repo-instructions" class="d-md-flex justify-content-between mt-3 font-smaller-3 d-md-none privaterepo-instructions">
-              <div>
-                <h5 class="font-smaller-3 font-weight-bold mb-2">Important Notes on Private Repo Bounties</h5>
-                <ul class="pl-3">
-                  <li>Please make sure you are the <b>repo admin</b> to fund the issue</li>
-                  <li>Gitcoin will <b>NOT</b> have any access to your private repo</li>
-                  <li>You have to approve and give repository access to each contributor before they can start work</li>
-                  <li>You can upload an NDA that each contributor has to sign before they can start work</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+
           <label class="font-caption letter-spacing text-black-60 text-uppercase" for=issueURL>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
           <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
           <div class="text-right mt-2">
@@ -74,7 +53,7 @@
           <div id="no-issue-banner" class="my-4">
             <img class="w-100" src="{% static "v2/images/bounty/no_issue.svg" %}">
           </div>
-          <div id="issue-details" class="mt-4">
+          <div id="issue-details" class="mt-4 issue-details-public">
             <div class="mt-4">
               <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">{% trans "Issue Title" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
               <input name='title' id="title"  class="form__input" type="text" value="{{ issue_title }}" placeholder="{% trans 'Your issue title' %}" readonly required/>
@@ -89,13 +68,6 @@
               <a id="edit-issue" class="button button--primary" href="#" target="_blank" rel="noopener noreferrer">
                 {% trans "Edit on Github" %} <i class="fab fa-github ml-1"></i>
               </a>
-            </div>
-          </div>
-          <div id="nda-upload" class="mt-4" style="display: none;">
-            <div>
-              <label class="font-caption letter-spacing text-black-60 text-uppercase" for=issueNDA>{% trans "Non-Disclosure Agreement" %}</label>
-              <p class="font-body">{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</p>
-              <input name='issueNDA' id="issueNDA" class="form__input" type="file" accept="application/pdf,application/msword, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation" required/>
             </div>
           </div>
 
@@ -310,7 +282,7 @@
                 You will have to approve
                 <span class="font-weight-bold">
                   <span id="confirmation">{% if FEE_PERCENTAGE == 0 %} 1 {% else %} 2 {% endif %}</span>
-                  Metamask confirmations.
+                  web3 wallet confirmations.
                 </span>
               </p>
             </div>

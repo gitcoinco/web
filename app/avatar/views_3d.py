@@ -373,6 +373,16 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
         },
+        'PixelBot': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/PixelBot.svg',
+        },
         'iamthembot': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -638,6 +648,15 @@ def get_avatar_attrs(theme, key):
             'hair_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/bender.svg',
+        },
+        'bendy': {
+            'preview_viewbox': {
+                'background': '0 0 250 250',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/bendy.svg',
         },
         'joker': {
             'preview_viewbox': {

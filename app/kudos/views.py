@@ -869,6 +869,7 @@ def newkudos(request):
                 metadata={
                     'ip': get_ip(request),
                     'email': request.POST.get('email'),
+                    'pay_gas': request.POST.get('pay_gas', 0),
                     }
                 )
             new_kudos_request(obj)

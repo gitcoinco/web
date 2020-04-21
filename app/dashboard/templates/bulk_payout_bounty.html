@@ -116,7 +116,7 @@
                             <li><strong>Payment Source:</strong>Bounty Funds</li>
                             <li><strong>Bounty Status after payment:</strong> COMPLETED
                             <li>If you choose to exceed {{ bounty.value_true }} {{ bounty.token_name }}, the remainder amount would be deducted from your
-                              metamask wallet and paid out using Gitcoin Tips</li>
+                              web3 wallet and paid out using Gitcoin Tips</li>
                             <li>Bounty will be closed once this mode of payment is chosen</li>
                             <li class='font-italic'>
                               Ensure you have enough {{ bounty.token_name }} if you decide to payout
@@ -136,7 +136,7 @@
                         <i class="fa fa-info-circle font-caption ml-1 gc-text-blue" data-toggle="tooltip" data-placement="right" data-html="true" title="
                           <p class='font-body font-weight-bold ml-2 pt-3'>PAY USING WALLET</p>
                           <ul>
-                            <li><strong>Payment Source:</strong> Your metamask wallet (using Gitcoin Tips)
+                            <li><strong>Payment Source:</strong> Your web3 wallet (using Gitcoin Tips)
                             <li><strong>Bounty Status after payment:</strong> OPEN (enables multiple payouts at different points in time)
                             <li><strong>Bounty Funds:</strong> Will not be used as the entire amount would come from your wallet</li>
                             <li class='font-italic'>Ensure you have enough tokens in your wallet before using this mode</li>
@@ -216,7 +216,7 @@
                     </p>
 
                     <p class="my-3 font-weight-bold">
-                      You will have to approve <span id="metamask-txn-count">0</span> Metamask transactions:
+                      You will have to approve <span id="metamask-txn-count">0</span> wallet transactions:
                     </p>
 
                     {% if bounty.additional_funding_summary %}
