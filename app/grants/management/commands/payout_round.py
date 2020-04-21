@@ -196,7 +196,7 @@ class Command(BaseCommand):
                 subscription.is_postive_vote = True
                 subscription.active = False
                 subscription.error = True
-                subscription.contributor_address = '/NA'
+                subscription.contributor_address = 'N/A'
                 subscription.amount_per_period = match.amount
                 subscription.real_period_seconds = 2592000
                 subscription.frequency = 30
