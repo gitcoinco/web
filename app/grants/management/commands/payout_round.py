@@ -36,6 +36,7 @@ from marketing.mails import (
 )
 from web3 import HTTPProvider, Web3
 
+WAIT_TIME_BETWEEN_PAYOUTS = 15
 
 class Command(BaseCommand):
 
@@ -249,3 +250,4 @@ class Command(BaseCommand):
                 }
 
                 Activity.objects.create(**kwargs)
+                time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
