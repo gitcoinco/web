@@ -302,10 +302,11 @@
                   </div>
                   <div class="col-12 col-md-9 p-2 ml-sm-4">
                     {% if not hackathon_not_started %}
-                      <div class="px-2" id="bounties">
-                        <div id="dashboard-title" class="hidden">
-                          {% include 'shared/search_bar.html' %}
-                        </div>
+                    <div class="px-2" id="bounties">
+                      <div id="dashboard-title" class="hidden">
+                        {% include 'shared/search_bar.html' %}
+                      </div>
+                      {% include 'dashboard/featured_bounties.html' %}
                       </div>
                       <div class="row loading justify-content-center align-items-center loading_img">
                         <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
@@ -325,7 +326,6 @@
                           {% include 'shared/hackathon_sponsors.html' %}
 
                       </div>
-                      {% include 'dashboard/featured_bounties.html' %}
                     {% else %}
                       <div class="text-center mx-auto">
                         <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
