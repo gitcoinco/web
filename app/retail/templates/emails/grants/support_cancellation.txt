@@ -12,10 +12,7 @@
 
 {{ subscription.amount_per_period|floatformat:4|intcomma }} {{ subscription.token_symbol }}
 
-{% trans "Grant % done" %} : {{ grant.percentage_done }}
-
 {% trans "Grant Received" %} : {{ grant.amount_received }}
-{% trans "Grant Goal" %} : {{ grant.amount_goal }}
 
 {% trans "Goal" %}
 

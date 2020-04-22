@@ -9,6 +9,4 @@
 
 {% trans "Description" %} : {{ grant.description }}
 
-{% trans "Goal" %} : {{ grant.amount_goal }}
-
 {% trans "The details of your grant can be seen here:" %} {{ grant.reference_url }}
