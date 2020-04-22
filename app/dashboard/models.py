@@ -4871,11 +4871,6 @@ class TribeMember(SuperModel):
 
 
 class Poll(SuperModel):
-    POLL_TYPE = (
-        ('HACKATHON', 'Hackathon'),
-    )
-
-    poll_type = models.CharField(max_length=50, choices=POLL_TYPE, blank=False, null=True)
     title = models.CharField(max_length=350, blank=True, null=True)
     active = models.BooleanField(default=False)
     hackathon = models.ForeignKey(HackathonEvent, on_delete=models.SET_NULL, null=True, blank=True)

@@ -430,9 +430,9 @@ class OptionsInline(admin.TabularInline):
 
 
 class PollsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'poll_type', 'title', 'active', 'hackathon', 'created_on']
+    list_display = ['id', 'title', 'active', 'hackathon', 'created_on']
     raw_id_fields = ['hackathon']
-    search_fields = ['title', 'poll_type']
+    search_fields = ['title']
     inlines = [QuestionInline]
 
 
