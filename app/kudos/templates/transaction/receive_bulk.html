@@ -173,6 +173,11 @@
     start_kudos_levitate();
     document.suppress_kudos_levitate_hover = true;
   })
+
+  window.addEventListener('load', function() {
+    setInterval(listen_for_web3_changes, 5000);
+    listen_for_web3_changes();
+  });
 </script>
 {% endblock %}
 {% block 'world' %}
