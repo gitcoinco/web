@@ -1147,6 +1147,14 @@ body.green.offer_view .announce {
   color: #567AFF;
 }
 
+.dark popover-body {
+  color: #dde5ee;
+}
+
+.dark popover-user-card {
+  background-color: #201a40;
+}
+
 .promo .logo {
   height: 55px;
   width: 65px;
