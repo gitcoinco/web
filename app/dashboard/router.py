@@ -496,6 +496,20 @@ class BountyViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class TribesSerializer(serializers.BaseSerializer):
+    """Handle serializing the Profile object."""
+    bounties = BountySerializer(many=True)
+    active_bounties = BountySerializer(many=True)
+
+
+    @property
+
+
+    class Meta:
+        """Define the profile serializer metadata."""
+        fields = ('bounties', 'active_bounties', 'title', 'active', 'card_desc', 'avatar_url', 'card_title', 'funded_bounties_count', 'total_kudos_count', 'hackathons_funded')
+
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'bounties/slim', BountiesViewSetSlim)

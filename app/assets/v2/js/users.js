@@ -24,7 +24,9 @@ Vue.mixin({
         vm.usersPage = newPage;
       }
       vm.params.page = vm.usersPage;
-      vm.params.hackathon = hackathonId;
+      if (hackathonId) {
+        vm.params.hackathon = hackathonId;
+      }
       if (vm.searchTerm) {
         vm.params.search = vm.searchTerm;
       } else {
