@@ -8,7 +8,7 @@ $(document).ready(function() {
 
   var linkify = function(new_text) {
     new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a data-usercard="$1" href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/(^|\s)@([a-zA-Z0-9_-]*)/g, '$1<a data-usercard="$2" href="/profile/$2">@$2</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
