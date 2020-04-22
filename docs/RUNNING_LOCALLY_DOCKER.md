@@ -8,17 +8,22 @@ cp app/app/local.env app/app/.env
 
 ## Special instructions for Windows WSL contributors
 *If you are using Windows 10 Professional or Enterprise*
+
 Download Docker Desktop for Windows [here](https://hub.docker.com/editions/community/docker-ce-desktop-windows).
 
 *If you are NOT using Windows 10 Professional or Enterprise*
+
 Docker Desktop for Windows is not available to your OS. Follow the steps below to install and configure Docker Toolbox:
+
 1. Follow the installation instructions on the [manual for installing Docker Toolbox on Windows](https://docs.docker.com/toolbox/toolbox_install_windows/).
+
 2. WSL by default mounts your C: drive on `/mnt/c`, but Docker Toolkit instead expects it to be mounted on `/c/`. To instruct WSL to mount it in the correct location, create a config file in `/etc/wsl.conf` using WSL and enter the following:
 ```
 [automount]
 root = /
 options = "metadata"
 ```
+
 3. Lastly, ensure that you are sharing the folders of your project directory to your VirtualBox VM, i.e. if your Gitcoin repository is located in `C:/Projects/web`, you will have to go to the VirtualBox UI, click on `Settings > Shared Folders`, and ensure that there is an entry with a name of `c/Projects` and a path of `C:\Projects`.
 
 Once Docker is installed (either via Docker Desktop for Windows or Docker Toolkit), install the Docker packages on WSL as you normally would for Ubuntu:
@@ -211,6 +216,17 @@ make fresh # docker-compose down -v; docker-compose up -d --build;
 ```shell
 make superuser # docker-compose exec web python3 app/manage.py createsuperuser
 open http://localhost:8000/_administration
+```
+
+#### Docker for-mac troubleshooting
+
+
+`Q: When building with docker on my mac, CPU usage is high and device is overheating what should I do?`
+
+Problems regarding docker and high CPU usage seem to be common on mac. One community user found that going to the resources section on Docker desktop and lowering CPU cores and disk image size to minimum improves this issue.
+
+```
+For more troubleshooting tips on this problem consult the docker for-mac repo issues [https://github.com/docker/for-mac/issues?q=cpu](https://github.com/docker/for-mac/issues?q=cpu)
 ```
 
 #### Fix local test issues

@@ -82,12 +82,16 @@ fi
 
 # let gunicorn know its ok to restart
 if ! [ "$JOBS_NODE" ]; then
-    echo "- gunicorn"
-    for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
-    sudo kill -1 $pid
-    sleep 0.5
-    done
-
+    if ! [ "$CELERY_NODE"  ]; then
+      echo "- gunicorn"
+      for pid in $(pgrep -fl "gunicorn: worke" | awk '{print $1}'); do
+      sudo kill -1 $pid
+      sleep 1.5
+      done
+    else
+      echo "- celery"
+      sudo systemctl restart celery.service
+    fi
 fi
 
 # invalidate cloudfront
@@ -99,7 +103,7 @@ fi
 
 # ping google
 cd ~/gitcoin/coin || echo "Cannot find coin directory!"
-bash scripts/run_management_command.bash ping_google
+bash scripts/run_management_command.bash ping_google https://gitcoin.co/sitemap.xml
 
 if [ "$ENV" = "prod" ] && [ "$JOBS_NODE" ]; then
     # Handle sentry deployment

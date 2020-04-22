@@ -112,16 +112,20 @@
 
       <div class="form-check">
         <input type="checkbox" name="save_addr" id="save_addr" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{% endif %} >
-        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
+        <label for=save_addr>{% trans "Save this address as my direct payment address (Optional, but recommended)" %}</label>
       </div>
 
-      <div class="form-check mb-3">
+      <div class="form-check">
         <input type="checkbox" id="tos" value="1" class="form-check-input" required>
-        <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %}</a>.</label>
+        <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %} </a>. (Required)</label>
       </div>
 
+      <div class="form-check mt-2">
+        <input type="checkbox" name="pay_gas" id="pay_gas" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{% endif %}>
+        <label for=pay_gas>{% trans "Chip in 0.005 ETH in gas money" %} (Optional, but recommended)</label>
+      </div>
 
-      <div class="text-center">
+      <div class="text-center mt-3">
         <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{% endif %} >
         <br>
         <br>
@@ -169,6 +173,11 @@
     start_kudos_levitate();
     document.suppress_kudos_levitate_hover = true;
   })
+
+  window.addEventListener('load', function() {
+    setInterval(listen_for_web3_changes, 5000);
+    listen_for_web3_changes();
+  });
 </script>
 {% endblock %}
 {% block 'world' %}

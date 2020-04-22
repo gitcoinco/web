@@ -52,7 +52,7 @@
             <li>{% trans "1) Create a Github Issue, you'll need the issue URL" %}</li>
             <li>{% trans "2) Select the type of issue to fund" %}</li>
             <li>{% trans '3) Complete the form and press "Fund Issue"' %}</li>
-            <li>{% trans "4) Confirm the transaction in MetaMask" %}</li>
+            <li>{% trans "4) Confirm the transaction in your web3 wallet" %}</li>
           </ol>
           <p class="mb-4">
             {% trans "Once confirmed on blockchain, your bounty is posted to Gitcoin! Wait for developers across the world to discover your bounty and start working on your issue." %}
@@ -164,4 +164,9 @@
         document.keywords = {{ keywords|safe }};
       </script>
     {% endif %}
+  <style type="text/css">
+    .activity_main .activity-tags {
+      display: none;
+    }
+  </style>
   </body>

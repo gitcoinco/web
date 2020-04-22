@@ -25,6 +25,30 @@
   color: #ffffff;
 }
 
+.Town img{
+  max-height: 400px;
+  margin: 0px 60px;
+}
+.Town{
+  background-color: #666;
+  color: #ffffff;
+}
+.Square-logo{
+  max-height: 30px;
+}
+
+.Chat img{
+  max-height: 500px;
+  margin: 0px 60px;
+}
+.Chat{
+  background-color: #3E00FF;
+  color: #ffffff;
+}
+.Chat-logo{
+  max-height: 30px;
+}
+
 .quests{
   background-color: #55508e;
   color: #ffffff;

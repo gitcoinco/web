@@ -17,9 +17,7 @@
 {% load i18n static %}
 {% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
-{% if is_alpha_tester %}
-  <div id=search_container class=""></div>
-{% endif %}
+{% include 'shared/search.html' %}
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -98,16 +96,11 @@
     </div>
   </div>
   <a href="/profile/" id="nav_auth_profile" class="nav_avatar d-none d-md-block"
-   data-gtm="profile" style="background-image: url('{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}')">
+   data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
   </a>
-  <script>
-    // setInterval(function(){
-    //   if($ && !$("#nav_auth_profile").attr('background-image')){
-    //     $("#nav_auth_profile").css('background-image', 'url("{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}")')
-    //   }
-    // }, 1000)
-  </script>
-
+  <a href="/chat">
+   {% include 'profiles/presence_indicator.html' with show_even_if_offline=1  suppress_click=1 last_chat_status=last_chat_status show_even_if_no_chat_id=1 %}
+  </a>
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>

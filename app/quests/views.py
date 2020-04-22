@@ -29,7 +29,7 @@ from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
-current_round_number = 3
+current_round_number = 4
 
 
 def next_quest(request):
@@ -204,6 +204,7 @@ def editquest(request, pk=None):
         'package': package,
         'the_quest': quest,
         'questions': questions,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-05.png')),
         'backgrounds': [ele[0] for ele in Quest.BACKGROUNDS],
         'answer_correct': request.POST.getlist('answer_correct[]',[]),
         'seconds_to_respond': request.POST.getlist('seconds_to_respond[]',[]),
@@ -338,14 +339,14 @@ def index(request):
         'REFER_LINK': f'https://gitcoin.co/quests/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
         'rewards_schedule': rewards_schedule,
         'query': query,
-        'latest_round_winners': ['solexplorer', 'tomafrench', 'yablu'],
+        'latest_round_winners': ['walidmujahid', 'nazariyv', 'cpix18'],
         'selected_tab': selected_tab,
         'title': f' {query.capitalize()} Quests',
         'point_history': point_history,
         'point_value': point_value,
         'show_loading': show_loading,
         'current_round_number': current_round_number,
-        'avatar_url': static('v2/images/quests/orb_small.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-05.png')),
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }
 

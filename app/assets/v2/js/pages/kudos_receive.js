@@ -1,3 +1,8 @@
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
+});
+
 /* eslint-disable no-console */
 var combine_secrets = function(secret1, secret2) {
   var shares = [ secret1, secret2 ];
@@ -50,7 +55,9 @@ window.onload = function() {
         _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
       }
     } else if (!$('#forwarding_address').val()) {
-      $('#forwarding_address').val(web3.eth.coinbase);
+      web3.eth.getCoinbase(function(_, coinbase) {
+        $('#forwarding_address').val(coinbase);
+      });
     }
     $('#network').val(document.web3network);
   });

@@ -44,6 +44,14 @@ body {
   text-transform: capitalize;
 }
 
+.avatar {
+  width: 50px;
+  height: 50px;
+  margin: 0px auto;
+  border-radius: 50px;
+  margin-top: 0px;
+}
+
 .invite-user .avatar {
   width: 5.5rem;
   height: 5.5rem;
@@ -71,19 +79,11 @@ body {
   font-style: italic;
 }
 
-.bounty_details .avatar {
-  width: 50px;
-  height: 50px;
-  margin: 0px auto;
-  border-radius: 50px;
-  margin-top: 0px;
-}
-
 .bounty_details .avatar.Azure-Samples {
   border-radius: 0px;
 }
 
-#avatar_url .avatar {
+.avatar-big {
   width: 80px;
   height: 80px;
 }
@@ -170,8 +170,9 @@ body {
   color: #3E00FF;
 }
 
-#issue_description {
+.issue_description {
   color: #000000;
+  font-size: 14px;
 }
 
 .bounty-subheading {
@@ -185,7 +186,7 @@ body {
 
 .bounty-info-heading {
   color: #0D0764;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: capitalize;
 }
 
@@ -267,11 +268,6 @@ body {
 .red_warning a,
 #network a{
   color: #fb9470;
-  font-weight: bold;
-}
-
-#bounty_reserved_for a {
-  margin-left: 5px;
   font-weight: bold;
 }
 
@@ -380,19 +376,6 @@ a.btn {
   transform: none;
 }
 
-#bounty_reserved_for img {
-  vertical-align: top;
-  margin-left: 3px;
-  margin-top: -2px;
-}
-
-#btn-white img {
-  position: absolute;
-  width: 1.313rem;
-  top: 0.4375rem;
-  right: 0.4375rem;
-}
-
 .comment {
   border-left: 1px solid #979797;
   padding-right: 20px;
@@ -439,6 +422,38 @@ a.btn {
   margin-bottom: 2em;
 }
 
+.issue_description img {
+  max-height: 30rem;
+  max-width: 100%;
+  cursor: zoom-in;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.issue_description h1,
+.issue_description h2,
+.issue_description h3,
+.issue_description h4,
+.issue_description h5,
+.issue_description h6 {
+  letter-spacing: 1px;
+  font-size: 16px;
+  margin-top: 15px;
+  text-transform: none;
+}
+
+#bounty_reserved_for img {
+  vertical-align: top;
+  margin-left: 3px;
+  margin-top: -2px;
+}
+
+#bounty_reserved_for a {
+  margin-left: 5px;
+  font-weight: bold;
+}
+
 #funder_notif_info:empty {
   display: none;
 }
@@ -458,27 +473,6 @@ a.btn {
   width: 1.25rem;
   position: relative;
   top: -2px;
-}
-
-#bounty_details #issue_description img {
-  max-height: 30rem;
-  max-width: 30rem;
-  cursor: pointer;
-  display: block;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-#bounty_details #issue_description h1,
-#bounty_details #issue_description h2,
-#bounty_details #issue_description h3,
-#bounty_details #issue_description h4,
-#bounty_details #issue_description h5,
-#bounty_details #issue_description h6 {
-  letter-spacing: 1px;
-  font-size: 16px;
-  margin-top: 15px;
-  text-transform: none;
 }
 
 #started_owners_username,
@@ -752,6 +746,25 @@ a.btn {
   padding: 0 25px;
 }
 
+.payout-input-amount-container input {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  max-width: 5rem;
+  outline: none;
+  color: #03B16B;
+}
+
+.payout-input-amount-container input::-webkit-outer-spin-button,
+.payout-input-amount-container input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.bounty_details .tooltip-inner {
+  max-width: 500px !important;
+}
+
 @media (max-width: 575.98px) {
 
   #timer {
@@ -855,4 +868,8 @@ a.btn {
 @-webkit-keyframes MoveUpDown {
   0% { transform: translateY(0); }
   100% { transform: translateY(-3rem); }
+}
+
+.qrcode {
+  display: inline-block;
 }

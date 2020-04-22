@@ -17,6 +17,7 @@
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
     <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   </head>
   <body class="interior {{ active }} g-font-muli">
@@ -50,6 +51,9 @@
     <div class="container-fluid bg-light">
       <div class="container profile-card mh-150">
         <div class="row">
+            <div id="follow_header" class="d-md-block d-none {% if not my_kudos|length %}lower{% endif %}">
+            {% include 'profiles/follow.html' %}
+            </div>
           {% if total_kudos_count %}
             <div id="kudos_header" class="d-md-block d-none">
               {% for kudos_group in my_kudos %}
@@ -61,15 +65,13 @@
           {% if not hidden %}
             <div class="col-12 col-lg-6 profile-header__main-infos">
               {% include 'profiles/header_avatar.html' %}
-              {% include 'profiles/header_sync_profile.html' %}
               {% include 'profiles/header_details.html' %}
             </div>
+            
             {% if profile.is_org %}
               {% include 'profiles/organization.html' %}
-
             {% elif profile.cascaded_persona == 'funder' %}
               {% include 'profiles/scorecard_funder.html' %}
-
             {% else %}
               {% include 'profiles/scorecard_hunter.html' %}
             {% endif %}
@@ -97,11 +99,14 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
     {% include 'shared/current_profile.html' %}
-
+    {% if tab == 'activity' %}
+      {% include 'shared/tip_dependancies.html' %}
+    {% else %}
+      <script src="/dynamic/js/tokens_dynamic.js"></script>
+      <script src="{% static "v2/js/tokens.js" %}"></script>
+    {% endif %}
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
-    <script src="/dynamic/js/tokens_dynamic.js"></script>
-    <script src="{% static "v2/js/tokens.js" %}"></script>
     <script>
       $('[data-toggle="popover"]').popover()
       $('[data-toggle="tooltip"]').bootstrapTooltip();
@@ -111,19 +116,19 @@
     <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
     <script src="{% static "v2/js/pages/tribe_title.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
-    <script src="{% static "v2/js/profile-backup.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>
+    <script src="{% static "v2/js/lib/jitsi.js" %}"></script>
     <script src="{% static "v2/js/activity.js" %}"></script>
+    <script src="{% static "v2/js/3box.min.js" %}"></script>
     <script>
       {% if profile.preferred_payout_address %}
         document.hasPreferredPayoutAddress = true;
       {% endif %}
-      {% if profile.automatic_backup %}
+      {% if profile.automatic_backup and is_editable %}
         window.profile_automatic_backup = true;
       {% endif %}
     </script>
-    <script src="https://unpkg.com/3box/dist/3box.min.js"></script>
   </body>
 </html>

@@ -16,66 +16,49 @@
 
 '''
 import logging
+from datetime import timedelta
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db.models import Q
+from django.utils import timezone
 
-from celery import group
-from chat.tasks import create_user
 from dashboard.models import Profile
-from marketing.utils import should_suppress_notification_email
 
 logger = logging.getLogger(__name__)
-
 
 
 class Command(BaseCommand):
     help = "create users to Gitcoin chat, creates the user if it doesn't exist"
 
+    def add_arguments(self, parser):
+        parser.add_argument('--days_ago', default=30, type=int)
+
     def handle(self, *args, **options):
         try:
+            from chat.tasks import associate_chat_to_profile
 
-            profiles = Profile.objects.filter(user__is_active=True, chat__id__exact='').prefetch_related('user')
+            days_ago = options['days_ago']
 
-            tasks = []
+            now = timezone.now()
+            delta = timedelta(days=days_ago)
+
+            profiles = Profile.objects.filter(
+                Q(gitcoin_chat_access_token__exact='') | Q(chat_id__exact=''),
+                last_visit__gte=now - delta,
+                user__is_active=True
+            ).prefetch_related('user')
 
             for profile in profiles:
-                # if profile.chat_id is None:
-                tasks.append(create_user.si(options={
-                    "email": profile.user.email,
-                    "username": profile.handle,
-                    "first_name": profile.user.first_name,
-                    "last_name": profile.user.last_name,
-                    "nickname": profile.handle,
-                    "auth_data": f'{profile.user.id}',
-                    "auth_service": "gitcoin",
-                    "locale": "en",
-                    "props": {},
-                    "notify_props": {
-                        "email": "false",
-                        "push": "mention",
-                        "desktop": "all",
-                        "desktop_sound": "true",
-                        "mention_keys": f'{profile.handle}, @{profile.handle}',
-                        "channel": "true",
-                        "first_name": "false"
-                    },
-                }, params={
-                    "tid": settings.GITCOIN_HACK_CHAT_TEAM_ID
-                }))
-            job = group(tasks)
-
-            result = job.apply_async()
-            for result_req in result.get():
-                if 'message' not in result_req:
-                    if 'username' in result_req and 'id' in result_req:
-                        profile = Profile.objects.get(handle=result_req['username'])
-                        if profile is not None:
-                            profile.chat_id = result_req['id']
-                            profile.save()
+                try:
+                    logger.info(f'Syncing Gitcoin Chat Data for: {profile.handle} Started')
+                    created, profile = associate_chat_to_profile(profile)
+                    logger.info(f'Syncing Gitcoin Chat Data for: {profile.handle} Complete')
+                except Exception as e:
+                    logger.info(f'Failed to associate chat to profile for: {profile.handle}')
+                    logger.error(str(e))
 
         except ConnectionError as exec:
-            print(str(exec))
-            self.retry(30)
+            logger.error(str(exec))
+            self.retry(countdown=30)
         except Exception as e:
             logger.error(str(e))

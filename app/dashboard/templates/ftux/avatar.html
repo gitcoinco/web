@@ -39,13 +39,7 @@
   <div class="tab-pane fade active show" id="avatars-builder-tab" role="tabpanel">
     <div class="row">
       <div class="col-12">
-        <h2>Build 
-          {% include 'ftux/avatar_toggle.html' %}
-         Gitcoin Avatar
-          <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
-            {% trans "Do This Later" %}
-          </button>
-        </h2>
+        {% include 'ftux/avatar_toggle.html' %}
       </div>
       {% if not has_purchased_everything_package %}
         <div class="col-12">
@@ -145,8 +139,14 @@
       <!-- Button Row -->
       <div id="avatar-builder__actions">
         <p class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+          <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
+            {% trans "Do This Later" %}
+          </button>
         <button disabled type="button" id="save-button" class="button button--primary" onclick="saveAvatar()">
           {% trans "Save Avatar" %}
+        </button>
+        <button disabled type="button" id="upload-button" class="button button--secondary" onclick="uploadAvatars()">
+          {% trans "Upload to 3Box" %}
         </button>
         <div>
           <a href="https://github.com/gitcoinco/web/issues/1550" target="_blank" rel="noopener noreferrer">{% trans "Don't see the right schwag?  Request new avatar attributes here" %}
@@ -169,11 +169,9 @@
   {% if theme != 'classic' %}
   <div class="tab-pane fade show active" id="avatars-builder-3d-tab" role="tabpanel">
     <div id="avatars-builder-3d">
-      <div class="text-muted text-cetner empty-avatars mb-2">Build
 
         {% include 'ftux/avatar_toggle.html' %}
 
-       Gitcoin Avatar</div>
       <div class="avatars-container">
         <img id=tdavatartarget class="{{theme}}" src="/avatar/view3d?theme={{theme}}">
       </div>
@@ -183,6 +181,10 @@
         <button type="button" id="save-3d-avatar" class="button button--primary">
           Save Avatar
         </button>
+        <button type="button" id="upload-3d-avatar" class="button button--secondary">
+          Upload to 3Box
+        </button>
+        {% if possible_skin_tones|length %}
         <div id=skin_tones class=tones>
           Skin:
           {% for st in possible_skin_tones %}
@@ -191,6 +193,8 @@
           </li>
           {% endfor %}
         </div>
+        {% endif %}
+        {% if possible_hair_tones|length %}
         <div id=hair_tones class=tones>
           Hair:
           {% for ht in possible_hair_tones %}
@@ -199,21 +203,36 @@
           </li>
           {% endfor %}
         </div>
+        {% endif %}
+        {% if possible_background_tones|length %}
+        <div id=background_tones class=tones>
+          Background:
+          {% for ht in possible_background_tones %}
+          <li data-tone='{{ht}}' style="background-color: #{{ht}}">
+            &nbsp;
+          </li>
+          {% endfor %}
+        </div>
+        {% endif %}
       <div class="action-buttons">
         {% for category, ids in 3d_avatar_params.by_category.items %}
-          <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>
+          {% if ids|length > 1 and category %}
+            <a href="#" class="select_avatar_type {{category}}" data-target="{{category}}">{{category}}</a>
+          {% endif %}
         {% endfor %}
       </div>
       <div class="targets">
         {% for category, ids in 3d_avatar_params.by_category.items %}
-          <div class="category {{category}} {% if category != 'background' %}hidden{% endif %}">
-            {% for id in ids %}
-              <img class=tdselection data-id="{{id}}" 
-              data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
-              data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
-              {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>            
-            {% endfor %}
-          </div>
+          {% if ids|length > 1 %}
+            <div class="category {{category}} {% if category != 'background' %}hidden{% endif %}">
+              {% for id in ids %}
+                <img class=tdselection data-id="{{id}}" 
+                data-src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
+                data-altsrc="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}" 
+                {% if category == 'background' %}src="/avatar/view3d?mode=preview&ids={{id}}&theme={{theme}}"{%endif%}>            
+              {% endfor %}
+            </div>
+          {% endif %}
         {% endfor %}
       </div>
     </div>

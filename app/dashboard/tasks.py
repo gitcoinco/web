@@ -4,8 +4,8 @@ from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Profile
-from marketing.mails import func_name, send_mail
+from dashboard.models import Activity, Bounty, Profile
+from marketing.mails import func_name, grant_update_email, send_mail
 from retail.emails import render_share_bounty
 
 logger = get_task_logger(__name__)
@@ -57,7 +57,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
     """
     with redis.lock("tasks:bounty_email:%s" % invite_url, timeout=LOCK_TIMEOUT):
         # need to look at how to send bulk emails with SG
-        profile = Profile.objects.get(handle=profile_handle)
+        profile = Profile.objects.get(handle=profile_handle.lower())
         try:
             for email in emails:
                 to_email = email
@@ -77,6 +77,47 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
         except ConnectionError as exc:
             logger.info(str(exc))
             logger.info("Retrying connection")
-            self.retry(30)
+            self.retry(countdown=30)
         except Exception as e:
             logger.error(str(e))
+
+
+@app.shared_task(bind=True, max_retries=3)
+def profile_dict(self, pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    if isinstance(pk, list):
+        pk = pk[0]
+    with redis.lock("tasks:profile_dict:%s" % pk, timeout=LOCK_TIMEOUT):
+        profile = Profile.objects.get(pk=pk)
+        if profile.frontend_calc_stale:
+            profile.calculate_all()
+            profile.save()
+
+
+@app.shared_task(bind=True)
+def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) -> None:
+    """
+    :param self:
+    :param bounty_pk:
+    :param event_name:
+    :return:
+    """
+    with redis.lock("maybe_market_to_user_slack:bounty", timeout=LOCK_TIMEOUT):
+        bounty = Bounty.objects.get(pk=bounty_pk)
+        from dashboard.notifications import maybe_market_to_user_slack_helper
+        maybe_market_to_user_slack_helper(bounty, event_name)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def grant_update_email_task(self, pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    activity = Activity.objects.get(pk=pk)
+    grant_update_email(activity)

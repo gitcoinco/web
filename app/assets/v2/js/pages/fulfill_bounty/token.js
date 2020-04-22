@@ -4,6 +4,16 @@
  */
 fulfillBounty = data => {
 
+  if (!data.githubPRLink) {
+    _alert({ message: gettext('Add Github Link to let the funder know where they can check out your work') }, 'error');
+    return;
+  }
+
+  if (!data.payoutAddress) {
+    _alert({ message: gettext('Add address you would want to be paid out upon payout') }, 'error');
+    return;
+  }
+
   const url  = '/api/v1/bounty/fulfill';
 
   const metadata = {

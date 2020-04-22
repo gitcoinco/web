@@ -46,7 +46,7 @@
         {% if profile.is_org %}
           <button type="button" id="nav-description" href="{{profile.url}}/people" class="text-center section-tab {% if tab == "people" %} active {% endif %}">
             {% trans "PEOPLE" %}
-            <span  class="nav-badge">({{profile.team|length}})</span>
+            <span  class="nav-badge">({{team|length}})</span>
           </button>
         {% endif %}
         {% if total_grant_actions %}
@@ -66,6 +66,11 @@
             {% trans "KUDOS" %}
             {% if total_kudos_count %}<span  class="nav-badge">({{total_kudos_count}})</span>{%endif%}
           </button>
+        {% endif %}
+        {% if projects_count %}
+          <button type="button" id="nav-description" href="{{profile.url}}/hackathons" class="text-center section-tab {% if tab == "hackathons" %} active {% endif %}">
+            {% trans "HACKATHONS" %}
+            {% if projects_count %}<span class="nav-badge">({{projects_count}})</span>{% endif %}
         {% endif %}
         {% if is_editable and profile.viewed_by.count %}
           <button type="button" id="nav-description" href="{{profile.url}}/viewers" class="text-center section-tab {% if tab == "viewers" %} active {% endif %}">

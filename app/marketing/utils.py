@@ -73,7 +73,7 @@ def delete_user_from_mailchimp(email_address):
 
 
 def is_deleted_account(handle):
-    return AccountDeletionRequest.objects.filter(handle__iexact=handle).exists()
+    return AccountDeletionRequest.objects.filter(handle=handle.lower()).exists()
 
 
 def get_stat(key):
@@ -81,8 +81,10 @@ def get_stat(key):
     return Stat.objects.filter(key=key).order_by('-created_on').first().val
 
 
-def invite_to_slack(email):
-    if settings.DEBUG:
+def invite_to_slack(email, override=False):
+    # KO 2020/03 disabling slack invites
+    # per https://gitcoincore.slack.com/archives/CB1N0L6F7/p1585245243010100
+    if settings.DEBUG or not override:
         return {}
     sc = SlackClient(settings.SLACK_TOKEN)
     response = sc.api_call('users.admin.invite', email=email)

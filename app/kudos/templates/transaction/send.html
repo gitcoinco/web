@@ -28,9 +28,9 @@
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script>
     if (window.location.hostname === 'localhost') {
-      document.network = 'custom network'
+      document.network = 'custom network';
     } else {
-      document.network = 'mainnet'
+      document.network = 'mainnet';
     }
   </script>
   <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
@@ -38,10 +38,14 @@
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/eth-price.js" %}"></script>
   <script>
-  $(document).ready(function() {
-    if (typeof userSearch != 'undefined') {
-      userSearch('.username-search', true, 'bootstrap4');
-    }
+    $(document).ready(function() {
+      if (typeof userSearch != 'undefined') {
+        userSearch('.username-search', true, 'bootstrap4');
+        $('.select2').on('click', removeStoredUser);
+        $('.clearSelectedUser').on('click', removeStoredUser);
+        $('.eth').on('click', removeStoredUser);
+        $('.airdrop').on('click', removeStoredUser);
+     }
   })
   </script>
 {% endblock %}
@@ -95,10 +99,14 @@
     <input type="hidden" name="send_type" value="github">
 
     <div class="form-group username">
-      <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
+      <select id="username" class="username-search custom-select">
+        {% if user_json %}
+          <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ user_json.preferred_payout_address }}">{{ user_json.text }}</option>
+        {% endif %}
+      </select>
       <input type="text" placeholder="0x408c49a91e46311ddc35737f8c1aaea6191f36e0" id="to_eth_address" value="" class="form-control eth_address hidden" >
       <input type="text" placeholder="(link will be displayed after you click Send)" id="airdrop_link" value="" class="form-control airdrop_link hidden" disabled="disabled">
-
+      <a href="#" style="display: none"  id="clearSelectedUser">Clear selected user</a>
     </div>
 
 
@@ -165,4 +173,55 @@
     <a id="" class="btn btn-gc-purple" href="{% url 'kudos_marketplace' %}">⬅ {% trans "Start Over" %}</a>
   </div>
 </section>
+
+<script>
+  function removeStoredUser(e) {
+    e.preventDefault();
+    localStorage.removeItem('current_receiver');
+    document.getElementById('username').innerHTML = '';
+    document.getElementById('clearSelectedUser').style.display = 'none'
+  }
+
+  window.addEventListener('load', function() {
+    setInterval(listen_for_web3_changes, 5000);
+    listen_for_web3_changes();
+  });
+
+  {% if not user_json and username %}
+    setTimeout(function() {
+      _alert("Sorry, we can't find the user");
+    }, 1000);
+  {% elif user_json and username %}
+    localStorage.setItem('current_receiver', JSON.stringify({
+      id:  {{user_json.id }},
+      avatar_id: {{ user_json.avatar_id }},
+      avatar_url: '{{ user_json.avatar_url }}',
+      preferred_payout_address: '{{ user_json.preferred_payout_address }}',
+      text: '{{ user_json.text }}',
+      date: new Date()
+    }));
+    document.getElementById('clearSelectedUser').style.display = 'block';
+  {% else %}
+    let encoded_data = localStorage.getItem('current_receiver');
+    if (encoded_data !== null) {
+      let data = JSON.parse(encoded_data);
+      let current = new Date();
+      let past = new Date(Date.parse(data.date));
+
+      if ((current.getTime() - past.getTime()) / (60 * 60) > 1440) {
+        localStorage.removeItem('current_receiver')
+      } else {
+        let option = document.createElement('option');
+        option.value = data.id;
+        option.setAttribute('avatar_id',  data.avatar_id);
+        option.setAttribute('avatar_url',data.avatar_url);
+        option.setAttribute('preferred_payout_address', data.preferred_payout_address);
+        option.textContent =  data.text;
+
+        document.getElementById('username').append(option);
+        document.getElementById('clearSelectedUser').style.display = 'block'
+      }
+    }
+  {% endif %}
+</script>
 {% endblock %}
