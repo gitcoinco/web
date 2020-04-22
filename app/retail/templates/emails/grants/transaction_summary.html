@@ -72,80 +72,8 @@
     margin-bottom: 2rem;
   }
 
-  .progress {
-    width: 60%;
-    margin-left: 20%;
-    margin-top: 50px;
-    padding-bottom: 75px;
-  }
-
   #tablePadding {
     padding-bottom: 25px;
-  }
-
-  .progressbar {
-    height: 15px;
-    background-color: #D8D8D8;
-    border-radius: 2.7px;
-  }
-
-  .progress-completed {
-    height: 100%;
-    background-color: #0FCE7C;
-    border-radius: 2.7px;
-    float: left;
-  }
-
-  .progress-removed {
-    height: 100%;
-    background-color: #CF0E0E;
-    border-top-right-radius: 2.7px;
-    border-bottom-right-radius: 2.7px;
-    float: left;
-  }
-
-  .funding {
-    width: 100%;
-  }
-
-  .left-funding {
-    width: 50%;
-    float: left;
-    text-align: left;
-  }
-
-  .right-funding {
-    width: 50%;
-    float: left;
-    text-align: right;
-  }
-
-  .funding > div > h4 {
-    line-height: 0px;
-    color: #0D0764;
-    padding-top: -50px;
-  }
-
-  .left-funding > h4 {
-    text-align: left;
-  }
-
-  .right-funding > h4 {
-    text-align: right;
-  }
-
-  .progressbar-line {
-    width: 1px;
-    height: 45px;
-    background-color: #979797;
-    float: left;
-    transform: translateY(-20%);
-    margin-right: 20px;
-  }
-
-  .funding > div > p {
-    line-height: 0px;
-    color: #BBBDBF;
   }
 
   table {
@@ -207,29 +135,10 @@
   </table>
 </div>
 <hr>
-<div class="progress">
-  <h3>
-    <strong>{% trans "Total Funds" %}</strong>
-  </h3>
-  <div class="progressbar">
-    <div class="progress-completed" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
-    </div>
-  </div>
-  <div class="funding">
-    <div class="left-funding">
-      <h4>
-        <strong>{{ grant.amount_received }} {% trans "DAI" %}</strong>
-      </h4>
-      <p>{% trans "Current" %}</p>
-    </div>
-    <div class="right-funding">
-      <h4>
-        <strong>{{ grant.amount_goal }} {% trans "DAI" %}</strong>
-      </h4>
-      <p>{% trans "Goal" %}</p>
-    </div>
-  </div>
-</div>
+<p>
+  Total Grant received
+  <strong>{{ grant.amount_received }} {% trans "DAI" %}</strong>
+</p>
 <hr>
 <br>
 <br>
