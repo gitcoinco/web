@@ -790,8 +790,13 @@ $(document).ready(function() {
           <div class="col-sm-1 mt-1 activity-avatar d-none d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
-          <div class="col-12 col-sm-11 text-right">
+          <div class="comment-area col-12 col-sm-11 text-right">
             <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
+            <div class="emoji-container position-absolute d-flex flex-wrap">
+              <button class="btn btn-sm p-1 emoji_button" data-toggle="tooltip" title="Add an emoji to post.">
+                <i class="far fa-fw fa-smile"></i>
+              </button>
+            </div>
             <a href=# class="btn btn-gc-blue btn-sm mt-= font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
@@ -804,6 +809,24 @@ $(document).ready(function() {
     });
   };
 
+  // add emoji to comment
+  let activityCommentTextArea = '';
+  var picker = new EmojiButton({
+    position: 'right-end'
+  });
+
+  picker.on('emoji', function(emoji) {
+    activityCommentTextArea.value += ` ${emoji} `;
+  });
+
+  $(document).on('click', '.emoji_button', function(e) {
+    e.preventDefault();
+    const commentArea = $(this).parents('.comment-area')[0];
+    const emojiContainer = $(this).parents('.emoji-container')[0];
+
+    picker.pickerVisible ? picker.hidePicker() : picker.showPicker(emojiContainer);
+    activityCommentTextArea = commentArea.children[0];
+  });
 
   // post comment activity
   $(document).on('click', '.comment_container .action.like', function(e) {
