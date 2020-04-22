@@ -180,7 +180,7 @@ def cryptocompare():
 
 def uniswap():
     """Hangle pulling market data from Uniswap using its subgraph node on mainnet."""
-    pull_uniswap_tokens_only = ['PAN']
+    pull_uniswap_tokens = ['PAN']
     endpoint = 'https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap'
     query_limit = 100
     skip = 0
@@ -212,12 +212,10 @@ def uniswap():
                 for exchange in json_data['data']['exchanges']:
                     try:
                         token_name = exchange['tokenSymbol']
-                        if token_name not in pull_uniswap_tokens_only:
+                        if token_name not in pull_uniswap_tokens or token_name == 'ETH': # dont pull ETH/ETH ETH/USD prices
                             continue
                         if float(exchange['price']) == 0.: # Skip exchange pairs with zero value
                             continue
-                        if token_name == 'ETH':
-                            continue # dont pull ETH/ETH and ETH/USD pricing
                         to_amount = (float(exchange['price']) + float(exchange['lastPrice'])) / 2.
                         ConversionRate.objects.create(
                             from_amount=1,
