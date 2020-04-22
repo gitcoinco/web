@@ -11,16 +11,18 @@ from django.utils import timezone
 import metadata_parser
 from app.redis_service import RedisService
 from bounty_requests.models import BountyRequest
-from dashboard.models import Activity, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants, \
-    TribeMember
+from dashboard.models import (
+    Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
+)
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
-from .models import Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction, \
-    Favorite
+from .models import (
+    Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
+)
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
@@ -159,7 +161,9 @@ def get_sidebar_tabs(request):
     }
     tabs = tabs + [connect]
 
-    hackathons = HackathonEvent.objects.filter(start_date__lt=timezone.now() + timezone.timedelta(days=10), end_date__gt=timezone.now())
+    start_date = timezone.now() + timezone.timedelta(days=10)
+    end_date = timezone.now() - timezone.timedelta(days=7)
+    hackathons = HackathonEvent.objects.filter(start_date__lt=start_date, end_date__gt=end_date, visible=True)
     if hackathons.count():
         for hackathon in hackathons:
             connect = {
@@ -283,7 +287,7 @@ def get_suggested_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
         handles = TribeMember.objects.filter(profile=request.user.profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-created_on')[:5]
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-follower_count')[:5]
 
         for profile in tribes:
             handle = profile.handle
@@ -296,7 +300,7 @@ def get_suggested_tribes(request):
                 'avatar_url': f'/dynamic/avatar/{handle}',
                 'follower_count': profile.tribe_members.all().count()
             }
-            following_tribes = [tribe] + following_tribes
+            following_tribes = following_tribes + [tribe]
     return following_tribes
 
 
@@ -377,6 +381,8 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'max_length': max_length,
+        'max_length_offset': max_length_offset,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,

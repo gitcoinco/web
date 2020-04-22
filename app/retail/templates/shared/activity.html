@@ -64,7 +64,7 @@
          {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
-         <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
+         <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
 
          {% if row.hackathonevent %}
             <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" class="tag">
@@ -89,11 +89,11 @@
       <div class="activity_detail_content font-body pb-2">
         {% if row.activity_type == 'new_tip' %}
           {% trans "tipped" %}
-          <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
+          <a data-usercard="{{ row.metadata.to_username }}" href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
             @{{ row.metadata.to_username }}
           </a>
         {% elif row.activity_type == 'mini_clr_payout' %}
-          {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
+          {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
           a new kudos has been minted:
           <a href="{{ row.kudos.external_url }}">

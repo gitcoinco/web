@@ -85,9 +85,6 @@
 <img id="grant-logo" src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}" alt="grant logo" >
 <h1 class="grant-email-name">{{ grant.title }}</h1>
 <p class="grant-description">{{ grant.description }}</p>
-<div>
-  <p>{% trans "You are seeking " %}<strong>{{ grant.amount_goal }}</strong> {% trans "DAI monthly" %}</p>
-</div>
 <p>{% trans "To view or edit your grant click the button below." %}</p>
 <p style="margin: 2rem;">
   <a class="grant-button" href="{% url 'grants:details' grant.pk grant.slug %}">{% trans "View Grant" %}</a>

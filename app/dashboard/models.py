@@ -217,8 +217,7 @@ class Bounty(SuperModel):
         ('approval', 'approval'),
     ]
     REPO_TYPES = [
-        ('public', 'public'),
-        ('private', 'private'),
+        ('public', 'public')
     ]
     PROJECT_TYPES = [
         ('traditional', 'traditional'),
@@ -336,7 +335,7 @@ class Bounty(SuperModel):
     project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
     permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
     bounty_categories = ArrayField(models.CharField(max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
-    repo_type = models.CharField(max_length=50, choices=REPO_TYPES, default='public')
+    repo_type = models.CharField(max_length=10, choices=REPO_TYPES, default='public')
     snooze_warnings_for_days = models.IntegerField(default=0)
     is_featured = models.BooleanField(
         default=False, help_text=_('Whether this bounty is featured'))
@@ -346,7 +345,6 @@ class Bounty(SuperModel):
     fee_amount = models.DecimalField(default=0, decimal_places=18, max_digits=50)
     fee_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
     coupon_code = models.ForeignKey('dashboard.Coupon', blank=True, null=True, related_name='coupon', on_delete=models.SET_NULL)
-    unsigned_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='bounty', on_delete=models.SET_NULL)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -1328,6 +1326,7 @@ class BountyFulfillment(SuperModel):
     """The structure of a fulfillment on a Bounty."""
 
     PAYOUT_STATUS = [
+        ('expired', 'expired'),
         ('pending', 'pending'),
         ('done', 'done'),
     ]
@@ -1400,32 +1399,6 @@ class BountySyncRequest(SuperModel):
     processed = models.BooleanField()
 
 
-class RefundFeeRequest(SuperModel):
-    """Define the Refund Fee Request model."""
-    profile = models.ForeignKey(
-        'dashboard.Profile',
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='refund_requests',
-    )
-    bounty = models.ForeignKey(
-        'dashboard.Bounty',
-        on_delete=models.CASCADE
-    )
-    fulfilled = models.BooleanField(default=False)
-    rejected = models.BooleanField(default=False)
-    comment = models.TextField(max_length=500, blank=True)
-    comment_admin = models.TextField(max_length=500, blank=True)
-    fee_amount = models.FloatField()
-    token = models.CharField(max_length=10)
-    address = models.CharField(max_length=255)
-    txnId = models.CharField(max_length=255, blank=True)
-
-    def __str__(self):
-        """Return the string representation of RefundFeeRequest."""
-        return f"bounty: {self.bounty}, fee: {self.fee_amount}, token: {self.token}. Time: {self.created_on}"
-
-
 class Subscription(SuperModel):
 
     email = models.EmailField(max_length=255)
@@ -1434,12 +1407,6 @@ class Subscription(SuperModel):
 
     def __str__(self):
         return f"{self.email} {self.created_on}"
-
-
-class BountyDocuments(SuperModel):
-
-    doc = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('Bounty documents.'))
-    doc_type = models.CharField(max_length=50)
 
 
 class SendCryptoAssetQuerySet(models.QuerySet):
@@ -1933,7 +1900,6 @@ class Interest(SuperModel):
         max_length=7,
         help_text=_('Whether or not the interest requires review'),
         verbose_name=_('Needs Review'))
-    signed_nda = models.ForeignKey('dashboard.BountyDocuments', blank=True, null=True, related_name='interest', on_delete=models.SET_NULL)
 
     # Interest QuerySet Manager
     objects = InterestQuerySet.as_manager()
@@ -2087,8 +2053,6 @@ class Activity(SuperModel):
         ('new_grant_contribution', 'Contributed to Grant'),
         ('new_grant_subscription', 'Subscribed to Grant'),
         ('killed_grant_contribution', 'Cancelled Grant Contribution'),
-        ('new_milestone', 'New Milestone'),
-        ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
         ('created_kudos', 'Created Kudos'),
         ('receive_kudos', 'Receive Kudos'),
@@ -2568,9 +2532,6 @@ class Profile(SuperModel):
     slack_token = models.CharField(max_length=255, default='', blank=True)
     custom_tagline = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
-    gitcoin_discord_username = models.CharField(max_length=255, default='', blank=True)
-    discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
-    discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -2664,7 +2625,6 @@ class Profile(SuperModel):
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
-
     @property
     def subscribed_threads(self):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
@@ -3580,9 +3540,9 @@ class Profile(SuperModel):
         if self.admin_override_name:
             return self.admin_override_name
 
-        if self.data and self.data["name"]:
+        # TODO: investigate how jsonfield blank keys get set.
+        if self.data and self.data["name"] and self.data["name"] != 'null':
             return self.data["name"]
-
         return self.username
 
 
@@ -3695,35 +3655,6 @@ class Profile(SuperModel):
         self.slack_channel = channel
         self.save()
 
-    def get_discord_repos(self, join=False):
-        """Get the profile's Discord tracked repositories.
-
-        Args:
-            join (bool): Whether or not to return a joined string representation.
-                Defaults to: False.
-
-        Returns:
-            list of str: If joined is False, a list of discord repositories.
-            str: If joined is True, a combined string of discord repositories.
-
-        """
-        if join:
-            repos = ', '.join(self.discord_repos)
-            return repos
-        return self.discord_repos
-
-    def update_discord_integration(self, webhook_url, repos):
-        """Update the profile's Discord integration settings.
-
-        Args:
-            webhook_url (str): The profile's Discord webhook url.
-            repos (list of str): The profile's github repositories to track.
-
-        """
-        repos = repos.split(',')
-        self.discord_webhook_url = webhook_url
-        self.discord_repos = [repo.strip() for repo in repos]
-        self.save()
 
     @staticmethod
     def get_network():
@@ -4510,16 +4441,18 @@ class HackathonEvent(SuperModel):
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    banner = models.ImageField(null=True, blank=True)
     background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner, default to white')
     text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
+    sponsor_profiles = models.ManyToManyField('dashboard.Profile', blank=True, limit_choices_to={'data__type': 'Organization'})
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
-
+    default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
 
     def __str__(self):
@@ -4610,6 +4543,7 @@ def psave_hackathonevent(sender, instance, **kwargs):
             }
             )
 
+
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [
         ('G', 'Gold'),
@@ -4668,6 +4602,12 @@ class HackathonProject(SuperModel):
         choices=PROJECT_STATUS,
         blank=True
     )
+    message = models.CharField(
+        max_length=150,
+        blank=True,
+        default=''
+    )
+    looking_members = models.BooleanField(default=False)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -4682,7 +4622,6 @@ class HackathonProject(SuperModel):
 
     def get_absolute_url(self):
         return self.url()
-
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
