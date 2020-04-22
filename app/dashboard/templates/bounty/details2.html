@@ -36,6 +36,8 @@
             Admin Actions
           </span>
           <a v-for="link in quickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
+          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="contactFunder()">Contact Funder</button>
+          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="overrideStatus()">Override Status</button>
         </div>
         <div class="col-12" v-if="loadingState === 'resolved'">
           {% if event_tag %}
