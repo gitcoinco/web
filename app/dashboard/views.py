@@ -110,7 +110,7 @@ from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
-from .router import HackathonEventSerializer, HackathonProjectSerializer
+from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
@@ -2831,6 +2831,15 @@ def profile(request, handle, tab=None):
     # record profile view
     if request.user.is_authenticated and not context['is_my_profile']:
         ProfileView.objects.create(target=profile, viewer=request.user.profile)
+
+    if profile.is_org:
+        # pdict = TribesSerializer(profile.to_dict()).data
+        context['init_data'] = profile.to_dict
+        context['currentProfile'] = profile.as_representation
+        context['target'] = f'/activity?what=tribe:{profile.handle}'
+        context['profile_handle'] = profile.handle
+
+        return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 

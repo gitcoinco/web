@@ -43,7 +43,7 @@ Vue.component('select2', {
   mounted: function() {
     let vm = this;
 
-    $(this.$el).select2({ data: this.options })
+    $(this.$el).select2({data: this.options})
       .val(this.value)
       .trigger('change')
       .on('change', function() {
@@ -53,13 +53,13 @@ Vue.component('select2', {
   watch: {
     value: function(value) {
       if (value === undefined) {
-        $(this.$el).empty().select2({ data: this.options });
+        $(this.$el).empty().select2({data: this.options});
       } else if ([...value].sort().join(',') !== [...$(this.$el).val()].sort().join(',')) {
         $(this.$el).val(value).trigger('change');
       }
     },
     options: function(options) {
-      $(this.$el).empty().select2({ data: options });
+      $(this.$el).empty().select2({data: options});
     }
   },
   destroyed: function() {
@@ -122,5 +122,112 @@ Vue.component('qrcode', {
     // return new QRCode(vm.jqEl, "http://jindo.dev.naver.com/collie");
     //   // return this.size.trim().toLowerCase()
     // }
+  }
+});
+
+
+Vue.component('project-directory', {
+  delimiters: [ '[[', ']]' ],
+  methods: {
+    fetchProjects: function(newPage) {
+      let vm = this;
+
+      vm.isLoading = true;
+      vm.noResults = false;
+
+      if (newPage) {
+        vm.projectsPage = newPage;
+      }
+      vm.params.page = vm.projectsPage;
+      if (vm.hackathonId) {
+        vm.params.hackathon = hackathonId;
+      }
+
+      if (vm.searchTerm) {
+        vm.params.search = vm.searchTerm;
+      } else {
+        delete vm.params['search'];
+      }
+
+      let searchParams = new URLSearchParams(vm.params);
+
+      let apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
+
+      var getProjects = fetchData(apiUrlProjects, 'GET');
+
+      $.when(getProjects).then(function(response) {
+        vm.hackathonProjects = [];
+        response.data.forEach(function(item) {
+          vm.hackathonProjects.push(item);
+        });
+
+        vm.projectsNumPages = response.num_pages;
+        vm.projectsHasNext = response.has_next;
+        vm.numProjects = response.count;
+        if (vm.projectsHasNext) {
+          vm.projectsPage = ++vm.projectsPage;
+
+        } else {
+          vm.projectsPage = 1;
+        }
+
+        if (vm.hackathonProjects.length) {
+          vm.noResults = false;
+        } else {
+          vm.noResults = true;
+        }
+        vm.isLoading = false;
+      });
+    },
+    searchProjects: function() {
+      let vm = this;
+
+      vm.hackathonProjects = [];
+
+      vm.fetchProjects(1);
+
+    }
+  },
+  data: () => ({
+    hackathonSponsors: document.hackathonSponsors || [],
+    hackathonProjects: document.hackathonProjects || [],
+    projectsPage: 1,
+    hackathonId: document.hackathon_id || null,
+    projectsNumPages: 0,
+    projectsHasNext: false,
+    numProjects: 0,
+    media_url,
+    searchTerm: null,
+    bottom: false,
+    params: {},
+    isFunder: false,
+    showModal: false,
+    showFilters: true,
+    skills: document.keywords || [],
+    selectedSkills: [],
+    noResults: false,
+    isLoading: true,
+    hideFilterButton: false
+  }),
+  mounted() {
+    this.fetchProjects();
+    this.$watch('params', function(newVal, oldVal) {
+      this.searchProjects();
+    }, {
+      deep: true
+    });
+  },
+  created() {
+    // this.extractURLFilters();
+  },
+  beforeMount() {
+    window.addEventListener('scroll', () => {
+      this.bottom = this.bottomVisible();
+    }, false);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', () => {
+      this.bottom = this.bottomVisible();
+    });
   }
 });
