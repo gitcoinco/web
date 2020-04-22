@@ -32,24 +32,29 @@
 .how-it-works img {
   width: 75%;
 }
+
 .testimonial-card {
   margin-top: 24px;
   border: 4px solid #3E00FF;
   height: 30rem;
   width: 38rem;
 }
+
 .testimonial-card:first-child {
   margin-left: -25%;
 }
+
 .testimonial-card:last-child {
   margin-right: -25%;
 }
+
 .card-description {
   width: 60%;
   font-size: 28px;
   line-height: 36px;
   text-align: center;
 }
+
 .card-description::before {
   content: '“          ';
   font-weight: bold;
@@ -58,6 +63,7 @@
   text-align: center;
   color: #000000;
 }
+
 .card-description::after {
   content: '             „';
   font-weight: bold;
@@ -67,9 +73,11 @@
   color: #000000;
   margin-top: 10px;
 }
+
 .overlap-line {
   margin-top: -4rem;
 }
+
 .avatar {
   max-width: 6rem;
   max-height: 6rem;
@@ -90,12 +98,15 @@
 .tribe-points img {
   height: 3rem;
 }
+
 .tribe-points h4 {
   font-size: 2rem;
 }
+
 .tribe-points p {
   font-size: 1.5rem;
 }
+
 .tribe-points li {
   padding-left: 30px;
   padding-right: 30px;
