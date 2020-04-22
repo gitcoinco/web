@@ -3668,6 +3668,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'projects_count': projects_count,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
         'is_registered': json.dumps(True if is_registered else False),
+        'hackathon_not_started': hackathon_not_started,
         'user': request.user,
         'tags': view_tags,
         'activities': [],
