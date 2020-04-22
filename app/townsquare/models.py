@@ -60,6 +60,7 @@ class Comment(SuperModel):
     likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
     likes_handles = ArrayField(models.CharField(max_length=200, blank=True), default=list, blank=True) #handles of users who like this post
     tip_count_eth = models.DecimalField(default=0, decimal_places=5, max_digits=50)
+    is_edited = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"

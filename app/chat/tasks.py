@@ -285,20 +285,21 @@ def add_to_channel(self, channel_details, chat_user_ids: list, retry: bool = Tru
     :param retry:
     :return:
     """
-    chat_driver.login()
     try:
+        chat_driver.login()
         for chat_user_id in chat_user_ids:
-            if chat_user_id is '' or chat_user_id is None:
+            try:
+                if chat_user_id is '' or chat_user_id is None:
+                    continue
+                chat_driver.channels.add_user(channel_details['id'], options={
+                    'user_id': chat_user_id
+                })
+            except Exception as e:
+                logger.debug(str(e))
                 continue
-            chat_driver.channels.add_user(channel_details['id'], options={
-                'user_id': chat_user_id
-            })
-
     except ConnectionError as exc:
         logger.debug(str(exc))
         self.retry(countdown=30)
-    except Exception as e:
-        logger.debug(str(e))
 
 
 @app.shared_task(bind=True, max_retries=1)
