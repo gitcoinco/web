@@ -367,7 +367,7 @@ def grants(request):
         'current_partners': current_partners,
         'past_partners': past_partners,
         'card_desc': f'❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants',
-        'avatar_url': f'/static/v2/images/grants/headers/{grant_type_gfx_if_any}.png',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 1097,
         'avatar_width': 1953,
@@ -1060,7 +1060,11 @@ def profile(request):
 
 def quickstart(request):
     """Display quickstart guide."""
-    params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
+    params = {
+    'active': 'grants_quickstart',
+    'title': _('Quickstart'),
+    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+    }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
 
