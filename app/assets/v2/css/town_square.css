@@ -1111,7 +1111,6 @@ body.green.offer_view .announce {
   width: 60%;
 }
 #get-started p {
-  width: 60%;
   color: white;
 }
 
@@ -1119,6 +1118,7 @@ body.green.offer_view .announce {
   font-size: 24px;
   line-height: 30px;
   text-align: center;
+  width: 60%;
 }
 
 #get-started a {
