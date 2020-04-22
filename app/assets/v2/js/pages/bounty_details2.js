@@ -88,7 +88,28 @@ Vue.mixin({
       }
       return url;
     },
+    getQRString: function(token_name, address) {
+      let qr_string;
 
+      switch (token_name) {
+        case 'ETC':
+          qr_string = `ethereum:${address}`;
+          break;
+
+        case 'cUSD':
+        case 'cGLD':
+          // TOOD : UPDATE
+          qr_string = `ethereum:${address}`;
+          break;
+
+        case 'ZIL':
+          // TOOD : UPDATE
+          qr_string = `ethereum:${address}`;
+          break;
+      }
+
+      return qr_string;
+    },
     syncBounty: function() {
       let vm = this;
 

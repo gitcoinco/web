@@ -387,8 +387,7 @@
                               <input type="number" class="mb-4 font-bigger-4 text-center" v-model="inputAmount" v-on:input="totalAmountPaid(inputAmount)" min="0" name="" id="">
                               <span class="font-body">[[ bounty.token_name ]]</span>
                             </p>
-
-                            <qrcode :string="`ethereum:${fulfillment.fulfiller_address}`"></qrcode>
+                            <qrcode :string="getQRString(fulfillment.token_name, fulfillment.fulfiller_address)"></qrcode>
                             <small class="d-block my-3">Scan the QR code above with your ETC Wallet to payout</small>
                             <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
                               @click="fulfillmentComplete(fulfillment.pk, inputAmount, $event)"
