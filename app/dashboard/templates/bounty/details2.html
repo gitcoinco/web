@@ -301,12 +301,6 @@
                         <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
-                        <p class="font-smaller-4 my-0">
-                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
-                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
-                            <i class="far fa-clipboard-check"></i>
-                          </button>
-                        </p>
                       </template>
 
                       <template v-else>
