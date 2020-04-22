@@ -4978,9 +4978,6 @@ def payout_bounty_v1(request, fulfillment_id):
     '''
         ETC-TODO
         - wire in email (invite + successful payout)
-        - invoke blockscout to check status
-        - add new bounty_state : pending verification
-        - handle multiple payouts
 
         {
             amount: <integer>,
@@ -5119,6 +5116,9 @@ def close_bounty_v1(request, bounty_id):
     if accepted_fulfillments.count() == 0:
         response['message'] = 'error: cannot close a bounty without making a payment'
         return JsonResponse(response)
+
+    event_name = 'work_done'
+    record_bounty_activity(bounty, user, event_name)
 
     bounty.bounty_state = 'done'
     bounty.idx_status = 'done' # TODO: RETIRE
