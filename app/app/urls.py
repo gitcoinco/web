@@ -613,7 +613,6 @@ urlpatterns = [
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
-    re_path(r'^settings/discord/?', marketing.views.discord_settings, name='discord_settings'),
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
