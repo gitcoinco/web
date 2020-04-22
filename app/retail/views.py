@@ -1585,7 +1585,7 @@ def increase_funding_limit_request(request):
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
 
-# @staff_member_required
+@staff_member_required
 def tribes(request):
     plans= [
         {
