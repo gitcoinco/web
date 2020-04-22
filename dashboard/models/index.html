@@ -5097,14 +5097,6 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Profile.discord_repos">discord_repos</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Profile.discord_webhook_url">discord_webhook_url</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Profile.dominant_persona">dominant_persona</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -5339,10 +5331,6 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 </code></pre>
 
 <h3 id="dashboard.models.Profile.gitcoin_chat_access_token">gitcoin_chat_access_token</h3>
-
-<p>A wrapper for a deferred-loading field. When the value is read from this
-object the first time, the query is executed.</p>
-<h3 id="dashboard.models.Profile.gitcoin_discord_username">gitcoin_discord_username</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -6193,27 +6181,6 @@ for a particular user
 <p>Args:
     token (str): The profile's slack token.
     channel (str): The profile's slack channel.
-    repos (list of str): The profile's github repositories to track.</p>
-<h3 id="dashboard.models.Profile.get_discord_repos">get_discord_repos</h3>
-
-<pre><code class="python">Profile.get_discord_repos(self, join=False)
-</code></pre>
-
-<p>Get the profile's Discord tracked repositories.</p>
-<p>Args:
-    join (bool): Whether or not to return a joined string representation.
-        Defaults to: False.</p>
-<p>Returns:
-    list of str: If joined is False, a list of discord repositories.
-    str: If joined is True, a combined string of discord repositories.</p>
-<h3 id="dashboard.models.Profile.update_discord_integration">update_discord_integration</h3>
-
-<pre><code class="python">Profile.update_discord_integration(self, webhook_url, repos)
-</code></pre>
-
-<p>Update the profile's Discord integration settings.</p>
-<p>Args:
-    webhook_url (str): The profile's Discord webhook url.
     repos (list of str): The profile's github repositories to track.</p>
 <h3 id="dashboard.models.Profile.get_eth_sum">get_eth_sum</h3>
 
