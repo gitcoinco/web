@@ -851,7 +851,7 @@ def users_directory(request):
 
     params = {
         'is_staff': request.user.is_staff,
-        'avatar_url': static('v2/images/twitter_cards/tw_cards-07.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')) ,
         'active': 'users',
         'title': 'Users',
         'meta_title': "",
@@ -1199,7 +1199,7 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': title,
-        'avatar_url': static('v2/images/twitter_cards/tw_cards-01 copy.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01 copy.png')),
         'meta_title': "Issue & Open Bug Bounty Marketplace | Gitcoin",
         'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
@@ -2087,7 +2087,7 @@ def quickstart(request):
     activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
     context = deepcopy(qs.quickstart)
     context["activities"] = activities
-    context['avatar_url'] = static('v2/images/twitter_cards/tw_cards-01.png')
+    context['avatar_url'] = request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png'))
     return TemplateResponse(request, 'quickstart.html', context)
 
 
@@ -3407,7 +3407,7 @@ def new_bounty(request):
     except (ValueError, Activity.DoesNotExist):
         pass
 
-    params['avatar_url'] = static('v2/images/twitter_cards/tw_cards-01.png')
+    params['avatar_url'] = request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png'))
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
@@ -3780,7 +3780,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
         'user': request.user,
-        'avatar_url': static('v2/images/twitter_cards/tw_cards-02.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'tags': view_tags,
         'activities': [],
         'SHOW_DRESSING': False,
@@ -3847,7 +3847,7 @@ def hackathon_onboard(request, hackathon=''):
         'title': f'{hackathon_event.name.title()} Onboard',
         'hackathon': hackathon_event,
         'referer': referer,
-        'avatar_url': static('v2/images/twitter_cards/tw_cards-02.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'is_registered': is_registered,
         'sponsors': sponsors
     }
@@ -3912,7 +3912,7 @@ def hackathon_projects(request, hackathon='', specify_project=''):
 
     title = f'{hackathon_event.name.title()} Projects'
     desc = f"{title} in the recent Gitcoin Virtual Hackathon"
-    avatar_url = hackathon_event.logo.url if hackathon_event.logo else static('v2/images/twitter_cards/tw_cards-02.png')
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
 
     if order_by not in {'created_on', '-created_on'}:
         order_by = '-created_on'
@@ -4003,7 +4003,7 @@ def hackathon_get_project(request, bounty_id, project_id=None):
         'bounty': bounty,
         'projects': projects,
         'project_selected': project_selected,
-        'avatar_url': static('v2/images/twitter_cards/tw_cards-02.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
     }
     return TemplateResponse(request, 'dashboard/hackathon/project_new.html', params)
 
@@ -4226,7 +4226,7 @@ def get_hackathons(request):
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
-        'avatar_url': static('v2/images/twitter_cards/tw_cards-02.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'events': events,
     }
