@@ -204,7 +204,6 @@ const init = () => {
             formData.append('contract_owner_address', $('#contract_owner_address').val());
             formData.append('token_address', $('#token_address').val());
             formData.append('token_symbol', $('#token_symbol').val());
-            formData.append('amount_goal', $('#amount_goal').val());
             formData.append('contract_version', $('#contract_version').val());
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());

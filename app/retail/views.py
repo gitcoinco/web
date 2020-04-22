@@ -221,6 +221,7 @@ def funder_bounties(request):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'bounties_funder',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png')),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
@@ -366,6 +367,7 @@ def contributor_bounties(request, tech_stack):
 
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png')),
         'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -435,10 +437,8 @@ def how_it_works(request, work_type):
 
 
 def robotstxt(request):
-    hidden_profiles = list(JSONStore.objects.get(view='hidden_profiles').data)
     context = {
         'settings': settings,
-        'hidden_profiles': hidden_profiles,
     }
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
@@ -1527,6 +1527,7 @@ def tribes_home(request):
     tribes = Profile.objects.filter(is_org=True).annotate(followers=Count('follower')).order_by('-followers')[:8]
 
     context = {
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')),
         'testimonials': testimonials(),
         'reasons': reasons(),
         'articles': articles(),

@@ -714,8 +714,7 @@ var show_interest_modal = function() {
         }
 
         add_interest(document.result['pk'], {
-          issue_message: msg,
-          discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+          issue_message: msg
         }).then(success => {
           if (success) {
             $(self).attr('href', '/uninterested');
