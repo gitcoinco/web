@@ -107,7 +107,7 @@ from .models import (
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
-    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
 from .router import HackathonEventSerializer, HackathonProjectSerializer
 from .utils import (
@@ -260,7 +260,6 @@ def create_new_interest_helper(bounty, user, issue_message):
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
     maybe_market_to_user_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
-    maybe_market_to_user_discord(bounty, 'start_work' if not approval_required else 'worker_applied')
     return interest
 
 
@@ -293,7 +292,6 @@ def get_interest_modal(request):
 
     context = {
         'bounty': bounty,
-        'gitcoin_discord_username': request.user.profile.gitcoin_discord_username if request.user.is_authenticated else None,
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
@@ -388,11 +386,6 @@ def new_interest(request, bounty_id):
             'error': _('You have already started work on this bounty!'),
             'success': False},
             status=401)
-
-    if request.POST.get('discord_username'):
-        profile = request.user.profile
-        profile.gitcoin_discord_username = request.POST.get('discord_username')
-        profile.save()
 
     msg = _("You have started work.")
     approval_required = bounty.permission_type == 'approval'
@@ -585,7 +578,6 @@ def remove_interest(request, bounty_id):
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-        maybe_market_to_user_discord(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': [_('You haven\'t expressed interest on this bounty.')],
@@ -740,7 +732,6 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-        maybe_market_to_user_discord(bounty, 'stop_work')
         if is_staff or is_moderator:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
@@ -4782,7 +4773,6 @@ def create_bounty_v1(request):
 
     # maybe_market_to_slack(bounty, event_name)
     # maybe_market_to_user_slack(bounty, event_name)
-    # maybe_market_to_user_discord(bounty, event_name)
 
     response = {
         'status': 204,
