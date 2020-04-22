@@ -1759,6 +1759,10 @@ def psave_tip(sender, instance, **kwargs):
 def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if instance.pk and is_valid:
+        try:
+            value_usd = instance.value_in_usdt_then
+        except:
+            value_usd = 0
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
@@ -1767,7 +1771,7 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "org_profile":instance.org_profile,
                 "from_profile":instance.sender_profile,
                 "to_profile":instance.recipient_profile,
-                "value_usd":instance.value_in_usdt_then,
+                "value_usd":value_usd,
                 "url":'https://gitcoin.co/tips',
                 "network":instance.network,
             }
