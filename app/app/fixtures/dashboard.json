@@ -7768,7 +7768,6 @@
                 "grant_url": "/grants/3/my-test-grant-x3",
                 "grant_logo": null,
                 "token_name": "Any Token",
-                "amount_goal": "100000.00",
                 "value_in_token": "0.00"
             },
             "needs_review": false

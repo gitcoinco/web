@@ -169,12 +169,6 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The wallet address that owns the subscription contract and is able to call endContract()'),
     )
-    amount_goal = models.DecimalField(
-        default=1,
-        decimal_places=4,
-        max_digits=50,
-        help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
-    )
     amount_received_in_round = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -314,12 +308,6 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
-    def percentage_done(self):
-        """Return the percentage of token received based on the token goal."""
-        if not self.amount_goal:
-            return 0
-        return ((float(self.amount_received_with_phantom_funds) / float(self.amount_goal)) * 100)
-
 
     def updateActiveSubscriptions(self):
         """updates the active subscriptions list"""
@@ -327,6 +315,7 @@ class Grant(SuperModel):
         for handle in Subscription.objects.filter(grant=self, active=True, is_postive_vote=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
+
 
     @property
     def contributions(self):
