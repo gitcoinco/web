@@ -243,6 +243,11 @@ Vue.mixin({
       }).fail(function(error) {
         event.target.disabled = false;
       });
+    },
+    openChat: function(user) {
+      const url = user ? `https://chat.gitcoin.co/gitcoin/messages/@${user}` : 'https://chat.gitcoin.co/';
+
+      window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
     }
   }
 });
