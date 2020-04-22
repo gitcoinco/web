@@ -112,19 +112,6 @@ def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) 
         maybe_market_to_user_slack_helper(bounty, event_name)
 
 
-@app.shared_task(bind=True)
-def maybe_market_to_user_discord(self, bounty_pk, event_name, retry: bool = True) -> None:
-    """
-    :param self:
-    :param bounty_pk:
-    :param event_name:
-    :return:
-    """
-    with redis.lock("maybe_market_to_user_discord:bounty", timeout=LOCK_TIMEOUT):
-        bounty = Bounty.objects.get(pk=bounty_pk)
-        from dashboard.notifications import maybe_market_to_user_discord_helper
-        maybe_market_to_user_discord_helper(bounty, event_name)
-
 @app.shared_task(bind=True, max_retries=3)
 def grant_update_email_task(self, pk, retry: bool = True) -> None:
     """

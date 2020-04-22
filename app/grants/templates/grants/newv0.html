@@ -88,18 +88,10 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <div class="row">
-                    <div class="col-12 col-md-6">
-                      <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
-                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" step=".001" required />
+                    <label class="font-body">{% trans "Required Token For Subscription" %}</label>
+                    <div class="form__select2">
+                      <select class='js-select2' name='denomination' id='js-token'></select>
                     </div>
-                    <div class="col-12 col-md-6">
-                      <label class="font-body">{% trans "Required Token For Subscription" %}</label>
-                      <div class="form__select2">
-                        <select class='js-select2' name='denomination' id='js-token'></select>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <div class="form__group-horizontal pb-3">
