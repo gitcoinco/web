@@ -913,14 +913,13 @@
     <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{orgs|json_script:"sponsor-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
-    {{is_registered|json_script:"hackathon-registration"}}
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
       });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{ keywords | safe }};
-      document.is_registered = JSON.parse(document.getElementById('hackathon-registration').textContent);
+      document.is_registered = {{ is_registered | safe }};
 
       window.localStorage['tab'] = 'hackathon:{{hackathon.id | safe}}';
       document.hackathon = "{{ hackathon.slug | safe }}";
