@@ -37,9 +37,14 @@
         width: 100%;
       }
       .onboard-banner {
+        position: relative;
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
       }
+
     </style>
   </head>
   <body class="interior {{active}} g-font-muli">
@@ -47,16 +52,16 @@
     <div class="container-fluid header dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav_hackathons.html' %}
-      <div class="onboard-banner text-center p-4 pb-5">
-        {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-        {% if logo %}
-          <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
-        {% else %}
-          <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
-            {{ hackathon.name }}
-          </div>
-        {% endif %}
-      </div>
+    </div>
+    <div class="onboard-banner text-center p-4 pb-5">
+      {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+      {% if logo %}
+        <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
+      {% else %}
+        <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
+          {{ hackathon.name }}
+        </div>
+      {% endif %}
     </div>
 
     <div class="container-fluid bg-lightblue pb-5">
