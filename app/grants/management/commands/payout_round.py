@@ -34,6 +34,7 @@ from grants.views import clr_active, clr_round, next_round_start, round_end
 from marketing.mails import (
     grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
 )
+from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
 WAIT_TIME_BETWEEN_PAYOUTS = 15
@@ -252,5 +253,10 @@ class Command(BaseCommand):
                     'metadata': metadata,
                 }
 
-                Activity.objects.create(**kwargs)
+                activity = Activity.objects.create(**kwargs)
+
+                if is_real_payout:
+                    comment = f"CLR Round {clr_round} Payout"
+                    comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
+
                 time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
