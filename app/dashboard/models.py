@@ -2070,6 +2070,7 @@ class Activity(SuperModel):
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
         ('hackathon_registration', 'Hackathon Registration'),
+        ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
     ]
 
@@ -2119,6 +2120,12 @@ class Activity(SuperModel):
     hackathonevent = models.ForeignKey(
         'dashboard.HackathonEvent',
         related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    project = models.ForeignKey(
+        'dashboard.HackathonProject',
+        related_name='hackathon_projects',
         on_delete=models.CASCADE,
         blank=True, null=True
     )
