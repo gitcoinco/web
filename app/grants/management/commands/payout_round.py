@@ -123,8 +123,11 @@ class Command(BaseCommand):
             kwargs[key] = False
             not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
             kwargs[key] = True
-            unpaid_scheduled_matches = scheduled_matches.filter(**kwargs).filter(test_payout_tx='')
-            paid_scheduled_matches = scheduled_matches.filter(**kwargs).exclude(test_payout_tx='')
+            kwargs2 = {}
+            key2 = 'test_payout_tx' if not is_real_payout else 'payout_tx'
+            kwargs2[key2] = ''
+            unpaid_scheduled_matches = scheduled_matches.filter(**kwargs).filter(**kwargs2)
+            paid_scheduled_matches = scheduled_matches.filter(**kwargs).exclude(**kwargs2)
             total_not_ready_matches = sum(sm.amount for sm in not_ready_scheduled_matches)
             total_owed_matches = sum(sm.amount for sm in unpaid_scheduled_matches)
             total_paid_matches = sum(sm.amount for sm in paid_scheduled_matches)
