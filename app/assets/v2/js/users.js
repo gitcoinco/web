@@ -64,7 +64,7 @@ Vue.mixin({
         vm.usersHasNext = response.has_next;
         vm.numUsers = response.count;
         vm.showBanner = response.show_banner;
-        vm.persona = response.persona;
+        // vm.persona = response.persona;
         vm.rating = response.rating;
         if (vm.usersHasNext) {
           vm.usersPage = ++vm.usersPage;
@@ -262,6 +262,7 @@ Vue = Vue.extend({
 
 Vue.component('user-directory', {
   delimiters: [ '[[', ']]' ],
+  props: ['persona'],
   data: () => ({
     users,
     usersPage,
@@ -290,7 +291,6 @@ Vue.component('user-directory', {
     issueDetails: undefined,
     errorIssueDetails: undefined,
     showBanner: undefined,
-    persona: undefined,
     hideFilterButton: !!document.getElementById('explore_tribes')
   }),
   mounted() {
