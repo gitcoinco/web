@@ -259,4 +259,6 @@ class Command(BaseCommand):
                     comment = f"CLR Round {clr_round} Payout"
                     comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
 
+                print("SLEEPING")
                 time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
+                print("DONE SLEEPING")
