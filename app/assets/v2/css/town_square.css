@@ -1077,7 +1077,7 @@ body.green.offer_view .announce {
   background-color: var(--gc-green);
 }
 
-.bg-gc-blue {
+.bg-light-blue {
   background-color: #00A3FF;
 }
 
@@ -1087,12 +1087,13 @@ body.green.offer_view .announce {
 
 .card-ribbon {
   margin-top: -14px;
-  margin-left: 10px;
+  right: -10px;
   width: 110px;
   margin-bottom: 10px;
+  position: absolute;
 }
 
 .logo-metacard {
-  max-height: 7rem;
-  max-width: 7rem;
+  max-height: 4rem;
+  max-width: 4rem;
 }
