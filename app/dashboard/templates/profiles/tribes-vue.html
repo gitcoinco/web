@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -298,184 +298,184 @@
       </div>
     {% endif %}
     <div id="tribes-content" class="container-fluid no-gutter" style="min-height:600px;">
-        <div id="tribes-vue-app" class="row" v-cloak>
-          <div :id="tribe.title" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 header profile-header dash {% if not profile.profile_wallpaper %}basic {% endif %}" style="{% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
-            {% csrf_token %}
-
-
-            <div class="position-relative profile-banner">
-              <div class="container mt-5">
-                <div class="row">
-                  <div class="col-12">
-                    <p class="profile-banner-cta text-center">
-                      <i class="fa fa-camera"></i>
-                      Update Header Image
-                    </p>
-                  </div>
+      <div id="tribes-vue-app" class="row" v-cloak>
+        <div :id="tribe.handle" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 header profile-header dash {% if not profile.profile_wallpaper %}basic {% endif %}" style="{% if profile.profile_wallpaper %} background-image: url( {{ profile.profile_wallpaper }} ) {% endif %}">
+          {% csrf_token %}
+          <div class="position-relative profile-banner">
+            <div class="container mt-5">
+              <div class="row">
+                <div class="col-12">
+                  <p class="profile-banner-cta text-center">
+                    <i class="fa fa-camera"></i>
+                    Update Header Image
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-9 body hackathon-explorer">
-            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-4 offset-md-5 px-4" nav-wrapper-class="col-12 nav-tabs" align="center" content-class="col-12 px-4 mt-4 light-blue" class="row">
-
-              <b-tab class="col-12" title-item-class="navigation">
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Townsquare" %}
-                  </div>
-                </template>
-                <div class="ml-md-4 townsquare_header">
-                  <div class="row">
-                    <div class="ml-4 col-12 col-md-2 col-xl-3 d-lg-block">
-                      <div class="col-12 subheading left-ribbon font-body">
-                        [[ tribe.title ]]{% trans "Team" %}
-                      </div>
-
+        </div>
+        <div class="col-9 body hackathon-explorer">
+          <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-4 offset-md-5 px-4" nav-wrapper-class="col-12 nav-tabs" align="center" content-class="col-12 px-4 mt-4 light-blue" class="row">
+            <b-tab class="col-12" title-item-class="navigation">
+              <template v-slot:title>
+                <div class="mt-4">
+                  {% trans "Townsquare" %}
+                </div>
+              </template>
+              <div class="ml-md-4 townsquare_header">
+                <div class="row">
+                  <div class="ml-4 col-12 col-md-2 col-xl-3 d-lg-block">
+                    <div class="col-12 subheading left-ribbon font-body">
+                      [[ tribe.name ]] {% trans "Team" %}
                     </div>
-                    <div class="feed_container col-12 col-lg-8">
-                      <div class="feed_container_child">
-                        {% csrf_token %}
-                        {% include 'townsquare/shared/shareactivity.html' %}
+                    <div class="team-wrapper">
+                      <b-media v-for="profile in tribe.team_or_none_if_timeout">
+                        <template v-slot:aside>
+                          <b-img-lazy class="profile-header__avatar" :src=`/dynamic/avatar/${profile.handle}`></b-img-lazy>
+                        </template>
+                      </b-media>
+                    </div>
+                  </div>
+                  <div class="feed_container col-12 col-lg-8">
+                    <div class="feed_container_child">
+                      {% csrf_token %}
+                      {% include 'townsquare/shared/shareactivity.html' %}
 
-                        <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
-                          <span id=activity_subheader>
-                            <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
-                            <br>
-                            <span>
-                              {{card_desc}}
-                            </span>
+                      <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
+                        <span id=activity_subheader>
+                          <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+                          <br>
+                          <span>
+                            {{card_desc}}
                           </span>
-                          {% include 'shared/activity_container.html' %}
-                        </div>
+                        </span>
+                        {% include 'shared/activity_container.html' %}
                       </div>
                     </div>
-                    <div class="actions_container col-12 col-md-2 offset-1">
-                    </div>
+                  </div>
+                  <div class="actions_container col-12 col-md-2 offset-1">
                   </div>
                 </div>
-              </b-tab>
+              </div>
+            </b-tab>
+            <b-tab class="col-12" title-item-class="navigation" lazy>
+              <template v-slot:title>
+                <div class="mt-4">
+                  {% trans "Projects" %}
+                </div>
+              </template>
               <project-directory inline-template>
-                <b-tab class="col-12" title-item-class="navigation" lazy>
-                  <template v-slot:title>
+                <div class="ml-4">
+                <div class="sidebar-container flex-column flex-lg-row">
+                  <transition name="fade">
+                    <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
+                      <div class="pb-4 border-bottom form-group">
+                        <div class="d-flex flex-grow-1" id="search_projects">
+                          <form class="form-inline my-2 flex-fill justify-content-center">
+                            <div class="input-group w-100">
+                              <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                              <div class="input-group-append">
+                                <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                      <div class="pb-4 border-bottom form-group">
+                        <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
+                        <div id="project_sponsors" class="form__select2">
+                          <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
+                            <option value="" selected="true">All</option>
+                            <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
+                              [[ option.display_name ]]
+                            </option>
+                          </select2>
+                        </div>
+                      </div>
+                      <div class="g-multiselect pb-4 border-bottom form-group">
+                        <label for="skills" class="font-weight-bold">Member Skills</label>
+                        <div class="form__select2">
+                          <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                            <option disabled value="0">Select one</option>
+                          </select2>
+                        </div>
+                      </div>
+                      <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
+                      <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                        <span class="font-weight-bold">[[ numProjects ]]</span> projects found
+                      </p>
+                    </nav>
+                  </transition>
+                  <div class="container pt-4" @scroll.passive="onScroll($event)">
+                    <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
                     <div class="mt-4">
-                      {% trans "Projects" %}
-                      <span class="nav-badge d-none d-sm-inline">([[ hackathonProjects.length ]])</span>
+                    <div v-if="noResults" class="text-center">
+                      <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                      <p class="mt-4 font-weight-bold mb-0">No projects found</p>
+                      <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                     </div>
-                  </template>
-                  <div class="ml-4">
-                    <div class="sidebar-container flex-column flex-lg-row">
-                      <transition name="fade">
-                        <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
-                          <div class="pb-4 border-bottom form-group">
-                            <div class="d-flex flex-grow-1" id="search_projects">
-                              <form class="form-inline my-2 flex-fill justify-content-center">
-                                <div class="input-group w-100">
-                                  <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                                  <div class="input-group-append">
-                                    <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
-                                  </div>
-                                </div>
-                              </form>
+                    <div class="grid-4">
+                      <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
+                        <div class="card card-project">
+                            <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="tribe.badge" alt="badge" />
+
+                            <div class="card-bg rounded-top" style="">
+                              <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
+                              <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
                             </div>
-                          </div>
-                          <div class="pb-4 border-bottom form-group">
-                            <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
-                            <div id="project_sponsors" class="form__select2">
-                              <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
-                                <option value="" selected="true">All</option>
-                                <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
-                                  [[ option.display_name ]]
-                                </option>
-                              </select2>
-                            </div>
-                          </div>
-                          <div class="g-multiselect pb-4 border-bottom form-group">
-                            <label for="skills" class="font-weight-bold">Member Skills</label>
-                            <div class="form__select2">
-                              <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                                <option disabled value="0">Select one</option>
-                              </select2>
-                            </div>
-                          </div>
-                          <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                          <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                            <span class="font-weight-bold">[[ numProjects ]]</span> projects found
-                          </p>
-                        </nav>
-                      </transition>
-                      <div class="container pt-4" @scroll.passive="onScroll($event)">
-                        <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
-                        <div class="mt-4">
-                        <div v-if="noResults" class="text-center">
-                          <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
-                          <p class="mt-4 font-weight-bold mb-0">No projects found</p>
-                          <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                        </div>
-                        <div class="grid-4">
-                          <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
-                            <div class="card card-project">
-                                <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="tribe.badge" alt="badge" />
-
-                                <div class="card-bg rounded-top" style="">
-                                  <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
-                                  <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
-                                </div>
-                                <div class="card-body">
-                                <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
-                                <div class="my-2">
-                                  <p class="text-left text-muted font-smaller-1 summary">
-                                    [[ project.summary ]]
-                                  </p>
-                                  <div class="text-left">
-                                    <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                                  </div>
-                                </div>
-
-                                <div class="my-3 mb-2 text-left">
-                                  <b class="font-weight-bold font-smaller-3">Team Members</b>
-                                  <div class="mt-1">
-                                      <a v-for="profile in project.profiles" :href=`/profile/${tribe.title}` class="">
-                                        <b-img-lazy :src="tribe.avatar_url" :alt=`"@${tribe.title}"` :title="tribe.title" width="30" height="30" class="rounded-circle"></b-img-lazy>
-                                      </a>
-                                  </div>
-                                </div>
-
-                                <div v-if="project.looking_members || project.message" class="my-3 looking-team">
-                                  <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
-                                  <p v-if="project.message" class="info-card-desc">
-                                    [[ project.message ]]
-                                  </p>
-                                </div>
-
-                                <div class="font-smaller-2 mt-4">
-                                  <b class="font-weight-bold">Sponsored by</b>
-                                  <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
-                                  <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
-                                </div>
+                            <div class="card-body">
+                            <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+                            <div class="my-2">
+                              <p class="text-left text-muted font-smaller-1 summary">
+                                [[ project.summary ]]
+                              </p>
+                              <div class="text-left">
+                                <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+                                <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
                               </div>
+                            </div>
+
+                            <div class="my-3 mb-2 text-left">
+                              <b class="font-weight-bold font-smaller-3">Team Members</b>
+                              <div class="mt-1">
+                                  <a v-for="profile in project.profiles" :href=`/profile/${tribe.handle}` class="">
+                                    <b-img-lazy :src="tribe.avatar_url" :alt=`"@${tribe.handle}"` :title="tribe.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
+                                  </a>
                               </div>
+                            </div>
+
+                            <div v-if="project.looking_members || project.message" class="my-3 looking-team">
+                              <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
+                              <p v-if="project.message" class="info-card-desc">
+                                [[ project.message ]]
+                              </p>
+                            </div>
+
+                            <div class="font-smaller-2 mt-4">
+                              <b class="font-weight-bold">Sponsored by</b>
+                              <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
+                              <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
+                            </div>
                           </div>
-                        </div>
-                        <loading-screen v-if="isLoading"></loading-screen>
-                      </div>
+                          </div>
                       </div>
                     </div>
-                </div>
-                </b-tab>
-              </project-directory>
-              <user-directory inline-template>
-
-              <b-tab class="col-12" title-item-class="navigation"lazy>
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "People" %}
-                    <span class="nav-badge d-none d-sm-inline">([[ users.length ]])</span>
+                    <loading-screen v-if="isLoading"></loading-screen>
                   </div>
-                </template>
-                  <div class="ml-4">
-                    <div class="sidebar-container flex-column flex-lg-row">
+                  </div>
+                </div>
+            </div>
+              </project-directory>
+            </b-tab>
+            <b-tab class="col-12" title-item-class="navigation"lazy>
+              <template v-slot:title>
+                <div class="mt-4">
+                  {% trans "People" %}
+                </div>
+              </template>
+              <user-directory inline-template persona="tribe">
+                <div class="ml-4">
+                  <div class="sidebar-container flex-column flex-lg-row">
                     <transition name="fade">
                       <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
                         <div class="pb-4 border-bottom form-group">
@@ -578,98 +578,148 @@
                           <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
                         </div>
                         <div class="grid-4">
-                            <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
+                          <div v-for="user in users" class="card card-user shadow-sm border-0" :key="user.id">
                             <div class="d-flex flex-column py-1 bg-lightblue">
-                              <a :href="`/profile/${ user.title }`" class="mx-auto">
-                                <img class="rounded-circle shadow-sm mt-n4 mb-2 bg-white"
-                                     style="height: 5rem; width: 5rem;"
-                                     :src="`/dynamic/avatar/${ user.title }`"
-                                     alt="${user.title} Avatar"/>
+                              <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                              <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
+                                <a :href="`/funding/new?invite=${ user.id }`" target="_blank" class="dropdown-item p-2">
+                                  <i class="fab fa-ethereum mr-2"></i>
+                                  Fund Bounty
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a :href="`/profile/${ user.handle }`" class="dropdown-item p-2" target="_blank">
+                                  <i class="fas fa-user mr-2"></i>
+                                  View profile
+                                </a>
+                              </div>
+                              <a :href="`/profile/${ user.handle }`" class="mx-auto">
+                                <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${ user.handle }`" alt="${user.handle} Avatar"/>
                               </a>
-                              <h5 class="text-center font-weight-bold font-header mb-0">
-                                [[ user.name || user.title ]]
+                              <h5 class="text-center card-user_name">
+                                [[ user.name || user.handle ]]
                                 <span v-if="user.verification">
-                                  <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15"
-                                       title="Verified user" alt="verify badget">
+                                  <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
                                 </span>
                               </h5>
-                              <a :href="`/profile/${ user.title }`"
-                                 class="text-center font-smaller-3 d-block mb-2">
-                                 @[[ user.title ]]
+                              <a :href="`/profile/${ user.handle }`" class="text-center d-block">
+                                @[[ user.handle ]]
                               </a>
-                              <small class="text-center font-body pb-1 mb-3"
-                                     v-if="user.status == 'looking-team'">
-                                <i class="fas fa-users mr-1 gc-text-blue"></i>Looking for a team
-                              </small>
-                              <small class="text-center font-body pb-1 mb-3"
-                                     v-else-if="user.status == 'looking-team-member'">
-                                <i class="fas fa-wrench mr-1 gc-text-blue"></i>Looking for team member
-                              </small>
-                              <small class="text-center font-body pb-1 mb-3 font-weight-semibold" v-else>
-                                <i class="fas fa-check mr-1 gc-text-blue"></i>Ready to hack
+                              <div v-if="!user.is_org" class="card-user_stars text-center my-2">
+                                <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
+                                ([[ user.avg_rating.total_rating ]] ratings)
+                              </div>
+                              <small class="text-center pb-1" v-if="user.previously_worked">
+                                <i class="far fa-handshake mr-1"></i>Worked with you
                               </small>
                             </div>
                             <div class="card-body d-flex flex-column justify-content-between">
-                              <div class="text-center mt-2 info-card-desc" style="height: 60px">
-                                <p>[[ user.message ]]</p>
-                              </div>
-                              <div class="text-center mt-2 mb-2" style="height: 55px">
-                                <div v-if="user.project">
-                                  <h4 class="font-weight-bold font-smaller-1 pt-0">Projects</h4>
-                                  <a :href="`/profile/${ user.title }`"
-                                     class="mx-auto d-flex justify-content-center">
-                                    <img class="rounded-circle bg-white mr-2"
-                                         style="height: 1.2rem; width: 1.2rem;"
-                                         :src="`/dynamic/avatar/${ user.project.logo }`"/>
-                                    <p class="font-body font-weight-semibold">[[ user.project.name]]</p>
+                              <!-- TRIBE -->
+                              <template v-if="user.is_org">
+                                <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
+                                </div>
+                                <div class="text-left">
+                                  <span v-if="user.rank_org > 0"><b>#[[ user.rank_org ]]</b> Tribe</span>
+                                </div>
+                                <div class="text-left">
+                                  <p class="mb-0">
+                                    <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                    <b>[[ user.follower_count ]]</b> followers
+                                  </p>
+                                  <p class="mb-0">
+                                    <i class="fas fa-trophy font-smaller-4 mr-1"></i>
+                                    <b>[[ user.count_bounties_on_repo ]]</b> Bounties Funded
+                                    (<b>[[ user.sum_eth_on_repos ]] ETH</b>)
+                                  </p>
+                                </div>
+                              </template>
+
+                              <!-- User : Funder / Contributor-->
+                              <template v-else>
+                                <div v-if="user.keywords" class="text-center">
+                                  <template v-for="keyword in user.keywords">
+                                    <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
+                                  </template>
+                                </div>
+                                <div class="text-center my-1 font-smaller-1">
+                                  <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
+                                    <i class="fab fa-github"></i>
+                                  </a>
+                                  <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
+                                    <i class="fas fa-home"></i>
+                                  </a>
+                                  <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
+                                    <i class="fab fa-linkedin-in"></i>
+                                  </a>
+                                  <a @click="chatWindow(user);" href="#" v-if="user.chat_id">
+                                    <i class="fas fa-comment-dots"></i>
                                   </a>
                                 </div>
+                                <div class="text-center" id="job_status" v-if="user.show_job_status">
+                                  <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                                    <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
+                                  </a>
                                 </div>
-                                <template>
-                                  <div v-if="user.keywords" class="text-center mb-1 overflow-hidden" style="height: 40px">
-                                    <template v-for="keyword in user.keywords.slice(0, 7)">
-                                      <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
-                                    </template>
-                                  </div>
-                                </template>
+                                <div class="text-left">
+                                  <p class="mb-0">
+                                    <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                    <b>[[ user.follower_count ]]</b> followers
+                                  </p>
+                                  <p v-if="!isFunder" class="mb-0">
+                                    <b>[[ user.work_done ]]</b> bounties completed
+                                  </p>
+                                  <p class="mb-0">
+                                    <span v-if="user.position_contributor > 0">
+                                      <b>#[[ user.position_contributor ]]</b> contributor
+                                    </span>
+                                    <span v-if="user.position_funder > 0">
+                                      <b>#[[ user.position_funder ]]</b> funder
+                                    </span>
+                                  </p>
+                                </div>
                                 <div class="text-center mt-2">
-                                  <button v-if="user.is_following" @click="joinTribe(user, $event)"
-                                          class="btn btn-gc-pink font-caption font-weight-semibold col-8 mt-2">
-                                    <i class="fas fa-user-minus mr-1"></i> Unfollow
-                                  </button>
-                                  <button v-else @click="joinTribe(user, $event)"
-                                    class="btn btn-gc-blue font-caption font-weight-semibold col-8 mt-2">
-                                    <i class="fas fa-user-plus mr-1"></i> Follow
-                                  </button>
-                                  <button @click="openChat(user.title)"
-                                          class="btn btn-outline-gc-blue font-caption font-weight-semibold mt-2">
-                                    <i class="fas fa-comment-dots mr-1"></i>
-                                  </button>
+                                  <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-gc-blue font-caption font-weight-semibold button--full" @click="openBounties(user)">Invite to Bounty</button>
                                 </div>
+                              </template>
+
+                              <div class="text-center mt-2">
+                                <button v-if="user.is_following" @click="joinTribe(user, $event)"
+                                  class="btn btn-sm btn-gc-pink font-caption font-weight-semibold button--full"
+                                >
+                                  <i class="fas fa-user-minus mr-1"></i>
+                                  Unfollow
+                                </button>
+                                <button v-else @click="joinTribe(user, $event)"
+                                  class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
+                                >
+                                  <i class="fas fa-user-plus mr-1"></i>
+                                  Follow
+                                </button>
                               </div>
+
                             </div>
+                          </div>
                         </div>
                         <loading-screen v-if="isLoading"></loading-screen>
                       </div>
                     </div>
-                      <modal ref="user-modal" id="userModal">
-                      <div slot="header" v-if="userSelected.title">
+                    <modal ref="user-modal" id="userModal">
+                      <div slot="header" v-if="userSelected.handle">
                         <div class="d-flex flex-column align-items-center">
                           <h6 class="font-weight-bold mb-3">Invite User to Bounty</h6>
-                          <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.title }`" alt="Avatar"/>
+                          <img class="rounded-circle mx-auto mb-3" width="64" height="64" :src="`/dynamic/avatar/${ userSelected.handle }`" alt="Avatar"/>
                           <span>[[ userSelected.name ]]</span>
-                          <a :href="`/profile/${ userSelected.title }`" class="text-center d-block" target="_blank">
-                            [[ userSelected.title ]]
+                          <a :href="`/profile/${ userSelected.handle }`" class="text-center d-block" target="_blank">
+                            [[ userSelected.handle ]]
                           </a>
                         </div>
                       </div>
-                      <div slot="body" v-if="userSelected.title">
+                      <div slot="body" v-if="userSelected.handle">
                         <div v-if="funderBounties.length">
                           <div class="my-2 text-center">
                             <b>Select a bounty</b> or <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank" class="font-weight-bold">create a new one</a>
                           </div>
                           <div class="bounties-box">
-                            <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.title && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
+                            <div v-for="bounty in funderBounties" :key="bounty.id" @click="bountySelected = bounty" v-bind:class="{ 'btn-gc-blue': bountySelected && bounty.id === bountySelected.id, 'hidden': contributorInvite === userSelected.handle && currentBounty == bounty.id }"  class="bounty-select py-2 px-3 border-bottom d-flex align-items-center">
                               <img :src="`/dynamic/avatar/${ bounty.funding_organisation || bounty.bounty_owner_github_username }`" class="rounded-circle flex-shrink-0" width="30" height="30" alt="Avatar">
                               <p class="line-clamp font-smaller-2 my-0 mx-2">
                                 [[ bounty.title ]]
@@ -685,7 +735,7 @@
                           <p class="font-weight-semibold">You've got NO open bounties</p>
                           <p class="font-body">
                             <a :href="`/funding/new?invite=${ userSelected.id }`" target="_blank">Create a bounty</a>
-                            to invite [[ userSelected.title ]]
+                            to invite [[ userSelected.handle ]]
                           </p>
                         </div>
                       </div>
@@ -697,80 +747,157 @@
                         </div>
                       </div>
                     </modal>
-                      {% if is_staff %}
-                      <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
-                          <div slot="header">
-                            <div class="d-flex flex-column align-items-center">
-                              <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
-                            </div>
+                    {% if is_staff %}
+                    <modal ref="user-modal" id="inviteAll" size="modal-lg" v-bind:issueDetails="issueDetails">
+                        <div slot="header">
+                          <div class="d-flex flex-column align-items-center">
+                            <h6 class="font-weight-bold mb-3">Invite [[numUsers]] Users to the Bounty</h6>
                           </div>
-                          <div slot="body">
-                            <div class="form-group">
-                              <label class="font-weight-semibold">Github Issue URL</label>
-                              <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
-                            </div>
-                            <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
-                            <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
-                              <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
-                              [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
-                              <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
-                              [[issueDetails.issue_description_text]]
-                            </div>
-                            <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
-                            <div class="alert-warning p-3" v-if="errorIssueDetails">
-                              [[errorIssueDetails]]
-                            </div>
+                        </div>
+                        <div slot="body">
+                          <div class="form-group">
+                            <label class="font-weight-semibold">Github Issue URL</label>
+                            <input class="form-control" v-model="gitcoinIssueUrl" type="text" placeholder="https://github.com/gitcoinco/web/issues/5045" v-on:keyup="getIssueDetails(gitcoinIssueUrl)"/>
                           </div>
-                          <div slot="footer" class="d-flex align-items-center flex-fill">
-                            <div class="ml-auto">
-                              <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
-                              <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
-                            </div>
+                          <span class="font-weight-semibold d-block mb-2" v-if="issueDetails">Description</span>
+                          <div v-if="issueDetails" class="pre-scrollable p-3 bg-light rounded font-body" style="white-space: pre-line;">
+                            <span class="text-black-60 text-uppercase d-block mt-3">ISSUE TITLE</span>
+                            [[issueDetails.title]] <span class="badge">[[issueDetails.status]]</span>
+                            <span class="text-black-60 text-uppercase d-block mt-3">ISSUE DESCRIPTION</span>
+                            [[issueDetails.issue_description_text]]
                           </div>
-                        </modal>
+                          <loading-screen v-else-if="gitcoinIssueUrl && !errorIssueDetails"></loading-screen>
+                          <div class="alert-warning p-3" v-if="errorIssueDetails">
+                            [[errorIssueDetails]]
+                          </div>
+                        </div>
+                        <div slot="footer" class="d-flex align-items-center flex-fill">
+                          <div class="ml-auto">
+                            <button class="btn btn-outline-gc-blue" data-dismiss="modal">Cancel</button>
+                            <button :disabled="gitcoinIssueUrl === '' && !issueDetails" class="btn btn-gc-blue" @click="sendInviteAll(issueDetails.pk)">Invite</button>
+                          </div>
+                        </div>
+                      </modal>
+                    {% endif %}
+                  </div>
+                </div>
+              </user-directory>
+            </b-tab>
+          </b-tabs>
+        </div>
+        <div class="col-12 col-md-3">
+          <div id="sponsor_sidebar" class="font-body">
+            <div class="sponsor-top"></div>
+            <div class="p-xl-0 p-4">
+              <b-media>
+                <template v-slot:aside>
+                  {% load i18n static avatar_tags %}
+                    <div class=" d-inline-block d-inline-block mb-1 {% if is_editable %}is_editable{% endif %}">
+                      {% if is_editable %}
+                        <a href="{% url "onboard" "profile" %}?steps=avatar">
+                      {% endif %}
+
+                      <b-img class="profile-header__avatar" :src=`/dynamic/avatar/${tribe.handle}`></b-img>
+
+                      {% if is_editable %}
+                        <div class="avatar_edit d-md-block d-sm-none">
+                          <div class="avatar_edit_text">
+                            <span>
+                              <i class="fa fa-camera"></i>
+                              Update
+                            </span>
+                          </div>
+                        </div>
+                        </a>
                       {% endif %}
                     </div>
-                  </div>
-                </b-tab>
-              </user-directory>
-            </b-tabs>
-          </div>
-          <div class="col-12 col-md-3">
-            <div id="sponsor_sidebar" class="font-body">
-              <div class="sponsor-top"></div>
-              <div class="p-xl-0 p-4">
-                <b-card>
-                  <b-media>
-                    <template v-slot:aside>
-                      {% load i18n static avatar_tags %}
-                        <div class=" d-inline-block d-inline-block mb-1 {% if is_editable %}is_editable{% endif %}">
-                          {% if is_editable %}
-                            <a href="{% url "onboard" "profile" %}?steps=avatar">
-                          {% endif %}
+                </template>
+                <tribes-profile-header v-bind:tribe="tribe" inline-template>
+                  <b-row>
+                    <b-col>
+                      <h1 class="profile-header__handle">
+                        [[ tribe.name ]]
+                      </h1>
+                      <p class="mb-0">
+                        @[[ tribe.handle ]]
 
-                          <b-img class="profile-header__avatar" src="/dynamic/avatar/{{profile.handle}}"></b-img>
-
-                          {% if is_editable %}
-                            <div class="avatar_edit d-md-block d-sm-none">
-                              <div class="avatar_edit_text">
-                                <span>
-                                  <i class="fa fa-camera"></i>
-                                  Update
-                                </span>
-                              </div>
-                            </div>
-                            </a>
-                          {% endif %}
+                        <span v-if="tribe.match_this_round" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="
+                          {% include 'profiles/match_estimate_explainer.html' %}
+                        ">
+                          <i class="fab fa-ethereum" style="font-size:20px;" data-toggle="tooltip" title="${{profile.match_this_round|floatformat:2}} in Matching Payout This Week." aria-hidden="true"></i>
+                        </span>
+                        {% if verification %}
+                          <button class="btn btn-sm animate-verify" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+                            <p class="h6 my-2 text-left">Gitcoin Verified <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
+                            <p>This contributor has completed the Gitcoin verification process, which means that the Gitcoin Core trusts their work.</p>
+                            <p>Please note - use your judgement on whether this is the right contributor for your task.</p>'
+                          >
+                            <img src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+                          </button>
+                        {% endif %}
+                      </p>
+                        <div v-if="tribe.data && tribe.data.bio" class="profile-header__bio my-2">
+                          <small class="review-comment">[[ tribe.data.bio ]]</small>
                         </div>
-                    </template>
-                    {% include 'profiles/header_details.html' %}
-                  </b-media>
-                </b-card>
-              </div>
+
+                        <b-button variant="primary" @click="followTribe(tribe.handle, $event)" class="btn btn-outline-gc-blue">[[ isOnTribe ? "unfollow" : "follow" ]]</b-button>
+
+                      <div v-if="tribe.custom_tagline" class="profile-header__bio my-2">
+                          <small class="review-comment">[[ tribe.custom_tagline ]]</small>
+                        </div>
+
+                      <p class="mb-0 mt-1">
+
+                        <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"
+                          href="{% url 'tip' %}?username={{ profile.handle }}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="Tip @{{ profile.handle }}"
+                        >
+                          <i class="fab fa-ethereum"></i>
+                        </a>
+
+                        <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"
+                           href="{% url 'kudos_send' %}?username={{ profile.handle }}" data-placement="bottom" data-toggle="tooltip" data-html="true" title="Kudos @{{ profile.handle }}">
+                           <i class="fas fa-dice-d6"></i>
+                        </a>
+
+                        <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="/users?invite={{ profile.handle }}"
+                          data-placement="bottom" data-toggle="tooltip" data-html="true" title="Invite @{{ profile.handle }} to Bounty"
+                        >
+
+                        <i class="fas fa-envelope-open-text"></i>
+
+                        </a>
+
+                        |
+
+                        <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
+                          <i class="fab fa-github"></i>
+                        </a>
+                        {% if profile.data.blog and user.is_authenticated %}
+                          <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s website" >
+                            <i class="fas fa-home"></i>
+                          </a>
+                        {% endif %}
+                        {% if profile.linkedin_url and user.is_authenticated %}
+                          <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Linkedin" >
+                            <i class="fab fa-linkedin-in"></i>
+                          </a>
+                        {% endif %}
+                        {% if profile.data.email and user.is_authenticated %}
+                          <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="mailto:{{profile.data.email | obfuscate}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s Email">
+                            <i class="far fa-envelope"></i>
+                          </a>
+                        {% endif %}
+                      </p>
+                      <p>[[ tribe.tribe_description || "Nothing here yet" ]]</p>
+                    </b-col>
+                  </b-row>
+              </tribes-profile-header>
+            </b-media>
             </div>
           </div>
         </div>
       </div>
+    </div>
     <div class="row bottom_notification font-caption">
       {{footer_msg|safe}}
     </div>
@@ -794,7 +921,7 @@
       </select>
     </script>
     <script src='{% static "v2/js/vue-components.js" %}'></script>
-    {{init_data|json_script:"init_data"}}
+    {{init_data|json_script:"init-data"}}
     {{currentProfile|json_script:"current-profile"}}
     <script>
       $('body').bootstrapTooltip({
@@ -803,8 +930,10 @@
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.initData = JSON.parse(document.getElementById('init-data').textContent);
       document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
+      console.log(document.currentProfile);
       window.localStorage['tab'] = "tribe:{{ profile_handle | safe }}";
-      document.activePanel = 0;
+      document.activePanel = {{active_panel| safe}};
+      document.is_on_tribe = {{is_on_tribe | safe}};
       document.chatURL = "{{ chat_url | safe }}";
     </script>
     <script src='{% static "v2/js/pages/profile-tribes.js" %}'></script>

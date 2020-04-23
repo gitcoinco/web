@@ -2810,7 +2810,6 @@ def profile(request, handle, tab=None):
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-    context['is_on_tribe'] = False
     if request.user.is_authenticated:
         context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower())
     context['ratings'] = range(0,5)
@@ -2822,6 +2821,15 @@ def profile(request, handle, tab=None):
     context['following'] = TribeMember.objects.filter(profile=request.user.profile)
     context['foltab'] = request.GET.get('sub', 'followers')
 
+    active_tab = 0
+    if tab == "townsquare":
+        active_tab = 0
+    elif tab == "projects":
+        active_tab = 1
+    elif tab == "people":
+        active_tab = 2
+    print(active_tab)
+    context['active_panel'] = active_tab
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
         context.update(tab)
@@ -2834,10 +2842,13 @@ def profile(request, handle, tab=None):
 
     if profile.is_org:
         # pdict = TribesSerializer(profile.to_dict()).data
-        context['init_data'] = profile.to_dict
-        context['currentProfile'] = profile.as_representation
+        context['init_data'] = profile.to_dict()
+        context['currentProfile'] = TribesSerializer(profile).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
+        context['is_on_tribe'] = json.dumps(True if len(context['is_on_tribe']) > 0 else False)
         context['profile_handle'] = profile.handle
+
+
 
         return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
 
