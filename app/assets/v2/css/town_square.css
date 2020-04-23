@@ -1053,3 +1053,47 @@ body.green.offer_view .announce {
 .promo .close-promo i {
   font-weight: 100;
 }
+
+.new_grant {
+  border-top: 6px solid rgba(13, 7, 100, 0.25);
+}
+
+.new_kudos {
+  border-top: 6px solid rgba(0, 163, 255, 0.25);
+}
+
+.new_bounty {
+  border-top: 6px solid rgba(62, 0, 255, 0.4);
+}
+
+.new_hackathon_project {
+  border-top: 6px solid rgba(15, 206, 124, 0.25);
+}
+
+.bg-gc-blue {
+  background-color: var(--gc-blue);
+}
+
+.bg-gc-green {
+  background-color: var(--gc-green);
+}
+
+.bg-gc-blue {
+  background-color: #00A3FF;
+}
+
+.bg-gc-dark-blue {
+  background-color: #0D0764;
+}
+
+.card-ribbon {
+  margin-top: -14px;
+  margin-left: 10px;
+  width: 110px;
+  margin-bottom: 10px;
+}
+
+.logo-metacard {
+  max-height: 7rem;
+  max-width: 7rem;
+}
