@@ -154,7 +154,7 @@ class Command(BaseCommand):
                 amount_owed = match.amount
 
                 w3 = get_web3(network)
-                contract = w3.eth.contract(Web3.toChecksumAddress(CLR_TOKEN_ADDRESS), abi=abi)
+                contract = w3.eth.contract(Web3.toChecksumAddress(TOKEN_ADDRESS), abi=abi)
                 address = Web3.toChecksumAddress(address)
 
                 amount = int(amount_owed * 10**DECIMALS)
@@ -205,7 +205,7 @@ class Command(BaseCommand):
                 subscription.real_period_seconds = 2592000
                 subscription.frequency = 30
                 subscription.frequency_unit = 'N/A'
-                subscription.token_address = CLR_TOKEN_ADDRESS
+                subscription.token_address = TOKEN_ADDRESS
                 subscription.token_symbol = token_name
                 subscription.gas_price = 0
                 subscription.new_approve_tx_id = '0x0'
