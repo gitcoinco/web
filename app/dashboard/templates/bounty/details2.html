@@ -301,12 +301,6 @@
                         <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
-                        <p class="font-smaller-4 my-0">
-                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
-                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
-                            <i class="far fa-clipboard-check"></i>
-                          </button>
-                        </p>
                       </template>
 
                       <template v-else>
@@ -387,7 +381,7 @@
                               <input type="number" class="mb-4 font-bigger-4 text-center" v-model="inputAmount" v-on:input="totalAmountPaid(inputAmount)" min="0" name="" id="">
                               <span class="font-body">[[ bounty.token_name ]]</span>
                             </p>
-                            <qrcode :string="getQRString(fulfillment.token_name, fulfillment.fulfiller_address)"></qrcode>
+                            <qrcode :string="getQRString(bounty.token_name, fulfillment.fulfiller_address)"></qrcode>
                             <small class="d-block my-3">Scan the QR code above with your ETC Wallet to payout</small>
                             <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
                               @click="fulfillmentComplete(fulfillment.pk, inputAmount, $event)"

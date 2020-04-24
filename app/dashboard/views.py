@@ -4955,6 +4955,7 @@ def fulfill_bounty_v1(request):
     fulfillment.created_on = now
     fulfillment.modified_on = now
     fulfillment.funder_last_notified_on = now
+    fulfillment.token_name = bounty.token_name
     fulfillment.fulfiller_github_username = profile.handle
 
     # fulfillment.fulfiller_name    ETC-TODO: REMOVE ?

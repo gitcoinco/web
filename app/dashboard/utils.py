@@ -478,6 +478,8 @@ def has_tx_mined(txid, network):
 
 def sync_payout(fulfillment):
     token_name = fulfillment.token_name
+    if not token_name:
+        token_name = fulfillment.bounty.token_name
 
     if token_name == 'ETC':
         sync_etc_payout(fulfillment)
@@ -863,7 +865,7 @@ def get_nonce(network, address, ignore_db=False):
     nonce_from_web3 = w3.eth.getTransactionCount(address)
     if ignore_db:
         return nonce_from_web3
-        
+
     # db storage
     key = f"nonce_{network}_{address}"
     view = 'get_nonce'
