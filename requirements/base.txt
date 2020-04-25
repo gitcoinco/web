@@ -93,5 +93,6 @@ redis==3.3.11
 pandas
 wiki
 django-bulk-update
+elasticsearch
 Pygments==2.1.3
 mistune
