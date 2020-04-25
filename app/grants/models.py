@@ -1168,6 +1168,9 @@ def psave_contrib(sender, instance, **kwargs):
                     "value_usd":instance.subscription.get_converted_amount(False),
                     "url":instance.subscription.grant.url,
                     "network":instance.subscription.grant.network,
+                    "txid":instance.subscription.split_tx_id,
+                    "token_name":instance.subscription.token_symbol,
+                    "token_value":instance.subscription.amount_per_period,
                 }
             )
         except:
