@@ -155,17 +155,17 @@
         </td>
       </tr>
 
-      <tr class="heading">
-        <td>
-          {% trans "Payment Method" %}
-        </td>
-
-        <td>
-          {% trans "Account" %} #
-        </td>
-      </tr>
-
       {% if bounty.is_bounties_network %}
+        <tr class="heading">
+          <td>
+            {% trans "Payment Method" %}
+          </td>
+
+          <td>
+            {% trans "Account" %} #
+          </td>
+        </tr>
+
         <tr class="details">
           <td>
             {% trans "Directly to counterparties via Ethereum Blockchain" %}
