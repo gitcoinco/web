@@ -26,6 +26,7 @@ import environ
 import raven
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
@@ -52,6 +53,9 @@ BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
+VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
+FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
+FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -220,7 +224,8 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'auth.User'
 
 # adds django debug toolbar
-if DEBUG:
+SUPRESS_DEBUG_TOOLBAR = env.bool('SUPRESS_DEBUG_TOOLBAR', default=False)
+if DEBUG and not SUPRESS_DEBUG_TOOLBAR:
     INTERNAL_IPS = [
         # ...
         '127.0.0.1',
@@ -288,7 +293,7 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
-        integrations=[DjangoIntegration()]
+        integrations=[DjangoIntegration(), CeleryIntegration()]
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,
@@ -795,6 +800,8 @@ LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
 
 # Gitcoin Bounty Funding Fee settings
 FEE_ADDRESS = env('FEE_ADDRESS', default='')
+
+ALETHIO_KEY = env('ALETHIO_KEY', default='')
 FEE_ADDRESS_PRIVATE_KEY = env('FEE_ADDRESS_PRIVATE_KEY', default='')
 SLIPPAGE = env.float('SLIPPAGE', default=0.05)
 UNISWAP_LIQUIDITY_FEE = env.float('UNISWAP_LIQUDITY_FEE', default=0.003)
@@ -808,6 +815,14 @@ MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE26
 
 AVATAR_ADDRESS = env('AVATAR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 AVATAR_PRIVATE_KEY = env('AVATAR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+
+GRANTS_PAYOUT_ADDRESS = env('GRANTS_PAYOUT_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+GRANTS_PAYOUT_PRIVATE_KEY = env('GRANTS_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+GRANTS_PAYOUT_CLR_KYC_THRESHOLD = env('GRANTS_PAYOUT_CLR_KYC_THRESHOLD', default=0)
+
+GRANTS_COUPON_25_OFF = env('GRANTS_COUPON_25_OFF', default='OWOCKIFOREVER')
+GRANTS_COUPON_50_OFF = env('GRANTS_COUPON_50_OFF', default='OWOCKIFOREVER')
+GRANTS_COUPON_100_OFF = env('GRANTS_COUPON_100_OFF', default='OWOCKIFOREVER')
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')

@@ -101,10 +101,10 @@ def about(request):
         'title': 'Kudos',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
         'card_player_override': 'https://www.youtube.com/embed/EOlMTOzmKKk',
-        'card_player_stream_override': static('v2/card/kudos.mp4'),
-        'card_player_thumb_override': static('v2/card/kudos.png'),
+        'card_player_stream_override': request.build_absolute_uri(static('v2/card/kudos.mp4')),
+        'card_player_thumb_override': request.build_absolute_uri(static('v2/card/kudos.png')),
         "listings": listings
     }
     return TemplateResponse(request, 'kudos_about.html', context)
@@ -147,7 +147,7 @@ def marketplace(request):
         'title': title,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
         'listings': listings,
         'network': network
     }
@@ -201,7 +201,7 @@ def details(request, kudos_id, name):
         'title': 'Details',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/kudos/assets/kudos-image.png')),
         'kudos': kudos,
         'related_handles': list(set(kudos.owners_handles))[:num_kudos_limit],
         'target': f'/activity?what=kudos:{kudos.pk}',
@@ -314,6 +314,7 @@ def send_2(request):
     params = {
         'active': 'send',
         'issueURL': request.GET.get('source'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
         'class': 'send2',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': getattr(request.user, 'email', ''),
@@ -825,6 +826,7 @@ def newkudos(request):
         'msg': None,
         'nav': 'kudos',
         'title': "Mint new Kudos",
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
     }
 
     if not request.user.is_authenticated:
@@ -869,6 +871,7 @@ def newkudos(request):
                 metadata={
                     'ip': get_ip(request),
                     'email': request.POST.get('email'),
+                    'pay_gas': request.POST.get('pay_gas', 0),
                     }
                 )
             new_kudos_request(obj)
