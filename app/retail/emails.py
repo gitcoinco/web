@@ -347,6 +347,15 @@ def render_funder_payout_reminder(**kwargs):
     return response_html, response_txt
 
 
+def render_match_distribution(mr):
+    params = {
+        'mr': mr,
+    }
+    response_html = premailer_transform(render_to_string("emails/match_distribution.html"))
+    response_txt = ''
+    return response_html, response_txt
+
+
 def render_no_applicant_reminder(bounty):
     params = {
         'bounty': bounty,
@@ -499,7 +508,7 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quests=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -511,6 +520,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
+        'show_action': True,
+        'trending_quests': trending_quests,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
@@ -1006,8 +1017,10 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "We Need YOU to Sustain Web3!"
-    new_kudos_pks = [8179, 7511, 7503]
+    from marketing.models import RoundupEmail
+    args = RoundupEmail.objects.order_by('created_on').last()
+    subject = args.subject
+    new_kudos_pks = args.kudos_ids.split(',')
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1024,75 +1037,10 @@ def render_new_bounty_roundup(to_email):
 </p>
     '''
 
-    intro = f'''
-<p>
-Hey Gitcoiners,
-</p>
-<p>
-The <a href="https://hackathons.gitcoin.co/sustain-web3">Sustain Web3</a> virtual hackathon is officially live with $17k in prizes up for grabs! You can now view all the bounties on the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a>. The two week hackathon will run until February 12th at 23:59 UTC, right before <a href="https://web3.sustainoss.org/">Sustain Web3 Summit</a>. Sponsors include <a href="https://foam.space/">FOAM</a>, <a href="https://xpring.io/">Xpring</a>, <a href="https://www.dfuse.io/">dfuse</a>, <a href="https://www.bancor.network/">Bancor</a>, <a href="https://labs.consensys.net/">ConsenSys Labs</a>, and more.
-</p>
-<p>
-Gitcoin <a href="https://gitcoin.co/grants/">Grants Round 4</a> is closed and funds will be distributed shortly. Check out our newest <a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">blog post</a> for the full results, and we also recommend reading <a href="https://vitalik.ca/general/2020/01/28/round4.html">Vitalik’s review</a> as well. Thank you to everyone who helped make this round the biggest success yet!
-</p>
-<p>
- Join us this weekend (Feb 1st & 2nd) for Trust-Less 2020: A Proof-Of-Stake (PoS) Validator summit. Attendees will learn about Ethereum 2.0 Validator Economics with ConsenSys Codefi, get updates on the beacon chain with Prysmatic Labs, learn how to spin up their own ETH 2.0 Validator with RocketPool, and more. The conf is 100% free & virtual so you can tune in from anywhere in the world to learn. Claim your spot <a href="https://trust-less-2020.dystopialabs.com/">here</a>.
-</p>
-
-{kudos_friday}
-<h3>What else is new?</h3>
-    <ul>
-        <li>
-            Today's Livestream will feature Sustain Web3 hackathon sponsors to discuss their companies and prizes. <a href="https://gitcoin.co/livestream">Join us</a> 2pm ET to hear from FOAM, Xpring, ConsenSys Labs, and dfuse.
-        </li>
-    </ul>
-</p>
-<p>
-Back to BUIDLing,
-</p>
-'''
-    highlights = [{
-        'who': 'pengiundev',
-        'who_link': True,
-        'what': 'Adjusted "Hatching Period" In Bonding Curve Smart Contract',
-        'link': 'https://gitcoin.co/issue/harmonylion/ideamarkets/10/3962',
-        'link_copy': 'View more',
-    }, {
-        'who': 'adrianhacker-pdx',
-        'who_link': True,
-        'what': 'Created an Explainer Page For Account Abstraction with EthHub',
-        'link': 'https://gitcoin.co/issue/ethhub-io/ethhub/422/3908',
-        'link_copy': 'View more',
-    }, {
-        'who': 'jmsofarelli',
-        'who_link': True,
-        'what': 'Made a Dapp With a Frontend Hosted on IPFS With Infuras API.',
-        'link': 'https://gitcoin.co/issue/INFURA/hackathons/2/3868',
-        'link_copy': 'View more',
-    }, ]
-
-    sponsor = {
-    'name': 'CodeFund',
-    'title': 'Does your project need 🦄 developers?',
-    'image_url': '',
-    'link': 'http://bit.ly/codefund-gitcoin-weekly',
-    'cta': 'Learn More',
-    'body': [
-       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
-       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
-    ]
-}
-
-    bounties_spec = [{
-        'url': 'https://github.com/ryan-foamspace/Sustain-Web3-hackathon/issues/3',
-        'primer': 'Create a Mobile-Friendly Map Viewer with FOAM',
-    }, {
-        'url': 'https://github.com/ConsenSys/Relays/issues/2',
-        'primer': 'Growth Hacking For Established Projects - Drive Viral Growth to Your Startup',
-    }, {
-        'url': 'https://github.com/gitcoinco/web/issues/5914',
-        'primer': 'Allow Gitcoin.Co/Tips To Support Sablier Style Streams',
-    }]
-
+    intro = args.body.replace('KUDOS_INPUT_HERE', kudos_friday)
+    highlights = args.highlights
+    sponsor = args.sponsor
+    bounties_spec = args.bounties_spec
 
     num_leadboard_items = 5
     highlight_kudos_ids = []
@@ -1159,7 +1107,7 @@ Back to BUIDLing,
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
-    return response_html, response_txt, subject
+    return response_html, response_txt, subject, args.from_email, args.from_name
 
 
 
@@ -1353,6 +1301,16 @@ def no_applicant_reminder(request):
 
 
 @staff_member_required
+def match_distribution(request):
+    from townsquare.models import MatchRanking
+    mr = MatchRanking.objects.last()
+    response_html, _ = render_match_distribution(mr)
+    return HttpResponse(response_html)
+
+
+
+
+@staff_member_required
 def funder_stale(request):
     """Display the stale funder email template.
 
@@ -1411,7 +1369,7 @@ def faucet_rejected(request):
 
 @staff_member_required
 def roundup(request):
-    response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    response_html, _, _, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
 
 

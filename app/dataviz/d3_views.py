@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import math
 import random
+import re
 import time
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -27,6 +28,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
+import pytz
 from dashboard.models import Bounty, BountyFulfillment, Profile, Tip
 from marketing.models import Stat
 from perftools.models import JSONStore
@@ -712,6 +714,105 @@ def viz_scatterplot_data_helper(keyword, hide_usernames=False):
 
     output = "\n".join(output_rows)
     return output
+
+
+def is_an_edge(handle, edges):
+    for edge in edges:
+        if handle == edge[0]:
+            return True
+        if handle == edge[1]:
+            return True
+    return False
+
+
+def normalize_handle(handle):
+    return re.sub(r'\W+', '', handle)
+
+
+@staff_member_required
+def mesh_network_viz(request, ):
+    """Render a Mesh Network visualization
+
+    Args:
+        key (str): The key type to visualize.
+
+    Returns:
+        TemplateResponse: The populated  mesh data visualization template.
+
+    """
+    handles = []
+    edges = []
+    year = int(request.GET.get('year', timezone.now().strftime("%Y")))
+    month = int(request.GET.get('month', timezone.now().strftime("%m")))
+    day = int(request.GET.get('day', timezone.now().strftime("%d")))
+    to_year = int(request.GET.get('to_year', timezone.now().strftime("%Y")))
+    to_month = int(request.GET.get('to_month', timezone.now().strftime("%m")))
+    to_day = int(request.GET.get('to_day', timezone.now().strftime("%d")))
+    start_date = timezone.datetime(year, month, day, 1, tzinfo=pytz.UTC)
+    end_date = timezone.datetime(to_year, to_month, to_day, 23, 59, tzinfo=pytz.UTC)
+    _type = request.GET.get('type', 'all')
+
+    since = f"{year}/{month}/{day}"
+
+    from dashboard.models import Earning
+    earnings = Earning.objects.filter(created_on__gt=start_date, created_on__lt=end_date)
+    if _type != 'all':
+        from django.contrib.contenttypes.models import ContentType
+        mapping = {
+            'grant': ContentType.objects.get(app_label='grants', model='contribution'),
+            'kudos': ContentType.objects.get(app_label='kudos', model='kudostransfer'),
+            'tip': ContentType.objects.get(app_label='dashboard', model='tip'),
+            'bounty': ContentType.objects.get(app_label='dashboard', model='bountyfulfillment'),
+        }
+        earnings = earnings.filter(source_type=mapping[_type])
+    earnings = earnings.values_list('from_profile__handle', 'to_profile__handle')
+    for obj in earnings:
+        handle1 = obj[0]
+        handle2 = obj[1]
+        handles.append(handle1)
+        handles.append(handle2)
+        edges.append([handle1, handle2])
+
+    # assemble and output
+    handles = set(handles)
+    handles = [handle for handle in handles if is_an_edge(handle, edges)]
+    graph = ""
+    print(len(handles))
+    counter = 1
+    for handle in handles:
+        if handle:
+            handle = normalize_handle(handle)
+            counter += 1
+            graph += (
+                f'var user_{handle} = new GRAPHVIS.Node({counter}); user_{handle}.data.title = "user_{handle}";  graph.addNode(user_{handle}); drawNode(user_{handle});'
+            )
+
+    for edge in edges:
+        handle1 = edge[0]
+        handle2 = edge[1]
+        if handle1 and handle2:
+            handle1 = normalize_handle(handle1)
+            handle2 = normalize_handle(handle2)
+            if handle1 and handle2:
+                graph += (f"graph.addEdge(user_{handle1}, user_{handle2}); drawEdge(user_{handle1}, user_{handle2}); ")
+
+    params = {
+        "type": _type,
+        "graph": graph,
+        "since": since,
+        "year": year,
+        "month": month,
+        "day": day,
+        "to_year": to_year,
+        "to_month": to_month,
+        "to_day": to_day,
+        "years": range(2017, 1 + int(timezone.now().strftime("%Y"))),
+        "months": range(1, 12),
+        "days": range(1, 31),
+        'types': ['all', 'grant', 'bounty', 'tip', 'kudos']
+    }
+    response = TemplateResponse(request, 'dataviz/mesh.html', params)
+    return response
 
 
 def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):

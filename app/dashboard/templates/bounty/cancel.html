@@ -169,7 +169,7 @@
       </div>
     </div>
     <script>
-      const is_bounties_network = {{ is_bounties_network|lower }};
+      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
     </script>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}

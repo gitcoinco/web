@@ -22,6 +22,7 @@
     <meta name="description" content="See open source development in real-time with the Gitcoin Activity Feed.">
     <link rel="canonical" href="{% url 'activity' %}">
     {% include 'shared/head.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
@@ -34,7 +35,11 @@
       {% include 'shared/minihero.html' with h1='Activity Feed' position_h1_below_logo=1 %}
     </div>
 
-    {% include 'shared/activity_container.html' %}
+    <div class="container">
+      <div class="col-12 col-md-10 col-lg-8 mx-auto">
+        {% include 'shared/activity_container.html' with supress_infinite_more_link_hidden=1 %}
+      </div>
+    </div>
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}

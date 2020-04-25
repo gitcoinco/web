@@ -29,7 +29,7 @@
         </div> <a id="read-all" href="" class="notifications__link" @click.prevent="markAll">{% trans 'Mark All as Read' %}</a>
       </div>
       <ul class="notifications__list" @scroll.passive="onScroll($event)">
-        <li v-for="notification in notifications" class="notifications__item" :key="notification.id">
+        <li v-for="notification in sortedItems" class="notifications__item" :key="notification.id">
           <span class="notifications__item-readed">
             <b class="notification__dot-small" v-bind:class="{'notification__dot-small_active': !notification.is_read}"></b>
           </span>

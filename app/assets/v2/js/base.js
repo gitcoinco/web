@@ -17,6 +17,16 @@ $(document).ready(function() {
     });
   }
 
+  $('body').on('click', '.copy_me', function() {
+    $(this).focus();
+    $(this).select();
+    document.execCommand('copy');
+    $(this).after('<div class=after_copy>Copied to clipboard</div>');
+    setTimeout(function() {
+      $('.after_copy').remove();
+    }, 500);
+  });
+
   function getParam(parameterName) {
     var result = null;
     var tmp = [];
@@ -172,6 +182,49 @@ $(document).ready(function() {
 
     setTimeout(callback, 300);
   });
+
+  // updates expiry timers with countdowns
+  const setDataFormat = function(data) {
+    let str = 'in ';
+
+    if (data.days() > 0)
+      str += data.days() + 'd ';
+    if (data.hours() > 0)
+      str += data.hours() + 'h ';
+    if (data.minutes() > 0)
+      str += data.minutes() + 'm ';
+    if (data.seconds() > 0)
+      str += data.seconds() + 's ';
+
+    return str;
+  };
+
+  const updateTimers = function() {
+    let enterTime = moment();
+
+    $('[data-time]').filter(':visible').each(function() {
+      moment.locale('en');
+      var time = $(this).data('time');
+      var timeFuture = $(this).data('time-future');
+      var timeDiff = moment(time).diff(enterTime, 'sec');
+
+      if (timeFuture && (timeDiff < 0)) {
+        $(this).html('now');
+        $(this).parents('.offer_container').addClass('animate').removeClass('empty');
+        $(this).removeAttr('data-time');
+
+        // let btn = `<a class="btn btn-block btn-gc-blue btn-sm mt-2" href="${timeUrl}">View Action</a>`;
+        // return $(this).parent().next().html(btn);
+        return $(this).parent().append('<div>Refresh to view offer!</div>');
+      }
+
+      const diffDuration = moment.duration(moment(time).diff(moment()));
+
+      $(this).html(setDataFormat(diffDuration));
+    });
+  };
+
+  setInterval(updateTimers, 1000);
 
   $('.faq_item .question').on('click', (event) => {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('hidden');
@@ -386,11 +439,60 @@ const gitcoinUpdates = () => {
 
 };
 
+
+if (document.contxt.chat_access_token && document.contxt.chat_id) {
+  // setup polling check for any updated data from chat
+  // and set users as active on chat just by browsing gitcoin
+  // scope our polling function so any potential js crashes won't affect it.
+  (($) => {
+
+    const checkChatNotifications = () => {
+      $.ajax({
+        beforeSend: function(request) {
+          request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
+        },
+        url: `${document.contxt.chat_url}/api/v4/users/me/teams/unread`,
+        dataType: 'json',
+        success: (JSONUnread) => {
+          let notified = false;
+
+          JSONUnread.forEach((team) => {
+            if ((team.msg_count > 0 || team.mention_count > 0) && !notified) {
+              $('#chat-notification-dot').addClass('notification__dot_active');
+              notified = true;
+            }
+          });
+
+        },
+        error: (error => {
+          console.log(error);
+        })
+      });
+    };
+
+    const set_as_active = () => {
+      $.ajax({
+        url: '/api/v0.1/chat/presence',
+        dataType: 'json',
+        success: (response) => {
+          console.log(response);
+        },
+        error: (error => {
+          console.log(error);
+        })
+      });
+    };
+
+
+    setInterval(() => {
+      checkChatNotifications();
+      set_as_active();
+    }, document.contxt.chat_persistence_frequency);
+    checkChatNotifications();
+    set_as_active();
+  })(jQuery);
+}
 // carousel/collabs/... inside menu
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
 });
-
-if (document.contxt.chat_unread_messages) {
-  $('#chat-notification-dot').addClass('notification__dot__active');
-}

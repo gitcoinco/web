@@ -6,13 +6,12 @@
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-
+    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
   </head>
   <body class="{{ active }} bg-light g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <header class="header">
       {% include 'shared/kudos_nav.html' %}
-      <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container pb-5">
         {% include 'shared/kudos_searchbar.html' %}
       </div>
@@ -38,7 +37,7 @@
           </div>
           <div id="kudos-image" class="sticky-top w-100">
             {% include 'shared/kudos_levitate.html' %}
-            <img src="{{ kudos.static_image }}" alt="{{ kudos.ui_name }}" class="w-100">
+            <img src="{{ kudos.preview_img_url }}" alt="{{ kudos.ui_name }}" class="w-100">
           </div>
         </div>
         <div class="col-md-6 col-lg-5 kudos-details">
@@ -115,8 +114,14 @@
               {% if send_enabled %}
                 <a href="{% url 'kudos_send' %}?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% if kudos.quests_reward %}
+                <BR>
+                <BR>
+                {% if reward_for|length %}
+                or: 
+                {% endif %}
                 {% for quest in reward_for %}
-                  <a class="btn btn-gc-blue m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
+                  <a class="m-1" href="{{quest.url}}">Play *{{quest.title}}* + Win</a>
+                  <BR>
                 {% endfor %}
               {% endif %}
               {% else %}
@@ -163,13 +168,13 @@
         </div>
       </div>
     </section>
-    <section class="container my-1 py-1">
+    <section class="container col-12 col-md-8 col-lg-5 mx-auto my-1 py-1 mt-3">
       {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on wall" what="kudos" whatid=kudos.pk %}
       <div id="activities" class="activity_stream container">
-      {% include 'shared/activity_container.html' %}
+        {% include 'shared/activity_container.html' %}
       </div>
-
     </section>
+
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     <script src="{% static 'v2/js/lib/tweenlite.js' %}"></script>

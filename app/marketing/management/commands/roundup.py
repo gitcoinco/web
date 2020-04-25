@@ -104,7 +104,7 @@ class Command(BaseCommand):
                         print(' -- already sent')
                     else:
                         weekly_roundup([to_email])
-                        time.sleep(1)
+                        time.sleep(0.05)
                 except Exception as e:
                     print(e)
                     time.sleep(5)

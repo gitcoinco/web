@@ -37,8 +37,8 @@
           </h2>
 
           <div class="buttons text-center mt-5">
-            <a id="fund-issue" href="{% url "quickstart" %}" class="btn button--primary mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">
-              Post a Bounty
+            <a id="fund-issue" href="/townsquare" class="btn button--primary mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">
+              Explore Gitcoin
             </a>
             <a class="btn btn-outline-white mx-2 shadow-none py-2 px-4 font-weight-semibold" href="{% url "products" %}">
               See our Products
@@ -290,6 +290,9 @@
             </div>
           {% endfor %}
           <div class="col-12 text-center">
+            <a class="btn button__home py-2 button__blue text-center" href="/townsquare">
+              {% trans "Explore Gitcoin" %}
+            </a>
             <a class="btn button__home py-2 button__blue text-center" href="mailto:founders@gitcoin.co">
               {% trans "Get in touch" %}
             </a>

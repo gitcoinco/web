@@ -31,4 +31,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # config
         network = options['network']
-        call_command('sync_geth', network, -200, 0)
+        call_command('sync_geth', network, -100, 0)

@@ -138,11 +138,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
   <div id="announce">
     <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
-    {% if 1 %}
-      <h4><strong>Round 3 Challenge is now Live!</strong></h4>
-      <p>Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on January 30 will <strong>win a special 60 DAI prize</strong> and a <a href="https://gitcoin.co/kudos/174/diamond">very special Kudos</a>.
-    {% else %}
-    <h4><strong>Round 2 Challenge ended on 10/30!</strong></h4>
+    <h4><strong>Round 3 Challenge ended on 1/30!</strong></h4>
     <p class="mb-0">Congratulations to</p> 
       <ol style='display: inline-block; margin: 0px auto;'>
         {% for rw in latest_round_winners %}
@@ -154,9 +150,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% endfor %}
       </ol>
       <p>
-      They have <strong>won a KeepKey hardware wallet</strong> and a <a href="https://gitcoin.co/kudos/174/diamond">very special Kudos</a>.
+      They have <strong>a $60 prize</strong> and a <i>very special Kudos</i>.
       </p>
-    {% endif %}
+      <h5 class="mt-1 pt-0"><strong>Round 4 Challenge is now Live!</strong></h5>
+      <p class="mb-3">Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on 4/30/2020 will <strong>win a special 60 DAI prize</strong> and a <i>very special Kudos</i>.
   </div>
 
 </div>
@@ -181,7 +178,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% for round_number, this_leaderboard in leaderboard.items %}
         <li class="nav-item">
           <a class="nav-link nav-line {% if current_round_number == round_number %}active{% endif %}" href="#" data-href="leaderboard_{{round_number}}">
-          Round {{round_number}} Leaderboard
+          Round {{round_number}}
           </a>
         </li>
       {% endfor %}
@@ -239,12 +236,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {{ row.created_on|naturaltime }}
             </td>
             <td>
-              <img data-src="/dynamic/avatar/{{ row.profile.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
-              <a href="{{ row.profile.url }}">@{{ row.profile.handle }}</a>
+              <img data-src="/dynamic/avatar/{{ row.metadata.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
+              <a href="/{{ row.metadata.handle }}">@{{ row.metadata.handle }}</a>
             </td>
             <td>
-              <img data-src="{{ row.questattempt.quest.enemy_img_url }}" style="width: 15px; height: 15px; border-radius: 10px">
-              {{row.action}} <a href="{{row.questattempt.quest.url}}">{{row.questattempt.quest.title}}</a>
+              <img data-src="{{ row.metadata.enemy_img }}" style="width: 15px; height: 15px; border-radius: 10px">
+              {{row.action}} <a href="{{row.metadata.quest_url}}">{{row.metadata.title}}</a>
             </td>
           </tr>
           {% endfor %}
@@ -279,7 +276,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <BR>
         Your personal referral link:
         <br>
-        <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100" readonly="readonly">
+        <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100 copy_me" readonly="readonly">
         <br>
       {% else %}
       <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to get your personal reflink.

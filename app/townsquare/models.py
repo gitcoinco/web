@@ -1,10 +1,13 @@
 from django.conf import settings
-from django.db import models
-from django.db.models.signals import post_save
+from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField, JSONField
+from django.db import models, transaction
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
+import townsquare.clr as clr
 from economy.models import SuperModel
 
 
@@ -54,6 +57,10 @@ class Comment(SuperModel):
     activity = models.ForeignKey('dashboard.Activity',
         on_delete=models.CASCADE, related_name='comments', blank=True, db_index=True)
     comment = models.TextField(default='', blank=True)
+    likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
+    likes_handles = ArrayField(models.CharField(max_length=200, blank=True), default=list, blank=True) #handles of users who like this post
+    tip_count_eth = models.DecimalField(default=0, decimal_places=5, max_digits=50)
+    is_edited = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"
@@ -63,15 +70,11 @@ class Comment(SuperModel):
         return self.profile.handle
 
     @property
-    def tip_able(self):
-        return self.activity.metadata.get("tip_able", False)
-
-    @property
     def url(self):
         return self.activity.url
 
     @property
-    def tip_count_eth(self):
+    def get_tip_count_eth(self):
         from dashboard.models import Tip
         network = 'rinkeby' if settings.DEBUG else 'mainnet'
         tips = Tip.objects.filter(comments_priv=f"comment:{self.pk}", network=network)
@@ -81,10 +84,18 @@ class Comment(SuperModel):
         return self.url
 
 
+@receiver(pre_save, sender=Comment, dispatch_uid="pre_save_comment")
+def presave_comment(sender, instance, **kwargs):
+    from dashboard.models import Profile
+    instance.likes_handles = list(Profile.objects.filter(pk__in=instance.likes).values_list('handle', flat=True))
+    instance.tip_count_eth = instance.get_tip_count_eth
+
+
 @receiver(post_save, sender=Comment, dispatch_uid="post_save_comment")
 def postsave_comment(sender, instance, created, **kwargs):
     from townsquare.tasks import send_comment_email
-    send_comment_email.delay(instance.pk)
+    if created:
+        send_comment_email.delay(instance.pk)
 
 
 class OfferQuerySet(models.QuerySet):
@@ -92,7 +103,11 @@ class OfferQuerySet(models.QuerySet):
 
     def current(self):
         """Filter results down to current offers only."""
-        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now(), public=True)
+        timestamp = timezone.now()
+        timestamp -= timezone.timedelta(microseconds=timestamp.microsecond)
+        timestamp -= timezone.timedelta(seconds=int(timestamp.strftime('%S')))
+        timestamp -= timezone.timedelta(minutes=int(timestamp.strftime('%M')))
+        return self.filter(valid_from__lte=timestamp, valid_to__gt=timestamp, public=True)
 
 num_backgrounds = 33
 
@@ -129,8 +144,9 @@ class Offer(SuperModel):
     public = models.BooleanField(help_text='Is this available publicly yet?', default=True)
     view_count = models.IntegerField(default=0, db_index=True)
     amount = models.CharField(max_length=50, blank=True)
+    comments_admin = models.TextField(default='', blank=True)
 
-    # Bounty QuerySet Manager
+    # Offer QuerySet Manager
     objects = OfferQuerySet.as_manager()
 
     def __str__(self):
@@ -207,3 +223,173 @@ class Announcement(SuperModel):
     objects = AnnounceQuerySet.as_manager()
     def __str__(self):
         return f"{self.created_on} => {self.title}"
+
+
+class MatchRoundQuerySet(models.QuerySet):
+    """Handle the manager queryset for MatchRanking."""
+
+    def current(self):
+        """Filter results down to current offers only."""
+        return self.filter(valid_from__lte=timezone.now(), valid_to__gt=timezone.now())
+
+
+class MatchRound(SuperModel):
+
+    valid_from = models.DateTimeField(db_index=True)
+    valid_to = models.DateTimeField(db_index=True)
+    number = models.IntegerField(default=1)
+    amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+
+    # Offer QuerySet Manager
+    objects = MatchRoundQuerySet.as_manager()
+
+    def __str__(self):
+        return f"Round {self.number} from {self.valid_from} to {self.valid_to}"
+
+    @property
+    def url(self):
+        return self.activity.url
+
+    def get_absolute_url(self):
+        return self.activity.url
+
+    def process(self):
+        from dashboard.models import Profile
+        mr = self
+        print("_")
+        with transaction.atomic():
+            mr.ranking.all().delete()
+            data = get_eligible_input_data(mr)
+            total_pot = mr.amount
+            print(mr, f"{len(data)} earnings to process")
+            results = []
+            try:
+                results = clr.run_calc(data, total_pot)
+            except ZeroDivisionError:
+                print('ZeroDivisionError; probably theres just not enough contribtuions in round')
+            for result in results:
+                try:
+                    profile = Profile.objects.get(pk=result['id'])
+                    match_curve = clr.run_live_calc(data, result['id'], 999999, total_pot)
+                    contributors = len(set([ele[1] for ele in data if int(ele[0]) == profile.pk]))
+                    contributions_for_this_user = [ele for ele in data if int(ele[0]) == profile.pk]
+                    contributions = len(contributions_for_this_user)
+                    contributions_total = sum([ele[2] for ele in contributions_for_this_user])
+                    MatchRanking.objects.create(
+                        profile=profile,
+                        round=mr,
+                        contributors=contributors,
+                        contributions=contributions,
+                        contributions_total=contributions_total,
+                        match_total=result['clr_amount'],
+                        match_curve=match_curve,
+                        )
+                except Exception as e:
+                    if settings.DEBUG:
+                        raise e
+
+            # update number rankings
+            number = 1
+            for mri in mr.ranking.order_by('-match_total'):
+                mri.number = number
+                mri.save()
+                number += 1
+
+
+class MatchRanking(SuperModel):
+
+    profile = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='match_rankings', blank=True)
+    round = models.ForeignKey('townsquare.MatchRound',
+        on_delete=models.CASCADE, related_name='ranking', blank=True, db_index=True)
+    number = models.IntegerField(default=1)
+    contributors = models.IntegerField(default=1)
+    contributions = models.IntegerField(default=1)
+    contributions_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    match_total = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    final = models.BooleanField(help_text='Is this match ranking final?', default=False)
+    paid = models.BooleanField(help_text='Is this match ranking paikd?', default=False)
+    payout_txid = models.CharField(max_length=255, default='', blank=True)
+    payout_tx_status = models.CharField(max_length=255, default='', blank=True)
+    payout_tx_issued = models.DateTimeField(db_index=True, null=True)
+    match_curve = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"Round {self.round.number}: Ranked {self.number}, {self.profile.handle} got {self.contributions} contributions worth ${self.contributions_total} for ${self.match_total} Matching"
+
+    @property
+    def default_match_estimate(self):
+        # TODO: 0.3 is the defaul contribution amount, so we're pulling the match estimate
+        return self.match_curve["0.3"] - float(self.match_total)
+
+    @property
+    def sorted_match_curve(self):
+        # returns a dict of the amounts that new matching affect things
+        import collections
+        items = self.match_curve.items()
+        items = [[float(ele[0]), ele[1] - float(self.match_total)] for ele in items]
+        od = collections.OrderedDict(sorted(items))
+        return od
+
+
+def get_eligible_input_data(mr):
+    from dashboard.models import Tip
+    from django.db.models import Q, F
+    from dashboard.models import Earning, Profile
+    from django.contrib.contenttypes.models import ContentType
+    network = 'mainnet'
+    earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
+    # filter out earnings that have invalid info (due to profile deletion), or dont have a USD value, or are not on the correct network
+    earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
+    # filter out staff earnings
+    earnings = earnings.exclude(to_profile__user__is_staff=True)
+    # filter out self earnings
+    earnings = earnings.exclude(to_profile__pk=F('from_profile__pk'))
+    # blacklisted users
+    earnings = earnings.exclude(to_profile__pk=68768)
+    # microtips only
+    earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
+    tips = list(Tip.objects.send_happy_path().filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
+    earnings = earnings.filter(source_id__in=tips)
+    # filter out colluding profiles
+    excluded_profiles = SquelchProfile.objects.filter(active=True).values_list('profile__id', flat=True)
+    earnings = earnings.exclude(to_profile__in=excluded_profiles)
+    earnings = earnings.exclude(from_profile__in=excluded_profiles)
+
+    # output
+    earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
+    return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
+
+class SuggestedAction(SuperModel):
+
+    title = models.CharField(max_length=50, blank=True)
+    desc = models.TextField(default='', blank=True)
+    suggested_donation = models.CharField(max_length=50, blank=True)
+    matchpotential = models.CharField(max_length=50, blank=True)
+    active = models.BooleanField(help_text='Is this suggestion active?', default=True)
+    rank = models.IntegerField(default=0, db_index=True)
+
+    def __str__(self):
+        return f"{self.title} / {self.suggested_donation}"
+
+
+class Favorite(SuperModel):
+    """Model for each favorite."""
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='favorites')
+    activity = models.ForeignKey('dashboard.Activity', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Favorite {self.activity.activity_type}:{self.activity_id} by {self.user}"
+
+
+class SquelchProfile(SuperModel):
+    """Squelches a profile from earning in CLR"""
+
+    profile = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='squelches')
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text='Is squelch applied?', default=True)
+
+    def __str__(self):
+        return f"SquelchProfile {self.profile.handle} => {self.comments}"

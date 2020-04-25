@@ -25,6 +25,14 @@
           {% trans "If this option is chosen, Gitcoin will hide your wallet address in it's UI." %}
         </small>
       </div>
+      <div>
+        <input type="checkbox" name="dont_autofollow_earnings" id=dont_autofollow_earnings {% if profile.dont_autofollow_earnings %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+        <label class="form__label" for="dont_autofollow_earnings">{% trans "Don't auto-follow users you do business with" %}</label>
+        <br>
+        <small id="dont_autofollow_earnings_help" class="form__input-help">
+          {% trans "If this option is chosen, Gitcoin will not auto-follow users you do business with." %}
+        </small>
+      </div>
       {% if profile.alumni.exists %}
         <div>
           <input type="checkbox" name="hide_alumni" id=hide_alumni value="1" {% if not profile.alumni.first.public %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >

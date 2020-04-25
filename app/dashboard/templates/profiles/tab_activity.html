@@ -17,7 +17,7 @@
     <div class="row">
       <div id="activity-tabs" class="tab-container mt-4 font-body">
         {% for tab in tabs %}
-          <button type="button" id="{{ tab.id }}" class="section-tab">{{ tab.name }} ({{ tab.count }})</button>
+          <button type="button" id="{{ tab.id }}" class="section-tab">{{ tab.name }} {% if tab.count > 1 %} ({{ tab.count }}) {% endif %}</button>
         {% endfor %}
       </div>
       <div id="activity-tabs-sections" class="tab-sections section">

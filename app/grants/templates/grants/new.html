@@ -28,7 +28,7 @@
   </head>
   <body class="interior {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header dash px-0">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
       <div class="row no-gutters metamask-banner">
@@ -41,7 +41,6 @@
       </div>
     </div>
 
-    {% include 'grants/shared/alpha.html' %}
     {% include 'grants/shared/waiting_state.html' %}
 
     <div class="grant-container">
@@ -50,14 +49,12 @@
           <div id="robot_error" class="hidden mt-5">
             <img src="{% static "v2/images/prime.png" %}">
           </div>
-          <div class="col-12 col-md-10 col-lg-8 mt-5" id="grants_form">
+          <div class="col-12 col-md-10 col-lg-8 mt-3" id="grants_form">
             <div class="form__intro my-4 text-center">
               <img src="{% static "v2/images/grants/new.svg" %}">
               <h1 class="text-center font-title-xl">{% trans "Create a Grant" %}</h1>
               <p class="mb-1">
                 {% trans "We're excited to learn about your project." %}
-                <br>
-                {% trans "Gitcoin Grants can help you accelerate your journey to funding." %}
                 <br>
                 {% trans "Complete the form below to get started." %}
               </p>
@@ -65,38 +62,81 @@
             <div class="primary-form py-5">
               <form method="POST" id="create-grant" enctype="multipart/form-data" class="px-5">
                 {% csrf_token %}
+                <h5 class="mt-4">Project Information</h5>
+                <hr>
+
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input_title">{% trans "Title of Project" %}</label>
-                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" required />
+                  <label class="font-body">{% trans "Project Logo" %}</label>
+                  <div class="form__drop" id="js-drop">
+                    <input id="img-project" type="file" name="input_image" accept="image/*">
+                    <span>{% trans "Drag & Drop or Browse" %} </span>
+                    <span> | {% trans "Square or 16:9; above 400x400 preferred" %}</span>
+                    <img id="preview"/>
+                  </div>
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input-description">{% trans "Description of Project" %}</label>
+                  <label class="font-body" for="input_title">{% trans "Project Title" %}</label>
+                  <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" placeholder="The Human Fund" required />
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-description">{% trans "Project Description" %}</label>
                   <div id="input-description">
                   </div>
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input-url">{% trans "Project URL" %}</label>
-                  <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" required/>
+                  <label class="font-body" for="input-url">{% trans "Project Website" %}</label>
+                  <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" placeholder="https://human.fund/" required/>
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input-team_members">{% trans "Team members" %}</label>
+                  <label class="font-body" for="input-team_members">{% trans "Project Team members" %}</label>
                   <div class="form__select2 g-multiselect">
-                    <select id="input-team_members" class="form__input form__input-lg  team_members" name="team_members[]" multiple="multiple">
+                    <select id="input-team_members" class="form__input form__input-lg team_members" name="team_members[]" multiple="multiple">
                     </select>
                   </div>
                 </div>
 
                 <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-handle2">{% trans "Project Twitter Handle" %}</label>
+                  <input type="text" class="form__input form__input-lg " id="input-handle1" name="handle1" placeholder="@humanfund" required/>
+                </div>
+
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-handle2">{% trans "Your Twitter Handle" %}</label>
+                  <input type="text" class="form__input form__input-lg " id="input-handle2" name="handle2" placeholder="@georgecostanza"/>
+                </div>
+
+                <h5 class="mt-4">Categorization Information</h5>
+                <hr>
+               <div class="form__group-horizontal pb-3">
+                  <label class="font-body" for="input-grant_type">{% trans "Grant Category" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2 form__input form__input-lg" name="input-grant_type" id="input-grant_type">
+                      <option selected value="tech">{% trans "Tech" %}</option>
+                      <option value="media">{% trans "Media" %}</option>
+                      <option value="health">{% trans "Public Health" %}</option>
+                    </select>
+                  </div>
+                </div>
+
+ 
+                <div class="form__group-horizontal pb-3">
+                  <label class="font-body">{% trans "Grant SubCategory" %}</label>
+                  <div class="form__select2 g-multiselect">
+                    <select id="input-categories" class="form__input form__input-lg categories" name="categories[]" multiple="multiple">
+                    </select>
+                  </div>
+                </div>
+
+                <h5 class="mt-4">Funding Information</h5>
+                <hr>
+                <div class="form__group-horizontal pb-3">
                   <div class="row">
-                    <div class="col-12 col-md-6">
-                      <label class="font-body">{% trans "Monthly amount sought in DAI" %}</label>
-                      <input type="number" id="amount_goal" name="amount_goal" class="form__input form__input-lg" min="0.001" step=".001" required />
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <label class="font-body">{% trans "Required Token For Subscription" %}</label>
+                    <div class="col-12 col-md-12">
+                      <label class="font-body">{% trans "Accepted Tokens" %}</label>
                       <div class="form__select2">
                         <select class='js-select2' name='denomination' id='js-token'></select>
                       </div>
@@ -108,29 +148,21 @@
                   <label class="font-body" for="input-admin_address">{% trans "Funding Recipient Wallet Address" %}</label>
                   <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required placeholder="0x00... or domain.eth"/>
                   <label class="font-body" for="input-admin_address">{% trans "This is where funds from contributors to this grant will be sent." %}</label>
-                  <label class="font-body" for="input-admin_address">{% trans "IMPORTANT NOTE - Contributions to this grant will be sent directly via the Ethereum blockchain to *this address*.  Gitcoin does *not* escrow any funds. Gitcoin does *not* have the ability to reverse any transactions.  As a preventative measure, please confirm that someone working on the project has access to funds that are sent to this address!" %}</label>
+                  <label class="font-body" for="input-admin_address"><i class="fas fa-exclamation-circle"></i> - {% trans "IMPORTANT NOTE - Contributions to this grant will be sent directly via the Ethereum blockchain to *this address*.  Gitcoin does *not* escrow any funds. Gitcoin does *not* have the ability to reverse any transactions.  As a preventative measure, please confirm that someone working on the project has access to funds that are sent to this address!" %}</label>
                 </div>
 
-
-                <div class="form__group-horizontal pb-3">
-                  <label class="font-body">{% trans "Project Logo" %}</label>
-                  <div class="form__drop" id="js-drop">
-                    <input id="img-project" type="file" name="input_image" accept="image/*">
-                    <span>{% trans "Drag & Drop or Browse" %} </span> 
-                    <span> | {% trans "Square or 16:9; above 400x400 preferred" %}</span>
-                    <img id="preview"/>
-                  </div>
+                <h5 class="mt-4">Contract Deployment</h5>
+                <hr>
+                <div class="text-left m-0 p-0">
+                  <p class="font-caption mb-3 text-black-60 m-0 p-0"><i class="fas fa-lock"></i> - Because subscription support is so important to provide recurring income to Gitcoin Grantees, Each Grant is an EIP 1337 compatible smart contract!  Gitcoin's implementation of EIP 1337 has been audited by smart contract auditors to enable trustless & secure on-chain subscriptions - <a class="m-0 p-0" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Learn More Here</a></p>
                 </div>
-
                 <div id="gas-section" class="pb-2">
                   <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
                   <div>
                     {% include 'shared/wallet_estimate.html' %}
                   </div>
                 </div>
-
                 <div class="form__footer text-center">
-                  <p class="font-caption mb-3 text-black-60">* Grant will appear on the grants search only after being reviewed by the Gitcoin Team</p>
                   <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
                 </div>
 
@@ -141,6 +173,7 @@
                   <input type="hidden" id="contract_version" name="contract_version" value="1">
                   <input type="hidden" id="token_address" name="token_address" value="">
                   <input type="hidden" id="token_symbol" name="token_symbol" value="">
+                  <input type="hidden" id="category" name="category" value="">
                   <input type="hidden" id="network" name="network">
                   <input type="hidden" id="trusted_relayer" name="trusted_relayer" value="{{ trusted_relayer }}">
                 </div>

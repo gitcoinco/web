@@ -3,6 +3,29 @@ var compiledSubscription;
 var compiledSplitter;
 var contractVersion;
 
+function grantCategoriesSelection(target, apiUrl) {
+  $(target).select2({
+    ajax: {
+      url: apiUrl,
+      dataType: 'json',
+      processResults: function(data) {
+        return {
+          results: data.categories.map(category => {
+            const name = category[0];
+            const humanisedName = name.charAt(0).toUpperCase() + name.substring(1);
+
+            const index = category[1];
+
+            return {value: name, text: humanisedName, id: index};
+          })
+        };
+      },
+      cache: true
+    },
+    allowClear: true
+  });
+}
+
 // Waiting State screen
 var enableWaitState = container => {
   $(container).hide();
@@ -44,7 +67,7 @@ var waitingStateActive = function() {
  */
 const notifyOwnerAddressMismatch = (username, address, button, message) => {
 
-  if (!web3 || !web3.eth || !username || !document.contxt.github_handle) {
+  if (!web3 || !web3.eth || !username || !document.contxt.github_handle || !address) {
     return;
   }
 
@@ -52,7 +75,7 @@ const notifyOwnerAddressMismatch = (username, address, button, message) => {
     if (
       typeof accounts != 'undefined' &&
       document.contxt && document.contxt.github_handle == username &&
-      accounts[0] && accounts[0] != address
+      accounts[0] && accounts[0].toLowerCase() != address.toLowerCase()
     ) {
       if ($(button).attr('disabled') != 'disabled') {
         $(button).attr('disabled', 'disabled');
@@ -177,6 +200,11 @@ $(document).ready(function() {
           currentNetwork(getNetwork(network));
         });
 
+        web3.eth.getAccounts((error, accounts) => {
+          if (accounts && accounts[0]) {
+            document.web3_address = accounts[0];
+          }
+        });
       } else {
         currentNetwork('locked');
       }
@@ -185,6 +213,6 @@ $(document).ready(function() {
     });
   };
 
-  setInterval(listen_web3_1_changes, 1000);
-
+  setInterval(listen_web3_1_changes, 5000);
+  listen_web3_1_changes();
 });

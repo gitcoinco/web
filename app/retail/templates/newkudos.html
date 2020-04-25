@@ -111,10 +111,14 @@
             <label class="form__label" for="to_address">{% trans "Owner Address" %}</label>
             <input type="text" name="to_address" class="form__input" placeholder='0x0...abc109' value="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" required>
           </div>
+          <div class="form-group">
+            <label class="form__label" for="bounty_url">{% trans "Are you submitting this kudos for a bounty? If so what is the bounty URL?" %}</label>
+            <input type="text" name="bounty_url" class="form__input" placeholder='https://gitcoin.co/issue/....' value="" >
+          </div>
           <div class="terms_container pt-2">
             {% if is_staff %}
             <div class="form__checkbox">
-              <input name='mint_and_sync' id='mint_and_sync' type="checkbox" value=1 required />
+              <input name='mint_and_sync' id='mint_and_sync' type="checkbox" value=1 />
                 <label class="form__label" for=mint_and_sync>{% trans "ADMIN ONLY - mint+sync this kudos immediately" %}
               </label>
             </div>

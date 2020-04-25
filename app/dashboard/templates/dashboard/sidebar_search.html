@@ -15,7 +15,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
 <div class="sidebar_search font-body">
   <div class="search font-caption mb-4">
     <div class="search-area col-12">
@@ -86,12 +85,12 @@
 
     <div class="col my-1 mt-3">
       <div class="col-12 subheading">
-        {% trans "Organization name" %}
+        {% trans "Tribe name" %}
         <i class="fas fa-question-circle ml-2" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" data-content='{% include "shared/organization_tooltip.html" %}'></i>
       </div>
       <div class="col-12">
         <div class="mb-2">
-          <input class="form__input form__input_lg" placeholder="Search by organization" name="org" id="org" type="text" />
+          <input class="form__input form__input_lg" placeholder="Search by tribe" name="org" id="org" type="text" />
         </div>
       </div>
     </div>
