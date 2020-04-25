@@ -25,7 +25,7 @@
           </button>
         </div>
         <div class="modal-body p-5">
-          <h2 class="h5 text-center font-weight-bold mb-4">Tell us about your project</h2>
+          <h2 class="h5 text-center font-weight-bold mb-4">Let's Get Started!</h2>
           {% if projects and "/issue/" in request.META.HTTP_REFERER  %}
             <div class="mb-4 font-smaller-1">
               <p class="mb-2">Use yor existing project{{ projects.count|pluralize }}:</p>
@@ -41,6 +41,10 @@
               <input type="hidden" name="bounty_id" value="{{project_selected.bounty.id}}">
               <input type="hidden" name="project_id" value="{{project_selected.id}}">
               <div class="form-group">
+                <label for="project_name">Project Name</label>
+                <input type="text" value="{{project_selected.name}}" class="form-control" name="name" id="project_name" placeholder="My project" required>
+              </div>
+              <div class="form-group">
                 <label for="project_logo" class="d-block">Project logo</label>
                 {% if project_selected.logo %}
                   <img src="{{MEDIA_URL}}{{ project_selected.logo }}" width="90" height="90" id="img-preview" class="border rounded">
@@ -51,13 +55,10 @@
                   <input type="file" class="form-control-file" id="project_logo" name="logo" aria-describedby="logoHelp" accept="image/jpeg, image/png" data-imgplaceholder="{% firstof project_selected.bounty.admin_override_org_logo or project_selected.bounty.avatar_url %}">
                   <small id="logoHelp" class="form-text text-muted">
                     If there's no Project Logo, we will use the prize sponsor logo.
-                  </small>
+                  </small>  
                 </div>
               </div>
-              <div class="form-group">
-                <label for="project_name">Project Name</label>
-                <input type="text" value="{{project_selected.name}}" class="form-control" name="name" id="project_name" placeholder="My project" required>
-              </div>
+              
               <div class="from-group mb-3">
                 <label for="project_profiles">Team members</label>
                 <div class="form__select2 g-multiselect">

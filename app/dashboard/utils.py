@@ -1001,27 +1001,30 @@ def get_custom_avatars(profile):
 
 
 
-def getTransaction__(txid):
+def getTransaction(txid):
     """Returns a transaction"""
+    
     try:
         return web3.eth.getTransaction(txid)
     except TransactionNotFound:
         return None
 
 
-def getBlock__(latest):
+def getBlock(latest):
+    """Returns a last block"""
+
     try:
         return web3.eth.getBlock(latest)
     except BlockNotFound:
         return None
 
-def getTransactionCount__(address):
+def getTransactionCount(address):
     try:
         return w3.eth.getTransactionCount(address)
     except TransactionNotFound:
         return None
 
-def getTransactionReceipt__(txid):
+def getTransactionReceipt(txid):
     try:
         return web3.eth.getTransactionReceipt(txid)
     except TransactionNotFound:

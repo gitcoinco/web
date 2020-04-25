@@ -30,7 +30,7 @@ from dashboard.models import Bounty, Profile
 from dashboard.utils import (
     IPFSCantConnectException, apply_new_bounty_deadline, clean_bounty_url, create_user_action, get_bounty, get_ipfs,
     get_ordinal_repr, get_web3, getBountyContract, humanize_event_name, ipfs_cat_ipfsapi, re_market_bounty,
-    release_bounty_to_the_public, getBlock__, getTransactionCount__, getTransactionReceipt__
+    release_bounty_to_the_public, getBlock, getTransactionCount, getTransactionReceipt
 )
 from pytz import UTC
 from test_plus.test import TestCase
@@ -298,15 +298,15 @@ class DashboardUtilsTest(TestCase):
         assert bounty.reserved_for_user_from is None
         assert bounty.reserved_for_user_expiration is None
 
-    def test_getBlock_is_sucess():
-        assert getBlock__('latest') is not None
+    def test_getBlock_is_success():
+        assert getBlock('latest') is not None
 
     def test_getBlock_is_BlockNotFound():
-        assert getBlock__('') is None
+        assert getBlock('') is None
 
-    def test_getTransactionReceit_is_sucess():
+    def test_getTransactionReceit_is_success():
         txid = '0x018396fe9f55e19a72b75ff68c8c8ffe89a314605bf71a3b91e9fee1f69013c7'
-        assert getTransactionReceipt__(txid) is not None
+        assert getTransactionReceipt(txid) is not None
 
     def test_getTransactionReceit_is_TransactionNotFound():
-        assert getTransactionReceipt__('') is None
+        assert getTransactionReceipt('') is None
