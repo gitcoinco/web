@@ -744,7 +744,7 @@ def mesh_network_viz(request, ):
     edges = []
     year = int(request.GET.get('year', timezone.now().strftime("%Y")))
     month = int(request.GET.get('month', timezone.now().strftime("%m")))
-    day = int(request.GET.get('day', 1))
+    day = int(request.GET.get('day', timezone.now().strftime("%d")))
     to_year = int(request.GET.get('to_year', timezone.now().strftime("%Y")))
     to_month = int(request.GET.get('to_month', timezone.now().strftime("%m")))
     to_day = int(request.GET.get('to_day', timezone.now().strftime("%d")))

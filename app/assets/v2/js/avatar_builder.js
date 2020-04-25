@@ -200,37 +200,39 @@ function purchaseOption(option, value, target) {
 
     to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // TODO: make dynamic
     indicateMetamaskPopup();
-    web3.eth.sendTransaction({
-      'from': web3.eth.coinbase,
-      'to': to_address,
-      'value': cost_wei
-    }, function(error, result) {
-      indicateMetamaskPopup(true);
-      if (error) {
-        _alert('There was an error.', 'error');
-        return;
-      }
-      showBusyOverlay();
-      _alert('Waiting for tx to mine...', 'info');
-      callFunctionWhenTransactionMined(result, function() {
-        var request_url = '/revenue/attestations/new';
-        var txid = result;
-        var data = {
-          'txid': txid,
-          'amount': cost_eth,
-          'network': document.web3network,
-          'from_address': web3.eth.coinbase,
-          'to_address': to_address,
-          'type': 'avatar',
-          'option': option,
-          'value': value
-        };
+    web3.eth.getCoinbase(function(_, coinbase) {
+      web3.eth.sendTransaction({
+        'from': coinbase,
+        'to': to_address,
+        'value': cost_wei
+      }, function(error, result) {
+        indicateMetamaskPopup(true);
+        if (error) {
+          _alert('There was an error.', 'error');
+          return;
+        }
+        showBusyOverlay();
+        _alert('Waiting for tx to mine...', 'info');
+        callFunctionWhenTransactionMined(result, function() {
+          var request_url = '/revenue/attestations/new';
+          var txid = result;
+          var data = {
+            'txid': txid,
+            'amount': cost_eth,
+            'network': document.web3network,
+            'from_address': coinbase,
+            'to_address': to_address,
+            'type': 'avatar',
+            'option': option,
+            'value': value
+          };
 
-        $.post(request_url, data).then(function(result) {
-          hideBusyOverlay();
-          _alert('Success ✅ Loading your purchase now.', 'success');
-          setTimeout(function() {
-            location.reload();
+          $.post(request_url, data).then(function(result) {
+            hideBusyOverlay();
+            _alert('Success ✅ Loading your purchase now.', 'success');
+            setTimeout(function() {
+              location.reload();
+            });
           });
         });
       });

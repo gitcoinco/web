@@ -1,5 +1,6 @@
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
 });
 
 const rateUser = (elem) => {
@@ -96,12 +97,14 @@ $(document).ready(function($) {
           _alert(msg, 'info');
           sendTransaction(i + 1);
 
-          // tell frontend that this issue has a pending tx
-          localStorage[$('#issueURL').text()] = JSON.stringify({
-            timestamp: timestamp(),
-            dataHash: null,
-            issuer: web3.eth.coinbase,
-            txid: txid
+          web3.eth.getCoinbase(function(_, coinbase) {
+            // tell frontend that this issue has a pending tx
+            localStorage[$('#issueURL').text()] = JSON.stringify({
+              timestamp: timestamp(),
+              dataHash: null,
+              issuer: coinbase,
+              txid: txid
+            });
           });
         }
       };
@@ -109,12 +112,14 @@ $(document).ready(function($) {
       var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
 
       indicateMetamaskPopup();
-      bounty.killBounty(
-        $('#standard_bounties_id').val(),
-        gas_dict,
-        {from: web3.eth.accounts[0]},
-        callback
-      );
+      web3.eth.getAccounts(function(_, accounts) {
+        bounty.killBounty(
+          $('#standard_bounties_id').val(),
+          gas_dict,
+          {from: accounts[0]},
+          callback
+        );
+      });
 
     } else {
       const email = '';
