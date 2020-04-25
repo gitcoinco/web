@@ -1760,7 +1760,7 @@ def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if instance.pk and is_valid:
         value_true = 0
-        value_true = 0
+        value_usd = 0
         try:
             value_true = instance.value_true
             value_usd = instance.value_in_usdt_then
