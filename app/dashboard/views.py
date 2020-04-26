@@ -107,7 +107,7 @@ from .models import (
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
-    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord, maybe_market_to_user_slack,
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
 from .router import HackathonEventSerializer, HackathonProjectSerializer
 from .utils import (
@@ -260,7 +260,6 @@ def create_new_interest_helper(bounty, user, issue_message):
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
     maybe_market_to_user_slack(bounty, 'start_work' if not approval_required else 'worker_applied')
-    maybe_market_to_user_discord(bounty, 'start_work' if not approval_required else 'worker_applied')
     return interest
 
 
@@ -293,7 +292,6 @@ def get_interest_modal(request):
 
     context = {
         'bounty': bounty,
-        'gitcoin_discord_username': request.user.profile.gitcoin_discord_username if request.user.is_authenticated else None,
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
@@ -388,11 +386,6 @@ def new_interest(request, bounty_id):
             'error': _('You have already started work on this bounty!'),
             'success': False},
             status=401)
-
-    if request.POST.get('discord_username'):
-        profile = request.user.profile
-        profile.gitcoin_discord_username = request.POST.get('discord_username')
-        profile.save()
 
     msg = _("You have started work.")
     approval_required = bounty.permission_type == 'approval'
@@ -585,7 +578,6 @@ def remove_interest(request, bounty_id):
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-        maybe_market_to_user_discord(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': [_('You haven\'t expressed interest on this bounty.')],
@@ -740,7 +732,6 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-        maybe_market_to_user_discord(bounty, 'stop_work')
         if is_staff or is_moderator:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
@@ -851,6 +842,7 @@ def users_directory(request):
 
     params = {
         'is_staff': request.user.is_staff,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')) ,
         'active': 'users',
         'title': 'Users',
         'meta_title': "",
@@ -949,6 +941,11 @@ def projects_fetch(request):
     if filters == 'winners':
         projects = projects.filter(
             Q(badge__isnull=False)
+        )
+
+    if filters == 'lfm':
+        projects = projects.filter(
+            Q(looking_members=True)
         )
 
     projects_data = HackathonProjectSerializer(projects.all(), many=True)
@@ -1081,7 +1078,7 @@ def users_fetch(request):
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
-            'organizations', 'is_org', 'last_chat_status']}
+            'organizations', 'is_org', 'last_chat_status', 'chat_id']}
 
         profile_json['is_following'] = is_following
 
@@ -1198,6 +1195,7 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': title,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01 copy.png')),
         'meta_title': "Issue & Open Bug Bounty Marketplace | Gitcoin",
         'meta_description': "Find open bug bounties & freelance development jobs including crypto bounty reward value in USD, expiration date and bounty age.",
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
@@ -1972,6 +1970,7 @@ def quickstart(request):
     activities = Activity.objects.filter(activity_type='new_bounty').order_by('-created')[:5]
     context = deepcopy(qs.quickstart)
     context["activities"] = activities
+    context['avatar_url'] = request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png'))
     return TemplateResponse(request, 'quickstart.html', context)
 
 
@@ -3291,6 +3290,7 @@ def new_bounty(request):
     except (ValueError, Activity.DoesNotExist):
         pass
 
+    params['avatar_url'] = request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png'))
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
@@ -3623,18 +3623,18 @@ def hackathon(request, hackathon='', panel='prizes'):
             'org_name': sponsor_profile.handle,
             'follower_count': sponsor_profile.tribe_members.all().count(),
             'followed': True if sponsor_profile.handle in following_tribes else False,
-            'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
+            'bounty_count': sponsor_profile.bounties.count()
         }
         orgs.append(org)
+
     if hasattr(request.user, 'profile') == False:
         is_registered = False
     else:
         is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                              hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    # if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
-        # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
-
+    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).all().count()
+    projects_count = HackathonProject.objects.filter(hackathon=hackathon_event).all().count()
     view_tags = get_tags(request)
     active_tab = 0
     if panel == "prizes":
@@ -3659,10 +3659,13 @@ def hackathon(request, hackathon='', panel='prizes'):
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
+        'hacker_count': hacker_count,
+        'projects_count': projects_count,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
         'user': request.user,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'tags': view_tags,
         'activities': [],
         'SHOW_DRESSING': False,
@@ -3729,6 +3732,7 @@ def hackathon_onboard(request, hackathon=''):
         'title': f'{hackathon_event.name.title()} Onboard',
         'hackathon': hackathon_event,
         'referer': referer,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'is_registered': is_registered,
         'sponsors': sponsors
     }
@@ -3793,7 +3797,8 @@ def hackathon_projects(request, hackathon='', specify_project=''):
 
     title = f'{hackathon_event.name.title()} Projects'
     desc = f"{title} in the recent Gitcoin Virtual Hackathon"
-    avatar_url = hackathon_event.logo.url if hackathon_event.logo else ''
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
+
     if order_by not in {'created_on', '-created_on'}:
         order_by = '-created_on'
 
@@ -3882,7 +3887,8 @@ def hackathon_get_project(request, bounty_id, project_id=None):
         'bounty_id': bounty_id,
         'bounty': bounty,
         'projects': projects,
-        'project_selected': project_selected
+        'project_selected': project_selected,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
     }
     return TemplateResponse(request, 'dashboard/hackathon/project_new.html', params)
 
@@ -4105,6 +4111,7 @@ def get_hackathons(request):
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'events': events,
     }
@@ -4782,7 +4789,6 @@ def create_bounty_v1(request):
 
     # maybe_market_to_slack(bounty, event_name)
     # maybe_market_to_user_slack(bounty, event_name)
-    # maybe_market_to_user_discord(bounty, event_name)
 
     response = {
         'status': 204,
@@ -4949,6 +4955,7 @@ def fulfill_bounty_v1(request):
     fulfillment.created_on = now
     fulfillment.modified_on = now
     fulfillment.funder_last_notified_on = now
+    fulfillment.token_name = bounty.token_name
     fulfillment.fulfiller_github_username = profile.handle
 
     # fulfillment.fulfiller_name    ETC-TODO: REMOVE ?
@@ -4979,9 +4986,6 @@ def payout_bounty_v1(request, fulfillment_id):
     '''
         ETC-TODO
         - wire in email (invite + successful payout)
-        - invoke blockscout to check status
-        - add new bounty_state : pending verification
-        - handle multiple payouts
 
         {
             amount: <integer>,
@@ -5120,6 +5124,9 @@ def close_bounty_v1(request, bounty_id):
     if accepted_fulfillments.count() == 0:
         response['message'] = 'error: cannot close a bounty without making a payment'
         return JsonResponse(response)
+
+    event_name = 'work_done'
+    record_bounty_activity(bounty, user, event_name)
 
     bounty.bounty_state = 'done'
     bounty.idx_status = 'done' # TODO: RETIRE

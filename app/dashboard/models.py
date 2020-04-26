@@ -1759,6 +1759,13 @@ def psave_tip(sender, instance, **kwargs):
 def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if instance.pk and is_valid:
+        value_true = 0
+        value_usd = 0
+        try:
+            value_true = instance.value_true
+            value_usd = instance.value_in_usdt_then
+        except:
+            pass
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
@@ -1767,9 +1774,12 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "org_profile":instance.org_profile,
                 "from_profile":instance.sender_profile,
                 "to_profile":instance.recipient_profile,
-                "value_usd":instance.value_in_usdt_then,
+                "value_usd":value_usd,
                 "url":'https://gitcoin.co/tips',
                 "network":instance.network,
+                "txid":instance.txid,
+                "token_name":instance.tokenName,
+                "token_value":value_true,
             }
             )
 
@@ -1852,6 +1862,9 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
+                "txid":'',
+                "token_name":instance.bounty.token_name,
+                "token_value":instance.bounty.value_in_token,
             }
             )
 
@@ -2532,9 +2545,6 @@ class Profile(SuperModel):
     slack_token = models.CharField(max_length=255, default='', blank=True)
     custom_tagline = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
-    gitcoin_discord_username = models.CharField(max_length=255, default='', blank=True)
-    discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
-    discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -3658,35 +3668,6 @@ class Profile(SuperModel):
         self.slack_channel = channel
         self.save()
 
-    def get_discord_repos(self, join=False):
-        """Get the profile's Discord tracked repositories.
-
-        Args:
-            join (bool): Whether or not to return a joined string representation.
-                Defaults to: False.
-
-        Returns:
-            list of str: If joined is False, a list of discord repositories.
-            str: If joined is True, a combined string of discord repositories.
-
-        """
-        if join:
-            repos = ', '.join(self.discord_repos)
-            return repos
-        return self.discord_repos
-
-    def update_discord_integration(self, webhook_url, repos):
-        """Update the profile's Discord integration settings.
-
-        Args:
-            webhook_url (str): The profile's Discord webhook url.
-            repos (list of str): The profile's github repositories to track.
-
-        """
-        repos = repos.split(',')
-        self.discord_webhook_url = webhook_url
-        self.discord_repos = [repo.strip() for repo in repos]
-        self.save()
 
     @staticmethod
     def get_network():
@@ -4773,6 +4754,10 @@ class Earning(SuperModel):
     source = GenericForeignKey('source_type', 'source_id')
     network = models.CharField(max_length=50, default='')
     url = models.CharField(max_length=500, default='')
+    txid = models.CharField(max_length=255, default='')
+    token_name = models.CharField(max_length=255, default='')
+    token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
+    network = models.CharField(max_length=50, default='')
 
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
