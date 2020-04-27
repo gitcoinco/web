@@ -1,5 +1,6 @@
 import re
 import time
+import hashlib
 
 from django.conf import settings
 from django.contrib import messages
@@ -20,7 +21,7 @@ from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
 from .models import (
-    Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
+    Announcement, Comment, Favorite, Flag, Like, Pin, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
 )
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
@@ -521,7 +522,7 @@ def api(request, activity_id):
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 
-    # like request
+    # favorite request
     elif request.POST.get('method') == 'favorite':
         if request.POST['direction'] == 'favorite':
             already_likes = Favorite.objects.filter(activity=activity, user=request.user).exists()
@@ -529,6 +530,23 @@ def api(request, activity_id):
                 Favorite.objects.create(user=request.user, activity=activity)
         elif request.POST['direction'] == 'unfavorite':
             Favorite.objects.filter(user=request.user, activity=activity).delete()
+
+    # Pin request
+    elif request.POST.get('method') == 'pin':
+        hash = hashlib.sha256()
+        hash.update(str(time.time()))
+        hash_what = hash.hexdigest()
+        
+        if request.POST['direction'] == 'pin':
+            already_pins = Pin.objects.filter(activity=activity, user=request.user, hash_what=hash_what).exists()
+            if not already_pins:
+                Pin.objects.create(activity=activity, user=request.user, hash_what=hash_what)
+            else:
+                Pin.objects.filter(activity=activity, user=request.user, hash_what=hash_what).delete()
+                Pin.objects.create(activity=activity, user=request.user, hash_what=hash_what)
+
+        elif request.POST['direction'] == 'unpin':
+            Pin.objects.filter(activity=activity, user=request.user, hash_what=hash_what).delete()
 
     # flag request
     elif request.POST.get('method') == 'flag':

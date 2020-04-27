@@ -295,6 +295,17 @@
 
 
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
+            {% if row.profile.organizations|length %}
+              <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the Tribe Town Square." href=# 
+              data-url={{row.url}}
+              data-affirmative=pinned
+              data-negative=unpin data-state="{% if row.metadata.pin%}pinned{% else %}unpin{%endif%}"
+              data-pk="{{row.pk}}"
+              data-what="tribe">
+
+              <i class="fas fa-map-pin mr-2"></i>Pin Post
+              </a>
+            {% endif %}
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
@@ -371,6 +382,9 @@
           {{ row.created_human_time }}
         {% endif %}
       </div>
+      <div class="activity_pinned font-smaller-5 text-right">
+         <i class="fas fa-map-pin mr-2"></i> Pinned
+        </div>
       <div class="mt-3 text-right pr-3 activity-img">
         {% if row.kudos %}
           <a href="{{row.kudos.external_url}}">

@@ -168,7 +168,8 @@ a .sup {
 .like_activity:hover,
 .flag_activity:hover,
 .comment_activity:hover,
-.copy_activity:hover {
+.copy_activity:hover,
+.pin_activity:hover {
   text-decoration: none;
 }
 .funder-avatar,
@@ -350,6 +351,24 @@ iframe.popout{
     margin: 0px auto;
   }
 }
+
+.activity_pinned {
+  display: none;
+}
+.pinned .activity_pinned {
+  display: block;
+}
+
+.pinned-activity {
+  background-color: #e7fff5;
+  border: 1px solid #82febd;
+}
+
+.activity_stream .box.pinned-activity {
+  border-bottom-color: #82febd;
+}
+
+
 @media (max-width: 1100px) {
   .activity_stream .avatar {
     width: 3.5rem;
