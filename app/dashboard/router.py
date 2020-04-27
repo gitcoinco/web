@@ -504,7 +504,7 @@ class TribesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         """Define the profile serializer metadata."""
-        fields = ('name', 'linkedin_url', 'team_or_none_if_timeout', 'suggested_bounties', 'active_bounties', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data')
+        fields = ('name', 'linkedin_url', 'team_or_none_if_timeout', 'suggested_bounties', 'active_bounties', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data', 'tribe_priority')
 
 
 # Routers provide an easy way of automatically determining the URL conf.

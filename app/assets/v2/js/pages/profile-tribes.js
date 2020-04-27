@@ -1,4 +1,26 @@
 /* eslint-disable no-loop-func */
+
+
+const loadDynamicScript = (callback, url, id) => {
+  const existingScript = document.getElementById(id);
+
+  if (!existingScript) {
+    const script = document.createElement('script');
+
+    script.src = url;
+    script.id = id;
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      if (callback)
+        callback();
+    };
+  }
+
+  if (existingScript && callback)
+    callback();
+};
+
 (function($) {
   // doc ready
   $(() => {
@@ -30,6 +52,7 @@
         }
       }
     });
+    Vue.use(VueQuillEditor)
     window.tribesApp = new Vue({
       delimiters: [ '[[', ']]' ],
       el: '#tribes-vue-app',
@@ -55,6 +78,20 @@
           let newUrl = `/${vm.tribe.handle}/${newPathName}${window.location.search}`;
 
           history.pushState({}, `Tribe - @${vm.tribe.handle}`, newUrl);
+        },
+        onEditorBlur(quill) {
+          console.log('editor blur!', quill)
+        },
+        onEditorFocus(quill) {
+          console.log('editor focus!', quill)
+        },
+        onEditorReady(quill) {
+          console.log('editor ready!', quill)
+        }
+      },
+      computed: {
+        editor() {
+          return this.$refs.quillEditor.quill
         }
       },
       updated() {

@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static avatar_tags add_url_schema email_obfuscator %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator humanize %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -364,7 +364,7 @@
                   {% trans "Projects" %}
                 </div>
               </template>
-              <project-directory inline-template>
+              <project-directory v-bind:sponsor="tribe.handle" inline-template>
                 <div class="ml-4">
                 <div class="sidebar-container flex-column flex-lg-row">
                   <transition name="fade">
@@ -381,7 +381,7 @@
                           </form>
                         </div>
                       </div>
-                      <div class="pb-4 border-bottom form-group">
+                      <div v-if="!sponsor" class="pb-4 border-bottom form-group">
                         <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
                         <div id="project_sponsors" class="form__select2">
                           <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
@@ -473,7 +473,7 @@
                   {% trans "People" %}
                 </div>
               </template>
-              <user-directory inline-template persona="tribe">
+              <user-directory inline-template persona="tribe" v-bind:tribe="tribe.handle">
                 <div class="ml-4">
                   <div class="sidebar-container flex-column flex-lg-row">
                     <transition name="fade">
@@ -841,11 +841,11 @@
 
 
                       <div v-if="tribe.custom_tagline" class="profile-header__bio my-2">
-                          <small class="review-comment">[[ tribe.custom_tagline ]]</small>
+                          <div v-html="tribe.custom_tagline" class="review-comment"></div>
                         </div>
 
                       <p class="mb-0 mt-1">
-                        <b-button @click="followTribe(tribe.handle, $event)" class="btn btn-gc-blue">[[ isOnTribe ? "unfollow" : "follow" ]]</b-button>
+                        <b-button @click="followTribe(tribe.handle, $event)" class="btn btn-gc-blue font-smaller-5">[[ isOnTribe ? "following" : "follow" ]]</b-button>
 
                         |
 
@@ -868,22 +868,22 @@
                           </a>
                         {% endif %}
                       </p>
-                      <p>[[ tribe.tribe_description || "Nothing here yet" ]]</p>
+
                     </b-col>
                   </b-row>
               </tribes-profile-header>
             </b-media>
+              <b-col>
+                [[ tribe.tribe_description ]]
+              </b-col>
             <a href="/profile/{{tribe.handle}}/tribe" class="col-md-8 btn button--full px-3 btn-gc-blue">
               {% trans "Suggest a bounty" %}
             </a>
             <div class="pt-0 mt-3 font-body">
               <div style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
                 <h4 class="mx-3 pt-4 font-body font-weight-bold">Currently collecting ideas for</h4>
-                <ul class="my-0 mx-4 p-0 pb-4">
-                  <li class="ml-2">Features that will help with engagement with developers</li>
-                  <li class="ml-2">Bug Fixes</li>
-                  <li class="ml-2">Security vulnerabilities</li>
-                  <li class="ml-2">Documentation improvements</li>
+
+                <ul v-html="tribe.tribe_priority" class="my-0 mx-4 p-0 pb-4">
                 </ul>
               </div>
               <div class="card" style="border-radius: 0px 0px 4px 4px;">

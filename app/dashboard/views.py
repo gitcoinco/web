@@ -915,23 +915,31 @@ def projects_fetch(request):
     page = clean(request.GET.get('page', 1))
     hackathon_id = clean(request.GET.get('hackathon', ''))
 
-    try:
-        hackathon_event = HackathonEvent.objects.get(id=hackathon_id)
-    except HackathonEvent.DoesNotExist:
-        hackathon_event = HackathonEvent.objects.last()
+    if hackathon_id:
+        try:
+            hackathon_event = HackathonEvent.objects.get(id=hackathon_id)
+        except HackathonEvent.DoesNotExist:
+            hackathon_event = HackathonEvent.objects.last()
 
-    projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
+        projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
+            status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
 
+        if sponsor:
+            projects = projects.filter(
+                Q(bounty__github_url__icontains=sponsor)
+            )
+    elif sponsor:
+        sponsor_profile = Profile.objects.get(handle=sponsor)
+        if sponsor_profile:
+            projects = HackathonProject.objects.filter(hackathon__sponsor_profiles__in=[sponsor_profile]).exclude(
+                status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
+        else:
+            projects = []
     if q:
         projects = projects.filter(
             Q(name__icontains=q) |
             Q(summary__icontains=q) |
             Q(profiles__handle__icontains=q)
-        )
-
-    if sponsor:
-        projects = projects.filter(
-            Q(bounty__github_url__icontains=sponsor)
         )
 
     if skills:
@@ -974,6 +982,7 @@ def users_fetch(request):
     leaderboard_rank = request.GET.get('leaderboard_rank', '').strip().split(',')
     rating = int(request.GET.get('rating', '0'))
     organisation = request.GET.get('organisation', '')
+    tribe = request.GET.get('tribe', '')
     hackathon_id = request.GET.get('hackathon', '')
 
     user_id = request.GET.get('user', None)
@@ -1001,6 +1010,12 @@ def users_fetch(request):
 
     if q:
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
+
+    if tribe:
+        # filter for only profiles that are following/members of the tribe
+        # tribe_profile = Profile.objects.get(handle=tribe)
+        # if tribe_profile:
+        profile_list = profile_list.filter(Q(follower__org__handle__in=[tribe]))
 
     show_banner = None
 
