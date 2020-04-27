@@ -794,8 +794,8 @@ def leaderboard(request, key=''):
     flags = []
     if key == 'countries':
         country_data = pandas.read_csv("./marketing/assets/country_codes.csv", header=0)
-        country_names = list(country_data['country'])
-        country_codes = list(country_data['code'])
+        country_names = country_data['country']
+        country_codes = country_data['code']
         for item in items[0:limit]:
             country = item.at_ify_username
             code = 'us'
