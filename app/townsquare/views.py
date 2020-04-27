@@ -540,7 +540,7 @@ def api(request, activity_id):
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 
-    # like request
+    # favorite request
     elif request.POST.get('method') == 'favorite':
         if request.POST['direction'] == 'favorite':
             already_likes = Favorite.objects.filter(activity=activity, user=request.user).exists()
