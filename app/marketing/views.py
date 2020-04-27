@@ -790,6 +790,24 @@ def leaderboard(request, key=''):
             for tech in techs:
                 technologies.add(tech)
 
+    import pandas
+    flags = []
+    if key == 'countries':
+        country_data = pandas.read_csv("./marketing/assets/country_codes.csv", header=0)
+        country_names = list(country_data['country'])
+        country_codes = list(country_data['code'])
+        for item in items[0:limit]:
+            country = item.at_ify_username
+            code = 'us'
+            try:
+                country_index = country_names.index(country)
+                code = country_codes[country_index]
+            except:
+                print('Failed to map country name, \
+                        See https://www.countryflags.io/#countries \
+                        for list of supported countries.')
+            flags.append(f'https://www.countryflags.io/{code}/flat/32.png')
+
     if amount:
         amount_max = amount[0][0]
         top_earners = ranks.order_by('-amount')[0:5].values_list('github_username', flat=True)
@@ -845,8 +863,11 @@ def leaderboard(request, key=''):
     if next_update and next_update < timezone.now():
         next_update = timezone.now() + timezone.timedelta(days=1)
 
+    dualList= zip(items[0:limit],flags)
     context = {
+        'key': key,
         'items': items[0:limit],
+        'dualList': dualList,
         'nav': 'home',
         'cht': cht,
         'titles': titles,
