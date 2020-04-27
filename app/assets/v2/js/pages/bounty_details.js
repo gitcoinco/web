@@ -722,6 +722,7 @@ var show_interest_modal = function() {
             $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
             modals.bootstrapModal('hide');
             if (document.result.event) {
+              localStorage['pendingProject'] = document.result.standard_bounties_id;
               projectModal(document.result.pk);
             }
           }

@@ -227,12 +227,12 @@ $(document).ready(function() {
 
     if (is_selected) {
       let html = `
-      <div id=poll_container class="bg-lightblue p-2">
-      <input name=option1 placeholder="Option 1" class="form-control form-control-sm my-2">
-      <input name=option2 placeholder="Option 2" class="form-control form-control-sm my-2">
-      <input name=option3 placeholder="Option 3" class="form-control form-control-sm my-2">
-      <input name=option4 placeholder="Option 4" class="form-control form-control-sm my-2">
-      </div>
+        <div id=poll_container class="bg-lightblue p-2">
+          <input name=option1 placeholder="Option 1" class="form-control form-control-sm">
+          <input name=option2 placeholder="Option 2" class="form-control form-control-sm">
+          <input name=option3 placeholder="Option 3" class="form-control form-control-sm">
+          <input name=option4 placeholder="Option 4" class="form-control form-control-sm">
+        </div>
       `;
 
       $(html).insertAfter('#status');
