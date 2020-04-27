@@ -500,10 +500,11 @@ class TribesSerializer(serializers.ModelSerializer):
     """Handle serializing the Profile object."""
     active_bounties = BountySerializer(many=True)
     team_or_none_if_timeout = ProfileSerializer(many=True)
+    suggested_bounties = BountySerializer(many=True)
     class Meta:
         model = Profile
         """Define the profile serializer metadata."""
-        fields = ('name', 'linkedin_url', 'team_or_none_if_timeout','active_bounties', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data')
+        fields = ('name', 'linkedin_url', 'team_or_none_if_timeout', 'suggested_bounties', 'active_bounties', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data')
 
 
 # Routers provide an easy way of automatically determining the URL conf.

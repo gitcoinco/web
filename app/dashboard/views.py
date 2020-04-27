@@ -2833,14 +2833,11 @@ def profile(request, handle, tab=None):
         ProfileView.objects.create(target=profile, viewer=request.user.profile)
 
     if profile.is_org:
-        # pdict = TribesSerializer(profile.to_dict()).data
         context['init_data'] = profile.to_dict()
         context['currentProfile'] = TribesSerializer(profile).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
         context['is_on_tribe'] = json.dumps(True if len(context['is_on_tribe']) > 0 else False)
         context['profile_handle'] = profile.handle
-
-
 
         return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
 

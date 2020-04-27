@@ -791,26 +791,25 @@
             <div class="p-xl-0 p-4">
               <b-media>
                 <template v-slot:aside>
-                  {% load i18n static avatar_tags %}
-                    <div class=" d-inline-block d-inline-block mb-1 {% if is_editable %}is_editable{% endif %}">
-                      {% if is_editable %}
-                        <a href="{% url "onboard" "profile" %}?steps=avatar">
-                      {% endif %}
+                  <div class=" d-inline-block d-inline-block mb-1 {% if is_editable %}is_editable{% endif %}">
+                    {% if is_editable %}
+                      <a href="{% url "onboard" "profile" %}?steps=avatar">
+                    {% endif %}
 
-                      <b-img class="profile-header__avatar" :src=`/dynamic/avatar/${tribe.handle}`></b-img>
+                    <b-img class="profile-header__avatar" :src=`/dynamic/avatar/${tribe.handle}`></b-img>
 
-                      {% if is_editable %}
-                        <div class="avatar_edit d-md-block d-sm-none">
-                          <div class="avatar_edit_text">
-                            <span>
-                              <i class="fa fa-camera"></i>
-                              Update
-                            </span>
-                          </div>
+                    {% if is_editable %}
+                      <div class="avatar_edit d-md-block d-sm-none">
+                        <div class="avatar_edit_text">
+                          <span>
+                            <i class="fa fa-camera"></i>
+                            Update
+                          </span>
                         </div>
-                        </a>
-                      {% endif %}
-                    </div>
+                      </div>
+                      </a>
+                    {% endif %}
+                  </div>
                 </template>
                 <tribes-profile-header v-bind:tribe="tribe" inline-template>
                   <b-row>
@@ -840,32 +839,13 @@
                           <small class="review-comment">[[ tribe.data.bio ]]</small>
                         </div>
 
-                        <b-button variant="primary" @click="followTribe(tribe.handle, $event)" class="btn btn-outline-gc-blue">[[ isOnTribe ? "unfollow" : "follow" ]]</b-button>
 
                       <div v-if="tribe.custom_tagline" class="profile-header__bio my-2">
                           <small class="review-comment">[[ tribe.custom_tagline ]]</small>
                         </div>
 
                       <p class="mb-0 mt-1">
-
-                        <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"
-                          href="{% url 'tip' %}?username={{ profile.handle }}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="Tip @{{ profile.handle }}"
-                        >
-                          <i class="fab fa-ethereum"></i>
-                        </a>
-
-                        <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"
-                           href="{% url 'kudos_send' %}?username={{ profile.handle }}" data-placement="bottom" data-toggle="tooltip" data-html="true" title="Kudos @{{ profile.handle }}">
-                           <i class="fas fa-dice-d6"></i>
-                        </a>
-
-                        <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="/users?invite={{ profile.handle }}"
-                          data-placement="bottom" data-toggle="tooltip" data-html="true" title="Invite @{{ profile.handle }} to Bounty"
-                        >
-
-                        <i class="fas fa-envelope-open-text"></i>
-
-                        </a>
+                        <b-button @click="followTribe(tribe.handle, $event)" class="btn btn-gc-blue">[[ isOnTribe ? "unfollow" : "follow" ]]</b-button>
 
                         |
 
@@ -893,6 +873,31 @@
                   </b-row>
               </tribes-profile-header>
             </b-media>
+            <a href="/profile/{{tribe.handle}}/tribe" class="col-md-8 btn button--full px-3 btn-gc-blue">
+              {% trans "Suggest a bounty" %}
+            </a>
+            <div class="pt-0 mt-3 font-body">
+              <div style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
+                <h4 class="mx-3 pt-4 font-body font-weight-bold">Currently collecting ideas for</h4>
+                <ul class="my-0 mx-4 p-0 pb-4">
+                  <li class="ml-2">Features that will help with engagement with developers</li>
+                  <li class="ml-2">Bug Fixes</li>
+                  <li class="ml-2">Security vulnerabilities</li>
+                  <li class="ml-2">Documentation improvements</li>
+                </ul>
+              </div>
+              <div class="card" style="border-radius: 0px 0px 4px 4px;">
+                <h4 class="px-2 pt-3 font-body text-muted">{% trans "Top ideas" %}</h4>
+                <table class="px-3 table table-borderless">
+                  <tbody>
+                    <tr v-for="suggested_bounty in tribe.suggested_bounties ">
+                      <th class="pr-0 font-weight-normal" scope="row">[[ suggested_bounty.pk ]]</th>
+                      <td class="px-3 font-weight-bold">[[ suggested_bounty.title ]]</td>
+                      <td class="pl-0">[[ suggested_bounty.votes ]] Votes</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
