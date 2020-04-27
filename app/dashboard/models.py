@@ -66,6 +66,7 @@ from marketing.mails import featured_funded_bounty, start_work_approved
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
+from bounty_requests.models import BountyRequest
 
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
@@ -74,6 +75,7 @@ logger = logging.getLogger(__name__)
 
 
 CROSS_CHAIN_STANDARD_BOUNTIES_OFFSET = 100000000
+
 
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""
@@ -2638,6 +2640,13 @@ class Profile(SuperModel):
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
+
+    @property
+    def suggested_bounties(self):
+        suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
+
+        return suggested_bounties if suggested_bounties else []
+
     @property
     def subscribed_threads(self):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
