@@ -332,14 +332,7 @@
                     <div class="col-12 subheading left-ribbon font-body">
                       [[ tribe.name ]] {% trans "Team" %}
                     </div>
-                    <div class="team-wrapper">
-                      <b-media v-for="profile in tribe.team_or_none_if_timeout">
-                        <template v-slot:aside>
-                          <b-img-lazy class="profile-header__avatar" :src=`/dynamic/avatar/${profile.handle}`></b-img-lazy>
-                        </template>
-                      </b-media>
-                    </div>
-                    <suggested-profiles :profiles="[{'name': 'zoek', followers_count: 1, handle: 'zoek1'}]"></suggested-profiles>
+                    <suggested-profiles :profiles="tribe.team_or_none_if_timeout"></suggested-profiles>
                   </div>
                   <div class="feed_container col-12 col-lg-8">
                     <div class="feed_container_child">
@@ -369,7 +362,7 @@
                   {% trans "Projects" %}
                 </div>
               </template>
-              <project-directory v-bind:sponsor="tribe.handle" inline-template>
+              <project-directory v-bind:tribe="tribe.handle" inline-template>
                 <div class="ml-4">
                 <div class="sidebar-container flex-column flex-lg-row">
                   <transition name="fade">
@@ -386,7 +379,7 @@
                           </form>
                         </div>
                       </div>
-                      <div v-if="!sponsor" class="pb-4 border-bottom form-group">
+                      <div v-if="!tribe" class="pb-4 border-bottom form-group">
                         <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
                         <div id="project_sponsors" class="form__select2">
                           <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
@@ -478,7 +471,7 @@
                   {% trans "People" %}
                 </div>
               </template>
-              <user-directory inline-template persona="tribe" v-bind:tribe="tribe.handle">
+              <user-directory inline-template v-bind:tribe="tribe.handle">
                 <div class="ml-4">
                   <div class="sidebar-container flex-column flex-lg-row">
                     <transition name="fade">
@@ -518,7 +511,7 @@
                             </select2>
                           </div>
                         </div>
-                        <div  v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
+                        <div  v-if="!tribe" class="g-multiselect pb-4 border-bottom form-group">
                           <label for="skills" class="font-weight-bold">Skills</label>
                           <div class="form__select2">
                             <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
@@ -526,7 +519,7 @@
                             </select2>
                           </div>
                         </div>
-                        <div v-if="persona != 'tribe'" class="pb-4 border-bottom form-group">
+                        <div v-if="!tribe" class="pb-4 border-bottom form-group">
                           <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
                           <div class="form__select2">
                             <select2 v-model.trim="params.bounties_completed" data-tags="true" class="form-control">
@@ -538,7 +531,7 @@
                             </select2>
                           </div>
                         </div>
-                        <div v-if="persona != 'tribe'" class="pb-2 border-bottom form-group">
+                        <div v-if="!tribe" class="pb-2 border-bottom form-group">
                           <div class="w-100 p-2">
                             <fieldset class="">
                               <label for="" class="font-weight-bold">Star Rating</label>
@@ -557,7 +550,7 @@
                             </fieldset>
                           </div>
                         </div>
-                        <div v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
+                        <div v-if="!tribe" class="g-multiselect pb-4 border-bottom form-group">
                           <label for="organisations" class="font-weight-bold">Tribe</label>
                           <div class="font-smaller">
                             <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
@@ -568,7 +561,7 @@
                           <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
                             <span class="font-weight-bold">[[ numUsers ]]</span> users found
                           </p>
-                          <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                          <button v-if="!tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
                             Invite all to bounty
                           </button>
                         {% endif %}
@@ -691,13 +684,13 @@
                                   class="btn btn-sm btn-gc-pink font-caption font-weight-semibold button--full"
                                 >
                                   <i class="fas fa-user-minus mr-1"></i>
-                                  Unfollow
+                                  following
                                 </button>
                                 <button v-else @click="joinTribe(user, $event)"
                                   class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
                                 >
                                   <i class="fas fa-user-plus mr-1"></i>
-                                  Follow
+                                  follow
                                 </button>
                               </div>
 

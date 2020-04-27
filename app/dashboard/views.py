@@ -110,7 +110,7 @@ from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
 )
-from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer
+from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
@@ -2843,7 +2843,6 @@ def profile(request, handle, tab=None):
         active_tab = 1
     elif tab == "people":
         active_tab = 2
-    print(active_tab)
     context['active_panel'] = active_tab
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
@@ -2857,7 +2856,8 @@ def profile(request, handle, tab=None):
 
     if profile.is_org:
         context['init_data'] = profile.to_dict()
-        context['currentProfile'] = TribesSerializer(profile).data
+
+        context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
         context['is_on_tribe'] = json.dumps(True if len(context['is_on_tribe']) > 0 else False)
         context['profile_handle'] = profile.handle

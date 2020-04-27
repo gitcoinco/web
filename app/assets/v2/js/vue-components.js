@@ -128,6 +128,7 @@ Vue.component('qrcode', {
 
 Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
+  props: ['tribe'],
   methods: {
     fetchProjects: function(newPage) {
       let vm = this;
@@ -138,9 +139,15 @@ Vue.component('project-directory', {
       if (newPage) {
         vm.projectsPage = newPage;
       }
+
       vm.params.page = vm.projectsPage;
+
       if (vm.hackathonId) {
         vm.params.hackathon = hackathonId;
+      }
+
+      if (vm.sponsor) {
+        vm.params.sponsor = vm.sponsor;
       }
 
       if (vm.searchTerm) {
@@ -188,27 +195,31 @@ Vue.component('project-directory', {
 
     }
   },
-  data: () => ({
-    hackathonSponsors: document.hackathonSponsors || [],
-    hackathonProjects: document.hackathonProjects || [],
-    projectsPage: 1,
-    hackathonId: document.hackathon_id || null,
-    projectsNumPages: 0,
-    projectsHasNext: false,
-    numProjects: 0,
-    media_url,
-    searchTerm: null,
-    bottom: false,
-    params: {},
-    isFunder: false,
-    showModal: false,
-    showFilters: true,
-    skills: document.keywords || [],
-    selectedSkills: [],
-    noResults: false,
-    isLoading: true,
-    hideFilterButton: false
-  }),
+  data: function() {
+
+    return {
+      sponsor: this.tribe || null,
+      hackathonSponsors: document.hackathonSponsors || [],
+      hackathonProjects: document.hackathonProjects || [],
+      projectsPage: 1,
+      hackathonId: document.hackathon_id || null,
+      projectsNumPages: 0,
+      projectsHasNext: false,
+      numProjects: 0,
+      media_url,
+      searchTerm: null,
+      bottom: false,
+      params: {},
+      isFunder: false,
+      showModal: false,
+      showFilters: true,
+      skills: document.keywords || [],
+      selectedSkills: [],
+      noResults: false,
+      isLoading: true,
+      hideFilterButton: false
+    };
+  },
   mounted() {
     this.fetchProjects();
     this.$watch('params', function(newVal, oldVal) {
@@ -236,9 +247,6 @@ Vue.component('project-directory', {
 Vue.component('suggested-profiles', {
   props: ['profiles'],
   template: `<div class="townsquare_nav-list my-2 tribe">
-      <div class="townsquare_block-header" data-target="suggested-tribes">
-        Suggested Profiles
-      </div>
       <div id="suggested-tribes">
         <ul class="nav d-inline-block font-body col-4 col-sm-11 pr-2" style="padding-right: 0">
             <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
@@ -252,8 +260,8 @@ Vue.component('suggested-profile', {
   props: ['profile'],
   data: function() {
     return {
-      follow: false,
-      follower_count: this.profile.follower_count || 0
+      follow: this.profile.user_is_following || false,
+      follower_count: this.profile.followers_count || 0
     };
   },
   computed: {
@@ -298,10 +306,10 @@ Vue.component('suggested-profile', {
         </span>
       </a>
       <a class="follow_tribe btn btn-sm btn-gc-pink font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
-        Unfollow
+        following
       </a>
       <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
-        Follow
+        follow
       </a>
     </li>`
 });
