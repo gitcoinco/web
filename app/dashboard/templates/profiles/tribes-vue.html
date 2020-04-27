@@ -254,6 +254,10 @@
         /* height: 70px; */
         /* max-height: 70px; */
       }
+      .follow_tribe {
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
       .looking-team {
         background-color: rgba(62, 0, 255, 0.05);
         border-radius: 8px;
@@ -335,6 +339,7 @@
                         </template>
                       </b-media>
                     </div>
+                    <suggested-profiles :profiles="[{'name': 'zoek', followers_count: 1, handle: 'zoek1'}]"></suggested-profiles>
                   </div>
                   <div class="feed_container col-12 col-lg-8">
                     <div class="feed_container_child">

@@ -231,3 +231,77 @@ Vue.component('project-directory', {
     });
   }
 });
+
+
+Vue.component('suggested-profiles', {
+  props: ['profiles'],
+  template: `<div class="townsquare_nav-list my-2 tribe">
+      <div class="townsquare_block-header" data-target="suggested-tribes">
+        Suggested Profiles
+      </div>
+      <div id="suggested-tribes">
+        <ul class="nav d-inline-block font-body col-4 col-sm-11 pr-2" style="padding-right: 0">
+            <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
+        </ul>
+      </div>
+    </div>`
+});
+
+
+Vue.component('suggested-profile', {
+  props: ['profile'],
+  data: function() {
+    return {
+      follow: false,
+      follower_count: this.profile.follower_count || 0
+    };
+  },
+  computed: {
+    avatar_url: function() {
+      return `/dynamic/avatar/${this.profile.handle}`;
+    },
+    profile_url: function() {
+      return `/profile/${this.profile.handle}`;
+    }
+  },
+  methods: {
+    followTribe: function(handle, event) {
+      event.preventDefault();
+      let vm = this;
+
+      const url = `/tribe/${handle}/join/`;
+      const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        if (response && response.is_member) {
+          vm.follow = true;
+          vm.follower_count += 1;
+        } else {
+          vm.follow = false;
+          vm.follower_count -= 1;
+        }
+      }).fail((error) => {
+        console.log(error);
+      });
+    }
+  },
+  template: `
+    <li class="nav-item d-flex justify-content-between align-items-center my-2">
+      <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
+        <img :src="avatar_url" class="nav_avatar mr-4" />
+        <span class="font-caption">
+          <span class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize">{{profile.name}}</span><br>
+          <p class="mb-0">
+            <i class="fas fa-user font-smaller-4 mr-1"></i>
+            <span class="font-weight-semibold">{{follower_count}}</span> followers
+          </p>
+        </span>
+      </a>
+      <a class="follow_tribe btn btn-sm btn-gc-pink font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
+        Unfollow
+      </a>
+      <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
+        Follow
+      </a>
+    </li>`
+});
