@@ -1,0 +1,21 @@
+{
+  "symbol": "MCC",
+  "address": "0x9C64bbBF75a77Fd98c028BB1fd9e1d76730449f8",
+  "overview":{
+        "en": "MOCA coin is designed to have the function of currency that can be used in real life any when and anywhere. We are focusing on creating Crypto-Currency with the stability, value, and usability through various profitable businesses that are currently underway and scheduled, combining the advantages such as transparency, anonymity, and convenience of the block chain.",
+        "zh": ""
+  },
+  "email": "spacedream1258@gmail.com",
+  "website": "http://spacedream.shop/",
+  "whitepaper": "http://spacedream.shop/data/file/MOCACOIN_whitepaper.pdf/",
+  "state": "NORMAL",
+  "published_on": "2020-04-18",
+  "initial_price":{
+        "ETH":"0.00021 ETH",
+        "USD":"0.04 USD",
+        "BTC":"0.0000052 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/MOCA_OFFIAL"
+  }
+}
