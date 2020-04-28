@@ -62,7 +62,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
-from marketing.mails import featured_funded_bounty, start_work_approved, fund_request_email
+from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
