@@ -33,8 +33,7 @@
       }
       .sponsors img {
         max-width: 150px;
-        height: auto;
-        width: 100%;
+        max-height: 150px;
       }
       .onboard-banner {
         position: relative;
@@ -66,11 +65,16 @@
       .options {
         display: grid;
         grid-gap: 16px;
-        grid-template-columns: repeat(2, 1fr);
       }
 
       .modal-header, .modal-body, .modal-footer {
         border: none;
+      }
+
+      @media screen and (min-width: 598px) {
+        .options {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
     </style>
   </head>
@@ -93,14 +97,14 @@
 
     <div class="container-fluid bg-lightblue pb-5">
       <div class="container mt-md-n5 bg-white position-relative rounded">
-        <div class="row p-5">
+        <div class="row p-4 p-md-5">
           <div class="col-12">
               <span>Gitcoin Virtual Hackathon</span>
-              <div class="d-flex justify-content-between">
+              <div class="d-md-flex justify-content-between">
                 <h1 class="text-uppercase gc-letter-spacing font-weight-bold">
                   {{ hackathon.name }}
                 </h1>
-                <div class="col-3 mt-1">
+                <div class="col-12 col-md-3 px-0 mt-md-1 mt-4">
                 {% if not github_handle %}
                   <a class="btn btn-gc-blue col-12" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?registration={{hackathon.slug}}&referer={{referer}}"
                     onclick="dataLayer.push({'event': 'login'});">Join Now</a>
@@ -113,7 +117,7 @@
                 {% endif %}
                 </div>
               </div>
-              <p>
+              <p class="mt-md-1 mt-4">
                 {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
               </p>
               {% if hackathon.end_date|timesince >= "1 min" %}
@@ -124,10 +128,10 @@
       </div>
 
       {% if is_registered %}
-      <div class="container bg-white my-4 pt-3 pb-4 rounded">
-        <div class="row p-5">
+      <div class="container bg-white my-4 p-4 p-md-5 pt-3  rounded">
+        <div class="row ">
           <div class="d-flex justify-content-between col-12">
-              <div class="{% if hackathon.start_date|timesince >= "1 min"%}col-12 {% else %} col-9{% endif %}">
+              <div class="{% if hackathon.start_date|timesince >= "1 min"%}col-12 {% else %} col-12 col-md-9{% endif %}">
                 {% if hackathon.start_date|timesince >= "1 min"%}
                 <h4 class="font-weight-bolder">
                   Here are other things you can do
@@ -150,8 +154,8 @@
 
               </div>
             {% if not hackathon.start_date|timesince >= "1 min"%}
-                <div class="d-flex mt-5 col-2 justify-content-end align-items-center">
-              <img src="{% static "v2/images/heart-robot.png" %}" alt="">
+                <div class="d-md-flex d-none mt-5 col-2 justify-content-end align-items-center">
+                  <img src="{% static "v2/images/heart-robot.png" %}" alt="">
                 </div>
             {% endif %}
             </div>
@@ -163,11 +167,11 @@
         <div id="sponsors" class="container bg-white my-4 pt-3 pb-4 rounded">
             <div class="row mb-5">
               <div class="col-12 sponsors mb-3">
-                <p class="font-weight-bold px-5 mx-3 h4 text-left mb-2 uppercase">Key Sponsors</p>
+                <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Key Sponsors</p>
                 {% if sponsors.sponsors_gold %}
                   <div class="d-flex flex-wrap mb-4">
                     {% for sponsor in sponsors.sponsors_gold %}
-                      <a href="{% url 'profile' sponsor.handle %}" class="col-3 sponsors-gold mt-5 mb-3 text-center">
+                      <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center">
                         <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
                         <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
                         <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
@@ -303,7 +307,7 @@
               </form>
           </div>
           <div class="modal-footer justify-content-center">
-            <button id="send_poll" class="btn btn-lg font-header btn-gc-blue mt-4 mb-4 px-5">Join Hackathon Now</button>
+            <button id="send_poll" class="btn btn-lg font-header btn-gc-blue mt-4 mb-4 px-4 px-md-5">Join Hackathon Now</button>
           </div>
         </div>
       </div>
