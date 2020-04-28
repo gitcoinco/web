@@ -66,6 +66,13 @@ class MatchPledgeAdmin(admin.ModelAdmin):
     list_display =['pk', 'profile', 'active','pledge_type','amount']
 
 
+class CLRMatchAdmin(admin.ModelAdmin):
+    """Define the CLRMatch administration layout."""
+
+    ordering = ['-id']
+    raw_id_fields = ['grant', 'payout_contribution', 'test_payout_contribution']
+
+
 class GrantAdmin(GeneralAdmin):
     """Define the Grant administration layout."""
 
@@ -277,6 +284,6 @@ admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Flag, FlagAdmin)
-admin.site.register(CLRMatch, GeneralAdmin)
+admin.site.register(CLRMatch, CLRMatchAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)

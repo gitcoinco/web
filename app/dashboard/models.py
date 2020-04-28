@@ -1759,6 +1759,13 @@ def psave_tip(sender, instance, **kwargs):
 def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if instance.pk and is_valid:
+        value_true = 0
+        value_usd = 0
+        try:
+            value_true = instance.value_true
+            value_usd = instance.value_in_usdt_then
+        except:
+            pass
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
@@ -1767,9 +1774,12 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "org_profile":instance.org_profile,
                 "from_profile":instance.sender_profile,
                 "to_profile":instance.recipient_profile,
-                "value_usd":instance.value_in_usdt_then,
+                "value_usd":value_usd,
                 "url":'https://gitcoin.co/tips',
                 "network":instance.network,
+                "txid":instance.txid,
+                "token_name":instance.tokenName,
+                "token_value":value_true,
             }
             )
 
@@ -1852,6 +1862,9 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
+                "txid":'',
+                "token_name":instance.bounty.token_name,
+                "token_value":instance.bounty.value_in_token,
             }
             )
 
@@ -4741,6 +4754,10 @@ class Earning(SuperModel):
     source = GenericForeignKey('source_type', 'source_id')
     network = models.CharField(max_length=50, default='')
     url = models.CharField(max_length=500, default='')
+    txid = models.CharField(max_length=255, default='')
+    token_name = models.CharField(max_length=255, default='')
+    token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
+    network = models.CharField(max_length=50, default='')
 
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
