@@ -4,9 +4,6 @@
 .follow_button[member=true]{
   display: none;
 }
-.follow_tribe i {
-  display: none;
-}
 .tooltip-inner {
   max-width: 450px;
 }
@@ -378,7 +375,7 @@ a.offer_container.animate:hover .prize-gift::after {
   text-shadow: 0 2px 0px #a58484;
 }
 .empty {
-  background-color: #ddd;
+  background-color: #f9f9f9;
   color: #808080;
 }
 .empty .prize-gift {

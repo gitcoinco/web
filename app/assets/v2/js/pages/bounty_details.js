@@ -714,8 +714,7 @@ var show_interest_modal = function() {
         }
 
         add_interest(document.result['pk'], {
-          issue_message: msg,
-          discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+          issue_message: msg
         }).then(success => {
           if (success) {
             $(self).attr('href', '/uninterested');
@@ -723,6 +722,7 @@ var show_interest_modal = function() {
             $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
             modals.bootstrapModal('hide');
             if (document.result.event) {
+              localStorage['pendingProject'] = document.result.standard_bounties_id;
               projectModal(document.result.pk);
             }
           }
