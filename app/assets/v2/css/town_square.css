@@ -1018,6 +1018,7 @@ body.green.offer_view .announce {
   background-color: var(--gc-blue);
   background-size: cover;
 }
+
 .promo .promo-text {
   font-size: 0.9em;
 }
@@ -1032,10 +1033,6 @@ body.green.offer_view .announce {
   margin-bottom: 0;
 }
 
-.promo .action:hover {
-  background-color: #101061;
-  filter: brightness(130%);
-}
 .promo .close-promo {
   position: absolute;
   top: 6px;
@@ -1044,9 +1041,16 @@ body.green.offer_view .announce {
   color: white;
   opacity: 1;
 }
+
 .promo .close-promo i {
   font-weight: 100;
 }
+
+.promo-action:hover {
+  background-color: #101061;
+  filter: brightness(130%);
+}
+
 .get-started {
   background-image: url(/static/v2/images/tribe-notce.svg);
   background-color: var(--gc-blue);

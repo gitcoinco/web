@@ -321,6 +321,11 @@ def get_following_tribes(request):
 
 
 def town_square(request):
+    data_results = JSONStore.objects.filter(view='results', key=None)
+    audience = '39102'
+    if data_results.exists():
+        audience = data_results.data['audience']
+
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
@@ -347,6 +352,7 @@ def town_square(request):
             'now': timezone.now(),
             'is_townsquare': True,
             'trending_only': bool(trending_only),
+            'audience': audience
         }
         return TemplateResponse(request, 'townsquare/index.html', context)
 
@@ -392,6 +398,7 @@ def town_square(request):
         'offers_by_category': offers_by_category,
         'following_tribes': following_tribes,
         'suggested_tribes': suggested_tribes,
+        'audience': audience
     }
 
     if 'tribe:' in tab:

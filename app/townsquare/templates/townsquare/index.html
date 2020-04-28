@@ -78,7 +78,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           <div class="col-12">
             <div class="get-started mb-4">
               <div class="d-flex flex-column align-items-center flex-fill ml-3 text-center">
-                <p class="p-0 font-weight-semibold">Gitcoin is a community of 344,814 amazing open source developers working remotely to build in Web3.</p>
+                <p class="p-0 font-weight-semibold">Gitcoin is a community of {{ audience|intcomma }} amazing open source developers working remotely to build in Web3.</p>
                 <div class="font-caption text-left">
                   <button class="btn action bg-dark-blue font-smaller-2 btn-sm mt-2" data-toggle="modal" data-target="#modal-get-started">Get Started</button>
                 </div>
@@ -94,7 +94,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="d-flex flex-column flex-fill ml-3">
                       <p class="p-0 font-smaller-1">Work with the coolest projects and the best developers in Web3</p>
                       <div class="font-caption font-smaller-5 text-left">
-                        <a href="{% url 'tribes_directory' %}" class="btn pl-5 pr-5 pt-2 pb-2 action font-smaller-4 btn-sm mt-2">Find a Tribe</a>
+                        <a href="{% url 'tribes_directory' %}" class="btn pl-5 pr-5 pt-2 pb-2 promo-action font-smaller-4 btn-sm mt-2">Find a Tribe</a>
                       </div>
                     </div>
                 </div>
