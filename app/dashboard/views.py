@@ -943,6 +943,11 @@ def projects_fetch(request):
             Q(badge__isnull=False)
         )
 
+    if filters == 'lfm':
+        projects = projects.filter(
+            Q(looking_members=True)
+        )
+
     projects_data = HackathonProjectSerializer(projects.all(), many=True)
 
     params = {
@@ -1073,7 +1078,7 @@ def users_fetch(request):
             ['id', 'actions_count', 'created_on', 'handle', 'hide_profile',
             'show_job_status', 'job_location', 'job_salary', 'job_search_status',
             'job_type', 'linkedin_url', 'resume', 'remote', 'keywords',
-            'organizations', 'is_org', 'last_chat_status']}
+            'organizations', 'is_org', 'last_chat_status', 'chat_id']}
 
         profile_json['is_following'] = is_following
 
@@ -3618,18 +3623,18 @@ def hackathon(request, hackathon='', panel='prizes'):
             'org_name': sponsor_profile.handle,
             'follower_count': sponsor_profile.tribe_members.all().count(),
             'followed': True if sponsor_profile.handle in following_tribes else False,
-            'bounty_count': Bounty.objects.filter(bounty_owner_github_username=sponsor_profile.handle).count()
+            'bounty_count': sponsor_profile.bounties.count()
         }
         orgs.append(org)
+
     if hasattr(request.user, 'profile') == False:
         is_registered = False
     else:
         is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                              hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    # if not is_registered and not (request.user and (request.user.is_staff or request.user.is_superuser)):
-        # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
-
+    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).all().count()
+    projects_count = HackathonProject.objects.filter(hackathon=hackathon_event).all().count()
     view_tags = get_tags(request)
     active_tab = 0
     if panel == "prizes":
@@ -3654,6 +3659,8 @@ def hackathon(request, hackathon='', panel='prizes'):
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
+        'hacker_count': hacker_count,
+        'projects_count': projects_count,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
@@ -4948,6 +4955,7 @@ def fulfill_bounty_v1(request):
     fulfillment.created_on = now
     fulfillment.modified_on = now
     fulfillment.funder_last_notified_on = now
+    fulfillment.token_name = bounty.token_name
     fulfillment.fulfiller_github_username = profile.handle
 
     # fulfillment.fulfiller_name    ETC-TODO: REMOVE ?
@@ -4978,9 +4986,6 @@ def payout_bounty_v1(request, fulfillment_id):
     '''
         ETC-TODO
         - wire in email (invite + successful payout)
-        - invoke blockscout to check status
-        - add new bounty_state : pending verification
-        - handle multiple payouts
 
         {
             amount: <integer>,
@@ -5119,6 +5124,9 @@ def close_bounty_v1(request, bounty_id):
     if accepted_fulfillments.count() == 0:
         response['message'] = 'error: cannot close a bounty without making a payment'
         return JsonResponse(response)
+
+    event_name = 'work_done'
+    record_bounty_activity(bounty, user, event_name)
 
     bounty.bounty_state = 'done'
     bounty.idx_status = 'done' # TODO: RETIRE
