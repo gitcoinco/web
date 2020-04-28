@@ -88,7 +88,9 @@ Vue.mixin({
       }
       return url;
     },
-    getQRString: function(token_name, address) {
+    getQRString: function(token_name, address, value) {
+      value = value || 0;
+
       let qr_string;
 
       switch (token_name) {
@@ -97,14 +99,15 @@ Vue.mixin({
           break;
 
         case 'cUSD':
+          qr_string = `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]`;
+          break;
+
         case 'cGLD':
-          // TOOD : UPDATE
-          qr_string = `ethereum:${address}`;
+          qr_string = `celo:${address}?value=${value}`;
           break;
 
         case 'ZIL':
-          // TOOD : UPDATE
-          qr_string = `ethereum:${address}`;
+          qr_string = `zilliqa:${address}`;
           break;
       }
 
