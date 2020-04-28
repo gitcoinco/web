@@ -9,7 +9,6 @@ const loadingState = {
 };
 
 document.result = bounty;
-// listen_for_web3_changes();
 
 Vue.mixin({
   methods: {
@@ -43,6 +42,76 @@ Vue.mixin({
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
       });
+    },
+    getTransactionURL: function(token_name, txn) {
+      let url;
+
+      switch (token_name) {
+        case 'ETC':
+          url = `https://blockscout.com/etc/mainnet/tx/${txn}`;
+          break;
+
+        case 'cUSD':
+        case 'cGLD':
+          url = `https://alfajores-blockscout.celo-testnet.org/tx/${txn}`;
+          break;
+
+        case 'ZIL':
+          url = `https://viewblock.io/zilliqa/tx/${txn}`;
+          break;
+
+        default:
+          url = `https://etherscan.io/tx/${txn}`;
+
+      }
+      return url;
+    },
+    getAddressURL: function(token_name, address) {
+      let url;
+
+      switch (token_name) {
+        case 'ETC':
+          url = `https://blockscout.com/etc/mainnet/address/${address}`;
+          break;
+
+        case 'cUSD':
+        case 'cGLD':
+          url = `https://alfajores-blockscout.celo-testnet.org/address/${address}`;
+          break;
+
+        case 'ZIL':
+          url = `https://viewblock.io/zilliqa/address/${address}`;
+          break;
+
+        default:
+          url = `https://etherscan.io/address/${address}`;
+      }
+      return url;
+    },
+    getQRString: function(token_name, address, value) {
+      value = value || 0;
+
+      let qr_string;
+
+      switch (token_name) {
+        case 'ETC':
+          qr_string = `ethereum:${address}`;
+          break;
+
+        case 'cUSD':
+          qr_string = `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]`;
+          break;
+
+        case 'cGLD':
+          qr_string = `celo:${address}?value=${value}`;
+          break;
+
+        case 'ZIL':
+          qr_string = `zilliqa:${address}`;
+          break;
+      }
+
+      return qr_string;
     },
     syncBounty: function() {
       let vm = this;
@@ -272,15 +341,6 @@ Vue.mixin({
       }
       document.location.href = `${vm.bounty.url}?snooze=${text}`;
     },
-    overrideStatus: function() {
-      let vm = this;
-      let text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
-
-      if (text === null) {
-        return;
-      }
-      document.location.href = `${vm.bounty.url}?admin_override_satatus=${text}`;
-    },
     hasAcceptedFulfillments: function() {
       let vm = this;
 
@@ -370,13 +430,6 @@ Vue.mixin({
         activities.forEach(activity => {
           if (activity.metadata) {
             if (activity.metadata.new_bounty) {
-              // ETH
-              activity.metadata.new_bounty['token_value'] = activity.metadata.new_bounty.value_in_token / 10 ** decimals;
-              if (activity.metadata.old_bounty) {
-                activity.metadata.old_bounty['token_value'] = activity.metadata.old_bounty.value_in_token / 10 ** decimals;
-              }
-            } else {
-              // cross-chain
               activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
             }
           }
@@ -502,7 +555,6 @@ var extend_expiration = function(bounty_pk, data) {
 };
 
 var show_interest_modal = function() {
-  var self = this;
   var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
@@ -528,9 +580,6 @@ var show_interest_modal = function() {
           issue_message: msg
         }).then(success => {
           if (success) {
-            // $(self).attr('href', '/uninterested');
-            // $(self).find('span').text(gettext('Stop Work'));
-            // $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
             appBounty.fetchBounty();
             modals.bootstrapModal('hide');
 
@@ -579,16 +628,3 @@ const promisify = (inner) =>
       }
     })
   );
-
-// async function waitBlock(txid) {
-//   while (true) {
-//     let receipt = web3.eth.getTransactionReceipt(txid);
-//     if (receipt && receipt.contractAddress) {
-//       console.log("Your contract has been deployed at http://testnet.etherscan.io/address/" + receipt.contractAddress);
-//       console.log("Note that it might take 30 - 90 sceonds for the block to propagate befor it's visible in etherscan.io");
-//       break;
-//     }
-//     console.log("Waiting a mined block to include your contract... currently in block " + web3.eth.blockNumber);
-//     await sleep(4000);
-//   }
-// }
