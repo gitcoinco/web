@@ -94,5 +94,5 @@ pandas
 wiki
 django-bulk-update
 elasticsearch
-Pygments==2.1.3
+Pygments==2.2
 mistune
