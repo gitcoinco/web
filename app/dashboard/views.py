@@ -37,7 +37,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Prefetch, Q
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.template import loader
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -4071,20 +4071,15 @@ def hackathon_registration(request):
             poll = json.loads(poll)
             set_questions = {}
             for entry in poll:
-                try:
-                    question = Question.objects.get(id=int(entry['name']))
-                    option = Option.objects.get(id=int(entry['value']))
+                question = get_object_or_404(Question, id=int(entry['name']))
+                option = get_object_or_404(Option, id=int(entry['value']))
 
-                    try:
-                        Answer.objects.get(user=request.user, question=question, choice=option)
-                    except Answer.DoesNotExist:
-                        Answer.objects.create(user=request.user, question=question, choice=option)
+                Answer.objects.get_or_create(user=request.user, question=question, choice=option)
 
-                    values = set_questions.get(entry['name'], []) or []
-                    values.append(int(entry['value']))
-                    set_questions[entry['name']] = values
-                except Question.DoesNotExist as e:
-                    logger.error(str(e))
+                values = set_questions.get(entry['name'], []) or []
+                values.append(int(entry['value']))
+                set_questions[entry['name']] = values
+
             for (question, choices) in set_questions.items():
                 Answer.objects.exclude(user=request.user, question__id=int(question), choice__in=choices).delete()
 
