@@ -26,6 +26,10 @@
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
+    <!-- Include stylesheet -->
+<link href="https://cdn.quilljs.com/1.3.4/quill.core.css" rel="stylesheet">
+<link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet">
+<link href="https://cdn.quilljs.com/1.3.4/quill.bubble.css" rel="stylesheet">
     <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/profile.css" %}' />
     <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}' />
@@ -37,6 +41,89 @@
     <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'/>
 
     <style type="text/css">
+
+      #post-to-ts {
+        top: 15px;
+      }
+
+      .priorities {
+        background-color: #1E2E42;
+      }
+
+      .text-grey {
+        color: rgba(0,0,0,0.50);
+      }
+
+      .text-white-70 {
+        color: rgba(255,255,255,0.70);
+      }
+
+      #priority-text p {
+        color: rgba(255,255,255,0.70) !important;
+      }
+
+      .suggested_bounties__box {
+        background-color: #EFF3F6;
+      }
+
+      .update-priority-submit {
+        background-color: #F8F8F8;
+      }
+
+      .update-priority {
+        background-color: white;
+      }
+
+      .update-priority img,
+      .priorities img {
+        max-width: 4rem;
+        height: auto;
+      }
+
+      .update-priority-submit .form__label {
+        font-size: 11px;
+        margin-top: 0.8rem;
+        color: #6587AE;
+      }
+
+      .update-priority-submit .form__label::before {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px
+      }
+
+      .priority-container .ql-toolbar.ql-snow,
+      .priority-container .ql-container.ql-snow {
+        border-color: #EFF3F6;
+        border-left-color: white;
+        border-right-color: white;
+        border-bottom: 0px;
+      }
+
+      .priority-container .ql-container {
+        min-height: 5rem;
+      }
+
+      .suggested_bounties h2 {
+        color: rgba(0,0,0,0.70);
+      }
+
+      .suggest-bounty-form,
+      .suggested_bounty {
+        background: white;
+      }
+
+      @media (max-width: 767.98px) {
+        .priority-container .ql-container {
+          min-height: 4rem;
+        }
+
+        .priority-container .ql-toolbar.ql-snow,
+        .priority-container .ql-container.ql-snow {
+          border-color: #EFF3F6;
+        }
+      }
+
       @media only screen and (max-width : 320px) {
         .chatWrapper {
           height: 76vh !important;
@@ -287,6 +374,7 @@
         }
       }
       </style>
+
   </head>
 
   <body class="interior g-font-muli">
@@ -320,6 +408,183 @@
         </div>
         <div class="col-9 body hackathon-explorer">
           <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-4 offset-md-5 px-4" nav-wrapper-class="col-12 nav-tabs" align="center" content-class="col-12 px-4 mt-4 light-blue" class="row">
+            <b-tab class="col-12" title-item-class="navigation">
+              <template v-slot:title>
+                <div class="mt-4">
+                  {% trans "Settings" %}
+                </div>
+              </template>
+              <b-row>
+                <b-col>
+                  <tribe-settings inline-template>
+                    <div class="suggested_bounties">
+                      <div class="suggested_bounties__box {% if is_my_org %}py-5 {% else %} pt-4 pb-5 {% endif %}">
+                        {% if is_my_org %}
+                          <!-- UPDATE PRIORITIES -->
+                          <div class="update-priority rounded row px-0 mx-0 mx-md-auto col-12 col-md-9 col-lg-10">
+                            <div class="d-none d-md-inline col-1 my-auto">
+                              <img class="profile-header__avatar" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" alt="tribe logo"/>
+                            </div>
+                            <div class="col-12 col-md-11 px-0 pr-md-0">
+                              <div class="priority-container">
+                                <div class="editor-container">
+                                  <quill-editor
+                                    ref="quillEditor"
+                                    class="editor"
+                                    v-model="tribe.tribe_description"
+                                    :options="editorOptionDesc"
+                                    @blur="onEditorBlur($event)"
+                                    @focus="onEditorFocus($event)"
+                                    @ready="onEditorReady($event)"
+                                  />
+                                </div>
+                              </div>
+                              <div class="priority-container">
+                                <quill-editor
+                                  ref="quillEditor"
+                                  class="editor"
+                                  v-model="tribe.tribe_priority"
+                                  :options="editorOptionPrio"
+                                  @blur="onEditorBlur($event)"
+                                  @focus="onEditorFocus($event)"
+                                  @ready="onEditorReady($event)"
+                                />
+                              </div>
+                            </div>
+                            <div class="update-priority-submit col-12 pr-md-0">
+                              <div class="form__checkbox d-inline-block">
+                                <input name='postToTS' id='post-to-ts' type="checkbox" />
+                                <label class="form__label" for="postToTS">Post to townsquare</label>
+                              </div>
+
+                              <button type="submit" class="btn btn-sm btn-gc-blue float-right font-smaller-3 my-2 mr-3" @click.prevent="updateTribe(tribe.handle)">
+                                <i class="fas fa-bullhorn mr-2"></i> Update Tribe
+                              </button>
+                            </div>
+                          </div>
+                        {% else %}
+                          <div class="px-5">
+                            <h2 class="font-bigger-1 font-weight-bold pb-2">Suggest a Bounty</h2>
+
+                            <div id="create_bounty_request" class="suggest-bounty-form px-4 pt-2 pb-5 rounded">
+                              <div class="mt-3">
+                                <textarea name="comment" class="form__input font-smaller-1 pt-2" id="comment" rows="4" placeholder="{% trans 'What\'s your idea' %}"></textarea>
+                              </div>
+
+                              <div>
+                                <label class="font-caption letter-spacing text-black-60 text-uppercase" for=githubUrl>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+                                <input name='githubUrl' id="githubUrl" class="form__input font-smaller-1" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
+                              </div>
+
+                              <div id="pricing-section" class="mt-2">
+
+                                <label class="font-smaller-1 letter-spacing text-black-60">{% trans "How much would you be willing to build this for?" %}</label>
+                                <div class="d-flex row mb-2">
+                                  <div class="col-12 col-md-3">
+                                    <div class="form__select2 font-smaller-1">
+                                      <select name='denomination' id='token'></select>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 col-md-3">
+                                    <input name='amount' id='amount' class="form__input font-smaller-1" type="number" value="{{amount|default:'0.01'}}" step="0.001" min="0.001"/>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <button type="submit" class="btn btn-sm btn-outline-gc-blue float-right font-smaller-3 my-2 mr-3" data-createbountyrequest="{{ profile.handle }}">
+                                <i class="far fa-arrow-alt-circle-up mr-1"></i>
+                                <span class="font-weight-semibold">Suggest Bounty</span>
+                              </button>
+                            </div>
+                          </div>
+
+                        {% endif %}
+
+                        {% if suggested_bounties %}
+                          <div class="col-12 suggested_bounties">
+                            <!-- SUGGESTED BOUNTIES -->
+                            <h2 class="mt-5 mb-4 font-bigger-1 font-weight-bold mx-3">
+                              Suggested Bounties
+                            </h2>
+
+                            {% for suggested_bounty in suggested_bounties %}
+                              <div id="{{ suggested_bounty.pk }}" class="row suggested_bounty rounded px-2 py-3 mx-3 mb-4">
+                                <div class="{% if is_my_org %} col-8 {% else %} col-12 {% endif %}">
+                                  <h3 class="font-subheader font-weight-bold">{{ suggested_bounty.title }}</h3>
+                                  <p class="font-caption text-black-60 mb-1">{{ suggested_bounty.comment }}</p>
+                                  <div class="row font-caption">
+                                    <div class="col-12">
+                                      <a href="{{ suggested_bounty.github_url }}" target="_blank">
+                                        <i class="fab fa-github mr-1"></i> View Github Issue
+                                      </a>
+                                      <span class="mx-2 text-grey">
+                                        <i class="far fa-user mr-1"></i>
+                                        {{ suggested_bounty.requested_by }}
+                                      </span>
+                                      <span class="text-grey mr-2">
+                                        <i class="far fa-clock mr-1"></i>
+                                        {{ suggested_bounty.created_on|naturaltime }}
+                                      </span>
+                                      <div class="tag usd my-0">
+                                        <p class="font-smaller-5">
+                                          {{ suggested_bounty.amount }}
+                                          <span>{{ suggested_bounty.token_name }}</span>
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {% if is_my_org %}
+                                  <div class="col-md-4 my-auto text-right">
+                                    <a target="_blank" class="btn btn-sm btn-outline-gc-green font-smaller-4 mx-2" href="{% url 'new_bounty' %}?type=public&url={{ suggested_bounty.github_url }}&invite={{ suggested_bounty.requested_by.pk }}&amount={{ suggested_bounty.amount }}">
+                                      <i class="fas fa-plus-circle mr-1"></i>
+                                      Fund Request
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger font-smaller-4 mx-2"
+                                      data-cancelbountyrequest="{{ suggested_bounty.pk }}"
+                                    >
+                                      <i class="fas fa-times-circle mr-1"></i>
+                                      Cancel Request
+                                  </button>
+                                  </div>
+                                {% endif %}
+                              </div>
+                            {% endfor %}
+                          </div>
+                        {% elif is_my_org %}
+                          <div class="col-12 suggested_bounties">
+                            <h2 class="text-center font-bigger-1 mt-5">
+                              <p class="mb-3 font-bigger-3"><i class="far fa-lightbulb"></i></p>
+                              <span>No Bounties have been suggested</span>
+                              <span class="d-block mt-2">
+                                Update your tribe's priorities to guide contributors
+                              </span>
+                              <span class="d-block mt-2">
+                                to submit issues they'd wanna <strong>#BUDIL</strong>
+                              </span>
+                            </h2>
+                          </div>
+                        {% else %}
+                          <div class="col-12 suggested_bounties">
+                            <h2 class="text-center font-bigger-1 mt-5">
+                              <p class="mb-3 font-bigger-3"><i class="fas fa-tools"></i></p>
+                              <span>No Bounties have been suggested</span>
+                              <span class="d-block mt-2">
+                                Suggest an issue you'd like bountied out to
+                              </span>
+                              <span class="d-block mt-2">
+                                <strong>#BUDIL</strong> to grow {{ profile.handle }}
+                              </span>
+                            </h2>
+                          </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </tribe-settings>
+                </b-col>
+              </b-row>
+            </b-tab>
             <b-tab class="col-12" title-item-class="navigation">
               <template v-slot:title>
                 <div class="mt-4">
@@ -364,105 +629,106 @@
               </template>
               <project-directory v-bind:tribe="tribe.handle" inline-template>
                 <div class="ml-4">
-                <div class="sidebar-container flex-column flex-lg-row">
-                  <transition name="fade">
-                    <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
-                      <div class="pb-4 border-bottom form-group">
-                        <div class="d-flex flex-grow-1" id="search_projects">
-                          <form class="form-inline my-2 flex-fill justify-content-center">
-                            <div class="input-group w-100">
-                              <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                              <div class="input-group-append">
-                                <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
+                  <div class="sidebar-container flex-column flex-lg-row">
+                    <transition name="fade">
+                      <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
+                        <div class="pb-4 border-bottom form-group">
+                          <div class="d-flex flex-grow-1" id="search_projects">
+                            <form class="form-inline my-2 flex-fill justify-content-center">
+                              <div class="input-group w-100">
+                                <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                <div class="input-group-append">
+                                  <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
+                                </div>
                               </div>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
-                      <div v-if="!tribe" class="pb-4 border-bottom form-group">
-                        <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
-                        <div id="project_sponsors" class="form__select2">
-                          <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
-                            <option value="" selected="true">All</option>
-                            <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
-                              [[ option.display_name ]]
-                            </option>
-                          </select2>
-                        </div>
-                      </div>
-                      <div class="g-multiselect pb-4 border-bottom form-group">
-                        <label for="skills" class="font-weight-bold">Member Skills</label>
-                        <div class="form__select2">
-                          <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                            <option disabled value="0">Select one</option>
-                          </select2>
-                        </div>
-                      </div>
-                      <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                      <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                        <span class="font-weight-bold">[[ numProjects ]]</span> projects found
-                      </p>
-                    </nav>
-                  </transition>
-                  <div class="container pt-4" @scroll.passive="onScroll($event)">
-                    <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
-                    <div class="mt-4">
-                    <div v-if="noResults" class="text-center">
-                      <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
-                      <p class="mt-4 font-weight-bold mb-0">No projects found</p>
-                      <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                    </div>
-                    <div class="grid-4">
-                      <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
-                        <div class="card card-project">
-                            <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="tribe.badge" alt="badge" />
-
-                            <div class="card-bg rounded-top" style="">
-                              <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
-                              <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
-                            </div>
-                            <div class="card-body">
-                            <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
-                            <div class="my-2">
-                              <p class="text-left text-muted font-smaller-1 summary">
-                                [[ project.summary ]]
-                              </p>
-                              <div class="text-left">
-                                <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                              </div>
-                            </div>
-
-                            <div class="my-3 mb-2 text-left">
-                              <b class="font-weight-bold font-smaller-3">Team Members</b>
-                              <div class="mt-1">
-                                  <a v-for="profile in project.profiles" :href=`/profile/${tribe.handle}` class="">
-                                    <b-img-lazy :src="tribe.avatar_url" :alt=`"@${tribe.handle}"` :title="tribe.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
-                                  </a>
-                              </div>
-                            </div>
-
-                            <div v-if="project.looking_members || project.message" class="my-3 looking-team">
-                              <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
-                              <p v-if="project.message" class="info-card-desc">
-                                [[ project.message ]]
-                              </p>
-                            </div>
-
-                            <div class="font-smaller-2 mt-4">
-                              <b class="font-weight-bold">Sponsored by</b>
-                              <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
-                              <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
-                            </div>
+                            </form>
                           </div>
+                          <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                            <span class="font-weight-bold">[[ numProjects ]] projects </span> found
+                          </p>
+                        </div>
+                        <div v-if="!tribe" class="pb-4 border-bottom form-group">
+                          <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
+                          <div id="project_sponsors" class="form__select2">
+                            <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
+                              <option value="" selected="true">All</option>
+                              <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
+                                [[ option.display_name ]]
+                              </option>
+                            </select2>
                           </div>
+                        </div>
+                        <div class="g-multiselect pb-4 border-bottom form-group">
+                          <label for="skills" class="font-weight-bold">Member Skills</label>
+                          <div class="form__select2">
+                            <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                              <option disabled value="0">Select one</option>
+                            </select2>
+                          </div>
+                        </div>
+                        <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
+
+                      </nav>
+                    </transition>
+                    <div class="container pt-4" @scroll.passive="onScroll($event)">
+                      <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                      <div class="mt-4">
+                      <div v-if="noResults" class="text-center">
+                        <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
+                        <p class="mt-4 font-weight-bold mb-0">No projects found</p>
+                        <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                       </div>
+                      <div class="grid-4">
+                        <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
+                          <div class="card card-project">
+                              <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="tribe.badge" alt="badge" />
+
+                              <div class="card-bg rounded-top" style="">
+                                <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
+                                <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
+                              </div>
+                              <div class="card-body">
+                              <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+                              <div class="my-2">
+                                <p class="text-left text-muted font-smaller-1 summary">
+                                  [[ project.summary ]]
+                                </p>
+                                <div class="text-left">
+                                  <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+                                  <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+                                </div>
+                              </div>
+
+                              <div class="my-3 mb-2 text-left">
+                                <b class="font-weight-bold font-smaller-3">Team Members</b>
+                                <div class="mt-1">
+                                    <a v-for="profile in project.profiles" :href=`/profile/${tribe.handle}` class="">
+                                      <b-img-lazy :src="tribe.avatar_url" :alt=`"@${tribe.handle}"` :title="tribe.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
+                                    </a>
+                                </div>
+                              </div>
+
+                              <div v-if="project.looking_members || project.message" class="my-3 looking-team">
+                                <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
+                                <p v-if="project.message" class="info-card-desc">
+                                  [[ project.message ]]
+                                </p>
+                              </div>
+
+                              <div class="font-smaller-2 mt-4">
+                                <b class="font-weight-bold">Sponsored by</b>
+                                <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
+                                <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
+                              </div>
+                            </div>
+                            </div>
+                        </div>
+                      </div>
+                      <loading-screen v-if="isLoading"></loading-screen>
                     </div>
-                    <loading-screen v-if="isLoading"></loading-screen>
-                  </div>
+                    </div>
                   </div>
                 </div>
-            </div>
               </project-directory>
             </b-tab>
             <b-tab class="col-12" title-item-class="navigation"lazy>
@@ -480,38 +746,32 @@
                           <div class="d-flex flex-grow-1" id="search">
                             <form class="form-inline my-2 flex-fill justify-content-center">
                               <div class="input-group w-100">
-                                <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                <input class="form-control" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
                                 <div class="input-group-append">
                                   <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchUsers()"> <i class="fas fa-search"></i></button>
                                 </div>
                               </div>
                             </form>
                           </div>
+                          <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                            <span class="font-weight-bold">[[ numUsers ]] Tribes members </span> found
+                          </p>
+                          <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                            Invite all to bounty
+                          </button>
                         </div>
-                        <div class="pb-4 border-bottom form-group">
-                          <label for="persona" class="font-weight-bold">Persona</label>
-                          <div class="form__select2">
-                            <select2 v-model="params.persona" data-minimum-results-for-search="Infinity" class="form-control">
-                              <option value="" selected="true">All</option>
-                              <option value="funder">Funder</option>
-                              <option value="coder">Coder</option>
-                            </select2>
-                          </div>
+                        <div class="col-12 left-ribbon font-body">
+                          {% trans "Filter People" %}
                         </div>
-                        <div class="pb-4 border-bottom form-group">
-                          <label for="leaderboard_rank" class="font-weight-bold">Leaderboard Rank</label>
-                          <div class="form__select2">
-                            <select2 v-model.trim="params.leaderboard_rank" data-tags="true" class="form-control">
-                              <option value="" selected="true">All</option>
-                              <option value="1,5">1,5</option>
-                              <option value="5,10">5,10</option>
-                              <option value="10,15">10,15</option>
-                              <option value="15,20">15,20</option>
-                              <option value="20,25">20,25</option>
-                            </select2>
-                          </div>
-                        </div>
-                        <div  v-if="!tribe" class="g-multiselect pb-4 border-bottom form-group">
+                        <b-form-group>
+                          <b-form-radio-group
+                            v-model="params.user_filter"
+                            :options="userFilter.options"
+                            name="people-filter"
+                            stacked
+                          ></b-form-radio-group>
+                        </b-form-group>
+                        <div class="g-multiselect pb-4 border-bottom form-group">
                           <label for="skills" class="font-weight-bold">Skills</label>
                           <div class="form__select2">
                             <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
@@ -519,52 +779,7 @@
                             </select2>
                           </div>
                         </div>
-                        <div v-if="!tribe" class="pb-4 border-bottom form-group">
-                          <label for="bounty-completed" class="font-weight-bold">Bounties Completed</label>
-                          <div class="form__select2">
-                            <select2 v-model.trim="params.bounties_completed" data-tags="true" class="form-control">
-                              <option value="" selected="true">All</option>
-                              <option value="0,5">0,5</option>
-                              <option value="5,10">5,10</option>
-                              <option value="10,15">10,15</option>
-                              <option value="15,20">15,20</option>
-                            </select2>
-                          </div>
-                        </div>
-                        <div v-if="!tribe" class="pb-2 border-bottom form-group">
-                          <div class="w-100 p-2">
-                            <fieldset class="">
-                              <label for="" class="font-weight-bold">Star Rating</label>
-                              <div class="rating font-smaller-4">
-                                <input type="radio" id="rating-5" name="rating" value="5" v-model="params.rating" />
-                                <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
-                                <input type="radio" id="rating-4" name="rating" value="4" v-model="params.rating" />
-                                <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
-                                <input type="radio" id="rating-3" name="rating" value="3" v-model="params.rating" />
-                                <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
-                                <input type="radio" id="rating-2" name="rating" value="2" v-model="params.rating" />
-                                <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
-                                <input type="radio" id="rating-1" name="rating" value="1" v-model="params.rating" />
-                                <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
-                              </div>
-                            </fieldset>
-                          </div>
-                        </div>
-                        <div v-if="!tribe" class="g-multiselect pb-4 border-bottom form-group">
-                          <label for="organisations" class="font-weight-bold">Tribe</label>
-                          <div class="font-smaller">
-                            <input v-model.lazy="params.organisation" data-placeholder="e.g. Gitcoin" data-tags="true" class="form-control">
-                          </div>
-                        </div>
                         <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
-                        {% if is_staff %}
-                          <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                            <span class="font-weight-bold">[[ numUsers ]]</span> users found
-                          </p>
-                          <button v-if="!tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
-                            Invite all to bounty
-                          </button>
-                        {% endif %}
                       </nav>
                     </transition>
                     <div class="container pt-4" @scroll.passive="onScroll($event)">
@@ -924,6 +1139,8 @@
       </select>
     </script>
     <script src='{% static "v2/js/vue-components.js" %}'></script>
+    <script defer src='https://cdn.quilljs.com/1.3.6/quill.js'></script>
+    <script defer src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
     {{init_data|json_script:"init-data"}}
     {{currentProfile|json_script:"current-profile"}}
     <script>

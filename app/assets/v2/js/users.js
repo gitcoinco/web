@@ -47,7 +47,7 @@ Vue.mixin({
       if (vm.tribeFilter) {
         vm.params.tribe = vm.tribeFilter;
       }
-      console.log(vm.params);
+
 
       let searchParams = new URLSearchParams(vm.params);
 
@@ -267,9 +267,17 @@ Vue = Vue.extend({
 
 Vue.component('user-directory', {
   delimiters: [ '[[', ']]' ],
-  props: [ 'persona', 'tribe' ],
+  props: ['tribe'],
   data: function() {
     return {
+      userFilter: {
+        options: [
+          { text: 'All', value: 'all' },
+          { text: 'Tribe Owners', value: 'owners' },
+          { text: 'Tribe Members', value: 'members' },
+          { text: 'Tribe Hackers', value: 'hackers' }
+        ]
+      },
       tribeFilter: this.tribe || '',
       users,
       usersPage,
@@ -281,7 +289,9 @@ Vue.component('user-directory', {
       chatURL: document.chatURL || 'https://chat.gitcoin.co/',
       searchTerm: null,
       bottom: false,
-      params: {},
+      params: {
+        'user_filter': 'all'
+      },
       funderBounties: [],
       currentBounty: undefined,
       contributorInvite: undefined,

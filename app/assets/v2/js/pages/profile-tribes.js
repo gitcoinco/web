@@ -52,7 +52,7 @@ const loadDynamicScript = (callback, url, id) => {
         }
       }
     });
-    Vue.use(VueQuillEditor)
+    Vue.use(VueQuillEditor);
     window.tribesApp = new Vue({
       delimiters: [ '[[', ']]' ],
       el: '#tribes-vue-app',
@@ -101,14 +101,37 @@ const loadDynamicScript = (callback, url, id) => {
         console.log('we mounted');
       },
       data: function() {
-        const data = $.extend({
+        return $.extend({
           chatURL: document.chatURL || 'https://chat.gitcoin.co/',
           activePanel: document.activePanel,
           tribe: document.currentProfile
-        }, document.initData);
-
-        console.log(data);
-        return data;
+        }, document.initData, {
+          editorOptionPrio: {
+            modules: {
+              toolbar: [
+                [ 'bold', 'italic', 'underline' ],
+                [{ 'align': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [ 'link', 'code-block' ],
+                ['clean']
+              ]
+            },
+            theme: 'snow',
+            placeholder: 'List out your tribe priorities to let contributors to know what they can request to work on'
+          },
+          editorOptionDesc: {
+            modules: {
+              toolbar: [
+                [ 'bold', 'italic', 'underline' ],
+                [{ 'align': [] }],
+                [ 'link', 'code-block' ],
+                ['clean']
+              ]
+            },
+            theme: 'snow',
+            placeholder: 'Describe your tribe so that people can follow you.'
+          }
+        });
       }
     });
   });

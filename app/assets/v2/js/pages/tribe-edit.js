@@ -1,64 +1,6 @@
 let quill;
 let quill_priority;
 
-$('#edit-btn').on('click', function() {
-
-  const activateQuill = () => {
-    if (quill) {
-      return quill.isEnabled() ? destroyQuill() : rebuildQuill();
-    }
-    quill = new Quill('#description-tribes', {
-      modules: {
-        toolbar: [
-          [{ header: [ 1, 2, false ] }],
-          [ 'bold', 'italic', 'underline' ],
-          [{ 'align': [] }],
-          [ 'link', 'image', 'code-block' ],
-          ['clean']
-        ]
-      },
-      theme: 'snow',
-      placeholder: 'Compose an epic description for your Tribe...'
-    });
-    $('#save-description-btn').removeClass('d-none');
-    $('#edit-btn i').removeClass('fa-edit');
-    $('#edit-btn i').addClass('fa-times');
-    $('#edit-btn span').text('Cancel');
-    $('#edit-btn').addClass('btn-gc-pink');
-    return quill;
-  };
-
-  if (!document.getElementById('quill-js')) {
-    const style = document.createElement('link');
-
-    style.href = '//cdn.quilljs.com/1.3.6/quill.snow.css';
-    style.type = 'text/css';
-    style.rel = 'stylesheet';
-    document.getElementsByTagName('head')[0].appendChild(style);
-  }
-  loadDynamicScript(activateQuill, 'https://cdn.quilljs.com/1.3.6/quill.js', 'quill-js');
-
-});
-
-const loadDynamicScript = (callback, url, id) => {
-  const existingScript = document.getElementById(id);
-
-  if (!existingScript) {
-    const script = document.createElement('script');
-
-    script.src = url;
-    script.id = id;
-    document.body.appendChild(script);
-
-    script.onload = () => {
-      if (callback)
-        callback();
-    };
-  }
-
-  if (existingScript && callback)
-    callback();
-};
 
 $('[data-savetribe]').on('click', function() {
   const tribe = $(this).data('savetribe');
@@ -136,7 +78,7 @@ if ($('#edit-tribe_priority').length) {
     quill_priority = new Quill('#edit-tribe_priority', {
       modules: {
         toolbar: [
-          [ 'bold', 'italic', 'underline' ],
+          [ 'bold', 'italic', 'underline', 'bullets' ],
           [{ 'align': [] }],
           [ 'link', 'code-block' ],
           ['clean']
@@ -158,7 +100,44 @@ if ($('#edit-tribe_priority').length) {
 
   loadDynamicScript(activateQuill, 'https://cdn.quilljs.com/1.3.6/quill.js', 'quill-js');
 }
+if ($('#description-tribes').length) {
 
+  const activateQuill = () => {
+    if (quill) {
+      return quill.isEnabled() ? destroyQuill() : rebuildQuill();
+    }
+    quill = new Quill('#description-tribes', {
+      modules: {
+        toolbar: [
+          [{ header: [ 1, 2, false ] }],
+          [ 'bold', 'italic', 'underline' ],
+          [{ 'align': [] }],
+          [ 'link', 'image', 'code-block' ],
+          ['clean']
+        ]
+      },
+      theme: 'snow',
+      placeholder: 'Compose an epic description for your Tribe...'
+    });
+    $('#save-description-btn').removeClass('d-none');
+    $('#edit-btn i').removeClass('fa-edit');
+    $('#edit-btn i').addClass('fa-times');
+    $('#edit-btn span').text('Cancel');
+    $('#edit-btn').addClass('btn-gc-pink');
+    return quill;
+  };
+
+  if (!document.getElementById('quill-js')) {
+    const style = document.createElement('link');
+
+    style.href = '//cdn.quilljs.com/1.3.6/quill.snow.css';
+    style.type = 'text/css';
+    style.rel = 'stylesheet';
+    document.getElementsByTagName('head')[0].appendChild(style);
+  }
+  loadDynamicScript(activateQuill, 'https://cdn.quilljs.com/1.3.6/quill.js', 'quill-js');
+
+}
 tokens(document.web3network).forEach(function(ele) {
   let option = document.createElement('option');
 

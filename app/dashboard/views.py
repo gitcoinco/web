@@ -984,6 +984,7 @@ def users_fetch(request):
     organisation = request.GET.get('organisation', '')
     tribe = request.GET.get('tribe', '')
     hackathon_id = request.GET.get('hackathon', '')
+    user_filter = request.GET.get('user_filter', '')
 
     user_id = request.GET.get('user', None)
     if user_id:
@@ -1012,10 +1013,19 @@ def users_fetch(request):
         profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q))
 
     if tribe:
-        # filter for only profiles that are following/members of the tribe
-        # tribe_profile = Profile.objects.get(handle=tribe)
-        # if tribe_profile:
-        profile_list = profile_list.filter(Q(follower__org__handle__in=[tribe]))
+
+        profile_list = profile_list.filter(Q(follower__org__handle__in=[tribe]) | Q(organizations_fk__handle__in=[tribe]))
+
+        if user_filter and user_filter != 'all':
+            if user_filter == 'owners':
+                profile_list = profile_list.filter(Q(organizations_fk__handle__in=[tribe]))
+
+            if user_filter == 'members':
+                profile_list = profile_list.exclude(Q(organizations_fk__handle__in=[tribe]))
+
+            if user_filter == 'hackers':
+                profile_list = profile_list.filter(Q(project_profiles__hackathon__sponsor_profiles__handle__in=[tribe]) | Q(hackathon_registration__hackathon__sponsor_profiles__handle__in=[tribe]))
+
 
     show_banner = None
 
@@ -2860,6 +2870,7 @@ def profile(request, handle, tab=None):
         context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
         context['is_on_tribe'] = json.dumps(True if len(context['is_on_tribe']) > 0 else False)
+        context['is_my_org'] = True
         context['profile_handle'] = profile.handle
 
         return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
