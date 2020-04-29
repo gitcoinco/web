@@ -115,12 +115,12 @@ $(document).ready(function() {
       localStorage.toggled = '';
     }
 
-});
+  });
 
- if (!$('body').hasClass('dark', false)) {
+  if (!$('body').hasClass('dark', false)) {
     $('#dopeSwitch').prop('checked', false);
   } else {
-     $('#dopeSwitch').prop('checked', true);
+    $('#dopeSwitch').prop('checked', true);
   }
 
   // toggles the daily email sender
