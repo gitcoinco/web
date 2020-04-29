@@ -19,6 +19,7 @@
   --gc-grey: #fafafa;
   --gc-blue-grey: #f2f6f9;
   --gc-dark-grey: #868789;
+  --gc-medium-dark-gray: #666666;
   --gc-darker-grey: #3d3d3d;
 
   --text-light: #D8D8D8;
@@ -55,4 +56,8 @@
 
 .text-highlight-yellow {
   color: var(--gc-yellow);
+}
+
+.text-medium-dark-grey {
+  color: var(--gc-medium-dark-gray);
 }
