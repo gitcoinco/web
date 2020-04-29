@@ -52,7 +52,7 @@
   })(jQuery)
 </script>
 <script type="text/x-template" id="townsquare-activity-template">
-  <div class="box bg-white d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
+  <div class="box d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
   <template v-if='row.activity_type == "new_bounty"'>
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
       <b>New Bounty</b>
@@ -435,9 +435,7 @@
   </div>
   {% endif %}
     <div class="activity_comments">
-      <div class="comment_container">
-
-      </div>
+      <div class="comment_container"></div>
     </div>
 </div>
 

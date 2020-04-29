@@ -26,8 +26,10 @@ html {
   --text-dark: var(--gc-black);
 
   --bg-shade-0: white;
-  --bg-shade-1: white;
+  --bg-shade-1: #EFF3F6;
   --bg-shade-2: #5f5c74;
+  --bg-activity: white;
+  --bg-comment-container: var(--bg-shade-1);
 
   --main-bg: #eff3f6;
   --form-input-bg: white;
@@ -63,19 +65,25 @@ html.dark-mode {
   --gc-blue-grey: #f2f6f9;
   --gc-dark-grey: #868789;
   --gc-darker-grey: #3d3d3d;
+  --gc-medium-dark-gray: #bbbbbb;
+  --gc-darker-grey: #3d3d3d;
 
   --text-light: #D8D8D8;
   --text-dark: var(--gc-black);
 
-  --bg-shade-0: #0a0428;
-  --bg-shade-1: #221d3e;
-  --bg-shade-2: #5f5c74;
+  --bg-shade-0: #221D3E;
+  --bg-shade-1: #373351;
+  --bg-shade-2: #5F5C74;
+  --bg-activity: var(--bg-shade-1);
+  --bg-comment-container: var(--bg-shade-0);
+
+
 
   --main-bg: #0a0428;
-  --form-input-bg: #221d3e;
+  --form-input-bg: #221D3E;
   --form-input-color: white;
   --button-radio-icon-color: white;
-  --link-color: white;
+  --link-color: #91b5ff;
   --townsquare-link-color: white;
   --townsquare-block-header-color: white;
   --active-button-border-color: white;
