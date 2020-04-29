@@ -2612,6 +2612,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         pass
     elif tab == 'tribe':
         context['team'] = profile.team_or_none_if_timeout
+    elif tab == 'follow':
+        pass
     elif tab == 'people':
         if profile.is_org:
             context['team'] = profile.team_or_none_if_timeout
@@ -2732,7 +2734,7 @@ def profile(request, handle, tab=None):
     disable_cache = False
 
     # make sure tab param is correct
-    all_tabs = ['active', 'ratings', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
+    all_tabs = ['active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2766,6 +2768,7 @@ def profile(request, handle, tab=None):
         context = {
             'hidden': True,
             'ratings': range(0,5),
+            'followers': TribeMember.objects.filter(org=request.user.profile),
             'profile': {
                 'handle': handle,
                 'avatar_url': f"/dynamic/avatar/Self",
@@ -2801,6 +2804,7 @@ def profile(request, handle, tab=None):
 
     context['is_my_profile'] = is_my_profile
     context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
+    context['show_follow_tab'] = True
     context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
@@ -2813,6 +2817,9 @@ def profile(request, handle, tab=None):
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
     context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
+    context['followers'] = TribeMember.objects.filter(org=request.user.profile)
+    context['following'] = TribeMember.objects.filter(profile=request.user.profile)
+    context['foltab'] = request.GET.get('sub', 'followers')
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
