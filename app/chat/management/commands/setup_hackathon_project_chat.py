@@ -37,7 +37,7 @@ class Command(BaseCommand):
             projects_to_setup = HackathonProject.objects.filter(
                 hackathon__start_date__lte=today,
                 hackathon__end_date__gte=today
-            ).select_related('project_profiles')
+            )
             print("Projects to Setup **************")
             print(projects_to_setup)
             hackathon_admins = Profile.objects.filter(user__groups__name='hackathon-admin')
