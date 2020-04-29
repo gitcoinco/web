@@ -47,7 +47,7 @@ class Command(BaseCommand):
             for bounty in bounties_to_sync:
                 profiles_to_connect = []
                 try:
-                    funder_profile = Profile.objects.get(handle__iexact=bounty.bounty_owner_github_username.lower())
+                    funder_profile = Profile.objects.get(handle=bounty.bounty_owner_github_username.lower())
 
                     if funder_profile:
                         if funder_profile.chat_id:

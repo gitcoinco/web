@@ -1,3 +1,7 @@
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+});
+
 $('document').ready(function() {
 
   $('#comment').bind('input propertychange', function() {

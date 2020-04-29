@@ -35,11 +35,11 @@ logger = logging.getLogger(__name__)
 def chat_presence(request):
     """Sets user presence on mattermost."""
     if not request.user.is_authenticated:
-        raise Http404
+        return JsonResponse({'status': 'OK'})
 
     profile = request.user.profile
     if not profile.chat_id:
-        raise Http404
+        return JsonResponse({'status': 'OK'})
 
     # setup driver
     driver = get_driver()
@@ -60,6 +60,7 @@ def chat_presence(request):
         # so that get_user_prsence can clean it up later
         redis = RedisService().redis
         redis.set(profile.chat_id, timezone.now().timestamp())
+        redis.set(f"chat:{profile.chat_id}", new_status)
 
     return JsonResponse({'status': 'OK'})
 

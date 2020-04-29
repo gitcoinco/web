@@ -168,6 +168,7 @@ const init = () => {
 
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {
+          indicateMetamaskPopup();
           SubscriptionContract.deploy({
             data: compiledSubscription.bytecode,
             arguments: args
@@ -185,9 +186,17 @@ const init = () => {
             let file = $('#img-project')[0].files[0];
             let formData = new FormData();
 
+            if (!$('#contract_owner_address').val()) {
+              web3.eth.getAccounts(function(err, accounts) {
+                $('#contract_owner_address').val(accounts[0]);
+              });
+            }
+
             formData.append('input_image', file);
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('title', $('#input_title').val());
+            formData.append('handle1', $('#input-handle1').val());
+            formData.append('handle2', $('#input-handle2').val());
             formData.append('description', description.getText());
             formData.append('description_rich', JSON.stringify(description.getContents()));
             formData.append('reference_url', $('#input-url').val());
@@ -195,7 +204,6 @@ const init = () => {
             formData.append('contract_owner_address', $('#contract_owner_address').val());
             formData.append('token_address', $('#token_address').val());
             formData.append('token_symbol', $('#token_symbol').val());
-            formData.append('amount_goal', $('#amount_goal').val());
             formData.append('contract_version', $('#contract_version').val());
             formData.append('transaction_hash', $('#transaction_hash').val());
             formData.append('network', $('#network').val());

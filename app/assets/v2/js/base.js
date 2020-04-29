@@ -472,7 +472,7 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
 
     const set_as_active = () => {
       $.ajax({
-        url: 'api/v0.1/chat/presence',
+        url: '/api/v0.1/chat/presence',
         dataType: 'json',
         success: (response) => {
           console.log(response);
@@ -487,7 +487,7 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
     setInterval(() => {
       checkChatNotifications();
       set_as_active();
-    }, 15000);
+    }, document.contxt.chat_persistence_frequency);
     checkChatNotifications();
     set_as_active();
   })(jQuery);

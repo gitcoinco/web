@@ -60,6 +60,11 @@
 
                   <div class="col-12 my-auto col-lg-6 text-center text-md-left">
                     <h1 class="font-header font-weight-semibold mb-lg-0">{{title}}</h1>
+                    {% if last_update %}
+                    <p class="mt-2">Last update: {{last_update | naturaltime}}
+                      <BR>
+                      Next update: {{next_update | naturaltime}}
+                    {% endif %}
                   </div>
                   <div class="col-12 col-sm-6 col-lg-3 mx-auto my-2 my-md-0 text-center text-sm-right text-lg-left">
                   </div>

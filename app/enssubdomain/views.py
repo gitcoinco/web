@@ -62,7 +62,7 @@ def handle_default_response(request, github_handle):
 
 
 def handle_subdomain_exists(request, github_handle):
-    profile = Profile.objects.filter(handle=github_handle).first()
+    profile = Profile.objects.filter(handle=github_handle.lower()).first()
     last_request = ENSSubdomainRegistration.objects.filter(profile=profile).latest('created_on')
     request_reset_time = timezone.now() - datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS)
     if last_request.pending:
@@ -207,7 +207,7 @@ def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier
     nonce += 1
     txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
 
-    profile = Profile.objects.filter(handle__iexact=github_handle).first()
+    profile = Profile.objects.filter(handle=github_handle.lower()).first()
     return ENSSubdomainRegistration.objects.create(
         profile=profile,
         subdomain_wallet_address=signer,
@@ -255,7 +255,7 @@ def handle_subdomain_post_request(request, github_handle):
 
         gas_price = get_gas_price()
         gas_cost_eth = (RESOLVER_GAS_COST + OWNER_GAS_COST + SET_ADDRESS_GAS_COST) * gas_price / 10**18
-        profile = Profile.objects.filter(handle=github_handle).first()
+        profile = Profile.objects.filter(handle=github_handle.lower()).first()
         if not txn_hash_1 or not txn_hash_2 or not txn_hash_3:
             return JsonResponse({'success': False, 'msg': _('Your ENS request has failed. Please try again.')})
         ENSSubdomainRegistration.objects.create(

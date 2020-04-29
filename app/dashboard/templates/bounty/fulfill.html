@@ -30,7 +30,7 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    <div class="container-fluid submit_bounty_content">
+    <div class="container-fluid px-0 submit_bounty_content">
       <div class="row no-gutters metamask-banner">
         <div class="col-12">
           {% include 'shared/no_issue_error.html' with page='fulfill_bounty' %}
@@ -85,8 +85,8 @@
                   <div class="mt-2">
                     <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
                     {% if is_bounties_network %}
-                      <span class="font-weight-semibold" onclick="fetchFromMetamask()" style="cursor: pointer; color: grey; font-size: 10px;">
-                        [ sync with metamask ]
+                      <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
+                        [ sync with web3 wallet ]
                       </span>
                     {% endif %}
                     <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"

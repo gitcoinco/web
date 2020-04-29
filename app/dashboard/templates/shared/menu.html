@@ -29,7 +29,9 @@
 </div>
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
   <nav class="navbar-nav mx-auto gc-megamenu">
-    <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Home" %}</a>
+    <a class="nav-link {% if '/landing' in request.path %} selected {% endif %} interior" href="/landing">{% trans "Home" %}</a>
+
+    <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
 
       <li class="nav-item dropdown">
         <a class="nav-link {% if '/chat' in request.path %}selected{% endif %}  dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -193,6 +195,11 @@
             </ul>
             <ul class="col-md-3 col-lg-2 list-unstyled">
               <li>
+                <a class="dropdown-item" href="https://gitcoin.co/wiki/wiki-code-conduct/">
+                  {% trans "Code of Conduct" %}
+                </a>
+              </li>
+              <li>
                 <a class="dropdown-item" href="{% url "activity" %}">
                   {% trans "Activity Feed" %}
                 </a>
@@ -204,7 +211,7 @@
               </li>
               <li>
                 <a class="dropdown-item" href="{% url "users_directory" %}?persona=tribe">
-                  {% trans "Org Tribes" %}
+                  {% trans "Tribes" %}
                 </a>
               </li>
             </ul>
@@ -276,7 +283,7 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="/wiki/help">
+                <a class="dropdown-item" href="/wiki">
                   {% trans "Help" %}
                 </a>
               </li>
@@ -311,7 +318,7 @@
                   <img src="{{post.jetpack_featured_media_url}}" width="100" alt="" class="mw-100">
                 </div>
                 <a class="media-body text-reset" href="{{post.link}}">
-                  <b>{{post.title.rendered}}</b>
+                  <b>{{post.title.rendered | safe}}</b>
                   {{post.excerpt.rendered |truncatechars_html:150|safe}}
                 </a>
               </li>

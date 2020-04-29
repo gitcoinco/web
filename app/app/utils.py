@@ -1,6 +1,8 @@
 import email
+import functools
 import imaplib
 import logging
+import multiprocessing.pool
 import os
 import re
 import time
@@ -205,7 +207,7 @@ def sync_profile(handle, user=None, hide_profile=True):
 
                     try:
                         from chat.tasks import associate_chat_to_profile
-                        created, profile = associate_chat_to_profile(profile)
+                        # created, profile = associate_chat_to_profile(profile)
 
                     except Exception as e:
                         logger.error(str(e))
@@ -240,8 +242,9 @@ def sync_profile(handle, user=None, hide_profile=True):
         if not profile_exists:
             defaults['hide_profile'] = hide_profile
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
-        access_token = profile.user.social_auth.filter(provider='github').latest('pk').access_token
-        orgs = get_user(handle, '/orgs', auth=(profile.handle, access_token))
+        latest_obj = profile.user.social_auth.filter(provider='github').latest('pk') if profile.user else None
+        access_token = latest_obj.access_token if latest_obj else None
+        orgs = get_user(handle, '/orgs', auth=(profile.handle, access_token)) if access_token else []
         profile.organizations = [ele['login'] for ele in orgs if ele and type(ele) is dict] if orgs else []
         print("Profile:", profile, "- created" if created else "- updated")
         keywords = []
@@ -373,6 +376,25 @@ def handle_location_request(request):
     return geolocation_data, ip_address
 
 
+geoIPobject = None
+geoIPCountryobject = None
+
+
+def get_geoIP_singleton():
+    global geoIPobject
+    if not geoIPobject:
+        geoIPobject = GeoIP2()
+    return geoIPobject
+
+
+def get_geoIP_country_singleton():
+    global geoIPCountryobject
+    db = f'{settings.GEOIP_PATH}GeoLite2-Country.mmdb'
+    if not geoIPCountryobject:
+        geoIPCountryobject = geoip2.database.Reader(db)
+    return geoIPCountryobject
+
+
 def get_location_from_ip(ip_address):
     """Get the location associated with the provided IP address.
 
@@ -388,7 +410,7 @@ def get_location_from_ip(ip_address):
         return city
 
     try:
-        geo = GeoIP2()
+        geo = get_geoIP_singleton()
         try:
             city = geo.city(ip_address)
         except AddressNotFoundError:
@@ -398,17 +420,15 @@ def get_location_from_ip(ip_address):
     return city
 
 
-def get_country_from_ip(ip_address, db=None):
+def get_country_from_ip(ip_address):
     """Get the user's country information from the provided IP address."""
     country = {}
-    if db is None:
-        db = f'{settings.GEOIP_PATH}GeoLite2-Country.mmdb'
 
     if not ip_address:
         return country
 
     try:
-        reader = geoip2.database.Reader(db)
+        reader = get_geoIP_country_singleton()
         country = reader.country(ip_address)
     except AddressNotFoundError:
         pass
@@ -490,3 +510,22 @@ def get_profiles_from_text(text):
     username_pattern = re.compile(r'@(\S+)')
     mentioned_usernames = re.findall(username_pattern, text)
     return Profile.objects.filter(handle__in=mentioned_usernames).distinct()
+
+
+def timeout(max_timeout):
+    """Timeout decorator, parameter in seconds."""
+
+    def timeout_decorator(item):
+        """Wrap the original function."""
+
+        @functools.wraps(item)
+        def func_wrapper(*args, **kwargs):
+            """Closure for function."""
+            pool = multiprocessing.pool.ThreadPool(processes=1)
+            async_result = pool.apply_async(item, args, kwargs)
+            # raises a TimeoutError if execution exceeds max_timeout
+            return async_result.get(max_timeout)
+
+        return func_wrapper
+
+    return timeout_decorator

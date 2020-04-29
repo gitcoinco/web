@@ -28,7 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Subquery
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -43,10 +43,9 @@ from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants, Tip
 from dashboard.notifications import amount_usdt_open_work, open_bounties
+from dashboard.tasks import grant_update_email_task
 from economy.models import Token
-from marketing.mails import (
-    grant_update_email, mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email,
-)
+from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -220,126 +219,6 @@ def index(request):
     return TemplateResponse(request, 'home/index.html', context)
 
 
-@staff_member_required
-def pricing(request):
-
-    plans= [
-        {
-            'type': 'basic',
-            'img': 'v2/images/pricing/basic.svg',
-            'fee': 10,
-            'features': [
-                '1 free <a href="/kudos">Kudos</a>',
-                'Community Support'
-            ],
-            'features_na': [
-                'Job Board Access',
-                'Contributor Stats',
-                'Multi-Seg Wallet',
-                'Featured Bounties',
-                'Job Listing'
-            ]
-        },
-        {
-            'type': 'pro',
-            'img': 'v2/images/pricing/pro.svg',
-            'price': 40,
-            'features': [
-                '5 Free <a href="/kudos">Kudos</a> / mo',
-                'Community Support',
-                'Job Board - Limited',
-                'Contributor Stats'
-            ],
-            'features_na': [
-                'Multi-Seg Wallet',
-                'Featured Bounties',
-                'Job Listings'
-            ]
-        },
-        {
-            'type': 'max',
-            'img': 'v2/images/pricing/max.svg',
-            'price': 99,
-            'features': [
-                '5 Free <a href="/kudos">Kudos</a> / mo',
-                'Community Support',
-                'Job Board Access',
-                'Contributor Stats',
-                'Multi-Sig Wallet',
-                '5 Featured Bounties',
-                '5 Job Listings'
-            ]
-        }
-    ]
-
-    companies = [
-        {
-            'name': 'Market Protocol',
-            'img': 'v2/images/project_logos/market.png'
-        },
-        {
-            'name': 'Consensys',
-            'img': 'v2/images/consensys.svg'
-        },
-        {
-            'name': 'Metamask',
-            'img': 'v2/images/project_logos/metamask.png'
-        },
-        {
-            'name': 'Ethereum Foundation',
-            'img': 'v2/images/project_logos/eth.png'
-        },
-        {
-            'name': 'Truffle',
-            'img': 'v2/images/project_logos/truffle.png'
-        },
-    ]
-
-    context = {
-        'plans': plans,
-        'companies': companies
-    }
-
-    return TemplateResponse(request, 'pricing/plans.html', context)
-
-
-@staff_member_required
-def subscribe(request):
-
-    if request.POST:
-        return TemplateResponse(request, 'pricing/subscribe.html', {})
-
-    from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
-
-    plan = {
-        'type': 'pro',
-        'img': 'v2/images/pricing/sub_pro.svg',
-        'price': 40
-    }
-
-    if request.GET:
-        if 'plan' in request.GET and request.GET['plan'] == 'max':
-            plan = {
-                'type': 'max',
-                'img': 'v2/images/pricing/sub_max.svg',
-                'price': 99
-            }
-        if 'pack' in request.GET and request.GET['pack'] == 'annual':
-            plan['price'] = plan['price'] - plan['price'] / 10
-
-    context = {
-        'plan': plan,
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-    }
-    return TemplateResponse(request, 'pricing/subscribe.html', context)
-
-
 def funder_bounties_redirect(request):
     return redirect(funder_bounties)
 
@@ -406,6 +285,7 @@ def funder_bounties(request):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'bounties_funder',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png')),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
@@ -551,6 +431,7 @@ def contributor_bounties(request, tech_stack):
 
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png')),
         'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -619,12 +500,9 @@ def how_it_works(request, work_type):
     return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
-@cached_view_as(Profile.objects.hidden())
 def robotstxt(request):
-    hidden_profiles = Profile.objects.hidden()
     context = {
         'settings': settings,
-        'hidden_profiles': hidden_profiles,
     }
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
@@ -1009,6 +887,26 @@ def products(request):
     """Render the Products response."""
     products = [
         {
+            'name': 'Town Square',
+            'heading': _("A Web3-enabled social networking bazaar."),
+            'description': _("Gitcoin offers social features that uses mechanism design create a community that #GivesFirst."),
+            'link': 'https://gitcoin.co/townsquare',
+            'img': static('v2/images/products/social.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of posts per day',
+        },
+        {
+            'name': 'Chat',
+            'heading': _("Reach your favorite Gitcoiner's in realtime.."),
+            'description': _("Gitcoin Chat is an enterprise-grade solution to connect with your favorite Gitcoiners in realtime.  Download the mobile apps to stay connected on the go!"),
+            'link': 'https://gitcoin.co/chat/landing',
+            'img': static('v2/images/products/chat.png'),
+            'logo': static('v2/images/helmet.svg'),
+            'service_level': '',
+            'traction': '100s of DAUs',
+        },
+        {
             'name': 'hackathons',
             'heading': _("Hack with the best companies in web3."),
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
@@ -1155,10 +1053,15 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
     relevant_grants = []
     if what == 'tribes':
         relevant_profiles = get_my_earnings_counter_profiles(user.profile.pk) if is_auth else []
+    elif what == 'all_grants':
+        activities = activities.filter(grant__isnull=False)
     elif what == 'grants':
         relevant_grants = get_my_grants(user.profile) if is_auth else []
     elif what == 'my_threads' and is_auth:
         activities = user.profile.subscribed_threads.all().order_by('-created') if is_auth else []
+    elif what == 'my_favorites' and is_auth:
+        favorites = user.favorites.all().values_list('activity_id')
+        activities = Activity.objects.filter(id__in=Subquery(favorites)).order_by('-created')
     elif 'keyword-' in what:
         keyword = what.split('-')[1]
         relevant_profiles = Profile.objects.filter(keywords__icontains=keyword)
@@ -1174,8 +1077,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         activities = activities.filter(keyword_filter | base_filter)
     elif 'tribe:' in what:
         key = what.split(':')[1]
-        profile_filter = Q(profile__handle=key)
-        other_profile_filter = Q(other_profile__handle=key)
+        profile_filter = Q(profile__handle=key.lower())
+        other_profile_filter = Q(other_profile__handle=key.lower())
         keyword_filter = Q(metadata__icontains=key)
         activities = activities.filter(keyword_filter | profile_filter | other_profile_filter)
     elif 'activity:' in what:
@@ -1188,7 +1091,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
                 activities = Activity.objects.none()
     elif 'hackathon:' in what:
         pk = what.split(':')[1]
-        activities = activities.filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
+        activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
@@ -1268,7 +1171,9 @@ def activity(request):
 
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
 def create_status_update(request):
+    issue_re = re.compile(r'^(?:https?://)?(?:github\.com)/(?:[\w,\-,\_]+)/(?:[\w,\-,\_]+)/issues/(?:[\d]+)')
     response = {}
+
     if request.POST:
         profile = request.user.profile
         title = request.POST.get('data')
@@ -1285,6 +1190,7 @@ def create_status_update(request):
             'metadata': {
                 'title': title,
                 'ask': request.POST.get('ask'),
+                'fund_able': provider and issue_re.match(provider) != None,
                 'resource': {
                     'type': resource,
                     'provider': provider,
@@ -1317,7 +1223,11 @@ def create_status_update(request):
                 key = f"{key}_id"
                 kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
-        
+
+        if request.POST.get('has_video'):
+            kwargs['metadata']['video'] = True
+            kwargs['metadata']['gfx'] = request.POST.get('video_gfx')
+
         if request.POST.get('option1'):
             poll_choices = []
             for i in range(1, 5):
@@ -1338,7 +1248,7 @@ def create_status_update(request):
             if key == 'hackathon':
                 kwargs['hackathonevent'] = HackathonEvent.objects.get(pk=result)
             if key == 'tribe':
-                kwargs['other_profile'] = Profile.objects.get(handle__iexact=result)
+                kwargs['other_profile'] = Profile.objects.get(handle=result.lower())
 
         try:
             activity = Activity.objects.create(**kwargs)
@@ -1351,7 +1261,7 @@ def create_status_update(request):
 
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):
-                    grant_update_email(activity)
+                    grant_update_email_task.delay(activity.pk)
                 else:
                     wall_post_email(activity)
 
@@ -1361,6 +1271,11 @@ def create_status_update(request):
             logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
             return JsonResponse(response, status=400)
     return JsonResponse(response)
+
+
+def grant_redir(request):
+    return redirect('/grants/')
+
 
 def help(request):
     return redirect('/wiki/')
@@ -1537,7 +1452,7 @@ def slack(request):
             try:
                 validate_email(email)
                 get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
-                response = invite_to_slack(email)
+                response = invite_to_slack(email, True)
 
                 if not response.get('ok'):
                     context['msg'] = response.get('error', _('Unknown error'))
@@ -1726,18 +1641,7 @@ def tribes(request):
         }
     ]
 
-    _tribes = Profile.objects.filter(data__type='Organization').\
-        annotate(follower_count=Count('org')).order_by('-follower_count')[:8]
-
-    tribes = []
-
-    for _tribe in _tribes:
-        tribe = {
-            'name': _tribe.handle,
-            'img': _tribe.avatar_url,
-            'followers_count': _tribe.follower_count
-        }
-        tribes.append(tribe)
+    tribes = JSONStore.objects.get(view='tribes', key='tribes').data
 
     testimonials = [
         {
@@ -1809,6 +1713,7 @@ def tribes(request):
         'plans': plans,
         'tribes': tribes,
         'testimonials': testimonials,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')),
         'reasons': reasons
     }
 
