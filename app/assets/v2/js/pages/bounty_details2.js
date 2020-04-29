@@ -238,15 +238,22 @@ Vue.mixin({
         });
       }
     },
-    fulfillmentComplete: function(fulfillment_id, amount, event) {
+    fulfillmentComplete: function(fulfillment_id, event) {
       let vm = this;
+
       const token_name = vm.bounty.token_name;
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
+      const amount = vm.fulfillment_context.amount;
+      const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
+      const bounty_owner_address = vm.bounty.bounty_owner_address;
+
       const payload = {
         amount: amount * 10 ** decimals,
         token_name: token_name,
-        bounty_owner_address: vm.bounty.bounty_owner_address
+        bounty_owner_address: bounty_owner_address,
+        payout_tx_id: payout_tx_id
       };
+
       const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;
 
       event.target.disabled = true;
@@ -255,8 +262,14 @@ Vue.mixin({
         event.target.disabled = false;
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+
           vm.fetchBounty();
           this.$refs['payout-modal'][0].closeModal();
+
+          vm.fulfillment_context = {
+            active_step: 'payout_amount'
+          };
+
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
@@ -404,15 +417,14 @@ Vue.mixin({
 
       return false;
     },
-    totalAmountPaid: function(inputAmount) {
+    goToStep: function(nextStep, currentStep, flow) {
       let vm = this;
-      let amount_paid = 0;
 
-      vm.bounty.fulfillments.forEach(fulfillment => {
-        amount_paid += (fulfillment.payout_amount / 10 ** vm.decimals);
-      });
-
-      vm.bounty.amount_paid = parseFloat(amount_paid) + parseFloat(inputAmount);
+      if (flow) {
+        vm.fulfillment_context.flow = flow;
+      }
+      vm.fulfillment_context.referrer = currentStep;
+      vm.fulfillment_context.active_step = nextStep;
     }
   },
   computed: {
@@ -440,7 +452,6 @@ Vue.mixin({
   }
 });
 
-
 if (document.getElementById('gc-bounty-detail')) {
   appBounty = new Vue({
     delimiters: [ '[[', ']]' ],
@@ -454,8 +465,11 @@ if (document.getElementById('gc-bounty-detail')) {
         isOwner: false,
         isOwnerAddress: false,
         is_bounties_network: is_bounties_network,
-        inputAmount: 0,
-        decimals: 18,
+        fulfillment_context: {
+          active_step: 'check_wallet_owner',
+          amount: 0
+        },
+        decimals: 18, // TODO: UPDATE BASED ON TOKEN
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
         quickLinks: []
@@ -518,9 +532,6 @@ var show_extend_deadline_modal = function() {
         extend_expiration(document.result['pk'], {
           deadline: extended_time
         });
-        // setTimeout(function() {
-        //   window.location.reload();
-        // }, 2000);
       });
     });
   });
