@@ -4627,8 +4627,7 @@ def save_tribe(request,handle):
         )
 
     try:
-        # is_my_org = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-        is_my_org = True
+        is_my_org = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
         if not is_my_org:
             return JsonResponse(
                 {
