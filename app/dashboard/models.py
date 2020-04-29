@@ -62,7 +62,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
-from marketing.mails import featured_funded_bounty, start_work_approved
+from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -1738,6 +1738,28 @@ class TipPayout(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"tip: {self.tip.pk} profile: {self.profile.handle}"
+
+
+class FundRequest(SuperModel):
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='requests_receiver', on_delete=models.CASCADE
+    )
+    requester = models.ForeignKey(
+        'dashboard.Profile', related_name='requests_sender', on_delete=models.CASCADE
+    )
+    token_name = models.CharField(max_length=255, default='ETH')
+    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    comments = models.TextField(default='', blank=True)
+    tip = models.OneToOneField(Tip, on_delete=models.CASCADE, null=True)
+    network = models.CharField(max_length=255, default='')
+    address = models.CharField(max_length=255, default='')
+    created_on = models.DateTimeField(auto_now_add=True)
+
+
+@receiver(post_save, sender=FundRequest, dispatch_uid="post_save_fund_request")
+def psave_fund_request(sender, instance, created, **kwargs):
+    if created:
+        fund_request_email(instance, [instance.profile.email])
 
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")

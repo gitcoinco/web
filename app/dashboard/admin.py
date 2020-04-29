@@ -28,7 +28,7 @@ from .models import (
     CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
     HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
     SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
-    UserVerificationModel, Poll, Question, Option, Answer
+    UserVerificationModel, Poll, Question, Option, Answer, FundRequest
 )
 
 
@@ -411,6 +411,14 @@ class TribeMemberAdmin(admin.ModelAdmin):
     list_display = ['pk', 'profile', 'org', 'leader', 'status']
 
 
+class FundRequestAdmin(admin.ModelAdmin):
+    list_display = ['id', 'profile', 'requester', 'network', 'token_name', 'amount',
+                    'comments', 'address', 'tip', 'created_on']
+    readonly_fields = ['id']
+    ordering = ['-id']
+    raw_id_fields = ['profile', 'requester', 'tip']
+
+
 class QuestionInline(admin.TabularInline):
     fields = ['id', 'poll', 'question_type', 'text']
     readonly_fields = ['id']
@@ -487,6 +495,7 @@ admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
+admin.site.register(FundRequest, FundRequestAdmin)
 admin.site.register(Poll, PollsAdmin)
 admin.site.register(Question, QuestionsAdmin)
 admin.site.register(Option, OptionsAdmin)
