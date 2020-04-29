@@ -2836,7 +2836,9 @@ def profile(request, handle, tab=None):
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
     if request.user.is_authenticated and hasattr(request.user, 'profile'):
-        context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower())
+        context['is_on_tribe'] = len(request.user.profile.tribe_members.filter(org__handle=handle.lower())) > 0
+    else:
+        context['is_on_tribe'] = False
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -2868,7 +2870,7 @@ def profile(request, handle, tab=None):
 
         context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
-        context['is_on_tribe'] = json.dumps(True if hasattr(context, 'is_on_tribe') and len(context['is_on_tribe']) > 0 else False)
+        context['is_on_tribe'] = json.dumps(context['is_on_tribe'])
         context['is_my_org'] = json.dumps(context['is_my_org'])
         context['profile_handle'] = profile.handle
 
@@ -4541,13 +4543,18 @@ def join_tribe(request, handle):
     if request.user.is_authenticated:
         profile = request.user.profile if hasattr(request.user, 'profile') else None
         try:
-            TribeMember.objects.get(profile=profile, org__handle=handle.lower()).delete()
+            try:
+                TribeMember.objects.get(profile=profile, org__handle=handle.lower()).delete()
+            except TribeMember.MultipleObjectsReturned:
+                TribeMember.objects.filter(profile=profile, org__handle=handle.lower()).delete()
+
             return JsonResponse(
-            {
-                'success': True,
-                'is_member': False,
-            },
-            status=200)
+                {
+                    'success': True,
+                    'is_member': False,
+                },
+                status=200
+            )
         except TribeMember.DoesNotExist:
             kwargs = {
                 'org': Profile.objects.filter(handle=handle.lower()).first(),
@@ -4566,7 +4573,9 @@ def join_tribe(request, handle):
             )
     else:
         return JsonResponse(
-            { 'error': _('You must be authenticated via github to use this feature!') },
+            {
+                'error': _('You must be authenticated via github to use this feature!')
+            },
             status=401
         )
 

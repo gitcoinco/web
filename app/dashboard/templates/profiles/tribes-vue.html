@@ -917,7 +917,7 @@
                     <b-img-lazy class="profile-header__avatar" :src=`/dynamic/avatar/${tribe.handle}`></b-img-lazy>
                   </div>
                 </template>
-                <tribes-profile-header v-bind:tribe="tribe" inline-template>
+
                   <b-row>
                     <b-col>
                       <h1 class="profile-header__handle">
@@ -931,7 +931,7 @@
                         </div>
 
                       <p class="mb-0 mt-1">
-                        <b-button @click="followTribe(tribe.handle, $event)" class="btn btn-gc-blue font-smaller-5">[[ isOnTribe ? "following" : "follow" ]]</b-button>
+                        <b-button @click="followTribe(tribe.handle, $event)" class="btn btn-gc-blue font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
 
                         |
 
@@ -957,7 +957,6 @@
 
                     </b-col>
                   </b-row>
-              </tribes-profile-header>
             </b-media>
             <b-col v-html="tribe.tribe_description" class="mt-3"></b-col>
             <b-button v-if="!is_my_org && is_on_tribe" v-b-modal.suggest-bounty-modal class="col-md-8 btn button--full px-3 btn-gc-blue">
@@ -1007,11 +1006,11 @@
             <b-button class="button button--primary button__small" @click.prevent="updateTribe();">Save</b-button>
           </template>
         </b-modal>
-        <b-modal v-if="!is_my_org" @hide="resetBountySuggestion" @close="resetBountySuggestion" @cancel="resetBountySuggestion"  hide-backdrop content-class="shadow" id="suggest-bounty-modal" tabindex="-1" role="dialog" aria-labelledby="suggestBountyLabel" aria-hidden="true">
+        <b-modal size="lg" v-if="!is_my_org" @hide="resetBountySuggestion" @close="resetBountySuggestion" @cancel="resetBountySuggestion"  hide-backdrop content-class="shadow" id="suggest-bounty-modal" tabindex="-1" role="dialog" aria-labelledby="suggestBountyLabel" aria-hidden="true">
           <template v-slot:modal-title>
             {% trans "Suggest a Bounty"%}
           </template>
-          <div class="px-5">
+          <div class="px-1">
             <div id="create_bounty_request" class="suggest-bounty-form px-4 pt-2 pb-5 rounded">
               <div class="mt-3">
                 <div class="editor-container">

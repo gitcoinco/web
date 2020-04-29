@@ -24,12 +24,10 @@ const loadDynamicScript = (callback, url, id) => {
 (function($) {
   // doc ready
   $(() => {
-    Vue.component('tribes-profile-header', {
+    Vue.use(VueQuillEditor);
+    window.tribesApp = new Vue({
       delimiters: [ '[[', ']]' ],
-      props: ['tribe'],
-      data: () => ({
-        isOnTribe: document.is_on_tribe
-      }),
+      el: '#tribes-vue-app',
       methods: {
         followTribe: function(tribe, event) {
           event.preventDefault();
@@ -40,23 +38,22 @@ const loadDynamicScript = (callback, url, id) => {
 
           $.when(sendJoin).then((response) => {
             if (response && response.is_member) {
+              $('[data-jointribe]').each((idx, ele) => {
+                $(ele).attr('hidden', true);
+              });
               vm.tribe.follower_count++;
-              vm.isOnTribe = true;
+              vm.is_on_tribe = true;
             } else {
               vm.tribe.follower_count--;
-              vm.isOnTribe = false;
+              vm.is_on_tribe = false;
+              $('[data-jointribe]').each((idx, ele) => {
+                $(ele).attr('hidden', false);
+              });
             }
           }).fail((error) => {
             console.log(error);
           });
-        }
-      }
-    });
-    Vue.use(VueQuillEditor);
-    window.tribesApp = new Vue({
-      delimiters: [ '[[', ']]' ],
-      el: '#tribes-vue-app',
-      methods: {
+        },
         resetPreview: function() {
           this.headerFilePreview = null;
         },
