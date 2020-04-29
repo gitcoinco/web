@@ -919,9 +919,10 @@ textarea.status-textarea {
 }
 
 .status-menu button {
-  color: #6c757d;
+  color: var(--gc-dark-grey);
 }
 
-.status-menu button.selected {
-  color: black;
+.status-menu button.selected,
+.status-menu button:hover {
+  color: var(--townsquare-link-color);
 }
