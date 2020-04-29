@@ -48,10 +48,7 @@ from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.clr import predict_clr_live
-from grants.forms import MilestoneForm
-from grants.models import (
-    Contribution, Flag, Grant, GrantCategory, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
-)
+from grants.models import Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription
 from grants.utils import get_leaderboard, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -73,13 +70,20 @@ matching_live = '(💰$250K Match LIVE!) '
 matching_live_tiny = '💰'
 total_clr_pot = 250000
 clr_round = 5
-clr_active = True
+clr_active = False
 show_clr_card = True
+# Round Schedule
+# from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
+# Round 5 - March 23th — April 7th 2020
+# Round 6 - June 15th — June 29th 2020
+# Round 7 - September 14th — September 28th 2020
+
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
-round_end = timezone.datetime(2020, 4, 7, 20, 0)
+after_that_next_round_begin = timezone.datetime(2020, 6, 15, 12, 0)
+round_end = timezone.datetime(2020, 4, 10, 10, 0)
 round_types = ['media', 'tech', 'health']
 
-kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12427, 12392, 12307, 12343, 12156, 12164]
+kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
 if not clr_active:
     clr_matching_banners_style = 'results'
@@ -351,6 +355,7 @@ def grants(request):
         'type': grant_type,
         'round_end': round_end,
         'next_round_start': next_round_start,
+        'after_that_next_round_begin': after_that_next_round_begin,
         'all_grants_count': all_grants_count,
         'now': timezone.now(),
         'mid_back': mid_back,
@@ -364,7 +369,7 @@ def grants(request):
         'current_partners': current_partners,
         'past_partners': past_partners,
         'card_desc': f'❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants',
-        'avatar_url': f'/static/v2/images/grants/headers/{grant_type_gfx_if_any}.png',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 1097,
         'avatar_width': 1953,
@@ -418,11 +423,9 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
     try:
-        grant = Grant.objects.prefetch_related('subscriptions', 'milestones', 'updates', 'team_members').get(
+        grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
             pk=grant_id, slug=grant_slug
         )
-        milestones = grant.milestones.order_by('due_date')
-        updates = grant.updates.order_by('-created_on')
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
 
@@ -467,18 +470,9 @@ def grant_details(request, grant_id, grant_slug):
             for sub in subscriptions:
                 subscription_terminated(grant, sub)
             record_grant_activity_helper('killed_grant', grant, profile)
-        elif 'input-title' in request.POST:
-            update_kwargs = {
-                'title': request.POST.get('input-title', ''),
-                'description': request.POST.get('description', ''),
-                'grant': grant
-            }
-            Update.objects.create(**update_kwargs)
-            record_grant_activity_helper('update_grant', grant, profile)
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
-            grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
@@ -516,7 +510,7 @@ def grant_details(request, grant_id, grant_slug):
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
         'tab': tab,
-        'title': matching_live_tiny + " Grants | " + grant.title,
+        'title': matching_live_tiny + grant.title + " | Grants",
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,
@@ -527,8 +521,6 @@ def grant_details(request, grant_id, grant_slug):
         'user_non_errored_subscription': user_non_errored_subscription,
         'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
-        'updates': updates,
-        'milestones': milestones,
         'keywords': get_keywords(),
         'target': f'/activity?what=grant:{grant.pk}',
         'activity_count': activity_count,
@@ -607,7 +599,6 @@ def grant_new(request):
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
                 'token_address': request.POST.get('token_address', ''),
                 'token_symbol': request.POST.get('token_symbol', ''),
-                'amount_goal': request.POST.get('amount_goal', 1),
                 'contract_version': request.POST.get('contract_version', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
@@ -704,7 +695,6 @@ def grant_new_v0(request):
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
                 'token_address': request.POST.get('token_address', ''),
                 'token_symbol': request.POST.get('token_symbol', ''),
-                'amount_goal': request.POST.get('amount_goal', 1),
                 'contract_version': request.POST.get('contract_version', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
@@ -767,52 +757,6 @@ def grant_new_v0(request):
     }
 
     return TemplateResponse(request, 'grants/newv0.html', params)
-
-
-
-@login_required
-def milestones(request, grant_id, grant_slug):
-    profile = get_profile(request)
-    grant = Grant.objects.prefetch_related('milestones').get(pk=grant_id, slug=grant_slug)
-
-    if not is_grant_team_member(grant, profile):
-        return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-
-    if request.method == "POST":
-        method = request.POST.get('method')
-
-        if method == "POST":
-            form = MilestoneForm(request.POST)
-            milestone = form.save(commit=False)
-            milestone.grant = grant
-            milestone.save()
-
-        if method == "PUT":
-            milestone_id = request.POST.get('milestone_id')
-            milestone = Milestone.objects.get(pk=milestone_id)
-            milestone.completion_date = request.POST.get('completion_date')
-            milestone.save()
-
-        if method == "DELETE":
-            milestone_id = request.POST.get('milestone_id')
-            milestone = grant.milestones.get(pk=milestone_id)
-            milestone.delete()
-
-        return redirect(reverse('grants:milestones', args=(grant.pk, grant.slug)))
-
-    form = MilestoneForm()
-    milestones = grant.milestones.order_by('due_date')
-
-    params = {
-        'active': 'grant_milestones',
-        'title': _('Grant Milestones'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'grant': grant,
-        'milestones': milestones,
-        'form': form,
-        'keywords': get_keywords(),
-    }
-    return TemplateResponse(request, 'grants/milestones.html', params)
 
 
 @login_required
@@ -1117,7 +1061,11 @@ def profile(request):
 
 def quickstart(request):
     """Display quickstart guide."""
-    params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
+    params = {
+    'active': 'grants_quickstart',
+    'title': _('Quickstart'),
+    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+    }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
 
@@ -1179,7 +1127,6 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
     metadata = {
         'id': grant.id,
         'value_in_token': '{0:.2f}'.format(grant.amount_received) if not amount else amount,
-        'amount_goal': '{0:.2f}'.format(grant.amount_goal) if not amount else amount,
         'token_name': grant.token_symbol if not token else token,
         'title': grant.title,
         'grant_logo': grant_logo,

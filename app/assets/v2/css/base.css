@@ -17,7 +17,7 @@ span {
 }
 
 a {
-  color: #3E00FF;
+  color: var(--link-color);
 }
 
 .cursor-pointer {
@@ -1516,6 +1516,21 @@ div.busyOverlay {
   padding: 1.4em 1.3em 1.3em;
 }
 
+.popover-user-card {
+  background-color: #FFF;
+  padding: 0;
+  width: 100%;
+  max-width: 30em;
+  font-size: 12px;
+}
+
+.user-card_donut-chart {
+  width: 56px;
+}
+.user-card_pie-chart {
+  width: 30px;
+}
+
 .big-popover {
   max-width: 482px;
 }
@@ -1543,25 +1558,6 @@ div.busyOverlay {
 .g-icon__dot-circle:before {
   border: 0.25em solid currentColor;
   border-radius: 100px;
-}
-
-.cta-blue {
-  background: #0D0764;
-  color: white;
-  padding: 1.8rem;
-  border-radius: 0.2rem;
-}
-
-.privaterepo-instructions {
-  color: grey;
-  padding-top: 1rem;
-}
-
-@media (min-width: 768px) {
-  .privaterepo-instructions {
-    width: 75%;
-  }
-
 }
 
 .g-modal .modal-header,
@@ -1729,3 +1725,12 @@ div.busyOverlay {
   font-size: 22px;
 }
 
+.bg-shade-0 {
+  background: var(--bg-shade-0);
+}
+.bg-shade-1{
+  background: var(--bg-shade-1);
+}
+.bg-shade-2{
+  background: var(--bg-shade-2);
+}

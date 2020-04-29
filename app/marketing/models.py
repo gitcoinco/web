@@ -149,7 +149,7 @@ class ManualStat(SuperModel):
     key = models.CharField(max_length=50, db_index=True)
     date = models.DateTimeField(db_index=True)
     val = models.FloatField()
-    comment = models.TextField(max_length=255, default='')
+    comment = models.TextField(max_length=255, default='', blank=True)
 
     def __str__(self):
         return f"{self.key}: {self.date}: {self.val}"

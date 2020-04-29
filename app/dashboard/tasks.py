@@ -77,7 +77,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
         except ConnectionError as exc:
             logger.info(str(exc))
             logger.info("Retrying connection")
-            self.retry(30)
+            self.retry(countdown=30)
         except Exception as e:
             logger.error(str(e))
 
@@ -111,19 +111,6 @@ def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) 
         from dashboard.notifications import maybe_market_to_user_slack_helper
         maybe_market_to_user_slack_helper(bounty, event_name)
 
-
-@app.shared_task(bind=True)
-def maybe_market_to_user_discord(self, bounty_pk, event_name, retry: bool = True) -> None:
-    """
-    :param self:
-    :param bounty_pk:
-    :param event_name:
-    :return:
-    """
-    with redis.lock("maybe_market_to_user_discord:bounty", timeout=LOCK_TIMEOUT):
-        bounty = Bounty.objects.get(pk=bounty_pk)
-        from dashboard.notifications import maybe_market_to_user_discord_helper
-        maybe_market_to_user_discord_helper(bounty, event_name)
 
 @app.shared_task(bind=True, max_retries=3)
 def grant_update_email_task(self, pk, retry: bool = True) -> None:

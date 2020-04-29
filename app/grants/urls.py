@@ -21,7 +21,7 @@ from django.urls import path, re_path
 
 from grants.views import (
     flag, grant_categories, grant_details, grant_fund, grant_new, grant_new_v0, grants, grants_addr_as_json,
-    grants_stats_view, invoice, leaderboard, milestones, new_matching_partner, predict_clr_v1, profile, quickstart,
+    grants_stats_view, invoice, leaderboard, new_matching_partner, predict_clr_v1, profile, quickstart,
     subscription_cancel,
 )
 
@@ -36,7 +36,6 @@ urlpatterns = [
     re_path(r'^new', grant_new, name='new'),
     re_path(r'^old', grant_new_v0, name='old'),
     re_path(r'^categories', grant_categories, name='grant_categories'),
-    path('<int:grant_id>/<slug:grant_slug>/milestones', milestones, name='milestones'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
     path(
         '<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel',

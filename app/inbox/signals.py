@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
 
 from app.utils import get_profiles_from_text
 from dashboard.models import Activity
@@ -127,14 +128,21 @@ def create_notification(sender, **kwargs):
         )
 
     if activity.activity_type == 'new_kudos':
+        kudos_url = reverse('profile_min', args=[
+            activity.kudos_transfer.recipient_profile.handle,
+            'kudos'
+        ])
+
         if activity.kudos_transfer and activity.kudos_transfer.recipient_profile:
-            send_notification_to_user(
-                activity.profile.user,
-                activity.kudos_transfer.recipient_profile.user,
-                activity.kudos_transfer.receive_url_for_recipient,
-                'new_kudos',
-                f'You received a <b>new kudos from {activity.profile.user}</b>'
-            )
+            kudos_url = activity.kudos_transfer.receive_url_for_recipient
+
+        send_notification_to_user(
+            activity.profile.user,
+            activity.kudos_transfer.recipient_profile.user,
+            kudos_url,
+            'new_kudos',
+            f'You received a <b>new kudos from {activity.profile.user}</b>'
+        )
 
     if activity.activity_type == 'status_update':
         text = activity.metadata['title']

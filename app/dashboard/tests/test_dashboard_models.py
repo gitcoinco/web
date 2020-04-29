@@ -177,6 +177,7 @@ class DashboardModelsTest(TestCase):
     def test_can_submit_legacy_bounty_after_expiration_date():
         bounty = Bounty.objects.create(
             title='ExpiredBounty',
+            standard_bounties_id=999999,
             web3_type='legacy_gitcoin',
             idx_status=0,
             is_open=False,

@@ -1,3 +1,6 @@
+body {
+  color: var(--default-text-color);
+}
 #mobile_nav_toggle{
   display: none !important;
 }
@@ -279,7 +282,7 @@
   background-image:radial-gradient(#0fde9c, #0fce7c 70%);
 }
 
-.offer_container {
+.offer_container, .promo {
   background: var(--gc-dark-violet);
   padding: 1em;
   color: white;
@@ -375,7 +378,7 @@ a.offer_container.animate:hover .prize-gift::after {
   text-shadow: 0 2px 0px #a58484;
 }
 .empty {
-  background-color: #ddd;
+  background-color: #f9f9f9;
   color: #808080;
 }
 .empty .prize-gift {
@@ -816,6 +819,10 @@ body.green.offer_view .announce {
   text-align: left;
 }
 
+.clr_container .font-caption {
+  font-size: 0.65rem;
+}
+
 .clr_container td {
   padding: 6px;
 }
@@ -858,7 +865,7 @@ body.green.offer_view .announce {
 
 .townsquare_nav-list .nav-item .nav-link {
   padding-left: 0;
-  color: black;
+  color: var(--townsquare-link-color);
 }
 
 .townsquare_nav-list .nav-link.active {
@@ -882,7 +889,8 @@ body.green.offer_view .announce {
 
 .townsquare_block-header {
   font-size: 0.9rem;
-  color: #626365;
+  font-weight: 700;
+  color: var(--townsquare-block-header-color);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -896,14 +904,15 @@ body.green.offer_view .announce {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
   border: 1px solid transparent;
+  margin-bottom: 0.5rem !important;
 }
 
 #status .btn-group-toggle .btn-radio.active {
-  border: 1px solid var(--link-color);
+  border: 1px solid var(--active-button-border-color);
 }
 
 .grey {
-  color: #666666 !important;
+  color: var(--gc-medium-dark-gray) !important;
 }
 .offer_container span{
   display: inline;
@@ -927,7 +936,7 @@ body.green.offer_view .announce {
 }
 
 .activity_time {
-  color: #666666;
+  color: var(--gc-medium-dark-gray);
 }
 
 .filter-tag {
@@ -969,7 +978,7 @@ body.green.offer_view .announce {
 
 .nav-badge {
   font-size: 9px;
-  color: rgba(62,0,255);
+  color: var(--link-color);
   top: -8px;
   position: relative;
   font-weight: bold;
@@ -998,4 +1007,50 @@ body.green.offer_view .announce {
   .townsquare_header li.nav-item{
     display:inline-block;
   }
+}
+
+
+.promo .logo {
+  height: 55px;
+  width: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.promo {
+  background-image: url("/static/v2/images/tribes/promo-decoration.svg");
+  background-color: var(--gc-blue);
+  background-size: cover;
+}
+.promo .promo-text {
+  font-size: 0.9em;
+}
+
+.promo .action {
+  background-color: #101061;
+  color: white;
+  border-radius: 0;
+}
+
+.promo p {
+  margin-bottom: 0;
+}
+
+.promo .action:hover {
+  background-color: #101061;
+  filter: brightness(130%);
+}
+
+.promo .close-promo {
+  position: absolute;
+  top: 6px;
+  right: 29px;
+  font-size: 16px;
+  color: white;
+  opacity: 1;
+}
+
+.promo .close-promo i {
+  font-weight: 100;
 }

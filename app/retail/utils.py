@@ -493,6 +493,7 @@ def build_stat_results(keyword=None):
     pp.profile_time('bounty_history')
 
     # Bounties
+    from marketing.models import ManualStat
     completion_rate = get_completion_rate(keyword)
     funder_receiver_stats = get_funder_receiver_stats(keyword)
     context['funders'] = funder_receiver_stats['funders']
@@ -500,6 +501,7 @@ def build_stat_results(keyword=None):
     context['median_value'] = funder_receiver_stats['median_value']
     context['transactions'] = funder_receiver_stats['transactions']
     context['recipients'] = funder_receiver_stats['recipients']
+    context['mau'] = ManualStat.objects.filter(key='MAUs').order_by('-pk').values_list('val', flat=True)[0]
     context['audience'] = json.loads(context['members_history'])[-1][1]
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
@@ -555,7 +557,6 @@ def build_stat_results(keyword=None):
     context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
 
-    from marketing.models import ManualStat
     try:
         context['pct_breakeven'] = ManualStat.objects.filter(key='pct_breakeven').values_list('val', flat=True)[0]
     except Exception as e:
@@ -574,7 +575,7 @@ def build_stat_results(keyword=None):
     context['last_month_amount'] = round(sum(bh)/1000)
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
-    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.order_by('start_date').all()]
+    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.filter(visible=True, start_date__lt=timezone.now()).order_by('start_date').all()]
     context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
     from dashboard.models import FeedbackEntry
     reviews = FeedbackEntry.objects.exclude(comment='').filter(created_on__lt=(timezone.now() - timezone.timedelta(days=7))).order_by('-created_on')[0:15]

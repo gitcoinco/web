@@ -187,6 +187,8 @@ $(document).ready(function() {
   const setDataFormat = function(data) {
     let str = 'in ';
 
+    if (data.months() > 0)
+      str += data.months() + 'mon ';
     if (data.days() > 0)
       str += data.days() + 'd ';
     if (data.hours() > 0)

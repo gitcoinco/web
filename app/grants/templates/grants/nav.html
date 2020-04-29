@@ -26,9 +26,23 @@
     <img class="mw-100 logo-animated" src="{% static "v2/images/grants/grants-white.gif" %}" alt="Grants" height="50">
   </a>
   {% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
-    <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
+    <button id="wallet-button" class="navbar-network ml-xl-5 py-1 px-2 hidden btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <i class="fas fa-circle pr-1"></i>
       <span id="current-network"></span>
+    </button>
+    <div id="wallet-dropdown" class="dropdown-menu" aria-labelledby="wallet-button" style="top: 50px; left: 19vw;">
+      <a id="copy-address" class="dropdown-item" href="javascript:;">
+        <i class="fas fa-copy"></i>
+        Copy Wallet Address
+      </a>
+      <a id="go-to-wallet" class="dropdown-item" href="#" target="_blank">
+        <i class="fas fa-wallet"></i>
+        Go to Your Wallet
+      </a>
+      <a id="change-wallet" class="dropdown-item" href="#">
+        <i class="fas fa-exchange-alt"></i>
+        Change Wallet Provider
+      </a>
     </div>
   {% endif %}
 
