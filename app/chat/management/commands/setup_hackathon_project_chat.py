@@ -20,7 +20,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils.text import slugify
-from chat.tasks import create_channel_if_not_exists, associate_chat_to_profile, add_to_channel
+from chat.tasks import get_driver, create_channel_if_not_exists, associate_chat_to_profile, add_to_channel
 from dashboard.models import HackathonEvent, HackathonProject, Profile
 
 logger = logging.getLogger(__name__)
@@ -79,7 +79,6 @@ class Command(BaseCommand):
                     profiles_to_connect = profiles_to_connect + mentors
 
                 project_channel_name = slugify(f'{project.name}')
-                print(project.summary)
                 created, channel_details = create_channel_if_not_exists({
                     'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                     'channel_purpose': project.summary[:64] if project.summary is not None else "",
@@ -96,9 +95,8 @@ class Command(BaseCommand):
                     if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
                         created, bounty_profile = associate_chat_to_profile(bounty_profile)
                     profiles_to_connect.append(bounty_profile.chat_id)
-
                 except Exception as e:
-                        logger.error('Error creating project channel', e)
+                    logger.error('Error creating project channel', e)
 
                 for team_m_profile in project.profiles.all():
                     if team_m_profile.chat_id is '' or team_m_profile.chat_id is None:
@@ -106,7 +104,15 @@ class Command(BaseCommand):
                     profiles_to_connect.append(team_m_profile.chat_id)
 
                 try:
-                    add_to_channel.delay({'id': project.chat_channel_id}, profiles_to_connect)
+                    chat_driver = get_driver()
+                    current_channel_members = chat_driver.channels.get_channel_members(project.chat_channel_id)
+                    current_channel_users = [member['user_id'] for member in current_channel_members]
+                    remove = list(set(current_channel_users) - set(profiles_to_connect))
+                    print(remove)
+                    print(profiles_to_connect)
+                    # for r in remove:
+                    #     chat_driver.channels.remove_channel_member(project.chat_channel_id, r)
+                    # add_to_channel.delay({'id': project.chat_channel_id}, profiles_to_connect)
                 except Exception as e:
                     logger.error(str(e))
                     continue
