@@ -1106,10 +1106,6 @@ body.green.offer_view .announce {
   background-color: #232342!important;
 }
 
-.dark .poll_choices.answered div.vote {
-  border: 1px solid #262661!important;
-}
-
 .dark #status .btn-group-toggle .btn-radio {
   background-color: black!important;
 }
