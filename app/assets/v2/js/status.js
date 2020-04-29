@@ -32,15 +32,13 @@ $(document).ready(function() {
   let selector = $('#bg-selector');
 
   for (var i = 0; i < bgs.length; i++) {
-    selector.append('<div data-bg-name="' + bgs[i] + '" class="bg-thumbnail"><img class="bg-icon" draggable="false" src="/static/status_backgrounds/' + bgs[i] + '-icon.png"/><div class="selector-bar hide"></div></div>');
+    selector.append('<div data-bg-name="' + bgs[i] + '" class="bg-thumbnail"><img class="bg-icon" draggable="false" src="/static/status_backgrounds/' + bgs[i] + '-icon.png"/><div class="selector-bar d-none"></div></div>');
   }
 
   function closeBackgroundDropdown(e) {
     e.preventDefault();
     $('#bg-selector').attr('data-selected', null);
-    $('#bg-selector').addClass('hide');
     embedded_resource = '';
-    $('#bg-selector').children('div').children('div').addClass('hide');
   }
 
   function selectGif(e) {
