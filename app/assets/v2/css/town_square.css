@@ -1122,6 +1122,12 @@ body.green.offer_view .announce {
   background-color: black!important;
 }
 
+.promo .action {
+  background-color: #101061;
+  color: white;
+  border-radius: 0;
+}
+
 .dark .action:hover {
   background-color: black!important;
 }
@@ -1171,12 +1177,6 @@ body.green.offer_view .announce {
 }
 .promo .promo-text {
   font-size: 0.9em;
-}
-
-.promo .action {
-  background-color: #101061;
-  color: white;
-  border-radius: 0;
 }
 
 .promo .action:hover {
