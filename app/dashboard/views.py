@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -2682,7 +2682,7 @@ def get_profile_tab(request, profile, tab, prev_context):
             ).distinct('pk').nocache()
         context['unrated_contributed_bounties'] = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=profile, network=network,) \
                 .filter(interested__status='okay') \
-                .filter(interested__pending=False).filter(idx_status='done') \
+                .filter(interested__pending=False).filter(idx_status='submitted') \
                 .exclude(
                     feedbacks__feedbackType='worker',
                     feedbacks__sender_profile=profile
