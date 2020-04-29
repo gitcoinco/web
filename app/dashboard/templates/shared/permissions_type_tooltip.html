@@ -15,14 +15,10 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div class="tooltip-info">
-  <p class="font-subheader">{% trans "Permissions" %}</p>
-  <div class="font-body">
-    <div class="row">
-      <ol class="pl-3">
-        <li class="mb-2"><strong>{% trans "Permissionless" %}:</strong> {% trans "Anyone can start work" %}</li>
-        <li class="mb-2"><strong>{% trans "Approval Required" %}:</strong> {% trans "Submitter will approve bounty hunters can start work." %}</li>
-      </ol>
-    </div>
-  </div>
+<div class="tooltip-info text-left">
+  <p class="font-smaller-1 font-weight-semibold">Permissions</p>
+  <ol class="pl-3 mb-0 font-smaller-2">
+    <li class="mb-2"><strong>{% trans "Permissionless" %}:</strong> {% trans "Anyone can start work" %}</li>
+    <li class="mb-2"><strong>{% trans "Approval Required" %}:</strong> {% trans "Submitter will approve bounty hunters can start work." %}</li>
+  </ol>
 </div>

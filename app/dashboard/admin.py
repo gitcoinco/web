@@ -27,8 +27,8 @@ from .models import (
     Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
     CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
     HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
-    RefundFeeRequest, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
-    UserVerificationModel,
+    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
+    UserVerificationModel, Poll, Question, Option, Answer, FundRequest
 )
 
 
@@ -90,7 +90,7 @@ class ToolAdmin(admin.ModelAdmin):
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer', 'hackathonevent']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
     def response_change(self, request, obj):
@@ -166,7 +166,7 @@ def recalculate_profile(modeladmin, request, queryset):
 recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
-    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer']
+    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
@@ -235,6 +235,25 @@ class TipAdmin(admin.ModelAdmin):
             html = 'n/a'
         return html
 
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_reset_tip_redemption" in request.POST:
+            if not obj.receive_txid:
+                self.message_user(request, f"Cannot reset tip! This tip has not been marked as receieved")
+                return redirect(obj.admin_url)
+            obj.receive_txid = ''
+            obj.receive_tx_status = ''
+            obj.received_on = None
+            obj.recipient_profile = None
+            obj.receive_address = ''
+            obj.metadata['num_redemptions'] = 0
+            obj.payouts.all().delete()
+            obj.save()
+            addr = obj.metadata.get('address')
+            self.message_user(request, f"This tip redemption has been reset.  Please make sure {addr} has enough ETH in it to pay gas, and send the new claim link to customer.")
+            return redirect(obj.admin_url)
+        return super().response_change(request, obj)
+
 
 # Register your models here.
 class BountyAdmin(admin.ModelAdmin):
@@ -290,50 +309,6 @@ class BountyAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
-class RefundFeeRequestAdmin(admin.ModelAdmin):
-    """Setup the RefundFeeRequest admin results display."""
-
-    raw_id_fields = ['bounty', 'profile']
-    ordering = ['-created_on']
-    list_display = ['pk', 'created_on', 'fulfilled', 'rejected', 'link', 'get_bounty_link', 'get_profile_handle',]
-    readonly_fields = ['pk', 'token', 'fee_amount', 'comment', 'address', 'txnId', 'link', 'get_bounty_link',]
-    search_fields = ['created_on', 'fulfilled', 'rejected', 'bounty', 'profile']
-
-    def get_bounty_link(self, obj):
-        bounty = getattr(obj, 'bounty', None)
-        url = bounty.url
-        return mark_safe(f"<a href={url}>{bounty}</a>")
-
-    def get_profile_handle(self, obj):
-        """Get the profile handle."""
-        profile = getattr(obj, 'profile', None)
-        if profile and profile.handle:
-            return mark_safe(
-                f'<a href=/_administration/dashboard/profile/{profile.pk}/change/>{profile.handle}</a>'
-            )
-        if obj.github_username:
-            return obj.github_username
-        return 'N/A'
-
-    get_profile_handle.admin_order_field = 'handle'
-    get_profile_handle.short_description = 'Profile Handle'
-
-    def link(self, instance):
-        """Handle refund fee request specific links.
-
-        Args:
-            instance (RefundFeeRequest): The refund request to build a link for.
-
-        Returns:
-            str: The HTML element for the refund request link.
-
-        """
-        if instance.fulfilled or instance.rejected:
-            return 'n/a'
-        return mark_safe(f"<a href=/_administration/process_refund_request/{instance.pk}>process me</a>")
-    link.allow_tags = True
-
-
 class HackathonSponsorAdmin(admin.ModelAdmin):
     """The admin object for the HackathonSponsor model."""
 
@@ -361,7 +336,9 @@ class SponsorAdmin(admin.ModelAdmin):
 class HackathonEventAdmin(admin.ModelAdmin):
     """The admin object for the HackathonEvent model."""
 
+    raw_id_fields = ['sponsor_profiles']
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
+    list_filter = ('sponsor_profiles', )
     readonly_fields = ['img', 'explorer_link', 'stats']
 
     def img(self, instance):
@@ -434,6 +411,58 @@ class TribeMemberAdmin(admin.ModelAdmin):
     list_display = ['pk', 'profile', 'org', 'leader', 'status']
 
 
+class FundRequestAdmin(admin.ModelAdmin):
+    list_display = ['id', 'profile', 'requester', 'network', 'token_name', 'amount',
+                    'comments', 'address', 'tip', 'created_on']
+    readonly_fields = ['id']
+    ordering = ['-id']
+    raw_id_fields = ['profile', 'requester', 'tip']
+
+
+class QuestionInline(admin.TabularInline):
+    fields = ['id', 'poll', 'question_type', 'text']
+    readonly_fields = ['id']
+    raw_id_fields = ['poll']
+    show_change_link = True
+    model = Question
+    extra = 0
+
+
+class OptionsInline(admin.TabularInline):
+    fields = ['id', 'question', 'text']
+    raw_id_fields = ['question']
+    readonly_fields = ['id']
+    show_change_link = True
+    model = Option
+    extra = 0
+
+
+class PollsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'active', 'hackathon', 'created_on']
+    raw_id_fields = ['hackathon']
+    search_fields = ['title']
+    inlines = [QuestionInline]
+
+
+class QuestionsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'poll', 'question_type', 'text']
+    raw_id_fields = ['poll']
+    search_fields = ['question_type', 'text']
+    inlines = [OptionsInline]
+
+
+class OptionsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'question', 'text']
+    raw_id_fields = ['question']
+    search_fields = ['question', 'text']
+
+
+class AnswersAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'question', 'open_response', 'choice']
+    raw_id_fields = ['user', 'question', 'choice']
+    unique_together = ('user', 'question', 'choice')
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -464,6 +493,10 @@ admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
-admin.site.register(RefundFeeRequest, RefundFeeRequestAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
+admin.site.register(FundRequest, FundRequestAdmin)
+admin.site.register(Poll, PollsAdmin)
+admin.site.register(Question, QuestionsAdmin)
+admin.site.register(Option, OptionsAdmin)
+admin.site.register(Answer, AnswersAdmin)

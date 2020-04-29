@@ -3,8 +3,8 @@ new_username='y'
 from dashboard.management.commands import cleanup_dupe_profiles
 from dashboard.models import Profile
 
-old_profile = Profile.objects.get(handle__iexact=old_username)
-new_profile = Profile.objects.get(handle__iexact=new_username)
+old_profile = Profile.objects.get(handle=old_username.lower())
+new_profile = Profile.objects.get(handle=new_username.lower())
 
 user = old_profile.user
 user.username = new_username

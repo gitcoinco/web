@@ -181,10 +181,10 @@ a {
   margin-left: 0;
 }
 
-.interior .container-fluid {
+/* .interior .container-fluid {
   padding-left: 0;
   padding-right: 0;
-}
+} */
 
 .with-grey-background .body {
   background-color: #eee !important;
@@ -1516,6 +1516,21 @@ div.busyOverlay {
   padding: 1.4em 1.3em 1.3em;
 }
 
+.popover-user-card {
+  background-color: #FFF;
+  padding: 0;
+  width: 100%;
+  max-width: 30em;
+  font-size: 12px;
+}
+
+.user-card_donut-chart {
+  width: 56px;
+}
+.user-card_pie-chart {
+  width: 30px;
+}
+
 .big-popover {
   max-width: 482px;
 }
@@ -1543,25 +1558,6 @@ div.busyOverlay {
 .g-icon__dot-circle:before {
   border: 0.25em solid currentColor;
   border-radius: 100px;
-}
-
-.cta-blue {
-  background: #0D0764;
-  color: white;
-  padding: 1.8rem;
-  border-radius: 0.2rem;
-}
-
-.privaterepo-instructions {
-  color: grey;
-  padding-top: 1rem;
-}
-
-@media (min-width: 768px) {
-  .privaterepo-instructions {
-    width: 75%;
-  }
-
 }
 
 .g-modal .modal-header,
@@ -1665,4 +1661,76 @@ div.busyOverlay {
 
 .emoji-picker__emoji {
   font-size: 1.6rem!important;
+}
+.online_now:hover {
+  font-weight: bold;
+}
+.chat_presence_indicator {
+  font-size: 12px;
+  padding: 0px;
+  list-style: none;
+  display: inline-block;
+  cursor: pointer;
+  margin-bottom: 0px;
+  margin-left: 5px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+.chat_presence_indicator .indicator {
+  vertical-align: middle;
+  content: "\2022";
+  font-size: 42px;
+  color: #aaa;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: -12px;
+  margin-bottom: 0px;
+  line-height: 10px;
+}
+.chat_presence_indicator.online .indicator {
+  color: #0fce7c;
+}
+.chat_presence_indicator.away .indicator {
+  color: orange;
+}
+.chat_presence_indicator.dnd .indicator {
+  color: red;
+}
+.chat_presence_indicator.mini {
+  padding: 0px 1px;
+  font-size: 10px;
+  margin-left: 0px;
+}
+.chat_presence_indicator.mini .indicator {
+  font-size: 24px;
+  line-height: 0px
+}
+.indie_chat_indicator{
+  color: #0fce7c;
+  display: inline;
+}
+.indie_chat_indicator.offline{
+  color: #aaa;
+}
+.navbar .chat_presence_indicator:hover{
+  background-color: rgba(0,0,0,.5);
+  border-radius: 5px;
+}
+.navbar .chat_presence_indicator{
+  position: relative;
+  left: -16px;
+  top: -4px;
+}
+.navbar .chat_presence_indicator .indicator{
+  font-size: 22px;
+}
+
+.bg-shade-0 {
+  background: var(--bg-shade-0);
+}
+.bg-shade-1{
+  background: var(--bg-shade-1);
+}
+.bg-shade-2{
+  background: var(--bg-shade-2);
 }

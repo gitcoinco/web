@@ -1,22 +1,3 @@
-.navbar-network {
-  position: relative;
-  bottom: -9px;
-}
-
-nav,
-.banner {
-  background-color: #0D0764;
-}
-
-.nav #logo:hover {
-  background-color: #0D0764;
-}
-
-.banner {
-  color: #fff;
-  min-height: 10rem;
-}
-
 .plan {
   border-radius: 3px;
   transition: box-shadow .25s ease-out,border-color .25s ease-out;
@@ -33,7 +14,6 @@ nav,
   color: #4A4A4A;
 }
 
-.price span.month,
 .plan-header h2 span.month,
 .plan-header p {
   font-size: 1rem;
@@ -42,11 +22,6 @@ nav,
 
 .plan-header h2 {
   font-size: 2rem;
-}
-
-.period {
-  display: flex;
-  justify-content: center;
 }
 
 .discount {
@@ -71,17 +46,6 @@ nav,
 
 .features-available-na {
   color: #cacaca;
-}
-
-.companies {
-  display: flex;
-  justify-content: center;
-}
-
-.companies img {
-  height: 5rem;
-  width: auto;
-  margin: auto;
 }
 
 .plan-button .button--full {
@@ -119,70 +83,7 @@ nav,
   transform: rotate(45deg);
 }
 
-/* Subscribe  */
-.step {
-  margin-top: 1.5rem;
-  border-bottom: 1px solid #ccc;
-}
-
-.step.row {
-  margin-left: 0 !important;
-  margin-right:0 !important;
-  padding-bottom: 1rem;
-}
-
-.step h2 {
-  font-size: 1.25rem;
-  color: #4A4A4A
-}
-
-.step p {
-  color: #4A4A4A;
-}
-
-.billed {
-  display: flex;
-}
-
-#bill-period {
-  max-width: 6rem;
-}
-
-#bill-period .select2-selection.select2-selection--single {
-  border: 0 !important;
-  outline: 0;
-}
-
-.save-more {
-  animation-name: fadeIn;
-  animation-duration: .5s;
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.summary p {
-  margin: 0 0 4px;
-}
-
-.summary i {
-  font-size: 6px;
-  position: relative;
-  bottom: 2px;
-}
-
-#primary_form {
-  max-width: none;
-}
-
 @media (max-width: 576px) {
-  #primary_form {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
   .plan-info {
     text-align: center !important;
   }

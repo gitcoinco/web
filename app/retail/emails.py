@@ -27,6 +27,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
@@ -255,6 +256,27 @@ def render_tip_email(to_email, tip, is_new):
     }
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
+    response_txt = render_to_string("emails/new_tip.txt", params)
+
+    return response_html, response_txt
+
+
+def render_request_amount_email(to_email, request, is_new):
+
+    link = f'{reverse("tip")}?request={request.id}'
+    params = {
+        'link': link,
+        'amount': request.amount,
+        'tokenName': request.token_name if request.network == 'ETH' else request.network,
+        'address': request.address,
+        'comments': request.comments,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'email_type': 'request',
+        'request': request,
+        'already_received': request.tip
+    }
+
+    response_html = premailer_transform(render_to_string("emails/request_funds.html", params))
     response_txt = render_to_string("emails/new_tip.txt", params)
 
     return response_html, response_txt
@@ -496,7 +518,7 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quests=[]):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -508,6 +530,8 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3):
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
+        'show_action': True,
+        'trending_quests': trending_quests,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
@@ -1003,8 +1027,10 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from django.conf import settings
-    subject = "Web3 Status: SUSTAINED!"
-    new_kudos_pks = [10864, 10852, 7502]
+    from marketing.models import RoundupEmail
+    args = RoundupEmail.objects.order_by('created_on').last()
+    subject = args.subject
+    new_kudos_pks = args.kudos_ids.split(',')
     new_kudos_size_px = 150
     if settings.DEBUG and False:
         # for debugging email styles
@@ -1014,86 +1040,19 @@ def render_new_bounty_roundup(to_email):
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
+<div style="text-align: center">
 <h3>New Kudos This Month</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
+</div>
     '''
 
-    intro = f'''
-<p>
-Greetings Gitcoiners,
-</p>
-<p>
-Happy Friday! If you were expecting an email from Mr. Owocki today, I have good news and bad news. The bad news is you’re stuck with me - sorry to disappoint. But the absolutely incredible good news is that in the early morning hours of a magical Sustain Web3 Summit, the blockchain gods blessed this earth with a healthy <a href="https://twitter.com/owocki/status/1227969021720424449">baby Owocki</a>. While this may have thrown a wrench in our event plans, we’re all extremely excited for Kevin and his wonderful family, and the show must (and did) go on.
-</p>
-<p>
-So let’s get into it! If you weren’t able to attend or stream Sustain Web3, the event was a blast and almost all the talks are already uploaded to our <a href="https://www.youtube.com/watch?v=wWXdi891b28&list=PLvTrX8LNPbPnJYe0v37HL4T8dsilPQWTE">Youtube</a> for your enjoyment. Furthermore, Xpring and Bancor have both decided to extend their bounties from the Sustain Web3 Virtual Hackathon, see the <a href="https://gitcoin.co/hackathon/sustain-web3">prize explorer</a> with $9,000 still up for grabs and 1 week left!
-</p>
-<p>
-Even as the Gitcoin team devolves into anarchy without Kevin, we still have plenty of hackathons in the pipeline for you. This week we kicked off the 6-week <a href="https://blockchainforsocialimpact.com/incubator/">Social Impact Incubator</a> with $30,000 in prizes, <a href="https://gitcoin.co/hackathon/onboard/decentralized-impact-incubator/">sign up</a> and form teams by next week. Next Friday we’re launching an <a href="https://gitcoin.co/hackathon/onboard/sia/">exclusive virtual hackathon</a> with <a href="https://siasky.net/">Sia</a>. Registration is also open for our DeFi hackathon <a href="https://gitcoin.co/hackathon/onboard/funding-the-future/">Funding The Future</a> in late March.
-</p>
-<p>
-Finally, a sleep deprived CEO and father of two still somehow managed to make it to his <a href="https://www.youtube.com/watch?v=eAMzAOhn1KY">ETHDenver talk</a> to make some special announcements. Titled “Cathedral & Bazaar in the web3 era” this talk explores concepts from the 90’s OSS classic "Cathedral & Bazaar" & revisits it in the web3-era. We’re excited to share that we’ve already got $600k in CLR matching funds for 2020, and will be running weekly mini CLR rounds on the Gitcoin <a href=“https://gitcoin.co/townsquare">Town Square</a>!
-</p>
-
-{kudos_friday}
-
-<h3>What else is new?</h3>
-    <ul>
-        <li>
-        Today's Gitcoin Livestream will be with Yorke Rhodes of Microsoft and Vanessa Grellet of ConsenSys, both part of the Blockchain for Social Impact Coalition. We'll be discussing the Social Impact Incubator (6-week hackathon) that kicked off this week, so <a href=“gitcoin.co/livestream”>join us</a> at 2pm ET and come with questions.
-        </li>
-    </ul>
-</p>
-<p>
-Back to Gittin' those Coins,
-</p>
-'''
-    highlights = [{
-        'who': 'matkt',
-        'who_link': True,
-        'what': 'Added NAT Kubernetes Support for Besu',
-        'link': 'https://gitcoin.co/issue/PegaSysEng/BountiedWork/4/4002',
-        'link_copy': 'View more',
-    }, {
-        'who': 'robsecord',
-        'who_link': True,
-        'what': 'Created The Best User Experience In A Dapp Utilizing Dfuse (Sustain Web3 Hackathon)',
-        'link': 'https://gitcoin.co/issue/dfuse-io/hackathons/1/3954',
-        'link_copy': 'View more',
-    }, {
-        'who': 'calchulus',
-        'who_link': True,
-        'what': 'Created a New Logo Design for Charged Particles',
-        'link': 'https://gitcoin.co/issue/robsecord/ChargedParticlesWeb/1/4025',
-        'link_copy': 'View more',
-    }, ]
-
-    sponsor = {
-    'name': 'CodeFund',
-    'title': 'Does your project need 🦄 developers?',
-    'image_url': '',
-    'link': 'http://bit.ly/codefund-gitcoin-weekly',
-    'cta': 'Learn More',
-    'body': [
-       'CodeFund is a privacy-focused ethical advertising network (by Gitcoin) that funds open source projects.',
-       'We specialize in helping companies connect with talented developers and potential customers on developer-centric sites that typically do not allow ads.'
-    ]
-}
-
-    bounties_spec = [{
-        'url': 'https://github.com/harmonylion/ideamarkets/issues/7',
-        'primer': 'Streamline Buying Tokens From Bonding Curve Using RDAI',
-    }, {
-        'url': 'https://github.com/unstoppabledomains/unstoppable-demo-browser/issues/4',
-        'primer': 'Support ENS (.Eth) + IPFS Resolution',
-    }, {
-        'url': 'https://github.com/blockchainforsocialimpact/incubator/issues/3',
-        'primer': '[$10,000] - Plastics & Pollution (Social Impact Incubator)',
-    }]
-
+    intro = args.body.replace('KUDOS_INPUT_HERE', kudos_friday)
+    highlights = args.highlights
+    sponsor = args.sponsor
+    bounties_spec = args.bounties_spec
 
     num_leadboard_items = 5
     highlight_kudos_ids = []
@@ -1155,12 +1114,13 @@ Back to Gittin' those Coins,
         'sponsor': sponsor,
 		'email_type': 'roundup',
         'email_style': email_style,
+        'hide_bottom_logo': True,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
-    return response_html, response_txt, subject
+    return response_html, response_txt, subject, args.from_email, args.from_name
 
 
 
@@ -1422,7 +1382,7 @@ def faucet_rejected(request):
 
 @staff_member_required
 def roundup(request):
-    response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    response_html, _, _, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
 
 

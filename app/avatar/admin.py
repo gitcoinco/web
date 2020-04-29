@@ -22,7 +22,26 @@ import json
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from avatar.models import BaseAvatar, CustomAvatar
+from avatar.models import AvatarTextOverlayInput, AvatarTheme, BaseAvatar, CustomAvatar
+
+
+class AvatarThemeAdmin(admin.ModelAdmin):
+    """Define the AvatarThemeAdmin administration layout."""
+
+    ordering = ['-popularity']
+    list_display = ['png_asset', 'popularity', 'created_on', '__str__']
+    readonly_fields = ['png_asset']
+
+    def png_asset(self, instance):
+        """Define the avatar PNG tag to be displayed in the admin."""
+        return mark_safe(f'<img src="{instance.img_url}" width="150" height="150" />')
+
+
+class VeryGeneralAdmin(admin.ModelAdmin):
+    """Define the VeryGeneralAdmin administration layout."""
+
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -74,5 +93,7 @@ class CustomAvatarAdmin(GeneralAdmin):
     raw_id_fields = ['profile']
 
 
+admin.site.register(AvatarTheme, AvatarThemeAdmin)
 admin.site.register(BaseAvatar, BaseAvatarAdmin)
 admin.site.register(CustomAvatar, CustomAvatarAdmin)
+admin.site.register(AvatarTextOverlayInput, VeryGeneralAdmin)

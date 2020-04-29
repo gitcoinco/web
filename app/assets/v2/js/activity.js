@@ -1,10 +1,14 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
+});
 
 $(document).ready(function() {
 
   var linkify = function(new_text) {
     new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/(^|\s)@([a-zA-Z0-9_-]*)/g, '$1<a data-usercard="$2" href="/profile/$2">@$2</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
@@ -16,6 +20,153 @@ $(document).ready(function() {
       return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
     });
   }
+
+  var get_jitsi_api_object = function(roomName) {
+    var jitsi_domain = 'meet.jit.si';
+    var jitsi_options = {
+      roomName: roomName,
+      parentNode: document.querySelector('#' + roomName),
+      welcomePageEnabled: true
+    };
+    var jitsi_api = new JitsiMeetExternalAPI(jitsi_domain, jitsi_options);
+
+    return jitsi_api;
+  };
+
+  // join video call
+  $(document).on('click', '.click_here_to_join_video', function(e) {
+    e.preventDefault();
+    if (typeof document.jitsi_api != 'undefined') {
+      _alert('You can only be in one video call at a time.', 'error', 1000);
+      return;
+    }
+    const animals = [ 'Hamster', 'Marmot', 'Robot', 'Ferret', 'Squirrel' ];
+    const animal = animals[Math.floor(Math.random() * animals.length)];
+    const safeHandle = document.contxt.github_handle ? document.contxt.github_handle : animal;
+
+    $(this).addClass('live');
+    $(this).text('');
+    const roomName = $(this).data('roomname');
+    const api = get_jitsi_api_object(roomName);
+    const avatarURL = 'https://gitcoin.co/dynamic/avatar/' + safeHandle;
+
+    document.jitsi_api = api;
+    api.executeCommand('displayName', safeHandle + parseInt(100 * Math.random()));
+    api.executeCommand('avatarUrl', avatarURL);
+    api.executeCommand('toggleAudio'); // default off
+    api.executeCommand('toggleVideo'); // default off
+    const participants_count = api.getNumberOfParticipants() + 1;
+    const $target = $(this).parents('.activity_detail_content');
+    const html = `
+    <p class='float-right p-0 m-0 video_options_container'>
+    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> |
+    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> |
+    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> |
+    <a href=# class=' leave_video_call'>Leave Video Call <i class="far fa-times-circle"></i></a>
+    </p>`;
+
+    $target.prepend(html);
+  });
+
+  // refresh job for live call
+  setInterval(function() {
+    $('.click_here_to_join_video.live').each(function() {
+      const pc = document.jitsi_api.getNumberOfParticipants();
+      const roomName = $(this).data('roomname');
+      const $parent = $(this).parents('.activity_detail');
+
+      $parent.find('.participants_count').text(pc);
+      if ($parent.find('.indie_chat_indicator').hasClass('offline')) {
+        $parent.find('.indie_chat_indicator').removeClass('offline');
+      }
+      if (!document.contxt.github_handle) {
+        return;
+      }
+      const url = '/api/v0.1/video/presence';
+      const params = {
+        'participants': pc,
+        'roomname': roomName,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+      };
+
+      $.post(url, params, function(response) {
+        $.noop;
+      });
+    });
+  }, 5000);
+
+  $(document).on('click', '.new_tab', function(e) {
+    e.preventDefault();
+    var roomname = $(this).parents('.row').find('.click_here_to_join_video').data('roomname');
+    var url = 'https://meet.jit.si/' + roomname;
+
+    window.open(url, '_blank');
+  });
+
+  // leave video call
+  $(document).on('click', '.leave_video_call', function(e) {
+    e.preventDefault();
+    document.jitsi_api.dispose();
+    var $taret = $(this).parents('.row').find('.click_here_to_join_video');
+    var url = $taret.data('src');
+    var html = "<img src='" + url + "'>";
+
+    document.jitsi_api = undefined;
+    $taret.removeClass('live').html(html);
+    $('.video_options_container').remove();
+  });
+
+  // full screen
+  $(document).on('click', '.full_screen', function(e) {
+    e.preventDefault();
+    var $target = $(this).parents('.row').find('iframe[name=jitsiConferenceFrame0]');
+
+    toggleFullscreen();
+  });
+
+  // popout screen
+  $(document).on('click', '.popout_screen', function(e) {
+    e.preventDefault();
+    var $target = $(this).parents('.row').find('iframe[name=jitsiConferenceFrame0]');
+
+    $target.toggleClass('popout');
+    if ($(this).text().indexOf('Pop Out') != -1) {
+      $(this).html('Pop In <i class="fas fa-level-up-alt"></i>');
+    } else {
+      $(this).html('Pop Out <i class="fas fa-sign-out-alt">');
+    }
+  });
+
+  function toggleFullscreen() {
+    let iframe = document.querySelector('#jitsiConferenceFrame0');
+
+    if (!document.fullscreenElement) {
+      iframe.requestFullscreen().catch(err => {
+        alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  $(document).on('click', '.infinite-more-link', function(e) {
+    if ($(this).hasClass('hidden')) {
+      e.preventDefault();
+      return;
+    }
+    $(this).addClass('hidden');
+    var url = $(this).attr('href');
+
+    $('.infinite-container').find('.loading').removeClass('hidden');
+    $.get(url, function(response) {
+      $('.infinite-container').find('.infinite-more-link').remove();
+      $('.infinite-container').find('.loading').remove();
+      $('.infinite-container').append($(response).find('.infinite-container').html());
+      $('.infinite-container').find('.loading').addClass('hidden');
+    });
+    e.preventDefault();
+  });
+  $('.infinite-more-link').click();
 
 
   document.base_title = $('title').text();
@@ -136,6 +287,79 @@ $(document).ready(function() {
     $('title').text(document.base_title);
   });
 
+  // show percentages and votes
+  var update_and_reveal = function($this, total) {
+
+    // calc total
+    var answers = $this.parents('.poll_choices').find('span');
+
+    for (var i = 0; i < answers.length; i++) {
+      total += parseInt(($(answers[i]).text()));
+    }
+
+    // update all htmls
+    for (var j = 0; j < answers.length; j++) {
+      var $answer = $(answers[j]);
+      var answer = parseInt(($answer.text()));
+      var new_answer = answer;
+
+      if (isNaN(new_answer)) {
+        new_answer = 0;
+      }
+      var pct = Math.round((new_answer / total) * 100);
+
+      if (isNaN(pct)) {
+        pct = 0;
+      }
+      var html = '- ' + new_answer + ' ( ' + pct + '% )';
+
+      $answer.html(html);
+    }
+    return total;
+  };
+
+  $('.poll_choices.answered').each(function() {
+    update_and_reveal($(this).find('div'), 0);
+  });
+
+  // vote on a poll
+  $(document).on('click', '.poll_choices div', function(e) {
+    e.preventDefault();
+
+    // no answering twice
+    if ($(this).parents('.poll_choices').hasClass('answered')) {
+      return;
+    }
+
+    // setup
+    $(this).addClass('answer');
+    $(this).parents('.poll_choices').addClass('answered');
+
+    // update this error count
+    var $answer = $(this).find('span');
+    var answer = parseInt(($answer.text()));
+    var new_answer = answer + 1;
+
+    $answer.html(new_answer);
+
+    update_and_reveal($(this), 0);
+
+    // remote post
+    var $parent = $(this).parents('.activity.box');
+    var vote = $(this).data('vote');
+    var params = {
+      'method': 'vote',
+      'vote': vote,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + $parent.data('pk');
+
+    $.post(url, params, function(response) {
+      console.log(response);
+    });
+
+  });
+
   // delete activity
   $(document).on('click', '.delete_activity', function(e) {
     e.preventDefault();
@@ -204,7 +428,7 @@ $(document).ready(function() {
       const msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
       var old_amount = $amount.text();
-      var new_amount = Math.round(100 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 100;
+      var new_amount = Math.round(1000 * (parseFloat(old_amount) + parseFloat(amountInEth))) / 1000;
 
       $amount.fadeOut().text(new_amount).fadeIn();
       setTimeout(function() {
@@ -251,8 +475,10 @@ $(document).ready(function() {
 
 
   // like activity
-  $(document).on('click', '.like_activity, .flag_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity', function(e) {
     e.preventDefault();
+    const current_tab = getURLParams('tab');
+
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
       return;
@@ -264,21 +490,18 @@ $(document).ready(function() {
     if (is_unliked) { // like
       $(this).find('span.action').addClass('open');
       $(this).data('state', $(this).data('affirmative'));
-
-      var $icon = $(this).find('.fa-heart');
-
-      $icon.effect('puff', function() {
-        $(this).fadeIn();
-      });
+      $(this).addClass('animate-sparkle');
 
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
+      $(this).find('i').removeClass('far').addClass('fas');
     } else { // unlike
       $(this).find('span.action').removeClass('open');
       $(this).data('state', $(this).data('negative'));
-
+      $(this).removeClass('animate-sparkle');
       num = parseInt(num) - 1;
       $(this).find('span.num').html(num);
+      $(this).find('i').removeClass('fas').addClass('far');
     }
 
     // remote post
@@ -290,11 +513,16 @@ $(document).ready(function() {
     var url = '/api/v0.1/activity/' + $(this).data('pk');
 
     var parent = $(this).parents('.activity.box');
+    var self = $(this);
 
     parent.find('.loading').removeClass('hidden');
     $.post(url, params, function(response) {
       // no message to be sent
       parent.find('.loading').addClass('hidden');
+
+      if (!is_unliked && current_tab === 'my_favorites') {
+        self.parentsUntil('.activity_stream').remove();
+      }
     }).fail(function() {
       parent.find('.error').removeClass('hidden');
     });
@@ -308,51 +536,98 @@ $(document).ready(function() {
       return;
     }
 
-    // user input
-    var comment = $parent.parents('.box').find('.comment_container textarea').val();
+    if ($('.editableComment')[0]) {
+      // edited content
+      const comment = $parent.parents('.box').find('.editableComment').val();
 
-    $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
+      $('.editableComment').prop('disabled', true);
 
-    // validation
-    if (!comment) {
-      return;
-    }
+      // validation
+      if (!comment) {
+        $('.editableComment').prop('disabled', false);
+        return;
+      }
 
-    $parent.parents('.activity.box').find('.loading').removeClass('hidden');
-    var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
-    // increment number
-    var num = $parent.find('span.num').html();
+      $parent.parents('.activity.box').find('.loading').removeClass('hidden');
 
-    num = parseInt(num) + 1;
-    $parent.find('span.num').html(num);
-
-    // remote post
-    var params = {
-      'method': 'comment',
-      'comment': comment,
-      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-    };
-    var url = '/api/v0.1/activity/' + $parent.data('pk');
-
-    $.post(url, params, function(response) {
-      var success_callback = function($parent) {
-        $parent.parents('.box').find('.comment_container textarea').val('');
-        $parent.find('textarea').focus();
-
+      const has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
+      const num = $parent.find('span.num').html();
+      const comment_id = $('.editableComment').parent().closest('.comment_row').data('id');
+      const url = '/api/v0.1/comment/' + comment_id;
+      const params = {
+        'method': 'EDIT',
+        'comment': comment,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
       };
-      var override_hide_comments = !has_hidden_comments;
 
-      view_comments($parent, allow_close_comment_container, success_callback, override_hide_comments);
-    }).done(function() {
-      // pass
-    })
-      .fail(function() {
-        $parent.parents('.activity.box').find('.error').removeClass('hidden');
-      })
-      .always(function() {
+      $.post(url, params, function(response) {
+        const success_callback = function($parent) {
+          $.noop(); // do nothing
+        };
+
+        view_comments($parent, allow_close_comment_container, success_callback);
+      }).always(function() {
         $parent.parents('.activity.box').find('.loading').addClass('hidden');
         $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
+        $('.editableComment').prop('disabled', false);
+        $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', false).removeClass('hidden');
+        $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+          .find('#container-post_comment')
+          .find('*').prop('disabled', false).removeClass('hidden');
+        // TODO: automatically cancel editing when another edit_comment button is clicked
+        $('.edit_comment').prop('disabled', false);
       });
+    } else {
+      // user input
+      const comment = $parent.parents('.box').find('.comment_container textarea').val().trim();
+
+      $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
+      $('.post_comment').prop('disabled', true);
+
+      // validation
+      if (!comment) {
+        $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
+        $('.post_comment').prop('disabled', false);
+        return;
+      }
+
+
+      $parent.parents('.activity.box').find('.loading').removeClass('hidden');
+      const has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
+
+      // increment number
+      let num = $parent.find('span.num').html();
+
+      num = parseInt(num) + 1;
+      $parent.find('span.num').html(num);
+
+      // remote post
+      const params = {
+        'method': 'comment',
+        'comment': comment,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+      };
+      const url = '/api/v0.1/activity/' + $parent.data('pk');
+
+      $.post(url, params, function(response) {
+        const success_callback = function($parent) {
+          $parent.parents('.box').find('.comment_container textarea').val('');
+          $parent.find('textarea').focus();
+
+        };
+        const override_hide_comments = !has_hidden_comments;
+
+        view_comments($parent, allow_close_comment_container, success_callback, override_hide_comments);
+      }).done(function() {
+        // pass
+      }).fail(function() {
+        $parent.parents('.activity.box').find('.error').removeClass('hidden');
+      }).always(function() {
+        $parent.parents('.activity.box').find('.loading').addClass('hidden');
+        $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
+        $('.post_comment').prop('disabled', false);
+      });
+    }
   };
 
   // converts an object to a dict
@@ -366,6 +641,10 @@ $(document).ready(function() {
 
   var view_comments = function($parent, allow_close_comment_container, success_callback, override_hide_comments) {
     hide_after_n_comments = 3;
+    if (getParam('tab') && getParam('tab').indexOf('activity:') != -1) {
+      hide_after_n_comments = 100;
+    }
+    const limit_hide_option = 10;
     // remote post
     var params = {
       'method': 'comment'
@@ -404,6 +683,7 @@ $(document).ready(function() {
         const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         const show_tip = true;
         const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
+        const is_edited = typeof comment['is_edited'] !== 'undefined' ? comment['is_edited'] : false;
         var sorted_match_curve_html = '';
 
         if (comment['sorted_match_curve']) {
@@ -413,20 +693,22 @@ $(document).ready(function() {
           for (let j = 0; j < match_curve.length; j++) {
             let ele = match_curve[j];
 
+
             sorted_match_curve_html += '<li>';
-            sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 100) / 100} in matching.`;
+            sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 1000) / 1000} in matching.`;
             sorted_match_curve_html += '</li>';
           }
         }
         var show_more_box = '';
         var is_hidden = (num_comments - i) >= hide_after_n_comments && override_hide_comments != true;
         var is_first_hidden = i == 0 && num_comments >= hide_after_n_comments && override_hide_comments != true;
+        const show_all_option = num_comments > limit_hide_option;
 
         if (is_first_hidden) {
           show_more_box = `
-          <div class="row mx-auto show_more d-block text-center">
+          <div class="row mx-auto ${ show_all_option ? 'show_all' : 'show_more'} d-block text-center">
             <a href="#" class="text-black-60 font-smaller-5">
-              Show More
+            ${ show_all_option ? 'See all comments' : `Show More (<span class="comment-count">${num_comments - hide_after_n_comments + 1}</span>)`}
             </a>
           </div>
           `;
@@ -435,22 +717,27 @@ $(document).ready(function() {
         ${show_more_box}
         <div class="row comment_row mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
           <div class="col-1 activity-avatar my-auto">
-            <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
+            <a href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
           </div>
           <div class="col-11 activity_comments_main pl-4 px-sm-3">
             <div class="mb-0">
               <span>
+              <span class="chat_presence_indicator mini ${comment['last_chat_status']}" data-openchat="${comment['profile_handle']}">
+                <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
+                  •
+                </span>
+              </span>
                 <b>${comment['name']}</b>
-                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
+                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
                 @${comment['profile_handle']}
                 </a></span>
                 ${comment['match_this_round'] ? `
-                <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning <strong>$${comment['match_this_round']}</strong> in this week's CLR Round.  
+                <span class="tip_on_comment" data-pk="${comment['id']}" data-username="${comment['profile_handle']}" style="border-radius: 3px; border: 1px solid white; color: white; background-color: black; cursor:pointer; padding: 2px; font-size: 10px;" data-placement="bottom" data-toggle="tooltip" data-html="true"  title="@${comment['profile_handle']} is estimated to be earning <strong>$${comment['match_this_round']}</strong> in this week's CLR Round.
                 <BR><BR>
 
-              Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(100 * comment['default_match_round']) / 100}</strong> in matching.
+              Want to help @${comment['profile_handle']} move up the rankings?  Assuming you haven't contributed to @${comment['profile_handle']} yet this round, a contribution of 0.001 ETH (about $0.30) could mean +<strong>$${Math.round(1000 * comment['default_match_round']) / 1000}</strong> in matching.
               <br>
               <br>
               Other contribution levels will mean other matching amounts:
@@ -468,11 +755,14 @@ $(document).ready(function() {
               </span>
               <span class='float-right'>
                 <span class="d-none d-sm-inline grey font-smaller-5 text-right">
-                  ${timeAgo}
+                  ${timeAgo} ${is_edited ? '(edited)' : ''}
                 </span>
-                <span class="font-smaller-5 mt-1" style="display: block; text-align: right;">
+                <span class="comment_options font-smaller-5 mt-1" style="display: block; text-align: right;">
                   ${is_comment_owner ?
     `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
+    : ''}
+    ${is_comment_owner ?
+    `<i data-pk=${comment['id']} class="edit_comment fas fa-edit font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
     : ''}
                   ${show_tip ? `
                   <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
@@ -496,13 +786,18 @@ $(document).ready(function() {
       }
 
       const post_comment_html = `
-        <div class="row py-2 mx-auto">
-          <div class="col-sm-1 activity-avatar d-none d-sm-inline">
+        <div id="container-post_comment" class="row py-2 mx-auto">
+          <div class="col-sm-1 mt-1 activity-avatar d-none d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
-          <div class="col-12 col-sm-11 text-right">
+          <div class="comment-area col-12 col-sm-11 text-right">
             <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
-            <a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
+            <div class="emoji-container position-absolute d-flex flex-wrap">
+              <button class="btn btn-sm p-1 emoji_button" data-toggle="tooltip" title="Add an emoji to post.">
+                <i class="far fa-fw fa-smile"></i>
+              </button>
+            </div>
+            <a href=# class="btn btn-gc-blue btn-sm mt-= font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
       `;
@@ -514,6 +809,24 @@ $(document).ready(function() {
     });
   };
 
+  // add emoji to comment
+  let activityCommentTextArea = '';
+  var picker = new EmojiButton({
+    position: 'right-end'
+  });
+
+  picker.on('emoji', function(emoji) {
+    activityCommentTextArea.value += ` ${emoji} `;
+  });
+
+  $(document).on('click', '.emoji_button', function(e) {
+    e.preventDefault();
+    const commentArea = $(this).parents('.comment-area')[0];
+    const emojiContainer = $(this).parents('.emoji-container')[0];
+
+    picker.pickerVisible ? picker.hidePicker() : picker.showPicker(emojiContainer);
+    activityCommentTextArea = commentArea.children[0];
+  });
 
   // post comment activity
   $(document).on('click', '.comment_container .action.like', function(e) {
@@ -534,15 +847,12 @@ $(document).ready(function() {
 
     if ($(this).hasClass('open')) {
       $(this).removeClass('open');
+      $(this).removeClass('animate-sparkle');
       like_count = like_count - 1;
     } else {
       $(this).addClass('open');
+      $(this).addClass('animate-sparkle');
       like_count = like_count + 1;
-      var $icon = $(this).find('.fa-heart');
-
-      $icon.effect('puff', function() {
-        $(this).fadeIn();
-      });
     }
     let $ele = $(this).find('span.like_count');
 
@@ -559,14 +869,27 @@ $(document).ready(function() {
   // post comment activity
   $(document).on('click', '.show_more', function(e) {
     e.preventDefault();
-    var num_to_unhide_at_once = 3;
+    const num_to_unhide_at_once = 3;
 
     for (var i = 0; i < num_to_unhide_at_once; i++) {
       get_hidden_comments($(this)).last().removeClass('hidden');
     }
     if (get_hidden_comments($(this)).length == 0) {
       $(this).remove();
+    } else {
+      $(this).find('.comment-count').text(get_hidden_comments($(this)).length);
     }
+  });
+
+  $(document).on('click', '.show_all', function(e) {
+    e.preventDefault();
+    const hiddenComments = get_hidden_comments($(this));
+
+    for (let i = 0; i < hiddenComments.length; i++) {
+      hiddenComments[i].classList.remove('hidden');
+    }
+
+    $(this).remove();
   });
 
   // post comment activity
@@ -587,6 +910,59 @@ $(document).ready(function() {
     post_comment($target, false);
   });
 
+
+  // cancel editing comment
+  $(document).on('click', '.cancel_edit', function(e) {
+    e.preventDefault();
+    const comment_id = $(this).data('id');
+    const editableContainer = $('#editableContainer');
+
+    const url = '/api/v0.1/comment/' + comment_id;
+    const params = {
+      'method': 'GET_COMMENT'
+    };
+
+    $.get(url, params, function(response) {
+      let the_comment = response['comment'];
+
+      the_comment = urlify(the_comment);
+      the_comment = linkify(the_comment);
+      the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
+
+      editableContainer.replaceWith(`<div class="activity_comments_main_comment">${the_comment}</div>`);
+
+    }).always(function() {
+      $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', false).removeClass('hidden');
+      $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+        .find('#container-post_comment')
+        .find('*').prop('disabled', false).removeClass('hidden');
+      // TODO: automatically cancel editing when another edit_comment button is clicked
+      $('.edit_comment').prop('disabled', false);
+    });
+  });
+
+
+  $(document).on('click', '.edit_comment', function(e) {
+    e.preventDefault();
+    let comment_id = $(this).data('pk');
+    let commentContainer = $(`.comment_row[data-id="${comment_id}"] .activity_comments_main_comment`);
+    let content = commentContainer.html().replace(/<br>/g, '\n').trim();
+    let editableContainer = $(`<div id="editableContainer" class="col-12 col-sm-12 text-right"><textarea class="form-control bg-lightblue font-caption editableComment" cols="80" rows="3" data-id="${comment_id}">${content}</textarea><a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold cancel_edit" data-id="${comment_id}">CANCEL</a></div>`);
+
+    $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', true).addClass('hidden');
+    $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+      .find('#container-post_comment')
+      .find('*').prop('disabled', true).addClass('hidden');
+
+    commentContainer.replaceWith(editableContainer);
+
+    $(`#editableContainer textarea[data-id="${comment_id}`).focus();
+
+    // TODO: automatically cancel editing when another edit_comment button is clicked
+    $('.edit_comment').prop('disabled', true);
+  });
+
+
   $(document).on('click', '.delete_comment', function(e) {
     e.preventDefault();
     const comment_id = $(this).data('pk');
@@ -598,27 +974,59 @@ $(document).ready(function() {
 
     const url = '/api/v0.1/comment/' + comment_id;
 
-    $.post(url, params, function(response) {
-      if (response.status <= 204) {
-        _alert('comment successfully deleted.', 'success', 1000);
-        $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
-        console.log(response);
-      } else {
-        _alert(`Unable to delete commment: ${response.message}`, 'error');
-        console.log(`error deleting commment: ${response.message}`);
-      }
-    }).fail(function(error) {
-      _alert('Unable to delete comment', 'error');
-      console.log(`error deleting commment: ${error.message}`);
-    });
+    if (confirm('Do you want to delete this comment?')) {
+      $.post(url, params, function(response) {
+        if (response.status <= 204) {
+          _alert('comment successfully deleted.', 'success', 1000);
+          $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
+          console.log(response);
+        } else {
+          _alert(`Unable to delete commment: ${response.message}`, 'error');
+          console.log(`error deleting commment: ${response.message}`);
+        }
+      }).fail(function(error) {
+        _alert('Unable to delete comment', 'error');
+        console.log(`error deleting commment: ${error.message}`);
+      });
+    }
   });
 
 
-  $(document).on('keypress', '.enter-activity-comment', function(e) {
+  $(document).on('keyup keydown keypress', '.enter-activity-comment, .editableComment', function(e) {
     if (e.which == 13 && !e.shiftKey) {
       const $target = $(this).parents('.activity.box').find('.comment_activity');
 
       post_comment($target, false);
+    }
+
+    if (e.key === 'Escape' && typeof $('.editableComment')[0] != 'undefined') {
+      const comment_id = $(this).data('id');
+      const editableContainer = $('#editableContainer');
+
+      const url = '/api/v0.1/comment/' + comment_id;
+      const params = {
+        'method': 'GET_COMMENT'
+      };
+
+      $.get(url, params, function(response) {
+        let the_comment = response['comment'];
+
+        the_comment = urlify(the_comment);
+        the_comment = linkify(the_comment);
+        the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
+
+        editableContainer.replaceWith(`<div class="activity_comments_main_comment">${the_comment}</div>`);
+
+      }).always(function() {
+        $(`.comment_row[data-id="${comment_id}"] .comment_options`)
+          .prop('disabled', false)
+          .removeClass('hidden');
+        $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+          .find('#container-post_comment')
+          .find('*').prop('disabled', false).removeClass('hidden');
+        // TODO: automatically cancel editing when another edit_comment button is clicked
+        $('.edit_comment').prop('disabled', false);
+      });
     }
   });
 
@@ -637,12 +1045,26 @@ $(document).ready(function() {
     }, 300);
   });
 
+  $(document).on('click', '.fund_issue', function(e) {
+    e.preventDefault();
+    const url = $(this).data('url');
+
+    copyToClipboard(url);
+    _alert('Link copied to clipboard.', 'success', 1000);
+    $(this).addClass('open');
+    const $target = $(this);
+
+    setTimeout(function() {
+      $target.removeClass('open');
+    }, 300);
+  });
 
   // auto open new comment threads
   setInterval(function() {
 
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').bootstrapTooltip();
+    openChat();
 
     $('.comment_activity').each(function() {
       var open = $(this).data('open');
@@ -674,3 +1096,23 @@ $(document).ready(function() {
 
 
 }(jQuery));
+
+function throttle(fn, wait) {
+  var time = Date.now();
+
+  return function() {
+    if ((time + wait - Date.now()) < 0) {
+      fn();
+      time = Date.now();
+    }
+  };
+}
+
+
+window.addEventListener('scroll', throttle(function() {
+  var offset = 800;
+
+  if ((window.innerHeight + window.scrollY + offset) >= document.body.offsetHeight) {
+    $('.infinite-more-link').click();
+  }
+}, 500));

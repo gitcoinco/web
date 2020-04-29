@@ -197,7 +197,7 @@ def cohort(request):
     cohorts = {}
 
     data_source = request.GET.get('data_source', 'slack-online')
-    num_periods = request.GET.get('num_periods', 20)
+    num_periods = int(request.GET.get('num_periods', 20))
     period_size = request.GET.get('period_size', 'weeks')
     kwargs = {}
 
@@ -207,7 +207,9 @@ def cohort(request):
         users = cohort_helper_users(start_time, end_time, data_source)
         num_entries = users.count()
         usage_by_time_period = {}
-        for k in range(1, i):
+        _range = list(range(1, i))
+        _range.reverse()
+        for k in _range:
             inner_start_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(k, period_size))
             inner_end_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(k - 1, period_size))
             num = cohort_helper_num(inner_start_time, inner_end_time, data_source, users)

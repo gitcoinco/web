@@ -166,7 +166,7 @@
             </div>
             <div class="col-12 mt-2">
               <h5 class="bounty-heading mt-0 pt-4" id="description">{% trans "Description" %}</h5>
-              <div class="bounty-text" id="issue_description"></div>
+              <div class="bounty-text text-body issue_description" id="issue_description"></div>
             </div>
             <div class="col-12">
               <div id="issue_keywords"></div>
@@ -231,6 +231,13 @@
                     </div>
                   {% endfor %}
                 </div>
+              </div>
+            {% endif %}
+            {% if event_tag and user.is_authenticated %}
+              <div class="col-12">
+                <p class="my-3">
+                  <button onclick="projectModal(document.result.pk)" class="btn btn-sm btn-gc-green">Add project</button> <small>(manually add your project if you already expressed interest on this prize or want to have more than one project)</small>
+                </p>
               </div>
             {% endif %}
             <div class="col-12">
@@ -334,9 +341,6 @@
                   <a href="/profile/[[>worker_handle]]" target="_blank">
                     [[>worker_handle]]
                   </a> to work on the bounty
-                [[/if]]
-                [[if signed_nda]]
-                  <a href="[[>signed_nda.signed_nda.doc]]" download class="d-flex">View signed NDA</a>
                 [[/if]]
               </div>
               [[if can_approve_worker ]]
@@ -503,10 +507,10 @@
     </noscript>
 
     <script>
-      const is_bounties_network = {% if is_bounties_network %} {{ is_bounties_network|lower }} {% else %} true {% endif %};
+      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
       document.issueURL = '{{ issueURL }}';
-                                                                                                
-      // ETC-TODO: remove network + std bounties for ETC                                                                                                     
+
+      // ETC-TODO: remove network + std bounties for ETC
       document.issueNetwork = '{{ network }}';
       document.issue_stdbounties_id = '{{ stdbounties_id }}';
 

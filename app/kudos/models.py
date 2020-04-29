@@ -347,6 +347,8 @@ class Token(SuperModel):
     def preview_img_url(self):
         if self.preview_img_mode == 'png':
             return self.img_url
+        if "https:" in self.image:
+            return self.image
         return static(self.image)
 
     @property
@@ -408,6 +410,24 @@ def psave_token(sender, instance, **kwargs):
                 'img_url': instance.img_url,
             }
             )
+
+
+@receiver(post_save, sender=Token, dispatch_uid="postsave_token")
+def postsave_token(sender, instance, created, **kwargs):
+    if created:
+        if instance.pk and instance.gen == 1 and not instance.hidden:
+            from dashboard.models import Activity, Profile
+            gcb = Profile.objects.filter(handle='gitcoinbot').first()
+            if not gcb:
+                return
+            kwargs = {
+                'activity_type': 'created_kudos',
+                'kudos': instance,
+                'profile': gcb,
+                'metadata': {
+                }
+            }
+            Activity.objects.create(**kwargs)
 
 
 class KudosTransfer(SendCryptoAsset):
@@ -509,6 +529,9 @@ def psave_kt(sender, instance, **kwargs):
             "value_usd":instance.value_in_usdt_then,
             "url":instance.kudos_token_cloned_from.url,
             "network":instance.network,
+            "txid":instance.txid,
+            "token_name":'ETH',
+            "token_value":instance.value_true,
         }
         )
 
@@ -570,6 +593,7 @@ class BulkTransferCoupon(SuperModel):
     sender_pk = models.CharField(max_length=255, blank=True)
     tag = models.CharField(max_length=255, blank=True)
     metadata = JSONField(default=dict, blank=True)
+    make_paid_for_first_minutes = models.IntegerField(default=0)
 
     def __str__(self):
         """Return the string representation of a model."""
@@ -582,6 +606,13 @@ class BulkTransferCoupon(SuperModel):
     def url(self):
         return f"/kudos/redeem/{self.secret}"
 
+    @property
+    def paid_until(self):
+        return self.created_on + timezone.timedelta(minutes=self.make_paid_for_first_minutes)
+
+    @property
+    def is_paid_right_now(self):
+        return timezone.now() < self.paid_until
 
 @receiver(pre_save, sender=BulkTransferCoupon, dispatch_uid="psave_BulkTransferCoupon")
 def psave_BulkTransferCoupon(sender, instance, **kwargs):
@@ -622,6 +653,7 @@ class TokenRequest(SuperModel):
     artist = models.CharField(max_length=255)
     platform = models.CharField(max_length=255)
     to_address = models.CharField(max_length=255)
+    bounty_url = models.CharField(max_length=255, blank=True, default='')
     artwork_url = models.CharField(max_length=255)
     numClonesAllowed = models.IntegerField(default=18)
     metadata = JSONField(null=True, default=dict, blank=True)
@@ -634,10 +666,10 @@ class TokenRequest(SuperModel):
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"{self.name} on {self.network} on {self.created_on}; approved: {self.approved} "
+        return f"approved: {self.approved} -- {self.name} on {self.network} on {self.created_on};"
 
 
-    def mint(self):
+    def mint(self, gas_price_gwei=None):
         """Approve / mint this token."""
         from kudos.management.commands.mint_all_kudos import mint_kudos # avoid circular import
         from kudos.utils import KudosContract # avoid circular import
@@ -648,15 +680,14 @@ class TokenRequest(SuperModel):
             'description': self.description,
             'priceFinney': self.priceFinney,
             'artist': self.artist,
-            'platform': self.name,
             'platform': self.platform,
             'numClonesAllowed': self.numClonesAllowed,
             'tags': self.tags,
             'artwork_url': self.artwork_url,
         }
         kudos_contract = KudosContract(network=self.network)
-        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2
-        tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=None, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
+        gas_price_gwei = recommend_min_gas_price_to_confirm_in_time(1) * 2 if not gas_price_gwei else None
+        tx_id = mint_kudos(kudos_contract, kudos, account, private_key, gas_price_gwei, mint_to=self.to_address, live=True, dont_wait_for_kudos_id_return_tx_hash_instead=True)
         self.processed = True
         self.approved = True
         self.save()

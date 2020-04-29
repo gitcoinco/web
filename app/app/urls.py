@@ -20,8 +20,10 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import index as sitemap_index
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.decorators.cache import cache_page
 from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
@@ -36,8 +38,6 @@ import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
-# event:ethdenver2019
-import event_ethdenver2019.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
@@ -61,12 +61,18 @@ from kudos.router import router as kdrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
+    path('wiki/', include('wiki.urls')),
+
     # oauth2 provider
     url('^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     url('^api/v1/bounty/create', dashboard.views.create_bounty_v1, name='create_bounty_v1'),
     url('^api/v1/bounty/cancel', dashboard.views.cancel_bounty_v1, name='cancel_bounty_v1'),
     url('^api/v1/bounty/fulfill', dashboard.views.fulfill_bounty_v1, name='fulfill_bounty_v1'),
+    path('api/v1/bounty/<int:bounty_id>/close', dashboard.views.close_bounty_v1, name='close_bounty_v1'),
+    path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
+    re_path(r'.*api/v0.1/chat/presence$', chat.views.chat_presence, name='chat_presence'),
+    re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
 
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
@@ -127,6 +133,7 @@ urlpatterns = [
         name='profile_job_opportunity'
     ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
+    url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
     url(
         r'^api/v0.1/get_suggested_contributors',
@@ -140,7 +147,6 @@ urlpatterns = [
     ),
     url(r'^api/v0.1/org_perms', dashboard.views.org_perms, name='org_perms'),
     url(r'^api/v0.1/bulk_invite', dashboard.views.bulk_invite, name='bulk_invite'),
-    url(r'^api/v0.1/bountydocument', dashboard.views.bounty_upload_nda, name='bounty_upload_nda'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
@@ -149,7 +155,7 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
-    url(r'^api/v0.1/search/', search.views.search, name='search'),
+    url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
@@ -163,7 +169,8 @@ urlpatterns = [
 
     # grant views
     path('grants/', include('grants.urls', namespace='grants')),
-    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall')),
+    re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall_')),
+    re_path(r'^grant/?', include('grants.urls', namespace='grants_catchall')),
 
     # dashboard views
     re_path(r'^onboard/(?P<flow>\w+)/?$', dashboard.views.onboard, name='onboard'),
@@ -200,9 +207,22 @@ urlpatterns = [
 
     # Hackathons / special events
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
-    path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
-    path('hackathon/projects/<str:hackathon>/', dashboard.views.hackathon_projects, name='hackathon_projects'),
-    path('hackathon/projects/<str:hackathon>', dashboard.views.hackathon_projects, name='hackathon_projects2'),
+    path('hackathon/<str:hackathon>', dashboard.views.hackathon, name='hackathon2'),
+    path('hackathon/<str:hackathon>/onboard/', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
+    path('hackathon/<str:hackathon>/<str:panel>/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon/<str:hackathon>/onboard', dashboard.views.hackathon_onboard, name='hackathon_onboard'),
+    path('hackathon/onboard/<str:hackathon>', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
+    path('hackathon/onboard/<str:hackathon>/', dashboard.views.hackathon_onboard, name='hackathon_onboard3'),
+    path('hackathon/<str:hackathon>/projects/', dashboard.views.hackathon_projects, name='hackathon_projects'),
+    path('hackathon/<str:hackathon>/prizes/', dashboard.views.hackathon, name='hackathon_prizes'),
+    path(
+        'hackathon/projects/<str:hackathon>/<str:project>', dashboard.views.hackathon_project, name='hackathon_project'
+    ),
+    path(
+        'hackathon/projects/<str:hackathon>/<str:project>/',
+        dashboard.views.hackathon_project,
+        name='hackathon_project2'
+    ),
     path('modal/new_project/<int:bounty_id>/', dashboard.views.hackathon_get_project, name='hackathon_get_project'),
     path(
         'modal/new_project/<int:bounty_id>/<int:project_id>/',
@@ -210,10 +230,15 @@ urlpatterns = [
         name='hackathon_edit_project'
     ),
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
-    re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
-    re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
+    # TODO: revisit if we need to keep these urls for legacy links
+    # re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
+    # re_path(r'^hackathon/(.*)?$', dashboard.views.hackathon, name='hackathon_idx2'),
+    url(r'^hackathon/<str:hackathon>/?$/?', dashboard.views.hackathon, name='hackathon'),
+    url(r'^hackathon/<str:hackathon>/<str:panel>/?$/?', dashboard.views.hackathon, name='hackathon'),
     path('hackathon-list/', dashboard.views.get_hackathons, name='get_hackathons'),
     path('hackathon-list', dashboard.views.get_hackathons, name='get_hackathons2'),
+    re_path(r'^hackathon/?$', dashboard.views.get_hackathons, name='get_hackathons3'),
+    re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons4'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
 
@@ -241,7 +266,6 @@ urlpatterns = [
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
-    path('issue/refund_request', dashboard.views.refund_request, name='refund_request'),
     path('issue/cancel_reason', dashboard.views.cancel_reason, name='cancel_reason'),
     path('modal/social_contribution', dashboard.views.social_contribution_modal, name='social_contribution_modal'),
     path(
@@ -307,7 +331,7 @@ urlpatterns = [
     url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
     url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
     url(r'^tip/?', dashboard.tip_views.send_tip_2, name='tip'),
-
+    url(r'^requestmoney/?', dashboard.tip_views.request_money, name='request_money'),
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
     re_path(r'^legal/terms/?', dashboard.views.terms, name='terms'),
@@ -351,7 +375,6 @@ urlpatterns = [
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
-    url(r'^sync/etc/?', dashboard.views.sync_etc, name='sync_etc'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
@@ -361,13 +384,13 @@ urlpatterns = [
 
     # brochureware views
     re_path(r'^home/?$', retail.views.index, name='home'),
-    re_path(r'^pricing/$', retail.views.pricing, name='pricing'),
-    re_path(r'^subscribe/$', retail.views.subscribe, name='subscribe'),
+    re_path(r'^landing/?$', retail.views.index, name='landing'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
     re_path(r'^products/?', retail.views.products, name='products'),
+    re_path(r'^landing/avatar/?', retail.views.avatar, name='avatar_landing'),
     path('not_a_token', retail.views.not_a_token, name='not_a_token'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
@@ -457,6 +480,11 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path(
+        '_administration/email/new_bounty_daily',
+        marketing.views.new_bounty_daily_preview,
+        name='admin_new_bounty_daily'
+    ),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
     path(
         '_administration/email/featured_funded_bounty',
@@ -544,11 +572,6 @@ urlpatterns = [
         name='process_faucet_request'
     ),
     re_path(
-        r'^_administration/process_refund_request/(.*)$',
-        dashboard.views.process_refund_request,
-        name='process_refund_request'
-    ),
-    re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
     ),
     re_path(
@@ -587,7 +610,6 @@ urlpatterns = [
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
-    re_path(r'^settings/discord/?', marketing.views.discord_settings, name='discord_settings'),
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
@@ -619,7 +641,12 @@ urlpatterns = [
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-    url(r'^sitemap.xml/?', perftools.views.sitemap, name='django.contrib.sitemaps.views.sitemap'),
+    path('sitemap.xml', sitemap_index, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
+    path(
+        'sitemap-<section>.xml',
+        cache_page(86400)(sitemap), {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'
+    ),
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
@@ -647,18 +674,15 @@ urlpatterns = [
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
 
-    # event:ethdenver2019
-    re_path(
-        r'^ethdenver/redeem/(?P<secret>.*)/?$',
-        event_ethdenver2019.views.receive_bulk_ethdenver,
-        name='kudos_receive_bulk'
-    ),
-    url(r'^ethdenver/', event_ethdenver2019.views.ethdenver2019),
-    # /event:ethdenver2019
-
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
+
+    #projets
+    url(r'^api/v0.1/projects_fetch/', dashboard.views.projects_fetch, name='projects_fetch'),
+
+    # wiki
+    path('wiki/notifications/', include('django_nyt.urls')),
 ]
 
 if settings.ENABLE_SILK:
@@ -678,12 +702,25 @@ if settings.DEBUG:
 
 urlpatterns += [
     re_path(
-        r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),
-    re_path(r'^([a-z|A-Z|0-9|\.](?:[a-z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'),
+    re_path(
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'
+    ),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+
+        # For django versions before 2.0:
+        # url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
+
+LOGIN_REDIRECT_URL = '/login'
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'
