@@ -53,7 +53,7 @@ class Command(BaseCommand):
 
             for project in projects_to_setup:
                 profiles_to_connect = admin_profiles
-                if project.bounty.bounty_owner_githuB_username.lower() == 'consensyshealth':
+                if project.bounty.bounty_owner_github_username.lower() == 'consensyshealth':
                     handles = [
                         'midknyt',
                         'jcw-telemed',
