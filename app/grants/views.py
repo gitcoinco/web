@@ -79,6 +79,7 @@ show_clr_card = True
 # Round 7 - September 14th — September 28th 2020
 
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
+after_that_next_round_begin = timezone.datetime(2020, 6, 15, 12, 0)
 round_end = timezone.datetime(2020, 4, 10, 10, 0)
 round_types = ['media', 'tech', 'health']
 
@@ -354,6 +355,7 @@ def grants(request):
         'type': grant_type,
         'round_end': round_end,
         'next_round_start': next_round_start,
+        'after_that_next_round_begin': after_that_next_round_begin,
         'all_grants_count': all_grants_count,
         'now': timezone.now(),
         'mid_back': mid_back,
