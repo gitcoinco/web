@@ -108,19 +108,19 @@ $(document).ready(function() {
 
   $('#dopeSwitch').on('click', function(event) {
     if (localStorage.toggled != 'dark') {
-      $('body').toggleClass('dark',  true)
-    localStorage.toggled = 'dark';
-  } else {
-    $('body').toggleClass('dark', false)
-    localStorage.toggled = '';
-  }
+      $('body').toggleClass('dark', true);
+      localStorage.toggled = 'dark';
+    } else {
+      $('body').toggleClass('dark', false);
+      localStorage.toggled = '';
+    }
 
 });
 
-  if (!$('body').hasClass('dark', false)) {
-     $('#dopeSwitch').prop('checked', false)
+ if (!$('body').hasClass('dark', false)) {
+    $('#dopeSwitch').prop('checked', false);
   } else {
-     $('#dopeSwitch').prop('checked', true)
+     $('#dopeSwitch').prop('checked', true);
   }
 
   // toggles the daily email sender
