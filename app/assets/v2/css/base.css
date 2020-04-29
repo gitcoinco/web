@@ -17,7 +17,7 @@ span {
 }
 
 a {
-  color: #3E00FF;
+  color: var(--link-color);
 }
 
 .cursor-pointer {

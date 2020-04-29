@@ -2,7 +2,6 @@ html {
   --color-notification: 37, 232, 153;
   --badge-bg: #D6FBEB;
   --badge-text: #00A55E;
-  --link-color: #3E00FF;
   --badge-blue-bg: #E7F0FA;
   --badge-blue-text: #6587AE;
 }
@@ -12,7 +11,6 @@ html.dark-mode {
   --color-notification: 37, 232, 153;
   --badge-bg: #D6FBEB;
   --badge-text: #00A55E;
-  --link-color: #3E00FF;
   --badge-blue-bg: #5f5c74;
   --badge-blue-text: white;
 }
