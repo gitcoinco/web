@@ -106,9 +106,9 @@ $(document).ready(function() {
   // Enables Dope Mode
   $('body').toggleClass(localStorage.toggled);
 
- $('#dopeSwitch').on("click",function(event) {
-  if (localStorage.toggled != 'dark') {
-    $('body').toggleClass('dark',  true)
+  $('#dopeSwitch').on('click', function(event) {
+    if (localStorage.toggled != 'dark') {
+      $('body').toggleClass('dark',  true)
     localStorage.toggled = 'dark';
   } else {
     $('body').toggleClass('dark', false)
