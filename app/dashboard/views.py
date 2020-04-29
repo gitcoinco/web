@@ -2864,7 +2864,7 @@ def profile(request, handle, tab=None):
     if request.user.is_authenticated and not context['is_my_profile']:
         ProfileView.objects.create(target=profile, viewer=request.user.profile)
 
-    if profile.is_org:
+    if profile.is_org and profile.handle.lower() in ['gitcoinco']:
 
         context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
