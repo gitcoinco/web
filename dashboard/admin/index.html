@@ -2587,7 +2587,176 @@ The argument must be an iterable if specified.
 <h3 id="dashboard.admin.TribeMemberAdmin.raw_id_fields">raw_id_fields</h3></p>
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
-The argument must be an iterable if specified.</p>
+The argument must be an iterable if specified.
+<h2 id="dashboard.admin.QuestionInline">QuestionInline</h2></p>
+<pre><code class="python">QuestionInline(self, parent_model, admin_site)
+</code></pre>
+
+<h3 id="dashboard.admin.QuestionInline.extra">extra</h3>
+
+<p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.<strong>int</strong>().  For floating point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>int('0b100', base=0)
+4
+<h3 id="dashboard.admin.QuestionInline.fields">fields</h3></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.QuestionInline.raw_id_fields">raw_id_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.QuestionInline.readonly_fields">readonly_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.QuestionInline.show_change_link">show_change_link</h3></p>
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h3 id="dashboard.admin.QuestionInline.model">Question</h3></p>
+<pre><code class="python">QuestionInline.Question(self, *args, **kwargs)
+</code></pre>
+
+<p>Question(id, created_on, modified_on, poll, question_type, text)
+<h2 id="dashboard.admin.OptionsInline">OptionsInline</h2></p>
+<pre><code class="python">OptionsInline(self, parent_model, admin_site)
+</code></pre>
+
+<h3 id="dashboard.admin.OptionsInline.extra">extra</h3>
+
+<p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.<strong>int</strong>().  For floating point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>int('0b100', base=0)
+4
+<h3 id="dashboard.admin.OptionsInline.fields">fields</h3></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.OptionsInline.raw_id_fields">raw_id_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.OptionsInline.readonly_fields">readonly_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.OptionsInline.show_change_link">show_change_link</h3></p>
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h3 id="dashboard.admin.OptionsInline.model">Option</h3></p>
+<pre><code class="python">OptionsInline.Option(self, *args, **kwargs)
+</code></pre>
+
+<p>Option(id, created_on, modified_on, question, text)
+<h2 id="dashboard.admin.PollsAdmin">PollsAdmin</h2></p>
+<pre><code class="python">PollsAdmin(self, model, admin_site)
+</code></pre>
+
+<h3 id="dashboard.admin.PollsAdmin.inlines">inlines</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.PollsAdmin.list_display">list_display</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.PollsAdmin.raw_id_fields">raw_id_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.PollsAdmin.search_fields">search_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h2 id="dashboard.admin.QuestionsAdmin">QuestionsAdmin</h2></p>
+<pre><code class="python">QuestionsAdmin(self, model, admin_site)
+</code></pre>
+
+<h3 id="dashboard.admin.QuestionsAdmin.inlines">inlines</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.QuestionsAdmin.list_display">list_display</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.QuestionsAdmin.raw_id_fields">raw_id_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.QuestionsAdmin.search_fields">search_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h2 id="dashboard.admin.OptionsAdmin">OptionsAdmin</h2></p>
+<pre><code class="python">OptionsAdmin(self, model, admin_site)
+</code></pre>
+
+<h3 id="dashboard.admin.OptionsAdmin.list_display">list_display</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.OptionsAdmin.raw_id_fields">raw_id_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.OptionsAdmin.search_fields">search_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h2 id="dashboard.admin.AnswersAdmin">AnswersAdmin</h2></p>
+<pre><code class="python">AnswersAdmin(self, model, admin_site)
+</code></pre>
+
+<h3 id="dashboard.admin.AnswersAdmin.list_display">list_display</h3>
+
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.AnswersAdmin.raw_id_fields">raw_id_fields</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.AnswersAdmin.unique_together">unique_together</h3></p>
+<p>Built-in immutable sequence.</p>
+<p>If no argument is given, the constructor returns an empty tuple.
+If iterable is specified the tuple is initialized from iterable's items.</p>
+<p>If the argument is a tuple, the return value is the same object.</p>
                 
                   
                 
