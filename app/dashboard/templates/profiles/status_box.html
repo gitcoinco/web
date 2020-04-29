@@ -6,7 +6,6 @@
       id="textarea"
       class="form__input p-2 font-body status-textarea"
       placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
-      style="resize: none; height: 7em;"
       data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
     ></textarea>
     <input type="hidden" name="what" value="{{what}}:{{whatid}}">
