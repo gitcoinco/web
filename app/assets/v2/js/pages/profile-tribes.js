@@ -222,6 +222,7 @@ const loadDynamicScript = (callback, url, id) => {
           headerFile: null,
           headerFilePreview: null,
           is_my_org: document.is_my_org,
+          is_on_tribe: document.is_on_tribe,
           params: {
             suggest: {},
             publish_to_ts: false
