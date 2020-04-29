@@ -125,7 +125,6 @@ INSTALLED_APPS = [
     'bounty_requests',
     'perftools',
     'revenue',
-    'event_ethdenver2019',
     'inbox',
     'feeswapper',
     'search',
