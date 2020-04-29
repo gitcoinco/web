@@ -56,7 +56,7 @@ class Command(BaseCommand):
                 print("profiles just add admins")
                 print(len(profiles_to_connect))
                 print(project.bounty.bounty_owner_github_username.lower())
-                if project.bounty.bounty_owner_github_username.lower() == 'consensyshealth':
+                if project.bounty.bounty_owner_github_username.lower() == 'randall-mitchell':
                     handles = [
                         'midknyt',
                         'jcw-telemed',
