@@ -1097,6 +1097,10 @@ body.green.offer_view .announce {
   color: #fff!important;
 }
 
+.promo p {
+  margin-bottom: 0;
+}
+
 .dark .poll_choices div p {
   color: #fff!important;
   background-color: black!important;
@@ -1104,10 +1108,6 @@ body.green.offer_view .announce {
 
 .dark .activity_stream .comment_row .activity_comments_main {
   border-top: #8ab2b2!important;
-}
-
-.promo p {
-  margin-bottom: 0;
 }
 
 .dark .poll_choices div.vote {
@@ -1139,11 +1139,6 @@ body.green.offer_view .announce {
 .dark #new_activity_notifier {
   background-color: #262661!important;
   border-bottom: 1px solid #262661!important;
-}
-
-
-.dark #status .btn-group-toggle .btn-radio {
-  background-color: #2b3358!important;
 }
 
 .dark .empty {
