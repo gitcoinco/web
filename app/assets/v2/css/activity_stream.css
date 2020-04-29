@@ -257,7 +257,6 @@ iframe.popout{
 
 .poll_choices.answered div.vote {
   border: 1px solid #e9e9e9;
-  background-color: #f9f9f9;
   cursor: default;
 }
 
@@ -276,6 +275,7 @@ iframe.popout{
 }
 
 .poll_choices div.answer {
+  color: black;
   border: 3px solid black;
   background-color: #f0f0f0;
 }
