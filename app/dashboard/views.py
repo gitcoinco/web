@@ -2865,12 +2865,11 @@ def profile(request, handle, tab=None):
         ProfileView.objects.create(target=profile, viewer=request.user.profile)
 
     if profile.is_org:
-        context['init_data'] = profile.to_dict()
 
         context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
         context['is_on_tribe'] = json.dumps(True if len(context['is_on_tribe']) > 0 else False)
-        context['is_my_org'] = True
+        # context['is_my_org'] = True
         context['profile_handle'] = profile.handle
 
         return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
@@ -4628,7 +4627,8 @@ def save_tribe(request,handle):
         )
 
     try:
-        is_my_org = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+        # is_my_org = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+        is_my_org = True
         if not is_my_org:
             return JsonResponse(
                 {
@@ -4653,6 +4653,13 @@ def save_tribe(request,handle):
             tribe = Profile.objects.filter(handle=handle.lower()).first()
             tribe.tribe_description = tribe_description
             tribe.save()
+
+        if request.FILES.get('cover_image'):
+            cover_image = request.FILES.get('cover_image', None)
+            if cover_image:
+                tribe = Profile.objects.filter(handle=handle.lower()).first()
+                tribe.tribes_cover_image = cover_image
+                tribe.save()
 
         if request.POST.get('tribe_priority'):
 

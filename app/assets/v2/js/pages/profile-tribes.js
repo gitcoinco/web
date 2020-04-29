@@ -57,6 +57,51 @@ const loadDynamicScript = (callback, url, id) => {
       delimiters: [ '[[', ']]' ],
       el: '#tribes-vue-app',
       methods: {
+        resetPreview: function() {
+          this.headerFilePreview = null;
+        },
+        updateTribe: function() {
+          let vm = this;
+          const url = `/tribe/${vm.tribe.handle}/save/`;
+
+          let data = new FormData();
+
+          if (vm.$refs.quillEditorDesc) {
+            data['tribe_description'] = vm.tribe.tribe_description;
+          }
+
+          if (vm.$refs.quillEditorPriority) {
+            data.append('tribe_priority', vm.tribe.tribe_priority);
+            data.append('priority_html_text', vm.$refs.quillEditorPriority.quill.getText(''));
+          }
+
+          if (vm.headerFile) {
+            data.append('cover_image', vm.headerFile);
+          }
+
+          if (vm.params.publish_to_ts) {
+            data.append('publish_to_ts', vm.params.publish_to_ts);
+          }
+          const sendSave = async(url, data) => {
+            return $.ajax({
+              type: 'POST',
+              url: url,
+              processData: false,
+              contentType: false,
+              data: data,
+              headers: {'X-CSRFToken': vm.csrf}
+            });
+          }
+
+          $.when(sendSave(url, data)).then(function(response) {
+            _alert('Tribe has been updated');
+            vm.tribe.tribes_cover_image = vm.headerFilePreview;
+            vm.$bvModal.hide('change-tribe-header');
+          }).fail(function(error) {
+            _alert('Error saving priorites. Try again later', 'error');
+            console.error('error: unable to save priority', error);
+          });
+        },
         tabChange: function(input) {
           let vm = this;
 
@@ -90,22 +135,46 @@ const loadDynamicScript = (callback, url, id) => {
         }
       },
       computed: {
-        editor() {
-          return this.$refs.quillEditor.quill
-        }
-      },
-      updated() {
-        console.log('something happened');
+        editorDesc() {
+          return this.$refs.quillEditorDesc.quill
+        },
+        editorPriority() {
+          return this.$refs.quillEditorPriority.quill
+        },
       },
       mounted() {
         console.log('we mounted');
+        let vm = this;
+        this.$watch('headerFile', function(newVal, oldVal) {
+          if (checkFileSize(this.headerFile, 4000000) === false) {
+            _alert(`Profile Header Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
+          } else {
+            let reader = new FileReader();
+
+            reader.onload = function(e) {
+              vm.headerFilePreview = e.target.result;
+              $('#preview').css('width', '100%');
+              $('#js-drop span').hide();
+              $('#js-drop input').css('visible', 'invisible');
+              $('#js-drop').css('padding', 0);
+            };
+            reader.readAsDataURL(this.headerFile);
+          }
+        }, {deep: true});
       },
       data: function() {
         return $.extend({
           chatURL: document.chatURL || 'https://chat.gitcoin.co/',
           activePanel: document.activePanel,
           tribe: document.currentProfile
-        }, document.initData, {
+        }, {
+          csrf: $("input[name='csrfmiddlewaretoken']").val(),
+          headerFile: null,
+          headerFilePreview: null,
+          is_my_org: true,
+          params: {
+            publish_to_ts: false
+          },
           editorOptionPrio: {
             modules: {
               toolbar: [

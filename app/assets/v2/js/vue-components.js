@@ -126,6 +126,47 @@ Vue.component('qrcode', {
 });
 
 
+Vue.component('tribes-settings', {
+  delimiters: [ '[[', ']]' ],
+  props: ['tribe'],
+  data: function() {
+    return {
+      editorOptions: {
+        priority: {
+          modules: {
+            toolbar: [
+              [ 'bold', 'italic', 'underline' ],
+              [{ 'align': [] }],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [ 'link', 'code-block' ],
+              ['clean']
+            ]
+          },
+          theme: 'snow',
+          placeholder: 'List out your tribe priorities to let contributors to know what they can request to work on'
+        },
+        description: {
+          modules: {
+            toolbar: [
+              [ 'bold', 'italic', 'underline' ],
+              [{ 'align': [] }],
+              [ 'link', 'code-block' ],
+              ['clean']
+            ]
+          },
+          theme: 'snow',
+          placeholder: 'Describe your tribe so that people can follow you.'
+        }
+      }
+    };
+  },
+  methods: {},
+  mounted() {
+
+  }
+});
+
+
 Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
   props: ['tribe'],

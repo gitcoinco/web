@@ -2633,6 +2633,13 @@ class Profile(SuperModel):
     as_representation = JSONField(default=dict, blank=True)
     tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
 
+    tribes_cover_image = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('The Tribes Cover image.'),
+    )
+
     is_org = models.BooleanField(
         default=True,
         help_text='Is this profile an org?',
