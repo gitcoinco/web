@@ -26,8 +26,9 @@ from django.utils.safestring import mark_safe
 from .models import (
     Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
     CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
-    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView, SearchHistory,
-    Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
+    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
+    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
+    UserVerificationModel, Poll, Question, Option, Answer
 )
 
 
@@ -410,6 +411,50 @@ class TribeMemberAdmin(admin.ModelAdmin):
     list_display = ['pk', 'profile', 'org', 'leader', 'status']
 
 
+class QuestionInline(admin.TabularInline):
+    fields = ['id', 'poll', 'question_type', 'text']
+    readonly_fields = ['id']
+    raw_id_fields = ['poll']
+    show_change_link = True
+    model = Question
+    extra = 0
+
+
+class OptionsInline(admin.TabularInline):
+    fields = ['id', 'question', 'text']
+    raw_id_fields = ['question']
+    readonly_fields = ['id']
+    show_change_link = True
+    model = Option
+    extra = 0
+
+
+class PollsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'active', 'hackathon', 'created_on']
+    raw_id_fields = ['hackathon']
+    search_fields = ['title']
+    inlines = [QuestionInline]
+
+
+class QuestionsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'poll', 'question_type', 'text']
+    raw_id_fields = ['poll']
+    search_fields = ['question_type', 'text']
+    inlines = [OptionsInline]
+
+
+class OptionsAdmin(admin.ModelAdmin):
+    list_display = ['id', 'question', 'text']
+    raw_id_fields = ['question']
+    search_fields = ['question', 'text']
+
+
+class AnswersAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'question', 'open_response', 'choice']
+    raw_id_fields = ['user', 'question', 'choice']
+    unique_together = ('user', 'question', 'choice')
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -442,3 +487,7 @@ admin.site.register(LabsResearch)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
+admin.site.register(Poll, PollsAdmin)
+admin.site.register(Question, QuestionsAdmin)
+admin.site.register(Option, OptionsAdmin)
+admin.site.register(Answer, AnswersAdmin)
