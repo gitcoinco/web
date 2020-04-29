@@ -103,24 +103,14 @@ tribeLeader();
 
 const newManageTribe = () => {
   $('[data-tribe]').each(function(index, elem) {
-    $(elem).mouseenter(function(e) {
+    $(elem).on('mouseenter focus', function(e) {
       if ($(elem).hasClass('btn-outline-gc-green')) {
         $(elem).addClass('btn-gc-outline-red').text('Unfollow');
         $(elem).removeClass('btn-outline-gc-green');
-      }
-    }).mouseleave(function(e) {
-      if ($(elem).hasClass('btn-gc-outline-red')) {
-        $(elem).removeClass('btn-gc-outline-red');
-        $(elem).addClass('btn-outline-gc-green').text('Following');
       }
     });
 
-    $(elem).focus(function(e) {
-      if ($(elem).hasClass('btn-outline-gc-green')) {
-        $(elem).addClass('btn-gc-outline-red').text('Unfollow');
-        $(elem).removeClass('btn-outline-gc-green');
-      }
-    }).focusout(function(e) {
+    $(elem).on('mouseleave focusout', function(e) {
       if ($(elem).hasClass('btn-gc-outline-red')) {
         $(elem).removeClass('btn-gc-outline-red');
         $(elem).addClass('btn-outline-gc-green').text('Following');
@@ -137,10 +127,8 @@ const newManageTribe = () => {
       $(elem).attr('disabled', true);
       e.preventDefault();
       const tribe = $(elem).data('tribe');
-      const url = `/tribe/${tribe}/join/`;
-      const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
 
-      $.when(sendJoin).then(function(response) {
+      followRequest(tribe, elem, function(handle, elem, response) {
         $(elem).attr('disabled', false);
         $(elem).attr('member', response.is_member);
         if (response.is_member) {
@@ -148,7 +136,7 @@ const newManageTribe = () => {
         } else {
           $(elem).removeClass([ 'btn-outline-gc-green', 'btn-gc-outline-red' ]).addClass('btn-gc-blue').text('Follow');
         }
-      }).fail(function(error) {
+      }, function(error) {
         $(elem).attr('disabled', false);
       });
     });

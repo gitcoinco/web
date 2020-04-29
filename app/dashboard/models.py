@@ -35,7 +35,7 @@ from django.contrib.humanize.templatetags.humanize import naturalday, naturaltim
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import connection, models
-from django.db.models import Count, F, Q, Sum
+from django.db.models import Count, F, Q, Sum, Subquery
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
@@ -4859,11 +4859,10 @@ class TribeMember(SuperModel):
 
     @property
     def mutual_follower(self):
-        tribe_following = TribeMember.objects.filter(profile=self.profile).values('org')
+        tribe_following = Subquery(TribeMember.objects.filter(profile=self.profile).values_list('org', flat=True))
         return TribeMember.objects.filter(org=self.org, profile__in=tribe_following).exclude(profile=self.profile)
 
     @property
     def mutual_following(self):
-        tribe_following = TribeMember.objects.filter(org=self.profile).values('profile')
-        print(tribe_following)
-        return TribeMember.objects.filter(org__in=tribe_following, profile=self.org)
+        tribe_following = Subquery(TribeMember.objects.filter(org=self.profile).values_list('profile', flat=True))
+        return TribeMember.objects.filter(org__in=tribe_following, profile=self.org).exclude(org=self.org)

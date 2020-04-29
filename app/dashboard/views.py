@@ -2613,14 +2613,7 @@ def get_profile_tab(request, profile, tab, prev_context):
     elif tab == 'tribe':
         context['team'] = profile.team_or_none_if_timeout
     elif tab == 'follow':
-        context['org_kudos'] = profile.get_org_kudos
-        owned_kudos = profile.get_my_kudos.order_by('id', order_by)
-        sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
-        kudos_limit = 8
-        context['kudos'] = owned_kudos[0:kudos_limit]
-        context['sent_kudos'] = sent_kudos[0:kudos_limit]
-        context['kudos_count'] = owned_kudos.count()
-        context['sent_kudos_count'] = sent_kudos.count()
+        pass
     elif tab == 'people':
         if profile.is_org:
             context['team'] = profile.team_or_none_if_timeout
@@ -2828,7 +2821,6 @@ def profile(request, handle, tab=None):
     context['following'] = TribeMember.objects.filter(profile=request.user.profile)
     context['foltab'] = request.GET.get('sub', 'followers')
 
-    print(f'===== TRIBES COUNT: {TribeMember.objects.filter(org=request.user.profile)}')
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
         context.update(tab)
