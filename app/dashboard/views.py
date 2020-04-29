@@ -1080,7 +1080,13 @@ def users_fetch(request):
         this_page = Profile.objects_full.filter(pk__in=[ele.pk for ele in this_page]).order_by('-follower_count', 'id')
 
     else:
-        profile_list = profile_list.order_by(order_by, '-earnings_count', 'id')
+        try:
+            print("here")
+            profile_list = profile_list.order_by(order_by, '-earnings_count', 'id')
+        except profile_list.FieldError:
+            print("We got here")
+            profile_list = profile_list.order_by('-earnings_count', 'id')
+
         profile_list = profile_list.values_list('pk', flat=True)
 
         all_pages = Paginator(profile_list, limit)
@@ -2855,6 +2861,8 @@ def profile(request, handle, tab=None):
         active_tab = 1
     elif tab == "people":
         active_tab = 2
+    elif tab == "bounties":
+        active_tab = 3
     context['active_panel'] = active_tab
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:

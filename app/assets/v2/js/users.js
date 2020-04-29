@@ -267,9 +267,10 @@ Vue = Vue.extend({
 
 Vue.component('user-directory', {
   delimiters: [ '[[', ']]' ],
-  props: ['tribe'],
+  props: [ 'tribe', 'is_my_org' ],
   data: function() {
     return {
+      orgOwner: this.is_my_org || false,
       userFilter: {
         options: [
           { text: 'All', value: 'all' },
@@ -309,7 +310,7 @@ Vue.component('user-directory', {
       errorIssueDetails: undefined,
       showBanner: undefined,
       hideFilterButton: !!document.getElementById('explore_tribes')
-    }
+    };
   },
   mounted() {
     this.fetchUsers();

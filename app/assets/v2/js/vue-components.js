@@ -160,10 +160,7 @@ Vue.component('tribes-settings', {
       }
     };
   },
-  methods: {},
-  mounted() {
-
-  }
+  methods: {}
 });
 
 

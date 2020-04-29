@@ -88,7 +88,7 @@ const loadDynamicScript = (callback, url, id) => {
               data: data,
               headers: {'X-CSRFToken': vm.csrf}
             });
-          }
+          };
 
           $.when(sendSave(url, data)).then(function(response) {
             _alert('Tribe has been updated');
@@ -161,31 +161,34 @@ const loadDynamicScript = (callback, url, id) => {
             case 2:
               newPathName = 'people';
               break;
+            case 3:
+              newPathName = 'bounties';
+              break;
           }
           let newUrl = `/${vm.tribe.handle}/${newPathName}${window.location.search}`;
 
           history.pushState({}, `Tribe - @${vm.tribe.handle}`, newUrl);
         },
         onEditorBlur(quill) {
-          console.log('editor blur!', quill)
+          console.log('editor blur!', quill);
         },
         onEditorFocus(quill) {
-          console.log('editor focus!', quill)
+          console.log('editor focus!', quill);
         },
         onEditorReady(quill) {
-          console.log('editor ready!', quill)
+          console.log('editor ready!', quill);
         }
       },
       computed: {
         editorDesc() {
-          return this.$refs.quillEditorDesc.quill
+          return this.$refs.quillEditorDesc.quill;
         },
         editorPriority() {
-          return this.$refs.quillEditorPriority.quill
+          return this.$refs.quillEditorPriority.quill;
         },
         editorComment() {
-          return this.$refs.quillEditorComment.quill
-        },
+          return this.$refs.quillEditorComment.quill;
+        }
       },
       mounted() {
         console.log('we mounted');
@@ -218,8 +221,8 @@ const loadDynamicScript = (callback, url, id) => {
           csrf: $("input[name='csrfmiddlewaretoken']").val(),
           headerFile: null,
           headerFilePreview: null,
-          is_my_org: document.is_my_org,
-          is_on_tribe: document.is_on_tribe,
+          is_my_org: document.is_my_org || false,
+          is_on_tribe: document.is_on_tribe || false,
           params: {
             suggest: {},
             publish_to_ts: false

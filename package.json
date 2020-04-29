@@ -25,5 +25,8 @@
     "eslint": "^5.16.0",
     "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.2.0"
+  },
+  "dependencies": {
+    "prettier": "^2.0.5"
   }
 }
