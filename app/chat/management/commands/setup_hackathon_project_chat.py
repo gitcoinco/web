@@ -52,7 +52,9 @@ class Command(BaseCommand):
                 logger.debug('Error with adding admin')
 
             for project in projects_to_setup:
-                profiles_to_connect = admin_profiles
+                profiles_to_connect = list(set(admin_profiles))
+                print("profiles just add admins")
+                print(len(profiles_to_connect))
                 if project.bounty.bounty_owner_github_username.lower() == 'consensyshealth':
                     handles = [
                         'midknyt',
@@ -76,7 +78,10 @@ class Command(BaseCommand):
                         'consensyshealth-nicole'
                     ]
                     mentors = [profile.chat_id for profile in Profile.objects.filter(handle__in=handles)]
-                    profiles_to_connect = profiles_to_connect + mentors
+                    profiles_to_connect = list(set(admin_profiles + mentors))
+                    print("profiles with admins and mentors")
+                    print(len(profiles_to_connect))
+
 
                 project_channel_name = slugify(f'{project.name}')
                 created, channel_details = create_channel_if_not_exists({
@@ -95,6 +100,8 @@ class Command(BaseCommand):
                     if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
                         created, bounty_profile = associate_chat_to_profile(bounty_profile)
                     profiles_to_connect.append(bounty_profile.chat_id)
+                    print("profiles with bounty profile added")
+                    print(len(profiles_to_connect))
                 except Exception as e:
                     logger.error('Error creating project channel', e)
 
@@ -102,14 +109,20 @@ class Command(BaseCommand):
                     if team_m_profile.chat_id is '' or team_m_profile.chat_id is None:
                         created, team_m_profile = associate_chat_to_profile(team_m_profile)
                     profiles_to_connect.append(team_m_profile.chat_id)
-
+                    print("profiles with project team profiles added")
+                    print(len(profiles_to_connect))
                 try:
                     chat_driver = get_driver()
                     current_channel_members = chat_driver.channels.get_channel_members(project.chat_channel_id)
                     current_channel_users = [member['user_id'] for member in current_channel_members]
                     remove = list(set(current_channel_users) - set(profiles_to_connect))
+
+                    print("unwanted guests including gitcoinbot")
+                    print(len(remove))
                     print(remove)
-                    print(profiles_to_connect)
+
+                    print("profiles to connect ??")
+                    print(len(profiles_to_connect))
                     # for r in remove:
                     #     chat_driver.channels.remove_channel_member(project.chat_channel_id, r)
                     # add_to_channel.delay({'id': project.chat_channel_id}, profiles_to_connect)
