@@ -10,10 +10,6 @@
 
 {% trans "Status" %} : {{ grant.status }}
 
-{% trans "Goal" %} : {{ grant.amount_goal }} {% trans "DAI" %}
-
-{% trans "Percentage done" %}: {{ grant.percentage_done }}
-
 {% trans "You can see the  cancelled subscription on Etherscan" %} at
 {% if subscription.network == 'mainnet' %}
   http://etherscan.io/tx/{{ subscription.cancel_tx_id }}

@@ -195,6 +195,11 @@
             </ul>
             <ul class="col-md-3 col-lg-2 list-unstyled">
               <li>
+                <a class="dropdown-item" href="https://gitcoin.co/wiki/wiki-code-conduct/">
+                  {% trans "Code of Conduct" %}
+                </a>
+              </li>
+              <li>
                 <a class="dropdown-item" href="{% url "activity" %}">
                   {% trans "Activity Feed" %}
                 </a>
@@ -313,7 +318,7 @@
                   <img src="{{post.jetpack_featured_media_url}}" width="100" alt="" class="mw-100">
                 </div>
                 <a class="media-body text-reset" href="{{post.link}}">
-                  <b>{{post.title.rendered}}</b>
+                  <b>{{post.title.rendered | safe}}</b>
                   {{post.excerpt.rendered |truncatechars_html:150|safe}}
                 </a>
               </li>
@@ -326,5 +331,6 @@
   </nav>
   <nav class="navbar-nav mr-3">
     {% include 'shared/nav_auth.html' with source='authed' %}
+    {% include 'shared/theme_switcher.html' with source='authed' %}
   </nav>
 </div>

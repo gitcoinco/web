@@ -353,6 +353,16 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/mage.svg',
         },
+        'powerrangers': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/powerrangers.svg',
+        },
         'orc_gitcoin': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -362,6 +372,36 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
+        },
+        'lego': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/lego.svg',
+        },
+        'PixelBot': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/PixelBot.svg',
+        },
+        'iamthembot': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/iamthembot.svg',
         },
         'visible': {
             'preview_viewbox': {
@@ -423,6 +463,15 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/walle2.svg',
         },
+        'walle3': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/walle3.svg',
+        },
         'chappie': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -431,6 +480,15 @@ def get_avatar_attrs(theme, key):
             'skin_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/chappie.svg',
+        },
+        'chappie2': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/chappie2.svg',
         },
         'megaman2': {
             'preview_viewbox': {
@@ -600,6 +658,15 @@ def get_avatar_attrs(theme, key):
             'hair_tones': [],
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/bender.svg',
+        },
+        'bendy': {
+            'preview_viewbox': {
+                'background': '0 0 250 250',
+            },
+            'skin_tones': [],
+            'hair_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/bendy.svg',
         },
         'joker': {
             'preview_viewbox': {

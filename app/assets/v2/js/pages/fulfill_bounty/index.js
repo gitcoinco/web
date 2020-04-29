@@ -9,7 +9,7 @@ window.onload = function() {
   });
 
   if (is_bounties_network) {
-    fetchFromMetamask();
+    fetchFromWeb3Wallet();
   }
 
   if (typeof localStorage['githubUsername'] != 'undefined') {
@@ -42,8 +42,9 @@ window.onload = function() {
   });
 };
 
-const fetchFromMetamask = () => {
-  const account = web3.eth.accounts[0];
-  $('#payoutAddress').val(account);
-  $('#payoutAddress').attr('disabled', true);
+const fetchFromWeb3Wallet = () => {
+  web3.eth.getAccounts(function(_, accounts) {
+    $('#payoutAddress').val(accounts[0]);
+    $('#payoutAddress').attr('disabled', true);
+  });
 }

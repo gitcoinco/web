@@ -1,6 +1,6 @@
 (function($) {
   function syncComplete(res) {
-    console.log('sync complete');
+    console.log('openBox done!');
   }
 
   function onFailure() {
@@ -25,7 +25,6 @@
         box.onSyncDone(syncComplete);
         window.box = box;
         window.curentEthAddr = addresses[0];
-        console.log('openBox succeeded');
         callback(box);
       }).catch(err => {
         onFailure();
@@ -39,7 +38,7 @@
     window.currentSpace = name;
     const opts = {
       onSyncDone: () => {
-        console.log('sync done in space', name);
+        console.log(`Open [${name}] Space completed!`);
         callback(box, box.spaces[name]);
       }
     };
@@ -51,6 +50,8 @@
 
   async function saveDataToSpace(space, model) {
     const res = await fetchProfieData(model);
+
+    console.log(`Received [${model}] data: `, res.data);
 
     if (res.data) {
       let data = res.data;
@@ -140,14 +141,10 @@
   }
 
   async function syncTo3Box(option) {
-    console.log('start sync data to 3box');
+    console.log('Start sync data to 3Box ...');
 
     onLoading = option ? option.onLoading : null;
-    const model = option ? option.model : null;
-
-    const res = await fetchProfieData(model);
-
-    console.log('data', res.data);
+    const models = option ? option.models : [];
 
     // User is prompted to approve the messages inside their wallet (openBox() and
     // openSpace() methods via 3Box.js). This logs them in to 3Box.
@@ -159,8 +156,10 @@
         inProgress(true);
         openBox(box => {
           openSpace(box, (box, space) => {
-            console.log('backup data into space');
-            saveDataToSpace(space, model);
+            models.forEach(async model => {
+              console.log(`Saving [${model}] data into space ... `);
+              await saveDataToSpace(space, model);
+            });
           });
         });
       } else {

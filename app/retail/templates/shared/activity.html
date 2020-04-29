@@ -64,7 +64,7 @@
          {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
-         <a class="grey" href="/profile/{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
+         <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
 
          {% if row.hackathonevent %}
             <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" class="tag">
@@ -89,11 +89,11 @@
       <div class="activity_detail_content font-body pb-2">
         {% if row.activity_type == 'new_tip' %}
           {% trans "tipped" %}
-          <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
+          <a data-usercard="{{ row.metadata.to_username }}" href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" >
             @{{ row.metadata.to_username }}
           </a>
         {% elif row.activity_type == 'mini_clr_payout' %}
-          {% trans "got a distribution of" %} of <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
+          {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
           a new kudos has been minted:
           <a href="{{ row.kudos.external_url }}">
@@ -198,7 +198,6 @@
 
           {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
           <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
-          
           <p class='num_participants m-0 p-0' data-roomname="+roomName+">
             <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
               •
@@ -299,16 +298,30 @@
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
+            <a href=# data-action='favorite' data-toggle="tooltip" title="Mark as favorite this activity" data-affirmative=favorite
+              data-negative=unfavorite data-state="{% if row.metadata.favorite %}favorite{% else %}unfavorite{%endif%}" data-pk="{{row.pk}}"
+              class="favorite_activity mr-2 dropdown-item px-3 font-smaller-5">
+              {% if row.metadata.favorite %}
+                  <i class="fas fa-star mr-2"></i>
+              {% else %}
+                  <i class="far fa-star mr-2"></i>
+              {%endif%} Favorite
+            </a>
             <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
               data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
               class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"
             >
               <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
             </a>
+            {% if row.metadata.fund_able and not row.bounty  %}
+              <a class="mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Create new bounty." href='/funding/new?type=public&activity={{ row.id }}&url={{ row.metadata.resource.provider }}'>
+                <i class="fab fa-ethereum mr-2"></i> Fund Issue
+              </a>
+            {% endif %}
             {% if row.profile.handle|lower == github_handle|lower %}
-            <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
-              <i class="fas fa-trash mr-2"></i> Delete
-            </a>
+              <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
+                <i class="fas fa-trash mr-2"></i> Delete
+              </a>
             {% endif %}
           </div>
 
@@ -316,14 +329,16 @@
             {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name or row.bounty %}
               <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">
-                  {% if row.bounty %}
+                  {% if row.activity_type == 'new_tip' %}
+                    <span class="value_in_token">{{ row.metadata.amount  | floatformat:2}} {{row.metadata.token_name}}</span>
+                  {% elif row.bounty %}
                     <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
                   {% elif row.value_in_token_disp %}
                     <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
                   {% elif row.metadata.value_in_eth %}
                     <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
                   {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                    <span class="value_in_token">{{row.metadata.value_in_token  | floatformat:2}}  {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{ row.metadata.value_in_token | floatformat:2}} {{row.metadata.token_name}}</span>
                   {% endif %}
                 </p>
               </div>

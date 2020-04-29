@@ -10,6 +10,15 @@ let gitcoinDonationAddress;
 
 document.suppress_faucet_solicitation = 1;
 
+var set_form_disabled = function(is_disabled) {
+  if (is_disabled) {
+    $('body').append('<div id=intercept_overlay>&nbsp;</div>');
+  } else {
+    $('#intercept_overlay').remove();
+  }
+};
+
+
 $(document).ready(function() {
 
 
@@ -122,14 +131,6 @@ $(document).ready(function() {
     $(event.currentTarget).addClass('badge-active');
   });
 
-  var set_form_disabled = function(is_disabled) {
-    if (is_disabled) {
-      $('body').append('<div id=intercept_overlay>&nbsp;</div>');
-    } else {
-      $('#intercept_overlay').remove();
-    }
-  };
-
   $('input[name=match_direction]').change(function(e) {
     let direction = $(this).val();
 
@@ -151,6 +152,10 @@ $(document).ready(function() {
   $('#js-token').change(function(e) {
     const val = $(this).val();
     const is_eth = val == '0x0000000000000000000000000000000000000000';
+
+    if (val == '0xdac17f958d2ee523a2206206994597c13d831ec7') {
+      _alert('WARNING: USDT is not well supported, it is recommended to use $USDC or $DAI instead. <a target=new href=https://twitter.com/owocki/status/1247546241862348801>More info here</a>', 'error', 2000);
+    }
 
     if (is_eth && $('#recurring_or_not').val() == 'recurring') {
       _alert('Sorry but this token is not supported for recurring donations', 'error', 1000);
@@ -322,7 +327,7 @@ $(document).ready(function() {
 
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
-            // TODO: Fix tweet modal
+            set_form_disabled(false);
             $('#tweetModal').css('display', 'block');
 
           };
@@ -355,14 +360,16 @@ $(document).ready(function() {
 
       let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
       let realApproval;
-
+      const approve_buffer = 100000;
+      
       if (data.contract_version == 1 || data.num_periods == 1) {
-        realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + 1);
+
+        realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + approve_buffer);
       } else if (data.contract_version == 0) {
         console.log('grant amount: ' + grant_amount);
         console.log('gitcoin grant amount: ' + gitcoin_grant_amount);
         // don't need to approve for gitcoin_grant_amount since we will directly transfer it
-        realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + 1);
+        realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + approve_buffer);
       }
 
       let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
@@ -416,7 +423,10 @@ $(document).ready(function() {
                 // call splitter after approval
                 var to_address = data.match_direction == '+' ? data.admin_address : gitcoinDonationAddress;
 
-                splitPayment(accounts[0], to_address, gitcoinDonationAddress, Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}), Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
+                var first = Number(grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false});
+                var second = Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false});
+
+                splitPayment(accounts[0], to_address, gitcoinDonationAddress, first, second);
               } else {
                 if (data.contract_version == 0 && gitcoin_grant_amount > 0) {
                   donationPayment(deployedToken, accounts[0], Number(gitcoin_grant_amount * Math.pow(10, decimals)).toLocaleString('fullwide', {useGrouping: false}));
@@ -547,6 +557,7 @@ const signSubscriptionHash = (subscriptionHash) => {
     indicateMetamaskPopup();
     web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
       indicateMetamaskPopup(true);
+      set_form_disabled(false);
       $('#tweetModal').css('display', 'block');
 
       if (signature) {
@@ -650,6 +661,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     _alert({ message: gettext('Your payment transaction failed. Please try again.')}, 'error');
   }).on('transactionHash', function(transactionHash) {
     indicateMetamaskPopup(1);
+    set_form_disabled(false);
     $('#tweetModal').css('display', 'block');
     data = {
       'subscription_hash': 'onetime',
@@ -670,7 +682,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
     $('#transaction_url').attr('href', linkURL);
     enableWaitState('#grants_form');
-    // TODO: Fix tweet modal
+    set_form_disabled(false);
     $('#tweetModal').css('display', 'block');
   }).on('confirmation', function(confirmationNumber, receipt) {
     data = {

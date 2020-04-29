@@ -56,6 +56,16 @@ CONTACT_EMAIL=xxx
 ENABLE_NOTIFICATIONS_ON_NETWORK=None
 ```
 
+## Setup Fortmatic Integration
+
+1. Sign up/Login to Fortmatic dashboard at https://dashboard.fortmatic.com
+2. Update the `web/app/app/.env` file to include the values provided by Fortmatic:
+
+```shell
+FORTMATIC_LIVE_KEY=xxx
+FORTMATIC_TEST_KEY=xxx
+```
+
 ## Gitcoinbot Installation Instructions
 
 ### This integration requires the Github OAuth2 App Integration

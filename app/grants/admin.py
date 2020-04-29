@@ -22,9 +22,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import (
-    CLRMatch, Contribution, Flag, Grant, MatchPledge, Milestone, PhantomFunding, Subscription, Update,
-)
+from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -68,6 +66,13 @@ class MatchPledgeAdmin(admin.ModelAdmin):
     list_display =['pk', 'profile', 'active','pledge_type','amount']
 
 
+class CLRMatchAdmin(admin.ModelAdmin):
+    """Define the CLRMatch administration layout."""
+
+    ordering = ['-id']
+    raw_id_fields = ['grant', 'payout_contribution', 'test_payout_contribution']
+
+
 class GrantAdmin(GeneralAdmin):
     """Define the Grant administration layout."""
 
@@ -75,7 +80,7 @@ class GrantAdmin(GeneralAdmin):
     fields = [
         'migrated_to',
         'title', 'description', 'reference_url', 'admin_address', 'active',
-        'amount_goal', 'amount_received', 'monthly_amount_subscribed',
+        'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
@@ -91,7 +96,7 @@ class GrantAdmin(GeneralAdmin):
     ]
     list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
-    search_fields = ['amount_goal', 'description', 'admin_profile__handle']
+    search_fields = ['description', 'admin_profile__handle']
 
 
     # Custom Avatars
@@ -255,19 +260,6 @@ class ContributionAdmin(GeneralAdmin):
         html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
         return mark_safe(html)
 
-class MilestoneAdmin(admin.ModelAdmin):
-    """Define the Milestone administration layout."""
-
-    ordering = ['-id']
-    list_display =['pk', 'grant', 'title', 'created_on']
-
-
-class UpdateAdmin(admin.ModelAdmin):
-    """Define the Update administration layout."""
-
-    ordering = ['-id']
-    list_display =['pk', 'grant', 'title', 'created_on']
-
 
 class PhantomFundingAdmin(admin.ModelAdmin):
     """Define the GeneralAdmin administration layout."""
@@ -292,8 +284,6 @@ admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
 admin.site.register(Flag, FlagAdmin)
-admin.site.register(CLRMatch, GeneralAdmin)
+admin.site.register(CLRMatch, CLRMatchAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
-admin.site.register(Milestone, MilestoneAdmin)
-admin.site.register(Update, UpdateAdmin)

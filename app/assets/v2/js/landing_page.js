@@ -5,16 +5,11 @@ $(document).ready(function() {
   $('#gc-tree #tree-svg .lines').addClass('pause-animation');
   $('#gc-tree #tree-svg .cls-4').addClass('pause-animation');
 
-  const $navbar = $('.navbar');
   const $gcRobot = $('#gc-robot');
 
-  const followStateHeight = 500;
   const treeAnimationPosition = 1500;
-  let navFollowState = scrollContainer.scrollTop() > followStateHeight;
 
   scrollContainer.scroll(RAFThrottle((e) => {
-    moveBackground(e);
-
     if (scrollContainer.scrollTop() > treeAnimationPosition) {
       $('#gc-tree #tree-svg .lines').removeClass('pause-animation');
       $('#gc-tree #tree-svg .cls-4').removeClass('pause-animation');
@@ -22,7 +17,6 @@ $(document).ready(function() {
 
     $gcRobot.css('transform', `translateY(${$gcRobot.parent()[0].getBoundingClientRect().top - 100}px)`);
   }));
-  moveBackground({});
 
   // How It Works section toggle
   const $toggleIndicator = $('#howworks-toggle-indicator');
