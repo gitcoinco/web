@@ -55,6 +55,7 @@ class Command(BaseCommand):
                 profiles_to_connect = list(set(admin_profiles))
                 print("profiles just add admins")
                 print(len(profiles_to_connect))
+                print(project.bounty.bounty_owner_github_username.lower())
                 if project.bounty.bounty_owner_github_username.lower() == 'consensyshealth':
                     handles = [
                         'midknyt',
@@ -125,7 +126,7 @@ class Command(BaseCommand):
                     print(len(profiles_to_connect))
                     # for r in remove:
                     #     chat_driver.channels.remove_channel_member(project.chat_channel_id, r)
-                    add_to_channel.delay({'id': project.chat_channel_id}, profiles_to_connect)
+                    # add_to_channel.delay({'id': project.chat_channel_id}, profiles_to_connect)
                 except Exception as e:
                     logger.error(str(e))
                     continue
