@@ -5055,6 +5055,10 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: missing parameter token_name'
         return JsonResponse(response)
 
+    payout_tx_id = request.POST.get('payout_tx_id')
+    if payout_tx_id:
+        fulfillment.payout_tx_id = payout_tx_id
+
     fulfillment.payout_amount = amount
     fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name
