@@ -27,9 +27,9 @@
       {% include 'shared/cards.html' %}
     {% endif %}
     <!-- Include stylesheet -->
-<link href="https://cdn.quilljs.com/1.3.4/quill.core.css" rel="stylesheet">
-<link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet">
-<link href="https://cdn.quilljs.com/1.3.4/quill.bubble.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.4/quill.core.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.4/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.4/quill.bubble.css" rel="stylesheet">
     <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/profile.css" %}' />
     <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}' />
@@ -158,11 +158,6 @@
         border-top: none;
       }
 
-      .onboard-banner {
-        /*background: {% firstof hackathon.background_color or 'white' %};*/
-        /*color: {% firstof hackathon.text_color or 'black' %};*/
-      }
-
       .card-bg {
         background-color: #0C1A27;
         padding: 1.8em;
@@ -247,26 +242,11 @@
         position:absolute;
         bottom:0;
       }
-      .hackathon-banner {
-        /*background: {% firstof hackathon.background_color or 'white' %};*/
-        /*color: {% firstof hackathon.text_color or 'black' %};*/
-        height: 225px;
-        /*{% if hackathon.banner %}*/
-          /*background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;*/
-        /*{% endif %}*/
-      }
 
       .bounty_row img.avatar {
         max-width: 50px;
       }
 
-      .hackathon-title {
-          font-size: 1.4rem;
-      }
-
-      .hackathon-countdown {
-          font-size: 1rem;
-      }
 
       .bounty_row {
         background-color: white;
@@ -287,39 +267,11 @@
         overflow: hidden;
       }
 
-      .hackathon-logo {
-        height: 240px;
-        max-height: 240px;
-        width: 240px;
-        max-width: 240px;
-        /*background: {% firstof hackathon.background_color or '#090E60' %};*/
-        border-radius: 10px;
-        /*color: {% firstof hackathon.text_color or 'black' %};*/
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .hackathon-logo img {
-        height: 185px;
-        object-fit: contain;
-      }
-
-      .register {
-        width: 100%;
-      }
 
       .card-bg {
         background-color: #0C1A27;
         padding: 1.8em;
         background-size: cover;
-      }
-
-      .project-grid {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        grid-gap: 5rem 3rem;
       }
 
       .card-project {
@@ -339,23 +291,6 @@
         object-fit: contain;
       }
 
-      @media (min-width: 768px) {
-        .project-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (min-width: 992px) {
-        .project-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (min-width: 1200px) {
-        .project-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
       .page-link-gc {
         color: #3e24fb;
       }
@@ -365,33 +300,6 @@
       }
       .controls .form-control, .controls .btn, .controls label {
         font-size: 0.7rem;
-      }
-      .summary {
-        /* height: 70px; */
-        /* max-height: 70px; */
-      }
-      .follow_tribe {
-        padding-top: 6px;
-        padding-bottom: 6px;
-      }
-      .looking-team {
-        background-color: rgba(62, 0, 255, 0.05);
-        border-radius: 8px;
-        padding: 11px 15px;
-      }
-      .info-card-title {
-        font-weight: bold;
-        font-size: 12px;
-        line-height: 22px;
-        letter-spacing: 1px;
-        color: #3E00FF;
-      }
-      .info-card-desc {
-        font-style: italic;
-        font-weight: normal;
-        font-size: 12px;
-        line-height: 18px;
-        color: #666666;
       }
 
       @media(max-width: 767.98px) {
@@ -519,7 +427,6 @@
                           </div>
                         </div>
                         <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-
                       </nav>
                     </transition>
                     <div class="container pt-4" @scroll.passive="onScroll($event)">
@@ -848,10 +755,10 @@
                 </div>
               </user-directory>
             </b-tab>
-            <b-tab class="col-12" title-item-class="navigation">
+            <b-tab v-if="is_my_org" class="col-12" title-item-class="navigation">
               <template v-slot:title>
                 <div class="mt-4">
-                  {% trans "Settings" %}
+                  {% trans "Manage" %}
                 </div>
               </template>
               <b-row>
@@ -875,171 +782,125 @@
                         <div class="col-12">
                           <h2 class="text-white font-bigger-1 font-weight-bold my-2 mb-3">Currently Collecting Ideas for</h2>
                         </div>
-                        <div id="priority-text" class="text-white-70 pl-md-3">{{ tribe_priority|safe }}</div>
+                        <div id="priority-text" class="text-white-70 pl-md-3" v-html="tribe.tribe_priority"></div>
                       </div>
                     </div>
                     <div class="suggested_bounties__box {% if is_my_org %}py-5 {% else %} pt-4 pb-5 {% endif %}">
-                      {% if is_my_org %}
-                        <!-- UPDATE PRIORITIES -->
-                        <div class="update-priority rounded row px-0 mx-0 mx-md-auto col-12 col-md-9 col-lg-10">
-                          <div class="d-none d-md-inline col-1 my-auto">
-                            <img class="profile-header__avatar" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" alt="tribe logo"/>
-                          </div>
-                          <div class="col-12 col-md-11 px-0 pr-md-0">
-                            <div class="priority-container">
-                              <div class="editor-container">
-                                <quill-editor
-                                  ref="quillEditorDesc"
-                                  class="editor"
-                                  v-model="tribe.tribe_description"
-                                  :options="editorOptionDesc"
-                                  @blur="onEditorBlur($event)"
-                                  @focus="onEditorFocus($event)"
-                                  @ready="onEditorReady($event)"
-                                />
-                              </div>
-                            </div>
-                            <div class="priority-container">
+                      <!-- UPDATE PRIORITIES -->
+                      <div class="update-priority rounded row px-0 mx-0 mx-md-auto col-12 col-md-9 col-lg-10">
+                        <div class="d-none d-md-inline col-1 my-auto">
+                          <img class="profile-header__avatar" src="{% if profile.avatar and profile.active_avatar.avatar_url %}{{ profile.active_avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" alt="tribe logo"/>
+                        </div>
+                        <div class="col-12 col-md-11 px-0 pr-md-0">
+                          <div class="priority-container">
+                            <div class="editor-container">
                               <quill-editor
-                                ref="quillEditorPriority"
+                                ref="quillEditorDesc"
                                 class="editor"
-                                v-model="tribe.tribe_priority"
-                                :options="editorOptionPrio"
+                                v-model="tribe.tribe_description"
+                                :options="editorOptionDesc"
                                 @blur="onEditorBlur($event)"
                                 @focus="onEditorFocus($event)"
                                 @ready="onEditorReady($event)"
                               />
                             </div>
                           </div>
-                          <div class="update-priority-submit col-12 pr-md-0">
-                            <div class="form__checkbox d-inline-block">
-                              <b-form-checkbox v-model="params.publish_to_ts" name="check-button" switch>
-                                Post to Townsquare
-                              </b-form-checkbox>
-                            </div>
-
-                            <button type="submit" class="btn btn-sm btn-gc-blue float-right font-smaller-3 my-2 mr-3" @click.prevent="updateTribe();">
-                              <i class="fas fa-bullhorn mr-2"></i> Update Tribe
-                            </button>
+                          <div class="priority-container">
+                            <quill-editor
+                              ref="quillEditorPriority"
+                              class="editor"
+                              v-model="tribe.tribe_priority"
+                              :options="editorOptionPrio"
+                              @blur="onEditorBlur($event)"
+                              @focus="onEditorFocus($event)"
+                              @ready="onEditorReady($event)"
+                            />
                           </div>
                         </div>
-                      {% else %}
-                        <div class="px-5">
-                          <h2 class="font-bigger-1 font-weight-bold pb-2">Suggest a Bounty</h2>
+                        <div class="update-priority-submit col-12 pr-md-0">
+                          <div class="form__checkbox d-inline-block">
+                            <b-form-checkbox v-model="params.publish_to_ts" name="check-button" switch>
+                              Post to Townsquare
+                            </b-form-checkbox>
+                          </div>
 
-                          <div id="create_bounty_request" class="suggest-bounty-form px-4 pt-2 pb-5 rounded">
-                            <div class="mt-3">
-                              <textarea name="comment" class="form__input font-smaller-1 pt-2" id="comment" rows="4" placeholder="{% trans 'What\'s your idea' %}"></textarea>
-                            </div>
+                          <button type="submit" class="btn btn-sm btn-gc-blue float-right font-smaller-3 my-2 mr-3" @click.prevent="updateTribe();">
+                            <i class="fas fa-bullhorn mr-2"></i> Update Tribe
+                          </button>
+                        </div>
+                      </div>
+                      <div v-if="tribe.suggested_bounties" class="col-12 suggested_bounties">
+                        <!-- SUGGESTED BOUNTIES -->
+                        <h2 class="mt-5 mb-4 font-bigger-1 font-weight-bold mx-3">
+                          {% trans "Suggested Bounties" %}
+                        </h2>
 
-                            <div>
-                              <label class="font-caption letter-spacing text-black-60 text-uppercase" for=githubUrl>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-                              <input name='githubUrl' id="githubUrl" class="form__input font-smaller-1" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
-                            </div>
 
-                            <div id="pricing-section" class="mt-2">
-
-                              <label class="font-smaller-1 letter-spacing text-black-60">{% trans "How much would you be willing to build this for?" %}</label>
-                              <div class="d-flex row mb-2">
-                                <div class="col-12 col-md-3">
-                                  <div class="form__select2 font-smaller-1">
-                                    <select name='denomination' id='token'></select>
-                                  </div>
-                                </div>
-                                <div class="col-12 col-md-3">
-                                  <input name='amount' id='amount' class="form__input font-smaller-1" type="number" value="{{amount|default:'0.01'}}" step="0.001" min="0.001"/>
+                        <div v-for="suggested_bounty in tribe.suggested_bounties" :id="suggested_bounty.id" class="row suggested_bounty rounded px-5 py-3 mx-3 mb-4">
+                          <div class="col-8">
+                            <h3 class="font-subheader font-weight-bold">[[ suggested_bounty.title ]]</h3>
+                            <p class="font-caption text-black-60 mb-1" v-html="suggested_bounty.comment"></p>
+                            <div class="row font-caption">
+                              <div class="col-12">
+                                <a :href="suggested_bounty.github_url" target="_blank">
+                                  <i class="fab fa-github mr-1"></i> {% trans "View Github Issue" %}
+                                </a>
+                                <span class="mx-2 text-grey">
+                                  <i class="far fa-user mr-1"></i>
+                                  [[ suggested_bounty.requested_by.handle ]]
+                                </span>
+                                <span class="text-grey mr-2">
+                                  <i class="far fa-clock mr-1"></i>
+                                  [[ suggested_bounty.created_on ]]
+                                </span>
+                                <div class="tag usd my-0">
+                                  <p class="font-smaller-5">
+                                    [[ suggested_bounty.amount ]]
+                                    <span>[[ suggested_bounty.token_name ]]</span>
+                                  </p>
                                 </div>
                               </div>
                             </div>
+                          </div>
 
-                            <button type="submit" class="btn btn-sm btn-outline-gc-blue float-right font-smaller-3 my-2 mr-3" data-createbountyrequest="{{ profile.handle }}">
-                              <i class="far fa-arrow-alt-circle-up mr-1"></i>
-                              <span class="font-weight-semibold">Suggest Bounty</span>
+                          <div v-if="is_my_org" class="col-md-4 my-auto text-right">
+                            <a target="_blank" class="btn btn-sm btn-outline-gc-green font-smaller-4 mx-2" href="{% url 'new_bounty' %}?type=public&url={{ suggested_bounty.github_url }}&invite={{ suggested_bounty.requested_by.pk }}&amount={{ suggested_bounty.amount }}">
+                              <i class="fas fa-plus-circle mr-1"></i>
+                              {% trans "Fund Request" %}
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger font-smaller-4 mx-2"
+                              data-cancelbountyrequest=`"%{suggested_bounty.pk}"`
+                            >
+                              <i class="fas fa-times-circle mr-1"></i>
+                              {% trans "Cancel Request" %}
                             </button>
                           </div>
                         </div>
-
-                      {% endif %}
-
-                      {% if suggested_bounties %}
-                        <div class="col-12 suggested_bounties">
-                          <!-- SUGGESTED BOUNTIES -->
-                          <h2 class="mt-5 mb-4 font-bigger-1 font-weight-bold mx-3">
-                            Suggested Bounties
-                          </h2>
-
-                          {% for suggested_bounty in suggested_bounties %}
-                            <div id="{{ suggested_bounty.pk }}" class="row suggested_bounty rounded px-2 py-3 mx-3 mb-4">
-                              <div class="{% if is_my_org %} col-8 {% else %} col-12 {% endif %}">
-                                <h3 class="font-subheader font-weight-bold">{{ suggested_bounty.title }}</h3>
-                                <p class="font-caption text-black-60 mb-1">{{ suggested_bounty.comment }}</p>
-                                <div class="row font-caption">
-                                  <div class="col-12">
-                                    <a href="{{ suggested_bounty.github_url }}" target="_blank">
-                                      <i class="fab fa-github mr-1"></i> View Github Issue
-                                    </a>
-                                    <span class="mx-2 text-grey">
-                                      <i class="far fa-user mr-1"></i>
-                                      {{ suggested_bounty.requested_by }}
-                                    </span>
-                                    <span class="text-grey mr-2">
-                                      <i class="far fa-clock mr-1"></i>
-                                      {{ suggested_bounty.created_on|naturaltime }}
-                                    </span>
-                                    <div class="tag usd my-0">
-                                      <p class="font-smaller-5">
-                                        {{ suggested_bounty.amount }}
-                                        <span>{{ suggested_bounty.token_name }}</span>
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {% if is_my_org %}
-                                <div class="col-md-4 my-auto text-right">
-                                  <a target="_blank" class="btn btn-sm btn-outline-gc-green font-smaller-4 mx-2" href="{% url 'new_bounty' %}?type=public&url={{ suggested_bounty.github_url }}&invite={{ suggested_bounty.requested_by.pk }}&amount={{ suggested_bounty.amount }}">
-                                    <i class="fas fa-plus-circle mr-1"></i>
-                                    Fund Request
-                                  </a>
-                                  <button class="btn btn-sm btn-outline-danger font-smaller-4 mx-2"
-                                    data-cancelbountyrequest="{{ suggested_bounty.pk }}"
-                                  >
-                                    <i class="fas fa-times-circle mr-1"></i>
-                                    Cancel Request
-                                </button>
-                                </div>
-                              {% endif %}
-                            </div>
-                          {% endfor %}
-                        </div>
-                      {% elif is_my_org %}
-                        <div class="col-12 suggested_bounties">
-                          <h2 class="text-center font-bigger-1 mt-5">
-                            <p class="mb-3 font-bigger-3"><i class="far fa-lightbulb"></i></p>
-                            <span>No Bounties have been suggested</span>
-                            <span class="d-block mt-2">
-                              Update your tribe's priorities to guide contributors
-                            </span>
-                            <span class="d-block mt-2">
-                              to submit issues they'd wanna <strong>#BUDIL</strong>
-                            </span>
-                          </h2>
-                        </div>
-                      {% else %}
-                        <div class="col-12 suggested_bounties">
-                          <h2 class="text-center font-bigger-1 mt-5">
-                            <p class="mb-3 font-bigger-3"><i class="fas fa-tools"></i></p>
-                            <span>No Bounties have been suggested</span>
-                            <span class="d-block mt-2">
-                              Suggest an issue you'd like bountied out to
-                            </span>
-                            <span class="d-block mt-2">
-                              <strong>#BUDIL</strong> to grow {{ profile.handle }}
-                            </span>
-                          </h2>
-                        </div>
-                      {% endif %}
+                      </div>
+                      <div v-else-if="is_my_org" class="col-12 suggested_bounties">
+                        <h2 class="text-center font-bigger-1 mt-5">
+                          <p class="mb-3 font-bigger-3"><i class="far fa-lightbulb"></i></p>
+                          <span>No Bounties have been suggested</span>
+                          <span class="d-block mt-2">
+                            Update your tribe's priorities to guide contributors
+                          </span>
+                          <span class="d-block mt-2">
+                            to submit issues they'd wanna <strong>#BUDIL</strong>
+                          </span>
+                        </h2>
+                      </div>
+                      <div v-else class="col-12 suggested_bounties">
+                        <h2 class="text-center font-bigger-1 mt-5">
+                          <p class="mb-3 font-bigger-3"><i class="fas fa-tools"></i></p>
+                          <span>No Bounties have been suggested</span>
+                          <span class="d-block mt-2">
+                            Suggest an issue you'd like bountied out to
+                          </span>
+                          <span class="d-block mt-2">
+                            <strong>#BUDIL</strong> to grow {{ profile.handle }}
+                          </span>
+                        </h2>
+                      </div>
                     </div>
                   </div>
                 </b-col>
@@ -1099,10 +960,10 @@
                   </b-row>
               </tribes-profile-header>
             </b-media>
-              <b-col v-html="tribe.tribe_description" class="mt-3"></b-col>
-            <a href="/profile/{{tribe.handle}}/tribe" class="col-md-8 btn button--full px-3 btn-gc-blue">
+            <b-col v-html="tribe.tribe_description" class="mt-3"></b-col>
+            <b-button v-if="!is_my_org" v-b-modal.suggest-bounty-modal class="col-md-8 btn button--full px-3 btn-gc-blue">
               {% trans "Suggest a bounty" %}
-            </a>
+            </b-button>
             <div class="pt-0 mt-3 font-body">
               <div style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
                 <h4 class="mx-3 pt-4 font-body font-weight-bold">Currently collecting ideas for</h4>
@@ -1114,9 +975,8 @@
                 <table class="px-3 table table-borderless">
                   <tbody>
                     <tr v-for="suggested_bounty in tribe.suggested_bounties ">
-                      <th class="pr-0 font-weight-normal" scope="row">[[ suggested_bounty.pk ]]</th>
+                      <th class="pr-0 font-weight-normal" scope="row">[[ suggested_bounty.id ]]</th>
                       <td class="px-3 font-weight-bold">[[ suggested_bounty.title ]]</td>
-                      <td class="pl-0">[[ suggested_bounty.votes ]] Votes</td>
                     </tr>
                   </tbody>
                 </table>
@@ -1148,6 +1008,60 @@
             <b-button class="button button--primary button__small" @click.prevent="updateTribe();">Save</b-button>
           </template>
         </b-modal>
+        <b-modal v-if="!is_my_org" @hide="resetBountySuggestion" @close="resetBountySuggestion" @cancel="resetBountySuggestion"  hide-backdrop content-class="shadow" id="suggest-bounty-modal" tabindex="-1" role="dialog" aria-labelledby="suggestBountyLabel" aria-hidden="true">
+          <template v-slot:modal-title>
+            {% trans "Suggest a Bounty"%}
+          </template>
+          <div class="px-5">
+            <div id="create_bounty_request" class="suggest-bounty-form px-4 pt-2 pb-5 rounded">
+              <div class="mt-3">
+                <div class="editor-container">
+                  <quill-editor
+                    ref="quillEditorDesc"
+                    class="editor"
+                    v-model="params.suggest.comment"
+                    :options="editorOptionComment"
+                    @blur="onEditorBlur($event)"
+                    @focus="onEditorFocus($event)"
+                    @ready="onEditorReady($event)"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for=githubUrl>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+                <input v-model="params.suggest.githubUrl" id="githubUrl" class="form__input font-smaller-1" type="url" placeholder="https://github.com/user/repo/issues/n" value="" required/>
+              </div>
+
+              <div id="pricing-section" class="mt-2">
+
+                <label class="font-smaller-1 letter-spacing text-black-60">{% trans "How much would you be willing to build this for?" %}</label>
+                <div class="d-flex row mb-2">
+                  <div class="col-12 col-md-3">
+                    <div class="form__select2 font-smaller-1">
+                      <select2 v-model.trim="params.suggest.token" data-minimum-results-for-search="Infinity" class="form-control">
+                        <option v-for="option in tokens" v-bind:value="option.addr">
+                          [[ option.name ]]
+                        </option>
+                      </select2>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <input v-model="params.suggest.amount" id='amount' class="form__input font-smaller-1" type="number" value="0.01" step="0.001" min="0.001"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <template v-slot:modal-footer>
+            <b-button class="button button--warning button__small" @click="$bvModal.hide('suggest-bounty-modal')">Cancel</b-button>
+            <b-button class="button button--primary button__small" @click.prevent="suggestBounty();">
+              <i class="far fa-arrow-alt-circle-up mr-1"></i>
+                <span class="font-weight-semibold">{% trans "Suggest Bounty"%}</span>
+            </b-button>
+          </template>
+        </b-modal>
+      </div>
     </div>
     <div class="row bottom_notification font-caption">
       {{footer_msg|safe}}
@@ -1166,6 +1080,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with vue=True %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/current_profile.html' %}
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>
@@ -1175,22 +1090,23 @@
     <script defer src='https://cdn.quilljs.com/1.3.6/quill.js'></script>
     <script defer src='https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.6/dist/vue-quill-editor.js'></script>
     {{currentProfile|json_script:"current-profile"}}
-    <script>
-      $('body').bootstrapTooltip({
-        selector: '[data-toggle="tooltip"]'
-      });
-      document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
-      console.log(document.currentProfile);
-      window.localStorage['tab'] = "tribe:{{ profile_handle | safe }}";
-      document.activePanel = {{active_panel| safe}};
-      document.is_on_tribe = {{is_on_tribe | safe}};
-      document.chatURL = "{{ chat_url | safe }}";
-    </script>
     <script src='{% static "v2/js/pages/profile-tribes.js" %}'></script>
     {% include 'shared/activity_scripts.html' %}
     <script src='{% static "v2/js/status.js" %}'></script>
     <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
     <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
     <script src='{% static "v2/js/users.js" %}'></script>
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+      document.tokens = tokens(document.web3network);
+      document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
+      document.is_my_org = {{is_my_org | safe}};
+      window.localStorage['tab'] = "tribe:{{ profile_handle | safe }}";
+      document.activePanel = {{active_panel| safe}};
+      document.is_on_tribe = {{is_on_tribe | safe}};
+      document.chatURL = "{{ chat_url | safe }}";
+    </script>
   </body>
 </html>

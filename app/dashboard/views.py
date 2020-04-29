@@ -2869,7 +2869,7 @@ def profile(request, handle, tab=None):
         context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
         context['is_on_tribe'] = json.dumps(True if len(context['is_on_tribe']) > 0 else False)
-        # context['is_my_org'] = True
+        context['is_my_org'] = json.dumps(context['is_my_org'])
         context['profile_handle'] = profile.handle
 
         return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)

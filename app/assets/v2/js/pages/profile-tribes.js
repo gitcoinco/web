@@ -31,7 +31,7 @@ const loadDynamicScript = (callback, url, id) => {
         isOnTribe: document.is_on_tribe
       }),
       methods: {
-        followTribe: function (tribe, event) {
+        followTribe: function(tribe, event) {
           event.preventDefault();
           let vm = this;
 
@@ -102,6 +102,54 @@ const loadDynamicScript = (callback, url, id) => {
             console.error('error: unable to save priority', error);
           });
         },
+        suggestBounty: function() {
+          let vm = this;
+          const githubUrl = vm.params.suggest.githubUrl;
+          const tokenName = tokenAddressToDetails(vm.params.suggest.token)['name'];
+          const comment = vm.params.suggest.comment;
+          const tribe = vm.tribe.handle;
+          const url = '/api/v1/bounty_request/create';
+          const amount = vm.params.suggest.amount;
+
+          fetchIssueDetailsFromGithub(githubUrl).then(result => {
+            const title = result.title;
+
+            const createBountyRequest = fetchData(
+              url,
+              'POST',
+              {
+                'github_url': githubUrl,
+                'tribe': tribe,
+                'comment': comment,
+                'token_name': tokenName,
+                'amount': amount,
+                'title': title
+              },
+              {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()}
+            );
+
+            $.when(createBountyRequest).then(function(response) {
+
+              if (response.status == 204) {
+                _alert('Bounty Request has been created');
+                location.reload();
+              } else {
+                _alert(`Error creating bounty request as ${response.message}`, 'error');
+                console.error(response.message);
+              }
+
+            }).fail(function(error) {
+              _alert(`Error creating bounty request as ${error}`, 'error');
+              console.error('error: unable to creating bounty request', error);
+            });
+          }).catch(error => {
+            _alert(`Error creating bounty request as ${error}`, 'error');
+            console.error('error: unable to creating bounty request', error);
+          });
+        },
+        resetBountySuggestion: function() {
+          this.params.suggest = {};
+        },
         tabChange: function(input) {
           let vm = this;
 
@@ -141,10 +189,14 @@ const loadDynamicScript = (callback, url, id) => {
         editorPriority() {
           return this.$refs.quillEditorPriority.quill
         },
+        editorComment() {
+          return this.$refs.quillEditorComment.quill
+        },
       },
       mounted() {
         console.log('we mounted');
         let vm = this;
+
         this.$watch('headerFile', function(newVal, oldVal) {
           if (checkFileSize(this.headerFile, 4000000) === false) {
             _alert(`Profile Header Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
@@ -168,11 +220,13 @@ const loadDynamicScript = (callback, url, id) => {
           activePanel: document.activePanel,
           tribe: document.currentProfile
         }, {
+          tokens: document.tokens,
           csrf: $("input[name='csrfmiddlewaretoken']").val(),
           headerFile: null,
           headerFilePreview: null,
-          is_my_org: true,
+          is_my_org: document.is_my_org,
           params: {
+            suggest: {},
             publish_to_ts: false
           },
           editorOptionPrio: {
@@ -199,6 +253,18 @@ const loadDynamicScript = (callback, url, id) => {
             },
             theme: 'snow',
             placeholder: 'Describe your tribe so that people can follow you.'
+          },
+          editorOptionComment: {
+            modules: {
+              toolbar: [
+                [ 'bold', 'italic', 'underline' ],
+                [{ 'align': [] }],
+                [ 'link', 'code-block' ],
+                ['clean']
+              ]
+            },
+            theme: 'snow',
+            placeholder: 'What would you suggest as a bounty?'
           }
         });
       }

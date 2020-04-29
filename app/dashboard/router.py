@@ -29,7 +29,7 @@ from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
+    Activity, Bounty, BountyFulfillment, BountyInvites, BountyRequest, HackathonEvent, HackathonProject, Interest, Profile,
     ProfileSerializer, SearchHistory, TribeMember,
 )
 
@@ -515,11 +515,20 @@ class TribesTeamSerializer(serializers.ModelSerializer):
         fields = ('name', 'handle', 'avatar_url', 'followers_count', 'user_is_following')
 
 
+class BountyRequestSerializer(serializers.ModelSerializer):
+
+    requested_by = TribesTeamSerializer()
+
+    class Meta:
+        model = BountyRequest
+        fields = ('id', 'token_name', 'comment', 'github_url', 'title', 'requested_by', 'status')
+
+
 class TribesSerializer(serializers.ModelSerializer):
     """Handle serializing the Profile object."""
     active_bounties = BountySerializer(many=True)
     team_or_none_if_timeout = TribesTeamSerializer(many=True, read_only=True)
-    suggested_bounties = BountySerializer(many=True)
+    suggested_bounties = BountyRequestSerializer(many=True)
     tribes_cover_image = serializers.ImageField(allow_empty_file=True)
 
     def __init__(self, *args, **kwargs):
