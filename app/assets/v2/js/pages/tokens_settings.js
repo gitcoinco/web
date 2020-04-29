@@ -38,41 +38,42 @@ $(document).ready(function() {
     e.preventDefault();
     // actual approval
     var token_contract = web3.eth.contract(token_abi).at(token_address);
-    var from = web3.eth.coinbase;
     var to = contract_address;
 
-    token_contract.allowance.call(from, to, function(error, result) {
-      if (error || result.toNumber() == 0) {
-        var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
+    web3.eth.getCoinbase(function(_, from) {
+      token_contract.allowance.call(from, to, function(error, result) {
+        if (error || result.toNumber() == 0) {
+          var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
 
-        indicateMetamaskPopup();
-        token_contract.approve(
-          to,
-          amount,
-          {
-            from: from,
-            value: 0,
-            gasPrice: web3.toHex(document.gas_price * Math.pow(10, 9))
-          }, function(error, result) {
-            indicateMetamaskPopup(true);
-            if (error) {
-              _alert('Token request denied - no permission for this token');
-              return;
-            }
-            var tx = result;
+          indicateMetamaskPopup();
+          token_contract.approve(
+            to,
+            amount,
+            {
+              from: from,
+              value: 0,
+              gasPrice: web3.toHex(document.gas_price * Math.pow(10, 9))
+            }, function(error, result) {
+              indicateMetamaskPopup(true);
+              if (error) {
+                _alert('Token request denied - no permission for this token');
+                return;
+              }
+              var tx = result;
 
-            $('#coinbase').val(web3.eth.coinbase);
-            $('#token_name').val(token_name);
-            $('#token_address').val(token_address);
-            $('#contract_address').val(contract_address);
-            $('#contract_name').val(contract_name);
-            $('#network').val(document.web3network);
-            $('#txid').val(tx);
-            $('input[type=submit]').click();
-          });
-      } else {
-        _alert('You have already approved this token for this contract');
-      }
+              $('#coinbase').val(from);
+              $('#token_name').val(token_name);
+              $('#token_address').val(token_address);
+              $('#contract_address').val(contract_address);
+              $('#contract_name').val(contract_name);
+              $('#network').val(document.web3network);
+              $('#txid').val(tx);
+              $('input[type=submit]').click();
+            });
+        } else {
+          _alert('You have already approved this token for this contract');
+        }
+      });
     });
 
   });

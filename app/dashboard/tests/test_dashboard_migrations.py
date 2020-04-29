@@ -57,7 +57,6 @@ def new_grant(profile):
         'contract_owner_address': '0x8B04e71007A783B4965BaFE068EC062D935E93b5',
         'token_address': '0xFc1079D41D56D78e9FA2a857991F41D777104c74',
         'token_symbol': 'E18R',
-        'amount_goal': Decimal('100.0000'),
         'contract_version':  Decimal('0'),
         'deploy_tx_id': '0xa95d30415427f76c778207e789c78d436b5c4ca4339797cff52ed21de8419554',
         'network': 'rinkeby',

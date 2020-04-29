@@ -25,7 +25,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </head>
   <body class="interior {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header dash px-0">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
       <div class="row no-gutters metamask-banner">
@@ -38,7 +38,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
 
-    {% include 'grants/shared/alpha.html' %}
     {% include 'grants/shared/waiting_state.html' %}
 
     <div class="row">
@@ -46,16 +45,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <img src="{% static "v2/images/prime.png" %}">
       </div>
     </div>
-
+    <div class="row" id="grants_form">
+      <div class="col-12 text-left mt-md-3">
+        <a href="{{ grant.url }}" class="float-left ml-2">< Back to {{ grant.title }}</a>
+      </div>
+    </div> 
     <div class="row" id="grants_form">
       <div class="col-12 text-center mt-md-3">
-        <h2 class="font-title-lg my-4">{% trans "Fund Grant" %}</h2>
+        <img src="/static/v2/images/grants/{{img}}" style="max-width: 200px; max-height: 200px; ">
+        <h2 class="font-title-lg my-4">{% if direction == '-' %} Negative {%endif%}  {% trans "Fund Grant" %}</h2>
+        <hr>
       </div>
 
-      {% include 'grants/banner.html' %}
-
       {% if can_phantom_fund %}
-        <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
+        <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row mb-2" style="border-bottom: #ddd 1px solid;">
           <ul class="nav">
             <li class="nav-item">
               <a class="nav-link active" href="#" data-target="original_fund">Normal Fund</a>
@@ -66,6 +69,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </ul>
         </div>
       {% endif %}
+
       <div id="phantom_fund" class="tab_target {% if active_tab == "normal" %} hidden {% endif %} ">
         <div class="col-12 offset-md-2 col-md-10 offset-lg-3 col-lg-6 mt-5 font-subheader mx-0 mx-md-auto row">
           <div class="form__group-horizontal">
@@ -115,11 +119,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </div>
       <div id="original_fund" class="tab_target {% if active_tab == "phantom" %} hidden {% endif %}">
-        <div class="col-12 offset-md-2 col-md-10 offset-xl-3 col-xl-6 mt-5 font-subheader mx-0 mx-md-auto row">
-          <p class="col-12 font-weight-semibold my-4 text-center">
-            {{ grant.admin_profile }} {% trans "is accepting contributions in "%}
+        <div class="col-12 offset-md-2 col-md-10 offset-xl-3 col-xl-6 mt-1 font-subheader mx-0 mx-md-auto row">
+          <p class="col-12 font-weight-semibold mb-4 text-center">
+            <a href="{{ grant.url }}">{{ grant.title }}</a> {% trans "is accepting contributions in "%}
             {% if grant_has_no_token %}
-              {% trans "any token." %}
+              {% trans "any token" %}
             {% else %}
               {{ grant.token_symbol }}
             {% endif %}
@@ -149,7 +153,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       </div>
                     </div>
                   </div>
-
                   <div class="form__group-horizontal contribution_type">
                     <div class="row">
                       <div class="col-12 col-sm-8 font-body">
@@ -162,34 +165,50 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                       <div class="col-12 col-sm-4 font-body num_recurring hidden">
                         <label class="form__label">
-                          {% trans "Number of Contribution Periods" %}
+                          {% trans "Number of Grants Rounds" %}
                         </label>
+                        <input type="hidden" id="frequency_count" name="frequency_count" class="form__input" value='1' required />
+                        <input type="hidden" id="frequency_unit" name="frequency_unit" class="form__input" value='rounds' required />
                         <input id="period" type="number" min="1" step="1" name="num_periods" class="form__input" value="12" required />
                       </div>
                     </div>
                   </div>
 
-                  <div class="form__group-horizontal frequency hidden">
-                    <label class="form__label">{% trans "Payment Period" %}</label>
-                    <div class="row">
-                      <div class="col-6 col-sm-8 font-body">
-                        <input type="number" min=0 step="1" id="frequency_count" name="frequency" class="form__input" value='30' required />
-                      </div>
-                      <div class="col-6 col-sm-4 font-body">
-                        <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
-                          {% if user.is_staff %}
-                            <option value="minutes" selected="selected">{% trans "minutes" %}</option>
-                            <option value="hours" selected="selected">{% trans "hours" %}</option>
-                          {% endif %}
-                          <option value="days" selected="selected">{% trans "days" %}</option>
-                          <option value="months">{% trans "months" %}</option>
-                        </select>
+                  {% if grant.negative_voting_enabled %}
+                    <div class="form__group-horizontal match_direction mt-0 pt-0">
+                      <div class="row">
+                        <div class="col-12 col-sm-12 font-body">
+                          <label class="form__label">{% trans "Match Pool Voting Direction" %}</label>
+                          <ul class="mb-0 pb-0">
+                            <li style="list-style-type: none;">
+                              <input type="radio" name="match_direction" id="positive" value="+" style="vertical-align:top" class="m-3" {% if direction != '-' %} checked="checked" {% endif %}>
+                              <label for="positive" class="form__label"><strong>Positive - I want to support this Grant.</strong>
+                              <BR>
+                              - Grant Contribution on Gitcoin's site will be <i>Public</i>.
+                              <BR>
+                              - Contribution will go to <i>Grantee</i>.
+                              <BR>
+                              - Matching Funds will go to <i>Grantee</i>.</label>
+                            </li>
+                            <li style="list-style-type: none;">
+                              <input type="radio" name="match_direction" id="negative" value="-" style="vertical-align:top" class="m-3"{% if direction == '-' %} checked="checked" {% endif %} >
+                              <label for="negative" class="form__label"><strong>Negative - I want to inhibit this Grant.</strong> <i class="fas fa-info-circle" title="Use this option if you want to cancel out someone elses positive contribution."></i>
+                              <BR>
+                              - Grant Contribution on Gitcoin's site will be <i>Private</i>.
+                              <BR>
+                              - Contribution will go to <i>Matching Pool</i>.
+                              <BR>
+                              - Matching Funds will be <i>*deducted* from Grantee</i>.</label>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  {% else %}
+                    <input type="hidden" name="match_direction" value="+">
+                  {% endif %}
 
-
-                  <div class="form__group-horizontal contribution_type">
+                  <div class="form__group-horizontal contribution_type comment_container">
                     <div class="row">
                       <div class="col-12 col-sm-12 font-body">
                         <label class="form__label">{% trans "Comment (Public)" %}</label>
@@ -200,7 +219,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
 
 
-                  <div class="my-1 text-left">
+                  <div class="my-1 text-left hide_wallet_address_container">
                     <input type="checkbox" name="hide_wallet_address" id="hide_wallet_address" {% if profile.hide_wallet_address %} checked="checked" {% endif %} >
                     <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
                     <small id="hide_wallet_address_help" class="form__input-help">{% trans "If this option is chosen, your wallet address will be hidden" %}</small>
@@ -209,11 +228,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
                     <div class="row">
                       <div class="col-12 mb-3">
-                        <h3 class="font-subheader ">{% trans "Support Gitcoin (optional)" %}</h3>
                         <p class="font-body">
                           {% trans "By using this service, you’ll also be contributing" %}
                           <span class="gitcoin-grant-percent">5</span>
-                          {% trans "% of your contribution to the" %} <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund">Gitcoin Sustainability Fund</a>. 
+                          {% trans "% of your contribution to the" %} <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="blank">Gitcoin Grants Round 6+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
                           <br>
                           <a href="#" id="adjust">Adjust &gt;&gt;</a>
                         </p>
@@ -240,7 +258,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             </span>
                           </p>
                           <p class="mb-0 mx-0 font-caption text-center summary-rollup-gitcoin">
-                          {% trans "every" %} <span class="font-caption summary-period">-</span>
+                          {% trans "for" %} <span class="font-caption summary-period">-</span>
                             <span class="font-caption summary-frequency-unit-gitcoin">-</span>
                             (<span class="summary-frequency-gitcoin">-</span> times)
                           </p>
@@ -269,10 +287,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                       <span id="summary-amount" class="font-weight-bold">-</span>
                       <span class="summary-token font-weight-bold">
                         {{ grant.token_symbol }}
-                      </span>
-                      {% trans "to this grant" %}
+                      </span>.
                       <span class="hide_if_onetime hidden">
-                        every
+                        for
                         <span class="summary-period font-weight-bold">-</span>
                         <span class="summary-frequency-unit font-weight-bold">-</span>.
                       </span>
@@ -286,7 +303,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         {% if not grant_has_no_token %} {{ grant.token_symbol }} {% endif %}
                       </span>
                       {% if grant.contract_version == 1 %}
-                        {% trans "to the gitcoin maintainer grant every" %}
+                        {% trans "to the gitcoin maintainer grant for" %}
                       {% elif grant.contract_version == 0 %}
                         {% trans "to the gitcoin maintainer grant" %}
                       {% endif %}
@@ -297,7 +314,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <p class="hide_if_onetime hidden">
                       <i class="fas fa-circle mr-2"></i>
                       {% trans "Your contribution will stop once this payment has happened" %}
-                      <span class="summary-frequency font-weight-bold">-</span> times.
+                      <span class="summary-frequency font-weight-bold">-</span> times.  You can cancel your subscription at any time by clicking the "Cancel Subscription" button on the grant page.
                     </p>
 
                     <p class="hide_if_onetime hidden">
@@ -320,7 +337,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                     <p>
                       <i class="fas fa-circle mr-2"></i>
-                      {% trans "Note: You will have to approve 2 transactions via MetaMask on submit." %} <a target="_blank" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Read how this works</a>.
+                      {% trans "Note: You will have to approve 2 transactions via your web3 wallet on submit." %} <a target="_blank" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Read how this works</a>.
                     </p>
                   </div>
 

@@ -17,28 +17,46 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <head>
     <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
     {% include 'shared/head.html' with slim=1 %}
-    {% include 'shared/cards.html' %}
+    {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   </head>
-  <body class="interior {{ active }} grant g-font-muli">
+  <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash" style="background-image: url('/static/v2/images/bg/{{bg}}.jpg');">
+    <div class="container-fluid header dash" style="background-image: url('/static/v2/images/bg/{{bg}}');">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
 
 
       {% include 'grants/shared/landing_hero.html' %}
-      {% include 'grants/shared/landing_announce.html' %}
+      <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
+        <div style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
       {% include 'grants/shared/landing_navbar.html' %}
       {% include 'grants/shared/landing_clr.html' %}
-      {% if type != 'activity' %}
+      {% if type == 'activity' %}
+        {% include 'grants/shared/landing_activity.html' %}
+      {% elif type == 'about' %}
+        {% include 'grants/shared/landing_announce.html' %}
+      {% elif type == 'stats' %}
+        <div id="insert_iframe">
+        </div>
+        <script>
+          var insert_iframe = function(){
+            if(typeof $ != 'undefined'){
+              $('#insert_iframe').html('<iframe src="/grants/stats/?category={{selected_category}}" style="width: 100%; height: 100%; min-height: 1000px;">')
+            } else {
+            setTimeout(insert_iframe, 100);
+            }
+          };
+          setTimeout(insert_iframe, 100);
+        </script>
+      {% else %}
         {% include 'grants/shared/landing_subnav.html' %}
         {% include 'grants/shared/landing_grants.html' %}
-      {% else %}
-        {% include 'grants/shared/landing_activity.html' %}
       {% endif %}
+        </div>
+      </div>
 
 
     {% include 'shared/bottom_notification.html' %}
@@ -66,4 +84,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       });
     </script>
   {% endif %}
+
+  
 </html>

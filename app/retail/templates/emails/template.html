@@ -20,20 +20,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting" />
 <head>
-
+  <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}" data-premailer="ignore">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" data-premailer="ignore">
 </head>
 
 <style>
   body {
     margin: 0px;
     padding: 0px;
-    font-family: Helvetica, sans-serif;
-  }
-
-  .bounty-box {
-    margin: 2rem auto;
-    padding-top: 1.5em;
-    padding-bottom: 1em;
+    font-family: 'Roboto', sans-serif;
   }
 
   .rounded {
@@ -80,8 +75,30 @@
     line-height: 30px;
   }
 
+  h3{
+    color: #000000;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 40px;
+  }
+
+
+  h5{
+    color: #000000;
+    font-size: 0.8em;
+    margin-top:5px; 
+    margin-bottom: 0;
+    font-weight: 400;
+  }
+
+  hr {
+    width: 90%;
+  }
+
   h1 {
     font-size: 1.8rem;
+    color: black;
+    font-weight: bold;
   }
 
   h2 {
@@ -89,7 +106,7 @@
   }
 
   h3 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   h4 {
@@ -112,20 +129,21 @@
   a.button {
     color: #fff;
     background-color: #3E00FF;
-    border-radius: 5px;
+    border-radius: 3px;
     cursor: pointer;
-    padding: 1rem 3rem;
+    padding: 10px 15px;
     font-size: 14px;
     line-height: 1.5;
     text-align: center;
     text-decoration: none;
+    font-family: 'Muli';
   }
 
   #logo {
     vertical-align: middle;
     display: inline-block;
     {% if email_style %}
-      max-height: 300px;
+      max-height: 100%;
       width: 80%;
     {% else %}
       max-height: 80px;
@@ -139,7 +157,7 @@
 
   #header {
     {% if email_style %}
-      max-height: 300px;
+      max-height: 100%;
     {% else %}
       height: 100px;
       padding: 30px 50px;
@@ -150,6 +168,9 @@
     color: white;
     align-content: center;
     text-align: center;
+  }
+  
+  body, #header, #footer {
       {% if email_style == 1 %}
         background-color: #3E00FF;
       {% elif email_style == 2 %}
@@ -176,6 +197,8 @@
         background-color: #ffc000;
       {% elif email_style == 21 %}
         background-color: #f7ecbc;
+      {% elif email_style == 27 %}
+        background-color: #15053F;
       {% else %}
         background-color: #15003e;
       {% endif %}
@@ -191,12 +214,16 @@
     text-align: center;
   }
 
-  #footer p, #footer a {
+  #footer p {
     color: #ccc;
   }
 
+  #footer a {
+    color: #70b2ff;
+  }
+
   #copyright, #legal-contact {
-    padding-top: 0.5em;
+
   }
 
   a {
@@ -204,12 +231,17 @@
     text-decoration: none;
   }
 
-  p,
-  a,
-  ul,
-  ol,
+  p, li, a{
+    color: #000000;
+    line-height: 26px;
+    font-size: 16px;
+    list-style: none;
+    margin-top: 1.5em;
+  }
+
   li {
-    font-size: 15px;
+    margin-top: 2em;
+    margin-bottom: 1.5em;
   }
 
   .text-center {
@@ -219,14 +251,16 @@
   .primary-content {
     padding: 2em;
     background-color: white;
+    overflow: hidden;
+    padding-bottom: 0;
   }
 
   @media screen and (min-width: 35.5em) {
     .social-img {
       max-height: 50px;
       max-width: 50px;
-      margin-left: 1rem;
-      margin-right: 1rem;
+      margin-left: 0.2rem;
+      margin-right: 0.2rem;
     }
 
     .primary-content {
@@ -253,12 +287,6 @@
     .primary-content {
       margin-left: 0;
       margin-right: 0;
-    }
-  }
-
-  @media screen and (min-width: 601px) {
-    .desktop-col {
-      display: flex;
     }
   }
 </style>
@@ -300,6 +328,7 @@
       {% elif email_style == 22 %} <img id="logo" src="{% static "v2/images/emails/email_header22.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 23 %} <img id="logo" src="{% static "v2/images/emails/email_header23.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 24 %} <img id="logo" src="{% static "v2/images/emails/email_header24.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 27 %} <img id="logo" src="{% static "v2/images/emails/email_header27.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% else %}
         <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% endif %}
@@ -310,7 +339,9 @@
     <div class="primary-content text-center">
         {% block content %}
         {% endblock %}
-        <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
+        {% if not hide_bottom_logo %}
+          <img id="grow-oss" width="259" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
+        {% endif %}
     </div>
 
   <div id="preferred_payout">
@@ -345,7 +376,7 @@
         <p>
           {% trans "Want to change how you receive these emails?" %}
           <br>
-          {% trans "You can" %} <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+          {% trans "You can update your " %} <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "preferences" %}</a> or <a href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
         </p>
       </div>
     </div>

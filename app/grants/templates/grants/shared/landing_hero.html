@@ -3,23 +3,38 @@
         <div class="grants-hero white my-5">
           <div class="row">
             <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
-              <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/eVgEWSPFR2o?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-              </div>
-            </div>
-            <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
-              <h1 class="font-title-xl font-weight-semibold">{% trans 'Get Matching Funding for Your Pubilc Goods Projects' %}</h1>
-              <p class="my-4 pt-1 font-header">
-                {% blocktrans %}
-                Gitcoin Grants <a target="_blank" rel="noopener noreferrer" href="https://vitalik.ca/general/2019/10/24/gitcoin.html">provides matching funds</a> + <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">monthly subscription</a> for
-                your favorite OSS maintainers, media outlets, <a href="https://twitter.com/gitcoin/status/1238524450045337603">public health</a>, and more. <br/><br/>
-                Show your support.
-                {% endblocktrans %}
+              <p class="p-3 font-header">
+                <strong style="font-size: 24px;">$250k match has ENDED!.</strong>
+                <BR>
+                <span style="display:none">
+                  Matching ends on {{round_end|date:'Y-m-d'}} at noon EST.
+                  (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so get started today!</span>
+                <span style="">
+                  Dates:
+                  <br>  
+                  - 4/10 - Round 5 Ended.
+                  <br>  
+                  - Final amounts will be announced on April 14th.  
+                  <br>  
+                  - Payout instructions will be circulated by April 21st.  
+                  <br>  
+                  - The next round starts June 15th.
+                </span>
               </p>
+              <div class="float-right">
               <a class="btn btn-gc-blue" href="{% url 'grants:new' %}">
                 <img class="mr-1 white-icon" src="{% static "v2/images/grants/icons/white.svg" %}">
                 {% trans 'Create a Grant' %}
               </a>
+              <span class="ml-2">
+              or
+              <a class="explore_grants" href="#content_navbar" style="text-decoration: underline; line-height: 60px;">
+                <i class="fas fa-map"></i> | Explore Grants
+              </a>
+              </div>
+            </div>
+            <div class="m-0 col-12 col-md-6 offset-lg-1 col-lg-5 d-none d-sm-block">
+              <h1 class="font-title-xl font-weight-semibold">Get Matching Funding for Your <a style="text-decoration: underline;" target="blank" href="https://en.wikipedia.org/wiki/Public_good_(economics)">Public Goods</a> Projects.</h1>
             </div>
           </div>
         </div>

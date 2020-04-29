@@ -1,3 +1,4 @@
+
 const url_re = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])/;
 const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
@@ -21,22 +22,28 @@ $(document).ready(function() {
     const result = fetchData(endpoint);
 
     $.when(result).then(function(response) {
+      $('.pick-gif').remove();
 
       for (let i = 0; i < response.data.length; i++) {
         let item = response.data[i];
         let downsize = item.images.original.webp;
         let preview = item.images.fixed_width_downsampled.webp;
 
-        $('.gif-grid').append('<img class="pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
+        $('.gif-grid').append('<img width="300" class="pick-gif" src="' + preview + '" data-src="' + downsize + '" alt="' + item.slug + '">');
       }
       $('.pick-gif').on('click', selectGif);
     });
   }
 
-  $('.click-gif').on('click', function(e) {
-    e.preventDefault();
-    $(this).toggleClass('selected');
-    $('#status .gif-inject-target').toggleClass('show');
+  $('#btn_gif').on('click', function(e) {
+    window.setTimeout(function() {
+      $('#search-gif').focus();
+      console.log($('#search-gif'));
+    }, 100);
+
+    if (!$('.pick-gif').length) {
+      injectGiphy('latest');
+    }
   });
 
   $('#search-gif').on('input', function(e) {
@@ -44,6 +51,9 @@ $(document).ready(function() {
     const query = e.target.value;
 
     injectGiphy(query);
+    if (!query) {
+      injectGiphy('latest');
+    }
   });
 
   if (button) {
@@ -217,12 +227,12 @@ $(document).ready(function() {
 
     if (is_selected) {
       let html = `
-      <div id=poll_container class="bg-lightblue p-2">
-      <input name=option1 placeholder="Option 1" class="form-control form-control-sm my-2">
-      <input name=option2 placeholder="Option 2" class="form-control form-control-sm my-2">
-      <input name=option3 placeholder="Option 3" class="form-control form-control-sm my-2">
-      <input name=option4 placeholder="Option 4" class="form-control form-control-sm my-2">
-      </div>
+        <div id=poll_container class="bg-lightblue p-2">
+          <input name=option1 placeholder="Option 1" class="form-control form-control-sm">
+          <input name=option2 placeholder="Option 2" class="form-control form-control-sm">
+          <input name=option3 placeholder="Option 3" class="form-control form-control-sm">
+          <input name=option4 placeholder="Option 4" class="form-control form-control-sm">
+        </div>
       `;
 
       $(html).insertAfter('#status');
@@ -263,6 +273,7 @@ $(document).ready(function() {
       }
     });
 
+
   });
   $('body').on('focus change paste keydown keyup blur', '#textarea', function(e) {
 
@@ -280,7 +291,7 @@ $(document).ready(function() {
         $('#char_count').text(len + '/' + max_len);
       }
     };
-    
+
     update_max_len();
     localStorage.setItem(lskey, $(this).val());
     if ($(this).val().trim().length > max_len) {
@@ -305,7 +316,7 @@ $(document).ready(function() {
     const data = new FormData();
     const message = $('#textarea');
     const the_message = message.val().trim();
-    const ask = $('.activity_type_selector .active input').val();
+    const ask = $('.activity_type_selector input:checked').val();
 
     data.append('ask', ask);
     data.append('data', the_message);
@@ -315,7 +326,7 @@ $(document).ready(function() {
       data.append('has_video', $('#video_container').length);
       data.append('video_gfx', $('#video_container').data('gfx'));
     }
-    
+
     message.val('');
     localStorage.setItem(lskey, '');
     data.append(
@@ -407,21 +418,23 @@ $(document).ready(function() {
       .catch(err => fail_callback());
   }
 
-  injectGiphy('latest');
 });
 window.addEventListener('DOMContentLoaded', function() {
-  var button = document.querySelector('#emoji-button');
-  var picker = new EmojiButton({
-    position: 'left-end'
+
+  $(() => {
+    var button = document.querySelector('#emoji-button');
+    var picker = new EmojiButton({
+      position: 'left-end'
+    });
+
+    if (button && picker) {
+      picker.on('emoji', function(emoji) {
+        document.querySelector('textarea').value += emoji;
+      });
+
+      button.addEventListener('click', function() {
+        picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
+      });
+    }
   });
-
-  if (button && picker) {
-    picker.on('emoji', function(emoji) {
-      document.querySelector('textarea').value += emoji;
-    });
-
-    button.addEventListener('click', function() {
-      picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
-    });
-  }
 });

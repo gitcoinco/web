@@ -14,20 +14,33 @@
                     </div>
                     <textarea
                       id="textarea"
-                      class="form__input border-0 pl-2"
+                      class="form__input border-0 pl-2 status-textarea"
                       placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
                       data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
                     ></textarea>
                     <div id="textarea-dropdown" class="dropdown-menu" style="left: initial;"></div>
-                    {% if is_alpha_tester %}
-                      <button id="video-button" class="btn btn-clean position-absolute" data-toggle="tooltip" title="Add a video call to post." style="bottom: 3.5em; right: 1.5em;"><i class="fas fa-video"></i></i></button>
-                    {% endif %}
-                      <button class="btn btn-clean position-absolute click-gif"  data-toggle="tooltip" title="Add a gif to post." data-toggle="dropdown" id="btn_gif" aria-haspopup="true" aria-expanded="false" style="bottom: 2em; right: 1.5em;">
-                          <i class="fas fa-images mr-2"></i>
-                      </button>
-
-                    <button id="poll-button" class="btn btn-clean position-absolute"  data-toggle="tooltip" title="Add a poll to post." style="bottom: 2em; right: 0em;"><i class="fas fa-chart-bar"></i></i></button>
-                    <button id="emoji-button" class="btn btn-clean position-absolute"  data-toggle="tooltip" title="Add an emoji to post." style="bottom: 3.5em; right: 0;"><i class="far fa-smile"></i></button>
+                    <div class="status-menu position-absolute d-flex flex-wrap" style="width: 3.6em; right: 0; top: 0px;">
+                      <button id="emoji-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add an emoji to post." style="bottom: 3.5em; right: 0;"><i class="far fa-fw fa-smile"></i></button>
+                      {% if is_alpha_tester %}
+                        <button id="video-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add a video call to post." style="bottom: 3.5em; right: 1.5em;"><i class="fas fa-fw fa-video"></i></i></button>
+                      {% endif %}
+                      <div class="dropdown">
+                        <button class="btn btn-sm p-1 click-gif" data-toggle="dropdown" id="btn_gif" aria-haspopup="true" aria-expanded="false" style="bottom: 2em; right: 1.5em;">
+                          <i class="fas fa-fw fa-photo-video" data-toggle="tooltip" title="Add a gif to post."></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right gif-inject-target">
+                          <form class="px-4 py-3">
+                            <div class="form-group mb-0">
+                              <label for="search-gif" class="sr-only">Search GIF</label>
+                              <input type="text" class="form-control" id="search-gif" placeholder="Search GIF" autofocus>
+                              <img src="{% static 'v2/images/Poweredby_640px-White_HorizText.png' %}" alt="Powered By GIPHY" height="10" class="mw-100">
+                            </div>
+                          </form>
+                          <div id="list-gif" class="gif-grid"></div>
+                        </div>
+                      </div>
+                      <button id="poll-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add a poll to post." style="bottom: 2em; right: 0em;"><i class="fas fa-fw fa-chart-bar"></i></i></button>
+                    </div>
                   </div>
                   <input type="hidden" name="what" value="{{what}}:{{whatid}}">
                   <div class="bg-lightblue p-2 d-flex flex-column flex-sm-row justify-content-between">
@@ -44,21 +57,6 @@
                     </div>
                     <button class="btn btn-gc-blue font-smaller-7 font-weight-bold h-100" id="btn_post" disabled="true">POST</button>
                   </div>
-
-                  <div class="btn-group-toggle text-center text-md-left gif-inject-target float-right" style="margin-top: 8px; margin-bottom: 8px">
-                    <div class="btn-group" data-toggle="actions">
-                      <div class="dropdown-menu gif-inject-target">
-                        <form class="px-4 py-3">
-                          <div class="form-group mb-0">
-                            <label for="search-gif" class="sr-only">Search GIF</label>
-                            <input type="text" class="form-control" id="search-gif" placeholder="Search GIF">
-                            <img src="{% static 'v2/images/Poweredby_640px-White_HorizText.png' %}" alt="Powered By GIPHY" height="10" class="mw-100">
-                          </div>
-                        </form>
-                        <div id="list-gif" class="gif-grid"></div>
-                      </div>
-                    </div>
-                  </div>
                   <div id="thumbnail" class="mt-1 mb-2" style="display: none; top: initial; left: initial; background-color: #FAFAFA">
                     <div class="row" style="display: flex; justify-content: center; align-items: center; ">
                       <div class="col ml-1 col-sm-3 col-md-2 text-center">
@@ -74,7 +72,7 @@
 
                   <div id="preview" class="mt-1 mb-2" style="display: none; top: initial; left: initial;">
                     <div class="row ml-2" style=" ">
-                        <img id="preview-img" style="max-width: 80%; max-height: 350px;" src="">
+                        <img id="preview-img" class="m-auto" style="max-width: 80%; max-height: 350px;" src="">
                     </div>
                   </div>
                 </div>

@@ -156,6 +156,29 @@ def featured_funded_bounty(from_email, bounty):
         translation.activate(cur_language)
 
 
+def new_grant_flag_admin(flag):
+    from_email = settings.CONTACT_EMAIL
+    to_email = 'kevin@gitcoin.co'
+
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        subject = _("New Grant Flag")
+        body = f"{flag.comments} : {settings.BASE_URL}{flag.admin_url}"
+        if not should_suppress_notification_email(to_email, 'new_grant_flag_admin'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_grant(grant, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
@@ -178,6 +201,8 @@ def new_grant(grant, profile):
 
 
 def new_supporter(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     if not to_email:
@@ -195,6 +220,8 @@ def new_supporter(grant, subscription):
 
 
 def thank_you_for_supporting(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     if not to_email:
@@ -212,6 +239,8 @@ def thank_you_for_supporting(grant, subscription):
 
 
 def support_cancellation(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
@@ -227,6 +256,8 @@ def support_cancellation(grant, subscription):
 
 
 def grant_cancellation(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
     cur_language = translation.get_language()
@@ -242,6 +273,8 @@ def grant_cancellation(grant, subscription):
 
 
 def subscription_terminated(grant, subscription):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
@@ -257,6 +290,8 @@ def subscription_terminated(grant, subscription):
 
 
 def successful_contribution(grant, subscription, contribution):
+    if subscription.negative:
+        return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
     cur_language = translation.get_language()
@@ -474,7 +509,7 @@ def grant_update_email(activity):
 
     what = activity.grant.title
     subject = f"📣 Message from @{activity.profile.handle} of Gitcoin Grant: {what}"
-    to_emails = [profile.email for profile in activity.grant.contributors if profile.pk not in activity.grant.metadata.get('unsubscribed_profiles', [])]
+    to_emails = list(set([profile.email for profile in activity.grant.contributors if profile.pk not in activity.grant.metadata.get('unsubscribed_profiles', [])]))
     cur_language = translation.get_language()
     for to_email in to_emails:
         try:
@@ -685,6 +720,48 @@ def notify_deadbeat_quest(quest):
         translation.activate(cur_language)
 
 
+def notify_kudos_minted(token_request):
+    to_email = token_request.profile.email
+    from_email = 'kevin@gitcoin.co'
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Kudos has been minted")
+        body = f"Your kudos '{token_request.name}' has been minted and should be available on https://gitcoin.co/kudos/marketplace soon."
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
+def notify_deadbeat_grants(grants):
+    to_email = 'kevin@gitcoin.co'
+    from_email = to_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = f"Dead Grants Alert {grants.count()}"
+        body = "\n\n-".join([f"({grant.title}): https://gitcoin.co/{grant.admin_url} " for grant in grants])
+        if not should_suppress_notification_email(to_email, 'sdeadbeat'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("No Reply from Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def new_kudos_request(obj):
     to_email = 'founders@gitcoin.co'
     from_email = obj.profile.email
@@ -716,20 +793,21 @@ def warn_account_out_of_eth(account, balance, denomination):
         subject = account + str(_(" is out of gas"))
         body_str = _("is down to ")
         body = f"{account} {body_str} {balance} {denomination}"
-        if not should_suppress_notification_email(to_email, 'admin'):
-            send_mail(
-                from_email,
-                to_email,
-                subject,
-                body,
-                from_name=_("No Reply from Gitcoin.co"),
-                categories=['admin', func_name()],
-            )
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            body,
+            from_name=_("No Reply from Gitcoin.co"),
+            categories=['admin', func_name()],
+        )
     finally:
         translation.activate(cur_language)
 
 
 def warn_subscription_failed(subscription):
+    if subscription.negative:
+        return
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
     cur_language = translation.get_language()
@@ -803,6 +881,147 @@ def funder_payout_reminder(to_email, bounty, github_username, live):
         return True
     else:
         return html
+
+
+def grant_match_distribution_kyc(match):
+    to_email = match.grant.admin_profile.email
+    cc_emails = [profile.email for profile in match.grant.team_members.all()]
+    from_email = 'kyc@gitcoin.co'
+    cur_language = translation.get_language()
+    rounded_amount = round(match.amount, 2)
+    token_name = f"CLR{match.round_number}"
+    try:
+        setup_lang(to_email)
+        subject = f"💰 (ACTION REQUIRED) Grants Round {match.round_number} Match Distribution: {rounded_amount} DAI"
+        body = f"""
+<pre>
+Hello @{match.grant.admin_profile.handle},
+
+This email is in regards to your Gitcoin Grants Round {match.round_number} payout of {rounded_amount} DAI for https://gitcoin.co{match.grant.get_absolute_url()}.
+
+We are required by law to collect the following information from you in order to administer your payout.  Please respond to this email with the following information.
+
+Full Name:
+Physical Address:
+(Only if you’re a US Citizen) Social Security Number:
+Proof of physical address (utility bill, or bank statement)
+Proof of identity (government issued ID)
+
+Thanks,
+Gitcoin Grants KYC Team
+</pre>
+
+        """
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
+    finally:
+        translation.activate(cur_language)
+
+
+def grant_match_distribution_test_txn(match):
+    to_email = match.grant.admin_profile.email
+    cc_emails = [profile.email for profile in match.grant.team_members.all()]
+    from_email = 'kyc@gitcoin.co'
+    cur_language = translation.get_language()
+    rounded_amount = round(match.amount, 2)
+    token_name = f"CLR{match.round_number}"
+    coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 25% off with coupon code {settings.GRANTS_COUPON_25_OFF}"
+    if match.amount > 100:
+        coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 50% off with coupon code {settings.GRANTS_COUPON_50_OFF}"
+    if match.amount > 1000:
+        coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 100% off with coupon code {settings.GRANTS_COUPON_100_OFF}"
+    # NOTE: IF YOURE A CLEVER BISCUT AND FOUND THIS BY READING OUR CODEBASE, 
+    # THEN GOOD FOR YOU!  HERE IS A 100% OFF COUPON CODE U CAN USE (LIMIT OF 1 FOR THE FIRST PERSON
+    # TO FIND THIS EASTER EGG) : GRANTS-ROUND-5-HAXXOR
+    try:
+        setup_lang(to_email)
+        subject = f"💰 Grants Round {match.round_number} Match Distribution: {rounded_amount} DAI (Email 1 of 2)"
+        body = f"""
+<pre>
+Hello @{match.grant.admin_profile.handle},
+
+This email is in regards to your Gitcoin Grants Round {match.round_number} payout of {rounded_amount} DAI for https://gitcoin.co{match.grant.get_absolute_url()}.
+
+We have sent a test transaction of {rounded_amount} {token_name} tokens to the address on file at {match.grant.admin_address}.  THESE TOKENS ARE NOT WORTH *ANYTHING*, AND THIS TEST TRANSACTION WAS MADE AS A REMINDER TO MAKE SURE YOU HAVE ACCESS TO YOUR GRANTS WALLET.
+
+The txid of this test transaction is {match.test_payout_tx}.
+
+We will be issuing a final payout transaction in DAI within 24-72 hours of this email.  No action is needed on your part, we will issue the final payout transaction automatically.
+
+If you're looking to kill time before your payout is administered:
+1. {coupon} (The Gitcoin Spring 2020 Edition is available at https://store.gitcoin.co/collections/ethereal-2020 )
+2. Mind helping us make Grants Round 6 even better? Fill out this donor survey:  https://gitcoin.typeform.com/to/tAxEwe
+3. Attend the Gitcoin livestream this week to let us know what you think should change for Grants Round 6: https://twitter.com/owocki/status/1250760421637644288
+
+Thanks,
+Kevin, Scott, Vivek and the Gitcoin Community
+"Our mission is to Grow Open Source & provide economic opportunities to our community" https://gitcoin.co/mission
+</pre>
+
+        """
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
+    finally:
+        translation.activate(cur_language)
+
+def grant_match_distribution_final_txn(match):
+    to_email = match.grant.admin_profile.email
+    cc_emails = [profile.email for profile in match.grant.team_members.all()]
+    from_email = 'kyc@gitcoin.co'
+    cur_language = translation.get_language()
+    rounded_amount = round(match.amount, 2)
+    try:
+        setup_lang(to_email)
+        subject = f"🎉 Your Match Distribution of {rounded_amount} DAI has been sent! 🎉"
+        body = f"""
+<pre>
+Hello @{match.grant.admin_profile.handle},
+
+This email is in regards to your Gitcoin Grants Round {match.round_number} payout of {rounded_amount} DAI for https://gitcoin.co{match.grant.get_absolute_url()}.
+
+We have sent your {rounded_amount} DAI to the address on file at {match.grant.admin_address}.  The txid of this transaction is {match.payout_tx}.
+
+Congratulations on a successful Gitcoin Grants Round {match.round_number}.  
+
+What now? 
+1. Send a tweet letting us know how these grant funds are being used to support your project (our twitter username is @gitcoin).
+2. Remember to update your grantees on what you use the funds for by clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and posting to your activity feed.
+3. Celebrate 🎉 and then get back to BUIDLing something great. 🛠
+
+Thanks,
+Kevin, Scott, Vivek and the Gitcoin Community
+"Our mission is to Grow Open Source & provide economic opportunities to our community" https://gitcoin.co/mission
+</pre>
+
+        """
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            '',
+            body,
+            from_name=_("Gitcoin Grants"),
+            cc_emails=cc_emails,
+            categories=['admin', func_name()],
+        )
+    finally:
+        translation.activate(cur_language)
 
 
 def match_distribution(mr):
@@ -948,8 +1167,7 @@ def weekly_roundup(to_emails=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            html, text, subject = render_new_bounty_roundup(to_email)
-            from_email = settings.CONTACT_EMAIL
+            html, text, subject, from_email, from_name = render_new_bounty_roundup(to_email)
 
             if not html:
                 print("no content")
@@ -962,7 +1180,7 @@ def weekly_roundup(to_emails=None):
                     subject,
                     text,
                     html,
-                    from_name="Vivek and the Gitcoin Team (Gitcoin.co)",
+                    from_name=from_name,
                     categories=['marketing', func_name()],
                 )
             else:
