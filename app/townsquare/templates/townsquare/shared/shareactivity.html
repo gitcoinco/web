@@ -1,6 +1,6 @@
 {% load humanize static i18n %}
             {% if not is_direct_link %}
-              <div class="bg-shade-1 rounded border">
+              <div class="bg-shade-0 rounded border">
                 <div id="status">
                   <div id="char_count" data-toggle="tooltip" title="You have been a Gitcoin community member for {{max_length_offset}} days, and you can post up to 280 + {{max_length_offset}} = {{max_length}} chars in your status update."></div>
                   <div class="position-relative d-flex flex-row px-2 pt-4 pb-2">
@@ -22,9 +22,7 @@
                     <div class="status-menu position-absolute d-flex flex-wrap" style="width: 3.6em; right: 0; top: 0px;">
                       <button id="emoji-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add an emoji to post." style="bottom: 3.5em; right: 0;"><i class="far fa-fw fa-smile"></i></button>
                       <button id="background-button" class="btn btn-sm p-1" style="bottom: 3.5em; right: 0em;"><i class="fas fa-image" data-toggle="tooltip" title="Add a background to post"></i></i></button>
-                      {% if is_alpha_tester %}
-                        <button id="video-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add a video call to post." style="bottom: 3.5em; right: 1.5em;"><i class="fas fa-fw fa-video"></i></i></button>
-                      {% endif %}
+                      <button id="video-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add a video call to post." style="bottom: 3.5em; right: 1.5em;"><i class="fas fa-fw fa-video"></i></i></button>
                       <div class="dropdown">
                         <button class="btn btn-sm p-1 click-gif" data-toggle="dropdown" id="btn_gif" aria-haspopup="true" aria-expanded="false" style="bottom: 2em; right: 1.5em;">
                           <i class="fas fa-fw fa-photo-video" data-toggle="tooltip" title="Add a gif to post."></i>
@@ -44,7 +42,7 @@
                     </div>
                   </div>
                   <input type="hidden" name="what" value="{{what}}:{{whatid}}">
-                  <div class="bg-lightblue p-2 d-flex flex-column flex-sm-row justify-content-between">
+                  <div class="bg-shade-1 p-2 d-flex flex-column flex-sm-row justify-content-between">
                     <div class="btn-group-toggle text-left activity_type_selector" data-toggle="buttons">
                       {% if tags %}
                         {% for tag in tags %}
@@ -58,7 +56,7 @@
                     </div>
                     <button class="btn btn-gc-blue font-smaller-7 font-weight-bold h-100" id="btn_post" disabled="true">POST</button>
                   </div>
-                  <div id="thumbnail" class="mt-1 mb-2" style="display: none; top: initial; left: initial; background-color: #FAFAFA">
+                  <div id="thumbnail" class="mt-1 mb-2" style="display: none; top: initial; left: initial;">
                     <div class="row" style="display: flex; justify-content: center; align-items: center; ">
                       <div class="col ml-1 col-sm-3 col-md-2 text-center">
                         <img id="thumbnail-img" style="width: 130%;" src="{% static 'v2/images/team/gitcoinbot.png' %}">

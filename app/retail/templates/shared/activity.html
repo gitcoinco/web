@@ -16,7 +16,7 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="box bg-white d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
+<div class="box d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
   {% if row.activity_type == 'new_bounty' %}
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
       <b>New Bounty</b>
@@ -292,7 +292,7 @@
             </a>
           </span>
 
-          <button class="btn-clean" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+          <button class="btn-clean grey" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-ellipsis-h"></i>
           </button>
         <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
@@ -439,7 +439,7 @@
   </div>
   {% elif row.metadata.resource.type == 'gif' %}
   <div class="mt-1 mb-2" >
-    <div class="row align-items-center bg-light">
+    <div class="row align-items-center">
         <img class="attachment" loading="lazy" data-src="{{ row.metadata.resource.id }}">
     </div>
   </div>
@@ -451,7 +451,7 @@
   </div>
   {% elif row.metadata.resource.type == 'content' %}
   <div class="mt-1 mb-2">
-    <div class="row align-items-center bg-light content">
+    <div class="row align-items-center content">
       <div class="col-12 col-md-3 text-center">
         {% if not row.metadata.resource.image or row.metadata.resource.image  == 'undefined' %}
           <img class="py-2" style="max-height: 7rem;" src="{% static 'v2/images/team/gitcoinbot.png' %}">
@@ -469,8 +469,6 @@
   </div>
   {% endif %}
     <div class="activity_comments">
-      <div class="comment_container">
-
-      </div>
+      <div class="comment_container"></div>
     </div>
 </div>
