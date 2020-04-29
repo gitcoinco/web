@@ -50,6 +50,8 @@ from marketing.mails import new_feedback
 from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
+from marketing.country_codes import COUNTRY_NAMES, COUNTRY_CODES, \
+                                        FLAG_API_LINK, FLAG_ERR_MSG, FLAG_STYLE, FLAG_SIZE
 from quests.models import Quest
 from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
@@ -790,23 +792,17 @@ def leaderboard(request, key=''):
             for tech in techs:
                 technologies.add(tech)
 
-    import pandas
     flags = []
     if key == 'countries':
-        country_data = pandas.read_csv("./marketing/assets/country_codes.csv", header=0)
-        country_names = country_data['country']
-        country_codes = country_data['code']
         for item in items[0:limit]:
             country = item.at_ify_username
             code = 'us'
             try:
-                country_index = country_names.index(country)
-                code = country_codes[country_index]
+                country_index = COUNTRY_NAMES.index(country)
+                code = COUNTRY_CODES[country_index]
             except:
-                print('Failed to map country name, \
-                        See https://www.countryflags.io/#countries \
-                        for list of supported countries.')
-            flags.append(f'https://www.countryflags.io/{code}/flat/32.png')
+                print(f'Error: {FLAG_ERR_MSG}')
+            flags.append(f'{FLAG_API_LINK}/{code}/{FLAG_STYLE}/{FLAG_SIZE}.png')
 
     if amount:
         amount_max = amount[0][0]
@@ -863,11 +859,10 @@ def leaderboard(request, key=''):
     if next_update and next_update < timezone.now():
         next_update = timezone.now() + timezone.timedelta(days=1)
 
-    dualList= zip(items[0:limit],flags)
     context = {
         'key': key,
         'items': items[0:limit],
-        'dualList': dualList,
+        'dual_list': zip(items[0:limit], flags),
         'nav': 'home',
         'cht': cht,
         'titles': titles,
