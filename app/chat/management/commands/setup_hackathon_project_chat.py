@@ -82,7 +82,7 @@ class Command(BaseCommand):
 
                 created, channel_details = create_channel_if_not_exists({
                     'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                    'channel_purpose': project.summary[:255],
+                    'channel_purpose': project.summary[:255] if project.summary else "",
                     'channel_display_name': f'project-{project_channel_name}'[:60],
                     'channel_name': project_channel_name[:60],
                     'channel_type': 'P'
