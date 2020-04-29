@@ -324,12 +324,12 @@ $(document).ready(function() {
     if (is_selected) {
       let html = `
         <div id=poll_container class="bg-lightblue p-2">
-        <input name=option1 placeholder="Option 1" class="form-control form-control-sm my-2">
-        <input name=option2 placeholder="Option 2" class="form-control form-control-sm my-2">
-        <input name=option3 placeholder="Option 3" class="form-control form-control-sm my-2">
-        <input name=option4 placeholder="Option 4" class="form-control form-control-sm my-2">
+          <input name=option1 placeholder="Option 1" class="form-control form-control-sm">
+          <input name=option2 placeholder="Option 2" class="form-control form-control-sm">
+          <input name=option3 placeholder="Option 3" class="form-control form-control-sm">
+          <input name=option4 placeholder="Option 4" class="form-control form-control-sm">
         </div>
-        `;
+      `;
 
       $(html).insertAfter('#status');
       $('#poll_container input[name=option1]').focus();
@@ -338,8 +338,6 @@ $(document).ready(function() {
     }
 
   });
-
-  $('#textarea').autogrow();
 
   // handle video button
   $('body').on('click', '#video-button', function(e) {
@@ -531,18 +529,21 @@ $(document).ready(function() {
 
 });
 window.addEventListener('DOMContentLoaded', function() {
-  var button = document.querySelector('#emoji-button');
-  var picker = new EmojiButton({
-    position: 'left-end'
+
+  $(() => {
+    var button = document.querySelector('#emoji-button');
+    var picker = new EmojiButton({
+      position: 'left-end'
+    });
+
+    if (button && picker) {
+      picker.on('emoji', function(emoji) {
+        document.querySelector('textarea').value += emoji;
+      });
+
+      button.addEventListener('click', function() {
+        picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
+      });
+    }
   });
-
-  if (button && picker) {
-    picker.on('emoji', function(emoji) {
-      document.querySelector('#textarea').value += emoji;
-    });
-
-    button.addEventListener('click', function() {
-      picker.pickerVisible ? picker.hidePicker() : picker.showPicker(button);
-    });
-  }
 });

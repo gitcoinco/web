@@ -33,95 +33,175 @@
       }
       .sponsors img {
         max-width: 150px;
-        height: auto;
-        width: 100%;
+        max-height: 150px;
       }
       .onboard-banner {
+        position: relative;
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
+      }
+      #questions-form input[type=checkbox] {
+          display:none;
+      }
+
+      #questions-form input[type=checkbox] + label {
+         border-radius: 2px;
+         border: 1px solid #D3D3D3;
+         margin: 1px;
+         padding: 14px 28px;
+         width: 100%;
+      }
+
+      #questions-form input[type=checkbox]:checked + label {
+         border-radius: 2px;
+         margin: 0px;
+         border: 2px solid var(--gc-blue);
+         padding: 14px 28px;
+      }
+
+      .options {
+        display: grid;
+        grid-gap: 16px;
+      }
+
+      .modal-header, .modal-body, .modal-footer {
+        border: none;
+      }
+
+      @media screen and (min-width: 598px) {
+        .options {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
     </style>
   </head>
   <body class="interior {{active}} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header px-0 dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav_hackathons.html' %}
-      <div class="onboard-banner text-center p-4 pb-5">
-        {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-        {% if logo %}
-          <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
-        {% else %}
-          <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
-            {{ hackathon.name }}
-          </div>
-        {% endif %}
-      </div>
+    </div>
+    <div class="onboard-banner text-center p-4 pb-5">
+      {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+      {% if logo %}
+        <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
+      {% else %}
+        <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
+          {{ hackathon.name }}
+        </div>
+      {% endif %}
     </div>
 
     <div class="container-fluid bg-lightblue pb-5">
       <div class="container mt-md-n5 bg-white position-relative rounded">
-        <div class="row p-5">
+        <div class="row p-4 p-md-5">
           <div class="col-12">
               <span>Gitcoin Virtual Hackathon</span>
-              <h1 class="text-uppercase gc-letter-spacing">
-                {{ hackathon.name }}
-              </h1>
-              <p>
+              <div class="d-md-flex justify-content-between">
+                <h1 class="text-uppercase gc-letter-spacing font-weight-bold">
+                  {{ hackathon.name }}
+                </h1>
+                <div class="col-12 col-md-3 px-0 mt-md-1 mt-4">
+                {% if not github_handle %}
+                  <a class="btn btn-gc-blue col-12" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?registration={{hackathon.slug}}&referer={{referer}}"
+                    onclick="dataLayer.push({'event': 'login'});">Join Now</a>
+                {% else %}
+                    {% if not is_registered %}
+                        <a class="btn btn-gc-blue col-12" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
+                    {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
+                        <a class="btn btn-gc-blue col-12"  href="{% url 'hackathon' hackathon.slug %}">See Prizes</a>
+                    {% endif %}
+                {% endif %}
+                </div>
+              </div>
+              <p class="mt-md-1 mt-4">
                 {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
               </p>
               {% if hackathon.end_date|timesince >= "1 min" %}
                 <p class="p-3 mt-3 alert-warning">This hackathon event had ended at {{hackathon.end_date}}, please check the <a href="{% url 'get_hackathons' %}">ongoing hackathons</a>.</p>
               {% endif %}
-              {% if not github_handle %}
-                <div class="text-center">
-                  <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                    onclick="dataLayer.push({'event': 'login'});">
-                    <i class="fab fa-github"></i>
-                    <span>{% trans "Register with GitHub for Hackathon" %}</span>
-                  </a>
-                  <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                </div>
-              {% else %}
-                {% if not is_registered %}
-                  <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                  <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
-                {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
-                  <p>Explore Web3 and be prepared via sponsors Quests</p>
-                  <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
-                  <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
-                {% else %}
-                  <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                  <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                {% endif %}
-              {% endif %}
             </div>
           </div>
-
       </div>
 
-      <div class="container bg-white mt-4 rounded">
-        <div class="row p-5">
-          <div class="col-12">
-            {% if is_staff %}
-              <div class="">
-                <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
-                <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
+      {% if is_registered %}
+      <div class="container bg-white my-4 p-4 p-md-5 pt-3  rounded">
+        <div class="row ">
+          <div class="d-flex justify-content-between col-12">
+              <div class="{% if hackathon.start_date|timesince >= "1 min"%}col-12 {% else %} col-12 col-md-9{% endif %}">
+                {% if hackathon.start_date|timesince >= "1 min"%}
+                <h4 class="font-weight-bolder">
+                  Here are other things you can do
+                </h4>
+                {% else %}
+                <h4 class="font-weight-bolder">
+                  Congratulations! <br> Your registration for {{ hackathon.name }} is successful.
+                </h4>
+                <h4 id="countdown" class="font-weight-bolder pt-4 mt-0">
+                  {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+                </h4>
+                <p class="pt-4 mb-4">Until then, we recommend a few different ways to prepare:</p>
+                {% endif %}
+                <ul  class="list-unstyled">
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="/townsquare?tab=hackathon:{{ hackathon.id }}&trending=0&personal=0"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Introduce yourself on Town Square + what you like to build (and earn your first Kudos!)</a></li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> RSVP to our 3 workshops</li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Checkout sponsors below and build your team</a></li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Invite your friends to hack and earn a Kudos</li>
+                </ul>
+
               </div>
+            {% if not hackathon.start_date|timesince >= "1 min"%}
+                <div class="d-md-flex d-none mt-5 col-2 justify-content-end align-items-center">
+                  <img src="{% static "v2/images/heart-robot.png" %}" alt="">
+                </div>
             {% endif %}
-            <div class="editor-container ">
-              <div id="description-hackathon" class="gc-editor description-hackathon">{{hackathon.description | safe}}</div>
             </div>
           </div>
-        </div>
+      </div>
+    {% endif %}
 
+      {% if sponsors %}
+        <div id="sponsors" class="container bg-white my-4 pt-3 pb-4 rounded">
+            <div class="row mb-5">
+              <div class="col-12 sponsors mb-3">
+                <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Key Sponsors</p>
+                {% if sponsors.sponsors_gold %}
+                  <div class="d-flex flex-wrap mb-4">
+                    {% for sponsor in sponsors.sponsors_gold %}
+                      <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center">
+                        <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                        <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
+                        <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
+                      </a>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                {% if sponsors.sponsors_silver %}
+                  <div class="d-flex flex-wrap mb-4 mx-5">
+                    {% for sponsor in sponsors.sponsors_silver %}
+                      <a href="{% url 'profile' sponsor.handle %}" class="col-2 sponsors-gold mt-5 mb-3 text-center">
+                        <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                        <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
+                        <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
+                      </a>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+      {% endif %}
+
+      <div class="container bg-white mt-4 rounded">
         <div class="row px-5">
           <div class="col-12">
             <h4 class="text-uppercase font-weight-bolder text-left">How does the Hackathon work?</h4>
           </div>
         </div>
-
         <div class="row px-5 my-5">
           <div class="col-12 col-md-5">
               <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
@@ -174,7 +254,7 @@
               {% endblocktrans %}
           </div>
         </div>
-        <div class="row my-4 px-5">
+        <div class="row my-4 px-5 pb-5">
           <div class="col-12 col-md-5">
             <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
           </div>
@@ -187,69 +267,50 @@
               {% endblocktrans %}
           </div>
         </div>
-
-        <div class="row px-5 pb-5">
-          <div class="col-12">
-            <p class="font-weight-bolder text-uppercase h4 text-left mb-4">
-              JOIN THE HACKATHON
-            </p>
-            {% if not github_handle %}
-              <div class="text-center">
-                <a class="btn btn-lg btn-gc-blue" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                  onclick="dataLayer.push({'event': 'login'});">
-                  <i class="fab fa-github"></i>
-                  <span>{% trans "Register with GitHub for Hackathon" %}</span>
-                </a>
-                <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-              </div>
-            {% else %}
-              {% if not is_registered %}
-                <p class="text-muted mt-2 font-smaller-1">By registering you agree to receive hackathon emails announcements</p>
-                <a class="btn btn-gc-blue" data-registration="{{hackathon.slug}}" data-referer="{{referer}}" href="{% url 'hackathon' hackathon.slug %}">Join Now</a>
-              {% elif is_registered and hackathon.start_date|timesince <= "1 min" and  hackathon.quest_link %}
-                <p>Explore Web3 and be prepared via sponsors Quests</p>
-                <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-              {% elif is_registered and hackathon.start_date|timesince >= "1 min"%}
-                <a class="btn btn-gc-blue" href="{% url 'hackathon' hackathon.slug %}">Start Hacking</a>
-              {% else %}
-                <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-              {% endif %}
-            {% endif %}
+      </div>
+    </div>
+    <div class="modal" id="questions-form" tabindex="-1" data-backdrop="static"  role="dialog" style="height: auto">
+      <div class="" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="">
+              <form id="hackathon-poll">
+                {% for question in poll.question_set.all %}
+                    {% if question.question_type == 'SINGLE_CHOICE' %}
+                        <div class="question">
+                          <input type="checkbox" id="{{ question.id }}" name="{{ question.id }}">
+                          <label for="{{ question.id }}">{{ question.text }}</label>
+                        </div>
+                    {% elif question.question_type == 'MUTIPLE_CHOICE' %}
+                        <div class="question">
+                        <h4 class="font-header text-center font-weight-bold pt-0 mb-5">{{ question.text }}</h4>
+                        <div class="options">
+                        {% for option in question.option_set.all %}
+                          <div>
+                            <input type="checkbox" id="{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
+                       		<label for="{{ option.id }}">{{ option.text }}</label>
+                          </div>
+                        {% endfor %}
+                        </div>
+                        </div>
+                    {% else %}
+                        <div class="question">
+                        <h4 class="font-header text-center">{{ question.text }}</h4>
+                        <input type="text" name="{{ question.id }}">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+              </form>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button id="send_poll" class="btn btn-lg font-header btn-gc-blue mt-4 mb-4 px-4 px-md-5">Join Hackathon Now</button>
           </div>
         </div>
       </div>
-
-      {% if sponsors %}
-        <div class="container bg-white my-4 py-2 rounded">
-            <div class="row px-5">
-              <div class="col-12 sponsors mt-5 mb-3">
-                <p class="font-weight-bolder h4 text-left mb-4">SUPPORTED BY</p>
-                {% if sponsors.sponsors_gold %}
-                  <div class="d-flex flex-wrap mb-4">
-                    {% for sponsor in sponsors.sponsors_gold %}
-                      <div class="sponsors-gold my-auto mx-2">
-                        <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                      </div>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-
-                {% if sponsors.sponsors_silver %}
-                  <div class="d-flex flex-wrap mb-4">
-                    {% for sponsor in sponsors.sponsors_silver %}
-                      <div class="sponsors-silver my-auto mx-2">
-                        <img src="{{sponsor.logo}}" height="50" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                      </div>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        {% endif %}
-
-
     </div>
     {% csrf_token %}
     {% include 'shared/analytics.html' %}
@@ -265,13 +326,21 @@
         if (is_registered) {
           return;
         }
+        $('#questions-form').modal('show');
+        $('#send_poll').unbind('click')
+        $('#send_poll').on('click', function () {
+
+        const poll = $('#hackathon-poll').serializeArray()
         const url = '/register_hackathon/'
-        const data = { 'name': name, 'referer': referer}
+        const data = { 'name': name, 'referer': referer, 'poll': JSON.stringify(poll)}
         const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
-        _alert('You have now registered for this hackathon.', 'success');
+
+
         $.when(sendRegister).then((response) => {
+          _alert('You have now registered for this hackathon.', 'success');
           console.log(response)
             document.location.href = response.redirect;
+          });
         });
       }
       const params = new URLSearchParams(window.location.search);
@@ -285,6 +354,28 @@
         let referer = $(this).data('referer');
         register(name, referer)
       });
+      if (is_registered) {
+        const countDownDate = Date.parse('{{ hackathon.start_date.isoformat }}')
+        const x = setInterval(function() {
+          const now = new Date().getTime();
+
+          const distance = countDownDate - now;
+
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+          if (distance <= 0) {
+            clearInterval(x);
+          }
+
+          document.getElementById("countdown").innerHTML = `The event starts in ${days}d : ${hours}h : ${minutes}m : ${seconds}s`;
+
+
+        }, 1000);
+      }
+
     </script>
     <script src="{% static 'v2/js/pages/hackathon-onboard.js' %}"></script>
 

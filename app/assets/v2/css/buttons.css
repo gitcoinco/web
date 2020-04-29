@@ -121,6 +121,18 @@ button:focus {
   color: white;
 }
 
+.btn-gc-outline-red {
+  border-color: #dc3545;
+  color: #dc3545;
+  background: none;
+}
+
+.btn-gc-outline-red:hover {
+  border-color: #dc3545;
+  color: #dc3545;
+  background: none;
+}
+
 .btn-outline-gc-blue {
   border-color: var(--gc-blue);
   color: var(--gc-blue);
@@ -274,7 +286,7 @@ button:focus {
 }
 
 .btn-radio i {
-  color: #3E00FF;
+  color: var(--button-radio-icon-color);
 }
 
 .badge-greylight {

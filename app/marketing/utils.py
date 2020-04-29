@@ -81,11 +81,10 @@ def get_stat(key):
     return Stat.objects.filter(key=key).order_by('-created_on').first().val
 
 
-def invite_to_slack(email):
+def invite_to_slack(email, override=False):
     # KO 2020/03 disabling slack invites
     # per https://gitcoincore.slack.com/archives/CB1N0L6F7/p1585245243010100
-    return
-    if settings.DEBUG:
+    if settings.DEBUG or not override:
         return {}
     sc = SlackClient(settings.SLACK_TOKEN)
     response = sc.api_call('users.admin.invite', email=email)

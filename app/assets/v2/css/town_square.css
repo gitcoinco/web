@@ -1,10 +1,10 @@
+body {
+  color: var(--default-text-color);
+}
 #mobile_nav_toggle{
   display: none !important;
 }
 .follow_button[member=true]{
-  display: none;
-}
-.follow_tribe i {
   display: none;
 }
 .tooltip-inner {
@@ -378,7 +378,7 @@ a.offer_container.animate:hover .prize-gift::after {
   text-shadow: 0 2px 0px #a58484;
 }
 .empty {
-  background-color: #ddd;
+  background-color: #f9f9f9;
   color: #808080;
 }
 .empty .prize-gift {
@@ -865,7 +865,7 @@ body.green.offer_view .announce {
 
 .townsquare_nav-list .nav-item .nav-link {
   padding-left: 0;
-  color: black;
+  color: var(--townsquare-link-color);
 }
 
 .townsquare_nav-list .nav-link.active {
@@ -889,7 +889,7 @@ body.green.offer_view .announce {
 
 .townsquare_block-header {
   font-size: 0.9rem;
-  color: #626365;
+  color: var(--townsquare-block-header-color);
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -903,10 +903,11 @@ body.green.offer_view .announce {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
   border: 1px solid transparent;
+  margin-bottom: 0.5rem !important;
 }
 
 #status .btn-group-toggle .btn-radio.active {
-  border: 1px solid var(--link-color);
+  border: 1px solid var(--active-button-border-color);
 }
 
 .grey {

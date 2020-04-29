@@ -27,6 +27,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
@@ -255,6 +256,27 @@ def render_tip_email(to_email, tip, is_new):
     }
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
+    response_txt = render_to_string("emails/new_tip.txt", params)
+
+    return response_html, response_txt
+
+
+def render_request_amount_email(to_email, request, is_new):
+
+    link = f'{reverse("tip")}?request={request.id}'
+    params = {
+        'link': link,
+        'amount': request.amount,
+        'tokenName': request.token_name if request.network == 'ETH' else request.network,
+        'address': request.address,
+        'comments': request.comments,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'email_type': 'request',
+        'request': request,
+        'already_received': request.tip
+    }
+
+    response_html = premailer_transform(render_to_string("emails/request_funds.html", params))
     response_txt = render_to_string("emails/new_tip.txt", params)
 
     return response_html, response_txt
@@ -1018,11 +1040,13 @@ def render_new_bounty_roundup(to_email):
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
     kudos_friday = f'''
+<div style="text-align: center">
 <h3>New Kudos This Month</h3>
 </p>
 <p>
 ''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 </p>
+</div>
     '''
 
     intro = args.body.replace('KUDOS_INPUT_HERE', kudos_friday)
@@ -1090,6 +1114,7 @@ def render_new_bounty_roundup(to_email):
         'sponsor': sponsor,
 		'email_type': 'roundup',
         'email_style': email_style,
+        'hide_bottom_logo': True,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

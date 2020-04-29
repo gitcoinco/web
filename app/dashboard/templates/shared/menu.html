@@ -195,6 +195,11 @@
             </ul>
             <ul class="col-md-3 col-lg-2 list-unstyled">
               <li>
+                <a class="dropdown-item" href="https://gitcoin.co/wiki/wiki-code-conduct/">
+                  {% trans "Code of Conduct" %}
+                </a>
+              </li>
+              <li>
                 <a class="dropdown-item" href="{% url "activity" %}">
                   {% trans "Activity Feed" %}
                 </a>
@@ -326,5 +331,6 @@
   </nav>
   <nav class="navbar-nav mr-3">
     {% include 'shared/nav_auth.html' with source='authed' %}
+    {% include 'shared/theme_switcher.html' with source='authed' %}
   </nav>
 </div>

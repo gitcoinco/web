@@ -77,14 +77,16 @@ var loading_button = function(button) {
 
 var cb_address;
 var reloadCbAddress = function() {
-
-  try {
-    // invoke infura synchronous call, if it fails metamask is locked
-    cb_address = web3.eth.coinbase;
-  } catch (error) {
-    // catch error so sentry doesn't alert on metamask call failure
-    console.log('web3.eth.coinbase could not be loaded');
+  if (typeof web3 == 'undefined') {
+    return;
   }
+  web3.eth.getCoinbase(function(error, result) {
+    if (!error) {
+      cb_address = result;
+    } else {
+      console.log('web3.eth.coinbase could not be loaded: ' + error);
+    }
+  });
 };
 
 reloadCbAddress();
@@ -692,6 +694,22 @@ const randomElement = array => {
   return array[randomIndex];
 };
 
+$('#change-wallet').click(function(_) {
+  web3Modal.clearCachedProvider();
+  web3Modal.connect().then(function(provider) {
+    window.web3 = new Web3(provider);
+  });
+});
+
+$('#copy-address').click(function(e) {
+  var input = $('<input type="text" value="' + cb_address + '" />');
+
+  input.appendTo('body');
+  input.select();
+  document.execCommand('copy');
+  input.remove();
+});
+
 /* eslint-disable no-lonely-if */
 var currentNetwork = function(network, no_ui_updates) {
 
@@ -704,19 +722,31 @@ var currentNetwork = function(network, no_ui_updates) {
 
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
     if (network == 'mainnet') {
-      $('#current-network').text('Main Ethereum Network');
       $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
       $('#navbar-network-banner').removeClass('network-banner--warning');
       $('#navbar-network-banner').addClass('hidden');
+
+      if (web3Modal.cachedProvider === 'authereum') {
+        $('#current-network').text('Main Ethereum Network (Authereum)');
+        $('#go-to-wallet').removeClass('hidden');
+        $('#go-to-wallet').attr('href', 'https://authereum.com/account');
+      } else if (web3Modal.cachedProvider === 'fortmatic') {
+        $('#current-network').text('Main Ethereum Network (Fortmatic)');
+        $('#go-to-wallet').removeClass('hidden');
+        $('#go-to-wallet').attr('href', 'https://app.zerion.io/' + cb_address + '/overview');
+      } else {
+        $('#current-network').text('Main Ethereum Network (Metamask)');
+        $('#go-to-wallet').addClass('hidden');
+      }
     } else {
       if (!network) {
         info = gettext('Web3 disabled. Please install ') +
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
-      } else if (network == 'locked') {
+      } else if (network == 'locked' && web3Modal.cachedProvider === 'injected') {
         if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
@@ -745,19 +775,31 @@ var currentNetwork = function(network, no_ui_updates) {
     }
   } else { // Staging
     if (network == 'rinkeby') {
-      $('#current-network').text('Rinkeby Network');
       $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
       $('#navbar-network-banner').removeClass('network-banner--warning');
       $('#navbar-network-banner').addClass('hidden');
+
+      if (web3Modal.cachedProvider === 'authereum') {
+        $('#current-network').text('Rinkeby Network (Authereum)');
+        $('#go-to-wallet').removeClass('hidden');
+        $('#go-to-wallet').attr('href', 'https://rinkeby.authereum.com/account');
+      } else if (web3Modal.cachedProvider === 'fortmatic') {
+        $('#current-network').text('Rinkeby Network (Fortmatic)');
+        $('#go-to-wallet').removeClass('hidden');
+        $('#go-to-wallet').attr('href', 'https://rinkeby.etherscan.io/address/' + cb_address);
+      } else {
+        $('#current-network').text('Rinkeby Network (Metamask)');
+        $('#go-to-wallet').addClass('hidden');
+      }
     } else {
       if (!network) {
         info = gettext('Web3 disabled. Please install ') +
           '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
-      } else if (network == 'locked') {
+      } else if (network == 'locked' && web3Modal.cachedProvider === 'injected') {
         if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
@@ -852,7 +894,9 @@ var trigger_faucet_form_web3_hooks = function() {
   if ($('#faucet_form').length) {
     var balance = document.balance;
 
-    $('#ethAddress').val(web3.eth.accounts[0]);
+    web3.eth.getAccounts(function(_, accounts) {
+      $('#ethAddress').val(accounts[0]);
+    });
     var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
 
     if (typeof web3 == 'undefined') {
@@ -865,7 +909,7 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'block');
       $('#over_balance_error').css('display', 'none');
       $('#faucet_form').addClass('hidden');
-    } else if (!web3.eth.coinbase) {
+    } else if (!cb_address) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'block');
       $('#connect_metamask_error').css('display', 'none');
@@ -886,7 +930,7 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#faucet_form').removeClass('hidden');
     }
   }
-  if ($('#admin_faucet_form').length || $('#admin_refund_form').length) {
+  if ($('#admin_faucet_form').length) {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
@@ -897,12 +941,12 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#connect_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
     }
-    if (!web3.eth.coinbase) {
+    if (!cb_address) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       return;
     }
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+    web3.eth.getBalance(cb_address, function(errors, result) {
       if (errors) {
         return;
       }
@@ -955,7 +999,7 @@ var listen_for_web3_changes = async function(no_ui_updates) {
     } else {
       is_metamask_unlocked = true;
 
-      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      web3.eth.getBalance(cb_address, function(errors, result) {
         if (errors) {
           return;
         }
@@ -977,7 +1021,7 @@ var listen_for_web3_changes = async function(no_ui_updates) {
     }
   }
 
-  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
+  if (web3Modal.cachedProvider === 'injected' && window.ethereum && !document.has_checked_for_ethereum_enable) {
     if (window.ethereum._metamask) {
       document.has_checked_for_ethereum_enable = true;
       is_metamask_approved = await window.ethereum._metamask.isApproved();
@@ -1027,6 +1071,60 @@ var actions_page_warn_if_not_on_same_network = function() {
 };
 
 attach_change_element_type();
+
+Web3Modal.providers.push({
+  id: 'injected',
+  name: 'QRcode',
+  logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' fill='none'%3E%3Cpath fill='url(%23paint0_radial)' fill-rule='evenodd' d='M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z' clip-rule='evenodd'/%3E%3Cpath fill='%23fff' d='M165 243v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zM269 165h78v78h-78v-78zm61.75 61.75v-45.5h-45.5v45.5h45.5zM165 347v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zm13 13h19.5v19.5h-19.5v-19.5zm0-104h19.5v19.5h-19.5v-19.5zm123.5 19.5h-19.5v-19.5h19.5v19.5zM334 269h13v52h-52v-13h-13v39h-13v-78h39v13h26v-13zm0 65h13v13h-13v-13zm-26 0h13v13h-13v-13z'/%3E%3Cdefs%3E%3CradialGradient id='paint0_radial' cx='0' cy='0' r='1' gradientTransform='translate(9.283 256) scale(502.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%237C89FF'/%3E%3Cstop offset='1' stop-color='%231E34FF'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E",
+  type: 'injected',
+  check: 'isQRcode',
+  styled: {
+    noShadow: true
+  }
+});
+
+
+$(document).ready(function() {
+  // Don't prompt user if they are not logged in
+  if (!document.contxt.github_handle) {
+    return;
+  }
+  // const Web3Modal = window.Web3Modal.default;
+  const Web3Modal = window.Web3Modal.default;
+  // Determine if we're on prod or not
+  const isProd = document.location.href.startsWith('https://gitcoin.co');
+  const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
+  const providerOptions = {
+    authereum: {
+      'package': Authereum
+    },
+    fortmatic: {
+      'package': Fortmatic,
+      options: {
+        key: formaticKey
+      }
+    }
+  };
+  const network = isProd ? 'mainnet' : 'rinkeby';
+
+  window.web3Modal = new Web3Modal({
+    network,
+    cacheProvider: true,
+    providerOptions
+  });
+
+  // const provider = await web3Modal.connect();
+  function qrcodeConnect() {
+    localStorage['WEB3_CONNECT_CACHED_PROVIDER'] = '"injected"';
+    web3Modal.toggleModal();
+  }
+
+  window.web3Modal.providers.push({name: 'QRcode', onClick: qrcodeConnect});
+  web3Modal.connect().then(function(provider) {
+    window.web3 = new Web3(provider);
+  });
+
+});
 
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
@@ -1191,7 +1289,7 @@ const saveAttestationData = (result, cost_eth, to_address, type) => {
     'txid': txid,
     'amount': cost_eth,
     'network': document.web3network,
-    'from_address': web3.eth.coinbase,
+    'from_address': cb_address,
     'to_address': to_address,
     'type': type
   };
@@ -1460,6 +1558,11 @@ const caseInsensitiveCompare = (val1, val2) => {
  * @param {*} closePopup [boolean]
  */
 const indicateMetamaskPopup = (closePopup) => {
+  // Don't show popup if user is not using Metamask
+  if (web3Modal.cachedProvider !== 'injected') {
+    return;
+  }
+
   if (closePopup) {
     $('#indicate-popup').hide();
   } else if ($('#indicate-popup').length) {
@@ -1535,7 +1638,7 @@ function check_balance_and_alert_user_if_not_enough(
   }
 
   let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-  let from = web3.eth.coinbase;
+  let from = cb_address;
   let token_details = tokenAddressToDetails(tokenAddress);
   let token_decimals = token_details['decimals'];
   let token_name = token_details['name'];

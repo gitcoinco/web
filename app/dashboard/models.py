@@ -35,7 +35,7 @@ from django.contrib.humanize.templatetags.humanize import naturalday, naturaltim
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import connection, models
-from django.db.models import Count, F, Q, Sum
+from django.db.models import Count, F, Q, Sum, Subquery
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
@@ -62,7 +62,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
-from marketing.mails import featured_funded_bounty, start_work_approved
+from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -1399,32 +1399,6 @@ class BountySyncRequest(SuperModel):
     processed = models.BooleanField()
 
 
-class RefundFeeRequest(SuperModel):
-    """Define the Refund Fee Request model."""
-    profile = models.ForeignKey(
-        'dashboard.Profile',
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='refund_requests',
-    )
-    bounty = models.ForeignKey(
-        'dashboard.Bounty',
-        on_delete=models.CASCADE
-    )
-    fulfilled = models.BooleanField(default=False)
-    rejected = models.BooleanField(default=False)
-    comment = models.TextField(max_length=500, blank=True)
-    comment_admin = models.TextField(max_length=500, blank=True)
-    fee_amount = models.FloatField()
-    token = models.CharField(max_length=10)
-    address = models.CharField(max_length=255)
-    txnId = models.CharField(max_length=255, blank=True)
-
-    def __str__(self):
-        """Return the string representation of RefundFeeRequest."""
-        return f"bounty: {self.bounty}, fee: {self.fee_amount}, token: {self.token}. Time: {self.created_on}"
-
-
 class Subscription(SuperModel):
 
     email = models.EmailField(max_length=255)
@@ -1766,6 +1740,28 @@ class TipPayout(SuperModel):
         return f"tip: {self.tip.pk} profile: {self.profile.handle}"
 
 
+class FundRequest(SuperModel):
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='requests_receiver', on_delete=models.CASCADE
+    )
+    requester = models.ForeignKey(
+        'dashboard.Profile', related_name='requests_sender', on_delete=models.CASCADE
+    )
+    token_name = models.CharField(max_length=255, default='ETH')
+    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    comments = models.TextField(default='', blank=True)
+    tip = models.OneToOneField(Tip, on_delete=models.CASCADE, null=True)
+    network = models.CharField(max_length=255, default='')
+    address = models.CharField(max_length=255, default='')
+    created_on = models.DateTimeField(auto_now_add=True)
+
+
+@receiver(post_save, sender=FundRequest, dispatch_uid="post_save_fund_request")
+def psave_fund_request(sender, instance, created, **kwargs):
+    if created:
+        fund_request_email(instance, [instance.profile.email])
+
+
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
@@ -1785,6 +1781,13 @@ def psave_tip(sender, instance, **kwargs):
 def postsave_tip(sender, instance, created, **kwargs):
     is_valid = instance.sender_profile != instance.recipient_profile and instance.txid
     if instance.pk and is_valid:
+        value_true = 0
+        value_usd = 0
+        try:
+            value_true = instance.value_true
+            value_usd = instance.value_in_usdt_then
+        except:
+            pass
         Earning.objects.update_or_create(
             source_type=ContentType.objects.get(app_label='dashboard', model='tip'),
             source_id=instance.pk,
@@ -1793,9 +1796,12 @@ def postsave_tip(sender, instance, created, **kwargs):
                 "org_profile":instance.org_profile,
                 "from_profile":instance.sender_profile,
                 "to_profile":instance.recipient_profile,
-                "value_usd":instance.value_in_usdt_then,
+                "value_usd":value_usd,
                 "url":'https://gitcoin.co/tips',
                 "network":instance.network,
+                "txid":instance.txid,
+                "token_name":instance.tokenName,
+                "token_value":value_true,
             }
             )
 
@@ -1878,6 +1884,9 @@ def psave_bounty_fulfilll(sender, instance, **kwargs):
                 "value_usd":instance.bounty.value_in_usdt_then,
                 "url":instance.bounty.url,
                 "network":instance.bounty.network,
+                "txid":'',
+                "token_name":instance.bounty.token_name,
+                "token_value":instance.bounty.value_in_token,
             }
             )
 
@@ -2079,8 +2088,6 @@ class Activity(SuperModel):
         ('new_grant_contribution', 'Contributed to Grant'),
         ('new_grant_subscription', 'Subscribed to Grant'),
         ('killed_grant_contribution', 'Cancelled Grant Contribution'),
-        ('new_milestone', 'New Milestone'),
-        ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
         ('created_kudos', 'Created Kudos'),
         ('receive_kudos', 'Receive Kudos'),
@@ -2560,9 +2567,6 @@ class Profile(SuperModel):
     slack_token = models.CharField(max_length=255, default='', blank=True)
     custom_tagline = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
-    gitcoin_discord_username = models.CharField(max_length=255, default='', blank=True)
-    discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
-    discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -2656,7 +2660,6 @@ class Profile(SuperModel):
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
-
     @property
     def subscribed_threads(self):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
@@ -3572,9 +3575,9 @@ class Profile(SuperModel):
         if self.admin_override_name:
             return self.admin_override_name
 
-        if self.data and self.data["name"]:
+        # TODO: investigate how jsonfield blank keys get set.
+        if self.data and self.data["name"] and self.data["name"] != 'null':
             return self.data["name"]
-
         return self.username
 
 
@@ -3687,35 +3690,6 @@ class Profile(SuperModel):
         self.slack_channel = channel
         self.save()
 
-    def get_discord_repos(self, join=False):
-        """Get the profile's Discord tracked repositories.
-
-        Args:
-            join (bool): Whether or not to return a joined string representation.
-                Defaults to: False.
-
-        Returns:
-            list of str: If joined is False, a list of discord repositories.
-            str: If joined is True, a combined string of discord repositories.
-
-        """
-        if join:
-            repos = ', '.join(self.discord_repos)
-            return repos
-        return self.discord_repos
-
-    def update_discord_integration(self, webhook_url, repos):
-        """Update the profile's Discord integration settings.
-
-        Args:
-            webhook_url (str): The profile's Discord webhook url.
-            repos (list of str): The profile's github repositories to track.
-
-        """
-        repos = repos.split(',')
-        self.discord_webhook_url = webhook_url
-        self.discord_repos = [repo.strip() for repo in repos]
-        self.save()
 
     @staticmethod
     def get_network():
@@ -4472,6 +4446,7 @@ class Sponsor(SuperModel):
     name = models.CharField(max_length=255, help_text='sponsor Name')
     logo = models.ImageField(help_text='sponsor logo', blank=True)
     logo_svg = models.FileField(help_text='sponsor logo svg', blank=True)
+    tribe = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name
@@ -4507,12 +4482,13 @@ class HackathonEvent(SuperModel):
     text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
+    sponsor_profiles = models.ManyToManyField('dashboard.Profile', blank=True, limit_choices_to={'data__type': 'Organization'})
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
-
+    default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
 
     def __str__(self):
@@ -4603,6 +4579,7 @@ def psave_hackathonevent(sender, instance, **kwargs):
             }
             )
 
+
 class HackathonSponsor(SuperModel):
     SPONSOR_TYPES = [
         ('G', 'Gold'),
@@ -4681,7 +4658,6 @@ class HackathonProject(SuperModel):
 
     def get_absolute_url(self):
         return self.url()
-
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
@@ -4801,6 +4777,10 @@ class Earning(SuperModel):
     source = GenericForeignKey('source_type', 'source_id')
     network = models.CharField(max_length=50, default='')
     url = models.CharField(max_length=500, default='')
+    txid = models.CharField(max_length=255, default='')
+    token_name = models.CharField(max_length=255, default='')
+    token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
+    network = models.CharField(max_length=50, default='')
 
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
@@ -4895,3 +4875,52 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
+    
+    @property
+    def mutual_follow(self):
+        return TribeMember.objects.filter(profile=self.org, org=self.profile).exists()
+
+    @property
+    def mutual_follower(self):
+        tribe_following = Subquery(TribeMember.objects.filter(profile=self.profile).values_list('org', flat=True))
+        return TribeMember.objects.filter(org=self.org, profile__in=tribe_following).exclude(profile=self.profile)
+
+    @property
+    def mutual_following(self):
+        tribe_following = Subquery(TribeMember.objects.filter(org=self.profile).values_list('profile', flat=True))
+        return TribeMember.objects.filter(org__in=tribe_following, profile=self.org).exclude(org=self.org)
+
+      
+class Poll(SuperModel):
+    title = models.CharField(max_length=350, blank=True, null=True)
+    active = models.BooleanField(default=False)
+    hackathon = models.ForeignKey(HackathonEvent, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+class Question(SuperModel):
+    TYPE_QUESTIONS = (
+        ('SINGLE_CHOICE', 'Single Choice'),
+        ('MUTIPLE_CHOICE', 'Multiple Choices'),
+        ('OPEN', 'Open'),
+    )
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True, blank=True)
+    question_type = models.CharField(choices=TYPE_QUESTIONS, max_length=50, blank=False, null=False)
+    text = models.CharField(max_length=350, blank=True, null=True)
+
+    def __str__(self):
+        return f'Question.{self.id} {self.text}'
+
+
+class Option(SuperModel):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    text = models.CharField(max_length=350, blank=True, null=True)
+
+    def __str__(self):
+        return f'Option.{self.id} {self.text}'
+
+
+class Answer(SuperModel):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    open_response = models.CharField(max_length=350, blank=True, null=True)
+    choice = models.ForeignKey(Option, on_delete=models.CASCADE, null=True, blank=True)

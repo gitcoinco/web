@@ -40,6 +40,15 @@ $(document).ready(() => {
     etherscanUrlConvert(links, _network);
   });
 
+  window.addEventListener('scroll', function() {
+    if ($('.activity_stream').length && $('.activity_stream').isInViewport()) {
+      $('#skip').addClass('hidden');
+    } else {
+      $('#skip').removeClass('hidden');
+    }
+
+  });
+
 });
 
 const etherscanUrlConvert = (elem, network) => {
@@ -100,13 +109,4 @@ var glow_skip = function() {
 
 setInterval(glow_skip, 5000);
 glow_skip();
-
-window.addEventListener('scroll', function() {
-  if ($('.activity_stream').length && $('.activity_stream').isInViewport()) {
-    $('#skip').addClass('hidden');
-  } else {
-    $('#skip').removeClass('hidden');
-  }
-  
-});
 
