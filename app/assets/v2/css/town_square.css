@@ -1106,6 +1106,10 @@ body.green.offer_view .announce {
   border-top: #8ab2b2!important;
 }
 
+.promo p {
+  margin-bottom: 0;
+}
+
 .dark .poll_choices div.vote {
   background-color: #232342!important;
 }
@@ -1173,10 +1177,6 @@ body.green.offer_view .announce {
   background-color: #101061;
   color: white;
   border-radius: 0;
-}
-
-.promo p {
-  margin-bottom: 0;
 }
 
 .promo .action:hover {
