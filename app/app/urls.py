@@ -38,8 +38,6 @@ import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
-# event:ethdenver2019
-import event_ethdenver2019.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
@@ -675,15 +673,6 @@ urlpatterns = [
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
-
-    # event:ethdenver2019
-    re_path(
-        r'^ethdenver/redeem/(?P<secret>.*)/?$',
-        event_ethdenver2019.views.receive_bulk_ethdenver,
-        name='kudos_receive_bulk'
-    ),
-    url(r'^ethdenver/', event_ethdenver2019.views.ethdenver2019),
-    # /event:ethdenver2019
 
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
