@@ -17,24 +17,26 @@ $(document).ready(function() {
     }
     loading_button($(this));
     // get form data
-    var username = $('.username-search').select2('data')[0] ? $('.username-search').select2('data')[0].text : '';
-    var amount = parseFloat($('#amount').val());
-    var network = $('#network').val();
-    var address = $('#address').val();
-    var comments = $('#comments').val();
-    var tokenAddress = (
+    const username = $('.username-search').select2('data')[0] ? $('.username-search').select2('data')[0].text : '';
+    const amount = parseFloat($('#amount').val());
+    const network = $('#network').val();
+    const address = $('#address').val();
+    const comments = $('#comments').val();
+    const tokenAddress = (
       ($('#token').val() == '0x0') ?
         '0x0000000000000000000000000000000000000000'
         : $('#token').val());
 
 
     // derived info
-    var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
-    var tokenDetails = tokenAddressToDetails(tokenAddress);
-    var tokenName = 'ETH';
+    const isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
+    const tokenDetails = tokenAddressToDetails(tokenAddress);
+    let tokenName;
 
     if (network == 'ETH' == !isSendingETH) {
       tokenName = tokenDetails.name;
+    } else {
+      tokenName = 'ETH';
     }
 
     if (!username) {
@@ -42,10 +44,10 @@ $(document).ready(function() {
       return;
     }
 
-    var success_callback = function() {
+    const success_callback = function() {
       unloading_button($('#request'));
     };
-    var failure_callback = function() {
+    const failure_callback = function() {
       unloading_button($('#request'));
     };
 
@@ -59,8 +61,6 @@ function requestFunds(username, amount, comments, tokenAddress, tokenName, netwo
   if (username.indexOf('@') == -1) {
     username = '@' + username;
   }
-
-  var tokenDetails = tokenAddressToDetails(tokenAddress);
 
   if (!isNumeric(amount) || amount == 0) {
     _alert({ message: gettext('You must enter the amount!') }, 'warning');
