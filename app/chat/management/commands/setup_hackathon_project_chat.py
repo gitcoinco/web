@@ -100,7 +100,7 @@ class Command(BaseCommand):
                 except Exception as e:
                         logger.error('Error creating project channel', e)
 
-                for team_m_profile in project.project_profiles.all():
+                for team_m_profile in project.profiles.all():
                     if team_m_profile.chat_id is '' or team_m_profile.chat_id is None:
                         created, team_m_profile = associate_chat_to_profile(team_m_profile)
                     profiles_to_connect.append(team_m_profile.chat_id)
