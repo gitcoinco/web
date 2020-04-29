@@ -215,7 +215,7 @@ class Command(BaseCommand):
                 subscription.contributor_profile = profile
                 subscription.grant = match.grant
                 subscription.comments = validator_comment
-                subscription.amount_per_period_usdt = match.amount
+                subscription.amount_per_period_usdt = match.amount if is_real_payout else 0
                 subscription.save()
 
                 contrib = Contribution.objects.create(
