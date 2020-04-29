@@ -327,7 +327,7 @@ input[type='checkbox']:checked + label::before,
 input[type='radio']:checked + label::before {
   color: #ff7496;
   content: '\f00c';
-  font-family: "Font Awesome 5 free", sans-serif;
+  font-family: "Font Awesome 5 Pro", sans-serif;
   font-weight: 900;
 }
 
