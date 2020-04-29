@@ -79,10 +79,10 @@ class Command(BaseCommand):
                     profiles_to_connect = profiles_to_connect + mentors
 
                 project_channel_name = slugify(f'{project.name}')
-
+                print(project.summary)
                 created, channel_details = create_channel_if_not_exists({
                     'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                    'channel_purpose': project.summary[:255] if project.summary else "",
+                    'channel_purpose': project.summary[:255] if project.summary is not None else "",
                     'channel_display_name': f'project-{project_channel_name}'[:60],
                     'channel_name': project_channel_name[:60],
                     'channel_type': 'P'
