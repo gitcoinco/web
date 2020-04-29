@@ -213,12 +213,6 @@ a .sup {
   display: inline-block;
 }
 
-.click-gif.selected,
-#poll-button.selected,
-#video-button.selected {
-  color: black;
-}
-
 #video_container{
   background-color: white;
   text-align: center;
