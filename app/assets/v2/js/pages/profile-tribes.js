@@ -164,9 +164,6 @@ const loadDynamicScript = (callback, url, id) => {
             case 2:
               newPathName = 'people';
               break;
-            case 3:
-              newPathName = 'chat';
-              break;
           }
           let newUrl = `/${vm.tribe.handle}/${newPathName}${window.location.search}`;
 
