@@ -1133,22 +1133,22 @@ body.green.quest_battle {
 
 body.back1 #desc li:hover,
 body.back1 #desc li.selected {
-  background-color: #102945;
+  background-color: rgba(0, 119, 255, 0.8);
 }
 
 body.back2 #desc li:hover,
 body.back2 #desc li.selected {
-  background-color: #102945;
+  background-color: rgba(60, 0, 180, 0.8);
 }
 
 body.back3 #desc li:hover,
 body.back3 #desc li.selected {
-  background-color: #f6126e;
+  background-color: rgb(204, 0, 94);
 }
 
 body.back14 #desc li:hover,
 body.back14 #desc li.selected {
-  background-color: #f6126e;
+  background-color: rgb(204, 0, 94);
 }
 
 body.back4 #desc li:hover,
@@ -1158,52 +1158,52 @@ body.back4 #desc li.selected {
 
 body.back5 #desc li:hover,
 body.back5 #desc li.selected {
-  background-color: #101061;
+  background-color: #0808a0;
 }
 
 body.back6 #desc li:hover,
 body.back6 #desc li.selected {
-  background-color: #8ab2b2;
+  background-color: rgba(0, 85, 114, 0.6);
 }
 
 body.back7 #desc li:hover,
 body.back7 #desc li.selected {
-  background-color: #0e151e;
+  background-color: rgb(0, 110, 255);
 }
 
 body.back8 #desc li:hover,
 body.back8 #desc li.selected {
-  background-color: #0a061e;
+  background-color: rgba(43, 0, 255, 0.6);
 }
 
 body.back9 #desc li:hover,
 body.back9 #desc li.selected {
-  background-color: #1c1135;
+  background-color: rgb(86, 35, 208);
 }
 
 body.red #desc li:hover,
 body.red #desc li.selected {
-  background-color: #fc4240;
+  background-color: rgb(206, 3, 0);
 }
 
 body.back19 #desc li:hover,
 body.back19 #desc li.selected {
-  background-color: #fc4240;
+  background-color: rgb(197, 0, 0);
 }
 
 body.back20 #desc li:hover,
 body.back20 #desc li.selected {
-  background-color: #ace4f9;
+  background-color: rgba(0, 162, 255, 0.97);
 }
 
 body.blue #desc li:hover,
 body.blue #desc li.selected {
-  background-color: #4040ff;
+  background-color: rgba(0, 0, 121, 0.6);
 }
 
 body.green #desc li:hover,
 body.green #desc li.selected {
-  background-color: #9EaB97;
+  background-color: rgb(0, 203, 86, 1);
 }
 
 #breadcrumbs,
