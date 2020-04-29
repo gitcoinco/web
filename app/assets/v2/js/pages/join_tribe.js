@@ -58,6 +58,23 @@ const joinTribeDirect = (elem) => {
 };
 
 
+const followRequest = (handle, elem, cb, cbError) => {
+  if (!document.contxt.github_handle) {
+    _alert('Please login first.', 'error');
+    return;
+  }
+
+  const url = `/tribe/${handle}/join/`;
+  const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+
+  $.when(sendJoin).then(function(response) {
+    return cb(handle, elem, response);
+  }).fail(function(error) {
+    return cbError(error);
+  });
+};
+
+
 const tribeLeader = () => {
   $('[data-tribeleader]').each(function(index, elem) {
 

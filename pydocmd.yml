@@ -179,8 +179,6 @@ generate:
     - marketing.management.commands.debug_test++
   - marketing/admin.md:
     - marketing.admin++
-  - marketing/google_analytics.md:
-    - marketing.google_analytics++
   - marketing/mails.md:
     - marketing.mails++
   - marketing/models.md:

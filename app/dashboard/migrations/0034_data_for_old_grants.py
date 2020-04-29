@@ -22,7 +22,6 @@ def record_grant_activity_helper(activity_type, grant, profile, date):
     metadata = {
         'id': grant.id,
         'value_in_token': '{0:.2f}'.format(grant.amount_received),
-        'amount_goal': '{0:.2f}'.format(grant.amount_goal),
         'token_name': grant.token_symbol,
         'title': grant.title,
         'grant_logo': grant_logo,

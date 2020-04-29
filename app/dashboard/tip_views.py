@@ -198,7 +198,7 @@ def receive_tip_v3(request, key, txid, network):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='25/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_4(request):
     """Handle the fourth stage of sending a tip (the POST).
 

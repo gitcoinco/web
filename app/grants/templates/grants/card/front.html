@@ -45,7 +45,7 @@
       </div>
   </div>
   <div class="grant-item__footer">
-      {% if clr_active %}
+      {% if 1 %}
         <div class="clr mb-3">
           <div class="match__round pb-1 pt-2 mb-2">
             <h2 class="title col-8 font-caption g-bold">
@@ -69,7 +69,7 @@
             <h2 class="font-title font-weight-bold amount pt-1 mb-2">
               {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
             </h2>
-            <p class="amount mb-2 font-caption font-weight-semibold">CLR Match Estimate</p>
+            <p class="amount mb-2 font-caption font-weight-semibold">Final CLR Match</p>
           </div>
         </div>
         <div class="col-12 pb-4">

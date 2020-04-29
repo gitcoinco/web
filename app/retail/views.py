@@ -218,126 +218,6 @@ def index(request):
     return TemplateResponse(request, 'home/index.html', context)
 
 
-@staff_member_required
-def pricing(request):
-
-    plans= [
-        {
-            'type': 'basic',
-            'img': 'v2/images/pricing/basic.svg',
-            'fee': 10,
-            'features': [
-                '1 free <a href="/kudos">Kudos</a>',
-                'Community Support'
-            ],
-            'features_na': [
-                'Job Board Access',
-                'Contributor Stats',
-                'Multi-Seg Wallet',
-                'Featured Bounties',
-                'Job Listing'
-            ]
-        },
-        {
-            'type': 'pro',
-            'img': 'v2/images/pricing/pro.svg',
-            'price': 40,
-            'features': [
-                '5 Free <a href="/kudos">Kudos</a> / mo',
-                'Community Support',
-                'Job Board - Limited',
-                'Contributor Stats'
-            ],
-            'features_na': [
-                'Multi-Seg Wallet',
-                'Featured Bounties',
-                'Job Listings'
-            ]
-        },
-        {
-            'type': 'max',
-            'img': 'v2/images/pricing/max.svg',
-            'price': 99,
-            'features': [
-                '5 Free <a href="/kudos">Kudos</a> / mo',
-                'Community Support',
-                'Job Board Access',
-                'Contributor Stats',
-                'Multi-Sig Wallet',
-                '5 Featured Bounties',
-                '5 Job Listings'
-            ]
-        }
-    ]
-
-    companies = [
-        {
-            'name': 'Market Protocol',
-            'img': 'v2/images/project_logos/market.png'
-        },
-        {
-            'name': 'Consensys',
-            'img': 'v2/images/consensys.svg'
-        },
-        {
-            'name': 'Metamask',
-            'img': 'v2/images/project_logos/metamask.png'
-        },
-        {
-            'name': 'Ethereum Foundation',
-            'img': 'v2/images/project_logos/eth.png'
-        },
-        {
-            'name': 'Truffle',
-            'img': 'v2/images/project_logos/truffle.png'
-        },
-    ]
-
-    context = {
-        'plans': plans,
-        'companies': companies
-    }
-
-    return TemplateResponse(request, 'pricing/plans.html', context)
-
-
-@staff_member_required
-def subscribe(request):
-
-    if request.POST:
-        return TemplateResponse(request, 'pricing/subscribe.html', {})
-
-    from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
-
-    plan = {
-        'type': 'pro',
-        'img': 'v2/images/pricing/sub_pro.svg',
-        'price': 40
-    }
-
-    if request.GET:
-        if 'plan' in request.GET and request.GET['plan'] == 'max':
-            plan = {
-                'type': 'max',
-                'img': 'v2/images/pricing/sub_max.svg',
-                'price': 99
-            }
-        if 'pack' in request.GET and request.GET['pack'] == 'annual':
-            plan['price'] = plan['price'] - plan['price'] / 10
-
-    context = {
-        'plan': plan,
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-    }
-    return TemplateResponse(request, 'pricing/subscribe.html', context)
-
-
 def funder_bounties_redirect(request):
     return redirect(funder_bounties)
 
@@ -404,6 +284,7 @@ def funder_bounties(request):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'bounties_funder',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png')),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'gitcoin_description': gitcoin_description,
@@ -549,6 +430,7 @@ def contributor_bounties(request, tech_stack):
 
     # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png')),
         'onboard_slides': onboard_slides,
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -618,10 +500,8 @@ def how_it_works(request, work_type):
 
 
 def robotstxt(request):
-    hidden_profiles = list(JSONStore.objects.get(view='hidden_profiles').data)
     context = {
         'settings': settings,
-        'hidden_profiles': hidden_profiles,
     }
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
@@ -1557,7 +1437,7 @@ def slack(request):
             try:
                 validate_email(email)
                 get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
-                response = invite_to_slack(email)
+                response = invite_to_slack(email, True)
 
                 if not response.get('ok'):
                     context['msg'] = response.get('error', _('Unknown error'))
@@ -1818,6 +1698,7 @@ def tribes(request):
         'plans': plans,
         'tribes': tribes,
         'testimonials': testimonials,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')),
         'reasons': reasons
     }
 

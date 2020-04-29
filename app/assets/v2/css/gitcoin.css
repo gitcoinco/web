@@ -546,13 +546,15 @@ div.button-pink {
 
 .accordion:after {
   /* stylelint-disable-next-line */
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Pro';
   content: '\f107';
-  font-size: 1.2em;
+  font-size: 1em;
   margin-right: auto;
   margin-top: auto;
   float: right;
   font-weight: 600;
+  top: 1px;
+  position: relative;
 }
 
 .accordion.active:after {
