@@ -274,7 +274,7 @@ button:focus {
 }
 
 .btn-radio i {
-  color: #3E00FF;
+  color: var(--button-radio-icon-color);
 }
 
 .badge-greylight {
