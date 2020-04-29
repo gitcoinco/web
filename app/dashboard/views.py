@@ -2794,7 +2794,7 @@ def profile(request, handle, tab=None):
         context = {
             'hidden': True,
             'ratings': range(0,5),
-            'followers': TribeMember.objects.filter(org=request.user.profile),
+            'followers': TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated and hasattr(request.user, 'profile') else [],
             'profile': {
                 'handle': handle,
                 'avatar_url': f"/dynamic/avatar/Self",
@@ -2835,15 +2835,15 @@ def profile(request, handle, tab=None):
     context['tab'] = tab
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and hasattr(request.user, 'profile'):
         context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower())
     context['ratings'] = range(0,5)
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
     context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
-    context['followers'] = TribeMember.objects.filter(org=request.user.profile)
-    context['following'] = TribeMember.objects.filter(profile=request.user.profile)
+    context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated and hasattr(request.user, 'profile') else []
+    context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated and hasattr(request.user, 'profile') else []
     context['foltab'] = request.GET.get('sub', 'followers')
 
     active_tab = 0
@@ -2868,7 +2868,7 @@ def profile(request, handle, tab=None):
 
         context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
         context['target'] = f'/activity?what=tribe:{profile.handle}'
-        context['is_on_tribe'] = json.dumps(True if len(context['is_on_tribe']) > 0 else False)
+        context['is_on_tribe'] = json.dumps(True if hasattr(context, 'is_on_tribe') and len(context['is_on_tribe']) > 0 else False)
         context['is_my_org'] = json.dumps(context['is_my_org'])
         context['profile_handle'] = profile.handle
 
