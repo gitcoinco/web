@@ -92,7 +92,7 @@ class Command(BaseCommand):
                     project.save()
 
                 try:
-                    bounty_profile = Profile.objects.get(handle__icontains=project.bounty.bounty_owner_github_username)
+                    bounty_profile = Profile.objects.filter(handle__icontains=project.bounty.bounty_owner_github_username).first()
                     if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
                         created, bounty_profile = associate_chat_to_profile(bounty_profile)
                     profiles_to_connect.append(bounty_profile.chat_id)
