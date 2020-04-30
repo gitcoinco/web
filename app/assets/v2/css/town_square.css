@@ -889,6 +889,7 @@ body.green.offer_view .announce {
 
 .townsquare_block-header {
   font-size: 0.9rem;
+  font-weight: 700;
   color: var(--townsquare-block-header-color);
   text-transform: uppercase;
   cursor: pointer;
@@ -911,7 +912,7 @@ body.green.offer_view .announce {
 }
 
 .grey {
-  color: #666666 !important;
+  color: var(--gc-medium-dark-gray) !important;
 }
 .offer_container span{
   display: inline;
@@ -935,7 +936,7 @@ body.green.offer_view .announce {
 }
 
 .activity_time {
-  color: #666666;
+  color: var(--gc-medium-dark-gray);
 }
 
 .filter-tag {
@@ -977,7 +978,7 @@ body.green.offer_view .announce {
 
 .nav-badge {
   font-size: 9px;
-  color: rgba(62,0,255);
+  color: var(--link-color);
   top: -8px;
   position: relative;
   font-weight: bold;
