@@ -2637,6 +2637,11 @@ class Profile(SuperModel):
         ('funder', 'Funder'),
         ('', 'Neither'),
     ]
+    KYC_STATUS = (
+        (0, 'Unverified'),
+        (1, 'Rejected'),
+        (2, 'Verified'),
+    )
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
@@ -2760,6 +2765,8 @@ class Profile(SuperModel):
     last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
     encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
     sybil_score = models.IntegerField(default=-1)
+    passbase_auth_key = models.CharField(max_length=255, null=True, blank=True, help_text='passbase auth_key')
+    kyc_status =  models.IntegerField(choices=KYC_STATUS, default=0, help_text='kyc status from passbase')
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
@@ -2771,6 +2778,9 @@ class Profile(SuperModel):
         except:
             return ''
 
+    @property
+    def is_kyc_verified(self):
+        return True if self.kyc_status == 1 else False
 
     @property
     def suggested_bounties(self):

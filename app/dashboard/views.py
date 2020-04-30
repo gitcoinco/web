@@ -54,6 +54,7 @@ from django.views.decorators.http import require_GET, require_POST
 import dateutil
 import magic
 import pytz
+import requests
 from app.services import RedisService, TwilioService
 from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
 from app.utils import clean_str, ellipses, get_default_network
@@ -5507,3 +5508,77 @@ def validate_verification(request):
         'success': False,
         'msg': 'No verification process associated'
     }, status=401)
+
+
+@login_required
+def kyc_status(request, profile_id):
+
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request.'
+    }
+
+    try:
+        profile = Profile.objects.get(id=profile_id)
+        if not profile:
+            response['message'] = 'error: unable to find profile'
+            return JsonResponse(response)
+    except Exception:
+        response['message'] = 'error: unable to find profile'
+        return JsonResponse(response)
+
+    if request.method == 'GET':
+        response = {
+            'status': 200,
+            'id': profile_id,
+            'kyc_status': profile.kyc_status
+        }
+
+        if profile.passbase_auth_key and profile.kyc_status == 0:
+            # fetch kyc status from passbase
+            try:
+                url = "https://api.passbase.com/api/v1/authentications/by_key/" + profile.passbase_auth_key
+                headers = {
+                    "Authorization": settings.PASSBASE_SECRET_API_KEY,
+                    "Accept":"application/json"
+                }
+                response = requests.get(url = url, headers = headers)
+                response_json = response.json()
+                status = response_json['authentication']['review_status']
+
+                if status == True: # kyc is verified
+                    profile.kyc_status = 2
+                    profile.save()
+                    response['kyc_status'] = profile.kyc_status
+
+                elif status == False: # kyc is rejected
+                    profile.kyc_status = 1
+                    profile.save()
+                    response['kyc_status'] = profile.kyc_status
+
+            except:
+                pass
+
+        return JsonResponse(response)
+    else:
+        passbase_auth_key = request.POST.get('passbase_auth_key')
+        if not passbase_auth_key:
+            response['message'] = 'error: missing parameter passbase_auth_key'
+            return JsonResponse(response)
+
+        if profile.passbase_auth_key and profile.kyc_status == 2:
+            response = {
+                'status': 409,
+                'id': profile_id,
+                'message': 'profile is already kyc verified'
+            }
+            return JsonResponse(response)
+
+        profile.passbase_auth_key = profile.passbase_auth_key
+
+        response = {
+            'status': 200,
+            'id': profile_id,
+            'kyc_status': profile.kyc_status
+        }
+        return JsonResponse(response)

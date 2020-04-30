@@ -72,6 +72,12 @@
     <h5 class="d-inline-block">Backup Profile data to 3box</h5>
     {% include 'profiles/header_sync_profile.html' %}
   </div>
+
+  <div class="form-group mb-5">
+    <h5 class="d-inline-block mr-3">KYC</h5>
+    <div id="passbase-button" class="d-inline-block"></div>
+  </div>
+
   <div class="form-group mb-5">
     <h5>{% trans "Account type" %}</h5>
     <p>{% trans "Let us know your account type so we can optimize your experience" %}</p>
@@ -234,5 +240,48 @@
 <script src="{% static "v2/js/3box-sync.js" %}"></script>
 <script src="{% static "v2/js/pages/profile-backup.js" %}"></script>
 <script src="{% static "v2/js/3box.min.js" %}"></script>
+
+<script type="text/javascript">
+  const apiKey = '4f28d3b36c5d2012422f1d014055e58b264319eb795bd81da483909b13462957';
+  const passbase_button = document.getElementById("passbase-button")
+
+  const onFinished = (error, authKey, additionalAttributes) => {
+    if (error) {
+      console.error(error)
+    } else {
+      const url = '/apo/v1/users/{{ profile.pk }}/kyc_status';
+      fetch(url, {
+        method: 'POST',
+        body: JSON.stringify({
+          passbase_auth_key: authKey
+        })
+      })
+
+      console.log(authKey);
+      console.log(additionalAttributes);
+    }
+  };
+
+  Passbase.renderButton(
+    passbase_button,
+    onFinished,
+    apiKey,
+    {
+      additionalAttributes: {
+        customer_user_id: "{{ profile.pk }}"
+      },
+      prefillAttributes: {
+        email: "{{ profile.email }}",
+        // country: "en"
+      },
+      theme: {
+        accentColor: '#ff0000',
+        font: 'Muli',
+        fontURL: 'https://fonts.googleapis.com/css?family=Muli:400,500,600,700,750,800'
+      }
+    }
+  );
+</script>
+
 {{ block.super }}
 {% endblock %}
