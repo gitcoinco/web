@@ -450,7 +450,6 @@ urlpatterns = [
     re_path(r'^medium/?', retail.views.medium, name='medium'),
     re_path(r'^github/?', retail.views.github, name='github'),
     re_path(r'^youtube/?', retail.views.youtube, name='youtube'),
-    re_path(r'^web3$/?', retail.views.web3, name='web3'),
 
     # increase funding limit
     re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
