@@ -50,7 +50,7 @@
 
 <div class="text-center bounty-box">
   <ul>
-    <li style="list-style:none;">
+    <li style="list-style:none; margin-left: 0;">
       {% if bounty.avatar_url %}
         <img style="border-radius: 20px; display: block; margin-left: auto; margin-right: auto; margin-bottom: 0.5em" src="{{ bounty.avatar_url }}" width=50px height=50px>
         <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ bounty.org_name }}</a>
