@@ -666,18 +666,10 @@
                               </template>
 
                               <div class="text-center mt-2">
-                                <button v-if="user.is_following" @click="joinTribe(user, $event)"
-                                  class="btn btn-sm btn-gc-pink font-caption font-weight-semibold button--full"
-                                >
-                                  <i class="fas fa-user-minus mr-1"></i>
-                                  following
-                                </button>
-                                <button v-else @click="joinTribe(user, $event)"
-                                  class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
-                                >
-                                  <i class="fas fa-user-plus mr-1"></i>
-                                  follow
-                                </button>
+
+                                <b-button v-bind:class="[user.is_following ? 'btn-outline-green' : 'btn-gc-blue', 'btn btn-sm font-caption font-weight-semibold button--full']" @click="joinTribe(user, $event)">
+                                  <i v-bind:class="[user.is_following ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> [[ user.is_following ? "following" : "follow" ]]
+                                </b-button>
                               </div>
 
                             </div>
@@ -1385,7 +1377,7 @@
                           </div>
 
                           <div v-if="is_my_org" class="col-md-4 my-auto text-right">
-                            <a target="_blank" class="btn btn-sm btn-outline-gc-green font-smaller-4 mx-2" href="{% url 'new_bounty' %}?type=public&url={{ suggested_bounty.github_url }}&invite={{ suggested_bounty.requested_by.pk }}&amount={{ suggested_bounty.amount }}">
+                            <a target="_blank" class="btn btn-sm btn-outline-green font-smaller-4 mx-2" href="{% url 'new_bounty' %}?type=public&url={{ suggested_bounty.github_url }}&invite={{ suggested_bounty.requested_by.pk }}&amount={{ suggested_bounty.amount }}">
                               <i class="fas fa-plus-circle mr-1"></i>
                               {% trans "Fund Request" %}
                             </a>
@@ -1454,7 +1446,7 @@
                       </div>
 
                       <p class="mb-0 mt-1">
-                        <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-gc-pink' : 'btn-gc-blue']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
+                        <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-green' : 'btn-gc-blue']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
 
                         |
 

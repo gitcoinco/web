@@ -362,11 +362,11 @@ Vue.component('suggested-profile', {
           </p>
         </span>
       </a>
-      <a class="follow_tribe btn btn-sm btn-gc-pink font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
-        following
+      <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
+        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
       </a>
       <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
-        follow
+        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> follow
       </a>
     </li>`
 });

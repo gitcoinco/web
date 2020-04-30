@@ -253,7 +253,7 @@ Vue.mixin({
           --user.follower_count;
         }
 
-        event.target.classList.toggle('btn-gc-pink');
+        event.target.classList.toggle('btn-outline-green');
         event.target.classList.toggle('btn-gc-blue');
       }).fail(function(error) {
         event.target.disabled = false;
@@ -309,6 +309,7 @@ Vue.component('user-directory', {
       issueDetails: undefined,
       errorIssueDetails: undefined,
       showBanner: undefined,
+      persona: undefined,
       hideFilterButton: !!document.getElementById('explore_tribes')
     };
   },
