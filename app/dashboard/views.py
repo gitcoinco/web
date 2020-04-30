@@ -1377,13 +1377,13 @@ def bulk_invite(request):
 
     if len(profiles):
         for profile in profiles:
-            bounty_invite = BountyInvites.objects.create(
-                status='pending'
-            )
-            bounty_invite.bounty.add(bounty)
-            bounty_invite.inviter.add(inviter)
-            bounty_invite.invitee.add(profile.user)
             try:
+                bounty_invite = BountyInvites.objects.create(
+                    status='pending'
+                )
+                bounty_invite.bounty.add(bounty)
+                bounty_invite.inviter.add(inviter)
+                bounty_invite.invitee.add(profile.user)
                 msg = request.POST.get('msg', '')
                 share_bounty([profile.email], msg, inviter.profile, invite_url, False)
             except Exception as e:
