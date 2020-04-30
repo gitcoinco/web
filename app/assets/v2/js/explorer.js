@@ -8,7 +8,7 @@ let bountiesHasNext = false;
 let numBounties = '';
 // let funderBounties = [];
 let paramsDefault = {
-  order_by: '',
+  order_by: '-web3_created',
   idx_status: '',
   experience_level: [],
   project_type: [],
@@ -19,7 +19,7 @@ let paramsDefault = {
   permission_type: [],
   project_length: [],
   bounty_type: [],
-  network: ['mainnet'],
+  network: [document.web3network || 'mainnet'],
   keywords: []
 };
 

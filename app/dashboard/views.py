@@ -1024,11 +1024,10 @@ def users_fetch(request):
                 profile_list = profile_list.exclude(Q(organizations_fk__handle__in=[tribe]))
 
             if user_filter == 'hackers':
-                profile_list = profile_list.filter(Q(project_profiles__hackathon__sponsor_profiles__handle__in=[tribe]) | Q(hackathon_registration__hackathon__sponsor_profiles__handle__in=[tribe]))
+                profile_list = profile_list.filter(Q(fulfilled__bounty__github_url__icontains=tribe) | Q(project_profiles__hackathon__sponsor_profiles__handle__in=[tribe]) | Q(hackathon_registration__hackathon__sponsor_profiles__handle__in=[tribe]))
 
 
     show_banner = None
-
     if persona:
         if persona == 'funder':
             profile_list = profile_list.filter(dominant_persona='funder')
@@ -1081,10 +1080,8 @@ def users_fetch(request):
 
     else:
         try:
-            print("here")
             profile_list = profile_list.order_by(order_by, '-earnings_count', 'id')
         except profile_list.FieldError:
-            print("We got here")
             profile_list = profile_list.order_by('-earnings_count', 'id')
 
         profile_list = profile_list.values_list('pk', flat=True)

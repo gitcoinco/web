@@ -1,3 +1,22 @@
+
+Vue.mixin({
+  data: function() {
+    return {
+      chatURL: document.chatURL || 'https://chat.gitcoin.co'
+    };
+  },
+  methods: {
+    chatWindow: function(handle) {
+      let vm = this;
+
+      const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
+
+      window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+    }
+  }
+});
+
+
 Vue.component('modal', {
   props: [ 'user', 'size', 'id', 'issueDetails' ],
   template: `<div class="vue-modal modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">

@@ -475,7 +475,7 @@
                                      <template v-slot:button-content>
                                        <i class='fas fa-comment-dots'></i>
                                      </template>
-                                     <b-dropdown-item-button @click.prevent="openChat(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                     <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
                                        @ [[ profile.handle ]]
                                      </b-dropdown-item-button>
                                     </b-dropdown>
@@ -712,7 +712,7 @@
                                       <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                                         <i class="fab fa-linkedin-in"></i>
                                       </a>
-                                      <a @click="chatWindow(user);" href="#" v-if="user.chat_id">
+                                      <a @click="chatWindow(user.handle);" href="#" v-if="user.chat_id">
                                         <i class="fas fa-comment-dots"></i>
                                       </a>
                                     </div>
