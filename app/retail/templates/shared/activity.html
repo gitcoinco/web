@@ -194,18 +194,21 @@
             {{ row.metadata.title }}
           </a>
         {% elif row.activity_type == 'status_update' or  row.activity_type == 'silent_status_update' %}
-          <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
+          {% if row.metadata.resource.type != 'background' %}
+            <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
 
-          {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
-          <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
-          <p class='num_participants m-0 p-0' data-roomname="+roomName+">
-            <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
-              •
+            {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
+            <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
+
+            <p class='num_participants m-0 p-0' data-roomname="+roomName+">
+              <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
+                •
+              </p>
+              <span class="participants_count">{{row.video_participants_count}}</span> users on call
             </p>
-            <span class="participants_count">{{row.video_participants_count}}</span> users on call
-          </p>
-          {% endif %}
 
+            {% endif %}
+          {% endif %}
         {% elif row.activity_type == 'wall_post' %}
           &gt;
         {% if row.grant %}
@@ -292,8 +295,6 @@
           <button class="btn-clean grey" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-ellipsis-h"></i>
           </button>
-
-
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
@@ -362,10 +363,9 @@
           <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
           <i class="fas fa-exclamation-triangle error red hidden"></i>
         {% endif %}
-
       </div>
     </div>
-    <div class="d-none d-sm-inline col-sm-2 pl-0">
+    <div class="d-none d-sm-inline col-sm-4 pl-0">
       <div class="activity_time font-smaller-5 text-right">
         {% if not hide_date %}
           {{ row.created_human_time }}
@@ -387,6 +387,16 @@
         {% endif %}
       </div>
     </div>
+    {% if row.metadata.resource.type == 'background' %}
+      <div class="status_background_container">
+        <img class="status_background" src="/static/status_backgrounds/{{row.metadata.resource.id}}.png" />
+        <div class="image-text-container">
+          <p style="margin: 0pt;">
+            {{row.metadata.title}}
+          </p>
+        </div>
+      </div>
+    {% endif %}
   </div>
   {% if row.metadata.poll_choices %}
   <div class="poll_choices {% if row.metadata.poll_answered %}answered{%endif%}">

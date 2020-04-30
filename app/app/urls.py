@@ -135,6 +135,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
+    url(r'^api/v0.1/status_wallpapers', townsquare.views.load_wallpapers, name='load_wallpapers'),
     url(
         r'^api/v0.1/get_suggested_contributors',
         dashboard.views.get_suggested_contributors,
