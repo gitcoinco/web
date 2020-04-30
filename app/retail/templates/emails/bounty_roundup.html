@@ -88,7 +88,9 @@
   <div class='intro text-left'>
     {{ intro|safe }}
     {% if sponsor %}
-      <div style="padding:20px 0; background-color: #f2f6f9; text-align: center; width: 100vw; margin-left: calc(-50vw + 50%)">
+    </div>
+  </div>
+      <div class="full-width text-center" style="padding:20px 0; background-color: #f2f6f9; text-align: center; margin: 0 auto;">
         <div style="max-width: 60vw; margin-left: auto; margin-right: auto;">
         <p style=" color: #000000;">Sponsored by <a href="{{ sponsor.link }}" style=" color: #3E00FF;">{{ sponsor.name }}</a></p>
         <a href="{{ sponsor.link }}" style="text-align: center; color: #000000; font-weight: bold; font-size: 16px; display: block; text-decoration: none; line-height: 19px;">{{ sponsor.title }}</a>
@@ -106,6 +108,8 @@
     {% endif %}
 
   </div>
+
+  <div class="primary-content text-center" style="padding-top: 0">
 
   {% if highlights %}
     <h3>{% trans "✨Last Week's Highlights" %}</h3>
@@ -150,7 +154,8 @@
   </div>
   
   {% if leaderboard %}
-  <div style="background-color: #000000; color: #ffffff; width: 110%; margin-left: -5%; padding-top: 15px; padding-bottom:15px">
+</div>
+  <div class="full-width text-center" style="background-color: #000000; color: #ffffff; margin: 0 auto; padding-top: 15px; padding-bottom:15px">
     <h3 style="color: #ffffff;">{% trans "🏆Who's leading the Leaderboard?" %}</h3>
     <h5 style="color: #ffffff;">{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
 
@@ -178,7 +183,8 @@
   {% endif %}
 
   {% if kudos_highlights %}
-  <div style="background-color: #F7F5FF; width: 110%; margin-left: -5%; padding-top:10px; padding-bottom: 15px;">
+  </div>
+  <div class="full-width text-center" style="background-color: #F7F5FF; margin: 0 auto; padding-top:10px; padding-bottom: 15px;">
     <h3>{% trans "♥️Kudos" %}</h3>
     <h5>{% trans "Recognition throughout the platform" %}</h5>
     <div>
