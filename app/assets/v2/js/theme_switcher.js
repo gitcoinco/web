@@ -5,7 +5,7 @@ const DARK_MODE = 'dark';
 const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 const theme = window.localStorage.getItem('theme');
 
-if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)'))) {
+if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
   document.documentElement.classList.add('dark-mode');
 }
 
