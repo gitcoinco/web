@@ -915,7 +915,7 @@ div.button-pink {
 
 textarea.status-textarea {
   padding-right: 4em;
-  min-height: 60px;
+  min-height: 100px;
 }
 
 .status-menu button {
