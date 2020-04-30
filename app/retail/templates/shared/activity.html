@@ -295,24 +295,6 @@
           <button class="btn-clean grey" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-ellipsis-h"></i>
           </button>
-        <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
-          <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
-            <i class="fas fa-link mr-2"></i> Copy Link
-          </a>
-          <a href=# data-action='flag' data-toggle="tooltip" title="Flag this feed item as inappropriate." data-affirmative=flagged
-            data-negative=unflagged data-state="{% if row.flagged %}flagged{% else %}unflagged{%endif%}" data-pk={{row.pk}}
-            class="flag_activity mr-2 dropdown-item px-3 font-smaller-5"
-          >
-            <span class="action px-0 {% if row.flagged %}open{%endif%}"><i class="far fa-flag mr-2"></i></span> Report
-          </a>
-          {% if row.profile.handle|lower == github_handle|lower %}
-          <a href=# data-pk={{row.pk}} class="dropdown-item delete_activity px-3 font-smaller-5">
-            <i class="fas fa-trash mr-2"></i> Delete
-          </a>
-          {% endif %}
-        </div>
-
-
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
