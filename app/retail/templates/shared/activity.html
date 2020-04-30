@@ -365,7 +365,9 @@
           {% if row.value_in_usdt_now %}
             <div class="tag usd mr-2">
               <p class="font-smaller-6 mb-0">
-                {% if row.bounty %}
+                {% if row.activity_type == 'new_tip' %}
+                  <span class="value_in_token">{{ row.metadata.amount  | floatformat:2}} {{row.metadata.token_name}}</span>
+                {% elif row.bounty %}
                   <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
                 {% elif row.value_in_token_disp %}
                   <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
