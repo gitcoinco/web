@@ -4,10 +4,42 @@ const youtube_re = /(?:https?:\/\/|\/\/)?(?:www\.|m\.)?(?:youtu\.be\/|youtube\.c
 const giphy_re = /(?:https?:\/\/)?(?:media0\.)?(?:giphy\.com\/media\/)/;
 
 $(document).ready(function() {
+
   var embedded_resource = '';
   const GIPHY_API_KEY = document.contxt.giphy_key;
 
   let button = document.querySelector('#btn_post');
+
+  // populates background selector on load
+  let bgs = [
+    'cannon-green-blue',
+    'h2-v2',
+    'burst-yellow',
+    'burst-pink',
+    'burst-blue',
+    'eletric_design',
+    'dvdptr-blue-green',
+    'cannon-yellow-pink',
+    'network-yellow',
+    'h4',
+    'network-blue',
+    'network-pink',
+    'h2',
+    'cannon-blue-yellow',
+    'dvdptr-blue-yellow'
+  ];
+
+  let selector = $('#bg-selector');
+
+  for (var i = 0; i < bgs.length; i++) {
+    selector.append('<div data-bg-name="' + bgs[i] + '" class="bg-thumbnail"><img class="bg-icon" draggable="false" src="/static/status_backgrounds/' + bgs[i] + '-icon.png"/><div class="selector-bar d-none"></div></div>');
+  }
+
+  function closeBackgroundDropdown(e) {
+    e.preventDefault();
+    $('#bg-selector').attr('data-selected', null);
+    embedded_resource = '';
+  }
 
   function selectGif(e) {
     embedded_resource = $(e.target).data('src');
@@ -16,6 +48,19 @@ $(document).ready(function() {
     $('#thumbnail').hide();
   }
 
+  function deselectGif(e) {
+    embedded_resource = '';
+    $('#preview-img').attr('src', '');
+    $('#preview').hide();
+    $('#thumbnail').hide();
+    $('#btn_gif').removeClass('selected');
+    $('.gif-inject-target').removeClass('show');
+  }
+
+  function deselectVideo(e) {
+    $('#video-button').removeClass('selected');
+    $('#video_container').remove();
+  }
 
   function injectGiphy(query) {
     const endpoint = 'https://api.giphy.com/v1/gifs/search?limit=13&api_key=' + GIPHY_API_KEY + '&offset=0&rating=G&lang=en&q=' + query;
@@ -155,7 +200,9 @@ $(document).ready(function() {
     } else {
       $('#thumbnail-desc').text('');
       if (no_lb) {
-        embedded_resource = '';
+        if (embedded_resource != $('#bg-selector').attr('data-selected')) {
+          embedded_resource = '';
+        }
         $('#thumbnail').hide();
       }
     }
@@ -218,10 +265,57 @@ $(document).ready(function() {
     $('#textarea').focus();
   }
 
+  $('#btn_gif').click(function(e) {
+    e.preventDefault();
+    closeBackgroundDropdown(e);
+    deselectVideo(e);
 
-  // handle poll button
+    $('#poll-button').removeClass('selected');
+    $('#poll_container').remove();
+  });
+
+  var selectedElement = null;
+  // handle background selection
+
+  $('.bg-thumbnail').click(function(e) {
+    e.preventDefault();
+
+    $('#bg-selector').find('.selector-bar').addClass('d-none');
+    $(this).children('div').removeClass('d-none');
+
+    selectedElement = $(this);
+    $('#bg-selector').attr('data-selected', $(this).attr('data-bg-name'));
+    embedded_resource = $(this).attr('data-bg-name');
+  });
+
+  // handle add background button push
+  $('body').on('click', '#background-button', function(e) {
+    e.preventDefault();
+    $('#bg-selector').toggleClass('d-none');
+    if ($('#bg-selector').hasClass('d-none')) {
+      closeBackgroundDropdown(e);
+    }
+
+    $('#poll-button').removeClass('selected');
+    $('#poll_container').remove();
+    deselectVideo(e);
+    deselectGif(e);
+  });
+
+
+  document.is_shift = false;
+  // handle shift button
+  $('body').on('keyup', '#textarea', function(e) {
+    if (e.keyCode == 16) {
+      document.is_shift = false;
+    }
+  });
+  // handle shift button
   $('body').on('click', '#poll-button', function(e) {
     e.preventDefault();
+    deselectGif(e);
+    closeBackgroundDropdown(e);
+    deselectVideo(e);
     $(this).toggleClass('selected');
     var is_selected = $(this).hasClass('selected');
 
@@ -246,6 +340,11 @@ $(document).ready(function() {
   // handle video button
   $('body').on('click', '#video-button', function(e) {
     e.preventDefault();
+    closeBackgroundDropdown(e);
+    deselectGif(e);
+    $('#poll-button').removeClass('selected');
+    $('#poll_container').remove();
+
     $(this).toggleClass('selected');
     var is_selected = $(this).hasClass('selected');
 
@@ -254,10 +353,10 @@ $(document).ready(function() {
       const item = $(this).data('gfx') ? $(this).data('gfx') : items[Math.floor(Math.random() * items.length)];
 
       let html = `
-      <div data-gfx=` + item + ` id=video_container class="bg-lightblue p-2">
+        <div data-gfx=` + item + ` id=video_container class="bg-lightblue p-2">
         <img src='/static/v2/images/` + item + `'>
-      </div>
-      `;
+        </div>
+        `;
 
       $(html).insertAfter('#status');
     } else {
@@ -313,6 +412,7 @@ $(document).ready(function() {
     if ($('#btn_post').is(':disabled')) {
       return;
     }
+
     const data = new FormData();
     const message = $('#textarea');
     const the_message = message.val().trim();
@@ -344,6 +444,7 @@ $(document).ready(function() {
       const description = $('#thumbnail-desc').text();
       const image = $('#thumbnail-img').attr('src');
       const youtube = embedded_resource.match(youtube_re);
+      const background = $('#bg-selector').attr('data-selected');
 
       if (embedded_resource.match(giphy_re)) {
         data.append('resource', 'gif');
@@ -356,6 +457,10 @@ $(document).ready(function() {
         data.append('title', title);
         data.append('description', description);
         data.append('image', image);
+      } else if (background != null) {
+        data.append('resource', 'background');
+        data.append('resourceProvider', 'gitcoin');
+        data.append('resourceId', background);
       } else {
         data.append('resource', 'content');
         data.append('resourceProvider', link);
@@ -365,7 +470,9 @@ $(document).ready(function() {
         data.append('image', image);
       }
     }
-
+    $('#bg-selector').attr('data-selected', null);
+    $('#bg-selector').addClass('d-none');
+    $('#bg-selector').children('div').children('div').addClass('d-none');
     var fail_callback = function() {
       message.val(the_message);
       localStorage.setItem(lskey, the_message);
