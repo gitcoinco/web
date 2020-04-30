@@ -2837,7 +2837,7 @@ def profile(request, handle, tab=None):
     context['show_activity'] = request.GET.get('p', False) != False
     context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
     if request.user.is_authenticated and hasattr(request.user, 'profile'):
-        context['is_on_tribe'] = len(request.user.profile.tribe_members.filter(org__handle=handle.lower())) > 0
+        context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower()).exists()
     else:
         context['is_on_tribe'] = False
     context['ratings'] = range(0,5)
