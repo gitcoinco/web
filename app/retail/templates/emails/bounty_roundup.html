@@ -181,7 +181,7 @@
     <h3>{% trans "❤️Kudos" %}</h3>
     <h5>{% trans "Recognition throughout the platform" %}</h5>
     <div>
-      <ul style="padding: 0 0 0 5%; margin-top: 2em;">
+      <ul class="kudos_highlights_items" style="padding: 0 0 0 5%;">
         {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
           <li class="kudos_transfer" style="background-color: #ffffff; list-style:none; margin-top: 0; margin-right: 10px; margin-left: 0; padding: 10px 20px; display: inline-block; float:left; border: 1px solid #ffffff; border-radius: 3px; width: 125px;">
