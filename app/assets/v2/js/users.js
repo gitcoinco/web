@@ -300,7 +300,7 @@ Vue.component('user-directory', {
       bountySelected: null,
       userSelected: [],
       showModal: false,
-      showFilters: !document.getElementById('explore_tribes'),
+      showFilters: true,
       skills: document.keywords,
       selectedSkills: [],
       noResults: false,
@@ -323,11 +323,16 @@ Vue.component('user-directory', {
     });
   },
   created() {
-    this.fetchBounties();
+    if (document.contxt.github_handle && this.is_my_org) {
+      this.fetchBounties();
+    }
     this.inviteOnMount();
     this.extractURLFilters();
   },
   beforeMount() {
+    if (this.isMobile) {
+      this.showFilters = false;
+    }
     window.addEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     }, false);

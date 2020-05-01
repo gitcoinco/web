@@ -9,7 +9,7 @@ let numBounties = '';
 // let funderBounties = [];
 let paramsDefault = {
   order_by: '-web3_created',
-  idx_status: '',
+  idx_status: 'open',
   experience_level: [],
   project_type: [],
   applicants: '',
@@ -29,6 +29,11 @@ Vue.filter('stringFixer', (str) => {
 
 Vue.mixin({
   methods: {
+    clearParams() {
+      let vm = this;
+
+      vm.params = paramsDefault;
+    },
     fetchBounties: function(newPage, featured) {
       let vm = this;
 
@@ -55,7 +60,7 @@ Vue.mixin({
         apiUrlBounties = `/api/v0.1/bounties/slim/?${searchParams.toString()}&is_featured=True`;
       }
 
-      var getBounties = fetchData (apiUrlBounties, 'GET');
+      const getBounties = fetchData (apiUrlBounties, 'GET');
 
       $.when(getBounties).then(function(response) {
 
@@ -91,6 +96,14 @@ Vue.mixin({
         vm.isLoading = false;
       });
     },
+    searchBounties: function() {
+      let vm = this;
+
+      vm.bounties = [];
+      vm.featuredBounties = [];
+      vm.fetchBounties(0);
+      vm.fetchBounties(0, true);
+    },
     getUrlParams: function() {
       let vm = this;
 
@@ -109,14 +122,6 @@ Vue.mixin({
         }
       }
     },
-    searchBounties: function() {
-      let vm = this;
-
-      vm.bounties = [];
-      vm.featuredBounties = [];
-      vm.fetchBounties(0);
-      vm.fetchBounties(0, true);
-    },
     bottomVisible: function() {
       let vm = this;
 
@@ -131,11 +136,6 @@ Vue.mixin({
           vm.bountiesHasNext = false;
         }
       }
-    },
-    clearParams() {
-      let vm = this;
-
-      vm.params = JSON.parse(JSON.stringify(paramsDefault));
     },
     closeModal() {
       this.$refs['user-modal'].closeModal();
@@ -205,22 +205,7 @@ Vue.component('bounty-explorer', Vue.extend({
       bottom: false,
       experienceSelected: [],
       showExtraParams: false,
-      params: {
-        order_by: '-web3_created',
-        idx_status: 'open',
-        experience_level: [],
-        project_type: [],
-        applicants: '',
-        bounty_filter: '',
-        bounty_categories: [],
-        moderation_filter: '',
-        permission_type: [],
-        project_length: [],
-        bounty_type: [],
-        // network: [document.web3network || 'mainnet'],
-        network: ['rinkeby'],
-        keywords: []
-      },
+      params: paramsDefault,
       showFilters: true,
       noResults: false,
       isLoading: true
@@ -252,6 +237,9 @@ Vue.component('bounty-explorer', Vue.extend({
     }
   },
   beforeMount() {
+    if (this.isMobile) {
+      this.showFilters = false;
+    }
     window.addEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     }, false);

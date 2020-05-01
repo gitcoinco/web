@@ -1,7 +1,10 @@
 
 Vue.mixin({
   data: function() {
+    const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
+
     return {
+      isMobile,
       chatURL: document.chatURL || 'https://chat.gitcoin.co'
     };
   },
@@ -289,6 +292,9 @@ Vue.component('project-directory', {
     // this.extractURLFilters();
   },
   beforeMount() {
+    if (this.isMobile) {
+      this.showFilters = false;
+    }
     window.addEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     }, false);
@@ -305,7 +311,7 @@ Vue.component('suggested-profiles', {
   props: ['profiles'],
   template: `<div class="townsquare_nav-list my-2 tribe">
       <div id="suggested-tribes">
-        <ul class="nav d-inline-block font-body col-4 col-sm-11 pr-2" style="padding-right: 0">
+        <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
             <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
         </ul>
       </div>
@@ -351,22 +357,29 @@ Vue.component('suggested-profile', {
     }
   },
   template: `
-    <li class="nav-item d-flex justify-content-between align-items-center my-2">
-      <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
-        <img :src="avatar_url" class="nav_avatar mr-4" />
-        <span class="font-caption">
-          <span class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize">{{profile.name}}</span><br>
-          <p class="mb-0">
-            <i class="fas fa-user font-smaller-4 mr-1"></i>
-            <span class="font-weight-semibold">{{follower_count}}</span> followers
-          </p>
-        </span>
-      </a>
-      <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
-        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
-      </a>
-      <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
-        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> follow
-      </a>
-    </li>`
+<b-media tag="li" class="row">
+  <template v-slot:aside>
+    <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
+      <b-img :src="avatar_url" class="nav_avatar"></b-img>
+    </a>
+  </template>
+  <div class="row">
+  <span class="col-6 col-md-12 col-xl-6 font-caption">
+      <span class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize">{{profile.name}}</span>
+      <p class="mb-0">
+        <i class="fas fa-user font-smaller-4 mr-1"></i>
+        <span class="font-weight-semibold">{{follower_count}}</span> followers
+      </p>
+  </span>
+  <span class="col-6 col-md-12 col-xl-6 p-0">
+    <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
+      <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
+    </a>
+    <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
+      <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> follow
+    </a>
+  </span> 
+</div>       
+</b-media>
+`
 });
