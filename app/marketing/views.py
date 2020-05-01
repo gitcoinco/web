@@ -49,9 +49,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_feedback
 from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
-from marketing.utils import (
-    delete_user_from_mailchimp, get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration,
-)
+from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
 from quests.models import Quest
 from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
@@ -75,9 +73,6 @@ def get_settings_navs(request):
     }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
-    }, {
-        'body': 'Discord',
-        'href': reverse('discord_settings')
     }, {
         'body': 'ENS',
         'href': reverse('ens_settings')
@@ -300,7 +295,7 @@ def email_settings(request, key):
             es.email = email
             unsubscribed_email_type = {}
             unsubscribed_email_type[email_type] = True
-            if email_type == 'chat':
+            if email_type == 'chat' and profile:
                 update_chat_notifications(profile, 'email', False)
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
@@ -347,7 +342,7 @@ def email_settings(request, key):
                     if key not in form.keys():
                         form[key] = False
 
-                if form['chat']:
+                if form['chat'] and profile:
                     update_chat_notifications(profile, 'email', False)
 
                 es.build_email_preferences(form)
@@ -370,7 +365,7 @@ def email_settings(request, key):
         'nav': 'home',
         'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
-        'profile': request.user.profile,
+        'profile': request.user.profile if request.user.is_authenticated else None,
         'email_types': ALL_EMAILS,
         'navs': get_settings_navs(request),
         'preferred_language': pref_lang
@@ -422,54 +417,6 @@ def slack_settings(request):
         'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/slack.html', context)
-
-
-def discord_settings(request):
-    """Display and save user's Discord settings.
-
-    Returns:
-        TemplateResponse: The user's Discord settings template response.
-
-    """
-    response = {'output': ''}
-    profile, es, user, is_logged_in = settings_helper_get_auth(request)
-
-    if not user or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
-
-    if request.POST:
-        test = request.POST.get('test')
-        submit = request.POST.get('submit')
-        gitcoin_discord_username = request.POST.get('gitcoin_discord_username', '')
-        webhook_url = request.POST.get('webhook_url', '')
-        repos = request.POST.get('repos', '')
-
-        if test and webhook_url:
-            response = validate_discord_integration(webhook_url)
-
-        if submit or (response and response.get('success')):
-            profile.gitcoin_discord_username = gitcoin_discord_username
-            profile.update_discord_integration(webhook_url, repos)
-            profile = record_form_submission(request, profile, 'discord')
-            if not response.get('output'):
-                response['output'] = _('Updated your preferences.')
-            ua_type = 'added_discord_integration' if webhook_url and repos else 'removed_discord_integration'
-            create_user_action(user, ua_type, request, {'webhook_url': webhook_url, 'repos': repos})
-
-    context = {
-        'repos': profile.get_discord_repos(join=True) if profile else [],
-        'gitcoin_discord_username': profile.gitcoin_discord_username,
-        'is_logged_in': is_logged_in,
-        'nav': 'home',
-        'active': '/settings/discord',
-        'title': _('Discord Settings'),
-        'navs': get_settings_navs(request),
-        'es': es,
-        'profile': profile,
-        'msg': response['output'],
-    }
-    return TemplateResponse(request, 'settings/discord.html', context)
 
 
 def token_settings(request):
@@ -587,18 +534,24 @@ def account_settings(request):
             response['Content-Disposition'] = f'attachment; filename="{name}.csv"'
 
             writer = csv.writer(response)
-            writer.writerow(['id', 'date', 'From', 'To', 'Type', 'Value In USD', 'url'])
+            writer.writerow(['id', 'date', 'From', 'From Location', 'To', 'To Location', 'Type', 'Value In USD', 'url', 'txid', 'token_name', 'token_value'])
             profile = request.user.profile
             earnings = profile.earnings if export_type == 'earnings' else profile.sent_earnings
-            earnings = earnings.all().order_by('-created_on')
+            earnings = earnings.filter(network='mainnet').order_by('-created_on')
             for earning in earnings:
                 writer.writerow([earning.pk,
                     earning.created_on.strftime("%Y-%m-%dT%H:00:00"), 
                     earning.from_profile.handle if earning.from_profile else '*',
+                    earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
                     earning.to_profile.handle if earning.to_profile else '*',
+                    earning.to_profile.data.get('location', 'Unknown') if earning.to_profile else 'Unknown',
                     earning.source_type.model_class(),
                     earning.value_usd,
-                    earning.url])
+                    earning.txid,
+                    earning.token_name,
+                    earning.token_value,
+                    earning.url,
+                    ])
 
             return response
         elif request.POST.get('disconnect', False):
@@ -804,7 +757,7 @@ def leaderboard(request, key=''):
 
     titles = {
         f'payers': _('Top Funders'),
-        f'earners': _('Top Coders'),
+        f'earners': _('Top Earners'),
         f'orgs': _('Top Orgs'),
         f'tokens': _('Top Tokens'),
         f'keywords': _('Top Keywords'),
@@ -887,12 +840,19 @@ def leaderboard(request, key=''):
     cadence_ui = cadence if cadence != 'all' else 'All-Time'
     product_ui = product.capitalize() if product != 'all' else ''
     page_title = f'{cadence_ui.title()} {keyword_search.title()} {product_ui} Leaderboard: {title.title()}'
+    last_update = items[0].created_on if len(items) else None
+    next_update = last_update + timezone.timedelta(days=7) if last_update else None
+    if next_update and next_update < timezone.now():
+        next_update = timezone.now() + timezone.timedelta(days=1)
+
     context = {
         'items': items[0:limit],
         'nav': 'home',
         'cht': cht,
         'titles': titles,
         'cadence': cadence,
+        'last_update': last_update,
+        'next_update': next_update,
         'product': product,
         'products': ['kudos', 'grants', 'bounties', 'tips', 'all'],
         'selected': title,

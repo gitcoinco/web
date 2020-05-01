@@ -42,7 +42,6 @@ class ProfileExportSerializer(serializers.BaseSerializer):
             '_locations': instance.locations,
             'organizations': instance.get_who_works_with(network=None),
             '_email': instance.email,
-            '_gitcoin_discord_username': instance.gitcoin_discord_username,
             '_pref_lang_code': instance.pref_lang_code,
             '_preferred_payout_address': instance.preferred_payout_address,
             'persona': instance.selected_persona or instance.dominant_persona,
@@ -104,7 +103,7 @@ class GrantExportSerializer(serializers.ModelSerializer):
         model = Grant
         fields = ('id', 'active', 'grant_type', 'title', 'slug',
                   'description', 'description_rich', 'reference_url', 'logo',
-                  'admin_address', 'contract_owner_address', 'amount_goal',
+                  'admin_address', 'contract_owner_address',
                   'monthly_amount_subscribed', 'amount_received', 'token_address',
                   'token_symbol', 'contract_address', 'network',
                   'org', 'created_at', 'url', 'contribution_count', 'contributor_count'
@@ -120,7 +119,7 @@ class GrantExportSerializer(serializers.ModelSerializer):
         return instance.get_absolute_url()
 
     def get_contributor_count(self, instance):
-        return instance.get_contributor_count
+        return instance.get_contributor_count()
 
     def get_contribution_count(self, instance):
         return instance.get_contribution_count
@@ -225,10 +224,10 @@ class TipExportSerializer(serializers.ModelSerializer):
         return instance.expires_date.isoformat()
 
     def get_sender(self, instance):
-        return instance.sender_profile.handle
+        return instance.sender_profile.handle if instance.sender_profile else ''
 
     def get_recipient(self, instance):
-        return instance.recipient_profile.handle
+        return instance.recipient_profile.handle if instance.recipient_profile else ''
 
 class FeedbackExportSerializer(serializers.ModelSerializer):
     bounty_url = serializers.SerializerMethodField()
@@ -256,10 +255,10 @@ class FeedbackExportSerializer(serializers.ModelSerializer):
         return instance.created_on.isoformat()
 
     def get_sender(self, instance):
-        return instance.sender_profile.handle
+        return instance.sender_profile.handle if instance.sender_profile else ''
 
     def get_receiver(self, instance):
-        return instance.receiver_profile.handle
+        return instance.receiver_profile.handle if instance.receiver_profile else ''
 
     def get_comment(self, instance):
         return instance.anonymized_comment

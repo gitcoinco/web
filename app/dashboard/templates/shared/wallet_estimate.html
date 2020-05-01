@@ -45,7 +45,7 @@
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
   {% include 'shared/gas_advisories.html' %}
-  <label id="metamask_label" class="font-body" style="display:none"><img class="mr-2" src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="18px" height="18px">{% blocktrans %}The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %}:
+  <label id="metamask_label" class="font-body" style="display:none">{% blocktrans %}The following gas settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %}:
   </label>
   <label id="trust_label" class="font-body" style="display:none"><img class="mr-2" src="{% url "avatar" %}?repo=https://github.com/TrustWallet&v=3" width="18px" height="18px">{% blocktrans %}The following Trust settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} :
   </label>
@@ -55,13 +55,13 @@
   </div>
   <div class="metamask_recc">
     <label class="form__label" for="gasPrice">{% trans "Gas Price (gwei)" %}</label>
-    <input max=100 min=0 name='gasPrice' id='gasPrice' class="form__input" type="number" value="{{recommend_gas_price | floatformat:1}}" step="0.1" />
+    <input max=100 min=0 name='gasPrice' id='gasPrice' class="form__input" type="number" value="{{recommend_gas_price | floatformat:1}}" step="0.001" />
   </div>
   <div class="mt-3">
     <strong>{% trans "Help" %}:</strong>
     <ul>
       <li>
-        <a href="{% url 'web3' %}" target="_blank" rel="noopener noreferrer">{% trans "Why do I need metamask / gas?" %}</a>
+        <a href="{% url 'web3' %}" target="_blank" rel="noopener noreferrer">{% trans "Why do I need gas?" %}</a>
       </li>
       <li>
         <a href="https://github.com/gitcoinco/gitcoinco/issues/12" target="_blank" rel="noopener noreferrer">{% trans "What gas price should I use?" %}</a>

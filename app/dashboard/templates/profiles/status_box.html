@@ -4,23 +4,54 @@
   <div class="position-relative">
     <textarea
       id="textarea"
-      class="form__input p-2 font-body"
+      class="form__input p-2 font-body status-textarea"
       placeholder="{% if placeholder %}{{placeholder}}{%else%}What are you thinking?{%endif%}"
-      style="resize: none"
       data-maxlen={% if max_length %}{{max_length}}{%else%}280{%endif%}
     ></textarea>
     <input type="hidden" name="what" value="{{what}}:{{whatid}}">
     <div id="textarea-dropdown" class="dropdown-menu" style="top: initial; left: initial;"></div>
-    <button id="poll-button" class="btn btn-clean position-absolute" style="bottom: 2em; right: 0em;"><i class="fas fa-chart-bar"></i></i></button>
-    <button id="emoji-button" class="btn btn-clean position-absolute" style="bottom: 0.2em; right: 0;"><i class="far fa-smile"></i></button>
+    <div class="status-menu position-absolute d-flex flex-wrap" style="width: 3.6em; right: 0; top: 0px;">
+      <button id="emoji-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add an emoji to post." style="bottom: 3.5em; right: 0;"><i class="far fa-fw fa-smile"></i></button>
+      {% if is_alpha_tester %}
+      <button id="background-button" style="bottom: 3.5em; right: 0em; flex:1;" class="btn btn-sm p-1"><i class="fas fa-paint-roller" data-toggle="tooltip" title="" data-original-title="Add a background to post"></i></button>
+      {% endif %}
+      <button id="video-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add a video call to post." style="bottom: 3.5em; right: 1.5em;"><i class="fas fa-fw fa-video"></i></i></button>
+      <div class="dropdown">
+        <button class="btn btn-sm p-1 click-gif" data-toggle="dropdown" id="btn_gif" aria-haspopup="true" aria-expanded="false" style="bottom: 2em; right: 1.5em;">
+          <i class="fas fa-fw fa-photo-video" data-toggle="tooltip" title="Add a gif to post."></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right gif-inject-target">
+          <form class="px-4 py-3">
+            <div class="form-group mb-0">
+              <label for="search-gif" class="sr-only">Search GIF</label>
+              <input type="text" class="form-control" id="search-gif" placeholder="Search GIF" autofocus>
+              <img src="{% static 'v2/images/Poweredby_640px-White_HorizText.png' %}" alt="Powered By GIPHY" height="10" class="mw-100">
+            </div>
+          </form>
+          <div id="list-gif" class="gif-grid"></div>
+        </div>
+      </div>
+      <button id="poll-button" class="btn btn-sm p-1" data-toggle="tooltip" title="Add a poll to post." style="bottom: 2em; right: 0em;"><i class="fas fa-fw fa-chart-bar"></i></i></button>
+    </div>
+    <div class="d-none" id="bg-selector">
+    </div>
   </div>
-  <div class="btn-group-toggle text-center text-md-left activity_type_selector" data-toggle="buttons">
+  <div class="btn-group-toggle text-center text-md-left activity_type_selector" {% if not suppress_data_toggle %} data-toggle="buttons" {%endif%}>
     {% if tags %}
       {% for tag in tags %}
-        <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" >
-          <input type="checkbox" name="activity_type" value="{{tag.0}}" autocomplete="off">
+        <label class="btn btn-radio mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip"  title="{{tag.2}}" >
+          <input type="checkbox" name="" value="{{tag.0}}" autocomplete="off">
           <i class="fas fa-{{tag.1}} mr-2"></i>
         {{tag.0}}
+        </label>
+      {% endfor %}
+    {% endif %}
+    {% if options %}
+      {% for option in options %}
+        <input id={{option.1}} type="checkbox" name="activity_type" value="{{option.0}}" autocomplete="off">
+        <label class="mr-2 mb-2 mb-md-0 frontend font-weight-semibold font-caption py-1 px-2" data-toggle="tooltip" title="{{option.2}}" for='{{option.1}}' >
+          <i class="fas fa-{{option.1}} mr-2"></i>
+        {{option.0}}
         </label>
       {% endfor %}
     {% endif %}
@@ -30,24 +61,7 @@
       </button>
     </div>
   </div>
-  <div class="btn-group-toggle text-center text-md-left" style="margin-top: 8px; margin-bottom: 8px">
-    <div class="btn-group" data-toggle="actions">
-      <button class="btn btn-radio font-smaller-4 dropdown-toggle" data-toggle="dropdown" id="btn_gif" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-gift mr-2"></i> GIF
-      </button>
-      <div class="dropdown-menu">
-        <form class="px-4 py-3">
-          <div class="form-group mb-0">
-            <label for="search-gif" class="sr-only">Search GIF</label>
-            <input type="text" class="form-control" id="search-gif" placeholder="Search GIF">
-            <img src="{% static 'v2/images/Poweredby_640px-White_HorizText.png' %}" alt="Powered By GIPHY" height="10" class="mw-100">
-          </div>
-        </form>
-        <div id="list-gif" class="gif-grid"></div>
-      </div>
-    </div>
-  </div>
-  <div id="thumbnail" class="mt-1 mb-2" style="display: none; top: initial; left: initial; background-color: #FAFAFA">
+  <div id="thumbnail" class="mt-1 mb-2" style="display: none; top: initial; left: initial;">
     <div class="row" style="display: flex; justify-content: center; align-items: center; ">
       <div class="col ml-1 col-sm-3 col-md-2 text-center">
         <img id="thumbnail-img" style="width: 130%;" src="{% static 'v2/images/team/gitcoinbot.png' %}">
@@ -61,7 +75,7 @@
   </div>
   <div id="preview" class="mt-1 mb-2" style="display: none; top: initial; left: initial;">
     <div class="row ml-2" style=" ">
-        <img id="preview-img" style="max-width: 80%; max-height: 350px;" src="">
+        <img id="preview-img" class="m-auto" style="max-width: 80%; max-height: 350px;" src="">
     </div>
   </div>
 </div>

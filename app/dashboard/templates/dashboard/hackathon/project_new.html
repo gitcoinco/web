@@ -28,7 +28,7 @@
           <h2 class="h5 text-center font-weight-bold mb-4">Tell us about your project</h2>
           {% if projects and "/issue/" in request.META.HTTP_REFERER  %}
             <div class="mb-4 font-smaller-1">
-              <p class="mb-2">Use yor existing project{{ projects.count|pluralize }}:</p>
+              <p class="mb-2">Edit your existing project{{ projects.count|pluralize }}:</p>
               {% for project in projects %}
                 <a href="#" class="btn btn-sm btn-outline-gc-blue mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
               {% endfor %}
@@ -72,6 +72,16 @@
                 </small>
               </div>
               <div class="form-group">
+                <div class="form__checkbox d-inline-block">
+                  <input name='looking-members' id='looking-members' type="checkbox" {% if project_selected.looking_members %}checked{% endif %}>
+                  <label class="form__label" for="looking-members">Looking for team members</label>
+                </div>
+                <div>
+                  <small for="looking-members-message">Skills your are looking for (150 characters)</small>
+                  <input type="text" class="form-control" placeholder="ex.looking for a designer" maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
+                </div>
+              </div>
+              <div class="form-group">
                 <label for="work_url">Project Repo or PR</label>
                 <input type="url" class="form-control" name="work_url" id="work_url" value="{{project_selected.work_url}}" placeholder="https://github.com/gitcoinco/web" required>
               </div>
@@ -111,6 +121,16 @@
                 <small id="profilesHelp" class="form-text text-muted">
                   Search Gitcoin usernames.
                 </small>
+              </div>
+              <div class="form-group">
+                <div class="form__checkbox d-inline-block">
+                  <input name='looking-members' id='looking-members' type="checkbox" {% if project_selected.looking_members %}checked{% endif %}>
+                  <label class="form__label" for="looking-members">Looking for team members</label>
+                </div>
+                <div>
+                  <small for="looking-members-message">Skills your are looking for (150 characters)</small>
+                  <input type="text" class="form-control" placeholder="ex.looking for a designer" maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
+                </div>
               </div>
               <div class="form-group">
                 <label for="work_url">Project Repo or PR</label>

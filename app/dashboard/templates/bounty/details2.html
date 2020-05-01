@@ -38,7 +38,6 @@
           <a v-for="link in quickLinks" class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" :href="[[link.href]]" :title="[[ link.title ]]">[[ link.label ]]</a>
           <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="contactFunder()">Contact Funder</button>
           <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="overrideStatus()">Override Status</button>
-          <button class="btn btn-outline-gc-blue px-2 mx-2 font-smaller-4" @click="snoozeeGitbot()">Snooze Gitcoinbot</button>
         </div>
         <div class="col-12" v-if="loadingState === 'resolved'">
           {% if event_tag %}
@@ -165,7 +164,7 @@
               <template v-if="isOwner">
                 <div id="bounty_actions" class="d-inline-block" v-if="is_bounties_network">
                   <a :href="bounty.action_urls.payout" class="btn btn-gc-blue btn-sm mr-2 px-3 font-caption" title="Payout the bounty to one or more submitters.">
-                    <i class="fab fa-ethereum mr-2"></i> {% trans "Payout Bounty" %}
+                    <i class="fab fa-ethereum mr-2"></i> Payout Bounty
                   </a>
                   <a :href="bounty.action_urls.increase" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" title="Help by funding or promoting this issue">
                     {% trans "Increase Funding" %}
@@ -199,7 +198,7 @@
                 <a :href="bounty.github_url" class="btn btn-outline-gc-blue btn-sm mr-2 px-3 font-caption" target="_blank">
                   <i class="fab fa-github mr-2"></i> {% trans "View On Github" %}
                 </a>
-                <a class="modal-link btn btn-outline-gc-blue btn-sm px-3 font-caption" href="" data-toggle="modal" data-target=".share-modal">
+                <a class="modal-link btn btn-outline-gc-blue btn-sm px-3 font-caption" href="#" data-toggle="modal" data-target=".share-modal">
                   <i class="fas fa-share-alt mr-2"></i>
                   <span>Share</span>
                 </a>
@@ -273,7 +272,7 @@
                       [[ fulfillment.profile.handle ]]
                     </a>
                     <div class="font-smaller-4" v-if="fulfillment.fulfiller_address">
-                      <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.fulfiller_address}` : `https://classic.etccoopexplorer.com/address/${fulfillment.fulfiller_address}` }`" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a>
+                      <a :href="getAddressURL(fulfillment.token_name, fulfillment.fulfiller_address)" target="_blank">[[ fulfillment.fulfiller_address | truncateHash ]]</a>
                       <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.fulfiller_address)">
                         <i class="far fa-clipboard-check"></i>
                       </button>
@@ -291,7 +290,7 @@
                           <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                         </span>
                         <p class="font-smaller-4 my-0">
-                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
@@ -302,17 +301,21 @@
                         <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
-                        <p class="font-smaller-4 my-0">
-                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
-                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
-                            <i class="far fa-clipboard-check"></i>
-                          </button>
-                        </p>
                       </template>
 
-                      <button v-else data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" class="btn btn-sm btn-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
-                        <i class="fas fa-money-check-alt mr-2 font-caption"></i>Payout Bounty
-                      </button>
+                      <template v-else>
+                        <template v-if="fulfillment.payout_status == 'expired'">
+                          <span class="font-smaller-1 position-relative" style="top: 2px" data-html="true" data-toggle="tooltip"
+                            title="<div class='tooltip-info text-left'><p class='font-smaller-1 font-weight-semibold mb-1'>We couldn't find the transaction on chain</p><p class='mb-0 font-smaller-2'>Please ensure the payment has been made and click on payout bounty </p></div>">
+                            <i class="fas fa-exclamation-triangle text-danger mr-3"></i>
+                          </span>
+                        </template>
+
+                        <button data-toggle="modal" :data-target="`#payoutModal${fulfillment.pk}`" class="btn btn-sm btn-gc-blue my-auto px-5 py-2 font-smaller-2 font-weight-semibold">
+                          Payout Bounty
+                        </button>
+                      </template>
+
                     </template>
 
                     <template v-else>
@@ -321,7 +324,7 @@
                           <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                         </span>
                         <p class="font-smaller-4 my-0">
-                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                             <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
@@ -332,7 +335,7 @@
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
                         <p class="font-smaller-4 my-0">
-                          <a :href="`${is_bounties_network ? `https://etherscan.io/address/${fulfillment.payout_tx_id}` : `https://classic.etccoopexplorer.com/tx/${fulfillment.payout_tx_id}` }`" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
                           </button>
@@ -353,40 +356,190 @@
                         <span class="font-weight-bold">Hours worked:</span>
                         [[ fulfillment.fulfiller_metadata.data.payload.fulfiller.hoursWorked ]]
                       </p>
-                      <modal :id="`payoutModal${fulfillment.pk}`" ref="user-modal">
+
+                      <modal :id="`payoutModal${fulfillment.pk}`" ref="payout-modal">
                         <div slot="body">
-                          <div class="text-center">
-                            <p class="alert-warning py-2 font-smaller-4 mb-0" v-if="bounty.amount_paid && bounty.amount_paid > bounty.value_true">
-                              <template v-if="inputAmount == 0">
-                                You've paid [[ bounty.amount_paid - bounty.value_true ]] [[ bounty.token_name ]] more than the bounty amount.
-                              </template>
-                              <template v-else>
-                                You are paying [[ bounty.amount_paid - bounty.value_true ]] [[ bounty.token_name ]] more than the bounty amount.
-                              </template>
-                            </p>
 
-                            <p class="pt-3 mb-3 font-title">
-                              Payout [[ fulfillment.profile.handle ]]
-                            </p>
+                          <div class="px-sm-4">
 
-                            <p v-if="bounty.bounty_owner_address">
-                              <span class="d-block">Scan QR code using address</span>
-                              <span class="font-subheader font-weight-semibold">[[bounty.bounty_owner_address]]</span>
-                            </p>
+                            <div class="text-center pb-3">
+                              <p class="mb-3 font-subheader font-weight-bold">Payout</p>
+                              <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
 
-                            <p class="payout-input-amount-container font-weight-semibold ">
-                              <input type="number" class="mb-4 font-bigger-4 text-center" v-model="inputAmount" v-on:input="totalAmountPaid(inputAmount)" min="0" name="" id="">
-                              <span class="font-body">[[ bounty.token_name ]]</span>
-                            </p>
+                              <p class="font-subheader font-weight-bold mt-3 mb-1">
+                                <template v-if="fulfillment.fulfiller_name">[[ fulfillment.fulfiller_name | capitalize ]]</template>
+                                <template v-else>[[ fulfillment.fulfiller_github_username | capitalize ]]</template>
+                              </p>
 
-                            <qrcode :string="`ethereum:${fulfillment.fulfiller_address}`"></qrcode>
-                            <small class="d-block my-3">Scan the QR code above with your ETC Wallet to payout</small>
-                            <button class="d-block mx-auto mb-3 btn btn-outline-gc-blue px-2 font-caption font-weight-semibold"
-                              @click="fulfillmentComplete(fulfillment.pk, inputAmount)"
-                            >
-                              I have Scanned & Paid
-                            </button>
+                              <p class="font-body text-medium-dark-grey">
+                                @[[ fulfillment.fulfiller_github_username ]]
+                                <i class="fas fa-circle font-smallest position-relative mx-1" style="top:-2px"></i>
+                                [[ fulfillment.fulfiller_address | truncateHash ]]
+                              </p>
+                            </div>
+
+                            <!-- STEP : WALLET OWNER CHECK -->
+                            <div id="check_wallet_owner" v-if="fulfillment_context.active_step == 'check_wallet_owner'">
+
+                              <p>
+                                This bounty can only be paid out from the same wallet address that funded it.
+                              </p>
+                              <p class="mb-4">
+                                Make sure you’re paying out from this address
+                                <a class="font-weight-bold" :href="getAddressURL(fulfillment.token_name, bounty.bounty_owner_address)" target="_blank">
+                                  [[ bounty.bounty_owner_address ]]
+                                </a>
+                              </p>
+                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-4"
+                                v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'access_to_wallet')"
+                              >
+                                Yes, I understand
+                              </button>
+                              <p class="font-subheader mt-4 mb-0 text-center">
+                                <a href="#" v-on:click="goToStep('payout_amount', 'check_wallet_owner', 'no_access_to_wallet')">
+                                  I don’t have access to this address
+                                </a>
+                              </p>
+
+                            </div>
+
+                            <!-- STEP : ENTER PAYOUT AMOUNT -->
+                            <div id="payout_amount" v-else-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
+                              <p class="font-subheader">How much are you paying out to this person?</p>
+
+                              <p class="payout-input-amount-container font-weight-semibold">
+                                <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
+                                <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
+                              </p>
+
+                              <button v-if="fulfillment_context.flow == 'access_to_wallet'"
+                                class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
+                                v-on:click="goToStep('scan_qr_code', 'payout_amount')"
+                              >
+                                Next
+                              </button>
+                              <button v-else class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
+                                v-on:click="goToStep('submit_transaction', 'payout_amount')"
+                              >
+                                Next
+                              </button>
+
+                              <p class="font-subheader mt-4 mb-0 text-center">
+                                <a href="#" v-on:click="goToStep('check_wallet_owner', 'payout_amount')">
+                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                  Previous Step
+                                </a>
+                              </p>
+                            </div>
+
+                            <!-- STEP: SCAN QR CODE -->
+                            <div id="scan_qr_code" v-else-if="fulfillment_context.active_step == 'scan_qr_code'">
+                              <p class="text-center font-subheader mb-1">Scan the QR code with your [[ bounty.token_name ]] wallet to payout.</p>
+                              <p class="font-caption text-center">
+                                <a href="#" v-on:click="goToStep('submit_transaction', 'scan_qr_code')">
+                                  ( Don't have a QR wallet ? )
+                                </a>
+                              </p>
+
+                              <div class="font-caption payout-summary-container p-3 mb-4">
+                                <p class="mb-1">
+                                  From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                                </p>
+                                <p class="mb-1">
+                                  Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                </p>
+                                <p class="mb-1">To:</p>
+                                <p class="mb-0">
+                                  <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+                                  <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
+                                  <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
+                                    Copy
+                                  </a>
+                                </p>
+                              </div>
+
+                              <div class="text-center py-3">
+                                <qrcode :string="getQRString(bounty.token_name, fulfillment.fulfiller_address)"></qrcode>
+                              </div>
+                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                @click="fulfillmentComplete(fulfillment.pk, $event)"
+                              >I have paid
+                              </button>
+                              <p class="font-subheader mt-4 mb-0 text-center">
+                                <a href="#" v-on:click="goToStep('payout_amount', 'scan_qr_code')">
+                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                  Previous Step
+                                </a>
+                              </p>
+                            </div>
+
+                            <!-- STEP: SUBMIT TXN ID -->
+                            <div id="submit_transaction" v-else-if="fulfillment_context.active_step == 'submit_transaction'">
+                              <div v-if="fulfillment_context.flow == 'access_to_wallet'" class="text-center">
+                                <p class="mb-1 font-subheader">
+                                  Pay with your wallet and enter the transaction ID
+                                </p>
+                                <p>
+                                  <a href="#" class="font-caption" v-on:click="goToStep('scan_qr_code', 'submit_transaction')">
+                                    ( Switch to QR code payment )
+                                  </a>
+                                </p>
+                              </div>
+
+                              <p v-else class="text-center font-subheader mb-4">
+                                Contact the owner of wallet
+                                <span class="font-weight-bold">[[ bounty.bounty_owner_address | truncateHash ]]</span>
+                                to make the payment with the details below:
+                              </p>
+
+                              <div class="font-caption payout-summary-container p-3 mb-4">
+                                <p class="mb-1">
+                                  From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                                </p>
+                                <p class="mb-1">
+                                  Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                </p>
+                                <p class="mb-1">To:</p>
+                                <p class="mb-1">
+                                  <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+                                  <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
+                                  <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
+                                    Copy
+                                  </a>
+                                </p>
+                              </div>
+
+                              <p class="font-caption text-medium-dark-grey mb-2">
+                                Input the
+                                <span class="font-weight-bold">Transaction ID</span>
+                                of the payment:
+                              </p>
+                              <div class="payout-tx-container">
+                                <input v-model="fulfillment_context.payout_tx_id"
+                                  name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
+                                  class="w-100 p-2 font-smaller-5 border-0"
+                                >
+                              </div>
+
+                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                @click="fulfillmentComplete(fulfillment.pk, $event)"
+                              >
+                                I have Paid
+                              </button>
+
+                              <p class="font-subheader mt-4 mb-0 text-center">
+                                <a href="#" v-on:click="goToStep('payout_amount', 'submit_transaction')">
+                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                  Previous Step
+                                </a>
+                              </p>
+
+                            </div>
+
                           </div>
+
                         </div>
                       </modal>
 
@@ -400,7 +553,7 @@
           <div class="row" v-if="bounty.interested && bounty.interested.length">
             <div class="col-12">
               <div class="border my-5 px-4 pt-4">
-                <h5 class="font-body font-weight-semibold">{% trans "APPLICANTS" %}</h5>
+                <h5 class="font-body font-weight-semibold">APPLICANTS</h5>
                 <div v-for="interest in bounty.interested" :key="interest.pk" class="my-4 row font-body">
                   <div class="col-md-2 col-lg-1 text-center text-md-leftr">
                     <a :href="`/profile/${interest.profile.handle}`" v-show="interest.profile.avatar_url">
@@ -456,7 +609,7 @@
           <div class="row" v-if="bounty.activities && bounty.activities.length">
             <div class="col-12">
               <div class="border my-5 px-4 pt-4">
-                <h5 class="font-body font-weight-semibold">{% trans "ALL  ACTIVITY" %}</h5>
+                <h5 class="font-body font-weight-semibold">ALL ACTIVITY</h5>
                 <div v-for="activity in sortedActivity" :key="activity.pk" class="my-4 row font-body">
                   <div class="col-md-2 col-lg-1 text-center text-md-left">
                     <a :href="`/profile/${activity.profile.handle}`" v-show="activity.profile.avatar_url">
@@ -507,7 +660,7 @@
           <div class="row">
             <div class="col-12">
               <div class="border my-3 px-4 py-3">
-                <h5 class="bounty-heading mt-0 mb-3">{% trans "Funder" %}</h5>
+                <h5 class="bounty-heading mt-0 mb-3">Funder</h5>
                 <div class="row">
                   <div class="col-md-2 col-lg-1 text-center text-md-left my-auto">
                     <a :href="`/profile/${bounty.bounty_owner_github_username}`" v-show="bounty.bounty_owner_github_username">
@@ -522,7 +675,7 @@
                     </a>
 
                     <div class="font-caption text-black-70">
-                      <span class="font-weight-semibold">{% trans "Email" %} :</span>
+                      <span class="font-weight-semibold">Email :</span>
                       <span>[[ bounty.bounty_owner_email ]]</span>
                     </div>
 
@@ -541,7 +694,7 @@
           <div class="row">
             {% if prize_projects %}
               <div class="col-12">
-                <h5 class="bounty-heading">{% trans "Projects" %}</h5>
+                <h5 class="bounty-heading">Projects</h5>
                 <div class="row">
                   {% for project in prize_projects %}
                     <div class="col-12 col-md-4">
@@ -664,16 +817,13 @@
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]',
-        template: '<div class="no-tooltip" role="tooltip"><div class="tooltip-inner"></div></div>'
+        template: '<div class="no-tooltip" role="tooltip"><div class="tooltip-inner font-smaller-2"></div></div>'
       });
+
       $('[data-toggle="popover"]').popover()
       $('body').on('mouseover', '[data-username]', function(e) {
         openContributorPopOver($(this).data('username'), $(this));
       });
-
-      // $('body').on('mouseout', '[data-username]', function(e) {
-      //   $(this).popover('dispose');
-      // });
 
       $('body').on('show.bs.popover', '[data-username]', function () {
         $('body [data-username]').not(this).popover('hide');

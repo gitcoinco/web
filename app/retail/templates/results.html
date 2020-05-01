@@ -100,7 +100,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{% trans "21,418" %}</h3>
+            <h3 class="single-stat__title">{{mau|floatformat:0|intcomma}}</h3>
             <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
@@ -141,9 +141,11 @@
             <div>
               {% if hackathon.1.logo %}
                 <img src="{{hackathon.1.logo}}"/>
+              {%else %}
+                <img src="/dynamic/avatar/gitcoinbot"/>
               {%endif %}
               <h4>{{hackathon.0.name}}</h4>
-              {% if hackathon.1.num_bounties %}
+              {% if hackathon.1.num_bounties and hackathon.1.total_volume > 1 %}
                 <p>{{hackathon.1.num_bounties}} Bounties</p>
                 <p>${{hackathon.1.total_volume|floatformat:0|intcomma}} In Prizes</p>
               {% endif %}

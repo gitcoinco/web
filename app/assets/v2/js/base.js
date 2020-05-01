@@ -187,6 +187,8 @@ $(document).ready(function() {
   const setDataFormat = function(data) {
     let str = 'in ';
 
+    if (data.months() > 0)
+      str += data.months() + 'mon ';
     if (data.days() > 0)
       str += data.days() + 'd ';
     if (data.hours() > 0)
@@ -487,7 +489,7 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
     setInterval(() => {
       checkChatNotifications();
       set_as_active();
-    }, 15000);
+    }, document.contxt.chat_persistence_frequency);
     checkChatNotifications();
     set_as_active();
   })(jQuery);
