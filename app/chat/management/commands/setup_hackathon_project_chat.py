@@ -76,8 +76,16 @@ class Command(BaseCommand):
                         'bluesteens',
                         'interceptor-x',
                         'randall-mitchell'
-                        'consensyshealth-nicole'
+                        'consensyshealth-nicole',
+                        'TShine-NETTs',
+                        'mbmarchant',
+                        'kalyaniyerra',
+                        'Therecanbeonlyone1969',
+                        'drnataliep',
+                        'omz100'
                     ]
+
+                    handles = [handle.lower() for handle in handles]
                     mentors = [profile.chat_id for profile in Profile.objects.filter(handle__in=handles)]
                     profiles_to_connect = list(set(admin_profiles + mentors))
                     print("profiles with admins and mentors")
