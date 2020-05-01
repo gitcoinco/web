@@ -17,6 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import json
 import logging
 import re
 import time
@@ -1118,7 +1119,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-    
+
     return activities
 
 
@@ -1529,13 +1530,37 @@ def web3(request):
 
 @cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
 def tokens(request):
-    context = {}
+    context = []
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
     for network in networks:
         key = f"{network}_tokens"
         context[key] = Token.objects.filter(network=network, approved=True)
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
+
+def json_tokens(request):
+    context = {}
+    networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
+    # for network in networks:
+        # key = f"{network}_tokens"
+        # context[key] = Token.objects.filter(network=network, approved=True)
+    tokens=Token.objects.filter(approved=True)
+    token_json = []
+    for token in tokens:
+        _token = {
+            'id':  token.id,
+            'address': token.address,
+            'symbol': token.symbol,
+            'network': token.network,
+            'decimals': token.decimals,
+            'priority': token.priority
+        }
+
+
+        token_json.append(_token)
+    # return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
+    # return JsonResponse(json.loads(json.dumps(list(context), default=str)), safe=False)
+    return JsonResponse(json.loads(json.dumps(token_json)), safe=False)
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
