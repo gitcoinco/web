@@ -190,10 +190,17 @@ const loadDynamicScript = (callback, url, id) => {
           return this.$refs.quillEditorComment.quill;
         }
       },
+      beforeMount() {
+        if (this.isMobile) {
+          this.showCoreTeam = false;
+        }
+      },
       mounted() {
         console.log('we mounted');
         let vm = this;
 
+        vm.isLoading = false;
+        $("#preloader").remove()
         this.$watch('headerFile', function(newVal, oldVal) {
           if (checkFileSize(this.headerFile, 4000000) === false) {
             _alert(`Profile Header Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
@@ -212,21 +219,23 @@ const loadDynamicScript = (callback, url, id) => {
         }, {deep: true});
       },
       data: function() {
-        return $.extend({
+        return {
+          isLoading: true,
+          params: {
+            suggest: {},
+            publish_to_ts: false
+          },
+          showCoreTeam: true,
           chatURL: document.chatURL || 'https://chat.gitcoin.co/',
           activePanel: document.activePanel,
-          tribe: document.currentProfile
-        }, {
+          tribe: document.currentProfile,
+          online: (document.contxt && document.contxt.github_handle),
           tokens: document.tokens,
           csrf: $("input[name='csrfmiddlewaretoken']").val(),
           headerFile: null,
           headerFilePreview: null,
           is_my_org: document.is_my_org || false,
           is_on_tribe: document.is_on_tribe || false,
-          params: {
-            suggest: {},
-            publish_to_ts: false
-          },
           editorOptionPrio: {
             modules: {
               toolbar: [
@@ -264,7 +273,7 @@ const loadDynamicScript = (callback, url, id) => {
             theme: 'snow',
             placeholder: 'What would you suggest as a bounty?'
           }
-        });
+        };
       }
     });
   });
