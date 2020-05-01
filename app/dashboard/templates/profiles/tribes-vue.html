@@ -45,6 +45,13 @@
         .sidebar {
           min-width: 15vw !important;
         }
+
+        img.profile-header__avatar {
+          width: 50px;
+          height: 50px;
+          margin-top:10px;
+
+        }
       }
       .navigation {
         height: 60px;
@@ -348,9 +355,6 @@
       }
 
       @media(max-width: 767.98px) {
-        .navbar-brand img {
-          height:20px;
-        }
         li.navigation > a.nav-link {
            font-size:14px;
         }
@@ -409,9 +413,9 @@
                 <div class="ml-md-4 mt-4 townsquare_header">
 
                   <div class="row">
-                    <div class="ml-4 col-12 col-md-3 d-lg-block">
-                      <div @click="showCoreTeam = !showCoreTeam" class="font-body left-ribbon text-justify btn-block d-flex justify-content-between align-items-center p-1">[[ tribe.name ]] {% trans "Team" %} <i class="fa fa-fw" :class="showCoreTeam ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
-                      <suggested-profiles v-show="showCoreTeam" :profiles="tribe.team_or_none_if_timeout"></suggested-profiles>
+                    <div class="col-12 col-md-3">
+                      <div @click="showCoreTeam = !showCoreTeam" class="ml-4 mb-4 font-body left-ribbon text-justify btn-block justify-content-between align-items-center p-1">[[ tribe.name ]] {% trans "Team" %} <i class="fa fa-fw" :class="showCoreTeam ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
+                      <suggested-profiles v-show="showCoreTeam" :profiles="tribe.team_or_none_if_timeout" class="ml-4"></suggested-profiles>
                     </div>
                     <div class="feed_container col-12 col-md-8">
                       <div class="feed_container_child container-fluid">
@@ -429,8 +433,6 @@
                           {% include 'shared/activity_container.html' %}
                         </div>
                       </div>
-                    </div>
-                    <div class="actions_container col-12 col-md-2 offset-1">
                     </div>
                   </div>
                 </div>
@@ -1356,9 +1358,11 @@
                   </div>
                   </b-col>
                 <b-col v-html="tribe.tribe_description" class="mt-3"></b-col>
-                <b-button v-if="!is_my_org && is_on_tribe" v-b-modal.suggest-bounty-modal class="col-md-8 btn button--full px-3 btn-gc-blue">
-                  {% trans "Suggest a Bounty" %}
-                </b-button>
+                <b-col>
+                  <b-button v-if="!is_my_org && is_on_tribe" v-b-modal.suggest-bounty-modal class="btn button--full px-3 btn-gc-blue">
+                    {% trans "Suggest a Bounty" %}
+                  </b-button>
+                </b-col>
 
               <div class="pt-0 mt-3 font-body">
                 <div style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
