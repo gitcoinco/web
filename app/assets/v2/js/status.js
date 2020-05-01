@@ -417,15 +417,11 @@ $(document).ready(function() {
     const message = $('#textarea');
     const the_message = message.val().trim();
     const ask = $('.activity_type_selector input:checked').val();
-    let tab = getParam('tab');
-
-    if (!tab || typeof tab == 'undefined')
-      tab = window.localStorage['tab'] || '';
 
     data.append('ask', ask);
     data.append('data', the_message);
     data.append('what', $('#status [name=what]').val());
-    data.append('tab', tab);
+    data.append('tab', getParam('tab'));
     if ($('#video_container').length) {
       data.append('has_video', $('#video_container').length);
       data.append('video_gfx', $('#video_container').data('gfx'));

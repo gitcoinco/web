@@ -50,13 +50,8 @@ const joinTribeDirect = (elem) => {
 
   $.when(sendJoin).then(function(response) {
     $(elem).attr('disabled', false);
-    $('[data-jointribe]').each((idx, ele) => {
-
-      if (window.hasOwnProperty('tribesApp')) {
-        window.tribesApp.is_on_tribe = true;
-      }
-      $(ele).attr('hidden', true);
-    });
+    $(elem).attr('member', response.is_member);
+    $(elem).attr('hidden', true);
   }).fail(function(error) {
     $(elem).attr('disabled', false);
   });
