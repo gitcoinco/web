@@ -326,22 +326,33 @@
         if (is_registered) {
           return;
         }
-        $('#questions-form').modal('show');
-        $('#send_poll').unbind('click')
-        $('#send_poll').on('click', function () {
+        if ($('#questions-form').find('input').length == 0) {
+          const url = '/register_hackathon/';
+          const data = {'name': name, 'referer': referer};
+          const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
-        const poll = $('#hackathon-poll').serializeArray()
-        const url = '/register_hackathon/'
-        const data = { 'name': name, 'referer': referer, 'poll': JSON.stringify(poll)}
-        const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
-
-
-        $.when(sendRegister).then((response) => {
-          _alert('You have now registered for this hackathon.', 'success');
-          console.log(response)
+          $.when(sendRegister).then((response) => {
+            _alert('You have now registered for this hackathon.', 'success');
+            console.log(response)
             document.location.href = response.redirect;
           });
-        });
+        } else {
+          $('#questions-form').modal('show');
+          $('#send_poll').unbind('click')
+          $('#send_poll').on('click', function () {
+
+            const poll = $('#hackathon-poll').serializeArray();
+            const url = '/register_hackathon/';
+            const data = { 'name': name, 'referer': referer, 'poll': JSON.stringify(poll)};
+            const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
+
+            $.when(sendRegister).then((response) => {
+              _alert('You have now registered for this hackathon.', 'success');
+              console.log(response)
+              document.location.href = response.redirect;
+            });
+          });
+        }
       }
       const params = new URLSearchParams(window.location.search);
 

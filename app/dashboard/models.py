@@ -66,6 +66,7 @@ from marketing.mails import featured_funded_bounty, fund_request_email, start_wo
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
+from bounty_requests.models import BountyRequest
 
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
@@ -74,6 +75,7 @@ logger = logging.getLogger(__name__)
 
 
 CROSS_CHAIN_STANDARD_BOUNTIES_OFFSET = 100000000
+
 
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""
@@ -2101,6 +2103,7 @@ class Activity(SuperModel):
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
         ('hackathon_registration', 'Hackathon Registration'),
+        ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
     ]
 
@@ -2150,6 +2153,12 @@ class Activity(SuperModel):
     hackathonevent = models.ForeignKey(
         'dashboard.HackathonEvent',
         related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    project = models.ForeignKey(
+        'dashboard.HackathonProject',
+        related_name='hackathon_projects',
         on_delete=models.CASCADE,
         blank=True, null=True
     )
@@ -2646,6 +2655,13 @@ class Profile(SuperModel):
     as_representation = JSONField(default=dict, blank=True)
     tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
 
+    tribes_cover_image = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('The Tribes Cover image.'),
+    )
+
     is_org = models.BooleanField(
         default=True,
         help_text='Is this profile an org?',
@@ -2660,6 +2676,13 @@ class Profile(SuperModel):
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
+
+    @property
+    def suggested_bounties(self):
+        suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
+
+        return suggested_bounties if suggested_bounties else []
+
     @property
     def subscribed_threads(self):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
