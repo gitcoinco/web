@@ -1089,10 +1089,10 @@ body.green.offer_view .announce {
 
 .card-ribbon {
   margin-top: -14px;
-  right: -10px;
+  margin-left: 10px;
   width: 110px;
   margin-bottom: 10px;
-  position: absolute;
+  position: relative;
 }
 
 .logo-metacard {
