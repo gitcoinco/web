@@ -2859,6 +2859,22 @@ def profile(request, handle, tab=None):
     elif tab == "bounties":
         active_tab = 3
     context['active_panel'] = active_tab
+
+    if profile.is_org and profile.handle.lower() in ['gitcoinco']:
+        # record profile view
+        if request.user.is_authenticated and not context['is_my_org']:
+            ProfileView.objects.create(target=profile, viewer=request.user.profile)
+        try:
+            context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
+            context['target'] = f'/activity?what=tribe:{profile.handle}'
+            context['is_on_tribe'] = json.dumps(context['is_on_tribe'])
+            context['is_my_org'] = json.dumps(context['is_my_org'])
+            context['profile_handle'] = profile.handle
+
+            return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
+        except Exception as e:
+            logger.info(str(e))
+
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
         context.update(tab)
@@ -2869,15 +2885,6 @@ def profile(request, handle, tab=None):
     if request.user.is_authenticated and not context['is_my_profile']:
         ProfileView.objects.create(target=profile, viewer=request.user.profile)
 
-    if profile.is_org and profile.handle.lower() in ['gitcoinco']:
-
-        context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
-        context['target'] = f'/activity?what=tribe:{profile.handle}'
-        context['is_on_tribe'] = json.dumps(context['is_on_tribe'])
-        context['is_my_org'] = json.dumps(context['is_my_org'])
-        context['profile_handle'] = profile.handle
-
-        return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 

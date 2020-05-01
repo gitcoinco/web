@@ -514,6 +514,7 @@ class TribesTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('name', 'handle', 'avatar_url', 'followers_count', 'user_is_following')
+        depth = 1
 
 
 class BountyRequestSerializer(serializers.ModelSerializer):
@@ -523,11 +524,10 @@ class BountyRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = BountyRequest
         fields = ('id', 'token_name', 'comment', 'github_url', 'title', 'requested_by', 'status')
-
+        depth = 1
 
 class TribesSerializer(serializers.ModelSerializer):
     """Handle serializing the Profile object."""
-    active_bounties = BountySerializer(many=True)
     team_or_none_if_timeout = TribesTeamSerializer(many=True, read_only=True)
     suggested_bounties = BountyRequestSerializer(many=True)
     tribes_cover_image = serializers.ImageField(allow_empty_file=True)
@@ -540,7 +540,8 @@ class TribesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         """Define the profile serializer metadata."""
-        fields = ('profile_wallpaper', 'tribes_cover_image', 'name', 'linkedin_url', 'team_or_none_if_timeout', 'suggested_bounties', 'active_bounties', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data', 'tribe_priority')
+        fields = ('profile_wallpaper', 'tribes_cover_image', 'name', 'linkedin_url', 'team_or_none_if_timeout', 'suggested_bounties', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data', 'tribe_priority')
+        depth = 1
 
 
 # Routers provide an easy way of automatically determining the URL conf.
