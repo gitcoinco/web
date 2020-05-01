@@ -85,9 +85,9 @@
           <option value="0x0">ETH</option>
         </select>
         {% else %}
-        <select style="width:100px; margin-bottom: 10px; display: inline;">
+          <select id="token" style="width:100px; margin-bottom: 10px; display: inline;">
             <option value="{{ fund_request.network }}">{{ fund_request.network }}</option>
-        </select>
+          </select>
         {% endif %}
       <input name="amount" type="text" placeholder="1.1" id="amount" value="{{ fund_request.amount }}" style="width: 170px; display: inline;">
     </div>

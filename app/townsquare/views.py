@@ -24,6 +24,7 @@ from .models import (
 )
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
+from dashboard.helpers import load_files_in_directory
 
 tags = [
     ['#announce','bullhorn','search-announce'],
@@ -36,6 +37,16 @@ tags = [
     ['#other','briefcase','search-other'],
     ]
 
+
+def load_wallpapers(request):
+    """Load profile banners"""
+    images_with_icons = load_files_in_directory('status_backgrounds')
+    images = [image.split('.')[0] for image in images_with_icons if 'icon' not in image]
+    response = {
+        'status': 200,
+        'wallpapers': images
+    }
+    return JsonResponse(response, safe=False)
 
 def get_next_time_available(key):
     d = timezone.now()
