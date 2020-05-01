@@ -650,13 +650,13 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
   let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
 
   indicateMetamaskPopup();
-  deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).estimateGas(function(err, gas_amount){
-      if (err) {
-        _alert('There was an error', 'error');
-        set_form_disabled(false);
-       indicateMetamaskPopup(1);
-        return;
-      } 
+  deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).estimateGas(function(err, gas_amount) {
+    if (err) {
+      _alert('There was an error', 'error');
+      set_form_disabled(false);
+      indicateMetamaskPopup(1);
+      return;
+    }
     deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
       from: account,
       gas: web3.utils.toHex(gas_amount + 1000),
@@ -702,8 +702,8 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
       saveSubscription(data, true);
       saveSplitTx(data, false, true);
     });
-  })
-  };
+  });
+};
 
 const waitforData = (callback) => {
   if ($('#wait').val() === 'false') {
