@@ -300,13 +300,8 @@
           </button>
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             {% if row.profile.organizations|length %}
-              <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the Tribe Town Square." href=# 
-              data-url={{row.url}}
-              data-affirmative=pinned
-              data-negative=unpin data-state="{% if row.metadata.pin%}pinned{% else %}unpin{%endif%}"
-              data-pk="{{row.pk}}"
-              data-what="tribe">
-
+              <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the Tribe Town Square." href=# data-url={{row.url}}
+              data-affirmative=pinned data-negative=unpin data-state="{% if row.metadata.pin%}pinned{% else %}unpin{%endif%}" data-pk="{{row.pk}}" data-what="tribe">
               <i class="fas fa-map-pin mr-2"></i>Pin Post
               </a>
             {% endif %}

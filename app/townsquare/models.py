@@ -383,8 +383,8 @@ class Favorite(SuperModel):
         return f"Favorite {self.activity.activity_type}:{self.activity_id} by {self.user}"
 
 
-class Pin(SuperModel):
-    """Model for each Pinned."""
+class PinnedPost(SuperModel):
+    """Model for each Pinned Post."""
 
     user = models.ForeignKey('dashboard.Profile',
         on_delete=models.CASCADE, related_name='pins')

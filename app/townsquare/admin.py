@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 
 from .models import (
-    Announcement, Comment, Flag, Like, Pin, MatchRanking, MatchRound, Offer, OfferAction, SquelchProfile, SuggestedAction,
+    Announcement, Comment, Flag, Like, PinnedPost, MatchRanking, MatchRound, Offer, OfferAction, SquelchProfile, SuggestedAction,
 )
 
 
@@ -30,7 +30,7 @@ class MatchRankingAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['profile', 'round']
 
-class PinAdmin(admin.ModelAdmin):
+class PinnedAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['user', 'activity']
     fields = ['hash_what']
@@ -156,7 +156,7 @@ admin.site.register(OfferAction, OfferActionAdmin)
 admin.site.register(Comment, GenericAdmin)
 admin.site.register(Like, GenericAdmin)
 admin.site.register(Flag, GenericAdmin)
-admin.site.register(Pin, PinAdmin)
+admin.site.register(PinnedPost, PinnedAdmin)
 admin.site.register(MatchRound, ActuallyGenericAdmin)
 admin.site.register(MatchRanking, MatchRankingAdmin)
 admin.site.register(Announcement, AnnounceAdmin)
