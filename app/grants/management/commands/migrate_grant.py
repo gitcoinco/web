@@ -23,26 +23,31 @@ class Command(BaseCommand):
 
         print(f'========= \n MIGRATING ACTIVITY FROM ({old_grant.pk}) {old_grant.title} TO ({new_grant.pk}) {new_grant.title} \n========')
 
-        for sub in old_grant.subscriptions.all():
-            sub.grant = new_grant
-            sub.save()
+        confirm = input("Type Y to confirm & N to cancel: ").upper()
 
-        for obj in old_grant.phantom_funding.all():
-            obj.grant = new_grant
-            obj.save()
+        if confirm == 'Y':
+            for sub in old_grant.subscriptions.all():
+                sub.grant = new_grant
+                sub.save()
 
-        for obj in old_grant.activities.all():
-            obj.grant = new_grant
-            obj.save()
+            for obj in old_grant.phantom_funding.all():
+                obj.grant = new_grant
+                obj.save()
 
-        for obj in old_grant.clr_matches.all():
-            obj.grant = new_grant
-            obj.save()
+            for obj in old_grant.activities.all():
+                obj.grant = new_grant
+                obj.save()
 
-        old_grant.hidden = True
-        old_grant.link_to_new_grant = new_grant
+            for obj in old_grant.clr_matches.all():
+                obj.grant = new_grant
+                obj.save()
 
-        old_grant.save()
-        new_grant.save()
+            old_grant.hidden = True
+            old_grant.link_to_new_grant = new_grant
 
-        print(f'======== \n ACTIVITIES MIGRATED. \n GRANT {old_grant.pk} is inactive & linked to GRANT {new_grant.pk} \n========')
+            old_grant.save()
+            new_grant.save()
+
+            print(f'======== \n ACTIVITIES MIGRATED. \n GRANT {old_grant.pk} is inactive & linked to GRANT {new_grant.pk} \n========')
+        else:
+            print(f'======== \n OPERATION CANCELLED BY USER. \n========')

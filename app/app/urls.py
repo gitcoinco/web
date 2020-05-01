@@ -135,6 +135,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
+    url(r'^api/v0.1/status_wallpapers', townsquare.views.load_wallpapers, name='load_wallpapers'),
     url(
         r'^api/v0.1/get_suggested_contributors',
         dashboard.views.get_suggested_contributors,
@@ -331,7 +332,7 @@ urlpatterns = [
     url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
     url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
     url(r'^tip/?', dashboard.tip_views.send_tip_2, name='tip'),
-
+    url(r'^requestmoney/?', dashboard.tip_views.request_money, name='request_money'),
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
     re_path(r'^legal/terms/?', dashboard.views.terms, name='terms'),
@@ -449,6 +450,7 @@ urlpatterns = [
     re_path(r'^medium/?', retail.views.medium, name='medium'),
     re_path(r'^github/?', retail.views.github, name='github'),
     re_path(r'^youtube/?', retail.views.youtube, name='youtube'),
+    re_path(r'^web3$/?', retail.views.web3, name='web3'),
 
     # increase funding limit
     re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
