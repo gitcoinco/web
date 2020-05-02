@@ -2818,8 +2818,8 @@ def profile(request, handle, tab=None):
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
     context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
-    context['followers'] = TribeMember.objects.filter(org=request.user.profile)
-    context['following'] = TribeMember.objects.filter(profile=request.user.profile)
+    context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
+    context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
     context['foltab'] = request.GET.get('sub', 'followers')
 
     tab = get_profile_tab(request, profile, tab, context)
