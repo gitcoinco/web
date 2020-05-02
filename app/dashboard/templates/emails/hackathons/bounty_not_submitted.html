@@ -24,7 +24,7 @@ along with this program. If not, see
 
 {% with title=bounty.title url=bounty.get_absolute_url %}
 <p style="margin-bottom:0.25rem;">
-  {% blocktrans %}The bounty <em>not submitted by you</em> <a href="{{ url }}">{{ title }}</a> ends in 4-5 days!{% endblocktrans %}
+  {% blocktrans %}The bounty <em>not submitted by you</em> <b><a href="{{ url }}">{{ title }}</a></b> ends in 4-5 days!{% endblocktrans %}
 </p>
 {% endwith %}
 
