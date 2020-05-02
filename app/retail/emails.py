@@ -1128,7 +1128,7 @@ def render_hackathon_end(hackathon, profile):
     params = {'hackathon': hackathon}
     response_html = premailer_transform(render_to_string("emails/hackathons/hackathon_ends.html", params))
     response_txt = render_to_string("emails/hackathons/hackathon_ends.txt", params)
-    subject = _("Your Gitcoin Hackaton ends soon")
+    subject = _("Your Gitcoin Hackathon ends soon")
     return response_html, response_txt, subject
 
 
@@ -1137,7 +1137,7 @@ def render_bounty_not_submitted(bounty, profile):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/hackathons/bounty_not_submitted.html", params))
     response_txt = render_to_string("emails/hackathons/bounty_not_submitted.txt", params)
-    subject = _("Your Gitcoin Hackaton bounty was not submitted")
+    subject = _("Your Gitcoin Hackathon bounty was not submitted")
     return response_html, response_txt, subject
 
 
@@ -1146,7 +1146,7 @@ def render_bounty_added_to_event(bounty, profile):
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/hackathons/bounty_added_to_event.html", params))
     response_txt = render_to_string("emails/hackathons/bounty_added_to_event.txt", params)
-    subject = _("Bounty added to a hackaton")
+    subject = _("Bounty added to a hackathon")
     return response_html, response_txt, subject
 
 

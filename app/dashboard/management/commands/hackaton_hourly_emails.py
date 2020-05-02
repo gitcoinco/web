@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from datetime import datetime
+import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -24,8 +24,8 @@ from django.utils import timezone
 from dashboard.models import Bounty, BountyFulfillment
 from marketing.mails import bounty_feedback
 
-from app.dashboard.models import HackathonEvent, Profile, HackathonRegistration
-from app.marketing.mails import hackathon_end
+from dashboard.models import HackathonEvent, Profile, HackathonRegistration
+from marketing.mails import hackathon_end
 
 
 class Command(BaseCommand):
@@ -38,8 +38,9 @@ class Command(BaseCommand):
             return
 
         for hackathon in HackathonEvent.objects.filter(ends_soon_notified=False):
-            if hackathon.end_date >= datetime.now() - datetime.timedelta(hours=48):
-                for profile in HackathonRegistration.objects(hackathon=hackathon).values('registrant'):
+            if hackathon.end_date >= timezone.now() - datetime.timedelta(hours=48):
+                for profile in (v.registrant for v in HackathonRegistration.objects.filter(hackathon=hackathon)):
+                    print('profile', profile)
                     hackathon_end(hackathon, profile)
                 hackathon.ends_soon_notified = True  # Do not send it second time.
                 hackathon.save()

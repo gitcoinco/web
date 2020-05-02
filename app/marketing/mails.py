@@ -50,6 +50,8 @@ from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_ava
 
 from retail.emails import render_bounty_not_submitted, render_bounty_added_to_event
 
+from retail.emails import render_hackathon_end
+
 logger = logging.getLogger(__name__)
 
 
@@ -1754,7 +1756,7 @@ def hackathon_end(hackathon, profile):
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_hackathon_end_email(hackathon)
+        html, text, subject = render_hackathon_end(hackathon, profile)
 
         if not should_suppress_notification_email(to_email, 'hackathon_end'):  # FIXME: Add this supression.
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
