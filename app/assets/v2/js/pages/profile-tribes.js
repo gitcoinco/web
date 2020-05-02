@@ -144,6 +144,36 @@ const loadDynamicScript = (callback, url, id) => {
             console.error('error: unable to creating bounty request', error);
           });
         },
+        rejectBountyRequest: function(idx, bounty_request_id) {
+          let vm = this;
+
+          const url = '/api/v1/bounty_request/update';
+
+          const createBountyRequest = fetchData(
+            url,
+            'POST',
+            {
+              'bounty_request_id': bounty_request_id,
+              'request_status': 'c'
+            },
+            {'X-CSRFToken': vm.csrf}
+          );
+
+          $.when(createBountyRequest).then(function(response) {
+
+            if (response.status === 200) {
+              _alert('Bounty Request has been rejected');
+              delete vm.tribe.suggested_bounties[idx];
+            } else {
+              _alert(`Error rejecting bounty request as ${response.message}`, 'error');
+              console.error(response.message);
+            }
+
+          }).fail(function(error) {
+            _alert(`Error rejecting bounty request. ${error}`, 'error');
+            console.error('error: unable to reject bounty request', error);
+          });
+        },
         resetBountySuggestion: function() {
           this.params.suggest = {};
         },
@@ -200,7 +230,7 @@ const loadDynamicScript = (callback, url, id) => {
         let vm = this;
 
         vm.isLoading = false;
-        $("#preloader").remove()
+        $('#preloader').remove()
         this.$watch('headerFile', function(newVal, oldVal) {
           if (checkFileSize(this.headerFile, 4000000) === false) {
             _alert(`Profile Header Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
