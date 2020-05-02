@@ -539,6 +539,90 @@
 
   /* Bootstrap styles used for activities -- END */
 
+  /* Styles for .activity_stream -- START */
+  
+  .activity_stream .box {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .activity_stream .activity_detail .tag {
+    background-color: #e7f0fa;
+    color: #3E00FF; /* var(--gc-blue) */
+    font-size: 10px;
+    list-style: none;
+    padding: 5px;
+  }
+  
+  .tag {
+    text-align: center;
+    border-radius: 2px;
+    margin: 4px;
+    padding: 3px 6px;
+    font-size: 11px;
+    font-weight: 400;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .tag.token {
+    background-color: #e7f0fa;
+    color: #3E00FF; /* var(--gc-blue) */
+  }
+
+  .tag span {
+    color: #3E00FF; /* var(--gc-blue) */
+  }
+  
+  .tag p {
+    margin-top: 0;
+    line-height: normal;
+  }
+  
+  .font-smaller-6 {
+    font-size: 0.6rem;
+  }
+
+  .activity_stream a {
+    color: #3E00FF;
+  }
+
+  .fa-icon-png {
+    vertical-align: text-top;
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  .fa-icon-png.small {
+    width: 0.5rem;
+  }
+
+  .grey {
+    color: #666666 !important; /* var(--gc-medium-dark-gray) */
+  }
+
+  @media screen and (max-width: 35.5em) {
+    .staff_tag,
+    .staff_tag~div {
+      margin-left: 20%
+    }
+
+    .activity_stream .activity_detail {
+      margin-left: 25px !important;
+    }
+
+    .d-none {
+      display: none;
+    }
+
+    .activities-container .button.large {
+      margin-right: 7%;
+    }
+  }
+
+  /* Styles for .activity_stream -- END */
+  
   @media screen and (min-width: 35.5em) {
     .social-img {
       max-height: 50px;
