@@ -40,7 +40,6 @@ class Command(BaseCommand):
         for hackathon in HackathonEvent.objects.filter(ends_soon_notified=False):
             if hackathon.end_date >= timezone.now() - datetime.timedelta(hours=48):
                 for profile in (v.registrant for v in HackathonRegistration.objects.filter(hackathon=hackathon)):
-                    print('profile', profile)
                     hackathon_end(hackathon, profile)
                 hackathon.ends_soon_notified = True  # Do not send it second time.
                 hackathon.save()
