@@ -92,9 +92,10 @@ This action expires at end of day, so act soon!
   </div>
   </div>
 {% endif %}
+</div>
 
 {% if upcoming_events %}
-  <div style="background-color: #000000; color: #ffffff; width: 110%; margin-left: -5%; margin-top: 30px; padding-top: 15px; padding-bottom:15px">
+  <div class="full-width text-center" style="background-color: #000000; color: #ffffff; margin: 0 auto; padding-top: 15px; padding-bottom:15px">
     <h3 style="color: #ffffff;">{% trans "⏰Save The Date" %}</h3>
     <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
 
@@ -111,6 +112,7 @@ This action expires at end of day, so act soon!
   </div>
 {% endif %}
 
+<div class="primary-content text-center">
 {% if quest_of_the_day %}
   <h3 class="no-subtitle" style="margin-top: 50px">{% trans "🎯Quest of The Day" %}</h3>
   {% include 'emails/quest_small.html' with quest=quest_of_the_day small=1 %}
