@@ -24,7 +24,7 @@ from django.utils import timezone
 from dashboard.models import Bounty, BountyFulfillment
 from marketing.mails import bounty_feedback
 
-from app.dashboard.models import HackathonEvent, Profile
+from app.dashboard.models import HackathonEvent, Profile, HackathonRegistration
 from app.marketing.mails import hackathon_end
 
 
@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
         for hackathon in HackathonEvent.objects.filter(ends_soon_notified=False):
             if hackathon.end_date >= datetime.now() - datetime.timedelta(hours=48):
-                for profile in Profile.objects.all():
+                for profile in HackathonRegistration.objects(hackathon=hackathon).values('registrant'):
                     hackathon_end(hackathon, profile)
                 hackathon.ends_soon_notified = True  # Do not send it second time.
                 hackathon.save()
