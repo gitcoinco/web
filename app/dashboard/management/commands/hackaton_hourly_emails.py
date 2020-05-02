@@ -37,7 +37,7 @@ class Command(BaseCommand):
             print("not active in non prod environments")
             return
 
-        for hackathon in HackathonEvent.objects.all(ends_soon_notified=False):
+        for hackathon in HackathonEvent.objects.filter(ends_soon_notified=False):
             if hackathon.end_date >= datetime.now() - datetime.timedelta(hours=48):
                 for profile in Profile.objects.all():  # FIXME
                     hackathon_end(hackathon, profile)
