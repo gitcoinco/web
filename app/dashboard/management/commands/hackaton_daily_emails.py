@@ -24,8 +24,10 @@ from django.utils import timezone
 from dashboard.models import Bounty, BountyFulfillment
 from marketing.mails import bounty_feedback
 
-from app.dashboard.models import Activity
-from app.marketing.mails import bounty_not_submitted
+from dashboard.models import Activity
+from marketing.mails import bounty_not_submitted
+
+from dashboard.models import Profile
 
 
 class Command(BaseCommand):
@@ -41,9 +43,11 @@ class Command(BaseCommand):
         bounties = Bounty.objects.filter(event__isnull=False)
         activities = Activity.objects.filter(bounty__in=bounties, activity_type='start_work')
         activities = (activity for activity in activities \
-                      if not Activity.objects.filter(bounty__profile=activity.bounty.profile,
+                      if not Activity.objects.filter(profile=activity.profile,
                                                      activity_type='work_submitted').exists())
-        for activity in activities:
-            if timezone.now() - datetime.timedelta(days=5) <= bounty.end_date < datetime.timedelta(days=4):
-                for bounty in activities.bounty.distinct():
-                    bounty_not_submitted(bounty, activity.profile)
+        activities = list(activities)
+        for bounty in Bounty.objects.filter(activities__in=activities):
+            for profile in Profile.objects.filter(activities__in=activities, activities__bounty=bounty):
+                now = timezone.now()
+                if now + datetime.timedelta(days=4) <= bounty.expires_date < now + datetime.timedelta(days=5):
+                    bounty_not_submitted(bounty, profile)

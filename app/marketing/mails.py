@@ -1777,7 +1777,7 @@ def bounty_not_submitted(bounty, profile):
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_bounty_not_submitted(bounty)
+        html, text, subject = render_bounty_not_submitted(bounty, profile)
 
         if not should_suppress_notification_email(to_email, 'bounty_not_submitted'):  # FIXME: Add this supression.
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
