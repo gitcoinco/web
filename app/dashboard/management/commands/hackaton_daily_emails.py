@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from datetime import datetime
+import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -44,6 +44,6 @@ class Command(BaseCommand):
                       if not Activity.objects.filter(bounty__profile=activity.bounty.profile,
                                                      activity_type='work_submitted').exists())
         for activity in activities:
-            if datetime.now() - datetime.timedelta(days=5) <= bounty.end_date < datetime.timedelta(days=4):
+            if timezone.now() - datetime.timedelta(days=5) <= bounty.end_date < datetime.timedelta(days=4):
                 for bounty in activities.bounty.distinct():
                     bounty_not_submitted(bounty, activity.profile)
