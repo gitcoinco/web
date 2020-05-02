@@ -1123,10 +1123,11 @@ def render_new_bounty_roundup(to_email):
     return response_html, response_txt, subject, args.from_email, args.from_name
 
 
-def render_hackaton_end(hackaton):
+def render_hackaton_end(hackaton, profile):
+    """`profile` is for now ignored."""
     params = {'hackaton': hackaton}
-    response_html = premailer_transform(render_to_string("emails/hackatons/ends_soon.html", params))
-    response_txt = render_to_string("emails/hackatons/ends_soon.txt", params)
+    response_html = premailer_transform(render_to_string("emails/hackatons/hackaton_ends.html", params))
+    response_txt = render_to_string("emails/hackatons/hackaton_ends.txt", params)
     subject = _("Your Gitcoin Hackaton ends soon")
     return response_html, response_txt, subject
 
@@ -1469,9 +1470,9 @@ def start_work_applicant_expired(request):
 
 
 @staff_member_required
-def hackaton_ends(request, hackaton_name, username):
-    from dashboard.models import HackatonEvent, Profile
-    hackaton = HackatonEvent.object.get(name=hackaton_name)
-    profile = Profile.object.get(handle=username)
-    response_html, _, _ = render_hackaton_end(hackaton, profile)
+def hackaton_ends(request, hackaton, username):
+    from dashboard.models import HackathonEvent, Profile
+    hackaton_obj = HackathonEvent.objects.get(slug=hackaton)
+    profile = Profile.objects.get(handle=username)
+    response_html, _, _ = render_hackaton_end(hackaton_obj, profile)
     return HttpResponse(response_html)
