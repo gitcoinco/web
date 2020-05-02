@@ -48,7 +48,7 @@ from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
 from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
 
-from app.retail.emails import render_bounty_not_submitted
+from retail.emails import render_bounty_not_submitted
 
 logger = logging.getLogger(__name__)
 
