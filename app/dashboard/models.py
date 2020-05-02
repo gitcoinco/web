@@ -4489,6 +4489,9 @@ class HackathonEvent(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
+    ends_soon_notified = models.BooleanField(help_text=_('48 hours before hackaton ends notification send'),
+                                             default=False,
+                                             db_index=True)
     objects = HackathonEventQuerySet.as_manager()
 
     def __str__(self):
@@ -4875,7 +4878,7 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
-    
+
     @property
     def mutual_follow(self):
         return TribeMember.objects.filter(profile=self.org, org=self.profile).exists()
@@ -4890,7 +4893,7 @@ class TribeMember(SuperModel):
         tribe_following = Subquery(TribeMember.objects.filter(org=self.profile).values_list('profile', flat=True))
         return TribeMember.objects.filter(org__in=tribe_following, profile=self.org).exclude(org=self.org)
 
-      
+
 class Poll(SuperModel):
     title = models.CharField(max_length=350, blank=True, null=True)
     active = models.BooleanField(default=False)

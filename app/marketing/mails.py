@@ -939,7 +939,7 @@ def grant_match_distribution_test_txn(match):
         coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 50% off with coupon code {settings.GRANTS_COUPON_50_OFF}"
     if match.amount > 1000:
         coupon = f"Pick up ONE item of Gitcoin Schwag at http://store.gitcoin.co/ at 100% off with coupon code {settings.GRANTS_COUPON_100_OFF}"
-    # NOTE: IF YOURE A CLEVER BISCUT AND FOUND THIS BY READING OUR CODEBASE, 
+    # NOTE: IF YOURE A CLEVER BISCUT AND FOUND THIS BY READING OUR CODEBASE,
     # THEN GOOD FOR YOU!  HERE IS A 100% OFF COUPON CODE U CAN USE (LIMIT OF 1 FOR THE FIRST PERSON
     # TO FIND THIS EASTER EGG) : GRANTS-ROUND-5-HAXXOR
     try:
@@ -998,9 +998,9 @@ This email is in regards to your Gitcoin Grants Round {match.round_number} payou
 
 We have sent your {rounded_amount} DAI to the address on file at {match.grant.admin_address}.  The txid of this transaction is {match.payout_tx}.
 
-Congratulations on a successful Gitcoin Grants Round {match.round_number}.  
+Congratulations on a successful Gitcoin Grants Round {match.round_number}.
 
-What now? 
+What now?
 1. Send a tweet letting us know how these grant funds are being used to support your project (our twitter username is @gitcoin).
 2. Remember to update your grantees on what you use the funds for by clicking through to your grant ( https://gitcoin.co{match.grant.get_absolute_url()} ) and posting to your activity feed.
 3. Celebrate 🎉 and then get back to BUIDLing something great. 🛠
@@ -1737,3 +1737,23 @@ def fund_request_email(request, to_emails, is_new=False):
                 send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
         finally:
             translation.activate(cur_language)
+
+def hackaton_end(hackaton, profile):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
+
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_hackaton_end_email(hackaton)
+
+        if not should_suppress_notification_email(to_email, 'hackaton_end'):  # FIXME: Add this supression.
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)

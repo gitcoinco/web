@@ -1123,6 +1123,14 @@ def render_new_bounty_roundup(to_email):
     return response_html, response_txt, subject, args.from_email, args.from_name
 
 
+def render_hackaton_end(hackaton):
+    params = {'hackaton': hackaton}
+    response_html = premailer_transform(render_to_string("emails/hackatons/ends_soon.html", params))
+    response_txt = render_to_string("emails/hackatons/ends_soon.txt", params)
+    subject = _("Your Gitcoin Hackaton ends soon")
+    return response_html, response_txt, subject
+
+
 
 # DJANGO REQUESTS
 
