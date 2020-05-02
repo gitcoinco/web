@@ -4825,14 +4825,6 @@ def create_bounty_v1(request):
     # maybe_market_to_slack(bounty, event_name)
     # maybe_market_to_user_slack(bounty, event_name)
 
-    logger.info("new_bounty.event", new_bounty.event)
-    if new_bounty.event:
-        for registration in HackathonRegistration.objects.filter(hackathon=new_bounty.event):
-            logger.info("HackathonRegistration", registration)
-            logger.info("new_bounty, registration.profile:", new_bounty, registration.profile)
-            # TODO: Run this in background:
-            bounty_added_to_event(new_bounty, registration.profile)
-
     response = {
         'status': 204,
         'message': 'bounty successfully created',

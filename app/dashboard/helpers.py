@@ -557,6 +557,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             logger.error(f'{e} encountered during new bounty creation for: {url}')
             new_bounty = None
 
+    if new_bounty.event:
+        for registration in HackathonRegistration.objects.filter(hackathon=new_bounty.event):
+            # TODO: Run this in background:
+            bounty_added_to_event(new_bounty, registration.registrant)
+
     return new_bounty
 
 
