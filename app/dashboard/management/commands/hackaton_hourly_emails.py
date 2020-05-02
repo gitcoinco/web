@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
         for hackathon in HackathonEvent.objects.filter(ends_soon_notified=False):
             if hackathon.end_date >= datetime.now() - datetime.timedelta(hours=48):
-                for profile in Profile.objects.all():  # FIXME
+                for profile in Profile.objects.all():
                     hackathon_end(hackathon, profile)
                 hackathon.ends_soon_notified = True  # Do not send it second time.
                 hackathon.save()
