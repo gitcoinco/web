@@ -25,21 +25,21 @@ from dashboard.models import Bounty, BountyFulfillment
 from marketing.mails import bounty_feedback
 
 from app.dashboard.models import HackathonEvent, Profile
-from app.marketing.mails import hackaton_end
+from app.marketing.mails import hackathon_end
 
 
 class Command(BaseCommand):
 
-    help = 'sends timed hackaton emails'
+    help = 'sends timed hackathon emails'
 
     def handle(self, *args, **options):
         if settings.DEBUG:
             print("not active in non prod environments")
             return
 
-        for hackaton in HackathonEvent.objects.all(ends_soon_notified=False):
-            if hackaton.end_date >= datetime.now() - datetime.timedelta(hours=48):
+        for hackathon in HackathonEvent.objects.all(ends_soon_notified=False):
+            if hackathon.end_date >= datetime.now() - datetime.timedelta(hours=48):
                 for profile in Profile.objects.all():  # FIXME
-                    hackaton_end(hackaton, profile)
-                hackaton.ends_soon_notified = True  # Do not send it second time.
-                hackaton.save()
+                    hackathon_end(hackathon, profile)
+                hackathon.ends_soon_notified = True  # Do not send it second time.
+                hackathon.save()

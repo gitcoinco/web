@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='hackathonevent',
             name='ends_soon_notified',
-            field=models.BooleanField(db_index=True, default=False, help_text='48 hours before hackaton ends notification send'),
+            field=models.BooleanField(db_index=True, default=False, help_text='48 hours before hackathon ends notification send'),
         ),
     ]

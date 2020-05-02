@@ -1739,7 +1739,7 @@ def fund_request_email(request, to_emails, is_new=False):
             translation.activate(cur_language)
 
 
-def hackaton_end(hackaton, profile):
+def hackathon_end(hackathon, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
     if not to_email:
@@ -1752,9 +1752,9 @@ def hackaton_end(hackaton, profile):
 
     try:
         setup_lang(to_email)
-        html, text, subject = render_hackaton_end_email(hackaton)
+        html, text, subject = render_hackathon_end_email(hackathon)
 
-        if not should_suppress_notification_email(to_email, 'hackaton_end'):  # FIXME: Add this supression.
+        if not should_suppress_notification_email(to_email, 'hackathon_end'):  # FIXME: Add this supression.
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)

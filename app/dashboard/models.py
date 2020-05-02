@@ -4489,7 +4489,7 @@ class HackathonEvent(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
-    ends_soon_notified = models.BooleanField(help_text=_('48 hours before hackaton ends notification send'),
+    ends_soon_notified = models.BooleanField(help_text=_('48 hours before hackathon ends notification send'),
                                              default=False,
                                              db_index=True)
     objects = HackathonEventQuerySet.as_manager()
