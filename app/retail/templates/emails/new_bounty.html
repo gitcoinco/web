@@ -87,7 +87,7 @@ This action expires at end of day, so act soon!
   <h3 class="no-subtitle" style="margin-top: 15px;">{% trans "💬Town Square Posts You've Missed" %}</h3>
   <div class="container" style="text-align: left; padding: 20px 10px">
     <div class="col-12 col-md-10 col-lg-8 mx-auto">
-      {% include 'shared/activity_container.html' with hide_loading=1 %}
+      {% include 'shared/activity_container.html' with hide_loading=1 for_email=1 %} 
     </div>
     <div style="text-align: center;">
       {% if notifications_count %}

@@ -261,7 +261,11 @@
 
           {% if not hide_likes %}
             <span class="mr-2">
-              <i class="far fa-eye grey" data-toggle="tooltip" title="The number of views this post has gotten." ></i>
+              {% if for_email %}
+                <img class="fa-icon-png" src="{% static "v2/images/emails/eye-regular.png" %}">
+              {% else %}
+                <i class="far fa-eye grey" data-toggle="tooltip" title="The number of views this post has gotten." ></i>
+              {% endif %}
               <span class="grey">{{ row.view_count }}</span>
             </span>
           {% endif %}
@@ -270,7 +274,11 @@
               <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"
               data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips."
               >
-                <i class="fab fa-ethereum grey" ></i>
+                {% if for_email %}
+                  <img class="fa-icon-png small" src="{% static "v2/images/emails/ethereum-brands-1.png" %}">
+                {% else %}
+                  <i class="fab fa-ethereum grey" ></i>
+                {% endif %}
                 <span class="amount grey">{{ row.tip_count_eth|floatformat:3}}</span>
               </a>
 
@@ -279,21 +287,34 @@
               data-pk={{row.pk}} class="like_activity mr-2" data-action='like' data-toggle="tooltip"
             >
               <span class="action {% if row.metadata.liked %}open{%endif%}">
-                <i class="far fa-heart grey"></i>
+                {% if for_email %}
+                  <img class="fa-icon-png" src=""{% static "v2/images/emails/heart-regular.png" %}">
+                {% else %}
+                  <i class="far fa-heart grey" ></i>
+                {% endif %}
               </span>
               <span class="num grey">{{row.likes.count}}</span>
             </a>
 
             <a href=# data-pk={{row.pk}} class="comment_activity mr-2" data-toggle="tooltip"
               title="Comment on this feed item." {% if row.comments.count %} data-open="true" {% endif %} >
-              <span class="action"><i class="far fa-comment grey"></i></span>
+              <span class="action">
+                {% if for_email %}
+                  <img class="fa-icon-png" src="{% static "v2/images/emails/comment-regular.png" %}">
+                {% else %}
+                  <i class="far fa-comment grey" ></i>
+                {% endif %}
+              </span>
               <span class="num grey">{{row.comments.count}}</span>
             </a>
           </span>
 
-          <button class="btn-clean grey" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-ellipsis-h"></i>
-          </button>
+          {% if not for_email %}
+            <button class="btn-clean" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-ellipsis-h grey" ></i>
+            </button>
+          {% endif %}
+
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
