@@ -45,73 +45,30 @@
     padding-right: 10px;
   }
   .quest-images-container {
-    padding: 45px 30px;
+    padding-top: 45px;
     width: 100%;
     margin: 0 auto;
     max-width: 900px;
   }
-  .quest-images-stack {
-    margin-left: 5%;
-  }
-  clearfix .quest-images-stack::after {
-    content: ' ';
-    display: table;
-    clear: both;
-  }
 
-  .quest-images-stack_item {
-    margin-bottom: 30px;
-  }
-
-  .quest-images-stack_item-top {
-    float: left;
-    margin-right: -100%;
-    z-index: 1;
-  }
-
-  .quest-images-stack_item-bottom {
-    float: right;
-  }
-
-  @media screen and (max-width: 599px) {
-    .quest-images-stack_item-top {
-      width: 50%;
-    }
-    .quest-images-stack_item-bottom {
-      width: 60%;
-    }
-  }
-
-  @media screen and (min-width: 600px) {
-    .quest-images-stack_item-top {
-      width: 80%;
-    }
-    .quest-images-stack_item-bottom {
-      width: 90%;
-    }
-}
 </style>
 
 <div class="text-center quest-box">
 
   {% if quest and small %}
-  <div class="quest">
-    <div class="quest-images-container">
-    <div class="quest-images-stack">
-      <div class="quest-images-stack_item quest-images-stack_item-top">
-        <img src="{{quest.enemy_img_url}}" alt="">
-      </div>
-      <div class="quest-images-stack_item quest-images-stack_item-bottom">
-        <img src="{{quest.kudos_reward.img_url}}" alt="">
-      </div>
-    </div>
-    </div>
-    <div style="clear: both;">
-      <p style="font-weight: bold; margin-bottom:0">{{quest.title}}</p>
-      <p style="margin-top:0">{{quest.description}}</p>
-    </div>
+    <table class="quest quest-images-container">
+      <tr>
+        <td></td>
+        <td rowspan=2><img class="quest-img-bottom"
+            src="{{quest.enemy_img_url}}"></td>
+      </tr>
+      <tr>
+        <td colspan=2><img class="quest-img-top" src="{{quest.kudos_reward.img_url}}"></td>
+      </tr>
+    </table>
+    <p style="font-weight: bold; margin-bottom:0">{{quest.title}}</p>
+    <p style="margin-top:0">{{quest.description}}</p>
     {% include 'emails/shared_quest_actions.html' with action='custom' action_copy='Play Quest' action_url=quest.url %}
-  </div>
   {% endif %}
 
   {% if quest and not small %}
