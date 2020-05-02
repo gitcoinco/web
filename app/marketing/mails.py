@@ -1754,7 +1754,7 @@ def hackathon_end(hackathon, profile):
         setup_lang(to_email)
         html, text, subject = render_hackathon_end(hackathon, profile)
 
-        if not should_suppress_notification_email(to_email, 'hackathon_end'):  # FIXME: Add this supression.
+        if not should_suppress_notification_email(to_email, 'hackathon_end'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
@@ -1775,7 +1775,7 @@ def bounty_not_submitted(bounty, profile):
         setup_lang(to_email)
         html, text, subject = render_bounty_not_submitted(bounty, profile)
 
-        if not should_suppress_notification_email(to_email, 'bounty_not_submitted'):  # FIXME: Add this supression.
+        if not should_suppress_notification_email(to_email, 'bounty_not_submitted'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
@@ -1796,7 +1796,7 @@ def bounty_added_to_event(bounty, profile):
         setup_lang(to_email)
         html, text, subject = render_bounty_added_to_event(bounty, profile)
 
-        if not should_suppress_notification_email(to_email, 'bounty_added_to_event'):  # FIXME: Add this supression.
+        if not should_suppress_notification_email(to_email, 'bounty_added_to_event'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)

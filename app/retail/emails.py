@@ -66,6 +66,9 @@ TRANSACTIONAL_EMAILS = [
     ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
     ('wall_post', _('Wall Post Emails'), _('Only when someone writes on your wall')),
     ('grant_updates', _('Grant Update Emails'), _('Updates from Grant Owners about grants you\'ve funded.')),
+    ('hackathon_end', _('Hackaton Ends Emails'), _('A hackathon will end soon.')),
+    ('bounty_not_submitted', _('Bounty Not Submitted Emails'), _('A hackathon bounty was not submitted.')),
+    ('bounty_added_to_event', _('Bounty Added to a Hackaton Emails'), _('A bounty was added to a hackathon you are joined.')),
 ]
 
 
