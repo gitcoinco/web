@@ -1,0 +1,5 @@
+{% load i18n  %}
+
+{% trans "A hackaton ends soon" %}
+
+{% trans "The hackaton \"{{ hackaton.name }}\" ends in 48 hours!" %}
