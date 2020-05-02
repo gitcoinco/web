@@ -50,7 +50,8 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from redis_semaphore import NotAvailable as SemaphoreExists
 
-from .models import Profile
+from .models import Profile, HackathonRegistration
+from ..marketing.mails import bounty_added_to_event
 
 logger = logging.getLogger(__name__)
 
@@ -672,7 +673,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         latest_old_bounty.save()
 
     if new_bounty.event:
-        for registration in HackathonRegistration.objects(hackathon=bounty.event):
+        for registration in HackathonRegistration.objects(hackathon=new_bounty.event):
             bounty_added_to_event(new_bounty, registration.profile)
 
 def process_bounty_details(bounty_details):
