@@ -172,6 +172,9 @@ class Command(BaseCommand):
                 receive_tx_status='pending',
                 receive_txid=tx_id,
                 receive_address=profile.preferred_payout_address,
+                tx_time=timezone.now(),
+                receive_tx_time=timezone.now(),
+                received_on=timezone.now(),
             )
             tip.trigger_townsquare()
             maybe_market_tip_to_github(tip)
