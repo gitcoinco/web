@@ -80,7 +80,7 @@ class Command(BaseCommand):
         network = 'mainnet' if not settings.DEBUG else 'rinkeby'
         actually_send = not settings.DEBUG
         usernames = options['usernames'].split(",")
-        amount = options['amount']
+        _amount = options['amount']
         DECIMALS = 18
         from_address = settings.TIP_PAYOUT_ADDRESS
         from_pk = settings.TIP_PAYOUT_PRIVATE_KEY
@@ -118,7 +118,7 @@ class Command(BaseCommand):
             contract = w3.eth.contract(Web3.toChecksumAddress(TOKEN_ADDRESS), abi=abi)
             address = Web3.toChecksumAddress(address)
 
-            amount = int(amount * 10**DECIMALS)
+            amount = int(_amount * 10**DECIMALS)
             tx_id = '0x0'
             if actually_send:
                 tx = contract.functions.transfer(address, amount).buildTransaction({
