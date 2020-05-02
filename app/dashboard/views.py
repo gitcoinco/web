@@ -4830,6 +4830,7 @@ def create_bounty_v1(request):
         for registration in HackathonRegistration.objects.filter(hackathon=new_bounty.event):
             logger.info("HackathonRegistration", registration)
             logger.info("new_bounty, registration.profile:", new_bounty, registration.profile)
+            # TODO: Run this in background:
             bounty_added_to_event(new_bounty, registration.profile)
 
     response = {
