@@ -26,7 +26,9 @@ along with this program. If not, see
 <p style="margin-bottom:0.25rem;">
   {% blocktrans %}The hackaton <b>{{ name }}</b> ends in 48 hours!{% endblocktrans %}
 </p>
+{% if logo %}
 <p><img src="{{ logo }}"/></p>
+{% endif %}
 {% endwith %}
 
 <hr>
