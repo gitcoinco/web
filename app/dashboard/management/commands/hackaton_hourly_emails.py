@@ -21,11 +21,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty, BountyFulfillment
-from marketing.mails import bounty_feedback
-
-from dashboard.models import HackathonEvent, Profile, HackathonRegistration
-from marketing.mails import hackathon_end
+from dashboard.models import Bounty, BountyFulfillment, HackathonEvent, HackathonRegistration, Profile
+from marketing.mails import bounty_feedback, hackathon_end
 
 
 class Command(BaseCommand):

@@ -24,11 +24,11 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
-    CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
-    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
-    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
-    UserVerificationModel, Poll, Question, Option, Answer, FundRequest
+    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
+    BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch, Option, Poll,
+    PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool,
+    ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
 
 

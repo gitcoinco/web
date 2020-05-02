@@ -37,7 +37,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Prefetch, Q
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -75,7 +75,7 @@ from git.utils import (
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
-from marketing.mails import admin_contact_funder, bounty_uninterested
+from marketing.mails import admin_contact_funder, bounty_added_to_event, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
@@ -100,11 +100,10 @@ from .helpers import (
     bounty_activity_event_adapter, get_bounty_data_for_activity, handle_bounty_views, load_files_in_directory,
 )
 from .models import (
-    Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
+    Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileSerializer, ProfileView,
-    SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
-    Poll, Question, Answer, Option
+    HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileView,
+    Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -116,7 +115,6 @@ from .utils import (
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
     release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
-from marketing.mails import bounty_added_to_event
 
 logger = logging.getLogger(__name__)
 

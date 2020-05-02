@@ -45,12 +45,12 @@ from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
-from marketing.mails import new_reserved_issue, bounty_added_to_event
+from marketing.mails import bounty_added_to_event, new_reserved_issue
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from redis_semaphore import NotAvailable as SemaphoreExists
 
-from .models import Profile, HackathonRegistration
+from .models import HackathonRegistration, Profile
 
 logger = logging.getLogger(__name__)
 

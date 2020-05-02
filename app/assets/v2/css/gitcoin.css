@@ -929,5 +929,5 @@ textarea.status-textarea {
 
 
 .dark-mode .bg-light {
-    background-color: var(--bg-shade-0)!important;
+  background-color: var(--bg-shade-0)!important;
 }

@@ -21,13 +21,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty, BountyFulfillment
-from marketing.mails import bounty_feedback
-
-from dashboard.models import Activity
-from marketing.mails import bounty_not_submitted
-
-from dashboard.models import Profile
+from dashboard.models import Activity, Bounty, BountyFulfillment, Profile
+from marketing.mails import bounty_feedback, bounty_not_submitted
 
 
 class Command(BaseCommand):
