@@ -59,7 +59,6 @@ from grants.router import router as grant_router
 from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
-from .. import app
 
 urlpatterns = [
     path('wiki/', include('wiki.urls')),
@@ -516,7 +515,7 @@ urlpatterns = [
         name='admin_successful_contribution'
     ),
     path(
-        '_administration/email/hackaton_ends/<int:hackaton>/<int:profile>',
+        '_administration/email/hackaton_ends/<str:hackaton>/<str:username>',
         retail.emails.hackaton_ends,
         name='hackaton_ends'),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),

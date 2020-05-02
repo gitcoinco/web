@@ -1469,9 +1469,9 @@ def start_work_applicant_expired(request):
 
 
 @staff_member_required
-def hackaton_ends(request, hackaton_id, profile_id):
+def hackaton_ends(request, hackaton_name, username):
     from dashboard.models import HackatonEvent, Profile
-    hackaton = HackatonEvent.object.get(pk=hackaton_id)
-    profile = Profile.object.get(pk=profile_id)
+    hackaton = HackatonEvent.object.get(name=hackaton_name)
+    profile = Profile.object.get(handle=username)
     response_html, _, _ = render_hackaton_end(hackaton, profile)
     return HttpResponse(response_html)
