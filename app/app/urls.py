@@ -518,6 +518,10 @@ urlpatterns = [
         '_administration/email/hackathon_ends/<str:hackathon>/<str:username>',
         retail.emails.hackathon_ends,
         name='hackathon_ends'),
+    path(
+        '_administration/email/bounty_not_submitted/<id:bounty>',
+        retail.emails.bounty_not_submitted,
+        name='bounty_not_submitted'),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
     path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
     path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),

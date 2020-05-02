@@ -48,6 +48,8 @@ from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
 from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
 
+from app.retail.emails import render_bounty_not_submitted
+
 logger = logging.getLogger(__name__)
 
 
@@ -1755,6 +1757,27 @@ def hackathon_end(hackathon, profile):
         html, text, subject = render_hackathon_end_email(hackathon)
 
         if not should_suppress_notification_email(to_email, 'hackathon_end'):  # FIXME: Add this supression.
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def bounty_not_submitted(bounty):
+    from_email = settings.CONTACT_EMAIL
+    to_email = bounty.profile.email
+    if not to_email:
+        if bounty.profile and bounty.profile.user:
+            to_email = bounty.profile.user.email
+    if not to_email:
+        return
+
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_bounty_not_submitted(bounty)
+
+        if not should_suppress_notification_email(to_email, 'bounty_not_submitted'):  # FIXME: Add this supression.
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)

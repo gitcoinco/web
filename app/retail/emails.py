@@ -1132,6 +1132,14 @@ def render_hackathon_end(hackathon, profile):
     return response_html, response_txt, subject
 
 
+def render_bounty_not_submitted(bounty):
+    params = {'bounty': bounty}
+    response_html = premailer_transform(render_to_string("emails/hackathons/bounty_not_submitted.html", params))
+    response_txt = render_to_string("emails/hackathons/bounty_not_submitted.txt", params)
+    subject = _("Your Gitcoin Hackaton bounty was not submitted")
+    return response_html, response_txt, subject
+
+
 
 # DJANGO REQUESTS
 
@@ -1475,4 +1483,12 @@ def hackathon_ends(request, hackathon, username):
     hackathon_obj = HackathonEvent.objects.get(slug=hackathon)
     profile = Profile.objects.get(handle=username)
     response_html, _, _ = render_hackathon_end(hackathon_obj, profile)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def bounty_not_submitted(request, bounty):
+    from dashboard.models import Bounty
+    bounty_obj = Bounty.objects.get(pk=bounty)
+    response_html, _, _ = render_bounty_not_submitted(bounty_obj)
     return HttpResponse(response_html)
