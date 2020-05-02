@@ -1738,6 +1738,7 @@ def fund_request_email(request, to_emails, is_new=False):
         finally:
             translation.activate(cur_language)
 
+
 def hackaton_end(hackaton, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email

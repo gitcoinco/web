@@ -1466,3 +1466,12 @@ def start_work_applicant_expired(request):
     bounty = Bounty.objects.last()
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def hackaton_ends(request, hackaton_id, profile_id):
+    from dashboard.models import HackatonEvent, Profile
+    hackaton = HackatonEvent.object.get(pk=hackaton_id)
+    profile = Profile.object.get(pk=profile_id)
+    response_html, _, _ = render_hackaton_end(hackaton, profile)
+    return HttpResponse(response_html)
