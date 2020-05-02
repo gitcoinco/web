@@ -3,6 +3,6 @@
 {% trans "Bounty not submitted" %}
 
 {% with title=bounty.title url=bounty.get_absolute_url %}
-  {% blocktrans %}The bounty not submitted by you {{ title }} - {{ url }} ends in 4-5 days!{% endblocktrans %}
+  {% blocktrans %}The bounty "{{ title }}" - {{ url }} not submitted by you ends in 4-5 days!{% endblocktrans %}
 </p>
 {% endwith %}
