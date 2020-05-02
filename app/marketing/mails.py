@@ -1175,7 +1175,14 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_new_bounty(to_email, bounties, old_bounties, trending_quests=trending_quests())
+
+            from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities
+            quest = quest_of_the_day()
+            grant = upcoming_grant()
+            hackathon = upcoming_hackathon()
+            activities = latest_activities()
+
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=hackathon, latest_activities=activities)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
