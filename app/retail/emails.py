@@ -1132,13 +1132,22 @@ def render_hackathon_end(hackathon, profile):
     return response_html, response_txt, subject
 
 
-def render_bounty_not_submitted(bounty):
+def render_bounty_not_submitted(bounty, profile):
+    """The `profile` argument is currently not used."""
     params = {'bounty': bounty}
     response_html = premailer_transform(render_to_string("emails/hackathons/bounty_not_submitted.html", params))
     response_txt = render_to_string("emails/hackathons/bounty_not_submitted.txt", params)
     subject = _("Your Gitcoin Hackaton bounty was not submitted")
     return response_html, response_txt, subject
 
+
+def render_bounty_added_to_event(bounty, profile):
+    """`profile` argument is currently not used."""
+    params = {'bounty': bounty}
+    response_html = premailer_transform(render_to_string("emails/hackathons/bounty_added_to_event.html", params))
+    response_txt = render_to_string("emails/hackathons/bounty_added_to_event.txt", params)
+    subject = _("Bounty added to a hackaton")
+    return response_html, response_txt, subject
 
 
 # DJANGO REQUESTS
@@ -1487,8 +1496,18 @@ def hackathon_ends(request, hackathon, username):
 
 
 @staff_member_required
-def bounty_not_submitted(request, bounty):
+def bounty_not_submitted(request, bounty, profile):
     from dashboard.models import Bounty
     bounty_obj = Bounty.objects.get(pk=bounty)
-    response_html, _, _ = render_bounty_not_submitted(bounty_obj)
+    response_html, _, _ = render_bounty_not_submitted(bounty_obj, profile)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def bounty_added_to_event(request, bounty, profile):
+    """The `profile` argument is currently not used."""
+    from dashboard.models import Bounty, Profile
+    bounty_obj = Bounty.objects.get(pk=bounty)
+    profile_obj = Profile.objects.get(handle=profile)
+    response_html, _, _ = render_bounty_added_to_event(bounty_obj, profile_obj)
     return HttpResponse(response_html)

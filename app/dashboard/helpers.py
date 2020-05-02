@@ -671,6 +671,9 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         latest_old_bounty.current_bounty = False
         latest_old_bounty.save()
 
+    if new_bounty.event:
+        for registration in HackathonRegistration.objects(hackathon=bounty.event):
+            bounty_added_to_event(new_bounty, registration.profile)
 
 def process_bounty_details(bounty_details):
     """Process bounty details.

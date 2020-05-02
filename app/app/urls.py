@@ -522,6 +522,10 @@ urlpatterns = [
         '_administration/email/bounty_not_submitted/<int:bounty>',
         retail.emails.bounty_not_submitted,
         name='bounty_not_submitted'),
+    path(
+        '_administration/email/bounty_added_to_event/<int:bounty>/<str:profile>',
+        retail.emails.bounty_added_to_event,
+        name='bounty_added_to_event'),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
     path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
     path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),

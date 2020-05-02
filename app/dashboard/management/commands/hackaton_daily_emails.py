@@ -43,6 +43,7 @@ class Command(BaseCommand):
         activities = (activity for activity in activities \
                       if not Activity.objects.filter(bounty__profile=activity.bounty.profile,
                                                      activity_type='work_submitted').exists())
-        for bounty in activities.bounty.distinct():
+        for activity in activities:
             if datetime.now() - datetime.timedelta(days=5) <= bounty.end_date < datetime.timedelta(days=4):
-                bounty_not_submitted(bounty)
+                for bounty in activities.bounty.distinct():
+                    bounty_not_submitted(bounty, activity.profile)

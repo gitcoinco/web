@@ -1,0 +1,33 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+Copyright (C) 2020 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see
+<http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "Bounty added to a hackaton you follow" %}</h1>
+
+{% with title=bounty.title url=bounty.get_absolute_url event=bounty.event hackaton=bounty.event.name %}
+<p style="margin-bottom:0.25rem;">
+  {% blocktrans %}The bounty <b><a href="{{ url }}">{{ title }}</a></b> added to hackathon <b>{{ hackaton }}</b>.{% endblocktrans %}
+</p>
+{% endwith %}
+
+<hr>
+
+{% endblock %}
