@@ -877,6 +877,12 @@
           refreshBounties(null, 0, false);
           initDOM();
           addPopover();
+          $(window).on('popstate', function(e) {
+            e.preventDefault();
+            // we change the url with the panels to ensure if you refresh or get linked here you're being shown what you want
+            // this is so that we go back to where we got sent here from, townsquare, etc.
+            window.location = document.referrer;
+          });
         }, 0);
       },
       methods: {
@@ -908,12 +914,6 @@
 
           history.pushState({}, `${vm.hackathonObj['slug']} - ${newPathName}`, newUrl);
 
-          $(window).on('popstate', function(e) {
-            e.preventDefault();
-            // we change the url with the panels to ensure if you refresh or get linked here you're being shown what you want
-            // this is so that we go back to where we got sent here from, townsquare, etc.
-            window.location = document.referrer;
-          });
         }
       },
       data: () => ({
