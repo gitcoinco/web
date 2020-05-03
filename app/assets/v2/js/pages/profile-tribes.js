@@ -226,7 +226,12 @@ const loadDynamicScript = (callback, url, id) => {
         }
       },
       mounted() {
-        console.log('we mounted');
+        $(window).on('popstate', function(e) {
+          e.preventDefault();
+          // we change the url with the panels to ensure if you refresh or get linked here you're being shown what you want
+          // this is so that we go back to where we got sent here from, townsquare, etc.
+          window.location = document.referrer;
+        });
         let vm = this;
 
         vm.isLoading = false;
