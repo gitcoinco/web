@@ -10,7 +10,9 @@
 .infinite-more-link{
   display: none;
 }
-
+.loading.unveil-loaded{
+  display: none !important;
+}
 .mega-founder {
   height: 150px;
   margin: 16px;

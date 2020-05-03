@@ -531,7 +531,7 @@ def psave_kt(sender, instance, **kwargs):
             "network":instance.network,
             "txid":instance.txid,
             "token_name":'ETH',
-            "token_value":instance.value_true,
+            "token_value":token.price_in_eth,
         }
         )
 
@@ -593,6 +593,7 @@ class BulkTransferCoupon(SuperModel):
     sender_pk = models.CharField(max_length=255, blank=True)
     tag = models.CharField(max_length=255, blank=True)
     metadata = JSONField(default=dict, blank=True)
+    make_paid_for_first_minutes = models.IntegerField(default=0)
 
     def __str__(self):
         """Return the string representation of a model."""
@@ -605,6 +606,13 @@ class BulkTransferCoupon(SuperModel):
     def url(self):
         return f"/kudos/redeem/{self.secret}"
 
+    @property
+    def paid_until(self):
+        return self.created_on + timezone.timedelta(minutes=self.make_paid_for_first_minutes)
+
+    @property
+    def is_paid_right_now(self):
+        return timezone.now() < self.paid_until
 
 @receiver(pre_save, sender=BulkTransferCoupon, dispatch_uid="psave_BulkTransferCoupon")
 def psave_BulkTransferCoupon(sender, instance, **kwargs):
