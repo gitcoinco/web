@@ -188,7 +188,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/avg-check.svg" %}" />
-            <h3 class="single-stat__title">{{ privacy_violations }}</h3>
+            <h3 class="single-stat__title">{{ privacy_violations|floatformat:0 }}</h3>
             <p class="single-stat__subtitle">{% trans "Privacy Violations" %}</p>
             <p class="single-stat__fineprint"></p>
           </div>
