@@ -29,6 +29,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 from cacheops import CacheMiss, cache
+from grants.models import Contribution, Grant
 from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, ManualStat, Stat
 from requests_oauthlib import OAuth2Session
 
@@ -581,5 +582,13 @@ def build_stat_results(keyword=None):
     reviews = FeedbackEntry.objects.exclude(comment='').filter(created_on__lt=(timezone.now() - timezone.timedelta(days=7))).order_by('-created_on')[0:15]
     context['reviews'] = [(ele.rating, ele.anonymized_comment) for ele in reviews]
     context['ratings'] = [1, 2, 3, 4, 5]
+    context['num_grants'] = Grant.objects.filter(hidden=False, active=True).count()
+    grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
+    context['grants_gmv'] = str(round(grants_gmv, 1)) + "m"
+    context['avg_contribution'] = Contribution.objects.count() / grants_gmv
+    from grants.views import clr_round
+    context['num_matching_rounds'] = clr_round
+    context['ads_served'] = str(round(ManualStat.objects.filter(key='ads_served').order_by('-pk').first().val / 10**6, 1)) + "m"
+    context['privacy_violations'] = ManualStat.objects.filter(key='privacy_violations').order_by('-pk').first().val
 
     return context

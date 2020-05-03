@@ -93,22 +93,30 @@
         <h2 class="content-block__title">{% trans "Gitcoin Platform Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
         <div class="platform-stats-container">
           <div class="single-stat">
-            <img src="{% static "v2/images/results/media-start-time.svg" %}" />
-            <h3 class="single-stat__title">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
-            <p class="single-stat__subtitle">{% trans "Median Bounty Start Time" %}</p>
-            <p class="single-stat__fineprint">(after Funding)</p>
-          </div>
-          <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
             <h3 class="single-stat__title">{{mau|floatformat:0|intcomma}}</h3>
             <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
           <div class="single-stat">
-            <img src="{% static "v2/images/results/hourly-rate-distribution.svg" %}" />
-            <h3 class="single-stat__title">{{ hourly_rate_distribution }}</h3>
-            <p class="single-stat__subtitle">{% trans "Hourly Rate Distribution" %}</p>
-            <p class="single-stat__fineprint">(for most bounties; <a href="#price_per_hour">more details here</a>)</p>
+            <img src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
+            <h3 class="single-stat__title">{{ alumni_count }}</h3>
+            <p class="single-stat__subtitle">{% trans "Full Time Jobs Placed" %}</p>
+            <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block content-block--blue-grey">
+      <div class="container" id="results_hero">
+        <h2 class="content-block__title">{% trans "Gitcoin Bounties Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <div class="platform-stats-container">
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/media-start-time.svg" %}" />
+            <h3 class="single-stat__title">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
+            <p class="single-stat__subtitle">{% trans "Median Bounty Start Time" %}</p>
+            <p class="single-stat__fineprint">(after Funding)</p>
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/median-turnaround-time.svg" %}" />
@@ -117,20 +125,73 @@
             <p class="single-stat__fineprint">(after Start Work)</p>
           </div>
           <div class="single-stat">
+            <img src="{% static "v2/images/results/hourly-rate-distribution.svg" %}" />
+            <h3 class="single-stat__title">{{ hourly_rate_distribution }}</h3>
+            <p class="single-stat__subtitle">{% trans "Hourly Rate Distribution" %}</p>
+            <p class="single-stat__fineprint">(for most bounties; <a href="#price_per_hour">more details here</a>)</p>
+          </div>
+          <div class="single-stat">
             <img src="{% static "v2/images/results/bounty-completion-rate.svg" %}" />
             <h3 class="single-stat__title">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
             <p class="single-stat__subtitle">{% trans "Bounty Completion Rate" %}</p>
             <p class="single-stat__fineprint">((after Start Work)</p>
           </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
-            <h3 class="single-stat__title">{{ alumni_count }}</h3>
-            <p class="single-stat__subtitle">{% trans "Bounty Hunters Hired Full Time" %}</p>
-            <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
-          </div>
         </div>
       </div>
     </div>
+
+
+    <div class="content-block content-block--blue-grey">
+      <div class="container" id="results_hero">
+        <h2 class="content-block__title">{% trans "Gitcoin Grants Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <div class="platform-stats-container">
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/GMV.svg" %}" />
+            <h3 class="single-stat__title">{{ num_grants }}</h3>
+            <p class="single-stat__subtitle">{% trans "Grants" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+            <h3 class="single-stat__title">{{ grants_gmv }}</h3>
+            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/avg-contribution.svg" %}" />
+            <h3 class="single-stat__title">{{ avg_contribution }}</h3>
+            <p class="single-stat__subtitle">{% trans "Average Contribution" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/matching_rounds.svg" %}" />
+            <h3 class="single-stat__title">{{ num_matching_rounds }}</h3>
+            <p class="single-stat__subtitle">{% trans "No. Matching Rounds" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="content-block content-block--blue-grey">
+      <div class="container" id="results_hero">
+        <h2 class="content-block__title">{% trans "Codefund Ads Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <div class="platform-stats-container">
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributions.svg" %}" />
+            <h3 class="single-stat__title">{{ ads_served }}</h3>
+            <p class="single-stat__subtitle">{% trans "Ethical Ads Served" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/avg-check.svg" %}" />
+            <h3 class="single-stat__title">{{ privacy_violations }}</h3>
+            <p class="single-stat__subtitle">{% trans "Privacy Violations" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+      </div>
+    </div>
+    
 
     <div class="content-block content-block--grey">
       <div class="container" >
