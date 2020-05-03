@@ -90,7 +90,7 @@
 
     <div class="content-block content-block--blue-grey">
       <div class="container" id="results_hero">
-        <h2 class="content-block__title">{% trans "Gitcoin Platform Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h2 class="content-block__title">{% trans "Gitcoin Platform-Wide Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
         <div class="platform-stats-container">
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
@@ -110,7 +110,8 @@
 
     <div class="content-block content-block--blue-grey">
       <div class="container" id="results_hero">
-        <h2 class="content-block__title">{% trans "Gitcoin Bounties Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h2 class="content-block__title mb-0">{% trans "Gitcoin Bounties Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h5 class="mt-0 pt-1">Bounties are a way of delegating development work to the Gitcoin community.  Place a bounty and do more faster, today.</h5>
         <div class="platform-stats-container">
           <div class="single-stat">
             <img src="{% static "v2/images/results/media-start-time.svg" %}" />
@@ -143,7 +144,8 @@
 
     <div class="content-block content-block--blue-grey">
       <div class="container" id="results_hero">
-        <h2 class="content-block__title">{% trans "Gitcoin Grants Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h2 class="content-block__title mb-1">{% trans "Gitcoin Grants Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h5 class="mt-0 pt-1">Gitcoin Grants is like a crypto-style patreon.  Raise money from supporters large & small, and earn even more from our quarterly matching rounds!</h5>
         <div class="platform-stats-container">
           <div class="single-stat">
             <img src="{% static "v2/images/results/GMV.svg" %}" />
@@ -153,19 +155,19 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/no-contributors.svg" %}" />
-            <h3 class="single-stat__title">{{ grants_gmv }}</h3>
+            <h3 class="single-stat__title">${{ grants_gmv }}</h3>
             <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
             <p class="single-stat__fineprint"></p>
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/avg-contribution.svg" %}" />
-            <h3 class="single-stat__title">{{ avg_contribution }}</h3>
+            <h3 class="single-stat__title">${{ avg_contribution }}</h3>
             <p class="single-stat__subtitle">{% trans "Average Contribution" %}</p>
             <p class="single-stat__fineprint"></p>
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/matching_rounds.svg" %}" />
-            <h3 class="single-stat__title">{{ num_matching_rounds }}</h3>
+            <h3 class="single-stat__title">{{ num_matching_rounds|floatformat:0 }}</h3>
             <p class="single-stat__subtitle">{% trans "No. Matching Rounds" %}</p>
             <p class="single-stat__fineprint"></p>
           </div>
@@ -175,7 +177,8 @@
 
     <div class="content-block content-block--blue-grey">
       <div class="container" id="results_hero">
-        <h2 class="content-block__title">{% trans "Codefund Ads Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h2 class="content-block__title mb-1">{% trans "Codefund Ads Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h5 class="mt-0 pt-1">Codefund is an ethical advertising network.  Monetize your audience without selling them out with Codefund!</h5>
         <div class="platform-stats-container">
           <div class="single-stat">
             <img src="{% static "v2/images/results/no-contributions.svg" %}" />

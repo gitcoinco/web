@@ -584,8 +584,8 @@ def build_stat_results(keyword=None):
     context['ratings'] = [1, 2, 3, 4, 5]
     context['num_grants'] = Grant.objects.filter(hidden=False, active=True).count()
     grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
-    context['grants_gmv'] = str(round(grants_gmv, 1)) + "m"
-    context['avg_contribution'] = Contribution.objects.count() / grants_gmv
+    context['grants_gmv'] = str(round(grants_gmv / 10**6, 1)) + "m"
+    context['avg_contribution'] = round(grants_gmv / Contribution.objects.count(), 2)
     from grants.views import clr_round
     context['num_matching_rounds'] = clr_round
     context['ads_served'] = str(round(ManualStat.objects.filter(key='ads_served').order_by('-pk').first().val / 10**6, 1)) + "m"
