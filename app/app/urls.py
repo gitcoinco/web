@@ -349,10 +349,6 @@ urlpatterns = [
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
-    re_path(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
-    path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
-    path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
-    re_path(r'^tools/?', dashboard.views.toolbox, name='tools'),
     re_path(r'^labs/?', dashboard.views.labs, name='labs'),
 
     # gas views
