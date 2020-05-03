@@ -475,7 +475,7 @@ $(document).ready(function() {
 
 
   // like activity
-  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity, .pin_activity', function(e) {
     e.preventDefault();
     const current_tab = getURLParams('tab');
 
@@ -1043,6 +1043,35 @@ $(document).ready(function() {
     setTimeout(function() {
       $target.removeClass('open');
     }, 300);
+  });
+
+  // pinned activity tribes
+  $(document).on('click', '.pin_activity', function(e) {
+    e.preventDefault();
+
+    state = $(this).data('state');
+
+    if (state == 'unpin') {
+      $('.pinned-activity').addClass('bg-white');
+      $('.pinned-activity .tip_activity').css({'background-color': 'white'});
+      $('.pinned-activity').css({'border-bottom-color': '#EFEFEF;'});
+      $('.pinned-activity .activity_pinned').hide();
+      $('.box').removeClass('pinned-activity');
+      _alert('Sucess unpin.', 'success', 1000);
+    } else if (state == 'pinned') {
+
+      $(this).closest('.box').addClass('pinned-activity');
+
+
+      if ($('.pinned-activity')) {
+        $('.pinned-activity .tip_activity').css({'background-color': '#e7fff5'});
+        $('.pinned-activity').removeClass('bg-white');
+        $('.pinned-activity .activity_pinned').show();
+      }
+      _alert('Status pinned.', 'success', 1000);
+    }
+
+
   });
 
   $(document).on('click', '.fund_issue', function(e) {
