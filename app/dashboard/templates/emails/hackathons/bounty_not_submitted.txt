@@ -2,7 +2,7 @@
 
 {% trans "Bounty added to a hackathon you follow" %}
 
-{% with title=bounty.title url=bounty.get_absolute_url %}
-  {% blocktrans %}The bounty "{{ title }}" - {{ url }} not submitted by you ends in 4-5 days!{% endblocktrans %}
+{% with title=bounty.title url=bounty.get_absolute_url hackathon=bounty.event.name %}
+  {% blocktrans %}The bounty "{{ title }}" - {{ url }} from hackathon "{{ hackathon }}" not submitted by you ends in 4-5 days!{% endblocktrans %}
 </p>
 {% endwith %}

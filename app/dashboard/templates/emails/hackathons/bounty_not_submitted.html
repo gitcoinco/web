@@ -22,9 +22,9 @@ along with this program. If not, see
 {% block content %}
 <h1>{% trans "Bounty not submitted" %}</h1>
 
-{% with title=bounty.title url=bounty.get_absolute_url %}
+{% with title=bounty.title url=bounty.get_absolute_url hackathon=bounty.event.name %}
 <p style="margin-bottom:0.25rem;">
-  {% blocktrans %}The bounty <b><a href="{{ url }}">{{ title }}</a></b> <em>not submitted by you</em> ends in 4-5 days!{% endblocktrans %}
+  {% blocktrans %}The bounty <b><a href="{{ url }}">{{ title }}</a></b> from hackathon <b>{{ hackathon }}</b> <em>not submitted by you</em> ends in 4-5 days!{% endblocktrans %}
 </p>
 {% endwith %}
 
