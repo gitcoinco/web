@@ -3,6 +3,6 @@
 {% trans "Bounty not submitted" %}
 
 {% with title=bounty.title url=bounty.get_absolute_url %}
-  {% blocktrans %}The bounty "{{ title }}" - {{ url }} added to hackathon "{{ hackaton }}".{% endblocktrans %}
+  {% blocktrans %}The bounty "{{ title }}" - {{ url }} added to hackathon "{{ hackathon }}".{% endblocktrans %}
 </p>
 {% endwith %}

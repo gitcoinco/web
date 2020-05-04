@@ -20,11 +20,11 @@ along with this program. If not, see
 {% load i18n static grants_extra %}
 
 {% block content %}
-<h1>{% trans "A hackaton ends soon" %}</h1>
+<h1>{% trans "A hackathon ends soon" %}</h1>
 
-{% with name=hackaton.name logo=hackaton.logo %}
+{% with name=hackathon.name logo=hackathon.logo %}
 <p style="margin-bottom:0.25rem;">
-  {% blocktrans %}The hackaton <b>{{ name }}</b> ends in 48 hours!{% endblocktrans %}
+  {% blocktrans %}The hackathon <b>{{ name }}</b> ends in 48 hours!{% endblocktrans %}
 </p>
 {% if logo %}
 <p><img src="{{ logo }}"/></p>

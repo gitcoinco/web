@@ -1499,10 +1499,10 @@ def hackathon_ends(request, hackathon, username):
 
 
 @staff_member_required
-def bounty_not_submitted(request, bounty, profile):
+def bounty_not_submitted(request, bounty, username):
     from dashboard.models import Bounty
     bounty_obj = Bounty.objects.get(pk=bounty)
-    response_html, _, _ = render_bounty_not_submitted(bounty_obj, profile)
+    response_html, _, _ = render_bounty_not_submitted(bounty_obj, username)
     return HttpResponse(response_html)
 
 

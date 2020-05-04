@@ -1,7 +1,7 @@
 {% load i18n  %}
 
-{% trans "A hackaton ends soon" %}
+{% trans "A hackathon ends soon" %}
 
-{% with name=hackaton.name %}
-  {% blocktrans %}The hackaton <b>{{ name }}</b> ends in 48 hours!{% endblocktrans %}
+{% with name=hackathon.name %}
+  {% blocktrans %}The hackathon <b>{{ name }}</b> ends in 48 hours!{% endblocktrans %}
 {% endwith %}

@@ -20,11 +20,11 @@ along with this program. If not, see
 {% load i18n %}
 
 {% block content %}
-<h1>{% trans "Bounty added to a hackaton you follow" %}</h1>
+<h1>{% trans "Bounty added to a hackathon you follow" %}</h1>
 
-{% with title=bounty.title url=bounty.get_absolute_url event=bounty.event hackaton=bounty.event.name %}
+{% with title=bounty.title url=bounty.get_absolute_url event=bounty.event hackathon=bounty.event.name %}
 <p style="margin-bottom:0.25rem;">
-  {% blocktrans %}The bounty <b><a href="{{ url }}">{{ title }}</a></b> added to hackathon <b>{{ hackaton }}</b>.{% endblocktrans %}
+  {% blocktrans %}The bounty <b><a href="{{ url }}">{{ title }}</a></b> added to hackathon <b>{{ hackathon }}</b>.{% endblocktrans %}
 </p>
 {% endwith %}
 

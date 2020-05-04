@@ -520,7 +520,7 @@ urlpatterns = [
         name='hackathon_ends'
     ),
     path(
-        '_administration/email/hackathons/bounty_not_submitted/<int:bounty>',
+        '_administration/email/hackathons/bounty_not_submitted/<int:bounty>/<str:username>',
         retail.emails.bounty_not_submitted,
         name='bounty_not_submitted'
     ),
