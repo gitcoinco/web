@@ -1010,5 +1010,11 @@ def new_bounty_daily_preview(request):
     hours_back = 2000
     new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
     quests = trending_quests()
-    response_html, _ = render_new_bounty('foo@bar.com', new_bounties, all_bounties, offset=3, trending_quests=quests)
+
+    quest = quest_of_the_day()
+    grant = upcoming_grant()
+    hackathon = upcoming_hackathon()
+    activities = latest_activities()
+
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=hackathon, latest_activities=activities)
     return HttpResponse(response_html)
