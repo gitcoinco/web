@@ -515,17 +515,17 @@ urlpatterns = [
         name='admin_successful_contribution'
     ),
     path(
-        '_administration/email/hackathon_ends/<str:hackathon>/<str:username>',
+        '_administration/email/hackathons/hackathon_ends/<str:hackathon>/<str:username>',
         retail.emails.hackathon_ends,
         name='hackathon_ends'
     ),
     path(
-        '_administration/email/bounty_not_submitted/<int:bounty>',
+        '_administration/email/hackathons/bounty_not_submitted/<int:bounty>',
         retail.emails.bounty_not_submitted,
         name='bounty_not_submitted'
     ),
     path(
-        '_administration/email/bounty_added_to_event/<int:bounty>/<str:profile>',
+        '_administration/email/hackathons/bounty_added_to_event/<int:bounty>/<str:profile>',
         retail.emails.bounty_added_to_event,
         name='bounty_added_to_event'
     ),
