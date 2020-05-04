@@ -504,24 +504,15 @@
                 </template>
                 <project-directory v-bind:tribe="tribe.handle" inline-template>
                   <div class="sidebar-container flex-column flex-lg-row mb-3">
-                    <div class="pb-4 border-bottom form-group d-md-none">
-                      <div class="d-flex flex-grow-1 d-md-inline-block mx-3" id="search_projects">
-                        <form class="form-inline my-2 flex-fill justify-content-center">
-                          <div class="input-group w-100">
-                            <input class="form-control" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                            <div class="input-group-append">
-                              <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                      <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2 d-md-none">
-                        <span class="font-weight-bold">[[ numProjects ]] projects </span> found
-                      </p>
-                    </div>
+                    <a class="mt-3 mx-3 col-11 d-md-none blue btn d-flex justify-content-between align-items-center text-muted font-weight-semibold" style="letter-spacing: 1.5px;" @click="showFilters = !showFilters">Filter
+                      <i class="fas fa-caret-down" v-if="!showFilters"></i>
+                      <i class="fas fa-caret-up" v-if="showFilters"></i>
+                    </a>
+
+
                     <transition name="fade">
                       <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-                        <div class="pb-4 border-bottom form-group  d-none d-md-block">
+                        <div class="pb-4 border-bottom form-group">
                           <div class="d-flex flex-grow-1 " id="search_projects">
                             <form class="form-inline my-2 flex-fill justify-content-center">
                               <div class="input-group w-100">
@@ -536,7 +527,7 @@
                             <span class="font-weight-bold">[[ numProjects ]] projects </span> found
                           </p>
                         </div>
-                        <div v-if="!tribe" class="pb-4 border-bottom form-group d-none d-md-inline-block">
+                        <div v-if="!tribe" class="pb-4 border-bottom form-group d-md-inline-block">
                           <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
                           <div id="project_sponsors" class="form__select2">
                             <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
@@ -547,7 +538,7 @@
                             </select2>
                           </div>
                         </div>
-                        <div class="g-multiselect pb-4 border-bottom form-group d-none d-md-inline-block">
+                        <div class="g-multiselect pb-4 border-bottom form-group d-md-inline-block">
                           <label for="skills" class="font-weight-bold">Member Skills</label>
                           <div class="form__select2">
                             <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
@@ -893,6 +884,10 @@
                 </template>
                 <bounty-explorer v-bind:tribe="tribe" inline-template>
                   <div class="sidebar-container flex-column flex-lg-row">
+                    <a class="mt-3 mx-3 col-11 d-md-none blue btn d-flex justify-content-between align-items-center text-muted font-weight-semibold" style="letter-spacing: 1.5px;" @click="showFilters = !showFilters">{% trans "Filter" %}
+                      <i class="fas fa-caret-down" v-if="!showFilters"></i>
+                      <i class="fas fa-caret-up" v-if="showFilters"></i>
+                    </a>
                     <transition name="fade">
                       <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
                         <div class="">
@@ -1029,7 +1024,7 @@
                     </transition>
                     <div class="container-fluid pt-4" @scroll.passive="onScroll($event)">
                       <div class="pb-5">
-                        <h1 class="font-bigger-1">
+                        <h1 class="font-bigger-1 d-none d-sm-inline-block">
                           <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters"><i class="fas fa-filter"></i></button>
                           [[ tribe.name ]] - {% trans "Bounties" %}
                         </h1>
