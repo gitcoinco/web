@@ -2845,13 +2845,16 @@ def profile(request, handle, tab=None):
         if request.user.is_authenticated and not context['is_my_org']:
             ProfileView.objects.create(target=profile, viewer=request.user.profile)
         try:
+
+            what = f'tribe:{profile.handle}'
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network=network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
             context['sum_eth_on_repos'] = profile.get_eth_sum(bounties=orgs_bounties)
             context['works_with_org'] = profile.get_who_works_with(work_type='org', bounties=orgs_bounties)
             context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
-            context['target'] = f'/activity?what=tribe:{profile.handle}'
+            context['what'] = what
+            context['target'] = f'/activity?what={what}'
             context['is_on_tribe'] = json.dumps(context['is_on_tribe'])
             context['is_my_org'] = json.dumps(context['is_my_org'])
             context['profile_handle'] = profile.handle

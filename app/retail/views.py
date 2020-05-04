@@ -1046,6 +1046,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
 
+    activities = activities.filter().exclude(pin__what=what)
+
     return activities
 
 
@@ -1057,7 +1059,7 @@ def activity(request):
     trending_only = int(request.GET.get('trending_only', 0))
 
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
-    activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent')
+    activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
 
     # store last seen
     if activities.exists():

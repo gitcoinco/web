@@ -21,7 +21,7 @@ from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
 from .models import (
-    Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
+    Announcement, Comment, Favorite, Flag, Like, PinnedPost, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
 )
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
@@ -336,6 +336,13 @@ def town_square(request):
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
+
+    try:
+        pinned = PinnedPost.objects.get(what=tab)
+        print(pinned)
+    except PinnedPost.DoesNotExist:
+        pinned = None
+
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
         trending_only = int(request.GET.get('trending', 0))
@@ -348,6 +355,8 @@ def town_square(request):
             'is_direct_link': is_direct_link,
             'page_seo_text_insert': page_seo_text_insert,
             'nav': 'home',
+            'what': tab,
+            'pinned': pinned,
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
             'tags': tags,
@@ -356,6 +365,7 @@ def town_square(request):
             'is_townsquare': True,
             'trending_only': bool(trending_only),
         }
+
         return TemplateResponse(request, 'townsquare/index.html', context)
 
     tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
@@ -381,6 +391,10 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'what': tab,
+        'pinned': pinned,
+        'max_length': max_length,
+        'max_length_offset': max_length_offset,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -535,6 +549,18 @@ def api(request, activity_id):
                 Favorite.objects.create(user=request.user, activity=activity)
         elif request.POST['direction'] == 'unfavorite':
             Favorite.objects.filter(user=request.user, activity=activity).delete()
+
+    # PinnedPost request
+    elif request.POST.get('method') == 'pin':
+        what = request.POST.get('what')
+        print(what)
+        print(request.POST.get('direction'))
+        if request.POST.get('direction') == 'pin':
+            pinned_post, created = PinnedPost.objects.update_or_create(
+                activity=activity, user=request.user.profile, what=what
+            )
+        elif request.POST.get('direction') == 'unpin':
+            PinnedPost.objects.filter(what=what).delete()
 
     # flag request
     elif request.POST.get('method') == 'flag':
