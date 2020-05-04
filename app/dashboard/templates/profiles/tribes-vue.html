@@ -41,9 +41,9 @@
     <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/explorer.css" %}' />
     <style type="text/css">
-      @media (min-width: 992px) and (max-width: 1200px) {
+      @media (min-width: 992px) {
         .sidebar {
-          min-width: 15vw !important;
+          min-width: 20vw !important;
         }
 
         img.profile-header__avatar {
@@ -52,6 +52,25 @@
           margin-top:10px;
 
         }
+      }
+      .looking-team {
+        background-color: rgba(62, 0, 255, 0.05);
+        border-radius: 8px;
+        padding: 11px 15px;
+      }
+      .info-card-title {
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 22px;
+        letter-spacing: 1px;
+        color: #3E00FF;
+      }
+      .info-card-desc {
+        font-style: italic;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 18px;
+        color: #666666;
       }
       .navigation {
         height: 60px;
@@ -459,11 +478,11 @@
                 </template>
                 <div class="ml-md-4 mt-4 townsquare_header">
                   <div class="row">
-                    <div class="col-12 col-md-3 d-md-block">
+                    <div class="col-12 col-md-4 col-lg-3">
                       <div @click="showCoreTeam = !showCoreTeam" class="ml-4 mb-4 font-body left-ribbon text-justify btn-block justify-content-between align-items-center p-1">[[ tribe.name ]] {% trans "Team" %} <i class="fa fa-fw" :class="showCoreTeam ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
                       <suggested-profiles v-show="showCoreTeam" :profiles="tribe.team_or_none_if_timeout" class="ml-4"></suggested-profiles>
                     </div>
-                    <div class="feed_container col-12 col-md-8">
+                    <div class="feed_container col-12 col-md-7 col-lg-8">
                       <div class="feed_container_child container-fluid">
                         {% csrf_token %}
                         {% if user.is_authenticated %}
@@ -860,7 +879,7 @@
                 <bounty-explorer v-bind:tribe="tribe" inline-template>
                   <div class="sidebar-container flex-column flex-lg-row">
                     <transition name="fade">
-                      <nav v-show="showFilters" class="sidebar flex-fill p-4 ml-4 ml-md-auto" role="navigation">
+                      <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
                         <div class="">
                           <div class="g-multiselect mb-2">
                             <div class="form__select2 align-items-center pr-4">
@@ -993,7 +1012,7 @@
                         <button class="btn blue" @click="clearParams(); searchBounties();">Reset Filters</button>
                       </nav>
                     </transition>
-                    <div class="container pt-4" @scroll.passive="onScroll($event)">
+                    <div class="container-fluid pt-4" @scroll.passive="onScroll($event)">
                       <div class="pb-5">
                         <h1 class="font-bigger-1">
                           <button class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters"><i class="fas fa-filter"></i></button>
@@ -1343,17 +1362,17 @@
 
                               <span class="m-0 p-0 d-none d-md-inline-block">|</span>
 
-                              <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
+                              <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"  :href="`${tribe.data.html_url}?tab=repositories`" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" v-bind:title="`@${tribe.handle} on Github`">
                                 <i class="fab fa-github"></i>
                               </a>
-                              <a v-if="tribe.data.blog && online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s website" >
+                              <a v-if="tribe.data.blog && online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" :href="`${tribe.data.blog}`" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true"  v-bind:title="`@${tribe.handle}'s Website on Github`">
                                 <i class="fas fa-home"></i>
                               </a>
-                              <a v-if="tribe.linkedin_url&& online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Linkedin" >
+                              <a v-if="tribe.linkedin_url&& online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" :href="`https://linkedin.com/in/${tribe.linkedin_url}`" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" v-bind:title="`@${tribe.handle} on Linkedin`" >
                                 <i class="fab fa-linkedin-in"></i>
                               </a>
 
-                              <a v-if="tribe.data.email && online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="mailto:{{profile.data.email | obfuscate}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s Email">
+                              <a v-if="tribe.data.email && online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" :href="`mailto:${tribe.data.email}`"  data-placement="bottom" data-toggle="tooltip" data-html="true" :title="`@${tribe.handle}'s Email`">
                                 <i class="far fa-envelope"></i>
                               </a>
                             </p>
@@ -1443,16 +1462,8 @@
           <form method="post" enctype="multipart/form-data">
             <div class="form__drop" id="js-drop">
               <span>Drag & Drop or Browse</span>
-              <b-form-file
-                id="img-project"
-                v-model="headerFile"
-                :state="Boolean(headerFile)"
-                plain
-                accept="image/*"
-              >
-
+              <b-form-file id="img-project" v-model="headerFile" :state="Boolean(headerFile)" plain accept="image/*"></b-form-file>
               <b-img-lazy v-if="headerFilePreview" id="preview" style="width:100%;" :src="headerFilePreview"></b-img-lazy>
-            </b-form-file>
             </div>
           </form>
           <template v-slot:modal-footer>

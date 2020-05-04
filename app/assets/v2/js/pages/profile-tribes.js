@@ -92,11 +92,14 @@ const loadDynamicScript = (callback, url, id) => {
 
           $.when(sendSave(url, data)).then(function(response) {
             _alert('Tribe has been updated');
-            vm.tribe.tribes_cover_image = vm.headerFilePreview;
-            vm.$bvModal.hide('change-tribe-header');
+            if (vm.headerFile) {
+              vm.tribe.tribes_cover_image = vm.headerFilePreview;
+              vm.$bvModal.hide('change-tribe-header');
+            }
           }).fail(function(error) {
-            _alert('Error saving priorites. Try again later', 'error');
-            console.error('error: unable to save priority', error);
+
+            _alert('Error updating Tribe', 'error');
+            console.error('error: unable to update tribe', error);
           });
         },
         suggestBounty: function() {
