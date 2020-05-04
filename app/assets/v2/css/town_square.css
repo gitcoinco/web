@@ -1068,11 +1068,13 @@ body.green.offer_view .announce {
   background-repeat: no-repeat;
   background-position: right;
 }
+
 .get-started p {
   width: 60%;
   font-size: 24px;
   line-height: 40px;
 }
+
 .get-started .action {
   background-color: #101061;
   color: white;
@@ -1082,6 +1084,7 @@ body.green.offer_view .announce {
   line-height: 40px;
   font-weight: bold;
 }
+
 .get-started .action:hover {
   background-color: #101061;
   filter: brightness(130%);
@@ -1094,6 +1097,7 @@ body.green.offer_view .announce {
   background-repeat: no-repeat;
   background-position: right;
 }
+
 #modal-get-started .topbar {
   height: 60px;
   width: 100%;
@@ -1116,6 +1120,7 @@ body.green.offer_view .announce {
   color: #FFFFFF;
   width: 60%;
 }
+
 #get-started p {
   color: white;
 }
@@ -1141,35 +1146,42 @@ body.green.offer_view .announce {
   padding-right: 28px;
   font-size: 18px;
 }
+
 #get-started a p {
   font-size: 18px;
   margin: 0;
 }
+
 #get-started img {
   height: 23px;
 }
+
 #get-started .close {
   font-size: 35px;
   margin-right: 17px;
 }
 
-@media screen and (max-width: 760px){
+@media screen and (max-width: 760px) {
   .get-started p {
     width: 90%;
     font-size: 1.1rem;
     line-height: 24px;
     margin-top: 15px;
   }
+
   .get-started .action {
     padding: 3px 50px;
     font-size: 14px;
   }
+
   #get-started h1, #get-started p {
     width: 90%;
   }
+
   #get-started a {
     width: 20em;
   }
+}
 
 .new_grant {
   border-top: 6px solid rgba(13, 7, 100, 0.25);
