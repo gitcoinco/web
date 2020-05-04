@@ -8,7 +8,6 @@ def find_txn_on_etc_explorer(fulfillment, network='mainnet'):
     token_name = fulfillment.token_name
     if token_name != 'ETC':
         return None
-
     funderAddress = fulfillment.bounty.bounty_owner_address
     amount = fulfillment.payout_amount
     payeeAddress = fulfillment.fulfiller_address

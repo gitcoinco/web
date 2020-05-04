@@ -67,6 +67,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
 matching_live = '(💰$250K Match LIVE!) '
+live_now = '❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
 total_clr_pot = 250000
 clr_round = 5
@@ -79,6 +80,7 @@ show_clr_card = True
 # Round 7 - September 14th — September 28th 2020
 
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
+after_that_next_round_begin = timezone.datetime(2020, 6, 15, 12, 0)
 round_end = timezone.datetime(2020, 4, 10, 10, 0)
 round_types = ['media', 'tech', 'health']
 
@@ -88,6 +90,7 @@ if not clr_active:
     clr_matching_banners_style = 'results'
     matching_live = ''
     matching_live_tiny = ''
+    live_now = 'Gitcoin Grants helps you find funding for your projects'
 
 
 def get_stats(round_type):
@@ -354,6 +357,7 @@ def grants(request):
         'type': grant_type,
         'round_end': round_end,
         'next_round_start': next_round_start,
+        'after_that_next_round_begin': after_that_next_round_begin,
         'all_grants_count': all_grants_count,
         'now': timezone.now(),
         'mid_back': mid_back,
@@ -366,8 +370,8 @@ def grants(request):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'past_partners': past_partners,
-        'card_desc': f'❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants',
-        'avatar_url': f'/static/v2/images/grants/headers/{grant_type_gfx_if_any}.png',
+        'card_desc': f'{live_now}',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 1097,
         'avatar_width': 1953,
@@ -471,7 +475,6 @@ def grant_details(request, grant_id, grant_slug):
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
-            grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
@@ -598,7 +601,6 @@ def grant_new(request):
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
                 'token_address': request.POST.get('token_address', ''),
                 'token_symbol': request.POST.get('token_symbol', ''),
-                'amount_goal': request.POST.get('amount_goal', 1),
                 'contract_version': request.POST.get('contract_version', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
@@ -695,7 +697,6 @@ def grant_new_v0(request):
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
                 'token_address': request.POST.get('token_address', ''),
                 'token_symbol': request.POST.get('token_symbol', ''),
-                'amount_goal': request.POST.get('amount_goal', 1),
                 'contract_version': request.POST.get('contract_version', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
@@ -1063,7 +1064,11 @@ def profile(request):
 
 def quickstart(request):
     """Display quickstart guide."""
-    params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
+    params = {
+    'active': 'grants_quickstart',
+    'title': _('Quickstart'),
+    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+    }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
 
@@ -1125,7 +1130,6 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
     metadata = {
         'id': grant.id,
         'value_in_token': '{0:.2f}'.format(grant.amount_received) if not amount else amount,
-        'amount_goal': '{0:.2f}'.format(grant.amount_goal) if not amount else amount,
         'token_name': grant.token_symbol if not token else token,
         'title': grant.title,
         'grant_logo': grant_logo,

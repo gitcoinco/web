@@ -38,8 +38,6 @@ import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
-# event:ethdenver2019
-import event_ethdenver2019.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
@@ -137,6 +135,7 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
+    url(r'^api/v0.1/status_wallpapers', townsquare.views.load_wallpapers, name='load_wallpapers'),
     url(
         r'^api/v0.1/get_suggested_contributors',
         dashboard.views.get_suggested_contributors,
@@ -333,7 +332,7 @@ urlpatterns = [
     url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
     url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
     url(r'^tip/?', dashboard.tip_views.send_tip_2, name='tip'),
-
+    url(r'^requestmoney/?', dashboard.tip_views.request_money, name='request_money'),
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
     re_path(r'^legal/terms/?', dashboard.views.terms, name='terms'),
@@ -350,10 +349,6 @@ urlpatterns = [
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
-    re_path(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
-    path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
-    path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
-    re_path(r'^tools/?', dashboard.views.toolbox, name='tools'),
     re_path(r'^labs/?', dashboard.views.labs, name='labs'),
 
     # gas views
@@ -451,7 +446,7 @@ urlpatterns = [
     re_path(r'^medium/?', retail.views.medium, name='medium'),
     re_path(r'^github/?', retail.views.github, name='github'),
     re_path(r'^youtube/?', retail.views.youtube, name='youtube'),
-    re_path(r'^web3/?', retail.views.web3, name='web3'),
+    re_path(r'^web3$/?', retail.views.web3, name='web3'),
 
     # increase funding limit
     re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
@@ -612,7 +607,6 @@ urlpatterns = [
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
-    re_path(r'^settings/discord/?', marketing.views.discord_settings, name='discord_settings'),
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
@@ -676,15 +670,6 @@ urlpatterns = [
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
-
-    # event:ethdenver2019
-    re_path(
-        r'^ethdenver/redeem/(?P<secret>.*)/?$',
-        event_ethdenver2019.views.receive_bulk_ethdenver,
-        name='kudos_receive_bulk'
-    ),
-    url(r'^ethdenver/', event_ethdenver2019.views.ethdenver2019),
-    # /event:ethdenver2019
 
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
