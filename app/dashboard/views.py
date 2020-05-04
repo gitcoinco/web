@@ -2860,7 +2860,7 @@ def profile(request, handle, tab=None):
         active_tab = 3
     context['active_panel'] = active_tab
 
-    if profile.is_org and profile.handle.lower() in ['gitcoinco']:
+    if profile.is_org:
         # record profile view
         if request.user.is_authenticated and not context['is_my_org']:
             ProfileView.objects.create(target=profile, viewer=request.user.profile)

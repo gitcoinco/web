@@ -606,6 +606,10 @@
                     </template>
                     <user-directory v-bind:is_my_org="is_my_org" inline-template v-bind:tribe="tribe.handle">
                       <div class="sidebar-container flex-column flex-lg-row">
+                          <a class="mt-3 mx-3 col-11 d-md-none blue btn d-flex justify-content-between align-items-center text-muted font-weight-semibold" style="letter-spacing: 1.5px;" @click="showFilters = !showFilters">Filter
+                            <i class="fas fa-caret-down" v-if="!showFilters"></i>
+                            <i class="fas fa-caret-up" v-if="showFilters"></i>
+                          </a>
                           <transition name="fade">
                             <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
                               <div class="pb-4 border-bottom form-group">
@@ -649,7 +653,7 @@
                             </nav>
                           </transition>
                           <div class="container-fluid pt-4" @scroll.passive="onScroll($event)">
-                            <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+                            <button v-if="!hideFilterButton" class="d-none d-md-block blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
                             <div class="py-5 mt-4">
                               <div v-if="noResults" class="text-center">
                                 <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
@@ -860,7 +864,7 @@
                     <bounty-explorer v-bind:tribe="tribe" inline-template>
                       <div class="sidebar-container flex-column flex-lg-row">
                         <transition name="fade">
-                          <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
+                          <nav v-show="showFilters" class="sidebar flex-fill p-4 ml-4 ml-md-auto" role="navigation">
                             <div class="">
                               <div class="g-multiselect mb-2">
                                 <div class="form__select2 align-items-center pr-4">
@@ -1316,7 +1320,7 @@
                   </b-tab>
                 </b-tabs>
               </div>
-              <div key="feed-1" v-if="!isLoading"  class="col-12 col-md-3 order-1 order-md-2">
+              <div key="feed-1" v-if="!isLoading && is_my_org && tribe"  class="col-12 col-md-3 order-1 order-md-2">
                   <div id="sponsor_sidebar" class="font-body">
                     <div class="sponsor-top d-none d-sm-block"></div>
                     <div class="p-3">

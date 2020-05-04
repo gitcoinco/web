@@ -310,7 +310,8 @@ Vue.component('user-directory', {
       errorIssueDetails: undefined,
       showBanner: undefined,
       persona: undefined,
-      hideFilterButton: !!document.getElementById('explore_tribes')
+      hideFilterButton: !!document.getElementById('explore_tribes'),
+      expandFilter: true
     };
   },
   mounted() {
