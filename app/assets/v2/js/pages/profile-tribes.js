@@ -234,8 +234,10 @@ const loadDynamicScript = (callback, url, id) => {
         });
         let vm = this;
 
-        vm.isLoading = false;
-        $('#preloader').remove()
+        this.$nextTick((e) => {
+          vm.isLoading = false;
+          $('#preloader').remove();
+        });
         this.$watch('headerFile', function(newVal, oldVal) {
           if (checkFileSize(this.headerFile, 4000000) === false) {
             _alert(`Profile Header Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');
