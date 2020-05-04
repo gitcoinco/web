@@ -926,3 +926,7 @@ textarea.status-textarea {
 .status-menu button:hover {
   color: var(--townsquare-link-color);
 }
+
+.dark-mode .bg-light {
+  background-color: var(--bg-shade-0)!important;
+}

@@ -654,6 +654,7 @@
                           </transition>
                           <div class="container-fluid pt-4" @scroll.passive="onScroll($event)">
                             <button v-if="!hideFilterButton" class="d-none d-md-block blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
+
                             <div class="py-5 mt-4">
                               <div v-if="noResults" class="text-center">
                                 <img src="{% static 'v2/images/shrug_bot.png' %}" alt="nothing found" width="316" height="221">
