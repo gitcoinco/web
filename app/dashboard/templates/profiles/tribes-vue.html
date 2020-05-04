@@ -484,7 +484,7 @@
                   </div>
                 </template>
                 <project-directory v-bind:tribe="tribe.handle" inline-template>
-                  <div class="sidebar-container flex-column flex-lg-row">
+                  <div class="sidebar-container flex-column flex-lg-row mb-3">
                     <div class="pb-4 border-bottom form-group d-md-none">
                       <div class="d-flex flex-grow-1 d-md-inline-block mx-3" id="search_projects">
                         <form class="form-inline my-2 flex-fill justify-content-center">
@@ -496,11 +496,14 @@
                           </div>
                         </form>
                       </div>
+                      <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2 d-md-none">
+                        <span class="font-weight-bold">[[ numProjects ]] projects </span> found
+                      </p>
                     </div>
                     <transition name="fade">
                       <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-                        <div class="pb-4 border-bottom form-group">
-                          <div class="d-flex flex-grow-1" id="search_projects">
+                        <div class="pb-4 border-bottom form-group  d-none d-md-block">
+                          <div class="d-flex flex-grow-1 " id="search_projects">
                             <form class="form-inline my-2 flex-fill justify-content-center">
                               <div class="input-group w-100">
                                 <input class="form-control" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
