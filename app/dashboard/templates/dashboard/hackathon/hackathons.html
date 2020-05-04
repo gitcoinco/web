@@ -62,7 +62,7 @@
     <div class="container-fluid header dash text-white">
       {% include 'shared/minihero.html' with h1='Hackathons' suppress_logo=0 position_h1_below_logo=True hide_rain=True %}
 
-      <div class="row justify-content-center" style="margin-top:8rem!important;">
+      <div class="row justify-content-center my-sm-5">
       {% if featured %}
         <div class="col-12 col-lg-7">
           <div class="box-cta rounded" style="width:100%;padding:0px 15x;">
@@ -129,8 +129,8 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-12 col-lg-2">
-                      <img width="316" src="/static/v2/images/hackathon/work_for_internet.svg" />
+                  <div class="col-12 col-lg-2 px-0 px-sm-1">
+                      <img class="work-internet" width="316" src="/static/v2/images/hackathon/work_for_internet.svg" />
                   </div>
                 </div>
               </div>
@@ -252,7 +252,7 @@
       <div class="row my-4">
         <div class="container">
           <div class="row">
-            <h3 class="text-uppercase font-weight-bolder">Hack with these tribes</h3>
+            <h3 class="text-uppercase font-weight-bolder font-title ml-4">Hack with these tribes</h3>
           </div>
           <div class="row">
             {% if tribes|length %}
@@ -261,7 +261,7 @@
                   <div class="mb-5 mt-5">
                     <a href="{{ tribe.path }}" target="_blank" style="text-decoration:none;">
                       <img width="128" src="{{ tribe.logo_path }}" alt="Tribe logo" />
-                      <span class="font-weight-bold d-flex align-items-center justify-content-around font-bigger-4 text-center mt-1 mb-1" style="color:black;">{{ tribe.display_name }}</span>
+                      <span class="font-weight-bold d-flex align-items-center justify-content-around font-title text-center mt-1 mb-1" style="color:black;">{{ tribe.display_name }}</span>
                     </a>
                     <div calss="small"><i class="fas fa-user-alt mr-1"></i> {{ tribe.members }} members</div>
                   </div>
@@ -270,7 +270,7 @@
             {% endif %}
           </div>
           <div class="row text-center mb-5" align="center">
-            <div class="col-12"><a class="font-bigger-3" href="{% url 'tribes_directory' %}">See all tribes</a></div>
+            <div class="col-12"><a class="font-title" href="{% url 'tribes_directory' %}">See all tribes</a></div>
           </div>
         </div>
       </div>

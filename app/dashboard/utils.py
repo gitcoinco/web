@@ -1105,11 +1105,13 @@ def get_hackathon_event(title, event, network):
 
 
 def get_tribe(display_name, logo_path, handle):
+    profile = Profile.objects.filter(handle=handle, is_org=True)
+
     return {
         'display_name': display_name,
         'logo_path': logo_path,
-        'members': list(Profile.objects.filter(handle=handle, is_org=True).values_list('follower_count', flat=True))[0],
-        'path': list(Profile.objects.filter(handle=handle, is_org=True))[0].absolute_url
+        'members': profile.values_list('follower_count', flat=True).first() or 0,
+        'path': profile.first().absolute_url if profile.exists() else ''
     }
 
 
