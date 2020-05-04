@@ -484,14 +484,25 @@ $(document).ready(function() {
       return;
     }
 
+    let method = $(this).data('action');
+    let state = $(this).data('state');
+    // remote post
+    var params = {
+      'method': method,
+      'direction': state,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+
+
     var is_unliked = $(this).data('state') == $(this).data('negative');
     var num = $(this).find('span.num').html();
 
-    if (is_unliked) { // like
+    if (method === 'pin') {
+      params['what'] = $('.infinite-more-link').data('what');
+    } else if (is_unliked) { // like
       $(this).find('span.action').addClass('open');
       $(this).data('state', $(this).data('affirmative'));
       $(this).addClass('animate-sparkle');
-
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
       $(this).find('i').removeClass('far').addClass('fas');
@@ -504,14 +515,7 @@ $(document).ready(function() {
       $(this).find('i').removeClass('fas').addClass('far');
     }
 
-    // remote post
-    var params = {
-      'method': $(this).data('action'),
-      'direction': $(this).data('state'),
-      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-    };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
-
     var parent = $(this).parents('.activity.box');
     var self = $(this);
 
@@ -523,6 +527,22 @@ $(document).ready(function() {
       if (!is_unliked && current_tab === 'my_favorites') {
         self.parentsUntil('.activity_stream').remove();
       }
+
+      if (state === 'unpin') {
+        $('.pinned-activity').addClass('bg-white');
+        $('.pinned-activity .tip_activity').css({'background-color': 'white'});
+        $('.pinned-activity').css({'border-bottom-color': '#EFEFEF;'});
+        $('.pinned-activity .activity_pinned').hide();
+        $('.box').removeClass('pinned-activity');
+        _alert('Sucess unpin.', 'success', 1000);
+      } else {
+        parent.addClass('pinned-activity');
+        parent.find('.tip_activity').css({'background-color': '#e7fff5'});
+        parent.removeClass('bg-white');
+        parent.find('.activity_pinned').show();
+        _alert('Status pinned.', 'success', 1000);
+      }
+
     }).fail(function() {
       parent.find('.error').removeClass('hidden');
     });
@@ -1045,34 +1065,6 @@ $(document).ready(function() {
     }, 300);
   });
 
-  // pinned activity tribes
-  $(document).on('click', '.pin_activity', function(e) {
-    e.preventDefault();
-
-    state = $(this).data('state');
-
-    if (state == 'unpin') {
-      $('.pinned-activity').addClass('bg-white');
-      $('.pinned-activity .tip_activity').css({'background-color': 'white'});
-      $('.pinned-activity').css({'border-bottom-color': '#EFEFEF;'});
-      $('.pinned-activity .activity_pinned').hide();
-      $('.box').removeClass('pinned-activity');
-      _alert('Sucess unpin.', 'success', 1000);
-    } else if (state == 'pinned') {
-
-      $(this).closest('.box').addClass('pinned-activity');
-
-
-      if ($('.pinned-activity')) {
-        $('.pinned-activity .tip_activity').css({'background-color': '#e7fff5'});
-        $('.pinned-activity').removeClass('bg-white');
-        $('.pinned-activity .activity_pinned').show();
-      }
-      _alert('Status pinned.', 'success', 1000);
-    }
-
-
-  });
 
   $(document).on('click', '.fund_issue', function(e) {
     e.preventDefault();

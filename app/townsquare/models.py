@@ -389,9 +389,8 @@ class PinnedPost(SuperModel):
     user = models.ForeignKey('dashboard.Profile',
         on_delete=models.CASCADE, related_name='pins')
     activity = models.ForeignKey('dashboard.Activity', 
-        on_delete=models.CASCADE, related_name='pins')
-    hash_what = models.CharField(max_length=32, 
-        default='', unique=True)
+        on_delete=models.CASCADE, related_name='pin')
+    what = models.CharField(max_length=100, default='', unique=True)
     created = models.DateTimeField(auto_now=True)
 
 

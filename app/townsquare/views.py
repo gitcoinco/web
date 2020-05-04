@@ -338,6 +338,12 @@ def town_square(request):
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
     max_length_offset = abs(((request.user.profile.created_on if request.user.is_authenticated else timezone.now()) - timezone.now()).days)
     max_length = 280 + max_length_offset
+    try:
+        pinned = PinnedPost.objects.get(what=tab)
+        print(pinned)
+    except PinnedPost.DoesNotExist:
+        pinned = None
+
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
         trending_only = int(request.GET.get('trending', 0))
@@ -350,6 +356,8 @@ def town_square(request):
             'is_direct_link': is_direct_link,
             'page_seo_text_insert': page_seo_text_insert,
             'nav': 'home',
+            'what': tab,
+            'pinned': pinned,
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
             'tags': tags,
@@ -360,6 +368,8 @@ def town_square(request):
             'is_townsquare': True,
             'trending_only': bool(trending_only),
         }
+
+
         return TemplateResponse(request, 'townsquare/index.html', context)
 
     tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
@@ -385,6 +395,8 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
+        'what': tab,
+        'pinned': pinned,
         'max_length': max_length,
         'max_length_offset': max_length_offset,
         'SHOW_DRESSING': SHOW_DRESSING,
@@ -544,20 +556,15 @@ def api(request, activity_id):
 
     # PinnedPost request
     elif request.POST.get('method') == 'pin':
-        hash = hashlib.sha256()
-        hash.update(str(time.time()))
-        hash_what = hash.hexdigest()
-        
-        if request.POST['direction'] == 'pin':
-            already_pins = PinnedPost.objects.filter(activity=activity, user=request.user, hash_what=hash_what).exists()
-            if not already_pins:
-                PinnedPost.objects.create(activity=activity, user=request.user, hash_what=hash_what)
-            else:
-                PinnedPost.objects.filter(activity=activity, user=request.user, hash_what=hash_what).delete()
-                PinnedPost.objects.create(activity=activity, user=request.user, hash_what=hash_what)
-
-        elif request.POST['direction'] == 'unpin':
-            PinnedPost.objects.filter(activity=activity, user=request.user, hash_what=hash_what).delete()
+        what = request.POST.get('what')
+        print(what)
+        print(request.POST.get('direction'))
+        if request.POST.get('direction') == 'pin':
+            pinned_post, created = PinnedPost.objects.update_or_create(
+                activity=activity, user=request.user.profile, what=what
+            )
+        elif request.POST.get('direction') == 'unpin':
+            PinnedPost.objects.filter(what=what).delete()
 
     # flag request
     elif request.POST.get('method') == 'flag':

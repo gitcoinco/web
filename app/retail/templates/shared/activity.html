@@ -203,12 +203,12 @@
             {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
             <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
 
-            <p class='num_participants m-0 p-0' data-roomname="+roomName+">
-              <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
+            <div class='num_participants m-0 p-0' data-roomname="+roomName+">
+              <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{% endif %}'>
                 •
               </p>
               <span class="participants_count">{{row.video_participants_count}}</span> users on call
-            </p>
+            </div>
 
             {% endif %}
           {% endif %}
@@ -301,13 +301,12 @@
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             {% if row.profile.organizations|length %}
               <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the Tribe Town Square." href=# 
-              data-url={{row.url}}
-              data-affirmative=pinned
-              data-negative=unpin data-state="{% if row.metadata.pin%}pinned{% else %}unpin{%endif%}"
-              data-pk="{{row.pk}}"
-              data-what="tribe">
+              data-url="{{row.url}}"
+              data-action="pin"
+              data-state="{% if row.metadata.pin%}unpin{% else %}pin{%endif%}"
+              data-pk="{{row.pk}}">
 
-              <i class="fas fa-map-pin mr-2"></i>Pin Post
+              <i class="fas fa-map-pin mr-2"></i>{% if row.metadata.pin%}Unpin {% else %} Pin {% endif %} Post
               </a>
             {% endif %}
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
@@ -478,6 +477,7 @@
           </div>
         {% endif %}
       </div>
+  </div>
   </div>
   {% elif row.activity_type == 'new_kudos' %}
   <div class="mt-1 mb-2">
