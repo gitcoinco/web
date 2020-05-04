@@ -127,14 +127,16 @@ This action expires at end of day, so act soon!
 <br>
 <hr>
 
-<div style="margin-bottom: 5em;">
-  <h3 class="no-subtitle">{% trans "💰Start Earning!" %}</h3>
+{% if bounties %}
+  <div style="margin-bottom: 5em;">
+    <h3 class="no-subtitle">{% trans "💰Start Earning!" %}</h3>
 
-  {% for bounty in bounties %}
-    {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1%}
-  {% endfor %}
+    {% for bounty in bounties %}
+      {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1%}
+    {% endfor %}
 
-</div>
+  </div>
+{% endif %}
 
 {% if old_bounties %}
 
