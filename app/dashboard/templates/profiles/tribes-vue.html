@@ -359,6 +359,36 @@
            font-size:14px;
         }
       }
+
+      .get-started {
+        background-image: url(/static/v2/images/tribe-notce.svg);
+        background-color: var(--gc-blue);
+        font-style: normal;
+        font-weight: normal;
+        color: white;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: right;
+      }
+
+      .get-started .action {
+        background-color: #101061;
+        color: white;
+        border-radius: 0;
+        padding: 3px 40px;
+        line-height: 40px;
+        font-weight: bold;
+      }
+
+      .get-started .action:hover {
+        background-color: #101061;
+        filter: brightness(130%);
+      }
+      .activity_main {
+        margin-left: 15px !important;
+      }
       </style>
 
   </head>
@@ -403,6 +433,18 @@
                 </div>
               </div>
               <div key="sidebar-1" v-if="!isLoading"  class="col-12 col-md-9 order-2 order-md-1">
+                {% if not user.is_authenticated %}
+                  <div class="p-xl-0 pb-4 mx-3 col-11 d-md-none">
+                    <div class="get-started">
+                      <div class="d-flex flex-column align-items-center flex-fill ml-3 text-center">
+                        <p class="py-0 px-2 font-title">Gitcoin is a community of 39,102 amazing open source developers working remotely to build in Web3.</p>
+                        <div class="font-caption text-left">
+                          <a class="btn action bg-dark-blue font-smaller-1 btn-sm mt-2" href="/login/github/?next=/login">Join now</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
                 <b-tabs :value="activePanel" @input="tabChange" fill nav-class="col-12 col-xs-12 col-xl-7 offset-xl-4" nav-wrapper-class="row nav-tabs" align="center" content-class="row light-blue" class="container-fluid">
                   <b-tab class="col-12" title-item-class="navigation">
                     <template v-slot:title>
@@ -413,14 +455,17 @@
                     <div class="ml-md-4 mt-4 townsquare_header">
 
                       <div class="row">
-                        <div class="col-12 col-md-3">
+
+                        <div class="col-12 col-md-3 d-none d-md-block">
                           <div @click="showCoreTeam = !showCoreTeam" class="ml-4 mb-4 font-body left-ribbon text-justify btn-block justify-content-between align-items-center p-1">[[ tribe.name ]] {% trans "Team" %} <i class="fa fa-fw" :class="showCoreTeam ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
                           <suggested-profiles v-show="showCoreTeam" :profiles="tribe.team_or_none_if_timeout" class="ml-4"></suggested-profiles>
                         </div>
                         <div class="feed_container col-12 col-md-8">
                           <div class="feed_container_child container-fluid">
                             {% csrf_token %}
-                            {% include 'townsquare/shared/shareactivity.html' %}
+                            {% if user.is_authenticated %}
+                              {% include 'townsquare/shared/shareactivity.html' %}
+                            {% endif %}
 
                             <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
                               <span id="activity_subheader">
@@ -1281,12 +1326,12 @@
                             <b-img-lazy blank blank-src="https://dapp.ngrok.io/dynamic/avatar/gitcoinco" class="profile-header__avatar" :src=`/dynamic/avatar/${tribe.handle}`></b-img-lazy>
                           </div>
                         </template>
-                          <b-row>
+                          <b-row class="ml-0">
                             <b-col>
-                              <h1 class="profile-header__handle">
+                              <h1 class="profile-header__handle mb-1">
                                 [[ tribe.name ]]
                               </h1>
-                              <p class="mb-0">
+                              <p class="mb-1 gc-text-blue">
                                 @[[ tribe.handle ]]
                               </p>
                               <div v-if="tribe.custom_tagline" class="profile-header__bio my-2">
@@ -1294,28 +1339,28 @@
                               </div>
 
                               <p class="mb-0 mt-1">
-                                <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-green' : 'btn-gc-blue']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
+                                <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-green' : 'btn-gc-blue']" class="d-none d-md-inline-block btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
 
-                                |
+                                <span class="m-0 p-0 d-none d-md-inline-block">|</span>
 
                                 <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Github">
                                   <i class="fab fa-github"></i>
                                 </a>
-                                <a v-if="tribe.data.blog && online" class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s website" >
+                                <a v-if="tribe.data.blog && online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s website" >
                                   <i class="fas fa-home"></i>
                                 </a>
-                                <a v-if="tribe.linkedin_url&& online" class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Linkedin" >
+                                <a v-if="tribe.linkedin_url&& online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="https://linkedin.com/in/{{ profile.linkedin_url }}" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }} on Linkedin" >
                                   <i class="fab fa-linkedin-in"></i>
                                 </a>
 
-                                <a v-if="tribe.data.email && online" class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="mailto:{{profile.data.email | obfuscate}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s Email">
+                                <a v-if="tribe.data.email && online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" href="mailto:{{profile.data.email | obfuscate}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ profile.handle }}'s Email">
                                   <i class="far fa-envelope"></i>
                                 </a>
                               </p>
                             </b-col>
                           </b-row>
                     </b-media>
-                      <b-col class="profile_details">
+                      <b-col class="profile_details d-none d-md-inline-block">
 
                         <div class="profile-header__stats profile-header__stats--contributor card mb-4">
                           <div class="card-header font-subheader">
@@ -1359,12 +1404,18 @@
                         </b-col>
                       <b-col v-html="tribe.tribe_description" class="mt-3"></b-col>
                       <b-col>
-                        <b-button v-if="!is_my_org && is_on_tribe" v-b-modal.suggest-bounty-modal class="btn button--full px-3 btn-gc-blue">
+                        <b-button v-if="!is_my_org && is_on_tribe" v-b-modal.suggest-bounty-modal class="btn button--full px-3 btn-gc-blue d-none d-md-inline-block">
                           {% trans "Suggest a Bounty" %}
                         </b-button>
+                        <div v-if="tribe.data && tribe.data.bio" class="col-12 d-md-none profile-header__bio my-3">
+                           [[ tribe.data.bio ]]
+                        </div>
+                        {%  if user.is_authenticated %}
+                        <b-button @click="followTribe(tribe.handle, $event)"  v-bind:class="[is_on_tribe ? 'd-none' : 'btn-gc-blue']" class="d-md-none mt-2 col-12 btn btn-gc-blue" >[[ isOnTribe ? "unfollow" : "follow" ]]</b-button>
+                        {% endif %}
                       </b-col>
 
-                    <div class="pt-0 mt-3 font-body">
+                    <div class="pt-0 mt-3 font-body d-none d-md-inline-block">
                       <div style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
                         <h4 class="mx-3 pt-4 font-body font-weight-bold">Currently collecting ideas for</h4>
                         <ul v-html="tribe.tribe_priority" class="my-0 mx-4 p-0 pb-4">
