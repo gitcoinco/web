@@ -26,7 +26,7 @@ from marketing.mails import bounty_feedback, bounty_not_submitted
 
 
 class Command(BaseCommand):
-    help = 'sends more timed hackathon emails'
+    help = 'sends more timed hackathon emails (that go daily)'
 
     def handle(self, *args, **options):
         if settings.DEBUG:

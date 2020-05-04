@@ -27,7 +27,7 @@ from marketing.mails import bounty_feedback, hackathon_end
 
 class Command(BaseCommand):
 
-    help = 'sends timed hackathon emails'
+    help = 'sends timed hackathon emails (that go up to hourly)'
 
     def handle(self, *args, **options):
         if settings.DEBUG:
