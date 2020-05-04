@@ -25,7 +25,7 @@
 			<line fill="none" stroke="#D0C2DF" stroke-linecap="round" stroke-miterlimit="10" x1="36.77" y1="122.46" x2="94.54" y2="122.46"/>
 		
 			<circle fill="#FFFFFF" stroke="#1C0E40" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" cx="107.81" cy="107.5" r="20"/>
-		<circle fill="#63C084" cx="107.81" cy="107.5" r="15.39"/>
+		<circle fill="#00ED92" cx="107.81" cy="107.5" r="15.39"/>
 		
 			<line fill="#FFFFFF" stroke="#1C0E40" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="53.54" y1="127.5" x2="107.5" y2="127.5"/>
 		

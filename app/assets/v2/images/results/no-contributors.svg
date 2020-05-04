@@ -19,7 +19,7 @@
 		</i:aipgfRef>
 	</foreignObject>
 	<g i:extraneous="self">
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#64C085" d="M121.16,89.14c7.65-4.86,12.72-13.4,12.72-23.13
+		<path fill-rule="evenodd" clip-rule="evenodd" fill="#00ED92" d="M121.16,89.14c7.65-4.86,12.72-13.4,12.72-23.13
 			c0-6.51-2.27-12.5-6.07-17.2l-6.2-3.1l-15.1-1.42l-14.63,1.89l-7.55,3.77c-3.27,4.51-5.2,10.05-5.2,16.05
 			c0,9.73,5.07,18.27,12.72,23.13L121.16,89.14z"/>
 		<path fill-rule="evenodd" clip-rule="evenodd" fill="#BCB0D0" d="M121.16,89.14c7.65-4.86,12.72-13.4,12.72-23.13
@@ -65,14 +65,14 @@
 			<path fill-rule="evenodd" clip-rule="evenodd" fill="#1C0B40" d="M141.44,92.14H73.94v-6h67.49V92.14z"/>
 		</g>
 		<g>
-			<path fill="#64C085" stroke="#1C0B40" stroke-width="5" stroke-miterlimit="10" d="M96.75,183.69l-24.62-37.25
+			<path fill="#00ED92" stroke="#1C0B40" stroke-width="5" stroke-miterlimit="10" d="M96.75,183.69l-24.62-37.25
 				c-2.88-4.36-2.88-10.1,0-14.46l24.62-37.25c4.92-7.45,15.55-7.45,20.48,0l24.62,37.25c2.88,4.36,2.88,10.1,0,14.46l-24.62,37.25
 				C112.3,191.14,101.67,191.14,96.75,183.69z"/>
-			<path fill="#64C085" stroke="#1C0B40" stroke-width="5" stroke-miterlimit="10" d="M74.84,131.3l26.92-19.01
+			<path fill="#00ED92" stroke="#1C0B40" stroke-width="5" stroke-miterlimit="10" d="M74.84,131.3l26.92-19.01
 				c3.15-2.22,7.3-2.22,10.45,0l26.92,19.01c5.38,3.8,5.38,12.01,0,15.81l-26.92,19.01c-3.15,2.22-7.3,2.22-10.45,0l-26.92-19.01
 				C69.45,143.31,69.45,135.1,74.84,131.3z"/>
 			
-				<line fill="#64C085" stroke="#1C0B40" stroke-width="5" stroke-miterlimit="10" x1="106.67" y1="89.15" x2="106.67" y2="189.27"/>
+				<line fill="#00ED92" stroke="#1C0B40" stroke-width="5" stroke-miterlimit="10" x1="106.67" y1="89.15" x2="106.67" y2="189.27"/>
 		</g>
 	</g>
 </switch>

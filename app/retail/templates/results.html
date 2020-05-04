@@ -99,6 +99,12 @@
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
           <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+            <h3 class="single-stat__title">${{ total_gmv_rounded }}</h3>
+            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+            <p class="single-stat__fineprint">({{transactions|intcomma}} Transactions)</p>
+          </div>
+          <div class="single-stat">
             <img src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
             <h3 class="single-stat__title">{{ alumni_count }}</h3>
             <p class="single-stat__subtitle">{% trans "Full Time Jobs Placed" %}</p>
@@ -124,6 +130,12 @@
             <h3 class="single-stat__title">{{ bounty_average_turnaround }}</h3>
             <p class="single-stat__subtitle">{% trans "Median Bounty Turnaround Time" %}</p>
             <p class="single-stat__fineprint">(after Start Work)</p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+            <h3 class="single-stat__title">${{ bounties_gmv }}</h3>
+            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+            <p class="single-stat__fineprint">(from {{no_bounties}} bounties + {{no_tips}} tips)</p>
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/hourly-rate-distribution.svg" %}" />
@@ -157,19 +169,19 @@
             <img src="{% static "v2/images/results/no-contributors.svg" %}" />
             <h3 class="single-stat__title">${{ grants_gmv }}</h3>
             <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
-            <p class="single-stat__fineprint"></p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/avg-contribution.svg" %}" />
-            <h3 class="single-stat__title">${{ avg_contribution }}</h3>
-            <p class="single-stat__subtitle">{% trans "Average Contribution" %}</p>
-            <p class="single-stat__fineprint"></p>
+            <p class="single-stat__fineprint">({{ no_contributions }} Contributions)</p>
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/matching_rounds.svg" %}" />
             <h3 class="single-stat__title">{{ num_matching_rounds|floatformat:0 }}</h3>
             <p class="single-stat__subtitle">{% trans "No. Matching Rounds" %}</p>
             <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/avg-contribution.svg" %}" />
+            <h3 class="single-stat__title">${{ median_contribution }}</h3>
+            <p class="single-stat__subtitle">{% trans "Median Contribution" %}</p>
+            <p class="single-stat__fineprint">(${{ avg_contribution }} Average)</p>
           </div>
       </div>
     </div>
@@ -184,6 +196,12 @@
             <img src="{% static "v2/images/results/no-contributions.svg" %}" />
             <h3 class="single-stat__title">{{ ads_served }}</h3>
             <p class="single-stat__subtitle">{% trans "Ethical Ads Served" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+            <h3 class="single-stat__title">${{ ads_gmv }}</h3>
+            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
             <p class="single-stat__fineprint"></p>
           </div>
           <div class="single-stat">

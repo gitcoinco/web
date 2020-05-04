@@ -555,7 +555,9 @@ def build_stat_results(keyword=None):
     pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
-    context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
+    total_gmv_rounded = f"${round(context['universe_total_usd'] / 1000000, 1)}m"
+    context['total_gmv_rounded'] = total_gmv_rounded
+    context['title'] = f"{total_gmv_rounded} in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
 
     try:
@@ -585,7 +587,16 @@ def build_stat_results(keyword=None):
     context['num_grants'] = Grant.objects.filter(hidden=False, active=True).count()
     grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
     context['grants_gmv'] = str(round(grants_gmv / 10**6, 1)) + "m"
-    context['avg_contribution'] = round(grants_gmv / Contribution.objects.count(), 2)
+    num_contributions = Contribution.objects.count()
+    context['no_contributions'] = num_contributions
+    context['no_bounties'] = Bounty.objects.current().count()
+    context['no_tips'] = Tip.objects.filter(network='mainnet').send_happy_path().count()
+    context['ads_gmv'] = get_codefund_history_at_date(timezone.now(), '')
+    context['bounties_gmv'] = Stat.objects.filter(key='bounties_done_value').order_by('-pk').first().val
+    context['bounties_gmv'] = str(round(total_tips_usd + context['bounties_gmv'], 1)) + "k"
+    median_index = int(num_contributions/2)
+    context['median_contribution'] = Contribution.objects.filter("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt
+    context['avg_contribution'] = round(grants_gmv / num_contributions, 2)
     from grants.views import clr_round
     context['num_matching_rounds'] = clr_round
     context['ads_served'] = str(round(ManualStat.objects.filter(key='ads_served').order_by('-pk').first().val / 10**6, 1)) + "m"

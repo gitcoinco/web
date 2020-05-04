@@ -45,7 +45,7 @@
 		<g>
 			
 				<circle fill="#FFFFFF" stroke="#1C0E40" stroke-width="4" stroke-linecap="round" stroke-miterlimit="10" cx="107.64" cy="99.52" r="20"/>
-			<circle fill="#63C084" cx="107.64" cy="99.52" r="16.33"/>
+			<circle fill="#00ED92" cx="107.64" cy="99.52" r="16.33"/>
 			<g>
 				<path fill="#FFFFFF" stroke="#1C0E3F" stroke-miterlimit="10" d="M114.17,99.55l-5.5,4.31c-0.46,0.36-1.07,0.37-1.54,0.04
 					l-5.77-4.12c-0.62-0.44-0.83-1.33-0.48-2.05l5.5-11.52c0.51-1.08,1.89-1.09,2.43-0.03l5.78,11.33
