@@ -592,10 +592,11 @@ def build_stat_results(keyword=None):
     context['no_bounties'] = Bounty.objects.current().count()
     context['no_tips'] = Tip.objects.filter(network='mainnet').send_happy_path().count()
     context['ads_gmv'] = get_codefund_history_at_date(timezone.now(), '')
+    context['ads_gmv'] = str(round(context['ads_gmv'] / 10**3, 1)) + "k"
     context['bounties_gmv'] = Stat.objects.filter(key='bounties_done_value').order_by('-pk').first().val
-    context['bounties_gmv'] = str(round(total_tips_usd + context['bounties_gmv'], 1)) + "k"
+    context['bounties_gmv'] = str(round(total_tips_usd + context['bounties_gmv'] / 10**6, 1)) + "m"
     median_index = int(num_contributions/2)
-    context['median_contribution'] = Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt
+    context['median_contribution'] = round(Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt, 2)
     context['avg_contribution'] = round(grants_gmv / num_contributions, 2)
     from grants.views import clr_round
     context['num_matching_rounds'] = clr_round

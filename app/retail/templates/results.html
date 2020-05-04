@@ -100,7 +100,7 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/no-contributors.svg" %}" />
-            <h3 class="single-stat__title">${{ total_gmv_rounded }}</h3>
+            <h3 class="single-stat__title">{{ total_gmv_rounded }}</h3>
             <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
             <p class="single-stat__fineprint">({{transactions|intcomma}} Transactions)</p>
           </div>
@@ -147,7 +147,7 @@
             <img src="{% static "v2/images/results/bounty-completion-rate.svg" %}" />
             <h3 class="single-stat__title">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
             <p class="single-stat__subtitle">{% trans "Bounty Completion Rate" %}</p>
-            <p class="single-stat__fineprint">((after Start Work)</p>
+            <p class="single-stat__fineprint">(after Start Work)</p>
           </div>
         </div>
       </div>
