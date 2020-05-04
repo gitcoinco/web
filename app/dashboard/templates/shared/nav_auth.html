@@ -18,6 +18,9 @@
 {% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
 {% include 'shared/search.html' %}
+{% if show_sales_action %}
+  <a class="btn button--primary shadow-none py-2 px-4 text-white font-weight-semibold mr-md-3 my-3 my-md-0" href="">Contact Sales</a>
+{% endif %}
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"

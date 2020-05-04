@@ -1055,7 +1055,7 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-    
+
     return activities
 
 
@@ -1532,7 +1532,8 @@ def tribes_home(request):
         'reasons': reasons(),
         'articles': articles(),
         'press': press(),
-        'tribes': tribes
+        'tribes': tribes,
+        'show_sales_action': True,
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)
