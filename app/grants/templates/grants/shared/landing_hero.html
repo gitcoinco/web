@@ -4,21 +4,17 @@
           <div class="row">
             <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
               <p class="p-3 font-header">
-                <strong style="font-size: 24px;">$250k match has ENDED!.</strong>
+                <strong style="font-size: 24px;">$250k Round 5 has ENDED!.</strong>
                 <BR>
                 <span style="display:none">
                   Matching ends on {{round_end|date:'Y-m-d'}} at noon EST.
-                  (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so get started today!</span>
+                  (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so get started today!
+                </span>
                 <span style="">
-                  Dates:
+                  Upcoming Dates:
                   <br>  
-                  - 4/10 - Round 5 Ended.
-                  <br>  
-                  - Final amounts will be announced on April 14th.  
-                  <br>  
-                  - Payout instructions will be circulated by April 17th.  
-                  <br>  
-                  - The next round starts June 15th.
+                  - Grants Round 6 starts {{after_that_next_round_begin|date:'Y-m-d'}}.
+                  (<span class="m-0" data-time="{{after_that_next_round_begin|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
                 </span>
               </p>
               <div class="float-right">

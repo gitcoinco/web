@@ -15,15 +15,11 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div class="tooltip-info">
-  <p class="font-subheader">{% trans "Project Types" %}</p>
-  <div class="font-body">
-    <div class="row">
-      <ol class="pl-3">
-        <li class="mb-2"><strong>{% trans "Traditional" %}:</strong> {% trans "1 worker at a time, 1 is paid out" %}</li>
-        <li class="mb-2"><strong>{% trans "Contest" %}:</strong> {% trans "many workers at a time, 1 is paid out" %}</li>
-        <li class="mb-2"><strong>{% trans "Cooperative" %}:</strong> {% trans "many workers at a time, many are paid out" %}</li>
-      </ol>
-    </div>
-  </div>
+<div class="tooltip-info text-left">
+  <p class="font-smaller-1 font-weight-semibold">{% trans "Project Types" %}</p>
+  <ol class="pl-3 mb-0 font-smaller-2">
+    <li class="mb-2"><strong>{% trans "Traditional" %}:</strong> {% trans "1 worker at a time, 1 is paid out" %}</li>
+    <li class="mb-2"><strong>{% trans "Contest" %}:</strong> {% trans "many workers at a time, 1 is paid out" %}</li>
+    <li class="mb-2"><strong>{% trans "Cooperative" %}:</strong> {% trans "many workers at a time, many are paid out" %}</li>
+  </ol>
 </div>
