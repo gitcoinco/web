@@ -595,7 +595,7 @@ def build_stat_results(keyword=None):
     context['bounties_gmv'] = Stat.objects.filter(key='bounties_done_value').order_by('-pk').first().val
     context['bounties_gmv'] = str(round(total_tips_usd + context['bounties_gmv'], 1)) + "k"
     median_index = int(num_contributions/2)
-    context['median_contribution'] = Contribution.objects.filter("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt
+    context['median_contribution'] = Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt
     context['avg_contribution'] = round(grants_gmv / num_contributions, 2)
     from grants.views import clr_round
     context['num_matching_rounds'] = clr_round
