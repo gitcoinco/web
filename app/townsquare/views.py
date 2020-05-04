@@ -10,6 +10,7 @@ from django.utils import timezone
 
 import metadata_parser
 from app.redis_service import RedisService
+from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
@@ -36,6 +37,16 @@ tags = [
     ['#other','briefcase','search-other'],
     ]
 
+
+def load_wallpapers(request):
+    """Load profile banners"""
+    images_with_icons = load_files_in_directory('status_backgrounds')
+    images = [image.split('.')[0] for image in images_with_icons if 'icon' not in image]
+    response = {
+        'status': 200,
+        'wallpapers': images
+    }
+    return JsonResponse(response, safe=False)
 
 def get_next_time_available(key):
     d = timezone.now()

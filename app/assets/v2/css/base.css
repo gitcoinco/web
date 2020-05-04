@@ -17,7 +17,7 @@ span {
 }
 
 a {
-  color: #3E00FF;
+  color: var(--link-color);
 }
 
 .cursor-pointer {
@@ -1725,3 +1725,12 @@ div.busyOverlay {
   font-size: 22px;
 }
 
+.bg-shade-0 {
+  background: var(--bg-shade-0);
+}
+.bg-shade-1{
+  background: var(--bg-shade-1);
+}
+.bg-shade-2{
+  background: var(--bg-shade-2);
+}
