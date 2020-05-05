@@ -332,13 +332,6 @@
     }
   }
 
-  @media (min-width: 768px) {
-    .col-md-10 {
-      -ms-flex: 0 0 83.333333%;
-      flex: 0 0 83.333333%;
-      max-width: 83.333333%;
-    }
-  }
 
   .col-12 {
     -ms-flex: 0 0 100%;
@@ -370,6 +363,13 @@
     .px-sm-3 {
       padding-right: 1rem !important;
     }
+  }
+
+  .pb-3, .py-3 {
+    padding-bottom: 1rem!important;
+  }
+  .pt-3, .py-3 {
+      padding-top: 1rem!important;
   }
 
   .pb-4,
@@ -507,6 +507,7 @@
   @media (min-width: 576px) {
     .d-sm-inline {
       display: inline !important;
+      margin-left: auto;
     }
   }
 
@@ -535,6 +536,41 @@
   .dropdown-menu {
     display: none;
   }
+
+  .mb-2, .my-2 {
+    margin-bottom: .5rem!important;
+  }
+  .mt-1, .my-1 {
+    margin-top: .25rem!important;
+  }
+
+  .bg-light {
+    background-color: #f8f9fa!important;
+  }
+
+  .font-weight-bold {
+      font-weight: 700!important;
+  }
+  .font-caption {
+    font-size: 0.75rem;
+  }
+  .text-right {
+      text-align: right!important;
+  }
+
+  .mb-auto, .my-auto {
+    margin-bottom: auto!important;
+  }
+
+  .mt-auto, .my-auto {
+      margin-top: auto!important;
+  }
+
+  .text-white {
+    color: #fff!important;
+  }
+
+  @media (min-width:768px){.col-md{-ms-flex-preferred-size:0;flex-basis:0;-ms-flex-positive:1;flex-grow:1;max-width:100%}.col-md-auto{-ms-flex:0 0 auto;flex:0 0 auto;width:auto;max-width:100%}.col-md-1{-ms-flex:0 0 8.333333%;flex:0 0 8.333333%;max-width:8.333333%}.col-md-2{-ms-flex:0 0 16.666667%;flex:0 0 16.666667%;max-width:16.666667%}.col-md-3{-ms-flex:0 0 25%;flex:0 0 25%;max-width:25%}.col-md-4{-ms-flex:0 0 33.333333%;flex:0 0 33.333333%;max-width:33.333333%}.col-md-5{-ms-flex:0 0 41.666667%;flex:0 0 41.666667%;max-width:41.666667%}.col-md-6{-ms-flex:0 0 50%;flex:0 0 50%;max-width:50%}.col-md-7{-ms-flex:0 0 58.333333%;flex:0 0 58.333333%;max-width:58.333333%}.col-md-8{-ms-flex:0 0 66.666667%;flex:0 0 66.666667%;max-width:66.666667%}.col-md-9{-ms-flex:0 0 75%;flex:0 0 75%;max-width:75%}.col-md-10{-ms-flex:0 0 83.333333%;flex:0 0 83.333333%;max-width:83.333333%}.col-md-11{-ms-flex:0 0 91.666667%;flex:0 0 91.666667%;max-width:91.666667%}.col-md-12{-ms-flex:0 0 100%;flex:0 0 100%;max-width:100%}}
 
   /* Bootstrap styles used for activities -- END */
 
@@ -620,6 +656,16 @@
     }
   }
 
+  .card-ribbon {
+    margin-top: -14px;
+    margin-left: 10px;
+    width: 110px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .bg-gc-blue {
+    background-color: #3E00FF; /* var(--gc-blue) */
+  }
   /* Styles for .activity_stream -- END */
   
   @media screen and (min-width: 35.5em) {
