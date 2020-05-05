@@ -133,7 +133,8 @@ class Token(SuperModel):
     contract = models.ForeignKey(
         'kudos.Contract', related_name='kudos_contract', on_delete=models.SET_NULL, null=True
     )
-    hidden = models.BooleanField(default=False)
+    hidden = models.BooleanField(default=False, help_text=('Hide from marketplace?'))
+    hidden_token_details_page = models.BooleanField(default=False, help_text=('Hide token details page'))
     send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
     preview_img_mode = models.CharField(max_length=255, default='png')
     suppress_sync = models.BooleanField(default=False)
