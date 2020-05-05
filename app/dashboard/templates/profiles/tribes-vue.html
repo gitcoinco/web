@@ -1375,7 +1375,7 @@
                             <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"  :href="`${tribe.data.html_url}?tab=repositories`" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" v-bind:title="`@${tribe.handle} on Github`">
                               <i class="fab fa-github"></i>
                             </a>
-                            <a v-if="tribe.data.blog && online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" :href="`${tribe.data.blog}`" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true"  v-bind:title="`@${tribe.handle}'s Website on Github`">
+                            <a v-if="tribe.data.blog && online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" :href="`${tribe.data.blog}`" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true"  v-bind:title="`@${tribe.handle}'s Website`">
                               <i class="fas fa-home"></i>
                             </a>
                             <a v-if="tribe.linkedin_url&& online" class="ml-1 btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link" :href="`https://linkedin.com/in/${tribe.linkedin_url}`" target="_blank" rel="noopener noreferrer"  data-placement="bottom" data-toggle="tooltip" data-html="true" v-bind:title="`@${tribe.handle} on Linkedin`" >
