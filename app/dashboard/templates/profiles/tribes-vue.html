@@ -1569,6 +1569,17 @@
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
       });
+      $('body').popover({
+        selector: '.bounty_row',
+        html: true,
+        trigger: 'hover',
+        placement: 'auto',
+        template: `<div class="popover popover-bounty" role="tooltip">
+                    <div class="arrow"></div>
+                    <div class="popover-body p-0"></div>
+                    <h3 class="popover-header"></h3>
+                  </div>`
+      });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.tokens = tokens(document.web3network);
       document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
