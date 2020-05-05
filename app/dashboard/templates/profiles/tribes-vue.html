@@ -40,6 +40,7 @@
     <link rel="stylesheet" href='{% static "v2/css/town_square.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/explorer.css" %}' />
+    <link rel="stylesheet" href='{% static "v2/css/featured-bounties.css" %}'/>
     <style type="text/css">
       @media (min-width: 992px) {
         .sidebar {
@@ -558,7 +559,7 @@
                             <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                           </div>
                           <div class="project-grid ml-2">
-                            <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key=`project-${project.id}`>
+                            <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key=`project-${project.pk}`>
                               <div class="card card-project">
                                 <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
 
