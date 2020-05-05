@@ -142,39 +142,22 @@
     </div>
     </div>
 
-    <div class="testimonials overflow-hidden mt-5 mb-5 pt-5 pb-5 d-flex justify-content-between">
-        <div class="testimonial-card d-inline-block text-center">
+    <div class="testimonials overflow-hidden mt-5 mb-5 pt-5 pb-5 d-md-flex justify-content-between">
+      {% for testimonial in testimonials %}
+        <div class="testimonial-card d-block d-inline-block text-center">
             <div class="overlap-line">
-              <img class="avatar" src="{% static 'v2/images/tribes/landing/tommycox.png' %}" alt="">
+              {% if testimonial.photo %}
+              <img class="avatar" src="{{ testimonial.photo }}" alt="">
+              {% endif %}
+              <img class="avatar" src="{{ testimonial.org_photo }}" alt="">
             </div>
             <div>
-              <h4 class="font-weight-bold gc-text-blue font-title-xl">VirajA</h4>
-              <p>Hacker</p>
+              <h4 class="font-weight-bold gc-text-blue font-title-xl">{{ testimonial.author }}</h4>
+              <p class="font-weight-semibold font-title">{{ testimonial.designation }}</p>
             </div>
-            <p class="card-description text-center mx-auto">I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!</p>
+            <p class="card-description text-center mx-auto">{{ testimonial.text }}</p>
         </div>
-        <div class="testimonial-card d-inline-block text-center">
-            <div class="overlap-line">
-              <img class="avatar" src="{% static 'v2/images/tribes/landing/sam.png' %}" alt="">
-              <img class="avatar" src="/dynamic/avatar/arweave" alt="">
-            </div>
-            <div>
-              <h4 class="font-weight-bold gc-text-blue font-title-xl">Sam Williams</h4>
-              <p class="font-weight-semibold font-title">CEO, Arweave</p>
-            </div>
-            <p class="card-description text-center mx-auto">Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.</p>
-        </div>
-        <div class="testimonial-card d-inline-block text-center">
-            <div class="overlap-line">
-              <img class="avatar" src="{% static 'v2/images/tribes/landing/scott.png' %}" alt="">
-              <img class="avatar" src="/dynamic/avatar/portis" alt="">
-            </div>
-            <div>
-              <h4 class="font-weight-bold gc-text-blue font-title-xl">Scott Gralnick</h4>
-              <p>Co-Founder, Portis</p>
-            </div>
-            <p class="card-description text-center mx-auto">Relationships with developers” is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.</p>
-        </div>
+      {% endfor %}
     </div>
 
     <div id="press" class="press">
@@ -223,7 +206,7 @@
             <h2 class="font-bigger-4 mb-3">{% trans "Gitcoin on Medium" %}</h2>
           </div>
           {% for article in articles %}
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6">
               <a class="article" href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
                 <img src="{{ article.img }}" alt="{{ article.alt }}">
                 <h3 class="mt-3 mb-2">{{ article.title }}</h3>

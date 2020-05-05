@@ -589,24 +589,28 @@ def build_stat_results(keyword=None):
 def testimonials():
     return [
         {
-            'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
-            'author': 'VirajA',
-            'designation': 'Hacker',
-            'photo': static('v2/images/tribes/landing/viraj.png')
+            'text': '"We were really impressed with the final hackathon project submissions and the quality of the developers. Gitcoin helped us benchmark fair prices and got us started really fast".',
+            'author': 'Chase Freo',
+            'designation': 'OP Games',
+            'org_photo': static('v2/images/project_logos/alto-io.png')
         },
         {
-            'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
-            'author': 'Sam Williams',
-            'designation': 'CEO, Arweave',
-            'photo':  static('v2/images/tribes/landing/sam.jpg'),
-            'org_photo': static('v2/images/project_logos/arweave.svg')
+            'text': 'Gitcoin is one of the more prominent decentralized, open source platforms in the web 3.0 ecosystem, and we chose to use Gitcoin for hackathons because of the developed user base.',
+            'author': 'Mareen Gläske',
+            'designation': 'Gnosis',
+            'org_photo': static('v2/images/project_logos/gnosis.png')
         },
         {
-            'text': 'Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
-            'author': 'Scott Gralnick',
-            'designation': 'Co-Founder, Portis',
-            'photo': static('v2/images/tribes/landing/scott.png'),
-            'org_photo': static('v2/images/project_logos/portis.png')
+            'text': 'We organized a hackathon through Gitcoin with five categories with different prizes. We got really great results from that. The specifications were delivered in good quality and the contributor went above and beyond the level of what they were asked to do.',
+            'author': 'Bernhard Mueller',
+            'designation': 'MythX',
+            'org_photo': static('v2/images/project_logos/mythx.png')
+        },
+        {
+            'text': 'The reason why I started using Gitcoin was because we really liked what Gitcoin was doing, we were adamant about decentralization, and we for sure wanted to do bounties. We wanted to activate developers and users in a unique way, and Gitcoin was perfectly set up for that.',
+            'author': 'Chris Hutchinson',
+            'designation': 'Status',
+            'org_photo': static('v2/images/project_logos/status-im.png')
         }
     ]
 
@@ -710,13 +714,6 @@ def articles():
             'title': _('Progressive Elaboration of Scope on Gitcoin'),
             'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
             'alt': 'gitcoin scope'
-        },
-        {
-            'link': 'https://gitcoin.co/blog/commit-reveal-scheme-on-ethereum/',
-            'img': static("v2/images/medium/2.png"),
-            'title': _('Commit Reveal Scheme on Ethereum'),
-            'description': _('Hiding Actions and Generating Random Numbers'),
-            'alt': 'commit reveal scheme'
         },
         {
             'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',

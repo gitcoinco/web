@@ -37,7 +37,7 @@
   margin-top: 24px;
   border: 4px solid #3E00FF;
   height: 30rem;
-  width: 38rem;
+  width: 32rem;
 }
 
 .testimonial-card:first-child {
@@ -49,9 +49,9 @@
 }
 
 .card-description {
-  width: 60%;
-  font-size: 28px;
-  line-height: 36px;
+  width: 80%;
+  font-size: 18px;
+  line-height: 24px;
   text-align: center;
 }
 
@@ -79,12 +79,14 @@
 }
 
 .avatar {
-  max-width: 6rem;
-  max-height: 6rem;
+  background-color: white;
+  width: 6rem;
+  height: 6rem;
   margin-left: auto;
   border-radius: 50%;
   border: 3px solid #3E00FF;
   margin-right: -25px;
+  object-fit: contain;
 }
 
 .tribe-points {
