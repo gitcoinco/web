@@ -66,8 +66,8 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '(💰$250K Match LIVE!) '
-live_now = '❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants'
+matching_live = '(💰$50K Match LIVE!) '
+live_now = '❇️ LIVE NOW! Up to $50k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
 total_clr_pot = 250000
 clr_round = 5
