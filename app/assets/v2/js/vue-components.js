@@ -312,7 +312,7 @@ Vue.component('suggested-profiles', {
   template: `<div class="townsquare_nav-list my-2 tribe">
       <div id="suggested-tribes">
         <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
-            <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
+            <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" :key=:"suggested-tribe-${profile.handle}" />
         </ul>
       </div>
     </div>`

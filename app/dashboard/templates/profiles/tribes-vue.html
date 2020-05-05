@@ -581,7 +581,7 @@
                                      <template v-slot:button-content>
                                        <i class='fas fa-comment-dots'></i>
                                      </template>
-                                     <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                     <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" :key=`"team-member-chat-${profile.handle}"` aria-describedby="dropdown-header-label">
                                        @ [[ profile.handle ]]
                                      </b-dropdown-item-button>
                                     </b-dropdown>

@@ -956,7 +956,7 @@ def projects_fetch(request):
             Q(looking_members=True)
         )
 
-    projects_data = HackathonProjectSerializer(projects.all(), many=True)
+    projects_data = HackathonProjectSerializer(projects.distinct('created_on', 'id').all(), many=True)
 
     params = {
         'data': projects_data.data,
