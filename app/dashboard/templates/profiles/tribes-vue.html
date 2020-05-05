@@ -647,9 +647,11 @@
                             <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
                               <span class="font-weight-bold">[[ numUsers ]] Tribes members </span> found
                             </p>
-                            <button v-if="is_my_org && tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                            {% if is_staff %}
+                            <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
                               {% trans "Invite all to bounty" %}
                             </button>
+                            {% endif %}
                           </div>
                           <div class="col-12 left-ribbon font-body">
                             {% trans "Filter People" %}
