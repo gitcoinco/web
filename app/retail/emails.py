@@ -1251,7 +1251,7 @@ def new_bounty(request):
     quest = quest_of_the_day()
     grant = upcoming_grant()
     hackathon = upcoming_hackathon()
-    activities = latest_activities()
+    activities = latest_activities(request.user)
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=hackathon, latest_activities=activities)
     return HttpResponse(response_html)
 
