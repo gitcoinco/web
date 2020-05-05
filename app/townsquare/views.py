@@ -10,6 +10,7 @@ from django.utils import timezone
 
 import metadata_parser
 from app.redis_service import RedisService
+from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
@@ -24,7 +25,6 @@ from .models import (
 )
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
-from dashboard.helpers import load_files_in_directory
 
 tags = [
     ['#announce','bullhorn','search-announce'],
