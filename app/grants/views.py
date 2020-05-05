@@ -71,8 +71,9 @@ live_now = '❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
 total_clr_pot = 250000
 clr_round = 5
-clr_active = False
+clr_active = True
 show_clr_card = True
+round_5_5_grants = [656, 493, 494, 502, 504, 662] # special grants for round 5.5
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
@@ -151,9 +152,9 @@ def get_stats(round_type):
                       'type': 'line',
                       'stacking': False
                       },
-                    'terms': 
+                    'terms':
                         ['val']
-                    
+
                 }],
                 chart_options =
                   {'title': {
@@ -223,7 +224,7 @@ def grants_addr_as_json(request):
 @cache_page(60 * 60)
 def grants_stats_view(request):
     cht, chart_list = get_stats(request.GET.get('category'))
-    params = { 
+    params = {
         'cht': cht,
         'chart_list': chart_list,
         'round_types': round_types,
@@ -295,7 +296,7 @@ def grants(request):
 
     if category:
         _grants = _grants.filter(Q(categories__category__icontains = category))
-    
+
     _grants = _grants.prefetch_related('categories')
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -329,7 +330,7 @@ def grants(request):
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
-    
+
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
@@ -387,7 +388,8 @@ def grants(request):
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
         'is_staff': request.user.is_staff,
-        'selected_category': category
+        'selected_category': category,
+        'round_5_5_grants': round_5_5_grants
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -532,6 +534,7 @@ def grant_details(request, grant_id, grant_slug):
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
+        'is_round_5_5': grant.id in round_5_5_grants,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
     }
 
