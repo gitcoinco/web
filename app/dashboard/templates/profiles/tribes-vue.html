@@ -418,7 +418,7 @@
 
   </head>
 
-  <body class="interior g-font-muli">
+  <body class="bg-lightblue interior g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header sticky-top dash">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -683,7 +683,7 @@
                             <button class="btn blue" @click="params = {}; searchUsers()">Reset Filters</button>
                           </div>
                           <div class="grid-4">
-                            <div v-for="user in users" class="card card-user shadow-sm border-0" :key=`"user-${user.id}"`>
+                            <div v-for="user in users" class="card card-user shadow-sm border-0" :key=`"user-${user.handle}"`>
                               <div class="d-flex flex-column py-1 bg-lightblue">
                                 <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
                                 <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
@@ -1234,9 +1234,6 @@
                               class="editor"
                               v-model="tribe.tribe_description"
                               :options="editorOptionDesc"
-                              @blur="onEditorBlur($event)"
-                              @focus="onEditorFocus($event)"
-                              @ready="onEditorReady($event)"
                             ></quill-editor>
                           </div>
                         </div>
@@ -1247,9 +1244,6 @@
                             class="editor"
                             v-model="tribe.tribe_priority"
                             :options="editorOptionPrio"
-                            @blur="onEditorBlur($event)"
-                            @focus="onEditorFocus($event)"
-                            @ready="onEditorReady($event)"
                           ></quill-editor>
                         </div>
                       </div>
@@ -1495,9 +1489,6 @@
                     class="editor"
                     v-model="params.suggest.comment"
                     :options="editorOptionComment"
-                    @blur="onEditorBlur($event)"
-                    @focus="onEditorFocus($event)"
-                    @ready="onEditorReady($event)"
                   ></quill-editor>
                 </div>
               </div>

@@ -973,7 +973,7 @@ def users_fetch(request):
     q = request.GET.get('search', '')
     skills = request.GET.get('skills', '')
     persona = request.GET.get('persona', '')
-    limit = int(request.GET.get('limit', 10))
+    limit = int(request.GET.get('limit', 20))
     page = int(request.GET.get('page', 1))
     default_sort = '-actions_count' if persona != 'tribe' else '-follower_count'
     order_by = request.GET.get('order_by', default_sort)
@@ -1082,11 +1082,10 @@ def users_fetch(request):
             profile_list = profile_list.order_by('-earnings_count', 'id')
 
         profile_list = profile_list.values_list('pk', flat=True)
-
         all_pages = Paginator(profile_list, limit)
         this_page = all_pages.page(page)
 
-        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-earnings_count', 'id')
+        profile_list = Profile.objects_full.filter(pk__in=[ele for ele in this_page]).order_by('-earnings_count', 'id').exclude(handle__iexact='gitcoinbot')
 
         this_page = profile_list
 

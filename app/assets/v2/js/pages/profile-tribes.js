@@ -197,19 +197,13 @@ const loadDynamicScript = (callback, url, id) => {
             case 3:
               newPathName = 'bounties';
               break;
+            case 4:
+              newPathName = 'manage';
+              break;
           }
           let newUrl = `/${vm.tribe.handle}/${newPathName}${window.location.search}`;
 
           history.pushState({}, `Tribe - @${vm.tribe.handle}`, newUrl);
-        },
-        onEditorBlur(quill) {
-          console.log('editor blur!', quill);
-        },
-        onEditorFocus(quill) {
-          console.log('editor focus!', quill);
-        },
-        onEditorReady(quill) {
-          console.log('editor ready!', quill);
         }
       },
       computed: {

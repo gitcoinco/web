@@ -314,6 +314,7 @@ Vue.component('user-directory', {
       expandFilter: true
     };
   },
+
   mounted() {
     this.fetchUsers();
     this.tribeFilter = this.tribe;
