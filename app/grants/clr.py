@@ -31,7 +31,7 @@ from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
 from perftools.models import JSONStore
 
-CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
+CLR_START_DATE = dt.datetime(2020, 5, 6, 0, 0)
 
 ROUND_5_5_GRANTS = [656, 493, 494, 502, 504, 662]
 
