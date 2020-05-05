@@ -103,38 +103,42 @@
           Available on all platforms. Chat anytime, anywhere!
         </p>
         {% endblocktrans %}
-        <div class="row mt-5 py-5">
-          <div class="col-12 col-md-12 col-lg-4">
-            <img class="text-center px-3 w-75 h-75" src="{% static "v2/images/chat/web.png" %}" alt="Web App" />
+        <div class="row py-5">
+          <div class="col-12 col-md-12 col-lg-4 mt-5">
+            <img class="text-center px-3 h-75" src="{% static "v2/images/chat/web.png" %}" alt="Web App" />
             <div class="my-3">
-              <a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-4" href="/chat/web">{% trans "Open Web Chat" %}</a>
+              <a class="btn btn-gc-blue btn-sm ml-2 font-weight-bold py-3 px-4" target="_blank" href="https://chat.gitcoin.co/">
+                <i class="fab fa-chrome"></i>
+                {% trans "Open Web Chat" %}
+              </a>
             </div>
           </div>
-          <div class="col-12 col-md-12 col-lg-4">
-            <img class="text-center px-3 w-75 h-75" src="{% static "v2/images/chat/mobile.png" %}" alt="Mobile App" />
+          <div class="col-12 col-md-12 col-lg-4 mt-5">
+            <img class="text-center px-3 h-75" src="{% static "v2/images/chat/mobile.png" %}" alt="Mobile App" />
             <div class="my-3">
-              <a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-4 comingsoon" href="#">
-                <img src="{% static "v2/images/chat/android.png" %}" alt="Android App" />
+              <a class="btn btn-gc-blue btn-sm ml-2 font-weight-bold py-3 px-4 comingsoon" href="#">
+                <i class="fab fa-android"></i>
                 {% trans "Android App" %}
               </a>
-              <a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-5 comingsoon" href="#">
-                <img src="{% static "v2/images/chat/apple.png" %}" alt="iOS App" />
+              <a class="btn btn-gc-blue btn-sm ml-2 font-weight-bold py-3 px-4 comingsoon" href="#">
+                <i class="fab fa-apple"></i>
                 {% trans "iOS" %}
               </a>
             </div>
           </div>
-          <div class="col-12 col-md-12 col-lg-4">
-            <img class="text-center px-3 w-75 h-75" src="{% static "v2/images/chat/desktop.png" %}" alt="Desktop App" />
+          <div class="col-12 col-md-12 col-lg-4 mt-5">
+            <img class="text-center px-3 h-75" src="{% static "v2/images/chat/desktop.png" %}" alt="Desktop App" />
             <div class="my-3">
-              <a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-5" href="https://gitcoin-static.s3-us-west-2.amazonaws.com/desktopapps/gitcoin-darwin-x64.zip">
-                <img src="{% static "v2/images/chat/apple.png" %}" alt="Mac App" />
+              <a class="btn btn-gc-blue btn-sm ml-2 font-weight-bold py-3 px-4" href="https://gitcoin-static.s3-us-west-2.amazonaws.com/desktopapps/gitcoin-darwin-x64.zip">
+                <i class="fab fa-apple"></i>
                 {% trans "Mac" %}
               </a>
-              <a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-4" href="https://gitcoin-static.s3-us-west-2.amazonaws.com/desktopapps/gitcoin-windows.zip">
-                <img src="{% static "v2/images/chat/windows.png" %}" alt="Windows" />
+              <a class="btn btn-gc-blue btn-sm ml-2 font-weight-bold py-3 px-4" href="https://gitcoin-static.s3-us-west-2.amazonaws.com/desktopapps/gitcoin-windows.zip">
+                <i class="fab fa-windows"></i>
                 {% trans "Windows" %}
               </a>
-              <a class="btn btn-gc-blue btn-sm ml-2 shadow-none font-weight-bold py-3 px-5" href="https://gitcoin-static.s3-us-west-2.amazonaws.com/desktopapps/gitcoin-linux-x64.zip">
+              <a class="btn btn-gc-blue btn-sm ml-2 font-weight-bold py-3 px-4" href="https://gitcoin-static.s3-us-west-2.amazonaws.com/desktopapps/gitcoin-linux-x64.zip">
+                <i class="fab fa-linux"></i>
                 {% trans "Linux" %}
               </a>
             </div>
