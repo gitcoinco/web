@@ -49,6 +49,8 @@ $(document).ready(function() {
                 $('label[for=pay_gas]').text('🌈✨✨💖💖👍💖💖✨✨🌈');
                 setTimeout(function() {
                   $('label[for=pay_gas]').fadeOut();
+                  $('#free_countdown').remove();
+                  $('.btn-gc-purple').removeAttr('disabled');
                 }, 1000);
               }, 1000);
             }, 1000);

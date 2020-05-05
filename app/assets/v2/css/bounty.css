@@ -88,6 +88,11 @@ body {
   height: 80px;
 }
 
+.avatar-small {
+  width: 25px;
+  height: 25px;
+}
+
 #status {
   color: #00A55E;
   text-transform: uppercase;
@@ -108,10 +113,6 @@ body {
 
 .related-bounties {
   list-style-type: none;
-}
-
-.related-bounties .bounty-title {
-  color: #3E00FF;
 }
 
 .related-bounties .static-stars .far {
@@ -464,6 +465,7 @@ a.btn {
   padding: 0.5rem;
 }
 
+.related-bounties .bounty-title,
 #funder_notif_info #bounty_funded_by,
 #funder_notif_info i {
   color: #3E00FF;
@@ -750,7 +752,7 @@ a.btn {
   border-top: none;
   border-left: none;
   border-right: none;
-  max-width: 5rem;
+  max-width: 12rem;
   outline: none;
   color: #03B16B;
 }
@@ -833,6 +835,15 @@ a.btn {
     text-align: center;
     margin-bottom: 1rem;
   }
+}
+
+.payout-summary-container {
+  background: #F9F7FF;
+}
+
+#submit_transaction .payout-tx-container {
+  border: 1px solid #D8D8D8;
+  border-radius: 3px;
 }
 
 @media (min-width: 769px) {
