@@ -55,6 +55,10 @@
           <i class="fas fa-user"></i>
           {% trans "My Profile" %}
         </a>
+        <a class="dropdown-item" href="/wiki">
+          <i class="fas fa-question-circle"></i>
+          {% trans "Wiki" %}
+        </a>
       {% else %}
         <a class="dropdown-item" data-gtm="get started" href="{% url "get_gitcoin" %}">
           <i class="fas fa-bolt"></i>
