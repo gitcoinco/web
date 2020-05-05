@@ -1193,7 +1193,10 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
             quest = quest_of_the_day()
             grant = upcoming_grant()
             hackathon = upcoming_hackathon()
-            activities = latest_activities()
+
+            from django.contrib.auth.models import User
+            user = User.objects.get(email__iexact=to_email)
+            activities = latest_activities(user)
 
             html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=hackathon, latest_activities=activities)
 

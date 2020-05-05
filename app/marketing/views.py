@@ -998,9 +998,11 @@ def upcoming_hackathon():
     hackathon = HackathonEvent.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:5][0]
     return hackathon
 
-def latest_activities():
+def latest_activities(user):
+    from retail.views import get_specific_activities
     cutoff_date = timezone.now() - timezone.timedelta(days=7)
-    activities = Activity.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:4]
+    # activities = Activity.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:4]
+    activities = get_specific_activities('connect', 0, user, 0)[:4]
     return activities
 
 @staff_member_required
@@ -1014,7 +1016,7 @@ def new_bounty_daily_preview(request):
     quest = quest_of_the_day()
     grant = upcoming_grant()
     hackathon = upcoming_hackathon()
-    activities = latest_activities()
+    activities = latest_activities(request.user)
 
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=hackathon, latest_activities=activities)
     return HttpResponse(response_html)
