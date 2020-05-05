@@ -328,6 +328,11 @@
         </div>
       </div>
     </div>
+  {% if is_townsquare %}
+   <div class="nav-item interior ">
+     <a href="{% url "tribes" %}" class="gc-text-green nav-link selected">Looking for developers?</a>
+   </div>
+  {% endif %}
   </nav>
   <nav class="navbar-nav mr-3">
     {% include 'shared/nav_auth.html' with source='authed' %}
