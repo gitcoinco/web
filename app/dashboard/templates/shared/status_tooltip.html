@@ -15,27 +15,20 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div class="tooltip-info">
-  <p class="font-subheader">{% trans "Possible Status" %}</p>
-  <div class="font-body">
-    <div class="row">
-      <ol class="pl-3">
-        <li class="mb-2"><strong>{% trans "Open" %}:</strong> {% trans "A funded bounty is available for anyone to work on." %}</li>
-        <li class="mb-2"><strong>{% trans "Work Started" %}:</strong> {% trans "Work has been started by at least one person." %}</li>
-        <li class="mb-2"><strong>{% trans "Work Submitted" %}:</strong> {% trans "Completed work has been submitted by for review." %}</li>
-        <li class="mb-2"><strong>{% trans "Work Done" %}:</strong> {% trans "The submitted project has been accepted and the funds have been paid." %}</li>
-      </ol>
-    </div>
+<div class="tooltip-info text-left">
+  <p class="font-smaller-1 font-weight-semibold">Possible Status</p>
+  <ol class="pl-3 mb-2 font-smaller-2">
+    <li class="mb-2"><strong>{% trans "Open" %}:</strong> {% trans "A funded bounty is available for anyone to work on." %}</li>
+    <li class="mb-2"><strong>{% trans "Work Started" %}:</strong> {% trans "Work has been started by at least one person." %}</li>
+    <li class="mb-2"><strong>{% trans "Work Submitted" %}:</strong> {% trans "Completed work has been submitted by for review." %}</li>
+    <li class="mb-2"><strong>{% trans "Work Done" %}:</strong> {% trans "The submitted project has been accepted and the funds have been paid." %}</li>
+    <li class="mb-2"><strong>{% trans "Reserved" %}:</strong> {% trans "The project has been reserved for an specific hunter." %}</li>
+  </ol>
 
+  <p class="font-smaller-1 font-weight-semibold">Possible Status</p>
+  <ol class="pl-3 mb-0 font-smaller-2">
+    <li class="mb-2"><strong>{% trans "Expired" %}:</strong> {% trans "Work was not completed by the expiration date." %}</li>
+    <li class="mb-2"><strong>{% trans "Canceled" %}:</strong> {% trans "A funded bounty was  cancelled by the owner of the project" %}</li>
+  </ol>
 
-  </div>
-  <p class="font-subheader">{% trans "Cancellation Status" %}</p>
-  <div class="font-body">
-    <div class="row">
-      <ol class="pl-3">
-        <li class="mb-2"><strong>{% trans "Expired" %}:</strong> {% trans "Work was not completed by the expiration date." %}</li>
-        <li class="mb-2"><strong>{% trans "Canceled" %}:</strong> {% trans "A funded bounty was  cancelled by the owner of the project" %}</li>
-      </ol>
-    </div>
-  </div>
 </div>

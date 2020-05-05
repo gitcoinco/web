@@ -262,8 +262,9 @@ div.button-pink {
   background-repeat: no-repeat;
 }
 
+
 .bg-lightblue {
-  background-color: #EFF3F6;
+  background-color: var(--main-bg);
 }
 
 .bg-lightpurple {
@@ -546,13 +547,15 @@ div.button-pink {
 
 .accordion:after {
   /* stylelint-disable-next-line */
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Pro';
   content: '\f107';
-  font-size: 1.2em;
+  font-size: 1em;
   margin-right: auto;
   margin-top: auto;
   float: right;
   font-weight: 600;
+  top: 1px;
+  position: relative;
 }
 
 .accordion.active:after {
@@ -912,13 +915,14 @@ div.button-pink {
 
 textarea.status-textarea {
   padding-right: 4em;
-  min-height: 60px;
+  min-height: 100px;
 }
 
 .status-menu button {
-  color: #6c757d;
+  color: var(--gc-dark-grey);
 }
 
-.status-menu button.selected {
-  color: black;
+.status-menu button.selected,
+.status-menu button:hover {
+  color: var(--townsquare-link-color);
 }

@@ -50,8 +50,13 @@ const joinTribeDirect = (elem) => {
 
   $.when(sendJoin).then(function(response) {
     $(elem).attr('disabled', false);
-    $(elem).attr('member', response.is_member);
-    $(elem).attr('hidden', true);
+    $('[data-jointribe]').each((idx, ele) => {
+
+      if (window.hasOwnProperty('tribesApp')) {
+        window.tribesApp.is_on_tribe = true;
+      }
+      $(ele).attr('hidden', true);
+    });
   }).fail(function(error) {
     $(elem).attr('disabled', false);
   });
@@ -100,3 +105,47 @@ const tribeLeader = () => {
 };
 
 tribeLeader();
+
+const newManageTribe = () => {
+  $('[data-tribe]').each(function(index, elem) {
+    $(elem).on('mouseenter focus', function(e) {
+      if ($(elem).hasClass('btn-outline-gc-green')) {
+        $(elem).addClass('btn-gc-outline-red').text('Unfollow');
+        $(elem).removeClass('btn-outline-gc-green');
+      }
+    });
+
+    $(elem).on('mouseleave focusout', function(e) {
+      if ($(elem).hasClass('btn-gc-outline-red')) {
+        $(elem).removeClass('btn-gc-outline-red');
+        $(elem).addClass('btn-outline-gc-green').text('Following');
+      }
+    });
+
+    $(elem).on('click', function(e) {
+      if (!document.contxt.github_handle) {
+        e.preventDefault();
+        _alert('Please login first.', 'error');
+        return;
+      }
+
+      $(elem).attr('disabled', true);
+      e.preventDefault();
+      const tribe = $(elem).data('tribe');
+
+      followRequest(tribe, elem, function(handle, elem, response) {
+        $(elem).attr('disabled', false);
+        $(elem).attr('member', response.is_member);
+        if (response.is_member) {
+          $(elem).addClass('btn-outline-gc-green').removeClass([ 'btn-gc-blue', 'btn-gc-outline-red' ]).text('Following');
+        } else {
+          $(elem).removeClass([ 'btn-outline-gc-green', 'btn-gc-outline-red' ]).addClass('btn-gc-blue').text('Follow');
+        }
+      }, function(error) {
+        $(elem).attr('disabled', false);
+      });
+    });
+  });
+};
+
+newManageTribe();

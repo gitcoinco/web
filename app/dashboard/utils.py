@@ -334,12 +334,12 @@ def get_unrated_bounties_count(user):
         return 0
     unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
         .filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status='done') \
+        .filter(interested__pending=False).filter(idx_status='submitted') \
         .exclude(
             feedbacks__feedbackType='worker',
-            feedbacks__sender_profile=user
+            feedbacks__sender_profile=user,
         )
-    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    unrated_funded = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
     .filter(
         bounty_owner_github_username__iexact=user.handle,
         idx_status='done'
@@ -478,6 +478,8 @@ def has_tx_mined(txid, network):
 
 def sync_payout(fulfillment):
     token_name = fulfillment.token_name
+    if not token_name:
+        token_name = fulfillment.bounty.token_name
 
     if token_name == 'ETC':
         sync_etc_payout(fulfillment)
@@ -863,7 +865,7 @@ def get_nonce(network, address, ignore_db=False):
     nonce_from_web3 = w3.eth.getTransactionCount(address)
     if ignore_db:
         return nonce_from_web3
-        
+
     # db storage
     key = f"nonce_{network}_{address}"
     view = 'get_nonce'
