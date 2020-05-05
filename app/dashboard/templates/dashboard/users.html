@@ -243,10 +243,10 @@
 
                   <div class="text-center mt-2">
                     <button v-if="user.is_following" @click="joinTribe(user, $event)"
-                      class="btn btn-sm btn-gc-pink font-caption font-weight-semibold button--full"
+                      class="btn btn-sm btn-outline-green font-caption font-weight-semibold button--full"
                     >
                       <i class="fas fa-user-minus mr-1"></i>
-                      Unfollow
+                      Following
                     </button>
                     <button v-else @click="joinTribe(user, $event)"
                       class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
