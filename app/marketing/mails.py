@@ -1134,6 +1134,8 @@ def reject_faucet_request(fr):
 
 
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
+    from marketing.views import trending_quests
+
     if not bounties:
         return
     max_bounties = 10
@@ -1167,7 +1169,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_new_bounty(to_email, bounties, old_bounties)
+            html, text = render_new_bounty(to_email, bounties, old_bounties, trending_quests=trending_quests())
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])

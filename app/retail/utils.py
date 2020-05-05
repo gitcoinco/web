@@ -29,6 +29,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 from cacheops import CacheMiss, cache
+from grants.models import Contribution, Grant
 from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, ManualStat, Stat
 from requests_oauthlib import OAuth2Session
 
@@ -554,7 +555,9 @@ def build_stat_results(keyword=None):
     pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
-    context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
+    total_gmv_rounded = f"${round(context['universe_total_usd'] / 1000000, 1)}m"
+    context['total_gmv_rounded'] = total_gmv_rounded
+    context['title'] = f"{total_gmv_rounded} in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
 
     try:
@@ -581,5 +584,23 @@ def build_stat_results(keyword=None):
     reviews = FeedbackEntry.objects.exclude(comment='').filter(created_on__lt=(timezone.now() - timezone.timedelta(days=7))).order_by('-created_on')[0:15]
     context['reviews'] = [(ele.rating, ele.anonymized_comment) for ele in reviews]
     context['ratings'] = [1, 2, 3, 4, 5]
+    context['num_grants'] = Grant.objects.filter(hidden=False, active=True).count()
+    grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
+    context['grants_gmv'] = str(round(grants_gmv / 10**6, 1)) + "m"
+    num_contributions = Contribution.objects.count()
+    context['no_contributions'] = num_contributions
+    context['no_bounties'] = Bounty.objects.current().count()
+    context['no_tips'] = Tip.objects.filter(network='mainnet').send_happy_path().count()
+    context['ads_gmv'] = get_codefund_history_at_date(timezone.now(), '')
+    context['ads_gmv'] = str(round(context['ads_gmv'] / 10**3, 1)) + "k"
+    context['bounties_gmv'] = Stat.objects.filter(key='bounties_done_value').order_by('-pk').first().val
+    context['bounties_gmv'] = str(round((total_tips_usd + context['bounties_gmv']) / 10**6, 1)) + "m"
+    median_index = int(num_contributions/2)
+    context['median_contribution'] = round(Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt, 2)
+    context['avg_contribution'] = round(grants_gmv / num_contributions, 2)
+    from grants.views import clr_round
+    context['num_matching_rounds'] = clr_round
+    context['ads_served'] = str(round(ManualStat.objects.filter(key='ads_served').order_by('-pk').first().val / 10**6, 1)) + "m"
+    context['privacy_violations'] = ManualStat.objects.filter(key='privacy_violations').order_by('-pk').first().val
 
     return context
