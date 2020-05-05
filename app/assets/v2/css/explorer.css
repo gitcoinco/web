@@ -1,0 +1,81 @@
+.bounty_row {
+  color: #000000;
+  text-decoration: none;
+  padding: 10px 1rem;
+}
+
+.bounty_row:hover {
+  color: #000000;
+  text-decoration: none;
+  background-color: #F9F9F9;
+}
+
+.hiring-alt {
+  font-size: 11px;
+  color: #4A90E2;
+  font-weight: 700;
+  letter-spacing: 1.7px;
+}
+
+.hackathon-alt {
+  font-size: 11px;
+  color: #0d0764;
+  font-weight: 600;
+  letter-spacing: 1.7px;
+}
+
+.hackathon-explorer .hackathon-alt {
+  display: none;
+}
+
+.status-open {
+  color: #00A652;
+}
+
+.status-reserved {
+  color: #d58512;
+}
+
+.status-started {
+  color: #0D0764;
+}
+
+.status-submitted {
+  color: #008EFF;
+}
+
+.status-done {
+  color: #666666;
+}
+
+.status-cancelled,
+.status-expired {
+  color: #C70018;
+}
+
+.separator-bull {
+  margin: 0 0.6em;
+}
+
+.separator-bull:after {
+  content: '\2022'
+}
+
+.btn-expand-token {
+  position: absolute;
+  line-height: 1.5rem;
+  border: 0;
+  background-color: transparent;
+  font-weight: 400;
+  color: #007bff;
+}
+
+.btn-expand-token:focus {
+  color: #007bff;
+}
+
+.expired-icon {
+  font-size: 15px;
+  padding-right: 0.5em;
+  vertical-align: text-bottom;
+}
