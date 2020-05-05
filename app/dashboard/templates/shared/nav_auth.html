@@ -52,6 +52,10 @@
           <i class="fas fa-user"></i>
           {% trans "My Profile" %}
         </a>
+        <a class="dropdown-item" href="/wiki">
+          <i class="fas fa-question-circle"></i>
+          {% trans "Wiki" %}
+        </a>
       {% else %}
         <a class="dropdown-item" data-gtm="get started" href="{% url "get_gitcoin" %}">
           <i class="fas fa-bolt"></i>
@@ -89,6 +93,9 @@
         </a>
       {% endif %}
       <div class="dropdown-divider"></div>
+      {% if is_townsquare %}
+        {% include 'shared/theme_switcher.html' with source='authed' %}
+      {% endif %}
       <a class="dropdown-item" data-gtm="logout" href="{% url "logout" %}?next={{ request.get_full_path }}">
         <i class="fas fa-lock"></i>
         {% trans "Log Out" %}

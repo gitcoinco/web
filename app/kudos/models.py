@@ -531,7 +531,7 @@ def psave_kt(sender, instance, **kwargs):
             "network":instance.network,
             "txid":instance.txid,
             "token_name":'ETH',
-            "token_value":instance.value_true,
+            "token_value":token.price_in_eth,
         }
         )
 
