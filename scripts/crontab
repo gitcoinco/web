@@ -91,6 +91,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 0 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_gas_history  >> /var/log/gitcoin/create_gas_history.log  2>&1
 0 19 * * 7 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash vacuum  >> /var/log/gitcoin/vacuum.log  2>&1
 2 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_page_cache  >> /var/log/gitcoin/create_page_cache.log  2>&1
+9 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_page_cache_quests  >> /var/log/gitcoin/create_page_cache_quests.log  2>&1
 1 */30 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_activity_cache  >> /var/log/gitcoin/create_activity_cache.log  2>&1
 
 
