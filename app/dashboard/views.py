@@ -4551,11 +4551,16 @@ def save_tribe(request,handle):
             tribe.save()
 
         if request.FILES.get('cover_image'):
+
             cover_image = request.FILES.get('cover_image', None)
-            if cover_image:
-                tribe = Profile.objects.filter(handle=handle.lower()).first()
-                tribe.tribes_cover_image = cover_image
-                tribe.save()
+
+            error_response = invalid_file_response(cover_image, supported=['image/png', 'image/jpeg', 'image/jpg'])
+
+            if error_response:
+                return JsonResponse(error_response)
+            tribe = Profile.objects.filter(handle=handle.lower()).first()
+            tribe.tribes_cover_image = cover_image
+            tribe.save()
 
         if request.POST.get('tribe_priority'):
 
