@@ -260,13 +260,13 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_top_grant_spenders_cache()
+        create_results_cache()
         if not settings.DEBUG:
             create_hidden_profiles_cache()
             create_tribes_cache()
             create_activity_cache()
             create_post_cache()
-            create_results_cache()
+            create_top_grant_spenders_cache()
             create_avatar_cache()
             create_quests_cache()
             create_grants_cache()

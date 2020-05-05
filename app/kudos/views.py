@@ -193,6 +193,9 @@ def details(request, kudos_id, name):
     kudos = get_object_or_404(Token, pk=kudos_id)
     num_kudos_limit = 100
 
+    if kudos.hidden_token_details_page:
+        raise Http404
+
     context = {
         'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
