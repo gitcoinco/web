@@ -28,11 +28,12 @@ from django.conf import settings
 from django.utils import timezone
 
 from grants.models import Contribution, Grant, PhantomFunding
-from grants.views import round_5_5_grants
 from marketing.models import Stat
 from perftools.models import JSONStore
 
 CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
+
+ROUND_5_5_GRANTS = [656, 493, 494, 502, 504, 662]
 
 # TODO: MOVE TO DB
 THRESHOLD_TECH = 20.0
@@ -279,8 +280,8 @@ def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile')
     # get all the eligible contributions and calculate total
     contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=CLR_START_DATE, created_on__lte=from_date, success=True)
 
-    if round_5_5_grants:
-        grants = Grant.objects.filter(id__in=round_5_5_grants)
+    if ROUND_5_5_GRANTS:
+        grants = Grant.objects.filter(id__in=ROUND_5_5_GRANTS)
         threshold = THRESHOLD_HEALTH
         total_pot = TOTAL_POT_HEALTH
     elif clr_type == 'tech':
