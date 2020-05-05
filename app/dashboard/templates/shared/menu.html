@@ -33,16 +33,6 @@
 
     <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
 
-      <li class="nav-item dropdown">
-        <a class="nav-link {% if '/chat' in request.path %}selected{% endif %}  dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Chat
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/chat">Web Chat</a>
-          <a class="dropdown-item" href="/chat/landing">Desktop & Mobile Apps</a>
-        </div>
-      </li>
-
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownProducts" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -171,7 +161,7 @@
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCommunity" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% trans "Community" %}
+        {% trans "Tribes" %}
       </a>
       <div class="dropdown-menu shadow-lg" id="" aria-labelledby="dropdownCommunity">
         <div class="gc-megamenu-content">
@@ -179,7 +169,7 @@
             <ul class="col-md-3 col-lg-2 list-unstyled offset-lg-2">
               <li>
                 <a class="dropdown-item" href="{% url "landing_chat" %}">
-                  {% trans "Chat" %}
+                  {% trans "Browse Tribes" %}
                 </a>
               </li>
               <li>
@@ -188,30 +178,26 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url "verified" %}">
-                  {% trans "Verify Profile" %}
+                <a class="dropdown-item" href="{% url "users_directory" %}">
+                  {% trans "Users Directory" %}
                 </a>
               </li>
+              <li><a href="{% url 'tribes' %}">Interested in Your Own Tribe?</a></li>
             </ul>
             <ul class="col-md-3 col-lg-2 list-unstyled">
-              <li>
-                <a class="dropdown-item" href="https://gitcoin.co/wiki/wiki-code-conduct/">
-                  {% trans "Code of Conduct" %}
-                </a>
-              </li>
               <li>
                 <a class="dropdown-item" href="{% url "activity" %}">
                   {% trans "Activity Feed" %}
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url "users_directory" %}">
-                  {% trans "Users Explorer" %}
+                <a class="dropdown-item" href="{% url "verified" %}">
+                  {% trans "Verify Profile" %}
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url "users_directory" %}?persona=tribe">
-                  {% trans "Tribes" %}
+                <a class="dropdown-item" href="https://gitcoin.co/wiki/wiki-code-conduct/">
+                  {% trans "Code of Conduct" %}
                 </a>
               </li>
             </ul>
@@ -226,8 +212,8 @@
                     </a>
                   </div>
                   <div class="carousel-item">
-                    <h5>Find your Tribe</h5>
-                    <p>Follow the orgs you like more with <a href="{% url 'tribes' %}">tribes</a> and build relationships and meaningful projects.</p>
+                    <h5>Find a Tribe</h5>
+                    <p>Discover great web3 organizations, work on meaningful projects and build relationships with like minded people. <a href="{% url 'users_directory' %}?persona=tribe">Browse Tribes</a></p>
                     <a class="btn btn-gc-blue" href="{% url 'users_directory' %}?persona=tribe">
                       {% trans "Find a Tribe" %}
                     </a>
@@ -246,7 +232,7 @@
         </div>
       </div>
     </div>
-
+    {% if not user.is_authenticated %}
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCompany" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -280,11 +266,6 @@
               <li>
                 <a class="dropdown-item" href="/wiki">
                   {% trans "Wiki" %}
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/wiki">
-                  {% trans "Help" %}
                 </a>
               </li>
             </ul>
@@ -328,6 +309,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
   </nav>
   <nav class="navbar-nav mr-3">
     {% include 'shared/nav_auth.html' with source='authed' %}
