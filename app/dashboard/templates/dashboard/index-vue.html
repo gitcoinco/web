@@ -314,7 +314,7 @@
                       <div class="row nonefound mx-auto" style="display:none;">
                           <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
                           <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                            <div v-if="is_registered">
+                            <div>
                               <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
                               <b-button class="btn btn-gc-blue" @click="activePanel = 1">Townsquare</b-button>
                             </div>
@@ -856,7 +856,7 @@
                       <div class="py-3 pr-3">
                         <div class="d-flex justify-content-between">
                           <a class="mb-1 font-bigger-1 text-truncate w-50" :href="`/profile/${sponsor.org_name}`">[[ sponsor.display_name ]]</a>
-                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm']">[[ sponsor.followed ? "following" : "follow" ]]</b-button>
+                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" v-bind:class="[sponsor.followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm']">[[ sponsor.followed ? "following" : "follow" ]]</b-button>
                         </div>
 
                         <div class="">
