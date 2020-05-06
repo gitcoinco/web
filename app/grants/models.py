@@ -1133,7 +1133,7 @@ class Contribution(SuperModel):
         if mechanism == 'originated_address':
             return self.originated_address
         else:
-            return subscription.contributor_profile.id
+            return self.subscription.contributor_profile.id
 
     def update_tx_status(self):
         """Updates tx status."""

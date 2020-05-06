@@ -80,6 +80,7 @@
 .status_background_container {
   margin-top: 1em;
   position: relative;
+  min-width: 100%;
 }
 
 .image-text-container {

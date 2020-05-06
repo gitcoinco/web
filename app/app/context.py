@@ -122,9 +122,17 @@ def preprocess(request):
 
     header_msg, footer_msg, nav_salt = get_sitewide_announcements()
 
+    # town square wall post max length
+    max_length_offset = abs(
+        ((request.user.profile.created_on if request.user.is_authenticated else timezone.now()) - timezone.now()).days
+    )
+    max_length = 600 + max_length_offset
+
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
+        'max_length': max_length,
+        'max_length_offset': max_length_offset,
         'chat_url': chat_url,
         'chat_id': chat_id,
         'chat_access_token': chat_access_token,
