@@ -24,6 +24,7 @@ import statistics
 import time
 
 from django.conf import settings
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -604,3 +605,142 @@ def build_stat_results(keyword=None):
     context['privacy_violations'] = ManualStat.objects.filter(key='privacy_violations').order_by('-pk').first().val
 
     return context
+
+
+def testimonials():
+    return [
+        {
+            'text': '"We were really impressed with the final hackathon project submissions and the quality of the developers. Gitcoin helped us benchmark fair prices and got us started really fast".',
+            'author': 'Chase Freo',
+            'designation': 'OP Games',
+            'org_photo': static('v2/images/project_logos/alto-io.png')
+        },
+        {
+            'text': 'Gitcoin is one of the more prominent decentralized, open source platforms in the web 3.0 ecosystem, and we chose to use Gitcoin for hackathons because of the developed user base.',
+            'author': 'Mareen Gläske',
+            'designation': 'Gnosis',
+            'org_photo': static('v2/images/project_logos/gnosis.png')
+        },
+        {
+            'text': 'We organized a hackathon through Gitcoin with five categories with different prizes. We got really great results from that. The specifications were delivered in good quality and the contributor went above and beyond the level of what they were asked to do.',
+            'author': 'Bernhard Mueller',
+            'designation': 'MythX',
+            'org_photo': static('v2/images/project_logos/mythx.png')
+        },
+        {
+            'text': 'The reason why I started using Gitcoin was because we really liked what Gitcoin was doing, we were adamant about decentralization, and we for sure wanted to do bounties. We wanted to activate developers and users in a unique way, and Gitcoin was perfectly set up for that.',
+            'author': 'Chris Hutchinson',
+            'designation': 'Status',
+            'org_photo': static('v2/images/project_logos/status-im.png')
+        }
+    ]
+
+
+def reasons():
+    return [
+        {
+            'title': 'Hackathon',
+            'img': static('v2/images/tribes/landing/hackathon.svg'),
+            'info': 'See meaningful projects come to life on your dapp'
+        },
+        {
+            'title': 'Suggest Bounty',
+            'img': static('v2/images/tribes/landing/suggest.svg'),
+            'info': 'Get bottoms up ideas from passionate contributors'
+        },
+        {
+            'title': 'Quadratic Funding',
+            'img': static('v2/images/tribes/landing/grow.svg'),
+            'info': 'Incentivize your tribe with mini quadratic funding'
+        },
+        {
+            'title': 'Workshops',
+            'img': static('v2/images/tribes/landing/workshop.svg'),
+            'info': 'Host workshops and learn together'
+        },
+        {
+            'title': 'Chat',
+            'img': static('v2/images/tribes/landing/chat.svg'),
+            'info': 'Direct connection to your trusted tribe'
+        },
+        {
+            'title': 'Town Square',
+            'img': static('v2/images/tribes/landing/townsquare.svg'),
+            'info': 'Engage the members of your tribe'
+        },
+        {
+            'title': 'Payout/Fund',
+            'img': static('v2/images/tribes/landing/payout.svg'),
+            'info': 'Easily co-manage hackathons with your team'
+        },
+        {
+            'title': 'Stats Report',
+            'img': static('v2/images/tribes/landing/stats.svg'),
+            'info': 'See how your hackathons are performing'
+        },
+        {
+            'title': 'Kudos',
+            'img': static('v2/images/tribes/landing/kudos.svg'),
+            'info': 'Show appreciation to your tribe members'
+        }
+    ]
+
+
+def press():
+    return [
+        {
+            'link': 'https://twit.tv/shows/floss-weekly/episodes/474',
+            'img': 'v2/images/press/floss_weekly.jpg'
+        },
+        {
+            'link': 'https://epicenter.tv/episode/257/',
+            'img': 'v2/images/press/epicenter.jpg'
+        },
+        {
+            'link': 'http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000',
+            'img': 'v2/images/press/ibtimes.jpg'
+        },
+        {
+            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'img': 'v2/images/press/forbes.jpg'
+        },
+        {
+            'link': 'https://unhashed.com/cryptocurrency-news/gitcoin-introduces-collectible-kudos-rewards/',
+            'img': 'v2/images/press/unhashed.jpg'
+        },
+        {
+            'link': 'https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/',
+            'img': 'v2/images/press/coindesk.png'
+        },
+        {
+            'link': 'https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/',
+            'img': 'v2/images/press/se_daily.png'
+        },
+        {
+            'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
+            'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
+        }
+    ]
+
+
+def articles():
+    return [
+        {
+            'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
+            'img': static("v2/images/medium/1.png"),
+            'title': _('Progressive Elaboration of Scope on Gitcoin'),
+            'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
+            'alt': 'gitcoin scope'
+        },
+        {
+            'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
+            'img': static("v2/images/medium/3.png"),
+            'title': _('Announcing Open Kudos'),
+            'description': _('Our vision for integrating Kudos in any (d)App'),
+            'alt': 'open kudos'
+        }
+    ]
