@@ -145,13 +145,12 @@
                 </h4>
                 <p class="pt-4 mb-4">Until then, we recommend a few different ways to prepare:</p>
                 {% endif %}
-                <ul class="mt-4">
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="/townsquare?tab=hackathon:{{ hackathon.id }}&trending=0&personal=0">Introduce yourself on Town Square + what you like to build (and earn your first Kudos!)</a></li>
-                    <li class="mb-3 gc-text-blue font-weight-bold">RSVP to our 3 workshops</li>
+                <ul  class="mt-4">
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="{% url 'hackathon' hackathon.slug %}?tab=hackathon:{{hackathon.id}}">Introduce yourself on Townsquare</a> </li>
+                    <li class="mb-3 gc-text-blue font-weight-bold">Look out for upcoming workshop invites in your email inbox</li>
                     <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors">Checkout sponsors below and build your team</a></li>
                     <li class="mb-3 gc-text-blue font-weight-bold">Invite your friends to hack and earn a Kudos</li>
                 </ul>
-
               </div>
             {% if not hackathon.start_date|timesince >= "1 min"%}
                 <div class="d-md-flex d-none mt-5 col-2 justify-content-end align-items-center">
@@ -163,38 +162,73 @@
       </div>
     {% endif %}
 
-      {% if sponsors %}
-        <div id="sponsors" class="container bg-white my-4 pt-3 pb-4 rounded">
-            <div class="row mb-5">
-              <div class="col-12 sponsors mb-3">
-                <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Key Sponsors</p>
-                {% if sponsors.sponsors_gold %}
-                  <div class="d-flex flex-wrap mb-4">
-                    {% for sponsor in sponsors.sponsors_gold %}
-                      <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center">
-                        <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                        <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
-                        <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
-                      </a>
-                    {% endfor %}
-                  </div>
-                {% endif %}
 
-                {% if sponsors.sponsors_silver %}
-                  <div class="d-flex flex-wrap mb-4 mx-5">
-                    {% for sponsor in sponsors.sponsors_silver %}
-                      <a href="{% url 'profile' sponsor.handle %}" class="col-2 sponsors-gold mt-5 mb-3 text-center">
-                        <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                        <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
-                        <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
-                      </a>
-                    {% endfor %}
-                  </div>
-                {% endif %}
+
+
+    <div id="sponsors" class="container bg-white my-4 pt-3 pb-4 rounded">
+      <div class="row mb-5">
+        {% if sponsors %}
+          <div class="col-12 sponsors mb-3">
+            <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Key Sponsors</p>
+            {% if sponsors.sponsors_gold %}
+              <div class="d-flex flex-wrap mb-4">
+                {% for sponsor in sponsors.sponsors_gold %}
+                  <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center">
+                    <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                    <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
+                    <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
+                  </a>
+                {% endfor %}
               </div>
-            </div>
+            {% endif %}
+
+            {% if sponsors.sponsors_silver %}
+              <div class="d-flex flex-wrap mb-4 mx-5">
+                {% for sponsor in sponsors.sponsors_silver %}
+                  <a href="{% url 'profile' sponsor.handle %}" class="col-2 sponsors-gold mt-5 mb-3 text-center">
+                    <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                    <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
+                    <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
           </div>
-      {% endif %}
+        {% else %}
+          <div class="col-12 sponsors mb-3">
+            <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Sponsors</p>
+            <div class="d-flex flex-wrap mb-4">
+              {% for sponsor in hackathon.sponsor_profiles.all %}
+              <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center text-body">
+                <img src="{{sponsor.avatar_url}}" height="114" alt="{{sponsor.handle}}" class="">
+                <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
+                {% if sponsor.tribe_members.count > 0  %}
+                  <span class="font-smaller-2"><i class="fas fa-users-crown"></i>  {{sponsor.tribe_members.count}} members</span>
+                {% endif %}
+              </a>
+              {% endfor %}
+            </div>
+
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="container bg-white mt-4 rounded">
+      <div class="row p-5">
+        <div class="col-12">
+          {% if is_staff %}
+          <div class="">
+            <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
+            <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
+          </div>
+          {% endif %}
+          <div class="editor-container">
+            <div id="description-hackathon" class="gc-editor description-hackathon">{{hackathon.description | safe}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
       <div class="container bg-white mt-4 rounded">
         <div class="row px-5">
@@ -380,9 +414,11 @@
           if (distance <= 0) {
             clearInterval(x);
           }
+          const countdownEle = document.getElementById("countdown");
 
-          document.getElementById("countdown").innerHTML = `The event starts in ${days}d : ${hours}h : ${minutes}m : ${seconds}s`;
-
+          if (countdownEle) {
+            countdownEle.innerHTML = `The event starts in ${days}d : ${hours}h : ${minutes}m : ${seconds}s`;
+          }
 
         }, 1000);
       }
