@@ -928,9 +928,9 @@ def projects_fetch(request):
                 Q(bounty__github_url__icontains=sponsor)
             )
     elif sponsor:
-        sponsor_profile = Profile.objects.get(handle=sponsor)
+        sponsor_profile = Profile.objects.get(handle__iexact=sponsor)
         if sponsor_profile:
-            projects = HackathonProject.objects.filter(hackathon__sponsor_profiles__in=[sponsor_profile]).exclude(
+            projects = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__in=[sponsor_profile]) | Q(bounty__bounty_owner_github_username__in=[sponsor])).exclude(
                 status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
         else:
             projects = []
