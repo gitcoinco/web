@@ -60,9 +60,35 @@ def details(request, quest):
         if qn is not None and request.user.is_authenticated:
             save_attempt = qn == 0
             if save_attempt:
+                # make sure that cooldown period is respected
+                override_cooldown = request.user.is_staff and request.GET.get('force', False)
+                if quest.is_within_cooldown_period(request.user) and not override_cooldown:
+                    response = {
+                        "question": quest.questions_safe(qn),
+                        "can_continue": False,
+                        "did_win": False,
+                        "prize_url": "",
+                    }
+                    response = JsonResponse(response)
+                    # response['X-Frame-Options'] = x_frame_option
+                    return response
                 process_start(request, quest)
             else:
                 qa = get_active_attempt_if_any(request.user, quest, state=(qn-1))
+                # NOTE: There was the proposition to display questions in a random order.
+                # That idea is incompatible with the below operator and requires a code rewrite.
+                if qa.last_question != qn - 1:
+                    response = {
+                        "question": quest.questions_safe(qn),
+                        "can_continue": False,
+                        "did_win": False,
+                        "prize_url": "",
+                    }
+                    response = JsonResponse(response)
+                    # response['X-Frame-Options'] = x_frame_option
+                    return response
+                qa.last_question = qn
+                qa.save()
                 this_question = quest.questions[qn-1]
                 correct_answers = [ele['answer'] for ele in this_question['responses'] if ele['correct']]
                 their_answers = [unescape(ele) for ele in payload.get('answers')]

@@ -168,6 +168,7 @@ def process_start(request, quest):
         success=False,
         profile=request.user.profile,
         state=0,
+        last_question=0,
         )
     record_quest_activity(quest, request.user.profile, 'played_quest')
 
@@ -278,6 +279,6 @@ def generate_leaderboard(max_entries=25, round_number=1):
         leaderboard_hero[0] = leaderboard_hero[1]
         leaderboard_hero[1] = tmp
         leaderboard_hero = leaderboard_hero[:3]
-        
+
     return_leaderboard = return_leaderboard[:max_entries]
     return return_leaderboard, leaderboard_hero

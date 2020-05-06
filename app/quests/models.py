@@ -55,7 +55,7 @@ class Quest(SuperModel):
     )
     ui_data = JSONField(default=dict, blank=True)
     edit_comments = models.TextField(default='', blank=True)
-    
+
     def __str__(self):
         """Return the string representation of this obj."""
         return f'{self.pk}, {self.title} (visible: {self.visible})'
@@ -291,6 +291,7 @@ class QuestAttempt(SuperModel):
         related_name='quest_attempts',
     )
     state = models.IntegerField(default=0)
+    last_question = models.IntegerField(default=-1)
 
     def __str__(self):
         """Return the string representation of this obj."""
