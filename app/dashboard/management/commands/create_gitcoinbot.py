@@ -21,6 +21,8 @@ from django.core.management.base import BaseCommand
 from dashboard.models import Profile
 
 
+# We use this command rather than profiles.json fixture,
+# because otherwise it could overwrite existing data in the DB.
 class Command(BaseCommand):
 
     help = 'creates gitcointbot profile'
