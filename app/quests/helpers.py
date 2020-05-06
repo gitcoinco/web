@@ -46,7 +46,6 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
     """
     Awards point awards (and referral rewards) to a winner
     """
-    return  # temporarily disabled (until we solve the hijacking problem)
 
     #max depth
     if layer > max_ref_depth:
@@ -87,8 +86,9 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
         send_notification_to_user(gitcoinbot.user, profile.user, cta_url, cta_text, msg_html)
 
     # recursively record points for your referals quest
-    if profile.referrer:
-        return record_award_helper(qa, profile.referrer, layer+1, action, value_multiplier)
+    # temporarily disabled (until we solve the hijacking problem)
+    # if profile.referrer:
+    #     return record_award_helper(qa, profile.referrer, layer+1, action, value_multiplier)
 
 
 def get_base_quest_view_params(user, quest):
