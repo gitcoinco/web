@@ -70,7 +70,8 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
 
     if [ "$DISABLE_INITIAL_CREATE_GITCOINBOT" != "on" ]; then
         # It may be already created, so >/dev/null
-        python3 manage.py create_gitcoinbot >/dev/null
+        echo "Creating gitcoinbot profile..."
+        python3 manage.py create_gitcoinbot
     fi
 
     date >> /provisioned
