@@ -71,7 +71,6 @@
     });
   }
 
-  scrollSlider($('#featured-card-container'), 288);
 
   function debounce(func, wait, immediate) {
     var timeout;
@@ -599,12 +598,7 @@
 
       if (results.length === 0 && !append) {
         $('.featured-bounties').hide();
-        if (localStorage['referrer'] === 'onboard') {
-          $('.no-results').removeClass('hidden');
-          $('#dashboard-content').addClass('hidden');
-        } else {
-          $('.nonefound').css('display', 'none');
-        }
+        $('.no-results').removeClass('hidden');
       }
 
       var html = renderFeaturedBountiesFromResults(results, true);
@@ -824,6 +818,9 @@
       $('#dashboard-title').removeClass('hidden');
     }
     addPopover();
+    if ($('#featured-card-container').length > 0) {
+      scrollSlider($('#featured-card-container'), 288);
+    }
   };
 
 
@@ -875,6 +872,10 @@
       el: '#dashboard-vue-app',
       updated: () => {
         addPopover();
+        if ($('#featured-card-container').length > 0) {
+          scrollSlider($('#featured-card-container'), 288);
+        }
+
       },
       mounted: () => {
         setTimeout(() => {
@@ -882,7 +883,6 @@
           reset_offset();
           refreshBounties(null, 0, false);
           initDOM();
-          addPopover();
           $(window).on('popstate', function(e) {
             e.preventDefault();
             // we change the url with the panels to ensure if you refresh or get linked here you're being shown what you want
