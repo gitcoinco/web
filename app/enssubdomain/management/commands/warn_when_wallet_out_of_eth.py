@@ -19,7 +19,7 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from dashboard.views import w3
+from dashboard.utils import get_web3
 from marketing.mails import warn_account_out_of_eth
 
 
@@ -28,6 +28,7 @@ class Command(BaseCommand):
     help = 'warns the admins when any of the monitored_accounts is out of gas'
 
     def handle(self, *args, **options):
+        w3 = get_web3('mainnet')
         monitored_accounts = [settings.ENS_OWNER_ACCOUNT, settings.KUDOS_OWNER_ACCOUNT, settings.GRANTS_OWNER_ACCOUNT]
         for account in monitored_accounts:
             balance_eth_threshold = 0.1
