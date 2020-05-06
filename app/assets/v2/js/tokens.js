@@ -27,7 +27,7 @@ const tokenNameToDetails = (network, token_name) => {
   return _tokens.filter(_token => _token.name == token_name)[0];
 };
 
-var load_tokens_from_network = function(network){
+var load_tokens_from_network = function(network) {
   // add tokens to the submission form
   var tokenAddress = localStorage['tokenAddress'];
 
@@ -54,7 +54,7 @@ var load_tokens_from_network = function(network){
 
     $('select[name=denomination]').append($('<option>', select));
   }
-}
+};
 
 var load_tokens = function() {
   window.addEventListener('load', function() {
