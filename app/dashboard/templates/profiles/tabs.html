@@ -6,11 +6,6 @@
         <button type="button" id="nav-description" href="{{profile.url}}/activity" class="text-center section-tab {% if tab == "activity" %} active {% endif %}">
           {% trans "ACTIVITY" %}
         </button>
-        {% if profile.is_org %}
-          <button type="button" id="nav-description" href="{{profile.url}}/tribe" class="text-center section-tab {% if tab == "tribe" %} active {% endif %}">
-            {% trans "TRIBE" %}{%if not profile.is_org %}S <span class="nav-badge">({{profile.tribe_members.count}})</span>{% endif %}
-          </button>
-        {% endif %}
         <button type="button" id="nav-description" href="{{profile.url}}/follow" class="text-center section-tab {% if tab == "follow" %} active {% endif %}">
           {% trans "FOLLOW" %}
         </button>
@@ -119,8 +114,6 @@
             {% include 'profiles/tab_portfolio.html' %}
           {% elif tab == 'orgs' %}
             {% include 'profiles/tab_orgs.html' %}
-          {% elif tab == 'tribe' %}
-            {% include 'profiles/tab_tribe.html' %}
           {% elif tab == 'people' %}
             {% include 'profiles/tab_people.html' %}
           {% elif tab == 'activity' %}
