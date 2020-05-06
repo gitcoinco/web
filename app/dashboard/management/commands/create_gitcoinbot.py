@@ -55,7 +55,7 @@ class Command(BaseCommand):
                                      "avatar_url": "https://avatars2.githubusercontent.com/u/27903976?s=460&u=55f8ae7c0f451691d93ea0ad5b89b58d1282981b&v=4",
                                      "created_at": "2016-02-20T13:42:34Z",
                                      "events_url": "https://api.github.com/users/gitcoinbot/events{/privacy}",
-                                     "site_admin": true,
+                                     "site_admin": True,
                                      "updated_at": "2016-02-27T08:15:49Z",
                                      "gravatar_id": "",
                                      "starred_url": "https://api.github.com/users/gitcoinbot/starred{/owner}{/repo}",
