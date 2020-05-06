@@ -314,15 +314,10 @@
                       <div class="row nonefound mx-auto" style="display:none;">
                           <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
                           <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-
-                          {% if hackathon.quest_link %}
-                            <p>Explore Web3 and be prepared via sponsors Quests</p>
-                            <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                          {% elif hackathon.start_date|timesince <= "1 min" %}
-                            <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                            <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                          {% endif %}
-
+                            <div v-if="is_registered">
+                              <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
+                              <a href="#" class="btn btn-gc-blue" @click="activePanel = 1">Townsquare</a>
+                            </div>
                           {% include 'shared/hackathon_sponsors.html' %}
 
                       </div>
@@ -345,7 +340,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab :disabled="!is_registered" class="col-12" title-item-class="navigation">
+              <b-tab class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Townsquare" %}
