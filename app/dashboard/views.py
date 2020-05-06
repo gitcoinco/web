@@ -2821,44 +2821,26 @@ def profile(request, handle, tab=None):
                 base = base.nocache()
             profile = base.get(pk=profile.pk)
 
-    if tab == 'tribe':
-        context['tribe_priority'] = profile.tribe_priority
-        suggested_bounties = BountyRequest.objects.filter(tribe=profile, status='o').order_by('created_on')
-        if suggested_bounties:
-            context['suggested_bounties'] = suggested_bounties
-
-    context['is_my_profile'] = is_my_profile
-    context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
-    context['show_follow_tab'] = True
-    context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
-    context['tab'] = tab
-    context['show_activity'] = request.GET.get('p', False) != False
-    context['is_my_org'] = request.user.is_authenticated and any([handle.lower() == org.lower() for org in request.user.profile.organizations ])
+    context['is_my_org'] = request.user.is_authenticated and any(
+        [handle.lower() == org.lower() for org in request.user.profile.organizations])
     if request.user.is_authenticated and hasattr(request.user, 'profile'):
         context['is_on_tribe'] = request.user.profile.tribe_members.filter(org__handle=handle.lower()).exists()
     else:
         context['is_on_tribe'] = False
-    context['ratings'] = range(0,5)
-    context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
-    context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
-    context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
-    context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
-    context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
-    context['foltab'] = request.GET.get('sub', 'followers')
-
-    active_tab = 0
-    if tab == "townsquare":
-        active_tab = 0
-    elif tab == "projects":
-        active_tab = 1
-    elif tab == "people":
-        active_tab = 2
-    elif tab == "bounties":
-        active_tab = 3
-    context['active_panel'] = active_tab
 
     if profile.is_org and profile.handle.lower() in ['gitcoinco']:
+
+        active_tab = 0
+        if tab == "townsquare":
+            active_tab = 0
+        elif tab == "projects":
+            active_tab = 1
+        elif tab == "people":
+            active_tab = 2
+        elif tab == "bounties":
+            active_tab = 3
+        context['active_panel'] = active_tab
+
         # record profile view
         if request.user.is_authenticated and not context['is_my_org']:
             ProfileView.objects.create(target=profile, viewer=request.user.profile)
@@ -2877,6 +2859,29 @@ def profile(request, handle, tab=None):
             return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
         except Exception as e:
             logger.info(str(e))
+
+
+    if tab == 'tribe':
+        context['tribe_priority'] = profile.tribe_priority
+        suggested_bounties = BountyRequest.objects.filter(tribe=profile, status='o').order_by('created_on')
+        if suggested_bounties:
+            context['suggested_bounties'] = suggested_bounties
+
+    context['is_my_profile'] = is_my_profile
+    context['show_resume_tab'] = profile.show_job_status or context['is_my_profile']
+    context['show_follow_tab'] = True
+    context['is_editable'] = context['is_my_profile'] # or context['is_my_org']
+    context['tab'] = tab
+    context['show_activity'] = request.GET.get('p', False) != False
+
+    context['ratings'] = range(0,5)
+    context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
+    context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
+    context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
+    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
+    context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
+    context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
+    context['foltab'] = request.GET.get('sub', 'followers')
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
