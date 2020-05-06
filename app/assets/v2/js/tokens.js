@@ -27,35 +27,41 @@ const tokenNameToDetails = (network, token_name) => {
   return _tokens.filter(_token => _token.name == token_name)[0];
 };
 
+var load_tokens_from_network = function(network){
+  // add tokens to the submission form
+  var tokenAddress = localStorage['tokenAddress'];
+
+  if (!tokenAddress) {
+    tokenAddress = '0x0000000000000000000000000000000000000000';
+  }
+  var _tokens = tokens(network);
+
+  for (var i = 0; i < _tokens.length; i++) {
+    if (_tokens[i]['divider']) {
+      $('select[name=denomination]').append('<option disabled />');
+      continue;
+    }
+
+    var token = _tokens[i];
+    var select = {
+      value: token['addr'],
+      text: token['name']
+    };
+
+    if (token['addr'] == tokenAddress) {
+      select['selected'] = 'selected';
+    }
+
+    $('select[name=denomination]').append($('<option>', select));
+  }
+}
+
 var load_tokens = function() {
   window.addEventListener('load', function() {
     waitforWeb3(function() {
-      // add tokens to the submission form
-      var tokenAddress = localStorage['tokenAddress'];
+      
+      load_tokens_from_network(document.web3network);
 
-      if (!tokenAddress) {
-        tokenAddress = '0x0000000000000000000000000000000000000000';
-      }
-      var _tokens = tokens(document.web3network);
-
-      for (var i = 0; i < _tokens.length; i++) {
-        if (_tokens[i]['divider']) {
-          $('select[name=denomination]').append('<option disabled />');
-          continue;
-        }
-
-        var token = _tokens[i];
-        var select = {
-          value: token['addr'],
-          text: token['name']
-        };
-
-        if (token['addr'] == tokenAddress) {
-          select['selected'] = 'selected';
-        }
-
-        $('select[name=denomination]').append($('<option>', select));
-      }
       // if web3, set the values of some form variables
       var url_string = window.location.href;
       var url = new URL(url_string);
