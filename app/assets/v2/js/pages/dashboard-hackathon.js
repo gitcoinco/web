@@ -593,12 +593,7 @@
 
       if (results.length === 0 && !append) {
         $('.featured-bounties').hide();
-        if (localStorage['referrer'] === 'onboard') {
-          $('.no-results').removeClass('hidden');
-          $('#dashboard-content').addClass('hidden');
-        } else {
-          $('.nonefound').css('display', 'none');
-        }
+        $('.no-results').removeClass('hidden');
       }
 
       var html = renderFeaturedBountiesFromResults(results, true);
