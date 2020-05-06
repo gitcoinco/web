@@ -179,8 +179,9 @@ def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
         bigtot += x['clr_amount']
     normalization_factor = bigtot / total_pot
     # modify totals
-    for x in totals:
-        x['clr_amount'] = x['clr_amount'] / normalization_factor
+    if normalization_factor != 0:
+        for x in totals:
+            x['clr_amount'] = x['clr_amount'] / normalization_factor
     return bigtot, totals
 
 
