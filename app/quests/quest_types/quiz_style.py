@@ -75,6 +75,7 @@ def details(request, quest):
                 process_start(request, quest)
             else:
                 qa = get_active_attempt_if_any(request.user, quest, state=(qn-1))
+                # Detect an attempt to run several quiz instances in parallel:
                 # NOTE: There was the proposition to display questions in a random order.
                 # That idea is incompatible with the below operator and requires a code rewrite.
                 if qa.last_question != qn - 1:
