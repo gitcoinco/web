@@ -24,7 +24,9 @@ Vue.mixin({
         vm.usersPage = newPage;
       }
       vm.params.page = vm.usersPage;
-      vm.params.hackathon = hackathonId;
+      if (hackathonId) {
+        vm.params.hackathon = hackathonId;
+      }
       if (vm.searchTerm) {
         vm.params.search = vm.searchTerm;
       } else {
@@ -41,6 +43,11 @@ Vue.mixin({
         delete vm.params['organisation'];
         delete vm.params['skills'];
       }
+
+      if (vm.tribeFilter) {
+        vm.params.tribe = vm.tribeFilter;
+      }
+
 
       let searchParams = new URLSearchParams(vm.params);
 
@@ -246,7 +253,7 @@ Vue.mixin({
           --user.follower_count;
         }
 
-        event.target.classList.toggle('btn-gc-pink');
+        event.target.classList.toggle('btn-outline-green');
         event.target.classList.toggle('btn-gc-blue');
       }).fail(function(error) {
         event.target.disabled = false;
@@ -260,39 +267,57 @@ Vue = Vue.extend({
 
 Vue.component('user-directory', {
   delimiters: [ '[[', ']]' ],
-  data: () => ({
-    users,
-    usersPage,
-    hackathonId,
-    usersNumPages,
-    usersHasNext,
-    numUsers,
-    media_url,
-    chatURL: document.chatURL || 'https://chat.gitcoin.co/',
-    searchTerm: null,
-    bottom: false,
-    params: {},
-    funderBounties: [],
-    currentBounty: undefined,
-    contributorInvite: undefined,
-    isFunder: false,
-    bountySelected: null,
-    userSelected: [],
-    showModal: false,
-    showFilters: !document.getElementById('explore_tribes'),
-    skills: document.keywords,
-    selectedSkills: [],
-    noResults: false,
-    isLoading: true,
-    gitcoinIssueUrl: '',
-    issueDetails: undefined,
-    errorIssueDetails: undefined,
-    showBanner: undefined,
-    persona: undefined,
-    hideFilterButton: !!document.getElementById('explore_tribes')
-  }),
+  props: [ 'tribe', 'is_my_org' ],
+  data: function() {
+    return {
+      orgOwner: this.is_my_org || false,
+      userFilter: {
+        options: [
+          { text: 'All', value: 'all' },
+          { text: 'Tribe Owners', value: 'owners' },
+          { text: 'Tribe Members', value: 'members' },
+          { text: 'Tribe Hackers', value: 'hackers' }
+        ]
+      },
+      tribeFilter: this.tribe || '',
+      users,
+      usersPage,
+      hackathonId,
+      usersNumPages,
+      usersHasNext,
+      numUsers,
+      media_url,
+      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
+      searchTerm: null,
+      bottom: false,
+      params: {
+        'user_filter': 'all'
+      },
+      funderBounties: [],
+      currentBounty: undefined,
+      contributorInvite: undefined,
+      isFunder: false,
+      bountySelected: null,
+      userSelected: [],
+      showModal: false,
+      showFilters: true,
+      skills: document.keywords,
+      selectedSkills: [],
+      noResults: false,
+      isLoading: true,
+      gitcoinIssueUrl: '',
+      issueDetails: undefined,
+      errorIssueDetails: undefined,
+      showBanner: undefined,
+      persona: undefined,
+      hideFilterButton: !!document.getElementById('explore_tribes'),
+      expandFilter: true
+    };
+  },
+
   mounted() {
     this.fetchUsers();
+    this.tribeFilter = this.tribe;
     this.$watch('params', function(newVal, oldVal) {
       this.searchUsers();
     }, {
@@ -300,11 +325,16 @@ Vue.component('user-directory', {
     });
   },
   created() {
-    this.fetchBounties();
+    if (document.contxt.github_handle && this.is_my_org) {
+      this.fetchBounties();
+    }
     this.inviteOnMount();
     this.extractURLFilters();
   },
   beforeMount() {
+    if (this.isMobile) {
+      this.showFilters = false;
+    }
     window.addEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     }, false);

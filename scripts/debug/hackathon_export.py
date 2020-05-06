@@ -1,4 +1,4 @@
-from dashboard.models import HackathonEvent, Bounty
+from dashboard.models import Bounty, HackathonEvent
 
 # total stats
 

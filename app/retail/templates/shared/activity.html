@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+
 {% load humanize i18n static grants_extra %}
 <div class="box d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
 
@@ -49,7 +50,9 @@
         {% endif %}
         {% if row.profile.data.type == 'Organization'%}
           {% if row.profile.handle not in my_tribes|join:"," %}
-            <div style="text-align:center"><a href=# class="align-middle btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>Join Tribe</a></div>
+            <div style="text-align:center">
+              <a href=# class="align-middle btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold" onclick="joinTribeDirect(this);" data-jointribe='{{row.profile.handle}}'>follow</a>
+            </div>
           {% endif %}
         {% endif %}
       </div>
@@ -382,13 +385,14 @@
           <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Grant</span>
         </div>
       {% endif %}
-
+    <div class="d-none d-sm-inline col-sm-4 pl-0">
       <div class="activity_time font-smaller-5 text-right">
         {% if not hide_date %}
         {{ row.created_human_time }}
         {% endif %}
       </div>
 
+    </div>
       <div class="mt-3 text-right pr-3 activity-img">
         {% if row.kudos %}
           <a href="{{row.kudos.external_url}}">

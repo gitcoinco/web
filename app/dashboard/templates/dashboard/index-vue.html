@@ -475,7 +475,7 @@
                                      <template v-slot:button-content>
                                        <i class='fas fa-comment-dots'></i>
                                      </template>
-                                     <b-dropdown-item-button @click.prevent="openChat(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                     <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
                                        @ [[ profile.handle ]]
                                      </b-dropdown-item-button>
                                     </b-dropdown>
@@ -712,7 +712,7 @@
                                       <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                                         <i class="fab fa-linkedin-in"></i>
                                       </a>
-                                      <a @click="chatWindow(user);" href="#" v-if="user.chat_id">
+                                      <a @click="chatWindow(user.handle);" href="#" v-if="user.chat_id">
                                         <i class="fas fa-comment-dots"></i>
                                       </a>
                                     </div>
@@ -744,18 +744,9 @@
                                   </template>
 
                                   <div class="text-center mt-2">
-                                    <button v-if="user.is_following" @click="joinTribe(user, $event)"
-                                      class="btn btn-sm btn-gc-pink font-caption font-weight-semibold button--full"
-                                    >
-                                      <i class="fas fa-user-minus mr-1"></i>
-                                      Unfollow
-                                    </button>
-                                    <button v-else @click="joinTribe(user, $event)"
-                                      class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
-                                    >
-                                      <i class="fas fa-user-plus mr-1"></i>
-                                      Follow
-                                    </button>
+                                    <b-button v-bind:class="[user.is_following ? 'btn-outline-green' : 'btn-gc-blue', 'btn btn-sm font-caption font-weight-semibold button--full']" @click="joinTribe(user, $event)">
+                                      <i class="fas fa-user-minus mr-1"></i> [[ user.is_following ? "following" : "follow" ]]
+                                    </b-button>
                                   </div>
 
                                 </div>
@@ -870,7 +861,7 @@
                       <div class="py-3 pr-3">
                         <div class="d-flex justify-content-between">
                           <a class="mb-1 font-bigger-1 text-truncate w-50" :href="`/profile/${sponsor.org_name}`">[[ sponsor.display_name ]]</a>
-                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" class="btn-sm btn-outline-gc-blue">[[ sponsor.followed ? "unfollow" : "follow" ]]</b-button>
+                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm']">[[ sponsor.followed ? "following" : "follow" ]]</b-button>
                         </div>
 
                         <div class="">
