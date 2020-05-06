@@ -2,10 +2,10 @@
 (function($) {
 
   $('body').on('click', '.btn', function(e) {
-    if($(this).text() == 'Register'){
+    if ($(this).text() == 'Register') {
       fbq('trackCustom', 'HackathonRegistration');
     }
-  })
+  });
 
   let hackathonProjects = [];
   let projectsPage = 1;
