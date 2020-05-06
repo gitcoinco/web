@@ -46,6 +46,7 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
     """
     Awards point awards (and referral rewards) to a winner
     """
+    return  # temporarily disabled (until we solve the hijacking problem)
 
     #max depth
     if layer > max_ref_depth:
