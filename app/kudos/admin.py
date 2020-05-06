@@ -41,6 +41,10 @@ class TokenRequestAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_reject_kudos" in request.POST:
+            from marketing.mails import notify_kudos_rejected
+            notify_kudos_rejected(obj)
+            self.message_user(request, f"Notified user of rejection")
         if "_mint_kudos" in request.POST:
             from kudos.tasks import mint_token_request
             try:
