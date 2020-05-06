@@ -31,7 +31,9 @@ from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
 from perftools.models import JSONStore
 
-CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
+CLR_START_DATE = dt.datetime(2020, 5, 6, 0, 0)
+
+ROUND_5_5_GRANTS = [656, 493, 494, 502, 504, 662]
 
 # TODO: MOVE TO DB
 THRESHOLD_TECH = 20.0
@@ -40,7 +42,7 @@ THRESHOLD_HEALTH = 20.0
 
 TOTAL_POT_TECH = 101000.0
 TOTAL_POT_MEDIA = 50120.0 #50k + 120 from negative voting per https://twitter.com/owocki/status/1249420758167588864
-TOTAL_POT_HEALTH = 100000.0
+TOTAL_POT_HEALTH = 50000.0
 
 '''
     Helper function that translates existing grant data structure
@@ -177,8 +179,9 @@ def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
         bigtot += x['clr_amount']
     normalization_factor = bigtot / total_pot
     # modify totals
-    for x in totals:
-        x['clr_amount'] = x['clr_amount'] / normalization_factor
+    if normalization_factor != 0:
+        for x in totals:
+            x['clr_amount'] = x['clr_amount'] / normalization_factor
     return bigtot, totals
 
 
@@ -278,7 +281,11 @@ def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile')
     # get all the eligible contributions and calculate total
     contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=CLR_START_DATE, created_on__lte=from_date, success=True)
 
-    if clr_type == 'tech':
+    if ROUND_5_5_GRANTS:
+        grants = Grant.objects.filter(id__in=ROUND_5_5_GRANTS)
+        threshold = THRESHOLD_HEALTH
+        total_pot = TOTAL_POT_HEALTH
+    elif clr_type == 'tech':
         grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', link_to_new_grant=None)
         threshold = THRESHOLD_TECH
         total_pot = TOTAL_POT_TECH

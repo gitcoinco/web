@@ -29,8 +29,8 @@ from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
 
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountyInvites, BountyRequest, HackathonEvent, HackathonProject, Interest, Profile,
-    ProfileSerializer, SearchHistory, TribeMember,
+    Activity, Bounty, BountyFulfillment, BountyInvites, BountyRequest, HackathonEvent, HackathonProject, Interest,
+    Profile, ProfileSerializer, SearchHistory, TribeMember,
 )
 
 logger = logging.getLogger(__name__)

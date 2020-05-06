@@ -59,7 +59,7 @@ Vue.mixin({
       if (featured) {
         apiUrlBounties = `/api/v0.1/bounties/slim/?${searchParams.toString()}&is_featured=True`;
       }
-      vm.bounties = [];
+      // vm.bounties = [];
       const getBounties = fetchData (apiUrlBounties, 'GET');
 
       $.when(getBounties).then(function(response) {
