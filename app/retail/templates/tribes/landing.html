@@ -61,15 +61,15 @@
           </p>
           <div class="row">
             <div class="col-12 col-md-4 my-4">
-              <img height="120" src="{% static 'v2/images/tribes/landing/new-idea.svg' %}" class="mt-5 mx-auto" alt="Sponsor hackathons">
+              <img height="120" src="{% static 'v2/images/tribes/landing/new-idea.svg' %}" class="mw-100 mt-5 mx-auto" alt="Sponsor hackathons">
               <p class="text-capitalize font-title font-weight-bold my-3">Sponsor hackathons & foster new ideas</p>
             </div>
             <div class="col-12 col-md-4 my-4">
-              <img height="120" src="{% static 'v2/images/tribes/landing/host-workshop.svg' %}" class="mt-5 mx-auto" alt="Host workshops and meet great developers">
+              <img height="120" src="{% static 'v2/images/tribes/landing/host-workshop.png' %}" class="mw-100 mt-5 mx-auto" alt="Host workshops and meet great developers">
               <p class="text-capitalize font-title font-weight-bold my-3">Host workshops and meet great developers</p>
             </div>
             <div class="col-12 col-md-4 my-4">
-              <img height="120" src="{% static 'v2/images/tribes/landing/grow-tribe.svg' %}" class="mt-5 mx-auto" alt="Sponsor hackathons">
+              <img height="120" src="{% static 'v2/images/tribes/landing/grow-tribe.png' %}" class="mw-100 mt-5 mx-auto" alt="Sponsor hackathons">
               <p class="text-capitalize font-title font-weight-bold my-3">Build great stuff and grow your tribe</p>
             </div>
           </div>
@@ -122,20 +122,20 @@
     </div>
     </div>
 
-    <div class="testimonials overflow-hidden mt-5 mb-5 pt-5 pb-5 d-md-flex justify-content-between">
+    <div class="testimonials overflow-auto mt-5 mb-5 pt-5 pb-5 d-md-flex justify-content-between">
       {% for testimonial in testimonials %}
-        <div class="testimonial-card d-block d-inline-block text-center">
+        <div class="testimonial-card flex-shrink-0 my-5 mx-3 d-block d-inline-block text-center">
             <div class="overlap-line">
               {% if testimonial.photo %}
-              <img class="avatar" src="{{ testimonial.photo }}" alt="">
+              <img class="testimonial-avatar" src="{{ testimonial.photo }}" alt="">
               {% endif %}
-              <img class="avatar" src="{{ testimonial.org_photo }}" alt="">
+              <img class="testimonial-avatar" src="{{ testimonial.org_photo }}" alt="">
             </div>
             <div>
               <h4 class="font-weight-bold gc-text-blue font-title-xl">{{ testimonial.author }}</h4>
               <p class="font-weight-semibold font-title">{{ testimonial.designation }}</p>
             </div>
-            <p class="card-description text-center mx-auto">{{ testimonial.text }}</p>
+            <p class="card-description m-5 text-center">{{ testimonial.text }}</p>
         </div>
       {% endfor %}
     </div>
