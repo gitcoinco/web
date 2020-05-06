@@ -23,6 +23,7 @@ All of the environment variables used by this application conform to the [`djang
 | DISABLE_INITIAL_COLLECTSTATIC | Whether or not to disable the initial collectstatic | `bool` | False |
 | DISABLE_INITIAL_MIGRATE | Whether or not to disable the initial data migration | `bool` | False |
 | DISABLE_INITIAL_LOADDATA | Whether or not to disable the initial loaddata fixture import | `bool` | False |
+| DISABLE_INITIAL_CREATE_GITCOINBOT | Whether or not to disable the initial creating of gitcoinbot user | `bool` | False |
 
 ## Amazon Web Services
 

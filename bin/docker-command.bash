@@ -67,6 +67,12 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
         python3 manage.py loaddata app/fixtures/marketing.json
 
     fi
+
+    if [ "$DISABLE_INITIAL_CREATE_GITCOINBOT" != "on" ]; then
+        # It may be already created, so >/dev/null
+        python3 manage.py create_gitcoinbot >/dev/null
+    fi
+
     date >> /provisioned
     echo "Provisioning completed!"
 fi
