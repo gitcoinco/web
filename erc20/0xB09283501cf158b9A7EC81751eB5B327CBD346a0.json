@@ -1,0 +1,17 @@
+{
+    "symbol": "TRC",
+    "address": "0xB09283501cf158b9A7EC81751eB5B327CBD346a0",
+    "overview":{
+          "en": "The Tarocoin platform is an application platform for blockchain tarocoin launched by the Taro Miners Union. The Taro Miners Alliance is a professional blockchain industry dedicated to the development of blockchain Taro and management, consisting of the Global Taro Alliance, the Virtual Asset Management Foundation, the Blockchain Taro Lovers Association and traditional fund institutions organization.",
+          "zh": "塔罗币平台是由塔罗矿工联盟推出的用于区块链塔罗币的应用平台。塔罗矿工联盟由全球塔罗币联盟、虚拟资产管理基金会、区块链塔罗币爱好者协会和传统的基金机构组成的致力于发展区块链塔罗币和管理的专业区块链行业组织。"
+    },
+    "email": "tarochaincc@gmail.com",
+    "website": "http://tarocoin.club/",
+    "whitepaper": "http://tarocoin.club/Public/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-05-03",
+    "links": {
+        "telegram": "http://www.t.me/trcgroup",
+        "twitter": "https://twitter.com/tarochain"
+      }
+}
