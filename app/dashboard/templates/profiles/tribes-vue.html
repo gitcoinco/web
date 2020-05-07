@@ -681,7 +681,7 @@
                           <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
                         </nav>
                       </transition>
-                      <div class="container-fluid pt-4" @scroll.passive="onScroll($event)">
+                      <div class="container-fluid pt-4 bg-white" @scroll.passive="onScroll($event)">
                         <button v-if="!hideFilterButton" class="d-none d-md-block blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
 
                         <div class="py-5 mt-4">
