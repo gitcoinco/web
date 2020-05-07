@@ -1219,12 +1219,13 @@
                       </h2>
                       <div class="col-12 col-md-11 px-0 pr-md-0">
                         <div class="priority-container mt-4">
-                          <h6 class="font-weight-semibold">
-                            {% trans "Tribe Description" %}
-                            <span class="font-weight-normal font-smaller-3">
-                              (Tell the community about your project)
-                            </span>
-                          </h6>
+                          <div class="priorities rounded col-12 py-4">
+                            <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
+                              <p class="mb-3 font-bigger-3"><i class="far fa-bullhorn"></i></p>
+                              <span>Tell the community about [[ tribe.name ]]</span>
+                            </h2>
+                          </div>
+
                           <div class="editor-container">
                             <quill-editor
                               ref="quillEditorDesc"
