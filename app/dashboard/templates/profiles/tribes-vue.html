@@ -656,7 +656,7 @@
                               <span class="font-weight-bold">[[ numUsers ]] Tribes members </span> found
                             </p>
                             {% if is_staff %}
-                            <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue" id="bulk-invite-modal">
+                            <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-caption btn btn-gc-blue" id="bulk-invite-modal">
                               {% trans "Invite all to bounty" %}
                             </button>
                             {% endif %}
