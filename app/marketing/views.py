@@ -989,8 +989,7 @@ def quest_of_the_day():
     return quest
 
 def upcoming_grant():
-    cutoff_date = timezone.now() - timezone.timedelta(days=7)
-    grant = Grant.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:5][0]
+    grant = Grant.objects.order_by('-weighted_shuffle').first()
     return grant
 
 def upcoming_hackathon():
