@@ -104,13 +104,6 @@
         height: 100%;
       }
 
-      .sponsor-top {
-        height: 60px;
-        display: flex;
-        background-color: #ffffff;
-        border-bottom: 1px solid #dee2e6;
-      }
-
       div.nav-tabs {
         background-color:#ffffff;
         border-left:0;
@@ -267,6 +260,7 @@
       #sponsor_sidebar {
         background-color: #fff;
         height: 100%;
+        padding-top: 20px;
       }
 
       .card-project-logo {
@@ -277,6 +271,12 @@
       @media (min-width: 768px) {
         .project-grid {
           grid-template-columns: repeat(2, 1fr);
+        }
+        #sponsor_sidebar {
+          padding-top: 59px;
+        }
+        .sponsor_sidebar-content {
+          border-top: 1px solid #dee2e6;
         }
       }
 
@@ -1348,8 +1348,7 @@
           </div>
           <div key="feed-1" v-if="!isLoading"  class="col-12 col-md-3 order-1 order-md-2">
             <div id="sponsor_sidebar" class="font-body">
-                <div class="sponsor-top d-none d-sm-block"></div>
-                <div class="p-3">
+                <div class="p-3 sponsor_sidebar-content">
                   <b-media>
                     <template v-slot:aside>
                       <div class=" d-inline-block d-inline-block mb-1">
