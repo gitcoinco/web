@@ -79,7 +79,39 @@
     </label>
   </div>
 </div>
-<label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">{% trans "Permissions" %}</label>
+<label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">{% trans "Permissions - Who can apply?" %}</label>
+<div class="d-flex row" data-toggle="buttons">
+  <div class="col-12 col-md-6 btn-group-toggle">
+    <label class="btn btn-block btn-radio approval my-2 font-weight-bold py-3 px-4 active text-left">
+      <input type="radio" name="applicant_type" id="approval" value="approval" autocomplete="off" checked>
+      {% trans "Verified" %}
+      <span class="d-block font-weight-normal">
+        <i class="fas fa-user-check"></i>
+        {% trans "Only verified users (certified by Gitcoin, 4.5 star ratings+, or users who have staked their rep)" %}
+      </span>
+    </label>
+  </div>
+  <div class="col-12 col-md-6 btn-group-toggle">
+    <label class="btn btn-block btn-radio permissionless my-2 font-weight-bold py-3 px-4 text-left">
+      <input type="radio" name="applicant_type" id="permissionless" value="permissionless" autocomplete="off">
+      {% trans "Anyone" %}
+      <span class="d-block font-weight-normal">
+        <i class="fas fa-users"></i>
+        {% trans "Any user on the platform" %}
+      </span>
+    </label>
+    <label class="btn btn-block btn-radio permissionless my-2 font-weight-bold py-3 px-4 text-left">
+      <input type="radio" name="applicant_type" id="permissionless" value="permissionless" autocomplete="off">
+      {% trans "Students" %}
+      <span class="d-block font-weight-normal">
+        <i class="fas fa-user-graduate"></i>
+        {% trans "Only high school and college students" %}
+      </span>
+    </label>
+  </div>
+</div>
+
+<label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">{% trans "Permissions - Who can start work?" %}</label>
 <div class="d-flex row" data-toggle="buttons">
   <div class="col-12 col-md-6 btn-group-toggle">
     <label class="btn btn-block btn-radio approval my-2 font-weight-bold py-3 px-4 active text-left">
