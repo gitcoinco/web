@@ -54,11 +54,18 @@
 
         }
       }
+
+      #suggested-tribes .media-body {
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+
       .looking-team {
         background-color: rgba(62, 0, 255, 0.05);
         border-radius: 8px;
         padding: 11px 15px;
       }
+
       .info-card-title {
         font-weight: bold;
         font-size: 12px;
@@ -66,6 +73,7 @@
         letter-spacing: 1px;
         color: #3E00FF;
       }
+
       .info-card-desc {
         font-style: italic;
         font-weight: normal;
@@ -73,6 +81,7 @@
         line-height: 18px;
         color: #666666;
       }
+
       .navigation {
         height: 60px;
         display: flex;
@@ -95,7 +104,6 @@
         height: 100%;
       }
 
-
       .sponsor-top {
         height: 60px;
         display: flex;
@@ -112,10 +120,10 @@
         border:0;
       }
 
-
       .activity_time {
         margin-right: 2rem;
       }
+
       .profile-banner-cta {
         background-color: rgb(0, 0, 0, 0.5) !important;
       }
@@ -260,7 +268,7 @@
       }
 
       #sponsor_sidebar {
-        background-color: #F9F9F9;
+        background-color: #fff;
         height: 100%;
       }
 
@@ -473,7 +481,7 @@
             <b-tabs v-model="activePanel" @input="tabChange" fill nav-class="col-12 col-xs-12 col-xl-7 offset-xl-4" nav-wrapper-class="row nav-tabs" align="center" content-class="row light-blue" class="container-fluid">
               <b-tab class="col-12" title-item-class="navigation">
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "Townsquare" %}
                   </div>
                 </template>
@@ -499,7 +507,7 @@
               </b-tab>
               <b-tab class="col-12" title-item-class="navigation" lazy>
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "Projects" %}
                   </div>
                 </template>
@@ -621,7 +629,7 @@
               </b-tab>
               <b-tab class="col-12" v-if="online" title-item-class="navigation" lazy>
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "People" %}
                   </div>
                 </template>
@@ -648,7 +656,7 @@
                               <span class="font-weight-bold">[[ numUsers ]] Tribes members </span> found
                             </p>
                             {% if is_staff %}
-                            <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                            <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue" id="bulk-invite-modal">
                               {% trans "Invite all to bounty" %}
                             </button>
                             {% endif %}
@@ -661,6 +669,7 @@
                               v-model="params.user_filter"
                               :options="userFilter.options"
                               name="people-filter"
+                              class="font-caption mt-3"
                               stacked
                             ></b-form-radio-group>
                           </b-form-group>
@@ -881,7 +890,7 @@
               </b-tab>
               <b-tab v-if="is_on_tribe" class="col-12" title-item-class="navigation" lazy>
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "Bounties" %}
                   </div>
                 </template>
@@ -1200,7 +1209,7 @@
               </b-tab>
               <b-tab v-if="is_my_org" class="col-12" title-item-class="navigation">
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "Manage" %}
                   </div>
                 </template>
@@ -1441,13 +1450,13 @@
                   </b-col>
 
                 <div class="pt-0 mt-3 font-body d-none d-md-inline-block">
-                  <div style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
+                  <div v-if="tribe.tribe_priority" style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
                     <h4 class="mx-3 pt-4 font-body font-weight-bold">Currently collecting ideas for</h4>
                     <ul v-html="tribe.tribe_priority" class="my-0 mx-4 p-0 pb-4">
                     </ul>
                   </div>
-                  <div class="card" style="border-radius: 0px 0px 4px 4px;">
-                    <h4 class="px-2 pt-3 font-body text-muted">{% trans "Top ideas" %}</h4>
+                  <div v-if="tribe.suggested_bounties && tribe.suggested_bounties.length > 0" class="card" style="border-radius: 0px 0px 4px 4px;">
+                    <h4 class="px-2 pt-3 font-body font-weight-semibold text-muted">{% trans "Top ideas from the community" %}</h4>
                     <table class="px-3 table table-borderless">
                       <tbody>
                         <tr v-for="suggested_bounty in tribe.suggested_bounties ">

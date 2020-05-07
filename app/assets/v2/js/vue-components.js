@@ -364,22 +364,22 @@ Vue.component('suggested-profile', {
     </a>
   </template>
   <div class="row">
-  <span class="col-6 col-md-12 col-xl-6 font-caption">
-      <span class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize">{{profile.name}}</span>
-      <p class="mb-0">
-        <i class="fas fa-user font-smaller-4 mr-1"></i>
-        <span class="font-weight-semibold">{{follower_count}}</span> followers
-      </p>
-  </span>
-  <span class="col-6 col-md-12 col-xl-6 p-0">
-    <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
-      <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
-    </a>
-    <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
-      <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> follow
-    </a>
-  </span>
-</div>
+    <span class="col-6 col-md-12 col-xl-7 font-caption">
+        <a :href="profile_url" class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize text-black">{{profile.name}}</a>
+        <p class="mb-0">
+          <i class="fas fa-user font-smaller-4 mr-1"></i>
+          <span class="font-weight-semibold">{{follower_count}}</span> followers
+        </p>
+    </span>
+    <span class="col-6 col-md-12 col-xl-5 p-0 my-auto">
+      <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
+        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
+      </a>
+      <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
+        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> follow
+      </a>
+    </span>
+  </div>
 </b-media>
 `
 });
