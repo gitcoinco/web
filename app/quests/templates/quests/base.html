@@ -28,13 +28,11 @@
   <body class="g-font-muli {{body_class}} {{quest.background}} {{quest.style}}">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header dash">
     {% if nav == 'home' %}
       {% include 'home/nav.html' %}
     {% else %}
       {% include 'quests/nav.html' %}
     {% endif %}
-    </div>
     <div class="row back_gradient">
       <div class="{% if not hide_col %}col-12 col-sm-10 m-auto{%endif %}" style="{% if hide_col %}width:100%;{%endif %}">
         {% block 'content' %}
@@ -44,7 +42,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' with prefix="data-" %}
-    
+
   </body>
   {% csrf_token %}
   <script>
