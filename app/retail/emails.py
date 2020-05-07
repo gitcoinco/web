@@ -529,11 +529,19 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
 
     # Get notifications count from the Profile.User of to_email
-    profile = Profile.objects.filter(email__iexact=to_email).last()
+    try:
+        profile = Profile.objects.filter(email__iexact=to_email).last()
+    except Profile.DoesNotExist:
+        pass
+
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_ago)
-    notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
 
+    try:
+        notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
+    except Notification.DoesNotExist:
+        pass        
+    
     upcoming_events = [{
         'event': upcoming_grant,
         'title': upcoming_grant.title,
