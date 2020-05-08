@@ -1368,9 +1368,9 @@
                           </div>
 
                           <p class="mb-0 mt-1">
-                            <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-green' : 'btn-gc-blue']" class="d-none d-md-inline-block btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
+                            <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-green' : 'btn-gc-blue']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
 
-                            <span class="m-0 p-0 d-none d-md-inline-block">|</span>
+                            <span class="m-0 p-0">|</span>
 
                             <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"  :href="`${tribe.data.html_url}?tab=repositories`" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" v-bind:title="`@${tribe.handle} on Github`">
                               <i class="fab fa-github"></i>
@@ -1389,8 +1389,8 @@
                         </b-col>
                       </b-row>
                 </b-media>
-                  <b-col class="profile_details d-none d-md-inline-block">
-                    <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+                  <b-col class="profile_details">
+                    <div class="profile-header__stats profile-header__stats--contributor card mt-1 mb-4">
                       <div class="card-header font-subheader">
                         {% include "profiles/rank_tooltip.html" with name="Organization" skip_style=True %}
                         <b>[[ tribe.rank_org ]]</b>
