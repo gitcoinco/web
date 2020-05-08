@@ -357,7 +357,7 @@ Vue.component('suggested-profile', {
     }
   },
   template: `
-<b-media tag="li" class="row">
+<b-media tag="li" class="row mx-auto mx-md-n1">
   <template v-slot:aside>
     <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
       <b-img :src="avatar_url" class="nav_avatar"></b-img>
@@ -371,7 +371,7 @@ Vue.component('suggested-profile', {
           <span class="font-weight-semibold">{{follower_count}}</span> followers
         </p>
     </span>
-    <span class="col-6 col-md-12 col-xl-5 p-0 my-auto">
+    <span class="col-6 col-md-12 col-xl-5 p-0 my-auto text-center">
       <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
         <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
       </a>
