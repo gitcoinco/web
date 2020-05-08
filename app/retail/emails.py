@@ -542,22 +542,24 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
     except Notification.DoesNotExist:
         pass        
-    
-    upcoming_events = [{
-        'event': upcoming_grant,
-        'title': upcoming_grant.title,
-        'image_url': upcoming_grant.logo.url,
-        'url': upcoming_grant.url,
-        'date': upcoming_grant.next_clr_calc_date.strftime("%Y-%d-%m")
-    },
-        {
-        'event': upcoming_hackathon,
-        'title': upcoming_hackathon.name,
-        'image_url': upcoming_hackathon.logo.url,
-        'url': upcoming_hackathon.url,
-        'date': upcoming_hackathon.start_date.strftime("%Y-%d-%m")
-    },
-    ]
+
+    upcoming_events = []
+    if upcoming_grant:
+        upcoming_events.append({
+            'event': upcoming_grant,
+            'title': upcoming_grant.title,
+            'image_url': upcoming_grant.logo.url,
+            'url': upcoming_grant.url,
+            'date': upcoming_grant.next_clr_calc_date.strftime("%Y-%d-%m")
+        })
+    if upcoming_hackathon:
+        upcoming_events.append({
+            'event': upcoming_hackathon,
+            'title': upcoming_hackathon.name,
+            'image_url': upcoming_hackathon.logo.url,
+            'url': upcoming_hackathon.url,
+            'date': upcoming_hackathon.start_date.strftime("%Y-%d-%m")
+        })
 
     params = {
         'old_bounties': old_bounties,
