@@ -828,12 +828,18 @@ def leaderboard(request, key=''):
                 
             }],
             chart_options =
-              {'title': {
+              {'legend': {
+                   'enabled': False},
+               'title': {
                    'text': 'Leaderboard'},
                'xAxis': {
                     'title': {
-                       'text': 'Time'}
-                    }
+                       'text': 'Time'
+                       },
+                    'labels': {
+                       'enabled': False
+                       }
+                    },
                 }
             )
 
