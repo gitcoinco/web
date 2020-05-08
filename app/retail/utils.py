@@ -589,6 +589,7 @@ def build_stat_results(keyword=None):
     grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
     context['grants_gmv'] = str(round(grants_gmv / 10**6, 2)) + "m"
     num_contributions = Contribution.objects.count()
+    from dashboard.models import BountyFulfillment
     context['hours'] = sum(BountyFulfillment.objects.filter(fulfiller_hours_worked__isnull=False, bounty__current_bounty=True, fulfiller_hours_worked__lt=1000).values_list('fulfiller_hours_worked', flat=True))
     context['no_contributions'] = num_contributions
     context['no_bounties'] = Bounty.objects.current().count()
