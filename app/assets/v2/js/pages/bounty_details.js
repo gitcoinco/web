@@ -1464,6 +1464,9 @@ const process_activities = function(result, bounty_activities) {
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
+      if (!_activity.kudos) {
+        return;
+      }
       const kudos_img = _activity.kudos.image;
 
       kudos = kudos_img.startsWith('v2/images/') ? '/static/'.concat(kudos_img) : kudos_img;
