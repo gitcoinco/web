@@ -1509,6 +1509,8 @@ class SendCryptoAsset(SuperModel):
 
     # TODO: DRY
     def get_natural_value(self):
+        if self.tokenAddress == '0x0':
+            return self.amount
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals']
         return float(self.amount) / 10**decimals
@@ -1786,8 +1788,8 @@ def postsave_tip(sender, instance, created, **kwargs):
         value_true = 0
         value_usd = 0
         try:
-            value_true = instance.value_true
             value_usd = instance.value_in_usdt_then
+            value_true = instance.value_true
         except:
             pass
         Earning.objects.update_or_create(
