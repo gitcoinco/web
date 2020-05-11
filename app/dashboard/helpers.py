@@ -711,10 +711,9 @@ def process_bounty_details(bounty_details):
         return (did_change, latest_old_bounty, latest_old_bounty)
 
     semaphore_key = get_bounty_semaphore_ns(bounty_id)
-    semaphore = get_semaphore(semaphore_key)
 
     try:
-        with semaphore:
+        if True:
             new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
 
             if new_bounty:
