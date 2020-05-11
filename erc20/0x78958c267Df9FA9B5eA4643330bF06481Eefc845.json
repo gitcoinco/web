@@ -1,0 +1,17 @@
+{
+    "symbol": "IQGT",
+    "address": "0x78958c267Df9FA9B5eA4643330bF06481Eefc845",
+    "overview":{
+          "en": "IQG is a global open miner alliance chain based on blockchain, dedicated to creating a new digital asset IQGT, which has the characteristics of globalization, multi-domains, no borders, easy operation, fast circulation, and wide audience.",
+          "zh": "IQG是基于区块链的全球开放式矿工联盟链，致力打造一个全新的数字资产IQGT，其具备全球化、多领域、无国界、易操作、快流通、受众面广等特性。"
+    },
+    "email": "iqgchain@gmail.com",
+    "website": "http://iqgt.club/",
+    "whitepaper": "http://iqgt.club/enwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-05-10",
+    "links": {
+        "telegram": "https://t.me/iqggroup",
+        "twitter": "https://twitter.com/iqgchain"
+      }
+}
