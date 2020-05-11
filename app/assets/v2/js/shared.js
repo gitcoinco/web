@@ -977,6 +977,20 @@ function getNetwork(id) {
   return networks[id] || 'custom network';
 }
 
+function resolveENS(ens_name) {
+  let test_Url = 'http://localhost:8000/resolve_ens/';
+  let prod_Url = 'https://gitcoin.co/resolve_ens/';
+
+  var request = new XMLHttpRequest();
+
+  request.open('GET', test_Url.concat(ens_name), false); // `false` makes the request synchronous
+  request.send(null);
+
+  if (request.status === 200) {
+    return (request.responseText);
+  }
+}
+
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = async function(no_ui_updates) {
   reloadCbAddress();

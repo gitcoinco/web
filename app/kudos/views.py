@@ -44,6 +44,7 @@ from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
 from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
+from ens import ENS
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_by_category, get_emails_master, get_github_primary_email
 from kudos.tasks import redeem_bulk_kudos
@@ -278,6 +279,19 @@ def kudos_preferred_wallet(request, handle):
 
     return JsonResponse(response)
 
+'''TODO: move this util function'''
+def get_ens_address(ens_name):
+    #used w3 in testing
+    #w3 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/<project-id>"))
+    ns = ENS.fromWeb3(Web3)
+    return ns.address(ens_name)
+
+def resolve_ens(request, ens_name):
+    """Resolves ENS name to address"""
+    result = None
+    if request.method == 'GET':
+        result = get_ens_address(ens_name)
+    return HttpResponse(result)
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_2(request):
@@ -627,8 +641,11 @@ def receive(request, key, txid, network):
         try:
             profile = get_profile(kudos_transfer.username.replace('@', ''))
             eth_address = params['forwarding_address']
-            if not is_valid_eth_address(eth_address):
+            if eth_address.endswith('.eth'):
+                eth_address = get_ens_address(eth_address)
+            elif not is_valid_eth_address(eth_address):
                 eth_address = profile.preferred_payout_address
+
             if params['save_addr']:
                 if profile:
                     # TODO: Does this mean that the address the user enters in the receive form

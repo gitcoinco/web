@@ -94,7 +94,7 @@
     <div id="usd_amount"> &nbsp;</div>
     <div id="tooltip" class="ethinfo-hover">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></div><br>
     <div class="pb-1 to_name">
-      <label>{% trans "To Github Username" %}:</label> <br>
+      <label>{% trans "To Github Username or ENS Name" %}:</label> <br>
       <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;">
         {% if user_json %}
         <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ fund_request.address|default:user_json.preferred_payout_address }}">{{ user_json.text }}</option>

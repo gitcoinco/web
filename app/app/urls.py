@@ -666,6 +666,7 @@ urlpatterns = [
 
     # ENS urls
     re_path(r'^ens/', enssubdomain.views.ens_subdomain, name='ens'),
+    path('resolve_ens/<ens_name>', kudos.views.resolve_ens, name='resolve_ens'),
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),

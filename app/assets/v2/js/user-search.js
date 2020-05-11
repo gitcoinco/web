@@ -107,6 +107,13 @@ function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_
 
       let user = $.extend({}, existent_properties, base_user);
 
+      if (!user.preferred_payout_address) {
+        if (user.text.endsWith('.eth')) {
+          // calling shared js function
+          user.preferred_payout_address = resolveENS(user.text);
+        }
+      }
+
       if (user.id) {
         selected = `
           <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>

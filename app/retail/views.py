@@ -41,8 +41,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants, \
-    TribeMember
+from dashboard.models import (
+    Activity, Bounty, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
+)
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
@@ -56,7 +57,7 @@ from retail.helpers import get_ip
 from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
-from .utils import programming_languages, articles, press, testimonials, reasons
+from .utils import articles, press, programming_languages, reasons, testimonials
 
 logger = logging.getLogger(__name__)
 
