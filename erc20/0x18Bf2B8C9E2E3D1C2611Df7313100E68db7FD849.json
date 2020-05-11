@@ -1,0 +1,17 @@
+{
+    "symbol": "FLIC",
+    "address": "0x18Bf2B8C9E2E3D1C2611Df7313100E68db7FD849",
+    "overview":{
+          "en": "FLIC is a comprehensive service platform for digital assets that integrates one-stop secure storage management services for digital assets, intelligent financial management for digital assets and payment ecology.",
+          "zh": "FLIC是一个集数字资产一站式安全存储管理服务、数字资产智能理财与支付生态为一体的数字资产综合性服务平台。"
+    },
+    "email": "flicscc@gmail.com",
+    "website": "http://www.flics.cc/",
+    "whitepaper": "http://www.flics.cc/FLICEN.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-04-16",
+    "links": {
+        "telegram": "https://t.me/flicgroup",
+        "twitter": "https://twitter.com/flicscc"
+      }
+}
