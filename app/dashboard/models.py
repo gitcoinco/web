@@ -4820,12 +4820,15 @@ class Earning(SuperModel):
                 if p1.pk == p2.pk:
                     continue
                 if not p1.dont_autofollow_earnings:
-                    TribeMember.objects.update_or_create(
-                        profile=p1,
-                        org=p2,
-                        defaults={'why':'auto'}
-                        )
-                    count += 1
+                    try:
+                        TribeMember.objects.update_or_create(
+                            profile=p1,
+                            org=p2,
+                            defaults={'why':'auto'}
+                            )
+                        count += 1
+                    except:
+                        pass
         return count
 
 @receiver(post_save, sender=Earning, dispatch_uid="post_save_earning")
