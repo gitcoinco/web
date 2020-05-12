@@ -11,10 +11,6 @@
   max-width: 20rem;;
 }
 
-.tribes-landing img {
-  max-width: 100%;
-}
-
 .work-section {
   background: #170640;
   color: #fff;
@@ -133,5 +129,13 @@
 @media (min-width:1200px) and (max-width: 1500px) {
   #plans-container {
     min-width: 100% !important;
+  }
+}
+
+@media screen and (max-width: 780px) {
+  .testimonial-card {
+    margin: 45px 0 !important;
+    width: 100% !important;
+    height: auto !important;
   }
 }

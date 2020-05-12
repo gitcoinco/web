@@ -178,8 +178,14 @@ def _get_utm_from_cookie(request):
     """
     utmDict = {}
     utm_source = request.COOKIES.get('utm_source')
+    if not utm_source:
+        utm_source = request.GET.get('utm_source')
     utm_medium = request.COOKIES.get('utm_medium')
+    if not utm_medium:
+        utm_medium = request.GET.get('utm_medium')
     utm_campaign = request.COOKIES.get('utm_campaign')
+    if not utm_campaign:
+        utm_campaign = request.GET.get('utm_campaign')
 
     if utm_source:
         utmDict['utm_source'] = utm_source

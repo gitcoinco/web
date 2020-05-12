@@ -204,7 +204,7 @@ $(document).ready(function() {
   var refresh_interval = 7000;
   var max_pk = null;
   var run_longpoller = function(recursively) {
-    if (document.hidden) {
+    if (document.hidden || !document.long_poller_live) {
       return setTimeout(function() {
         if (recursively) {
           run_longpoller(true);
