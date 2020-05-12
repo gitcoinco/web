@@ -1,0 +1,71 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+  <style>
+    .tip-box {
+      margin-bottom: 2em;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #e0e0e0;
+    }
+    .tip-contents {
+      text-align: left;
+    }
+    .tip {
+      display: flex;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+  </style>
+
+  <div>
+    <h1>🕑️ {% trans "Request funds" %} 🕑️</h1>
+    <h3>
+        {{request.requester.handle}} {% blocktrans %} request funds worth {{amount}} {{tokenName}}{% endblocktrans %}
+        {% if address %}
+        Recipient Address: {{ address }}
+        {% endif %}
+        {{tip.created_on | naturaltime}}.
+    </h3>
+  </div>
+
+  <div class="text-center tip-box">
+    <div class="tip">
+      <div class="tip-contents">
+          <p>
+            {% trans "They had the following comments:" %}
+            <pre>
+              {{comments}}
+            </pre>
+          </p>
+      </div>
+    </div>
+    {% if not already_redeemed %}
+      <div style="margin-bottom: 1.5em;">
+        <a class="button" href="{{link}}">{% trans "Fund this Request" %}</a>
+      </div>
+    {% endif %}
+  </div>
+
+{% endblock %}

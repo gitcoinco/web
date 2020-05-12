@@ -33,6 +33,11 @@ if (document.getElementById('gc-search')) {
       this.search();
     },
     methods: {
+      init: function() {
+        setTimeout(() => {
+          $('.has-search input').focus();
+        }, 100);
+      },
       search: async function() {
         let vm = this;
 

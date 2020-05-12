@@ -79,7 +79,6 @@ counts = default_ranks()
 
 
 def profile_to_location(handle):
-    return [] # temporary stopgap because we think thaat this part of the job was crushing the cronox
     timeout = 60 * 20
     key_salt = '1'
     key = f'profile_to_location{handle}_{key_salt}'
@@ -435,8 +434,12 @@ def do_leaderboard():
             grants = Contribution.objects.filter(subscription__network='mainnet')
             # iterate
             for gc in grants:
-                index_terms = grant_index_terms(gc)
-                sum_grants(gc, index_terms)
+                try:
+                    index_terms = grant_index_terms(gc)
+                    sum_grants(gc, index_terms)
+                except Exception as e:
+                    print(gc.id)
+                    print(e)
 
         if product in ['all', 'bounties']:
             # get bounties

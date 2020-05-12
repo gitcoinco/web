@@ -1,8 +1,20 @@
-                      <li class="nav-item">
-                        <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
-                          <span class="nav-title">{{this_tab.title}}</span>
-                          {% if this_tab.badge %}
+                      <li class="nav-item d-flex align-items-center">
+                        {% if this_tab.url_slug %}
+                          <a data-toggle="tooltip" title="{{this_tab.helper_text}}" href="{% url 'hackathon' this_tab.url_slug %}townsquare/?tab={{this_tab.slug}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} ">
+                            <span class="nav-title">{{ this_tab.title }}</span>
+                            {% if this_tab.badge %}
+                              <span class="nav-badge">({{ this_tab.badge }})</span>
+                            {% endif %}
+                          </a>
+                          <a href="/townsquare/?tab={{ this_tab.slug }}" data-toggle="tooltip" title="Filter {{ this_tab.title}} Posts">
+                            <i class="fas fa-filter"></i>
+                          </a>
+                        {% else %}
+                          <a data-toggle="tooltip" title="{{this_tab.helper_text}}" class="nav-link nav-line {% if tab == this_tab.slug %}active{% endif %} " href="#" data-slug="{{this_tab.slug}}">
+                            <span class="nav-title">{{this_tab.title}}</span>
+                            {% if this_tab.badge %}
                             <span class="nav-badge">({{ this_tab.badge }})</span>
-                          {% endif %}
-                        </a>
+                            {% endif %}
+                          </a>
+                        {% endif %}
                       </li>

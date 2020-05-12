@@ -25,6 +25,47 @@
 
     {% include "profiles/earningsgraph.html" with graph_type="grants" %}
 
+    <h2 class="font-body m-3 pb-3 title">Subscriptions ({{profile.grant_contributor.count}})</h3>
+
+    {% if not profile.grant_contributor.count %}
+      <h2 class="font-title m-3 pb-3 title">
+        No Grants Subscribed. <a href=grants/>Explore Grants &gt;</a>
+      </h2>
+    {% endif %}
+
+    {% for subscription in profile.grant_contributor.all %}
+      {# FIXME: last_contribution_date is wrong. #}
+      <div class="py-3 mx-sm-0 px-lg-0 row subscription-history bounty_row">
+        <div class="col-auto px-0 justify-content-center special_tag">
+          <img class="avatar" style="max-width: 70px" src="{% if subscription.grant.logo and subscription.grant.logo.url %}{{ subscription.grant.logo }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=subscription.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+        </div>
+        <div class="col-auto my-auto">
+          <div class="title font-body">
+            <a href="{{ subscription.grant.url }}">{{ subscription.grant.title }}</a>
+          </div>
+        </div>
+        <div class="col-auto my-auto">
+          <div class="font-body">
+            {% if not subscription.active %}<strike>{% endif %}
+            {{ subscription.amount_per_period|floatformat }} {{ subscription.token_symbol }} (${{ subscription.amount_per_period_usdt|floatformat}}) per round &times; {{ subscription.num_tx_approved|floatformat }}
+            {% if not subscription.active %}</strike>{% endif %}
+          </div>
+        </div>
+        <div class="col-auto my-auto">
+          <div class="info font-caption mt-4 mt-md-0 text-center text-sm-left">
+            <span class="font-weight-semibold">Goal: </span> {{ subscription.grant.amount_goal}}<br>
+            <span class="font-weight-semibold">Received:</span> {{ subscription.grant.amount_received }}<br>
+          </div>
+        </div>
+        <div class="col-auto my-auto">
+          <div class="info font-caption mt-sm-4 mt-md-0 text-center text-sm-left">
+            <span class="font-weight-semibold">Contributons Count:</span> {{ subscription.grant.contribution_count }} <br>
+            <span class="font-weight-semibold">Contributors Count:</span> {{ subscription.grant.contributor_count }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
     <h2 class="font-body m-3 pb-3 title">Grants Created ({{profile.grant_admin.count}})</h3>
 
     {% if not profile.grant_admin.count %}
@@ -48,7 +89,6 @@
         </div>
         <div class="col-12 col-sm-6 col-md-2 my-auto">
           <div class="info font-caption mt-4 mt-md-0 text-center text-sm-left">
-            <span class="font-weight-semibold">Goal: </span> {{ transaction.amount_goal}}<br>
             <span class="font-weight-semibold">Received:</span> {{ transaction.amount_received }}<br>
           </div>
         </div>

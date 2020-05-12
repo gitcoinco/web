@@ -28,7 +28,7 @@
           <h2 class="h5 text-center font-weight-bold mb-4">Tell us about your project</h2>
           {% if projects and "/issue/" in request.META.HTTP_REFERER  %}
             <div class="mb-4 font-smaller-1">
-              <p class="mb-2">Use yor existing project{{ projects.count|pluralize }}:</p>
+              <p class="mb-2">Edit your existing project{{ projects.count|pluralize }}:</p>
               {% for project in projects %}
                 <a href="#" class="btn btn-sm btn-outline-gc-blue mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
               {% endfor %}
@@ -77,8 +77,8 @@
                   <label class="form__label" for="looking-members">Looking for team members</label>
                 </div>
                 <div>
-                  <small for="looking-members-message">Enter short message, 150 characters</small>
-                  <input type="text" class="form-control" maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
+                  <small for="looking-members-message">Skills your are looking for (150 characters)</small>
+                  <input type="text" class="form-control" placeholder="ex.looking for a designer" maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
                 </div>
               </div>
               <div class="form-group">
@@ -128,8 +128,8 @@
                   <label class="form__label" for="looking-members">Looking for team members</label>
                 </div>
                 <div>
-                  <small for="looking-members-message">Enter short message, 150 characters</small>
-                  <input type="text" class="form-control" maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
+                  <small for="looking-members-message">Skills your are looking for (150 characters)</small>
+                  <input type="text" class="form-control" placeholder="ex.looking for a designer" maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
                 </div>
               </div>
               <div class="form-group">

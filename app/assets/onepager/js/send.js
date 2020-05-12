@@ -144,11 +144,13 @@ $(document).ready(function() {
   waitforWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
       if (ele && ele.addr) {
-        var html = '<option value=' + ele.addr + '>' + ele.name + '</option>';
+        const is_token_selected = $('#token').data('token') === ele.name ? ' selected' : ' ';
+        const html = '<option value=' + ele.addr + is_token_selected + '>' + ele.name + '</option>';
 
         $('#token').append(html);
       }
     });
+    $('#token').val('0x0000000000000000000000000000000000000000').select2();
     jQuery('#token').select2();
   });
 

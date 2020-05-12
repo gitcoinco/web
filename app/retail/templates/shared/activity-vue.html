@@ -52,7 +52,7 @@
   })(jQuery)
 </script>
 <script type="text/x-template" id="townsquare-activity-template">
-  <div class="box bg-white d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
+  <div class="box d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
   <template v-if='row.activity_type == "new_bounty"'>
     <div class="align-items-baseline d-flex font-weight-bold justify-content-between mb-2 mt-n3">
       <b>New Bounty</b>
@@ -331,14 +331,16 @@
             {% if row.value_in_token_disp or row.metadata.value_in_eth or row.metadata.value_in_token and row.metadata.token_name or row.bounty %}
               <div class="tag token mr-2">
                 <p class="font-smaller-6 mb-0">
-                  {% if row.bounty %}
+                  {% if row.activity_type == 'new_tip' %}
+                    <span class="value_in_token">{{ row.metadata.amount | floatformat:2}} {{row.metadata.token_name}}</span>
+                  {% elif row.bounty %}
                     <span class="value_in_token_bounty">{{ row.bounty.value_true | floatformat:2 }} {{row.bounty.token_name}}</span>
                   {% elif row.value_in_token_disp %}
                     <span class="value_in_token_disp">{{ row.value_in_token_disp | floatformat:2 }} {{row.token_name}}</span>
                   {% elif row.metadata.value_in_eth %}
                     <span class="value_in_eth">{{ row.metadata.value_in_eth | floatformat:2 }} ETH</span>
                   {% elif row.metadata.value_in_token and row.metadata.token_name %}
-                    <span class="value_in_token">{{row.metadata.value_in_token  | floatformat:2}}  {{row.metadata.token_name}}</span>
+                    <span class="value_in_token">{{ row.metadata.value_in_token | floatformat:2}} {{row.metadata.token_name}}</span>
                   {% endif %}
                 </p>
               </div>
@@ -433,9 +435,7 @@
   </div>
   {% endif %}
     <div class="activity_comments">
-      <div class="comment_container">
-
-      </div>
+      <div class="comment_container"></div>
     </div>
 </div>
 

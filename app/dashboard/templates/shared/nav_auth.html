@@ -18,6 +18,9 @@
 {% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
 {% include 'shared/search.html' %}
+{% if show_sales_action %}
+  <a class="btn button--primary shadow-none py-2 px-4 text-white font-weight-semibold mr-md-3 my-3 my-md-0" target="_blank" href="https://hackathons.gitcoin.co/contact/">Contact Sales</a>
+{% endif %}
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -51,6 +54,10 @@
         <a class="dropdown-item" data-gtm="profile" href="{{profile_url}}">
           <i class="fas fa-user"></i>
           {% trans "My Profile" %}
+        </a>
+        <a class="dropdown-item" href="/wiki">
+          <i class="fas fa-question-circle"></i>
+          {% trans "Wiki" %}
         </a>
       {% else %}
         <a class="dropdown-item" data-gtm="get started" href="{% url "get_gitcoin" %}">
@@ -89,6 +96,9 @@
         </a>
       {% endif %}
       <div class="dropdown-divider"></div>
+      {% if is_townsquare %}
+        {% include 'shared/theme_switcher.html' with source='authed' %}
+      {% endif %}
       <a class="dropdown-item" data-gtm="logout" href="{% url "logout" %}?next={{ request.get_full_path }}">
         <i class="fas fa-lock"></i>
         {% trans "Log Out" %}

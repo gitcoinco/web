@@ -66,12 +66,14 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '(💰$250K Match LIVE!) '
+matching_live = '(💰$50K Match LIVE!) '
+live_now = '❇️ LIVE NOW! Up to $50k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
 total_clr_pot = 250000
 clr_round = 5
-clr_active = False
+clr_active = True
 show_clr_card = True
+round_5_5_grants = [656, 493, 494, 502, 504, 662] # special grants for round 5.5
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
@@ -79,6 +81,7 @@ show_clr_card = True
 # Round 7 - September 14th — September 28th 2020
 
 next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
+after_that_next_round_begin = timezone.datetime(2020, 6, 15, 12, 0)
 round_end = timezone.datetime(2020, 4, 10, 10, 0)
 round_types = ['media', 'tech', 'health']
 
@@ -88,6 +91,7 @@ if not clr_active:
     clr_matching_banners_style = 'results'
     matching_live = ''
     matching_live_tiny = ''
+    live_now = 'Gitcoin Grants helps you find funding for your projects'
 
 
 def get_stats(round_type):
@@ -148,9 +152,9 @@ def get_stats(round_type):
                       'type': 'line',
                       'stacking': False
                       },
-                    'terms': 
+                    'terms':
                         ['val']
-                    
+
                 }],
                 chart_options =
                   {'title': {
@@ -220,7 +224,7 @@ def grants_addr_as_json(request):
 @cache_page(60 * 60)
 def grants_stats_view(request):
     cht, chart_list = get_stats(request.GET.get('category'))
-    params = { 
+    params = {
         'cht': cht,
         'chart_list': chart_list,
         'round_types': round_types,
@@ -292,7 +296,7 @@ def grants(request):
 
     if category:
         _grants = _grants.filter(Q(categories__category__icontains = category))
-    
+
     _grants = _grants.prefetch_related('categories')
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -326,7 +330,7 @@ def grants(request):
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
-    
+
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
@@ -354,6 +358,7 @@ def grants(request):
         'type': grant_type,
         'round_end': round_end,
         'next_round_start': next_round_start,
+        'after_that_next_round_begin': after_that_next_round_begin,
         'all_grants_count': all_grants_count,
         'now': timezone.now(),
         'mid_back': mid_back,
@@ -366,8 +371,8 @@ def grants(request):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'past_partners': past_partners,
-        'card_desc': f'❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants',
-        'avatar_url': f'/static/v2/images/grants/headers/{grant_type_gfx_if_any}.png',
+        'card_desc': f'{live_now}',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 1097,
         'avatar_width': 1953,
@@ -383,7 +388,8 @@ def grants(request):
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
         'is_staff': request.user.is_staff,
-        'selected_category': category
+        'selected_category': category,
+        'round_5_5_grants': round_5_5_grants
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -471,7 +477,6 @@ def grant_details(request, grant_id, grant_slug):
         elif 'edit-title' in request.POST:
             grant.title = request.POST.get('edit-title')
             grant.reference_url = request.POST.get('edit-reference_url')
-            grant.amount_goal = Decimal(request.POST.get('edit-amount_goal'))
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
@@ -529,6 +534,7 @@ def grant_details(request, grant_id, grant_slug):
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
+        'is_round_5_5': grant.id in round_5_5_grants,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
     }
 
@@ -598,7 +604,6 @@ def grant_new(request):
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
                 'token_address': request.POST.get('token_address', ''),
                 'token_symbol': request.POST.get('token_symbol', ''),
-                'amount_goal': request.POST.get('amount_goal', 1),
                 'contract_version': request.POST.get('contract_version', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
@@ -695,7 +700,6 @@ def grant_new_v0(request):
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
                 'token_address': request.POST.get('token_address', ''),
                 'token_symbol': request.POST.get('token_symbol', ''),
-                'amount_goal': request.POST.get('amount_goal', 1),
                 'contract_version': request.POST.get('contract_version', ''),
                 'deploy_tx_id': request.POST.get('transaction_hash', ''),
                 'network': request.POST.get('network', 'mainnet'),
@@ -1063,7 +1067,11 @@ def profile(request):
 
 def quickstart(request):
     """Display quickstart guide."""
-    params = {'active': 'grants_quickstart', 'title': _('Quickstart')}
+    params = {
+    'active': 'grants_quickstart',
+    'title': _('Quickstart'),
+    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+    }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
 
@@ -1125,7 +1133,6 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
     metadata = {
         'id': grant.id,
         'value_in_token': '{0:.2f}'.format(grant.amount_received) if not amount else amount,
-        'amount_goal': '{0:.2f}'.format(grant.amount_goal) if not amount else amount,
         'token_name': grant.token_symbol if not token else token,
         'title': grant.title,
         'grant_logo': grant_logo,

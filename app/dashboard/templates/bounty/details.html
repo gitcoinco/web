@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% include 'shared/fbpixel.html' %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -231,6 +232,13 @@
                     </div>
                   {% endfor %}
                 </div>
+              </div>
+            {% endif %}
+            {% if event_tag and user.is_authenticated %}
+              <div class="col-12">
+                <p class="my-3">
+                  <button onclick="projectModal(document.result.pk)" class="btn btn-sm btn-gc-green">Add project</button> <small>(manually add your project if you already expressed interest on this prize or want to have more than one project)</small>
+                </p>
               </div>
             {% endif %}
             <div class="col-12">

@@ -110,3 +110,11 @@ Vue.filter('capitalize', function(value) {
   value = value.toString();
   return value.charAt(0).toUpperCase() + value.slice(1);
 });
+
+Vue.filter('toUppercase', function(value) {
+  return value.toUpperCase();
+});
+
+Vue.filter('toLower', function(value) {
+  return value.toLowerCase();
+});

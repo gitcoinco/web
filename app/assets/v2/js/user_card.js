@@ -1,13 +1,17 @@
 $('body').on('mouseover', '[data-usercard]', function(e) {
   openContributorPopOver($(this).data('usercard'), $(this));
 }).on('mouseleave', '[data-usercard]', function() {
-  var _this = this;
+  var elem = this
 
-  setTimeout(function(_this) {
+  setTimeout(function() {
     if (!$('.popover-user-card:hover').length) {
-      $(_this).popover('hide');
+      $(elem).popover('hide');
     }
   }, 100);
+
+  $('.popover-user-card').on('mouseleave', function() {
+    $(elem).popover('hide');
+  });
 });
 
 $('body').on('show.bs.popover', '[data-usercard]', function() {
@@ -30,7 +34,7 @@ const renderPopOverData = function(data) {
         <img src="/dynamic/avatar/${_organization}" alt="${_organization}" class="rounded-circle border" width="24" height="24">
         </a>`;
     } else if (index < 6) {
-      return `<span class="m-1">+${data.orgs.length - 5}</span>`;
+      return `<span class="m-1">+${unique_orgs.length - 5}</span>`;
     }
   }).join(' ');
 
@@ -273,7 +277,6 @@ function setupPopover(element, data) {
     },
     placement: 'auto',
     trigger: 'manual',
-    delay: { 'show': 200, 'hide': 500 },
     template: `
       <div class="popover popover-user-card" role="tooltip">
         <div class="arrow"></div>
@@ -284,22 +287,8 @@ function setupPopover(element, data) {
       return renderPopOverData(data);
     },
     html: true
-  }).on('mouseenter', function() {
-    var _this = this;
+  })
 
-    $(this).popover('show');
-    $('.popover-user-card').on('mouseleave', function() {
-      $(_this).popover('hide');
-    });
-  }).on('mouseleave', function() {
-    var _this = this;
-
-    setTimeout(function() {
-      if (!$('.popover-user-card:hover').length) {
-        $(_this).popover('hide');
-      }
-    }, 100);
-  });
   $(element).popover('show');
 
   addFollowAction();

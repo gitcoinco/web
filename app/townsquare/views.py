@@ -10,6 +10,7 @@ from django.utils import timezone
 
 import metadata_parser
 from app.redis_service import RedisService
+from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
@@ -36,6 +37,16 @@ tags = [
     ['#other','briefcase','search-other'],
     ]
 
+
+def load_wallpapers(request):
+    """Load profile banners"""
+    images_with_icons = load_files_in_directory('status_backgrounds')
+    images = [image.split('.')[0] for image in images_with_icons if 'icon' not in image]
+    response = {
+        'status': 200,
+        'wallpapers': images
+    }
+    return JsonResponse(response, safe=False)
 
 def get_next_time_available(key):
     d = timezone.now()
@@ -168,7 +179,8 @@ def get_sidebar_tabs(request):
             connect = {
                 'title': hackathon.name,
                 'slug': f'hackathon:{hackathon.pk}',
-                'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+                'url_slug': hackathon.slug,
+                'helper_text': f'Go to {hackathon.name} Townsquare.',
             }
             hackathon_tabs = [connect] + hackathon_tabs
 
@@ -324,8 +336,6 @@ def town_square(request):
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
-    max_length_offset = abs(((request.user.profile.created_on if request.user.is_authenticated else timezone.now()) - timezone.now()).days)
-    max_length = 280 + max_length_offset
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
         trending_only = int(request.GET.get('trending', 0))
@@ -341,8 +351,6 @@ def town_square(request):
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
             'tags': tags,
-            'max_length': max_length,
-            'max_length_offset': max_length_offset,
             'admin_link': admin_link,
             'now': timezone.now(),
             'is_townsquare': True,
@@ -373,8 +381,6 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
-        'max_length': max_length,
-        'max_length_offset': max_length_offset,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -472,6 +478,8 @@ def api(request, activity_id):
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             comment_dict['sorted_match_curve'] = comment.profile.matchranking_this_round.sorted_match_curve if comment.profile.matchranking_this_round else None
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
+            if comment.is_edited:
+                comment_dict['is_edited'] = comment.is_edited
             response['comments'].append(comment_dict)
         for key, val in results.items():
             if settings.DEBUG:
@@ -598,6 +606,28 @@ def comment_v1(request, comment_id):
         response = {
             'status': 204,
             'message': 'comment successfully deleted'
+        }
+        return JsonResponse(response)
+
+    if method == 'EDIT':
+        content = request.POST.get('comment')
+        title = request.POST.get('comment')
+
+        comment.comment = content
+        comment.is_edited = True
+        comment.save()
+        response = {
+            'status': 203,
+            'message': 'comment successfully updated'
+        }
+        return JsonResponse(response)
+
+    # no perms needed responses go here
+    if request.GET.get('method') == 'GET_COMMENT':
+        response = {
+            'status': 202,
+            'message': 'comment successfully retrieved',
+            'comment': comment.comment,
         }
         return JsonResponse(response)
 

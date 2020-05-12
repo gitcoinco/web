@@ -9,7 +9,6 @@ const loadingState = {
 };
 
 document.result = bounty;
-// listen_for_web3_changes();
 
 Vue.mixin({
   methods: {
@@ -43,6 +42,76 @@ Vue.mixin({
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
       });
+    },
+    getTransactionURL: function(token_name, txn) {
+      let url;
+
+      switch (token_name) {
+        case 'ETC':
+          url = `https://blockscout.com/etc/mainnet/tx/${txn}`;
+          break;
+
+        case 'cUSD':
+        case 'cGLD':
+          url = `https://alfajores-blockscout.celo-testnet.org/tx/${txn}`;
+          break;
+
+        case 'ZIL':
+          url = `https://viewblock.io/zilliqa/tx/${txn}`;
+          break;
+
+        default:
+          url = `https://etherscan.io/tx/${txn}`;
+
+      }
+      return url;
+    },
+    getAddressURL: function(token_name, address) {
+      let url;
+
+      switch (token_name) {
+        case 'ETC':
+          url = `https://blockscout.com/etc/mainnet/address/${address}`;
+          break;
+
+        case 'cUSD':
+        case 'cGLD':
+          url = `https://alfajores-blockscout.celo-testnet.org/address/${address}`;
+          break;
+
+        case 'ZIL':
+          url = `https://viewblock.io/zilliqa/address/${address}`;
+          break;
+
+        default:
+          url = `https://etherscan.io/address/${address}`;
+      }
+      return url;
+    },
+    getQRString: function(token_name, address, value) {
+      value = value || 0;
+
+      let qr_string;
+
+      switch (token_name) {
+        case 'ETC':
+          qr_string = `ethereum:${address}`;
+          break;
+
+        case 'cUSD':
+          qr_string = `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]`;
+          break;
+
+        case 'cGLD':
+          qr_string = `celo:${address}?value=${value}`;
+          break;
+
+        case 'ZIL':
+          qr_string = `zilliqa:${address}`;
+          break;
+      }
+
+      return qr_string;
     },
     syncBounty: function() {
       let vm = this;
@@ -169,15 +238,22 @@ Vue.mixin({
         });
       }
     },
-    fulfillmentComplete: function(fulfillment_id, amount, event) {
+    fulfillmentComplete: function(fulfillment_id, event) {
       let vm = this;
+
       const token_name = vm.bounty.token_name;
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
+      const amount = vm.fulfillment_context.amount;
+      const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
+      const bounty_owner_address = vm.bounty.bounty_owner_address;
+
       const payload = {
         amount: amount * 10 ** decimals,
         token_name: token_name,
-        bounty_owner_address: vm.bounty.bounty_owner_address
+        bounty_owner_address: bounty_owner_address,
+        payout_tx_id: payout_tx_id
       };
+
       const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;
 
       event.target.disabled = true;
@@ -186,8 +262,14 @@ Vue.mixin({
         event.target.disabled = false;
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+
           vm.fetchBounty();
           this.$refs['payout-modal'][0].closeModal();
+
+          vm.fulfillment_context = {
+            active_step: 'payout_amount'
+          };
+
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
@@ -272,15 +354,6 @@ Vue.mixin({
       }
       document.location.href = `${vm.bounty.url}?snooze=${text}`;
     },
-    overrideStatus: function() {
-      let vm = this;
-      let text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
-
-      if (text === null) {
-        return;
-      }
-      document.location.href = `${vm.bounty.url}?admin_override_satatus=${text}`;
-    },
     hasAcceptedFulfillments: function() {
       let vm = this;
 
@@ -344,15 +417,14 @@ Vue.mixin({
 
       return false;
     },
-    totalAmountPaid: function(inputAmount) {
+    goToStep: function(nextStep, currentStep, flow) {
       let vm = this;
-      let amount_paid = 0;
 
-      vm.bounty.fulfillments.forEach(fulfillment => {
-        amount_paid += (fulfillment.payout_amount / 10 ** vm.decimals);
-      });
-
-      vm.bounty.amount_paid = parseFloat(amount_paid) + parseFloat(inputAmount);
+      if (flow) {
+        vm.fulfillment_context.flow = flow;
+      }
+      vm.fulfillment_context.referrer = currentStep;
+      vm.fulfillment_context.active_step = nextStep;
     }
   },
   computed: {
@@ -370,13 +442,6 @@ Vue.mixin({
         activities.forEach(activity => {
           if (activity.metadata) {
             if (activity.metadata.new_bounty) {
-              // ETH
-              activity.metadata.new_bounty['token_value'] = activity.metadata.new_bounty.value_in_token / 10 ** decimals;
-              if (activity.metadata.old_bounty) {
-                activity.metadata.old_bounty['token_value'] = activity.metadata.old_bounty.value_in_token / 10 ** decimals;
-              }
-            } else {
-              // cross-chain
               activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
             }
           }
@@ -386,7 +451,6 @@ Vue.mixin({
     }
   }
 });
-
 
 if (document.getElementById('gc-bounty-detail')) {
   appBounty = new Vue({
@@ -401,8 +465,11 @@ if (document.getElementById('gc-bounty-detail')) {
         isOwner: false,
         isOwnerAddress: false,
         is_bounties_network: is_bounties_network,
-        inputAmount: 0,
-        decimals: 18,
+        fulfillment_context: {
+          active_step: 'check_wallet_owner',
+          amount: 0
+        },
+        decimals: 18, // TODO: UPDATE BASED ON TOKEN
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
         quickLinks: []
@@ -465,9 +532,6 @@ var show_extend_deadline_modal = function() {
         extend_expiration(document.result['pk'], {
           deadline: extended_time
         });
-        // setTimeout(function() {
-        //   window.location.reload();
-        // }, 2000);
       });
     });
   });
@@ -502,7 +566,6 @@ var extend_expiration = function(bounty_pk, data) {
 };
 
 var show_interest_modal = function() {
-  var self = this;
   var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
@@ -525,13 +588,9 @@ var show_interest_modal = function() {
         }
 
         add_interest(document.result['pk'], {
-          issue_message: msg,
-          discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+          issue_message: msg
         }).then(success => {
           if (success) {
-            // $(self).attr('href', '/uninterested');
-            // $(self).find('span').text(gettext('Stop Work'));
-            // $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
             appBounty.fetchBounty();
             modals.bootstrapModal('hide');
 
@@ -580,16 +639,3 @@ const promisify = (inner) =>
       }
     })
   );
-
-// async function waitBlock(txid) {
-//   while (true) {
-//     let receipt = web3.eth.getTransactionReceipt(txid);
-//     if (receipt && receipt.contractAddress) {
-//       console.log("Your contract has been deployed at http://testnet.etherscan.io/address/" + receipt.contractAddress);
-//       console.log("Note that it might take 30 - 90 sceonds for the block to propagate befor it's visible in etherscan.io");
-//       break;
-//     }
-//     console.log("Waiting a mined block to include your contract... currently in block " + web3.eth.blockNumber);
-//     await sleep(4000);
-//   }
-// }

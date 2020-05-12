@@ -169,12 +169,6 @@ class Grant(SuperModel):
         default='0x0',
         help_text=_('The wallet address that owns the subscription contract and is able to call endContract()'),
     )
-    amount_goal = models.DecimalField(
-        default=1,
-        decimal_places=4,
-        max_digits=50,
-        help_text=_('The monthly contribution goal amount for the Grant in DAI.'),
-    )
     amount_received_in_round = models.DecimalField(
         default=0,
         decimal_places=4,
@@ -314,12 +308,6 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, active: {self.active}, title: {self.title}, type: {self.grant_type}"
 
-    def percentage_done(self):
-        """Return the percentage of token received based on the token goal."""
-        if not self.amount_goal:
-            return 0
-        return ((float(self.amount_received_with_phantom_funds) / float(self.amount_goal)) * 100)
-
 
     def updateActiveSubscriptions(self):
         """updates the active subscriptions list"""
@@ -327,6 +315,14 @@ class Grant(SuperModel):
         for handle in Subscription.objects.filter(grant=self, active=True, is_postive_vote=True).distinct('contributor_profile').values_list('contributor_profile__handle', flat=True):
             handles.append(handle)
         self.activeSubscriptions = handles
+
+
+    @property
+    def clr_match_estimate_this_round(self):
+        try:
+            return self.clr_prediction_curve[0][1]
+        except:
+            return 0
 
     @property
     def contributions(self):
@@ -1137,7 +1133,7 @@ class Contribution(SuperModel):
         if mechanism == 'originated_address':
             return self.originated_address
         else:
-            return subscription.contributor_profile.id
+            return self.subscription.contributor_profile.id
 
     def update_tx_status(self):
         """Updates tx status."""
@@ -1172,6 +1168,9 @@ def psave_contrib(sender, instance, **kwargs):
                     "value_usd":instance.subscription.get_converted_amount(False),
                     "url":instance.subscription.grant.url,
                     "network":instance.subscription.grant.network,
+                    "txid":instance.subscription.split_tx_id,
+                    "token_name":instance.subscription.token_symbol,
+                    "token_value":instance.subscription.amount_per_period,
                 }
             )
         except:
@@ -1216,6 +1215,39 @@ class CLRMatch(SuperModel):
         null=False,
         help_text=_('The associated Grant.'),
     )
+    ready_for_test_payout = models.BooleanField(default=False, help_text=_('Ready for test payout or not'))
+    test_payout_tx = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text=_('The test payout txid'),
+    )
+    test_payout_tx_date = models.DateTimeField(null=True, blank=True)
+    test_payout_contribution = models.ForeignKey(
+        'grants.Contribution',
+        related_name='test_clr_match_payouts',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Contribution for the test payout')
+    )
+
+    ready_for_payout = models.BooleanField(default=False, help_text=_('Ready for regular payout or not'))
+    payout_tx = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text=_('The test payout txid'),
+    )
+    payout_tx_date = models.DateTimeField(null=True, blank=True)
+    payout_contribution = models.ForeignKey(
+        'grants.Contribution',
+        related_name='clr_match_payouts',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        help_text=_('Contribution for the payout')
+    )
+    comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
+
 
     def __str__(self):
         """Return the string representation of a Grant."""

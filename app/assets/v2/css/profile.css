@@ -207,10 +207,13 @@
   .profile-header__avatar {
     float: none;
     margin-right: 0!important;
+    width: 81px;
+    height: 81px;
   }
 
   .profile-header__handle {
     display: block;
+    padding-top: 0;
   }
 
   .profile-header__links li {
