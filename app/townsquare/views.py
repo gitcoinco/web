@@ -332,10 +332,17 @@ def get_following_tribes(request):
 
 
 def town_square(request):
-    data_results = JSONStore.objects.filter(view='results', key=None)
-    audience = '39102'
-    if data_results.exists():
-        audience = data_results.data['audience']
+    from app.redis_service import RedisService
+    redis = RedisService().redis
+
+    try:
+        audience = redis.get(f"townsquare:audience")
+        audience = str(audience.decode('utf-8')) if audience else '39102'
+    except KeyError:
+        data_results = JSONStore.objects.filter(view='results', key=None).first()
+        if data_results:
+            audience = data_results.data['audience']
+            redis.set('townsquare:audience', audience)
 
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
