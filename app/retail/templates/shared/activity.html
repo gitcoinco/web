@@ -65,8 +65,9 @@
          <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
 
          {% if row.hackathonevent %}
-            <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" class="tag">
-              via {{ row.hackathonevent.name }}
+            <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag" data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
+            <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" data-toggle="tooltip" title="Filter {{ row.hackathonevent.name }} Posts">
+              <i class="fas fa-filter"></i>
             </a>
          {% endif %}
         </span>
