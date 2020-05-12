@@ -1,0 +1,21 @@
+{
+  "symbol": "IPCM",
+  "address": "0xECf1624E155b022d36602b384402DfF439D4D6AF",
+  "overview":{
+        "en": "InterPlanetary Continuous Media is a decentralized IPFS distributed storage based professional multimedia content community sharing platform.",
+        "zh": "IPCM是一个去中心化基于IPFS分布式存储的专业多媒体内容社区共享平台。"
+  },
+  "email": "ipcmer@hotmail.com",
+  "website": "http://www.ipcm.me",
+  "whitepaper": "http://www.ipcm.me/attachment/ipcm_business_white_paper_v1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-04-22",
+  "initial_price":{
+        "USD":"0.0285 USD"
+  },
+  "links": {
+    "telegram": "http://t.me/IPCMoffice01",
+    "reddit": "https://www.reddit.com/user/ResponsibleFloor7",
+    "medium": "https://medium.com/@wbxq16"
+  }
+}
