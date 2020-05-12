@@ -117,7 +117,8 @@ This action expires at end of day, so act soon!
   </div>
 {% endif %}
 
-<div class="primary-content text-center">
+<div class="primary-content text-center" {% if not upcoming_events %} style="padding-top: 0;" {% endif %}>
+  {% if not upcoming_events %} <hr>  {% endif %}
 {% if quest_of_the_day %}
   <h3 class="no-subtitle" style="margin-top: 50px">{% trans "🎯Quest of The Day" %}</h3>
   {% include 'emails/quest_small.html' with quest=quest_of_the_day small=1 %}
