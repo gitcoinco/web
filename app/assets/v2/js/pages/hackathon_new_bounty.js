@@ -100,6 +100,27 @@ Vue.mixin({
       } else {
         return;
       }
+    },
+    submitForm: function() {
+      let vm = this;
+
+      if (network === 'mainnnet') {
+        // vm.blockchainSend(form)
+        // vm.sendData(form)
+
+      } else if (network === 'custom') {
+        // vm.sendData(form)
+
+      }
+
+
+    },
+    sendData: function() {
+      // api post method
+
+    },
+    blockchainSend: function() {
+
     }
   },
   computed: {
