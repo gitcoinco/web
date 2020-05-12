@@ -401,7 +401,7 @@ var callbacks = {
   },
   'started_owners_username': function(key, val, result) {
     var started = [];
-
+    var uniqueness = []
     if (result.interested) {
       var interested = result.interested;
 
@@ -409,8 +409,10 @@ var callbacks = {
         var name = (position == interested.length - 1) ?
           _interested.profile.handle : _interested.profile.handle.concat(',');
 
-        if (!_interested.pending)
+        if (!_interested.pending && uniqueness.indexOf(_interested.profile.handle) == -1){
+          uniqueness.push(_interested.profile.handle);
           started.push(profileHtml(_interested.profile.handle, name));
+        }
       });
       if (started.length == 0)
         started.push('<i class="fas fa-minus"></i>');
@@ -419,6 +421,7 @@ var callbacks = {
   },
   'submitted_owners_username': function(key, val, result) {
     var accepted = [];
+    var uniqueness = []
 
     if (result.fulfillments) {
       var submitted = result.fulfillments;
@@ -427,7 +430,10 @@ var callbacks = {
         var name = (position == submitted.length - 1) ?
           _submitted.fulfiller_github_username : _submitted.fulfiller_github_username.concat(',');
 
-        accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
+        if (uniqueness.indexOf(_submitted.profile.handle) == -1){
+          uniqueness.push(_submitted.profile.handle);
+          accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
+        }
       });
       if (accepted.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
