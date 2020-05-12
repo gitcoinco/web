@@ -83,3 +83,32 @@ def is_grant_team_member(grant, profile):
                 is_team_member = True
                 break
     return is_team_member
+
+def amount_in_wei(tokenAddress, amount):
+    from dashboard.tokens import addr_to_token
+    token = addr_to_token(tokenAddress)
+    decimals = token['decimals'] if token else 18
+    return float(amount) * 10**decimals
+
+def which_clr_round(timestamp):
+    import datetime, pytz
+    utc = pytz.UTC
+
+    date_ranges = {
+        1: [(2019, 2, 1), (2019, 2, 15)],   # Round 1: 2/1/2019 – 2/15/2019
+        2: [(2019, 3, 5), (2019, 4, 19)],   # Round 2: 3/5/2019 - 4/19/2019
+        3: [(2019, 9, 16), (2019, 9, 30)],  # Round 3: 9/16/2019 - 9/30/2019
+        4: [(2019, 1, 6), (2019, 1, 21)],   # Round 4: 1/6/2020 — 1/21/2020
+        5: [(2019, 3, 23), (2019, 4, 7)],   # Round 5: 3/23/2020 — 4/7/2020
+        6: [(2019, 6, 15), (2019, 6, 29)],  # Round 6: 6/15/2020 — 6/29/2020
+        7: [(2019, 9, 14), (2019, 9, 28)],  # Round 7: 9/14/2020 — 9/28/2020
+    }
+
+    for round, dates in date_ranges.items():
+        round_start = utc.localize(datetime.datetime(*dates[0]))
+        round_end = utc.localize(datetime.datetime(*dates[1]))
+
+        if round_start < timestamp < round_end:
+            return round
+    
+    return None
