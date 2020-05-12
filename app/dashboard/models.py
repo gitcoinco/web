@@ -4798,7 +4798,7 @@ class Earning(SuperModel):
     org_profile = models.ForeignKey('dashboard.Profile', related_name='org_earnings', on_delete=models.CASCADE, db_index=True, null=True, blank=True)
     value_usd = models.DecimalField(decimal_places=2, max_digits=50, null=True)
     source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    source_id = models.PositiveIntegerField()
+    source_id = models.PositiveIntegerField(db_index=True)
     source = GenericForeignKey('source_type', 'source_id')
     network = models.CharField(max_length=50, default='')
     url = models.CharField(max_length=500, default='')
