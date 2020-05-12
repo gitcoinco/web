@@ -564,13 +564,14 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
             'date': upcoming_grant.next_clr_calc_date.strftime("%Y-%d-%m")
         })
     if upcoming_hackathon:
-        upcoming_events.append({
-            'event': upcoming_hackathon,
-            'title': upcoming_hackathon.name,
-            'image_url': upcoming_hackathon.logo.url,
-            'url': upcoming_hackathon.url,
-            'date': upcoming_hackathon.start_date.strftime("%Y-%d-%m")
-        })
+        for hackathon in upcoming_hackathon:
+            upcoming_events.append({
+                'event': hackathon,
+                'title': hackathon.name,
+                'image_url': hackathon.logo.url,
+                'url': hackathon.url,
+                'date': hackathon.start_date.strftime("%Y-%d-%m")
+            })
 
     params = {
         'old_bounties': old_bounties,
