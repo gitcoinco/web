@@ -916,9 +916,13 @@ def upcoming_grant():
     return grant
 
 def upcoming_hackathon():
-    cutoff_date = timezone.now() - timezone.timedelta(days=7)
-    hackathon = HackathonEvent.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:5][0]
-    return hackathon
+    try:
+        return HackathonEvent.objects.filter(end_date__gt=timezone.now()).order_by('-start_date')
+    except HackathonEvent.DoesNotExist:
+        try:
+            return HackathonEvent.objects.filter(start_date__gte=timezone.now()).order_by('start_date').first()
+        except HackathonEvent.DoesNotExist:
+            return None
 
 def latest_activities(user):
     from retail.views import get_specific_activities
