@@ -2,7 +2,7 @@
 (function($) {
 
   $('body').on('click', '.btn', function(e) {
-    if ($(this).text() == 'Register') {
+    if (typeof fbq !== 'undefined' && $(this).text() == 'Register') {
       fbq('trackCustom', 'HackathonRegistration');
     }
   });
