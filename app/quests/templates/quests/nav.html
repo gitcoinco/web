@@ -17,13 +17,13 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark gitcoin-background">
-  <a class="d-none d-md-block mr-2" href="{% url 'index' %}">
+  <a class="d-none d-md-block mr-2 mb-1" href="{% url 'index' %}">
     {% include 'shared/helmet-white-animated.html' %}
   </a>
   <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand ml-2 py-0 brand-hover" href="{% url 'quests_index' %}" style="margin-top: -12px;">
-    <img class="mw-100 logo-static" src="{% static 'v2/images/quests_logo_white.png' %}" alt="Quests" height="50">
-    <img class="mw-100 logo-animated" src="{% static 'v2/images/quest_logo_hover.png' %}" alt="Quests" height="50">
+  <a class="navbar-brand ml-2 py-0" href="{% url 'quests_index' %}">
+    <img class="mw-100 logo-static" src="{% static 'v2/images/top-bar/quests-neg.svg' %}" alt="Quests" height="35">
+    <!-- <img class="mw-100 logo-animated" src="{% static 'v2/images/quest_logo_hover.png' %}" alt="Quests" height="50"> -->
   </a>
   {% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
     <div class="navbar-network ml-xl-5 py-1 px-2 hidden">

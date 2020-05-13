@@ -94,4 +94,3 @@ pandas
 wiki
 django-bulk-update
 elasticsearch
-

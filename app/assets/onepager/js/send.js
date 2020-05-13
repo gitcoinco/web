@@ -150,6 +150,7 @@ $(document).ready(function() {
         $('#token').append(html);
       }
     });
+    $('#token').val('0x0000000000000000000000000000000000000000').select2();
     jQuery('#token').select2();
   });
 
