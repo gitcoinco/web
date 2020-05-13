@@ -153,12 +153,14 @@
                     </thead>
 
                     <tbody>
-                      {% for item in items %}
+                      {% for item, flag in dual_list %}
                         <tr class='{% if not is_linked_to_profile %} clickable-row {% endif %} d-flex  align-items-stretch' {% if not is_linked_to_profile %} data-href="{{item.url}}" {% endif %} >
                           <td class="col-2 d-flex align-items-center item-position"># {{forloop.counter}}</td>
                           <td class="col-6 d-flex align-items-center" >
                             {% if not is_linked_to_profile %}
                               <img class="img-fluid"  data-src="{{item.avatar_url}}">
+                            {% elif key == "countries" %}
+                              <img class="img-fluid"  data-src="{{flag}}">
                             {% endif %}
                             <div class="ml-3 item-count-bounties" style="white-space: nowrap">
                               {% if not is_linked_to_profile %}
