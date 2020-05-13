@@ -21,6 +21,7 @@ from django.core.management.base import BaseCommand
 
 from marketing.mails import notify_deadbeat_quest
 
+
 class Command(BaseCommand):
 
     help = 'finds (and migrates) quests whose reward is out of redemptions'
@@ -46,4 +47,3 @@ class Command(BaseCommand):
                     print(f"migrating {quest.pk}")
                     quest.kudos_reward = kudos
                     quest.save()
-
