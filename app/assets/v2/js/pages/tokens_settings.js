@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
-load_tokens();
+load_tokens_from_network('mainnet');
 
 $(document).ready(function() {
 
@@ -32,6 +32,10 @@ $(document).ready(function() {
     if (token_address == '0x0000000000000000000000000000000000000000') {
       _alert('You already are approved for this token');
       e.preventDefault();
+      return;
+    }
+    if (!web3 || typeof web3 == 'undefined') {
+      _alert('You are not connected to a web3 wallet.  Please unlock metamask (or web3 wallet equivilent), set to mainnet, and connect to gitcoin on the mainnet (settings > connections).', 'error');
       return;
     }
 

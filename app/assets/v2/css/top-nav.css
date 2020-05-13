@@ -13,7 +13,14 @@
 
 
 .top-nav a {
-  padding: 0.3rem 0.62rem;
+  filter: grayscale(1);
+  opacity: 0.6;
+  transition: all 0.2s linear;
+}
+
+.top-nav a.selected {
+  filter: grayscale(0);
+  opacity: 0.8;
 }
 
 .top-nav .link {
@@ -23,10 +30,7 @@
 
 
 .top-nav a img {
-  filter: grayscale(1);
-  opacity: 0.6;
-  transition: all 0.2s linear;
-  height: 40px;
+  height: 30px;
 }
 
 @media (min-width: 768px) {
@@ -39,17 +43,13 @@
     border: none;
     padding: 0;
   }
-
-  .top-nav a img {
-    height: auto;
-  }
 }
 .top-nav a:hover img,
 .top-nav a.selected img {
   /* opacity: 1; */
 }
 
-.top-nav a:hover img {
+.top-nav a:hover {
   filter: grayscale(0);
   opacity: 1;
 }

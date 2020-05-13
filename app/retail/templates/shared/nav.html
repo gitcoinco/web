@@ -21,9 +21,9 @@
     {% include 'shared/helmet-white-animated.html' %}
   </a>
   <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand brand-hover ml-2 py-0" href="/explorer">
-    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" alt="Bounties" height="50">
-    <img class="mw-100 logo-animated" src="{% static "v2/images/top-bar/bounties_desktop_hearbeating.gif" %}" alt="Logo" height="50">
+  <a class="navbar-brand ml-2 py-0" href="/explorer">
+    <img class="mw-100 logo-static" src="{% static 'v2/images/top-bar/bounties-neg.svg' %}" alt="Bounties" height="35">
+    <!-- <img class="mw-100 logo-animated" src="{% static "v2/images/top-bar/bounties_desktop_hearbeating.gif" %}" alt="Logo" height="50"> -->
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <!-- TODO: FIGURE HOW TO HANDLE FOR CROSS CHAIN -->
