@@ -664,6 +664,7 @@ class TokenRequest(SuperModel):
     profile = models.ForeignKey(
         'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
     )
+    rejection_reason = models.TextField(max_length=500, default='', blank=True)
 
     def __str__(self):
         """Define the string representation of a conversion rate."""

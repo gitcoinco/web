@@ -43,8 +43,8 @@
           <div class="row">
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path %}gc-megamenu-active{% endif %}">
               <li>
-                <a class="text-reset" href="{% url "funder_bounties" %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/bounties_symbol_dark.svg" %}" alt="Bounties" height="48">
+                <a class="text-reset" href="{% url 'funder_bounties' %}">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="48">
                   <b class="gc-megamenu-title">{% trans "Bounties" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Development resources at your finger tips" %}</p>
@@ -66,7 +66,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/hackathon' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'get_hackathons' %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/hackathons_symbol_dark.svg" %}" alt="Hackathons" height="48">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="48">
                   <b class="gc-megamenu-title">{% trans "Hackathons" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Build with the coolest Web3 projects" %}</p>
@@ -82,7 +82,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/grants' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'grants:grants' %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/grants_symbol_dark.svg" %}" alt="Grants" height="48">
+                  <img class="mw-100 logo-static p-2" src="{% static "v2/images/top-bar/grants-symbol-pos.svg" %}" alt="Grants" height="48">
                   <b class="gc-megamenu-title">{% trans "Grants" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Recurring funding for Open Source" %}</p>
@@ -122,7 +122,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/quests' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'quests_index' %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/quests_symbol_dark.svg" %}" alt="Quests" height="48">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="48">
                   <b class="gc-megamenu-title">{% trans "Quests" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Learn about Web3 & earn rewards" %}</p>
@@ -138,7 +138,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kudos' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'kudos_main' %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/kudos_symbol_dark.svg" %}" alt="Kudos" height="48">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="48">
                   <b class="gc-megamenu-title">{% trans "Kudos" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Show appreciation for each other" %}</p>
@@ -168,7 +168,7 @@
           <div class="row">
             <ul class="col-md-3 col-lg-2 list-unstyled offset-lg-2">
               <li>
-                <a class="dropdown-item" href="{% url "landing_chat" %}">
+                <a class="dropdown-item" href="{% url "tribes_directory" %}">
                   {% trans "Browse Tribes" %}
                 </a>
               </li>

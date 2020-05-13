@@ -121,3 +121,17 @@ def grant_update_email_task(self, pk, retry: bool = True) -> None:
     """
     activity = Activity.objects.get(pk=pk)
     grant_update_email(activity)
+
+
+@app.shared_task(bind=True)
+def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param bounty_pk:
+    :return:
+    """
+    with redis.lock("m2m_changed_interested:bounty", timeout=LOCK_TIMEOUT):
+        bounty = Bounty.objects.get(pk=bounty_pk)
+        from dashboard.notifications import maybe_market_to_github
+        maybe_market_to_github(instance, 'work_started',
+                               profile_pairs=bounty.profile_pair)
