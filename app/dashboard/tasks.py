@@ -134,4 +134,4 @@ def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
         bounty = Bounty.objects.get(pk=bounty_pk)
         from dashboard.notifications import maybe_market_to_github
         maybe_market_to_github(bounty, 'work_started',
-                               profile_pairs=bounty.profile_pair)
+                               profile_pairs=bounty.profile_pairs)
