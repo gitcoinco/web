@@ -26,6 +26,10 @@ from .models import (
 from .tasks import increment_offer_view_counts
 from .utils import is_user_townsquare_enabled
 
+from app.redis_service import RedisService
+
+redis = RedisService().redis
+
 tags = [
     ['#announce','bullhorn','search-announce'],
     ['#mentor','terminal','search-mentor'],
@@ -332,9 +336,6 @@ def get_following_tribes(request):
 
 
 def town_square(request):
-    from app.redis_service import RedisService
-    redis = RedisService().redis
-
     try:
         audience = redis.get(f"townsquare:audience")
         audience = str(audience.decode('utf-8')) if audience else '39102'

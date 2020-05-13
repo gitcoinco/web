@@ -75,7 +75,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </ul>
             </div>
           </div>
-          <div class="row {% if user.user.is_authenticated %} mt-4 {% else %} mt-2 {% endif %}townsquare_header">
+          <div class="row {% if user.is_authenticated %} mt-4 {% else %} mt-2 {% endif %}townsquare_header">
           {% if not user.is_authenticated %}
           <div class="col-12">
             <div class="get-started mb-4">
