@@ -400,17 +400,23 @@ var callbacks = {
     return [ label, response ];
   },
   'started_owners_username': function(key, val, result) {
-    var started = [];
+    let started = [];
+    let uniqueness = [];
 
     if (result.interested) {
-      var interested = result.interested;
+      let interested = result.interested;
 
       interested.forEach(function(_interested, position) {
-        var name = (position == interested.length - 1) ?
+        const name = (position == interested.length - 1) ?
           _interested.profile.handle : _interested.profile.handle.concat(',');
 
-        if (!_interested.pending)
+        if (
+          !_interested.pending &&
+          uniqueness.indexOf(_interested.profile.handle) == -1
+        ) {
+          uniqueness.push(_interested.profile.handle);
           started.push(profileHtml(_interested.profile.handle, name));
+        }
       });
       if (started.length == 0)
         started.push('<i class="fas fa-minus"></i>');
@@ -418,16 +424,20 @@ var callbacks = {
     return [ 'started_owners_username', started ];
   },
   'submitted_owners_username': function(key, val, result) {
-    var accepted = [];
+    let accepted = [];
+    let uniqueness = [];
 
     if (result.fulfillments) {
-      var submitted = result.fulfillments;
+      let submitted = result.fulfillments;
 
       submitted.forEach(function(_submitted, position) {
-        var name = (position == submitted.length - 1) ?
+        const name = (position == submitted.length - 1) ?
           _submitted.fulfiller_github_username : _submitted.fulfiller_github_username.concat(',');
 
-        accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
+        if (uniqueness.indexOf(_submitted.profile.handle) == -1) {
+          uniqueness.push(_submitted.profile.handle);
+          accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
+        }
       });
       if (accepted.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
@@ -436,14 +446,14 @@ var callbacks = {
     return [ 'submitted_owners_username', accepted ];
   },
   'fulfilled_owners_username': function(key, val, result) {
-    var accepted = [];
+    let accepted = [];
 
     if (result.paid) {
       if (result.paid.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
       } else {
         result.paid.forEach((github_username, position) => {
-          var name = (position == result.paid.length - 1) ?
+          const name = (position == result.paid.length - 1) ?
             github_username : github_username.concat(',');
 
           accepted.push(profileHtml(github_username, name));

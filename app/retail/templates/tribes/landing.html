@@ -53,6 +53,7 @@
       </div>
     </div>
 
+    <!-- SECTION: HOW IT WORKS -->
     <div class="container how-it-works">
       <div class="row py-5">
         <div class="col-12 text-center" >
@@ -76,12 +77,12 @@
         </div>
       </div>
     </div>
+
     <div class="container-fluid py-5 mt-5 landing__newsletter bg-light">
       {% include 'shared/newsletter.html' %}
     </div>
 
-
-
+    <!-- SECTION : WHY TRIBES -->
     <div class="col-12 why-section py-5">
       <h1 class="text-center mb-5 py-4">
         <span class="pb-2 title font-weight-bold">Why Tribes</span>
@@ -102,6 +103,7 @@
       </div>
     </div>
 
+    <!-- SECTION : TOP TRIBES -->
     <div class="row bg-white text-black justify-content-center mb-5 mt-5">
       <div class="row col-lg-10 text-center tribes-section mt-5 pt-5 mx-2 mx-md-auto">
         <div class="col-12">
@@ -127,24 +129,26 @@
       </div>
     </div>
 
+    <!-- SECTION : TESTIMONIALS -->
     <div class="testimonials overflow-auto mt-5 mb-5 pt-5 pb-5 d-md-flex justify-content-between">
       {% for testimonial in testimonials %}
         <div class="testimonial-card flex-shrink-0 my-5 mx-3 d-block d-inline-block text-center">
-            <div class="overlap-line">
-              {% if testimonial.photo %}
-              <img class="testimonial-avatar" src="{{ testimonial.photo }}" alt="">
-              {% endif %}
-              <img class="testimonial-avatar" src="{{ testimonial.org_photo }}" alt="">
-            </div>
-            <div>
-              <h4 class="font-weight-bold gc-text-blue font-title-xl">{{ testimonial.author }}</h4>
-              <p class="font-weight-semibold font-title">{{ testimonial.designation }}</p>
-            </div>
-            <p class="card-description m-5 text-center">{{ testimonial.text }}</p>
+          <div class="overlap-line">
+            {% if testimonial.photo %}
+            <img class="testimonial-avatar" src="{{ testimonial.photo }}" alt="">
+            {% endif %}
+            <img class="testimonial-avatar" src="{{ testimonial.org_photo }}" alt="">
+          </div>
+          <div>
+            <h4 class="font-weight-bold gc-text-blue font-title-xl">{{ testimonial.author }}</h4>
+            <p class="font-weight-semibold font-title">{{ testimonial.designation }}</p>
+          </div>
+          <p class="card-description m-5 text-center">{{ testimonial.text }}</p>
         </div>
       {% endfor %}
     </div>
 
+    <!-- SECTION : PRESS -->
     <div id="press" class="press">
       <div class="container py-5 press-mobile">
         <div class="row text-center">
@@ -162,6 +166,7 @@
       </div>
     </div>
 
+    <!-- SECTION : KNOW US -->
     <div id="know_us" class="know_us">
       <div class="container py-5">
         <div class="row">
@@ -188,6 +193,7 @@
       </div>
     </div>
 
+    <!-- SECTION : ARTICLES -->
     <div id="articles" class="articles text-center">
       <div class="container py-5">
         <div class="row">
