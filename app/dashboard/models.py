@@ -53,6 +53,7 @@ from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
 from bleach import clean
+from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_0_time, get_time
@@ -66,7 +67,6 @@ from marketing.mails import featured_funded_bounty, fund_request_email, start_wo
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
-from bounty_requests.models import BountyRequest
 
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
@@ -307,7 +307,7 @@ class Bounty(SuperModel):
     reserved_for_user_expiration = models.DateTimeField(blank=True, null=True)
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
-    raw_data = JSONField()
+    raw_data = JSONField(blank=True)
     metadata = JSONField(default=dict, blank=True)
     current_bounty = models.BooleanField(
         default=False, help_text=_('Whether this bounty is the most current revision one or not'), db_index=True)
@@ -1509,6 +1509,8 @@ class SendCryptoAsset(SuperModel):
 
     # TODO: DRY
     def get_natural_value(self):
+        if self.tokenAddress == '0x0':
+            return self.amount
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals']
         return float(self.amount) / 10**decimals
@@ -1786,8 +1788,8 @@ def postsave_tip(sender, instance, created, **kwargs):
         value_true = 0
         value_usd = 0
         try:
-            value_true = instance.value_true
             value_usd = instance.value_in_usdt_then
+            value_true = instance.value_true
         except:
             pass
         Earning.objects.update_or_create(
@@ -2604,7 +2606,7 @@ class Profile(SuperModel):
     profile_organizations = models.ManyToManyField(Organization, blank=True)
     repos = models.ManyToManyField(Repo, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
-    max_num_issues_start_work = models.IntegerField(default=3)
+    max_num_issues_start_work = models.IntegerField(default=5)
     etc_address = models.CharField(max_length=255, default='', blank=True)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
@@ -4793,10 +4795,10 @@ class Earning(SuperModel):
 
     from_profile = models.ForeignKey('dashboard.Profile', related_name='sent_earnings', on_delete=models.CASCADE, db_index=True, null=True)
     to_profile = models.ForeignKey('dashboard.Profile', related_name='earnings', on_delete=models.CASCADE, db_index=True, null=True)
-    org_profile = models.ForeignKey('dashboard.Profile', related_name='org_earnings', on_delete=models.CASCADE, db_index=True, null=True)
+    org_profile = models.ForeignKey('dashboard.Profile', related_name='org_earnings', on_delete=models.CASCADE, db_index=True, null=True, blank=True)
     value_usd = models.DecimalField(decimal_places=2, max_digits=50, null=True)
     source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    source_id = models.PositiveIntegerField()
+    source_id = models.PositiveIntegerField(db_index=True)
     source = GenericForeignKey('source_type', 'source_id')
     network = models.CharField(max_length=50, default='')
     url = models.CharField(max_length=500, default='')
@@ -4818,12 +4820,15 @@ class Earning(SuperModel):
                 if p1.pk == p2.pk:
                     continue
                 if not p1.dont_autofollow_earnings:
-                    TribeMember.objects.update_or_create(
-                        profile=p1,
-                        org=p2,
-                        defaults={'why':'auto'}
-                        )
-                    count += 1
+                    try:
+                        TribeMember.objects.update_or_create(
+                            profile=p1,
+                            org=p2,
+                            defaults={'why':'auto'}
+                            )
+                        count += 1
+                    except:
+                        pass
         return count
 
 @receiver(post_save, sender=Earning, dispatch_uid="post_save_earning")

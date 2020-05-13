@@ -33,7 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <body class="{{ active }} bg-lightblue g-font-muli" >
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header sticky-top">
+    <div class="header sticky-top">
       {% include 'home/nav.html' %}
     </div>
     <div class="townsquare_main container-fluid">
@@ -94,7 +94,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <div id=left_sidebar>
                 <div class="promo mb-4 align-items-center hidden">
                     <span class="close-promo"><i class="fas fa-times"></i></span>
-                    <img class="logo" src="{% static "v2/images/tribes/logo-townsquare.svg" %}">
+                    <img class="logo" width="65" src="{% static "v2/images/tribes/logo-townsquare.svg" %}">
                     <div class="d-flex flex-column flex-fill ml-3">
                       <p class="p-0 font-smaller-1">Work with the coolest projects and the best developers in Web3</p>
                       <div class="font-caption font-smaller-5 text-left">

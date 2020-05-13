@@ -1,5 +1,6 @@
 /* eslint-disable no-loop-func */
 
+document.long_poller_live = false;
 
 const loadDynamicScript = (callback, url, id) => {
   const existingScript = document.getElementById(id);
@@ -183,10 +184,14 @@ const loadDynamicScript = (callback, url, id) => {
         tabChange: function(input) {
           let vm = this;
 
+          document.long_poller_live = false;
+
           switch (input) {
             default:
             case 0:
               newPathName = 'townsquare';
+              document.long_poller_live = true;
+              document.run_long_poller(true);
               break;
             case 1:
               newPathName = 'projects';

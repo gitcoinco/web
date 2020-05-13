@@ -184,7 +184,8 @@ def get_sidebar_tabs(request):
             connect = {
                 'title': hackathon.name,
                 'slug': f'hackathon:{hackathon.pk}',
-                'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+                'url_slug': hackathon.slug,
+                'helper_text': f'Go to {hackathon.name} Townsquare.',
             }
             hackathon_tabs = [connect] + hackathon_tabs
 
@@ -340,8 +341,6 @@ def town_square(request):
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
-    max_length_offset = abs(((request.user.profile.created_on if request.user.is_authenticated else timezone.now()) - timezone.now()).days)
-    max_length = 280 + max_length_offset
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
         trending_only = int(request.GET.get('trending', 0))
@@ -357,8 +356,6 @@ def town_square(request):
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
             'tags': tags,
-            'max_length': max_length,
-            'max_length_offset': max_length_offset,
             'admin_link': admin_link,
             'now': timezone.now(),
             'is_townsquare': True,
@@ -389,8 +386,6 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'tabs': tabs,
-        'max_length': max_length,
-        'max_length_offset': max_length_offset,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,

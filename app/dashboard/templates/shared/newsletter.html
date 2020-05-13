@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="{% static "v2/css/newsletter.css" %}">
 <div class="row newsletter text-center" id="newsletterGroup">
   <div class="col-12">
-    <h4 class="col-12 font-title font-weight-semibold py-1" id="newsletter-title">
+    <h4 class="col-12 font-title font-weight-bold py-1" id="newsletter-title">
       {% if newsletter_headline %}
         {{ newsletter_headline }}
       {% else %}
@@ -41,7 +41,7 @@
         {% endif %}
         <div class="col-12 pt-3">
           <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-funder" type="submit" class="button button--primary subscribe py-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+          <button id="newsletter-subscribe-funder" type="submit" class="button font-weight-bold button--primary subscribe py-2 my-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
         </div>
         {% if not hide_newsletter_consent %}
           <span style="display: block; margin-top: 3px; font-size: 10px;">
@@ -59,7 +59,7 @@
         {% endif %}
         <div class="col-12 pt-3">
           <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
-          <button id="newsletter-subscribe-hunter" type="submit" class="button button--primary subscribe ml-lg-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
+          <button id="newsletter-subscribe-hunter" type="submit" class="button font-weight-bold button--primary subscribe ml-lg-2 my-2"><i class="far fa-envelope mr-2"></i>Subscribe</button>
         </div>
         {% if not hide_newsletter_consent %}
           <span style="display: block; margin-top: 3px; font-size: 10px;">

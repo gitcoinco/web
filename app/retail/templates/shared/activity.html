@@ -65,8 +65,9 @@
          <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
 
          {% if row.hackathonevent %}
-            <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" class="tag">
-              via {{ row.hackathonevent.name }}
+            <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag" data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
+            <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" data-toggle="tooltip" title="Filter {{ row.hackathonevent.name }} Posts">
+              <i class="fas fa-filter"></i>
             </a>
          {% endif %}
         </span>
@@ -196,7 +197,7 @@
             <span>{{ row.metadata.title }} {% if row.metadata.ask != 'undefined' %}{{ row.metadata.ask }}{%endif%}</span>
 
             {% if row.metadata.video and row.metadata.gfx != 'undefined' %}
-            <div id=meet{{row.pk}} class="click_here_to_join_video" data-roomname="meet{{row.pk}}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
+            <div id="{% if row.metadata.roomname %}{{row.metadata.roomname}}{%else%}meet{{row.pk}}{%endif%}" class="click_here_to_join_video" data-roomname="{% if row.metadata.roomname %}{{row.metadata.roomname}}{%else%}meet{{row.pk}}{%endif%}" data-src='/static/v2/images/{{row.metadata.gfx}}'><img src='/static/v2/images/{{row.metadata.gfx}}'></div>
 
             <p class='num_participants m-0 p-0' data-roomname="+roomName+">
               <p class='m-0 p-0 indie_chat_indicator {% if row.video_participants_count == 0 %}offline{%endif%}'>
@@ -371,22 +372,23 @@
     <div class="d-none d-sm-inline col-sm-2 pl-0 position-relative">
       {% if row.activity_type == 'new_bounty' %}
         <div class="bg-gc-blue card-ribbon px-2 text-center">
-          <i style="font-size: 14px" class="text-white fas fa-tools"></i>
+          <!-- <i style="font-size: 14px" class="text-white fas fa-tools"></i> -->
+          <img height="15" src="{% static 'v2/images/top-bar/bounties-symbol-neg.svg' %}" alt="">
           <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New bounty</span>
         </div>
       {% elif row.activity_type == 'new_kudos' %}
         <div class="bg-light-blue card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/top-bar/kudos_symbol_dark.svg' %}" alt="">
+          <img height="15" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="">
           <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New kudos</span>
         </div>
       {% elif row.activity_type == 'new_hackathon_project' %}
         <div class="bg-gc-green card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/Lightbulb.svg' %}" alt="">
+          <img height="15" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="">
           <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Project</span>
         </div>
       {% elif row.activity_type == 'new_grant' %}
         <div class="bg-gc-dark-blue card-ribbon px-2 text-center">
-          <img height="15" src="{% static 'v2/images/products/grants-logo.svg' %}" alt="">
+          <img height="15" src="{% static 'v2/images/top-bar/grants-symbol-neg.svg' %}" alt="">
           <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Grant</span>
         </div>
       {% endif %}
