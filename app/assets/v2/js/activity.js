@@ -204,7 +204,7 @@ $(document).ready(function() {
   var refresh_interval = 7000;
   var max_pk = null;
   var run_longpoller = function(recursively) {
-    if (document.hidden) {
+    if (document.hidden || !document.long_poller_live) {
       return setTimeout(function() {
         if (recursively) {
           run_longpoller(true);
@@ -707,7 +707,7 @@ $(document).ready(function() {
         if (is_first_hidden) {
           show_more_box = `
           <div class="row mx-auto ${ show_all_option ? 'show_all' : 'show_more'} d-block text-center">
-            <a href="#" class="text-black-60 font-smaller-5">
+            <a href="#" class="font-smaller-5">
             ${ show_all_option ? 'See all comments' : `Show More (<span class="comment-count">${num_comments - hide_after_n_comments + 1}</span>)`}
             </a>
           </div>
@@ -759,10 +759,10 @@ $(document).ready(function() {
                 </span>
                 <span class="comment_options font-smaller-5 mt-1" style="display: block; text-align: right;">
                   ${is_comment_owner ?
-    `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
+    `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative grey mr-1 cursor-pointer" style="top:-1px; "></i>| `
     : ''}
     ${is_comment_owner ?
-    `<i data-pk=${comment['id']} class="edit_comment fas fa-edit font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
+    `<i data-pk=${comment['id']} class="edit_comment fas fa-edit font-smaller-7 position-relative grey mr-1 cursor-pointer" style="top:-1px; "></i>| `
     : ''}
                   ${show_tip ? `
                   <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
@@ -791,13 +791,13 @@ $(document).ready(function() {
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="comment-area col-12 col-sm-11 text-right">
-            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
+            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3" maxlength="500">${existing_text}</textarea>
             <div class="emoji-container position-absolute d-flex flex-wrap">
-              <button class="btn btn-sm p-1 emoji_button" data-toggle="tooltip" title="Add an emoji to post.">
+              <button class="btn btn-sm p-1 emoji_button grey" data-toggle="tooltip" title="Add an emoji to post.">
                 <i class="far fa-fw fa-smile"></i>
               </button>
             </div>
-            <a href=# class="btn btn-gc-blue btn-sm mt-= font-smaller-7 font-weight-bold post_comment">COMMENT</a>
+            <a href=# class="btn btn-gc-blue btn-sm mt-3 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
       `;

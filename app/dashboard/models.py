@@ -35,7 +35,7 @@ from django.contrib.humanize.templatetags.humanize import naturalday, naturaltim
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import connection, models
-from django.db.models import Count, F, Q, Sum
+from django.db.models import Count, F, Q, Subquery, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
@@ -53,6 +53,7 @@ from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
 from bleach import clean
+from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
 from dashboard.tokens import addr_to_token, token_by_name
 from economy.models import ConversionRate, EncodeAnything, SuperModel, get_0_time, get_time
@@ -62,7 +63,7 @@ from git.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
     repo_name,
 )
-from marketing.mails import featured_funded_bounty, start_work_approved
+from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -74,6 +75,7 @@ logger = logging.getLogger(__name__)
 
 
 CROSS_CHAIN_STANDARD_BOUNTIES_OFFSET = 100000000
+
 
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""
@@ -305,7 +307,7 @@ class Bounty(SuperModel):
     reserved_for_user_expiration = models.DateTimeField(blank=True, null=True)
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
-    raw_data = JSONField()
+    raw_data = JSONField(blank=True)
     metadata = JSONField(default=dict, blank=True)
     current_bounty = models.BooleanField(
         default=False, help_text=_('Whether this bounty is the most current revision one or not'), db_index=True)
@@ -1507,6 +1509,8 @@ class SendCryptoAsset(SuperModel):
 
     # TODO: DRY
     def get_natural_value(self):
+        if self.tokenAddress == '0x0':
+            return self.amount
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals']
         return float(self.amount) / 10**decimals
@@ -1740,6 +1744,28 @@ class TipPayout(SuperModel):
         return f"tip: {self.tip.pk} profile: {self.profile.handle}"
 
 
+class FundRequest(SuperModel):
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='requests_receiver', on_delete=models.CASCADE
+    )
+    requester = models.ForeignKey(
+        'dashboard.Profile', related_name='requests_sender', on_delete=models.CASCADE
+    )
+    token_name = models.CharField(max_length=255, default='ETH')
+    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    comments = models.TextField(default='', blank=True)
+    tip = models.OneToOneField(Tip, on_delete=models.CASCADE, null=True)
+    network = models.CharField(max_length=255, default='')
+    address = models.CharField(max_length=255, default='')
+    created_on = models.DateTimeField(auto_now_add=True)
+
+
+@receiver(post_save, sender=FundRequest, dispatch_uid="post_save_fund_request")
+def psave_fund_request(sender, instance, created, **kwargs):
+    if created:
+        fund_request_email(instance, [instance.profile.email])
+
+
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
     # when a new tip is saved, make sure it doesnt have whitespace in it
@@ -1762,8 +1788,8 @@ def postsave_tip(sender, instance, created, **kwargs):
         value_true = 0
         value_usd = 0
         try:
-            value_true = instance.value_true
             value_usd = instance.value_in_usdt_then
+            value_true = instance.value_true
         except:
             pass
         Earning.objects.update_or_create(
@@ -2079,6 +2105,7 @@ class Activity(SuperModel):
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
         ('hackathon_registration', 'Hackathon Registration'),
+        ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
     ]
 
@@ -2128,6 +2155,12 @@ class Activity(SuperModel):
     hackathonevent = models.ForeignKey(
         'dashboard.HackathonEvent',
         related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    project = models.ForeignKey(
+        'dashboard.HackathonProject',
+        related_name='hackathon_projects',
         on_delete=models.CASCADE,
         blank=True, null=True
     )
@@ -2573,7 +2606,7 @@ class Profile(SuperModel):
     profile_organizations = models.ManyToManyField(Organization, blank=True)
     repos = models.ManyToManyField(Repo, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
-    max_num_issues_start_work = models.IntegerField(default=3)
+    max_num_issues_start_work = models.IntegerField(default=5)
     etc_address = models.CharField(max_length=255, default='', blank=True)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
@@ -2624,6 +2657,13 @@ class Profile(SuperModel):
     as_representation = JSONField(default=dict, blank=True)
     tribe_priority = models.TextField(default='', blank=True, help_text=_('HTML rich description for what tribe priorities.'))
 
+    tribes_cover_image = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('The Tribes Cover image.'),
+    )
+
     is_org = models.BooleanField(
         default=True,
         help_text='Is this profile an org?',
@@ -2638,6 +2678,13 @@ class Profile(SuperModel):
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
+
+    @property
+    def suggested_bounties(self):
+        suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
+
+        return suggested_bounties if suggested_bounties else []
+
     @property
     def subscribed_threads(self):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
@@ -4424,6 +4471,7 @@ class Sponsor(SuperModel):
     name = models.CharField(max_length=255, help_text='sponsor Name')
     logo = models.ImageField(help_text='sponsor logo', blank=True)
     logo_svg = models.FileField(help_text='sponsor logo svg', blank=True)
+    tribe = models.ForeignKey(Profile, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name
@@ -4747,10 +4795,10 @@ class Earning(SuperModel):
 
     from_profile = models.ForeignKey('dashboard.Profile', related_name='sent_earnings', on_delete=models.CASCADE, db_index=True, null=True)
     to_profile = models.ForeignKey('dashboard.Profile', related_name='earnings', on_delete=models.CASCADE, db_index=True, null=True)
-    org_profile = models.ForeignKey('dashboard.Profile', related_name='org_earnings', on_delete=models.CASCADE, db_index=True, null=True)
+    org_profile = models.ForeignKey('dashboard.Profile', related_name='org_earnings', on_delete=models.CASCADE, db_index=True, null=True, blank=True)
     value_usd = models.DecimalField(decimal_places=2, max_digits=50, null=True)
     source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    source_id = models.PositiveIntegerField()
+    source_id = models.PositiveIntegerField(db_index=True)
     source = GenericForeignKey('source_type', 'source_id')
     network = models.CharField(max_length=50, default='')
     url = models.CharField(max_length=500, default='')
@@ -4772,12 +4820,15 @@ class Earning(SuperModel):
                 if p1.pk == p2.pk:
                     continue
                 if not p1.dont_autofollow_earnings:
-                    TribeMember.objects.update_or_create(
-                        profile=p1,
-                        org=p2,
-                        defaults={'why':'auto'}
-                        )
-                    count += 1
+                    try:
+                        TribeMember.objects.update_or_create(
+                            profile=p1,
+                            org=p2,
+                            defaults={'why':'auto'}
+                            )
+                        count += 1
+                    except:
+                        pass
         return count
 
 @receiver(post_save, sender=Earning, dispatch_uid="post_save_earning")
@@ -4852,3 +4903,52 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
+    
+    @property
+    def mutual_follow(self):
+        return TribeMember.objects.filter(profile=self.org, org=self.profile).exists()
+
+    @property
+    def mutual_follower(self):
+        tribe_following = Subquery(TribeMember.objects.filter(profile=self.profile).values_list('org', flat=True))
+        return TribeMember.objects.filter(org=self.org, profile__in=tribe_following).exclude(profile=self.profile)
+
+    @property
+    def mutual_following(self):
+        tribe_following = Subquery(TribeMember.objects.filter(org=self.profile).values_list('profile', flat=True))
+        return TribeMember.objects.filter(org__in=tribe_following, profile=self.org).exclude(org=self.org)
+
+      
+class Poll(SuperModel):
+    title = models.CharField(max_length=350, blank=True, null=True)
+    active = models.BooleanField(default=False)
+    hackathon = models.ForeignKey(HackathonEvent, on_delete=models.SET_NULL, null=True, blank=True)
+
+
+class Question(SuperModel):
+    TYPE_QUESTIONS = (
+        ('SINGLE_CHOICE', 'Single Choice'),
+        ('MUTIPLE_CHOICE', 'Multiple Choices'),
+        ('OPEN', 'Open'),
+    )
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True, blank=True)
+    question_type = models.CharField(choices=TYPE_QUESTIONS, max_length=50, blank=False, null=False)
+    text = models.CharField(max_length=350, blank=True, null=True)
+
+    def __str__(self):
+        return f'Question.{self.id} {self.text}'
+
+
+class Option(SuperModel):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    text = models.CharField(max_length=350, blank=True, null=True)
+
+    def __str__(self):
+        return f'Option.{self.id} {self.text}'
+
+
+class Answer(SuperModel):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    open_response = models.CharField(max_length=350, blank=True, null=True)
+    choice = models.ForeignKey(Option, on_delete=models.CASCADE, null=True, blank=True)

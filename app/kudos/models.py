@@ -133,7 +133,8 @@ class Token(SuperModel):
     contract = models.ForeignKey(
         'kudos.Contract', related_name='kudos_contract', on_delete=models.SET_NULL, null=True
     )
-    hidden = models.BooleanField(default=False)
+    hidden = models.BooleanField(default=False, help_text=('Hide from marketplace?'))
+    hidden_token_details_page = models.BooleanField(default=False, help_text=('Hide token details page'))
     send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
     preview_img_mode = models.CharField(max_length=255, default='png')
     suppress_sync = models.BooleanField(default=False)
@@ -531,7 +532,7 @@ def psave_kt(sender, instance, **kwargs):
             "network":instance.network,
             "txid":instance.txid,
             "token_name":'ETH',
-            "token_value":instance.value_true,
+            "token_value":token.price_in_eth,
         }
         )
 
@@ -593,6 +594,7 @@ class BulkTransferCoupon(SuperModel):
     sender_pk = models.CharField(max_length=255, blank=True)
     tag = models.CharField(max_length=255, blank=True)
     metadata = JSONField(default=dict, blank=True)
+    make_paid_for_first_minutes = models.IntegerField(default=0)
 
     def __str__(self):
         """Return the string representation of a model."""
@@ -605,6 +607,13 @@ class BulkTransferCoupon(SuperModel):
     def url(self):
         return f"/kudos/redeem/{self.secret}"
 
+    @property
+    def paid_until(self):
+        return self.created_on + timezone.timedelta(minutes=self.make_paid_for_first_minutes)
+
+    @property
+    def is_paid_right_now(self):
+        return timezone.now() < self.paid_until
 
 @receiver(pre_save, sender=BulkTransferCoupon, dispatch_uid="psave_BulkTransferCoupon")
 def psave_BulkTransferCoupon(sender, instance, **kwargs):
@@ -655,6 +664,7 @@ class TokenRequest(SuperModel):
     profile = models.ForeignKey(
         'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
     )
+    rejection_reason = models.TextField(max_length=500, default='', blank=True)
 
     def __str__(self):
         """Define the string representation of a conversion rate."""

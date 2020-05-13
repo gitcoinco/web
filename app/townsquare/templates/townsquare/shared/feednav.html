@@ -31,13 +31,13 @@
 
                 <div class="townsquare_nav-list my-1 tribe">
                   <div class="townsquare_block-header" data-target="tribes">
-                    Tribes
+                    Shortcuts
                   </div>
                   <div id="tribes">
                     <ul class="nav d-inline-block font-body">
                       {% for tribe in following_tribes %}
                         <li class="nav-item">
-                          <a data-toggle="tooltip" title="{{tribe.helper_text}}" class="nav-link nav-line {% if tab == tribe.slug %}active{% endif %} " href="#" data-slug="{{tribe.slug}}">
+                          <a data-toggle="tooltip" title="@{{tribe.title}}'s Tribe" class="nav-link nav-line" href="/{{ tribe.title }}">
                             <img src="{{tribe.avatar_url}}" class="rounded avatar">
                             <span class="nav-title">{{tribe.title}}</span>
                             {% if tribe.badge %}

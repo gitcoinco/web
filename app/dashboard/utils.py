@@ -178,8 +178,14 @@ def _get_utm_from_cookie(request):
     """
     utmDict = {}
     utm_source = request.COOKIES.get('utm_source')
+    if not utm_source:
+        utm_source = request.GET.get('utm_source')
     utm_medium = request.COOKIES.get('utm_medium')
+    if not utm_medium:
+        utm_medium = request.GET.get('utm_medium')
     utm_campaign = request.COOKIES.get('utm_campaign')
+    if not utm_campaign:
+        utm_campaign = request.GET.get('utm_campaign')
 
     if utm_source:
         utmDict['utm_source'] = utm_source
@@ -334,12 +340,12 @@ def get_unrated_bounties_count(user):
         return 0
     unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
         .filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status='done') \
+        .filter(interested__pending=False).filter(idx_status='submitted') \
         .exclude(
             feedbacks__feedbackType='worker',
-            feedbacks__sender_profile=user
+            feedbacks__sender_profile=user,
         )
-    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    unrated_funded = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
     .filter(
         bounty_owner_github_username__iexact=user.handle,
         idx_status='done'
@@ -974,7 +980,11 @@ def get_orgs_perms(profile):
 
 
 def get_url_first_indexes():
-
+    
+    return ['_administration','about','action','actions','activity','api','avatar','blog','bounties','bounty','btctalk','casestudies','casestudy','chat','community','contributor','contributor_dashboard','credit','dashboard','docs','dynamic','ens','explorer','extension','faucet','fb','feedback','funder','funder_dashboard','funding','gas','ghlogin','github','gitter','grant','grants','hackathon','hackathonlist','hackathons','health','help','home','how','impersonate','inbox','interest','issue','itunes','jobs','jsi18n','kudos','l','labs','landing','lazy_load_kudos','lbcheck','leaderboard','legacy','legal','livestream','login','logout','mailing_list','medium','mission','modal','new','not_a_token','o','onboard','podcast','postcomment','press','presskit','products','profile','quests','reddit','refer','register_hackathon','requestincrease','requestmoney','requests','results','revenue','robotstxt','schwag','send','service','settings','sg_sendgrid_event_processor','sitemapsectionxml','sitemapxml','slack','spec','strbounty_network','submittoken','sync','terms','tip','townsquare','tribe','tribes','twitter','users','verified','vision','wallpaper','wallpapers','web3','whitepaper','wiki','wikiazAZ09azdAZdazd','youtube']
+    # TODO: figure out the recursion issue with the URLs at a later date
+    # or just cache them in the backend dynamically
+    
     urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
     def list_urls(lis, acc=None):

@@ -37,11 +37,12 @@ from retail.emails import (
     render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
     render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
-    render_nth_day_email_campaign, render_quarterly_stats, render_reserved_issue, render_share_bounty,
-    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
-    render_successful_contribution_email, render_support_cancellation_email, render_thank_you_for_supporting_email,
-    render_tip_email, render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    render_nth_day_email_campaign, render_quarterly_stats, render_request_amount_email, render_reserved_issue,
+    render_share_bounty, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
+    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
+    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
+    render_thank_you_for_supporting_email, render_tip_email, render_unread_notification_email_weekly_roundup,
+    render_wallpost, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -741,6 +742,27 @@ def notify_kudos_minted(token_request):
         translation.activate(cur_language)
 
 
+def notify_kudos_rejected(token_request):
+    to_email = token_request.profile.email
+    from_email = 'kevin@gitcoin.co'
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Kudos has been rejected")
+        body = f"Your kudos '{token_request.name}', with the file {token_request.artwork_url} has been rejected.  The reason stated was '{token_request.rejection_reason}.  \n\n You can resubmit the token request at https://gitcoin.co/kudos/new "
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("Admin at Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def notify_deadbeat_grants(grants):
     to_email = 'kevin@gitcoin.co'
     from_email = to_email
@@ -1118,6 +1140,8 @@ def reject_faucet_request(fr):
 
 
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
+    from marketing.views import trending_quests
+
     if not bounties:
         return
     max_bounties = 10
@@ -1151,7 +1175,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_new_bounty(to_email, bounties, old_bounties)
+            html, text = render_new_bounty(to_email, bounties, old_bounties, trending_quests=trending_quests())
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
@@ -1718,3 +1742,21 @@ def bounty_request_feedback(profile):
         )
     finally:
         translation.activate(cur_language)
+
+
+def fund_request_email(request, to_emails, is_new=False):
+    token_name = request.token_name if request.network == 'ETH' else request.network
+    subject = gettext("🕐 New Request funds from {} ({} {})").format(request.requester.handle,
+                                                                     request.amount,
+                                                                     token_name)
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_request_amount_email(to_email, request, is_new)
+
+            if not should_suppress_notification_email(to_email, 'tip'):
+                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        finally:
+            translation.activate(cur_language)
