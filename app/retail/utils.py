@@ -587,15 +587,17 @@ def build_stat_results(keyword=None):
     context['ratings'] = [1, 2, 3, 4, 5]
     context['num_grants'] = Grant.objects.filter(hidden=False, active=True).count()
     grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
-    context['grants_gmv'] = str(round(grants_gmv / 10**6, 1)) + "m"
+    context['grants_gmv'] = str(round(grants_gmv / 10**6, 2)) + "m"
     num_contributions = Contribution.objects.count()
+    from dashboard.models import BountyFulfillment
+    context['hours'] = sum(BountyFulfillment.objects.filter(fulfiller_hours_worked__isnull=False, bounty__current_bounty=True, fulfiller_hours_worked__lt=1000).values_list('fulfiller_hours_worked', flat=True))
     context['no_contributions'] = num_contributions
     context['no_bounties'] = Bounty.objects.current().count()
     context['no_tips'] = Tip.objects.filter(network='mainnet').send_happy_path().count()
     context['ads_gmv'] = get_codefund_history_at_date(timezone.now(), '')
     context['ads_gmv'] = str(round(context['ads_gmv'] / 10**3, 1)) + "k"
     context['bounties_gmv'] = Stat.objects.filter(key='bounties_done_value').order_by('-pk').first().val
-    context['bounties_gmv'] = str(round((total_tips_usd + context['bounties_gmv']) / 10**6, 1)) + "m"
+    context['bounties_gmv'] = str(round((total_tips_usd + context['bounties_gmv']) / 10**6, 2)) + "m"
     median_index = int(num_contributions/2)
     context['median_contribution'] = round(Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt, 2)
     context['avg_contribution'] = round(grants_gmv / num_contributions, 2)

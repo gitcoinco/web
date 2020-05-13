@@ -41,8 +41,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants, \
-    TribeMember
+from dashboard.models import (
+    Activity, Bounty, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
+)
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
@@ -56,7 +57,7 @@ from retail.helpers import get_ip
 from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
-from .utils import programming_languages, articles, press, testimonials, reasons
+from .utils import articles, press, programming_languages, reasons, testimonials
 
 logger = logging.getLogger(__name__)
 
@@ -848,7 +849,7 @@ def products(request):
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
             'link': 'https://hackathons.gitcoin.co',
             'img': static('v2/images/products/graphics-hackathons.png'),
-            'logo': static('v2/images/products/hackathons-logo.svg'),
+            'logo': static('v2/images/top-bar/hackathons-symbol-neg.svg'),
             'service_level': 'Full Service',
             'traction': '1-3 hacks/month worth $40k/mo',
         },
@@ -859,7 +860,7 @@ def products(request):
                             contributions to your favorite OSS maintainers. Plus, with our NEW quarterly $100k+ matching funds it's now even easier to fund your OSS work! "),
             'link': '/grants',
             'img': static('v2/images/products/graphics-Grants.png'),
-            'logo': static('v2/images/products/grants-logo.svg'),
+            'logo': static('v2/images/top-bar/grants-symbol-neg.svg'),
             'service_level': 'Self Service',
             'traction': 'over $1mm in GMV',
         },
@@ -870,7 +871,7 @@ def products(request):
                             It's also a way to showcase special skills that a member might have."),
             'link': '/kudos',
             'img': static('v2/images/products/graphics-Kudos.png'),
-            'logo': static('v2/images/products/kudos-logo.svg'),
+            'logo': static('v2/images/top-bar/kudos-symbol-neg.svg'),
             'service_level': 'Self Service',
             'traction': '1200+ kudos sent/month',
         },
@@ -881,7 +882,7 @@ def products(request):
                             through bounties."),
             'link': '/explorer',
             'img': static('v2/images/products/graphics-Bounties.png'),
-            'logo': static('v2/images/products/gitcoin-logo.svg'),
+            'logo': static('v2/images/top-bar/bounties-symbol-neg.svg'),
             'service_level': 'Self Service',
             'traction': '$25k/mo',
         },
@@ -905,17 +906,6 @@ def products(request):
             'logo': static('v2/images/products/engine-logo.png'),
             'service_level': 'Integrated',
             'traction': 'Matching 20k devs/mo',
-        },
-        {
-            'name': 'labs',
-            'heading': _("Tools for busy developers"),
-            'description': _("Gitcoin Labs provides research reports and toolkits for busy developers, \
-                            making Ethereum dapps fast, usable, and secure."),
-            'link': '/labs',
-            'img': static('v2/images/products/graphics-Labs.png'),
-            'logo': static('v2/images/products/labs-logo.svg'),
-            'service_level': 'Self Service',
-            'traction': '12 Articles Shipped',
         }
     ]
 
@@ -926,7 +916,7 @@ def products(request):
             'description': _("Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, earn rewards, and level up your decentralization-fu!"),
             'link': '/quests',
             'img': static('v2/images/products/graphics-Quests.png'),
-            'logo': static('v2/images/products/quests-symbol.svg'),
+            'logo': static('v2/images/top-bar/quests-symbol-neg.svg'),
             'service_level': 'Self Service',
             'traction': 'over 3000 plays/month',
         })

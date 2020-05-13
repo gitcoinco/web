@@ -791,7 +791,7 @@ $(document).ready(function() {
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="comment-area col-12 col-sm-11 text-right">
-            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
+            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3" maxlength="500">${existing_text}</textarea>
             <div class="emoji-container position-absolute d-flex flex-wrap">
               <button class="btn btn-sm p-1 emoji_button grey" data-toggle="tooltip" title="Add an emoji to post.">
                 <i class="far fa-fw fa-smile"></i>

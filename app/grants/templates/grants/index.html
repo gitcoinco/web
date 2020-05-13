@@ -24,9 +24,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </head>
   <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'grants/nav.html' %}
     <div class="container-fluid header dash" style="background-image: url('/static/v2/images/bg/{{bg}}');">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'grants/nav.html' %}
 
 
       {% include 'grants/shared/landing_hero.html' %}
@@ -85,5 +85,5 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </script>
   {% endif %}
 
-  
+
 </html>
