@@ -18,6 +18,7 @@
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from marketing.models import ManualStat
 from django.utils import timezone
 
 import requests
