@@ -133,5 +133,5 @@ def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
     with redis.lock("m2m_changed_interested:bounty", timeout=LOCK_TIMEOUT):
         bounty = Bounty.objects.get(pk=bounty_pk)
         from dashboard.notifications import maybe_market_to_github
-        maybe_market_to_github(instance, 'work_started',
+        maybe_market_to_github(bounty, 'work_started',
                                profile_pairs=bounty.profile_pair)
