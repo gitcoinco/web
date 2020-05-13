@@ -139,3 +139,7 @@
     height: auto !important;
   }
 }
+
+.newsletter {
+  border-top: none !important;
+}

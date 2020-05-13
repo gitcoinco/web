@@ -28,7 +28,7 @@
   <body class="g-font-muli {{body_class}} {{quest.background}} {{quest.style}}">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
-    <div class="container-fluid header dash">
+    <div class="header dash">
     {% if nav == 'home' %}
       {% include 'home/nav.html' %}
     {% else %}
@@ -44,7 +44,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' with prefix="data-" %}
-    
+
   </body>
   {% csrf_token %}
   <script>
