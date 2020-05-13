@@ -1157,7 +1157,7 @@ def reject_faucet_request(fr):
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
     # if not bounties:
     #     return
-    max_bounties = 10
+    max_bounties = 5
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
     if to_emails is None:
@@ -1174,9 +1174,9 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
             offers = f"💰 1 New Action"
 
         new_bounties = ""
-        if bounties.count():
+        if len(bounties):
             new_bounties = f"⚡️ {worth} In New Bounties Available"
-        elif old_bounties.count():
+        elif len(old_bounties):
             new_bounties = f"😁 {len(old_bounties)} Bounties Available"
 
         _and = "&& " if has_offer and new_bounties else ""

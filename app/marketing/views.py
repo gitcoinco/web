@@ -1013,7 +1013,12 @@ def new_bounty_daily_preview(request):
     profile = request.user.profile
     keywords = profile.keywords
     hours_back = 2000
+
     new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
+    max_bounties = 5
+    if len(new_bounties) > max_bounties:
+        new_bounties = new_bounties[0:max_bounties]
+
     quests = trending_quests()
 
     quest = quest_of_the_day()
