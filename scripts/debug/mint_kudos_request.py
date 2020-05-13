@@ -2,11 +2,12 @@
 
 token_req_id = 314
 
+import time
+
+from dashboard.utils import has_tx_mined
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from kudos.management.commands.mint_all_kudos import sync_latest
 from kudos.models import TokenRequest
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from dashboard.utils import has_tx_mined
-import time
 from marketing.mails import notify_kudos_minted
 
 obj = TokenRequest.objects.get(pk=token_req_id)

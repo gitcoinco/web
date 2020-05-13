@@ -20,6 +20,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+
 class Command(BaseCommand):
 
     help = 'sorts quests into difficulty categories based upon their success percentages '
