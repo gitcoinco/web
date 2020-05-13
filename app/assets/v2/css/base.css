@@ -194,10 +194,6 @@ a {
   overflow-x: hidden;
 }
 
-.interior #logo {
-  margin-top: -5px;
-}
-
 .interior .header {
   background-size: cover;
 }

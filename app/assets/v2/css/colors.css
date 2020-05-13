@@ -125,3 +125,7 @@ html.dark-mode {
 .text-medium-dark-grey {
   color: var(--gc-medium-dark-gray);
 }
+
+.text-black {
+  color: #000;
+}

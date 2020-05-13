@@ -29,63 +29,57 @@
   border-bottom: 0.68rem solid white;
 }
 
-.how-it-works img {
-  width: 75%;
-}
-
 .testimonial-card {
-  margin-top: 24px;
   border: 4px solid #3E00FF;
-  height: 30rem;
   width: 32rem;
 }
 
 .testimonial-card:first-child {
-  margin-left: -25%;
+  /* margin-left: -25%; */
 }
 
 .testimonial-card:last-child {
-  margin-right: -25%;
+  /* margin-right: -25%; */
 }
 
 .card-description {
-  width: 80%;
   font-size: 18px;
   line-height: 24px;
   text-align: center;
+  position: relative;
+  margin-top: 1em;
+}
+
+.card-description::before,
+.card-description::after {
+  font-weight: bold;
+  font-size: 64px;
+  position: absolute;
+  text-align: center;
+  color: #000000;
 }
 
 .card-description::before {
-  content: '“          ';
-  font-weight: bold;
-  font-size: 64px;
-  line-height: 40px;
-  text-align: center;
-  color: #000000;
+  content: '“';
+  top: -10px;
+  left: -20px;
 }
 
 .card-description::after {
-  content: '             „';
-  font-weight: bold;
-  font-size: 64px;
-  line-height: 40px;
-  text-align: center;
-  color: #000000;
-  margin-top: 10px;
+  content: '„';
+  bottom: 0;
 }
 
 .overlap-line {
   margin-top: -4rem;
 }
 
-.avatar {
+.testimonial-avatar {
   background-color: white;
   width: 6rem;
   height: 6rem;
-  margin-left: auto;
   border-radius: 50%;
   border: 3px solid #3E00FF;
-  margin-right: -25px;
   object-fit: contain;
 }
 
@@ -635,37 +629,13 @@ figure:hover::before {
     font-size: 0.875rem;
   }
 
-  .tribes {
-    width: 100% !important;
-  }
-
-  .tribes .justify-content-center {
-    margin-top: 0!important;
-    margin-bottom: 0!important;
-  }
-
   .tribes .tribes-grid {
     display: grid !important;
     grid-gap: 16px;
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .testimonial-card {
-    margin-left: 5%;
-    margin-right: 5%;
-    height: 300px;
-  }
-
-  .testimonial-card:first-child {
-    margin-left: -60%;
-  }
-
-  .testimonial-card:last-child {
-    margin-right: -60%;
-  }
-
   .card-description {
-    width: 80%;
     font-size: 14px;
     line-height: 20px;
     text-align: center;

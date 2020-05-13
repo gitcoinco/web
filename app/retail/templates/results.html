@@ -35,7 +35,9 @@
     <div class="container-fluid header">
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
-
+    <div style="font-size: 12px; text-align: center; background-color: #eee;" class="p-2">
+      This page is automatically updated every 3 hours. Last updated {{updated|naturaltime}} - <a href="https://github.com/gitcoinco/web/blob/master/app/retail/utils.py#L414">[View Code]</a>.
+    </div>
     <div id=gmv class="content-block content-block--white">
       <div class="container">
         <h2 class="content-block__title">
@@ -95,7 +97,7 @@
           <div class="single-stat">
             <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
             <h3 class="single-stat__title">{{mau|floatformat:0|intcomma}}</h3>
-            <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
+            <p class="single-stat__subtitle">{% trans "Monthly Active Developers" %}</p>
             <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
           </div>
           <div class="single-stat">
@@ -148,6 +150,12 @@
             <h3 class="single-stat__title">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
             <p class="single-stat__subtitle">{% trans "Bounty Completion Rate" %}</p>
             <p class="single-stat__fineprint">(after Start Work)</p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/length.svg" %}" />
+            <h3 class="single-stat__title">{{ hours|floatformat:0|intcomma }}</h3>
+            <p class="single-stat__subtitle">{% trans "Hours Worked" %}</p>
+            <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
           </div>
         </div>
       </div>
@@ -602,10 +610,6 @@
       </div>
     </div>
 
-    <div style="font-size: 12px; text-align: center;" class="p-2">
-      This page is automatically updated every 3 hours. Last updated {{updated|naturaltime}} - <a href="https://github.com/gitcoinco/web/blob/master/app/retail/utils.py#L414">[View Code]</a>.
-    </div>
-    <br>
     <div style="font-size: 12px; text-align: center;" class="p-2">
       Disclaimer: The numbers on this page are good-faith representations of the Gitcoin network, but are provided without warranty.  While we strive to provide these numbers as accurately as possible, we cannot guarantee their 100% accuracy. Do not make any financial, legal, or other decisions based upon these numbers.
     </div>

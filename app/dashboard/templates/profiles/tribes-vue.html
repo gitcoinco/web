@@ -54,11 +54,18 @@
 
         }
       }
+
+      #suggested-tribes .media-body {
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+
       .looking-team {
         background-color: rgba(62, 0, 255, 0.05);
         border-radius: 8px;
         padding: 11px 15px;
       }
+
       .info-card-title {
         font-weight: bold;
         font-size: 12px;
@@ -66,6 +73,7 @@
         letter-spacing: 1px;
         color: #3E00FF;
       }
+
       .info-card-desc {
         font-style: italic;
         font-weight: normal;
@@ -73,6 +81,7 @@
         line-height: 18px;
         color: #666666;
       }
+
       .navigation {
         height: 60px;
         display: flex;
@@ -95,14 +104,6 @@
         height: 100%;
       }
 
-
-      .sponsor-top {
-        height: 60px;
-        display: flex;
-        background-color: #ffffff;
-        border-bottom: 1px solid #dee2e6;
-      }
-
       div.nav-tabs {
         background-color:#ffffff;
         border-left:0;
@@ -112,10 +113,10 @@
         border:0;
       }
 
-
       .activity_time {
         margin-right: 2rem;
       }
+
       .profile-banner-cta {
         background-color: rgb(0, 0, 0, 0.5) !important;
       }
@@ -153,10 +154,7 @@
         background-color: #EFF3F6;
       }
 
-      .update-priority-submit {
-        background-color: #F8F8F8;
-      }
-
+      .update-priority-submit,
       .update-priority {
         background-color: white;
       }
@@ -260,8 +258,9 @@
       }
 
       #sponsor_sidebar {
-        background-color: #F9F9F9;
+        background-color: #fff;
         height: 100%;
+        padding-top: 20px;
       }
 
       .card-project-logo {
@@ -272,6 +271,12 @@
       @media (min-width: 768px) {
         .project-grid {
           grid-template-columns: repeat(2, 1fr);
+        }
+        #sponsor_sidebar {
+          padding-top: 59px;
+        }
+        .sponsor_sidebar-content {
+          border-top: 1px solid #dee2e6;
         }
       }
 
@@ -473,7 +478,7 @@
             <b-tabs v-model="activePanel" @input="tabChange" fill nav-class="col-12 col-xs-12 col-xl-7 offset-xl-4" nav-wrapper-class="row nav-tabs" align="center" content-class="row light-blue" class="container-fluid">
               <b-tab class="col-12" title-item-class="navigation">
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "Townsquare" %}
                   </div>
                 </template>
@@ -499,7 +504,7 @@
               </b-tab>
               <b-tab class="col-12" title-item-class="navigation" lazy>
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "Projects" %}
                   </div>
                 </template>
@@ -575,7 +580,6 @@
                                   </p>
                                   <div class="text-left">
                                     <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-
                                     <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
                                     <b-dropdown varitant="primary" toggle-class="btn-sm btn btn-gc-blue" split-class="btn btn-sm btn btn-outline-gc-blue">
                                      <template v-slot:button-content>
@@ -621,7 +625,7 @@
               </b-tab>
               <b-tab class="col-12" v-if="online" title-item-class="navigation" lazy>
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "People" %}
                   </div>
                 </template>
@@ -648,7 +652,7 @@
                               <span class="font-weight-bold">[[ numUsers ]] Tribes members </span> found
                             </p>
                             {% if is_staff %}
-                            <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
+                            <button v-if="tribe" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-caption btn btn-gc-blue" id="bulk-invite-modal">
                               {% trans "Invite all to bounty" %}
                             </button>
                             {% endif %}
@@ -661,6 +665,7 @@
                               v-model="params.user_filter"
                               :options="userFilter.options"
                               name="people-filter"
+                              class="font-caption mt-3"
                               stacked
                             ></b-form-radio-group>
                           </b-form-group>
@@ -675,7 +680,7 @@
                           <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {};">Reset Filters</button>
                         </nav>
                       </transition>
-                      <div class="container-fluid pt-4" @scroll.passive="onScroll($event)">
+                      <div class="container-fluid pt-4 bg-white" @scroll.passive="onScroll($event)">
                         <button v-if="!hideFilterButton" class="d-none d-md-block blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
 
                         <div class="py-5 mt-4">
@@ -881,7 +886,7 @@
               </b-tab>
               <b-tab v-if="is_on_tribe" class="col-12" title-item-class="navigation" lazy>
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "Bounties" %}
                   </div>
                 </template>
@@ -1200,67 +1205,65 @@
               </b-tab>
               <b-tab v-if="is_my_org" class="col-12" title-item-class="navigation">
                 <template v-slot:title>
-                  <div class="mt-4">
+                  <div class="mt-3">
                     {% trans "Manage" %}
                   </div>
                 </template>
-                <div class="suggested_bounties row mt-5">
+                <div class="suggested_bounties row">
                   <div class="col-10 offset-1">
-                    <div class="priorities rounded col-12 py-4">
-                    <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
-                      <p class="mb-3 font-bigger-3"><i class="far fa-star"></i></p>
-                      <span>Share your priorities to encourage tribe members</span>
-                      <span class="d-block mt-2">to volunteer to work on bounties which matter</span>
-                    </h2>
-
-                    <div id="priority-text-container" class="hidden px-md-5">
-                      <div class="col-12">
-                        <h2 class="text-white font-bigger-1 font-weight-bold my-2 mb-3">Currently Collecting Ideas for</h2>
-                      </div>
-                      <div id="priority-text" class="text-white-70 pl-md-3" v-html="tribe.tribe_priority"></div>
-                    </div>
-                  </div>
-
                     <div class="rounded py-4 px-md-5 row mx-0 suggested_bounties">
+                      <b-col>
+                      <h2 class="mt-2 mb-4 font-bigger-1 font-weight-bold mx-3 ml-lg-0">
+                        {% trans "Update Sidebar" %}
+                      </h2>
+                      <div class="col-12 col-md-11 px-0 pr-md-0">
+                        <div class="priority-container mt-4">
+                          <div class="priorities rounded col-12 py-4">
+                            <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
+                              <p class="mb-3 font-bigger-3"><i class="far fa-bullhorn"></i></p>
+                              <span>Tell the community about [[ tribe.name ]]</span>
+                            </h2>
+                          </div>
 
-                        <b-col>
-                         <h2 class="mt-2 mb-4 font-bigger-1 font-weight-bold mx-3">
-                          {% trans "Update Sidebar" %}
-                        </h2>
-                           <div class="col-12 col-md-11 px-0 pr-md-0">
-                        <div class="priority-container">
-                          <h6>{% trans "Tribe Description" %}</h6>
                           <div class="editor-container">
                             <quill-editor
                               ref="quillEditorDesc"
-                              class="editor"
+                              class="editor bg-white"
                               v-model="tribe.tribe_description"
                               :options="editorOptionDesc"
                             ></quill-editor>
                           </div>
                         </div>
-                        <div class="priority-container">
-                          <h6>{% trans "Tribe Priority" %}</h6>
+                        <div class="priority-container mt-5">
+
+                          <div class="priorities rounded col-12 py-4">
+                            <h2 id="placeholder-text" class="text-center text-white font-bigger-1">
+                              <p class="mb-3 font-bigger-3"><i class="far fa-star"></i></p>
+                              <span>Share your priorities to encourage tribe members</span>
+                              <span class="d-block mt-2">to volunteer to work on bounties which matter</span>
+                            </h2>
+                          </div>
+
                           <quill-editor
                             ref="quillEditorPriority"
-                            class="editor"
+                            class="editor bg-white"
                             v-model="tribe.tribe_priority"
                             :options="editorOptionPrio"
                           ></quill-editor>
                         </div>
                       </div>
-                    <div class="update-priority-submit col-12 p-1">
-                        <div class="form__checkbox d-inline-block p-2">
-                          <b-form-checkbox v-model="params.publish_to_ts" name="check-button" switch>
-                            {% trans "Post to Townsquare" %}
-                          </b-form-checkbox>
-                        </div>
+                      <div class="update-priority-submit col-12 col-md-11 p-1">
+                          <div class="form__checkbox d-inline-block p-2">
+                            <b-form-checkbox v-model="params.publish_to_ts" name="check-button" switch>
+                              {% trans "Post to Townsquare" %}
+                            </b-form-checkbox>
+                          </div>
 
-                        <button type="submit" class="btn btn-sm btn-gc-blue float-right font-smaller-3 my-2 mr-3" @click.prevent="updateTribe();">
-                          <i class="fas fa-bullhorn mr-2"></i> {% trans "Update Sidebar" %}
-                        </button>
-                    </div>
-                        </b-col>
+                          <button type="submit" class="btn btn-sm btn-gc-blue float-right font-smaller-3 my-2 mr-3" @click.prevent="updateTribe();">
+                            <i class="fas fa-bullhorn mr-2"></i> {% trans "Update Sidebar" %}
+                          </button>
+                      </div>
+                      </b-col>
                     </div>
                     <div v-if="tribe.suggested_bounties && tribe.suggested_bounties.length > 0" class="rounded py-4 px-md-5 row mx-0 suggested_bounties">
 
@@ -1344,12 +1347,11 @@
           </div>
           <div key="feed-1" v-if="!isLoading"  class="col-12 col-md-3 order-1 order-md-2">
             <div id="sponsor_sidebar" class="font-body">
-                <div class="sponsor-top d-none d-sm-block"></div>
-                <div class="p-3">
+                <div class="p-3 sponsor_sidebar-content">
                   <b-media>
                     <template v-slot:aside>
                       <div class=" d-inline-block d-inline-block mb-1">
-                        <b-img-lazy blank blank-src="https://dapp.ngrok.io/dynamic/avatar/gitcoinco" class="profile-header__avatar" :src=`/dynamic/avatar/${tribe.handle}`></b-img-lazy>
+                        <b-img-lazy blank blank-color="#cacaca" class="profile-header__avatar" :src=`/dynamic/avatar/${tribe.handle}`></b-img-lazy>
                       </div>
                     </template>
                       <b-row class="ml-0">
@@ -1365,9 +1367,9 @@
                           </div>
 
                           <p class="mb-0 mt-1">
-                            <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-green' : 'btn-gc-blue']" class="d-none d-md-inline-block btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
+                            <b-button @click="followTribe(tribe.handle, $event)" v-bind:class="[is_on_tribe ? 'btn-outline-green' : 'btn-gc-blue']" class="btn font-smaller-5">[[ is_on_tribe ? "following" : "follow" ]]</b-button>
 
-                            <span class="m-0 p-0 d-none d-md-inline-block">|</span>
+                            <span class="m-0 p-0">|</span>
 
                             <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5 position-relative quick-link"  :href="`${tribe.data.html_url}?tab=repositories`" target="_blank" rel="noopener noreferrer" data-placement="bottom" data-toggle="tooltip" data-html="true" v-bind:title="`@${tribe.handle} on Github`">
                               <i class="fab fa-github"></i>
@@ -1386,8 +1388,8 @@
                         </b-col>
                       </b-row>
                 </b-media>
-                  <b-col class="profile_details d-none d-md-inline-block">
-                    <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+                  <b-col class="profile_details">
+                    <div class="profile-header__stats profile-header__stats--contributor card mt-1 mb-4">
                       <div class="card-header font-subheader">
                         {% include "profiles/rank_tooltip.html" with name="Organization" skip_style=True %}
                         <b>[[ tribe.rank_org ]]</b>
@@ -1441,13 +1443,13 @@
                   </b-col>
 
                 <div class="pt-0 mt-3 font-body d-none d-md-inline-block">
-                  <div style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
+                  <div v-if="tribe.tribe_priority" style="background-color: #3C3C3C; border-radius: 4px 4px 0px 0px; color: white">
                     <h4 class="mx-3 pt-4 font-body font-weight-bold">Currently collecting ideas for</h4>
                     <ul v-html="tribe.tribe_priority" class="my-0 mx-4 p-0 pb-4">
                     </ul>
                   </div>
-                  <div class="card" style="border-radius: 0px 0px 4px 4px;">
-                    <h4 class="px-2 pt-3 font-body text-muted">{% trans "Top ideas" %}</h4>
+                  <div v-if="tribe.suggested_bounties && tribe.suggested_bounties.length > 0" class="card" style="border-radius: 0px 0px 4px 4px;">
+                    <h4 class="px-2 pt-3 font-body font-weight-semibold text-muted">{% trans "Top ideas from the community" %}</h4>
                     <table class="px-3 table table-borderless">
                       <tbody>
                         <tr v-for="suggested_bounty in tribe.suggested_bounties ">

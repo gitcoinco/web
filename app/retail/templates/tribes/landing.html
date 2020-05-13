@@ -34,7 +34,7 @@
     <div class="container-fluid banner header text-white">
       <div class="row">
         <div class="col-12 col-md-9 col-xl-6  mx-auto pt-2">
-          <h2 class="text-center font-weight-bold banner__h2 mt-md-5">
+          <h2 class="text-center font-weight-bold banner__h2 mt-md-5 pt-5">
             Build meaningful relationships with top
               developers and work on awesome projects in
               an <span class="gc-text-green">open source tribe</span>.
@@ -53,97 +53,108 @@
       </div>
     </div>
 
+    <!-- SECTION: HOW IT WORKS -->
     <div class="container how-it-works">
       <div class="row py-5">
-        <div class="col-12 issue text-center" >
-          <p class="font-weight-bold text-center d-inline-block section-title pt-2 text-capitalize pb-2 mb-5">
-            How it works
-          </p>
+        <div class="col-12 text-center" >
+          <h1 class="text-center mb-5 py-4">
+            <span class="pb-2 title font-weight-bold">How It Works</span>
+          </h1>
           <div class="row">
-            <div class="col-12 col-md-4 my-4">
-              <img height="120" src="{% static 'v2/images/tribes/landing/new-idea.svg' %}" class="mt-5 mx-auto" alt="Sponsor hackathons">
+            <div class="col-12 col-md-4 my-4 g-fadein" data-fade-duration=1000 data-fade-direction="left">
+              <img height="120" src="{% static 'v2/images/tribes/landing/new-idea.svg' %}" class="mw-100 mt-5 mx-auto" alt="Sponsor hackathons">
               <p class="text-capitalize font-title font-weight-bold my-3">Sponsor hackathons & foster new ideas</p>
             </div>
-            <div class="col-12 col-md-4 my-4">
-              <img height="120" src="{% static 'v2/images/tribes/landing/host-workshop.png' %}" class="mt-5 mx-auto" alt="Host workshops and meet great developers">
+            <div class="col-12 col-md-4 my-4" g-fadein" data-fade-duration=1000 data-fade-direction="mid">
+              <img height="120" src="{% static 'v2/images/tribes/landing/host-workshop.png' %}" class="mw-100 mt-5 mx-auto" alt="Host workshops and meet great developers">
               <p class="text-capitalize font-title font-weight-bold my-3">Host workshops and meet great developers</p>
             </div>
-            <div class="col-12 col-md-4 my-4">
-              <img height="120" src="{% static 'v2/images/tribes/landing/grow-tribe.png' %}" class="mt-5 mx-auto" alt="Sponsor hackathons">
+            <div class="col-12 col-md-4 my-4 g-fadein" data-fade-duration=1000 data-fade-direction="right">
+              <img height="120" src="{% static 'v2/images/tribes/landing/grow-tribe.png' %}" class="mw-100 mt-5 mx-auto" alt="Sponsor hackathons">
               <p class="text-capitalize font-title font-weight-bold my-3">Build great stuff and grow your tribe</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div class="container-fluid py-5 mt-5 landing__newsletter bg-light">
       {% include 'shared/newsletter.html' %}
     </div>
 
+    <!-- SECTION : WHY TRIBES -->
+    <div class="col-12 why-section py-5">
+      <h1 class="text-center mb-5 py-4">
+        <span class="pb-2 title font-weight-bold">Why Tribes</span>
+      </h1>
+      <img class="square-1 position-absolute" src="{% static "v2/images/tribes/landing/abstract-square.svg" %}">
 
+      <img class="square-2 position-absolute" src="{% static "v2/images/tribes/landing/abstract-square.svg" %}">
 
-    <div class="d-flex justify-content-center dark-section pt-5 pb-5">
-      <div class="row py-5 d-flex justify-content-center">
-        <div class="col-10 text-center">
-          <p class="font-weight-bold text-center d-inline-block section-title pt-2 text-capitalize pb-2 mb-5">
-            Why tribes?
-          </p>
-          <ul class="tribe-points mt-5 mb-5">
-              {% for reason in reasons %}
-              <li>
-                  <img src="{{ reason.img  }}" alt="Hackathon">
-                  <h4 class="font-weight-bold">{{ reason.title }}</h4>
-                  <p class="">{{ reason.info }}</p>
-              </li>
-              {% endfor %}
-          </ul>
+      <div class="row col-lg-8 mx-auto mt-5 py-5 reasons">
+
+        {% for reason in reasons %}
+          <div class="col-12 col-md-4 mb-4 pb-2 g-fadein" data-fade-duration=1000 data-fade-direction="mid">
+            <img class="zoom-on-hover" src="{{ reason.img }}" alt="{{ reason.title }}">
+            <p class="font-weight-bold mt-2 mb-1 font-title-lg">{{ reason.title }}</p>
+            <p class="font-header">{{ reason.info }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- SECTION : TOP TRIBES -->
+    <div class="row bg-white text-black justify-content-center mb-5 mt-5">
+      <div class="row col-lg-10 text-center tribes-section mt-5 pt-5 mx-2 mx-md-auto">
+        <div class="col-12">
+          <h1 class="text-center mb-5 py-4">
+            <span class="pb-2 title font-weight-bold">Top Tribes</span>
+          </h1>
+        </div>
+
+        {% for tribe in tribes %}
+          <div class="col-6 col-sm-4 col-md-3 mb-3">
+            <a href="/profile/{{tribe.name}}/tribe">
+              <img src="/dynamic/avatar/{{ tribe.handle }}" alt="{{ tribe.name }}" class="mx-2 mx-md-5 my-3 rounded-circle zoom-on-hover"/>
+            </a>
+            <h4 class="font-weight-bold pt-0 mb-0 font-title text-capitalize">{{ tribe.name }}</h4>
+            <span class="font-body">
+              <i class="fas fa-user mr-1 font-caption position-relative"></i> {{ tribe.followers_count|default:0 }} members
+            </span>
+          </div>
+        {% endfor %}
+        <div class="text-center w-100 my-5">
+          <a class="button button--primary font-weight-semibold py-2 px-4" href="{% url "tribes_directory" %}">EXPLORE TRIBES</a>
         </div>
       </div>
     </div>
 
-
-    <div class="bg-white py-4 pt-5 pb-4 rounded tribes">
-    <div class="d-flex justify-content-center mb-5 mt-5">
-      <div class="col-xs-12 col-md-9 tribes mb-3 text-center">
-        <p class="font-weight-bold text-center section-title pt-2 text-capitalize pb-2 mb-5">
-            Top tribes
-          </p>
-
-          <div class="d-flex flex-wrap mb-4 tribes-grid">
-            {% for tribe in tribes %}
-              <a href="{% url 'profile' tribe.handle %}" class="col-xs-6 col-md-3  mt-5 mb-3 text-center black text-black-70">
-                <img src="/dynamic/avatar/{{ tribe.handle }}" height="114" alt="{{tribe.name}}" class="{{tribe.name}}">
-                <h4 class="font-header font-weight-bolder font-bigger-2 p-0 mt-3 mb-0 ">{{tribe.name}}</h4>
-                <span class="font-smaller-1 font-weight-semibold mt-3">{% if tribe.followers  %}<i class="fas fa-user"></i>  {{tribe.followers}} members{% endif %}</span>
-              </a>
-            {% endfor %}
-          </div>
-      </div>
-    </div>
-    </div>
-
-    <div class="testimonials overflow-hidden mt-5 mb-5 pt-5 pb-5 d-md-flex justify-content-between">
+    <!-- SECTION : TESTIMONIALS -->
+    <div class="testimonials overflow-auto mt-5 mb-5 pt-5 pb-5 d-md-flex justify-content-between">
       {% for testimonial in testimonials %}
-        <div class="testimonial-card d-block d-inline-block text-center">
-            <div class="overlap-line">
-              {% if testimonial.photo %}
-              <img class="avatar" src="{{ testimonial.photo }}" alt="">
-              {% endif %}
-              <img class="avatar" src="{{ testimonial.org_photo }}" alt="">
-            </div>
-            <div>
-              <h4 class="font-weight-bold gc-text-blue font-title-xl">{{ testimonial.author }}</h4>
-              <p class="font-weight-semibold font-title">{{ testimonial.designation }}</p>
-            </div>
-            <p class="card-description text-center mx-auto">{{ testimonial.text }}</p>
+        <div class="testimonial-card flex-shrink-0 my-5 mx-3 d-block d-inline-block text-center">
+          <div class="overlap-line">
+            {% if testimonial.photo %}
+            <img class="testimonial-avatar" src="{{ testimonial.photo }}" alt="">
+            {% endif %}
+            <img class="testimonial-avatar" src="{{ testimonial.org_photo }}" alt="">
+          </div>
+          <div>
+            <h4 class="font-weight-bold gc-text-blue font-title-xl">{{ testimonial.author }}</h4>
+            <p class="font-weight-semibold font-title">{{ testimonial.designation }}</p>
+          </div>
+          <p class="card-description m-5 text-center">{{ testimonial.text }}</p>
         </div>
       {% endfor %}
     </div>
 
+    <!-- SECTION : PRESS -->
     <div id="press" class="press">
       <div class="container py-5 press-mobile">
-        <div class="row">
-          <h2 class="col-12 mb-4 font-title-lg">{% trans "What are people saying?" %}</h2>
+        <div class="row text-center">
+          <div class="col-12 text-center mb-2">
+            <h2 class="font-bigger-4 mb-3">{% trans "What are people saying?" %}</h2>
+          </div>
           {% for article in press %}
             <a href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
               <div class="explain-img-wrapper">
@@ -154,6 +165,8 @@
         </div>
       </div>
     </div>
+
+    <!-- SECTION : KNOW US -->
     <div id="know_us" class="know_us">
       <div class="container py-5">
         <div class="row">
@@ -179,7 +192,9 @@
         </div>
       </div>
     </div>
-    <div id="articles" class="articles">
+
+    <!-- SECTION : ARTICLES -->
+    <div id="articles" class="articles text-center">
       <div class="container py-5">
         <div class="row">
           <div class="col-12 text-center mb-4">
@@ -189,7 +204,7 @@
             <div class="col-12 col-md-6">
               <a class="article" href="{{ article.link }}" target="_blank" rel="noopener noreferrer">
                 <img src="{{ article.img }}" alt="{{ article.alt }}">
-                <h3 class="mt-3 mb-2">{{ article.title }}</h3>
+                <h3 class="mt-3 mb-0">{{ article.title }}</h3>
                 <p class="font-weight-semibold">{{ article.description }}</p>
               </a>
             </div>

@@ -12,7 +12,7 @@ class SearchResult(SuperModel):
     """Records SearchResult - the generic object for all search results on the platform ."""
 
     source_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    source_id = models.PositiveIntegerField()
+    source_id = models.PositiveIntegerField(db_index=True)
     source = GenericForeignKey('source_type', 'source_id')
     title = models.CharField(max_length=1000, default='')
     description = models.TextField(default='', blank=True)

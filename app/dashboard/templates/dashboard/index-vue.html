@@ -465,7 +465,6 @@
                                   </p>
                                   <div class="text-left">
                                     <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-
                                     <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
                                     <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
                                      <template v-slot:button-content>
@@ -833,11 +832,11 @@
                   </user-directory>
                 </b-tab>
               <template v-slot:tabs-end>
-                <li role="presentation" class="nav-item navigation"><a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
-                  <div class="mt-4">
-                    Guide
-                  </div>
-                </a></li>
+                <li role="presentation" class="nav-item navigation">
+                  <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
+                    <div class="mt-4">Guide</div>
+                  </a>
+                </li>
               </template>
             </b-tabs>
           </div>
