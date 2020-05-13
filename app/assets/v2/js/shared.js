@@ -1074,7 +1074,7 @@ var listen_for_web3_changes = async function(no_ui_updates) {
     }
   }
 
-  if (web3Modal.cachedProvider === 'injected' && window.ethereum && !document.has_checked_for_ethereum_enable) {
+  if (web3Modal && web3Modal.cachedProvider === 'injected' && window.ethereum && !document.has_checked_for_ethereum_enable) {
     if (window.ethereum._metamask) {
       document.has_checked_for_ethereum_enable = true;
       is_metamask_approved = await window.ethereum._metamask.isApproved();
