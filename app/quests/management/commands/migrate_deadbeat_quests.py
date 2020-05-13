@@ -47,4 +47,3 @@ class Command(BaseCommand):
                     print(f"migrating {quest.pk}")
                     quest.kudos_reward = kudos
                     quest.save()
-

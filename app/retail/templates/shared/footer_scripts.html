@@ -22,6 +22,9 @@
   document.contxt = {{ json_context|safe }};
 </script>
 <script src="{% url 'javascript-catalog' %}"></script>
+{% if not ignore_inject_web3 %}
+  {% include 'shared/shared_scripts.html' %}
+{% endif %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if env == 'prod' %}
   <script src="{% static 'v2/js/lib/vue.js' %}"></script>
@@ -73,11 +76,6 @@
   <script src="{% static "v2/js/notifications.js" %}"></script>
 {% endif %}
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
-
-{% if not ignore_inject_web3 %}
-  {% include 'shared/shared_scripts.html' %}
-{% endif %}
-
 
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
