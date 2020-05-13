@@ -124,7 +124,7 @@ def preprocess(request):
 
     # town square wall post max length
     max_length_offset = abs(
-        ((request.user.profile.created_on if request.user.is_authenticated else timezone.now()) - timezone.now()).days
+        ((request.user.profile.created_on if hasattr(request.user, 'profile') and request.user.is_authenticated else timezone.now()) - timezone.now()).days
     )
     max_length = 600 + max_length_offset
 

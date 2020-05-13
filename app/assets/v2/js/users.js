@@ -246,11 +246,11 @@ Vue.mixin({
         event.target.disabled = false;
 
         if (response.is_member) {
-          event.target.innerHTML = '<i class="fas fa-user-minus mr-1"></i> Unfollow';
           ++user.follower_count;
+          user.is_following = true;
         } else {
-          event.target.innerHTML = '<i class="fas fa-user-plus mr-1"></i> Follow';
           --user.follower_count;
+          user.is_following = false;
         }
 
         event.target.classList.toggle('btn-outline-green');

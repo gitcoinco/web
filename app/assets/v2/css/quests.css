@@ -438,13 +438,6 @@ body.quest_battle p {
   border: none !important;
 }
 
-#explore_quests img {
-  max-width: 30px;
-  max-height: 30px;
-  margin-top: -10px;
-  margin-left: -10px;
-}
-
 #enemy.character img {
   width: 250px;
   height: 250px;

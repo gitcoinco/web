@@ -77,7 +77,7 @@ var loading_button = function(button) {
 
 var cb_address;
 var reloadCbAddress = function() {
-  if (typeof web3 == 'undefined') {
+  if (typeof web3 == 'undefined' || !web3.eth) {
     return;
   }
   web3.eth.getCoinbase(function(error, result) {
@@ -276,6 +276,10 @@ var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
+  if (typeof fbq !== 'undefined'){
+    fbq('trackCustom', 'Start Work');
+  }
+
   return mutate_interest(bounty_pk, 'new', data);
 };
 

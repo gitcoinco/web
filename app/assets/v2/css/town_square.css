@@ -284,7 +284,7 @@ body {
 
 .offer_container, .promo {
   background: var(--gc-dark-violet);
-  padding: 1em;
+  padding: 1em 1.5em;
   color: white;
   display: flex;
   border-radius: 3px;
@@ -1009,9 +1009,7 @@ body.green.offer_view .announce {
   }
 }
 
-
 .promo .logo {
-  height: 55px;
   width: 65px;
   display: flex;
   align-items: center;
@@ -1048,6 +1046,7 @@ body.green.offer_view .announce {
   right: 29px;
   font-size: 16px;
   color: white;
+  cursor: pointer;
   opacity: 1;
 }
 
