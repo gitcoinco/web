@@ -156,11 +156,9 @@
           </button>
         </a>
       {% else %}
-        <a href="{% url 'grants:fund' grant.id grant.slug %}">
-          <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">
-            Fund this Grant
-          </button>
-        </a>
+        <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3" id='js-addToCart-button'>
+          Add To Cart
+        </button>
       {% endif %}
 
     {% endif %}
