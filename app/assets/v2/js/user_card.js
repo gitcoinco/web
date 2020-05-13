@@ -1,7 +1,7 @@
 $('body').on('mouseover', '[data-usercard]', function(e) {
   openContributorPopOver($(this).data('usercard'), $(this));
 }).on('mouseleave', '[data-usercard]', function() {
-  var elem = this
+  var elem = this;
 
   setTimeout(function() {
     if (!$('.popover-user-card:hover').length) {
@@ -287,7 +287,7 @@ function setupPopover(element, data) {
       return renderPopOverData(data);
     },
     html: true
-  })
+  });
 
   $(element).popover('show');
 
