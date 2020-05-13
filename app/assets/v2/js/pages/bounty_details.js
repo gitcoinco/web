@@ -560,40 +560,40 @@ var showWarningMessage = function(txid) {
 };
 
 // refresh page if metamask changes
-waitforWeb3(function() {
-  setInterval(function() {
-    if (document.web3Changed) {
-      return;
-    }
-    reloadCbAddress();
+// waitforWeb3(function() {
+//   setInterval(function() {
+//     if (document.web3Changed) {
+//       return;
+//     }
+//     reloadCbAddress();
 
-    if (typeof document.lastWeb3Network == 'undefined') {
-      document.lastWeb3Network = document.web3network;
-      return;
-    }
+//     if (typeof document.lastWeb3Network == 'undefined') {
+//       document.lastWeb3Network = document.web3network;
+//       return;
+//     }
 
-    if (typeof document.lastCoinbase == 'undefined') {
+//     if (typeof document.lastCoinbase == 'undefined') {
 
-      web3.eth.getCoinbase(function(error, coinbase) {
-        if (error) {
-          console.log('web3.eth.coinbase could not be loaded');
-          document.lastCoinbase = null;
-          return;
-        }
-        document.lastCoinbase = coinbase;
-      });
-      return;
-    }
+//       web3.eth.getCoinbase(function(error, coinbase) {
+//         if (error) {
+//           console.log('web3.eth.coinbase could not be loaded');
+//           document.lastCoinbase = null;
+//           return;
+//         }
+//         document.lastCoinbase = coinbase;
+//       });
+//       return;
+//     }
 
-    if (web3 && (document.lastCoinbase != cb_address) ||
-      (document.lastWeb3Network != document.web3network)) {
-      _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
-      document.location.reload();
-      document.web3Changed = true;
-    }
+//     if (web3 && (document.lastCoinbase != cb_address) ||
+//       (document.lastWeb3Network != document.web3network)) {
+//       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
+//       document.location.reload();
+//       document.web3Changed = true;
+//     }
 
-  }, 500);
-});
+//   }, 500);
+// });
 
 var wait_for_tx_to_mine_and_then_ping_server = function() {
   console.log('checking for updates');

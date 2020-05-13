@@ -81,6 +81,7 @@ var reloadCbAddress = function() {
     return;
   }
   web3.eth.getCoinbase(function(error, result) {
+    // console.log(error, result)
     if (!error) {
       cb_address = result;
     } else {
@@ -90,6 +91,53 @@ var reloadCbAddress = function() {
 };
 
 reloadCbAddress();
+
+
+const Web3Modal = window.Web3Modal.default;
+
+window.Web3Modal.providers.push({
+  id: 'injected',
+  name: 'QRcode',
+  logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' fill='none'%3E%3Cpath fill='url(%23paint0_radial)' fill-rule='evenodd' d='M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z' clip-rule='evenodd'/%3E%3Cpath fill='%23fff' d='M165 243v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zM269 165h78v78h-78v-78zm61.75 61.75v-45.5h-45.5v45.5h45.5zM165 347v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zm13 13h19.5v19.5h-19.5v-19.5zm0-104h19.5v19.5h-19.5v-19.5zm123.5 19.5h-19.5v-19.5h19.5v19.5zM334 269h13v52h-52v-13h-13v39h-13v-78h39v13h26v-13zm0 65h13v13h-13v-13zm-26 0h13v13h-13v-13z'/%3E%3Cdefs%3E%3CradialGradient id='paint0_radial' cx='0' cy='0' r='1' gradientTransform='translate(9.283 256) scale(502.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%237C89FF'/%3E%3Cstop offset='1' stop-color='%231E34FF'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E",
+  type: 'injected',
+  check: 'isQRcode',
+  styled: {
+    noShadow: true
+  }
+});
+
+// Determine if we're on prod or not
+const isProd = document.location.href.startsWith('https://gitcoin.co');
+const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
+const providerOptions = {
+  authereum: {
+    'package': Authereum
+  },
+  fortmatic: {
+    'package': Fortmatic,
+    options: {
+      key: formaticKey
+    }
+  }
+};
+const network = isProd ? 'mainnet' : 'rinkeby';
+
+const web3Modal = new Web3Modal({
+  network,
+  cacheProvider: true,
+  providerOptions
+});
+
+// const provider = await web3Modal.connect();
+function qrcodeConnect() {
+  localStorage['WEB3_CONNECT_CACHED_PROVIDER'] = '"injected"';
+  web3Modal.toggleModal();
+}
+
+web3Modal.providers.push({name: 'QRcode', onClick: qrcodeConnect});
+web3Modal.connect().then(function(provider) {
+  window.web3 = new Web3(provider);
+});
 
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
@@ -1076,60 +1124,6 @@ var actions_page_warn_if_not_on_same_network = function() {
 };
 
 attach_change_element_type();
-
-Web3Modal.providers.push({
-  id: 'injected',
-  name: 'QRcode',
-  logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' fill='none'%3E%3Cpath fill='url(%23paint0_radial)' fill-rule='evenodd' d='M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z' clip-rule='evenodd'/%3E%3Cpath fill='%23fff' d='M165 243v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zM269 165h78v78h-78v-78zm61.75 61.75v-45.5h-45.5v45.5h45.5zM165 347v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zm13 13h19.5v19.5h-19.5v-19.5zm0-104h19.5v19.5h-19.5v-19.5zm123.5 19.5h-19.5v-19.5h19.5v19.5zM334 269h13v52h-52v-13h-13v39h-13v-78h39v13h26v-13zm0 65h13v13h-13v-13zm-26 0h13v13h-13v-13z'/%3E%3Cdefs%3E%3CradialGradient id='paint0_radial' cx='0' cy='0' r='1' gradientTransform='translate(9.283 256) scale(502.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%237C89FF'/%3E%3Cstop offset='1' stop-color='%231E34FF'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E",
-  type: 'injected',
-  check: 'isQRcode',
-  styled: {
-    noShadow: true
-  }
-});
-
-
-$(document).ready(function() {
-  // Don't prompt user if they are not logged in
-  if (!document.contxt.github_handle) {
-    return;
-  }
-  // const Web3Modal = window.Web3Modal.default;
-  const Web3Modal = window.Web3Modal.default;
-  // Determine if we're on prod or not
-  const isProd = document.location.href.startsWith('https://gitcoin.co');
-  const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
-  const providerOptions = {
-    authereum: {
-      'package': Authereum
-    },
-    fortmatic: {
-      'package': Fortmatic,
-      options: {
-        key: formaticKey
-      }
-    }
-  };
-  const network = isProd ? 'mainnet' : 'rinkeby';
-
-  window.web3Modal = new Web3Modal({
-    network,
-    cacheProvider: true,
-    providerOptions
-  });
-
-  // const provider = await web3Modal.connect();
-  function qrcodeConnect() {
-    localStorage['WEB3_CONNECT_CACHED_PROVIDER'] = '"injected"';
-    web3Modal.toggleModal();
-  }
-
-  window.web3Modal.providers.push({name: 'QRcode', onClick: qrcodeConnect});
-  web3Modal.connect().then(function(provider) {
-    window.web3 = new Web3(provider);
-  });
-
-});
 
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
