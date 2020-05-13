@@ -276,7 +276,8 @@ var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  if (typeof fbq !== 'undefined'){
+
+  if (typeof fbq !== 'undefined') {
     fbq('trackCustom', 'Start Work');
   }
 
