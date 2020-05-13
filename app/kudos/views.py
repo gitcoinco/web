@@ -806,6 +806,7 @@ def receive_bulk(request, secret):
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
     tweet_text = f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  " if not request.GET.get('tweet', None) else request.GET.get('tweet')
+    gas_amount = round(0.00035 * float(recommend_min_gas_price_to_confirm_in_time(1)), 4)
     params = {
         'title': title,
         'card_title': title,
@@ -815,6 +816,7 @@ def receive_bulk(request, secret):
         'coupon': coupon,
         'user': request.user,
         'class': _class,
+        'gas_amount': gas_amount,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
         'tweet_text': urllib.parse.quote_plus(tweet_text),

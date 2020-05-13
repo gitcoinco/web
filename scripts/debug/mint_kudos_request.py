@@ -1,3 +1,5 @@
+# note: only use this if the admin is failling
+
 token_req_id = 314
 
 from kudos.management.commands.mint_all_kudos import sync_latest
