@@ -3545,7 +3545,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name.title()
-    description = f"{title} in the recent Gitcoin Virtual Hackathon"
+    description = f"{title} | Gitcoin Virtual Hackathon"
     avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
