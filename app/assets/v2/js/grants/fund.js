@@ -192,12 +192,14 @@ $(document).ready(function() {
   });
   $('.contribution_type select').trigger('change');
 
+  // TODO: convert add to cart to form and grab data from hidden inputs like this
   $('#js-fundGrant').submit(function(e) {
     e.preventDefault();
     var data = {};
     var form = $(this).serializeArray();
 
     $.each(form, function() {
+      console.log(this.name, this.value);
       data[this.name] = this.value;
     });
 
