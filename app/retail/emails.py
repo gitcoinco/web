@@ -1258,11 +1258,7 @@ def new_bounty(request):
     from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    quest = quest_of_the_day()
-    grant = upcoming_grant()
-    hackathon = upcoming_hackathon()
-    activities = latest_activities(request.user)
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=hackathon, latest_activities=activities)
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), upcoming_hackathon=upcoming_hackathon(), latest_activities=latest_activities(request.user))
     return HttpResponse(response_html)
 
 
