@@ -7,9 +7,37 @@
 }
 
 .separator {
-  border-top-width: 1px;
-  border-top-style: solid;
   border-top-color: var(--text-light);
+  border-top-style: solid;
+  border-top-width: 1px;
   display: block;
   margin: 1rem 0 2rem;
+}
+
+.flex-container {
+  width: 100%;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+  -webkit-justify-content: space-between;
+  align-items: center
+}
+
+.grant-row {
+  width: 100%;
+}
+
+.grant-row-style {
+  background-color: var(--gc-grey);
+  border-color: var(--text-light);
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.grant-name {
+  font-weight: bold;
+  margin-left: 0.5rem;
 }

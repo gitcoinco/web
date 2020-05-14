@@ -63,7 +63,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             </div>
             {% comment %} Cart section {% endcomment %}
             <div class="container">
-              This string is from the Vue component: [[ testString ]]
+              <div v-for="grant in grantData" class="grant-row">
+                <div class="grant-row-style">
+                  <div class="flex-container">
+                    <div style="width: 25%">
+                      <div class="flex-container" style="justify-content: start">
+                        <img :src="grant.grantImgPath" alt="Grant logo" width="30">
+                        <div class="grant-name">[[grant.grantName]]</div>
+                      </div>
+                    </div>
+                    <div style="width: 25%">
+                      <div>
+                        [[grant.donationAmount]]
+                        [[grant.donationCurrency]]
+                      </div>
+                      <div class="font-smaller-3">
+                        + Add comment to owner
+                      </div>
+                    </div>
+                    <div style="width: 25%">
+                      [[grant.donationType]]
+                      <span v-if="grant.donationType === 'Recurring'">
+                        for [[grant.numberOfRounds]] rounds
+                      </span>
+                    </div>
+                    <div style="width: 3%; opacity: 40%">
+                      <i class="fas fa-trash-alt"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </grants-cart>
