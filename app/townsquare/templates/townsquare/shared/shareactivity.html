@@ -69,14 +69,15 @@
                             <input id="attachAmount" type="number" class="form-control">
                           </div>
                       </div>
+
                       <div class="col-md-4">
                         <div class="form-group">
                           <label class="sup featured-text">Token</label>
                           <select class="form-control" id="attachToken">
                             <option value="0x0">ETH</option>
-                          {% for token in TOKENS %}
-                            <option value="{{ token.token_addres }}">{{ token.token_name }}</option>
-                          {% endfor %}
+                            {% for token in TOKENS %}
+                              <option value="{{ token.token_address }}">{{ token.token_name }}</option>
+                            {% endfor %}
                           </select>
                         </div>
                       </div>
