@@ -1031,6 +1031,12 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
     return TemplateResponse(request, 'grants/cancel.html', params)
 
+# @login_required
+def grants_cart_view(request):
+    response =  TemplateResponse(request, 'grants/cart.html')
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
 
 @login_required
 def profile(request):
