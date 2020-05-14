@@ -27,7 +27,7 @@
     <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   </head>
   <body class="interior {{ active }} grant g-font-muli">
-  {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash px-0">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'grants/nav.html' %}
@@ -42,9 +42,16 @@
     </div>
 
 
-   <div>
-    THIS IS THE CART
-   </div>
+    <div>
+      THIS IS THE CART
+      <div id="gc-grants-cart" v-cloak>
+        <grants-cart inline-template>
+          <div>
+            This string is from the Vue component: [[ testString ]]
+          </div>
+        </grants-cart>
+      </div>
+    </div>
 
 
     {% include 'shared/current_profile.html' %}
@@ -53,8 +60,15 @@
     {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
+
+    <script src="{% static "v2/js/vue-components.js" %}"></script>
+    <script src="{% static "v2/js/cart.js" %}"></script>
   </body>
 
+  {% comment %}
+    TODO this template was initialized by copying the temlate of another file, so
+    we don't need all of these scripts and need to determine which to remove
+  {% endcomment %}
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>

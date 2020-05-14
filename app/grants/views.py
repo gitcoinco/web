@@ -1033,7 +1033,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
 # @login_required
 def grants_cart_view(request):
-    response =  TemplateResponse(request, 'grants/cart.html')
+    response =  TemplateResponse(request, 'grants/cart-vue.html')
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
