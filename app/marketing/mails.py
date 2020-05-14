@@ -1140,8 +1140,6 @@ def reject_faucet_request(fr):
 
 
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
-    # if not bounties:
-    #     return
     max_bounties = 5
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
