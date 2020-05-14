@@ -227,10 +227,8 @@
                     </table>
                   </div>
 
-                  <div id="gas-section">
-                    {% include 'shared/bounty_actions_hidden_vars.html' %}
-                    {% include 'shared/wallet_estimate.html' %}
-                  </div>
+                  {% include 'shared/bounty_actions_hidden_vars.html' %}
+
                   <div class="w-100 mt-4 terms_container">
                     <input name='terms' id='terms' type="checkbox" value=1 required />
                     <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
@@ -257,7 +255,6 @@
     {% include 'shared/footer.html' %}
 
   </body>
-  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/rating.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>

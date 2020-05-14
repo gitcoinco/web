@@ -22,8 +22,6 @@ var set_form_disabled = function(is_disabled) {
 $(document).ready(function() {
 
 
-  // _alert({ message: gettext('Note: Brave users seem to have issues while contributing to Grants while using both Brave Wallet and MetaMask. We recommend disabling one. For more info, see this <a target="_blank" href="https://github.com/brave/brave-browser/issues/6053">issue</a>') }, 'warning');
-
   // set defaults
   var set_defaults = function() {
     var lookups = {
@@ -281,8 +279,7 @@ $(document).ready(function() {
         web3.eth.sendTransaction({
           from: accounts[0],
           to: to_address,
-          value: to_addr_amount,
-          gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
+          value: to_addr_amount
         }, function(err, txid) {
           indicateMetamaskPopup(1);
           if (err) {
@@ -339,8 +336,7 @@ $(document).ready(function() {
             web3.eth.sendTransaction({
               from: accounts[0],
               to: gitcoinDonationAddress,
-              value: gitcoin_amount,
-              gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
+              value: gitcoin_amount
             }, success_callback);
           }
         });
@@ -372,11 +368,8 @@ $(document).ready(function() {
         realApproval = Number(((grant_amount * data.num_periods)) * Math.pow(10, decimals) + approve_buffer);
       }
 
-      let realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
+      const realGasPrice = Number(gitcoin_grant_amount * Math.pow(10, decimals)); // optional grants fee
 
-      if (contractVersion == 0) {
-        realGasPrice = 1;
-      }
 
       $('#gas_price').val(realGasPrice);
 
@@ -408,7 +401,6 @@ $(document).ready(function() {
               web3.utils.toTwosComplement(approvalSTR)
             ).send({
               from: accounts[0],
-              gasPrice: web3.utils.toHex(parseInt($('#gasPrice').val() * Math.pow(10, 9))),
               gas: web3.utils.toHex(gas_amount(document.location.href)),
               gasLimit: web3.utils.toHex(gas_amount(document.location.href))
             }).on('error', function(error) {
@@ -647,13 +639,10 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
   let deployedSplitter = new web3.eth.Contract(compiledSplitter.abiDefinition, splitterAddress);
 
-  let token_address = $('#js-token').length ? $('#js-token').val() : $('#sub_token_address').val();
-
   indicateMetamaskPopup();
   deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).send({
     from: account,
-    gas: web3.utils.toHex(100000),
-    gasPrice: parseInt(web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)))
+    gas: web3.utils.toHex(100000)
   }).on('error', function(error) {
     console.log('1', error);
     indicateMetamaskPopup(1);
