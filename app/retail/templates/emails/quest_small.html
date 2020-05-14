@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize urlexists %}
 
 <style>
 
@@ -59,8 +59,13 @@
     <table class="quest quest-images-container">
       <tr>
         <td></td>
-        <td rowspan=2><img class="quest-img-bottom"
-            src="{{quest.enemy_img_url}}"></td>
+        <td rowspan=2>
+          {% if quest.enemy_img_url|urlexists %}
+            <img class="quest-img-bottom"src="{{quest.enemy_img_url}}">
+          {% else %}
+            <img class="quest-img-bottom"src={{base_url}}static/v2/images/emails/kudos_template.png>
+          {% endif %}
+        </td>
       </tr>
       <tr>
         <td colspan=2><img class="quest-img-top" src="{{quest.kudos_reward.img_url}}"></td>
