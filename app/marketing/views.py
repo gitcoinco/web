@@ -1004,7 +1004,6 @@ def upcoming_hackathon():
 def latest_activities(user):
     from retail.views import get_specific_activities
     cutoff_date = timezone.now() - timezone.timedelta(days=7)
-    # activities = Activity.objects.filter(created_on__gte=cutoff_date).order_by('-created_on')[:4]
     activities = get_specific_activities('connect', 0, user, 0)[:4]
     return activities
 
