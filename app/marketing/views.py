@@ -920,7 +920,7 @@ def upcoming_hackathon():
         return HackathonEvent.objects.filter(end_date__gt=timezone.now()).order_by('-start_date')
     except HackathonEvent.DoesNotExist:
         try:
-            return HackathonEvent.objects.filter(start_date__gte=timezone.now()).order_by('start_date').first()
+            return [HackathonEvent.objects.filter(start_date__gte=timezone.now()).order_by('start_date').first()]
         except HackathonEvent.DoesNotExist:
             return None
 
