@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 750px;
+}
+
+.separator {
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--text-light);
+  display: block;
+  margin: 1rem 0 2rem;
+}

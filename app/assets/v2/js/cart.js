@@ -1,11 +1,13 @@
 let testString = 'qwertyyyyyy';
+let numberOfGrants = 'TBD';
 
 Vue.component('grants-cart', {
   delimiters: [ '[[', ']]' ],
   // props: [ 'tribe', 'is_my_org' ],
   data: function() {
     return {
-      testString
+      testString,
+      numberOfGrants
     };
   },
 
@@ -16,14 +18,10 @@ Vue.component('grants-cart', {
     //
   },
   beforeMount() {
-    window.addEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    }, false);
+    //
   },
   beforeDestroy() {
-    window.removeEventListener('scroll', () => {
-      this.bottom = this.bottomVisible();
-    });
+    //
   }
 });
 
@@ -33,7 +31,8 @@ if (document.getElementById('gc-grants-cart')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-grants-cart',
     data: {
-      testString
+      testString,
+      numberOfGrants
     },
     mounted() {
       //
@@ -42,14 +41,10 @@ if (document.getElementById('gc-grants-cart')) {
       //
     },
     beforeMount() {
-      window.addEventListener('scroll', () => {
-        this.bottom = this.bottomVisible();
-      }, false);
+      //
     },
     beforeDestroy() {
-      window.removeEventListener('scroll', () => {
-        this.bottom = this.bottomVisible();
-      });
+      //
     }
   });
 }

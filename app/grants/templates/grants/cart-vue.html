@@ -1,22 +1,21 @@
 {% comment %}
-  Copyright (C) 2020 Gitcoin Core
+Copyright (C) 2020 Gitcoin Core
 
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Affero General Public License as published
-  by the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-  You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
-{% endcomment %}
-{% load static i18n %}
-<!DOCTYPE html>
-<html lang="en">
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomment %} {% load static i18n %} <!DOCTYPE
+  html>
+  <html lang="en">
+
   <head>
     {% include 'shared/head.html' with slim=1 %}
     {% include 'shared/cards.html' %}
@@ -25,7 +24,9 @@
     <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
     <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "v2/css/grants/cart.css" %}">
   </head>
+
   <body class="interior {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash px-0">
@@ -43,11 +44,27 @@
 
 
     <div>
-      THIS IS THE CART
       <div id="gc-grants-cart" v-cloak>
         <grants-cart inline-template>
           <div>
-            This string is from the Vue component: [[ testString ]]
+            {% comment %} Heading section {% endcomment %}
+            <div class="container" style="margin-top:2rem;">
+              <h1 class="text-center font-bigger-2">
+                Grant Cart ([[ numberOfGrants ]] items)
+              </h1>
+              <img src="{% static 'v2/images/grants/torchbearer.svg' %}" alt="Robot with torch" width="150">
+              <div class="font-smaller-1" style="margin: 2rem 0 0 auto;">
+                Clear my cart
+              </div>
+            </div>
+            {% comment %} Divider {% endcomment %}
+            <div>
+              <div class="separator" />
+            </div>
+            {% comment %} Cart section {% endcomment %}
+            <div class="container">
+              This string is from the Vue component: [[ testString ]]
+            </div>
           </div>
         </grants-cart>
       </div>
@@ -66,8 +83,8 @@
   </body>
 
   {% comment %}
-    TODO this template was initialized by copying the temlate of another file, so
-    we don't need all of these scripts and need to determine which to remove
+  TODO this template was initialized by copying the temlate of another file, so
+  we don't need all of these scripts and need to determine which to remove
   {% endcomment %}
   <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
@@ -83,4 +100,5 @@
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/new.js" %}"></script>
-</html>
+
+  </html>
