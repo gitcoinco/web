@@ -274,6 +274,45 @@
           </div>
         </div>
       </div>
+
+      <div class="row my-4">
+        <div class="container">
+          <style>
+            .speaker-avatar {
+              width: 100px;
+              height: 100px;
+              border-radius: 50%;
+              float: right;
+            }
+          </style>
+            {% if workshops|length %}
+              <div class="row">
+                <h3 class="text-uppercase font-weight-bolder font-title ml-4">Learn through workshops</h3>
+              </div>
+              <div class="row">
+                {% for workshop in workshops %}
+                  <style>
+                    #workshop-cover {
+                      max-width: {{ workshop.cover_max_width }}px;
+                    }
+                  </style>
+                  <div class="col-xs-12 col-sm-5 col-lg-3">
+                    <div class="mb-5 mt-5">
+                      <a href="{{ workshop.url }}" target="_blank" style="text-decoration:none;">
+                        <img id="workshop-cover" src="{{ MEDIA_URL }}{{ workshop.cover }}" alt="Workshop cover" />
+                        <!-- <a href="/{{ workshop.speaker.handle }}">
+                          <img class="speaker-avatar d-flex" src="{{ workshop.speaker.avatar_url }}" alt="{{ workshop.speaker.handle }}'s Avatar or Logo" />
+                        </a> -->
+                        <span class="font-weight-bold d-flex font-title mt-1 mb-1" style="color:black;">{{ workshop.name }}</span>
+                      </a>
+                      <div calss="small">in {{ workshop.start_date|timeuntil }}</div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+        </div>
+      </div>
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

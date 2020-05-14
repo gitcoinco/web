@@ -108,7 +108,7 @@ from .helpers import (
 from .models import (
     Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
+    HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
     ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember,
     UserAction, UserVerificationModel,
 )
@@ -4318,6 +4318,8 @@ def get_hackathons(request):
         ('finished', finished_hackathon_events.count()),
     ]
 
+    hackathon_workshops = HackathonWorkshop.objects.all().filter(visible=True)
+
     hackathon_events = []
     tribes = []
 
@@ -4392,6 +4394,7 @@ def get_hackathons(request):
         'tabs': tabs,
         'events': hackathon_events,
         'tribes': tribes,
+        'workshops': hackathon_workshops,
     }
 
     if current_hackathon_events.exists():

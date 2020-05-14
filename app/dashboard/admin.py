@@ -26,11 +26,14 @@ from django.utils.safestring import mark_safe
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import (
-    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
-    BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
-    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification, ProfileView, Question,
-    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription, UserAction,
+    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent,
+    BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
+    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor,
+    HackathonWorkshop, Interest, Investigation, LabsResearch, ObjectView,
+    Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
+    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
+    TokenApproval, TribeMember, TribesSubscription, UserAction,
     UserVerificationModel,
 )
 
@@ -367,6 +370,12 @@ class HackathonSponsorAdmin(admin.ModelAdmin):
     list_display = ['pk', 'hackathon', 'sponsor', 'sponsor_type']
 
 
+class HackathonWorkshopAdmin(admin.ModelAdmin):
+    """The admin object for the HackathonWorkshop model."""
+
+    list_display = ['pk', 'start_date', 'hackathon', 'speaker', 'url']
+
+
 class SponsorAdmin(admin.ModelAdmin):
     """The admin object for the Sponsor model."""
 
@@ -589,6 +598,7 @@ admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Sponsor, SponsorAdmin)
 admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(HackathonSponsor, HackathonSponsorAdmin)
+admin.site.register(HackathonWorkshop, HackathonWorkshopAdmin)
 admin.site.register(HackathonRegistration, HackathonRegistrationAdmin)
 admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
