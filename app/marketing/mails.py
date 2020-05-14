@@ -1147,37 +1147,47 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         bounties = bounties[0:max_bounties]
     if to_emails is None:
         to_emails = []
-    plural = "s" if len(bounties) != 1 else ""
-    worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
-    worth = f"${worth}" if worth else ""
+    
+    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities
+    quest = quest_of_the_day()
+    grant = upcoming_grant()
+    hackathon = upcoming_hackathon()
+
     offers = f""
     if to_emails:
         offers = ""
 
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
-            offers = f"💰 1 New Action"
+            offers = f"💰1 New Action"
 
         new_bounties = ""
-        if len(bounties):
-            new_bounties = f"⚡️ {worth} In New Bounties Available"
-        elif len(old_bounties):
-            new_bounties = f"😁 {len(old_bounties)} Bounties Available"
+        if bounties:
+            plural_bounties = "Bounties" if len(bounties)>1 else "Bounty"
+            new_bounties = f"⚡️{len(bounties)} {plural_bounties}"
+        elif old_bounties:
+            plural_old_bounties = "Bounties" if len(old_bounties)>1 else "Bounty"
+            new_bounties = f"⚡️{len(old_bounties)} {plural_old_bounties}"
+            
+        new_quests = ""
+        if quest:
+            new_quests = f"🎯1 Quest"
 
-        _and = "&& " if has_offer and new_bounties else ""
+        new_hackathons = ""
+        if hackathon:
+            plural_hackathon = "Hackathons" if len(hackathon)>1 else "Hackathon"
+            new_hackathons = f"🛠️{len(hackathon)} {plural_hackathon}"
 
-        subject = f"{offers} {_and}{new_bounties} "
+        def comma(a):
+            return ", " if a and (new_bounties or new_quests or new_hackathons) else ""
+
+        subject = f"Gitcoin Daily {offers}{comma(offers)}{new_bounties}{comma(new_bounties)}{new_quests}{comma(new_quests)}{new_hackathons}"
 
     for to_email in to_emails:
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-
-            from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities
-            quest = quest_of_the_day()
-            grant = upcoming_grant()
-            hackathon = upcoming_hackathon()
 
             from django.contrib.auth.models import User
             user = User.objects.get(email__iexact=to_email)
