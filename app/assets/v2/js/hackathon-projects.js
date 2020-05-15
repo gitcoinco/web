@@ -14,7 +14,9 @@ const projectModal = (bountyId, projectId) => {
     userSearch('.team-users', false, '', data, true, false);
     $('#modalProject').bootstrapModal('show');
     $('[data-toggle="tooltip"]').bootstrapTooltip();
-
+    $('#looking-members').on('click', function() {
+      $('.looking-members').toggle();
+    });
     $('#projectForm').on('submit', function(e) {
       e.preventDefault();
       let logo = $(this)[0]['logo'].files[0];

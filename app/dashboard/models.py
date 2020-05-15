@@ -4670,6 +4670,7 @@ class HackathonProject(SuperModel):
     )
     looking_members = models.BooleanField(default=False)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+    extra = JSONField(default=dict, blank=True, null=True)
 
     class Meta:
         ordering = ['-name']
@@ -4903,7 +4904,7 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
-    
+
     @property
     def mutual_follow(self):
         return TribeMember.objects.filter(profile=self.org, org=self.profile).exists()
@@ -4918,7 +4919,7 @@ class TribeMember(SuperModel):
         tribe_following = Subquery(TribeMember.objects.filter(org=self.profile).values_list('profile', flat=True))
         return TribeMember.objects.filter(org__in=tribe_following, profile=self.org).exclude(org=self.org)
 
-      
+
 class Poll(SuperModel):
     title = models.CharField(max_length=350, blank=True, null=True)
     active = models.BooleanField(default=False)
