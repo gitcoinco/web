@@ -25,14 +25,9 @@
     </div>
     {% if user_logged_in %}
       <div class="col-12">
-        {% if is_registered or not bounty.event %}
+        {% if is_registered and not bounty.event %}
           <form id="action_plan" class="font-body">
             <div>
-              {% if bounty.event %}
-                <p class="alert-danger p-2">
-                  This bounty is part of <b>{{bounty.event.name}}</b>, please read the <a href="{% url 'hackathon_onboard' bounty.event.slug %}" target="_blank">rules to participate</a> before you continue.
-                </p>
-              {% endif %}
               <label for="issue_message">
                 <p>
                   {% trans "Provide an action plan and any initial questions you have for this ticket." %}
@@ -65,6 +60,7 @@
                   </label>
                 </div>
               </div>
+            </div>
             <div>
               <div class="checkbox_container d-flex font-caption">
                 <input type="checkbox" id="checkbox1" class="form__input" value="1" required/>
@@ -77,6 +73,78 @@
               </div>
             </div>
             <button id="submit" class="row button button--primary btn-interested" type="submit">{% trans "Next" %}</button>
+          </form>
+        {% elif is_registered and bounty.event %}
+          <form action="" class="mt-3 border-top pt-3" id="projectForm">
+              <p class="alert-danger p-2">
+                  This bounty is part of <b>{{bounty.event.name}}</b>, please read the <a href="{% url 'hackathon_onboard' bounty.event.slug %}" target="_blank">rules to participate</a> before you continue.
+              </p>
+              <input type="hidden" name="bounty_id" value="{{bounty.id}}">
+              <div class="form-group">
+                <label class="font-weight-semibold"  for="project_name">Project Name</label>
+                <input type="text" class="form-control" id="project_name" name="name" placeholder="My project" required>
+              </div>
+              <div class="form-group mt-4">
+                <label for="project_logo" class="d-block">Project logo</label>
+                <img src="{% firstof bounty.admin_override_org_logo or bounty.avatar_url %}" width="90" height="90" id="img-preview" class="border rounded">
+                <div class="d-inline-block align-middle ml-4">
+                  <input type="file" class="form-control-file" id="project_logo" name="logo" aria-describedby="logoHelp" accept="image/jpeg, image/png" data-imgplaceholder="{% firstof project_selected.bounty.admin_override_org_logo or project_selected.bounty.avatar_url %}">
+                  <small id="logoHelp" class="form-text text-muted">
+                    If there's no Project Logo, we will use the prize sponsor logo.
+                  </small>
+                </div>
+              </div>
+              <div class="form-group mt-4">
+                <label class="font-weight-semibold"  for="project_summary">Project Summary</label>
+                <textarea class="form-control" name="summary" id="project_summary" style="height: 120px" cols="10" rows="2" placeholder="Tell us about your project!" required></textarea>
+              </div>
+              <div class="form-group mt-4">
+                <label class="font-weight-semibold" for="work_url">Project Github Repository or Link to Pull Request</label>
+                <input type="url" class="form-control" name="work_url" id="work_url" placeholder="https://github.com/gitcoinco/web" required>
+              </div>
+
+              <div class="from-group mb-3 mt-4">
+                <label class="font-weight-semibold" for="project_profiles">Team members</label>
+                <div class="form__select2 g-multiselect">
+                  <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
+                  </select>
+                </div>
+                <small id="profilesHelp" class="form-text text-muted">
+                  Search Gitcoin usernames.
+                </small>
+              </div>
+              <div class="form-group">
+                <div class="form__checkbox d-inline-block">
+                  <input name='looking-members' id='looking-members' type="checkbox">
+                  <label class="form__label" for="looking-members">Looking for team members</label>
+                </div>
+              </div>
+              <div class="looking-members" style="display: none">
+                <div class="mt-4">
+                  <label class="font-weight-semibold" for="looking-members-message">What skills are you looking for in your team</label>
+                  <input type="text" class="form-control" placeholder="Skills, experiences you need in your team. Enter short message. 150 characters." maxlength="150" name="looking-members-message" id="looking-members-message" >
+                </div>
+                <div class="mt-4">
+                  <label class="font-weight-semibold" for="looking-members-message">How to get in touch:</label>
+                  <div class="form__checkbox">
+                    <input name='has_gitcoin_chat' id='has_gitcoin_chat' type="checkbox">
+                    <label class="form__label" for="has_gitcoin_chat">Gitcoin Chat</label>
+                  </div>
+                  <div class="d-flex">
+                    <div class="form__checkbox d-flex">
+                      <input type="checkbox" name='has_other_contact_method' id='has_other_contact_method'>
+                      <label class="form__label" for="has_other_contact_method">Other: </label>
+                    </div>
+                    <input type="text" class="ml-2 form-control" style="width: 80%; font-size: var(--fs-body);" placeholder="Website, Email, or other ways for people to reach out your team" maxlength="150" name="other_contact_method" id="other-contact-method-message" >
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center flex-fill mt-5">
+                <p class="text-muted mb-0 font-smaller-1">You can modify your project details anytime on the projects page or when you submit work.</p>
+              </div>
+              <div class="row mt-4">
+                <button class="mx-auto px-5 btn btn-lg btn-gc-blue" id="sendInvites">Submit</button>
+              </div>
           </form>
         {% else %}
           <div class="text-center mb-5 mt-4">

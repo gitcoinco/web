@@ -710,7 +710,11 @@ var show_interest_modal = function() {
 
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
-
+      let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
+      $('#looking-members').on('click', function() {
+        $('.looking-members').toggle();
+      });
+      userSearch('.team-users', false, '', data, true, false);
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
 
       actionPlanForm.on('submit', function(event) {
