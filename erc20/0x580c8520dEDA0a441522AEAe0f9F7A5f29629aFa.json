@@ -1,0 +1,17 @@
+{
+  "symbol": "DAWN",
+  "address": "0x580c8520dEDA0a441522AEAe0f9F7A5f29629aFa",
+  "overview":{
+        "en": "Dawn is an open-source protocol for gaming and competitions.Its mission is to enable a fair, open and rewarding gaming ecosystem no matter what country or background users are from. Anyone whether you are a player, business or influencer can run competitions and earn cryptocurrencies on video games using Dawn. Game developers can integrate the open protocol in their games to allow gamers to compete." 
+  },
+  "email": "team@dawn.org",
+  "website": "https://dawn.org/",
+  "state": "NORMAL"
+  },
+  "links": {
+    "twitter": "https://twitter.com/DawnProtocol",
+    "telegram": "https://t.me/dawnprotocol",
+    "github": "https://github.com/Dawn-Protocol",
+    "facebook": "https://www.facebook.com/dawnprotocol/"
+  }
+}
