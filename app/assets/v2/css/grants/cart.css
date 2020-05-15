@@ -3,7 +3,7 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  max-width: 750px;
+  max-width: 1000px;
 }
 
 .separator {
@@ -20,7 +20,12 @@
   display: flex;
   justify-content: space-between;
   -webkit-justify-content: space-between;
-  align-items: center
+  align-items: center;
+}
+
+.grant-header-row {
+  padding: 1rem;
+  width: 100%;
 }
 
 .grant-row {
@@ -40,4 +45,11 @@
 .grant-name {
   font-weight: bold;
   margin-left: 0.5rem;
+}
+
+.clr-match-box {
+  background-color: rgba(15, 206, 124, 0.1);
+  border: 1px rgba(15, 206, 124, 0.1) solid;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
 }

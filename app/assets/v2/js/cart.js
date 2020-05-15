@@ -1,5 +1,4 @@
 let testString = 'qwertyyyyyy';
-let numberOfGrants = 'TBD';
 let grantHeaders = [ 'Grant', 'Amount', 'Type', 'Total CLR Match Amount' ];
 // Using dummy data for now
 let grantData = [
@@ -9,7 +8,8 @@ let grantData = [
     donationAmount: 1,
     donationCurrency: 'DAI',
     donationType: 'Recurring',
-    numberOfRounds: 3
+    numberOfRounds: 3,
+    clrMatchAmount: 250
   },
   {
     grantImgPath: '../static/v2/images/gitcoinco.png',
@@ -17,7 +17,8 @@ let grantData = [
     donationAmount: 1,
     donationCurrency: 'DAI',
     donationType: 'Recurring',
-    numberOfRounds: 2
+    numberOfRounds: 2,
+    clrMatchAmount: 250
   },
   {
     grantImgPath: '../static/v2/images/gitcoinco.png',
@@ -25,7 +26,8 @@ let grantData = [
     donationAmount: 1,
     donationCurrency: 'ETH',
     donationType: 'One Time',
-    numberOfRounds: undefined
+    numberOfRounds: undefined,
+    clrMatchAmount: 250
   }
 ];
 
@@ -35,7 +37,6 @@ Vue.component('grants-cart', {
   data: function() {
     return {
       testString,
-      numberOfGrants,
       grantHeaders,
       grantData
     };
@@ -62,7 +63,6 @@ if (document.getElementById('gc-grants-cart')) {
     el: '#gc-grants-cart',
     data: {
       testString,
-      numberOfGrants,
       grantHeaders,
       grantData
     },

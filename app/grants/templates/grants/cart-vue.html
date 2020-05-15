@@ -50,7 +50,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             {% comment %} Heading section {% endcomment %}
             <div class="container" style="margin-top:2rem;">
               <h1 class="text-center font-bigger-2">
-                Grant Cart ([[ numberOfGrants ]] items)
+                Grant Cart ([[ grantData.length ]] items)
               </h1>
               <img src="{% static 'v2/images/grants/torchbearer.svg' %}" alt="Robot with torch" width="150">
               <div class="font-smaller-1" style="margin: 2rem 0 0 auto;">
@@ -61,8 +61,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             <div>
               <div class="separator" />
             </div>
-            {% comment %} Cart section {% endcomment %}
-            <div class="container">
+            {% comment %} Cart header {% endcomment %}
+            <div class="container" style="padding-bottom: 10rem;">
+              <div class="flex-container font-smaller-2 text-left grant-header-row">
+                <div style="width: 25%">
+                  <div class="flex-container" style="justify-content: start">
+                    Grant
+                  </div>
+                </div>
+                <div style="width: 20%">
+                  Amount
+                </div>
+                <div style="width: 20%">
+                  Type
+                </div>
+                <div style="width: 20%">
+                  <div class="flex-container">
+                    Total CLR Match Amount
+                  </div>
+                </div>
+                <div style="width: 3%; opacity: 40%; margin-left: 5rem;">
+                  &nbsp;
+                </div>
+              </div>
+              {% comment %} Cart content {% endcomment %}
               <div v-for="grant in grantData" class="grant-row">
                 <div class="grant-row-style">
                   <div class="flex-container">
@@ -72,7 +94,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div class="grant-name">[[grant.grantName]]</div>
                       </div>
                     </div>
-                    <div style="width: 25%">
+                    <div style="width: 20%">
                       <div>
                         [[grant.donationAmount]]
                         [[grant.donationCurrency]]
@@ -81,13 +103,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         + Add comment to owner
                       </div>
                     </div>
-                    <div style="width: 25%">
+                    <div style="width: 20%">
                       [[grant.donationType]]
                       <span v-if="grant.donationType === 'Recurring'">
                         for [[grant.numberOfRounds]] rounds
                       </span>
                     </div>
-                    <div style="width: 3%; opacity: 40%">
+                    <div class="clr-match-box" style="width: 20%;">
+                      <div class="flex-container">
+                        <div>
+                          [[grant.clrMatchAmount]] DAI
+                        </div>
+                        <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
+                          width="20">
+                      </div>
+                    </div>
+                    <div style="width: 3%; opacity: 40%; margin-left: 5rem;">
                       <i class="fas fa-trash-alt"></i>
                     </div>
                   </div>
