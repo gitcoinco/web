@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -659,7 +659,7 @@
                                       <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
                                     </span>
                                   </h5>
-                                  <a :href="`/profile/${ user.handle }`" class="text-center d-block">
+                                  <a :href="`/profile/${ user.handle }`" v-bind:data-usercard="[[ user.handle ]]" class="text-center d-block">
                                     @[[ user.handle ]]
                                   </a>
                                   <div v-if="!user.is_org" class="card-user_stars text-center my-2">
