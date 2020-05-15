@@ -30,7 +30,9 @@
             <div class="mb-4 font-smaller-1">
               <p class="mb-2">Edit your existing project{{ projects.count|pluralize }}:</p>
               {% for project in projects %}
-                <a href="#" class="btn btn-sm btn-outline-gc-blue mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
+                {% if project.status == '' %}
+                  <a href="#" class="btn btn-sm btn-outline-gc-blue mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
+                {% endif %}
               {% endfor %}
                 or <a href="#" class="" onclick="projectModal({{bounty_id}});">create a new one</a>
             </div>
