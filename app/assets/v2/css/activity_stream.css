@@ -5,6 +5,12 @@
   background-color: #ecf0f4;
   border: 0px solid;
 }
+
+.dark-mode #reflink {
+  background-color: var(--gc-blue);
+  color: #ecf0f4;
+}
+
 .click_here_to_join_video{
   width: 100%;
   cursor: pointer;
