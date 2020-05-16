@@ -49,6 +49,7 @@ import perftools.views
 import quests.views
 import retail.emails
 import retail.views
+import ptokens.views
 import revenue.views
 import search.views
 import tdi.views
@@ -79,6 +80,10 @@ urlpatterns = [
 
     # board
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
+
+    # personal_tokens
+    re_path(r'^quickstart/?', ptokens.views.quickstart, name='quickstart'),
+    re_path(r'^ptokens/faq/?', ptokens.views.faq, name='ptokens_faq'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),

@@ -99,6 +99,7 @@ INSTALLED_APPS = [
     'app',
     'avatar',
     'retail',
+    'ptokens',
     'rest_framework',
     'marketing',
     'economy',
