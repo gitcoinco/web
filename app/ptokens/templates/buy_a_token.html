@@ -22,7 +22,7 @@
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <style>
-      #grant-quickstart-tabs-sections img {
+      #quickstart-tabs-sections img {
         max-width: 15rem;
       }
 
@@ -65,12 +65,12 @@
 
     <div class="container pt-5 font-body">
       <div class="col-12 offset-lg-1 col-lg-10">
-        <div id="grant-quickstart-tabs" class="tab-container mb-3">
+        <div id="quickstart-tabs" class="tab-container mb-3">
           <button type="button" id="fund" class="section-tab">{%trans "Buy a Token" %}</button>
           <button type="button" id="start" class="section-tab">{%trans "Make a Token" %}</button>
         </div>
 
-        <div id="grant-quickstart-tabs-sections" class="tab-sections section mt-4">
+        <div id="quickstart-tabs-sections" class="tab-sections section mt-4">
           <div id="section-fund" class="tab-section active">
             <div class="container px-0">
               <div class="row mb-3 py-2 px-md-0 mx-sm-0">
@@ -176,14 +176,7 @@
   <script src="{% static "v2/js/pages/tabs.js" %}"></script>
   <script>
     $(document).ready(function() {
-      setupTabs('#grant-quickstart-tabs');
-      const url = document.referrer;
-      if(url.includes('grants/profile') || url.includes('grants/new')) {
-        localStorage['grants_quickstart_disable'] = 'true';
-        $('#quickstart-referrer').attr('href', url);
-      } else {
-        $('#quickstart-referrer').hide();
-      }
+      setupTabs('#quickstart-tabs');
     });
   </script>
 <html>
