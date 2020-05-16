@@ -2,7 +2,7 @@ from dashboard.router import ProfileSerializer
 from rest_framework import serializers
 
 from .models import Contribution, Grant, Subscription, CLRMatch
-from .utils import which_clr_round, amount_in_wei
+from .utils import which_clr_round, amount_in_wei, get_converted_amount
 
 
 class GrantSerializer(serializers.ModelSerializer):
@@ -78,25 +78,39 @@ class TransactionsSerializer(serializers.Serializer):
 
         fields = ('asset', 'timestamp', 'amount', 'clr_round', 'usd_value')
 
+class CLRPayoutsSerializer(serializers.Serializer):
+    """Handle serializing CLR Payout information."""
+
+    amount = serializers.FloatField()
+    asset = serializers.CharField(default='DAI')
+    usd_value = serializers.SerializerMethodField()
+    timestamp = serializers.DateTimeField(source='created_on')
+    round = serializers.IntegerField(source='round_number')
+
+    def get_usd_value(self, obj):
+        return get_converted_amount(obj.amount, 'DAI')
+
+    class Meta:
+        """Define the CLRPayout serializer metadata."""
+
+        fields = ('amount', 'asset', 'usd_value', 'timestamp', 'round')
 
 class GranteeSerializer(serializers.Serializer):
     """Handle serializing Grantee information."""
 
     grant_name = serializers.CharField(source='title')
     transactions = serializers.SerializerMethodField()
-    clr_payout = serializers.SerializerMethodField()
+    clr_payouts = serializers.SerializerMethodField()
 
     def get_transactions(self, obj):
         return TransactionsSerializer(
             Contribution.objects.filter(subscription__grant__pk=obj.pk), many=True
         ).data
     
-    def get_clr_payout(self, obj):
-        try:
-            payout = CLRMatch.objects.filter(grant__pk=obj.pk).first().amount
-        except:
-            payout = None
-        return payout
+    def get_clr_payouts(self, obj):
+        return CLRPayoutsSerializer(
+            CLRMatch.objects.filter(grant__pk=obj.pk), many=True
+        ).data
     
     class Meta:
         """Define the Grantee serializer metadata."""

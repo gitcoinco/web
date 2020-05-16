@@ -21,7 +21,12 @@ import os
 from secrets import token_hex
 
 from perftools.models import JSONStore
+from decimal import Decimal
+from gas.utils import eth_usd_conv_rate
+from economy.utils import ConversionRateNotFoundError, convert_amount
 
+import logging
+logger = logging.getLogger(__name__)
 
 def get_upload_filename(instance, filename):
     salt = token_hex(16)
@@ -112,3 +117,28 @@ def which_clr_round(timestamp):
             return round
     
     return None
+
+def get_converted_amount(amount, token_symbol):            
+    try:
+        if token_symbol == "ETH" or token_symbol == "WETH":
+            return Decimal(float(amount) * float(eth_usd_conv_rate()))
+        else:
+            value_token_to_eth = Decimal(convert_amount(
+                amount,
+                token_symbol,
+                "ETH")
+            )
+
+        value_eth_to_usdt = Decimal(eth_usd_conv_rate())
+        value_usdt = value_token_to_eth * value_eth_to_usdt
+        return value_usdt
+
+    except ConversionRateNotFoundError as e:
+        try:
+            return Decimal(convert_amount(
+                amount,
+                token_symbol,
+                "USDT"))
+        except ConversionRateNotFoundError as no_conversion_e:
+            logger.info(no_conversion_e)
+            return None
