@@ -1,4 +1,32 @@
 .tag {
+  --usd-bg: #d6fbeb;
+  --usd-color: #00a55e;
+  --usd-hover-bg: #c6ebdb;
+
+  --network_warning-bg: #fbaf95;
+  --network_warning-color: #fff;
+  --network_warning-hover-bg: #fbaf95;
+
+  --warning-bg: #7e1518;
+  --warning-color: #fff;
+  --warning-hover-bg: #d3696c;
+
+  --success-bg: #216a12;
+  --success-color: #fff;
+  --success-hover-bg: #68b159;
+
+  --in-progress-bg: #162955;
+  --in-progress-color: #fff;
+  --in-progress-hover-bg: #4f628e;
+
+  --token-bg: #e7f0fa;
+  --token-color: var(--gc-blue);
+  --token-hover-bg: #d7e0ea;
+
+  --hiring-bg: #3a9ced;
+  --hiring-color: #fff;
+  --hiring-hover-bg: #3a9ced;
+
   text-align: center;
   border-radius: 2px;
   margin: 4px;
@@ -9,6 +37,37 @@
   cursor: pointer;
 }
 
+.dark-mode .tag{
+  --usd-bg: #00a55e;
+  --usd-color: #d6fbeb;
+  --usd-hover-bg: #1bbb76;
+
+  --network_warning-bg: #fbaf95;
+  --network_warning-color: #fff;
+  --network_warning-hover-bg: #fbaf95;
+
+  --warning-bg: #7e1518;
+  --warning-color: #fff;
+  --warning-hover-bg: #d3696c;
+
+  --success-bg: #216a12;
+  --success-color: #fff;
+  --success-hover-bg: #68b159;
+
+  --in-progress-bg: #162955;
+  --in-progress-color: #fff;
+  --in-progress-hover-bg: #4f628e;
+
+  --token-bg: var(--gc-blue);
+  --token-color: #e7f0fa;
+  --token-hover-bg: var(--gc-blue-hover);
+
+  --hiring-bg: #3a9ced;
+  --hiring-color: #fff;
+  --hiring-hover-bg: #3a9ced;
+}
+
+
 .tag-lg {
   padding: 6px 16px;
 }
@@ -17,66 +76,90 @@
   margin-bottom: 1px;
 }
 
-.tag.usd {
-  background-color: #d6fbeb;
-  color: #00A55E;
+/* usd */
+
+.tag.usd{
+  background-color: var(--usd-bg);
+  color: var(--usd-color);
 }
 
-.tag.usd:hover {
-  background-color: #c6ebdb;
+.tag.usd:hover{
+  background-color: var(--usd-hover-bg);
 }
 
-.tag.network_warning {
-  background-color: #fbaf95;
-  color: #fff;
+/* usd */
+
+.tag.network_warning{
+  background-color: var(--network_warning-bg);
+  color: var(--network_warning-color);
 }
 
-.tag.warning {
-  background-color: #7E1518;
-  color: #fff;
+.tag.network_warning:hover{
+  background-color: var(--network_warning-hover-bg);
 }
 
-.tag.warning:hover {
-  background-color: #D3696C;
+/* usd */
+
+.tag.warning{
+  background-color: var(--warning-bg);
+  color: var(--warning-color);
 }
 
-.tag.success {
-  background-color: #216A12;
-  color: #fff;
+.tag.warning:hover{
+  background-color: var(--warning-hover-bg);
 }
 
-.tag.success:hover {
-  background-color: #68B159;
+/* usd */
+
+.tag.success{
+  background-color: var(--success-bg);
+  color: var(--success-color);
 }
 
-.tag.in-progress {
-  background-color: #162955;
-  color: #fff;
+.tag.success:hover{
+  background-color: var(--success-hover-bg);
 }
 
-.tag.in-progress:hover {
-  background-color: #4F628E;
+/* usd */
+
+.tag.in-progress{
+  background-color: var(--in-progress-bg);
+  color: var(--in-progress-color);
 }
 
-.tag.token {
-  background-color: #e7f0fa;
-  color: var(--gc-blue);
+.tag.in-progress:hover{
+  background-color: var(--in-progress-hover-bg);
 }
 
-.tag.token:hover {
-  background-color: #d7e0ea;
+/* usd */
+
+.tag.token{
+  background-color: var(--token-bg);
+  color: var(--token-color);
 }
 
-.tag.hiring {
-  background-color: #3a9ced;
-  color: #fff;
+.tag.token:hover{
+  background-color: var(--token-hover-bg);
 }
 
-.tag.token > a {
+.tag.token > a{
   height: 0;
   line-height: 1.5rem;
   float: right;
 }
+
+/* hiring */
+
+.tag.hiring{
+  background-color: var(--hiring-bg);
+  color: var(--hiring-color);
+}
+
+.tag.hiring:hover{
+  background-color: var(--hiring-hover-bg);
+}
+
+/*  */
 
 .keyword-group {
   display: flex;
