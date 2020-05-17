@@ -1362,12 +1362,6 @@ class BountyFulfillment(SuperModel):
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True, help_text="fulfillers's profile")
     funder_profile = models.ForeignKey('dashboard.Profile', null=True, on_delete=models.CASCADE, help_text="funder's profile")
 
-    # TODO: MAKE AS PROP
-    fulfiller_email = models.CharField(max_length=255, blank=True)
-    # TODO: MAKE AS PROP
-    fulfiller_github_username = models.CharField(max_length=255, blank=True)
-    # TODO: MAKE AS PROP
-    fulfiller_name = models.CharField(max_length=255, blank=True)
 
     # TODO: rename to hours_worked
     fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
@@ -1398,16 +1392,21 @@ class BountyFulfillment(SuperModel):
         """
         return f'BountyFulfillment ID: ({self.pk}) - Bounty ID: ({self.bounty.pk})'
 
-    def save(self, *args, **kwargs):
-        """Define custom handling for saving bounty fulfillments."""
-        if self.fulfiller_github_username:
-            self.fulfiller_github_username = self.fulfiller_github_username.lstrip('@')
-        super().save(*args, **kwargs)
+
+    @property
+    def fulfiller_email(self):
+        return self.profile.email
+
+
+    @property
+    def fulfiller_github_username(self):
+        return self.profile.handle
 
 
     @property
     def should_hide(self):
         return self.fulfiller_github_username in settings.BLOCKED_USERS
+
 
     @property
     def to_json(self):
@@ -1422,7 +1421,6 @@ class BountyFulfillment(SuperModel):
             'bounty_id': self.bounty.pk,
             'email': self.fulfiller_email,
             'githubUsername': self.fulfiller_github_username,
-            'name': self.fulfiller_name,
             'payout_status': self.payout_status,
             'payout_amount': self.payout_amount,
             'token_name': self.token_name,

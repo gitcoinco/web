@@ -24,7 +24,6 @@ const ethFulfillBounty = data => {
   loading_button($('.js-submit'));
   const githubUsername = data.githubUsername;
   const issueURL = data.issueURL;
-  const notificationEmail = data.notificationEmail;
   const githubPRLink = data.githubPRLink;
   const hoursWorked = data.hoursWorked;
   const address = data.payoutAddress;
@@ -46,7 +45,6 @@ const ethFulfillBounty = data => {
       fulfiller: {
         githubPRLink: githubPRLink,
         hoursWorked: hoursWorked,
-        email: notificationEmail,
         githubUsername: githubUsername,
         address: address
       },

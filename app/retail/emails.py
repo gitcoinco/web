@@ -377,7 +377,6 @@ def render_no_applicant_reminder(bounty):
 
 
 def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
-    previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
     if persona == 'fulfiller':
         accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
         github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() and accepted_fulfillments.first().fulfiller_github_username else ""

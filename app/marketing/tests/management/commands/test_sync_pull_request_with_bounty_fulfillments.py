@@ -65,9 +65,6 @@ class TestSyncPullRequestWithBountyFulfillments(TestCase):
 
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
-            fulfiller_email='fred@bar.com',
-            fulfiller_github_username='samplegitcoindeveloper1',
-            fulfiller_name='Fred',
             accepted=False,
             bounty=Bounty.objects.last()
         )

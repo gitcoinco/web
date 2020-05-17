@@ -96,7 +96,6 @@ class TestAssembleLeaderboards(TestCase):
         )
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
-            fulfiller_github_username=self.bounty_earner_handle,
             bounty=self.bounty,
             accepted=True,
             profile=self.fulfiller_profile,
