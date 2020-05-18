@@ -22,7 +22,7 @@ $(document).ready(function() {
     if (!checked) {
       return;
     }
-    amount = 0.005 * 10 ** 18;
+    amount = document.gas_amount * 10 ** 18;
     var to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F';
 
     web3.eth.sendTransaction({

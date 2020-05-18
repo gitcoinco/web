@@ -6,7 +6,6 @@ Disallow: /profile/{{ handle }}*
 {% endfor %}
 
 Disallow: /kudos/redeem/*
-Disallow: /dynamic/avatar/*
 Disallow: /login/github/*
 
 User-agent: Yandex

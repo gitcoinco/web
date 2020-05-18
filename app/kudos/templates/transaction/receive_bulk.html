@@ -125,7 +125,7 @@
 
       <div class="form-check mt-2">
         <input type="checkbox" name="pay_gas" id="pay_gas" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{% endif %}>
-        <label for=pay_gas>{% trans "Chip in 0.005 ETH in gas money" %} 
+        <label for=pay_gas>Chip in {{gas_amount}} ETH in gas money
           <BR>
         {% if coupon.is_paid_right_now %}
           - (required now, optional <span class="m-0" data-time="{{coupon.paid_until|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
@@ -183,6 +183,7 @@
 <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <script>
   document.network = '{{coupon.token.contract.network}}';
+  document.gas_amount = {{gas_amount}};
   $(document).ready(function(){
     {% if error %}
       _alert('{{error}}', 'error');
