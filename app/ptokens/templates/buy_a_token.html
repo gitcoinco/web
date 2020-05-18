@@ -74,7 +74,7 @@
           <div id="section-fund" class="tab-section active">
             <div class="container px-0">
               <div class="row mb-3 py-2 px-md-0 mx-sm-0">
-                <div class="col-12 col-md-8 px-md-0">
+                <div class="col-12 col-md-12 px-md-0">
                   <h1 class="font-title">{%trans "Buy a Token" %}</h1>
                   <p class="my-4">
                     {%trans "With personal tokens, you can buy a stake of someone's future work potential today." %} <br>
@@ -111,8 +111,8 @@
                   <a class="btn btn-gc-blue" href="{% url "users_directory" %}">{%trans "Explore" %}</a>
 
                   <p class="my-4">
-                      {% trans "Disclaimer: Gitcoin personal tokens are currently in beta. Creators remain full control over whether or not they accept a redemption request." %}
-                      {% trans "There is an inherent risk that your redemption may not be redeemed, so please purchase at your own risk with the knowledge that secondary liquidity may be limited."%}
+                      <i>{% trans "Disclaimer: Gitcoin personal tokens are currently in beta. Creators remain full control over whether or not they accept a redemption request." %}</i>
+                      <i>{% trans "There is an inherent risk that your redemption may not be redeemed, so please purchase at your own risk with the knowledge that secondary liquidity may be limited."%}</i>
                   </p>
                 </div>
               </div>
@@ -157,9 +157,9 @@
 
                   <a class="btn btn-gc-blue" href="{% url 'dashboard' %}">{%trans "Get Started" %}</a>
 
-                  <i class="my-4">
-                    {% trans "Disclaimer: Personal tokens are highly experimental. Users who issue personal tokens and are unresponsive to redemption requests are likely to suffer penalties or be removed from the platform." %}
-                  </i>
+                  <p class="my-4">
+                    <i>{% trans "Disclaimer: Personal tokens are highly experimental. Users who issue personal tokens and are unresponsive to redemption requests are likely to suffer penalties or be removed from the platform." %}</i>
+                  </p>
                 </div>
               </div>
             </div>
