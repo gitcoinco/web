@@ -280,7 +280,13 @@ $(document).ready(function() {
     for (var i = document.buffered_rows.length; i > 0; i -= 1) {
       var html = document.buffered_rows[i - 1];
 
-      $('.infinite-container').prepend($(html));
+      let pin = $('.pinned-activity');
+
+      if (pin.length > 0) {
+        $(html).insertAfter($(pin));
+      } else {
+        $('.infinite-container').prepend($(html));
+      }
     }
     $(this).remove();
     document.buffered_rows = [];
@@ -544,14 +550,21 @@ $(document).ready(function() {
           self.find('.pin-title').html('Pin Post')
           _alert('Sucess unpin.', 'success', 1000);
         } else {
-          $('.pinned-activity').remove();
+          let curr_pinn = $('.pinned-activity');
+
           parent.addClass('pinned-activity');
           parent.find('.tip_activity').css({'background-color': '#e7fff5'});
           parent.removeClass('bg-white');
 
           self.data('state', 'unpin');
           self.find('.pin-title').html('Unpin Post')
-          $('.pinned-activity').replaceWith(parent);
+          if (curr_pinn.length > 0) {
+            $(curr_pinn).replaceWith(parent);
+          } else {
+            $('.activity_stream').prepend($('<div id="temp-pin"></div>'));
+            $('#temp-pin').replaceWith(parent);
+            window.scrollTo(0, 0);
+          }
           _alert('Status pinned.', 'success', 1000);
         }
       }
