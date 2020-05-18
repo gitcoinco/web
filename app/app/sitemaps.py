@@ -62,7 +62,7 @@ class ProfileSitemap(Sitemap):
     limit = 5000
 
     def items(self):
-        return Profile.objects.visible().order_by('-pk').cache()
+        return Profile.objects.filter(hide_profile=False).order_by('-pk').cache()
 
     def lastmod(self, obj):
         return obj.modified_on

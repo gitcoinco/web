@@ -2861,6 +2861,9 @@ def profile(request, handle, tab=None):
             context['is_on_tribe'] = json.dumps(context['is_on_tribe'])
             context['is_my_org'] = json.dumps(context['is_my_org'])
             context['profile_handle'] = profile.handle
+            context['title'] = profile.handle
+            context['card_desc'] = profile.desc
+
 
             return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
         except Exception as e:

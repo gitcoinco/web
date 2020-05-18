@@ -142,11 +142,15 @@
               {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
             {% endif %}
           </div>
+          {% if is_staff %}
           <div class="form-group">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The number of Gitcoin Quest Points rewarded to winner. Should scale with difficulty (Subject to final approval by Gitcoin team)"></i>
             <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" min="0" required>
           </div>
+          {% else %}
+          <input type="hidden" name="points" value="1">
+          {% endif %}
           <div class="form-group">
             <label class="form__label" for="minutes">{% trans "Cooldown Minutes" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="If someone fails the quest, how many minutes until they can try again?"></i>
