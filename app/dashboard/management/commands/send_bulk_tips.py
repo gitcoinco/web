@@ -89,7 +89,7 @@ class Command(BaseCommand):
         DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6a6e8b58dee0ca4b4ee147ad72d3ddd2ef1bf6f7'
         token_name = 'DAI'
         # https://gitcoin.co/_administrationperftools/jsonstore/1801078/change/
-        sybil_attack_addresses = JSONStore.objects.get(key='sybil_attack_addresses').first().data
+        sybil_attack_addresses = JSONStore.objects.get(key='sybil_attack_addresses').data
 
         # payout rankings (round must be finalized first)
         TOKEN_ADDRESS = DAI_ADDRESS
