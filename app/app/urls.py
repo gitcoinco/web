@@ -349,10 +349,6 @@ urlpatterns = [
     # Alpha functionality
     re_path(r'^profile/(.*)/(.*)?', dashboard.views.profile, name='profile_by_tab'),
     re_path(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
-    re_path(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
-    path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
-    path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
-    re_path(r'^tools/?', dashboard.views.toolbox, name='tools'),
     re_path(r'^labs/?', dashboard.views.labs, name='labs'),
 
     # gas views
@@ -418,7 +414,7 @@ urlpatterns = [
     url(r'^extension/firefox/?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
     path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
-    re_path(r'^tribes', retail.views.tribes, name='tribes'),
+    re_path(r'^tribes', retail.views.tribes_home, name='tribes'),
     path('tribe/<str:handle>/join/', dashboard.views.join_tribe, name='join_tribe'),
     path('tribe/<str:handle>/save/', dashboard.views.save_tribe, name='save_tribe'),
     path('tribe/title/', dashboard.views.set_tribe_title, name='set_tribe_title'),

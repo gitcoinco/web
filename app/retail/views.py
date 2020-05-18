@@ -41,7 +41,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity, Bounty, HackathonEvent, Profile, get_my_earnings_counter_profiles, get_my_grants
+from dashboard.models import (
+    Activity, Bounty, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
+)
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
@@ -55,7 +57,7 @@ from retail.helpers import get_ip
 from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
-from .utils import programming_languages
+from .utils import articles, press, programming_languages, reasons, testimonials
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +74,6 @@ def get_activities(tech_stack=None, num_activities=15):
 
 
 def index(request):
-
     products = [
         {
             'group' : 'grow_oss',
@@ -142,78 +143,15 @@ def index(request):
         }
     ]
 
-    press = [
-        {
-            'link': 'https://twit.tv/shows/floss-weekly/episodes/474',
-            'img' : 'v2/images/press/floss_weekly.jpg'
-        },
-        {
-            'link': 'https://epicenter.tv/episode/257/',
-            'img' : 'v2/images/press/epicenter.jpg'
-        },
-        {
-            'link': 'http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000',
-            'img': 'v2/images/press/ibtimes.jpg'
-        },
-        {
-            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
-            'img': 'v2/images/press/forbes.jpg'
-        },
-        {
-            'link': 'https://unhashed.com/cryptocurrency-news/gitcoin-introduces-collectible-kudos-rewards/',
-            'img': 'v2/images/press/unhashed.jpg'
-        },
-        {
-            'link': 'https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/',
-            'img': 'v2/images/press/coindesk.png'
-        },
-        {
-            'link': 'https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/',
-            'img': 'v2/images/press/se_daily.png'
-        },
-        {
-            'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
-            'img': 'v2/images/press/ethnews.jpg'
-        },
-        {
-            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
-            'img': 'v2/images/press/hosting-advice.png'
-        }
-    ]
-
-    articles = [
-        {
-            'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
-            'img': static("v2/images/medium/1.png"),
-            'title': _('Progressive Elaboration of Scope on Gitcoin'),
-            'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
-            'alt': 'gitcoin scope'
-        },
-        {
-            'link': 'https://gitcoin.co/blog/commit-reveal-scheme-on-ethereum/',
-            'img': static("v2/images/medium/2.png"),
-            'title': _('Commit Reveal Scheme on Ethereum'),
-            'description': _('Hiding Actions and Generating Random Numbers'),
-            'alt': 'commit reveal scheme'
-        },
-        {
-            'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
-            'img': static("v2/images/medium/3.png"),
-            'title': _('Announcing Open Kudos'),
-            'description': _('Our vision for integrating Kudos in any (d)App'),
-            'alt': 'open kudos'
-        }
-    ]
-
     context = {
         'products': products,
         'know_us': know_us,
-        'press': press,
-        'articles': articles,
+        'press': press(),
+        'articles': articles(),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
-        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto')
+        'title': _('Grow Open Source: Get crowdfunding and find freelance developers for your software projects, paid in crypto'),
     }
     return TemplateResponse(request, 'home/index.html', context)
 
@@ -911,7 +849,7 @@ def products(request):
             'description': _("Gitcoin offers Virtual Hackathons about once a month; Earn Prizes by working with some of the best projects in the decentralization space."),
             'link': 'https://hackathons.gitcoin.co',
             'img': static('v2/images/products/graphics-hackathons.png'),
-            'logo': static('v2/images/products/hackathons-logo.svg'),
+            'logo': static('v2/images/top-bar/hackathons-symbol-neg.svg'),
             'service_level': 'Full Service',
             'traction': '1-3 hacks/month worth $40k/mo',
         },
@@ -922,7 +860,7 @@ def products(request):
                             contributions to your favorite OSS maintainers. Plus, with our NEW quarterly $100k+ matching funds it's now even easier to fund your OSS work! "),
             'link': '/grants',
             'img': static('v2/images/products/graphics-Grants.png'),
-            'logo': static('v2/images/products/grants-logo.svg'),
+            'logo': static('v2/images/top-bar/grants-symbol-neg.svg'),
             'service_level': 'Self Service',
             'traction': 'over $1mm in GMV',
         },
@@ -933,7 +871,7 @@ def products(request):
                             It's also a way to showcase special skills that a member might have."),
             'link': '/kudos',
             'img': static('v2/images/products/graphics-Kudos.png'),
-            'logo': static('v2/images/products/kudos-logo.svg'),
+            'logo': static('v2/images/top-bar/kudos-symbol-neg.svg'),
             'service_level': 'Self Service',
             'traction': '1200+ kudos sent/month',
         },
@@ -944,7 +882,7 @@ def products(request):
                             through bounties."),
             'link': '/explorer',
             'img': static('v2/images/products/graphics-Bounties.png'),
-            'logo': static('v2/images/products/gitcoin-logo.svg'),
+            'logo': static('v2/images/top-bar/bounties-symbol-neg.svg'),
             'service_level': 'Self Service',
             'traction': '$25k/mo',
         },
@@ -968,17 +906,6 @@ def products(request):
             'logo': static('v2/images/products/engine-logo.png'),
             'service_level': 'Integrated',
             'traction': 'Matching 20k devs/mo',
-        },
-        {
-            'name': 'labs',
-            'heading': _("Tools for busy developers"),
-            'description': _("Gitcoin Labs provides research reports and toolkits for busy developers, \
-                            making Ethereum dapps fast, usable, and secure."),
-            'link': '/labs',
-            'img': static('v2/images/products/graphics-Labs.png'),
-            'logo': static('v2/images/products/labs-logo.svg'),
-            'service_level': 'Self Service',
-            'traction': '12 Articles Shipped',
         }
     ]
 
@@ -989,7 +916,7 @@ def products(request):
             'description': _("Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, earn rewards, and level up your decentralization-fu!"),
             'link': '/quests',
             'img': static('v2/images/products/graphics-Quests.png'),
-            'logo': static('v2/images/products/quests-symbol.svg'),
+            'logo': static('v2/images/top-bar/quests-symbol-neg.svg'),
             'service_level': 'Self Service',
             'traction': 'over 3000 plays/month',
         })
@@ -1118,8 +1045,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         if what == 'everywhere':
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
-
-    activities = activities.filter().exclude(pin__what=what)
 
     return activities
 
@@ -1587,121 +1512,18 @@ def increase_funding_limit_request(request):
 
     return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)
 
-@staff_member_required
-def tribes(request):
-    plans= [
-        {
-            'type': 'lite',
-            'img': static('v2/images/tribes/landing/plan-lite.svg'),
-            'price': '10k',
-            'features': [
-                '1 Hackthon Credit'
-            ],
-            'features_na': [
-                'Access to Gitcoin Pro Tools'
-            ]
-        },
-        {
-            'type': 'pro',
-            'img': static('v2/images/tribes/logo.svg'),
-            'discount': '40%',
-            'price': '6k',
-            'features': [
-                {
-                    'title': '3 Hackathon Credits',
-                    'info': '18k year total'
-                },
-                'Access to Gitcoin Pro Tools'
-            ]
-        },
-        {
-            'type': 'launch',
-            'img': static('v2/images/tribes/landing/plan-launch.svg'),
-            'price': '4k',
-            'features': [
-                {
-                    'title': '5 Hackathon Credits',
-                    'info': '20k year total'
-                },
-                'Access to Gitcoin Pro Tools'
-            ]
-        }
-    ]
 
-    tribes = JSONStore.objects.get(view='tribes', key='tribes').data
-
-    testimonials = [
-        {
-            'text': 'I had a lot of fun (during Beyond Blockchain) meeting people and building tangible rapidly. Glad to have a winning submission!',
-            'author': 'VirajA',
-            'designation': 'Hacker',
-            'photo': static('v2/images/tribes/landing/viraj.png')
-        },
-        {
-            'text': 'Gitcoin has a fantastic community that is our target audience -- Web 3 developers who want to build.',
-            'author': 'Sam Williams',
-            'designation': 'CEO, Arweave',
-            'photo':  static('v2/images/tribes/landing/sam.jpg'),
-            'org_photo': static('v2/images/project_logos/arweave.svg')
-        },
-        {
-            'text': 'Relationships with developers" is our guiding light. For both developers and ourselves, it’s great to work with GItcoin to see more working examples using Portis.',
-            'author': 'Scott Gralnick',
-            'designation': 'Co-Founder, Portis',
-            'photo': static('v2/images/tribes/landing/scott.png'),
-            'org_photo': static('v2/images/project_logos/portis.png')
-        }
-    ]
-
-    reasons = [
-        {
-            'title': 'Hackathon',
-            'img': static('v2/images/tribes/landing/hackathon.svg'),
-            'info': 'See meaningful projects come to life on your dapp'
-        },
-        {
-            'title': 'Suggest Bounty',
-            'img': static('v2/images/tribes/landing/suggest.svg'),
-            'info': 'Get bottoms up ideas from passionate contributors'
-        },
-        {
-            'title': 'Grow Tribe',
-            'img': static('v2/images/tribes/landing/grow.svg'),
-            'info': 'Work seamlessly with your core contributors'
-        },
-        {
-            'title': 'Workshops',
-            'img': static('v2/images/tribes/landing/workshop.svg'),
-            'info': 'Host workshops and learn together'
-        },
-        {
-            'title': 'Chat',
-            'img': static('v2/images/tribes/landing/chat.svg'),
-            'info': 'Direct connection to your trusted tribe'
-        },
-        {
-            'title': 'Town Square',
-            'img': static('v2/images/tribes/landing/townsquare.svg'),
-            'info': 'Broadcast your priorities and engagey our tribe'
-        },
-        {
-            'title': 'Payout/Fund',
-            'img': static('v2/images/tribes/landing/payout.svg'),
-            'info': 'Easily co-manage hackathons with your team'
-        },
-        {
-            'title': 'Stats Report',
-            'img': static('v2/images/tribes/landing/stats.svg'),
-            'info': 'See how your hackathons are performing'
-        }
-    ]
+def tribes_home(request):
+    tribes = Profile.objects.filter(is_org=True).annotate(followers=Count('follower')).order_by('-followers')[:8]
 
     context = {
-        'plans': plans,
-        'tribes': tribes,
-        'testimonials': testimonials,
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')),
-        'reasons': reasons
+        'testimonials': testimonials(),
+        'reasons': reasons(),
+        'articles': articles(),
+        'press': press(),
+        'tribes': tribes,
+        'show_sales_action': True,
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)

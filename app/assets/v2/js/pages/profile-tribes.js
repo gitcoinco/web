@@ -1,5 +1,6 @@
 /* eslint-disable no-loop-func */
 
+document.long_poller_live = false;
 
 const loadDynamicScript = (callback, url, id) => {
   const existingScript = document.getElementById(id);
@@ -92,11 +93,14 @@ const loadDynamicScript = (callback, url, id) => {
 
           $.when(sendSave(url, data)).then(function(response) {
             _alert('Tribe has been updated');
-            vm.tribe.tribes_cover_image = vm.headerFilePreview;
-            vm.$bvModal.hide('change-tribe-header');
+            if (vm.headerFile) {
+              vm.tribe.tribes_cover_image = vm.headerFilePreview;
+              vm.$bvModal.hide('change-tribe-header');
+            }
           }).fail(function(error) {
-            _alert('Error saving priorites. Try again later', 'error');
-            console.error('error: unable to save priority', error);
+
+            _alert('Error updating Tribe', 'error');
+            console.error('error: unable to update tribe', error);
           });
         },
         suggestBounty: function() {
@@ -180,10 +184,14 @@ const loadDynamicScript = (callback, url, id) => {
         tabChange: function(input) {
           let vm = this;
 
+          document.long_poller_live = false;
+
           switch (input) {
             default:
             case 0:
               newPathName = 'townsquare';
+              document.long_poller_live = true;
+              document.run_long_poller(true);
               break;
             case 1:
               newPathName = 'projects';
@@ -194,19 +202,13 @@ const loadDynamicScript = (callback, url, id) => {
             case 3:
               newPathName = 'bounties';
               break;
+            case 4:
+              newPathName = 'manage';
+              break;
           }
           let newUrl = `/${vm.tribe.handle}/${newPathName}${window.location.search}`;
 
           history.pushState({}, `Tribe - @${vm.tribe.handle}`, newUrl);
-        },
-        onEditorBlur(quill) {
-          console.log('editor blur!', quill);
-        },
-        onEditorFocus(quill) {
-          console.log('editor focus!', quill);
-        },
-        onEditorReady(quill) {
-          console.log('editor ready!', quill);
         }
       },
       computed: {
@@ -234,8 +236,10 @@ const loadDynamicScript = (callback, url, id) => {
         });
         let vm = this;
 
-        vm.isLoading = false;
-        $('#preloader').remove()
+        this.$nextTick((e) => {
+          vm.isLoading = false;
+          $('#preloader').remove();
+        });
         this.$watch('headerFile', function(newVal, oldVal) {
           if (checkFileSize(this.headerFile, 4000000) === false) {
             _alert(`Profile Header Image should not exceed ${(4000000 / 1024 / 1024).toFixed(2)} MB`, 'error');

@@ -30,7 +30,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
           </p>
           <a id=explore_quests class="hero-p-mobile btn btn-gc-blue" href="#available_quests">
-            <img class="mr-1 white-icon" src="{% static "v2/images/products/quests-symbol.svg" %}">
+            <img class="mr-1 white-icon" height="22" src="{% static "v2/images/top-bar/quests-symbol-neg.svg" %}">
             Explore Quests
           </a>
         </div>
@@ -97,7 +97,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </h2>
         </a>
         <ul class='tags mb-1'>
-          {% for tag in quest.ui_data.tags %} 
+          {% for tag in quest.ui_data.tags %}
             <li>#{{tag|lower}}</li>
           {% endfor %}
         </ul>
@@ -117,7 +117,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
         <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Play Quest</a>
       {% else %}
-        🔒Locked; To unlock 
+        🔒Locked; To unlock
         {% if quest.unlocked_by_hackathon %}
           register for <a href="{{quest.unlocked_by_hackathon.onboard_url}}">{{quest.unlocked_by_hackathon.name}}</a>.
         {% else %}
@@ -138,22 +138,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
   <div id="announce">
     <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
-    <h4><strong>Round 3 Challenge ended on 1/30!</strong></h4>
-    <p class="mb-0">Congratulations to</p> 
-      <ol style='display: inline-block; margin: 0px auto;'>
-        {% for rw in latest_round_winners %}
-          <li>
-            <a href="/profile/@{{rw}}">
-              @{{rw}}
-            </a>
-          </li>
-        {% endfor %}
-      </ol>
-      <p>
-      They have <strong>a $60 prize</strong> and a <i>very special Kudos</i>.
+    <h4><strong>Round 4 Challenge ended on 4/30!</strong></h4>
+    <p class="mb-0">
+      Congrats to the winners, <a href="https://github.com/gitcoinco/web/issues/6574" target="new">announced here</a>
       </p>
-      <h5 class="mt-1 pt-0"><strong>Round 4 Challenge is now Live!</strong></h5>
-      <p class="mb-3">Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on 4/30/2020 will <strong>win a special 60 DAI prize</strong> and a <i>very special Kudos</i>.
+      <h5 class="mt-1 pt-0"><strong>Round 5 Challenge is now Live!</strong></h5>
+      <p class="mb-3">Starting with round 5, we will have more advanced anti-cheating congrats + will no longer be rewarding referrals as much.  Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on 7/30/2020 will <strong>win a special 60 DAI prize</strong> and a <i>very special Kudos</i>.
   </div>
 
 </div>
@@ -245,11 +235,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </td>
           </tr>
           {% endfor %}
-        </table>      
+        </table>
       </div>
     </div>
     {% endif %}
-  </div>  
+  </div>
 </div>
 <div class="row indent_on_mobile leaderboard_tab how_to_earn hidden">
 <div class="row indent_on_mobile" style="background-color: #fafafa;">
@@ -267,7 +257,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <div class="container-fluid py-4">
     <div class="container w-50 float-left">
       <strong>Gitcoin Quests are a team sport!</strong>.
-      You can onboard friends into the ecosystem,  earn points, climb the leaderboard faster, by referring friends to share tips & play together.  
+      You can onboard friends into the ecosystem,  earn points, climb the leaderboard faster, by referring friends to share tips & play together.
       <br>
       <br>
       After each quest you complete you will be invited to show off your quest completion + share a referral link.  You will earn points for every user who join completes a quest after joining with your referral link.
@@ -303,7 +293,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% else %}
               1/{{row.reward_denominator}}
             {% endif %}
-            point{{row.reward_denominator|pluralize}} + <img style="width:17px; height: 17px;" data-src="{% static "v2/images/quests/rando_kudos.gif" %}"> quest kudos 
+            point{{row.reward_denominator|pluralize}} + <img style="width:17px; height: 17px;" data-src="{% static "v2/images/quests/rando_kudos.gif" %}"> quest kudos
           </td>
         </tr>
         {% endfor %}
@@ -344,7 +334,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     By creating a quest.
     </h3>
   <div class="container-fluid py-4 pt-1">
-    Want to teach the world something?  Want to earn 3 points for doing it? 
+    Want to teach the world something?  Want to earn 3 points for doing it?
     <a href="#create_quest">Create a quest on Gitcoin</a>
   </div>
   <h3 class="mt-0">
@@ -361,7 +351,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{% endif %}">
     <div class="leaderboard_hero hide_on_mobile">
       {% for item in this_leaderboard.1 %}
-      <div class="inner_row {{ item.4|apnumber }}"> 
+      <div class="inner_row {{ item.4|apnumber }}">
         <h3 class="mr-2 ml-2" style="font-weight:bold;">
           {{ item.4|ordinal }} - {{item.1}} point{{item.1|pluralize}}
         </h3>
@@ -413,9 +403,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 <div class="container-fluid py-1 pt-3 announce indent_on_mobile">
   <div class="container">
-    
+
     <h4 class="pt-0">We &lt;3 Feedback.</h4>
-    <strong>Gitcoin Quests</strong> has been played <strong>{{attempt_count}} times</strong> by <strong>{{user_count}} community members</strong>.  About <strong>{{success_ratio}}% </strong> of quest attempts are sucessful.  
+    <strong>Gitcoin Quests</strong> has been played <strong>{{attempt_count}} times</strong> by <strong>{{user_count}} community members</strong>.  About <strong>{{success_ratio}}% </strong> of quest attempts are sucessful.
 
     <br>
     Quests is still in ALPHA and is evolving.  Got feedback?
@@ -434,9 +424,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 <div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile">
   <div class="container">
-    
+
     <h4 class="pt-0">Quest Content Squad Here; Looking for new Quest Topic Ideas..</h4>
-    <strong>Gitcoin Quests is by & for the community.</strong>  As of right now <strong>{{total_visible_quest_count}} quests have been created</strong>; of which <strong>Gitcoin Core created {{gitcoin_created}} of them</strong> and the <strong>community created {{community_created}} of them</strong>.  This means our Quests Economy is designed to be driven by the community. That means you ( yes you ) can help drive the roadmap!  
+    <strong>Gitcoin Quests is by & for the community.</strong>  As of right now <strong>{{total_visible_quest_count}} quests have been created</strong>; of which <strong>Gitcoin Core created {{gitcoin_created}} of them</strong> and the <strong>community created {{community_created}} of them</strong>.  This means our Quests Economy is designed to be driven by the community. That means you ( yes you ) can help drive the roadmap!
     <br>
     <br>
     Gitcoin Quests is designed to usher users through their *web3 a-ha moments* in a fun informative way.
@@ -469,7 +459,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 <div class="container-fluid py-1 pt-3 announce announce6 indent_on_mobile">
   <div class="container">
-    
+
     <h4 class="pt-0">Our Roadmap is Decentralized. Vote on what we should BUIDL next.</h4>
     We are proud to say that our quest product roadmap is open to all.. You can even vote on what we BUIDL next!
     <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5436">
@@ -487,9 +477,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 <div class="container-fluid py-1 pt-3 announce announce3 indent_on_mobile">
   <div class="container">
-    
+
     <h4 class="pt-0">Want to Write a Gitcoin Quest?</h4>
-    <strong>The Gitcoin Quests Economy is driven by writers just like you... </strong>  
+    <strong>The Gitcoin Quests Economy is driven by writers just like you... </strong>
     <br>
     <br>
     Got a web3 a-ha moment you want to tell the world about?
@@ -511,9 +501,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce4 indent_on_mobile">
   <div class="container">
-    
+
     <h4 class="pt-0">Want to BUIDL a Gitcoin Quest Game Dynamic?</h4>
-    <strong>The Gitcoin Quests Economy is driven by aspiring game programmers just like you... </strong>  
+    <strong>The Gitcoin Quests Economy is driven by aspiring game programmers just like you... </strong>
     <br>
     <br>
     Got a retro game dynamic or game experience that you love?  Want to build it into web-based educational experience?  Want to earn some rewards (Quest Points, ETH) while doing so?
@@ -551,7 +541,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce5 indent_on_mobile">
   <div class="container">
-    
+
     <h4 class="pt-0">Play Gitcoin Quests Now.</h4>
     <br>
     We'll automagically choose your next quest for you.
@@ -563,13 +553,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <div class="float-right right-announce2" style="margin-top: 50px; width: 45%;">
     <img data-src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
-    <p>Quests Stats are real-time (ish); updated every hour or so. </p> 
+    <p>Quests Stats are real-time (ish); updated every hour or so. </p>
   </div>
 
 
   <div class="float-left right-announce3" style="margin-top: 50px;  width: 45%;">
     <img data-src="{% static 'v2/images/quests/enemies/goldbot.svg' %}" />
-    <p>No kilobits were harmed in the making of this landing page..</p> 
+    <p>No kilobits were harmed in the making of this landing page..</p>
   </div>
 
   </div>
@@ -580,7 +570,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <div class="float-right right-announce4" style="margin-top: 50px; width: 45%;">
     <img data-src="{% static 'v2/images/quests/enemies/spider_bot.svg' %}" />
-    <p>Psst.. Hey you, kid. Check out the <a style="font-weight: bold; color: black;" href="/products">rest of our products</a>. </p> 
+    <p>Psst.. Hey you, kid. Check out the <a style="font-weight: bold; color: black;" href="/products">rest of our products</a>. </p>
   </div>
 
   </div>
@@ -597,7 +587,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       if (scrollTop > 500 && !document.offset_loaded){
         $("img").unveil(200);
-        document.offset_loaded = true; 
+        document.offset_loaded = true;
       }
     }, 3000);
     setTimeout(function(){

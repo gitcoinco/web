@@ -24,11 +24,11 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
-    CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
-    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
-    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
-    UserVerificationModel, Poll, Question, Option, Answer, FundRequest
+    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
+    BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch, Option, Poll,
+    PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember,
+    UserAction, UserVerificationModel,
 )
 
 
@@ -82,15 +82,9 @@ class EarningAdmin(admin.ModelAdmin):
     search_fields = ['from_profile__handle', 'to_profile__handle']
 
 
-class ToolAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['votes']
-
-
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer', 'hackathonevent']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer', 'hackathonevent', 'project']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
     def response_change(self, request, obj):
@@ -116,11 +110,6 @@ class TokenApprovalAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
     search_fields = ['profile__handle', 'token_name', 'token_address']
-
-
-class ToolVoteAdmin(admin.ModelAdmin):
-    raw_id_fields = ['profile']
-    ordering = ['-id']
 
 
 class BountyInvitesAdmin(admin.ModelAdmin):
@@ -483,8 +472,6 @@ admin.site.register(Tip, TipAdmin)
 admin.site.register(TokenApproval, TokenApprovalAdmin)
 admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
-admin.site.register(Tool, ToolAdmin)
-admin.site.register(ToolVote, ToolVoteAdmin)
 admin.site.register(Sponsor, SponsorAdmin)
 admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(HackathonSponsor, HackathonSponsorAdmin)
