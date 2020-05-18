@@ -3602,7 +3602,7 @@ def hackathon(request, hackathon='', panel='prizes'):
 
 
     what = f'hackathon:{hackathon_event.id}'
-
+    from townsquare.utils import can_pin
     try:
         pinned = PinnedPost.objects.get(what=what)
     except PinnedPost.DoesNotExist:
@@ -3613,6 +3613,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'type': 'hackathon',
         'title': title,
         'what': what,
+        'can_pin': can_pin(request, what),
         'pinned': pinned,
         'target': f'/activity?what={what}',
         'orgs': orgs,
