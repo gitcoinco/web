@@ -3089,7 +3089,8 @@ class Profile(SuperModel):
 
     @property
     def desc(self):
-        return self.get_desc(self.get_funded_bounties(), self.get_fulfilled_bounties())
+        bounties = self.get_orgs_bounties() if self.is_org else self.get_fulfilled_bounties() 
+        return self.get_desc(self.get_funded_bounties(), bounties)
 
     @property
     def github_created_on(self):
@@ -3731,7 +3732,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__icontains=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url)
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
