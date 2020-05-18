@@ -295,13 +295,13 @@
           </button>
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             {% if can_pin %}
-              <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the Tribe Town Square." href=# 
+              <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the feed." href=#
               data-url="{{row.url}}"
               data-action="pin"
-              data-state="{% if row.pin.what == what %}unpin{% else %}pin{%endif%}"
+              data-state="{% if row.pin.what == what or is_pin %}unpin{% else %}pin{%endif%}"
               data-pk="{{row.pk}}">
 
-              <i class="fas fa-map-pin mr-2"></i>{% if row.metadata.pin%}Unpin {% else %} Pin {% endif %} Post
+              <i class="fas fa-map-pin mr-2"></i><span class="pin-title">{% if row.pin.what == what or is_pin %}Unpin {% else %} Pin {% endif %} Post</span>
               </a>
             {% endif %}
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
