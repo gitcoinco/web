@@ -83,7 +83,7 @@ urlpatterns = [
 
     # personal_tokens
     re_path(r'^token/quickstart/?', ptokens.views.quickstart, name='quickstart'),
-    re_path(r'^ptokens/faq/?', ptokens.views.faq, name='ptokens_faq'),
+    re_path(r'^token/faq/?', ptokens.views.faq, name='ptokens_faq'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
