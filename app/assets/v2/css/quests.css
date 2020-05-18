@@ -893,6 +893,15 @@ body.back22.quest_battle {
   background-size: 120%;
 }
 
+.video-background{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  object-fit: fill;
+  top: 0px;
+  left: 0px;
+}
+
 div.back23,
 body.back23.quest_battle {
   background: url('/static/v2/images/quests/backs/back23.jpeg') repeat;
