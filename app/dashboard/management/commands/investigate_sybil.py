@@ -16,10 +16,12 @@
 
 '''
 
+import time
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-import time
-from dashboard.models import Profile, Investigation
+
+from dashboard.models import Investigation, Profile
 
 
 class Command(BaseCommand):
