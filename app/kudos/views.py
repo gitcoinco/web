@@ -51,6 +51,7 @@ from kudos.utils import kudos_abi
 from marketing.mails import new_kudos_request
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from townsquare.models import PinnedPost
 from web3 import Web3
 
 from .forms import KudosSearchForm
@@ -196,6 +197,11 @@ def details(request, kudos_id, name):
     if kudos.hidden_token_details_page:
         raise Http404
 
+    what = f'kudos:{kudos.pk}'
+    try:
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     context = {
         'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
@@ -206,6 +212,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/kudos/assets/kudos-image.png')),
         'kudos': kudos,
+        'pinned': pinned,
         'related_handles': list(set(kudos.owners_handles))[:num_kudos_limit],
         'target': f'/activity?what=kudos:{kudos.pk}',
     }

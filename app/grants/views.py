@@ -59,7 +59,7 @@ from marketing.mails import (
 from marketing.models import Keyword, Stat
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Comment
+from townsquare.models import Comment, PinnedPost
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -349,6 +349,11 @@ def grants(request):
         title = f"Round {clr_round} Stats"
     cht = []
     chart_list = ''
+    try:
+        what = 'all_grants'
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -377,6 +382,8 @@ def grants(request):
         'avatar_height': 1097,
         'avatar_width': 1953,
         'grants': grants,
+        'what': what,
+        'pinned': pinned,
         'target': f'/activity?what=all_grants',
         'bg': bg,
         'keywords': get_keywords(),
@@ -509,6 +516,11 @@ def grant_details(request, grant_id, grant_slug):
             )
         is_unsubscribed_from_updates_from_this_grant = True
 
+    try:
+        what = f'grant:{grant.pk}'
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
@@ -526,7 +538,9 @@ def grant_details(request, grant_id, grant_slug):
         'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
         'keywords': get_keywords(),
-        'target': f'/activity?what=grant:{grant.pk}',
+        'target': f'/activity?what={what}',
+        'pinned': pinned,
+        'what': what,
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,

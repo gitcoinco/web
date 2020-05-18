@@ -336,6 +336,10 @@ def get_following_tribes(request):
 def town_square(request):
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
+    try:
+        pinned = PinnedPost.objects.get(what=tab)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
@@ -385,7 +389,9 @@ def town_square(request):
         'nav': 'home',
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
+        'what': tab,
         'tabs': tabs,
+        'pinned': pinned,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -449,6 +455,7 @@ def api(request, activity_id):
 
     # setup response
     response = {}
+    status = 200
 
     # no perms needed responses go here
     if request.GET.get('method') == 'comment':
@@ -544,14 +551,37 @@ def api(request, activity_id):
     # PinnedPost request
     elif request.POST.get('method') == 'pin':
         what = request.POST.get('what')
-        print(what)
-        print(request.POST.get('direction'))
-        if request.POST.get('direction') == 'pin':
-            pinned_post, created = PinnedPost.objects.update_or_create(
-                activity=activity, user=request.user.profile, what=what
-            )
-        elif request.POST.get('direction') == 'unpin':
-            PinnedPost.objects.filter(what=what).delete()
+        permission = False
+        # handle permissions for pinning/unpinning
+        if ':' in what:
+            split = what.split(':')
+            key = split[0]
+            lookup = split[1]
+        else:
+            key = what
+            lookup = what
+
+        if key == 'grant': # check for grant owner
+            permission = True
+        elif key == 'tribe': # check for org owner
+            permission = request.user.is_authenticated and any(
+                [lookup.lower() == org.lower() for org in request.user.profile.organizations])
+        else:
+            if request.user.is_staff:
+                permission = True
+            else:
+                status = 400
+                response['message'] = "Bad Request"
+        if permission:
+            if request.POST.get('direction') == 'pin':
+                pinned_post, created = PinnedPost.objects.update_or_create(
+                    what=what, defaults={"activity": activity, "user": request.user.profile}
+                )
+            elif request.POST.get('direction') == 'unpin':
+                PinnedPost.objects.filter(what=what).delete()
+        else:
+            status = 401
+            response['message'] = "UNAUTHORIZED"
 
     # flag request
     elif request.POST.get('method') == 'flag':
@@ -575,7 +605,7 @@ def api(request, activity_id):
         if 'Just sent a tip of' not in comment:
             comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
 
-    return JsonResponse(response)
+    return JsonResponse(response, status=status)
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
