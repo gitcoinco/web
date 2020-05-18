@@ -63,11 +63,11 @@
           {% endif %}
 
           {% if not hidden %}
-            <div class="col-12 col-lg-6 profile-header__main-infos">
+            <div class="col-12 col-lg-3 profile-header__main-infos">
               {% include 'profiles/header_avatar.html' %}
               {% include 'profiles/header_details.html' %}
             </div>
-            
+            {% include 'profiles/scorecard_ptoken.html' %}
             {% if profile.is_org %}
               {% include 'profiles/organization.html' %}
             {% elif profile.cascaded_persona == 'funder' %}
