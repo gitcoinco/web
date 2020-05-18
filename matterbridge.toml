@@ -1,0 +1,27 @@
+[discord]
+    [discord.gitcoin]
+    Token="NzEwMTMyMzc1MzU4Nzk5OTI1.XrwAig.qY4dYGjceYKgwnAXnVPQd55WlzA"
+    Server="562828676480237578"
+
+[mattermost]
+    [mattermost.gitcoin]
+    Server="chat.gitcoin.co"
+    Team="hackathons"
+    Token="6f7x559dbtggbe9ahwf5ajtino"
+    PrefixMessagesWithNick=true
+
+
+[general]
+RemoteNickFormat="<{NICK}> "
+
+[[gateway]]
+name="mygateway"
+enable=true
+
+    [[gateway.inout]]
+    account="discord.gitcoin"
+    channel="bridge-test"
+
+    [[gateway.inout]]
+    account="mattermost.gitcoin"
+    channel="bridge-test"

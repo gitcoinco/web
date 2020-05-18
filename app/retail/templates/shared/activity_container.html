@@ -16,13 +16,18 @@
 
 {% endcomment %}
 <div class="mt-2">
-  <div class="infinite-container activity_stream">
+  <div class="infinite-container activity_stream" data-what="{{what}}">
+
+    {% if pinned %}
+        {% include 'shared/activity.html' with is_pin=True row=pinned.activity %}
+    {% endif %}
+
     {% for row in activities %}
-      {% include 'shared/activity.html' %}
+      {% include 'shared/activity.html' with can_pin=True %}
     {% endfor %}
     <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
     {% if not suppress_more_link %}
-      <a class="infinite-more-link" data-what="{{what}}" href="{% if target %}{{target}}{% else %}?what={{what}}&page={{next_page}}{% endif %}" style="{% if not supress_infinite_more_link_hidden %}display:none;{%endif%}">{% if infinite_more_copy %}{{infinite_more_copy}}{% else %}More{%endif%}</a>
+      <a class="infinite-more-link" href="{% if target %}{{target}}{% else %}?what={{what}}&page={{next_page}}{% endif %}" style="{% if not supress_infinite_more_link_hidden %}display:none;{%endif%}">{% if infinite_more_copy %}{{infinite_more_copy}}{% else %}More{%endif%}</a>
     {% endif %}
   </div>
 </div>

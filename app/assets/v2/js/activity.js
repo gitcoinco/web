@@ -213,7 +213,7 @@ $(document).ready(function() {
     }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
-        max_pk = $('#activities .box').first().data('pk');
+        max_pk = $('#activities .box [data-pk]').first().data('pk');
         if (!max_pk) {
           return;
         }
@@ -498,7 +498,11 @@ $(document).ready(function() {
     var num = $(this).find('span.num').html();
 
     if (method === 'pin') {
-      params['what'] = $('.infinite-more-link').data('what');
+      if (confirm('Only one post may be pinned at a time')) {
+        params['what'] = $('.infinite-container').data('what');
+      } else {
+        return false;
+      }
     } else if (is_unliked) { // like
       $(this).find('span.action').addClass('open');
       $(this).data('state', $(this).data('affirmative'));
@@ -528,19 +532,23 @@ $(document).ready(function() {
         self.parentsUntil('.activity_stream').remove();
       }
 
-      if (state === 'unpin') {
-        $('.pinned-activity').addClass('bg-white');
-        $('.pinned-activity .tip_activity').css({'background-color': 'white'});
-        $('.pinned-activity').css({'border-bottom-color': '#EFEFEF;'});
-        $('.pinned-activity .activity_pinned').hide();
-        $('.box').removeClass('pinned-activity');
-        _alert('Sucess unpin.', 'success', 1000);
-      } else {
-        parent.addClass('pinned-activity');
-        parent.find('.tip_activity').css({'background-color': '#e7fff5'});
-        parent.removeClass('bg-white');
-        parent.find('.activity_pinned').show();
-        _alert('Status pinned.', 'success', 1000);
+      if (method === 'pin') {
+        if (state === 'unpin') {
+          $('.pinned-activity').addClass('bg-white');
+          $('.pinned-activity .tip_activity').css({'background-color': 'white'});
+          $('.pinned-activity').css({'border-bottom-color': '#EFEFEF;'});
+          $('.pinned-activity .activity_pinned').hide();
+          $('.box').removeClass('pinned-activity');
+          _alert('Sucess unpin.', 'success', 1000);
+        } else {
+          $('.pinned-activity').remove();
+          parent.addClass('pinned-activity');
+          parent.find('.tip_activity').css({'background-color': '#e7fff5'});
+          parent.removeClass('bg-white');
+          $('.activity_stream').prepend(parent);
+          parent.remove();
+          _alert('Status pinned.', 'success', 1000);
+        }
       }
 
     }).fail(function() {

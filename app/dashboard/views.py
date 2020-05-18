@@ -88,7 +88,7 @@ from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
-from townsquare.models import Comment
+from townsquare.models import Comment, PinnedPost
 from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
 
@@ -2853,8 +2853,13 @@ def profile(request, handle, tab=None):
             context['sum_eth_on_repos'] = profile.get_eth_sum(bounties=orgs_bounties)
             context['works_with_org'] = profile.get_who_works_with(work_type='org', bounties=orgs_bounties)
             context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
-            context['what'] = what
+            what = f'tribe:{profile.handle}'
+            try:
+                context['pinned'] = PinnedPost.objects.get(what=what)
+            except PinnedPost.DoesNotExist:
+                context['pinned'] = None
             context['target'] = f'/activity?what={what}'
+            context['what'] = what
             context['is_on_tribe'] = json.dumps(context['is_on_tribe'])
             context['is_my_org'] = json.dumps(context['is_my_org'])
             context['profile_handle'] = profile.handle
@@ -3598,13 +3603,20 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 4
 
 
+    what = f'hackathon:{hackathon_event.id}'
 
+    try:
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     params = {
         'active': 'dashboard',
         'prize_count': hackathon_event.get_current_bounties.count(),
         'type': 'hackathon',
         'title': title,
-        'target': f'/activity?what=hackathon:{hackathon_event.id}',
+        'what': what,
+        'pinned': pinned,
+        'target': f'/activity?what={what}',
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,

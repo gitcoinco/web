@@ -54,6 +54,7 @@ from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
+from townsquare.models import PinnedPost
 from townsquare.tasks import increment_view_counts
 
 from .forms import FundingLimitIncreaseRequestForm
@@ -969,7 +970,7 @@ def results(request, keyword=None):
 
 def get_specific_activities(what, trending_only, user, after_pk, request=None):
     # create diff filters
-    activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    activities = Activity.objects.filter(hidden=False).order_by('-created_on').exclude(pin__what__iexact=what)
     view_count_threshold = 10
 
     is_auth = user and user.is_authenticated
@@ -1060,7 +1061,6 @@ def activity(request):
 
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
-
     # store last seen
     if activities.exists():
         last_pk = activities.first().pk
@@ -1087,6 +1087,7 @@ def activity(request):
         'what': what,
         'next_page': next_page,
         'page': page,
+        'pinned': None,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
         'my_tribes': list(request.user.profile.tribe_members.values_list('org__handle',flat=True)) if request.user.is_authenticated else [],
