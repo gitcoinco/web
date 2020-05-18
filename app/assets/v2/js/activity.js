@@ -498,7 +498,8 @@ $(document).ready(function() {
     var num = $(this).find('span.num').html();
 
     if (method === 'pin') {
-      if (confirm('Only one post may be pinned at a time')) {
+      let message = state === 'pin' ? 'This action will pin the selected post, only one Pin may be active at a time' : 'This action will un-pin this post, are you sure?'
+      if (confirm(message)) {
         params['what'] = $('.infinite-container').data('what');
       } else {
         return false;
@@ -539,14 +540,18 @@ $(document).ready(function() {
           $('.pinned-activity').css({'border-bottom-color': '#EFEFEF;'});
           $('.pinned-activity .activity_pinned').hide();
           $('.box').removeClass('pinned-activity');
+          self.data('state', 'pin');
+          self.find('.pin-title').html('Pin Post')
           _alert('Sucess unpin.', 'success', 1000);
         } else {
           $('.pinned-activity').remove();
           parent.addClass('pinned-activity');
           parent.find('.tip_activity').css({'background-color': '#e7fff5'});
           parent.removeClass('bg-white');
-          $('.activity_stream').prepend(parent);
-          parent.remove();
+
+          self.data('state', 'unpin');
+          self.find('.pin-title').html('Unpin Post')
+          $('.pinned-activity').replaceWith(parent);
           _alert('Status pinned.', 'success', 1000);
         }
       }
