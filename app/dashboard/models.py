@@ -4903,7 +4903,7 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
-    
+
     @property
     def mutual_follow(self):
         return TribeMember.objects.filter(profile=self.org, org=self.profile).exists()
@@ -4918,17 +4918,18 @@ class TribeMember(SuperModel):
         tribe_following = Subquery(TribeMember.objects.filter(org=self.profile).values_list('profile', flat=True))
         return TribeMember.objects.filter(org__in=tribe_following, profile=self.org).exclude(org=self.org)
 
-      
+
 class Poll(SuperModel):
     title = models.CharField(max_length=350, blank=True, null=True)
     active = models.BooleanField(default=False)
-    hackathon = models.ForeignKey(HackathonEvent, on_delete=models.SET_NULL, null=True, blank=True)
+    hackathon = models.ManyToManyField(HackathonEvent)
+
 
 
 class Question(SuperModel):
     TYPE_QUESTIONS = (
         ('SINGLE_CHOICE', 'Single Choice'),
-        ('MUTIPLE_CHOICE', 'Multiple Choices'),
+        ('MULTIPLE_CHOICE', 'Multiple Choices'),
         ('OPEN', 'Open'),
     )
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True, blank=True)
@@ -4952,3 +4953,5 @@ class Answer(SuperModel):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     open_response = models.CharField(max_length=350, blank=True, null=True)
     choice = models.ForeignKey(Option, on_delete=models.CASCADE, null=True, blank=True)
+    checked = models.BooleanField(default=False)
+    hackathon = models.ForeignKey(HackathonEvent, null=True, on_delete=models.CASCADE)

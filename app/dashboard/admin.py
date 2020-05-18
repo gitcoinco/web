@@ -427,8 +427,7 @@ class OptionsInline(admin.TabularInline):
 
 
 class PollsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'active', 'hackathon', 'created_on']
-    raw_id_fields = ['hackathon']
+    list_display = ['id', 'title', 'active']
     search_fields = ['title']
     inlines = [QuestionInline]
 
@@ -447,8 +446,8 @@ class OptionsAdmin(admin.ModelAdmin):
 
 
 class AnswersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'question', 'open_response', 'choice']
-    raw_id_fields = ['user', 'question', 'choice']
+    list_display = ['id', 'user', 'question', 'open_response', 'choice', 'checked', 'hackathon']
+    raw_id_fields = ['user', 'question', 'choice', 'hackathon']
     unique_together = ('user', 'question', 'choice')
 
 

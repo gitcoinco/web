@@ -64,12 +64,12 @@ class EncodeAnything(DjangoJSONEncoder):
 
 def get_time():
     """Get the local time."""
-    return localtime(timezone.now())
+    return timezone.now()
 
 
 def get_0_time():
     """Get the local time."""
-    return localtime(timezone.datetime(1970, 1, 1).replace(tzinfo=pytz.utc))
+    return timezone.datetime(1970, 1, 1).replace(tzinfo=pytz.utc)
 
 
 class SuperModel(models.Model):
@@ -80,8 +80,8 @@ class SuperModel(models.Model):
 
         abstract = True
 
-    created_on = models.DateTimeField(null=False, default=get_time, db_index=True)
-    modified_on = models.DateTimeField(null=False, default=get_time)
+    created_on = models.DateTimeField(null=True, default=get_time, db_index=True)
+    modified_on = models.DateTimeField(null=True, default=get_time)
 
     def save(self, update=True, *args, **kwargs):
         """Override the SuperModel save to optionally handle modified_on logic."""
