@@ -97,6 +97,7 @@ class Command(BaseCommand):
             print('no from_profile found')
             return
 
+        sent_addresses = []
         for username in usernames:
 
             # issue payment
@@ -121,6 +122,13 @@ class Command(BaseCommand):
             amount = int(_amount * 10**DECIMALS)
             tx_id = '0x0'
             if actually_send:
+
+                if address.lower() in sent_addresses:
+                    print('address was already in the sent addresess; skipping due to anti-sybil protections')
+                    continue
+
+                sent_addresses.append(address.lower())
+
                 tx = contract.functions.transfer(address, amount).buildTransaction({
                     'nonce': w3.eth.getTransactionCount(from_address),
                     'gas': 60000,
