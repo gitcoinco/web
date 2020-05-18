@@ -60,6 +60,7 @@ from marketing.models import Keyword, Stat
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Comment, PinnedPost
+from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -383,6 +384,7 @@ def grants(request):
         'avatar_width': 1953,
         'grants': grants,
         'what': what,
+        'can_pin': can_pin(request, what),
         'pinned': pinned,
         'target': f'/activity?what=all_grants',
         'bg': bg,
@@ -541,6 +543,7 @@ def grant_details(request, grant_id, grant_slug):
         'target': f'/activity?what={what}',
         'pinned': pinned,
         'what': what,
+        'can_pin': can_pin(request, what),
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,

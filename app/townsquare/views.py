@@ -15,6 +15,7 @@ from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
+from grants.models import Grant
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore
@@ -25,7 +26,7 @@ from .models import (
     Announcement, Comment, Favorite, Flag, Like, PinnedPost, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
 )
 from .tasks import increment_offer_view_counts
-from .utils import is_user_townsquare_enabled
+from .utils import is_user_townsquare_enabled, can_pin
 
 tags = [
     ['#announce','bullhorn','search-announce'],
@@ -354,6 +355,7 @@ def town_square(request):
             'page_seo_text_insert': page_seo_text_insert,
             'nav': 'home',
             'what': tab,
+            'can_pin': can_pin(request, tab),
             'pinned': pinned,
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
@@ -390,6 +392,7 @@ def town_square(request):
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
         'what': tab,
+        'can_pin': can_pin(request, tab),
         'tabs': tabs,
         'pinned': pinned,
         'SHOW_DRESSING': SHOW_DRESSING,

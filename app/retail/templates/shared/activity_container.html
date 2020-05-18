@@ -18,11 +18,11 @@
 <div class="mt-2">
   <div class="infinite-container activity_stream" data-what="{{what}}">
     {% if pinned %}
-        {% include 'shared/activity.html' with can_pin=True is_pin=True row=pinned.activity %}
+        {% include 'shared/activity.html' with is_pin=True row=pinned.activity %}
     {% endif %}
 
     {% for row in activities %}
-      {% include 'shared/activity.html' with can_pin=True %}
+      {% include 'shared/activity.html' %}
     {% endfor %}
     <img class="loading" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
     {% if not suppress_more_link %}

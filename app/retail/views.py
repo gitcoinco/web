@@ -56,6 +56,7 @@ from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 from townsquare.models import PinnedPost
 from townsquare.tasks import increment_view_counts
+from townsquare.utils import can_pin
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import articles, press, programming_languages, reasons, testimonials
@@ -1083,6 +1084,7 @@ def activity(request):
     context = {
         'suppress_more_link': suppress_more_link,
         'what': what,
+        'can_pin': can_pin(request, what),
         'next_page': next_page,
         'page': page,
         'pinned': None,
