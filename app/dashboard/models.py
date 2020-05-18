@@ -4074,6 +4074,8 @@ class Profile(SuperModel):
         context['portfolio_keywords'] = sorted_portfolio_keywords
         earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
         earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        from django.contrib.contenttypes.models import ContentType
+        earnings_to = earnings_to.exclude(source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'))
         context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))
         context['spent_total'] = round(sum(earnings_from.values_list('value_usd', flat=True)))
         context['earnings_count'] = earnings_to.count()
