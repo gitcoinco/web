@@ -145,7 +145,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         <label class="form__label" id="token_label">{% trans "Token" %}</label>
                         {% if grant_has_no_token %}
                           <div class="form__select2">
-                            <select class='js-select2' name='denomination' id='js-token'> </select>
+                            <select class='js-select2' name='denomination' id='js-token'>
+                              <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
+                            </select>
                           </div>
                         {% else %}
                           <p class="my-2">{{ grant.token_symbol }}</p>

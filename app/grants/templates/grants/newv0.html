@@ -90,7 +90,9 @@
                 <div class="form__group-horizontal pb-3">
                     <label class="font-body">{% trans "Required Token For Subscription" %}</label>
                     <div class="form__select2">
-                      <select class='js-select2' name='denomination' id='js-token'></select>
+                      <select class='js-select2' name='denomination' id='js-token'>
+                        <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
+                      </select>
                     </div>
                 </div>
 
