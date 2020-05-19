@@ -30,6 +30,8 @@ def can_pin(request, what):
     elif key == 'tribe':  # check for org owner
         permission = request.user.is_authenticated and any(
             [lookup.lower() == org.lower() for org in request.user.profile.organizations])
+    elif key == 'my_threads':
+        permission = False
     else:
         if request.user.is_staff:
             permission = True

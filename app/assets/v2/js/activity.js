@@ -546,6 +546,7 @@ $(document).ready(function() {
           $('.box').removeClass('pinned-activity');
           self.data('state', 'pin');
           self.find('.pin-title').html('Pin Post');
+          parent.remove();
           _alert('Sucess unpin.', 'success', 1000);
         } else {
           let curr_pinn = $('.pinned-activity');
