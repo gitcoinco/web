@@ -211,10 +211,9 @@ $(document).ready(function() {
         }
       }, refresh_interval);
     }
-    console.log(`max pk:${max_pk}`)
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
-        max_pk = $('#activities .box').find('div[data-pk]').first().data('pk');
+        max_pk = $('#activities div.box[data-pk]').first().data('pk');
 
         if (!max_pk) {
           return;
@@ -506,7 +505,8 @@ $(document).ready(function() {
     var num = $(this).find('span.num').html();
 
     if (method === 'pin') {
-      let message = state === 'pin' ? 'This action will pin the selected post, only one Pin may be active at a time' : 'This action will un-pin this post, are you sure?'
+      let message = state === 'pin' ? 'This action will pin the selected post, only one Pin may be active at a time' : 'This action will un-pin this post, are you sure?';
+
       if (confirm(message)) {
         params['what'] = $('.infinite-container').data('what');
       } else {
@@ -545,7 +545,7 @@ $(document).ready(function() {
         if (state === 'unpin') {
           $('.box').removeClass('pinned-activity');
           self.data('state', 'pin');
-          self.find('.pin-title').html('Pin Post')
+          self.find('.pin-title').html('Pin Post');
           _alert('Sucess unpin.', 'success', 1000);
         } else {
           let curr_pinn = $('.pinned-activity');
@@ -553,7 +553,7 @@ $(document).ready(function() {
           parent.addClass('pinned-activity');
 
           self.data('state', 'unpin');
-          self.find('.pin-title').html('Unpin Post')
+          self.find('.pin-title').html('Unpin Post');
           if (curr_pinn.length > 0) {
             $(curr_pinn).replaceWith(parent);
           } else {
@@ -1021,7 +1021,7 @@ $(document).ready(function() {
         if (response.status <= 204) {
           _alert('comment successfully deleted.', 'success', 1000);
           $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
-          console.log(response);
+
         } else {
           _alert(`Unable to delete commment: ${response.message}`, 'error');
           console.log(`error deleting commment: ${response.message}`);
