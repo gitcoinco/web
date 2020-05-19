@@ -134,9 +134,16 @@ function qrcodeConnect() {
 }
 
 web3Modal.providers.push({name: 'QRcode', onClick: qrcodeConnect});
+
 web3Modal.connect().then(function(provider) {
   window.web3 = new Web3(provider);
 });
+
+if (web3Modal.cachedProvider) {
+  web3Modal.connect().then(function(provider) {
+    window.web3 = new Web3(provider);
+  });
+}
 
 var unloading_button = function(button) {
   button.prop('disabled', false);
