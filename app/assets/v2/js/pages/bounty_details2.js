@@ -306,6 +306,18 @@ Vue.mixin({
         _alert('Unable to make payout bounty. Please try again later', 'error');
       });
     },
+    nextStepAndLoadPYPLButton: function(fulfillment_id, fulfiller_identifier) {
+      let vm = this;
+
+      Promise.resolve(vm.goToStep('submit_transaction', 'payout_amount')).then(() => {
+        const ele = '#payout-with-pypl';
+
+        $(ele).html('');
+        const modal = this.$refs['payout-modal'][0];
+
+        payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
+      });
+    },
     closeBounty: function() {
 
       let vm = this;
@@ -388,10 +400,6 @@ Vue.mixin({
         return [];
       }
 
-      if (vm.is_bounties_network) {
-        return vm.bounty.fulfillments.filter(fulfillment => fulfillment.accepted);
-      }
-
       return vm.bounty.fulfillments.filter(fulfillment =>
         fulfillment.accepted &&
           fulfillment.payout_status == 'done'
@@ -452,6 +460,15 @@ Vue.mixin({
       }
       vm.fulfillment_context.referrer = currentStep;
       vm.fulfillment_context.active_step = nextStep;
+    },
+    initFulfillmentContext: function(fulfillment) {
+      let vm = this;
+
+      if (fulfillment.payout_type == 'fiat') {
+        vm.fulfillment_context.active_step = 'payout_amount';
+      } else if (fulfillment.payout_type == 'qr') {
+        vm.fulfillment_context.active_step = 'check_wallet_owner';
+      }
     }
   },
   computed: {
@@ -466,9 +483,11 @@ Vue.mixin({
       let activities = this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
 
       if (decimals) {
-        activities.forEach(activity => {
+        activities.forEach((activity, index) => {
           if (activity.metadata) {
-            if (activity.metadata.new_bounty) {
+            if (activity.metadata.token_name == 'USD' && activity.activity_type == 'worker_paid') {
+              activity.metadata['token_value'] = activity.metadata.payout_amount;
+            } else {
               activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
             }
           }
@@ -491,12 +510,11 @@ if (document.getElementById('gc-bounty-detail')) {
         cb_address: cb_address,
         isOwner: false,
         isOwnerAddress: false,
-        is_bounties_network: is_bounties_network,
         fulfillment_context: {
           active_step: 'check_wallet_owner',
           amount: 0
         },
-        decimals: 18, // TODO: UPDATE BASED ON TOKEN
+        decimals: 18,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
         quickLinks: []
