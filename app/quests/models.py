@@ -55,6 +55,7 @@ class Quest(SuperModel):
     )
     ui_data = JSONField(default=dict, blank=True)
     edit_comments = models.TextField(default='', blank=True)
+    admin_comments = models.TextField(default='', blank=True)
     
     def __str__(self):
         """Return the string representation of this obj."""
