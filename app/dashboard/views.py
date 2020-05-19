@@ -4050,7 +4050,22 @@ def hackathon_registration(request):
 
     user_email_hash = hashlib.md5(email.encode('utf')).hexdigest()
 
+    try:
+        client.lists.members.create_or_update(settings.MAILCHIMP_LIST_ID_HACKERS, user_email_hash, mailchimp_data)
 
+        client.lists.members.tags.update(
+            settings.MAILCHIMP_LIST_ID_HACKERS,
+            user_email_hash,
+            {
+                'tags': [
+                    {'name': hackathon, 'status': 'active'},
+                ],
+            }
+        )
+        print('pushed_to_list')
+    except Exception as e:
+        logger.error(f"error in record_action: {e}")
+        pass
 
     if referer and '/issue/' in referer and is_safe_url(referer, request.get_host()):
         messages.success(request, _(f'You have successfully registered to {hackathon_event.name}. Happy hacking!'))
