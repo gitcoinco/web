@@ -135,9 +135,16 @@ function qrcodeConnect() {
 }
 
 web3Modal.providers.push({name: 'QRcode', onClick: qrcodeConnect});
+
 web3Modal.connect().then(function(provider) {
   window.web3 = new Web3(provider);
 });
+
+if (web3Modal.cachedProvider) {
+  web3Modal.connect().then(function(provider) {
+    window.web3 = new Web3(provider);
+  });
+}
 
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';

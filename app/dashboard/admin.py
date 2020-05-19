@@ -159,7 +159,7 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
-    readonly_fields = ['active_bounties_list']
+    readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
 
     def active_bounties_list(self, instance):
@@ -171,6 +171,60 @@ class ProfileAdmin(admin.ModelAdmin):
                 htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
         html = format_html("<BR>".join(htmls))
         return html
+
+    def user_sybil_info(self, instance):
+        htmls = []
+        userActions = instance.actions.filter(action='Visit')
+        from django.db.models import Count
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        ipAddresses = userActions.values('ip_address').annotate(Count("id")).order_by('-id__count')
+        cities = userActions.values('location_data__city').annotate(Count("id")).order_by('-id__count')
+
+        htmls += [f"<a href=/_administrationdashboard/useraction/?profile={instance.pk}>View Recent User Actions</a><BR>"]
+
+        htmls += [ f"Github Created: {instance.github_created_on.strftime('%Y-%m-%d')} ({naturaltime(instance.github_created_on)})<BR>"]
+
+        if instance.preferred_payout_address:
+            htmls.append('Preferred Payout Address')
+            htmls.append(f' - {instance.preferred_payout_address}')
+            other_Profiles = Profile.objects.filter(preferred_payout_address=instance.preferred_payout_address).exclude(pk=instance.pk).values_list('handle', flat=True)
+            url = f'/_administrationdashboard/useraction/?preferred_payout_address={instance.preferred_payout_address}'
+            htmls += [f" -- <a href={url}>{len(other_Profiles)} other profiles share this ppa: {', '.join(list(other_Profiles))}</a><BR>"]
+
+        htmls.append('IP Addresses')
+        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        for ip in ipAddresses:
+            html = f"- <a href=/_administrationdashboard/useraction/?ip_address={ip['ip_address']}>{ip['ip_address']} ({ip['id__count']} Visits)</a>"
+            other_Profiles = UserAction.objects.filter(ip_address=ip['ip_address'], profile__isnull=False).exclude(profile=instance).distinct('profile').values_list('profile__handle', flat=True)
+            if len(other_Profiles):
+                html += f"<BR> -- {len(other_Profiles)} other profiles share this IP: {', '.join(list(other_Profiles))}"
+            htmls.append(html)
+        htmls.append("</div>'")
+
+        htmls.append('Cities')
+        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        for city in cities:
+            html = f"- <a href=/_administrationdashboard/useraction/?location_data__city={city['location_data__city']}>{city['location_data__city']} ({city['id__count']} Visits)</a>"
+            htmls.append(html)
+        htmls.append("</div>'")
+
+        htmls.append('Earnings')
+        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        for earning in instance.earnings.filter(network='mainnet').all():
+            html = f"- <a href={earning.admin_url}>{earning}</a>"
+            htmls.append(html)
+        htmls.append("</div>'")
+
+        htmls.append('Sent Earnings')
+        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        for earning in instance.sent_earnings.filter(network='mainnet').all():
+            html = f"- <a href={earning.admin_url}>{earning}</a>"
+            htmls.append(html)
+        htmls.append("</div>'")
+
+        htmls = format_html("<BR>".join(htmls))
+        return htmls
+    user_sybil_info.allow_tags = True
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect

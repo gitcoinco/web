@@ -18,7 +18,8 @@ redis = RedisService().redis
 
 # Lock timeout of 2 minutes (just in the case that the application hangs to avoid a redis deadlock)
 LOCK_TIMEOUT = 60 * 2
-delay_if_gas_prices_gt = 25
+delay_if_gas_prices_gt_redeem = 25
+delay_if_gas_prices_gt_mint = 60
 
 @app.shared_task(bind=True, max_retries=10)
 def mint_token_request(self, token_req_id, retry=False):
@@ -35,7 +36,7 @@ def mint_token_request(self, token_req_id, retry=False):
             obj = TokenRequest.objects.get(pk=token_req_id)
             multiplier = 1
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
-            if gas_price > delay_if_gas_prices_gt:
+            if gas_price > delay_if_gas_prices_gt_mint:
                 self.retry(countdown=120)
                 return
             tx_id = obj.mint(gas_price)
@@ -65,7 +66,7 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
             try:
                 multiplier = 1
                 gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
-                if gas_price > delay_if_gas_prices_gt:
+                if gas_price > delay_if_gas_prices_gt_redeem:
                     self.retry(countdown=120)
                     return
 

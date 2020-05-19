@@ -35,6 +35,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import (
     grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
 )
+from perftools.models import JSONStore
 from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
@@ -87,6 +88,8 @@ class Command(BaseCommand):
         from_username = options['from_name']
         DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6a6e8b58dee0ca4b4ee147ad72d3ddd2ef1bf6f7'
         token_name = 'DAI'
+        # https://gitcoin.co/_administrationperftools/jsonstore/1801078/change/
+        sybil_attack_addresses = JSONStore.objects.get(key='sybil_attack_addresses').data
 
         # payout rankings (round must be finalized first)
         TOKEN_ADDRESS = DAI_ADDRESS
@@ -97,6 +100,7 @@ class Command(BaseCommand):
             print('no from_profile found')
             return
 
+        sent_addresses = []
         for username in usernames:
 
             # issue payment
@@ -121,6 +125,17 @@ class Command(BaseCommand):
             amount = int(_amount * 10**DECIMALS)
             tx_id = '0x0'
             if actually_send:
+
+                if address.lower() in sent_addresses:
+                    print('address was already in the sent addresess; skipping due to anti-sybil protections')
+                    continue
+
+                if address.lower() in sybil_attack_addresses:
+                    print('skipping due to anti-sybil protections')
+                    continue
+
+                sent_addresses.append(address.lower())
+
                 tx = contract.functions.transfer(address, amount).buildTransaction({
                     'nonce': w3.eth.getTransactionCount(from_address),
                     'gas': 60000,
