@@ -341,11 +341,13 @@ var start_quest = function() {
 
 $(document).ready(function() {
 
-  var size_background = function(){
+  var size_background = function() {
     var buffer = 200;
-    $(".video-background").css('height', ($( window ).height() + buffer)+ "px")
-    $(".video-background").css('width', ($( window ).width() + buffer) + "px")
-  }
+
+    $('.video-background').css('height', ($(window).height() + buffer) + 'px');
+    $('.video-background').css('width', ($(window).width() + buffer) + 'px');
+  };
+
   $(window).resize(size_background);
   size_background();
   // force the music to load
