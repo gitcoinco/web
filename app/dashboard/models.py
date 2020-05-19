@@ -3089,7 +3089,9 @@ class Profile(SuperModel):
 
     @property
     def desc(self):
-        return self.get_desc(self.get_funded_bounties(), self.get_fulfilled_bounties())
+        bounties1 = self.get_funded_bounties() if not self.is_org else Bounty.objects.none()
+        bounties2 = self.get_orgs_bounties() if self.is_org else self.get_fulfilled_bounties() 
+        return self.get_desc(bounties1, bounties2)
 
     @property
     def github_created_on(self):
@@ -3731,7 +3733,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__icontains=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url)
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
@@ -4074,6 +4076,8 @@ class Profile(SuperModel):
         context['portfolio_keywords'] = sorted_portfolio_keywords
         earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
         earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        from django.contrib.contenttypes.models import ContentType
+        earnings_to = earnings_to.exclude(source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'))
         context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))
         context['spent_total'] = round(sum(earnings_from.values_list('value_usd', flat=True)))
         context['earnings_count'] = earnings_to.count()
