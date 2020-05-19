@@ -89,29 +89,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   <div class="flex-container">
                     <div style="width: 25%">
                       <div class="flex-container" style="justify-content: start">
-                        <img :src="grant.grantImgPath" alt="Grant logo" width="30">
-                        <div class="grant-name">[[grant.grantName]]</div>
+                        <img :src="grant.grant_logo" alt="Grant logo" width="30">
+                        <div class="grant-name">[[grant.grant_title]]</div>
                       </div>
                     </div>
                     <div style="width: 20%">
                       <div>
-                        [[grant.donationAmount]]
-                        [[grant.donationCurrency]]
+                        [[grant.grant_donation_amount]]
+                        [[grant.grant_donation_currency]]
                       </div>
                       <div class="font-smaller-3">
                         + Add comment to owner
                       </div>
                     </div>
                     <div style="width: 20%">
-                      [[grant.donationType]]
-                      <span v-if="grant.donationType === 'Recurring'">
-                        for [[grant.numberOfRounds]] rounds
+                      <span v-if="grant.grant_donation_type === 'one-time'">One Time</span>
+                      <span v-else-if="grant.grant_donation_type === 'recurring'">Recurring</span>
+                      <span v-else>Error: Invalid donation type</span>
+                      <span v-if="grant.donationType === 'recurring'">
+                        for [[grant.grant_donation_num_rounds]] rounds
                       </span>
                     </div>
                     <div class="clr-match-box" style="width: 20%;">
                       <div class="flex-container">
                         <div>
-                          [[grant.clrMatchAmount]] DAI
+                          [[grant.grant_donation_clr_match]] DAI
                         </div>
                         <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
                           width="20">

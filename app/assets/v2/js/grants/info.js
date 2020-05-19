@@ -39,6 +39,14 @@ function addToCart(grantData) {
         return;
     }
 
+    // Add donation defaults
+    // TODO Update to use real data
+    grantData.grant_donation_amount = 5;
+    grantData.grant_donation_currency = 'DAI';
+    grantData.grant_donation_type = 'one-time'; // options are 'one-time' and 'recurring'
+    grantData.grant_donation_num_rounds = 0; // N/A if type is one-time
+    grantData.grant_donation_clr_match = 250;
+
     let cartList = loadCart()
     cartList.push(grantData);
     setCart(cartList);
