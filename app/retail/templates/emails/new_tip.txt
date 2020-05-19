@@ -12,14 +12,22 @@
 {{comments}}
 {% endif %}
 
-{% if already_redeemed %}
- {% trans "This tip has been remitted automatically to the Ethereum address on file for your account via txid " %}{{tip.txid}}
-{% elif show_expires %}
-The tip expires on *{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}*.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
+{% if tip.stream_id %}
+ {% trans "Your tip is being stream through" %}<a href="https://sablier.finance" target="_blank">Sablier</a>. {% trans "to your Ethereum address (" %}{{tip.receive_address}}{% trans "). Click the button below to see it in real time and reedem it whenever you want!" %}
 {% else %}
-No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
+ {% if already_redeemed %}
+  {% trans "This tip has been remitted automatically to the Ethereum address on file for your account via txid " %}{{tip.txid}}
+ {% elif show_expires %}
+  The tip expires on *{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}*.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
+ {% else %}
+  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
+ {% endif %}
 {% endif %}
 
-{% if not already_redeemed %}
-Click here to redeem it: {{link}}
+{% if tip.stream_id %}
+ Open Streaming Tip: https://app.sablier.finance/stream/{{tip.stream_id}}
+{% else %}
+ {% if not already_redeemed %}
+  Click here to redeem it: {{link}}
+ {% endif %}
 {% endif %}

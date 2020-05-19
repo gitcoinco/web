@@ -33,7 +33,7 @@ import requests
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from marketing.mails import featured_funded_bounty, send_mail, setup_lang, tip_email
+from marketing.mails import featured_funded_bounty, send_mail, set_account_address_email, setup_lang, tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from marketing.utils import should_suppress_notification_email
 from pyshorteners import Shortener
@@ -322,6 +322,25 @@ def maybe_market_tip_to_email(tip, emails):
 
     tip_email(tip, set(emails), True)
     return True
+
+
+def maybe_market_set_acccount_address(from_user, emails, network):
+    """Send an email for requesting a user to set an account address to receive tips .
+
+    Args:
+        from_user (str): User that will send a tip.
+        emails (list of str): The list of emails to notify.
+
+    Returns:
+        bool: Whether or not the email notification was sent successfully.
+
+    """
+    if network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    set_account_address_email(from_user, set(emails), network)
+    return True
+    
 
 
 def maybe_market_tip_to_slack(tip, event_name):

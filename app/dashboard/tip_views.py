@@ -41,7 +41,9 @@ from retail.helpers import get_ip
 from web3 import Web3
 
 from .models import Activity, FundRequest, Profile, Tip, TipPayout
-from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
+from .notifications import (
+    maybe_market_set_acccount_address, maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack,
+)
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -256,6 +258,7 @@ def send_tip_4(request):
     params = json.loads(request.body)
     txid = params['txid']
     destinationAccount = params['destinationAccount']
+    stream_id = params['stream_id'] if hasattr(params, 'stream_id') else None
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     if is_direct_to_recipient:
         tip = Tip.objects.get(
@@ -291,6 +294,7 @@ def send_tip_4(request):
             profile=get_profile(tip.username),
             tip=tip,
             )
+    tip.stream_id = stream_id
     tip.save()
     tip.trigger_townsquare()
 
@@ -332,6 +336,61 @@ def tipee_address(request, handle):
     profile = get_profile(str(handle).replace('@', ''))
     if profile and profile.preferred_payout_address:
         response['addresses'].append(profile.preferred_payout_address)
+    return JsonResponse(response)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_stream_invite(request):
+    """Send an email notification for a user to set an an account address in order to receive a tip
+       through Sablier streaming money.
+
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+    response = {
+        'status': 'OK',
+        'message': _('An email notification has been sent to the user'),
+    }
+
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated and request.user.profile else ''
+
+    params = json.loads(request.body)
+
+    to_username = params['username'].lstrip('@')
+    to_emails = get_emails_by_category(to_username)
+    primary_email = ''
+
+    if to_emails.get('primary', None):
+        primary_email = to_emails['primary']
+    elif to_emails.get('github_profile', None):
+        primary_email = to_emails['github_profile']
+    else:
+        if len(to_emails.get('events', None)):
+            primary_email = to_emails['events'][0]
+        else:
+            print("TODO: no email found.  in the future, we should handle this case better because it's GOING to end up as a support request")
+    if primary_email and isinstance(primary_email, list):
+        primary_email = primary_email[0]
+
+    # If no primary email in session, try the POST data. If none, fetch from GH.
+    if params.get('fromEmail'):
+        primary_from_email = params['fromEmail']
+    elif access_token and not primary_from_email:
+        primary_from_email = get_github_primary_email(access_token)
+
+    network = params['network']
+    tipper = from_username if from_username != '' else (primary_from_email if primary_from_email != '' else 'Someone')
+
+    sent = maybe_market_set_acccount_address(tipper, [primary_email], network)
+    if not sent:
+        response['status'] = 'error'
+        response['message'] = _('Email notification not sent')
+
     return JsonResponse(response)
 
 

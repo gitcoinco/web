@@ -1658,6 +1658,11 @@ class Tip(SendCryptoAsset):
     sender_profile = models.ForeignKey(
         'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
+    stream_id = models.PositiveIntegerField(blank=True, null=True)
+
+    @property
+    def is_streaming_tip(self):
+        return True if self.stream_id is not None else False
 
     @property
     def is_programmatic_comment(self):

@@ -230,6 +230,23 @@ def new_grant(request):
     return HttpResponse(response_html)
 
 
+def render_set_account_request_email(from_user, to_email, network):
+    warning = network if network != 'mainnet' else ""
+    # link = 'https://gitcoin.co/settings/account'
+    link = '/settings/account'
+    
+    params = {
+        'link': link,
+        'from_user': from_user,
+        'warning': warning
+    }
+
+    response_html = premailer_transform(render_to_string("emails/set_account_request.html", params))
+    response_txt = render_to_string("emails/set_account_request.txt", params)
+
+    return response_html, response_txt
+
+
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
     already_redeemed = bool(tip.receive_txid)

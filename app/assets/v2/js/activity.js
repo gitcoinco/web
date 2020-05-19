@@ -453,6 +453,7 @@ $(document).ready(function() {
       from_name,
       username,
       amountInEth,
+      0,
       comments_public,
       comments_priv,
       from_email,

@@ -26,6 +26,8 @@
   <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/lib/bootstrap.min.js" %}"></script>
+  <script src="{% static "v2/js/bootstrap-duration-picker.min.js" %}"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
@@ -34,6 +36,7 @@
 <!-- Main -->
 {% block 'main' %}
 <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "v2/css/bootstrap-duration-picker.css" %}">
 <style>
   #ethinfo-tooltip {
     top: 19.5rem;
@@ -62,6 +65,72 @@
   .to_name .select2-container,
   .terms {
     margin-top: 0.75rem;
+  }
+
+  #sablier-container {
+    border: 1px solid black;
+    border-radius: 12px;
+    margin: 20px 0px;
+    padding: 10px;
+  }
+
+  .toggle-label {
+    float: left;
+    margin: 10px 0px;
+    padding-left: 35px;
+  }
+
+  .toggle-btn {
+    float: right;
+    width: 80px;
+    height: 40px;
+    margin: 10px;
+    border-radius: 50px;
+    display: inline-block;
+    position: relative;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAyklEQVQ4T42TaxHCQAyENw5wAhLACVUAUkABOCkSwEkdhNmbpHNckzv689L98toIAKjqGcAFwElEFr5ln6ruAMwA7iLyFBM/TPDuQSrxwf6fCKBoX2UMIYGYkg8BLOnVg2RiAEexGaQQq4w9e9klcxGLLAUwgDAcihlYAR1IvZA1sz/+AAaQjXhTQQVoe2Yo3E7UQiT2ijeQdojRtClOfVKvMVyVpU594kZK9zzySWTlcNqZY9tjCsUds00+A57z1e35xzlzJjee8xf0HYp+cOZQUQAAAABJRU5ErkJggg==') no-repeat 50px center #e74c3c;
+    cursor: pointer;
+    -webkit-transition: background-color .40s ease-in-out;
+    -moz-transition: background-color .40s ease-in-out;
+    -o-transition: background-color .40s ease-in-out;
+    transition: background-color .40s ease-in-out;
+    cursor:pointer;
+  }
+  .toggle-btn.active {
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAmUlEQVQ4T6WT0RWDMAhFeZs4ipu0mawZpaO4yevBc6hUIWLNd+4NeQDk5sE/PMkZwFvZywKSTxF5iUgH0C4JHGyF97IggFVSqyCFga0CvQSg70Mdwd8QSSr4sGBMcgavAgdvwQCtApvA2uKr1x7Pu++06ItrF5LXPB/CP4M0kKTwYRIDyRAOR9lJTuF0F0hOAJbKopVHOZN9ACS0UgowIx8ZAAAAAElFTkSuQmCC') no-repeat 10px center #2ecc71;
+    .round-btn {
+      left: 45px;
+    }
+  }
+  .toggle-btn.active > .round-btn {
+    left: 45px;
+  }
+  .round-btn {
+    width: 30px;
+    height: 30px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    margin-top: -15px;
+    -webkit-transition: all .30s ease-in-out;
+    -moz-transition: all .30s ease-in-out;
+    -o-transition: all .30s ease-in-out;
+    transition: all .30s ease-in-out;
+  }
+
+  input.cb-value {
+    position: absolute;
+    left:0;
+    right:0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 9;
+    cursor:pointer;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   }
 </style>
 <div>
@@ -115,6 +184,25 @@
       <label>{% trans "Related Github Issue URL" %} ({% trans "optional" %}):</label>
       <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" value="" style="max-width: 400px; margin-left: auto; margin-right: auto;">
     </div>
+    <div id="sablier-container">
+      <div style="height: auto; overflow: hidden;">
+        <div class="toggle-label">
+          <span style="line-height: 40px">{% trans "Stream with Sablier" %}</span>
+        </div>
+        <div class="toggle-btn">
+          <input type="checkbox" class="cb-value" id="toggle-stream" />
+          <span class="round-btn"></span>
+        </div>
+      </div>
+      <div id='sablier-opts' style="display:none;">
+        <div style="display: inline-block;">{% trans "For how long should the tip be streamed?" %} ({% trans "Required" %}):</div>
+        <input type="text" class="form-control" id="duration">
+        <div id="stream-per-sec"> &nbsp;</div>
+      </div>
+      <div>
+        <a href="#" id="send-stream-invite" class="button button--primary" style="display: none">{% trans "Send Invite Email" %} <span class="emoji">✉️</span>
+      </div>
+    </div>
     <div id="advanced_toggle">
       <a>{% trans "Advanced" %} >></a>
     </div>
@@ -164,6 +252,9 @@
       <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
       <br>
       <img src="{% static "onepager/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;" alt="Loading ...">
+    </p>
+    <p id="stream_payee_info" style="display:none;">
+      {% blocktrans %}Your recipient will be able to redeem the stream through this <a href="" target="_blank" rel="noopener noreferrer" id="sablier-payee-url">link</a>.{% endblocktrans %}
     </p>
     <hr>
     <h1>{% blocktrans %}<span id="new_username"></span> has been notified{% endblocktrans %}</h1>

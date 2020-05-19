@@ -208,7 +208,7 @@ $(document).ready(async function() {
         console.log('failed');
       };
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, true);
+      return sendTip(email, github_url, from_name, username, amountInEth, 0, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, true);
 
     }
 

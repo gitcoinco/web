@@ -37,7 +37,7 @@ from retail.emails import (
     render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
     render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
-    render_nth_day_email_campaign, render_quarterly_stats, render_request_amount_email, render_reserved_issue,
+    render_nth_day_email_campaign, render_quarterly_stats, render_request_amount_email, render_reserved_issue, render_set_account_request_email,
     render_share_bounty, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
     render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
     render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
@@ -402,6 +402,21 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=None):
     finally:
         translation.activate(cur_language)
 
+def set_account_address_email(from_user, to_emails, network):
+    warning = '' if network == 'mainnet' else "({})".format(network)
+    subject = gettext("⚡️ {} wants to sent you a tip. Please set an account address in your Profile {}").format(from_user, warning)
+
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_set_account_request_email(from_user, to_email, network)
+
+            if not should_suppress_notification_email(to_email, 'set_account_address'):
+                send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])
+        finally:
+            translation.activate(cur_language)
 
 def tip_email(tip, to_emails, is_new):
     round_decimals = 5

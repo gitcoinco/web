@@ -1,0 +1,6 @@
+{% load humanize i18n %}
+⚡️ {{from_user}} {% trans "wants to sent you a tip. Please specify an Ethereum account." %} ⚡️
+
+{{from_user}} {% blocktrans %} wants to stream a tip to you throguh Sablier but your profile does not specify an account address. {{warning}} {% endblocktrans %}
+
+{% trans "No worries!. You can set your Ethereum account through this" %} <a href="{{link}}">link</a>. 👌

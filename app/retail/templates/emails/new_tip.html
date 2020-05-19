@@ -93,25 +93,37 @@
               </pre>
             </p>
           {% endif %}
-          {% if already_redeemed %}
+          {% if tip.stream_id %}
             <p>
-               {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}<a href='https://etherscan.io/address/{{tip.receive_address}}'>{{tip.receive_address}}</a>{% trans ") via txid " %}<a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>.
-            </p>
-          {% elif show_expires %}
-            <p>
-            {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
+              {% trans "Your tip is being streamed through" %} <a href="https://sablier.finance" target="_blank">Sablier</a> {% trans "to your Ethereum address (" %}{{tip.receive_address}}{% trans "). Click the button below to see it in real time and reedem it whenever you want!" %}
             </p>
           {% else %}
-            <p>
-              {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌" %}
-            </p>
+            {% if already_redeemed %}
+              <p>
+                 {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}<a href='https://etherscan.io/address/{{tip.receive_address}}'>{{tip.receive_address}}</a>{% trans ") via txid " %}<a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>.
+              </p>
+            {% elif show_expires %}
+              <p>
+              {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
+              </p>
+            {% else %}
+              <p>
+                {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌" %}
+              </p>
+            {% endif %}
           {% endif %}
       </div>
     </div>
-    {% if not already_redeemed %}
+    {% if tip.stream_id %}
       <div style="margin-bottom: 1.5em;">
-        <a class="button" href="{{link}}">{% trans "Redeem Tip" %}</a>
+        <a class="button" href="https://app.sablier.finance/stream/{{tip.stream_id}}">{% trans "Open Streaming Tip" %}</a>
       </div>
+    {% else %}
+      {% if not already_redeemed %}
+        <div style="margin-bottom: 1.5em;">
+          <a class="button" href="{{link}}">{% trans "Redeem Tip" %}</a>
+        </div>
+      {% endif %}
     {% endif %}
     <div>
       {% trans "Transaction ID:" %} <a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>
