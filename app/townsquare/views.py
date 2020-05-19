@@ -552,27 +552,8 @@ def api(request, activity_id):
     # PinnedPost request
     elif request.POST.get('method') == 'pin':
         what = request.POST.get('what')
-        permission = False
+        permission = can_pin(request, what)
         # handle permissions for pinning/unpinning
-        if ':' in what:
-            split = what.split(':')
-            key = split[0]
-            lookup = split[1]
-        else:
-            key = what
-            lookup = what
-
-        if key == 'grant': # check for grant owner
-            permission = True
-        elif key == 'tribe': # check for org owner
-            permission = request.user.is_authenticated and any(
-                [lookup.lower() == org.lower() for org in request.user.profile.organizations])
-        else:
-            if request.user.is_staff:
-                permission = True
-            else:
-                status = 400
-                response['message'] = "Bad Request"
         if permission:
             if request.POST.get('direction') == 'pin':
                 pinned_post, created = PinnedPost.objects.update_or_create(

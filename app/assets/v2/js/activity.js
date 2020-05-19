@@ -543,10 +543,6 @@ $(document).ready(function() {
 
       if (method === 'pin') {
         if (state === 'unpin') {
-          $('.pinned-activity').addClass('bg-white');
-          $('.pinned-activity .tip_activity').css({'background-color': 'white'});
-          $('.pinned-activity').css({'border-bottom-color': '#EFEFEF;'});
-          $('.pinned-activity .activity_pinned').hide();
           $('.box').removeClass('pinned-activity');
           self.data('state', 'pin');
           self.find('.pin-title').html('Pin Post')
@@ -555,8 +551,6 @@ $(document).ready(function() {
           let curr_pinn = $('.pinned-activity');
 
           parent.addClass('pinned-activity');
-          parent.find('.tip_activity').css({'background-color': '#e7fff5'});
-          parent.removeClass('bg-white');
 
           self.data('state', 'unpin');
           self.find('.pin-title').html('Unpin Post')
