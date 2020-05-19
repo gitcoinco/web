@@ -476,7 +476,7 @@ class DashboardModelsTest(TestCase):
         assert profile.is_org is True
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
-        assert profile.desc == '@gitcoinco is a organization who has participated in 1 funded issue on Gitcoin'
+        assert profile.desc == '@gitcoinco is a organization who has participated in 2 funded issues on Gitcoin'
         assert profile.github_url == 'https://github.com/gitcoinco'
         assert profile.get_relative_url() == '/gitcoinco'
 
