@@ -8,7 +8,7 @@ $(document).ready(function() {
 
         const formData = objectifySerialized($(this).serializeArray());
         addToCart(formData);
-        // console.log("CART", loadCart());
+        console.log("CART", loadCart());
     });
 });
 

@@ -48,16 +48,19 @@
     {% endif %}
 
     <div id="grants-details">
-
       <div class="row">
-        <div class="col-12 col-md-5 col-xl-4 px-lg-5 pt-lg-5 pt-1 summary-container bg-white"  style="padding-top: 20px !important;">
-          {% include 'grants/detail/info.html' %}
+        <div class="col-8 px-0">
+          <div>
+            {% include 'grants/detail/info.html' %}
+          </div>
+          <div>
+            {% include 'grants/detail/tabs.html' %}
+          </div>
         </div>
-        <div class="detail col-12 col-md-7 col-xl-8 pt-lg-5 pb-4 px-5 pt-2">
-          {% include 'grants/detail/tabs.html' %}
+        <div class="col-4 px-0">
+          {% include 'grants/detail/funding.html' %}
         </div>
       </div>
-
     </div>
     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}"/>
     {% include 'shared/current_profile.html' %}
@@ -73,7 +76,7 @@
   <script src="{% static "v2/js/status.js" %}"></script>
   <script src="{% static "v2/js/pages/tabs.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
-  <script src="{% static "v2/js/grants/info.js" %}"></script>
+  <script src="{% static "v2/js/grants/funding.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract1.js" %}"></script>
