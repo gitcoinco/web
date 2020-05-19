@@ -957,6 +957,11 @@ body.back33.quest_battle {
   background: url('/static/v2/images/quests/backs/back33.jpeg') repeat;
   background-size: 120%;
 }
+div.back34,
+body.back34.quest_battle {
+  background: url('/static/v2/images/quests/backs/back34.jpeg') repeat;
+  background-size: 100%;
+}
 
 div.red,
 body.red.quest_battle {
