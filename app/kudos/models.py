@@ -668,7 +668,7 @@ class TokenRequest(SuperModel):
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"approved: {self.approved} -- {self.name} on {self.network} on {self.created_on};"
+        return f"approved: {self.approved}, rejected: {bool(self.rejection_reason)} -- {self.name} on {self.network} on {self.created_on};"
 
 
     def mint(self, gas_price_gwei=None):
