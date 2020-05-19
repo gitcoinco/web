@@ -315,8 +315,8 @@
                   <div>
                     {% if question.question_type == 'SINGLE_CHOICE' %}
                         <div class="form__checkbox">
-                          <input type="checkbox" id="{{ question.id }}" name="{{ question.id }}">
-                          <label class="form__label" for="{{ question.id }}">{{ question.text }}</label>
+                          <input type="checkbox" id="single_{{ question.id }}" name="{{ question.id }}">
+                          <label class="form__label" for="single_{{ question.id }}">{{ question.text }}</label>
                         </div>
                     {% elif question.question_type == 'MULTIPLE_CHOICE' %}
                         <div class="question">
@@ -324,8 +324,8 @@
                         <div class="options">
                         {% for option in question.option_set.all %}
                           <div class="px-1">
-                            <input type="checkbox" id="{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
-                       		  <label for="{{ option.id }}">{{ option.text }}</label>
+                            <input type="checkbox" id="multiple_{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
+                       		  <label for="multiple_{{ option.id }}">{{ option.text }}</label>
                           </div>
                         {% endfor %}
                         </div>
@@ -345,8 +345,8 @@
                       < Previous
                     </a>
                     <div id="poll-empty"></div>
-                    <a id="poll-submit" class="btn btn-lg btn-gc-blue d-none" href="#">Submit</a>
-                    <a id="poll-next" class="btn btn-lg btn-gc-blue" href="#" role="button" data-slide="next">
+                    <a id="poll-submit" class="btn btn-lg btn-gc-blue {% if poll.question_set.count > 1%} d-none{% endif %}" href="#">Submit</a>
+                    <a id="poll-next" class="btn btn-lg btn-gc-blue {% if poll.question_set.count <= 1%}d-none{% endif %}" href="#" role="button" data-slide="next">
                       Next >
                     </a>
 
@@ -442,7 +442,6 @@
         e.preventDefault();
         const fieldset = $('fieldset.active');
 
-        console.log(fieldset)
         if (fieldset.data('rstep') === 1) {
           $("#poll-prev").removeClass('d-none')
           $("#poll-next").addClass('d-none')
@@ -461,7 +460,6 @@
         e.preventDefault();
         const fieldset = $('fieldset.active');
 
-        console.log(fieldset)
         if (fieldset.data('step') === 1) {
           $("#poll-prev").addClass('d-none')
           $("#poll-next").removeClass('d-none')
