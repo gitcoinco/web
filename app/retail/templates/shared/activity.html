@@ -570,4 +570,11 @@
     <div class="activity_comments">
       <div class="comment_container"></div>
     </div>
+  {% if pinned %}
+    <div class="small mt-2 row">
+      <dic class="col">
+        <i class="fal fa-map-pin"></i> Pinned by @{{pinned.user.handle}}
+      </dic>
+    </div>
+  {% endif %}
 </div>

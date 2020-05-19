@@ -211,9 +211,11 @@ $(document).ready(function() {
         }
       }, refresh_interval);
     }
+    console.log(`max pk:${max_pk}`)
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
-        max_pk = $('#activities .box [data-pk]').first().data('pk');
+        max_pk = $('#activities .box').find('div[data-pk]').first().data('pk');
+
         if (!max_pk) {
           return;
         }
