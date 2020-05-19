@@ -153,7 +153,7 @@
                     </thead>
 
                     <tbody>
-                      {% for item, flag in dual_list %}
+                      {% for item in items %}
                         <tr class='{% if not is_linked_to_profile %} clickable-row {% endif %} d-flex  align-items-stretch' {% if not is_linked_to_profile %} data-href="{{item.url}}" {% endif %} >
                           <td class="col-2 d-flex align-items-center item-position"># {{forloop.counter}}</td>
                           <td class="col-6 d-flex align-items-center" >

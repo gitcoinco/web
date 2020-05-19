@@ -18,6 +18,7 @@
 
 
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 
 class Command(BaseCommand):
@@ -27,6 +28,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from quests.models import Quest
 
+        # hide quests that have a low feedback ratio
+        exempt_quests = [5]
+        kwargs = {}
+        kwargs['ui_data__feedbacks__feedback__isnull'] = False
+        kwargs['ui_data__feedbacks__feedback__ne'] = []
+        kwargs['ui_data__feedbacks__stats__-1__gt'] = 2
+        kwargs['ui_data__feedbacks__ratio__lt'] = 0.3
+        hide_quests = Quest.objects.filter(**kwargs).exclude(pk__in=exempt_quests, visible=False).order_by('ui_data__feedbacks__ratio')
+        for quest in hide_quests:
+            print(f'hiding {quest.pk}')
+            quest.admin_comments = f"hidden on {timezone.now()} bc of low quality"
+            quest.visible = False
+            quest.save()
+
+        # for all visibble quests, reclassify them
         for quest in Quest.objects.filter(visible=True):
             pct = quest.success_pct
             ac = quest.attempts.count()
