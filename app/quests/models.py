@@ -67,6 +67,10 @@ class Quest(SuperModel):
         return settings.BASE_URL + self.relative_url
 
     @property
+    def video(self):
+        return self.game_metadata.get('video', None)
+
+    @property
     def relative_url(self):
         return f"quests/{self.pk}/{slugify(self.title)}"
 
