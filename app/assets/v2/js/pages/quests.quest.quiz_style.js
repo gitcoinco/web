@@ -342,7 +342,7 @@ var start_quest = function() {
 $(document).ready(function() {
 
   var size_background = function() {
-    var buffer = 200;
+    var buffer = 50;
 
     $('.video-background').css('height', ($(window).height() + buffer) + 'px');
     $('.video-background').css('width', ($(window).width() + buffer) + 'px');
