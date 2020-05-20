@@ -5803,9 +5803,6 @@
             "created_on": "2019-06-09T18:31:03.534Z",
             "modified_on": "2019-06-09T18:31:03.536Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test3",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -5849,9 +5846,6 @@
             "created_on": "2019-06-09T18:31:12.409Z",
             "modified_on": "2019-06-09T18:31:12.411Z",
             "fulfiller_address": "0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866",
-            "fulfiller_email": "octavioamuchastegui@gmail.com",
-            "fulfiller_github_username": "octavioamu",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -5895,9 +5889,6 @@
             "created_on": "2019-06-09T18:31:07.439Z",
             "modified_on": "2019-06-09T19:00:10.461Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test4",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -5941,9 +5932,6 @@
             "created_on": "2019-06-09T18:31:07.446Z",
             "modified_on": "2019-06-09T19:00:10.479Z",
             "fulfiller_address": "0xCC4b3DE30576E161C8632786560Fa7DD3Fb33f77",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test5",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 1,
                 "data": {
@@ -5987,9 +5975,6 @@
             "created_on": "2019-06-09T18:31:07.452Z",
             "modified_on": "2019-06-09T19:00:10.496Z",
             "fulfiller_address": "0x0B8C767a91DdbE99ABA14685d03B14D4265c1E5B",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "owocki",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 2,
                 "data": {
@@ -6033,9 +6018,6 @@
             "created_on": "2019-06-09T18:31:07Z",
             "modified_on": "2019-06-10T09:49:45.646Z",
             "fulfiller_address": "0xBcAfdD642118e5536024675e776d32413728dd08",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test3",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 3,
                 "data": {
@@ -6079,9 +6061,6 @@
             "created_on": "2019-06-09T18:31:07Z",
             "modified_on": "2019-06-10T09:49:38.760Z",
             "fulfiller_address": "0xCC4b3DE30576E161C8632786560Fa7DD3Fb33f77",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test10",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 4,
                 "data": {
@@ -6125,9 +6104,6 @@
             "created_on": "2019-06-10T09:41:33Z",
             "modified_on": "2019-06-10T09:42:42.114Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6146,9 +6122,6 @@
             "created_on": "2019-06-10T09:42:47Z",
             "modified_on": "2019-06-10T09:43:16.481Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6167,9 +6140,6 @@
             "created_on": "2019-06-10T09:43:34Z",
             "modified_on": "2019-06-10T09:44:16.848Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6188,9 +6158,6 @@
             "created_on": "2019-06-10T09:44:29Z",
             "modified_on": "2019-06-10T09:45:03.943Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6209,9 +6176,6 @@
             "created_on": "2019-06-10T09:52:43Z",
             "modified_on": "2019-06-10T09:53:12.807Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6230,9 +6194,6 @@
             "created_on": "2019-06-27T01:08:08.620Z",
             "modified_on": "2019-06-27T01:08:08.625Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test4",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -6276,9 +6237,6 @@
             "created_on": "2019-06-27T01:08:08.635Z",
             "modified_on": "2019-06-27T01:08:08.640Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test4",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 1,
                 "data": {
@@ -6322,9 +6280,6 @@
             "created_on": "2019-06-30T19:27:18.223Z",
             "modified_on": "2019-06-30T19:27:18.234Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test8",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -7321,9 +7276,7 @@
                     "id": 19,
                     "accepted": false,
                     "accepted_on": "None",
-                    "fulfiller_name": "",
                     "fulfillment_id": 1,
-                    "fulfiller_email": "",
                     "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
                     "fulfiller_metadata": {
                         "id": 1,
@@ -7352,8 +7305,7 @@
                         "fulfiller": "0x27FC067c91f1bA562C7978920722B07B70122897"
                     },
                     "fulfiller_github_url": "",
-                    "fulfiller_hours_worked": "20.00",
-                    "fulfiller_github_username": "test4"
+                    "fulfiller_hours_worked": "20.00"
                 }
             },
             "needs_review": false
@@ -7595,9 +7547,7 @@
                     "id": 20,
                     "accepted": false,
                     "accepted_on": "None",
-                    "fulfiller_name": "",
                     "fulfillment_id": 0,
-                    "fulfiller_email": "",
                     "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
                     "fulfiller_metadata": {
                         "id": 0,
@@ -7626,8 +7576,7 @@
                         "fulfiller": "0x27FC067c91f1bA562C7978920722B07B70122897"
                     },
                     "fulfiller_github_url": "",
-                    "fulfiller_hours_worked": "100.00",
-                    "fulfiller_github_username": "test8"
+                    "fulfiller_hours_worked": "100.00"
                 }
             },
             "needs_review": false

@@ -1,14 +1,17 @@
 var tokens = function(network_id) {
   var _tokens = null;
-
   if (network_id == 'mainnet') {
     _tokens = [{% for token in mainnet_tokens %}{{token.to_json | safe}},{%endfor%}];
+    $(".loading_tokens").remove();
   } else if (network_id == 'ropsten') { // ropsten
     _tokens = [{% for token in ropsten_tokens %}{{token.to_json | safe}},{%endfor%}];
-  } else if (network_id == 'rinkeby') { // ropsten
+    $(".loading_tokens").remove();
+  } else if (network_id == 'rinkeby') { // rinkeby
     _tokens = [{% for token in rinkeby_tokens %}{{token.to_json | safe}},{%endfor%}];
+    $(".loading_tokens").remove();
   } else if (network_id == 'custom network') { // testrpc
     _tokens = [{% for token in custom_tokens %}{{token.to_json | safe}},{%endfor%}];
+    $(".loading_tokens").remove();
   } else {
     _tokens = [{% for token in unknown_tokens %}{{token.to_json | safe}},{%endfor%}];
   }

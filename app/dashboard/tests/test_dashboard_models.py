@@ -75,9 +75,6 @@ class DashboardModelsTest(TestCase):
         )
         bounty_fulfillment = BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
-            fulfiller_email='',
-            fulfiller_github_username='fred',
-            fulfiller_name='Fred',
             bounty=bounty,
             profile=fulfiller_profile,
         )

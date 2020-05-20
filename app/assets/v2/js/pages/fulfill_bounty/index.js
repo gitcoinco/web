@@ -17,9 +17,6 @@ window.onload = function() {
       $('input[name=githubUsername]').val(localStorage['githubUsername']);
     }
   }
-  if (typeof localStorage['notificationEmail'] != 'undefined') {
-    $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
-  }
   if (getParam('source')) {
     $('input[name=issueURL]').val(getParam('source'));
   }
