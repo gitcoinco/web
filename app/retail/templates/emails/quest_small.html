@@ -59,8 +59,13 @@
     <table class="quest quest-images-container">
       <tr>
         <td></td>
-        <td rowspan=2><img class="quest-img-bottom"
-            src="{{quest.enemy_img_url}}"></td>
+        <td rowspan=2>
+          {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
+            <img class="quest-img-bottom"src={{base_url}}static/v2/images/emails/kudos_template.png>
+          {% else %}
+            <img class="quest-img-bottom"src="{{quest.enemy_img_url}}">
+          {% endif %}
+        </td>
       </tr>
       <tr>
         <td colspan=2><img class="quest-img-top" src="{{quest.kudos_reward.img_url}}"></td>
