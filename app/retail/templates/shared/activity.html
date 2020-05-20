@@ -17,8 +17,7 @@
 {% endcomment %}
 
 {% load humanize i18n static grants_extra %}
-<div class="box d-block m-0 mb-3 activity {{ row.activity_type }} infinite-item px-sm-3 py-4" data-pk="{{row.pk}}">
-
+<div class="box d-block m-0 mb-3 activity {% if is_pin %} pinned-activity {% else %} infinite-item {% endif %} {{ row.activity_type }} px-sm-3 py-4" {% if not is_pin %} data-pk="{{row.pk}}" {% endif %}>
   <div class="activity_main row">
     <div class="col-2 p-0">
       <div class="activity-avatar">
@@ -295,6 +294,16 @@
             <i class="fas fa-ellipsis-h"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
+            {% if can_pin %}
+              <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the feed." href=#
+              data-url="{{row.url}}"
+              data-action="pin"
+              data-state="{% if row.pin.what == what or is_pin %}unpin{% else %}pin{%endif%}"
+              data-pk="{{row.pk}}">
+
+              <i class="fas fa-map-pin mr-2"></i><span class="pin-title">{% if row.pin.what == what or is_pin %}Unpin {% else %} Pin {% endif %} Post</span>
+              </a>
+            {% endif %}
             <a class="copy_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Copy a link to this feed item." href=# data-url={{row.url}}>
               <i class="fas fa-link mr-2"></i> Copy Link
             </a>
@@ -535,7 +544,7 @@
   {% elif row.metadata.resource.type == 'gif' %}
   <div class="mt-1 mb-2" >
     <div class="row align-items-center">
-        <img class="attachment" loading="lazy" data-src="{{ row.metadata.resource.id }}">
+        <img class="attachment" {% if not is_pin %} loading="lazy" data-src="{{ row.metadata.resource.id }} {% else %} src="{{ row.metadata.resource.id }} {% endif %} ">
     </div>
   </div>
   {% elif row.metadata.resource.provider == 'youtube' %}
@@ -566,4 +575,11 @@
     <div class="activity_comments">
       <div class="comment_container"></div>
     </div>
+  {% if pinned %}
+    <div class="pinned-by small mt-2">
+      <dic class="col">
+        <i class="fal fa-map-pin"></i> Pinned by @{{pinned.user.handle}}
+      </dic>
+    </div>
+  {% endif %}
 </div>
