@@ -230,7 +230,8 @@ a .sup {
 .like_activity:hover,
 .flag_activity:hover,
 .comment_activity:hover,
-.copy_activity:hover {
+.copy_activity:hover,
+.pin_activity:hover {
   text-decoration: none;
 }
 .funder-avatar,
@@ -369,7 +370,6 @@ iframe.popout{
   bottom: 10px;
   text-align: center;
   width: 50%;
-  background-color: white;
   border: 1px solid;
   margin-left: 25%;
 }
@@ -412,6 +412,22 @@ iframe.popout{
     margin: 0px auto;
   }
 }
+
+.activity_pinned {
+  display: none;
+}
+.pinned .activity_pinned {
+  display: block;
+}
+
+
+.pinned-activity {
+  -webkit-box-shadow: 0px 0px 8px 0px var(--pinned-activity);
+  -moz-box-shadow: 0px 0px 8px 0px var(--pinned-activity);
+  box-shadow: 0px 0px 8px 0px var(--pinned-activity);
+}
+
+
 @media (max-width: 1100px) {
   .activity_stream .avatar {
     width: 3.5rem;
