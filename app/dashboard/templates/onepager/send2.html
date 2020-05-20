@@ -83,10 +83,12 @@
         {% if fund_request.network == 'ETH' %}
         <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" data-token="{{ fund_request.token_name }}">
           <option value="0x0">ETH</option>
+          <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
         </select>
         {% else %}
           <select id="token" style="width:100px; margin-bottom: 10px; display: inline;">
             <option value="{{ fund_request.network }}">{{ fund_request.network }}</option>
+            <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
           </select>
         {% endif %}
       <input name="amount" type="text" placeholder="1.1" id="amount" value="{{ fund_request.amount }}" style="width: 170px; display: inline;">
