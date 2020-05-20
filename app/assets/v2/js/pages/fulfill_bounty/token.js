@@ -20,7 +20,6 @@ fulfillBounty = data => {
     'data': {
       'payload': {
         'fulfiller': {
-          'email': data.notificationEmail,
           'address': data.payoutAddress,
           'hoursWorked': data.hoursWorked,
           'githubPRLink': data.githubPRLink
@@ -33,7 +32,6 @@ fulfillBounty = data => {
 
   const params = {
     'issueURL': data.issueURL,
-    'email': data.notificationEmail,
     'githubPRLink': data.githubPRLink,
     'hoursWorked': data.hoursWorked,
     'metadata': JSON.stringify(metadata),
