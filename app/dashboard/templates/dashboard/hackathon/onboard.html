@@ -145,13 +145,12 @@
                 </h4>
                 <p class="pt-4 mb-4">Until then, we recommend a few different ways to prepare:</p>
                 {% endif %}
-                <ul  class="list-unstyled">
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="{% url 'hackathon' hackathon.slug %}?tab=hackathon:{{hackathon.id}}"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Introduce yourself on Townsquare</a> </li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Look out for upcoming workshop invites in your email inbox</li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Checkout sponsors below and build your team</a></li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Invite your friends to hack and earn a Kudos</li>
+                <ul  class="mt-4">
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="{% url 'hackathon' hackathon.slug %}?tab=hackathon:{{hackathon.id}}">Introduce yourself on Townsquare</a> </li>
+                    <li class="mb-3 gc-text-blue font-weight-bold">Look out for upcoming workshop invites in your email inbox</li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors">Checkout sponsors below and build your team</a></li>
+                    <li class="mb-3 gc-text-blue font-weight-bold">Invite your friends to hack and earn a Kudos</li>
                 </ul>
-
               </div>
             {% if not hackathon.start_date|timesince >= "1 min"%}
                 <div class="d-md-flex d-none mt-5 col-2 justify-content-end align-items-center">
