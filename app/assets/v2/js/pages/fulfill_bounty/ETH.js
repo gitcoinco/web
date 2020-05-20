@@ -132,10 +132,7 @@ const ethFulfillBounty = data => {
             bounty.fulfillBounty(
               bountyId,
               document.ipfsDataHash,
-              {
-                from: accounts[0],
-                gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-              },
+              { from: accounts[0] },
               web3Callback
             );
           });

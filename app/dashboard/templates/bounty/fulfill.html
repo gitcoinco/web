@@ -112,11 +112,9 @@
 
                   {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' label="Rate this funder"%}
 
+                  
                   {% if is_bounties_network %}
-                    <div id="gas-section" class="mt-4">
-                      {% include 'shared/bounty_actions_hidden_vars.html' %}
-                      {% include 'shared/wallet_estimate.html' %}
-                    </div>
+                    {% include 'shared/bounty_actions_hidden_vars.html' %}
                   {% endif %}
 
                   <div class="mt-2 terms_container">
@@ -174,7 +172,6 @@
   </script>
 
   {% if is_bounties_network %}
-    <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>
