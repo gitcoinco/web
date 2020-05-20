@@ -140,7 +140,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
                     {% comment %} Delete icon {% endcomment %}
                     <div style="width: 3%; opacity: 40%; margin-left: 5rem;">
-                      <i class="fas fa-trash-alt" @click="removeGrantFromCart(grant.grant_id)"></i>
+                      <i class="fas fa-trash-alt" style="cursor: pointer"
+                        @click="removeGrantFromCart(grant.grant_id)"></i>
                     </div>
                   </div>
                 </div>

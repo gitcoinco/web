@@ -103,18 +103,19 @@ Vue.component('grants-cart', {
     }
   },
 
+  watch: {
+    // Use watcher to keep local storage in sync with Vue state
+    grantData: {
+      handler() {
+        window.localStorage.setItem('grants_cart', JSON.stringify(this.grantData));
+      },
+      deep: true
+    }
+  },
+
   mounted() {
     // Read array of grants in cart from localStorage
     this.grantData = JSON.parse(window.localStorage.getItem('grants_cart'));
-  },
-  created() {
-    //
-  },
-  beforeMount() {
-    //
-  },
-  beforeDestroy() {
-    //
   }
 });
 
@@ -126,18 +127,6 @@ if (document.getElementById('gc-grants-cart')) {
     data: {
       grantHeaders,
       grantData
-    },
-    mounted() {
-      //
-    },
-    created() {
-      //
-    },
-    beforeMount() {
-      //
-    },
-    beforeDestroy() {
-      //
     }
   });
 }
