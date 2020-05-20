@@ -338,10 +338,6 @@ iframe.popout{
   border: 3px solid black;
   background-color: #f0f0f0;
 }
-.dark-mode .activity_stream .activity_detail .tag{
-  background-color: var(--gc-blue);
-  color: white;
-}
 
 .activity_stream .activity_detail .tag {
   background-color: #e7f0fa;
@@ -376,6 +372,11 @@ iframe.popout{
   background-color: white;
   border: 1px solid;
   margin-left: 25%;
+}
+
+.dark-mode .activity_stream .activity_detail .tag {
+  background-color: var(--gc-blue);
+  color: white;
 }
 
 @media (min-width: 768px) {
