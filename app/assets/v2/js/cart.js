@@ -7,7 +7,8 @@ Vue.component('grants-cart', {
   data: function() {
     return {
       grantHeaders,
-      grantData
+      grantData,
+      currencies: [ 'ETH', 'DAI', 'USDC' ] // TODO update with Gitcoin's list of tokens
     };
   },
 
