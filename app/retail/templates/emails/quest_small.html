@@ -60,7 +60,7 @@
       <tr>
         <td></td>
         <td rowspan=2>
-          {% if quest.enemy_img_url|urlexists %}
+          {% if quest.enemy_img_url %}
             <img class="quest-img-bottom"src="{{quest.enemy_img_url}}">
           {% else %}
             <img class="quest-img-bottom"src={{base_url}}static/v2/images/emails/kudos_template.png>

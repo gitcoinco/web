@@ -57,9 +57,6 @@ class Command(BaseCommand):
     help = 'sends new_bounty_daily _emails'
 
     def handle(self, *args, **options):
-        if settings.DEBUG:
-            print("not active in non prod environments")
-            return
         hours_back = 24
         eses = EmailSubscriber.objects.filter(active=True).distinct('email')
         counter_grant_total = 0
