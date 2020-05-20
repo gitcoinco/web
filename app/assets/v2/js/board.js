@@ -2,8 +2,6 @@ let contributorBounties = {};
 let bounties = {};
 let authProfile = document.contxt.profile_id;
 let skills = document.skills;
-let network = document.contxt.env === 'prod' ? 'mainnet' : 'rinkeby';
-
 
 Vue.mixin({
   methods: {
