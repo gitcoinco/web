@@ -351,7 +351,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
 
 
 def render_funder_payout_reminder(**kwargs):
-    kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
+    kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(profile__handle=kwargs['github_username']).last()
     response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
     response_txt = ''
     return response_html, response_txt

@@ -94,10 +94,14 @@ class TestExpiration(TestCase):
             current_bounty=True,
             network='mainnet'
         )
+        fulfiller_profile = Profile.objects.create(
+            data={},
+            handle='fred'
+        )
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
             bounty=bounty,
-            profile=None,
+            profile=fulfiller_profile,
         )
 
         Command().handle()

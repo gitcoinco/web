@@ -745,7 +745,7 @@ class Bounty(SuperModel):
 
     @property
     def fulfillers_handles(self):
-        bounty_fulfillers = self.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
+        bounty_fulfillers = self.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True)
         tip_fulfillers = self.tips.values_list('username', flat=True)
         return list(bounty_fulfillers) + list(tip_fulfillers)
 

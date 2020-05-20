@@ -27,7 +27,7 @@ from django.utils import timezone
 
 import marketing
 import marketing.management.commands.sync_pull_request_with_bounty_fulfillments
-from dashboard.models import Bounty, BountyFulfillment
+from dashboard.models import Bounty, BountyFulfillment, Profile
 from test_plus.test import TestCase
 
 
@@ -63,9 +63,16 @@ class TestSyncPullRequestWithBountyFulfillments(TestCase):
             current_bounty=True
         )
 
+        fulfiller_profile = Profile.objects.create(
+            data={},
+            handle='samplegitcoindeveloper1',
+            email='fred@bar.com'
+        )
+
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
             accepted=False,
+            profile=fulfiller_profile,
             bounty=Bounty.objects.last()
         )
 

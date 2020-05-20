@@ -39,7 +39,6 @@ class TestAssembleLeaderboards(TestCase):
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
         self.bounty_earner_handle = 'freddy'
-        self.fulfiller_handle = 'bambam'
 
         self.bounty_payer_profile = Profile.objects.create(
             data={},
@@ -89,16 +88,12 @@ class TestAssembleLeaderboards(TestCase):
             network='mainnet',
             metadata={"issueKeywords": "Python, Shell"},
         )
-        self.fulfiller_profile = Profile.objects.create(
-            data={},
-            handle=self.fulfiller_handle,
-            hide_profile=False,
-        )
+
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
             bounty=self.bounty,
             accepted=True,
-            profile=self.fulfiller_profile,
+            profile=self.bounty_earner_profile,
         )
 
         self.tip_value = 7
@@ -141,7 +136,6 @@ class TestAssembleLeaderboards(TestCase):
     def tearDown(self):
         self.bounty_payer_profile.delete()
         self.bounty_earner_profile.delete()
-        self.fulfiller_profile.delete()
         self.tip_username_profile.delete()
         self.tip_from_username_profile.delete()
 

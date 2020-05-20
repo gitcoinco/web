@@ -642,7 +642,7 @@ def viz_draggable(request, key='email_open'):
     if request.GET.get('data'):
         output = []
         for username in usernames:
-            these_bounties = bfs.filter(fulfiller_github_username=username)
+            these_bounties = bfs.filter(profile__handle=username)
             start_date = timezone.now() - timezone.timedelta(days=180)
             income = []
             lifeExpectancy = []

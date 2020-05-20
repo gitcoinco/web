@@ -58,7 +58,6 @@ def setup_bounties():
 
     BountyFulfillment.objects.create(
         fulfiller_address='0x0000000000000000000000000000000000000000',
-        fulfiller_github_username='user1',
         accepted=True,
         bounty=Bounty.objects.first(),
         profile=User.objects.filter(username='user1').first().profile
@@ -66,7 +65,6 @@ def setup_bounties():
 
     BountyFulfillment.objects.create(
         fulfiller_address='0x0000000000000000000000000000000000000000',
-        fulfiller_github_username='user19',
         accepted=True,
         bounty=Bounty.objects.last(),
         profile=User.objects.last().profile
