@@ -91,6 +91,18 @@ Vue.component('grants-cart', {
     }
   },
 
+  methods: {
+    clearCart() {
+      window.localStorage.setItem('grants_cart', JSON.stringify([]));
+      this.grantData = [];
+    },
+
+    removeGrantFromCart(id) {
+      this.grantData = this.grantData.filter(grant => grant.grant_id !== id);
+      window.localStorage.setItem('grants_cart', JSON.stringify(this.grantData));
+    }
+  },
+
   mounted() {
     // Read array of grants in cart from localStorage
     this.grantData = JSON.parse(window.localStorage.getItem('grants_cart'));

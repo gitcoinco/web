@@ -69,3 +69,8 @@
 .darker-grey {
   color: var(--gc-darker-grey);
 }
+
+.hyperlink {
+  color: var(--link-color);
+  cursor: pointer;
+}

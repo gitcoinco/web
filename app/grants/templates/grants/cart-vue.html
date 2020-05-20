@@ -53,7 +53,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 Grant Cart ([[ grantData.length ]] items)
               </h1>
               <img src="{% static 'v2/images/grants/torchbearer.svg' %}" alt="Robot with torch" width="150">
-              <div class="font-smaller-1" style="margin: 2rem 0 0 auto;">
+              <div class="font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;" @click="clearCart">
                 Clear my cart
               </div>
             </div>
@@ -64,7 +64,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             </div>
 
             {% comment %} Main container {% endcomment %}
-            <div class="container" style="padding-bottom: 10rem;">
+            <div v-if="grantData.length === 0" class="flex-container font-bigger-1 text-left grant-header-row"
+              style="justify-content: center; margin: 5rem 0">
+              Your cart is empty.
+            </div>
+            <div v-else class="container" style="padding-bottom: 10rem;">
               {% comment %} Cart header {% endcomment %}
               <div class="flex-container font-smaller-2 text-left grant-header-row">
                 <div style="width: 25%">
@@ -136,7 +140,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
                     {% comment %} Delete icon {% endcomment %}
                     <div style="width: 3%; opacity: 40%; margin-left: 5rem;">
-                      <i class="fas fa-trash-alt"></i>
+                      <i class="fas fa-trash-alt" @click="removeGrantFromCart(grant.grant_id)"></i>
                     </div>
                   </div>
                 </div>
