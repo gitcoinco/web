@@ -46,6 +46,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
       <div id="gc-grants-cart" v-cloak>
         <grants-cart inline-template>
           <div>
+
             {% comment %} Heading section {% endcomment %}
             <div class="container" style="margin-top:2rem;">
               <h1 class="text-center font-bigger-2">
@@ -56,12 +57,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 Clear my cart
               </div>
             </div>
+
             {% comment %} Divider {% endcomment %}
             <div>
               <div class="separator" />
             </div>
-            {% comment %} Cart header {% endcomment %}
+
+            {% comment %} Main container {% endcomment %}
             <div class="container" style="padding-bottom: 10rem;">
+              {% comment %} Cart header {% endcomment %}
               <div class="flex-container font-smaller-2 text-left grant-header-row">
                 <div style="width: 25%">
                   <div class="flex-container" style="justify-content: start">
@@ -83,7 +87,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   &nbsp;
                 </div>
               </div>
-              {% comment %} Cart content {% endcomment %}
+              {% comment %} Cart contents {% endcomment %}
               <div v-for="grant in grantData" class="grant-row">
                 <div class="grant-row-style">
                   <div class="flex-container">
@@ -91,7 +95,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     <div style="width: 25%">
                       <div class="flex-container" style="justify-content: start">
                         <img :src="grant.grant_logo" alt="Grant logo" width="30">
-                        <div class="grant-name">[[grant.grant_title]]</div>
+                        <div class="grant-name black">[[grant.grant_title]]</div>
                       </div>
                     </div>
                     {% comment %} Grant amount and currency {% endcomment %}
@@ -137,6 +141,82 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   </div>
                 </div>
               </div>
+
+              {% comment %} Cart total {% endcomment %}
+              <div class="flex-container font-bigger-1 text-left grant-header-row black" style="font-weight: bold">
+                <div style="width: 25%">
+                  <div class="flex-container" style="justify-content: start">
+                    TOTAL
+                  </div>
+                </div>
+                <div style="width: 75%">
+                  <div class="flex-container" style="justify-content: start">
+                    [[donationTotalsString]]
+                  </div>
+                </div>
+              </div>
+
+              {% comment %} Hide wallet option {% endcomment %}
+              <div class="flex-container text-left cart-section black">
+                <div style="width: 100%">
+                  <div class="flex-container" style="justify-content: start">
+                    <div>
+                      <input type="checkbox" name="hide_wallet_address" id="hide_wallet_address"
+                        {% if profile.hide_wallet_address %} checked="checked" {% endif %}>
+                      <span class="font-smaller-1 darker-gray"
+                        for="hide_wallet_address">{% trans "Hide my wallet address" %}</span>
+                      <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
+                        style="margin-left: 0.5rem;">
+                        {% trans "If this option is chosen, your wallet address will be hidden" %}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {% comment %} Contribution to Gitcoin notice {% endcomment %}
+              <div class="flex-container text-left cart-section black" style="margin-top: 1rem">
+                <div style="width: 100%">
+                  <div class="flex-container" style="justify-content: start">
+                    <div>
+                      {% trans "By using this service, you’ll also be contributing" %}
+                      <span class="gitcoin-grant-percent">5</span>{% trans "% of your contribution to the" %}
+                      <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="blank">Gitcoin Grants
+                        Round 6+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {% comment %} Summary {% endcomment %}
+              <div class="flex-container font-bigger-1 text-left grant-header-row black"
+                style="font-weight: bold; margin-top: 3rem;">
+                <div style="width: 100%">
+                  <div class="flex-container" style="justify-content: start">
+                    SUMMARY
+                  </div>
+                </div>
+              </div>
+              <div class="flex-container text-left cart-section black">
+                <div style="width: 100%">
+                  <div class="flex-container" style="justify-content: start">
+                    <ul>
+                      <li>
+                        You are contributing <span style="font-weight: bold">[[donationTotalsString]]</span>
+                      </li>
+                      <li>
+                        You are additionally contributing
+                        <span style="font-weight: bold">[[donationsToGitcoinString]]</span>
+                        to the Gitcoin Mainainter Grant
+                      </li>
+                      <li>
+                        Note: You will have to approve 2 transactions via your Web3 wallet on submit. Read how this
+                        works.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </grants-cart>

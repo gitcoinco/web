@@ -42,6 +42,10 @@
   padding: 1rem;
 }
 
+.cart-section {
+  padding: 0rem 1rem;
+}
+
 .grant-name {
   font-weight: bold;
   margin-left: 0.5rem;
@@ -52,4 +56,16 @@
   border: 1px rgba(15, 206, 124, 0.1) solid;
   border-radius: 5px;
   padding: 0.5rem 1rem;
+}
+
+.black {
+  color: black;
+}
+
+.medium-dark-gray {
+  color: var(--gc-medium-dark-gray);
+}
+
+.darker-grey {
+  color: var(--gc-darker-grey);
 }
