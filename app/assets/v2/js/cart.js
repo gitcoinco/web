@@ -74,10 +74,17 @@ Vue.component('grants-cart', {
       }
 
       Object.keys(totals).forEach(key => {
+        // Round to 2 digits
+        const amount = totals[key];
+        const formattedAmount = amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
         if (string === '') {
-          string += `${totals[key]} ${key}`;
+          string += `${formattedAmount} ${key}`;
         } else {
-          string += `+ ${totals[key]} ${key}`;
+          string += `+ ${formattedAmount} ${key}`;
         }
       });
       return string;

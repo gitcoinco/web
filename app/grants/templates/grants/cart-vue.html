@@ -78,7 +78,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div style="width: 20%">
                   Type
                 </div>
-                <div style="width: 20%">
+                <div style="width: 15%">
                   <div class="flex-container">
                     Total CLR Match Amount
                   </div>
@@ -117,15 +117,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
                     {% comment %} Grant type {% endcomment %}
                     <div style="width: 20%">
-                      <span v-if="grant.grant_donation_type === 'one-time'">One Time</span>
-                      <span v-else-if="grant.grant_donation_type === 'recurring'">Recurring</span>
-                      <span v-else>Error: Invalid donation type</span>
-                      <span v-if="grant.donationType === 'recurring'">
-                        for [[grant.grant_donation_num_rounds]] rounds
-                      </span>
+                      <div class="flex-container font-smaller-3" style="justify-content: start">
+                        split accross
+                        <input class="form-control" v-model.number="grant.grant_donation_num_rounds" type="number"
+                          placeholder="Amount" style="width: 25%; margin: 0 0.5rem;">
+                        CLR round<span v-if="grant.grant_donation_num_rounds !== 1">s</span>
+                      </div>
                     </div>
                     {% comment %} CLR match amount {% endcomment %}
-                    <div class="clr-match-box" style="width: 20%;">
+                    <div class="clr-match-box" style="width: 15%;">
                       <div class="flex-container">
                         <div>
                           [[grant.grant_donation_clr_match]] [[grant.grant_donation_currency]]
