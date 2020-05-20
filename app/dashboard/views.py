@@ -4017,16 +4017,28 @@ def hackathon_registration(request):
             set_questions = {}
             for entry in poll:
                 question = get_object_or_404(Question, id=int(entry['name']))
-                option = get_object_or_404(Option, id=int(entry['value']))
 
-                Answer.objects.get_or_create(user=request.user, question=question, choice=option)
-
-                values = set_questions.get(entry['name'], []) or []
-                values.append(int(entry['value']))
-                set_questions[entry['name']] = values
+                if question.question_type == 'SINGLE_CHOICE':
+                    answer, status = Answer.objects.get_or_create(user=request.user, question=question,
+                                                                  hackathon=hackathon_event)
+                    answer.checked = entry['value'] == 'on'
+                    answer.save()
+                elif question.question_type == 'MULTIPLE_CHOICE':
+                    option = get_object_or_404(Option, id=int(entry['value']))
+                    Answer.objects.get_or_create(user=request.user, question=question, choice=option,
+                                                 hackathon=hackathon_event)
+                    values = set_questions.get(entry['name'], []) or []
+                    values.append(int(entry['value']))
+                    set_questions[entry['name']] = values
+                else:
+                    answer, status = Answer.objects.get_or_create(user=request.user, question=question,
+                                                                  hackathon=hackathon_event)
+                    answer.open_response = entry['value']
+                    answer.save()
 
             for (question, choices) in set_questions.items():
-                Answer.objects.exclude(user=request.user, question__id=int(question), choice__in=choices).delete()
+                    Answer.objects.filter(user=request.user, question__id=int(question),
+                                          hackathon=hackathon_event).exclude(choice__in=choices).delete()
 
     except Exception as e:
         logger.error('Error while saving registration', e)
