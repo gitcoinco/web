@@ -699,23 +699,63 @@ var attach_override_status = function() {
   });
 };
 
-var show_interest_modal = function() {
-  var self = this;
-  var modals = $('#modalInterest');
+const submitInterest = (bounty, msg, self, onSuccess) => {
+  add_interest(bounty, {
+    issue_message: msg
+  }).then(success => {
+    if (success) {
+      $(self).attr('href', '/uninterested');
+      $(self).find('span').text(gettext('Stop Work'));
+      $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+  }).catch((error) => {
+    if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+      return;
+    throw error;
+  });
+};
+
+const show_interest_modal = () => {
+  let self = this;
+  let modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
   modals.on('show.bs.modal', function() {
     modalBody.load(modalUrl, ()=> {
-
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
       let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
+      let projectForm = $('#projectForm');
+
       $('#looking-members').on('click', function() {
         $('.looking-members').toggle();
       });
       userSearch('.team-users', false, '', data, true, false);
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
+
+      if (document.result.event) {
+        $(document).on('change', '#project_logo', function() {
+          previewFile($(this));
+        });
+        projectForm.on('submit', function(e) {
+          e.preventDefault();
+          let logo = $(this)[0]['logo'].files[0];
+          let data = $(this).serializeArray();
+
+          submitInterest(document.result['pk'], '', self, () => {
+            submitProject(logo, data);
+            modals.bootstrapModal('hide');
+          });
+        });
+
+        return;
+      }
 
       actionPlanForm.on('submit', function(event) {
         event.preventDefault();
@@ -727,25 +767,9 @@ var show_interest_modal = function() {
           return false;
         }
 
-        add_interest(document.result['pk'], {
-          issue_message: msg
-        }).then(success => {
-          if (success) {
-            $(self).attr('href', '/uninterested');
-            $(self).find('span').text(gettext('Stop Work'));
-            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-            modals.bootstrapModal('hide');
-            if (document.result.event) {
-              localStorage['pendingProject'] = document.result.standard_bounties_id;
-              projectModal(document.result.pk);
-            }
-          }
-        }).catch((error) => {
-          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-            return;
-          throw error;
+        submitInterest(document.result['pk'], msg, self, () => {
+          modals.bootstrapModal('hide');
         });
-
       });
 
     });
