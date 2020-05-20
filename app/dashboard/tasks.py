@@ -7,6 +7,7 @@ from chat.tasks import create_channel
 from dashboard.models import Activity, Bounty, Profile
 from marketing.mails import func_name, grant_update_email, send_mail
 from retail.emails import render_share_bounty
+from app.redis_service import RedisService
 
 logger = get_task_logger(__name__)
 
@@ -135,3 +136,21 @@ def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
         from dashboard.notifications import maybe_market_to_github
         maybe_market_to_github(bounty, 'work_started',
                                profile_pairs=bounty.profile_pairs)
+
+
+
+@app.shared_task(bind=True, max_retries=1)
+def increment_view_count(self, pks, content_type, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :param content_type:
+    :return:
+    """
+    redis = RedisService().redis
+    for pk in pks:
+        key = f"{content_type}_{pk}"
+        print(key)
+        result = redis.incr(key)
+        
+

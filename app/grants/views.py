@@ -22,6 +22,7 @@ import json
 import logging
 import random
 from decimal import Decimal
+from dashboard.tasks import increment_view_count
 
 from django.conf import settings
 from django.contrib import messages
@@ -306,6 +307,12 @@ def grants(request):
 
     now = datetime.datetime.now()
 
+    # record view 
+    pks = list([grant.pk for grant in grants])
+    if len(pks):
+        increment_view_count.delay(pks, grants[0].content_type)
+
+
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
     past_partners = partners.filter(end_date__lt=now).order_by('-amount')
     current_partners_fund = 0
@@ -440,6 +447,7 @@ def grant_details(request, grant_id, grant_slug):
         grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
             pk=grant_id, slug=grant_slug
         )
+        increment_view_count.delay([grant.pk], grant.content_type)
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
 
@@ -544,7 +552,6 @@ def grant_details(request, grant_id, grant_slug):
         'target': f'/activity?what={what}',
         'pinned': pinned,
         'what': what,
-        'can_pin': can_pin(request, what),
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,

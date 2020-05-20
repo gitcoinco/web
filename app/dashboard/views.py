@@ -62,6 +62,7 @@ from cacheops import invalidate_obj
 from chat.tasks import (
     add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
 )
+from dashboard.tasks import increment_view_count
 from dashboard.context import quickstart as qs
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
@@ -3552,6 +3553,7 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
+        increment_view_count.delay([hackathon_event.pk]. hackathon_event.content_type)
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
@@ -4108,6 +4110,11 @@ def get_hackathons(request):
         'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
         'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
     }
+
+    pks = HackathonEvent.objects.filter(visible=True).values_list('pk', flat=True)
+    if len(pks):
+        increment_view_count.delay(list(pks), 'hackathon event')
+
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',

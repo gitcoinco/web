@@ -307,7 +307,7 @@ class BountyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'bounty_state', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
-        '_action_urls', 'coupon_link'
+        '_action_urls', 'coupon_link', 'view_count'
     ]
 
     def img(self, instance):
@@ -319,6 +319,9 @@ class BountyAdmin(admin.ModelAdmin):
 
     def what(self, instance):
         return str(instance)
+
+    def view_count(self, instance):
+        return instance.get_view_count
 
     def fulfillments_link(self, instance):
         copy = f'fulfillments({instance.num_fulfillments})'
@@ -382,7 +385,10 @@ class HackathonEventAdmin(admin.ModelAdmin):
     raw_id_fields = ['sponsor_profiles']
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
     list_filter = ('sponsor_profiles', )
-    readonly_fields = ['img', 'explorer_link', 'stats']
+    readonly_fields = ['img', 'explorer_link', 'stats', 'view_count']
+
+    def view_count(self, instance):
+        return instance.get_view_count
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
