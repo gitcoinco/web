@@ -745,7 +745,7 @@ class Bounty(SuperModel):
 
     @property
     def fulfillers_handles(self):
-        bounty_fulfillers = self.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
+        bounty_fulfillers = self.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True)
         tip_fulfillers = self.tips.values_list('username', flat=True)
         return list(bounty_fulfillers) + list(tip_fulfillers)
 
@@ -1333,25 +1333,55 @@ class BountyFulfillment(SuperModel):
         ('done', 'done'),
     ]
 
-    fulfiller_address = models.CharField(max_length=50)
-    fulfiller_email = models.CharField(max_length=255, blank=True)
-    fulfiller_github_username = models.CharField(max_length=255, blank=True)
-    fulfiller_name = models.CharField(max_length=255, blank=True)
+    PAYOUT_TYPE = [
+        ('bounties_network', 'bounties_network'),
+        ('qr', 'qr'),
+        ('fiat', 'fiat')
+    ]
+
+    TENANT = [
+        ('ETH', 'ETH'),
+        ('ETC', 'ETC'),
+        ('ZIL', 'ZIL'),
+        ('CELO', 'CELO'),
+        ('PYPL', 'PYPL')
+    ]
+
+    bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE, help_text="the bounty against which the fulfillment is made")
+
+    # TODO: RENAME
+    fulfillment_id = models.IntegerField(null=True, blank=True, help_text="bounty's fulfillment number")
+
+    # TODO: RETIRE
     fulfiller_metadata = JSONField(default=dict, blank=True)
-    fulfillment_id = models.IntegerField(null=True, blank=True)
+
+    fulfiller_address = models.CharField(max_length=50, help_text="address to which amount is credited")
+    funder_address = models.CharField(max_length=50, null=True, help_text="address from which amount is deducted")
+
+    # TODO: rename to fulfiller_profile
+    profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True, help_text="fulfillers's profile")
+    funder_profile = models.ForeignKey('dashboard.Profile', null=True, on_delete=models.CASCADE, help_text="funder's profile")
+
+
+    # TODO: rename to hours_worked
     fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
+    # TODO: rename to submission_url
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
     funder_last_notified_on = models.DateTimeField(null=True, blank=True)
-    accepted = models.BooleanField(default=False)
-    accepted_on = models.DateTimeField(null=True, blank=True)
 
-    bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
-    profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True)
+    accepted = models.BooleanField(default=False, help_text="has the fulfillment been accepted by the funder")
+    accepted_on = models.DateTimeField(null=True, blank=True, help_text="date when the fulfillment was accepted by the funder")
 
-    token_name = models.CharField(max_length=10, blank=True)
-    payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True)
-    payout_status = models.CharField(max_length=10, choices=PAYOUT_STATUS, blank=True)
-    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=50)
+    payout_type = models.CharField(max_length=20, null=True, blank=True,choices=PAYOUT_TYPE, help_text="payment type used to make the payment")
+    tenant = models.CharField(max_length=10, null=True, blank=True,choices=TENANT, help_text="specific tenant type under the payout_type")
+
+    funder_identifier = models.CharField(max_length=50, null=True, blank=True, help_text="unique funder identifier used by when payout_type is fiat")
+    fulfiller_identifier = models.CharField(max_length=50, null=True, blank=True, help_text="unique fulfiller identifier used by when payout_type is fiat")
+
+    token_name = models.CharField(max_length=10, blank=True, help_text="token/currency in which the payout is done")
+    payout_tx_id = models.CharField(default="0x0", max_length=255, blank=True, help_text="transaction id")
+    payout_status = models.CharField(max_length=10, choices=PAYOUT_STATUS, blank=True, help_text="payment status")
+    payout_amount = models.DecimalField(null=True, blank=True, decimal_places=4, max_digits=50, help_text="amount being paid out by funder")
 
     def __str__(self):
         """Define the string representation of BountyFulfillment.
@@ -1362,16 +1392,21 @@ class BountyFulfillment(SuperModel):
         """
         return f'BountyFulfillment ID: ({self.pk}) - Bounty ID: ({self.bounty.pk})'
 
-    def save(self, *args, **kwargs):
-        """Define custom handling for saving bounty fulfillments."""
-        if self.fulfiller_github_username:
-            self.fulfiller_github_username = self.fulfiller_github_username.lstrip('@')
-        super().save(*args, **kwargs)
+
+    @property
+    def fulfiller_email(self):
+        return self.profile.email
+
+
+    @property
+    def fulfiller_github_username(self):
+        return self.profile.handle
 
 
     @property
     def should_hide(self):
         return self.fulfiller_github_username in settings.BLOCKED_USERS
+
 
     @property
     def to_json(self):
@@ -1386,7 +1421,6 @@ class BountyFulfillment(SuperModel):
             'bounty_id': self.bounty.pk,
             'email': self.fulfiller_email,
             'githubUsername': self.fulfiller_github_username,
-            'name': self.fulfiller_name,
             'payout_status': self.payout_status,
             'payout_amount': self.payout_amount,
             'token_name': self.token_name,
@@ -3089,7 +3123,9 @@ class Profile(SuperModel):
 
     @property
     def desc(self):
-        return self.get_desc(self.get_funded_bounties(), self.get_fulfilled_bounties())
+        bounties1 = self.get_funded_bounties() if not self.is_org else Bounty.objects.none()
+        bounties2 = self.get_orgs_bounties() if self.is_org else self.get_fulfilled_bounties() 
+        return self.get_desc(bounties1, bounties2)
 
     @property
     def github_created_on(self):
@@ -3731,7 +3767,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__icontains=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url)
         return bounties
 
     def get_leaderboard_index(self, key='weekly_earners'):
@@ -4074,6 +4110,8 @@ class Profile(SuperModel):
         context['portfolio_keywords'] = sorted_portfolio_keywords
         earnings_to = Earning.objects.filter(to_profile=profile, network='mainnet', value_usd__isnull=False)
         earnings_from = Earning.objects.filter(from_profile=profile, network='mainnet', value_usd__isnull=False)
+        from django.contrib.contenttypes.models import ContentType
+        earnings_to = earnings_to.exclude(source_type=ContentType.objects.get(app_label='kudos', model='kudostransfer'))
         context['earnings_total'] = round(sum(earnings_to.values_list('value_usd', flat=True)))
         context['spent_total'] = round(sum(earnings_from.values_list('value_usd', flat=True)))
         context['earnings_count'] = earnings_to.count()
@@ -4903,7 +4941,7 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
-    
+
     @property
     def mutual_follow(self):
         return TribeMember.objects.filter(profile=self.org, org=self.profile).exists()
@@ -4918,7 +4956,7 @@ class TribeMember(SuperModel):
         tribe_following = Subquery(TribeMember.objects.filter(org=self.profile).values_list('profile', flat=True))
         return TribeMember.objects.filter(org__in=tribe_following, profile=self.org).exclude(org=self.org)
 
-      
+
 class Poll(SuperModel):
     title = models.CharField(max_length=350, blank=True, null=True)
     active = models.BooleanField(default=False)
