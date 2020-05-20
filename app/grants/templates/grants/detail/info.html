@@ -21,123 +21,127 @@
     Back to Grants
   </a>
   <!-- GRANT LOGO -->
-  <div class="grant-logo pb-2" style="padding-top: 20px !important;">
-    {% if is_team_member %}
-      <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
-        <i class="far fa-image" data-toggle="tooltip" data-placement="right" title="Change Grant Profile Photo"></i>
-        <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
-      </a>
+  <div class="row">
+    <div class="col-5 grant-logo pb-2" style="padding-top: 20px !important;">
+      {% if is_team_member %}
+        <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
+          <i class="far fa-image" data-toggle="tooltip" data-placement="right" title="Change Grant Profile Photo"></i>
+          <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
+        </a>
 
-      <div class="modal fade" id="changeLogo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <form method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                <h6 class="modal-title text-center" id="changeLogoLabel">Change Grant Logo</h6>
-                <div class="form__drop" id="js-drop">
-                  <input id="img-project" type="file" name="input_image" accept="image/*">
-                  <span>{% trans "Drag & Drop or Browse" %}</span>
-                  <img id="preview"/>
+        <div class="modal fade" id="changeLogo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <h6 class="modal-title text-center" id="changeLogoLabel">Change Grant Logo</h6>
+                  <div class="form__drop" id="js-drop">
+                    <input id="img-project" type="file" name="input_image" accept="image/*">
+                    <span>{% trans "Drag & Drop or Browse" %}</span>
+                    <img id="preview"/>
+                  </div>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="button button--warning button__small" data-dismiss="modal">Cancel</button>
-                <button id="saveLogo" type="submit" class="button button--primary button__small">Save</button>
-              </div>
-            </form>
+                <div class="modal-footer">
+                  <button type="button" class="button button--warning button__small" data-dismiss="modal">Cancel</button>
+                  <button id="saveLogo" type="submit" class="button button--primary button__small">Save</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
+
+      {% else %}
+
+        <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
+
+      {% endif %}
+    </div>
+
+    <div class="col-7">
+      <h1 class="font-title-xl my-4 font-weight-bold">
+        {% if is_team_member %}
+          <textarea id="form--input__title" class="p-0 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.title }}</textarea>
+        {% else %}
+          {{ grant.title }}
+        {% endif %}
+      </h1>
+  
+       <!-- SUMMARY INFO -->
+      <div class="summary-info mb-4 pb-1">
+  
+        {% if grant.hidden and not grant.link_to_new_grant %}
+          <div class="mb-2 font-smaller-2">
+            <i style="width: 14px; top:0.6rem" class="mb-2 mb-md-0 fas fa-eye-slash mr-2 text-center position-relative"></i>
+            <p class="d-md-inline">
+              <span>This grant is hidden from the main grant explorer.</span> <br>
+            </p>
+          </div>
+        {% endif %}
+  
+  
+        <div class="font-body mb-2">
+          {% if is_team_member %}
+            <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
+          {% else %}
+            <i style="width: 14px;" class="fab fa-github mr-2 text-center"></i>
+            <a href="{{ grant.reference_url }}" target="_blank" data-toggle="tooltip" data-html="true" data-placement="top" title="Project URL">
+              {{ grant.reference_url }}
+            </a>
+          {% endif %}
+        </div>
+  
+        <div class="mb-2">
+          <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
+          <a id="wallet-address" class="wallet-address"
+            target="_blank" data-toggle="tooltip" data-placement="top" title="Recipient Funding Address">
+            {{ grant.admin_address }}
+          </a>
+        </div>
+  
+        {% if is_unsubscribed_from_updates_from_this_grant %}
+          <div class="font-body mb-2">
+            <i style="width: 14px;" class="fas fa-comment-slash mr-2 text-center"></i>
+              You are unsubscribed from updates for this grant.
+            </p>
+          </div>
+        {% endif %}
+  
+        {% if grant.link_to_new_grant %}
+          <div class="font-body mb-2">
+            <i style="width: 14px;" class="fas fa-times mr-2 text-center"></i>
+            <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="The grant owner has migrated to a new grant. Click below to visit new grant and fund">
+              Not accepting contributions as a new grant was created to replace this one by the owner 
+            </p>
+          </div>
+        {% elif grant.token_symbol %}
+          <div class="font-body mb-2">
+            <i style="width: 14px;" class="fas fa-coins mr-2 text-center"></i>
+            <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="ERC20 Token">
+              Grant accepts {{ grant.token_symbol }}
+            </p>
+          </div>
+        {% endif %}
+  
+        {% if user_non_errored_subscription %}
+          <div class="font-body mb-2">
+            <i style="width: 14px;" class="fas fa-info-circle mr-2 text-center"></i>
+            <p class="mb-0 d-inline-block" data-toggle="tooltip" data-placement="top" title="Your Current Active Subscription">
+              You are contributing
+              {{ user_non_errored_subscription.amount_per_period|floatformat:2|intcomma }}
+              {{ user_non_errored_subscription.token_symbol }} every {{ user_non_errored_subscription.frequency }} {{ user_non_errored_subscription.frequency_unit }}
+            </p>
+          </div>
+        {% endif %}
+  
       </div>
-
-    {% else %}
-
-      <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{grant.image_css}}">
-
-    {% endif %}
+    </div>
   </div>
 
   <div>
-    <h1 class="font-title-xl my-4 font-weight-bold">
-      {% if is_team_member %}
-        <textarea id="form--input__title" class="p-0 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.title }}</textarea>
-      {% else %}
-        {{ grant.title }}
-      {% endif %}
-    </h1>
-
-     <!-- SUMMARY INFO -->
-    <div class="summary-info mb-4 pb-1">
-
-      {% if grant.hidden and not grant.link_to_new_grant %}
-        <div class="mb-2 font-smaller-2">
-          <i style="width: 14px; top:0.6rem" class="mb-2 mb-md-0 fas fa-eye-slash mr-2 text-center position-relative"></i>
-          <p class="d-md-inline">
-            <span>This grant is hidden from the main grant explorer.</span> <br>
-          </p>
-        </div>
-      {% endif %}
-
-
-      <div class="font-body mb-2">
-        {% if is_team_member %}
-          <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
-        {% else %}
-          <i style="width: 14px;" class="fab fa-github mr-2 text-center"></i>
-          <a href="{{ grant.reference_url }}" target="_blank" data-toggle="tooltip" data-html="true" data-placement="top" title="Project URL">
-            {{ grant.reference_url }}
-          </a>
-        {% endif %}
-      </div>
-
-      <div class="mb-2">
-        <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
-        <a id="wallet-address" class="wallet-address"
-          target="_blank" data-toggle="tooltip" data-placement="top" title="Recipient Funding Address">
-          {{ grant.admin_address }}
-        </a>
-      </div>
-
-      {% if is_unsubscribed_from_updates_from_this_grant %}
-        <div class="font-body mb-2">
-          <i style="width: 14px;" class="fas fa-comment-slash mr-2 text-center"></i>
-            You are unsubscribed from updates for this grant.
-          </p>
-        </div>
-      {% endif %}
-
-      {% if grant.link_to_new_grant %}
-        <div class="font-body mb-2">
-          <i style="width: 14px;" class="fas fa-times mr-2 text-center"></i>
-          <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="The grant owner has migrated to a new grant. Click below to visit new grant and fund">
-            Not accepting contributions as a new grant was created to replace this one by the owner 
-          </p>
-        </div>
-      {% elif grant.token_symbol %}
-        <div class="font-body mb-2">
-          <i style="width: 14px;" class="fas fa-coins mr-2 text-center"></i>
-          <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="ERC20 Token">
-            Grant accepts {{ grant.token_symbol }}
-          </p>
-        </div>
-      {% endif %}
-
-      {% if user_non_errored_subscription %}
-        <div class="font-body mb-2">
-          <i style="width: 14px;" class="fas fa-info-circle mr-2 text-center"></i>
-          <p class="mb-0 d-inline-block" data-toggle="tooltip" data-placement="top" title="Your Current Active Subscription">
-            You are contributing
-            {{ user_non_errored_subscription.amount_per_period|floatformat:2|intcomma }}
-            {{ user_non_errored_subscription.token_symbol }} every {{ user_non_errored_subscription.frequency }} {{ user_non_errored_subscription.frequency_unit }}
-          </p>
-        </div>
-      {% endif %}
-
-    </div>
-
     {% if not is_team_member or grant_is_inactive %}
       {% if grant.categories and grant.categories.all %}
         <div class="mb-2 mt-3 font-body">
