@@ -3089,8 +3089,9 @@ class Profile(SuperModel):
 
     @property
     def desc(self):
-        bounties = self.get_orgs_bounties() if self.is_org else self.get_fulfilled_bounties() 
-        return self.get_desc(self.get_funded_bounties(), bounties)
+        bounties1 = self.get_funded_bounties() if not self.is_org else Bounty.objects.none()
+        bounties2 = self.get_orgs_bounties() if self.is_org else self.get_fulfilled_bounties() 
+        return self.get_desc(bounties1, bounties2)
 
     @property
     def github_created_on(self):
