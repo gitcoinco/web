@@ -5050,6 +5050,22 @@ def payout_bounty_v1(request, fulfillment_id):
     if payout_tx_id:
         fulfillment.payout_tx_id = payout_tx_id
 
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing parameter payout_type'
+        return JsonResponse(response)
+
+    tenant = request.POST.get('tenant')
+    if not tenant:
+        response['message'] = 'error: missing parameter tenant'
+        return JsonResponse(response)
+
+
+    fulfillment.funder_profile = profile
+    fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
+    fulfillment.payout_type = payout_type
+    fulfillment.tenant = tenant
+
     fulfillment.payout_amount = amount
     fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name

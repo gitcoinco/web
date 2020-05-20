@@ -366,6 +366,11 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     hours_worked = None
 
                 new_bounty.fulfillments.create(
+                    funder_profile=new_bounty.bounty_owner_profile,
+                    funder_address=new_bounty.bounty_owner_address,
+                    payout_type='bounties_network',
+                    tenant = 'ETH',
+                    token_name=new_bounty.token_name,
                     fulfiller_address=fulfiller_address,
                     fulfiller_email=fulfiller_email,
                     fulfiller_github_username=github_username,
