@@ -22,10 +22,11 @@ from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
 from .models import (
-    Announcement, Comment, Favorite, Flag, Like, PinnedPost, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
+    Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, PinnedPost,
+    SuggestedAction,
 )
 from .tasks import increment_offer_view_counts
-from .utils import is_user_townsquare_enabled, can_pin
+from .utils import can_pin, is_user_townsquare_enabled
 
 tags = [
     ['#announce','bullhorn','search-announce'],

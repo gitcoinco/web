@@ -62,8 +62,8 @@ from cacheops import invalidate_obj
 from chat.tasks import (
     add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
 )
-from dashboard.tasks import increment_view_count
 from dashboard.context import quickstart as qs
+from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
 )

@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from __future__ import unicode_literals
 
 import json
-from app.redis_service import RedisService
+
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
@@ -40,6 +40,7 @@ from django.utils.html import escape
 from django.utils.timezone import localtime
 
 import pytz
+from app.redis_service import RedisService
 
 
 class EncodeAnything(DjangoJSONEncoder):

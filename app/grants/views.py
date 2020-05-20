@@ -22,7 +22,6 @@ import json
 import logging
 import random
 from decimal import Decimal
-from dashboard.tasks import increment_view_count
 
 from django.conf import settings
 from django.contrib import messages
@@ -45,6 +44,7 @@ from app.utils import get_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, Profile, SearchHistory
+from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
