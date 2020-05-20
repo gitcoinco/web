@@ -1,7 +1,7 @@
 from dashboard.models import Bounty, HackathonEvent
 
 # bounty data export script for electric capital
-print("hackathon name, start date, end date, bounty_created, bounty url, bounty title, bounty amount, bounty token, contributors, github_issue, fulfiller_name, fulfiller_pr")
+print("hackathon name, start date, end date, bounty_created, bounty url, bounty title, bounty amount, bounty token, contributors, github_issue, fulfiller_pr")
 for bounty in Bounty.objects.current().filter(idx_status='done'):
       for bf in bounty.fulfillments.all():
             he = bounty.event

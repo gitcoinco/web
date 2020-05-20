@@ -158,12 +158,6 @@
                 <div class="text-left m-0 p-0">
                   <p class="font-caption mb-3 text-black-60 m-0 p-0"><i class="fas fa-lock"></i> - Because subscription support is so important to provide recurring income to Gitcoin Grantees, Each Grant is an EIP 1337 compatible smart contract!  Gitcoin's implementation of EIP 1337 has been audited by smart contract auditors to enable trustless & secure on-chain subscriptions - <a class="m-0 p-0" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Learn More Here</a></p>
                 </div>
-                <div id="gas-section" class="pb-2">
-                  <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
-                  <div>
-                    {% include 'shared/wallet_estimate.html' %}
-                  </div>
-                </div>
                 <div class="form__footer text-center">
                   <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
                 </div>
@@ -194,7 +188,6 @@
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
 
-  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
