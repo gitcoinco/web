@@ -5,6 +5,12 @@
   background-color: #ecf0f4;
   border: 0px solid;
 }
+
+.dark-mode #reflink {
+  background-color: var(--gc-blue);
+  color: #ecf0f4;
+}
+
 .click_here_to_join_video{
   width: 100%;
   cursor: pointer;
@@ -366,6 +372,11 @@ iframe.popout{
   width: 50%;
   border: 1px solid;
   margin-left: 25%;
+}
+
+.dark-mode .activity_stream .activity_detail .tag {
+  background-color: var(--gc-blue);
+  color: white;
 }
 
 @media (min-width: 768px) {
