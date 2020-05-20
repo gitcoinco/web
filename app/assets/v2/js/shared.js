@@ -214,7 +214,7 @@ var getTimeFromDate = function(date) {
 };
 
 var waitforWeb3 = function(callback) {
-  if (document.web3network && document.web3network != 'locked') {
+  if (document.web3network) {
     callback();
   } else {
     var wait_callback = function() {
