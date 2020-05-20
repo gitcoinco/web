@@ -1,5 +1,5 @@
 var waitforWeb3 = function(callback) {
-  if (document.web3network) {
+  if (document.web3network && document.web3network != 'locked') {
     callback();
   } else {
     var wait_callback = function() {
