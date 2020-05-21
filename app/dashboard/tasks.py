@@ -1,14 +1,14 @@
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 
 from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Activity, Bounty, Profile, ObjectView
+from dashboard.models import Activity, Bounty, ObjectView, Profile
 from marketing.mails import func_name, grant_update_email, send_mail
 from retail.emails import render_share_bounty
-from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 
 logger = get_task_logger(__name__)
 
