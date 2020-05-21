@@ -1138,3 +1138,8 @@ body.green.offer_view .announce {
   opacity: 0.8;
   text-shadow: none;
 }
+
+.dark-mode .alert-info{
+  background: var(--gc-dark-violet);
+  color: white;
+}
