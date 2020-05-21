@@ -260,7 +260,11 @@
 
           {% if not hide_likes %}
             <span class="mr-2">
-              <i class="far fa-eye grey" data-toggle="tooltip" title="The number of views this post has gotten." ></i>
+              {% if for_email %}
+                <img class="fa-icon-png" src="{% static "v2/images/emails/eye-regular.png" %}">
+              {% else %}
+                <i class="far fa-eye grey" data-toggle="tooltip" title="The number of views this post has gotten." ></i>
+              {% endif %}
               <span class="grey">{{ row.view_count }}</span>
             </span>
           {% endif %}
@@ -269,7 +273,11 @@
               <a data-pk={{row.pk}} data-username={{row.profile.handle}} class="tip_activity" href="#"
               data-toggle="tooltip" title="This activity feed has generated {{ row.tip_count_eth|floatformat:2 }} ETH (${{row.tip_count_usd|floatformat:2}}) in Tips."
               >
-                <i class="fab fa-ethereum grey" ></i>
+                {% if for_email %}
+                  <img class="fa-icon-png small" src="{% static "v2/images/emails/ethereum-brands-1.png" %}">
+                {% else %}
+                  <i class="fab fa-ethereum grey" ></i>
+                {% endif %}
                 <span class="amount grey">{{ row.tip_count_eth|floatformat:3}}</span>
               </a>
 
@@ -278,21 +286,34 @@
               data-pk={{row.pk}} class="like_activity mr-2" data-action='like' data-toggle="tooltip"
             >
               <span class="action {% if row.metadata.liked %}open{%endif%}">
-                <i class="far fa-heart grey"></i>
+                {% if for_email %}
+                  <img class="fa-icon-png" src=""{% static "v2/images/emails/heart-regular.png" %}">
+                {% else %}
+                  <i class="far fa-heart grey" ></i>
+                {% endif %}
               </span>
               <span class="num grey">{{row.likes.count}}</span>
             </a>
 
             <a href=# data-pk={{row.pk}} class="comment_activity mr-2" data-toggle="tooltip"
               title="Comment on this feed item." {% if row.comments.count %} data-open="true" {% endif %} >
-              <span class="action"><i class="far fa-comment grey"></i></span>
+              <span class="action">
+                {% if for_email %}
+                  <img class="fa-icon-png" src="{% static "v2/images/emails/comment-regular.png" %}">
+                {% else %}
+                  <i class="far fa-comment grey" ></i>
+                {% endif %}
+              </span>
               <span class="num grey">{{row.comments.count}}</span>
             </a>
           </span>
 
-          <button class="btn-clean grey" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-ellipsis-h"></i>
-          </button>
+          {% if not for_email %}
+            <button class="btn-clean" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-ellipsis-h grey" ></i>
+            </button>
+          {% endif %}
+
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             {% if can_pin %}
               <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the feed." href=#
@@ -420,7 +441,7 @@
         {% endif %}
       </div>
     </div>
-    {% if row.metadata.resource.type == 'background' %}
+    {% if row.metadata.resource.type == 'background' and not for_email %}
       <div class="status_background_container">
         <img class="status_background" src="/static/status_backgrounds/{{row.metadata.resource.id}}.png" />
         <div class="image-text-container">
@@ -431,7 +452,7 @@
       </div>
     {% endif %}
   </div>
-  {% if row.activity_type == 'new_bounty' %}
+  {% if row.activity_type == 'new_bounty' and not for_email %}
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content py-3">
       <div class="col-12 col-md-2 text-center">
@@ -476,7 +497,7 @@
       </div>
     </div>
   </div>
-  {% elif row.activity_type == 'new_kudos' %}
+  {% elif row.activity_type == 'new_kudos' and not for_email %}
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content py-3">
       <div class="col-12 col-md-3 text-center">
@@ -488,7 +509,7 @@
       </div>
     </div>
   </div>
-  {% elif row.activity_type == 'new_hackathon_project' %}
+  {% elif row.activity_type == 'new_hackathon_project' and not for_email %}
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content py-3">
       <div class="col-12 col-md-2 text-center">
@@ -511,7 +532,7 @@
       </div>
     </div>
   </div>
-  {% elif row.activity_type == 'new_grant' %}
+  {% elif row.activity_type == 'new_grant' and not for_email %}
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content py-3">
       <div class="col-12 col-md-2 text-center">
@@ -523,7 +544,7 @@
       </div>
     </div>
   </div>
-  {% elif row.metadata.poll_choices %}
+  {% elif row.metadata.poll_choices and not for_email %}
   <div class="poll_choices {% if row.metadata.poll_answered %}answered{%endif%}">
     {% for ele in row.metadata.poll_choices %}
       <div data-vote="{{ forloop.counter0 }}" class=" vote {% if row.metadata.poll_answered == ele.i %}answer{%endif%}">
@@ -536,19 +557,19 @@
       </div>
     {% endfor %}
   </div>
-  {% elif row.metadata.resource.type == 'gif' %}
+  {% elif row.metadata.resource.type == 'gif' and not for_email %}
   <div class="mt-1 mb-2" >
     <div class="row align-items-center">
         <img class="attachment" {% if not is_pin %} loading="lazy" data-src="{{ row.metadata.resource.id }} {% else %} src="{{ row.metadata.resource.id }} {% endif %} ">
     </div>
   </div>
-  {% elif row.metadata.resource.provider == 'youtube' %}
+  {% elif row.metadata.resource.provider == 'youtube' and not for_email %}
   <div class="embed-responsive embed-responsive-16by9 mt-2">
     <iframe class="embed-responsive-item" height="315" src="https://www.youtube.com/embed/{{ row.metadata.resource.id }}"
     frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen></iframe>
   </div>
-  {% elif row.metadata.resource.type == 'content' %}
+  {% elif row.metadata.resource.type == 'content' and not for_email %}
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content">
       <div class="col-12 col-md-3 text-center">

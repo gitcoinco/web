@@ -14,18 +14,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n humanize %}{% if action == 'custom' %}
-  <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button large" href="{{ action_url }}">{{ action_copy }}</a>
-  </div>
-{% else %}
-  <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button large" href="{{ quest.absolute_url }}">{% trans "View on Gitcoin.co" %}</a>
-  </div>
-{% endif %}
-{% if action2 == 'custom' %}
-  <hr>
-  <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button large" href="{{ action2_url }}">{{ action2_copy }}</a>
-  </div>
-{% endif %}
+{% load i18n static %}
+<link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}" data-premailer="ignore">
+<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" >
+<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" data-premailer="ignore">
