@@ -14,7 +14,7 @@ from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
-from grants.models import Grant
+
 from kudos.models import Token
 from marketing.mails import comment_email, new_action_request
 from perftools.models import JSONStore

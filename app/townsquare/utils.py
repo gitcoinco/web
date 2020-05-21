@@ -1,5 +1,5 @@
 from .models import Offer
-
+from grants.models import Grant
 
 def is_user_townsquare_enabled(user):
     if not user.is_authenticated:
