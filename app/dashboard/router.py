@@ -453,7 +453,8 @@ class BountiesViewSet(viewsets.ModelViewSet):
         # increment view counts
         pks = [ele.pk for ele in queryset]
         if len(pks):
-            increment_view_count.delay(pks, queryset[0].content_type)
+            view_type = 'individual' if len(pks) == 1 else 'list'
+            increment_view_count.delay(pks, queryset[0].content_type, request.user.id, view_type)
 
         return queryset
 

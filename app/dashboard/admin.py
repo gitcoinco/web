@@ -28,7 +28,7 @@ from .models import (
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
     Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
-    TribeMember, UserAction, UserVerificationModel,
+    TribeMember, UserAction, UserVerificationModel, ObjectView
 )
 
 
@@ -51,6 +51,11 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
 
+
+class ObjectViewAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['viewer']
 
 class InvestigationAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -504,5 +509,6 @@ admin.site.register(TribeMember, TribeMemberAdmin)
 admin.site.register(FundRequest, FundRequestAdmin)
 admin.site.register(Poll, PollsAdmin)
 admin.site.register(Question, QuestionsAdmin)
+admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)

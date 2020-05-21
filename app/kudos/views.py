@@ -145,7 +145,7 @@ def marketplace(request):
     # increment view counts
     pks = list(token_list.values_list('pk', flat=True))
     if len(pks):
-        increment_view_count.delay(pks, token_list.first().content_type)
+        increment_view_count.delay(pks, token_list.first().content_type, request.user.id, 'index')
 
     listings = token_list.order_by(order_by).cache()
     context = {
@@ -228,7 +228,7 @@ def details(request, kudos_id, name):
             contract__address=kudos.contract.address,
         )
         # increment view counts
-        increment_view_count.delay([token.pk], token.content_type)
+        increment_view_count.delay([token.pk], token.content_type, request.user.id, 'individual')
 
         # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
         kudos.num_clones_in_wild = token.num_clones_in_wild

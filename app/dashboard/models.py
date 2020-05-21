@@ -5071,3 +5071,17 @@ class Investigation(SuperModel):
             key='sybil',
         )
 
+class ObjectView(SuperModel):
+    """Records object views ."""
+    viewer = models.ForeignKey(User, related_name='objectviews', on_delete=models.SET_NULL, null=True, db_index=True)
+    target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    target_id = models.PositiveIntegerField(db_index=True)
+    target = GenericForeignKey('target_type', 'target_id')
+    view_type = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ['-pk']
+
+    def __str__(self):
+        return f"{self.viewer} => {self.target} on {self.created_on}"
+

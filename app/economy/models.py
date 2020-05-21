@@ -146,16 +146,6 @@ class SuperModel(models.Model):
         key = f"{self.content_type}_{self.pk}"
         return key
 
-    def increment_view_count(self):
-        try:
-            redis = RedisService().redis
-            result = redis.incr(self.view_count_redis_key)
-            if not result:
-                return 0
-            return int(result.decode('utf-8'))
-        except KeyError:
-            return 0
-
     def set_view_count(self, amount):
         try:
             redis = RedisService().redis

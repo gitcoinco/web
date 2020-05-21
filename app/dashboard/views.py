@@ -3553,7 +3553,7 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
-        increment_view_count.delay([hackathon_event.pk]. hackathon_event.content_type)
+        increment_view_count.delay([hackathon_event.pk], hackathon_event.content_type, request.user.id, 'individual')
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
@@ -4113,7 +4113,7 @@ def get_hackathons(request):
 
     pks = HackathonEvent.objects.filter(visible=True).values_list('pk', flat=True)
     if len(pks):
-        increment_view_count.delay(list(pks), 'hackathon event')
+        increment_view_count.delay(list(pks), 'hackathon event', request.user.id, 'index')
 
     params = {
         'active': 'hackathons',

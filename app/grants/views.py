@@ -310,7 +310,7 @@ def grants(request):
     # record view 
     pks = list([grant.pk for grant in grants])
     if len(pks):
-        increment_view_count.delay(pks, grants[0].content_type)
+        increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
 
 
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
@@ -447,7 +447,7 @@ def grant_details(request, grant_id, grant_slug):
         grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
             pk=grant_id, slug=grant_slug
         )
-        increment_view_count.delay([grant.pk], grant.content_type)
+        increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
 
