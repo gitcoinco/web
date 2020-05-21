@@ -5070,3 +5070,4 @@ class Investigation(SuperModel):
             description=htmls,
             key='sybil',
         )
+
