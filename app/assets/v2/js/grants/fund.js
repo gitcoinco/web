@@ -214,7 +214,7 @@ $(document).ready(function() {
     localStorage.setItem('grantsgitcoin-grant-input-amount', $('#gitcoin-grant-input-amount').val());
 
     data.is_postive_vote = (data.match_direction == '-') ? 0 : 1;
-  
+
     if (data.frequency_unit) {
 
       // translate timeAmount&timeType to requiredPeriodSeconds

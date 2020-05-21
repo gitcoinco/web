@@ -9,10 +9,45 @@ $(document).ready(function() {
         const formData = objectifySerialized($(this).serializeArray());
         addToCart(formData);
         console.log("CART", loadCart());
+
+        showSideCart();
+    });
+
+    $("#close-side-cart").click(function() {
+        hideSideCart();
     });
 });
 
 // HELPERS
+
+function showSideCart() {
+    const isShowing = $('#side-cart').hasClass('col-3');
+
+    if (isShowing) {
+        return;
+    }
+
+    toggleSideCart();
+}
+
+function hideSideCart() {
+    const isShowing = $('#side-cart').hasClass('col-3');
+
+    if (!isShowing) {
+        return;
+    }
+
+    toggleSideCart();
+}
+
+function toggleSideCart() {
+    $('#grants-details').toggleClass('col-12');
+    $('#grants-details').toggleClass('col-9');
+    $('#side-cart').toggleClass("col-3");
+    $('#side-cart').toggleClass("col-0");
+    $('#funding-card').toggleClass("mr-md-5");
+    $('#funding-card').toggleClass("mr-md-3");
+}
 
 function objectifySerialized(data) {
     let objectData = {};
