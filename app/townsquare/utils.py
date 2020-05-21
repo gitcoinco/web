@@ -1,3 +1,5 @@
+from grants.models import Grant
+
 from .models import Offer
 
 
