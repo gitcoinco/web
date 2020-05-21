@@ -15,8 +15,10 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}" data-premailer="ignore">
-<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" >
-<link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-<link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" data-premailer="ignore">
+<style>
+  {% include 'v2/css/lib/typography.css' %}
+  {% include 'v2/css/gitcoin.css' %}
+  {% include 'v2/css/town_square.css' %}
+  {% include 'v2/css/activity_stream.css' %}
+
+</style>
