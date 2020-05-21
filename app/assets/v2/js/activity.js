@@ -1,7 +1,7 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
 window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
+  // setInterval(listen_for_web3_changes, 5000);
+  // listen_for_web3_changes();
 });
 
 $(document).ready(function() {
@@ -389,6 +389,7 @@ $(document).ready(function() {
   });
   // like activity
   var send_tip_to_object = function($parent, e, tag) {
+    console.log($parent, e, tag)
     e.preventDefault();
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
@@ -397,6 +398,10 @@ $(document).ready(function() {
     if (!web3) {
       _alert('Please enable and unlock your web3 wallet.', 'error');
       return;
+    }
+
+    if (!provider) {
+      return onConnect()
     }
 
     var $amount = $parent.find('.amount');
@@ -439,7 +444,7 @@ $(document).ready(function() {
         view_comments($target, false, undefined, true);
       }, 1000);
 
-      _alert(msg, 'info', 1000);
+      _alert(msg, 'info');
       // todo: update amount
     };
 

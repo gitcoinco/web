@@ -1,9 +1,11 @@
 
 var tokenAddressToDetails = function(addr) {
+  console.log(addr)
   return tokenAddressToDetailsByNetwork(addr, document.web3network);
 };
 
 var tokenAddressToDetailsByNetwork = function(addr, network) {
+  console.log(addr,network)
   var _tokens = tokens(network);
 
   for (var i = 0; i < _tokens.length; i += 1) {
@@ -59,7 +61,7 @@ var load_tokens_from_network = function(network) {
 var load_tokens = function() {
   window.addEventListener('load', function() {
     waitforWeb3(function() {
-      
+
       load_tokens_from_network(document.web3network);
 
       // if web3, set the values of some form variables
