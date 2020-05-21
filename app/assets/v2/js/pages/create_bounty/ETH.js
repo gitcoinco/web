@@ -220,7 +220,6 @@ const ethCreateBounty = async (data) => {
       {
         from: account,
         value: eth_amount,
-        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
         gas: web3.toHex(318730),
         gasLimit: web3.toHex(318730)
       },
@@ -232,7 +231,6 @@ const ethCreateBounty = async (data) => {
     handleTokenAuth().then(() => {
       const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
       const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-      const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
 
       indicateMetamaskPopup();
       if (FEE_PERCENTAGE == 0) {
@@ -243,7 +241,6 @@ const ethCreateBounty = async (data) => {
             to: to_address,
             from: account,
             value: web3.toWei(fee, 'ether'),
-            gasPrice: gas_price
           }, function(error, txnId) {
             indicateMetamaskPopup(true);
             if (error) {
@@ -262,7 +259,7 @@ const ethCreateBounty = async (data) => {
           const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
           const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+          token_contract.transfer(to_address, amountInWei,
             function(error, txnId) {
               indicateMetamaskPopup(true);
               if (error) {
@@ -305,7 +302,6 @@ const ethCreateBounty = async (data) => {
       to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
       from: web3.account,
       value: web3.toWei(ethFeaturedPrice, 'ether'),
-      gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
       gas: web3.toHex(318730),
       gasLimit: web3.toHex(318730)
     },

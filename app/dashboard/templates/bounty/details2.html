@@ -368,8 +368,7 @@
                               <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
 
                               <p class="font-subheader font-weight-bold mt-3 mb-1">
-                                <template v-if="fulfillment.fulfiller_name">[[ fulfillment.fulfiller_name | capitalize ]]</template>
-                                <template v-else>[[ fulfillment.fulfiller_github_username | capitalize ]]</template>
+                                [[ fulfillment.fulfiller_github_username | capitalize ]]
                               </p>
 
                               <p class="font-body text-medium-dark-grey">

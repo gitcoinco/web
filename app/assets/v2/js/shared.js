@@ -92,67 +92,6 @@ var reloadCbAddress = function() {
 
 reloadCbAddress();
 
-
-var update_metamask_conf_time_and_cost_estimate = function() {
-  var confTime = 'unknown';
-  var ethAmount = 'unknown';
-  var usdAmount = 'unknown';
-
-  var gasLimit = parseInt($('#gasLimit').val());
-  var gasPrice = parseFloat($('#gasPrice').val());
-
-  if (gasPrice) {
-    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
-
-    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
-    usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
-  }
-
-  if (typeof document.conf_time_spread == 'undefined') return;
-
-  for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
-    var this_ele = (document.conf_time_spread[i]);
-    var next_ele = (document.conf_time_spread[i + 1]);
-
-    if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(10 * next_ele[1]) / 10;
-    }
-  }
-
-  $('#ethAmount').html(ethAmount);
-  $('#usdAmount').html(usdAmount);
-  $('#confTime').html(confTime);
-};
-
-var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
-
-  var confTime = 'unknown';
-  var ethAmount = 'unknown';
-  var usdAmount = 'unknown';
-
-  var gasLimit = parseInt($('#gasLimit').val());
-
-  if (gasPrice) {
-    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
-
-    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
-    usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
-  }
-
-  if (typeof document.conf_time_spread == 'undefined') return;
-
-  for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
-    var this_ele = (document.conf_time_spread[i]);
-    var next_ele = (document.conf_time_spread[i + 1]);
-
-    if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(10 * next_ele[1]) / 10;
-    }
-  }
-
-  return {'eth': ethAmount, 'usd': usdAmount, 'time': confTime};
-};
-
 var unloading_button = function(button) {
   button.prop('disabled', false);
   button.removeClass('disabled');
@@ -222,7 +161,7 @@ var getTimeFromDate = function(date) {
 };
 
 var waitforWeb3 = function(callback) {
-  if (document.web3network) {
+  if (document.web3network && document.web3network != 'locked') {
     callback();
   } else {
     var wait_callback = function() {

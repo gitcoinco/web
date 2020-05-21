@@ -383,6 +383,28 @@ class Favorite(SuperModel):
         return f"Favorite {self.activity.activity_type}:{self.activity_id} by {self.user}"
 
 
+class PinnedPost(SuperModel):
+    """Model for each Pinned Post."""
+
+    user = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='pins')
+    activity = models.ForeignKey('dashboard.Activity', 
+        on_delete=models.CASCADE, related_name='pin')
+    what = models.CharField(max_length=100, default='', unique=True)
+    created = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return f"Pin {self.activity.activity_type} by {self.user}"
+
+    @property
+    def url(self):
+        return self.activity.url
+
+    def get_absolute_url(self):
+        return self.activity.url
+
+
 class SquelchProfile(SuperModel):
     """Squelches a profile from earning in CLR"""
 
