@@ -86,6 +86,9 @@ def get_settings_navs(request):
     }, {
         'body': _('Job Status'),
         'href': reverse('job_settings'),
+    }, {
+        'body': _('Tax'),
+        'href': reverse('tax_settings'),
     }]
 
     if request.user.is_staff:
@@ -691,7 +694,6 @@ def org_settings(request):
 
     Returns:
         TemplateResponse: The user's Account settings template response.
-
     """
     msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
@@ -718,6 +720,81 @@ def org_settings(request):
         'current_scopes': current_scopes,
     }
     return TemplateResponse(request, 'settings/organizations.html', context)
+
+
+def tax_settings(request):
+    """Display and save user's Tax settings.
+
+    Returns:
+        TemplateResponse: The user's Tax settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not profile or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+        
+    # location  dict is not empty
+    location = ''
+    if profile.location:
+        location_components = json.loads(profile.location)
+        if 'locality' in location_components:
+            location += location_components['locality']
+        if 'country' in location_components:
+            country = location_components['country']
+            if location:
+                location += ', ' + country
+            else:
+                location += country
+        if 'code' in location_components:
+            code = location_components['code']
+            if location:
+                location += ', ' + code
+            else:
+                location += code
+    # location dict is empty
+    else:
+        # set it to the last location registered for the user
+        location_components = profile.locations[-1]
+        if 'city' in location_components:
+            location += location_components['city']
+        if 'country_name' in location_components:
+            country_name = location_components['country_name']
+            if location:
+                location += ', ' + country_name
+            else:
+                location += country_name
+        if 'country_code' in location_components:
+            country_code = location_components['country_code']
+            if location:
+                location += ', ' + country_code
+            else:
+                location += country_code
+    
+    #address is not empty
+    if profile.address:
+        address = profile.address   
+    else:
+        address = ''
+    
+    g_maps_api_key = "AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ"
+        
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'home',
+        'active': '/settings/tax',
+        'title': _('Tax Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'location': location,
+        'address': address,
+        'api_key': g_maps_api_key,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/tax.html', context)
 
 
 def _leaderboard(request):
