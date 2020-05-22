@@ -21,9 +21,8 @@ $(document).ready(function() {
 // HELPERS
 
 function sideCartRowForGrant(grant) {
-
     const cartRow = `
-        <div class="side-cart-row mb-3">
+        <div id="side-cart-row-${grant.grant_id}" class="side-cart-row mb-3">
             <div class="form-row mb-2">
                 <div class="col-2">
                     <img src="${grant.grant_logo}" alt="Grant logo" width="40">
@@ -32,7 +31,7 @@ function sideCartRowForGrant(grant) {
                     ${grant.grant_title}
                 </div>
                 <div class="col-1" style="opacity: 40%">
-                    <i class="fas fa-trash-alt" style="cursor: pointer"></i>
+                    <i id="side-cart-row-remove-${grant.grant_id}" class="fas fa-trash-alt" style="cursor: pointer"></i>
                 </div>
             </div>
             <div class="form-row">
@@ -62,9 +61,15 @@ function showSideCart() {
 
     // Add all elements in cart
     let cartData = loadCart();
-    cartData.forEach( grantInCart => {
-        const cartRow = sideCartRowForGrant(grantInCart);
-        $("#side-cart-data").append(cartRow);
+    cartData.forEach( grant => {
+        const cartRowHtml = sideCartRowForGrant(grant);
+        $("#side-cart-data").append(cartRowHtml);
+
+        // Register remove click handler
+        $(`#side-cart-row-remove-${grant.grant_id}`).click(function() {
+            $(`#side-cart-row-${grant.grant_id}`).remove();
+            removeIdFromCart(grant.grant_id);
+        });
     });
 
     toggleSideCart();
@@ -77,12 +82,12 @@ function hideSideCart() {
         return;
     }
 
+    toggleSideCart();
+
     // Remove elements in cart
     $("#side-cart-data")
         .find("div.side-cart-row")
         .remove();
-
-    toggleSideCart();
 }
 
 function toggleSideCart() {
@@ -105,17 +110,17 @@ function objectifySerialized(data) {
     return objectData;
 }
 
-function cartContainsGrantWithSlug(grantSlug) {
+function cartContainsGrantWithId(grantId) {
     const cart = loadCart();
-    const slugList = cart.map(grant => {
-        return grant.grant_slug;
+    const idList = cart.map(grant => {
+        return grant.grant_id;
     });
 
-    return slugList.includes(grantSlug);
+    return idList.includes(grantId);
 }
 
 function addToCart(grantData) {
-    if (cartContainsGrantWithSlug(grantData.grant_slug)) {
+    if (cartContainsGrantWithId(grantData.grant_id)) {
         return;
     }
 
@@ -128,6 +133,16 @@ function addToCart(grantData) {
     let cartList = loadCart()
     cartList.push(grantData);
     setCart(cartList);
+}
+
+function removeIdFromCart(grantId) {
+    let cartList = loadCart();
+
+    const newList = cartList.filter(grant => {
+        return (grant.grant_id !== grantId);
+    });
+
+    setCart(newList);
 }
 
 function loadCart() {
