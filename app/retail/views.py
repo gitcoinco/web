@@ -1138,7 +1138,8 @@ def create_status_update(request):
             result = what.split(':')[1]
             if key and result:
                 key = f"{key}_id"
-                kwargs[key] = result
+                if key != 'hackathon_id':
+                    kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
 
         if request.POST.get('has_video'):
