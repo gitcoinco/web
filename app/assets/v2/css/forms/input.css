@@ -47,7 +47,7 @@ textarea.form__input {
   background-position: top 0.5rem right 0.5rem;
 }
 
-.form__input,
+.dark-mode .form__input,
 .form__input::-webkit-input-placeholder {
   color: var(--form-input-color);
 }
@@ -77,4 +77,9 @@ textarea.form__input {
 .dark-mode .border,
 .dark-mode .activity_stream .box {
   border-color:transparent!important;
+}
+
+.form-control.bg-lightblue:focus {
+  background: var(--main-bg) !important;
+  color: white;
 }

@@ -18,13 +18,6 @@
 {% load i18n static humanize avatar_tags kudos_extras %}
 {% block content %}
 <style>
-  .roundup {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    padding-left: 2em;
-    padding-right: 2em;
-    line-height: 20px;
-  }
   .intro li{
     margin-top: 15px;
     margin-bottom: 15px;
@@ -54,8 +47,6 @@
   }
   .regards img{
     border-radius: 50%;
-    height: 5%;
-    width: 5%;
     vertical-align: middle;
   }
 
@@ -88,8 +79,10 @@
   <div class='intro text-left'>
     {{ intro|safe }}
     {% if sponsor %}
-      <div style="padding:20px 0; background-color: #f2f6f9; text-align: center; width: 100vw; margin-left: calc(-50vw + 50%)">
-        <div style="max-width: 60vw; margin-left: auto; margin-right: auto;">
+    </div>
+  </div>
+      <div class="full-width text-center" style="padding:20px 0; background-color: #f2f6f9; text-align: center; margin: 0 auto;">
+        <div class="sponsor-text" style="margin-left: auto; margin-right: auto;">
         <p style=" color: #000000;">Sponsored by <a href="{{ sponsor.link }}" style=" color: #3E00FF;">{{ sponsor.name }}</a></p>
         <a href="{{ sponsor.link }}" style="text-align: center; color: #000000; font-weight: bold; font-size: 16px; display: block; text-decoration: none; line-height: 19px;">{{ sponsor.title }}</a>
         {% for paragraph in sponsor.body %}
@@ -107,13 +100,16 @@
 
   </div>
 
+  <div class="primary-content text-center" style="padding-top: 0">
+
   {% if highlights %}
     <h3>{% trans "✨Last Week's Highlights" %}</h3>
     <h5>{% trans "Community Members growing open source" %}</h5>
 
     <div style="text-align: center;">
+      <ul>
       {% for highlight in highlights %}
-        <li style="list-style:none;">
+        <li style="list-style:none; margin-left: 0; margin-top: 2.5em">
           {% if highlight.who_link %}
             <img style="border-radius: 20px; vertical-align: middle;" src="{% avatar_url highlight.who%}" width=30px height=30px>
             <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>
@@ -126,6 +122,7 @@
           {% endif %}
         </li>
       {% endfor %}
+      </ul>
     </div>
     <br>
     <br>
@@ -141,7 +138,7 @@
     {% include 'emails/bounty.html' with bounty=bounty.obj small=1 primer=bounty.primer %}
   {% endfor %}
 
-  <div class="text-center" style="width: 75%; margin-left: auto; margin-right: auto;">
+  <div class="text-center" style="margin-left: auto; margin-right: auto;">
     <p style="margin-top: 3em;">{% trans "Don't see anything above that strikes your fancy? There are more issues in the Gitcoin Issue Explorer:" %}</p>
 
     <div style="margin-bottom: 2em; margin-top: 1.5em;">
@@ -150,7 +147,8 @@
   </div>
   
   {% if leaderboard %}
-  <div style="background-color: #000000; color: #ffffff; width: 110%; margin-left: -5%; padding-top: 15px; padding-bottom:15px">
+</div>
+  <div class="full-width text-center" style="background-color: #000000; color: #ffffff; margin: 0 auto; padding-top: 15px; padding-bottom:15px">
     <h3 style="color: #ffffff;">{% trans "🏆Who's leading the Leaderboard?" %}</h3>
     <h5 style="color: #ffffff;">{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
 
@@ -160,7 +158,7 @@
           <h4 style="text-align: left; margin-bottom: 10px; margin-left: 1em;">{{ package.title }}</h4>
           <ul>
             {% for leaderboard_item in package.items %}
-            <li style="font-size: 0.93em; list-style:none; margin-top: 10px; margin-bottom: 10px; text-align: start;">
+            <li style="font-size: 0.93em; list-style:none; margin-top: 10px; margin-left: 20px; margin-bottom: 10px; text-align: start;">
               {{ leaderboard_item.rank }} <img style="border-radius: 20px; vertical-align: middle; margin: 0 7px" src="{% avatar_url leaderboard_item.profile %}" width=25px height=25px>
               <a style="font-size: 0.99em; font-weight: bold; text-decoration: none;" href="{% url "profile" leaderboard_item.github_username %}">{{ leaderboard_item.github_username }}</a> : ${{ leaderboard_item.amount|floatformat:2 }}
             </li>
@@ -178,14 +176,15 @@
   {% endif %}
 
   {% if kudos_highlights %}
-  <div style="background-color: #F7F5FF; width: 110%; margin-left: -5%; padding-top:10px; padding-bottom: 15px;">
-    <h3>{% trans "♥️Kudos" %}</h3>
+  </div>
+  <div class="full-width text-center" style="background-color: #F7F5FF; margin: 0 auto; padding-top:10px; padding-bottom: 15px;">
+    <h3>{% trans "❤️Kudos" %}</h3>
     <h5>{% trans "Recognition throughout the platform" %}</h5>
     <div>
-      <ul style="padding-left: 20px; margin-left: 2vw;">
+      <ul class="kudos_highlights_items" style="padding: 0 0 0 5%;">
         {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
-          <li style="background-color: #ffffff; list-style:none; margin: 5px; padding: 10px 20px; min-height: 170px; display: inline-block; float:left; border: 1px solid #ffffff; border-radius: 3px; width: 125px;">
+          <li class="kudos_transfer" style="background-color: #ffffff; list-style:none; margin-top: 0; margin-right: 10px; margin-left: 0; padding: 10px 20px; display: inline-block; float:left; border: 1px solid #ffffff; border-radius: 3px; width: 125px;">
               <a style="font-size: 14px; font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received <strong>{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
             <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.pk kudos.kudos_token_cloned_from.name  %}">
 

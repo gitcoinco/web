@@ -149,21 +149,6 @@ const init = () => {
           // trusted relayer
           web3.utils.toChecksumAddress(data.trusted_relayer)
         ];
-      } else if ($('#contract_version').val() == 0) {
-        args = [
-          // admin_address
-          web3.utils.toChecksumAddress(data.admin_address),
-          // required token
-          web3.utils.toChecksumAddress(data.denomination),
-          // required tokenAmount
-          web3.utils.toTwosComplement(0),
-          // data.frequency
-          web3.utils.toTwosComplement(0),
-          // data.gas_price
-          web3.utils.toTwosComplement(0),
-          // contract version
-          web3.utils.toTwosComplement(0)
-        ];
       }
 
       web3.eth.getAccounts(function(err, accounts) {
@@ -174,7 +159,6 @@ const init = () => {
             arguments: args
           }).send({
             from: accounts[0],
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
             gas: web3.utils.toHex(gas_amount(document.location.href)),
             gasLimit: web3.utils.toHex(gas_amount(document.location.href))
           }).on('error', function(error) {

@@ -59,19 +59,22 @@ from marketing.mails import (
 from marketing.models import Keyword, Stat
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Comment
+from townsquare.models import Comment, PinnedPost
+from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '(💰$250K Match LIVE!) '
+matching_live = '(💰$50K Match LIVE!) '
+live_now = '❇️ LIVE NOW! Up to $50k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
 total_clr_pot = 250000
 clr_round = 5
-clr_active = False
+clr_active = True
 show_clr_card = True
+round_5_5_grants = [656, 493, 494, 502, 504, 662] # special grants for round 5.5
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
@@ -89,6 +92,7 @@ if not clr_active:
     clr_matching_banners_style = 'results'
     matching_live = ''
     matching_live_tiny = ''
+    live_now = 'Gitcoin Grants helps you find funding for your projects'
 
 
 def get_stats(round_type):
@@ -149,9 +153,9 @@ def get_stats(round_type):
                       'type': 'line',
                       'stacking': False
                       },
-                    'terms': 
+                    'terms':
                         ['val']
-                    
+
                 }],
                 chart_options =
                   {'title': {
@@ -188,7 +192,8 @@ def get_fund_reward(request, grant):
         current_uses=0,
         secret=_key,
         comments_to_put_in_kudos_transfer=f"Thank you for funding '{grant.title}' on Gitcoin Grants!",
-        sender_profile=Profile.objects.get(handle='gitcoinbot')
+        sender_profile=Profile.objects.get(handle='gitcoinbot'),
+        make_paid_for_first_minutes=300,
         )
 
     #store btc on session
@@ -221,7 +226,7 @@ def grants_addr_as_json(request):
 @cache_page(60 * 60)
 def grants_stats_view(request):
     cht, chart_list = get_stats(request.GET.get('category'))
-    params = { 
+    params = {
         'cht': cht,
         'chart_list': chart_list,
         'round_types': round_types,
@@ -293,7 +298,7 @@ def grants(request):
 
     if category:
         _grants = _grants.filter(Q(categories__category__icontains = category))
-    
+
     _grants = _grants.prefetch_related('categories')
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -327,7 +332,7 @@ def grants(request):
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
-    
+
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
@@ -346,6 +351,11 @@ def grants(request):
         title = f"Round {clr_round} Stats"
     cht = []
     chart_list = ''
+    try:
+        what = 'all_grants'
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -368,12 +378,15 @@ def grants(request):
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
         'past_partners': past_partners,
-        'card_desc': f'❇️ LIVE NOW! Up to $250k Matching Funding on Gitcoin Grants',
+        'card_desc': f'{live_now}',
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 1097,
         'avatar_width': 1953,
         'grants': grants,
+        'what': what,
+        'can_pin': can_pin(request, what),
+        'pinned': pinned,
         'target': f'/activity?what=all_grants',
         'bg': bg,
         'keywords': get_keywords(),
@@ -385,7 +398,8 @@ def grants(request):
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
         'is_staff': request.user.is_staff,
-        'selected_category': category
+        'selected_category': category,
+        'round_5_5_grants': round_5_5_grants
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -505,6 +519,11 @@ def grant_details(request, grant_id, grant_slug):
             )
         is_unsubscribed_from_updates_from_this_grant = True
 
+    try:
+        what = f'grant:{grant.pk}'
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
@@ -522,7 +541,10 @@ def grant_details(request, grant_id, grant_slug):
         'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
         'keywords': get_keywords(),
-        'target': f'/activity?what=grant:{grant.pk}',
+        'target': f'/activity?what={what}',
+        'pinned': pinned,
+        'what': what,
+        'can_pin': can_pin(request, what),
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
@@ -530,6 +552,7 @@ def grant_details(request, grant_id, grant_slug):
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
+        'is_round_5_5': grant.id in round_5_5_grants,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
     }
 
@@ -676,88 +699,6 @@ def grant_new(request):
     }
     return TemplateResponse(request, 'grants/new.html', params)
 
-@login_required
-def grant_new_v0(request):
-    """Create a v0 version of a grant contract."""
-    profile = get_profile(request)
-
-    if request.method == 'POST':
-        if 'title' in request.POST:
-            logo = request.FILES.get('input_image', None)
-            receipt = json.loads(request.POST.get('receipt', '{}'))
-            team_members = request.POST.getlist('team_members[]')
-
-            grant_kwargs = {
-                'title': request.POST.get('title', ''),
-                'description': request.POST.get('description', ''),
-                'reference_url': request.POST.get('reference_url', ''),
-                'admin_address': request.POST.get('admin_address', ''),
-                'contract_owner_address': request.POST.get('contract_owner_address', ''),
-                'token_address': request.POST.get('token_address', ''),
-                'token_symbol': request.POST.get('token_symbol', ''),
-                'contract_version': request.POST.get('contract_version', ''),
-                'deploy_tx_id': request.POST.get('transaction_hash', ''),
-                'network': request.POST.get('network', 'mainnet'),
-                'metadata': receipt,
-                'admin_profile': profile,
-                'logo': logo,
-            }
-            grant = Grant.objects.create(**grant_kwargs)
-
-            team_members = (team_members[0].split(','))
-            team_members.append(profile.id)
-            team_members = list(set(team_members))
-
-            for i in range(0, len(team_members)):
-                team_members[i] = int(team_members[i])
-
-            grant.team_members.add(*team_members)
-            grant.save()
-
-            return JsonResponse({
-                'success': True,
-            })
-
-        if 'contract_address' in request.POST:
-            tx_hash = request.POST.get('transaction_hash', '')
-            if not tx_hash:
-                return JsonResponse({
-                    'success': False,
-                    'info': 'no tx hash',
-                    'url': None,
-                })
-
-            grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
-            grant.contract_address = request.POST.get('contract_address', '')
-            print(tx_hash, grant.contract_address)
-            grant.save()
-            record_grant_activity_helper('new_grant', grant, profile)
-            new_grant(grant, profile)
-            return JsonResponse({
-                'success': True,
-                'url': reverse('grants:details', args=(grant.pk, grant.slug))
-            })
-
-
-    params = {
-        'active': 'new_grant',
-        'title': _('New Grant'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'profile': profile,
-        'grant': {},
-        'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
-    }
-
-    return TemplateResponse(request, 'grants/newv0.html', params)
-
 
 @login_required
 def grant_fund(request, grant_id, grant_slug):
@@ -864,7 +805,7 @@ def grant_fund(request, grant_id, grant_slug):
                 comment = request.POST.get('comment')
                 if comment and activity:
                     profile = request.user.profile
-                    if subscription.negative:
+                    if subscription and subscription.negative:
                         profile = Profile.objects.filter(handle='gitcoinbot').first()
                         comment = f"Comment from contributor: {comment}"
                     comment = Comment.objects.create(
@@ -1085,7 +1026,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
-    if subscription.negative:
+    if subscription and subscription.negative:
         profile = Profile.objects.filter(handle='gitcoinbot').first()
         activity_type = 'negative_contribution'
     try:

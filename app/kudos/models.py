@@ -133,7 +133,8 @@ class Token(SuperModel):
     contract = models.ForeignKey(
         'kudos.Contract', related_name='kudos_contract', on_delete=models.SET_NULL, null=True
     )
-    hidden = models.BooleanField(default=False)
+    hidden = models.BooleanField(default=False, help_text=('Hide from marketplace?'))
+    hidden_token_details_page = models.BooleanField(default=False, help_text=('Hide token details page'))
     send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
     preview_img_mode = models.CharField(max_length=255, default='png')
     suppress_sync = models.BooleanField(default=False)
@@ -531,7 +532,7 @@ def psave_kt(sender, instance, **kwargs):
             "network":instance.network,
             "txid":instance.txid,
             "token_name":'ETH',
-            "token_value":instance.value_true,
+            "token_value":token.price_in_eth,
         }
         )
 
@@ -663,10 +664,11 @@ class TokenRequest(SuperModel):
     profile = models.ForeignKey(
         'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
     )
+    rejection_reason = models.TextField(max_length=500, default='', blank=True)
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"approved: {self.approved} -- {self.name} on {self.network} on {self.created_on};"
+        return f"approved: {self.approved}, rejected: {bool(self.rejection_reason)} -- {self.name} on {self.network} on {self.created_on};"
 
 
     def mint(self, gas_price_gwei=None):

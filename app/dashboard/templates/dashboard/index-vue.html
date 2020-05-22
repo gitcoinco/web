@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -239,6 +239,7 @@
         }
       }
       </style>
+      {% include 'shared/fbpixel.html' %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -314,15 +315,10 @@
                       <div class="row nonefound mx-auto" style="display:none;">
                           <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
                           <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-
-                          {% if hackathon.quest_link %}
-                            <p>Explore Web3 and be prepared via sponsors Quests</p>
-                            <a class="btn btn-gc-blue" href="{{hackathon.quest_link}}">Explore Quests</a>
-                          {% elif hackathon.start_date|timesince <= "1 min" %}
-                            <p>Explore Web3 via Gitcoin Quests to prepare</p>
-                            <a class="btn btn-gc-blue" href="{% url 'quests_index' %}">Explore Quests</a>
-                          {% endif %}
-
+                            <div>
+                              <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
+                              <b-button class="btn btn-gc-blue" @click="activePanel = 1">Townsquare</b-button>
+                            </div>
                           {% include 'shared/hackathon_sponsors.html' %}
 
                       </div>
@@ -345,7 +341,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab :disabled="!is_registered" class="col-12" title-item-class="navigation">
+              <b-tab class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Townsquare" %}
@@ -469,13 +465,12 @@
                                   </p>
                                   <div class="text-left">
                                     <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-
-                                    <a :href="project.bounty.url" class="btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                                    <b-dropdown varitant="primary" toggle-class="btn-sm btn btn-gc-blue" split-class="btn-sm btn btn-gc-blue">
+                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+                                    <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
                                      <template v-slot:button-content>
                                        <i class='fas fa-comment-dots'></i>
                                      </template>
-                                     <b-dropdown-item-button @click.prevent="openChat(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                     <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
                                        @ [[ profile.handle ]]
                                      </b-dropdown-item-button>
                                     </b-dropdown>
@@ -663,7 +658,7 @@
                                       <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
                                     </span>
                                   </h5>
-                                  <a :href="`/profile/${ user.handle }`" class="text-center d-block">
+                                  <a :href="`/profile/${ user.handle }`" v-bind:data-usercard="[[ user.handle ]]" class="text-center d-block">
                                     @[[ user.handle ]]
                                   </a>
                                   <div v-if="!user.is_org" class="card-user_stars text-center my-2">
@@ -712,7 +707,7 @@
                                       <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                                         <i class="fab fa-linkedin-in"></i>
                                       </a>
-                                      <a @click="chatWindow(user);" href="#" v-if="user.chat_id">
+                                      <a @click="chatWindow(user.handle);" href="#" v-if="user.chat_id">
                                         <i class="fas fa-comment-dots"></i>
                                       </a>
                                     </div>
@@ -744,18 +739,9 @@
                                   </template>
 
                                   <div class="text-center mt-2">
-                                    <button v-if="user.is_following" @click="joinTribe(user, $event)"
-                                      class="btn btn-sm btn-gc-pink font-caption font-weight-semibold button--full"
-                                    >
-                                      <i class="fas fa-user-minus mr-1"></i>
-                                      Unfollow
-                                    </button>
-                                    <button v-else @click="joinTribe(user, $event)"
-                                      class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full"
-                                    >
-                                      <i class="fas fa-user-plus mr-1"></i>
-                                      Follow
-                                    </button>
+                                    <b-button v-bind:class="[user.is_following ? 'btn-outline-green' : 'btn-gc-blue', 'btn btn-sm font-caption font-weight-semibold button--full']" @click="joinTribe(user, $event)">
+                                      <i class="fas fa-user-minus mr-1"></i> [[ user.is_following ? "following" : "follow" ]]
+                                    </b-button>
                                   </div>
 
                                 </div>
@@ -846,11 +832,11 @@
                   </user-directory>
                 </b-tab>
               <template v-slot:tabs-end>
-                <li role="presentation" class="nav-item navigation"><a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
-                  <div class="mt-4">
-                    Guide
-                  </div>
-                </a></li>
+                <li role="presentation" class="nav-item navigation">
+                  <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
+                    <div class="mt-4">Guide</div>
+                  </a>
+                </li>
               </template>
             </b-tabs>
           </div>
@@ -870,7 +856,7 @@
                       <div class="py-3 pr-3">
                         <div class="d-flex justify-content-between">
                           <a class="mb-1 font-bigger-1 text-truncate w-50" :href="`/profile/${sponsor.org_name}`">[[ sponsor.display_name ]]</a>
-                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" class="btn-sm btn-outline-gc-blue">[[ sponsor.followed ? "unfollow" : "follow" ]]</b-button>
+                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" v-bind:class="[sponsor.followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm']">[[ sponsor.followed ? "following" : "follow" ]]</b-button>
                         </div>
 
                         <div class="">

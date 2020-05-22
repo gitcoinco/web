@@ -40,6 +40,7 @@ html {
   --townsquare-block-header-color: #626365;
   --active-button-border-color: var(--link-color);
   --default-text-color: var(--text-dark);
+  --pinned-activity: var(--gc-green);
 }
 
 /* @media screen and (prefers-color-scheme: dark) { */
@@ -88,6 +89,7 @@ html.dark-mode {
   --townsquare-block-header-color: white;
   --active-button-border-color: white;
   --default-text-color: white;
+  --pinned-activity: white;
 }
 
 .text-highlight-purple {
@@ -124,4 +126,8 @@ html.dark-mode {
 
 .text-medium-dark-grey {
   color: var(--gc-medium-dark-gray);
+}
+
+.text-black {
+  color: #000;
 }

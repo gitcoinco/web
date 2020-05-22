@@ -1,9 +1,6 @@
 /* eslint-disable no-console */
 
 var get_gas_price = function() {
-  if ($('#gasPrice').length) {
-    return $('#gasPrice').val() * Math.pow(10, 9);
-  }
   if (typeof defaultGasPrice != 'undefined') {
     return defaultGasPrice;
   }
@@ -449,7 +446,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     if ($('.redemptions select').length) {
       num_redemptions = $('.redemptions select').val();
     }
-    
+
     web3.eth.getCoinbase(function(_, account) {
       var formbody = {
         username: username,
@@ -647,7 +644,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 // web3.currentProvider.publicConfigStore.on('update', function(e) {
 var error;
 
-if (window.ethereum.publicConfigStore) {
+if (window.ethereum && window.ethereum.publicConfigStore) {
   window.ethereum.publicConfigStore.on('update', checkNetwork);
 }
 function checkNetwork(e) {

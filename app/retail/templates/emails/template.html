@@ -28,7 +28,7 @@
   body {
     margin: 0px;
     padding: 0px;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
   }
 
   .rounded {
@@ -136,7 +136,7 @@
     line-height: 1.5;
     text-align: center;
     text-decoration: none;
-    font-family: 'Muli';
+    font-family: 'Muli', Arial, sans-serif;
   }
 
   #logo {
@@ -214,6 +214,10 @@
     text-align: center;
   }
 
+  #preferred_payout a {
+    font-size: 1em;
+  }
+
   #footer p {
     color: #ccc;
   }
@@ -252,7 +256,13 @@
     padding: 2em;
     background-color: white;
     overflow: hidden;
-    padding-bottom: 0;
+    padding-bottom: 20px;
+  }
+
+  .roundup {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    line-height: 20px;
   }
 
   @media screen and (min-width: 35.5em) {
@@ -274,12 +284,55 @@
       max-height: 45px;
       max-width: 45px;
     }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .kudos_transfer {
+      min-height: 320px;
+    }
+
+    .roundup {
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
+    .sponsor-text {
+      max-width: 80vw;
+    }
+    .regards img {
+      height: 20%;
+      width: 20%;
+    }
+    .kudos_highlights_items {
+      margin: 2em 0;
+    }
   }
 
   @media screen and (min-width: 48em) {
     .primary-content {
       margin-left: 10%;
       margin-right: 10%;
+    }
+    .full-width {
+      width: 80%;
+    }
+    .kudos_transfer {
+      min-height: 280px;
+    }
+    .roundup {
+      padding-left: 2em;
+      padding-right: 2em;
+    }
+    .sponsor-text {
+      max-width: 60vw;
+    }
+    .regards img {
+      height: 10%;
+      width: 10%;
+    }
+    .kudos_highlights_items {
+      margin: 2em;
     }
   }
 

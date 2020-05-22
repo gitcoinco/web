@@ -1,12 +1,8 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
-load_tokens();
+load_tokens_from_network('mainnet');
 
 $(document).ready(function() {
-
-  waitforWeb3(function() {
-    $('#contract_address').val(bounty_address());
-  });
 
   $('.js-select2').each(function() {
     $(this).select2();
@@ -24,7 +20,7 @@ $(document).ready(function() {
 
     // form
     var token_address = $('select[name=denomination]').val();
-    var contract_address = $('#contract_address').val();
+    var contract_address = bounty_address();
     var contract_name = $('select[name=contract] option:selected').text().trim();
     var token_name = $('select[name=denomination] option:selected').text().trim();
     
@@ -32,6 +28,10 @@ $(document).ready(function() {
     if (token_address == '0x0000000000000000000000000000000000000000') {
       _alert('You already are approved for this token');
       e.preventDefault();
+      return;
+    }
+    if (!web3 || typeof web3 == 'undefined') {
+      _alert('You are not connected to a web3 wallet.  Please unlock metamask (or web3 wallet equivilent), set to mainnet, and connect to gitcoin on the mainnet (settings > connections).', 'error');
       return;
     }
 
@@ -64,7 +64,6 @@ $(document).ready(function() {
               $('#coinbase').val(from);
               $('#token_name').val(token_name);
               $('#token_address').val(token_address);
-              $('#contract_address').val(contract_address);
               $('#contract_name').val(contract_name);
               $('#network').val(document.web3network);
               $('#txid').val(tx);

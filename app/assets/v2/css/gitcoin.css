@@ -915,7 +915,7 @@ div.button-pink {
 
 textarea.status-textarea {
   padding-right: 4em;
-  min-height: 60px;
+  min-height: 100px;
 }
 
 .status-menu button {
@@ -925,4 +925,8 @@ textarea.status-textarea {
 .status-menu button.selected,
 .status-menu button:hover {
   color: var(--townsquare-link-color);
+}
+
+.dark-mode .bg-light {
+  background-color: var(--bg-shade-0)!important;
 }

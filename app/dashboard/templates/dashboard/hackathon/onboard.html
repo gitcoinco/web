@@ -70,12 +70,6 @@
       .modal-header, .modal-body, .modal-footer {
         border: none;
       }
-
-      @media screen and (min-width: 598px) {
-        .options {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
     </style>
   </head>
   <body class="interior {{active}} g-font-muli">
@@ -145,13 +139,12 @@
                 </h4>
                 <p class="pt-4 mb-4">Until then, we recommend a few different ways to prepare:</p>
                 {% endif %}
-                <ul  class="list-unstyled">
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="/townsquare?tab=hackathon:{{ hackathon.id }}&trending=0&personal=0"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Introduce yourself on Town Square + what you like to build (and earn your first Kudos!)</a></li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> RSVP to our 3 workshops</li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Checkout sponsors below and build your team</a></li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Invite your friends to hack and earn a Kudos</li>
+                <ul  class="mt-4">
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="{% url 'hackathon' hackathon.slug %}?tab=hackathon:{{hackathon.id}}">Introduce yourself on Townsquare</a> </li>
+                    <li class="mb-3 gc-text-blue font-weight-bold">Look out for upcoming workshop invites in your email inbox</li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors">Checkout sponsors below and build your team</a></li>
+                    <li class="mb-3 gc-text-blue font-weight-bold">Invite your friends to hack and earn a Kudos</li>
                 </ul>
-
               </div>
             {% if not hackathon.start_date|timesince >= "1 min"%}
                 <div class="d-md-flex d-none mt-5 col-2 justify-content-end align-items-center">
@@ -163,38 +156,73 @@
       </div>
     {% endif %}
 
-      {% if sponsors %}
-        <div id="sponsors" class="container bg-white my-4 pt-3 pb-4 rounded">
-            <div class="row mb-5">
-              <div class="col-12 sponsors mb-3">
-                <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Key Sponsors</p>
-                {% if sponsors.sponsors_gold %}
-                  <div class="d-flex flex-wrap mb-4">
-                    {% for sponsor in sponsors.sponsors_gold %}
-                      <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center">
-                        <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                        <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
-                        <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
-                      </a>
-                    {% endfor %}
-                  </div>
-                {% endif %}
 
-                {% if sponsors.sponsors_silver %}
-                  <div class="d-flex flex-wrap mb-4 mx-5">
-                    {% for sponsor in sponsors.sponsors_silver %}
-                      <a href="{% url 'profile' sponsor.handle %}" class="col-2 sponsors-gold mt-5 mb-3 text-center">
-                        <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
-                        <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
-                        <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
-                      </a>
-                    {% endfor %}
-                  </div>
-                {% endif %}
+
+
+    <div id="sponsors" class="container bg-white my-4 pt-3 pb-4 rounded">
+      <div class="row mb-5">
+        {% if sponsors %}
+          <div class="col-12 sponsors mb-3">
+            <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Key Sponsors</p>
+            {% if sponsors.sponsors_gold %}
+              <div class="d-flex flex-wrap mb-4">
+                {% for sponsor in sponsors.sponsors_gold %}
+                  <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center">
+                    <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                    <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
+                    <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
+                  </a>
+                {% endfor %}
               </div>
-            </div>
+            {% endif %}
+
+            {% if sponsors.sponsors_silver %}
+              <div class="d-flex flex-wrap mb-4 mx-5">
+                {% for sponsor in sponsors.sponsors_silver %}
+                  <a href="{% url 'profile' sponsor.handle %}" class="col-2 sponsors-gold mt-5 mb-3 text-center">
+                    <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
+                    <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
+                    <span class="font-smaller-2">{% if sponsor.members  %}<i class="fas fa-users-crown"></i>  {{sponsor.members}} members{% endif %}</span>
+                  </a>
+                {% endfor %}
+              </div>
+            {% endif %}
           </div>
-      {% endif %}
+        {% else %}
+          <div class="col-12 sponsors mb-3">
+            <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Sponsors</p>
+            <div class="d-flex flex-wrap mb-4">
+              {% for sponsor in hackathon.sponsor_profiles.all %}
+              <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center text-body">
+                <img src="{{sponsor.avatar_url}}" height="114" alt="{{sponsor.handle}}" class="">
+                <h4 class="font-header font-weight-bolder p-0 mt-2 mb-0">{{sponsor.name}}</h4>
+                {% if sponsor.tribe_members.count > 0  %}
+                  <span class="font-smaller-2"><i class="fas fa-users-crown"></i>  {{sponsor.tribe_members.count}} members</span>
+                {% endif %}
+              </a>
+              {% endfor %}
+            </div>
+
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="container bg-white mt-4 rounded">
+      <div class="row p-5">
+        <div class="col-12">
+          {% if is_staff %}
+          <div class="">
+            <button class="btn btn-gc-blue btn-sm" id="edit-btn">Edit</button>
+            <button class="btn btn-gc-blue btn-sm d-none" id="save-description-btn" data-savehackathon="{{hackathon.slug}}">save</button>
+          </div>
+          {% endif %}
+          <div class="editor-container">
+            <div id="description-hackathon" class="gc-editor description-hackathon">{{hackathon.description | safe}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
       <div class="container bg-white mt-4 rounded">
         <div class="row px-5">
@@ -277,37 +305,53 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="">
+          <div class="px-5">
               <form id="hackathon-poll">
+                <div id="poll_container" class="carousel slide" data-ride="carousel">
+                  <div class="carousel-inner">
                 {% for question in poll.question_set.all %}
+                  <fieldset style="min-height: 200px" class="carousel-item {% if forloop.first %}active first{% elif forloop.last %}last{% endif %}" data-question="{{ question.id }}" data-step="{{ forloop.counter0 }}" data-rstep="{{ forloop.revcounter0 }}">
+                  <div>
                     {% if question.question_type == 'SINGLE_CHOICE' %}
-                        <div class="question">
-                          <input type="checkbox" id="{{ question.id }}" name="{{ question.id }}">
-                          <label for="{{ question.id }}">{{ question.text }}</label>
+                        <div class="form__checkbox">
+                          <input type="checkbox" id="single_{{ question.id }}" name="{{ question.id }}">
+                          <label class="form__label" for="single_{{ question.id }}">{{ question.text }}</label>
                         </div>
-                    {% elif question.question_type == 'MUTIPLE_CHOICE' %}
+                    {% elif question.question_type == 'MULTIPLE_CHOICE' %}
                         <div class="question">
-                        <h4 class="font-header text-center font-weight-bold pt-0 mb-5">{{ question.text }}</h4>
+                        <h4 class="font-header font-weight-bold pt-0 mb-5">{{ forloop.counter }}. {{ question.text }}</h4>
                         <div class="options">
                         {% for option in question.option_set.all %}
-                          <div>
-                            <input type="checkbox" id="{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
-                       		<label for="{{ option.id }}">{{ option.text }}</label>
+                          <div class="px-1">
+                            <input type="checkbox" id="multiple_{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
+                       		  <label for="multiple_{{ option.id }}">{{ option.text }}</label>
                           </div>
                         {% endfor %}
                         </div>
                         </div>
                     {% else %}
                         <div class="question">
-                        <h4 class="font-header text-center">{{ question.text }}</h4>
-                        <input type="text" name="{{ question.id }}">
+                          <h4 class="font-header font-weight-bold pt-0 mb-5">{{ question.text }}</h4>
+                          <textarea class="form-control" style="height: 120px" cols="10" rows="2"  name="{{ question.id }}" ></textarea>
                         </div>
                     {% endif %}
+                  </div>
+                  </fieldset>
                 {% endfor %}
+                  </div>
+                  <div class="mt-5 mb-3 d-flex justify-content-between align-items-center">
+                    <a id="poll-prev" class="btn-link gc-text-blue d-none" href="#" role="button" data-slide="prev">
+                      < Previous
+                    </a>
+                    <div id="poll-empty"></div>
+                    <a id="poll-submit" class="btn btn-lg btn-gc-blue {% if poll.question_set.count > 1%} d-none{% endif %}" href="#">Submit</a>
+                    <a id="poll-next" class="btn btn-lg btn-gc-blue {% if poll.question_set.count <= 1%}d-none{% endif %}" href="#" role="button" data-slide="next">
+                      Next >
+                    </a>
+
+                  </div>
+                </div>
               </form>
-          </div>
-          <div class="modal-footer justify-content-center">
-            <button id="send_poll" class="btn btn-lg font-header btn-gc-blue mt-4 mb-4 px-4 px-md-5">Join Hackathon Now</button>
           </div>
         </div>
       </div>
@@ -326,22 +370,33 @@
         if (is_registered) {
           return;
         }
-        $('#questions-form').modal('show');
-        $('#send_poll').unbind('click')
-        $('#send_poll').on('click', function () {
+        if ($('#questions-form').find('input').length == 0) {
+          const url = '/register_hackathon/';
+          const data = {'name': name, 'referer': referer};
+          const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
-        const poll = $('#hackathon-poll').serializeArray()
-        const url = '/register_hackathon/'
-        const data = { 'name': name, 'referer': referer, 'poll': JSON.stringify(poll)}
-        const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
-
-
-        $.when(sendRegister).then((response) => {
-          _alert('You have now registered for this hackathon.', 'success');
-          console.log(response)
+          $.when(sendRegister).then((response) => {
+            _alert('You have now registered for this hackathon.', 'success');
+            console.log(response)
             document.location.href = response.redirect;
           });
-        });
+        } else {
+          $('#questions-form').modal('show');
+          $('#poll-submit').unbind('click')
+          $('#poll-submit').on('click', function () {
+
+            const poll = $('#hackathon-poll').serializeArray();
+            const url = '/register_hackathon/';
+            const data = { 'name': name, 'referer': referer, 'poll': JSON.stringify(poll)};
+            const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
+
+            $.when(sendRegister).then((response) => {
+              _alert('You have now registered for this hackathon.', 'success');
+              console.log(response)
+              document.location.href = response.redirect;
+            });
+          });
+        }
       }
       const params = new URLSearchParams(window.location.search);
 
@@ -369,12 +424,54 @@
           if (distance <= 0) {
             clearInterval(x);
           }
+          const countdownEle = document.getElementById("countdown");
 
-          document.getElementById("countdown").innerHTML = `The event starts in ${days}d : ${hours}h : ${minutes}m : ${seconds}s`;
-
+          if (countdownEle) {
+            countdownEle.innerHTML = `The event starts in ${days}d : ${hours}h : ${minutes}m : ${seconds}s`;
+          }
 
         }, 1000);
       }
+
+      const poll_manager = $('#poll_container').carousel({
+        interval: false
+      })
+
+      $('[data-slide="next"]').click(function (e) {
+        e.preventDefault();
+        const fieldset = $('fieldset.active');
+
+        if (fieldset.data('rstep') === 1) {
+          $("#poll-prev").removeClass('d-none')
+          $("#poll-next").addClass('d-none')
+          $('#poll-empty').addClass('d-none')
+          $('#poll-submit').removeClass('d-none')
+        } else {
+          $("#poll-prev").removeClass('d-none')
+          $("#poll-next").removeClass('d-none')
+          $('#poll-empty').addClass('d-none')
+          $('#poll-submit').addClass('d-none')
+        }
+        poll_manager.carousel('next');
+      })
+
+      $('[data-slide="prev"]').click(function (e) {
+        e.preventDefault();
+        const fieldset = $('fieldset.active');
+
+        if (fieldset.data('step') === 1) {
+          $("#poll-prev").addClass('d-none')
+          $("#poll-next").removeClass('d-none')
+          $('#poll-empty').removeClass('d-none')
+          $('#poll-submit').addClass('d-none')
+        } else {
+          $("#poll-prev").removeClass('d-none')
+          $("#poll-next").removeClass('d-none')
+          $('#poll-empty').addClass('d-none')
+          $('#poll-submit').addClass('d-none')
+        }
+        poll_manager.carousel('prev');
+      })
 
     </script>
     <script src="{% static 'v2/js/pages/hackathon-onboard.js' %}"></script>

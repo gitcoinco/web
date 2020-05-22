@@ -5,6 +5,12 @@
   background-color: #ecf0f4;
   border: 0px solid;
 }
+
+.dark-mode #reflink {
+  background-color: var(--gc-blue);
+  color: #ecf0f4;
+}
+
 .click_here_to_join_video{
   width: 100%;
   cursor: pointer;
@@ -52,6 +58,60 @@
   text-align: left;
 }
 
+#bg-selector {
+  height: 4em;
+  width: 100%;
+  padding: 0.5em;
+  overflow: auto;
+  white-space: nowrap;
+}
+
+.bg-thumbnail {
+  display: inline-block;
+  height: 2.35em;
+  width: 2em;
+  margin-left:0.2em;
+  margin-right: 0.2em;
+}
+
+.bg-icon {
+  width:100%;
+  cursor: pointer;
+}
+
+.status_background {
+  width:100%;
+}
+
+.status_background_container {
+  margin-top: 1em;
+  position: relative;
+  min-width: 100%;
+}
+
+.image-text-container {
+  padding:1.5em;
+  text-align: center;
+  width: 100%;
+  text-overflow: wrap;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18pt;
+  font-weight: bold;
+}
+
+
+.selector-bar {
+  background-color: #3E00FF;
+  height: 0.15em;
+  width: 100%;
+  margin-top: 0.2em;
+  border-radius: 0.075em;
+}
+
 .action {
   padding: 3px;
   border-radius: 5px;
@@ -68,6 +128,11 @@
 
 a .sup {
   color: black;
+}
+
+.tip_activity,
+.action:hover {
+  cursor: pointer;
 }
 
 .action.open {
@@ -157,7 +222,7 @@ a .sup {
 }
 
 
-.tip_activity{
+.tip_activity {
   color: black;
 }
 
@@ -165,7 +230,8 @@ a .sup {
 .like_activity:hover,
 .flag_activity:hover,
 .comment_activity:hover,
-.copy_activity:hover {
+.copy_activity:hover,
+.pin_activity:hover {
   text-decoration: none;
 }
 .funder-avatar,
@@ -304,9 +370,13 @@ iframe.popout{
   bottom: 10px;
   text-align: center;
   width: 50%;
-  background-color: white;
   border: 1px solid;
   margin-left: 25%;
+}
+
+.dark-mode .activity_stream .activity_detail .tag {
+  background-color: var(--gc-blue);
+  color: white;
 }
 
 @media (min-width: 768px) {
@@ -342,6 +412,22 @@ iframe.popout{
     margin: 0px auto;
   }
 }
+
+.activity_pinned {
+  display: none;
+}
+.pinned .activity_pinned {
+  display: block;
+}
+
+
+.pinned-activity {
+  -webkit-box-shadow: 0px 0px 8px 0px var(--pinned-activity);
+  -moz-box-shadow: 0px 0px 8px 0px var(--pinned-activity);
+  box-shadow: 0px 0px 8px 0px var(--pinned-activity);
+}
+
+
 @media (max-width: 1100px) {
   .activity_stream .avatar {
     width: 3.5rem;

@@ -51,8 +51,8 @@
       <div id="contributor-suggestions" class="font-smaller-4">
         {% for contributor in suggested_developers %}
           <li class="select2-tag__choice p-1" data-id="{{ forloop.counter0 }}">
-            <img src="/dynamic/avatar/{{ contributor.fulfiller_github_username }}" alt="" class="rounded-circle mx-2" width="20">
-            <span class="text">{{ contributor.fulfiller_github_username }}</span>
+            <img src="/dynamic/avatar/{{ contributor.profile__handle }}" alt="" class="rounded-circle mx-2" width="20">
+            <span class="text">{{ contributor.profile__handle }}</span>
             <i class="fas fa-plus ml-2 font-smaller-4"></i>
           </li>
         {% endfor %}

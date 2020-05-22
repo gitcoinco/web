@@ -35,7 +35,9 @@
     <div class="container-fluid header">
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
-
+    <div style="font-size: 12px; text-align: center; background-color: #eee;" class="p-2">
+      This page is automatically updated every 3 hours. Last updated {{updated|naturaltime}} - <a href="https://github.com/gitcoinco/web/blob/master/app/retail/utils.py#L414">[View Code]</a>.
+    </div>
     <div id=gmv class="content-block content-block--white">
       <div class="container">
         <h2 class="content-block__title">
@@ -90,7 +92,34 @@
 
     <div class="content-block content-block--blue-grey">
       <div class="container" id="results_hero">
-        <h2 class="content-block__title">{% trans "Gitcoin Platform Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h2 class="content-block__title">{% trans "Gitcoin Platform-Wide Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <div class="platform-stats-container">
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
+            <h3 class="single-stat__title">{{mau|floatformat:0|intcomma}}</h3>
+            <p class="single-stat__subtitle">{% trans "Monthly Active Developers" %}</p>
+            <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+            <h3 class="single-stat__title">{{ total_gmv_rounded }}</h3>
+            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+            <p class="single-stat__fineprint">({{transactions|intcomma}} Transactions)</p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
+            <h3 class="single-stat__title">{{ alumni_count }}</h3>
+            <p class="single-stat__subtitle">{% trans "Full Time Jobs Placed" %}</p>
+            <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block content-block--blue-grey">
+      <div class="container" id="results_hero">
+        <h2 class="content-block__title mb-0">{% trans "Gitcoin Bounties Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h5 class="mt-0 pt-1">Bounties are a way of delegating development work to the Gitcoin community.  Place a bounty and do more faster, today.</h5>
         <div class="platform-stats-container">
           <div class="single-stat">
             <img src="{% static "v2/images/results/media-start-time.svg" %}" />
@@ -99,10 +128,16 @@
             <p class="single-stat__fineprint">(after Funding)</p>
           </div>
           <div class="single-stat">
-            <img src="{% static "v2/images/results/monthly-active-users.svg" %}" />
-            <h3 class="single-stat__title">{{mau|floatformat:0|intcomma}}</h3>
-            <p class="single-stat__subtitle">{% trans "Monthly Active Users" %}</p>
-            <p class="single-stat__fineprint">(but only 1% of them create on-chain tx's)</p>
+            <img src="{% static "v2/images/results/median-turnaround-time.svg" %}" />
+            <h3 class="single-stat__title">{{ bounty_average_turnaround }}</h3>
+            <p class="single-stat__subtitle">{% trans "Median Bounty Turnaround Time" %}</p>
+            <p class="single-stat__fineprint">(after Start Work)</p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+            <h3 class="single-stat__title">${{ bounties_gmv }}</h3>
+            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+            <p class="single-stat__fineprint">(from {{no_bounties}} bounties + {{no_tips}} tips)</p>
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/hourly-rate-distribution.svg" %}" />
@@ -111,26 +146,81 @@
             <p class="single-stat__fineprint">(for most bounties; <a href="#price_per_hour">more details here</a>)</p>
           </div>
           <div class="single-stat">
-            <img src="{% static "v2/images/results/median-turnaround-time.svg" %}" />
-            <h3 class="single-stat__title">{{ bounty_average_turnaround }}</h3>
-            <p class="single-stat__subtitle">{% trans "Median Bounty Turnaround Time" %}</p>
-            <p class="single-stat__fineprint">(after Start Work)</p>
-          </div>
-          <div class="single-stat">
             <img src="{% static "v2/images/results/bounty-completion-rate.svg" %}" />
             <h3 class="single-stat__title">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
             <p class="single-stat__subtitle">{% trans "Bounty Completion Rate" %}</p>
-            <p class="single-stat__fineprint">((after Start Work)</p>
+            <p class="single-stat__fineprint">(after Start Work)</p>
           </div>
           <div class="single-stat">
-            <img src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
-            <h3 class="single-stat__title">{{ alumni_count }}</h3>
-            <p class="single-stat__subtitle">{% trans "Bounty Hunters Hired Full Time" %}</p>
+            <img src="{% static "v2/images/results/length.svg" %}" />
+            <h3 class="single-stat__title">{{ hours|floatformat:0|intcomma }}</h3>
+            <p class="single-stat__subtitle">{% trans "Hours Worked" %}</p>
             <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
           </div>
         </div>
       </div>
     </div>
+
+
+    <div class="content-block content-block--blue-grey">
+      <div class="container" id="results_hero">
+        <h2 class="content-block__title mb-1">{% trans "Gitcoin Grants Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h5 class="mt-0 pt-1">Gitcoin Grants is like a crypto-style patreon.  Raise money from supporters large & small, and earn even more from our quarterly matching rounds!</h5>
+        <div class="platform-stats-container">
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/GMV.svg" %}" />
+            <h3 class="single-stat__title">{{ num_grants }}</h3>
+            <p class="single-stat__subtitle">{% trans "Grants" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+            <h3 class="single-stat__title">${{ grants_gmv }}</h3>
+            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+            <p class="single-stat__fineprint">({{ no_contributions }} Contributions)</p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/matching_rounds.svg" %}" />
+            <h3 class="single-stat__title">{{ num_matching_rounds|floatformat:0 }}</h3>
+            <p class="single-stat__subtitle">{% trans "No. Matching Rounds" %}</p>
+            <p class="single-stat__fineprint">(<a href="https://twitter.com/owocki/status/1252807334570516484" target="new">see the growth of these matching rounds</a>)</p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/avg-contribution.svg" %}" />
+            <h3 class="single-stat__title">${{ median_contribution }}</h3>
+            <p class="single-stat__subtitle">{% trans "Median Contribution" %}</p>
+            <p class="single-stat__fineprint">(${{ avg_contribution }} Average)</p>
+          </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="content-block content-block--blue-grey">
+      <div class="container" id="results_hero">
+        <h2 class="content-block__title mb-1">{% trans "Codefund Ads Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
+        <h5 class="mt-0 pt-1">Codefund is an ethical advertising network.  Monetize your audience without selling them out with Codefund!</h5>
+        <div class="platform-stats-container">
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributions.svg" %}" />
+            <h3 class="single-stat__title">{{ ads_served }}</h3>
+            <p class="single-stat__subtitle">{% trans "Ethical Ads Served" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
+            <h3 class="single-stat__title">${{ ads_gmv }}</h3>
+            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+          <div class="single-stat">
+            <img src="{% static "v2/images/results/avg-check.svg" %}" />
+            <h3 class="single-stat__title">{{ privacy_violations|floatformat:0 }}</h3>
+            <p class="single-stat__subtitle">{% trans "Privacy Violations" %}</p>
+            <p class="single-stat__fineprint"></p>
+          </div>
+      </div>
+    </div>
+    
 
     <div class="content-block content-block--grey">
       <div class="container" >
@@ -243,7 +333,9 @@
         <div class="row mt-5 pb-5 text-center align-items-center">
           <div class="col">
             <a class="button button--primary" role="button" href='{% url "_leaderboard" %}'
-               target="_blank" rel="noopener noreferrer">{% trans "Checkout the Leaderboard" %}</a>
+               target="_blank" rel="noopener noreferrer">{% trans "View Leaderboard" %}</a>
+            <a class="button button--primary" role="button" href='/users'
+               target="_blank" rel="noopener noreferrer">{% trans "User Directory" %}</a>
           </div>
         </div>
       </div>
@@ -520,10 +612,6 @@
       </div>
     </div>
 
-    <div style="font-size: 12px; text-align: center;" class="p-2">
-      This page is automatically updated every 3 hours. Last updated {{updated|naturaltime}} - <a href="https://github.com/gitcoinco/web/blob/master/app/retail/utils.py#L414">[View Code]</a>.
-    </div>
-    <br>
     <div style="font-size: 12px; text-align: center;" class="p-2">
       Disclaimer: The numbers on this page are good-faith representations of the Gitcoin network, but are provided without warranty.  While we strive to provide these numbers as accurately as possible, we cannot guarantee their 100% accuracy. Do not make any financial, legal, or other decisions based upon these numbers.
     </div>

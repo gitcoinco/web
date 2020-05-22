@@ -202,7 +202,7 @@ def new_grant(grant, profile):
 
 
 def new_supporter(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
@@ -221,7 +221,7 @@ def new_supporter(grant, subscription):
 
 
 def thank_you_for_supporting(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -240,7 +240,7 @@ def thank_you_for_supporting(grant, subscription):
 
 
 def support_cancellation(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -257,7 +257,7 @@ def support_cancellation(grant, subscription):
 
 
 def grant_cancellation(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
@@ -274,7 +274,7 @@ def grant_cancellation(grant, subscription):
 
 
 def subscription_terminated(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -291,7 +291,7 @@ def subscription_terminated(grant, subscription):
 
 
 def successful_contribution(grant, subscription, contribution):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -742,6 +742,27 @@ def notify_kudos_minted(token_request):
         translation.activate(cur_language)
 
 
+def notify_kudos_rejected(token_request):
+    to_email = token_request.profile.email
+    from_email = 'kevin@gitcoin.co'
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("Kudos has been rejected")
+        body = f"Your kudos '{token_request.name}', with the file {token_request.artwork_url} has been rejected.  The reason stated was '{token_request.rejection_reason}.  \n\n You can resubmit the token request at https://gitcoin.co/kudos/new "
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(
+                from_email,
+                to_email,
+                subject,
+                body,
+                from_name=_("Admin at Gitcoin.co"),
+                categories=['admin', func_name()],
+            )
+    finally:
+        translation.activate(cur_language)
+
+
 def notify_deadbeat_grants(grants):
     to_email = 'kevin@gitcoin.co'
     from_email = to_email
@@ -807,7 +828,7 @@ def warn_account_out_of_eth(account, balance, denomination):
 
 
 def warn_subscription_failed(subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
@@ -1119,6 +1140,8 @@ def reject_faucet_request(fr):
 
 
 def new_bounty_daily(bounties, old_bounties, to_emails=None):
+    from marketing.views import trending_quests
+
     if not bounties:
         return
     max_bounties = 10
@@ -1152,7 +1175,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_new_bounty(to_email, bounties, old_bounties)
+            html, text = render_new_bounty(to_email, bounties, old_bounties, trending_quests=trending_quests())
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])

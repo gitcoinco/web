@@ -204,7 +204,7 @@ $(document).ready(function() {
   var refresh_interval = 7000;
   var max_pk = null;
   var run_longpoller = function(recursively) {
-    if (document.hidden) {
+    if (document.hidden || !document.long_poller_live) {
       return setTimeout(function() {
         if (recursively) {
           run_longpoller(true);
@@ -213,7 +213,8 @@ $(document).ready(function() {
     }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
-        max_pk = $('#activities .box').first().data('pk');
+        max_pk = $('#activities div.box[data-pk]').first().data('pk');
+
         if (!max_pk) {
           return;
         }
@@ -280,7 +281,13 @@ $(document).ready(function() {
     for (var i = document.buffered_rows.length; i > 0; i -= 1) {
       var html = document.buffered_rows[i - 1];
 
-      $('.infinite-container').prepend($(html));
+      let pin = $('.pinned-activity');
+
+      if (pin.length > 0) {
+        $(html).insertAfter($(pin));
+      } else {
+        $('.infinite-container').prepend($(html));
+      }
     }
     $(this).remove();
     document.buffered_rows = [];
@@ -475,7 +482,7 @@ $(document).ready(function() {
 
 
   // like activity
-  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity, .pin_activity', function(e) {
     e.preventDefault();
     const current_tab = getURLParams('tab');
 
@@ -484,14 +491,31 @@ $(document).ready(function() {
       return;
     }
 
+    let method = $(this).data('action');
+    let state = $(this).data('state');
+    // remote post
+    var params = {
+      'method': method,
+      'direction': state,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+
+
     var is_unliked = $(this).data('state') == $(this).data('negative');
     var num = $(this).find('span.num').html();
 
-    if (is_unliked) { // like
+    if (method === 'pin') {
+      let message = state === 'pin' ? 'This action will pin the selected post, only one Pin may be active at a time' : 'This action will un-pin this post, are you sure?';
+
+      if (confirm(message)) {
+        params['what'] = $('.infinite-container').data('what');
+      } else {
+        return false;
+      }
+    } else if (is_unliked) { // like
       $(this).find('span.action').addClass('open');
       $(this).data('state', $(this).data('affirmative'));
       $(this).addClass('animate-sparkle');
-
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
       $(this).find('i').removeClass('far').addClass('fas');
@@ -504,14 +528,7 @@ $(document).ready(function() {
       $(this).find('i').removeClass('fas').addClass('far');
     }
 
-    // remote post
-    var params = {
-      'method': $(this).data('action'),
-      'direction': $(this).data('state'),
-      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-    };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
-
     var parent = $(this).parents('.activity.box');
     var self = $(this);
 
@@ -523,6 +540,32 @@ $(document).ready(function() {
       if (!is_unliked && current_tab === 'my_favorites') {
         self.parentsUntil('.activity_stream').remove();
       }
+
+      if (method === 'pin') {
+        if (state === 'unpin') {
+          $('.box').removeClass('pinned-activity');
+          self.data('state', 'pin');
+          self.find('.pin-title').html('Pin Post');
+          parent.remove();
+          _alert('Sucess unpin.', 'success', 1000);
+        } else {
+          let curr_pinn = $('.pinned-activity');
+
+          parent.addClass('pinned-activity');
+
+          self.data('state', 'unpin');
+          self.find('.pin-title').html('Unpin Post');
+          if (curr_pinn.length > 0) {
+            $(curr_pinn).replaceWith(parent);
+          } else {
+            $('.activity_stream').prepend($('<div id="temp-pin"></div>'));
+            $('#temp-pin').replaceWith(parent);
+            window.scrollTo(0, 0);
+          }
+          _alert('Status pinned.', 'success', 1000);
+        }
+      }
+
     }).fail(function() {
       parent.find('.error').removeClass('hidden');
     });
@@ -791,7 +834,7 @@ $(document).ready(function() {
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
           <div class="comment-area col-12 col-sm-11 text-right">
-            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
+            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3" maxlength="500">${existing_text}</textarea>
             <div class="emoji-container position-absolute d-flex flex-wrap">
               <button class="btn btn-sm p-1 emoji_button grey" data-toggle="tooltip" title="Add an emoji to post.">
                 <i class="far fa-fw fa-smile"></i>
@@ -979,7 +1022,7 @@ $(document).ready(function() {
         if (response.status <= 204) {
           _alert('comment successfully deleted.', 'success', 1000);
           $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
-          console.log(response);
+
         } else {
           _alert(`Unable to delete commment: ${response.message}`, 'error');
           console.log(`error deleting commment: ${response.message}`);
@@ -1044,6 +1087,7 @@ $(document).ready(function() {
       $target.removeClass('open');
     }, 300);
   });
+
 
   $(document).on('click', '.fund_issue', function(e) {
     e.preventDefault();

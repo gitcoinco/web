@@ -1,8 +1,5 @@
 /* eslint-disable no-console */
 var get_gas_price = function() {
-  if ($('#gasPrice').length) {
-    return $('#gasPrice').val() * Math.pow(10, 9);
-  }
   if (typeof defaultGasPrice != 'undefined') {
     return defaultGasPrice;
   }
@@ -150,6 +147,7 @@ $(document).ready(function() {
         $('#token').append(html);
       }
     });
+    $('#token').val('0x0000000000000000000000000000000000000000').select2();
     jQuery('#token').select2();
   });
 

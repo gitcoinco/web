@@ -46,6 +46,7 @@ from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
@@ -790,6 +791,18 @@ def leaderboard(request, key=''):
             for tech in techs:
                 technologies.add(tech)
 
+    flags = []
+    if key == 'countries':
+        for item in items[0:limit]:
+            country = item.at_ify_username
+            code = 'us'
+            try:
+                country_index = COUNTRY_NAMES.index(country)
+                code = COUNTRY_CODES[country_index]
+            except:
+                print(f'Error: {FLAG_ERR_MSG}')
+            flags.append(f'{FLAG_API_LINK}/{code}/{FLAG_STYLE}/{FLAG_SIZE}.png')
+
     if amount:
         amount_max = amount[0][0]
         top_earners = ranks.order_by('-amount')[0:5].values_list('github_username', flat=True)
@@ -828,12 +841,18 @@ def leaderboard(request, key=''):
                 
             }],
             chart_options =
-              {'title': {
+              {'legend': {
+                   'enabled': False},
+               'title': {
                    'text': 'Leaderboard'},
                'xAxis': {
                     'title': {
-                       'text': 'Time'}
-                    }
+                       'text': 'Time'
+                       },
+                    'labels': {
+                       'enabled': False
+                       }
+                    },
                 }
             )
 
@@ -846,7 +865,9 @@ def leaderboard(request, key=''):
         next_update = timezone.now() + timezone.timedelta(days=1)
 
     context = {
+        'key': key,
         'items': items[0:limit],
+        'dual_list': zip(items[0:limit], flags),
         'nav': 'home',
         'cht': cht,
         'titles': titles,

@@ -24,11 +24,11 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest,
-    CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
-    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, PortfolioItem, Profile, ProfileView,
-    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, Tool, ToolVote, TribeMember, UserAction,
-    UserVerificationModel, Poll, Question, Option, Answer, FundRequest
+    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
+    BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
+    Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
+    TribeMember, UserAction, UserVerificationModel,
 )
 
 
@@ -39,10 +39,10 @@ class BountyEventAdmin(admin.ModelAdmin):
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
+    readonly_fields = ['fulfiller_github_username']
     list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
     search_fields = [
-        'fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
-        'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url'
+        'fulfiller_address', 'fulfiller_metadata', 'fulfiller_github_url'
     ]
     ordering = ['-id']
 
@@ -50,6 +50,12 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class InvestigationAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile']
 
 
 class TipPayoutAdmin(admin.ModelAdmin):
@@ -82,15 +88,9 @@ class EarningAdmin(admin.ModelAdmin):
     search_fields = ['from_profile__handle', 'to_profile__handle']
 
 
-class ToolAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    list_display = ['created_on', '__str__']
-    raw_id_fields = ['votes']
-
-
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
-    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer', 'hackathonevent']
+    raw_id_fields = ['bounty', 'profile', 'tip', 'kudos', 'grant', 'subscription', 'other_profile', 'kudos_transfer', 'hackathonevent', 'project']
     search_fields = ['metadata', 'activity_type', 'profile__handle']
 
     def response_change(self, request, obj):
@@ -116,11 +116,6 @@ class TokenApprovalAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
     search_fields = ['profile__handle', 'token_name', 'token_address']
-
-
-class ToolVoteAdmin(admin.ModelAdmin):
-    raw_id_fields = ['profile']
-    ordering = ['-id']
 
 
 class BountyInvitesAdmin(admin.ModelAdmin):
@@ -170,7 +165,7 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
-    readonly_fields = ['active_bounties_list']
+    readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
 
     def active_bounties_list(self, instance):
@@ -182,6 +177,13 @@ class ProfileAdmin(admin.ModelAdmin):
                 htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
         html = format_html("<BR>".join(htmls))
         return html
+
+    def user_sybil_info(self, instance):
+        investigation = instance.investigations.filter(key='sybil').first()
+        html = f"Refreshed {investigation.created_on.strftime('%m/%d/%Y')}<BR><BR>"
+        html += investigation.description
+        return format_html(html)
+    user_sybil_info.allow_tags = True
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
@@ -438,8 +440,7 @@ class OptionsInline(admin.TabularInline):
 
 
 class PollsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'active', 'hackathon', 'created_on']
-    raw_id_fields = ['hackathon']
+    list_display = ['id', 'title', 'active']
     search_fields = ['title']
     inlines = [QuestionInline]
 
@@ -458,8 +459,8 @@ class OptionsAdmin(admin.ModelAdmin):
 
 
 class AnswersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'question', 'open_response', 'choice']
-    raw_id_fields = ['user', 'question', 'choice']
+    list_display = ['id', 'user', 'question', 'open_response', 'choice', 'checked', 'hackathon']
+    raw_id_fields = ['user', 'question', 'choice', 'hackathon']
     unique_together = ('user', 'question', 'choice')
 
 
@@ -483,8 +484,6 @@ admin.site.register(Tip, TipAdmin)
 admin.site.register(TokenApproval, TokenApprovalAdmin)
 admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
-admin.site.register(Tool, ToolAdmin)
-admin.site.register(ToolVote, ToolVoteAdmin)
 admin.site.register(Sponsor, SponsorAdmin)
 admin.site.register(HackathonEvent, HackathonEventAdmin)
 admin.site.register(HackathonSponsor, HackathonSponsorAdmin)
@@ -492,6 +491,7 @@ admin.site.register(HackathonRegistration, HackathonRegistrationAdmin)
 admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
+admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)

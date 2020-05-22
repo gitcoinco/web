@@ -194,10 +194,6 @@ a {
   overflow-x: hidden;
 }
 
-.interior #logo {
-  margin-top: -5px;
-}
-
 .interior .header {
   background-size: cover;
 }
@@ -248,48 +244,6 @@ p a {
 
 .modal-close {
   float:right;
-}
-
-#gas-section .gas-image {
-  height: 4.5rem;
-}
-
-#gas-section .font-body {
-  margin: 0;
-}
-
-#gas-section .recommended-prices {
-  cursor: pointer;
-  text-align: center;
-}
-
-#gas-section .gas-dark-bg {
-  background-color: #FAFAFA;
-}
-
-#gas-section .gas-rates .active {
-  font-weight: 600;
-  background-color: #0ECF7C;
-}
-
-#gas-section #metamask_context {
-  display: none;
-}
-
-#gas-section #accordion-set-own-limit {
-  cursor: pointer;
-  border-bottom: 1px solid rgba(0,0,0,.1);
-  border-top: 1px solid rgba(0,0,0,.1);
-}
-
-#gas-section #accordion-set-own-limit i {
-  float: right;
-}
-
-#gas-section #default-recommended-gas,
-#gas-section .message {
-  display: none;
-  text-align: center;
 }
 
 .btn-warning,
@@ -687,52 +641,6 @@ input[type=text].loading {
 .bottom_notification-pink {
   background-color: #9f80ff;
   color: #000;
-}
-
-.metamask_recc {
-  width: 45%;
-  display: inline-block;
-}
-
-#metamask_label img {
-  position: relative;
-  top: -2px;
-}
-
-#metamask_context .red_warning {
-  background-color: #fbe0d6;
-  color: #fb9470;
-  padding: 5px 10px;
-  border-radius: 2px;
-  margin-bottom: 15px;
-  display: block;
-}
-
-#metamask_context .red_warning a {
-  color: #fb9470 !important;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-#metamask_context ul {
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
-  padding-left: 1rem;
-}
-
-#metamask_context li a {
-  color: #0D0764;
-}
-
-#metamask_context .warning {
-  text-align: center;
-  background-color: #ff9800;
-  border-radius: 5px;
-}
-
-#metamask_context .warning a {
-  color: black;
-  font-weight: bold;
 }
 
 .bottom_notification a {
