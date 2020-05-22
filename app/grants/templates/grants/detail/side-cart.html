@@ -16,17 +16,27 @@
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
 
-<div id="side-cart-data" class="pt-4 pr-2">
-    <!-- X Button -->
-    <div class="row">
-        <div class="col-10"></div>
-        <div id="close-side-cart" class="col-2 p-2" style="opacity: 40%">
-            <i class="fas fa-times" style="cursor: pointer"></i>
+<div class="pt-4 pr-2">
+    <div id="side-cart-data">
+        <!-- X Button -->
+        <div class="row">
+            <div class="col-10"></div>
+            <div id="close-side-cart" class="col-2 p-2" style="opacity: 40%">
+                <i class="fas fa-times" style="cursor: pointer"></i>
+            </div>
+        </div>
+        <!-- Header -->
+        <div class="pb-4">
+            <div class="font-bigger-1" style="font-weight: bold">Fund Grants</div>
+            <div>You can add more grants to fund multiple grants at once!</div>
         </div>
     </div>
-    <!-- Header -->
-    <div class="pb-4">
-        <div class="font-bigger-1" style="font-weight: bold">Fund Grants</div>
-        <div>You can add more grants to fund multiple grants at once!</div>
+    <div class="mt-5">
+        <form action="/grants/cart">
+            <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3">
+                <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
+                CHECKOUT
+            </button>
+        </form>
     </div>
 </div>

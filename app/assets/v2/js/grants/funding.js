@@ -36,7 +36,7 @@ function sideCartRowForGrant(grant) {
             </div>
             <div class="form-row">
                 <div class="col-2"></div>
-                <div class="col-3">
+                <div class="col-5">
                     <input type="number" id="side-cart-amount-${grant.grant_id}" class="form-control" value="${grant.grant_donation_amount}">
                 </div>
                 <div class="col-5">
