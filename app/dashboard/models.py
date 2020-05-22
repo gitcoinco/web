@@ -1395,12 +1395,16 @@ class BountyFulfillment(SuperModel):
 
     @property
     def fulfiller_email(self):
-        return self.profile.email
+        if self.profile:
+            return self.profile.email
+        return None
 
 
     @property
     def fulfiller_github_username(self):
-        return self.profile.handle
+        if self.profile:
+            return self.profile.handle
+        return None
 
 
     @property
@@ -5070,4 +5074,3 @@ class Investigation(SuperModel):
             description=htmls,
             key='sybil',
         )
-
