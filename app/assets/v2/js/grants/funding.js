@@ -40,9 +40,9 @@ function sideCartRowForGrant(grant) {
                     <input type="number" id="side-cart-amount-${grant.grant_id}" class="form-control" value="${grant.grant_donation_amount}">
                 </div>
                 <div class="col-5">
-                    <select class="form-control">
-                        <option>DAI</option>
-                        <option>ETH</option>
+                    <select id="side-cart-currency-${grant.grant_id}" class="form-control">
+                        <option value="DAI">DAI</option>
+                        <option value="ETH">ETH</option>
                     </select>
                 </div>
             </div>
@@ -75,6 +75,14 @@ function showSideCart() {
         $(`#side-cart-amount-${grant.grant_id}`).change(function() {
             const newAmount = parseFloat($(this).val());
             updateCartItem(grant.grant_id, 'grant_donation_amount', newAmount);
+        });
+
+        // Select appropriate currency
+        $(`#side-cart-currency-${grant.grant_id}`).val(grant.grant_donation_currency);
+
+        // Register currency change handler
+        $(`#side-cart-currency-${grant.grant_id}`).change(function() {
+            updateCartItem(grant.grant_id, 'grant_donation_currency', $(this).val());
         });
     });
 
