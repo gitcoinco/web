@@ -1,0 +1,23 @@
+{
+  "symbol": "MAC",
+  "address": "0x6d33B902A08cB826d23600f61cB57A62afce80D6",
+  "overview":{
+        "en": "Spacetravel BUBU App is an unique lifestyle app that combines the powerful features of geospartial navigation mapping, digital payments, reward system and gamications into one unified platform that creates an eco-system of both users and providers benefit from participation.",
+        "zh": "SpaceTravel 创新开发了旗舰应用程序“ BUBU”，该应用程序集卓越的地理空间技术、区块链和增强现实（AR）技术为基础。BUBU是一款生活方式体验应用程序，使用户能够搜索并导航到周边的最佳目的地，同时享受创新的游戏化体验并获得奖励。",
+        "ja": "SpaceTravelは、優れた地理空間技術、ブロックチェーン、拡張現実 (AR) を備えた革 新的なフラグシップアプリ 「BUBU」 を特色とし、BUBUは、革新的なゲーム化さ れた報酬体験を楽しみながら、ユーザーが自分の周りの最高の目的地のお得な情報 をナビゲートすることを可能にするライフスタイルアプリです。"
+  },
+  "email": "Email",
+  "website": "https://spacetravel.entwork/",
+  "whitepaper": "https://spacetravel.network/files/WP-Bubu-8.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-05-22",
+  "initial_price":{
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/SpaceTravel18",
+    "telegram": "https://t.me/spacetravelproject",
+    "facebook": "https://m.facebook.com/spacetravelsg/",
+    "medium": "https://link.medium.com/0RetUUHyj6"
+  }
+}
