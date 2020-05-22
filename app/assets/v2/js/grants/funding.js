@@ -20,12 +20,52 @@ $(document).ready(function() {
 
 // HELPERS
 
+function sideCartRowForGrant(grant) {
+
+    const cartRow = `
+        <div class="side-cart-row mb-3">
+            <div class="form-row mb-2">
+                <div class="col-2">
+                    <img src="${grant.grant_logo}" alt="Grant logo" width="40">
+                </div>
+                <div class="col-9">
+                    ${grant.grant_title}
+                </div>
+                <div class="col-1" style="opacity: 40%">
+                    <i class="fas fa-trash-alt" style="cursor: pointer"></i>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-2"></div>
+                <div class="col-3">
+                    <input type="number" class="form-control" value="${grant.grant_donation_amount}">
+                </div>
+                <div class="col-5">
+                    <select class="form-control">
+                        <option>DAI</option>
+                        <option>ETH</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    `;
+
+    return cartRow;
+}
+
 function showSideCart() {
     const isShowing = $('#side-cart').hasClass('col-3');
 
     if (isShowing) {
         return;
     }
+
+    // Add all elements in cart
+    let cartData = loadCart();
+    cartData.forEach( grantInCart => {
+        const cartRow = sideCartRowForGrant(grantInCart);
+        $("#side-cart-data").append(cartRow);
+    });
 
     toggleSideCart();
 }
@@ -36,6 +76,11 @@ function hideSideCart() {
     if (!isShowing) {
         return;
     }
+
+    // Remove elements in cart
+    $("#side-cart-data")
+        .find("div.side-cart-row")
+        .remove();
 
     toggleSideCart();
 }
@@ -77,7 +122,7 @@ function addToCart(grantData) {
     // Add donation defaults
     grantData.grant_donation_amount = 1;
     grantData.grant_donation_currency = 'DAI';
-    grantData.grant_donation_num_rounds = 1; 
+    grantData.grant_donation_num_rounds = 1;
     grantData.grant_donation_clr_match = 250;
 
     let cartList = loadCart()
