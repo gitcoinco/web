@@ -89,7 +89,7 @@
                     <input type="hidden" id="grant_logo" name="grant_logo" value="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
                     <input type="hidden" id="grant_image_css" name="grant_image_css" value="{{ grant.image_css }}">
                     <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3" id='js-addToCart-button'>
-                        Add To Cart
+                        ADD TO CART
                     </button>
                 </form>
             {% endif %}
