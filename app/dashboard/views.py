@@ -2846,8 +2846,7 @@ def profile(request, handle, tab=None):
         if request.user.is_authenticated and not context['is_my_org']:
             ProfileView.objects.create(target=profile, viewer=request.user.profile)
         try:
-
-            what = f'tribe:{profile.handle}'
+            context['tags'] = get_tags(request)
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network=network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
