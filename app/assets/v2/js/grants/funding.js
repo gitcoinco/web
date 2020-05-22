@@ -105,6 +105,7 @@ function hideSideCart() {
 }
 
 function toggleSideCart() {
+    $('#side-cart').toggle();
     $('#grants-details').toggleClass('col-12');
     $('#grants-details').toggleClass('col-9');
     $('#side-cart').toggleClass("col-3");
