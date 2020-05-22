@@ -201,8 +201,7 @@ $(document).ready(function() {
         deployedSubscription.methods.endContract()
           .send({
             from: accounts[0],
-            gas: 3000000,
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gas: 3000000
           }).on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             const linkURL = get_etherscan_url(transactionHash);

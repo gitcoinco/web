@@ -1,8 +1,5 @@
 /* eslint-disable no-console */
 var get_gas_price = function() {
-  if ($('#gasPrice').length) {
-    return $('#gasPrice').val() * Math.pow(10, 9);
-  }
   if (typeof defaultGasPrice != 'undefined') {
     return defaultGasPrice;
   }

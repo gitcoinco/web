@@ -78,7 +78,7 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
             metadata={
                 'recipient': profile.pk,
             },
-            make_paid_for_first_minutes=30,
+            make_paid_for_first_minutes=999999,
             )
         cta_url = btc.url
         cta_text = 'Redeem Kudos'
@@ -205,7 +205,7 @@ def process_win(request, qa):
             metadata={
                 'recipient': request.user.profile.pk,
             },
-            make_paid_for_first_minutes=30,
+            make_paid_for_first_minutes=999999,
             )
     prize_url = tweetify_prize_url(btc.url, quest, request.user)
     qa.success = True

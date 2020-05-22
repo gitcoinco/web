@@ -217,7 +217,7 @@ def new_grant(grant, profile):
 
 
 def new_supporter(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
@@ -236,7 +236,7 @@ def new_supporter(grant, subscription):
 
 
 def thank_you_for_supporting(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -255,7 +255,7 @@ def thank_you_for_supporting(grant, subscription):
 
 
 def support_cancellation(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -272,7 +272,7 @@ def support_cancellation(grant, subscription):
 
 
 def grant_cancellation(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
@@ -289,7 +289,7 @@ def grant_cancellation(grant, subscription):
 
 
 def subscription_terminated(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -306,7 +306,7 @@ def subscription_terminated(grant, subscription):
 
 
 def successful_contribution(grant, subscription, contribution):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -843,7 +843,7 @@ def warn_account_out_of_eth(account, balance, denomination):
 
 
 def warn_subscription_failed(subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
