@@ -37,7 +37,7 @@ function sideCartRowForGrant(grant) {
             <div class="form-row">
                 <div class="col-2"></div>
                 <div class="col-3">
-                    <input type="number" class="form-control" value="${grant.grant_donation_amount}">
+                    <input type="number" id="side-cart-amount-${grant.grant_id}" class="form-control" value="${grant.grant_donation_amount}">
                 </div>
                 <div class="col-5">
                     <select class="form-control">
@@ -69,6 +69,12 @@ function showSideCart() {
         $(`#side-cart-row-remove-${grant.grant_id}`).click(function() {
             $(`#side-cart-row-${grant.grant_id}`).remove();
             removeIdFromCart(grant.grant_id);
+        });
+
+        // Register change amount handler
+        $(`#side-cart-amount-${grant.grant_id}`).change(function() {
+            const newAmount = parseFloat($(this).val());
+            updateCartItem(grant.grant_id, 'grant_donation_amount', newAmount);
         });
     });
 
@@ -143,6 +149,29 @@ function removeIdFromCart(grantId) {
     });
 
     setCart(newList);
+}
+
+function updateCartItem(grantId, field, value) {
+    let cartList = loadCart();
+
+    let grant = null;
+
+    for (let index = 0; index < cartList.length; index++) {
+        const maybeGrant = cartList[index];
+
+        if (maybeGrant.grant_id === grantId) {
+            grant = maybeGrant;
+            break;
+        }
+    }
+
+    if (null === grant) {
+        throw new Error(`Tried to update grant with Id ${grantId} that is not in cart`);
+    }
+
+    grant[field] = value;
+
+    setCart(cartList);
 }
 
 function loadCart() {
