@@ -2774,6 +2774,7 @@ def profile(request, handle, tab=None):
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
     context = {}
+    context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
@@ -2845,8 +2846,7 @@ def profile(request, handle, tab=None):
         if request.user.is_authenticated and not context['is_my_org']:
             ProfileView.objects.create(target=profile, viewer=request.user.profile)
         try:
-
-            what = f'tribe:{profile.handle}'
+            context['tags'] = get_tags(request)
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network=network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
@@ -2889,7 +2889,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
+
     context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
     context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
     context['foltab'] = request.GET.get('sub', 'followers')
