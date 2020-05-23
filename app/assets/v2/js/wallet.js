@@ -158,6 +158,7 @@ async function fetchAccountData(provider) {
   // MetaMask does not give you all accounts, only the selected account
   console.log("Got accounts", accounts);
   selectedAccount = accounts[0] || provider.account;
+  cb_address = selectedAccount;
 
   document.querySelector(".selected-account").textContent = truncate(selectedAccount);
 

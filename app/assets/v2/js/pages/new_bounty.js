@@ -24,36 +24,59 @@ const updateOnNetworkOrTokenChange = () => {
     $('.web3-alert').hide();
 
   } else {
-    listen_for_web3_changes();
-
-    $('#navbar-network-banner').show();
-    $('.navbar-network').show();
-
-    $('.funder-address-container').hide();
-    $('#funderAddress').removeAttr('required');
-    $('#funderAddress').val('');
-
-    $('.web3-alert').show();
-    if (!document.web3network) {
-      $('.web3-alert').html('To continue, please setup a web3 wallet.');
-      $('.web3-alert').addClass('wallet-not-connected');
-    } else if (document.web3network == 'locked') {
-      $('.web3-alert').html('To continue, please unlock your web3 wallet');
-      $('.web3-alert').addClass('wallet-not-connected');
-    } else if (document.web3network == 'rinkeby') {
-      $('.web3-alert').html(`connected to address <b>${web3.eth.coinbase}</b> on rinkeby`);
-      $('.web3-alert').addClass('wallet-success');
+    // listen_for_web3_changes();
+    if (!provider && !web3Modal.cachedProvider || provider === 'undefined' ) {
+      onConnect().then( ()=>{
+        changeUi();
+      })
     } else {
-      $('.web3-alert').html(`connected to address <b>${web3.eth.coinbase}</b> on mainnet`);
-      $('.web3-alert').addClass('wallet-success');
+      web3Modal.on('connect', async () => {
+        try {
+          provider = await web3Modal.connect().then( ()=>{
+            changeUi();
+          });
+        } catch(e) {
+          console.log("Could not get a wallet connection", e);
+          return;
+        }
+      });
+
+
     }
+
+
   }
 };
 
+function changeUi(){
+  $('#navbar-network-banner').show();
+  $('.navbar-network').show();
+
+  $('.funder-address-container').hide();
+  $('#funderAddress').removeAttr('required');
+  $('#funderAddress').val('');
+
+  $('.web3-alert').show();
+  if (!document.web3network) {
+    $('.web3-alert').html('To continue, please setup a web3 wallet.');
+    $('.web3-alert').addClass('wallet-not-connected');
+  } else if (document.web3network == 'locked') {
+    $('.web3-alert').html('To continue, please unlock your web3 wallet');
+    $('.web3-alert').addClass('wallet-not-connected');
+  } else if (document.web3network == 'rinkeby') {
+    $('.web3-alert').html(`connected to address <b>${selectedAccount}</b> on rinkeby`);
+    $('.web3-alert').addClass('wallet-success');
+  } else {
+    $('.web3-alert').html(`connected to address <b>${selectedAccount}</b> on mainnet`);
+    $('.web3-alert').addClass('wallet-success');
+  }
+}
+
 window.addEventListener('load', function() {
-  setTimeout(() => {
-    setInterval(updateOnNetworkOrTokenChange, 1000);
-  }, 5000);
+  // updateOnNetworkOrTokenChange()
+  // setTimeout(() => {
+  //   setInterval(updateOnNetworkOrTokenChange, 1000);
+  // }, 5000);
 });
 
 var localStorage = window.localStorage ? window.localStorage : {};
@@ -237,7 +260,7 @@ const handleTokenAuth = () => {
       tokenAuthAlert(isTokenAuthed);
       resolve(isTokenAuthed);
     } else {
-      const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+      const token_contract = web3.eth.Contract(token_abi).at(tokenAddress);
       const to = bounty_address();
 
       web3.eth.getCoinbase(function(_, from) {

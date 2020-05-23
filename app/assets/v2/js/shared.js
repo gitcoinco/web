@@ -76,21 +76,21 @@ var loading_button = function(button) {
 };
 
 var cb_address;
-var reloadCbAddress = function() {
-  if (typeof web3 == 'undefined' || !web3.eth) {
-    return;
-  }
-  web3.eth.getCoinbase(function(error, result) {
-    // console.log(error, result)
-    if (!error) {
-      cb_address = result;
-    } else {
-      console.log('web3.eth.coinbase could not be loaded: ' + error);
-    }
-  });
-};
+// var reloadCbAddress = function() {
+//   if (typeof web3 == 'undefined' || !web3.eth) {
+//     return;
+//   }
+//   web3.eth.getCoinbase(function(error, result) {
+//     // console.log(error, result)
+//     if (!error) {
+//       cb_address = result;
+//     } else {
+//       console.log('web3.eth.coinbase could not be loaded: ' + error);
+//     }
+//   });
+// };
 
-reloadCbAddress();
+// reloadCbAddress();
 
 var unloading_button = function(button) {
   button.prop('disabled', false);
