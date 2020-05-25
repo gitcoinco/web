@@ -18,11 +18,10 @@
 <div class="sidebar_search font-body">
   <div class="search font-caption mb-4">
     <div class="search-area col-12">
-      <input class="form__input form__input_lg" id="keywords" type="text" />
-      <img class="close-icon" src="{% static "v2/images/close-grey.png" %}" alt="X" />
-      <a id="new_search" href="#">
-        <i class="fas fa-search"></i>
-      </a>
+      <form method="POST" id="search_form">
+        {% csrf_token %}
+        <input class="form__input form__input_lg" type="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Muli', sans-serif; font-weight: 900;" placeholder="&#xF002; Search Grant" />
+      </form>
     </div>
     <div class="col-12">
       <div class="filter-tags"></div> <!-- Populate the filters -->
