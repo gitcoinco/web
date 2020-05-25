@@ -353,6 +353,13 @@ def grants(request):
         {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
 
     ]
+    
+    sub_categories = []
+    for keyword in [grant_type['keyword'] for grant_type in grant_types]:
+        sub_category = {}
+        sub_category[keyword] = [tuple[0] for tuple in basic_grant_categories(keyword)]
+        sub_categories.append(sub_category)
+
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
     grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
@@ -386,6 +393,7 @@ def grants(request):
         'bottom_back': bottom_back,
         'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,
+        'sub_categories': sub_categories,
         'grant_types': grant_types,
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
