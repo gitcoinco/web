@@ -131,7 +131,8 @@ class Grant(SuperModel):
     GRANT_TYPES = [
         ('tech', 'tech'),
         ('health', 'health'),
-        ('media', 'media')
+        ('media', 'media'),
+        ('matic', 'matic')
     ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))

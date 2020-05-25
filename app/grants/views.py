@@ -329,6 +329,9 @@ def grants(request):
     health_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='health'
     ).count()
+    matic_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='matic'
+    ).count()
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
@@ -339,7 +342,9 @@ def grants(request):
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
-        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count}
+        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
+        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
+
     ]
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
@@ -599,6 +604,30 @@ def flag(request, grant_id):
     return JsonResponse({
         'success': True,
     })
+
+
+@login_required
+def grant_new_whitelabel(request):
+    """Create a new grant, with a branded creation form for specific tribe"""
+
+    params = {
+        'active': 'new_grant',
+        'title': _('New Grant'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'profile': profile,
+        'grant': {},
+        'keywords': get_keywords(),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
+        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
+    }
+    return TemplateResponse(request, 'grants/new-whitelabel.html', params)
+
 
 
 @login_required
