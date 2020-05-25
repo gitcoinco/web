@@ -474,13 +474,13 @@
 }
 
 .grants_type_nav {
-  border-bottom: 1px solid #979797;
+  border-bottom: none;
   line-height: 37px;
 }
 
 .grants_type_nav a.selected {
   font-weight: bold;
-  border-bottom: 4px solid #3E00FF;
+  border-bottom: none;
   padding-bottom: 6px;
 }
 
