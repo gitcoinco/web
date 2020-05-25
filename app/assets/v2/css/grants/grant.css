@@ -592,6 +592,19 @@ background: linear-gradient(11deg, #942f3d 0%,#9c602f 12%,#110f22 42%,#09060e 10
   font-weight: 650;
 }
 
+/* sidebar_search.css */
+.accordion:after {
+  float: none;
+}
+
+.subheading {
+  margin-bottom: 0 !important;
+  letter-spacing: 2px;
+}
+
+
+/* sidebar_search.css */
+
 @media (min-width: 1200px) {
   .header .container {
     max-width: 1240px;
