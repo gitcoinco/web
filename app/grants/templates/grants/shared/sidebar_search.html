@@ -15,8 +15,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static get_categories_from_list %}
-<div class="sidebar_search font-body">
-  <div class="search font-caption mb-4">
+<div class="sidebar_search font-body pr-0 pl-4">
+  <div class="search font-caption mb-4" style="width: 110%;">
     <div class="search-area col-12">
       <form method="POST" id="search_form">
         {% csrf_token %}
