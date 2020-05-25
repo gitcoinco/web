@@ -931,6 +931,9 @@ textarea.status-textarea {
   background-color: var(--bg-shade-0)!important;
 }
 
+input[type="search"]::-webkit-search-cancel-button {
+  z-index: 100;
+}
 .svg-animated-logo {
   height: 42px;
   max-width: 100%;
