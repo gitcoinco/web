@@ -110,3 +110,6 @@ var glow_skip = function() {
 setInterval(glow_skip, 5000);
 glow_skip();
 
+$(document).ready(function() {
+  $('.selected').parents('.accordion').trigger('click');
+});
