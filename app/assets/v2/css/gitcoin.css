@@ -930,3 +930,7 @@ textarea.status-textarea {
 .dark-mode .bg-light {
   background-color: var(--bg-shade-0)!important;
 }
+
+input[type="search"]::-webkit-search-cancel-button {
+  z-index: 100;
+}
