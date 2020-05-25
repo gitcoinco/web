@@ -33,7 +33,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% include 'grants/shared/landing_hero.html' %}
       <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
         <div style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
-      <div class="row">
+          <div class="row">
+            <div class="col-12 mt-3">
+              <div class="info-box large mx-auto p-3">
+                <p class="mb-2">Sustain these projects with <b>recurring</b> funding. You funded 6 grants last time. Fund them again?</p>
+                <span class="font-smaller-3"><a href="">DAppNode</a>, <a href="">White Hat Hacking</a>, <a href="">Burner Wallet</a> and 4 more.</span>
+              </div>
+            </div>
+          </div>
       <div class="row">
       <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container">
         {% include 'grants/shared/sidebar_search.html' %}
