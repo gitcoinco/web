@@ -556,7 +556,7 @@ background: linear-gradient(140deg, #659998 0%,#659998 0%,#659998 0%,#97dbca 37%
 background: linear-gradient(11deg, #e99907 0%,#207cca 63%,#2989d8 99%,#110f22 100%,#2989d8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 .tech_grants .grant-partners {
-background: linear-gradient(11deg, #942f3d 0%,#9c602f 12%,#110f22 42%,#09060e 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 .grant-partners h2 {
   letter-spacing: 3px;
@@ -564,7 +564,7 @@ background: linear-gradient(11deg, #942f3d 0%,#9c602f 12%,#110f22 42%,#09060e 10
 
 .grant-partners img {
   border-radius: 50px;
-  width: 4rem;
+  width: 3rem;
 }
 
 .grant-partners .nav-tabs {
@@ -585,6 +585,24 @@ background: linear-gradient(11deg, #942f3d 0%,#9c602f 12%,#110f22 42%,#09060e 10
 
 .grant-partners .nav-tabs .nav-line.active  {
   font-weight: 700;
+}
+
+.grant-partners .partner-details-container {
+  padding: 10px;
+  display: inline-block;
+}
+
+.grant-partners .partner-details {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.grant-partners .partner-amount {
+  width: max-content;
+}
+
+.grant-partners .tab-content>.active {
+  display: inline-block;
 }
 
 .total_active_fund p {
