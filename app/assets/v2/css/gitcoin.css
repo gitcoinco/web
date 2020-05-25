@@ -931,6 +931,18 @@ textarea.status-textarea {
   background-color: var(--bg-shade-0)!important;
 }
 
+.info-box {
+  background: rgba(62, 0, 255, 0.05);
+  border: 1px solid rgba(62, 0, 255, 0.5);
+  box-sizing: border-box;
+  border-radius: 4px;
+  line-height: 16px;
+}
+
+.info-box.large {
+  width: 95%;
+}
+
 input[type="search"]::-webkit-search-cancel-button {
   z-index: 100;
 }
