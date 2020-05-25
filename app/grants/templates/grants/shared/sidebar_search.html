@@ -37,7 +37,7 @@
     <i class="fas fa-chevron-up"></i>
   </p>
 
-  <form>
+  <form id="filters">
 
     <div class="col border-top-0">
       <div class="subheading">
@@ -80,25 +80,7 @@
       </ul>
     </div>
 
-        <div class="col">
-          <div class="col-12 subheading">{% trans "Network" %}</div>
-          <div class="col-12 options">
-            <div class="checkbox_container">
-              <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
-              <span class="checkbox"></span>
-              <div class="filter-label">
-                <label for=rinkeby>{% trans "Rinkeby" %}</label>
-              </div>
-            </div>
-            <div class="checkbox_container">
-              <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
-              <span class="checkbox"></span>
-              <div class="filter-label">
-                <label for=mainnet>{% trans "Mainnet" %}</label>
-              </div>
-            </div>
-          </div>
-        </div>
+  </form>
 
         <div class="col">
           <div class="col-12 subheading">{% trans "Misc" %}</div>
