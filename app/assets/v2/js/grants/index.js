@@ -115,3 +115,22 @@ glow_skip();
 $(document).ready(function() {
   $('.selected').parents('.accordion').trigger('click');
 });
+
+$('#expand').on('click', () => {
+  $('#expand').hide();
+  $('#minimize').show();
+  $('#sidebar_container form#filters').css({
+    'height': 'auto',
+    'display': 'inherit'
+  });
+});
+
+$('#minimize').on('click', () => {
+  $('#minimize').hide();
+  $('#expand').show();
+  $('#sidebar_container form#filters').css({
+    'height': 0,
+    'display': 'none'
+  });
+});
+

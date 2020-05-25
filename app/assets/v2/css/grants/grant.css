@@ -602,6 +602,15 @@ background: linear-gradient(11deg, #942f3d 0%,#9c602f 12%,#110f22 42%,#09060e 10
   letter-spacing: 2px;
 }
 
+@media (max-width: 991.98px) {
+  #sidebar_container form#filters {
+    height: 0;
+    display: none;
+  }
+  #sidebar_container form#search_form {
+    display: inline-block;
+    width: 95%;
+  }
 
 /* sidebar_search.css */
 
