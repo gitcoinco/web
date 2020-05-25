@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/sidebar_search.css" %}"/>
   </head>
   <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -32,6 +33,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% include 'grants/shared/landing_hero.html' %}
       <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
         <div style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
+      <div class="row">
+      <div class="row">
+      <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container">
+        {% include 'grants/shared/sidebar_search.html' %}
+      </div>
+
+      <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
       {% include 'grants/shared/landing_navbar.html' %}
       {% include 'grants/shared/landing_clr.html' %}
       {% if type == 'activity' %}
@@ -55,7 +63,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% include 'grants/shared/landing_subnav.html' %}
         {% include 'grants/shared/landing_grants.html' %}
       {% endif %}
-        </div>
+      </div>
+      </div>
+      </div>
       </div>
 
 
