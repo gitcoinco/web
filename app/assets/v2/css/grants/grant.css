@@ -451,7 +451,7 @@
 }
 
 #search_form .sort_container .select2-container {
-  width: 270px !important;
+
 }
 
 #search_form .select2-network-container {
@@ -463,7 +463,8 @@
 }
 
 #search_form .select2-selection {
-  background: #F2F6F9;
+  background: none;
+  outline: none;
   border: none !important;
   color: var(--gc-blue);
 }
