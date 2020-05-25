@@ -92,10 +92,12 @@ $('.grants_nav a').on('click', function(event) {
     document.location.href = $(this).attr('href');
     return;
   }
-  const queryParam = $(this).data('type');
-  const queryParamValue = $(this).data('value');
+  
+  const typeValue = $(this).data('type');
+  const categoryValue = $(this).data('category');
+  const params = { 'type': typeValue, 'category': categoryValue};
 
-  updateParams(queryParam, queryParamValue);
+  updateMultipleParams(params);
 });
 
 var glow_skip = function() {
