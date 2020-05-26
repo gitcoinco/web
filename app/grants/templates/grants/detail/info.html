@@ -336,12 +336,6 @@
                   <li>{% trans "Once cancelled, it is " %}<b>{% trans "not possible to restart the grant, " %}</b>{% trans "as the smart contract will be destroyed." %}</li></ul>
                   <p>{% trans "To relaunch the grant, you need to create a new grant." %}</p>
                 </div>
-                <div id="gas-section" class="form__group-horizontal">
-                  <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
-                  <div>
-                    {% include 'shared/wallet_estimate.html' %}
-                  </div>
-                </div>
                 <div class="col-12 mt-4 mb-2 text-center text-md-right font-caption">
                   <a data-dismiss="modal" aria-label="Close dialog" class="button button--primary-o mr-3 shadow-none font-weight-bold py-3">
                     {% trans "No, I don\'t want to cancel" %}

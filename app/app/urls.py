@@ -137,6 +137,11 @@ urlpatterns = [
         dashboard.views.profile_job_opportunity,
         name='profile_job_opportunity'
     ),
+    url(
+        r'^api/v0.1/profile/(.*)?/setTaxSettings',
+        dashboard.views.profile_tax_settings,
+        name='profile_set_tax_settings'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -617,6 +622,7 @@ urlpatterns = [
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
     re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
     re_path(r'^settings/organizations/?', marketing.views.org_settings, name='org_settings'),
+    re_path(r'^settings/tax/?', marketing.views.tax_settings, name='tax_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
     re_path(r'^settings$', marketing.views.org_settings, name='settings2'),
 
@@ -704,12 +710,14 @@ if settings.DEBUG:
 
 urlpatterns += [
     re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),
     re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/?$',
+        dashboard.views.profile,
+        name='profile_min'
     ),
 ]
 

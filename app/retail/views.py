@@ -54,7 +54,9 @@ from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
+from townsquare.models import PinnedPost
 from townsquare.tasks import increment_view_counts
+from townsquare.utils import can_pin
 
 from .forms import FundingLimitIncreaseRequestForm
 from .utils import articles, press, programming_languages, reasons, testimonials
@@ -618,7 +620,7 @@ def about(request):
             "gitcoinbot",
             "beep boop bop",
             "gitcoinbot",
-            "gitcoinbot",
+            None,
             "everything that's automated",
             "bits",
             "gitcoinbot",
@@ -969,7 +971,7 @@ def results(request, keyword=None):
 
 def get_specific_activities(what, trending_only, user, after_pk, request=None):
     # create diff filters
-    activities = Activity.objects.filter(hidden=False).order_by('-created_on')
+    activities = Activity.objects.filter(hidden=False).order_by('-created_on').exclude(pin__what__iexact=what)
     view_count_threshold = 10
 
     is_auth = user and user.is_authenticated
@@ -1046,6 +1048,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             view_count_threshold = 40
         activities = activities.filter(view_count__gt=view_count_threshold)
 
+    activities = activities.filter().exclude(pin__what=what)
+
     return activities
 
 
@@ -1057,8 +1061,7 @@ def activity(request):
     trending_only = int(request.GET.get('trending_only', 0))
 
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
-    activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent')
-
+    activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     # store last seen
     if activities.exists():
         last_pk = activities.first().pk
@@ -1083,8 +1086,10 @@ def activity(request):
     context = {
         'suppress_more_link': suppress_more_link,
         'what': what,
+        'can_pin': can_pin(request, what),
         'next_page': next_page,
         'page': page,
+        'pinned': None,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
         'my_tribes': list(request.user.profile.tribe_members.values_list('org__handle',flat=True)) if request.user.is_authenticated else [],
