@@ -2479,6 +2479,37 @@ def profile_backup(request):
 
     return JsonResponse(response, status=response.get('status', 200))
 
+@require_POST
+@login_required
+def profile_tax_settings(request, handle):
+    """ Save profile tax info (country location and address).
+
+    Args:
+        handle (str): The profile handle.
+    """
+    try:
+        profile = profile_helper(handle, True)
+        if request.user.profile.id != profile.id:
+            return JsonResponse(
+                {'error': 'Bad request'},
+                status=401)
+        location_component = request.POST.get('locationComponent')
+        address_component = request.POST.get('addressComponent')
+        if json.loads(location_component):
+            profile.location = location_component
+        if address_component:
+            profile.address = address_component
+        profile.save()
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = {
+        'status': 200,
+        'message': 'Tax settings saved'
+    }
+    return JsonResponse(response)
+
+
 def invalid_file_response(uploaded_file, supported):
     response = None
     forbidden_content = ['<script>']

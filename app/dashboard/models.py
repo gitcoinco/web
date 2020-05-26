@@ -2659,6 +2659,8 @@ class Profile(SuperModel):
     )
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     job_location = JSONField(default=dict, blank=True)
+    location = JSONField(default=dict, blank=True)
+    address = models.CharField(max_length=255, default='', blank=True, null=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
     profile_wallpaper = models.CharField(max_length=255, default='', blank=True, null=True)
@@ -3119,12 +3121,13 @@ class Profile(SuperModel):
         plural = 's' if total_funded_participated != 1 else ''
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
-               f"funded issue{plural} on Gitcoin"
+               f"transaction{plural} on Gitcoin"
+               
 
     @property
     def desc(self):
-        bounties1 = self.get_funded_bounties() if not self.is_org else Bounty.objects.none()
-        bounties2 = self.get_orgs_bounties() if self.is_org else self.get_fulfilled_bounties() 
+        bounties1 = self.sent_earnings if not self.is_org else Earning.objects.none()
+        bounties2 = self.earnings if not self.is_org else self.org_earnings
         return self.get_desc(bounties1, bounties2)
 
     @property
