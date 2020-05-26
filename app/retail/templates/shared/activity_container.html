@@ -16,7 +16,11 @@
 
 {% endcomment %}
 <div class="mt-2">
-  <div class="infinite-container activity_stream">
+  <div class="infinite-container activity_stream" data-what="{{what}}">
+    {% if pinned %}
+        {% include 'shared/activity.html' with is_pin=True row=pinned.activity %}
+    {% endif %}
+
     {% for row in activities %}
       {% include 'shared/activity.html' %}
     {% endfor %}

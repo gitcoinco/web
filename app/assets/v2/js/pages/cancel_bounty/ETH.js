@@ -114,10 +114,7 @@ const ethCancelBounty = data => {
       web3.eth.getAccounts(function(_, accounts) {
         bounty.killBounty(
           bountyId,
-          {
-            from: accounts[0],
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-          },
+          { from: accounts[0] },
           final_callback
         );
       });

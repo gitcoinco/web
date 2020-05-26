@@ -268,7 +268,7 @@ window.onload = function() {
           // just sent payout
           var send_payout = function() {
             web3.eth.getAccounts(function(_, accounts) {
-              bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)), from: accounts[0]}, final_callback);
+              bounty.acceptFulfillment(bountyId, fulfillmentId, {from: accounts[0]}, final_callback);
             });
           };
 

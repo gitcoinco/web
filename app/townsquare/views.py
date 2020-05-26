@@ -21,10 +21,11 @@ from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
 from .models import (
-    Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
+    Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, PinnedPost,
+    SuggestedAction,
 )
 from .tasks import increment_offer_view_counts
-from .utils import is_user_townsquare_enabled
+from .utils import can_pin, is_user_townsquare_enabled
 
 from app.redis_service import RedisService
 
@@ -348,6 +349,10 @@ def town_square(request):
 
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
+    try:
+        pinned = PinnedPost.objects.get(what=tab)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
@@ -361,6 +366,9 @@ def town_square(request):
             'is_direct_link': is_direct_link,
             'page_seo_text_insert': page_seo_text_insert,
             'nav': 'home',
+            'what': tab,
+            'can_pin': can_pin(request, tab),
+            'pinned': pinned,
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
             'tags': tags,
@@ -370,6 +378,7 @@ def town_square(request):
             'trending_only': bool(trending_only),
             'audience': audience
         }
+
         return TemplateResponse(request, 'townsquare/index.html', context)
 
     tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
@@ -394,7 +403,10 @@ def town_square(request):
         'nav': 'home',
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
+        'what': tab,
+        'can_pin': can_pin(request, tab),
         'tabs': tabs,
+        'pinned': pinned,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -459,6 +471,7 @@ def api(request, activity_id):
 
     # setup response
     response = {}
+    status = 200
 
     # no perms needed responses go here
     if request.GET.get('method') == 'comment':
@@ -542,7 +555,7 @@ def api(request, activity_id):
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 
-    # like request
+    # favorite request
     elif request.POST.get('method') == 'favorite':
         if request.POST['direction'] == 'favorite':
             already_likes = Favorite.objects.filter(activity=activity, user=request.user).exists()
@@ -550,6 +563,22 @@ def api(request, activity_id):
                 Favorite.objects.create(user=request.user, activity=activity)
         elif request.POST['direction'] == 'unfavorite':
             Favorite.objects.filter(user=request.user, activity=activity).delete()
+
+    # PinnedPost request
+    elif request.POST.get('method') == 'pin':
+        what = request.POST.get('what')
+        permission = can_pin(request, what)
+        # handle permissions for pinning/unpinning
+        if permission:
+            if request.POST.get('direction') == 'pin':
+                pinned_post, created = PinnedPost.objects.update_or_create(
+                    what=what, defaults={"activity": activity, "user": request.user.profile}
+                )
+            elif request.POST.get('direction') == 'unpin':
+                PinnedPost.objects.filter(what=what).delete()
+        else:
+            status = 401
+            response['message'] = "UNAUTHORIZED"
 
     # flag request
     elif request.POST.get('method') == 'flag':
@@ -573,7 +602,7 @@ def api(request, activity_id):
         if 'Just sent a tip of' not in comment:
             comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
 
-    return JsonResponse(response)
+    return JsonResponse(response, status=status)
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

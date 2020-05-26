@@ -17,6 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import base64
+import datetime
 import logging
 
 from django.conf import settings
@@ -37,14 +39,14 @@ from retail.emails import (
     render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
     render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
-    render_nth_day_email_campaign, render_quarterly_stats, render_request_amount_email, render_reserved_issue,
-    render_share_bounty, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
-    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
-    render_thank_you_for_supporting_email, render_tip_email, render_unread_notification_email_weekly_roundup,
+    render_nth_day_email_campaign, render_quarterly_stats, render_request_amount_email, render_reserved_issue, 
+    render_share_bounty, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, 
+    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected, 
+    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email, 
+    render_tax_report, render_thank_you_for_supporting_email,render_tip_email, render_unread_notification_email_weekly_roundup,
     render_wallpost, render_weekly_recap,
 )
-from sendgrid.helpers.mail import Content, Email, Mail, Personalization
+from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
 from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
 
@@ -52,7 +54,7 @@ logger = logging.getLogger(__name__)
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False):
+              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False, zip_path=None):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
     if not settings.SENDGRID_API_KEY:
@@ -100,6 +102,19 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     # categories
     for category in categories:
         mail.add_category(Category(category))
+
+    # Zip Attachment
+    if zip_path is not None:
+        with open(zip_path, 'rb') as f:
+            data = f.read()
+            f.close()
+        encoded = base64.b64encode(data).decode()
+        attachment = Attachment()
+        attachment.content = encoded
+        attachment.type = 'application/zip'
+        attachment.filename = 'tax_report.zip'
+        attachment.disposition = 'attachment'
+        mail.add_attachment(attachment)
 
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
@@ -202,7 +217,7 @@ def new_grant(grant, profile):
 
 
 def new_supporter(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
@@ -221,7 +236,7 @@ def new_supporter(grant, subscription):
 
 
 def thank_you_for_supporting(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -240,7 +255,7 @@ def thank_you_for_supporting(grant, subscription):
 
 
 def support_cancellation(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -257,7 +272,7 @@ def support_cancellation(grant, subscription):
 
 
 def grant_cancellation(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = grant.admin_profile.email
@@ -274,7 +289,7 @@ def grant_cancellation(grant, subscription):
 
 
 def subscription_terminated(grant, subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -291,7 +306,7 @@ def subscription_terminated(grant, subscription):
 
 
 def successful_contribution(grant, subscription, contribution):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     from_email = settings.CONTACT_EMAIL
     to_email = subscription.contributor_profile.email
@@ -828,7 +843,7 @@ def warn_account_out_of_eth(account, balance, denomination):
 
 
 def warn_subscription_failed(subscription):
-    if subscription.negative:
+    if subscription and subscription.negative:
         return
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
@@ -1438,7 +1453,37 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
                 )
         finally:
             translation.activate(cur_language)
+    
 
+def tax_report(to_emails=None, zip_paths=None, tax_year=None):
+    if to_emails is None:
+        to_emails = []
+    if zip_paths is None:
+        zip_paths = []
+    if tax_year is None:
+        # retrieve last year
+        tax_year = datetime.date.today().year-1
+    for idx, to_email in enumerate(to_emails):
+        if to_email:
+            cur_language = translation.get_language()
+            try:
+                setup_lang(to_email)
+                subject = f"Your tax report for year ({tax_year})"
+                html, text = render_tax_report(to_email, tax_year)
+                from_email = settings.CONTACT_EMAIL
+                send_mail(
+                    from_email, 
+                    to_email, 
+                    subject, 
+                    text, 
+                    html, 
+                    from_name="Kevin Owocki (Gitcoin.co)",
+                    categories=['marketing', func_name()],
+                    zip_path=zip_paths[idx]
+                )
+            finally:    
+                translation.activate(cur_language)
+            
 
 def bounty_expire_warning(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt_now:

@@ -26,9 +26,9 @@ from django.utils.safestring import mark_safe
 from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
-    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch, Option, Poll,
-    PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember,
-    UserAction, UserVerificationModel,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
+    Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
+    TribeMember, UserAction, UserVerificationModel,
 )
 
 
@@ -39,10 +39,10 @@ class BountyEventAdmin(admin.ModelAdmin):
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
+    readonly_fields = ['fulfiller_github_username']
     list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
     search_fields = [
-        'fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
-        'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url'
+        'fulfiller_address', 'fulfiller_metadata', 'fulfiller_github_url'
     ]
     ordering = ['-id']
 
@@ -50,6 +50,12 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class InvestigationAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile']
 
 
 class TipPayoutAdmin(admin.ModelAdmin):
@@ -173,57 +179,10 @@ class ProfileAdmin(admin.ModelAdmin):
         return html
 
     def user_sybil_info(self, instance):
-        htmls = []
-        userActions = instance.actions.filter(action='Visit')
-        from django.db.models import Count
-        from django.contrib.humanize.templatetags.humanize import naturaltime
-        ipAddresses = userActions.values('ip_address').annotate(Count("id")).order_by('-id__count')
-        cities = userActions.values('location_data__city').annotate(Count("id")).order_by('-id__count')
-
-        htmls += [f"<a href=/_administrationdashboard/useraction/?profile={instance.pk}>View Recent User Actions</a><BR>"]
-
-        htmls += [ f"Github Created: {instance.github_created_on.strftime('%Y-%m-%d')} ({naturaltime(instance.github_created_on)})<BR>"]
-
-        if instance.preferred_payout_address:
-            htmls.append('Preferred Payout Address')
-            htmls.append(f' - {instance.preferred_payout_address}')
-            other_Profiles = Profile.objects.filter(preferred_payout_address=instance.preferred_payout_address).exclude(pk=instance.pk).values_list('handle', flat=True)
-            url = f'/_administrationdashboard/useraction/?preferred_payout_address={instance.preferred_payout_address}'
-            htmls += [f" -- <a href={url}>{len(other_Profiles)} other profiles share this ppa: {', '.join(list(other_Profiles))}</a><BR>"]
-
-        htmls.append('IP Addresses')
-        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
-        for ip in ipAddresses:
-            html = f"- <a href=/_administrationdashboard/useraction/?ip_address={ip['ip_address']}>{ip['ip_address']} ({ip['id__count']} Visits)</a>"
-            other_Profiles = UserAction.objects.filter(ip_address=ip['ip_address'], profile__isnull=False).exclude(profile=instance).distinct('profile').values_list('profile__handle', flat=True)
-            if len(other_Profiles):
-                html += f"<BR> -- {len(other_Profiles)} other profiles share this IP: {', '.join(list(other_Profiles))}"
-            htmls.append(html)
-        htmls.append("</div>'")
-
-        htmls.append('Cities')
-        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
-        for city in cities:
-            html = f"- <a href=/_administrationdashboard/useraction/?location_data__city={city['location_data__city']}>{city['location_data__city']} ({city['id__count']} Visits)</a>"
-            htmls.append(html)
-        htmls.append("</div>'")
-
-        htmls.append('Earnings')
-        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
-        for earning in instance.earnings.filter(network='mainnet').all():
-            html = f"- <a href={earning.admin_url}>{earning}</a>"
-            htmls.append(html)
-        htmls.append("</div>'")
-
-        htmls.append('Sent Earnings')
-        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
-        for earning in instance.sent_earnings.filter(network='mainnet').all():
-            html = f"- <a href={earning.admin_url}>{earning}</a>"
-            htmls.append(html)
-        htmls.append("</div>'")
-
-        htmls = format_html("<BR>".join(htmls))
-        return htmls
+        investigation = instance.investigations.filter(key='sybil').first()
+        html = f"Refreshed {investigation.created_on.strftime('%m/%d/%Y')}<BR><BR>"
+        html += investigation.description
+        return format_html(html)
     user_sybil_info.allow_tags = True
 
     def response_change(self, request, obj):
@@ -481,8 +440,7 @@ class OptionsInline(admin.TabularInline):
 
 
 class PollsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'active', 'hackathon', 'created_on']
-    raw_id_fields = ['hackathon']
+    list_display = ['id', 'title', 'active']
     search_fields = ['title']
     inlines = [QuestionInline]
 
@@ -501,8 +459,8 @@ class OptionsAdmin(admin.ModelAdmin):
 
 
 class AnswersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'question', 'open_response', 'choice']
-    raw_id_fields = ['user', 'question', 'choice']
+    list_display = ['id', 'user', 'question', 'open_response', 'choice', 'checked', 'hackathon']
+    raw_id_fields = ['user', 'question', 'choice', 'hackathon']
     unique_together = ('user', 'question', 'choice')
 
 
@@ -533,6 +491,7 @@ admin.site.register(HackathonRegistration, HackathonRegistrationAdmin)
 admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
+admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
