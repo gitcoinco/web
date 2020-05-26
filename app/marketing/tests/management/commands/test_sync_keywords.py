@@ -21,7 +21,7 @@ from datetime import datetime, timedelta
 
 from django.utils import timezone
 
-from dashboard.models import Bounty, BountyFulfillment
+from dashboard.models import Bounty, BountyFulfillment, Profile
 from marketing.management.commands.sync_keywords import Command
 from marketing.models import Keyword
 from test_plus.test import TestCase
@@ -109,20 +109,28 @@ class TestSyncKeywords(TestCase):
             }
         )
 
-        BountyFulfillment.objects.create(
-            fulfiller_address='0x0000000000000000000000000000000000000000',
-            fulfiller_email='fred@bar.com',
-            fulfiller_github_username='fred',
-            fulfiller_name='Fred',
-            bounty=bounty
+        fulfiller_profile = Profile.objects.create(
+            data={},
+            handle='fred',
+            email='fred@bar.com'
         )
 
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
-            fulfiller_email='david@bar.com',
-            fulfiller_github_username='',
-            fulfiller_name='Fred',
-            bounty=bounty
+            bounty=bounty,
+            profile=fulfiller_profile
+        )
+
+        fulfiller_profile = Profile.objects.create(
+            data={},
+            handle='',
+            email='david@bar.com'
+        )
+
+        BountyFulfillment.objects.create(
+            fulfiller_address='0x0000000000000000000000000000000000000000',
+            bounty=bounty,
+            profile=fulfiller_profile
         )
         Command().handle()
 

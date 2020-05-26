@@ -238,6 +238,30 @@ Vue.mixin({
         });
       }
     },
+    getTenant: function(token_name) {
+      let tenant;
+
+      switch (token_name) {
+
+        case 'ETC':
+          tenant = 'ETC';
+          break;
+
+        case 'cUSD':
+        case 'cGLD':
+          tenant = 'CELO';
+          break;
+
+        case 'ZIL':
+          tenant = 'ZIL';
+          break;
+
+        default:
+          tenant = 'ETH';
+      }
+
+      return tenant;
+    },
     fulfillmentComplete: function(fulfillment_id, event) {
       let vm = this;
 
@@ -246,8 +270,11 @@ Vue.mixin({
       const amount = vm.fulfillment_context.amount;
       const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
       const bounty_owner_address = vm.bounty.bounty_owner_address;
+      const tenant = vm.getTenant(token_name);
 
       const payload = {
+        payout_type: 'qr',
+        tenant: tenant,
         amount: amount * 10 ** decimals,
         token_name: token_name,
         bounty_owner_address: bounty_owner_address,
