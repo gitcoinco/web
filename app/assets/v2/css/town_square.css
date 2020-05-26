@@ -1049,10 +1049,17 @@ body.green.offer_view .announce {
 .promo .close-promo i {
   font-weight: 100;
 }
+.promo-action {
+    background-color: #101061;
+    color: white;
+    border-radius: 0;
+    padding: 10px 50px;
+}
 
 .promo-action:hover {
   background-color: #101061;
   filter: brightness(130%);
+  color: white;
 }
 
 .get-started {
