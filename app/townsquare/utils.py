@@ -1,3 +1,5 @@
+from grants.models import Grant
+
 from .models import Offer
 
 
@@ -32,6 +34,10 @@ def can_pin(request, what):
             [lookup.lower() == org.lower() for org in request.user.profile.organizations])
     elif key == 'my_threads':
         permission = False
+    elif key in ['search-announce', 'search-mentor', 'search-jobs', 'search-bounty', 'search-help', 'search-meme', 'search-music', 'search-other']:
+        if request.user.is_staff:
+            permission = True
+
     else:
         if request.user.is_staff:
             permission = True

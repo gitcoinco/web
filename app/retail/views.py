@@ -620,7 +620,7 @@ def about(request):
             "gitcoinbot",
             "beep boop bop",
             "gitcoinbot",
-            "gitcoinbot",
+            None,
             "everything that's automated",
             "bits",
             "gitcoinbot",

@@ -2659,6 +2659,8 @@ class Profile(SuperModel):
     )
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     job_location = JSONField(default=dict, blank=True)
+    location = JSONField(default=dict, blank=True)
+    address = models.CharField(max_length=255, default='', blank=True, null=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
     profile_wallpaper = models.CharField(max_length=255, default='', blank=True, null=True)
@@ -3119,12 +3121,13 @@ class Profile(SuperModel):
         plural = 's' if total_funded_participated != 1 else ''
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
-               f"funded issue{plural} on Gitcoin"
+               f"transaction{plural} on Gitcoin"
+               
 
     @property
     def desc(self):
-        bounties1 = self.get_funded_bounties() if not self.is_org else Bounty.objects.none()
-        bounties2 = self.get_orgs_bounties() if self.is_org else self.get_fulfilled_bounties() 
+        bounties1 = self.sent_earnings if not self.is_org else Earning.objects.none()
+        bounties2 = self.earnings if not self.is_org else self.org_earnings
         return self.get_desc(bounties1, bounties2)
 
     @property
@@ -4282,7 +4285,7 @@ class UserAction(SuperModel):
     action = models.CharField(max_length=50, choices=ACTION_TYPES, db_index=True)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True, db_index=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True, db_index=True)
-    ip_address = models.GenericIPAddressField(null=True)
+    ip_address = models.GenericIPAddressField(null=True, db_index=True)
     location_data = JSONField(default=dict)
     metadata = JSONField(default=dict)
     utm = JSONField(default=dict, null=True)
@@ -4993,3 +4996,81 @@ class Answer(SuperModel):
     choice = models.ForeignKey(Option, on_delete=models.CASCADE, null=True, blank=True)
     checked = models.BooleanField(default=False)
     hackathon = models.ForeignKey(HackathonEvent, null=True, on_delete=models.CASCADE)
+
+
+class Investigation(SuperModel):
+    profile = models.ForeignKey(
+        'dashboard.Profile', on_delete=models.CASCADE, related_name='investigations', blank=True
+    )
+    key = models.CharField(max_length=350, blank=True, default='', db_index=True)
+    description = models.TextField(default='', blank=True)
+
+    def __str__(self):
+        return f"{self.profile.handle} / {self.key}"
+
+    def investigate_sybil(instance):
+        htmls = []
+        userActions = instance.actions.filter(action='Visit')
+        from django.db.models import Count
+        import time
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        ipAddresses = (userActions.values('ip_address').annotate(Count("id")).order_by('-id__count'))
+        cities = (userActions.values('location_data__city').annotate(Count("id")).order_by('-id__count'))
+
+        htmls += [f"<a href=/_administrationdashboard/useraction/?profile={instance.pk}>View Recent User Actions</a><BR>"]
+
+        htmls += [ f"Github Created: {instance.github_created_on.strftime('%Y-%m-%d')} ({naturaltime(instance.github_created_on)})<BR>"]
+        print(f" - preferred payout {time.time()}")
+        if instance.preferred_payout_address:
+            htmls.append('Preferred Payout Address')
+            htmls.append(f' - {instance.preferred_payout_address}')
+            other_Profiles = Profile.objects.filter(preferred_payout_address=instance.preferred_payout_address).exclude(pk=instance.pk).values_list('handle', flat=True)
+            url = f'/_administrationdashboard/profile/?preferred_payout_address={instance.preferred_payout_address}'
+            htmls += [f" -- <a href={url}>{len(other_Profiles)} other profiles share this ppa: {', '.join(list(other_Profiles))}</a><BR>"]
+
+        print(f" - ip ({len(ipAddresses)}) {time.time()}")
+        htmls.append('IP Addresses')
+        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        for ip in ipAddresses:
+            html = f"- <a href=/_administrationdashboard/useraction/?ip_address={ip['ip_address']}>{ip['ip_address']} ({ip['id__count']} Visits)</a>"
+            other_Profiles = UserAction.objects.filter(ip_address=ip['ip_address'], profile__isnull=False).exclude(profile=instance).distinct('profile').values_list('profile__handle', flat=True)
+            if len(other_Profiles):
+                html += f"<BR> -- {len(other_Profiles)} other profiles share this IP: {', '.join(list(other_Profiles))}"
+            htmls.append(html)
+        htmls.append("</div>'")
+
+        print(f" - cities ({len(cities)}) {time.time()}")
+        htmls.append('Cities')
+        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        for city in cities:
+            html = f"- <a href=/_administrationdashboard/useraction/?location_data__city={city['location_data__city']}>{city['location_data__city']} ({city['id__count']} Visits)</a>"
+            htmls.append(html)
+        htmls.append("</div>'")
+
+        earnings = instance.earnings.filter(network='mainnet').all()
+        print(f" - Earnings ({len(earnings)}) {time.time()}")
+        htmls.append('Earnings')
+        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        for earning in earnings:
+            html = f"- <a href={earning.admin_url}>{earning}</a>"
+            htmls.append(html)
+        htmls.append("</div>'")
+
+        sent_earnings = instance.sent_earnings.filter(network='mainnet').all()
+        print(f" - Sent Earnings ({len(sent_earnings)}) {time.time()}")
+        htmls.append('Sent Earnings')
+        htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        for earning in sent_earnings:
+            html = f"- <a href={earning.admin_url}>{earning}</a>"
+            htmls.append(html)
+        htmls.append("</div>'")
+
+        print(f" - End {time.time()}")
+        htmls = ("<BR>".join(htmls))
+        instance.investigations.filter(key='sybil').delete()
+        Investigation.objects.create(
+            profile=instance,
+            description=htmls,
+            key='sybil',
+        )
+

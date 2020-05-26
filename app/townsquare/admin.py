@@ -3,7 +3,8 @@ from django.utils import timezone
 from django.utils.html import format_html
 
 from .models import (
-    Announcement, Comment, Flag, Like, PinnedPost, MatchRanking, MatchRound, Offer, OfferAction, SquelchProfile, SuggestedAction,
+    Announcement, Comment, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, PinnedPost, SquelchProfile,
+    SuggestedAction,
 )
 
 
