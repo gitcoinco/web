@@ -381,6 +381,12 @@ a.offer_container.animate:hover .prize-gift::after {
   background-color: #f9f9f9;
   color: #808080;
 }
+.dark-mode .empty{
+  background: var(--gc-blue);
+  color: white;
+  opacity: 0.4;
+}
+
 .empty .prize-gift {
   color: grey;
   text-shadow: 0 2px 0px grey;
@@ -1232,4 +1238,38 @@ body.green.offer_view .announce {
 .logo-metacard {
   max-height: 4rem;
   max-width: 4rem;
+}
+
+/* alerts */
+/* todo:
+  probably move this to seperate alert.css file
+*/
+
+.dark-mode .alert-primary {
+  color: #cce5ff;
+  background-color: #20037e;
+}
+
+.dark-mode .alert-success {
+  color: #d4edda;
+  background-color: #155724;
+}
+
+.dark-mode .alert-warning {
+  background-color: #856404;
+  color: #fff3cd;
+}
+
+.dark-mode .alert-danger {
+  color: #f8d7da;
+  background-color: #721c24;
+}
+
+.dark-mode .alert {
+  border-color: transparent !important;
+}
+
+.dark-mode .alert .close {
+  opacity: 0.8;
+  text-shadow: none;
 }
