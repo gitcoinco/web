@@ -1,7 +1,7 @@
 from kudos.models import BulkTransferCoupon
 from dashboard.models import Profile
 
-handles = ['xtrullols35', 'sergisi', 'bcaspi', 'gerardguerrero', 'rafacucurull']
+handles = ['xtrullols35', 'sergisi', 'bcaspi', 'gerardguerrero', 'rafacucurull', 'davidcascos', 'pau1838', 'ivancg98']
 for handle in handles:
     profile = Profile.objects.get(handle__iexact=handle)
     btcs = BulkTransferCoupon.objects.filter(metadata__recipient=profile.pk)
