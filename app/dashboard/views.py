@@ -3781,6 +3781,51 @@ def save_hackathon(request, hackathon):
             status=401)
 
 
+@csrf_exempt
+def hackathon_resource(request, hackathon):
+    resource_type = request.POST.get('resource')
+    name = request.POST.get('name')
+    url = request.POST.get('url')
+    action = request.POST.get('action')
+
+    if request.method == 'GET':
+        hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+
+        return JsonResponse(
+            {
+                'success': True,
+                'resources': hackathon_event.resources,
+            },
+            status=200)
+
+    if request.user.is_authenticated and request.user.is_staff:
+        hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+
+        if action == 'delete':
+            hackathon_event.resources = [res for res in hackathon_event.resources if res['name'] != name]
+            hackathon_event.save()
+        else:
+            hackathon_event.resources.append({
+                'name': name,
+                'type': resource_type,
+                'url': url
+            })
+        hackathon_event.save()
+
+        return JsonResponse(
+            {
+                'success': True,
+                'resources': hackathon_event.resources,
+            },
+            status=200)
+    else:
+        return JsonResponse(
+            {
+                'success': False,
+            },
+            status=401)
+
+
 def hackathon_project(request, hackathon='', project=''):
     return hackathon_projects(request, hackathon, project)
 
