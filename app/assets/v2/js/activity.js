@@ -545,13 +545,20 @@ $(document).ready(function() {
       }
     } else if (is_unliked) { // like
       $(this).find('span.action').addClass('open');
-      $(this).data('state', $(this).data('affirmative'));
+      let newState = $(this).data('affirmative');
+
+      $(this).data('state', newState);
+      params.direction = newState;
       $(this).addClass('animate-sparkle');
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
       $(this).find('i').removeClass('far').addClass('fas');
     } else { // unlike
       $(this).find('span.action').removeClass('open');
+      let newState = $(this).data('negative');
+
+      $(this).data('state', newState);
+      params.direction = newState;
       $(this).data('state', $(this).data('negative'));
       $(this).removeClass('animate-sparkle');
       num = parseInt(num) - 1;
