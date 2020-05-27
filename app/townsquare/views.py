@@ -27,6 +27,10 @@ from .models import (
 from .tasks import increment_offer_view_counts
 from .utils import can_pin, is_user_townsquare_enabled
 
+from app.redis_service import RedisService
+
+redis = RedisService().redis
+
 tags = [
     ['#announce','bullhorn','search-announce'],
     ['#mentor','terminal','search-mentor'],
@@ -333,6 +337,15 @@ def get_following_tribes(request):
 
 
 def town_square(request):
+    try:
+        audience = redis.get(f"townsquare:audience")
+        audience = str(audience.decode('utf-8')) if audience else '39102'
+    except KeyError:
+        data_results = JSONStore.objects.filter(view='results', key=None).first()
+        if data_results:
+            audience = data_results.data['audience']
+            redis.set('townsquare:audience', audience)
+
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
     try:
@@ -362,6 +375,7 @@ def town_square(request):
             'now': timezone.now(),
             'is_townsquare': True,
             'trending_only': bool(trending_only),
+            'audience': audience
         }
 
         return TemplateResponse(request, 'townsquare/index.html', context)
@@ -409,6 +423,7 @@ def town_square(request):
         'offers_by_category': offers_by_category,
         'following_tribes': following_tribes,
         'suggested_tribes': suggested_tribes,
+        'audience': audience
     }
 
     if 'tribe:' in tab:

@@ -22,6 +22,7 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
@@ -432,7 +433,7 @@ class FundRequestAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile', 'requester', 'tip']
 
 
-class QuestionInline(admin.TabularInline):
+class QuestionInline(SortableInlineAdminMixin, admin.TabularInline):
     fields = ['id', 'poll', 'question_type', 'text']
     readonly_fields = ['id']
     raw_id_fields = ['poll']
@@ -452,6 +453,7 @@ class OptionsInline(admin.TabularInline):
 
 class PollsAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'active']
+    raw_id_fields = ['hackathon']
     search_fields = ['title']
     inlines = [QuestionInline]
 

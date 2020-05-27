@@ -185,6 +185,106 @@ Vue.component('tribes-settings', {
   methods: {}
 });
 
+Vue.component('about-hackathon', {
+  delimiters: [ '[[', ']]' ],
+  props: [],
+  data: () => ({
+    is_registered: document.is_registered,
+    activePanel: document.activePanel,
+    hackathonObj: document.hackathonObj,
+    documentation: document.documentation || [],
+    quests: document.quests || [],
+    workshops: document.workshops || [],
+    new_quest_text: '',
+    new_quest_url: '',
+    new_work_url: '',
+    new_work_text: '',
+    new_doc_url: '',
+    new_doc_text: ''
+  }),
+  mounted() {
+    this.fetchResources();
+  },
+  methods: {
+    goTo: function(section, event) {
+      event.preventDefault();
+      document.getElementById(section).scrollIntoView();
+    },
+    fetchResources: function() {
+      let vm = this;
+      const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/resource/`;
+      const retrieveResources = fetchData(resource_url, 'GET', {}, {'X-CSRFToken': vm.csrf});
+
+      $.when(retrieveResources).then((response) => {
+        vm.documentation = response.resources.filter(resource => resource.type === 'documentation');
+        vm.quests = response.resources.filter(resource => resource.type === 'quest');
+        vm.workshops = response.resources.filter(resource => resource.type === 'workshop');
+      }).fail((error) => {
+        console.log(error);
+      });
+    },
+    remove_resource: function(resource, name, event) {
+      event.preventDefault();
+      let vm = this;
+
+      const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/resource/`;
+      const sendJoin = fetchData(resource_url, 'POST', {
+        resource: resource,
+        name: name,
+        action: 'delete'
+      }, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        console.log(vm);
+        vm.fetchResources();
+      }).fail((error) => {
+        _alert(`Failed to update ${resource}`);
+        console.log(error);
+      });
+    },
+    add_resource: function(resource, name, url, event) {
+      event.preventDefault();
+      let vm = this;
+
+      if (name.length === 0) {
+        _alert(`The ${resource} name is missing`, 'warning');
+        return;
+      }
+
+      if (url.length === 0) {
+        _alert(`The ${resource} url is missing`, 'warning');
+        return;
+      }
+
+
+      const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/resource/`;
+      const sendJoin = fetchData(resource_url, 'POST', {
+        resource: resource,
+        name: name,
+        url: url
+      }, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        vm.documentation = response.resources.filter(resource => resource.type === 'documentation');
+        vm.quests = response.resources.filter(resource => resource.type === 'quest');
+        vm.workshops = response.resources.filter(resource => resource.type === 'workshop');
+        if (resource === 'quest') {
+          vm.new_quest_text = '';
+          vm.new_quest_url = '';
+        } else if (resource === 'documentation') {
+          vm.new_doc_url = '';
+          vm.new_doc_text = '';
+        } else if (resource === 'workshop') {
+          vm.new_work_url = '';
+          vm.new_work_text = '';
+        }
+      }).fail((error) => {
+        _alert(`Failed to update ${resource}`);
+        console.log(error);
+      });
+    }
+  }
+});
 
 Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
