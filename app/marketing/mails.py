@@ -485,10 +485,27 @@ def mention_email(post, to_emails):
 
             if not should_suppress_notification_email(to_email, 'mention'):
                 send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])
-        finally:
-            pass
+        except Exception as e:
+            logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, to_email)
+
     translation.activate(cur_language)
 
+
+def tip_comment_awarded_email(post, to_emails):
+    subject = gettext("🏆 @{} has awarded you.").format(post.profile.handle)
+    cur_language = translation.get_language()
+
+    for to_email in to_emails:
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_mention(to_email, post)
+
+            if not should_suppress_notification_email(to_email, 'mention'):
+                send_mail(from_email, to_email, subject, text, html, categories=['notification', func_name()])
+        except Exception as e:
+            logger.error('Status Update error - Error: (%s) - Handle: (%s)', e, to_email)
+    translation.activate(cur_language)
 
 
 def wall_post_email(activity):
