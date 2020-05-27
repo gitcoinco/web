@@ -26,6 +26,8 @@ from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
 from townsquare.utils import is_email_townsquare_enabled
 
+import warnings
+warnings.filterwarnings("ignore")
 
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
