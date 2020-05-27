@@ -5098,4 +5098,3 @@ class ObjectView(SuperModel):
 
     def __str__(self):
         return f"{self.viewer} => {self.target} on {self.created_on}"
-

@@ -1296,3 +1296,25 @@ body.green.offer_view .announce {
   background: var(--gc-dark-violet);
   color: white;
 }
+
+.dark-mode .alert-info{
+  background: var(--gc-dark-violet);
+  color: white;
+}
+.dark-mode .web3modal-provider-name{
+  color: white;
+}
+.dark-mode .gc-search-box input {
+  background-color: var(--main-bg)
+}
+.dark-mode .gc-search-result__content p{
+  color: white;
+}
+.dark-mode .gc-search-result__content,
+.dark-mode .gc-search-box,
+.dark-mode .web3modal-provider-container,
+.dark-mode .web3modal-provider-wrapper,
+.dark-mode .web3modal-modal-card{
+  background: var(--gc-dark-violet);
+  color: white;
+}
