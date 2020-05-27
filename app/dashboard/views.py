@@ -5305,3 +5305,58 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+@staff_member_required
+def bulkDM(request):
+    handles = request.POST.get('handles', '')
+    message = request.POST.get('message', '')
+
+    if message and handles:
+        try:
+            from mattermostdriver import Driver
+            from chat.tasks import driver_opts
+
+            from_profile = request.user.profile
+            from_user_id = from_profile.chat_id
+            driver_opts = {
+                'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
+                'url': settings.CHAT_SERVER_URL,
+                'port': settings.CHAT_PORT,
+                'token': from_profile.gitcoin_chat_access_token
+            }
+
+            chat_driver = Driver(driver_opts)
+            chat_driver.login()
+
+            for to_handle in handles.split(','):
+                to_handle = to_handle.lower().strip()
+                to_profile = Profile.objects.get(handle=to_handle)
+                to_user_id = to_profile.chat_id
+
+                response = chat_driver.client.make_request('post', 
+                    '/channels/direct', 
+                    options=None, 
+                    params=None, 
+                    data=f'["{to_user_id}", "{from_user_id}"]', 
+                    files=None, 
+                    basepath=None)
+                channel_id = response.json()['id']
+                chat_driver.posts.create_post(options={
+                    'channel_id': channel_id,
+                    'message': message
+                    })
+
+
+            messages.success(request, 'sent')
+        except Exception as e:
+            messages.error(request, str(e))
+
+
+    context = {
+        'message': message,
+        'handles': handles,
+    }
+
+    return TemplateResponse(request, 'bulk_DM.html', context)
+
