@@ -114,7 +114,6 @@ def get_sidebar_tabs(request):
         'badge': get_amount_unread('everywhere', request),
     }]
     default_tab = 'everywhere'
-
     if request.user.is_authenticated:
         num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
         if num_business_relationships:

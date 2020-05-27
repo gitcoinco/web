@@ -32,6 +32,7 @@ from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, BountyRequest, HackathonEvent, HackathonProject, Interest,
     Profile, ProfileSerializer, SearchHistory, TribeMember,
 )
+from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
 
@@ -451,6 +452,11 @@ class BountiesViewSet(viewsets.ModelViewSet):
                     logger.debug(e)
                     pass
 
+        # increment view counts
+        pks = [ele.pk for ele in queryset]
+        if len(pks):
+            view_type = 'individual' if len(pks) == 1 else 'list'
+            increment_view_count.delay(pks, queryset[0].content_type, request.user.id, view_type)
 
         return queryset
 

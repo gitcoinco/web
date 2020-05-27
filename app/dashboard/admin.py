@@ -28,8 +28,8 @@ from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval,
-    TribeMember, UserAction, UserVerificationModel,
+    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
+    TokenApproval, TribeMember, UserAction, UserVerificationModel,
 )
 
 
@@ -52,6 +52,11 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
 
+
+class ObjectViewAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['viewer']
 
 class InvestigationAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -267,7 +272,7 @@ class BountyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'bounty_state', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
-        '_action_urls', 'coupon_link'
+        '_action_urls', 'coupon_link', 'view_count'
     ]
 
     def img(self, instance):
@@ -279,6 +284,9 @@ class BountyAdmin(admin.ModelAdmin):
 
     def what(self, instance):
         return str(instance)
+
+    def view_count(self, instance):
+        return instance.get_view_count
 
     def fulfillments_link(self, instance):
         copy = f'fulfillments({instance.num_fulfillments})'
@@ -342,7 +350,10 @@ class HackathonEventAdmin(admin.ModelAdmin):
     raw_id_fields = ['sponsor_profiles']
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
     list_filter = ('sponsor_profiles', )
-    readonly_fields = ['img', 'explorer_link', 'stats']
+    readonly_fields = ['img', 'explorer_link', 'stats', 'view_count']
+
+    def view_count(self, instance):
+        return instance.get_view_count
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
@@ -500,5 +511,6 @@ admin.site.register(TribeMember, TribeMemberAdmin)
 admin.site.register(FundRequest, FundRequestAdmin)
 admin.site.register(Poll, PollsAdmin)
 admin.site.register(Question, QuestionsAdmin)
+admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
