@@ -3127,7 +3127,7 @@ class Profile(SuperModel):
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"transaction{plural} on Gitcoin"
-               
+
 
     @property
     def desc(self):
@@ -4560,6 +4560,7 @@ class HackathonEvent(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
+    resources = ArrayField(JSONField(default=dict, blank=True, null=True), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
 
     def __str__(self):
