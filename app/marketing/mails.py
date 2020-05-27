@@ -1178,7 +1178,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
     if to_emails is None:
         to_emails = []
     
-    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities
+    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities, upcoming_dates
     quest = quest_of_the_day()
     grant = upcoming_grant()
     hackathon = upcoming_hackathon()

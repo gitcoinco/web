@@ -70,10 +70,10 @@
 
 {% if show_action %}
 
-<h1>1 New Daily Action</h1>
+<h3 class="no-subtitle" style="margin-top: 15px;">{% trans "🌈1 New Daily Action" %}</h3>
 
 <a href={{base_url}}>
-<img src={{base_url}}static/v2/images/offer.gif>
+<img style="width: 306px; height: 80px; margin-top: 5px; margin-bottom: 5px;" src={{base_url}}static/v2/images/offer.gif>
 </a> 
 <BR>
 <a href={{base_url}}>
@@ -99,10 +99,20 @@ This action expires at end of day, so act soon!
 {% endif %}
 </div>
 
-{% if upcoming_events %}
+{% if upcoming_events or upcoming_dates %}
   <div class="full-width text-center" style="background-color: #000000; color: #ffffff; margin: 0 auto; padding-top: 15px; padding-bottom:15px">
     <h3 style="color: #ffffff;">{% trans "⏰Save The Date" %}</h3>
     <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
+
+    <div class="upcoming-events-container">
+      {{upcoming_dates|length}}
+      {% for event in upcoming_dates %}
+        <img class="event-img" src="{{event.img_url}}">
+        <h4 style="">{{event.title}}</h4>
+        <p>{{event.date}}</p>
+        <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
+      {% endfor %}
+    </div>
 
     <div class="upcoming-events-container">
       {% for event in upcoming_events %}

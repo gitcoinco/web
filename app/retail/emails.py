@@ -533,6 +533,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     from dashboard.models import Profile
     from inbox.models import Notification
+    from marketing.views import upcoming_dates
     sub = get_or_save_email_subscriber(to_email, 'internal')
     
     email_style = 26
@@ -552,14 +553,6 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         pass        
 
     upcoming_events = []
-    if upcoming_grant:
-        upcoming_events.append({
-            'event': upcoming_grant,
-            'title': upcoming_grant.title,
-            'image_url': upcoming_grant.logo.url if upcoming_grant.logo else f'{settings.STATIC_URL}v2/images/emails/grants-neg.png',
-            'url': upcoming_grant.url,
-            'date': upcoming_grant.next_clr_calc_date.strftime("%Y-%d-%m") if upcoming_grant.next_clr_calc_date else upcoming_grant.created_on.strftime("%Y-%d-%m")
-        })
     if upcoming_hackathon:
         for hackathon in upcoming_hackathon:
             upcoming_events.append({
@@ -573,6 +566,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
+        'upcoming_dates': upcoming_dates(),
         'subscriber': sub,
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
         'email_style': email_style,

@@ -49,7 +49,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
-from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
+from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
 from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
 from quests.models import Quest
 from grants.models import Grant
@@ -100,6 +100,8 @@ def get_settings_navs(request):
 
     return tabs
 
+def upcoming_dates():
+    return UpcomingDate.objects.filter(date__gt=timezone.now()).order_by('date')
 
 def settings_helper_get_auth(request, key=None):
     # setup
@@ -994,17 +996,20 @@ def upcoming_grant():
 
 def upcoming_hackathon():
     try:
-        return HackathonEvent.objects.filter(end_date__gt=timezone.now()).order_by('-start_date')
+        return HackathonEvent.objects.filter(end_date__gt=timezone.now(), visible=True).order_by('-start_date')
     except HackathonEvent.DoesNotExist:
         try:
-            return [HackathonEvent.objects.filter(start_date__gte=timezone.now()).order_by('start_date').first()]
+            return [HackathonEvent.objects.filter(start_date__gte=timezone.now(), visible=True).order_by('start_date').first()]
         except HackathonEvent.DoesNotExist:
             return None
 
 def latest_activities(user):
     from retail.views import get_specific_activities
-    cutoff_date = timezone.now() - timezone.timedelta(days=7)
+    from townsquare.tasks import increment_view_counts
+    cutoff_date = timezone.now() - timezone.timedelta(days=1)
     activities = get_specific_activities('connect', 0, user, 0)[:4]
+    activities_pks = list(activities.values_list('pk', flat=True))
+    increment_view_counts.delay(activities_pks)
     return activities
 
 @staff_member_required
