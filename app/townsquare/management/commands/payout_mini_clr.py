@@ -94,7 +94,7 @@ class Command(BaseCommand):
             print('------------------------------')
             user_input = input("continue? (y/n) ")
             if user_input != 'y':
-
+                return
 
             num_rankings = rankings.count()
             num_handles = len(set(list(rankings.values_list('profile__handle', flat=True))))
