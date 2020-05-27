@@ -4,24 +4,19 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
-from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants, Profile
 import metadata_parser
-
 from app.redis_service import RedisService
 from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
-
 from kudos.models import Token
-
 from marketing.mails import comment_email, mention_email, new_action_request, tip_comment_awarded_email
 from perftools.models import JSONStore
-
 from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
@@ -31,8 +26,6 @@ from .models import (
 )
 from .tasks import increment_offer_view_counts
 from .utils import can_pin, is_user_townsquare_enabled
-
-from app.redis_service import RedisService
 
 redis = RedisService().redis
 
