@@ -42,7 +42,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import (
-    Activity, Bounty, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants, Tip,
+    Activity, Bounty, HackathonEvent, Profile, Tip, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task

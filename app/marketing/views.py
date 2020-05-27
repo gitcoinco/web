@@ -42,17 +42,17 @@ from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from chat.tasks import update_chat_notifications
-from dashboard.models import Profile, TokenApproval, HackathonEvent, Activity
+from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
 from quests.models import Quest
-from grants.models import Grant
 from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
 

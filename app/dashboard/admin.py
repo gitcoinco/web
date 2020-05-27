@@ -22,6 +22,7 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import (
