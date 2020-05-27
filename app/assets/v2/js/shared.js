@@ -1077,15 +1077,15 @@ var setUsdAmount = function() {
 
   getUSDEstimate(amount, denomination, function(estimate) {
     if (estimate['value']) {
-      $('#usd-amount-wrapper').css('visibility', 'visible');
-      $('#usd_amount_text').css('visibility', 'visible');
+      $('#usd-amount-wrapper').show();
+      $('#usd_amount_text').show();
 
       $('#usd_amount').val(estimate['value_unrounded']);
       $('#usd_amount_text').html(estimate['rate_text']);
       $('#usd_amount').removeAttr('disabled');
     } else {
-      $('#usd-amount-wrapper').css('visibility', 'hidden');
-      $('#usd_amount_text').css('visibility', 'hidden');
+      $('#usd-amount-wrapper').hide();
+      $('#usd_amount_text').hide();
 
       $('#usd_amount_text').html('');
       $('#usd_amount').prop('disabled', true);
