@@ -530,6 +530,10 @@ appreciate you being a part of the community + let us know if you'd like some Gi
 
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7):
+    import warnings
+    warnings.filterwarnings("ignore")    
+    import time
+    print(time.time())
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     from dashboard.models import Profile
     from inbox.models import Notification
@@ -538,20 +542,24 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     
     email_style = 26
 
+    print(time.time())
     # Get notifications count from the Profile.User of to_email
     try:
         profile = Profile.objects.filter(email__iexact=to_email).last()
     except Profile.DoesNotExist:
         pass
 
+    print(time.time())
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_ago)
 
+    print(time.time())
     try:
         notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
     except Notification.DoesNotExist:
         pass        
 
+    print(time.time())
     upcoming_events = []
     if upcoming_hackathon:
         for hackathon in upcoming_hackathon:
@@ -562,6 +570,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
                 'url': hackathon.url,
                 'date': hackathon.start_date.strftime("%Y-%d-%m")
             })
+    print(time.time())
 
     params = {
         'old_bounties': old_bounties,
@@ -580,9 +589,11 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'notifications_count': notifications_count,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
+    print(time.time())
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
     response_txt = render_to_string("emails/new_bounty.txt", params)
+    print("HERRREEEE", time.time())
 
     return response_html, response_txt
 
