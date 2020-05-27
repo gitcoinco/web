@@ -1087,10 +1087,6 @@ body.green.offer_view .announce {
   line-height: 40px;
 }
 
-.dark-mode .gc-search-result__content p{
-  color: white;
-}
-
 .get-started .action {
   background-color: #101061;
   color: white;
@@ -1135,6 +1131,10 @@ body.green.offer_view .announce {
   text-align: center;
   color: #FFFFFF;
   width: 60%;
+}
+
+.dark-mode .gc-search-result__content p {
+  color: white;
 }
 
 #get-started p {
@@ -1278,43 +1278,24 @@ body.green.offer_view .announce {
   border-color: transparent !important;
 }
 
-.dark-mode .alert-info{
-  background: var(--gc-dark-violet);
-  color: white;
-}
-.dark-mode .web3modal-provider-name{
-  color: white;
-}
-.dark-mode .gc-search-box input {
-  background-color: var(--main-bg)
-}
-.dark-mode .gc-search-result__content,
-.dark-mode .gc-search-box,
-.dark-mode .web3modal-provider-container,
-.dark-mode .web3modal-provider-wrapper,
-.dark-mode .web3modal-modal-card{
+.dark-mode .alert-info {
   background: var(--gc-dark-violet);
   color: white;
 }
 
-.dark-mode .alert-info{
-  background: var(--gc-dark-violet);
+.dark-mode .web3modal-provider-name {
   color: white;
 }
-.dark-mode .web3modal-provider-name{
-  color: white;
-}
+
 .dark-mode .gc-search-box input {
   background-color: var(--main-bg)
 }
-.dark-mode .gc-search-result__content p{
-  color: white;
-}
+
 .dark-mode .gc-search-result__content,
 .dark-mode .gc-search-box,
 .dark-mode .web3modal-provider-container,
 .dark-mode .web3modal-provider-wrapper,
-.dark-mode .web3modal-modal-card{
+.dark-mode .web3modal-modal-card {
   background: var(--gc-dark-violet);
   color: white;
 }
