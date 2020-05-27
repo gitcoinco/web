@@ -48,6 +48,27 @@
               <textarea id="issue_message" class="form__input"></textarea>
             </div>
             <div>
+
+              {% if bounty.web3_type == 'fiat' %}
+                <div class="checkbox_container d-flex font-caption">
+                  <input type="checkbox" id="checkbox1" class="form__input" value="1" required/>
+                  <span class="checkbox"></span>
+                  <div class="filter-label">
+                    <label for="checkbox1">
+                      I understand that this bounty is paid out in USD using PayPal and I am required to have a
+                      <span class="font-weight-bold">valid PayPal account.</span>
+                    </label>
+                  </div>
+                </div>
+                <p class="ml-2 pl-4 font-caption mb-2">
+                  Don’t have a PayPal account?
+                  <a href="https://www.paypal.com/in/webapps/mpp/account-selection" target="_blank" rel="noopener noreferrer">
+                    Create a PayPal account here
+                    <i class="ml-2 fas fa-external-link-alt"></i>
+                  </a>
+                </p>
+              {% endif %}
+
               <div class="checkbox_container d-flex font-caption">
                 <input type="checkbox" id="checkbox2" class="form__input" value="1" required/>
                 <span class="checkbox"></span>
@@ -65,12 +86,12 @@
                   </label>
                 </div>
               </div>
-            <div>
+
               <div class="checkbox_container d-flex font-caption">
-                <input type="checkbox" id="checkbox1" class="form__input" value="1" required/>
+                <input type="checkbox" id="checkbox3" class="form__input" value="1" required/>
                 <span class="checkbox"></span>
                 <div class="filter-label">
-                  <label for="checkbox1">
+                  <label for="checkbox3">
                     {% trans "I agree to keep the funder informed of my progress every few days." %}
                   </label>
                 </div>

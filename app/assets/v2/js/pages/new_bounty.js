@@ -5,6 +5,10 @@ document.web3network = 'mainnet';
 load_tokens();
 
 const qr_tokens = [ 'ETC', 'cGLD', 'cUSD', 'ZIL' ];
+const fiat_tokens = ['USD'];
+
+const isQRToken = tokenName => qr_tokens.includes(tokenName);
+const isFiatToken = tokenName => fiat_tokens.includes(tokenName);
 
 const updateOnNetworkOrTokenChange = () => {
   const tokenName = $('select[name=denomination]').select2('data')[0] &&
@@ -12,19 +16,32 @@ const updateOnNetworkOrTokenChange = () => {
 
   if (!tokenName) {
     // tokens haven't loaded yet
-  } else if (qr_tokens.includes(tokenName)) {
+  } else if (isQRToken(tokenName) || isFiatToken(tokenName)) {
     document.web3network = 'mainnet';
 
     $('#navbar-network-banner').hide();
     $('.navbar-network').hide();
-
-    $('.funder-address-container').show();
-    $('#funderAddress').attr('required', true);
-
+    $('.eth-chain').hide();
     $('.web3-alert').hide();
+
+    FEE_PERCENTAGE = 0;
+
+    if (isQRToken(tokenName)) {
+      $('.funder-address-container').show();
+      $('#funderAddress').attr('required', true);
+      $('#fiat_text').hide();
+    } else {
+      $('.funder-address-container').hide();
+      $('#funderAddress').removeAttr('required');
+      $('#funderAddress').val('');
+      $('#fiat_text').show();
+    }
 
   } else {
     listen_for_web3_changes();
+
+    $('.eth-chain').show();
+    FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
     $('#navbar-network-banner').show();
     $('.navbar-network').show();
@@ -32,6 +49,7 @@ const updateOnNetworkOrTokenChange = () => {
     $('.funder-address-container').hide();
     $('#funderAddress').removeAttr('required');
     $('#funderAddress').val('');
+    $('#fiat_text').hide();
 
     $('.web3-alert').show();
     if (!document.web3network) {
@@ -284,19 +302,6 @@ const tokenAuthAlert = (isTokenAuthed, tokenName) => {
   }
 };
 
-
-const updateViewForToken = (token_name) => {
-
-  if (qr_tokens.includes(token_name)) {
-    $('.eth-chain').hide();
-    FEE_PERCENTAGE = 0;
-  } else {
-    $('.eth-chain').show();
-    FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
-  }
-
-};
-
 $(function() {
 
   $('#last-synced').hide();
@@ -366,15 +371,14 @@ $(function() {
     updateOnNetworkOrTokenChange();
 
     const token_address = $('select[name=denomination]').val();
-    const tokenName = $('select[name=denomination]').select2('data')[0].text;
+    const tokenName = $('select[name=denomination]').select2('data')[0] &&
+      $('select[name=denomination]').select2('data')[0].text;
 
-    const tokendetails = qr_tokens.includes(tokenName) ?
+    const tokendetails = isQRToken(tokenName) || isFiatToken(tokenName) ?
       tokenAddressToDetailsByNetwork(token_address, 'mainnet') :
       tokenAddressToDetails(token_address);
 
     const token = tokendetails['name'];
-
-    updateViewForToken(token);
 
     $('#summary-bounty-token').html(token);
     $('#summary-fee-token').html(token);
@@ -584,10 +588,10 @@ $('#submitBounty').validate({
       });
     }
 
-    const token = $('#summary-bounty-token').html();
+    const tokenName = $('#summary-bounty-token').html();
     const data = transformBountyData(form);
 
-    if (qr_tokens.includes(token)) {
+    if (isQRToken(tokenName) || isFiatToken(tokenName)) {
       createBounty(data);
     } else {
       ethCreateBounty(data);

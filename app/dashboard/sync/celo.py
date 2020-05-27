@@ -1,7 +1,7 @@
 from django.utils import timezone
 
 import requests
-from dashboard.sync.helpers import txn_already_used
+from dashboard.sync.helpers import record_payout_activity, txn_already_used
 
 
 def find_txn_on_celo_explorer(fulfillment, network='mainnet'):
@@ -66,4 +66,6 @@ def sync_celo_payout(fulfillment):
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
+            record_payout_activity(fulfillment)
+
         fulfillment.save()

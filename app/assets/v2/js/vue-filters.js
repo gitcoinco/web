@@ -84,7 +84,8 @@ Vue.filter('stringReplace', function(activity_type) {
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
     bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    new_kudos: gettext('New Kudos')
+    new_kudos: gettext('New Kudos'),
+    worker_paid: gettext('Bounty paid to')
   };
 
   return activity_names[activity_type];

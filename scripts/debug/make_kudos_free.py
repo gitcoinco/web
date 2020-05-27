@@ -1,5 +1,5 @@
-from kudos.models import BulkTransferCoupon
 from dashboard.models import Profile
+from kudos.models import BulkTransferCoupon
 
 handles = ['xtrullols35', 'sergisi', 'bcaspi', 'gerardguerrero', 'rafacucurull', 'davidcascos', 'pau1838', 'ivancg98']
 for handle in handles:
@@ -9,4 +9,3 @@ for handle in handles:
     for btc in btcs:
         btc.make_paid_for_first_minutes = 0
         btc.save()
-        
