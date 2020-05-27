@@ -47,20 +47,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div id=top_bar>
         {% if SHOW_DRESSING %}
 
-        {% if not profile_id %}
-          <!--- This is for users who come to the site + are not registered yet, to take them to the homescreen. -->
-          <div class="container">
-            <div class="row">
-              <div class="col pt-2">
-                <div class="alert bs-alert alert-info mb-0 w-90 mt-2" role="alert">
-                  <i class="fas fa-info mr-3"></i>
-                  What is Gitcoin? - <a class="font-weight-bold" href="/landing">Learn More <i class="fas fa-share-square"></i> </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        {% endif %}
-
         {% include 'townsquare/shared/offers_top.html' %}
         {% include 'townsquare/shared/announcements.html' %}
 
@@ -89,7 +75,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </ul>
             </div>
           </div>
-          <div class="row mt-4 townsquare_header">
+          <div class="row {% if user.is_authenticated %} mt-4 {% else %} mt-2 {% endif %}townsquare_header">
+          {% if not user.is_authenticated %}
+          <div class="col-12">
+            <div class="get-started mb-4">
+              <div class="d-flex flex-column align-items-center flex-fill ml-3 text-center">
+                <p class="p-0 font-weight-semibold">Gitcoin is a community of {{ audience|intcomma }} amazing open source developers working remotely to build in Web3.</p>
+                <div class="font-caption text-left">
+                  <button class="btn action bg-dark-blue font-smaller-2 btn-sm mt-2" data-toggle="modal" data-target="#modal-get-started">Get Started</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
             <div class="col-12 col-lg-3 d-lg-block">
               <div id=left_sidebar>
                 <div class="promo mb-4 align-items-center hidden">
@@ -98,7 +96,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="d-flex flex-column flex-fill ml-3">
                       <p class="p-0 font-smaller-1">Work with the coolest projects and the best developers in Web3</p>
                       <div class="font-caption font-smaller-5 text-left">
-                        <a href="{% url 'tribes_directory' %}" class="btn pl-5 pr-5 pt-2 pb-2 action font-smaller-4 btn-sm mt-2">Find a Tribe</a>
+                        <a href="{% url 'tribes_directory' %}" class="btn pl-5 pr-5 pt-2 pb-2 promo-action font-smaller-4 btn-sm mt-2">Find a Tribe</a>
                       </div>
                     </div>
                 </div>
@@ -181,6 +179,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       </div>
     </div>
 
+    <div class="modal"  id="modal-get-started" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div id="get-started">
+      <div class="topbar">
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <h1 class="font-title text-white mt-5">We’re excited you’re here! Let’s get started!</h1>
+      <p class="description mt-2 mb-4">Gitcoin is a community where developers can collaborate on new ideas, build forward thinking projects, and grow long term relationships with like minded people.</p>
+        <div class="mt-3" role="document">
+            <a href="{% url 'get_hackathons' %}">
+                <p>Explore Gitcoin Hackathons</p>
+                <img src="{% static 'v2/images/top-bar/hackathons-neg.svg' %}" alt="">
+            </a>
+            <a href="{% url 'explorer' %}">
+                <p>Explore bounties</p>
+                <img src="{% static 'v2/images/top-bar/bounties-neg.svg' %}" alt="">
+            </a>
+
+            <a href="{% url 'grants_catchall_:grants' %}">
+                <p>Support public goods</p>
+                <img src="{% static 'v2/images/top-bar/grants-neg.svg' %}" alt="">
+            </a>
+            <a href="{% url 'quests_index' %}">
+                <p>Learn about Web3</p>
+                <img src="{% static 'v2/images/top-bar/quests-neg.svg' %}" alt="">
+            </a>
+        </div>
+        <div class="text-center text-white col-12">
+            <p class="mx-0 ">Just checkin it out</p>
+        </div>
+    </div>
+    </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/activity_scripts.html' %}
