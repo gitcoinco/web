@@ -1086,10 +1086,9 @@
         selector: '[data-toggle="tooltip"]'
       });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.current_tab = 'hackathon:{{hackathon.id | safe}}';
       document.keywords = {{ keywords | safe }};
       document.is_registered = {{ is_registered | safe }};
-
-      window.localStorage['tab'] = 'hackathon:{{hackathon.id | safe}}';
       document.hackathon = "{{ hackathon.slug | safe }}";
       document.hackathon_id = "{{ hackathon.id | safe }}";
       document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
