@@ -5359,4 +5359,3 @@ def bulkDM(request):
     }
 
     return TemplateResponse(request, 'bulk_DM.html', context)
-
