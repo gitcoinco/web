@@ -162,7 +162,7 @@ This action expires at end of day, so act soon!
 {% endif %}
 
 <p>
-  {% trans "You are receiving this email because your email address is on the notification list" %}.  <a href="{% url 'email_settings' subscriber.priv %}" style="text-decoration: underline;">{% trans "Manage Email Settings" %}</a>.
+  {% trans "You are receiving this email bc you are subscribed to daily emails." %}  <a href="{% url 'email_settings' subscriber.priv %}" style="text-decoration: underline;">{% trans "Manage Email Settings" %}</a> | <a href="{% url 'email_settings' subscriber.priv %}?type=new_bounty_notifications" style="text-decoration: underline;">{% trans "Unsubscribe" %}</a>.
 </p>
 
 {% endblock %}
