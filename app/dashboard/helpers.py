@@ -814,8 +814,8 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                     fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-            if fulfillment:
-                user_profile = Profile.objects.filter(handle=fulfillment.profile__handle.lower()).first()
+            if fulfillment and fulfillment.profile:
+                user_profile = fulfillment.profile
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.profile__handle)
 
