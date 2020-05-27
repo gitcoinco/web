@@ -34,19 +34,49 @@
     width: 100%;
   }
 
-  .quest {
-    display: flex;
-    padding: 0.5em;
-  }
   .quest_table, .quest_table tr{
     width: 100%;
   }
   .odd{
     background-color: #fafafa;
   }
+  .quest img {
+    max-width: 150px;
+    padding-right: 10px;
+  }
+  .quest-images-container {
+    padding-top: 45px;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 900px;
+  }
+
 </style>
 
-<div class="text-center quest-box {% if count|divisibleby:2 %}even{% else %}odd{% endif %}">
+<div class="text-center quest-box">
+
+  {% if quest and small %}
+    <table class="quest quest-images-container">
+      <tr>
+        <td></td>
+        <td rowspan=2>
+          {% if not quest.enemy_img_url or quest.enemy_img_url == "/static/" %}
+            <img class="quest-img-bottom"src={{base_url}}static/v2/images/emails/kudos_template.png>
+          {% else %}
+            <img class="quest-img-bottom"src="{{quest.enemy_img_url}}">
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan=2><img class="quest-img-top" src="{{quest.kudos_reward.img_url}}"></td>
+      </tr>
+    </table>
+    <p style="font-weight: bold; margin-bottom:0">{{quest.title}}</p>
+    <p style="margin-top:0">{{quest.description}}</p>
+    {% include 'emails/shared_quest_actions.html' with action='custom' action_copy='Play Quest' action_url=quest.url %}
+  {% endif %}
+
+  {% if quest and not small %}
   <div class="quest">
     <div class="quest-avatar">
       <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{quest.enemy_img_url_png}}">
@@ -77,4 +107,5 @@
       </table>
     </div>
   </div>
+  {% endif %}
 </div>
