@@ -36,8 +36,8 @@ import premailer
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
-from retail.utils import strip_double_chars, strip_html
 from premailer import Premailer
+from retail.utils import strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)
 
@@ -531,31 +531,39 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7):
-    from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-    from dashboard.models import Profile
-    from inbox.models import Notification
-    from marketing.views import upcoming_dates, email_announcements
-    sub = get_or_save_email_subscriber(to_email, 'internal')
-    
-    email_style = 26
-
-    # Get notifications count from the Profile.User of to_email
-    try:
-        profile = Profile.objects.filter(email__iexact=to_email).last()
-    except Profile.DoesNotExist:
-        pass
-
+def get_notification_count(profile, days_ago, from_date):
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_ago)
 
     notifications_count = 0
+    from inbox.models import Notification
     try:
         notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
     except Notification.DoesNotExist:
         pass        
     except AttributeError:
         pass        
+    return notifications_count
+
+def email_to_profile(to_email):
+    from dashboard.models import Profile
+    try:
+        profile = Profile.objects.filter(email__iexact=to_email).last()
+    except Profile.DoesNotExist:
+        pass
+    return profile
+
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7):
+    from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
+    from marketing.views import upcoming_dates, email_announcements
+    sub = get_or_save_email_subscriber(to_email, 'internal')
+    
+    email_style = 26
+
+    # Get notifications count from the Profile.User of to_email
+    profile = email_to_profile(to_email)
+
+    notifications_count = get_notification_count(profile, days_ago, from_date)
 
     upcoming_events = []
     if upcoming_hackathon:

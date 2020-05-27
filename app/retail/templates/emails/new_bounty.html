@@ -101,21 +101,6 @@
 <HR>
 {% endif %}
 
-{% if show_action %}
-
-<h3 class="no-subtitle" style="margin-top: 15px;">{% trans "🌈1 New Daily Action" %}</h3>
-
-<a href={{base_url}}>
-<img style="width: 306px; height: 80px; margin-top: 5px; margin-bottom: 5px;" src={{base_url}}static/v2/images/offer.gif>
-</a> 
-<BR>
-<a href={{base_url}}>
-This action expires at end of day, so act soon!
-</a>
-
-<HR>
-{% endif %}
-
 {% if activities %}
   <h3 class="no-subtitle" style="margin-top: 15px;">{% trans "💬Town Square Posts You've Missed" %}</h3>
   <div class="container" style="text-align: left; padding: 20px 10px">
@@ -170,6 +155,22 @@ This action expires at end of day, so act soon!
 <br>
 <br>
 <hr>
+
+{% if show_action %}
+
+<h3 class="no-subtitle" style="margin-top: 15px;">{% trans "🌈1 New Daily Action" %}</h3>
+
+<a href={{base_url}}>
+<img style="width: 306px; height: 80px; margin-top: 5px; margin-bottom: 5px;" src={{base_url}}static/v2/images/offer.gif>
+</a> 
+<BR>
+<a href={{base_url}}>
+This action expires at end of day, so act soon!
+</a>
+
+<HR>
+{% endif %}
+
 
 {% if bounties %}
   <div style="margin-bottom: 5em;">

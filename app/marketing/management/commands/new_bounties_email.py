@@ -16,6 +16,8 @@
 
 '''
 import logging
+import time
+import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -26,10 +28,9 @@ from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
 from townsquare.utils import is_email_townsquare_enabled
 
-import time
-
-import warnings
 warnings.filterwarnings("ignore")
+
+override_in_dev = True
 
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
@@ -61,7 +62,7 @@ class Command(BaseCommand):
     help = 'sends new_bounty_daily _emails'
 
     def handle(self, *args, **options):
-        if settings.DEBUG and False:
+        if settings.DEBUG and not override_in_dev:
             print("not active in non prod environments")
             return
         hours_back = 24
@@ -88,7 +89,7 @@ class Command(BaseCommand):
                 # stats
                 speed = round((time.time() - start_time) / counter_grant_total, 2)
                 ETA = round((total_count - counter_grant_total) / speed / 3600, 1)
-                print(f"{counter_sent} sent/{counter_total} enabeld/{counter_grant_total} evaluated, {speed}/s, ETA:{ETA}h, working on {to_email} ")
+                print(f"{counter_sent} sent/{counter_total} enabled/{counter_grant_total} evaluated, {speed}/s, ETA:{ETA}h, working on {to_email} ")
 
                 # send
                 should_send = new_bounties.count() or town_square_enabled
