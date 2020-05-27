@@ -935,7 +935,7 @@
                               <div class="my-4" >
                                 <template v-for="doc in documentation">
                                   <a class="underline gc-text-blue mt-3 d-block text-left" :href="doc.url" >[[ doc.name]]</a>
-                                  <a @click="remove_resource('documentation', doc.name, $event)" class="btn btn-link red_warning"><i class="fas fa-times "></i> Remove quest</a>
+                                  <a @click="remove_resource('documentation', doc.name, $event)" class="btn btn-link red_warning"><i class="fas fa-times "></i> Remove documentation</a>
                                 </template>
                               </div>
                               {% if is_staff %}
@@ -964,7 +964,7 @@
                               <template v-for="workshop in workshops">
                                 <a class="underline gc-text-blue mt-3 d-block text-left" :href="workshop.url">[[ workshop.name]]</a>
                                 {% if is_staff %}
-                                  <a @click="remove_resource('workshop', workshop.name, $event)" class="btn btn-link red_warning"><i class="fas fa-times "></i> Remove quest</a>
+                                  <a @click="remove_resource('workshop', workshop.name, $event)" class="btn btn-link red_warning"><i class="fas fa-times "></i> Remove workshop</a>
                                 {% endif %}
                               </template>
                               </div>
