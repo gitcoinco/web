@@ -24,7 +24,7 @@ from django.utils.safestring import mark_safe
 from .models import (
     AccountDeletionRequest, Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent,
     GithubOrgToTwitterHandleMapping, Job, Keyword, LeaderboardRank, ManualStat, MarketingCallback, Match, RoundupEmail,
-    SlackPresence, SlackUser, Stat, UpcomingDate
+    SlackPresence, SlackUser, Stat, UpcomingDate,
 )
 
 
