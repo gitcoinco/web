@@ -420,7 +420,7 @@ $(document).ready(function() {
     let tab = getParam('tab');
 
     if (!tab || typeof tab == 'undefined')
-      tab = window.localStorage['tab'] || '';
+      tab = document.current_tab || '';
 
     data.append('ask', ask);
     data.append('data', the_message);

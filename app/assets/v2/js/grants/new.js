@@ -28,7 +28,7 @@ function saveGrant(grantData, isFinal) {
 
   $.ajax({
     type: 'post',
-    url: '',
+    url: '/grants/new',
     processData: false,
     contentType: false,
     data: grantData,

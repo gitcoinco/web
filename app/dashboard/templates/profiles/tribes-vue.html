@@ -1585,10 +1585,10 @@
                   </div>`
       });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.current_tab = "tribe:{{ profile_handle | safe }}";
       document.tokens = tokens(document.web3network);
       document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
       document.is_my_org = {{is_my_org | safe}};
-      window.localStorage['tab'] = "tribe:{{ profile_handle | safe }}";
       document.activePanel = {{active_panel| safe}};
       document.is_on_tribe = {{is_on_tribe | safe}};
       document.chatURL = "{{ chat_url | safe }}";

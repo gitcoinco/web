@@ -11,7 +11,7 @@ from django.utils.text import slugify
 from economy.models import SuperModel
 
 num_backgrounds = 34
-video_enabled_backgrounds = [8, 9, 11, 13, 13, 23]
+video_enabled_backgrounds = [8, 9, 11, 13, 13, 23, 34]
 
 
 class Quest(SuperModel):
