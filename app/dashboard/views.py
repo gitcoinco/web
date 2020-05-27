@@ -3587,6 +3587,8 @@ def hackathon(request, hackathon='', panel='prizes'):
         return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name.title()
+    description = f"{title} | Gitcoin Virtual Hackathon"
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
     # if hackathon_not_started:
@@ -3645,6 +3647,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'prize_count': hackathon_event.get_current_bounties.count(),
         'type': 'hackathon',
         'title': title,
+        'card_desc': description,
         'what': what,
         'can_pin': can_pin(request, what),
         'pinned': pinned,
@@ -3658,7 +3661,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
         'user': request.user,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
+        'avatar_url': avatar_url,
         'tags': view_tags,
         'activities': [],
         'SHOW_DRESSING': False,
