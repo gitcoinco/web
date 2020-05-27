@@ -1056,10 +1056,10 @@ body.green.offer_view .announce {
   font-weight: 100;
 }
 .promo-action {
-    background-color: #101061;
-    color: white;
-    border-radius: 0;
-    padding: 10px 50px;
+  background-color: #101061;
+  color: white;
+  border-radius: 0;
+  padding: 10px 50px;
 }
 
 .promo-action:hover {
@@ -1085,6 +1085,10 @@ body.green.offer_view .announce {
   width: 60%;
   font-size: 24px;
   line-height: 40px;
+}
+
+.dark-mode .gc-search-result__content p{
+  color: white;
 }
 
 .get-started .action {
@@ -1166,6 +1170,11 @@ body.green.offer_view .announce {
 
 #get-started img {
   height: 23px;
+}
+
+.dark-mode .alert .close {
+  opacity: 0.8;
+  text-shadow: none;
 }
 
 #get-started .close {
@@ -1269,11 +1278,6 @@ body.green.offer_view .announce {
   border-color: transparent !important;
 }
 
-.dark-mode .alert .close {
-  opacity: 0.8;
-  text-shadow: none;
-}
-
 .dark-mode .alert-info{
   background: var(--gc-dark-violet);
   color: white;
@@ -1283,9 +1287,6 @@ body.green.offer_view .announce {
 }
 .dark-mode .gc-search-box input {
   background-color: var(--main-bg)
-}
-.dark-mode .gc-search-result__content p{
-  color: white;
 }
 .dark-mode .gc-search-result__content,
 .dark-mode .gc-search-box,
