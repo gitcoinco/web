@@ -29,12 +29,12 @@ const updateOnNetworkOrTokenChange = () => {
     if (isQRToken(tokenName)) {
       $('.funder-address-container').show();
       $('#funderAddress').attr('required', true);
-      $('#fiat_text').hide();
+      $('#fiat_text').addClass('d-none');
     } else {
       $('.funder-address-container').hide();
       $('#funderAddress').removeAttr('required');
       $('#funderAddress').val('');
-      $('#fiat_text').show();
+      $('#fiat_text').removeClass('d-none');
     }
 
   } else {
@@ -49,7 +49,7 @@ const updateOnNetworkOrTokenChange = () => {
     $('.funder-address-container').hide();
     $('#funderAddress').removeAttr('required');
     $('#funderAddress').val('');
-    $('#fiat_text').hide();
+    $('#fiat_text').addClass('d-none');
 
     $('.web3-alert').show();
     if (!document.web3network) {
