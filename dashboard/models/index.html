@@ -3955,6 +3955,17 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Tip.awards">awards</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Tip.comments_priv">comments_priv</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -7497,6 +7508,10 @@ class built by <code>create_forward_many_to_many_manager()</code> defined below.
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="dashboard.models.HackathonEvent.resources">resources</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.HackathonEvent.show_results">show_results</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -8358,7 +8373,7 @@ object the first time, the query is executed.</p>
 <pre><code class="python">Question(self, *args, **kwargs)
 </code></pre>
 
-<p>Question(id, created_on, modified_on, poll, question_type, text)
+<p>Question(id, created_on, modified_on, poll, question_type, text, order)
 <h3 id="dashboard.models.Question.answer_set">answer_set</h3></p>
 <p>Accessor to the related objects manager on the reverse side of a
 many-to-one relation.</p>
@@ -8409,6 +8424,10 @@ many-to-one relation.</p>
 <p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Question.order">order</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="dashboard.models.Question.poll">poll</h3>
 
 <p>Accessor to the related object on the forward side of a many-to-one or

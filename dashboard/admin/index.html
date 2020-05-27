@@ -2645,7 +2645,7 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <pre><code class="python">QuestionInline.Question(self, *args, **kwargs)
 </code></pre>
 
-<p>Question(id, created_on, modified_on, poll, question_type, text)
+<p>Question(id, created_on, modified_on, poll, question_type, text, order)
 <h2 id="dashboard.admin.OptionsInline">OptionsInline</h2></p>
 <pre><code class="python">OptionsInline(self, parent_model, admin_site)
 </code></pre>
@@ -2702,6 +2702,10 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.
 <h3 id="dashboard.admin.PollsAdmin.list_display">list_display</h3></p>
+<p>Built-in mutable sequence.</p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.
+<h3 id="dashboard.admin.PollsAdmin.raw_id_fields">raw_id_fields</h3></p>
 <p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.
