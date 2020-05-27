@@ -61,12 +61,41 @@
     display: inline-block;
     margin-top: 3px;
   }
+  .arrow-up{
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #ddd; 
+  margin-left: auto;
+  margin-right: auto;
+}
+
+  #founder_announce a{
+    font-weight: bold;
+  }
 
 </style>
 
 <div>
   <h1 class="text-centre">{% trans "Gitcoin Daily Digest" %}</h1>
 </div>
+
+{% if email_announcements %}
+
+<a href="https://gitcoin.co/owocki">
+<img style="width: 100px; height: 100px;" src="https://gitcoin.co/dynamic/avatar/owocki">
+</a>
+<div class="arrow-up">&nbsp;</div>
+<div id="founder_announce" style="border: 1px solid #ddd; max-width: 300px; text-align: center; margin-left: auto; margin-right: auto;">
+<h3 class="no-subtitle" style="margin-top: 5px; margin-bottom: 5px;">{{email_announcements.title}}</h3>
+<p style="margin: 5px; border-radius: 5px;">
+  {{email_announcements.desc|safe}}
+</p>
+</div>  
+
+<HR>
+{% endif %}
 
 {% if show_action %}
 

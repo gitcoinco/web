@@ -533,7 +533,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     from dashboard.models import Profile
     from inbox.models import Notification
-    from marketing.views import upcoming_dates
+    from marketing.views import upcoming_dates, email_announcements
     sub = get_or_save_email_subscriber(to_email, 'internal')
     
     email_style = 26
@@ -567,6 +567,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'old_bounties': old_bounties,
         'bounties': bounties,
         'upcoming_dates': upcoming_dates(),
+        'email_announcements': email_announcements(),
         'subscriber': sub,
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
         'email_style': email_style,

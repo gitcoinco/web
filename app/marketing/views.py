@@ -55,6 +55,7 @@ from quests.models import Quest
 from grants.models import Grant
 from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
+from townsquare.models import Announcement
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +103,9 @@ def get_settings_navs(request):
 
 def upcoming_dates():
     return UpcomingDate.objects.filter(date__gt=timezone.now()).order_by('date')
+
+def email_announcements():
+    return Announcement.objects.filter(key='founders_note_daily_email', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).order_by('valid_to').first()
 
 def settings_helper_get_auth(request, key=None):
     # setup

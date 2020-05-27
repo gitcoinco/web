@@ -214,6 +214,7 @@ class Announcement(SuperModel):
         ('townsquare', 'townsquare'),
         ('header', 'header'),
         ('footer', 'footer'),
+        ('founders_note_daily_email', 'founders_note_daily_email'),
     ]
     key = models.CharField(max_length=50, db_index=True, choices=_TYPES)
     title = models.TextField(default='', blank=True)
