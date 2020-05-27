@@ -59,7 +59,8 @@ from marketing.mails import (
 from marketing.models import Keyword, Stat
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Comment
+from townsquare.models import Comment, PinnedPost
+from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -191,7 +192,8 @@ def get_fund_reward(request, grant):
         current_uses=0,
         secret=_key,
         comments_to_put_in_kudos_transfer=f"Thank you for funding '{grant.title}' on Gitcoin Grants!",
-        sender_profile=Profile.objects.get(handle='gitcoinbot')
+        sender_profile=Profile.objects.get(handle='gitcoinbot'),
+        make_paid_for_first_minutes=300,
         )
 
     #store btc on session
@@ -327,6 +329,9 @@ def grants(request):
     health_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='health'
     ).count()
+    matic_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='matic'
+    ).count()
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
@@ -337,7 +342,9 @@ def grants(request):
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
-        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count}
+        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
+        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
+
     ]
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
@@ -349,6 +356,11 @@ def grants(request):
         title = f"Round {clr_round} Stats"
     cht = []
     chart_list = ''
+    try:
+        what = 'all_grants'
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -377,6 +389,9 @@ def grants(request):
         'avatar_height': 1097,
         'avatar_width': 1953,
         'grants': grants,
+        'what': what,
+        'can_pin': can_pin(request, what),
+        'pinned': pinned,
         'target': f'/activity?what=all_grants',
         'bg': bg,
         'keywords': get_keywords(),
@@ -509,6 +524,11 @@ def grant_details(request, grant_id, grant_slug):
             )
         is_unsubscribed_from_updates_from_this_grant = True
 
+    try:
+        what = f'grant:{grant.pk}'
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
@@ -526,7 +546,10 @@ def grant_details(request, grant_id, grant_slug):
         'is_admin': is_admin,
         'grant_is_inactive': not grant.active,
         'keywords': get_keywords(),
-        'target': f'/activity?what=grant:{grant.pk}',
+        'target': f'/activity?what={what}',
+        'pinned': pinned,
+        'what': what,
+        'can_pin': can_pin(request, what),
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
@@ -581,6 +604,30 @@ def flag(request, grant_id):
     return JsonResponse({
         'success': True,
     })
+
+
+@login_required
+def grant_new_whitelabel(request):
+    """Create a new grant, with a branded creation form for specific tribe"""
+
+    params = {
+        'active': 'new_grant',
+        'title': _('New Grant'),
+        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'profile': profile,
+        'grant': {},
+        'keywords': get_keywords(),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
+        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
+    }
+    return TemplateResponse(request, 'grants/new-whitelabel.html', params)
+
 
 
 @login_required
@@ -680,88 +727,6 @@ def grant_new(request):
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
     }
     return TemplateResponse(request, 'grants/new.html', params)
-
-@login_required
-def grant_new_v0(request):
-    """Create a v0 version of a grant contract."""
-    profile = get_profile(request)
-
-    if request.method == 'POST':
-        if 'title' in request.POST:
-            logo = request.FILES.get('input_image', None)
-            receipt = json.loads(request.POST.get('receipt', '{}'))
-            team_members = request.POST.getlist('team_members[]')
-
-            grant_kwargs = {
-                'title': request.POST.get('title', ''),
-                'description': request.POST.get('description', ''),
-                'reference_url': request.POST.get('reference_url', ''),
-                'admin_address': request.POST.get('admin_address', ''),
-                'contract_owner_address': request.POST.get('contract_owner_address', ''),
-                'token_address': request.POST.get('token_address', ''),
-                'token_symbol': request.POST.get('token_symbol', ''),
-                'contract_version': request.POST.get('contract_version', ''),
-                'deploy_tx_id': request.POST.get('transaction_hash', ''),
-                'network': request.POST.get('network', 'mainnet'),
-                'metadata': receipt,
-                'admin_profile': profile,
-                'logo': logo,
-            }
-            grant = Grant.objects.create(**grant_kwargs)
-
-            team_members = (team_members[0].split(','))
-            team_members.append(profile.id)
-            team_members = list(set(team_members))
-
-            for i in range(0, len(team_members)):
-                team_members[i] = int(team_members[i])
-
-            grant.team_members.add(*team_members)
-            grant.save()
-
-            return JsonResponse({
-                'success': True,
-            })
-
-        if 'contract_address' in request.POST:
-            tx_hash = request.POST.get('transaction_hash', '')
-            if not tx_hash:
-                return JsonResponse({
-                    'success': False,
-                    'info': 'no tx hash',
-                    'url': None,
-                })
-
-            grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
-            grant.contract_address = request.POST.get('contract_address', '')
-            print(tx_hash, grant.contract_address)
-            grant.save()
-            record_grant_activity_helper('new_grant', grant, profile)
-            new_grant(grant, profile)
-            return JsonResponse({
-                'success': True,
-                'url': reverse('grants:details', args=(grant.pk, grant.slug))
-            })
-
-
-    params = {
-        'active': 'new_grant',
-        'title': _('New Grant'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
-        'profile': profile,
-        'grant': {},
-        'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
-    }
-
-    return TemplateResponse(request, 'grants/newv0.html', params)
 
 
 @login_required
@@ -869,7 +834,7 @@ def grant_fund(request, grant_id, grant_slug):
                 comment = request.POST.get('comment')
                 if comment and activity:
                     profile = request.user.profile
-                    if subscription.negative:
+                    if subscription and subscription.negative:
                         profile = Profile.objects.filter(handle='gitcoinbot').first()
                         comment = f"Comment from contributor: {comment}"
                     comment = Comment.objects.create(
@@ -1090,7 +1055,7 @@ def record_subscription_activity_helper(activity_type, subscription, profile):
         profile (dashboard.models.Profile): The current user's profile.
 
     """
-    if subscription.negative:
+    if subscription and subscription.negative:
         profile = Profile.objects.filter(handle='gitcoinbot').first()
         activity_type = 'negative_contribution'
     try:

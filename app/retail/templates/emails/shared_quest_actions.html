@@ -16,16 +16,16 @@
 {% endcomment %}
 {% load i18n humanize %}{% if action == 'custom' %}
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ action_url }}">{{ action_copy }}</a>
+    <a class="button large" href="{{ action_url }}">{{ action_copy }}</a>
   </div>
 {% else %}
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ quest.absolute_url }}">{% trans "View on Gitcoin.co" %}</a>
+    <a class="button large" href="{{ quest.absolute_url }}">{% trans "View on Gitcoin.co" %}</a>
   </div>
 {% endif %}
 {% if action2 == 'custom' %}
   <hr>
   <div style="margin-bottom: 2em; margin-top: 2em;">
-    <a class="button" href="{{ action2_url }}">{{ action2_copy }}</a>
+    <a class="button large" href="{{ action2_url }}">{{ action2_copy }}</a>
   </div>
 {% endif %}

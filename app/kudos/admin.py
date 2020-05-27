@@ -45,6 +45,7 @@ class TokenRequestAdmin(admin.ModelAdmin):
             from marketing.mails import notify_kudos_rejected
             notify_kudos_rejected(obj)
             self.message_user(request, f"Notified user of rejection")
+            return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
         if "_mint_kudos" in request.POST:
             from kudos.tasks import mint_token_request
             try:
@@ -52,6 +53,7 @@ class TokenRequestAdmin(admin.ModelAdmin):
                 self.message_user(request, f"Mint/sync submitted to chain")
             except Exception as e:
                 self.message_user(request, str(e))
+            return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
 
         if "_change_owner" in request.POST:
             obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'

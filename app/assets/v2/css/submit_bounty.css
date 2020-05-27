@@ -62,6 +62,7 @@ input:read-only {
 #contributor-suggestions {
   display: flex;
   margin-left: 15px;
+  flex-wrap: wrap;
 }
 
 .revisions input {

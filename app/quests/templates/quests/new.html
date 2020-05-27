@@ -142,11 +142,15 @@
               {% include 'shared/add_kudos.html' with name='reward' filter_by_address="0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F" %}
             {% endif %}
           </div>
+          {% if is_staff %}
           <div class="form-group">
             <label class="form__label" for="points">{% trans "Reward Points Value" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="The number of Gitcoin Quest Points rewarded to winner. Should scale with difficulty (Subject to final approval by Gitcoin team)"></i>
             <input type="number" name="points" class="form__input" placeholder='1' value="{{package.points}}" min="0" required>
           </div>
+          {% else %}
+          <input type="hidden" name="points" value="1">
+          {% endif %}
           <div class="form-group">
             <label class="form__label" for="minutes">{% trans "Cooldown Minutes" %}</label>
             <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="If someone fails the quest, how many minutes until they can try again?"></i>
@@ -201,8 +205,11 @@
             <div class="background_container pt-4">
               <label class="form__label" for="reading_material_url">{% trans "Arena" %}</label>
               <BR>
+                <input name='video_enabled' id='video_enabled' type="checkbox" value=1 required {% if package.video_enabled%}checked=checked{% endif %} />
+              <label class="form__label" for="video_enabled">{% trans "Video Enabled Arena" %}</label>
+              <BR>
               {% for bg in backgrounds %}
-                <div data-value="{{bg}}" class="new_quest_background {{bg}} {% if bg == package.background %}selected{% endif %}">&nbsp;</div>
+                <div data-value="{{bg}}" class="new_quest_background {{bg}} {% if bg == package.background %}selected{% endif %} {% if bg in video_enabled_backgrounds %}video_enabled{% else %}no_video_enabled{% endif %}">&nbsp;</div>
               {% endfor %}
               <input type="hidden" name="background" id="background" value="{{package.background}}">
             </div>

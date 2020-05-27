@@ -5,6 +5,19 @@ $(document).ready(function() {
   const question_template = $('.form-group.question:last').clone();
   const answer_template = question_template.children('span:last').clone();
 
+  let video_toggle = function(e) {
+    var is_checked = $('#video_enabled').is(':checked');
+
+    if (is_checked) {
+      $('.new_quest_background.no_video_enabled').addClass('hidden');
+      $('.new_quest_background.no_video_enabled').removeClass('selected');
+    } else {
+      $('.new_quest_background.no_video_enabled').removeClass('hidden');
+    }
+  };
+
+  $(document).on('click', '#video_enabled', video_toggle);
+  video_toggle();
 
   $(document).on('form#newkudos', 'submit', function(e) {
     // e.preventDefault();

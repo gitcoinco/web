@@ -125,10 +125,15 @@
 
       <div class="form-check mt-2">
         <input type="checkbox" name="pay_gas" id="pay_gas" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{% endif %}>
-        <label for=pay_gas>{% trans "Chip in 0.005 ETH in gas money" %} 
+        <label for=pay_gas>Chip in {{gas_amount}} ETH in gas money
           <BR>
         {% if coupon.is_paid_right_now %}
-          - (required now, optional <span class="m-0" data-time="{{coupon.paid_until|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
+            {% if coupon.make_paid_for_first_minutes > 99999 %}
+              - (Required)
+            {% else %}
+              - (Required now, optional <span class="m-0" data-time="{{coupon.paid_until|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
+            {% endif %}
+
         {% else %}
           - (Optional, but recommended)
         {% endif %}
@@ -139,7 +144,7 @@
       <div class="text-center mt-3">
         <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs or coupon.is_paid_right_now %}disabled=disabled{% endif %} >
         <br>
-        {% if coupon.is_paid_right_now %}
+        {% if coupon.is_paid_right_now and coupon.make_paid_for_first_minutes <= 99999 %}
           <span id="free_countdown">
             (free <span class="m-0" data-time="{{coupon.paid_until|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
           </span>
@@ -183,6 +188,7 @@
 <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <script>
   document.network = '{{coupon.token.contract.network}}';
+  document.gas_amount = {{gas_amount}};
   $(document).ready(function(){
     {% if error %}
       _alert('{{error}}', 'error');

@@ -21,7 +21,9 @@
     <div class="col-12 col-md-3">
       <label class="form__label" for="amount">{% trans "Denomination" %}</label>
       <div class="form__select2">
-        <select name='denomination' id='token'></select>
+        <select name='denomination' id='token'>
+          <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
+        </select>
       </div>
     </div>
     <div class="col-12 col-md-3">
@@ -40,4 +42,9 @@
   </div>
 
   <small class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text"></small>
+
+  <small class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="fiat_text">
+    USD payment is powered by <span class="font-weight-bold">PayPal</span>. Please note that there might be a small fee for payment to contributors in outside of the US.
+  </small>
+
 </div>

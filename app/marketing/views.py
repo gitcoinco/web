@@ -42,17 +42,17 @@ from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from chat.tasks import update_chat_notifications
-from dashboard.models import Profile, TokenApproval
+from dashboard.models import Profile, TokenApproval, HackathonEvent, Activity
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
 from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
-from marketing.country_codes import COUNTRY_NAMES, COUNTRY_CODES, \
-                                        FLAG_API_LINK, FLAG_ERR_MSG, FLAG_STYLE, FLAG_SIZE
 from quests.models import Quest
+from grants.models import Grant
 from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
@@ -87,6 +87,9 @@ def get_settings_navs(request):
     }, {
         'body': _('Job Status'),
         'href': reverse('job_settings'),
+    }, {
+        'body': _('Tax'),
+        'href': reverse('tax_settings'),
     }]
 
     if request.user.is_staff:
@@ -692,7 +695,6 @@ def org_settings(request):
 
     Returns:
         TemplateResponse: The user's Account settings template response.
-
     """
     msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
@@ -719,6 +721,81 @@ def org_settings(request):
         'current_scopes': current_scopes,
     }
     return TemplateResponse(request, 'settings/organizations.html', context)
+
+
+def tax_settings(request):
+    """Display and save user's Tax settings.
+
+    Returns:
+        TemplateResponse: The user's Tax settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not profile or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+        
+    # location  dict is not empty
+    location = ''
+    if profile.location:
+        location_components = json.loads(profile.location)
+        if 'locality' in location_components:
+            location += location_components['locality']
+        if 'country' in location_components:
+            country = location_components['country']
+            if location:
+                location += ', ' + country
+            else:
+                location += country
+        if 'code' in location_components:
+            code = location_components['code']
+            if location:
+                location += ', ' + code
+            else:
+                location += code
+    # location dict is empty
+    else:
+        # set it to the last location registered for the user
+        location_components = profile.locations[-1]
+        if 'city' in location_components:
+            location += location_components['city']
+        if 'country_name' in location_components:
+            country_name = location_components['country_name']
+            if location:
+                location += ', ' + country_name
+            else:
+                location += country_name
+        if 'country_code' in location_components:
+            country_code = location_components['country_code']
+            if location:
+                location += ', ' + country_code
+            else:
+                location += country_code
+    
+    #address is not empty
+    if profile.address:
+        address = profile.address   
+    else:
+        address = ''
+    
+    g_maps_api_key = "AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ"
+        
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'home',
+        'active': '/settings/tax',
+        'title': _('Tax Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'location': location,
+        'address': address,
+        'api_key': g_maps_api_key,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/tax.html', context)
 
 
 def _leaderboard(request):
@@ -907,12 +984,38 @@ def trending_quests():
         ).order_by('-recent_attempts').all()[0:10]
     return quests
 
+def quest_of_the_day():
+    quest = trending_quests()[0]
+    return quest
+
+def upcoming_grant():
+    grant = Grant.objects.order_by('-weighted_shuffle').first()
+    return grant
+
+def upcoming_hackathon():
+    try:
+        return HackathonEvent.objects.filter(end_date__gt=timezone.now()).order_by('-start_date')
+    except HackathonEvent.DoesNotExist:
+        try:
+            return [HackathonEvent.objects.filter(start_date__gte=timezone.now()).order_by('start_date').first()]
+        except HackathonEvent.DoesNotExist:
+            return None
+
+def latest_activities(user):
+    from retail.views import get_specific_activities
+    cutoff_date = timezone.now() - timezone.timedelta(days=7)
+    activities = get_specific_activities('connect', 0, user, 0)[:4]
+    return activities
+
 @staff_member_required
 def new_bounty_daily_preview(request):
     profile = request.user.profile
     keywords = profile.keywords
     hours_back = 2000
+
     new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
-    quests = trending_quests()
-    response_html, _ = render_new_bounty('foo@bar.com', new_bounties, all_bounties, offset=3, trending_quests=quests)
+    max_bounties = 5
+    if len(new_bounties) > max_bounties:
+        new_bounties = new_bounties[0:max_bounties]
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), upcoming_hackathon=upcoming_hackathon(), latest_activities=latest_activities(request.user))
     return HttpResponse(response_html)

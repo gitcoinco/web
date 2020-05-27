@@ -92,7 +92,6 @@ var reloadCbAddress = function() {
 
 reloadCbAddress();
 
-
 const Web3Modal = window.Web3Modal.default;
 
 window.Web3Modal.providers.push({
@@ -135,69 +134,16 @@ function qrcodeConnect() {
 }
 
 web3Modal.providers.push({name: 'QRcode', onClick: qrcodeConnect});
+
 web3Modal.connect().then(function(provider) {
   window.web3 = new Web3(provider);
 });
 
-var update_metamask_conf_time_and_cost_estimate = function() {
-  var confTime = 'unknown';
-  var ethAmount = 'unknown';
-  var usdAmount = 'unknown';
-
-  var gasLimit = parseInt($('#gasLimit').val());
-  var gasPrice = parseFloat($('#gasPrice').val());
-
-  if (gasPrice) {
-    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
-
-    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
-    usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
-  }
-
-  if (typeof document.conf_time_spread == 'undefined') return;
-
-  for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
-    var this_ele = (document.conf_time_spread[i]);
-    var next_ele = (document.conf_time_spread[i + 1]);
-
-    if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(10 * next_ele[1]) / 10;
-    }
-  }
-
-  $('#ethAmount').html(ethAmount);
-  $('#usdAmount').html(usdAmount);
-  $('#confTime').html(confTime);
-};
-
-var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
-
-  var confTime = 'unknown';
-  var ethAmount = 'unknown';
-  var usdAmount = 'unknown';
-
-  var gasLimit = parseInt($('#gasLimit').val());
-
-  if (gasPrice) {
-    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
-
-    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
-    usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
-  }
-
-  if (typeof document.conf_time_spread == 'undefined') return;
-
-  for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
-    var this_ele = (document.conf_time_spread[i]);
-    var next_ele = (document.conf_time_spread[i + 1]);
-
-    if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(10 * next_ele[1]) / 10;
-    }
-  }
-
-  return {'eth': ethAmount, 'usd': usdAmount, 'time': confTime};
-};
+if (web3Modal.cachedProvider) {
+  web3Modal.connect().then(function(provider) {
+    window.web3 = new Web3(provider);
+  });
+}
 
 var unloading_button = function(button) {
   button.prop('disabled', false);
@@ -268,7 +214,7 @@ var getTimeFromDate = function(date) {
 };
 
 var waitforWeb3 = function(callback) {
-  if (document.web3network) {
+  if (document.web3network && document.web3network != 'locked') {
     callback();
   } else {
     var wait_callback = function() {
@@ -1131,15 +1077,15 @@ var setUsdAmount = function() {
 
   getUSDEstimate(amount, denomination, function(estimate) {
     if (estimate['value']) {
-      $('#usd-amount-wrapper').css('visibility', 'visible');
-      $('#usd_amount_text').css('visibility', 'visible');
+      $('#usd-amount-wrapper').show();
+      $('#usd_amount_text').show();
 
       $('#usd_amount').val(estimate['value_unrounded']);
       $('#usd_amount_text').html(estimate['rate_text']);
       $('#usd_amount').removeAttr('disabled');
     } else {
-      $('#usd-amount-wrapper').css('visibility', 'hidden');
-      $('#usd_amount_text').css('visibility', 'hidden');
+      $('#usd-amount-wrapper').hide();
+      $('#usd_amount_text').hide();
 
       $('#usd_amount_text').html('');
       $('#usd_amount').prop('disabled', true);

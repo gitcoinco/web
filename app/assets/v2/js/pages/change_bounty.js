@@ -131,7 +131,7 @@ const getSuggestions = () => {
       }
 
       obj.children.forEach(children => {
-        children.text = children.fulfiller_github_username || children.user__profile__handle;
+        children.text = children.profile__handle || children.user__profile__handle;
         children.id = generalIndex;
         generalIndex++;
       });

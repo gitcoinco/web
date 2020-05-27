@@ -78,3 +78,8 @@ textarea.form__input {
 .dark-mode .activity_stream .box {
   border-color:transparent!important;
 }
+
+.dark-mode .form-control.bg-lightblue:focus {
+  background: var(--main-bg) !important;
+  color: white;
+}

@@ -39,14 +39,18 @@ logger = logging.getLogger(__name__)
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
     """Handle serializing the BountyFulfillment object."""
     profile = ProfileSerializer()
+    fulfiller_email = serializers.ReadOnlyField()
+    fulfiller_github_username = serializers.ReadOnlyField()
     class Meta:
         """Define the bounty fulfillment serializer metadata."""
 
         model = BountyFulfillment
-        fields = ('pk', 'fulfiller_address',
-                  'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url',
-                  'payout_tx_id', 'payout_amount', 'token_name', 'payout_status')
+        fields = ('pk', 'fulfiller_email', 'fulfiller_address',
+                  'fulfiller_github_username', 'fulfiller_metadata',
+                  'fulfillment_id', 'accepted', 'profile', 'created_on',
+                  'accepted_on', 'fulfiller_github_url', 'payout_tx_id',
+                  'payout_amount', 'token_name', 'payout_status', 'tenant',
+                  'payout_type', 'fulfiller_identifier', 'funder_identifier')
 
 
 class HackathonEventSerializer(serializers.ModelSerializer):
@@ -349,13 +353,13 @@ class BountiesViewSet(viewsets.ModelViewSet):
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
             queryset = queryset.filter(
-                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
+                fulfillments__profile__handle__iexact=self.request.query_params.get('fulfiller_github_username')
             )
 
         # Retrieve all DONE fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username_done' in param_keys:
             queryset = queryset.filter(
-                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username'),
+                fulfillments__profile__handle__iexact=self.request.query_params.get('fulfiller_github_username'),
                 fulfillments__accepted=True,
             )
 

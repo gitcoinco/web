@@ -131,7 +131,8 @@ class Grant(SuperModel):
     GRANT_TYPES = [
         ('tech', 'tech'),
         ('health', 'health'),
-        ('media', 'media')
+        ('media', 'media'),
+        ('matic', 'matic')
     ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
@@ -913,7 +914,8 @@ def psave_grant(sender, instance, **kwargs):
     instance.contribution_count = instance.get_contribution_count
     instance.contributor_count = instance.get_contributor_count()
     from grants.clr import CLR_START_DATE
-    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
+    import pytz
+    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc) if instance.grant_type == 'health' else timezone.datetime(2020, 3, 23, 12, 0).replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
     instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
     instance.amount_received_in_round = 0

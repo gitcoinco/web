@@ -1,8 +1,5 @@
 /* eslint-disable no-console */
 var get_gas_price = function() {
-  if ($('#gasPrice').length) {
-    return $('#gasPrice').val() * Math.pow(10, 9);
-  }
   if (typeof defaultGasPrice != 'undefined') {
     return defaultGasPrice;
   }
@@ -173,7 +170,7 @@ function isNumeric(n) {
 }
 
 
-function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
+function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller, noAvailableUser) {
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();
@@ -233,16 +230,19 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
       failure_callback();
       return;
     }
+
     if (!isNumeric(amountInDenom) || amountInDenom == 0) {
-      _alert({ message: gettext('You must enter an number for the amount!') }, 'warning');
+      _alert({ message: gettext('You must enter a number for the amount!') }, 'warning');
       failure_callback();
       return;
     }
-    if (username == '') {
+
+    if (username == '' && !noAvailableUser) {
       _alert({ message: gettext('You must enter a username.') }, 'warning');
       failure_callback();
       return;
     }
+
     if (!accept_tos) {
       _alert({ message: gettext('You must accept the terms.') }, 'warning');
       failure_callback();
