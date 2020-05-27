@@ -9,8 +9,10 @@ fulfillBounty = data => {
     return;
   }
 
-  if (!data.payoutAddress) {
-    _alert({ message: gettext('Add address you would want to be paid out upon payout') }, 'error');
+  if (web3_type == 'fiat' && !data.fulfiller_identifier) {
+    _alert({ message: gettext('Add valid email you would want the bounty to be sent to') }, 'error');
+  } else if (web3_type != 'fiat' && !data.payoutAddress) {
+    _alert({ message: gettext('Add valid address you would want the bounty to be sent to') }, 'error');
     return;
   }
 
@@ -27,7 +29,8 @@ fulfillBounty = data => {
       }
     },
     'accepted': false,
-    'fulfiller': data.payoutAddress
+    'fulfiller': data.payoutAddress,
+    'fulfiller_identifier': data.fulfiller_identifier
   };
 
   const params = {
@@ -35,7 +38,9 @@ fulfillBounty = data => {
     'githubPRLink': data.githubPRLink,
     'hoursWorked': data.hoursWorked,
     'metadata': JSON.stringify(metadata),
-    'fulfiller_address': data.payoutAddress
+    'fulfiller_address': data.payoutAddress,
+    'fulfiller_identifier': data.fulfiller_identifier,
+    'payout_type': web3_type
   };
 
   $.post(url, params, function(response) {

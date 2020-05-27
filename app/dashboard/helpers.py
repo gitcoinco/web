@@ -781,7 +781,8 @@ bounty_activity_event_adapter = {
     'killed_bounty': 'cancel_bounty',
     'work_submitted': 'submit_work',
     'stop_work': 'stop_work',
-    'work_done': 'payout_bounty'
+    'work_done': 'payout_bounty',
+    'worker_paid': 'worker_paid'
 }
 
 

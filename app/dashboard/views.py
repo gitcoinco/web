@@ -179,7 +179,7 @@ def record_user_action(user, event_name, instance):
         logger.error(f"error in record_action: {e} - {event_name} - {instance}")
 
 
-def record_bounty_activity(bounty, user, event_name, interest=None):
+def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=None):
     """Creates Activity object.
 
     Args:
@@ -215,6 +215,11 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
     elif event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
+    elif event_name == 'worker_paid' and fulfillment:
+        kwargs['metadata']['from'] = fulfillment.funder_profile.handle
+        kwargs['metadata']['to'] = fulfillment.profile.handle
+        kwargs['metadata']['payout_amount'] = fulfillment.payout_amount
+        kwargs['metadata']['token_name'] = fulfillment.token_name
 
     try:
         if event_name in bounty_activity_event_adapter:
@@ -1934,6 +1939,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if request.GET.get('sb') == '1' or (bounty and bounty.is_bounties_network):
         return TemplateResponse(request, 'bounty/details.html', params)
 
+    params['PYPL_CLIENT_ID'] = settings.PYPL_CLIENT_ID
     return TemplateResponse(request, 'bounty/details2.html', params)
 
 
@@ -5018,11 +5024,6 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: user can submit once per bounty'
         return JsonResponse(response)
 
-    fulfiller_address = request.POST.get('fulfiller_address')
-    if not fulfiller_address:
-        response['message'] = 'error: missing fulfiller_address'
-        return JsonResponse(response)
-
     hours_worked = request.POST.get('hoursWorked')
     if not hours_worked or not hours_worked.isdigit():
         response['message'] = 'error: missing hoursWorked'
@@ -5031,6 +5032,21 @@ def fulfill_bounty_v1(request):
     fulfiller_github_url = request.POST.get('githubPRLink')
     if not fulfiller_github_url:
         response['message'] = 'error: missing githubPRLink'
+        return JsonResponse(response)
+
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing payout_type'
+        return JsonResponse(response)
+
+    fulfiller_identifier = request.POST.get('fulfiller_identifier', None)
+    fulfiller_address = request.POST.get('fulfiller_address', None)
+
+    if payout_type == 'fiat' and not fulfiller_identifier:
+        response['message'] = 'error: missing fulfiller_identifier'
+        return JsonResponse(response)
+    elif payout_type == 'qr' and not fulfiller_address:
+        response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
     event_name = 'work_submitted'
@@ -5056,10 +5072,16 @@ def fulfill_bounty_v1(request):
     fulfillment.modified_on = now
     fulfillment.funder_last_notified_on = now
     fulfillment.token_name = bounty.token_name
+    fulfillment.payout_type = payout_type
+
+    if fulfiller_identifier:
+        fulfillment.fulfiller_identifier = fulfiller_identifier
+        fulfillment.tenant = 'PYPL'
+    elif fulfiller_address:
+        fulfillment.fulfiller_address = fulfiller_address
 
     # fulfillment.fulfillment_id    ETC-TODO: REMOVE ?
 
-    fulfillment.fulfiller_address = fulfiller_address
     fulfillment.fulfiller_hours_worked = hours_worked
     fulfillment.fulfiller_github_url = fulfiller_github_url
 
@@ -5122,7 +5144,6 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: bounty fulfillment not found'
         return JsonResponse(response)
 
-
     if bounty.bounty_state in ['cancelled', 'done']:
         response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be paid out'
         return JsonResponse(response)
@@ -5133,14 +5154,18 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: payout is bounty funder operation'
         return JsonResponse(response)
 
-    if not bounty.bounty_owner_address:
-        bounty_owner_address = request.POST.get('bounty_owner_address')
-        if not bounty_owner_address:
-            response['message'] = 'error: missing parameter bounty_owner_address'
-            return JsonResponse(response)
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing parameter payout_type'
+        return JsonResponse(response)
+    if payout_type not in ['fiat', 'qr']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr'
+        return JsonResponse(response)
 
-        bounty.bounty_owner_address = bounty_owner_address
-        bounty.save()
+    tenant = request.POST.get('tenant')
+    if not tenant:
+        response['message'] = 'error: missing parameter tenant'
+        return JsonResponse(response)
 
     amount = request.POST.get('amount')
     if not amount:
@@ -5152,32 +5177,55 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: missing parameter token_name'
         return JsonResponse(response)
 
+    if payout_type == 'fiat':
+
+        payout_status = request.POST.get('payout_status')
+        if not payout_status :
+            response['message'] = 'error: missing parameter payout_status for fiat payment'
+            return JsonResponse(response)
+
+        funder_identifier = request.POST.get('funder_identifier')
+        if not funder_identifier :
+            response['message'] = 'error: missing parameter funder_identifier for fiat payment'
+            return JsonResponse(response)
+
+        fulfillment.funder_identifier = funder_identifier
+        fulfillment.payout_status = payout_status
+
+    elif payout_type == 'qr':
+
+        if not bounty.bounty_owner_address:
+            bounty_owner_address = request.POST.get('bounty_owner_address')
+            if not bounty_owner_address:
+                response['message'] = 'error: missing parameter bounty_owner_address'
+                return JsonResponse(response)
+
+            bounty.bounty_owner_address = bounty_owner_address
+            bounty.save()
+
+        fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
+        fulfillment.payout_status = 'pending'
+
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
         fulfillment.payout_tx_id = payout_tx_id
 
-    payout_type = request.POST.get('payout_type')
-    if not payout_type:
-        response['message'] = 'error: missing parameter payout_type'
-        return JsonResponse(response)
-
-    tenant = request.POST.get('tenant')
-    if not tenant:
-        response['message'] = 'error: missing parameter tenant'
-        return JsonResponse(response)
-
-
     fulfillment.funder_profile = profile
-    fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
     fulfillment.payout_type = payout_type
     fulfillment.tenant = tenant
-
     fulfillment.payout_amount = amount
-    fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name
+
+    if payout_type == 'fiat':
+        fulfillment.payout_status = 'done'
+        fulfillment.accepted_on = timezone.now()
+        fulfillment.accepted = True
+        record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
+
     fulfillment.save()
 
-    sync_payout(fulfillment)
+    if payout_type == 'qr':
+        sync_payout(fulfillment)
 
     response = {
         'status': 204,

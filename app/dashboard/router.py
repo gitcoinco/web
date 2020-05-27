@@ -48,8 +48,10 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         model = BountyFulfillment
         fields = ('pk', 'fulfiller_email', 'fulfiller_address',
                   'fulfiller_github_username', 'fulfiller_metadata',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url',
-                  'payout_tx_id', 'payout_amount', 'token_name', 'payout_status')
+                  'fulfillment_id', 'accepted', 'profile', 'created_on',
+                  'accepted_on', 'fulfiller_github_url', 'payout_tx_id',
+                  'payout_amount', 'token_name', 'payout_status', 'tenant',
+                  'payout_type', 'fulfiller_identifier', 'funder_identifier')
 
 
 class HackathonEventSerializer(serializers.ModelSerializer):
