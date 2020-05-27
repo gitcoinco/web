@@ -388,9 +388,14 @@
             </p>
           </div>
         {% endif %}
-
           <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
           <i class="fas fa-exclamation-triangle error red hidden"></i>
+        {% endif %}
+        {% if row.metadata.attach.token %}
+          | <button class="btn btn-sm btn-link" style="color: #3E00FF;">
+          <i class="fas fa-coins gc-blue-text" ></i>
+          <span class="value_in_token">{{row.metadata.attach.amount}}  {{row.metadata.attach.token_name}} attached</span>
+          </button>
         {% endif %}
       </div>
     </div>

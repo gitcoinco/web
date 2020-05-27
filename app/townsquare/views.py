@@ -4,19 +4,24 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
+from dashboard.models import Activity, HackathonEvent, get_my_earnings_counter_profiles, get_my_grants, Profile
 import metadata_parser
+
 from app.redis_service import RedisService
 from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
+
 from kudos.models import Token
-from marketing.mails import comment_email, new_action_request
+
+from marketing.mails import comment_email, mention_email, new_action_request, tip_comment_awarded_email
 from perftools.models import JSONStore
+
 from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
@@ -422,6 +427,7 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
+        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
         'following_tribes': following_tribes,
         'suggested_tribes': suggested_tribes,
         'audience': audience
@@ -476,6 +482,13 @@ def api(request, activity_id):
     # no perms needed responses go here
     if request.GET.get('method') == 'comment':
         comments = activity.comments.prefetch_related('profile').order_by('created_on')
+        # check for permissions
+        is_authenticated = request.user.is_authenticated
+        if request.POST.get('method') == 'delete':
+            has_perms = activity.profile == request.user.profile
+        if is_authenticated:
+            profile = request.user.profile
+
         response['comments'] = []
         results = {i : 0 for i in range(0, 15)}
         for comment in comments:
@@ -508,18 +521,23 @@ def api(request, activity_id):
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             if comment.is_edited:
                 comment_dict['is_edited'] = comment.is_edited
+
+            comment_dict['redeem_link'] = comment.redeem_link if is_authenticated and comment.tip and comment.tip.recipient_profile_id == profile.id else ''
+            comment_dict['tip'] = bool(comment.tip)
             response['comments'].append(comment_dict)
+
+        response['has_tip'] = False
+        if activity.tip:
+            user_can_redeem = request.user.profile.id == activity.tip.recipient_profile_id
+            response['has_tip'] = True
+            response['tip_available'] = not activity.tip.recipient_profile
+            response['can_redeem'] = activity.tip.status == 'PENDING' and user_can_redeem
+        response['author'] = activity.profile.handle
+
         for key, val in results.items():
             if settings.DEBUG:
                 print(key, round(val, 2))
         return JsonResponse(response)
-
-    # check for permissions
-    has_perms = request.user.is_authenticated
-    if request.POST.get('method') == 'delete':
-        has_perms = activity.profile == request.user.profile
-    if not has_perms:
-        raise Http404
 
     # deletion request
     if request.POST.get('method') == 'delete':
@@ -554,6 +572,18 @@ def api(request, activity_id):
                 Like.objects.create(profile=request.user.profile, activity=activity)
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
+
+    # award request
+    elif request.POST.get('method') == 'award':
+        comment = get_object_or_404(Comment, id=int(request.POST['comment']))
+        if request.user.profile.id == activity.profile.id and comment.activity_id == activity.id:
+            recipient_profile = comment.profile
+            activity.tip.username = recipient_profile.username
+            activity.tip.recipient_profile = recipient_profile
+            activity.tip.save()
+            comment.tip = activity.tip
+            comment.save()
+            tip_comment_awarded_email(comment, [recipient_profile.email])
 
     # favorite request
     elif request.POST.get('method') == 'favorite':
