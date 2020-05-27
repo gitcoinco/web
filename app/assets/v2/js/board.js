@@ -22,7 +22,7 @@ Vue.mixin({
     },
     fetchTokens: function(type) {
       let vm = this;
-      let api = `/ptokens/${type}/`;
+      let api = `/tokens/${type}/`;
       let getTokens = fetchData (api, 'GET');
 
       $.when(getTokens).then(function(response) {

@@ -2393,8 +2393,6 @@ def post_add_activity(sender, instance, created, **kwargs):
             dupe.delete()
 
 
-
-
 class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
 
@@ -2600,6 +2598,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, Gitcoin will not auto-follow users you do business with',
     )
 
+    tokens = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations_fk = models.ManyToManyField('dashboard.Profile', blank=True)

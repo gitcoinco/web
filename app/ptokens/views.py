@@ -31,10 +31,13 @@ from django.db.models import Avg, Count, Max, Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse
 from django.utils import timezone, translation
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
+
+from dashboard.models import Profile
 
 def quickstart(request):
     context = {}
@@ -43,3 +46,22 @@ def quickstart(request):
 def faq(request):
     context = {}
     return TemplateResponse(request, 'buy_a_token.html', context)
+
+def tokens(request, token_state):
+    """List JSON data for the user tokens"""
+    
+    user = request.user if request.user.is_authenticated else None
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    profile = request.user.profile
+    if token_state == 'open':
+        return JsonResponse([], safe=False)
+    elif token_state == 'in_progress':
+        return JsonResponse([], safe=False)
+    elif token_state == 'completed':
+        return JsonResponse([], safe=False)
+    elif token_state == 'denied':
+        return JsonResponse([], safe=False)
