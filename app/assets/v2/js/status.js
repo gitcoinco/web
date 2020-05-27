@@ -417,10 +417,7 @@ $(document).ready(function() {
     const message = $('#textarea');
     const the_message = message.val().trim();
     const ask = $('.activity_type_selector input:checked').val();
-    let tab = getParam('tab');
-
-    if (!tab || typeof tab == 'undefined')
-      tab = document.current_tab || '';
+    const tab = document.current_tab || '';
 
     data.append('ask', ask);
     data.append('data', the_message);
