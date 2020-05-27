@@ -37,6 +37,7 @@ from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
+from premailer import Premailer
 
 logger = logging.getLogger(__name__)
 
@@ -76,11 +77,12 @@ NOTIFICATION_EMAILS = [
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 
+# per speed notes at https://pypi.org/project/premailer/
+premailer = Premailer(base_url=settings.BASE_URL)
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
-    p = premailer.Premailer(html, base_url=settings.BASE_URL)
-    return p.transform()
+    return premailer.transform(html)
 
 
 def render_featured_funded_bounty(bounty):
@@ -547,9 +549,12 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_ago)
 
+    notifications_count = 0
     try:
         notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
     except Notification.DoesNotExist:
+        pass        
+    except AttributeError:
         pass        
 
     upcoming_events = []
