@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -580,9 +580,8 @@
                                   </p>
                                   <div class="text-left">
                                     <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-
-                                    <a :href="project.bounty.url" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                                    <b-dropdown varitant="primary" toggle-class="btn-sm btn btn-gc-blue" split-class="btn-sm btn btn-gc-blue">
+                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+                                    <b-dropdown varitant="outline-gc-blue" toggle-class="btn-sm btn" split-class="btn-sm btn btn-gc-blue">
                                      <template v-slot:button-content>
                                        <i class='fas fa-comment-dots'></i>
                                      </template>
@@ -714,7 +713,7 @@
                                     <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
                                   </span>
                                 </h5>
-                                <a :href="`/profile/${ user.handle }`" class="text-center d-block">
+                                <a :href="`/profile/${ user.handle }`" v-bind:data-usercard="[[ user.handle ]]" class="text-center d-block">
                                   @[[ user.handle ]]
                                 </a>
                                 <div v-if="!user.is_org" class="card-user_stars text-center my-2">
@@ -1570,7 +1569,6 @@
     <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
     <script src='{% static "v2/js/users.js" %}'></script>
     <script src='{% static "v2/js/explorer.js" %}'></script>
-    <script src='{% static "v2/js/user_card.js" %}'></script>
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
@@ -1587,10 +1585,10 @@
                   </div>`
       });
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.current_tab = "tribe:{{ profile_handle | safe }}";
       document.tokens = tokens(document.web3network);
       document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
       document.is_my_org = {{is_my_org | safe}};
-      window.localStorage['tab'] = "tribe:{{ profile_handle | safe }}";
       document.activePanel = {{active_panel| safe}};
       document.is_on_tribe = {{is_on_tribe | safe}};
       document.chatURL = "{{ chat_url | safe }}";

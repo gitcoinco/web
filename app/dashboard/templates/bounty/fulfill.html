@@ -76,9 +76,9 @@
                   </div>
 
                   <div class="mt-2">
-                    <label class="form__label" for="githubPRLink">{% trans "Github PR Link" %}</label>
+                    <label class="form__label" for="githubPRLink">{% trans "Project Link" %}</label>
                     <input name='githubPRLink' id='githubPRLink' class="form__input font-body" type="text"
-                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM (optional)" value=""
+                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM (optional)" value="" required
                     />
                   </div>
 
@@ -96,19 +96,14 @@
                   </div>
 
                   <div class="mt-2 row">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12">
                       <label class="form__label" for="hoursWorked">{% trans "Hours Worked" %}</label>
                       <input name='hoursWorked' id='hoursWorked' class="form__input font-body" type="number" placeholder="1 (feel free to approximate)"
                         value="" min="0" step="0.1"
                       />
                     </div>
 
-                    <div class="col-12 col-md-6">
-                      <label class="form__label" for="notificationEmail">{% trans "Notification Email" %}</label>
-                      <input name='notificationEmail' id='notificationEmail'  class="form__input font-body" type="email"
-                        placeholder="you@domain.co (optional, but recommended for notifications)"
-                        value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{ notificationEmail }}{% endif %}"
-                      />
+                    <div class="col-12">
                       {% if show_information_publicly_checkbox %}
                         {% include "shared/show_information_publicly.html" with id="show_email_publicly" %}
                       {% endif %}
@@ -117,11 +112,9 @@
 
                   {% include 'shared/rating.html' with counterparty='contributor' id='str' data='true' label="Rate this funder"%}
 
+
                   {% if is_bounties_network %}
-                    <div id="gas-section" class="mt-4">
-                      {% include 'shared/bounty_actions_hidden_vars.html' %}
-                      {% include 'shared/wallet_estimate.html' %}
-                    </div>
+                    {% include 'shared/bounty_actions_hidden_vars.html' %}
                   {% endif %}
 
                   <div class="mt-2 terms_container">
@@ -179,7 +172,6 @@
   </script>
 
   {% if is_bounties_network %}
-    <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>

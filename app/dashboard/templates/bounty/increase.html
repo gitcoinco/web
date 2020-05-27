@@ -83,9 +83,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                     <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                   </div>
-                  <div id="gas-section" class="py-4">
-                    {% include 'shared/wallet_estimate.html' %}
-                  </div>
                   {% if FEE_PERCENTAGE != 0 %}
                     <div id="fee-section" class="mt-4">
                       <h5 class="font-subheader">{% trans "No Surprises" %}</h5>
@@ -181,7 +178,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% endif %}
   </script>
 
-  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
