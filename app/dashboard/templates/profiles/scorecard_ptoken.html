@@ -1,0 +1,35 @@
+{% load i18n static avatar_tags %}
+<div class="col-12 col-lg-3">
+  <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+    <div class="card-header font-subheader">
+        <b>PROOF</b>
+      {% trans "Token" %}
+      <div id="tooltip" class="float-right mt-2">
+        <i class='fa fa-info-circle' data-toggle="tooltip"
+          data-placement="bottom" title="Proof token">
+        </i>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>
+            <b>50 DAI</b> per token
+            <div><small>Worth one hour of {{profile.handle}}'s time</small></div>
+        </li>
+        <li><b>50</b> Total Supply</li>
+        <li><b>87</b> Purchases</li>
+        <li><b>63</b> Redemptions</li>
+        <li><b>20</b> Holders</li>
+        <li>
+          <!-- todo: add holders with holders -->
+        </li>
+        <li>
+            <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" id="buy_ptoken">BUY</button>
+            <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" id="redeem_ptoken">REDEEM</button>
+            <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" id="redeem_ptoken">CREATE A PERSONAL TOKEN</button>
+        </li>
+    </ul>
+    </div>
+  </div>
+</div>
+
