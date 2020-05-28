@@ -52,7 +52,9 @@
             <div>
               Create a personal token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
             </div>
-            <button @click="createToken(token.id)" class="btn btn-sm btn-outline-gc-blue m-2">Create</button>
+            <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
+              Create
+            </button>
           </div>
         </div>
       </div>
@@ -63,7 +65,7 @@
     <div class="row">
       <div class="col-12">
         <div class="bg-white rounded border my-4">
-          <div class="p-4 border-bottom font-weight-bold" v-if="pTokens.open">[[ pTokens.in_progress.length ]] Open</div>
+          <div class="p-4 border-bottom font-weight-bold" v-if="pTokens.open">[[ pTokens.open.length ]] Open</div>
 
           <ul class="list-unstyled list-bounty">
             <li v-for="(token, key) in pTokens.open" :key="token.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
@@ -218,4 +220,43 @@
       </div>
     </div>
   </section>
+
+  <div class="modal fade" id="createTokenModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create a Personal Token</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form class="modal-body">
+          <div class="form-group">
+            <label for="tokenName">Token Name</label>
+            <input type="text" class="form-control" id="tokenName" aria-describedby="tokenName" placeholder="My Token">
+          </div>
+          <div class="form-group">
+            <label for="symbol">Symbol</label>
+            <input type="text" class="form-control" id="symbol" placeholder="TOK">
+          </div>
+          <div class="form-group">
+            <label for="price">Price (in DAI)</label>
+            <input type="number" class="form-control" id="price" placeholder="50">
+          </div>
+          <div class="form-group">
+            <label for="supply">Supply</label>
+            <input type="number" class="form-control" id="supply" placeholder="10">
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="TOSCheck">
+            <small id="TOSText" class="form-check-label">I have read, understand, and agree to, the Terms of Service.</small>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Confirm</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
