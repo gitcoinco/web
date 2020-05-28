@@ -915,9 +915,6 @@
             case 4:
               newPathName = 'participants';
               break;
-            case 5:
-              newPathName = 'about';
-              break;
           }
           let newUrl = `/hackathon/${vm.hackathonObj['slug']}/${newPathName}/${window.location.search}`;
 
