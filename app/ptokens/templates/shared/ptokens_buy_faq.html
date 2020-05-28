@@ -16,8 +16,7 @@
 {% endcomment %}
 {% load static humanize i18n %}
 <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-<section class="container-fluid">
-  <div class="container">
+
     <h3 id='faq' class="text-center my-5">FAQ</h3>
 
     <div class="mb-3 faq-item">
@@ -46,15 +45,15 @@
     <div class="mb-3 faq-item">
       <h5 class="accordion">What happens to my personal tokens when they are used?</h5>
       <div class="panel">
-        <p>When a Creator accepts your request, the equivalent amount of personal tokens is automatically burned and removed from the supply forever.</p>
+        <p>When a Creator accepts your request, you are responsible for marking it as complete. Upon marking a request as complete, you will be prompted to complete a transaction that sends the amount of personal tokens used back to the Creator's sale contract.</p>
       </div>
     </div>
 
     <div class="mb-3 faq-item">
       <h5 class="accordion">A Creator accepted my request and did not meet my expectations - What should I do?</h5>
       <div class="panel">
-        <p>Under each profile you’ll see a feedback score. This is the main place where we can see how a creator is holding up their end of the bargain. Please submit an appropriate overview on what happened and we’ll look to see if further action needs to be taken.</p>
+        <p>Seeing as you have the power to Complete a request (thus transferring the personal tokens) you can always Cancel the redemption to avoid having your tokens revoked without work being performed. We strongly recommend trying to resolve this issue directly with the Creator via Chat as they are unlikely to accept future requests from you if you do not complete your existing requests first.</p>
       </div>
     </div>
-</section>
+
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
