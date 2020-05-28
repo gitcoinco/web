@@ -32,19 +32,20 @@ from app.utils import get_profiles_from_text
 from marketing.utils import func_name, get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
-    render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
-    render_bounty_request, render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment,
-    render_faucet_rejected, render_faucet_request, render_featured_funded_bounty, render_funder_payout_reminder,
-    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email,
-    render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
-    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
-    render_nth_day_email_campaign, render_quarterly_stats, render_request_amount_email, render_reserved_issue,
-    render_share_bounty, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
-    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
-    render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
-    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
+    render_bounty_expire_warning, render_bounty_feedback, render_bounty_request, render_bounty_startwork_expire_warning,
+    render_bounty_unintersted, render_comment, render_faucet_rejected, render_faucet_request,
+    render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
+    render_gdpr_update, render_grant_cancellation_email, render_grant_update, render_kudos_email,
+    render_match_distribution, render_match_email, render_mention, render_new_bounty, render_new_bounty_acceptance,
+    render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email,
+    render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign, render_quarterly_stats,
+    render_request_amount_email, render_reserved_issue, render_share_bounty,
+    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
+    render_successful_contribution_email, render_support_cancellation_email, render_tax_report,
+    render_thank_you_for_supporting_email, render_tip_email, render_unread_notification_email_weekly_roundup,
+    render_wallpost, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -1178,40 +1179,53 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
     if to_emails is None:
         to_emails = []
     
-    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities
+    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities, upcoming_dates, upcoming_dates, email_announcements
     quest = quest_of_the_day()
     grant = upcoming_grant()
-    hackathon = upcoming_hackathon()
+    dates = list(upcoming_hackathon()) + list(upcoming_dates())
+    announcements = email_announcements()
 
     offers = f""
     if to_emails:
         offers = ""
 
+        profile = email_to_profile(to_emails[0])
+        notifications = get_notification_count(profile, 7, timezone.now())
+        if notifications:
+            plural = 's' if notifications > 1 else ''
+            notifications = f"💬 {notifications} Notification{plural}"
+        else:
+            notifications = ''
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
-            offers = f"💰1 New Action"
+            offers = f"⚡️ 1 New Action"
 
         new_bounties = ""
         if bounties:
             plural_bounties = "Bounties" if len(bounties)>1 else "Bounty"
-            new_bounties = f"⚡️{len(bounties)} {plural_bounties}"
+            new_bounties = f"💰{len(bounties)} {plural_bounties}"
         elif old_bounties:
             plural_old_bounties = "Bounties" if len(old_bounties)>1 else "Bounty"
-            new_bounties = f"⚡️{len(old_bounties)} {plural_old_bounties}"
+            new_bounties = f"💰{len(old_bounties)} {plural_old_bounties}"
             
         new_quests = ""
         if quest:
             new_quests = f"🎯1 Quest"
 
-        new_hackathons = ""
-        if hackathon:
-            plural_hackathon = "Hackathons" if len(hackathon)>1 else "Hackathon"
-            new_hackathons = f"🛠️{len(hackathon)} {plural_hackathon}"
+        new_dates = ""
+        if dates:
+            plural_dates = "Events" if len(dates)>1 else "Event"
+            new_dates = f"🛠📆{len(dates)} {plural_dates}"
+
+        new_announcements = ""
+        if announcements:
+            plural = "Announcement"
+            new_announcements = f"📣 1 {plural}"
 
         def comma(a):
-            return ", " if a and (new_bounties or new_quests or new_hackathons) else ""
+            return ", " if a and (new_bounties or new_quests or new_dates or new_announcements or notifications) else ""
 
-        subject = f"Gitcoin Daily {offers}{comma(offers)}{new_bounties}{comma(new_bounties)}{new_quests}{comma(new_quests)}{new_hackathons}"
+        subject = f"{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}"
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -1220,10 +1234,10 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
             from_email = settings.CONTACT_EMAIL
 
             from django.contrib.auth.models import User
-            user = User.objects.get(email__iexact=to_email)
+            user = User.objects.filter(email__iexact=to_email).first()
             activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=hackathon, latest_activities=activities)
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])

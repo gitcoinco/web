@@ -61,6 +61,23 @@
     display: inline-block;
     margin-top: 3px;
   }
+  .arrow-up{
+  width: 0; 
+  height: 0; 
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 15px solid #ddd; 
+  margin-left: auto;
+  margin-right: auto;
+}
+  #founder_announce {
+    background-color: #fafafa;
+    margin-bottom: 15px;
+
+  }
+  #founder_announce a{
+    font-weight: bold;
+  }
 
 </style>
 
@@ -68,17 +85,18 @@
   <h1 class="text-centre">{% trans "Gitcoin Daily Digest" %}</h1>
 </div>
 
-{% if show_action %}
+{% if email_announcements %}
 
-<h1>1 New Daily Action</h1>
-
-<a href={{base_url}}>
-<img src={{base_url}}static/v2/images/offer.gif>
-</a> 
-<BR>
-<a href={{base_url}}>
-This action expires at end of day, so act soon!
+<a href="https://gitcoin.co/owocki">
+<img style="width: 100px; height: 100px;" src="https://gitcoin.co/dynamic/avatar/owocki">
 </a>
+<div class="arrow-up">&nbsp;</div>
+<div id="founder_announce" style="border: 1px solid #ddd; max-width: 500px; text-align: center; margin-left: auto; margin-right: auto;">
+<h3 class="no-subtitle" style="margin-top: 5px; margin-bottom: 5px;">{{email_announcements.title}}</h3>
+<p style="margin: 5px; border-radius: 5px;">
+  {{email_announcements.desc|safe}}
+</p>
+</div>  
 
 <HR>
 {% endif %}
@@ -99,10 +117,20 @@ This action expires at end of day, so act soon!
 {% endif %}
 </div>
 
-{% if upcoming_events %}
+{% if upcoming_events or upcoming_dates %}
   <div class="full-width text-center" style="background-color: #000000; color: #ffffff; margin: 0 auto; padding-top: 15px; padding-bottom:15px">
     <h3 style="color: #ffffff;">{% trans "⏰Save The Date" %}</h3>
     <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
+
+    <div class="upcoming-events-container">
+      {{upcoming_dates|length}}
+      {% for event in upcoming_dates %}
+        <img class="event-img" src="{{event.img_url}}">
+        <h4 style="">{{event.title}}</h4>
+        <p>{{event.date}}</p>
+        <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
+      {% endfor %}
+    </div>
 
     <div class="upcoming-events-container">
       {% for event in upcoming_events %}
@@ -128,6 +156,22 @@ This action expires at end of day, so act soon!
 <br>
 <hr>
 
+{% if show_action %}
+
+<h3 class="no-subtitle" style="margin-top: 15px;">{% trans "🌈1 New Daily Action" %}</h3>
+
+<a href={{base_url}}>
+<img style="width: 306px; height: 80px; margin-top: 5px; margin-bottom: 5px;" src={{base_url}}static/v2/images/offer.gif>
+</a> 
+<BR>
+<a href={{base_url}}>
+This action expires at end of day, so act soon!
+</a>
+
+<HR>
+{% endif %}
+
+
 {% if bounties %}
   <div style="margin-bottom: 5em;">
     <h3 class="no-subtitle">{% trans "💰Start Earning!" %}</h3>
@@ -152,7 +196,7 @@ This action expires at end of day, so act soon!
 {% endif %}
 
 <p>
-  {% trans "You are receiving this email because your email address is on the notification list" %}.  <a href="{% url 'email_settings' subscriber.priv %}" style="text-decoration: underline;">{% trans "Manage Email Settings" %}</a>.
+  {% trans "You are receiving this email because you are subscribed to daily emails." %}  <a href="{% url 'email_settings' subscriber.priv %}" style="text-decoration: underline;">{% trans "Manage Email Settings" %}</a> | <a href="{% url 'email_settings' subscriber.priv %}?type=new_bounty_notifications" style="text-decoration: underline;">{% trans "Unsubscribe" %}</a>.
 </p>
 
 {% endblock %}
