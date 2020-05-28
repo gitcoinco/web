@@ -321,8 +321,8 @@
 
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             {% if can_pin %}
-              <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the feed." hrefo=#
-              data-url="{{rw.url}}"
+              <a class="pin_activity mr-2 dropdown-item px-3 font-smaller-5" data-toggle="tooltip" title="Pinned post will display at the top of the feed." href=#
+              data-url="{{row.url}}"
               data-action="pin"
               data-state="{% if row.pin.what == what or is_pin %}unpin{% else %}pin{%endif%}"
               data-pk="{{row.pk}}">
