@@ -4319,7 +4319,7 @@ def get_hackathons(request):
     hackathon_events = []
     tribes = []
 
-    if current_hackathon_event.count():
+    if current_hackathon_event.exists():
         for event in current_hackathon_event:
             event_bounties = Bounty.objects.filter(event=event, network=network)
 
@@ -4334,7 +4334,7 @@ def get_hackathons(request):
                 'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
             })
 
-            if event_bounties.current().count():
+            if event_bounties.current().exists():
                 for bounty in event_bounties.current():
                     for tribe in Profile.objects.filter(handle=bounty.org_name, is_org=True):
                         tribes.append({
@@ -4344,7 +4344,7 @@ def get_hackathons(request):
                         'path': tribe.absolute_url
                         })
 
-    if upcoming_hackathon_event.count():
+    if upcoming_hackathon_event.exists():
         for event in upcoming_hackathon_event:
             event_bounties = Bounty.objects.filter(event=event, network=network)
 
@@ -4359,7 +4359,7 @@ def get_hackathons(request):
                 'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
             })
 
-    if finished_hackathon_event.count():
+    if finished_hackathon_event.exists():
         for event in finished_hackathon_event:
             event_bounties = Bounty.objects.filter(event=event, network=network)
 
@@ -4383,6 +4383,16 @@ def get_hackathons(request):
         'events': hackathon_events,
         'tribes': tribes,
     }
+
+    params['featured'] = HackathonEvent.objects.filter(is_featured=True)[0] if \
+        HackathonEvent.objects.filter(is_featured=True).exists() else \
+        False
+
+    if params['featured']:
+        featured = HackathonEvent.objects.filter(is_featured=True)[0].pk
+        params['featured_conversation'] = f'hackathon:{featured}' if featured \
+            else False
+
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 
 
