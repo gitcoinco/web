@@ -81,7 +81,7 @@ ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
     p = premailer.Premailer(html, base_url=settings.BASE_URL)
-    return premailer.transform(html)
+    return p.transform()
 
 
 def render_featured_funded_bounty(bounty):
