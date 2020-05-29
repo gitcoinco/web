@@ -250,24 +250,27 @@
       </div>
 
       <div class="row my-4">
-        <h3 class="text-uppercase font-weight-bolder">Hack with these tribes</h3>
-
         <div class="container">
-          {% if tribes|length %}
-            {% for tribe in tribes %}
-            <div class="col-xs-12 col-sm-6 col-lg-4 text-center" align="center">
-              <div class="mb-5 mt-5">
-                <a href="{{ tribe.path }}" target="_blank" style="text-decoration:none;">
-                  <img width="128" src="{{ tribe.logo_path }}" alt="Tribe logo" />
-                  <span class="font-weight-bold d-flex align-items-center justify-content-around font-bigger-4 text-center mt-1 mb-1" style="color:black;">{{ tribe.display_name }}</span>
-                </a>
-                <div calss="small"><i class="fas fa-user-alt mr-1"></i> {{ tribe.members }} members</div>
-              </div>
-            </div>
-            {% endfor %}
-          {% endif %}
-          <div class="text-center mb-5" align="center">
-            <a class="font-bigger-3" href="{% url 'tribes_directory' %}">See all tribes</a>
+          <div class="row">
+            <h3 class="text-uppercase font-weight-bolder">Hack with these tribes</h3>
+          </div>
+          <div class="row">
+            {% if tribes|length %}
+              {% for tribe in tribes %}
+                <div class="col-xs-12 col-sm-5 col-lg-3 text-center" align="center">
+                  <div class="mb-5 mt-5">
+                    <a href="{{ tribe.path }}" target="_blank" style="text-decoration:none;">
+                      <img width="128" src="{{ tribe.logo_path }}" alt="Tribe logo" />
+                      <span class="font-weight-bold d-flex align-items-center justify-content-around font-bigger-4 text-center mt-1 mb-1" style="color:black;">{{ tribe.display_name }}</span>
+                    </a>
+                    <div calss="small"><i class="fas fa-user-alt mr-1"></i> {{ tribe.members }} members</div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          <div class="row text-center mb-5" align="center">
+            <div class="col-12"><a class="font-bigger-3" href="{% url 'tribes_directory' %}">See all tribes</a></div>
           </div>
         </div>
       </div>
