@@ -8,6 +8,9 @@ $(document).ready(function() {
     $('.nav-link').css('font-weight', '');
     $(this).addClass('active');
     $(this).css('font-weight', '700');
+
+
+    $('.hackathon-list').addClass('hidden');
     $('.hackathon-list.' + target).removeClass('hidden');
 
     $('html,body').animate({
