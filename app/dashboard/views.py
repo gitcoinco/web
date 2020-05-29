@@ -24,7 +24,7 @@ import logging
 import os
 import time
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.conf import settings
@@ -52,6 +52,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 import magic
+
+from app.services import TwilioService, RedisService
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
@@ -5202,3 +5204,72 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+@login_required
+def send_verification(request):
+    phone = request.POST.get('phone')
+    redis = RedisService().redis
+    twilio = TwilioService().verify
+
+    has_previous_validation = redis.get(f'verification:{request.user.id}:timestamp')
+    validation_attempts = redis.get(f'verification:{request.user.id}:attempts')
+    if not has_previous_validation:
+        verification = twilio.verifications.create(to=phone, channel='sms')
+        redis.set(f'verification:{request.user.id}:timestamp', timezone.now().isoformat())
+        redis.set(f'verification:{request.user.id}:phone', phone)
+        redis.set(f'verification:{request.user.id}:attempts', 0)
+    else:
+        cooldown = datetime.fromisoformat(has_previous_validation) + timedelta(minutes=1)
+        if int(validation_attempts.decode('utf-8')) < 4:
+            return JsonResponse({
+                'success': False,
+                'msg': 'number of attempts exceeded'
+            })
+        if cooldown > datetime.now():
+            return JsonResponse({
+                'success': False,
+                'msg': 'Wait a minute to try again'
+            })
+        verification = twilio.verifications.create(to=phone, channel='sms')
+        redis.set(f'verification:{request.user.id}:timestamp', timezone.now().isoformat())
+        redis.set(f'verification:{request.user.id}:phone', phone)
+        redis.set(f'verification:{request.user.id}:attempts', int(validation_attempts.decode('utf-8')) + 1)
+
+    return JsonResponse({
+        'success': True,
+        'msg': 'The verification number was sent'
+    })
+
+
+@login_required
+def validate_verification(request):
+    redis = RedisService().redis
+    twilio = TwilioService().verify
+    code = request.POST.get('code')
+
+    has_previous_validation = redis.get(f'verification:{request.user.id}:timestamp')
+    phone = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
+    if has_previous_validation:
+        verification = twilio.verification_checks.create(to=phone, code=code)
+        if verification.status == 'approved':
+            redis.delete(f'verification:{request.user.id}:timestamp')
+            redis.delete(f'verification:{request.user.id}:phone')
+            redis.delete(f'verification:{request.user.id}:attempts')
+            request.user.profile.sms_verification = True
+            request.user.profile.save()
+
+            return JsonResponse({
+                    'success': True,
+                    'msg': 'Verification completed'
+                })
+
+        return JsonResponse({
+            'success': False,
+            'msg': 'Failed verification'
+        })
+
+    return JsonResponse({
+        'success': False,
+        'msg': 'No verification process associated'
+    })

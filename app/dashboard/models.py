@@ -2234,7 +2234,7 @@ class Activity(SuperModel):
         if not self.metadata.get('video'):
             return 0
         try:
-            from app.redis_service import RedisService
+            from app.services import RedisService
             redis = RedisService().redis
             result = redis.get(self.pk)
             if not result:
@@ -2711,6 +2711,7 @@ class Profile(SuperModel):
     following_count = models.IntegerField(default=0, db_index=True, help_text='how many users are they following')
     earnings_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user earned crypto with Gitcoin')
     spent_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user spent crypto with Gitcoin')
+    sms_verification = models.BooleanField(default=False, help_text=_('SMS verification process'))
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
@@ -2929,7 +2930,7 @@ class Profile(SuperModel):
         if not self.chat_id:
             return 'offline'
         try:
-            from app.redis_service import RedisService
+            from app.services import RedisService
             redis = RedisService().redis
             status = redis.get(f"chat:{self.chat_id}")
             if not status:

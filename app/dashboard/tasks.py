@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
