@@ -83,7 +83,7 @@
               {% firstof featured.logo_svg or featured.logo as logo %}
               {% if logo %}
               <div class="col-2 col-lg-2">
-                  <img width="364" src="{{MEDIA_URL}}{{logo}}" alt="Featured hackathon logo" />
+                  <img width="364" height="318" src="{{MEDIA_URL}}{{logo}}" alt="Featured hackathon logo" />
               </div>
               {% endif %}
               </div>
@@ -91,7 +91,7 @@
           </div>
         </div>
         {% endif %}
-        <div class="col-3 col-lg-3 col-md-offset-2">
+        <div class="col-3 col-lg-3 mt-5">
           <div class="box-cta rounded text-center">
             <h3 class="my-2">Planning a hackathon for companies?</h3>
             <a href="https://hackathons.gitcoin.co/contact/" class="btn button--primary mt-5 mb-5 mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">Get Involved</a>
