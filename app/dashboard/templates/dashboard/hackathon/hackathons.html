@@ -71,11 +71,11 @@
               <div class="col-12 col-xl-6 mt-5">
                 <div class="row">
                   <div class="col-12">
-                  <p class="font-bigger-2">Register now for</p>
-                </div>
-                <div class="col-12">
-                  <h2>{{ featured.name }}</h2>
-                </div>
+                    <p class="font-bigger-2">Register now for</p>
+                  </div>
+                  <div class="col-12">
+                    <h2>{{ featured.name }}</h2>
+                  </div>
                 </div>
                 <div class="row mt-4">
                   <div class="col-12">
@@ -109,16 +109,37 @@
               </style>
 
               <div class="col-12 col-lg-2">
-                  <img id="featured-logo" src="{{MEDIA_URL}}{{logo}}" alt="Featured hackathon logo" />
+                  <img id="featured-logo" src="{{ MEDIA_URL }}{{ logo }}" alt="Featured hackathon logo" />
               </div>
               {% endif %}
               </div>
             </div>
           </div>
         </div>
+        {% else %}
+          <div class="col-12 col-lg-7">
+            <div class="box-cta rounded" style="width:100%;padding:0px 15x;">
+              <div class="container">
+                <div class="row">
+                  <div class="col-12 col-xl-6 mt-5">
+                    <div class="row">
+                      <div class="col-12">
+                        <p class="font-bigger-2">Learn, earn, network with the best open source projects</p>
+                        <p>Participate in Gitcoin hackathons, meet great devs, earn crypto and stay up to date on upcoming events be entering your email address below.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-2">
+                      <img width="316" src="/static/v2/images/hackathon/work_for_internet.svg" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         {% endif %}
-        <div class="col-12 col-lg-12 col-xl-3 mt-5">
+        <div class="col-12 col-lg-12 col-xl-3 mt-3">
           <div class="box-cta rounded text-center">
+            <img width="128" src="/static/v2/images/hackathon/hackathon_robot.png" />
             <h3 class="my-2">Planning a hackathon for companies?</h3>
             <a href="https://hackathons.gitcoin.co/contact/" class="btn button--primary mt-5 mb-5 mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">Get Involved</a>
           </div>
@@ -167,12 +188,12 @@
 
                 <div class="col-xs-12 col-md-9 col-lg-8 col-xl-5 mx-auto hackathon-list {{ event.title }} {% if event.title != 'current' %}hidden{% endif %}">
 
-                  <div class="card flex-row flex-wrap mb-5" id="{{event.hackathon.slug}}">
+                  <div class="card flex-row flex-wrap mb-5" id="{{ event.hackathon.slug }}">
 
                     <div class="card-header text-center col-3 col-sm-4 px-0 border-0 my-auto">
                       {% firstof event.hackathon.logo_svg or event.hackathon.logo as logo %}
                       {% if logo %}
-                        <img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
+                        <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ logo }}" alt="Hackathon logo" />
                       {% else %}
                         <div class="hackathon-card-logo text-center px-3 font-caption">
                           {{ event.hackathon.name }}
