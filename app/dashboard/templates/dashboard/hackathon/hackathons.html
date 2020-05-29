@@ -83,7 +83,7 @@
               {% firstof featured.logo_svg or featured.logo as logo %}
               {% if logo %}
               <div class="col-2 col-lg-2">
-                  <img width="364" height="318" src="{{MEDIA_URL}}{{logo}}" alt="Featured hackathon logo" />
+                  <img width="{{ featured.featured_logo_width }}" {% if featured_logo_height %}height="{{ featured.featured_logo_height }}"{% endif %} src="{{MEDIA_URL}}{{logo}}" alt="Featured hackathon logo" />
               </div>
               {% endif %}
               </div>
