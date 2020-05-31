@@ -1457,6 +1457,10 @@ class SendCryptoAssetQuerySet(models.QuerySet):
         """Filter results down to successful sends only."""
         return self.filter(tx_status='success').exclude(txid='')
 
+    def not_submitted(self):
+        """Filter results down to successful sends only."""
+        return self.filter(tx_status='not_subed')
+
     def send_pending(self):
         """Filter results down to pending sends only."""
         return self.filter(tx_status='pending').exclude(txid='')
@@ -1496,6 +1500,7 @@ class SendCryptoAsset(SuperModel):
         ('error', 'error'),
         ('unknown', 'unknown'),
         ('dropped', 'dropped'),
+        ('not_subed', 'not_subed'), # not submitted to chain yet
     )
 
     web3_type = models.CharField(max_length=50, default='v3')
@@ -2853,7 +2858,7 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
         )
-        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
 
         # remove this line IFF we ever move to showing multiple kudos transfers on a profile
         kudos_transfers = kudos_transfers.distinct('id')
