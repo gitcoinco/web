@@ -22,6 +22,7 @@ import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 import requests
 from dashboard.utils import has_tx_mined
@@ -57,4 +58,6 @@ class Command(BaseCommand):
             kt.receive_txid = txid
             kt.receive_tx_status = 'success'
             kt.tx_status = 'success'
+            kt.received_on = timezone.now()
+            kt.tx_time = timezone.now()
             kt.save()
