@@ -17,11 +17,12 @@
 '''
 
 import logging
-import warnings
 import time
+import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+
 import requests
 from dashboard.utils import has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -57,6 +58,3 @@ class Command(BaseCommand):
             kt.receive_tx_status = 'success'
             kt.tx_status = 'success'
             kt.save()
-
-
-

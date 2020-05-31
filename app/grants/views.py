@@ -194,7 +194,7 @@ def get_fund_reward(request, grant):
         secret=_key,
         comments_to_put_in_kudos_transfer=f"Thank you for funding '{grant.title}' on Gitcoin Grants!",
         sender_profile=Profile.objects.get(handle='gitcoinbot'),
-        make_paid_for_first_minutes=300,
+        make_paid_for_first_minutes=0,
         )
 
     #store btc on session
