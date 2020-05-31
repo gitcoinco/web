@@ -220,16 +220,15 @@ Vue.component('project-directory', {
 
       let apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
 
-      var getProjects = fetchData(apiUrlProjects, 'GET');
+      const getProjects = fetchData(apiUrlProjects, 'GET');
 
       $.when(getProjects).then(function(response) {
         vm.hackathonProjects = [];
-        response.data.forEach(function(item) {
+        response.results.forEach(function(item) {
           vm.hackathonProjects.push(item);
         });
 
-        vm.projectsNumPages = response.num_pages;
-        vm.projectsHasNext = response.has_next;
+        vm.projectsHasNext = response.next;
         vm.numProjects = response.count;
         if (vm.projectsHasNext) {
           vm.projectsPage = ++vm.projectsPage;
@@ -269,7 +268,9 @@ Vue.component('project-directory', {
       media_url,
       searchTerm: null,
       bottom: false,
-      params: {},
+      params: {
+        filters: []
+      },
       isFunder: false,
       showModal: false,
       showFilters: true,

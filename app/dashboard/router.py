@@ -21,11 +21,12 @@ import logging
 import time
 from datetime import datetime
 
-from django.db.models import Count, F
+from django.db.models import Count, F, Q
 
 import django_filters.rest_framework
 from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
+from rest_framework.pagination import PageNumberPagination
 from retail.helpers import get_ip
 
 from .models import (
@@ -203,6 +204,70 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
         model = HackathonProject
         fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members')
         depth = 1
+
+
+class HackathonProjectsPagination(PageNumberPagination):
+    page_size = 100
+
+
+class HackathonProjectsViewSet(viewsets.ModelViewSet):
+    queryset = HackathonProject.objects.prefetch_related('bounty', 'profiles').all().order_by('id')
+    serializer_class = HackathonProjectSerializer
+    pagination_class = HackathonProjectsPagination
+
+    def get_queryset(self):
+
+        q = self.request.query_params.get('search', '')
+        order_by = self.request.query_params.get('order_by', '-created_on')
+        skills = self.request.query_params.get('skills', '')
+        filters = self.request.query_params.get('filters', '')
+        sponsor = self.request.query_params.get('sponsor', '')
+        hackathon_id = self.request.query_params.get('hackathon', '')
+
+        if hackathon_id:
+            try:
+                hackathon_event = HackathonEvent.objects.get(id=hackathon_id)
+            except HackathonEvent.DoesNotExist:
+                hackathon_event = HackathonEvent.objects.last()
+
+            queryset = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
+                status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
+
+            if sponsor:
+                queryset = queryset.filter(
+                    Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username__in=[sponsor])
+                )
+        elif sponsor:
+            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
+                bounty__bounty_owner_github_username__in=[sponsor])).exclude(
+                status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
+
+        if q:
+            queryset = queryset.filter(
+                Q(name__icontains=q) |
+                Q(summary__icontains=q) |
+                Q(profiles__handle__icontains=q)
+            )
+
+        if skills:
+            queryset = queryset.filter(
+                Q(profiles__keywords__icontains=skills)
+            )
+
+        if 'winners' in filters:
+            queryset = queryset.filter(
+                Q(badge__isnull=False)
+            )
+        if 'lfm' in filters:
+            queryset = queryset.filter(
+                Q(looking_members=True)
+            )
+        if 'submitted' in filters:
+            queryset = queryset.filter(
+                Q(bounty__bounty_state='work_submitted')
+            )
+
+        return queryset
 
 
 class BountySerializerSlim(BountySerializer):
@@ -561,3 +626,4 @@ router.register(r'bounties', BountiesViewSet)
 router.register(r'checkin', BountiesViewSetCheckIn)
 
 router.register(r'bounty', BountyViewSet)
+router.register(r'projects_fetch', HackathonProjectsViewSet)

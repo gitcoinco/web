@@ -681,9 +681,6 @@ urlpatterns = [
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 
-    #projets
-    url(r'^api/v0.1/projects_fetch/', dashboard.views.projects_fetch, name='projects_fetch'),
-
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),
 ]

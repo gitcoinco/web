@@ -4544,6 +4544,7 @@ class HackathonEvent(SuperModel):
 
     name = models.CharField(max_length=255)
     slug = models.SlugField(blank=True)
+    short_code = models.CharField(max_length=5, default='', help_text='used in the chat for better channel grouping')
     logo = models.ImageField(blank=True)
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
