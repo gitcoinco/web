@@ -636,8 +636,7 @@ def viz_draggable(request, key='email_open'):
     bfs = BountyFulfillment.objects.filter(accepted=True)
     limit = 50
     usernames = list(
-        bfs.exclude(profile__handle=''
-                    ).distinct('profile__handle').values_list('profile__handle', flat=True)
+        bfs.exclude(profile__handle='').distinct('profile__handle').values_list('profile__handle', flat=True)
     )[0:limit]
     if request.GET.get('data'):
         output = []

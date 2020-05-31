@@ -56,6 +56,7 @@ YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY'
 VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
 FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
+PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='YOUR-SupEr-SecRet-TeSt-PYPL-KeY')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -141,8 +142,8 @@ INSTALLED_APPS = [
     'wiki.plugins.notifications.apps.NotificationsConfig',
     'wiki.plugins.images.apps.ImagesConfig',
     'wiki.plugins.macros.apps.MacrosConfig',
+    'adminsortable2',
     'debug_toolbar',
-
 ]
 
 MIDDLEWARE = [
@@ -239,7 +240,7 @@ if DEBUG and not SUPRESS_DEBUG_TOOLBAR:
         "SHOW_TOOLBAR_CALLBACK" : callback,
     }
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
-    
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
@@ -812,6 +813,7 @@ MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=6
 
 MINICLR_ADDRESS = env('MINICLR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+
 
 AVATAR_ADDRESS = env('AVATAR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 AVATAR_PRIVATE_KEY = env('AVATAR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')

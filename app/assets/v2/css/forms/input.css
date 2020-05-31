@@ -79,7 +79,7 @@ textarea.form__input {
   border-color:transparent!important;
 }
 
-.form-control.bg-lightblue:focus {
+.dark-mode .form-control.bg-lightblue:focus {
   background: var(--main-bg) !important;
   color: white;
 }

@@ -42,7 +42,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import (
-    Activity, Bounty, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
+    Activity, Bounty, HackathonEvent, Profile, Tip, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
@@ -1092,6 +1092,7 @@ def activity(request):
         'pinned': None,
         'target': f'/activity?what={what}&trending_only={trending_only}&page={next_page}',
         'title': _('Activity Feed'),
+        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
         'my_tribes': list(request.user.profile.tribe_members.values_list('org__handle',flat=True)) if request.user.is_authenticated else [],
     }
     context["activities"] = [a.view_props_for(request.user) for a in page]
@@ -1110,6 +1111,10 @@ def create_status_update(request):
         resource = request.POST.get('resource', '')
         provider = request.POST.get('resourceProvider', '')
         resource_id = request.POST.get('resourceId', '')
+        attach_token = request.POST.get('attachToken', '')
+        attach_amount = request.POST.get('attachAmount', '')
+        attach_token_name = request.POST.get('attachTokenName', '')
+        tx_id = request.POST.get('attachTxId', '')
 
         kwargs = {
             'activity_type': 'status_update',
@@ -1125,6 +1130,15 @@ def create_status_update(request):
             }
         }
 
+        if tx_id:
+            kwargs['tip'] = Tip.objects.get(txid=tx_id)
+            amount = float(attach_amount)
+            kwargs['metadata']['attach'] = {
+                'amount': amount,
+                'token': attach_token,
+                'token_name': attach_token_name,
+            }
+
         if resource == 'content':
             meta = kwargs['metadata']['resource']
             meta['title'] = request.POST.get('title', '')
@@ -1138,7 +1152,8 @@ def create_status_update(request):
             result = what.split(':')[1]
             if key and result:
                 key = f"{key}_id"
-                kwargs[key] = result
+                if key != 'hackathon_id':
+                    kwargs[key] = result
                 kwargs['activity_type'] = 'wall_post'
 
         if request.POST.get('has_video'):

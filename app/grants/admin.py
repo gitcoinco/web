@@ -86,13 +86,13 @@ class GrantAdmin(GeneralAdmin):
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2'
+        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list',
         'subscriptions_links', 'contributions_links', 'link',
-        'migrated_to'
+        'migrated_to', 'view_count'
     ]
     list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
@@ -105,6 +105,9 @@ class GrantAdmin(GeneralAdmin):
         if instance.logo_svg and instance.logo_svg.url:
             return mark_safe(f'<img src="{instance.svg.url}" width="300" height="300" />')
         return mark_safe('N/A')
+
+    def view_count(self, instance):
+        return instance.get_view_count
 
     def team_member_list(self, instance):
         items = []

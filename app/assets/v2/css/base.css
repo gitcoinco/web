@@ -1642,3 +1642,7 @@ div.busyOverlay {
 .bg-shade-2{
   background: var(--bg-shade-2);
 }
+.dark-mode #CookielawBanner{
+  background: var(--main-bg);
+  color: white;
+}
