@@ -439,6 +439,28 @@
                                 </select2>
                               </div>
                             </div>
+
+
+                            <div class="pb-2 border-bottom form-group">
+                              <div class="w-100 p-2">
+                                <fieldset class="">
+                                  <label for="" class="font-weight-bold">Star Rating</label>
+                                  <div class="rating font-smaller-4">
+                                    <input type="radio"  name="rating" value="5" v-model="params.rating" />
+                                    <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
+                                    <input type="radio" name="rating" value="4" v-model="params.rating" />
+                                    <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
+                                    <input type="radio" name="rating" value="3" v-model="params.rating" />
+                                    <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
+                                    <input type="radio"  name="rating" value="2" v-model="params.rating" />
+                                    <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
+                                    <input type="radio" name="rating" value="1" v-model="params.rating" />
+                                    <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
+                                  </div>
+                                </fieldset>
+                              </div>
+                            </div>
+
                             <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                             <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
                               <span class="font-weight-bold">[[ numProjects ]]</span> projects found
@@ -478,7 +500,7 @@
                                         <b-dropdown-item-button @click.prevent="chatWindow(project.chat_channel_id);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
                                          [[ project.name ]]'s Chat Channel
                                         </b-dropdown-item-button>
-                                        <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                        <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
                                           @ [[ profile.handle ]]
                                         </b-dropdown-item-button>
                                       </b-dropdown>
@@ -498,6 +520,11 @@
                                     <p v-if="project.message" class="info-card-desc">
                                       [[ project.message ]]
                                     </p>
+                                  </div>
+
+                                  <div class="card-user_stars text-center my-2">
+                                    <i class="far fa-star" :class="star <= project.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in project.avg_rating.overall.toFixed(), 5"></i>
+                                    ([[ project.avg_rating.total_rating ]] ratings)
                                   </div>
 
                                   <div class="font-smaller-2 mt-4">

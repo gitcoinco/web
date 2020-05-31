@@ -22,16 +22,20 @@ import time
 from datetime import datetime
 
 from django.db.models import Count, F, Q
-
 import django_filters.rest_framework
 from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
 from retail.helpers import get_ip
 
+from bounty_requests.models import (
+    BountyRequest
+)
+
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountyInvites, BountyRequest, HackathonEvent, HackathonProject, Interest,
-    Profile, ProfileSerializer, SearchHistory, TribeMember,
+    Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent,
+    HackathonProject, HackathonProjectFeedbackEntry, Interest, Profile, ProfileSerializer,
+    SearchHistory, TribeMember
 )
 from .tasks import increment_view_count
 
@@ -195,14 +199,24 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         return bounty
 
 
+class HackathonProjectFeedbackSerializer(serializers.ModelSerializer):
+
+    sender = ProfileSerializer()
+
+    class Meta:
+        model = HackathonProjectFeedbackEntry
+        fields = ('pk', 'sender', 'comment', 'rating')
+
 class HackathonProjectSerializer(serializers.ModelSerializer):
     bounty = BountySerializer()
     profiles = ProfileSerializer(many=True)
     hackathon = HackathonEventSerializer()
+    project_feedbacks_got = HackathonProjectFeedbackSerializer(many=True)
+    avg_rating = serializers.JSONField(source='get_avg_rating')
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'project_feedbacks_got', 'avg_rating')
         depth = 1
 
 

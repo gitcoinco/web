@@ -9,10 +9,16 @@ Vue.mixin({
     };
   },
   methods: {
-    chatWindow: function(handle) {
-      let vm = this;
+    chatWindow: function(channel, dm) {
+      dm = dm | !channel;
+      channel = channel | 'town-square';
 
-      const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
+      let vm = this;
+      let hackathonTeamSlug = 'hackathon';
+      let gitcoinTeamSlug = 'gitcoin';
+      let isHackathon = (document.hackathon_id !== null);
+
+      const url = channel ? `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channel'}/@${channel}` : `${vm.chatURL}/`;
 
       window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
     }

@@ -4731,6 +4731,53 @@ class HackathonProject(SuperModel):
     def get_absolute_url(self):
         return self.url()
 
+    def get_avg_rating(self, scale=1):
+        """Returns the average star ratings (overall, and total ratings) as well as a list of comments
+        for a particular user"""
+
+        feedbacks = HackathonProjectFeedbackEntry.objects.filter(receiver_project=self).all()
+
+        average_rating = {
+            'overall': sum([feedback.rating for feedback in feedbacks]) * scale / feedbacks.count() if feedbacks.count() != 0 else 0,
+            'total_rating': feedbacks.count()
+        }
+
+        return average_rating
+
+
+
+class HackathonProjectFeedbackEntry(SuperModel):
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='project_feedbacks_sent',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    receiver_project = models.ForeignKey(
+        'dashboard.HackathonProject',
+        related_name='project_feedbacks_got',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    rating = models.SmallIntegerField(blank=True, default=0)
+    comment = models.TextField(default='', blank=True)
+    private = models.BooleanField(help_text=_('whether this feedback can be shown publicly'), default=True)
+
+    def visible_to(self, user):
+        """Whether this user can see the feedback ornot"""
+        if not self.private:
+            return True
+        if user.is_staff:
+            return True
+        # if self.receiver_project.bounty check for profile being in the bounty org or a judge of the project?
+        if not user.is_authenticated:
+            return False
+
+        return False
+
+
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
         'dashboard.Bounty',
