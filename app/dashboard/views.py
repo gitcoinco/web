@@ -5328,24 +5328,29 @@ def bulkDM(request):
 
             chat_driver = Driver(driver_opts)
             chat_driver.login()
+            handles = list(set(handles.split(',')))
 
-            for to_handle in handles.split(','):
+            for to_handle in handles:
                 to_handle = to_handle.lower().strip()
-                to_profile = Profile.objects.get(handle=to_handle)
+                to_profile = Profile.objects.filter(handle=to_handle).first()
+                if not to_profile:
+                    continue
                 to_user_id = to_profile.chat_id
-
-                response = chat_driver.client.make_request('post', 
-                    '/channels/direct', 
-                    options=None, 
-                    params=None, 
-                    data=f'["{to_user_id}", "{from_user_id}"]', 
-                    files=None, 
-                    basepath=None)
-                channel_id = response.json()['id']
-                chat_driver.posts.create_post(options={
-                    'channel_id': channel_id,
-                    'message': message
-                    })
+                try:
+                    response = chat_driver.client.make_request('post', 
+                        '/channels/direct', 
+                        options=None, 
+                        params=None, 
+                        data=f'["{to_user_id}", "{from_user_id}"]', 
+                        files=None, 
+                        basepath=None)
+                    channel_id = response.json()['id']
+                    chat_driver.posts.create_post(options={
+                        'channel_id': channel_id,
+                        'message': message
+                        })
+                except Exception as e:
+                    messages.error(request, f'{to_handle} : {e}')
 
 
             messages.success(request, 'sent')
