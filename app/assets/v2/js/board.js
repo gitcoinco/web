@@ -3,7 +3,6 @@ let pTokens = {};
 let bounties = {};
 let authProfile = document.contxt.profile_id;
 let skills = document.skills;
-// let network = document.contxt.env === 'prod' ? 'mainnet' : 'rinkeby';
 
 Vue.mixin({
   methods: {
@@ -190,6 +189,10 @@ Vue.mixin({
     },
     redirect(url) {
       document.location.href = url;
+    },
+    createPToken() {
+      console.log(this.newPToken);
+      console.log(web3);
     }
   }
 });
@@ -213,6 +216,12 @@ if (document.getElementById('gc-board')) {
       authProfile: authProfile,
       skills: skills,
       matchingBounties: [],
+      newPToken: {
+        name: '',
+        symbol: '',
+        price: '',
+        supply: ''
+      },
       isLoading: {
         'open': true,
         'openContrib': true,

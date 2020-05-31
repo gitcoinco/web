@@ -23,7 +23,7 @@
 </script>
 <script src="{% url 'javascript-catalog' %}"></script>
 {% if not ignore_inject_web3 %}
-  {% include 'shared/shared_scripts.html' %}
+  {% include 'grants/shared/shared_scripts.html' %}
 {% endif %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if env == 'prod' %}
