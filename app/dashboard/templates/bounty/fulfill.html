@@ -76,9 +76,10 @@
                   </div>
 
                   <div class="mt-2">
-                    <label class="form__label" for="githubPRLink">{% trans "Github PR Link" %}</label>
+                    <label class="form__label" for="githubPRLink">{% trans "Project Link" %}</label>
                     <input name='githubPRLink' id='githubPRLink' class="form__input font-body" type="text"
-                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM (optional)" value=""
+                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM" value=""
+                      required
                     />
                   </div>
 
