@@ -11,7 +11,7 @@ $(document).ready(function() {
   $('select').on('change', function(evt) {
     $('.select2-selection__rendered').removeAttr('title');
   });
-  
+
   $('input[type=submit]').on('click', function(e) {
     // acutally submit form if data is present
     if ($('#network').val()) {
@@ -23,7 +23,7 @@ $(document).ready(function() {
     var contract_address = bounty_address();
     var contract_name = $('select[name=contract] option:selected').text().trim();
     var token_name = $('select[name=denomination] option:selected').text().trim();
-    
+
     // validation
     if (token_address == '0x0000000000000000000000000000000000000000') {
       _alert('You already are approved for this token');
@@ -37,11 +37,11 @@ $(document).ready(function() {
 
     e.preventDefault();
     // actual approval
-    var token_contract = web3.eth.contract(token_abi).at(token_address);
+    var token_contract = new web3.eth.Contract(token_abi,token_address);
     var to = contract_address;
 
     web3.eth.getCoinbase(function(_, from) {
-      token_contract.allowance.call(from, to, function(error, result) {
+      token_contract.methods.allowance.call(from, to, function(error, result) {
         if (error || result.toNumber() == 0) {
           var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
 
