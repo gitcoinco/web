@@ -1,0 +1,17 @@
+{
+    "symbol": "TAC",
+    "address": "0xf74555E67e0fA6EbB0CA4A06f19a9AE5bbe4D8F7",
+    "overview":{
+          "zh": "tacu交易所平台币"
+    },
+    "email": "jiangnan@tacu.com",
+    "website": "https://www.tacu.com",
+    "state": "NORMAL",
+    "published_on": "2017-11-01",
+    "initial_price":{
+          "USD":"0.1 USD"
+    },
+    "links": {
+      "twitter": "https://twitter.com/t3okciHzt4atLpF"
+    }
+  }
