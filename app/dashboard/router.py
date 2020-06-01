@@ -32,6 +32,7 @@ from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, BountyRequest, HackathonEvent, HackathonProject, Interest,
     Profile, ProfileSerializer, SearchHistory, TribeMember,
 )
+from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +48,10 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         model = BountyFulfillment
         fields = ('pk', 'fulfiller_email', 'fulfiller_address',
                   'fulfiller_github_username', 'fulfiller_metadata',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url',
-                  'payout_tx_id', 'payout_amount', 'token_name', 'payout_status')
+                  'fulfillment_id', 'accepted', 'profile', 'created_on',
+                  'accepted_on', 'fulfiller_github_url', 'payout_tx_id',
+                  'payout_amount', 'token_name', 'payout_status', 'tenant',
+                  'payout_type', 'fulfiller_identifier', 'funder_identifier')
 
 
 class HackathonEventSerializer(serializers.ModelSerializer):
@@ -449,6 +452,11 @@ class BountiesViewSet(viewsets.ModelViewSet):
                     logger.debug(e)
                     pass
 
+        # increment view counts
+        pks = [ele.pk for ele in queryset]
+        if len(pks):
+            view_type = 'individual' if len(pks) == 1 else 'list'
+            increment_view_count.delay(pks, queryset[0].content_type, self.request.user.id, view_type)
 
         return queryset
 

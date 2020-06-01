@@ -42,18 +42,20 @@ from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from chat.tasks import update_chat_notifications
-from dashboard.models import Profile, TokenApproval
+from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
 from marketing.mails import new_feedback
 from marketing.management.commands.new_bounties_email import get_bounties_for_keywords
-from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
+from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank, UpcomingDate
 from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
 from quests.models import Quest
 from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from retail.helpers import get_ip
+from townsquare.models import Announcement
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +101,11 @@ def get_settings_navs(request):
 
     return tabs
 
+def upcoming_dates():
+    return UpcomingDate.objects.filter(date__gt=timezone.now()).order_by('date')
+
+def email_announcements():
+    return Announcement.objects.filter(key='founders_note_daily_email', valid_from__lt=timezone.now(), valid_to__gt=timezone.now()).order_by('valid_to').first()
 
 def settings_helper_get_auth(request, key=None):
     # setup
@@ -983,12 +990,41 @@ def trending_quests():
         ).order_by('-recent_attempts').all()[0:10]
     return quests
 
+def quest_of_the_day():
+    quest = trending_quests()[0]
+    return quest
+
+def upcoming_grant():
+    grant = Grant.objects.order_by('-weighted_shuffle').first()
+    return grant
+
+def upcoming_hackathon():
+    try:
+        return HackathonEvent.objects.filter(end_date__gt=timezone.now(), visible=True).order_by('-start_date')
+    except HackathonEvent.DoesNotExist:
+        try:
+            return [HackathonEvent.objects.filter(start_date__gte=timezone.now(), visible=True).order_by('start_date').first()]
+        except HackathonEvent.DoesNotExist:
+            return None
+
+def latest_activities(user):
+    from retail.views import get_specific_activities
+    from townsquare.tasks import increment_view_counts
+    cutoff_date = timezone.now() - timezone.timedelta(days=1)
+    activities = get_specific_activities('connect', 0, user, 0)[:4]
+    activities_pks = list(activities.values_list('pk', flat=True))
+    increment_view_counts.delay(activities_pks)
+    return activities
+
 @staff_member_required
 def new_bounty_daily_preview(request):
     profile = request.user.profile
     keywords = profile.keywords
     hours_back = 2000
+
     new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
-    quests = trending_quests()
-    response_html, _ = render_new_bounty('foo@bar.com', new_bounties, all_bounties, offset=3, trending_quests=quests)
+    max_bounties = 5
+    if len(new_bounties) > max_bounties:
+        new_bounties = new_bounties[0:max_bounties]
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, new_bounties, old_bounties='', offset=3, quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), upcoming_hackathon=upcoming_hackathon(), latest_activities=latest_activities(request.user))
     return HttpResponse(response_html)

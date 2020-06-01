@@ -1027,6 +1027,7 @@ body.green.offer_view .announce {
   background-color: var(--gc-blue);
   background-size: cover;
 }
+
 .promo .promo-text {
   font-size: 0.9em;
 }
@@ -1041,11 +1042,6 @@ body.green.offer_view .announce {
   margin-bottom: 0;
 }
 
-.promo .action:hover {
-  background-color: #101061;
-  filter: brightness(130%);
-}
-
 .promo .close-promo {
   position: absolute;
   top: 6px;
@@ -1058,6 +1054,154 @@ body.green.offer_view .announce {
 
 .promo .close-promo i {
   font-weight: 100;
+}
+.promo-action {
+  background-color: #101061;
+  color: white;
+  border-radius: 0;
+  padding: 10px 50px;
+}
+
+.promo-action:hover {
+  background-color: #101061;
+  filter: brightness(130%);
+  color: white;
+}
+
+.get-started {
+  background-image: url(/static/v2/images/tribe-notce.svg);
+  background-color: var(--gc-blue);
+  font-style: normal;
+  font-weight: normal;
+  color: white;
+  height: 14rem;
+  padding-top: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+.get-started p {
+  width: 60%;
+  font-size: 24px;
+  line-height: 40px;
+}
+
+.get-started .action {
+  background-color: #101061;
+  color: white;
+  border-radius: 0;
+  padding: 10px 50px;
+  font-size: 18px;
+  line-height: 40px;
+  font-weight: bold;
+}
+
+.get-started .action:hover {
+  background-color: #101061;
+  filter: brightness(130%);
+}
+
+#modal-get-started {
+  background-color: rgba(62, 0, 255, 0.7);
+  background-image: url(/static/v2/images/modal-bg.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+#modal-get-started .topbar {
+  height: 60px;
+  width: 100%;
+  background-color: rgba(62, 0, 255, 0.9);
+  display: flex;
+  justify-content: flex-end;
+}
+
+#get-started {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#get-started h1 {
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 42px;
+  text-align: center;
+  color: #FFFFFF;
+  width: 60%;
+}
+
+.dark-mode .gc-search-result__content p {
+  color: white;
+}
+
+#get-started p {
+  color: white;
+}
+
+#get-started .description {
+  font-size: 24px;
+  line-height: 30px;
+  text-align: center;
+  width: 60%;
+}
+
+#get-started a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 562.47px;
+  height: 86.47px;
+  background: #090D60;
+  border-radius: 4px;
+  color: white;
+  margin: 17px auto;
+  padding-left: 28px;
+  padding-right: 28px;
+  font-size: 18px;
+}
+
+#get-started a p {
+  font-size: 18px;
+  margin: 0;
+}
+
+#get-started img {
+  height: 23px;
+}
+
+.dark-mode .alert .close {
+  opacity: 0.8;
+  text-shadow: none;
+}
+
+#get-started .close {
+  font-size: 35px;
+  margin-right: 17px;
+}
+
+@media screen and (max-width: 760px) {
+  .get-started p {
+    width: 90%;
+    font-size: 1.1rem;
+    line-height: 24px;
+    margin-top: 15px;
+  }
+
+  .get-started .action {
+    padding: 3px 50px;
+    font-size: 14px;
+  }
+
+  #get-started h1, #get-started p {
+    width: 90%;
+  }
+
+  #get-started a {
+    width: 20em;
+  }
 }
 
 .new_grant {
@@ -1134,7 +1278,24 @@ body.green.offer_view .announce {
   border-color: transparent !important;
 }
 
-.dark-mode .alert .close {
-  opacity: 0.8;
-  text-shadow: none;
+.dark-mode .alert-info {
+  background: var(--gc-dark-violet);
+  color: white;
+}
+
+.dark-mode .web3modal-provider-name {
+  color: white;
+}
+
+.dark-mode .gc-search-box input {
+  background-color: var(--main-bg)
+}
+
+.dark-mode .gc-search-result__content,
+.dark-mode .gc-search-box,
+.dark-mode .web3modal-provider-container,
+.dark-mode .web3modal-provider-wrapper,
+.dark-mode .web3modal-modal-card {
+  background: var(--gc-dark-violet);
+  color: white;
 }

@@ -16,6 +16,8 @@
 
 '''
 import logging
+import time
+import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -26,6 +28,9 @@ from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
 from townsquare.utils import is_email_townsquare_enabled
 
+warnings.filterwarnings("ignore")
+
+override_in_dev = True
 
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
@@ -57,7 +62,7 @@ class Command(BaseCommand):
     help = 'sends new_bounty_daily _emails'
 
     def handle(self, *args, **options):
-        if settings.DEBUG:
+        if settings.DEBUG and not override_in_dev:
             print("not active in non prod environments")
             return
         hours_back = 24
@@ -65,9 +70,12 @@ class Command(BaseCommand):
         counter_grant_total = 0
         counter_total = 0
         counter_sent = 0
-        print("got {} emails".format(eses.count()))
+        start_time = time.time()
+        total_count = eses.count()
+        print("got {} emails".format(total_count))
         for es in eses:
             try:
+                # prep
                 counter_grant_total += 1
                 to_email = es.email
                 keywords = es.keywords
@@ -77,13 +85,19 @@ class Command(BaseCommand):
                     continue
                 counter_total += 1
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
-                print("{}/{}/{}) {}/{}: got {} new bounties & {} all bounties".format(counter_sent, counter_total, counter_grant_total, to_email, keywords, new_bounties.count(), all_bounties.count()))
+
+                # stats
+                speed = round((time.time() - start_time) / counter_grant_total, 2)
+                ETA = round((total_count - counter_grant_total) / speed / 3600, 1)
+                print(f"{counter_sent} sent/{counter_total} enabled/{counter_grant_total} evaluated, {speed}/s, ETA:{ETA}h, working on {to_email} ")
+
+                # send
                 should_send = new_bounties.count() or town_square_enabled
                 #should_send = new_bounties.count()
                 if should_send:
-                    print(f"sending to {to_email}")
+                    #print(f"sending to {to_email}")
                     new_bounty_daily(new_bounties, all_bounties, [to_email])
-                    print(f"/sent to {to_email}")
+                    #print(f"/sent to {to_email}")
                     counter_sent += 1
             except Exception as e:
                 logging.exception(e)

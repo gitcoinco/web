@@ -63,6 +63,7 @@ from chat.tasks import (
     add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
 )
 from dashboard.context import quickstart as qs
+from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
 )
@@ -178,7 +179,7 @@ def record_user_action(user, event_name, instance):
         logger.error(f"error in record_action: {e} - {event_name} - {instance}")
 
 
-def record_bounty_activity(bounty, user, event_name, interest=None):
+def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=None):
     """Creates Activity object.
 
     Args:
@@ -214,6 +215,11 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
     elif event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
+    elif event_name == 'worker_paid' and fulfillment:
+        kwargs['metadata']['from'] = fulfillment.funder_profile.handle
+        kwargs['metadata']['to'] = fulfillment.profile.handle
+        kwargs['metadata']['payout_amount'] = fulfillment.payout_amount
+        kwargs['metadata']['token_name'] = fulfillment.token_name
 
     try:
         if event_name in bounty_activity_event_adapter:
@@ -1009,7 +1015,7 @@ def users_fetch(request):
             ).exclude(hide_profile=True)
 
     if q:
-        profile_list = profile_list.filter(Q(follower__org__handle__in=[tribe]) | Q(organizations_fk__handle__in=[tribe])).distinct()
+        profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).distinct()
 
     if tribe:
 
@@ -1933,6 +1939,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if request.GET.get('sb') == '1' or (bounty and bounty.is_bounties_network):
         return TemplateResponse(request, 'bounty/details.html', params)
 
+    params['PYPL_CLIENT_ID'] = settings.PYPL_CLIENT_ID
     return TemplateResponse(request, 'bounty/details2.html', params)
 
 
@@ -2805,6 +2812,7 @@ def profile(request, handle, tab=None):
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
     context = {}
+    context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
@@ -2876,8 +2884,7 @@ def profile(request, handle, tab=None):
         if request.user.is_authenticated and not context['is_my_org']:
             ProfileView.objects.create(target=profile, viewer=request.user.profile)
         try:
-
-            what = f'tribe:{profile.handle}'
+            context['tags'] = get_tags(request)
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network=network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
@@ -2920,7 +2927,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
+
     context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
     context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
     context['foltab'] = request.GET.get('sub', 'followers')
@@ -3583,10 +3590,13 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
+        increment_view_count.delay([hackathon_event.pk], hackathon_event.content_type, request.user.id, 'individual')
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name.title()
+    description = f"{title} | Gitcoin Virtual Hackathon"
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
     # if hackathon_not_started:
@@ -3645,6 +3655,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'prize_count': hackathon_event.get_current_bounties.count(),
         'type': 'hackathon',
         'title': title,
+        'card_desc': description,
         'what': what,
         'can_pin': can_pin(request, what),
         'pinned': pinned,
@@ -3658,7 +3669,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
         'user': request.user,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
+        'avatar_url': avatar_url,
         'tags': view_tags,
         'activities': [],
         'SHOW_DRESSING': False,
@@ -4139,6 +4150,11 @@ def get_hackathons(request):
         'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
         'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
     }
+
+    pks = HackathonEvent.objects.filter(visible=True).values_list('pk', flat=True)
+    if len(pks):
+        increment_view_count.delay(list(pks), 'hackathon event', request.user.id, 'index')
+
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
@@ -4963,11 +4979,6 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: user can submit once per bounty'
         return JsonResponse(response)
 
-    fulfiller_address = request.POST.get('fulfiller_address')
-    if not fulfiller_address:
-        response['message'] = 'error: missing fulfiller_address'
-        return JsonResponse(response)
-
     hours_worked = request.POST.get('hoursWorked')
     if not hours_worked or not hours_worked.isdigit():
         response['message'] = 'error: missing hoursWorked'
@@ -4976,6 +4987,21 @@ def fulfill_bounty_v1(request):
     fulfiller_github_url = request.POST.get('githubPRLink')
     if not fulfiller_github_url:
         response['message'] = 'error: missing githubPRLink'
+        return JsonResponse(response)
+
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing payout_type'
+        return JsonResponse(response)
+
+    fulfiller_identifier = request.POST.get('fulfiller_identifier', None)
+    fulfiller_address = request.POST.get('fulfiller_address', None)
+
+    if payout_type == 'fiat' and not fulfiller_identifier:
+        response['message'] = 'error: missing fulfiller_identifier'
+        return JsonResponse(response)
+    elif payout_type == 'qr' and not fulfiller_address:
+        response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
     event_name = 'work_submitted'
@@ -5001,10 +5027,16 @@ def fulfill_bounty_v1(request):
     fulfillment.modified_on = now
     fulfillment.funder_last_notified_on = now
     fulfillment.token_name = bounty.token_name
+    fulfillment.payout_type = payout_type
+
+    if fulfiller_identifier:
+        fulfillment.fulfiller_identifier = fulfiller_identifier
+        fulfillment.tenant = 'PYPL'
+    elif fulfiller_address:
+        fulfillment.fulfiller_address = fulfiller_address
 
     # fulfillment.fulfillment_id    ETC-TODO: REMOVE ?
 
-    fulfillment.fulfiller_address = fulfiller_address
     fulfillment.fulfiller_hours_worked = hours_worked
     fulfillment.fulfiller_github_url = fulfiller_github_url
 
@@ -5067,7 +5099,6 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: bounty fulfillment not found'
         return JsonResponse(response)
 
-
     if bounty.bounty_state in ['cancelled', 'done']:
         response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be paid out'
         return JsonResponse(response)
@@ -5078,14 +5109,18 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: payout is bounty funder operation'
         return JsonResponse(response)
 
-    if not bounty.bounty_owner_address:
-        bounty_owner_address = request.POST.get('bounty_owner_address')
-        if not bounty_owner_address:
-            response['message'] = 'error: missing parameter bounty_owner_address'
-            return JsonResponse(response)
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing parameter payout_type'
+        return JsonResponse(response)
+    if payout_type not in ['fiat', 'qr']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr'
+        return JsonResponse(response)
 
-        bounty.bounty_owner_address = bounty_owner_address
-        bounty.save()
+    tenant = request.POST.get('tenant')
+    if not tenant:
+        response['message'] = 'error: missing parameter tenant'
+        return JsonResponse(response)
 
     amount = request.POST.get('amount')
     if not amount:
@@ -5097,32 +5132,55 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: missing parameter token_name'
         return JsonResponse(response)
 
+    if payout_type == 'fiat':
+
+        payout_status = request.POST.get('payout_status')
+        if not payout_status :
+            response['message'] = 'error: missing parameter payout_status for fiat payment'
+            return JsonResponse(response)
+
+        funder_identifier = request.POST.get('funder_identifier')
+        if not funder_identifier :
+            response['message'] = 'error: missing parameter funder_identifier for fiat payment'
+            return JsonResponse(response)
+
+        fulfillment.funder_identifier = funder_identifier
+        fulfillment.payout_status = payout_status
+
+    elif payout_type == 'qr':
+
+        if not bounty.bounty_owner_address:
+            bounty_owner_address = request.POST.get('bounty_owner_address')
+            if not bounty_owner_address:
+                response['message'] = 'error: missing parameter bounty_owner_address'
+                return JsonResponse(response)
+
+            bounty.bounty_owner_address = bounty_owner_address
+            bounty.save()
+
+        fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
+        fulfillment.payout_status = 'pending'
+
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
         fulfillment.payout_tx_id = payout_tx_id
 
-    payout_type = request.POST.get('payout_type')
-    if not payout_type:
-        response['message'] = 'error: missing parameter payout_type'
-        return JsonResponse(response)
-
-    tenant = request.POST.get('tenant')
-    if not tenant:
-        response['message'] = 'error: missing parameter tenant'
-        return JsonResponse(response)
-
-
     fulfillment.funder_profile = profile
-    fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
     fulfillment.payout_type = payout_type
     fulfillment.tenant = tenant
-
     fulfillment.payout_amount = amount
-    fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name
+
+    if payout_type == 'fiat':
+        fulfillment.payout_status = 'done'
+        fulfillment.accepted_on = timezone.now()
+        fulfillment.accepted = True
+        record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
+
     fulfillment.save()
 
-    sync_payout(fulfillment)
+    if payout_type == 'qr':
+        sync_payout(fulfillment)
 
     response = {
         'status': 204,
