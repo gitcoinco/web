@@ -1,0 +1,23 @@
+{
+    "symbol": "PGH",
+    "address": "0x5e49A09eD45D26A0bFEeC832982037842Ae06B6B",
+    "overview": {
+        "en": "PGH is the honor score of PGO pangolin's ecological development contribution. All members who contribute to the community can get a certain honor score as a reward. We will use the blockchain to record their contributions.",
+        "zh": "PGH是PGO穿山甲生态发展的贡献荣誉积分，所有为社区做出贡献的成员都可以获得一定的荣誉积分作为奖励，我们将使用区块链记录成员贡献。"
+    },
+    "email": "support@pgh.gold",
+    "website": "https://www.pgh.gold",
+    "whitepaper": "https://www.pgh.gold/static/PGO-white-paper-v1.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-05-20",
+    "initial_price": {
+        
+    },
+    "links": {
+        "twitter" : "https://twitter.com/PengolinC",
+        "telegram": "https://t.me/pengolincoin",
+        "facebook": "https://www.facebook.com/PengolinCoin-105101314474751",
+        "reddit": "https://www.reddit.com/user/PengolinCoin",
+        "medium": "https://medium.com/@cryptorigvin/pengolincoin-is-a-truly-private-and-decentralized-cryptocurrency-utilizing-advanced-cryptography-5b7c63bc06ed"
+    }
+}
