@@ -1,9 +1,13 @@
 const Web3Modal = window.Web3Modal.default;
+const WalletConnectProvider = window.WalletConnectProvider.default;
+
 let web3Modal;
 let provider;
 let selectedAccount;
 let balance;
 let chainId;
+let networkId;
+let networkName;
 let chainName;
 let humanFriendlyBalance;
 if (window.ethereum) {
@@ -60,6 +64,40 @@ function initWallet() {
   //   }
   // });
 
+  // custom code for qcode
+  // "custom-qrcode": {
+  //   display: {
+  //     logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' fill='none'%3E%3Cpath fill='url(%23paint0_radial)' fill-rule='evenodd' d='M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z' clip-rule='evenodd'/%3E%3Cpath fill='%23fff' d='M165 243v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zM269 165h78v78h-78v-78zm61.75 61.75v-45.5h-45.5v45.5h45.5zM165 347v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zm13 13h19.5v19.5h-19.5v-19.5zm0-104h19.5v19.5h-19.5v-19.5zm123.5 19.5h-19.5v-19.5h19.5v19.5zM334 269h13v52h-52v-13h-13v39h-13v-78h39v13h26v-13zm0 65h13v13h-13v-13zm-26 0h13v13h-13v-13z'/%3E%3Cdefs%3E%3CradialGradient id='paint0_radial' cx='0' cy='0' r='1' gradientTransform='translate(9.283 256) scale(502.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%237C89FF'/%3E%3Cstop offset='1' stop-color='%231E34FF'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E",
+  //     name: "QRcode",
+  //     type: "qrcode",
+  //     check: "isQRcode",
+  //     description: "Connect to your example provider account"
+  //   },
+  //   package: qrcodeConnect,
+  //   connector: async (ProviderPackage) => {
+  //     console.log(ProviderPackage)
+  //       const provider = new ProviderPackage();
+
+  //       // await provider.enable()
+
+  //       // return true;
+  //       // let provider = null;
+  //       // if (window.ethereum) {
+  //       //   provider = window.ethereum;
+  //       //   try {
+  //       //     await window.ethereum.enable();
+  //       //   } catch (error) {
+  //       //     throw new Error("User Rejected");
+  //       //   }
+  //       // } else if (window.web3) {
+  //       //   provider = window.web3.currentProvider;
+  //       // } else {
+  //       //   throw new Error("No Web3 Provider found");
+  //       // }
+  //       return provider;
+  //   }
+  // }
+
 
   // Determine if we're on prod or not
   const isProd = document.location.href.startsWith('https://gitcoin.co');
@@ -74,38 +112,13 @@ function initWallet() {
         key: formaticKey
       }
     },
-    "custom-qrcode": {
-      display: {
-        logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' fill='none'%3E%3Cpath fill='url(%23paint0_radial)' fill-rule='evenodd' d='M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z' clip-rule='evenodd'/%3E%3Cpath fill='%23fff' d='M165 243v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zM269 165h78v78h-78v-78zm61.75 61.75v-45.5h-45.5v45.5h45.5zM165 347v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zm13 13h19.5v19.5h-19.5v-19.5zm0-104h19.5v19.5h-19.5v-19.5zm123.5 19.5h-19.5v-19.5h19.5v19.5zM334 269h13v52h-52v-13h-13v39h-13v-78h39v13h26v-13zm0 65h13v13h-13v-13zm-26 0h13v13h-13v-13z'/%3E%3Cdefs%3E%3CradialGradient id='paint0_radial' cx='0' cy='0' r='1' gradientTransform='translate(9.283 256) scale(502.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%237C89FF'/%3E%3Cstop offset='1' stop-color='%231E34FF'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E",
-        name: "QRcode",
-        type: "qrcode",
-        check: "isQRcode",
-        description: "Connect to your example provider account"
-      },
-      package: qrcodeConnect,
-      connector: async (ProviderPackage) => {
-        console.log(ProviderPackage)
-          const provider = new ProviderPackage();
-
-          // await provider.enable()
-
-          // return true;
-          // let provider = null;
-          // if (window.ethereum) {
-          //   provider = window.ethereum;
-          //   try {
-          //     await window.ethereum.enable();
-          //   } catch (error) {
-          //     throw new Error("User Rejected");
-          //   }
-          // } else if (window.web3) {
-          //   provider = window.web3.currentProvider;
-          // } else {
-          //   throw new Error("No Web3 Provider found");
-          // }
-          return provider;
+    walletconnect: {
+      package: WalletConnectProvider,
+      options: {
+        infuraId: "1e0a90928efe4bb78bb1eeceb8aacc27",
       }
-    }
+    },
+
 
   };
   const network = isProd ? 'mainnet' : 'rinkeby';
@@ -127,22 +140,25 @@ async function fetchAccountData(provider) {
   console.log("Web3 instance is", web3);
 
   // Get connected chain id from Ethereum node
-  chainId = await web3.eth.net.getId();
-  chainName = getNetwork(chainId);
+  chainId = await web3.eth.currentProvider.chainId;
+  networkId = await web3.eth.net.getId();
+  // web3.currentProvider.chainId
+  networkName = await web3.eth.net.getNetworkType()
+  // chainName = getNetwork(chainId);
   // if (provider.isFortmatic) {
 
   //   chainName = await provider.fm.ethNetwork;
   // } else {
   //   // chainId = await web3.currentProvider.networkVersion;
   // }
-  console.log(chainName)
-  document.web3network = chainName;
+  console.log(networkName)
+  document.web3network = networkName;
   // Load chain information over an HTTP API
   // const chainData = await EvmChains.getChain(chainId);
 
-  document.querySelector(".network-name").textContent = chainName;
+  document.querySelector(".network-name").textContent = networkName;
   document.querySelector(".wallet-network").classList.remove('rinkeby', 'mainnet')
-  document.querySelector(".wallet-network").classList.add(chainName.split(' ').join('-'))
+  document.querySelector(".wallet-network").classList.add(networkName.split(' ').join('-'))
 
   // Get list of accounts of the connected wallet
   const accounts = await web3.eth.getAccounts();
