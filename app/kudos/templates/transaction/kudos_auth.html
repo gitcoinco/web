@@ -45,12 +45,43 @@
 
   {% if user.is_authenticated %}
   <div class="d-flex order-0 order-md-last">
+    {% include 'shared/notifications.html' %}
+    <div class="nav-item dropdown interior">
+
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
+        <a class="dropdown-item" href="#" id="wallet-btn">
+          Connect Wallet
+        </a>
+        <div class="dropdown-item wallet-hidden d-none">
+          <span class="network-name"></span>
+          <span class="selected-account"></span>
+        </div>
+        <div id="accounts" class="dropdown-item wallet-hidden d-none"></div>
+        <div class="dropdown-divider wallet-hidden d-none"></div>
+        <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
+          Disconnect
+        </a>
+      </div>
+
+    </div>
+    <div id="templates" style="display: none">
+      <template id="template-balance">
+        <tr>
+          <th class="address"></th>
+          <td class="balance"></td>
+        </tr>
+      </template>
+    </div>
+
     <a class="nav-link login" href="{% url 'profile' %}">
       <img class="nav_avatar" width=25 height=25
       src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       {{ user }}
     </a>
-    {% include 'shared/notifications.html' %}
   </div>
 
   {% else %}
