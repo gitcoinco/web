@@ -570,8 +570,8 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     except Exception as e:
         logger.error(e)
 
-    # if latest_old_bounty:
-    #    new_bounty.set_view_count(latest_old_bounty.view_count)
+     if latest_old_bounty:
+        new_bounty.set_view_count(latest_old_bounty.get_view_count)
 
     if latest_old_bounty and latest_old_bounty.event:
         new_bounty.event = latest_old_bounty.event
