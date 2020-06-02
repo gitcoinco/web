@@ -185,7 +185,7 @@ function changeImage(option, path) {
 }
 
 function purchaseOption(option, value, target) {
-  if (document.web3network == 'rinkeby') {
+  if (document.web3network == 'mainnet') {
     _alert('You will now be prompted via Metamask to purchase this avatar item.', 'info');
     var ele = $('#' + target.id.replace("'", '').replace("'", ''));
     var cost = null;
