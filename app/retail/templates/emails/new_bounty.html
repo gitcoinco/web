@@ -123,7 +123,6 @@
     <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
 
     <div class="upcoming-events-container">
-      {{upcoming_dates|length}}
       {% for event in upcoming_dates %}
         <img class="event-img" src="{{event.img_url}}">
         <h4 style="">{{event.title}}</h4>
