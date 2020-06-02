@@ -1529,15 +1529,15 @@ function check_balance_and_alert_user_if_not_enough(
     return;
   }
 
-  let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  let token_contract = new web3.eth.Contract(token_abi, tokenAddress);
   let from = cb_address;
   let token_details = tokenAddressToDetails(tokenAddress);
   let token_decimals = token_details['decimals'];
   let token_name = token_details['name'];
 
-  token_contract.balanceOf.call(from, function(error, result) {
+  token_contract.methods.balanceOf(from).call({from: from}, function(error, result) {
     if (error) return;
-    let balance = result.toNumber() / Math.pow(10, token_decimals);
+    let balance = Number(result) / Math.pow(10, token_decimals);
     let balance_rounded = Math.round(balance * 10) / 10;
 
     if (parseFloat(amount) > balance) {
@@ -1545,6 +1545,7 @@ function check_balance_and_alert_user_if_not_enough(
       let msg2 = gettext(' You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
 
       _alert(msg1 + msg2, 'warning');
+      return;
     }
   });
 

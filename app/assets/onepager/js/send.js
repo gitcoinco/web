@@ -108,6 +108,7 @@ $(document).ready(function() {
 
     if (!username && !secret_link) {
       _alert('Please enter a recipient', 'error');
+      unloading_button($('#send'));
       return;
     }
 
@@ -202,10 +203,10 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
     denomFactor = Math.pow(10, tokenDetails.decimals);
   }
 
-  // check_balance_and_alert_user_if_not_enough(
-  //   tokenAddress,
-  //   amount,
-  //   'You do not have enough ' + tokenName + ' to send this tip.');
+  check_balance_and_alert_user_if_not_enough(
+    tokenAddress,
+    amount,
+    'You do not have enough ' + tokenName + ' to send this tip.');
 
   var amountInDenom = amount * 1.0 * denomFactor;
   // validation
@@ -323,16 +324,18 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
           });
         } else {
           var send_erc20 = function() {
-            var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+            var token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-            token_contract.transfer(destinationAccount, amountInDenom, {}, post_send_callback);
+            token_contract.methods.transfer(destinationAccount, web3.utils.toHex(amountInDenom)).send({from: fromAccount}, post_send_callback);
           };
           var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
+
             web3.eth.sendTransaction({
+              from: fromAccount,
               to: destinationAccount,
               value: gas_money
-            }, send_erc20);
+            }).once('transactionHash', send_erc20);
           };
 
           if (is_direct_to_recipient) {
@@ -518,7 +521,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   //           var send_erc20 = function() {
   //             var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-  //             token_contract.transfer(destinationAccount, amountInDenom, {}, post_send_callback);
+  //             methods.(destinationAccount, amountInDenom, {}, post_send_callback);
   //           };
   //           var send_gas_money_and_erc20 = function() {
   //             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');

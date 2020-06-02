@@ -190,7 +190,7 @@ $(document).ready(function() {
         } else {
 
           // send ERC20
-          var data = token_contract.methods.transfer.getData(forwarding_address, amount_in_wei.toString());
+          var data = token_contract.methods.transfer(forwarding_address, amount_in_wei.toString()).encodeABI();
 
           rawTx = {
             nonce: web3.utils.toHex(nonce),
@@ -201,9 +201,9 @@ $(document).ready(function() {
           };
 
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['gasPrice'] = gas_price_wei.toNumber();
-            rawTx['gas'] = gasLimit;
-            rawTx['gasLimit'] = gasLimit;
+            rawTx['gasPrice'] = web3.utils.toHex(gas_price_wei.toString());
+            rawTx['gas'] = web3.utils.toHex(gasLimit.toString());
+            rawTx['gasLimit'] = web3.utils.toHex(gasLimit.toString());
             var will_fail_at_this_gas_price = (gas_price_wei * gasLimit) > holderBalance;
 
             if (will_fail_at_this_gas_price) { // adjust if gas prices have increased since this tx was created
