@@ -10,9 +10,16 @@ let networkId;
 let networkName;
 let chainName;
 let humanFriendlyBalance;
+
 if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
+
+const needWalletConnection = () => {
+  if (!web3Modal.cachedProvider) {
+    return onConnect();
+  }
+};
 
 const qrcodeConnect = function() {
   // return new Promise(async (resolve, reject) => {
@@ -32,22 +39,23 @@ const qrcodeConnect = function() {
 
 
   const provider = {
-      chainId: 1,
-      account: 'none'
-    };
-    // if (window.ethereum) {
-    //   provider = window.ethereum;
-    //   try {
-    //     await window.ethereum.enable();
-    //   } catch (error) {
-    //     throw new Error("User Rejected");
-    //   }
-    // } else if (window.web3) {
-    //   provider = window.web3.currentProvider;
-    // } else {
-    //   throw new Error("No Web3 Provider found");
-    // }
-    return provider;
+    chainId: 1,
+    account: 'none'
+  };
+
+  // if (window.ethereum) {
+  //   provider = window.ethereum;
+  //   try {
+  //     await window.ethereum.enable();
+  //   } catch (error) {
+  //     throw new Error("User Rejected");
+  //   }
+  // } else if (window.web3) {
+  //   provider = window.web3.currentProvider;
+  // } else {
+  //   throw new Error("No Web3 Provider found");
+  // }
+  return provider;
 
 
 };
@@ -113,13 +121,11 @@ function initWallet() {
       }
     },
     walletconnect: {
-      package: WalletConnectProvider,
+      'package': WalletConnectProvider,
       options: {
-        infuraId: "1e0a90928efe4bb78bb1eeceb8aacc27",
+        infuraId: '1e0a90928efe4bb78bb1eeceb8aacc27'
       }
-    },
-
-
+    }
   };
   const network = isProd ? 'mainnet' : 'rinkeby';
 
@@ -128,22 +134,20 @@ function initWallet() {
     cacheProvider: true,
     providerOptions
   });
-
-
 }
 
 async function fetchAccountData(provider) {
 
   // Get a Web3 instance for the wallet
-   web3 = new Web3(provider);
+  web3 = new Web3(provider);
 
-  console.log("Web3 instance is", web3);
+  console.log('Web3 instance is', web3);
 
   // Get connected chain id from Ethereum node
   chainId = await web3.eth.currentProvider.chainId;
   networkId = await web3.eth.net.getId();
   // web3.currentProvider.chainId
-  networkName = await web3.eth.net.getNetworkType()
+  networkName = await web3.eth.net.getNetworkType();
   // chainName = getNetwork(chainId);
   // if (provider.isFortmatic) {
 
@@ -151,14 +155,14 @@ async function fetchAccountData(provider) {
   // } else {
   //   // chainId = await web3.currentProvider.networkVersion;
   // }
-  console.log(networkName)
+  console.log(networkName);
   document.web3network = networkName;
   // Load chain information over an HTTP API
   // const chainData = await EvmChains.getChain(chainId);
 
-  document.querySelector(".network-name").textContent = networkName;
-  document.querySelector(".wallet-network").classList.remove('rinkeby', 'mainnet')
-  document.querySelector(".wallet-network").classList.add(networkName.split(' ').join('-'))
+  document.querySelector('.network-name').textContent = networkName;
+  document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
+  document.querySelector('.wallet-network').classList.add(networkName.split(' ').join('-'));
 
   // Get list of accounts of the connected wallet
   const accounts = await web3.eth.getAccounts();
@@ -172,44 +176,36 @@ async function fetchAccountData(provider) {
 
 
   // MetaMask does not give you all accounts, only the selected account
-  console.log("Got accounts", accounts);
+  console.log('Got accounts', accounts);
   selectedAccount = accounts[0] || provider.account;
   cb_address = selectedAccount;
 
-  document.querySelector(".selected-account").textContent = truncate(selectedAccount);
+  document.querySelector('.selected-account').textContent = truncate(selectedAccount);
 
   // Get a handl
-  const template = document.querySelector("#template-balance");
-  const accountContainer = document.querySelector("#accounts");
+  const template = document.querySelector('#template-balance');
+  const accountContainer = document.querySelector('#accounts');
 
   // Purge UI elements any previously loaded accounts
   accountContainer.innerHTML = '';
 
-  console.log('provider', provider)
   if (provider.isFortmatic) {
-    console.log('is fortmatic')
-    let fortmaticBalance = await provider.fm.user.getBalances()
-    console.log(fortmaticBalance)
+    let fortmaticBalance = await provider.fm.user.getBalances();
+
     balance = fortmaticBalance[0].crypto_amount;
     humanFriendlyBalance = fortmaticBalance[0].crypto_amount_display;
-    console.log('humanFriendlyBalance', humanFriendlyBalance)
+    console.log('humanFriendlyBalance', humanFriendlyBalance);
 
     const clone = template.content.cloneNode(true);
-    clone.querySelector(".address").textContent = truncate(selectedAccount);
-    clone.querySelector(".balance").textContent = humanFriendlyBalance;
+
+    clone.querySelector('.address').textContent = truncate(selectedAccount);
+    clone.querySelector('.balance').textContent = humanFriendlyBalance;
     accountContainer.appendChild(clone);
   }
 
   // Go through all accounts and get their ETH balance
-  const rowResolvers = accounts.map(async (address) => {
-    // const balance = await web3.eth.getBalance(address);
-    // async function(){
-      // await web3.eth.getBalance(address, function(sus,erro) {
-      //   console.log(sus, erro)
-      //   balance = sus;
-      // })
+  const rowResolvers = accounts.map(async(address) => {
 
-      // var bal = await provider.fm.user.getBalances()
     if (!accounts.length || provider.isFortmatic) {
       return;
     }
@@ -217,9 +213,9 @@ async function fetchAccountData(provider) {
       if (errors) {
         return;
       }
-      balance = result
-      const ethBalance = web3.utils.fromWei(result, "ether");
-      console.log(result)
+      balance = result;
+      const ethBalance = web3.utils.fromWei(result, 'ether');
+
       // console.log(web3.fromWei(result, "ether"));
       // }
       // const ethBalance = await balance.toNumber();
@@ -231,10 +227,11 @@ async function fetchAccountData(provider) {
 
       // Fill in the templated row and put in the document
       const clone = template.content.cloneNode(true);
-      clone.querySelector(".address").textContent = truncate(address);
-      clone.querySelector(".balance").textContent = humanFriendlyBalance;
+
+      clone.querySelector('.address').textContent = truncate(address);
+      clone.querySelector('.balance').textContent = humanFriendlyBalance;
       accountContainer.appendChild(clone);
-    })
+    });
 
   });
 
@@ -243,29 +240,25 @@ async function fetchAccountData(provider) {
   // until data for all accounts is loaded
   await Promise.all(rowResolvers);
   $('.wallet-hidden').removeClass('d-none');
-  displayProvider()
+  displayProvider();
   // Display fully loaded UI for wallet data
   // document.querySelector("#prepare").style.display = "none";
   // document.querySelector("#connected").style.display = "block";
 }
 
-
-
 // const provider = await web3Modal.connect();
-
-
 // web3Modal.providers.push({name: 'QRcode', onClick: qrcodeConnect});
 // web3Modal.connect().then(function(provider) {
 //   window.web3 = new Web3(provider);
 // });
 function createImg(source) {
-  let elem = document.querySelector("#navbarDropdownWallet");
-  let icon = document.querySelector(".provider-icon");
-  let imgProvider = document.querySelector(".image-provider");
+  let elem = document.querySelector('#navbarDropdownWallet');
+  let icon = document.querySelector('.provider-icon');
+  let imgProvider = document.querySelector('.image-provider');
 
   if (!imgProvider) {
     imgProvider = document.createElement('img');
-    imgProvider.classList.add('image-provider')
+    imgProvider.classList.add('image-provider');
     elem.appendChild(imgProvider);
   }
 
@@ -280,10 +273,9 @@ function createImg(source) {
 }
 
 function displayProvider() {
+  let image = web3Modal.providerController.getProvider(web3Modal.providerController.cachedProvider);
 
-  let image = web3Modal.providerController.getProvider(web3Modal.providerController.cachedProvider)
-  createImg(image)
-
+  createImg(image);
 }
 
 async function onConnect() {
@@ -293,54 +285,49 @@ async function onConnect() {
   // in our localhost.
   // TODO: A clean API needed here
   web3Modal.providerController.cachedProvider = null;
-    // web3Modal.clearCachedProvider();
+  // web3Modal.clearCachedProvider();
 
-  console.log("Opening a dialog", web3Modal);
+  console.log('Opening a dialog', web3Modal);
   try {
     provider = await web3Modal.connect();
-  } catch(e) {
-    console.log("Could not get a wallet connection", e);
+  } catch (e) {
+    console.log('Could not get a wallet connection', e);
     return;
   }
 
-  console.log(provider)
-  if (provider.on){
+  console.log(provider);
+  if (provider.on) {
     // Subscribe to accounts change
-    provider.on("accountsChanged", (accounts) => {
+    provider.on('accountsChanged', (accounts) => {
       fetchAccountData();
     });
 
     // Subscribe to chainId change
-    provider.on("chainChanged", (chainId) => {
+    provider.on('chainChanged', (chainId) => {
       fetchAccountData();
     });
 
     // Subscribe to networkId change
-    provider.on("networkChanged", (networkId) => {
+    provider.on('networkChanged', (networkId) => {
       fetchAccountData();
     });
   }
-
-  // web3Modal.providerController.injectedProvider.logo
-
-
 
   await refreshAccountData();
 }
 
 async function onDisconnect() {
 
-  console.log("Killing the wallet connection", provider);
+  console.log('Killing the wallet connection', provider);
 
   // TODO: MetamaskInpageProvider does not provide disconnect?
-  if(provider.close) {
+  if (provider.close) {
     await provider.close();
-
   }
   provider = null;
 
-  web3Modal.clearCachedProvider()
-  displayProvider()
+  web3Modal.clearCachedProvider();
+  displayProvider();
 
   selectedAccount = null;
 
@@ -364,48 +351,48 @@ async function refreshAccountData() {
   // fetchAccountData() will take a while as it communicates
   // with Ethereum node via JSON-RPC and loads chain data
   // over an API call.
-  document.querySelector("#wallet-btn").setAttribute("disabled", "disabled")
+  document.querySelector('#wallet-btn').setAttribute('disabled', 'disabled');
   await fetchAccountData(provider);
-  document.querySelector("#wallet-btn").removeAttribute("disabled")
+  document.querySelector('#wallet-btn').removeAttribute('disabled');
 }
 
 
 $('.selected-account').click(function(e) {
   let input = $(`<input type="text" value="${selectedAccount}" />`);
+
   input.appendTo('body');
   input.select();
   document.execCommand('copy');
   input.remove();
 });
 
-window.addEventListener('load', async () => {
+window.addEventListener('load', async() => {
   initWallet();
   if (web3Modal.cachedProvider) {
     try {
       provider = await web3Modal.connect();
-    } catch(e) {
-      console.log("Could not get a wallet connection", e);
+    } catch (e) {
+      console.log('Could not get a wallet connection', e);
       return;
     }
 
     if (web3Modal.providerController.cachedProvider) {
-      console.log(web3Modal.providerController.cachedProvider)
+      console.log(web3Modal.providerController.cachedProvider);
       fetchAccountData(provider);
     }
     if (provider.isMetaMask) {
-      console.log('metamask')
-      window.ethereum.on('accountsChanged', function (accounts) {
-      console.log('accountsChanged')
+      console.log('metamask');
+      window.ethereum.on('accountsChanged', function(accounts) {
+        console.log('accountsChanged');
+        fetchAccountData();
+      });
+      window.ethereum.on('networkChanged', function(networkId) {
+        console.log('networkChanged');
 
         fetchAccountData();
-      })
-      window.ethereum.on('networkChanged', function (networkId) {
-      console.log('networkChanged')
-
-        fetchAccountData();
-      })
+      });
     }
   }
-  document.querySelector("#wallet-btn").addEventListener("click", onConnect);
-  document.querySelector("#btn-disconnect").addEventListener("click", onDisconnect);
+  document.querySelector('#wallet-btn').addEventListener('click', onConnect);
+  document.querySelector('#btn-disconnect').addEventListener('click', onDisconnect);
 });

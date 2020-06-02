@@ -25,18 +25,18 @@ const updateOnNetworkOrTokenChange = () => {
 
   } else {
     // listen_for_web3_changes();
-    if (!provider && !web3Modal.cachedProvider || provider === 'undefined' ) {
-      onConnect().then( ()=>{
+    if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
+      onConnect().then(()=> {
         changeUi();
-      })
+      });
     } else {
-      web3Modal.on('connect', async () => {
+      web3Modal.on('connect', async() => {
         try {
-          provider = await web3Modal.connect().then( ()=>{
+          provider = await web3Modal.connect().then(()=> {
             changeUi();
           });
-        } catch(e) {
-          console.log("Could not get a wallet connection", e);
+        } catch (e) {
+          console.log('Could not get a wallet connection', e);
           return;
         }
       });
@@ -48,7 +48,7 @@ const updateOnNetworkOrTokenChange = () => {
   }
 };
 
-function changeUi(){
+function changeUi() {
   $('#navbar-network-banner').show();
   $('.navbar-network').show();
 

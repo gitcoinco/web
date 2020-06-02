@@ -3,12 +3,12 @@ $(document).ready(function() {
     document.location = $(this).attr('href');
   });
 
-  if($('.load-more').length) {
-    $(window).scroll(function(){
-      if($(".load-more").isInViewport()){
+  if ($('.load-more').length) {
+    $(window).scroll(function() {
+      if ($('.load-more').isInViewport()) {
         $('.load-more').click();
       }
-    })
+    });
   }
 
   $('#kudos-section').on('click keypress', '.flip-card', e => {

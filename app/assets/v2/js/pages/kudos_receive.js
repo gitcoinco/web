@@ -20,23 +20,21 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
   console.log('0x' + serializedTx.toString('hex'));
 
   // send raw transaction
-  web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-  .on('transactionHash', txHash => {
-    console.log('transactionHash:', txHash)
-    success_callback(undefined, txHash)
+  web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex')).on('transactionHash', txHash => {
+    console.log('transactionHash:', txHash);
+    success_callback(undefined, txHash);
   })
-  .on('receipt', receipt => {
-    console.log('receipt:', receipt)
-  })
-  .on('confirmation', (confirmationNumber, receipt) => {
-    if (confirmationNumber >= 1) {
-      console.log('confirmations:', confirmationNumber, receipt)
-    }
-  })
-  .on('error:', error => {
-    console.error(error)
-    success_callback(error, undefined)
-  });
+    .on('receipt', receipt => {
+      console.log('receipt:', receipt);
+    })
+    .on('confirmation', (confirmationNumber, receipt) => {
+      if (confirmationNumber >= 1) {
+        console.log('confirmations:', confirmationNumber, receipt);
+      }
+    })
+    .on('error:', error => {
+      success_callback(error, undefined);
+    });
 };
 
 window.onload = function() {
@@ -112,15 +110,14 @@ $(document).ready(function() {
     loading_button($(this));
 
     var success_callback = function(err, txid) {
-      console.log(err, txid)
       unloading_button($(this));
       if (err) {
         _alert(err.message.split('\n')[0], 'error');
       } else {
         const url = window.location.href.split('?')[0];
         const csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val();
-        const forwardingAddress = $('#forwarding_address').val()
-        const saveAddr = ($('#save_addr').is(':checked') ? '1' : '0')
+        const forwardingAddress = $('#forwarding_address').val();
+        const saveAddr = ($('#save_addr').is(':checked') ? '1' : '0');
         const form = $(`
           <form action="${url}" method="post" class="d-none">
             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfmiddlewaretoken}">
@@ -163,8 +160,8 @@ $(document).ready(function() {
         var kudosId = $('#kudosid').data('kudosid');
         var tokenId = $('#tokenid').data('tokenid');
         var numClones = 1;
-        // var data = kudos_contract.methods.clone.getData(forwarding_address, tokenId, numClones);
-        var data = kudos_contract.methods.clone(forwarding_address, tokenId, numClones).encodeABI()
+        var data = kudos_contract.methods.clone(forwarding_address, tokenId, numClones).encodeABI();
+
         // create the raw transaction
         rawTx = {
           nonce: web3.utils.toHex(nonce),
@@ -178,9 +175,7 @@ $(document).ready(function() {
 
         console.log(kudosPriceInEth);
         // var kudosPriceInWei = new web3.utils.BN(kudosPriceInEth * 1.0 * Math.pow(10, 18));
-        var kudosPriceInWei = new web3.utils.BN(web3.utils.toWei(String(kudosPriceInEth)))
-        console.log(kudosPriceInWei)
-
+        var kudosPriceInWei = new web3.utils.BN(web3.utils.toWei(String(kudosPriceInEth)));
         var params = {
           forwarding_address: forwarding_address,
           tokenid: tokenId,
@@ -195,7 +190,6 @@ $(document).ready(function() {
           from: holding_address,
           value: kudosPriceInWei
         }, function(error, gasLimit) {
-          console.log(error,gasLimit);
           if (error) {
             _alert({ message: error.message}, 'error');
           }
@@ -209,9 +203,7 @@ $(document).ready(function() {
           }
 
           gasLimit = new web3.utils.BN(gasLimit);
-          console.log(gasLimit)
           var send_amount = holderBalance.sub(gasLimit.mul(gas_price_wei)).sub(buffer);
-          console.log(send_amount)
 
           rawTx['value'] = send_amount.toNumber();
           rawTx['gasPrice'] = web3.utils.toHex(gas_price_wei.toString());

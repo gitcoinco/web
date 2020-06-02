@@ -556,21 +556,17 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             console.log('Using Kudos Direct Send (KDS)');
 
 
-            kudos_contract.methods.clone(destinationAccount, tokenId, numClones)
-            .send({
+            kudos_contract.methods.clone(destinationAccount, tokenId, numClones).send({
               from: account,
               value: kudosPriceInWei
-            }).on('transactionHash', function(hash){
-              console.log(hash)
+            }).on('transactionHash', function(hash) {
               kudos_contract.methods.getLatestId().call(function(cloneError, kudos_id) {
                 post_send_callback(cloneError, hash, kudos_id);
-              })
-            })
-            .catch(err => {
+              });
+            }).catch(err => {
               console.log(err);
-              post_send_callback(err)
+              post_send_callback(err);
             });
-
 
             // Send Indirectly
           } else {
@@ -585,7 +581,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               from: account,
               value: kudosPriceInWei.toString()
             };
-            console.log(destinationAccount, tokenId, numClones, account,  kudosPriceInWei, web3.utils.toHex(get_gas_price()))
+
             kudos_contract.methods.clone(destinationAccount, tokenId, numClones).estimateGas({
               from: account,
               gas: web3.utils.toHex(get_gas_price()),
@@ -671,7 +667,7 @@ if (web3Modal) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
     }
 
-  })
+  });
 }
 // function checkNetwork(e) {
 //   if (error) {

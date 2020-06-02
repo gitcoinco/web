@@ -37,7 +37,7 @@ $(document).ready(function() {
 
     e.preventDefault();
     // actual approval
-    var token_contract = new web3.eth.Contract(token_abi,token_address);
+    var token_contract = new web3.eth.Contract(token_abi, token_address);
     var to = contract_address;
 
     web3.eth.getCoinbase(function(_, from) {

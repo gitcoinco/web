@@ -14,22 +14,21 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
 
   // send raw transaction
   web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-  .on('transactionHash', txHash => {
-    console.log('transactionHash:', txHash)
-    success_callback(undefined, txHash)
-  })
-  .on('receipt', receipt => {
-    console.log('receipt:', receipt)
-  })
-  .on('confirmation', (confirmationNumber, receipt) => {
-    if (confirmationNumber >= 1) {
-      console.log('confirmations:', confirmationNumber, receipt)
-    }
-  })
-  .on('error:', error => {
-    console.error(error)
-    success_callback(error, undefined)
-  });
+    .on('transactionHash', txHash => {
+      console.log('transactionHash:', txHash);
+      success_callback(undefined, txHash);
+    })
+    .on('receipt', receipt => {
+      console.log('receipt:', receipt);
+    })
+    .on('confirmation', (confirmationNumber, receipt) => {
+      if (confirmationNumber >= 1) {
+        console.log('confirmations:', confirmationNumber, receipt);
+      }
+    })
+    .on('error:', error => {
+      success_callback(error, undefined);
+    });
 };
 
 window.onload = function() {
@@ -111,8 +110,8 @@ $(document).ready(function() {
       } else {
         const url = window.location.href.split('?')[0];
         const csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val();
-        const forwardingAddress = $('#forwarding_address').val()
-        const saveAddr = ($('#save_addr').is(':checked') ? '1' : '0')
+        const forwardingAddress = $('#forwarding_address').val();
+        const saveAddr = ($('#save_addr').is(':checked') ? '1' : '0');
         const form = $(`
           <form action="${url}" method="post" class="d-none">
             <input type="hidden" name="csrfmiddlewaretoken" value="${csrfmiddlewaretoken}">
@@ -129,13 +128,13 @@ $(document).ready(function() {
     // redeem tip
 
 
+    document.tip['token_address'] = document.tip['token_address'] == '0x0' ? '0x0000000000000000000000000000000000000000' : document.tip['token_address'];
     var gas_price_wei = new web3.utils.BN(document.gas_price * 10 ** 9);
     var is_eth = document.tip['token_address'] == '0x0' || document.tip['token_address'] == '0x0000000000000000000000000000000000000000';
-    document.tip['token_address'] = document.tip['token_address'] == '0x0' ? '0x0000000000000000000000000000000000000000' : document.tip['token_address'];
     var token_address = document.tip['token_address'];
     var token_contract = new web3.eth.Contract(token_abi, token_address);
     var holding_address = document.tip['holding_address'];
-    var amount_in_wei = new web3.utils.BN(String(document.tip['amount_in_wei']))
+    var amount_in_wei = new web3.utils.BN(String(document.tip['amount_in_wei']));
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;

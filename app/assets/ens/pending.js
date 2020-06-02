@@ -1,7 +1,4 @@
-// figure out what version of web3 this is
-if (!web3Modal.cachedProvider) {
-  return onConnect();
-}
+needWalletConnection();
 
 var ts = function() {
   return Math.round((new Date()).getTime() / 1000);

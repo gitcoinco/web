@@ -49,6 +49,7 @@ Vue.mixin({
     },
     fetchMatchingBounties: function() {
       let vm = this;
+
       vm.network = document.web3network;
       const apiUrlbounties = `/api/v0.1/bounties/slim/?network=${vm.network}&idx_status=open&applicants=ALL&keywords=${vm.skills}&order_by=-web3_created&offset=0&limit=10`;
 

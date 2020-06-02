@@ -536,7 +536,7 @@ var update_title = function() {
 };
 
 var showWarningMessage = function(txid) {
-  console.log(txid)
+  console.log(txid);
   const secondsBetweenQuoteChanges = 30;
   let interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 

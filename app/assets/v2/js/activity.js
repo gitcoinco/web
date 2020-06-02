@@ -396,7 +396,6 @@ $(document).ready(function() {
   });
   // like activity
   var send_tip_to_object = function($parent, e, tag) {
-    console.log($parent, e, tag)
     e.preventDefault();
     if (!document.contxt.github_handle) {
       _alert('Please login first.', 'error');
@@ -408,7 +407,7 @@ $(document).ready(function() {
     }
 
     if (!provider) {
-      return onConnect()
+      return onConnect();
     }
 
     var $amount = $parent.find('.amount');

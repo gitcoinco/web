@@ -180,10 +180,11 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
   if (selectedAccount === 'undefined') {
 
     _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
-      failure_callback();
-      return;
+    failure_callback();
+    return;
   }
   const fromAccount = selectedAccount;
+
   if (username.indexOf('@') == -1) {
     username = '@' + username;
   }
@@ -277,7 +278,6 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
         var is_direct_to_recipient = metadata['is_direct'];
         var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
         var post_send_callback = function(errors, txid) {
-          console.log(errors, txid)
           indicateMetamaskPopup(true);
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');

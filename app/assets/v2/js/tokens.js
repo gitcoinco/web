@@ -1,11 +1,9 @@
 
 var tokenAddressToDetails = function(addr) {
-  console.log(addr)
   return tokenAddressToDetailsByNetwork(addr, document.web3network);
 };
 
 var tokenAddressToDetailsByNetwork = function(addr, network) {
-  console.log(addr,network)
   var _tokens = tokens(network);
 
   for (var i = 0; i < _tokens.length; i += 1) {

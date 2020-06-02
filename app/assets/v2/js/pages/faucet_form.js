@@ -48,8 +48,8 @@ $('document').ready(function() {
     e.preventDefault();
     if (!web3Modal.cachedProvider) {
       onConnect().then(() => {
-        trigger_faucet_form_web3_hooks(provider)
-      })
+        trigger_faucet_form_web3_hooks(provider);
+      });
     }
     // if (document.web3network != 'mainnet') {
     //   _alert({ message: gettext('You must be on mainnet')}, 'error');
@@ -99,8 +99,7 @@ $('document').ready(function() {
 });
 
 var trigger_faucet_form_web3_hooks = function(data) {
-  var params = {};
-  let cb_address = data.selectedAddress
+  let cb_address = data.selectedAddress;
 
   if ($('#faucet_form').length) {
     $('#ethAddress').val(cb_address);
@@ -166,13 +165,15 @@ var trigger_faucet_form_web3_hooks = function(data) {
     });
   }
 };
-window.addEventListener('load', async () => {
 
-  if (!provider && !web3Modal.cachedProvider || provider === 'undefined' ) {
+window.addEventListener('load', async() => {
+  if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
     onConnect().then(() => {
       trigger_faucet_form_web3_hooks(provider);
-    })
+    });
   } else {
-    web3Modal.on('connect', async (data) => {trigger_faucet_form_web3_hooks(data)})
+    web3Modal.on('connect', async(data) => {
+      trigger_faucet_form_web3_hooks(data);
+    });
   }
 });
