@@ -19,8 +19,14 @@
 
 {% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
+<style>
+  .d-none {
+    display: none;
+  }
+</style>
 
+{% endblock %}
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
@@ -50,6 +56,36 @@
         {% csrf_token %}
     <p>{% blocktrans %}By funding this faucet request, you will transfer {{ faucet_amount }} ETH to
     {{ obj.github_username }} with a wallet address of {{ obj.address }}{% endblocktrans %}</p>
+    <br>
+    <p>Connect to your wallet</p>
+    <div class="nav-item dropdown interior">
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
+        <a class="dropdown-item" href="#" id="wallet-btn">
+          Connect Wallet
+        </a>
+        <div class="dropdown-item wallet-hidden d-none">
+          <span class="network-name"></span>
+          <span class="selected-account"></span>
+        </div>
+        <div id="accounts" class="dropdown-item wallet-hidden d-none"></div>
+        <div class="dropdown-divider wallet-hidden d-none"></div>
+        <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
+          Disconnect
+        </a>
+      </div>
+    </div>
+    <div id="templates" style="display: none">
+      <template id="template-balance">
+        <tr>
+          <th class="address"></th>
+          <td class="balance"></td>
+        </tr>
+      </template>
+    </div>
     <br>
     <input type="hidden" name="destinationAccount" id="destinationAccount" value="{{ obj.address }}">
     <input type="hidden" name="faucetAmount" id="faucetAmount" value="{{ faucet_amount }}">

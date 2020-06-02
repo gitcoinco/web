@@ -1,7 +1,3 @@
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-});
-
 $('document').ready(function() {
 
   $('#comment').bind('input propertychange', function() {
@@ -50,10 +46,15 @@ $('document').ready(function() {
 
   $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
-    if (document.web3network != 'mainnet') {
-      _alert({ message: gettext('you must be on mainnet')}, 'error');
-      return;
+    if (!web3Modal.cachedProvider) {
+      onConnect().then(() => {
+        trigger_faucet_form_web3_hooks(provider)
+      })
     }
+    // if (document.web3network != 'mainnet') {
+    //   _alert({ message: gettext('You must be on mainnet')}, 'error');
+    //   return;
+    // }
     if ($(this).hasClass('disabled')) {
       return;
     }
@@ -95,4 +96,83 @@ $('document').ready(function() {
         $('#fail_container').show();
       });
   });
+});
+
+var trigger_faucet_form_web3_hooks = function(data) {
+  var params = {};
+  let cb_address = data.selectedAddress
+
+  if ($('#faucet_form').length) {
+    $('#ethAddress').val(cb_address);
+    var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
+
+    if (typeof web3 == 'undefined') {
+      $('#no_metamask_error').css('display', 'block');
+      $('#faucet_form').addClass('hidden');
+      return;
+    } else if (is_metamask_unlocked && !is_metamask_approved) {
+      $('#no_metamask_error').css('display', 'none');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'block');
+      $('#over_balance_error').css('display', 'none');
+      $('#faucet_form').addClass('hidden');
+    } else if (!cb_address) {
+      $('#no_metamask_error').css('display', 'none');
+      $('#unlock_metamask_error').css('display', 'block');
+      $('#connect_metamask_error').css('display', 'none');
+      $('#over_balance_error').css('display', 'none');
+      $('#faucet_form').addClass('hidden');
+      return;
+    } else if (balance >= faucet_amount) {
+      $('#no_metamask_error').css('display', 'none');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
+      $('#over_balance_error').css('display', 'block');
+      $('#faucet_form').addClass('hidden');
+    } else {
+      $('#over_balance_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'none');
+      $('#faucet_form').removeClass('hidden');
+    }
+  }
+  if ($('#admin_faucet_form').length) {
+    if (typeof web3 == 'undefined') {
+      $('#no_metamask_error').css('display', 'block');
+      $('#faucet_form').addClass('hidden');
+      return;
+    }
+    if (is_metamask_unlocked && !is_metamask_approved) {
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#connect_metamask_error').css('display', 'block');
+      $('#faucet_form').addClass('hidden');
+    }
+    if (!cb_address) {
+      $('#unlock_metamask_error').css('display', 'block');
+      $('#faucet_form').addClass('hidden');
+      return;
+    }
+    web3.eth.getBalance(cb_address, function(errors, result) {
+      if (errors) {
+        return;
+      }
+      var balance = result.toNumber();
+
+      if (balance == 0) {
+        $('#zero_balance_error').css('display', 'block');
+        $('#admin_faucet_form').remove();
+      }
+    });
+  }
+};
+window.addEventListener('load', async () => {
+
+  if (!provider && !web3Modal.cachedProvider || provider === 'undefined' ) {
+    onConnect().then(() => {
+      trigger_faucet_form_web3_hooks(provider);
+    })
+  } else {
+    web3Modal.on('connect', async (data) => {trigger_faucet_form_web3_hooks(data)})
+  }
 });
