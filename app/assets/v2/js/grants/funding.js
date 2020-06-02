@@ -87,10 +87,11 @@ function showSideCart() {
     });
 
     toggleSideCart();
+    window.scrollTo($('#side-cart').scrollTop(), 0);
 }
 
 function hideSideCart() {
-    const isShowing = $('#side-cart').hasClass('col-3');
+    const isShowing = $('#side-cart').hasClass('col-12');
 
     if (!isShowing) {
         return;
@@ -105,11 +106,16 @@ function hideSideCart() {
 }
 
 function toggleSideCart() {
-    $('#side-cart').toggle();
     $('#grants-details').toggleClass('col-12');
     $('#grants-details').toggleClass('col-9');
-    $('#side-cart').toggleClass("col-3");
+    $('#grants-details').toggleClass('d-none');
+    $('#grants-details').toggleClass('d-md-block');
+
+    $('#side-cart').toggle();
+    $('#side-cart').toggleClass("col-12");
+    $('#side-cart').toggleClass("col-md-3");
     $('#side-cart').toggleClass("col-0");
+
     $('#funding-card').toggleClass("mr-md-5");
     $('#funding-card').toggleClass("mr-md-3");
 }
