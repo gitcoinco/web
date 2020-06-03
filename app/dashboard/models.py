@@ -1303,6 +1303,7 @@ class BountyEvent(SuperModel):
         ('expire_bounty', 'Expire Bounty'),
         ('extend_expiration', 'Extend Expiration'),
         ('close_bounty', 'Close Bounty'),
+        ('worker_paid', 'Worker Paid')
     )
 
     bounty = models.ForeignKey('dashboard.Bounty', on_delete=models.CASCADE,
@@ -1355,12 +1356,12 @@ class BountyFulfillment(SuperModel):
     # TODO: RETIRE
     fulfiller_metadata = JSONField(default=dict, blank=True)
 
-    fulfiller_address = models.CharField(max_length=50, help_text="address to which amount is credited")
-    funder_address = models.CharField(max_length=50, null=True, help_text="address from which amount is deducted")
+    fulfiller_address = models.CharField(max_length=50, null=True, blank=True, help_text="address to which amount is credited")
+    funder_address = models.CharField(max_length=50, null=True, blank=True, help_text="address from which amount is deducted")
 
     # TODO: rename to fulfiller_profile
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True, help_text="fulfillers's profile")
-    funder_profile = models.ForeignKey('dashboard.Profile', null=True, on_delete=models.CASCADE, help_text="funder's profile")
+    funder_profile = models.ForeignKey('dashboard.Profile', null=True, blank=True, on_delete=models.CASCADE, help_text="funder's profile")
 
 
     # TODO: rename to hours_worked
@@ -1372,8 +1373,8 @@ class BountyFulfillment(SuperModel):
     accepted = models.BooleanField(default=False, help_text="has the fulfillment been accepted by the funder")
     accepted_on = models.DateTimeField(null=True, blank=True, help_text="date when the fulfillment was accepted by the funder")
 
-    payout_type = models.CharField(max_length=20, null=True, blank=True,choices=PAYOUT_TYPE, help_text="payment type used to make the payment")
-    tenant = models.CharField(max_length=10, null=True, blank=True,choices=TENANT, help_text="specific tenant type under the payout_type")
+    payout_type = models.CharField(max_length=20, null=True, blank=True, choices=PAYOUT_TYPE, help_text="payment type used to make the payment")
+    tenant = models.CharField(max_length=10, null=True, blank=True, choices=TENANT, help_text="specific tenant type under the payout_type")
 
     funder_identifier = models.CharField(max_length=50, null=True, blank=True, help_text="unique funder identifier used by when payout_type is fiat")
     fulfiller_identifier = models.CharField(max_length=50, null=True, blank=True, help_text="unique fulfiller identifier used by when payout_type is fiat")
@@ -1395,12 +1396,16 @@ class BountyFulfillment(SuperModel):
 
     @property
     def fulfiller_email(self):
-        return self.profile.email
+        if self.profile:
+            return self.profile.email
+        return None
 
 
     @property
     def fulfiller_github_username(self):
-        return self.profile.handle
+        if self.profile:
+            return self.profile.handle
+        return None
 
 
     @property
@@ -3122,7 +3127,7 @@ class Profile(SuperModel):
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"transaction{plural} on Gitcoin"
-               
+
 
     @property
     def desc(self):
@@ -4555,6 +4560,7 @@ class HackathonEvent(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
+    resources = ArrayField(JSONField(default=dict, blank=True, null=True), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
 
     def __str__(self):
@@ -5074,4 +5080,3 @@ class Investigation(SuperModel):
             description=htmls,
             key='sybil',
         )
-

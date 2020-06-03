@@ -2805,6 +2805,7 @@ def profile(request, handle, tab=None):
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
     context = {}
+    context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
@@ -2876,8 +2877,7 @@ def profile(request, handle, tab=None):
         if request.user.is_authenticated and not context['is_my_org']:
             ProfileView.objects.create(target=profile, viewer=request.user.profile)
         try:
-
-            what = f'tribe:{profile.handle}'
+            context['tags'] = get_tags(request)
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network=network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
@@ -2920,7 +2920,7 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
+
     context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
     context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
     context['foltab'] = request.GET.get('sub', 'followers')
@@ -3587,6 +3587,8 @@ def hackathon(request, hackathon='', panel='prizes'):
         return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name.title()
+    description = f"{title} | Gitcoin Virtual Hackathon"
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
     # if hackathon_not_started:
@@ -3645,6 +3647,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'prize_count': hackathon_event.get_current_bounties.count(),
         'type': 'hackathon',
         'title': title,
+        'card_desc': description,
         'what': what,
         'can_pin': can_pin(request, what),
         'pinned': pinned,
@@ -3658,7 +3661,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
         'user': request.user,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
+        'avatar_url': avatar_url,
         'tags': view_tags,
         'activities': [],
         'SHOW_DRESSING': False,
@@ -3777,6 +3780,51 @@ def save_hackathon(request, hackathon):
             {
                 'success': False,
                 'is_my_org': False,
+            },
+            status=401)
+
+
+@csrf_exempt
+def hackathon_resource(request, hackathon):
+    resource_type = request.POST.get('resource')
+    name = request.POST.get('name')
+    url = request.POST.get('url')
+    action = request.POST.get('action')
+
+    if request.method == 'GET':
+        hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+
+        return JsonResponse(
+            {
+                'success': True,
+                'resources': hackathon_event.resources,
+            },
+            status=200)
+
+    if request.user.is_authenticated and request.user.is_staff:
+        hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+
+        if action == 'delete':
+            hackathon_event.resources = [res for res in hackathon_event.resources if res['name'] != name]
+            hackathon_event.save()
+        else:
+            hackathon_event.resources.append({
+                'name': name,
+                'type': resource_type,
+                'url': url
+            })
+        hackathon_event.save()
+
+        return JsonResponse(
+            {
+                'success': True,
+                'resources': hackathon_event.resources,
+            },
+            status=200)
+    else:
+        return JsonResponse(
+            {
+                'success': False,
             },
             status=401)
 
