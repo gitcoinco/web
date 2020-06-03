@@ -1793,10 +1793,17 @@ class FundRequest(SuperModel):
     token_name = models.CharField(max_length=255, default='ETH')
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments = models.TextField(default='', blank=True)
-    tip = models.OneToOneField(Tip, on_delete=models.CASCADE, null=True)
+    tip = models.OneToOneField(Tip, on_delete=models.CASCADE, null=True, blank=True)
     network = models.CharField(max_length=255, default='')
     address = models.CharField(max_length=255, default='')
     created_on = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def url(self):
+        return settings.BASE_URL + f'tip?request={self.pk}'
+
+    def get_absolute_url(self):
+        return self.url
 
 
 @receiver(post_save, sender=FundRequest, dispatch_uid="post_save_fund_request")
