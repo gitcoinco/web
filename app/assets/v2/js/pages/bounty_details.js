@@ -745,10 +745,12 @@ const show_interest_modal = () => {
         });
         projectForm.on('submit', function(e) {
           e.preventDefault();
-          let logo = $(this)[0]['logo'].files[0];
+          let elements = $(this)[0];
+          let logo = elements['logo'].files[0];
           let data = $(this).serializeArray();
+          let summary = elements['summary'].value;
 
-          submitInterest(document.result['pk'], '', self, () => {
+          submitInterest(document.result['pk'], summary, self, () => {
             submitProject(logo, data);
             modals.bootstrapModal('hide');
           });
