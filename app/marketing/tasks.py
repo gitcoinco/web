@@ -4,8 +4,9 @@ from django.contrib.contenttypes.models import ContentType
 from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
+from marketing.mails import new_bounty_daily as new_bounty_daily_email
+from marketing.mails import weekly_roundup as weekly_roundup_email
 from marketing.models import EmailSubscriber
-from marketing.mails import new_bounty_daily as new_bounty_daily_email, weekly_roundup as weekly_roundup_email
 
 logger = get_task_logger(__name__)
 

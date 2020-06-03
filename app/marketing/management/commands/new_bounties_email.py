@@ -23,9 +23,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from marketing.tasks import new_bounty_daily
 from marketing.models import EmailSubscriber
-import time
+from marketing.tasks import new_bounty_daily
 
 warnings.filterwarnings("ignore")
 
