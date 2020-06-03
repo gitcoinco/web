@@ -385,7 +385,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab class="col-12" title-item-class="navigation" lazy>
+                <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Projects" %}
@@ -831,195 +831,13 @@
                     </div>
                   </user-directory>
                 </b-tab>
-              <b-tab class="col-12" title-item-class="navigation">
-                  <template v-slot:title>
-                    <div class="mt-4">
-                        {% trans "About" %}
-                    </div>
-                  </template>
-                  <about-hackathon inline-template>
-                  <div id="about" class="row">
-                    <div class="col-12 col-md-2 d-lg-block" style="background: #F2F6F9; margin-left:2%">
-                      <div class="ml-sm-4 mr-4 mr-sm-0 d-none d-md-inline-block " id="sidebar_container">
-                        <a :href="`/hackathon/${hackathonObj.slug}/onboard`" class="btn btn-gc-blue btn-block text-uppercase mb-4" v-if="!is_registered">
-                          Register
-                        </a>
-                        <a class="btn btn-link gc-text-blue mt-3 px-0 d-block text-left" href="" @click="goTo('get-started', $event)">Get Started Guide</a>
-                        <a class="btn btn-link gc-text-blue mt-1 px-0 d-block text-left" href="" @click="goTo('documentation', $event)">Documentation</a>
-                        <a class="btn btn-link gc-text-blue mt-1 px-0 d-block text-left" href="" @click="goTo('workshops', $event)">Workshops</a>
-                        <a class="btn btn-link gc-text-blue mt-1 px-0 d-block text-left" href="" @click="goTo('quests', $event)">Quests</a>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-9 ml-sm-4">
-                      <div class="sidebar-container flex-column">
-                        <div id="get-started" class="container bg-white rounded">
-                          <div class="row px-5 pt-4">
-                            <div class="col-12">
-                              <h1 class="text-muted font-body">Guides</h1>
-                              <h1 class="text-muted font-title">Get Started with Gitcoin Virtual Hackathon</h1>
-                            </div>
-                          </div>
-                          <div class="row px-5 my-5">
-                            <div class="col-12 col-md-5">
-                                <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
-                            </div>
-                            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0 ml-md-4">
-                                <b class="counter">{% trans "Check out the Prizes" %}</b>
-                                {% blocktrans %}
-                                  <p class="">
-                                    Visit the <a target="_blank" href="{{ hackathon_url }}#bounties">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
-                                  </p>
-                                {% endblocktrans %}
-                            </div>
-                          </div>
-                          <div class="row px-5 my-5">
-                            <div class="col-12 col-md-5">
-                                <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
-                            </div>
-                            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0 ml-md-4">
-                                <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
-                                {% blocktrans %}
-                                  <p class="">
-                                    Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://chat.gitcoin.co/hackathons">Click here to join the party!</a>.
-                                  </p>
-                                {% endblocktrans %}
-                            </div>
-                          </div>
-                          <div class="row px-5 my-5">
-                            <div class="col-12 col-md-5">
-                                <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
-                            </div>
-                            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0 ml-md-4">
-                                <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
-                                {% blocktrans %}
-                                  <p class="">
-                                    When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
-                                  </p>
-                                {% endblocktrans %}
-                            </div>
-                          </div>
-                          <div class="row px-5 my-5">
-                            <div class="col-12 col-md-5">
-                                <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
-                            </div>
-                            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0 ml-md-4">
-                                <b class="counter">{% trans "BUIDL!" %}</b>
-                                {% blocktrans %}
-                                  <p class="">
-                                    Build your cool ideas and make your vision come true with your team!
-                                  </p>
-                                {% endblocktrans %}
-                            </div>
-                          </div>
-                          <div class="row my-4 px-5 pb-5">
-                            <div class="col-12 col-md-5">
-                              <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
-                            </div>
-                            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0 ml-md-4">
-                                <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
-                                {% blocktrans %}
-                                  <p class="">
-                                    When your project is completed, submit your work by clicking the “Submit Work” button on the prize page/
-                                  </p>
-                                {% endblocktrans %}
-                            </div>
-                          </div>
-                        </div>
-                        <div id='documentation' class="container bg-white mt-4 rounded py-5">
-                          <div class="row px-5">
-                            <div class="col-12">
-                              <h1 class="text-muted font-body text-capitalize">Documentation</h1>
-                              <h1 class="text-muted font-title">Build cool stuff with our sponsors!</h1>
-                              <h1 class="mt-5 font-subheader text-center text-muted" v-if="documentation.length == 0">No documentation posted. Check out our sponsors’ repo
-                                <br> and start hacking!</h1>
-                              <div class="my-4" >
-                                <template v-for="doc in documentation">
-                                  <a class="underline gc-text-blue mt-3 d-block text-left" :href="doc.url" >[[ doc.name]]</a>
-                                  <a @click="remove_resource('documentation', doc.name, $event)" class="btn btn-link red_warning"><i class="fas fa-times "></i> Remove documentation</a>
-                                </template>
-                              </div>
-                              {% if is_staff %}
-                              <form>
-                                <fieldset class="pb-4 border-bottom form-group">
-                                  <label for="new_doc_text">Documentation description</label>
-                                  <input class="form-control" id="new_doc_text" v-model="new_doc_text" type="text">
-                                </fieldset>
-                                <fieldset class="pb-4 border-bottom form-group">
-                                  <label for="new_quest_url">Documentation url</label>
-                                  <input class="form-control" v-model="new_doc_url" id="new_doc_url" type="text">
-                                </fieldset>
-                                <a @click="add_resource('documentation', new_doc_text, new_doc_url, $event)" class="btn btn-gc-blue text-white">Add documentation</a>
-                              </form>
-                              {% endif %}
-                            </div>
-                          </div>
-                        </div>
-                        <div id="workshops" class="container bg-white mt-4 py-5 rounded">
-                          <div class="row px-5">
-                            <div class="col-12">
-                              <h1 class="text-muted font-body text-capitalize">Workshops</h1>
-                              <h1 class="text-muted font-title">Learn new skills!</h1>
-                              <h1 class="mt-5 font-subheader text-center text-muted" v-if="workshops.length == 0">No workshop at the moment. Check out our past workshops.</h1>
-                              <div class="my-4" >
-                              <template v-for="workshop in workshops">
-                                <a class="underline gc-text-blue mt-3 d-block text-left" :href="workshop.url">[[ workshop.name]]</a>
-                                {% if is_staff %}
-                                  <a @click="remove_resource('workshop', workshop.name, $event)" class="btn btn-link red_warning"><i class="fas fa-times "></i> Remove workshop</a>
-                                {% endif %}
-                              </template>
-                              </div>
-                              {% if is_staff %}
-                              <form>
-                                <fieldset class="pb-4 border-bottom form-group">
-                                  <label for="new_work_text">Workshop title</label>
-                                  <input class="form-control" id="new_work_text" v-model="new_work_text" type="text">
-                                </fieldset>
-                                <fieldset class="pb-4 border-bottom form-group">
-                                  <label for="new_work_url">Workshop url</label>
-                                  <input class="form-control" v-model="new_work_url" id="new_work_url" type="text">
-                                </fieldset>
-                                <a @click="add_resource('workshop', new_work_text, new_work_url, $event)" class="btn btn-gc-blue text-white">Add documentation</a>
-                              </form>
-                              {% endif %}
-                            </div>
-                          </div>
-                        </div>
-                        <div id="quests" class="container bg-white my-4 py-5 rounded">
-                          <div class="row px-5">
-                            <div class="col-12">
-                              <h1 class="text-muted font-body text-capitalize">Quests</h1>
-                              <h1 class="text-muted font-title">Test your skills and get kudos</h1>
-                              <h1 class="mt-5 font-subheader text-center text-muted" v-if="quests.length == 0">No quests found for this hackathon. Check out other quests?</h1>
-                              <div class="my-4" >
-                                <template v-for="quest in quests">
-                                  <a class="underline gc-text-blue mt-3 d-block text-left" :href="quest.url" >[[ quest.name]]</a>
-                                  {% if is_staff %}
-                                    <a @click="remove_resource('quest', quest.name, $event)" class="btn btn-link red_warning"><i class="fas fa-times "></i> Remove quest</a>
-                                  {% endif %}
-                                </template>
-                              </div>
-
-                              {% if is_staff %}
-                              <form>
-                                <fieldset class="pb-4 border-bottom form-group">
-                                  <label for="new_quest_text">Quest name</label>
-                                  <input class="form-control" id="new_quest_text" v-model="new_quest_text" type="text">
-                                </fieldset>
-                                <fieldset class="pb-4 border-bottom form-group">
-                                  <label for="new_quest_url">Quest url</label>
-                                  <input class="form-control" v-model="new_quest_url" id="new_quest_url" type="text">
-                                </fieldset>
-                                <a @click="add_resource('quest', new_quest_text, new_quest_url, $event)" class="btn btn-gc-blue text-white">Add quest</a>
-                              </form>
-                              {% endif %}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  </about-hackathon>
-              </b-tab>
+              <template v-slot:tabs-end>
+                <li role="presentation" class="nav-item navigation">
+                  <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
+                    <div class="mt-4">Guide</div>
+                  </a>
+                </li>
+              </template>
             </b-tabs>
           </div>
           <div class="col-12 col-md-3">

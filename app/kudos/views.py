@@ -42,6 +42,7 @@ from django.views.decorators.csrf import csrf_exempt
 import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
+from dashboard.tasks import increment_view_count
 from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -141,6 +142,11 @@ def marketplace(request):
             logger.debug(e)
             pass
 
+    # increment view counts
+    pks = list(token_list.values_list('pk', flat=True))
+    if len(pks):
+        increment_view_count.delay(pks, token_list.first().content_type, request.user.id, 'index')
+
     listings = token_list.order_by(order_by).cache()
     context = {
         'is_outside': True,
@@ -221,6 +227,9 @@ def details(request, kudos_id, name):
             token_id=kudos.cloned_from_id,
             contract__address=kudos.contract.address,
         )
+        # increment view counts
+        increment_view_count.delay([token.pk], token.content_type, request.user.id, 'individual')
+
         # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
         kudos.num_clones_in_wild = token.num_clones_in_wild
         # Create a new attribute to reference number of gen0 clones allowed

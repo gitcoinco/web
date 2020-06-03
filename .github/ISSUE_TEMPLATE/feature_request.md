@@ -12,7 +12,7 @@ Hello Gitcoiner!
 
 Please use the template below for feature requests for Gitcoin.
 If it is general support you need, reach out to us at
-gitcoin.co/slack
+chat.gitcoin.co
 
 -->
 

@@ -570,6 +570,9 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     except Exception as e:
         logger.error(e)
 
+    if latest_old_bounty:
+        new_bounty.set_view_count(latest_old_bounty.get_view_count)
+
     if latest_old_bounty and latest_old_bounty.event:
         new_bounty.event = latest_old_bounty.event
         new_bounty.save()
@@ -778,7 +781,8 @@ bounty_activity_event_adapter = {
     'killed_bounty': 'cancel_bounty',
     'work_submitted': 'submit_work',
     'stop_work': 'stop_work',
-    'work_done': 'payout_bounty'
+    'work_done': 'payout_bounty',
+    'worker_paid': 'worker_paid'
 }
 
 
@@ -814,10 +818,10 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                     fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-            if fulfillment:
-                user_profile = Profile.objects.filter(handle=fulfillment.profile__handle.lower()).first()
+            if fulfillment and fulfillment.profile:
+                user_profile = fulfillment.profile
                 if not user_profile:
-                    user_profile = sync_profile(fulfillment.profile__handle)
+                    user_profile = sync_profile(fulfillment.fulfiller_github_username)
 
     except Exception as e:
         logger.error(f'{e} during record_bounty_activity for {new_bounty}')
