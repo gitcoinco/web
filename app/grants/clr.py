@@ -169,59 +169,6 @@ def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_p
 
 
 
-# '''
-#     Clubbed function that intakes grant data, calculates necessary intermediate calculations, and spits out clr calculations. This function is re-used for positive and negative contributions
-
-#     Args:
-#         grant_contributions: {
-#             'id': (string) ,
-#             'contributions' : [
-#                 {
-#                     contributor_profile (str) : contribution_amount (int)
-#                 }
-#             ]
-#         }
-#         threshold: pairwise coefficient
-#         total_pot: total pot set for the round category
-#         positive: positive or negative contributions
-
-#     Returns:
-#         totals: clr totals
-# '''
-# def grants_clr_calculate(grant_contributions, total_pot=0.0, threshold=0.0, positive=True):
-#     grants_list = translate_data(grant_contributions)
-#     aggregated_contributions, pair_totals = aggregate_contributions(grants_list)
-#     totals = calculate_new_clr(aggregated_contributions, pair_totals, threshold=threshold, total_pot=total_pot, positive=positive)
-#     return totals
-
-
-
-# '''
-#     Clubbed function that intakes the result of grants_clr_calculate and calculates the final difference calculation between positive and negative grant contributions.
-
-#     Args:
-#         totals_pos: [{'id': proj, 'clr_amount': tot}]
-#         totals_neg: [{'id': proj, 'clr_amount': tot}]
-#         total_pot: total pot set for the round category
-
-#     Returns:
-#         final_bigtot: should equal total pot
-#         final_totals: final clr totals
-
-#     Final flow:
-#         grants_clr_calculate includes:
-#             translate_data
-#             aggregate_contributions
-#             calculate_new_clr
-#         and outputs: positive & negatives clr amounts
-#         grants_clr_calculate_pos_neg uses output from grants_clr_calculates to output final totals
-# '''
-# def grants_clr_calculate_pos_neg(pos_totals, neg_totals, total_pot=0.0):
-#     final_bigtot, final_totals = calculate_new_clr_final(pos_totals, neg_totals, total_pot=total_pot)
-#     return final_bigtot, final_totals
-
-
-
 ''' 
     clubbed function that runs all calculation functions
 
