@@ -44,44 +44,67 @@ TOTAL_POT_TECH = 101000.0
 TOTAL_POT_MEDIA = 50120.0 #50k + 120 from negative voting per https://twitter.com/owocki/status/1249420758167588864
 TOTAL_POT_HEALTH = 50000.0
 
-'''
-    Helper function that translates existing grant data structure
-    to a list of lists.
 
-    Args:
-        {
-            'id': (string) ,
-            'contibutions' : [
-                {
-                    contributor_profile (str) : contribution_amount (int)
-                }
-            ]
-        }
 
-    Returns:
-        [[grant_id (str), user_id (str), contribution_amount (float)]]
 '''
-def translate_data(grants):
+    translates django grant data structure to a list of lists
+
+    args: 
+        django grant data structure
+            {
+                'id': (string) ,
+                'contibutions' : [
+                    {
+                        contributor_profile (str) : contribution_amount (int)
+                    }
+                ]
+            }
+
+    returns: 
+        list of lists of grant data 
+            [[grant_id (str), user_id (str), contribution_amount (float)]]
+'''
+def translate_data(grants_data):
     grants_list = []
-    for grant in grants:
-        grant_id = grant.get('id')
-        for contribution in grant.get('contributions'):
-            val = [grant_id] + [list(contribution.keys())[0], list(contribution.values())[0]]
+    for g in grants_data:
+        grant_id = g.get('id')
+        for c in g.get('contributions'):
+            val = [grant_id] + [list(c.keys())[0], list(c.values())[0]]
             grants_list.append(val)
+
     return grants_list
 
 
 
 '''
-    Helper function that aggregates contributions by contributor, and then uses the aggregated contributors by contributor and calculates total contributions by unique pairs.
+    combine previous round 1/3 contributions with current round contributions
 
-    Args:
-        from translate_data:
+    args: previous round contributions list of lists
+
+    returns: list of lists of combined contributions
         [[grant_id (str), user_id (str), contribution_amount (float)]]
 
-    Returns:
-        {grant_id (str): {user_id (str): aggregated_amount (float)}}
-        {user_id (str): {user_id (str): pair_total (float)}}
+'''
+def combine_previous_round(previous, current):
+    for x in previous:
+        x[2] = x[2]/3.0
+    combined = current + previous
+
+    return combined
+
+
+
+'''
+    aggregates contributions by contributor, and calculates total contributions by unique pairs
+
+    args: 
+        list of lists of grant data
+            [[grant_id (str), user_id (str), contribution_amount (float)]]
+
+    returns: 
+        aggregated contributions by pair & total contributions by pair
+            {grant_id (str): {user_id (str): aggregated_amount (float)}}
+            {user_id (str): {user_id (str): pair_total (float)}}
 '''
 def aggregate_contributions(grant_contributions):
     contrib_dict = {}
@@ -99,157 +122,166 @@ def aggregate_contributions(grant_contributions):
                 if k2 not in tot_overlap[k1]:
                     tot_overlap[k1][k2] = 0
                 tot_overlap[k1][k2] += (v1 * v2) ** 0.5
+
     return contrib_dict, tot_overlap
 
 
 
 '''
-    Helper function that runs the pairwise clr formula for positive or negative instances, depending on the switch.
+    calculates the clr amount at the given threshold and total pot
 
-    Args:
-        aggregated_contributions: {grant_id (str): {user_id (str): aggregated_amount (float)}}
-        pair_totals: {user_id (str): {user_id (str): pair_total (float)}}
-        threshold: pairwise coefficient
-        total_pot: total pot set for the round category
-        positive: positive or negative contributions
+    args:
+        aggregated_contributions
+            {grant_id (str): {user_id (str): aggregated_amount (float)}}
+        pair_totals
+            {user_id (str): {user_id (str): pair_total (float)}}
+        threshold
+            float
+        total_pot
+            float
 
-    Returns:
-        totals: total clr, positive or negative sum and award by grant
+    returns:
+        total clr award by grant, normalized by the normalization factor
+            [{'id': proj, 'clr_amount': tot}]
+        saturation point
+            boolean
 '''
-def calculate_new_clr(aggregated_contributions, pair_totals, threshold=0.0, total_pot=0.0, positive=True):
-    totals = []
-    if positive:  # positive
-        for proj, contribz in aggregated_contributions.items():
-            tot = 0
-            for k1, v1 in contribz.items():
-                for k2, v2 in contribz.items():
-                    if k2 > k1:  # removes single donations, vitalik's formula
-                        tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / threshold + 1)
-            totals.append({'id': proj, 'clr_amount': tot})
-
-    if not positive:  # negative
-        for proj, contribz in aggregated_contributions.items():
-            tot = 0
-            for k1, v1 in contribz.items():
-                for k2, v2 in contribz.items():
-                    if k2 > k1:  # removes single donations but adds it in below, vitalik's formula
-                        tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / threshold + 1)
-                    if k2 == k1:  # negative vote will count less if single, but will count
-                        tot += ((v1 * v2) ** 0.5)
-            totals.append({'id': proj, 'clr_amount': tot})
-
-    return totals
-
-
-
-'''
-    Helper function that calculates the final difference between positive and negative totals and finds the final clr reward amount. The amount is also normalized as well.
-
-    ### UNCOMMENTING CHANGES HERE MAY BE NECESSARY HERE FOR NORMALIZATION ###
-
-    Args:
-        totals_pos: [{'id': proj, 'clr_amount': tot}]
-        totals_neg: [{'id': proj, 'clr_amount': tot}]
-        total_pot: total pot for the category round
-
-    Returns:
-        totals: total clr award by grant pos less neg, normalized by the normalization factor
-'''
-def calculate_new_clr_final(totals_pos, totals_neg, total_pot=0.0):
-    # calculate final totals
-    # print(f'+ve {len(totals_pos)} {totals_pos}')
-    # print(f'-ve {len(totals_neg)} {totals_neg}')
-    neg_ids = [y['id'] for y in totals_neg]
-    [totals_neg.append({'id': x['id'], 'clr_amount': 0}) for x in totals_pos if x['id'] not in neg_ids]
-
-    pos_ids = [x['id'] for x in totals_pos]
-    [totals_pos.append({'id': y['id'], 'clr_amount': 0}) for y in totals_neg if y['id'] not in pos_ids]
-
-    totals = []
-    for x in totals_pos:
-        for y in totals_neg:
-            if x['id'] == y['id'] and (x['clr_amount'] == 0 or x['clr_amount'] < y['clr_amount']):
-                totals.append({'id': x['id'], 'clr_amount': 0})
-            elif x['id'] == y['id']:
-                totals.append({'id': x['id'], 'clr_amount': (math.sqrt(x['clr_amount']) - math.sqrt(y['clr_amount']))**2})
-
+def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_pot=0.0):
     bigtot = 0
+    totals = []
+    for proj, contribz in aggregated_contributions.items():
+        tot = 0
+        for k1, v1 in contribz.items():
+            for k2, v2 in contribz.items():
+                if k2 > k1:  # removes single donations, vitalik's formula
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / threshold + 1)
+        bigtot += tot
+        totals.append({'id': proj, 'clr_amount': tot})
+
     # find normalization factor
-    for x in totals:
-        bigtot += x['clr_amount']
     normalization_factor = bigtot / total_pot
+
     # modify totals
-    if normalization_factor != 0:
-        for x in totals:
-            x['clr_amount'] = x['clr_amount'] / normalization_factor
-    return bigtot, totals
+    for result in totals:
+        result['clr_amount'] = result['clr_amount'] / normalization_factor
 
-
-'''
-    Clubbed function that intakes grant data, calculates necessary intermediate calculations, and spits out clr calculations. This function is re-used for positive and negative contributions
-
-    Args:
-        grant_contributions: {
-            'id': (string) ,
-            'contributions' : [
-                {
-                    contributor_profile (str) : contribution_amount (int)
-                }
-            ]
-        }
-        threshold: pairwise coefficient
-        total_pot: total pot set for the round category
-        positive: positive or negative contributions
-
-    Returns:
-        totals: clr totals
-'''
-def grants_clr_calculate(grant_contributions, total_pot=0.0, threshold=0.0, positive=True):
-    grants_list = translate_data(grant_contributions)
-    aggregated_contributions, pair_totals = aggregate_contributions(grants_list)
-    totals = calculate_new_clr(aggregated_contributions, pair_totals, threshold=threshold, total_pot=total_pot, positive=positive)
     return totals
 
 
 
+# '''
+#     Clubbed function that intakes grant data, calculates necessary intermediate calculations, and spits out clr calculations. This function is re-used for positive and negative contributions
+
+#     Args:
+#         grant_contributions: {
+#             'id': (string) ,
+#             'contributions' : [
+#                 {
+#                     contributor_profile (str) : contribution_amount (int)
+#                 }
+#             ]
+#         }
+#         threshold: pairwise coefficient
+#         total_pot: total pot set for the round category
+#         positive: positive or negative contributions
+
+#     Returns:
+#         totals: clr totals
+# '''
+# def grants_clr_calculate(grant_contributions, total_pot=0.0, threshold=0.0, positive=True):
+#     grants_list = translate_data(grant_contributions)
+#     aggregated_contributions, pair_totals = aggregate_contributions(grants_list)
+#     totals = calculate_new_clr(aggregated_contributions, pair_totals, threshold=threshold, total_pot=total_pot, positive=positive)
+#     return totals
+
+
+
+# '''
+#     Clubbed function that intakes the result of grants_clr_calculate and calculates the final difference calculation between positive and negative grant contributions.
+
+#     Args:
+#         totals_pos: [{'id': proj, 'clr_amount': tot}]
+#         totals_neg: [{'id': proj, 'clr_amount': tot}]
+#         total_pot: total pot set for the round category
+
+#     Returns:
+#         final_bigtot: should equal total pot
+#         final_totals: final clr totals
+
+#     Final flow:
+#         grants_clr_calculate includes:
+#             translate_data
+#             aggregate_contributions
+#             calculate_new_clr
+#         and outputs: positive & negatives clr amounts
+#         grants_clr_calculate_pos_neg uses output from grants_clr_calculates to output final totals
+# '''
+# def grants_clr_calculate_pos_neg(pos_totals, neg_totals, total_pot=0.0):
+#     final_bigtot, final_totals = calculate_new_clr_final(pos_totals, neg_totals, total_pot=total_pot)
+#     return final_bigtot, final_totals
+
+
+
+''' 
+    clubbed function that runs all calculation functions
+
+    args: 
+        grant_contribs_curr
+            {
+                'id': (string) ,
+                'contibutions' : [
+                    {
+                        contributor_profile (str) : contribution_amount (int)
+                    }
+                ]
+            }
+        grant_contribs_prev
+            {
+                'id': (string) ,
+                'contibutions' : [
+                    {
+                        contributor_profile (str) : contribution_amount (int)
+                    }
+                ]
+            }
+        threshold
+            float
+        total_pot
+            float
+
+    returns: 
+        grants clr award amounts
 '''
-    Clubbed function that intakes the result of grants_clr_calculate and calculates the final difference calculation between positive and negative grant contributions.
-
-    Args:
-        totals_pos: [{'id': proj, 'clr_amount': tot}]
-        totals_neg: [{'id': proj, 'clr_amount': tot}]
-        total_pot: total pot set for the round category
-
-    Returns:
-        final_bigtot: should equal total pot
-        final_totals: final clr totals
-
-    Final flow:
-        grants_clr_calculate includes:
-            translate_data
-            aggregate_contributions
-            calculate_new_clr
-        and outputs: positive & negatives clr amounts
-        grants_clr_calculate_pos_neg uses output from grants_clr_calculates to output final totals
-'''
-def grants_clr_calculate_pos_neg(pos_totals, neg_totals, total_pot=0.0):
-    final_bigtot, final_totals = calculate_new_clr_final(pos_totals, neg_totals, total_pot=total_pot)
-    return final_bigtot, final_totals
+def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, threshold=20.0, total_pot=100000.0):
+    
+    # get data
+    curr_round = translate_data(grant_contribs_curr)
+    prev_round = translate_data(grant_contribs_prev)
+    
+    # combined round
+    comb_round = combine_previous_round(prev_round, curr_round)
+    
+    # clr calcluations
+    agg_contribs, pair_tots = aggregate_contributions(comb_round)
+    totals = calculate_clr(agg_contribs, pair_tots, threshold=threshold, total_pot=total_pot)
+ 
+    return totals
 
 
-def calculate_clr_for_donation(grant, amount, positive_grant_contributions, negative_grant_contributions, total_pot, threshold):
 
-    _positive_grant_contributions = copy.deepcopy(positive_grant_contributions)
+def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_contributions_prev, total_pot, threshold):
+
+    _grant_contributions_curr = copy.deepcopy(grant_contributions_curr)
+    _grant_contributions_prev = copy.deepcopy(grant_contributions_prev)
+
     # find grant in contributions list and add donation
     if amount != 0:
-        for grant_contribution in _positive_grant_contributions:
+        for grant_contribution in _grant_contributions_curr:
             if grant_contribution['id'] == grant.id:
                 # add this donation with a new profile (id 99999999999) to get impact
                 grant_contribution['contributions'].append({'999999999999': amount})
 
-    pos_totals = grants_clr_calculate(_positive_grant_contributions, total_pot=total_pot, threshold=threshold, positive=True)
-    neg_totals = grants_clr_calculate(negative_grant_contributions, total_pot=total_pot, threshold=threshold, positive=False)
-    _, grants_clr = grants_clr_calculate_pos_neg(pos_totals, neg_totals, total_pot=total_pot)
+    grants_clr = run_clr_calcs(_grant_contributions_curr, _grant_contributions_prev, threshold=threshold, total_pot=total_pot)
 
     # find grant we added the contribution to and get the new clr amount
     for grant_clr in grants_clr:
@@ -258,6 +290,7 @@ def calculate_clr_for_donation(grant, amount, positive_grant_contributions, nega
 
     # print(f'info: no contributions found for grant {grant}')
     return (None, None)
+
 
 
 '''
@@ -380,7 +413,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
     # setup
     clr_calc_start_time = timezone.now()
     debug_output = []
-    grants, positive_contrib_data, negative_contrib_data, total_pot, threshold = populate_data_for_clr(clr_type, network, mechanism=mechanism)
+    grants, grant_contributions_curr, grant_contributions_prev, total_pot, threshold = populate_data_for_clr(clr_type, network, mechanism=mechanism)
 
     # print(f'GRANT {len(grants)}')
     # print(f'CONTRIB {len(positive_contrib_data)}')
@@ -396,8 +429,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
             predicted_clr, grants_clr = calculate_clr_for_donation(
                 grant,
                 amount,
-                positive_contrib_data,
-                negative_contrib_data,
+                grant_contributions_curr,
+                grant_contributions_prev,
                 total_pot,
                 threshold
             )
@@ -490,32 +523,23 @@ LIVE GRANTS FUNDING PAGE METHODS START HERE
     Returns:
         clr_amount
 '''
-def calculate_clr_for_donation_live(grant, contributor, amount, is_postive_vote, positive_grant_contributions, negative_grant_contributions, total_pot, threshold):
+def calculate_clr_for_donation_live(grant, contributor, amount, grant_contributions_curr, grant_contributions_prev, total_pot, threshold):
 
     if amount == 0:
         return 0
 
-    _positive_grant_contributions = copy.deepcopy(positive_grant_contributions)
-    _negative_grant_contributions = copy.deepcopy(negative_grant_contributions)
+    _grant_contributions_curr = copy.deepcopy(grant_contributions_curr)
+    _grant_contributions_prev = copy.deepcopy(grant_contributions_prev)
 
     profile_id = str(contributor.pk)
 
-    if is_postive_vote:
-        for grant_contribution in _positive_grant_contributions:
-            if grant_contribution['id'] == grant.id:
-                grant_contribution['contributions'].append({
-                    profile_id: amount
-                })
-    else:
-        for grant_contribution in _negative_grant_contributions:
-            if grant_contribution['id'] == grant.id:
-                grant_contribution['contributions'].append({
-                    profile_id: amount
-                })
+    for grant_contribution in _grant_contributions_curr:
+        if grant_contribution['id'] == grant.id:
+            grant_contribution['contributions'].append({
+                profile_id: amount
+            })
 
-    pos_totals = grants_clr_calculate(_positive_grant_contributions, total_pot=total_pot, threshold=threshold, positive=True)
-    neg_totals = grants_clr_calculate(_negative_grant_contributions, total_pot=total_pot, threshold=threshold, positive=False)
-    _, grants_clr = grants_clr_calculate_pos_neg(pos_totals, neg_totals, total_pot=total_pot)
+    grants_clr = run_clr_calcs(_grant_contributions_curr, _grant_contributions_prev, threshold=threshold, total_pot=total_pot)
 
     # find grant we added the contribution to and get the new clr amount
     for grant_clr in grants_clr:
@@ -539,7 +563,7 @@ def calculate_clr_for_donation_live(grant, contributor, amount, is_postive_vote,
     Returns:
         predicted_clr_match
 '''
-def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
+def predict_clr_live(grant, contributor, amount):
 
     if not grant or not contributor:
         print('error: predict_clr_live - missing parameters')
@@ -550,10 +574,10 @@ def predict_clr_live(grant, contributor, amount, is_postive_vote=True):
 
     clr_type = grant.grant_type
     network = grant.network
-    _, positive_contrib_data, negative_contrib_data , total_pot, threshold = populate_data_for_clr(clr_type, network)
+    _, grant_contributions_curr, grant_contributions_prev, total_pot, threshold = populate_data_for_clr(clr_type, network)
 
     predicted_clr_match = calculate_clr_for_donation_live(
-        grant, contributor, amount, is_postive_vote, positive_contrib_data, negative_contrib_data, total_pot, threshold
+        grant, contributor, amount, grant_contributions_curr, grant_contributions_prev, total_pot, threshold
     )
 
     return predicted_clr_match
