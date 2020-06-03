@@ -223,12 +223,7 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
 
     created = False
     try:
-        already_exists = EmailSubscriber.objects.filter(email__iexact=email)
-        if already_exists.exists():
-            es = already_exists.first()
-        else:
-            es = EmailSubscriber.objects.create(**defaults)
-            created = True
+        created, es = EmailSubscriber.objects.get_or_create(email__iexact=email, default=defaults)
         #print("EmailSubscriber:", es, "- created" if created else "- updated")
     except EmailSubscriber.MultipleObjectsReturned:
         email_subscriber_ids = EmailSubscriber.objects.filter(email__iexact=email) \
@@ -247,8 +242,6 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
     if created or not es.priv:
         es.set_priv()
         es.save()
-        if send_slack_invite:
-            invite_to_slack(email)
 
     return es
 
