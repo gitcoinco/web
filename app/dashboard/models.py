@@ -2727,6 +2727,33 @@ class Profile(SuperModel):
         return suggested_bounties if suggested_bounties else []
 
     @property
+    def chat_num_unread_msgs(self):
+        from mattermostdriver import Driver
+        if not self.gitcoin_chat_access_token:
+            return 0
+
+        driver_opts = {
+            'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
+            'url': settings.CHAT_SERVER_URL,
+            'port': settings.CHAT_PORT,
+            'token': self.gitcoin_chat_access_token
+        }
+
+        chat_driver = Driver(driver_opts)
+        chat_driver.login()
+
+        response = chat_driver.client.make_request('get', 
+            '/users/me/teams/unread', 
+            options=None, 
+            params=None, 
+            data=None, 
+            files=None, 
+            basepath=None)
+        total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
+        return total_unread
+
+
+    @property
     def subscribed_threads(self):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
         tips = [tip.comments_priv.split(':')[1] for tip in tips]
