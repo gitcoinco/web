@@ -93,11 +93,14 @@ class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
     raw_id_fields = ['contract']
-    readonly_fields = ['link']
+    readonly_fields = ['link', 'view_count']
 
     def link(self, instance):
         html = f"<a href={instance.url}>{instance.url}</a>"
         return mark_safe(html)
+
+    def view_count(self, instance):
+        return instance.get_view_count
 
 
 class TransferAdmin(admin.ModelAdmin):

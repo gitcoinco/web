@@ -78,22 +78,34 @@
                   <div class="mt-2">
                     <label class="form__label" for="githubPRLink">{% trans "Project Link" %}</label>
                     <input name='githubPRLink' id='githubPRLink' class="form__input font-body" type="text"
-                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM (optional)" value="" required
+                      placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM" value=""
+                      required
                     />
                   </div>
 
-                  <div class="mt-2">
-                    <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
-                    {% if is_bounties_network %}
-                      <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
-                        [ sync with web3 wallet ]
-                      </span>
-                    {% endif %}
-                    <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
-                      title="Address to which which bounty will be sent upon being accepted">
-                    </i>
-                    <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="0x0000000000000"/>
-                  </div>
+                  {% if bounty.web3_type == 'fiat' %}
+                    <div class="mt-2">
+                      <label class="form__label" for="fulfiller_identifier">{% trans "Paypal Account" %}</label>
+                      <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
+                        title="Paypal Account to which bounty will be sent upon being accepted">
+                      </i>
+                      <input name='fulfiller_identifier' id='fulfiller_identifier' class="form__input font-body" type="email" required/>
+                    </div>
+                  {% else %}
+
+                    <div class="mt-2">
+                      <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
+                      {% if is_bounties_network %}
+                        <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
+                          [ sync with web3 wallet ]
+                        </span>
+                      {% endif %}
+                      <i class='fa fa-info-circle font-smaller-4' data-toggle="tooltip" data-placement="top"
+                        title="Address to which bounty will be sent upon being accepted">
+                      </i>
+                      <input name='payoutAddress' id='payoutAddress' class="form__input font-body" type="text" placeholder="0x0000000000000"/>
+                    </div>
+                  {% endif %}
 
                   <div class="mt-2 row">
                     <div class="col-12">
@@ -128,17 +140,20 @@
                       </label>
                     </div>
                   </div>
-                  <div class="terms_container">
-                    <div class="form__checkbox">
-                      <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                      <label class="form__label" for=blockchain_tos>
-                        {% blocktrans %}
-                          I understand that this information is being submitted to a public, immutable, blockchain.
-                          No one, including Gitcoin Core, will be able to take my funds or change this information.
-                        {% endblocktrans %}
-                      </label>
+                  {% if bounty.web3_type != 'fiat' %}
+                    <div class="terms_container">
+                      <div class="form__checkbox">
+                        <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+                        <label class="form__label" for=blockchain_tos>
+                          {% blocktrans %}
+                            I understand that this information is being submitted to a public, immutable, blockchain.
+                            No one, including Gitcoin Core, will be able to take my funds or change this information.
+                          {% endblocktrans %}
+                        </label>
+                      </div>
                     </div>
-                  </div>
+                  {% endif %}
+
                   <div class="my-2 pb-5 text-center">
                     <button class="mb-3 w-100 button button--primary js-submit" role="button">{% trans "Submit Work" %}</button>
                   </div>
@@ -151,6 +166,7 @@
     </div>
 
     <script>
+      const web3_type = '{{ bounty.web3_type }}';
       const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
     </script>
     {% include 'shared/bottom_notification.html' %}

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 
 import requests
-from dashboard.sync.helpers import txn_already_used
+from dashboard.sync.helpers import record_payout_activity, txn_already_used
 
 headers = {
     "X-APIKEY" : settings.VIEW_BLOCK_API_KEY
@@ -71,4 +71,5 @@ def sync_zil_payout(fulfillment):
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
+            record_payout_activity(fulfillment)
         fulfillment.save()

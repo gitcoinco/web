@@ -95,7 +95,9 @@ def profile_to_location(handle):
 
 
 def profile_to_location_helper(handle):
-
+    if not handle:
+        return []
+    
     profiles = Profile.objects.filter(handle=handle.lower())
     if handle and profiles.exists():
         profile = profiles.first()

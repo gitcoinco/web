@@ -63,6 +63,7 @@ from chat.tasks import (
     add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
 )
 from dashboard.context import quickstart as qs
+from dashboard.tasks import increment_view_count
 from dashboard.utils import (
     ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
 )
@@ -178,7 +179,7 @@ def record_user_action(user, event_name, instance):
         logger.error(f"error in record_action: {e} - {event_name} - {instance}")
 
 
-def record_bounty_activity(bounty, user, event_name, interest=None):
+def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=None):
     """Creates Activity object.
 
     Args:
@@ -214,6 +215,11 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
     elif event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
+    elif event_name == 'worker_paid' and fulfillment:
+        kwargs['metadata']['from'] = fulfillment.funder_profile.handle
+        kwargs['metadata']['to'] = fulfillment.profile.handle
+        kwargs['metadata']['payout_amount'] = fulfillment.payout_amount
+        kwargs['metadata']['token_name'] = fulfillment.token_name
 
     try:
         if event_name in bounty_activity_event_adapter:
@@ -1009,7 +1015,7 @@ def users_fetch(request):
             ).exclude(hide_profile=True)
 
     if q:
-        profile_list = profile_list.filter(Q(follower__org__handle__in=[tribe]) | Q(organizations_fk__handle__in=[tribe])).distinct()
+        profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).distinct()
 
     if tribe:
 
@@ -1933,6 +1939,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if request.GET.get('sb') == '1' or (bounty and bounty.is_bounties_network):
         return TemplateResponse(request, 'bounty/details.html', params)
 
+    params['PYPL_CLIENT_ID'] = settings.PYPL_CLIENT_ID
     return TemplateResponse(request, 'bounty/details2.html', params)
 
 
@@ -3583,6 +3590,7 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
+        increment_view_count.delay([hackathon_event.pk], hackathon_event.content_type, request.user.id, 'individual')
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
@@ -3780,51 +3788,6 @@ def save_hackathon(request, hackathon):
             {
                 'success': False,
                 'is_my_org': False,
-            },
-            status=401)
-
-
-@csrf_exempt
-def hackathon_resource(request, hackathon):
-    resource_type = request.POST.get('resource')
-    name = request.POST.get('name')
-    url = request.POST.get('url')
-    action = request.POST.get('action')
-
-    if request.method == 'GET':
-        hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
-
-        return JsonResponse(
-            {
-                'success': True,
-                'resources': hackathon_event.resources,
-            },
-            status=200)
-
-    if request.user.is_authenticated and request.user.is_staff:
-        hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
-
-        if action == 'delete':
-            hackathon_event.resources = [res for res in hackathon_event.resources if res['name'] != name]
-            hackathon_event.save()
-        else:
-            hackathon_event.resources.append({
-                'name': name,
-                'type': resource_type,
-                'url': url
-            })
-        hackathon_event.save()
-
-        return JsonResponse(
-            {
-                'success': True,
-                'resources': hackathon_event.resources,
-            },
-            status=200)
-    else:
-        return JsonResponse(
-            {
-                'success': False,
             },
             status=401)
 
@@ -4204,6 +4167,11 @@ def get_hackathons(request):
         'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
         'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
     }
+
+    pks = HackathonEvent.objects.filter(visible=True).values_list('pk', flat=True)
+    if len(pks):
+        increment_view_count.delay(list(pks), 'hackathon event', request.user.id, 'index')
+
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
@@ -5028,11 +4996,6 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: user can submit once per bounty'
         return JsonResponse(response)
 
-    fulfiller_address = request.POST.get('fulfiller_address')
-    if not fulfiller_address:
-        response['message'] = 'error: missing fulfiller_address'
-        return JsonResponse(response)
-
     hours_worked = request.POST.get('hoursWorked')
     if not hours_worked or not hours_worked.isdigit():
         response['message'] = 'error: missing hoursWorked'
@@ -5041,6 +5004,21 @@ def fulfill_bounty_v1(request):
     fulfiller_github_url = request.POST.get('githubPRLink')
     if not fulfiller_github_url:
         response['message'] = 'error: missing githubPRLink'
+        return JsonResponse(response)
+
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing payout_type'
+        return JsonResponse(response)
+
+    fulfiller_identifier = request.POST.get('fulfiller_identifier', None)
+    fulfiller_address = request.POST.get('fulfiller_address', None)
+
+    if payout_type == 'fiat' and not fulfiller_identifier:
+        response['message'] = 'error: missing fulfiller_identifier'
+        return JsonResponse(response)
+    elif payout_type == 'qr' and not fulfiller_address:
+        response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
     event_name = 'work_submitted'
@@ -5066,10 +5044,16 @@ def fulfill_bounty_v1(request):
     fulfillment.modified_on = now
     fulfillment.funder_last_notified_on = now
     fulfillment.token_name = bounty.token_name
+    fulfillment.payout_type = payout_type
+
+    if fulfiller_identifier:
+        fulfillment.fulfiller_identifier = fulfiller_identifier
+        fulfillment.tenant = 'PYPL'
+    elif fulfiller_address:
+        fulfillment.fulfiller_address = fulfiller_address
 
     # fulfillment.fulfillment_id    ETC-TODO: REMOVE ?
 
-    fulfillment.fulfiller_address = fulfiller_address
     fulfillment.fulfiller_hours_worked = hours_worked
     fulfillment.fulfiller_github_url = fulfiller_github_url
 
@@ -5132,7 +5116,6 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: bounty fulfillment not found'
         return JsonResponse(response)
 
-
     if bounty.bounty_state in ['cancelled', 'done']:
         response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be paid out'
         return JsonResponse(response)
@@ -5143,14 +5126,18 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: payout is bounty funder operation'
         return JsonResponse(response)
 
-    if not bounty.bounty_owner_address:
-        bounty_owner_address = request.POST.get('bounty_owner_address')
-        if not bounty_owner_address:
-            response['message'] = 'error: missing parameter bounty_owner_address'
-            return JsonResponse(response)
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing parameter payout_type'
+        return JsonResponse(response)
+    if payout_type not in ['fiat', 'qr']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr'
+        return JsonResponse(response)
 
-        bounty.bounty_owner_address = bounty_owner_address
-        bounty.save()
+    tenant = request.POST.get('tenant')
+    if not tenant:
+        response['message'] = 'error: missing parameter tenant'
+        return JsonResponse(response)
 
     amount = request.POST.get('amount')
     if not amount:
@@ -5162,32 +5149,55 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: missing parameter token_name'
         return JsonResponse(response)
 
+    if payout_type == 'fiat':
+
+        payout_status = request.POST.get('payout_status')
+        if not payout_status :
+            response['message'] = 'error: missing parameter payout_status for fiat payment'
+            return JsonResponse(response)
+
+        funder_identifier = request.POST.get('funder_identifier')
+        if not funder_identifier :
+            response['message'] = 'error: missing parameter funder_identifier for fiat payment'
+            return JsonResponse(response)
+
+        fulfillment.funder_identifier = funder_identifier
+        fulfillment.payout_status = payout_status
+
+    elif payout_type == 'qr':
+
+        if not bounty.bounty_owner_address:
+            bounty_owner_address = request.POST.get('bounty_owner_address')
+            if not bounty_owner_address:
+                response['message'] = 'error: missing parameter bounty_owner_address'
+                return JsonResponse(response)
+
+            bounty.bounty_owner_address = bounty_owner_address
+            bounty.save()
+
+        fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
+        fulfillment.payout_status = 'pending'
+
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
         fulfillment.payout_tx_id = payout_tx_id
 
-    payout_type = request.POST.get('payout_type')
-    if not payout_type:
-        response['message'] = 'error: missing parameter payout_type'
-        return JsonResponse(response)
-
-    tenant = request.POST.get('tenant')
-    if not tenant:
-        response['message'] = 'error: missing parameter tenant'
-        return JsonResponse(response)
-
-
     fulfillment.funder_profile = profile
-    fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
     fulfillment.payout_type = payout_type
     fulfillment.tenant = tenant
-
     fulfillment.payout_amount = amount
-    fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name
+
+    if payout_type == 'fiat':
+        fulfillment.payout_status = 'done'
+        fulfillment.accepted_on = timezone.now()
+        fulfillment.accepted = True
+        record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
+
     fulfillment.save()
 
-    sync_payout(fulfillment)
+    if payout_type == 'qr':
+        sync_payout(fulfillment)
 
     response = {
         'status': 204,
@@ -5267,3 +5277,62 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+@staff_member_required
+def bulkDM(request):
+    handles = request.POST.get('handles', '')
+    message = request.POST.get('message', '')
+
+    if message and handles:
+        try:
+            from mattermostdriver import Driver
+            from chat.tasks import driver_opts
+
+            from_profile = request.user.profile
+            from_user_id = from_profile.chat_id
+            driver_opts = {
+                'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
+                'url': settings.CHAT_SERVER_URL,
+                'port': settings.CHAT_PORT,
+                'token': from_profile.gitcoin_chat_access_token
+            }
+
+            chat_driver = Driver(driver_opts)
+            chat_driver.login()
+            handles = list(set(handles.split(',')))
+
+            for to_handle in handles:
+                to_handle = to_handle.lower().strip()
+                to_profile = Profile.objects.filter(handle=to_handle).first()
+                if not to_profile:
+                    continue
+                to_user_id = to_profile.chat_id
+                try:
+                    response = chat_driver.client.make_request('post', 
+                        '/channels/direct', 
+                        options=None, 
+                        params=None, 
+                        data=f'["{to_user_id}", "{from_user_id}"]', 
+                        files=None, 
+                        basepath=None)
+                    channel_id = response.json()['id']
+                    chat_driver.posts.create_post(options={
+                        'channel_id': channel_id,
+                        'message': message
+                        })
+                except Exception as e:
+                    messages.error(request, f'{to_handle} : {e}')
+
+
+            messages.success(request, 'sent')
+        except Exception as e:
+            messages.error(request, str(e))
+
+
+    context = {
+        'message': message,
+        'handles': handles,
+    }
+
+    return TemplateResponse(request, 'bulk_DM.html', context)

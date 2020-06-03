@@ -287,7 +287,7 @@
             >
               <span class="action {% if row.metadata.liked %}open{%endif%}">
                 {% if for_email %}
-                  <img class="fa-icon-png" src=""{% static "v2/images/emails/heart-regular.png" %}">
+                  <img class="fa-icon-png" src="{{base_url}}static/v2/images/emails/heart-regular.png">
                 {% else %}
                   <i class="far fa-heart grey" ></i>
                 {% endif %}
@@ -312,7 +312,12 @@
             <button class="btn-clean" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-ellipsis-h grey" ></i>
             </button>
+          {% else %}
+          <a href={{row.url}}>
+            <img class="fa-icon-png" src="{% static "v2/images/emails/link-regular.png" %}">
+          </a>
           {% endif %}
+
 
           <div class="dropdown-menu dropdown-menu-right shadow font-smaller-4 px-0">
             {% if can_pin %}
@@ -388,9 +393,14 @@
             </p>
           </div>
         {% endif %}
-
           <i class="fas fa-circle-notch fa-spin loading blue hidden"></i>
           <i class="fas fa-exclamation-triangle error red hidden"></i>
+        {% endif %}
+        {% if row.metadata.attach.token %}
+          | <button class="btn btn-sm btn-link" style="color: #3E00FF;">
+          <i class="fas fa-coins gc-blue-text" ></i>
+          <span class="value_in_token">{{row.metadata.attach.amount}}  {{row.metadata.attach.token_name}} attached</span>
+          </button>
         {% endif %}
       </div>
     </div>
