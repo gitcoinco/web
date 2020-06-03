@@ -1,9 +1,10 @@
 .toggle {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 600;
+  display: inline-flex;
+}
+
+.toggle span {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .toggle input[type=checkbox] {
@@ -14,16 +15,16 @@
 
 .toggle label {
   cursor: pointer;
-  width: 80px;
-  height: 35px;
-  background: #f6136e;
+  width: 34px;
+  height: 17px;
+  background: #eee;
   display: block;
   border-radius: 18px;
   position: relative;
 }
 
 .toggle label:active:after {
-  width: 36px;
+  width: 25px;
 }
 
 .toggle label::after {
@@ -31,38 +32,20 @@
   border-radius: 18px;
   transition: 0.3s;
   background-color: #fff;
-  top: 2px;
-  left: 2px;
-  width: 35px;
-  height: 31px;
+  top: 2.4px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
   position: absolute;
 }
 
 .toggle input:checked + label {
-  background: #26cd7f;
+  background: limegreen;
 }
 
 .toggle input:checked + label:after {
-  left: calc(100% - 2px);
+  left: calc(100% - 3px);
   transform: translateX(-100%);
-}
-
-.toggle label:before {
-  transition-duration: .2s;
-  content: 'OFF';
-  width: 10px;
-  font-size: 11px;
-  color: #fff;
-  position: relative;
-  left: 50px;
-  top: 4px;
-}
-
-.toggle input:checked + label:before {
-  transition-duration: .2s;
-  content: 'ON';
-  left: 10px;
-  top: 4px;
 }
 
 .button_container{
