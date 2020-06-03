@@ -619,8 +619,8 @@ def grant_new_whitelabel(request):
 
     params = {
         'active': 'new_grant',
-        'title': _('New Grant'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'title': _('Matic Build-n-Earn x Gitcoin'),
+        'card_desc': _('Earn Rewards by Making Your DApps Superior'),
         'profile': profile,
         'grant': {},
         'keywords': get_keywords(),
