@@ -212,11 +212,10 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
     profiles = ProfileSerializer(many=True)
     hackathon = HackathonEventSerializer()
     project_feedbacks_got = HackathonProjectFeedbackSerializer(many=True)
-    avg_rating = serializers.JSONField(source='get_avg_rating')
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'project_feedbacks_got', 'avg_rating', 'winner', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'project_feedbacks_got', 'winner', 'admin_url')
         depth = 1
 
 
