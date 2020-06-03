@@ -53,7 +53,7 @@ function sideCartRowForGrant(grant) {
 }
 
 function showSideCart() {
-    const isShowing = $('#side-cart').hasClass('col-3');
+    const isShowing = $('#side-cart').hasClass('col-12');
 
     if (isShowing) {
         return;
@@ -107,17 +107,20 @@ function hideSideCart() {
 
 function toggleSideCart() {
     $('#grants-details').toggleClass('col-12');
-    $('#grants-details').toggleClass('col-9');
+    $('#grants-details').toggleClass('col-md-8');
+    $('#grants-details').toggleClass('col-lg-9');
     $('#grants-details').toggleClass('d-none');
     $('#grants-details').toggleClass('d-md-block');
 
     $('#side-cart').toggle();
-    $('#side-cart').toggleClass("col-12");
-    $('#side-cart').toggleClass("col-md-3");
-    $('#side-cart').toggleClass("col-0");
+    $('#side-cart').toggleClass('col-12');
+    $('#side-cart').toggleClass('col-md-4');
+    $('#side-cart').toggleClass('col-lg-3');
 
-    $('#funding-card').toggleClass("mr-md-5");
-    $('#funding-card').toggleClass("mr-md-3");
+    $('#funding-card').toggleClass('mr-md-5');
+    $('#funding-card').toggleClass('mr-md-3');
+    $('#funding-card').toggleClass('d-none');
+    $('#funding-card').toggleClass('d-lg-block');
 }
 
 function objectifySerialized(data) {
