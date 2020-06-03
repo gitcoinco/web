@@ -1,3 +1,8 @@
+// Constants
+const BN = web3.utils.BN;
+const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+
 // Contract parameters
 const contractAbi = [{ 'inputs': [ { 'components': [ { 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' } ], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' } ], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }]; // eslint-disable-line
 const contractAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
@@ -117,7 +122,7 @@ Vue.component('grants-cart', {
     getTokenByName(name) {
       if (name === 'ETH') {
         return {
-          addr: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+          addr: ETH_ADDRESS,
           name: 'ETH',
           decimals: 18,
           priority: 1
@@ -127,6 +132,9 @@ Vue.component('grants-cart', {
     },
 
     async checkout() {
+      // Get address of current user
+      const userAddress = (await web3.eth.getAccounts())[0];
+
       // Generate array of objects containing donation info from cart
       const donations = this.grantData.map((grant) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
@@ -134,11 +142,12 @@ Vue.component('grants-cart', {
         return {
           token: tokenDetails.addr,
           amount: String(grant.grant_donation_amount * 10 ** tokenDetails.decimals),
-          dest: grant.grant_contract_address
+          dest: grant.grant_contract_address,
+          name: grant.grant_donation_currency
         };
       });
 
-      // First lets calculate the donations to Gitcoin
+      // Now we calculate the additional donations to Gitcoin
       const gitcoinFactor = 0.05;
       const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
       const gitcoinDonations = {};
@@ -160,19 +169,75 @@ Vue.component('grants-cart', {
         const tokenDetails = this.getTokenByName(token);
 
         donations.push({
-          token: tokenDetails.addr,
           amount: String(gitcoinDonations[token] * 10 ** tokenDetails.decimals),
-          dest: gitcoinAddress
+          token: tokenDetails.addr,
+          dest: gitcoinAddress,
+          name: token
         });
       });
-
       console.log('Donations: ', donations);
 
-      // Send the transaction
-      const userAddress = (await web3.eth.getAccounts())[0];
+      // Now, `donations` contains an array of all donations to make.
+      // For convenience we generate a condensed version containing the totals by token
+      const condensedDonations = {};
 
+      donations.forEach(donation => {
+        if (condensedDonations[donation.name]) {
+          condensedDonations[donation.name] += Number(donation.amount);
+        } else {
+          condensedDonations[donation.name] = Number(donation.amount);
+        }
+      });
+      console.log('condensedDonations', condensedDonations);
+
+      // Get token approvals
+      // TODO this can be more efficient by looping over condensedDonations
+      for (let i = 0; i < donations.length; i += 1) {
+        // If ETH donation, no approval necessary
+        if (donations[i].name === 'ETH') {
+          continue;
+        }
+
+        // Check allowance
+        const tokenContract = new web3.eth.Contract(token_abi, donations[i].token);
+        const allowance = new BN(
+          await tokenContract.methods
+            .allowance(userAddress, contractAddress)
+            .call({ from: userAddress })
+        );
+
+        // Check allowance against the total being donated of that token
+        const requiredAllowance = new BN(String(condensedDonations[donations[i].name]));
+
+        if (allowance.lt(requiredAllowance)) {
+          // Allowance is too small, ask for approval
+          indicateMetamaskPopup();
+          const txHash = await tokenContract.methods.approve(contractAddress, MAX_UINT256).send({ from: userAddress });
+
+          console.log('txHash', txHash);
+          indicateMetamaskPopup(true);
+        }
+      } // end for each donation
+
+      // Get the total ETH we need to send
+      const ethAmount = donations.reduce((accumulator, currentValue) => {
+        return currentValue.token === ETH_ADDRESS
+          ? accumulator + Number(currentValue.amount) // ETH donation
+          : accumulator + 0; // token donation
+      }, 0);
+
+      // Estimate gas to send all of them
+      // Arbitrarily choose to use a gas limit 10% higher than estimated gas
       bulkTransaction = new web3.eth.Contract(contractAbi, contractAddress);
-      bulkTransaction.methods.donate(donations).send({from: userAddress})
+      const estimatedGas = await bulkTransaction.methods
+        .donate(donations)
+        .estimateGas({ from: userAddress, value: ethAmount });
+      const gasLimit = Math.ceil(1.1 * estimatedGas);
+
+      // Send the transaction
+      bulkTransaction.methods
+        .donate(donations)
+        .send({ from: userAddress, gas: gasLimit, value: ethAmount })
         .on('transactionHash', (txHash) => {
           console.log('txHash: ', txHash);
         })
@@ -183,12 +248,10 @@ Vue.component('grants-cart', {
         .on('receipt', (receipt) => {
           // receipt example
           console.log(receipt);
-
         })
         .on('error', (err) => {
           console.error(err);
         });
-
     }
   },
 
