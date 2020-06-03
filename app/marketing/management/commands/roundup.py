@@ -20,10 +20,12 @@ import warnings
 
 from django.core.management.base import BaseCommand
 
-from marketing.mails import weekly_roundup
+from marketing.tasks import weekly_roundup
 from marketing.models import EmailSubscriber
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+THROTTLE_S = 0.05
 
 
 check_already_sent = False
@@ -103,8 +105,8 @@ class Command(BaseCommand):
                     if check_already_sent and is_already_sent_this_week(to_email):
                         print(' -- already sent')
                     else:
-                        weekly_roundup([to_email])
-                        time.sleep(0.05)
+                        weekly_roundup.delay(to_email)
+                        time.sleep(THROTTLE_S)
                 except Exception as e:
                     print(e)
                     time.sleep(5)

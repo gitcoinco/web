@@ -23,39 +23,15 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty
-from marketing.mails import new_bounty_daily
+from marketing.tasks import new_bounty_daily
 from marketing.models import EmailSubscriber
-from townsquare.utils import is_email_townsquare_enabled
+import time
 
 warnings.filterwarnings("ignore")
 
 override_in_dev = True
 
-def get_bounties_for_keywords(keywords, hours_back):
-    new_bounties_pks = []
-    all_bounties_pks = []
-
-    new_bounty_cutoff = (timezone.now() - timezone.timedelta(hours=hours_back))
-    all_bounty_cutoff = (timezone.now() - timezone.timedelta(days=60))
-
-    for keyword in keywords:
-        relevant_bounties = Bounty.objects.current().filter(
-            network='mainnet',
-            idx_status__in=['open'],
-        ).keyword(keyword).exclude(bounty_reserved_for_user__isnull=False)
-        for bounty in relevant_bounties.filter(web3_created__gt=new_bounty_cutoff):
-            new_bounties_pks.append(bounty.pk)
-        for bounty in relevant_bounties.filter(web3_created__gt=all_bounty_cutoff):
-            all_bounties_pks.append(bounty.pk)
-    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by('-_val_usd_db')
-    all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('-_val_usd_db')
-
-    new_bounties = new_bounties.order_by('-admin_mark_as_remarket_ready')
-    all_bounties = all_bounties.order_by('-admin_mark_as_remarket_ready')
-
-    return new_bounties, all_bounties
-
+THROTTLE_S = 0.1
 
 class Command(BaseCommand):
 
@@ -65,40 +41,30 @@ class Command(BaseCommand):
         if settings.DEBUG and not override_in_dev:
             print("not active in non prod environments")
             return
-        hours_back = 24
         eses = EmailSubscriber.objects.filter(active=True).distinct('email')
-        counter_grant_total = 0
         counter_total = 0
         counter_sent = 0
-        start_time = time.time()
+        start_time = time.time() - 1
         total_count = eses.count()
         print("got {} emails".format(total_count))
         for es in eses:
             try:
                 # prep
-                counter_grant_total += 1
                 to_email = es.email
-                keywords = es.keywords
-                town_square_enabled = is_email_townsquare_enabled(to_email)
-                should_eval = keywords or town_square_enabled
-                if not should_eval:
-                    continue
                 counter_total += 1
-                new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
 
                 # stats
-                speed = round((time.time() - start_time) / counter_grant_total, 2)
-                ETA = round((total_count - counter_grant_total) / speed / 3600, 1)
-                print(f"{counter_sent} sent/{counter_total} enabled/{counter_grant_total} evaluated, {speed}/s, ETA:{ETA}h, working on {to_email} ")
+                speed = counter_total / (time.time() - start_time)
+                ETA = round((total_count - counter_total) / speed / 3600, 1)
+                print(f"{counter_sent} sent/{counter_total} enabled/ {total_count} total/, {round(speed, 2)}/s, ETA:{ETA}h, working on {to_email} ")
 
                 # send
-                should_send = new_bounties.count() or town_square_enabled
-                #should_send = new_bounties.count()
-                if should_send:
-                    #print(f"sending to {to_email}")
-                    new_bounty_daily(new_bounties, all_bounties, [to_email])
-                    #print(f"/sent to {to_email}")
+                did_send = new_bounty_daily.delay(es.pk)
+                if did_send:
                     counter_sent += 1
+
+                time.sleep(THROTTLE_S)
+                
             except Exception as e:
                 logging.exception(e)
                 print(e)
