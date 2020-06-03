@@ -84,6 +84,7 @@ class PersonalTokenQuerySet(models.QuerySet):
             Q(tags__icontains=keyword)
         )
 
+
 class PersonalToken(SuperModel):
     """Define the structure of a Personal Token"""
 
@@ -110,7 +111,7 @@ class PersonalToken(SuperModel):
     txid = models.CharField(max_length=255, default='')
 
     objects = PersonalTokenQuerySet.as_manager()
-    
+
     def save(self, *args, **kwargs):
         if self.token_owner_address:
             self.token_owner_address = to_checksum_address(self.token_owner_address)
@@ -121,3 +122,30 @@ class PersonalToken(SuperModel):
     @property
     def title(self):
         return self.title
+
+
+class RedemptionToken(SuperModel):
+    """Define the structure of a Redemption PToken"""
+
+    REDEMPTION_STATUS_CHOICES = [
+        ('request', 'requested'),
+        ('accepted', 'accepted'),
+        ('denied', 'denied'),
+        ('completed', 'completed')
+    ]
+    ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
+    redemption_state = models.CharField(max_length=50, choices=REDEMPTION_STATUS_CHOICES, default='open', db_index=True)
+    web3_type = models.CharField(max_length=50, default='token_network')
+    reason = models.CharField(max_length=1000)
+    web3_created = models.DateTimeField(db_index=True)
+    buyer_address = models.CharField(max_length=50)
+    buyer_profile = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='token_redemption', blank=True
+    )
+    total = models.IntegerField(default=0, db_index=True, help_text='Total minted')
+    txid = models.CharField(max_length=255, default='')
+
+
+@receiver(post_save, sender=PersonalToken, dispatch_uid="PTokenActivity")
+def psave_ptoken(sender, instance, **kwargs):
+    pass
