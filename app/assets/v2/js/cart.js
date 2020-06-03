@@ -6,10 +6,6 @@ const contractAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
 let grantHeaders = [ 'Grant', 'Amount', 'Type', 'Total CLR Match Amount' ]; // cart column headers
 let grantData = []; // data for grants in cart
 
-// TODO try the below since we don't have access to these globals in the mounted hook
-window.addEventListener('load', function(event) {
-  // this.currencies = tokens(network).map(token => token.name);
-});
 
 Vue.component('grants-cart', {
   delimiters: [ '[[', ']]' ],
@@ -18,7 +14,7 @@ Vue.component('grants-cart', {
     return {
       grantHeaders,
       grantData,
-      currencies: [ 'ETH', 'DAI', 'USDC' ] // TODO update with Gitcoin's list of tokens
+      currencies: [] // TODO update with Gitcoin's list of tokens]
     };
   },
 
@@ -209,6 +205,16 @@ Vue.component('grants-cart', {
   mounted() {
     // Read array of grants in cart from localStorage
     this.grantData = JSON.parse(window.localStorage.getItem('grants_cart'));
+
+    // Populate currency list with selected tokens
+    // TODO wait until `tokens` loads and we can show full list
+    this.grantData.forEach(grant => {
+      const token = grant.grant_donation_currency;
+
+      if (!this.currencies.includes(token)) {
+        this.currencies.push(token);
+      }
+    });
   }
 });
 
