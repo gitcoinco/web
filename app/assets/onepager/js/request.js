@@ -1,7 +1,7 @@
 $(document).ready(function() {
   waitforWeb3(function() {
-    if(!$("#address").val() && web3 && web3.eth.coinbase){
-      $("#address").val(web3.eth.coinbase);
+    if (!$('#address').val() && web3 && web3.eth.coinbase) {
+      $('#address').val(web3.eth.coinbase);
     }
   });
 
@@ -30,15 +30,16 @@ $(document).ready(function() {
     const network = $('#network').val();
     const address = $('#address').val();
     const comments = $('#comments').val();
-    if(!document.contxt['github_handle']){
+
+    if (!document.contxt['github_handle']) {
       _alert('You must be logged in to use this form', 'warning');
       return;
     }
-    if(username == document.contxt['github_handle']){
+    if (username == document.contxt['github_handle']) {
       _alert('You cannot request money from yourself.', 'warning');
       return;
     }
-    if(!comments || comments.length < 5){
+    if (!comments || comments.length < 5) {
       _alert('Please leave a comment describing why this user should send you money.', 'warning');
       return;
     }
