@@ -53,10 +53,11 @@ def faq(request):
     return TemplateResponse(request, 'buy_a_token.html', context)
 
 
-def tokens(request, token_state):
+def tokens(request):
     """List JSON data for the user tokens"""
     error = None
     user = request.user if request.user.is_authenticated else None
+    token_state = request.GET.get('token_state')
 
     if request.method == 'POST':
         if not user:
@@ -188,7 +189,7 @@ def ptoken_redemptions(request, tokenId):
         status=401)
 
 
-def ptoken_redemptions(request, redemptionId):
+def ptoken_redemption(request, redemptionId):
     """List JSON data for the user tokens"""
     redemption = get_object_or_404(RedemptionToken, id=redemptionId)
     user = request.user if request.user.is_authenticated else None
