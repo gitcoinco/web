@@ -4219,7 +4219,7 @@ def psave_profile(sender, instance, **kwargs):
                 "visible_to":None,
                 'img_url': instance.avatar_url,
             }
-            )
+        )
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -4717,6 +4717,7 @@ class HackathonProject(SuperModel):
     )
     looking_members = models.BooleanField(default=False)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+    winner = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-name']

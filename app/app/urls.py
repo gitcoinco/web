@@ -677,6 +677,8 @@ urlpatterns = [
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
 
+    url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
+
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),

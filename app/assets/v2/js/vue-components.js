@@ -196,6 +196,21 @@ Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
   props: ['tribe'],
   methods: {
+    markWinner: function($event, project) {
+      let vm = this;
+
+
+      const url = '/api/v0.1/hackathon_project/set_winner/';
+      const markWinner = fetchData(url, 'POST', {project_id: project.pk, winner: $event ? 1 : 0}, {'X-CSRFToken': vm.csrf});
+
+      $.when(markWinner).then((response) => {
+        if (response.message) {
+          alert(response.message);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    },
     fetchProjects: function(newPage) {
       let vm = this;
 
@@ -263,6 +278,7 @@ Vue.component('project-directory', {
   data: function() {
 
     return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       sponsor: this.tribe || null,
       hackathonSponsors: document.hackathonSponsors || [],
       hackathonProjects: document.hackathonProjects || [],

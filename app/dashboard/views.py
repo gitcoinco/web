@@ -954,6 +954,25 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
     return profile_list
 
 
+@require_POST
+def set_project_winner(request):
+    if not request.user.is_authenticated and request.user.is_staff:
+        return JsonResponse({
+            'message': 'UNAUTHORIZED'
+        })
+
+    winner = request.POST.get('winner', False)
+    project_id = request.POST.get('project_id', None)
+    if not project_id:
+        return JsonResponse({
+            'message': 'Invalid Project'
+        })
+    project = HackathonProject.objects.get(pk=project_id)
+    project.winner = winner
+    project.save()
+
+    return JsonResponse({})
+
 
 @require_GET
 def users_fetch(request):

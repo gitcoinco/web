@@ -48,6 +48,134 @@
         }
       }
 
+
+
+      /* common */
+      .ribbon {
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+        position: absolute;
+      }
+      .ribbon::before,
+      .ribbon::after {
+        position: absolute;
+        z-index: -1;
+        content: '';
+        display: block;
+        border: 5px solid #000;
+      }
+      .ribbon span {
+        position: absolute;
+        display: block;
+        width: 225px;
+        padding: 15px 0;
+        background-color: #25E899;
+        box-shadow: 0 5px 10px rgba(0,0,0,.1);
+        color: #000;
+        font: 700 18px/1 'Lato', sans-serif;
+        text-shadow: 0 1px 1px rgba(0,0,0,.2);
+        text-transform: uppercase;
+        text-align: center;
+      }
+
+      /* top left*/
+      .ribbon-top-left {
+        top: -10px;
+        left: -10px;
+      }
+      .ribbon-top-left::before,
+      .ribbon-top-left::after {
+        border-top-color: transparent;
+        border-left-color: transparent;
+      }
+      .ribbon-top-left::before {
+        top: 0;
+        right: 0;
+      }
+      .ribbon-top-left::after {
+        bottom: 0;
+        left: 0;
+      }
+      .ribbon-top-left span {
+        right: -25px;
+        top: 30px;
+        transform: rotate(-45deg);
+      }
+
+      /* top right*/
+      .ribbon-top-right {
+        top: -10px;
+        right: -10px;
+      }
+      .ribbon-top-right::before,
+      .ribbon-top-right::after {
+        border-top-color: transparent;
+        border-right-color: transparent;
+      }
+      .ribbon-top-right::before {
+        top: 0;
+        left: 0;
+      }
+      .ribbon-top-right::after {
+        bottom: 0;
+        right: 0;
+      }
+      .ribbon-top-right span {
+        left: -25px;
+        top: 30px;
+        transform: rotate(45deg);
+      }
+
+      /* bottom left*/
+      .ribbon-bottom-left {
+        bottom: -10px;
+        left: -10px;
+      }
+      .ribbon-bottom-left::before,
+      .ribbon-bottom-left::after {
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+      }
+      .ribbon-bottom-left::before {
+        bottom: 0;
+        right: 0;
+      }
+      .ribbon-bottom-left::after {
+        top: 0;
+        left: 0;
+      }
+      .ribbon-bottom-left span {
+        right: -25px;
+        bottom: 30px;
+        transform: rotate(225deg);
+      }
+
+      /* bottom right*/
+      .ribbon-bottom-right {
+        bottom: -10px;
+        right: -10px;
+      }
+      .ribbon-bottom-right::before,
+      .ribbon-bottom-right::after {
+        border-bottom-color: transparent;
+        border-right-color: transparent;
+      }
+      .ribbon-bottom-right::before {
+        bottom: 0;
+        left: 0;
+      }
+      .ribbon-bottom-right::after {
+        top: 0;
+        right: 0;
+      }
+      .ribbon-bottom-right span {
+        left: -25px;
+        bottom: 30px;
+        transform: rotate(-225deg);
+      }
+
+
       .show>.btn-secondary.dropdown-toggle {
         background-color: var(--gc-blue-hover) !important;
       }
@@ -410,15 +538,18 @@
                               </div>
                             </div>
                             <div class="pb-4 border-bottom form-group">
-                                <b-form-checkbox value="winners" v-model="params.filters" name="winners" switch>
-                                  Winners
-                                </b-form-checkbox>
-                                <b-form-checkbox value="submitted" v-model="params.filters" name="submitted" switch>
-                                  Have Submitted
-                                </b-form-checkbox>
-                                <b-form-checkbox value="lfm" v-model="params.filters" name="lfm" switch>
-                                  Looking for Members
-                                </b-form-checkbox>
+                              {% if is_staff %}
+
+                              <b-form-checkbox value="winners" v-model="params.filters" name="winners" switch>
+                                Winners
+                              </b-form-checkbox>
+                              <b-form-checkbox value="submitted" v-model="params.filters" name="submitted" switch>
+                                Have Submitted
+                              </b-form-checkbox>
+                              {% endif %}
+                              <b-form-checkbox value="lfm" v-model="params.filters" name="lfm" switch>
+                                Looking for Members
+                              </b-form-checkbox>
                             </div>
                             <div class="pb-4 border-bottom form-group">
                               <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
@@ -441,26 +572,6 @@
                             </div>
 
 
-                            <div class="pb-2 border-bottom form-group">
-                              <div class="w-100 p-2">
-                                <fieldset class="">
-                                  <label for="" class="font-weight-bold">Star Rating</label>
-                                  <div class="rating font-smaller-4">
-                                    <input type="radio"  name="rating" value="5" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-5" data-toggle="tooltip" title="It was great - 5 stars"></label>
-                                    <input type="radio" name="rating" value="4" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-4" data-toggle="tooltip" title="It was good - 4 stars"></label>
-                                    <input type="radio" name="rating" value="3" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-3" data-toggle="tooltip" title="It was okay - 3 stars"></label>
-                                    <input type="radio"  name="rating" value="2" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-2" data-toggle="tooltip" title="It was bad - 2 stars"></label>
-                                    <input type="radio" name="rating" value="1" v-model="params.rating" />
-                                    <label class ="rating-star full" for="rating-1" data-toggle="tooltip" title="It was terrible - 1 star"></label>
-                                  </div>
-                                </fieldset>
-                              </div>
-                            </div>
-
                             <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                             <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
                               <span class="font-weight-bold">[[ numProjects ]]</span> projects found
@@ -478,62 +589,61 @@
                           <div class="project-grid ml-2">
                             <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
                               <div class="card card-project">
-                                  <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
+                                {% if is_staff %}
+                                <b-form-checkbox switch v-model="project.winner" style="padding:0;float:left;" @change="markWinner($event, project)">mark winner</b-form-checkbox>
+                                {% endif %}
+                                <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
+                                <div class="card-bg rounded-top" style="">
 
-                                  <div class="card-bg rounded-top" style="">
-                                    <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
-                                    <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
-                                  </div>
-                                  <div class="card-body">
-                                  <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
-                                  <div class="my-2">
-                                    <p class="text-left text-muted font-smaller-1">
-                                      [[ project.summary | truncate(500) ]]
-                                    </p>
-                                    <div class="text-left">
-                                      <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                      <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                                      <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
-                                        <template v-slot:button-content>
-                                          <i class='fas fa-comment-dots'></i>
-                                        </template>
-                                        <b-dropdown-item-button @click.prevent="chatWindow(project.chat_channel_id);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
-                                         [[ project.name ]]'s Chat Channel
-                                        </b-dropdown-item-button>
-                                        <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
-                                          @ [[ profile.handle ]]
-                                        </b-dropdown-item-button>
-                                      </b-dropdown>
-                                    </div>
-                                  </div>
-                                  <div class="my-3 mb-2 text-left">
-                                    <b class="font-weight-bold font-smaller-3">Team Members</b>
-                                    <div class="mt-1">
-                                        <a v-for="profile in project.profiles" :href=`/profile/${profile.handle}` class="">
-                                          <b-img-lazy :src="profile.avatar_url" :alt=`"@${profile.handle}"` :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
-                                        </a>
-                                    </div>
-                                  </div>
-
-                                  <div v-if="project.looking_members || project.message" class="my-3 looking-team">
-                                    <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
-                                    <p v-if="project.message" class="info-card-desc">
-                                      [[ project.message ]]
-                                    </p>
-                                  </div>
-
-                                  <div class="card-user_stars text-center my-2">
-                                    <i class="far fa-star" :class="star <= project.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in project.avg_rating.overall.toFixed(), 5"></i>
-                                    ([[ project.avg_rating.total_rating ]] ratings)
-                                  </div>
-
-                                  <div class="font-smaller-2 mt-4">
-                                    <b class="font-weight-bold">Sponsored by</b>
-                                    <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
-                                    <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
+                                  <div v-if="project.winner" class="ribbon ribbon-top-right"><span>winner</span></div>
+                                  <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
+                                  <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
+                                </div>
+                                <div class="card-body">
+                                <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+                                <div class="my-2">
+                                  <p class="text-left text-muted font-smaller-1">
+                                    [[ project.summary | truncate(500) ]]
+                                  </p>
+                                  <div class="text-left">
+                                    <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+                                    <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
+                                      <template v-slot:button-content>
+                                        <i class='fas fa-comment-dots'></i>
+                                      </template>
+                                      <b-dropdown-item-button @click.prevent="chatWindow(project.chat_channel_id);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                       [[ project.name ]]'s Chat Channel
+                                      </b-dropdown-item-button>
+                                      <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                        @ [[ profile.handle ]]
+                                      </b-dropdown-item-button>
+                                    </b-dropdown>
                                   </div>
                                 </div>
+                                <div class="my-3 mb-2 text-left">
+                                  <b class="font-weight-bold font-smaller-3">Team Members</b>
+                                  <div class="mt-1">
+                                      <a v-for="profile in project.profiles" :href=`/profile/${profile.handle}` class="">
+                                        <b-img-lazy :src="profile.avatar_url" :alt=`"@${profile.handle}"` :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
+                                      </a>
+                                  </div>
                                 </div>
+
+                                <div v-if="project.looking_members || project.message" class="my-3 looking-team">
+                                  <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
+                                  <p v-if="project.message" class="info-card-desc">
+                                    [[ project.message ]]
+                                  </p>
+                                </div>
+
+                                <div class="font-smaller-2 mt-4">
+                                  <b class="font-weight-bold">Sponsored by</b>
+                                  <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
+                                  <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
+                                </div>
+                              </div>
+                              </div>
                             </div>
                           </div>
                           <loading-screen v-if="isLoading"></loading-screen>

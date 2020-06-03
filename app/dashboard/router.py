@@ -216,7 +216,7 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'project_feedbacks_got', 'avg_rating')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'project_feedbacks_got', 'avg_rating', 'winner', 'admin_url')
         depth = 1
 
 
@@ -237,6 +237,7 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         filters = self.request.query_params.get('filters', '')
         sponsor = self.request.query_params.get('sponsor', '')
         hackathon_id = self.request.query_params.get('hackathon', '')
+        rating = self.request.query_params.get('rating', '')
 
         if hackathon_id:
             try:
@@ -268,9 +269,14 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
                 Q(profiles__keywords__icontains=skills)
             )
 
+        if rating:
+            queryset = queryset.filter(
+                Q(rating__gte=rating)
+            )
+
         if 'winners' in filters:
             queryset = queryset.filter(
-                Q(badge__isnull=False)
+                Q(winner=True)
             )
         if 'lfm' in filters:
             queryset = queryset.filter(
