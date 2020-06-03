@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 /* eslint-disable no-lonely-if */
-document.web3network = 'mainnet';
+// document.web3network = 'mainnet';
 load_tokens();
 
 const qr_tokens = [ 'ETC', 'cGLD', 'cUSD', 'ZIL' ];
@@ -260,19 +260,17 @@ const handleTokenAuth = () => {
       tokenAuthAlert(isTokenAuthed);
       resolve(isTokenAuthed);
     } else {
-      const token_contract = web3.eth.Contract(token_abi).at(tokenAddress);
+      const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
       const to = bounty_address();
 
-      web3.eth.getCoinbase(function(_, from) {
-        token_contract.allowance.call(from, to, (error, result) => {
-
-          if (error || result.toNumber() == 0) {
-            isTokenAuthed = false;
-          }
-          tokenAuthAlert(isTokenAuthed, tokenName);
-          resolve(isTokenAuthed);
-        });
+      token_contract.methods.allowance(selectedAccount, to).call({from: selectedAccount}, (error, result) => {
+        if (error || Number(result) == 0) {
+          isTokenAuthed = false;
+        }
+        tokenAuthAlert(isTokenAuthed, tokenName);
+        resolve(isTokenAuthed);
       });
+
     }
   });
 };
@@ -392,9 +390,12 @@ $(function() {
     const tokenName = $('select[name=denomination]').select2('data')[0].text;
 
     const tokendetails = qr_tokens.includes(tokenName) ?
-      tokenAddressToDetailsByNetwork(token_address, 'mainnet') :
+      tokenAddressToDetailsByNetwork(token_address, document.web3network) :
       tokenAddressToDetails(token_address);
 
+    if (!tokendetails) {
+      return;
+    }
     const token = tokendetails['name'];
 
     updateViewForToken(token);
