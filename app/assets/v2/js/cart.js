@@ -8,8 +8,9 @@
 const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-const gitcoinFactor = 0.05;
-const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+const DEV_GRANT_ADDRESS = '0x0000000000000000000000000001000000000000'; // rinkeby grants seem unable to accept ETH, so use dummy address
+const gitcoinFactor = 0.05; // 5% of donation amount goes to Gitcoin
+const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
 
 // Contract parameters
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
@@ -18,7 +19,7 @@ const erc20Abi = [{ 'inputs': [{ 'internalType': 'string', 'name': 'name', 'type
 
 // Grant data
 let grantHeaders = [ 'Grant', 'Amount', 'Type', 'Total CLR Match Amount' ]; // cart column headers
-let grantData = []; // data for grants in cart
+let grantData = []; // data for grants in cart, initialized in mounted hook
 
 
 Vue.component('grants-cart', {
@@ -65,10 +66,17 @@ Vue.component('grants-cart', {
       let string = '';
 
       Object.keys(this.donationTotals).forEach(key => {
+        // Round to 2 digits
+        const amount = this.donationTotals[key];
+        const formattedAmount = amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+
         if (string === '') {
-          string += `${this.donationTotals[key]} ${key}`;
+          string += `${formattedAmount} ${key}`;
         } else {
-          string += `+ ${this.donationTotals[key]} ${key}`;
+          string += `+ ${formattedAmount} ${key}`;
         }
       });
       return string;
@@ -111,7 +119,7 @@ Vue.component('grants-cart', {
         const amount = this.donationsToGitcoin[key];
         const formattedAmount = amount.toLocaleString(undefined, {
           minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          maximumFractionDigits: 4
         });
 
         if (string === '') {
@@ -154,8 +162,9 @@ Vue.component('grants-cart', {
     },
 
     async checkout() {
-      // Get address of current user
-      const userAddress = (await web3.eth.getAccounts())[0];
+      await window.ethereum.enable();
+      const isDev = network === 'rinkeby'; // True if in development mode
+      const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
       // Generate array of objects containing donation info from cart
       const donations = this.grantData.map((grant) => {
@@ -164,8 +173,7 @@ Vue.component('grants-cart', {
         return {
           token: tokenDetails.addr,
           amount: String(grant.grant_donation_amount * 10 ** tokenDetails.decimals),
-          // dest: grant.grant_contract_address,
-          dest: '0x0000000000000000000000000001000000000000',
+          dest: isDev ? DEV_GRANT_ADDRESS : grant.grant_contract_address,
           name: grant.grant_donation_currency
         };
       });
