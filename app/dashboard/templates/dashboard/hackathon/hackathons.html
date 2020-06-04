@@ -24,7 +24,7 @@
 
     <style>
 
-      img.card-top {
+      img.hackathon-card-logo {
         max-height: 8rem;
         max-width: 11rem;
       }
@@ -37,7 +37,7 @@
 
 
       @media (max-width: 920px) {
-        img.card-top {
+        img.hackathon-card-logo {
           max-width: 100%;
         }
       }
@@ -91,7 +91,6 @@
                 <style>
                   #{{hackathon.slug}} .card-header {
                     background: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
-                    background-color: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
                   }
                 </style>
                 <div class="col-xs-12 col-md-9 col-lg-8 col-xl-5 mx-auto">
@@ -101,9 +100,9 @@
                     <div class="card-header text-center col-3 col-sm-4 px-0 border-0 my-auto">
                       {% firstof hackathon.logo_svg or hackathon.logo as logo %}
                       {% if logo %}
-                        <img class="card-top" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
+                        <img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
                       {% else %}
-                        <div class="card-top text-center px-3 font-caption">
+                        <div class="hackathon-card-logo text-center px-3 font-caption">
                           {{ hackathon.name }}
                         </div>
                       {% endif %}
