@@ -20,7 +20,7 @@ Vue.mixin({
 
       const url = `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${dm ? '@' + channel : channel}`;
 
-      window.open(url, 'Loading', 'top=0,left=0,width=650,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+      window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
     }
   }
 });
