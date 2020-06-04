@@ -1,7 +1,16 @@
+/**
+ * @notice Vue component for managing cart and checkout process
+ * @dev If you need to interact with the Rinkeby Dai contract (e.g. to reset allowances for
+ * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
+ */
+
 // Constants
 const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+const gitcoinFactor = 0.05;
+// const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+const gitcoinAddress = '0x0000000000000000000000000001000000000000';
 
 // Contract parameters
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
@@ -150,9 +159,6 @@ Vue.component('grants-cart', {
       });
 
       // Now we calculate the additional donations to Gitcoin
-      const gitcoinFactor = 0.05;
-      // const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-      const gitcoinAddress = '0x0000000000000000000000000001000000000000';
       const gitcoinDonations = {};
 
       this.grantData.forEach((grant) => {
@@ -193,14 +199,18 @@ Vue.component('grants-cart', {
 
       // Get token approvals
       // TODO this can be more efficient by looping over condensedDonations
-      for (let i = 0; i < donations.length; i += 1) {
+      const selectedTokens = Object.keys(condensedDonations);
+
+      for (let i = 0; i < selectedTokens.length; i += 1) {
+        const tokenDetails = this.getTokenByName(selectedTokens[i]);
+
         // If ETH donation, no approval necessary
-        if (donations[i].name === 'ETH') {
+        if (tokenDetails.name === 'ETH') {
           continue;
         }
 
         // Check allowance
-        const tokenContract = new web3.eth.Contract(erc20Abi, donations[i].token);
+        const tokenContract = new web3.eth.Contract(erc20Abi, tokenDetails.addr);
         const allowance = new BN(
           await tokenContract.methods
             .allowance(userAddress, bulkCheckoutAddress)
@@ -208,7 +218,7 @@ Vue.component('grants-cart', {
         );
 
         // Check allowance against the total being donated of that token
-        const requiredAllowance = new BN(String(condensedDonations[donations[i].name]));
+        const requiredAllowance = new BN(String(condensedDonations[tokenDetails.name]));
 
         if (allowance.lt(requiredAllowance)) {
           // Allowance is too small, ask for approval
@@ -220,11 +230,13 @@ Vue.component('grants-cart', {
       } // end for each donation
 
       // Get the total ETH we need to send
-      const ethAmount = donations.reduce((accumulator, currentValue) => {
+      const initialValue = new BN('0');
+      const ethAmountBN = donations.reduce((accumulator, currentValue) => {
         return currentValue.token === ETH_ADDRESS
-          ? accumulator + Number(currentValue.amount) // ETH donation
-          : accumulator + 0; // token donation
-      }, 0);
+          ? accumulator.add(new BN(currentValue.amount)) // ETH donation
+          : accumulator.add(new BN('0')); // token donation
+      }, initialValue);
+      const ethAmountString = ethAmountBN.toString();
 
       // Configure our donation inputs
       const donationInputs = donations.map(donation => {
@@ -235,18 +247,16 @@ Vue.component('grants-cart', {
       // Estimate gas to send all of them
       // Arbitrarily choose to use a gas limit 10% higher than estimated gas
       bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
-      console.log('donations', donationInputs);
-      // const estimatedGas = await bulkTransaction.methods
-      //   .donate(donationInputs)
-      //   .estimateGas({ from: userAddress, value: ethAmount});
-      const gasLimit = 8000000; // Math.ceil(1.1 * estimatedGas);
+      const estimatedGas = await bulkTransaction.methods
+        .donate(donationInputs)
+        .estimateGas({ from: userAddress, value: ethAmountString});
+      const gasLimit = Math.ceil(1.1 * estimatedGas);
 
       // Send the transaction
-      console.log(123);
       indicateMetamaskPopup();
       bulkTransaction.methods
         .donate(donationInputs)
-        .send({ from: userAddress, gas: gasLimit, value: ethAmount })
+        .send({ from: userAddress, gas: gasLimit, value: ethAmountString })
         .on('transactionHash', (txHash) => {
           indicateMetamaskPopup(true);
           console.log('txHash: ', txHash);
