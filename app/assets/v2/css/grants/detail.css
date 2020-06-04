@@ -214,11 +214,6 @@ textarea.editable {
   max-height: 22rem;
 }
 
-.grant-side-cart {
-  background-color: white;
-  border-left: lightgray 2px solid;
-}
-
 .wallet-address {
   font-size: 0.85rem;
 }

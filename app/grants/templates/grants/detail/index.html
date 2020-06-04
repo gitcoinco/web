@@ -22,6 +22,7 @@
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
@@ -67,7 +68,7 @@
       <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
         {% include 'grants/detail/side-cart.html' %}
       </div>
-      </div>
+      </div> <!-- meh? -->
     </div>
     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}"/>
     {% include 'shared/current_profile.html' %}

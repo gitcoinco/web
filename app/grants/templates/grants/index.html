@@ -24,6 +24,7 @@ along with this program. If not, see
   <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
   <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   <link rel="stylesheet" href="{% static "v2/css/sidebar_search.css" %}" />
+  <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
 </head>
 
 <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
@@ -34,52 +35,59 @@ along with this program. If not, see
 
 
     {% include 'grants/shared/landing_hero.html' %}
-    <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
-      <div
-        style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
-        <div class="row">
-          <div class="col-12 mt-3">
-            <div class="info-box large mx-auto p-3">
-              <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="#">+
-                Add to Cart</a> <!-- TODO: Add proper href -->
-              <p class="mb-2">Sustain these projects with <b>recurring</b> funding. You funded 6 grants last time. Fund
-                them again?</p> <!-- TODO: Load correct count of grants -->
-              <span class="font-smaller-3"><a href="">DAppNode</a>, <a href="">White Hat Hacking</a>, <a href="">Burner
-                  Wallet</a> and 4 more.</span> <!-- TODO: Load previous grants and count -->
+    <div class="row">
+      <div id="grants-details" class="col-12 pr-0">
+        <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
+          <div
+            style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
+            <div class="row">
+              <div class="col-12 mt-3">
+                <div class="info-box large mx-auto p-3">
+                  <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="#">+
+                    Add to Cart</a> <!-- TODO: Add proper href -->
+                  <p class="mb-2">Sustain these projects with <b>recurring</b> funding. You funded 6 grants last time. Fund
+                    them again?</p> <!-- TODO: Load correct count of grants -->
+                  <span class="font-smaller-3"><a href="">DAppNode</a>, <a href="">White Hat Hacking</a>, <a href="">Burner
+                      Wallet</a> and 4 more.</span> <!-- TODO: Load previous grants and count -->
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container">
-            {% include 'grants/shared/sidebar_search.html' %}
-          </div>
+            <div class="row">
+              <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container">
+                {% include 'grants/shared/sidebar_search.html' %}
+              </div>
 
-          <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
-            {% include 'grants/shared/landing_navbar.html' %}
-            {% include 'grants/shared/landing_clr.html' %}
-            {% if type == 'activity' %}
-            {% include 'grants/shared/landing_activity.html' %}
-            {% elif type == 'about' %}
-            {% include 'grants/shared/landing_announce.html' %}
-            {% elif type == 'stats' %}
-            <div id="insert_iframe">
-            </div>
-            <script>
-              var insert_iframe = function () {
-                if (typeof $ != 'undefined') {
-                  $('#insert_iframe').html('<iframe src="/grants/stats/?category={{selected_category}}" style="width: 100%; height: 100%; min-height: 1000px;">')
-                } else {
+              <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
+                {% include 'grants/shared/landing_navbar.html' %}
+                {% include 'grants/shared/landing_clr.html' %}
+                {% if type == 'activity' %}
+                {% include 'grants/shared/landing_activity.html' %}
+                {% elif type == 'about' %}
+                {% include 'grants/shared/landing_announce.html' %}
+                {% elif type == 'stats' %}
+                <div id="insert_iframe">
+                </div>
+                <script>
+                  var insert_iframe = function () {
+                    if (typeof $ != 'undefined') {
+                      $('#insert_iframe').html('<iframe src="/grants/stats/?category={{selected_category}}" style="width: 100%; height: 100%; min-height: 1000px;">')
+                    } else {
+                      setTimeout(insert_iframe, 100);
+                    }
+                  };
                   setTimeout(insert_iframe, 100);
-                }
-              };
-              setTimeout(insert_iframe, 100);
-            </script>
-            {% else %}
-            {% include 'grants/shared/landing_subnav.html' %}
-            {% include 'grants/shared/landing_grants.html' %}
-            {% endif %}
+                </script>
+                {% else %}
+                {% include 'grants/shared/landing_subnav.html' %}
+                {% include 'grants/shared/landing_grants.html' %}
+                {% endif %}
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+      <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
+        {% include 'grants/detail/side-cart.html' %}
       </div>
     </div>
 

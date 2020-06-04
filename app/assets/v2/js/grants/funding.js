@@ -19,6 +19,8 @@ $(document).ready(function() {
         const formData = objectifySerialized($(this).serializeArray());
         addToCart(formData);
         console.log("CART", loadCart());
+
+        showSideCart();
     });
 
     $("#close-side-cart").click(function() {
@@ -61,13 +63,12 @@ function sideCartRowForGrant(grant) {
 }
 
 function showSideCart() {
-    const isShowing = $('#side-cart').hasClass('col-12');
+    // Remove elements in side cart
+    $("#side-cart-data")
+        .find("div.side-cart-row")
+        .remove();
 
-    if (isShowing) {
-        return;
-    }
-
-    // Add all elements in cart
+    // Add all elements in side cart
     let cartData = loadCart();
     cartData.forEach( grant => {
         const cartRowHtml = sideCartRowForGrant(grant);
@@ -94,8 +95,14 @@ function showSideCart() {
         });
     });
 
-    toggleSideCart();
-    window.scrollTo($('#side-cart').scrollTop(), 0);
+    const isShowing = $('#side-cart').hasClass('col-12');
+
+    if (!isShowing) {
+        toggleSideCart();
+    }
+
+    const cartTop = $('#side-cart').position().top;
+    window.scrollTo(0, cartTop);
 }
 
 function hideSideCart() {
@@ -106,11 +113,6 @@ function hideSideCart() {
     }
 
     toggleSideCart();
-
-    // Remove elements in cart
-    $("#side-cart-data")
-        .find("div.side-cart-row")
-        .remove();
 }
 
 function toggleSideCart() {
