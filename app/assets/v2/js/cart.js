@@ -4,8 +4,9 @@ const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
 // Contract parameters
-const contractAbi = [{ 'inputs': [ { 'components': [ { 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' } ], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' } ], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }]; // eslint-disable-line
-const contractAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
+const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
+const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
+const erc20Abi = [{ 'inputs': [{ 'internalType': 'string', 'name': 'name', 'type': 'string' }, { 'internalType': 'string', 'name': 'symbol', 'type': 'string' }], 'stateMutability': 'nonpayable', 'type': 'constructor' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'owner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'spender', 'type': 'address' }, { 'indexed': false, 'internalType': 'uint256', 'name': 'value', 'type': 'uint256' }], 'name': 'Approval', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'from', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'to', 'type': 'address' }, { 'indexed': false, 'internalType': 'uint256', 'name': 'value', 'type': 'uint256' }], 'name': 'Transfer', 'type': 'event' }, { 'inputs': [{ 'internalType': 'address', 'name': 'owner', 'type': 'address' }, { 'internalType': 'address', 'name': 'spender', 'type': 'address' }], 'name': 'allowance', 'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'spender', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }], 'name': 'approve', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'balanceOf', 'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'decimals', 'outputs': [{ 'internalType': 'uint8', 'name': '', 'type': 'uint8' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'spender', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'subtractedValue', 'type': 'uint256' }], 'name': 'decreaseAllowance', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'spender', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'addedValue', 'type': 'uint256' }], 'name': 'increaseAllowance', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'account', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }], 'name': 'mint', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'name', 'outputs': [{ 'internalType': 'string', 'name': '', 'type': 'string' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'symbol', 'outputs': [{ 'internalType': 'string', 'name': '', 'type': 'string' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'totalSupply', 'outputs': [{ 'internalType': 'uint256', 'name': '', 'type': 'uint256' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'recipient', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }], 'name': 'transfer', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'sender', 'type': 'address' }, { 'internalType': 'address', 'name': 'recipient', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }], 'name': 'transferFrom', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'nonpayable', 'type': 'function' }];
 
 // Grant data
 let grantHeaders = [ 'Grant', 'Amount', 'Type', 'Total CLR Match Amount' ]; // cart column headers
@@ -19,7 +20,7 @@ Vue.component('grants-cart', {
     return {
       grantHeaders,
       grantData,
-      currencies: [] // TODO update with Gitcoin's list of tokens]
+      currencies: [ 'DAI', 'ETH' ] // TODO update with Gitcoin's list of tokens]
     };
   },
 
@@ -142,14 +143,16 @@ Vue.component('grants-cart', {
         return {
           token: tokenDetails.addr,
           amount: String(grant.grant_donation_amount * 10 ** tokenDetails.decimals),
-          dest: grant.grant_contract_address,
+          // dest: grant.grant_contract_address,
+          dest: '0x0000000000000000000000000001000000000000',
           name: grant.grant_donation_currency
         };
       });
 
       // Now we calculate the additional donations to Gitcoin
       const gitcoinFactor = 0.05;
-      const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      // const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      const gitcoinAddress = '0x0000000000000000000000000001000000000000';
       const gitcoinDonations = {};
 
       this.grantData.forEach((grant) => {
@@ -175,7 +178,6 @@ Vue.component('grants-cart', {
           name: token
         });
       });
-      console.log('Donations: ', donations);
 
       // Now, `donations` contains an array of all donations to make.
       // For convenience we generate a condensed version containing the totals by token
@@ -188,7 +190,6 @@ Vue.component('grants-cart', {
           condensedDonations[donation.name] = Number(donation.amount);
         }
       });
-      console.log('condensedDonations', condensedDonations);
 
       // Get token approvals
       // TODO this can be more efficient by looping over condensedDonations
@@ -199,10 +200,10 @@ Vue.component('grants-cart', {
         }
 
         // Check allowance
-        const tokenContract = new web3.eth.Contract(token_abi, donations[i].token);
+        const tokenContract = new web3.eth.Contract(erc20Abi, donations[i].token);
         const allowance = new BN(
           await tokenContract.methods
-            .allowance(userAddress, contractAddress)
+            .allowance(userAddress, bulkCheckoutAddress)
             .call({ from: userAddress })
         );
 
@@ -212,9 +213,8 @@ Vue.component('grants-cart', {
         if (allowance.lt(requiredAllowance)) {
           // Allowance is too small, ask for approval
           indicateMetamaskPopup();
-          const txHash = await tokenContract.methods.approve(contractAddress, MAX_UINT256).send({ from: userAddress });
+          const txHash = await tokenContract.methods.approve(bulkCheckoutAddress, MAX_UINT256).send({ from: userAddress });
 
-          console.log('txHash', txHash);
           indicateMetamaskPopup(true);
         }
       } // end for each donation
@@ -226,27 +226,32 @@ Vue.component('grants-cart', {
           : accumulator + 0; // token donation
       }, 0);
 
+      // Configure our donation inputs
+      const donationInputs = donations.map(donation => {
+        delete donation.name;
+        return donation;
+      });
+
       // Estimate gas to send all of them
       // Arbitrarily choose to use a gas limit 10% higher than estimated gas
-      bulkTransaction = new web3.eth.Contract(contractAbi, contractAddress);
-      const estimatedGas = await bulkTransaction.methods
-        .donate(donations)
-        .estimateGas({ from: userAddress, value: ethAmount });
-      const gasLimit = Math.ceil(1.1 * estimatedGas);
+      bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
+      console.log('donations', donationInputs);
+      // const estimatedGas = await bulkTransaction.methods
+      //   .donate(donationInputs)
+      //   .estimateGas({ from: userAddress, value: ethAmount});
+      const gasLimit = 8000000; // Math.ceil(1.1 * estimatedGas);
 
       // Send the transaction
+      console.log(123);
+      indicateMetamaskPopup();
       bulkTransaction.methods
-        .donate(donations)
+        .donate(donationInputs)
         .send({ from: userAddress, gas: gasLimit, value: ethAmount })
         .on('transactionHash', (txHash) => {
+          indicateMetamaskPopup(true);
           console.log('txHash: ', txHash);
         })
-        .on('confirmation', (confirmationNumber, receipt) => {
-          console.log('confirmationNumber: ', confirmationNumber);
-          console.log('receipt: ', receipt);
-        })
         .on('receipt', (receipt) => {
-          // receipt example
           console.log(receipt);
         })
         .on('error', (err) => {
@@ -269,15 +274,15 @@ Vue.component('grants-cart', {
     // Read array of grants in cart from localStorage
     this.grantData = JSON.parse(window.localStorage.getItem('grants_cart'));
 
-    // Populate currency list with selected tokens
-    // TODO wait until `tokens` loads and we can show full list
-    this.grantData.forEach(grant => {
-      const token = grant.grant_donation_currency;
+    // // Populate currency list with selected tokens
+    // // TODO wait until `tokens` loads and we can show full list
+    // this.grantData.forEach(grant => {
+    //   const token = grant.grant_donation_currency;
 
-      if (!this.currencies.includes(token)) {
-        this.currencies.push(token);
-      }
-    });
+    //   if (!this.currencies.includes(token)) {
+    //     this.currencies.push(token);
+    //   }
+    // });
   }
 });
 
