@@ -167,10 +167,8 @@
       }
 
       .hackathon-logo {
-        height: 240px;
-        max-height: 240px;
-        width: 240px;
-        max-width: 240px;
+        height: 13rem;
+        width: 13rem;
         background: {% firstof hackathon.background_color or '#090E60' %};
         border-radius: 10px;
         color: {% firstof hackathon.text_color or 'black' %};
@@ -196,7 +194,6 @@
       }
 
       .card-project {
-        /* padding: 2em; */
         text-align: center;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
       }
@@ -207,14 +204,17 @@
         filter: drop-shadow(0 0.3rem 0.2rem rgba(0,0,0,0.25));
         width: 4em;
       }
+
       .controls .form-control, .controls .btn, .controls label {
         font-size: 0.7rem;
       }
+
       .looking-team {
         background-color: rgba(62, 0, 255, 0.05);
         border-radius: 8px;
         padding: 11px 15px;
       }
+
       .info-card-title {
         font-weight: bold;
         font-size: 12px;
@@ -222,6 +222,7 @@
         letter-spacing: 1px;
         color: #3E00FF;
       }
+
       .info-card-desc {
         font-style: italic;
         font-weight: normal;
@@ -230,8 +231,12 @@
         color: #666666;
       }
 
+      .ui-selectmenu-button.ui-button {
+        background: none !important;
+      }
+
       @media(max-width: 767.98px) {
-        .navbar-brand img {
+        .navbar .navbar-brand img {
           height:20px;
         }
         li.navigation > a.nav-link {
@@ -258,8 +263,8 @@
     <div id="dashboard-content" class="container-fluid no-gutter" style="min-height:600px;">
         <div id="dashboard-vue-app" class="row" v-cloak>
           <div :id="hackathonObj.identifier" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
-            <div class="offset-lg-2 col-lg-10 col-12 hackathon-text pl-4">
-              <div class="mt-sm-5">
+            <div class="offset-xl-2 col-lg-10 col-12 hackathon-text pl-4">
+              <div class="mt-5">
                 <p class="hackathon-title title font-weight-bold mb-0">[[ hackathonObj.name ]]</p>
               </div>
               <p class="mb-1">
@@ -273,10 +278,10 @@
               </p>
             </div>
           </div>
-          <div class="col-9 body hackathon-explorer">
+          <div class="col-12 col-xl-9 body hackathon-explorer">
             <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
               <template v-slot:tabs-start>
-                <div class="hack-logo-wrapper d-none d-md-block">
+                <div class="hack-logo-wrapper d-none d-xl-block">
                   <div class="mb-1 hackathon-logo">
                     <b-img-lazy v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo_svg" alt="Hackathon logo"></b-img-lazy>
                     <b-img-lazy v-else-if="hackathonObj.logo" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo" alt="Hackathon logo"></b-img-lazy>
@@ -294,14 +299,11 @@
                 <div id="prizes" class="row">
                   <div class="col-12 col-md-2 d-lg-block" style="background: #F2F6F9; margin-left:2%">
 
-                    <div class="ml-sm-4 mr-4 mr-sm-0 invisible" id="sidebar_container">
-                      <!-- <a :href="`/hackathon/${hackathonObj.slug}/onboard`" class="btn register btn-gc-blue mt-2" v-if="!is_registered">
-                        Register
-                      </a> -->
+                    <div class="ml-md-4 invisible" id="sidebar_container">
                       {% include 'dashboard/sidebar_search_hackathon.html' %}
                     </div>
                   </div>
-                  <div class="col-12 col-md-9 p-2 ml-sm-4">
+                  <div class="col-12 col-md-9 p-2 ml-md-4">
                     {% if not hackathon_not_started %}
                     <div class="px-2" id="bounties">
                       <div id="dashboard-title" class="hidden">
@@ -840,7 +842,7 @@
               </template>
             </b-tabs>
           </div>
-          <div class="col-12 col-md-3">
+          <div class="d-none d-xl-block col-xl-3">
             <div id="sponsor_sidebar" class="font-body">
               <div class="sponsor-top"></div>
               <sponsor-tribes-widget v-if="hackathonSponsors.length > 0" inline-template>
