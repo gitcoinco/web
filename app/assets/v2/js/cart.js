@@ -26,9 +26,10 @@ Vue.component('grants-cart', {
 
   data: function() {
     return {
+      isLoading: undefined,
       grantHeaders,
       grantData,
-      currencies: [ 'DAI', 'ETH' ] // TODO update with Gitcoin's list of tokens]
+      currencies: undefined
     };
   },
 
@@ -262,6 +263,10 @@ Vue.component('grants-cart', {
         .on('error', (err) => {
           console.error(err);
         });
+    },
+
+    sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
   },
 
@@ -275,19 +280,20 @@ Vue.component('grants-cart', {
     }
   },
 
-  mounted() {
+  async mounted() {
+    // Show loading dialog
+    this.isLoading = true;
     // Read array of grants in cart from localStorage
     this.grantData = JSON.parse(window.localStorage.getItem('grants_cart'));
-
-    // // Populate currency list with selected tokens
-    // // TODO wait until `tokens` loads and we can show full list
-    // this.grantData.forEach(grant => {
-    //   const token = grant.grant_donation_currency;
-
-    //   if (!this.currencies.includes(token)) {
-    //     this.currencies.push(token);
-    //   }
-    // });
+    // Wait until we can load token list
+    while (!this.currencies) {
+      try {
+        this.currencies = tokens(network).map(token => token.name);
+      } catch (err) {}
+      await this.sleep(50); // every 100 ms
+    }
+    // Cart is now ready
+    this.isLoading = false;
   }
 });
 
