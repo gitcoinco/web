@@ -9,8 +9,7 @@ const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 const gitcoinFactor = 0.05;
-// const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-const gitcoinAddress = '0x0000000000000000000000000001000000000000';
+const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
 
 // Contract parameters
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
@@ -34,69 +33,82 @@ Vue.component('grants-cart', {
   },
 
   computed: {
+    /**
+     * @notice Generates an object where keys are token names and value are the total amount
+     * being donated in that token
+     * @dev The addition here is based on human-readable numbers so BN is not needed
+     */
     donationTotals() {
       const totals = {};
 
       this.grantData.forEach(grant => {
-        const token = grant.grant_donation_currency;
-
-        if (!totals[token]) {
+        if (!totals[grant.grant_donation_currency]) {
           // First time seeing this token, set the field and initial value
-          totals[token] = grant.grant_donation_amount;
+          totals[grant.grant_donation_currency] = grant.grant_donation_amount;
         } else {
           // We've seen this token, so just update the total
-          totals[token] += grant.grant_donation_amount;
+          totals[grant.grant_donation_currency] += grant.grant_donation_amount;
         }
       });
       return totals;
     },
 
+    /**
+     * @notice Returns a string of the form "3 DAI + 0.5 ETH + 10 USDC" which describe the
+     * user's donations to grants
+     */
     donationTotalsString() {
-      const totals = this.donationTotals;
-      let string = '';
-
-      if (!totals) {
+      if (!this.donationTotals) {
         return undefined;
       }
 
-      Object.keys(totals).forEach(key => {
+      let string = '';
+
+      Object.keys(this.donationTotals).forEach(key => {
         if (string === '') {
-          string += `${totals[key]} ${key}`;
+          string += `${this.donationTotals[key]} ${key}`;
         } else {
-          string += `+ ${totals[key]} ${key}`;
+          string += `+ ${this.donationTotals[key]} ${key}`;
         }
       });
       return string;
     },
 
+    /**
+     * @notice Generates an object where keys are token names and value are the total amount
+     * being donated in that token to Gitcoin
+     * @dev The addition here is based on human-readable numbers so BN is not needed. However,
+     * we do get some floating point error
+     */
     donationsToGitcoin() {
       const totals = {};
 
       this.grantData.forEach(grant => {
-        const token = grant.grant_donation_currency;
-
-        if (!totals[token]) {
+        if (!totals[grant.grant_donation_currency]) {
           // First time seeing this token, set the field and initial value
-          totals[token] = grant.grant_donation_amount * 0.05;
+          totals[grant.grant_donation_currency] = grant.grant_donation_amount * 0.05;
         } else {
           // We've seen this token, so just update the total
-          totals[token] += (grant.grant_donation_amount * 0.05);
+          totals[grant.grant_donation_currency] += (grant.grant_donation_amount * 0.05);
         }
       });
       return totals;
     },
 
+    /**
+     * @notice Returns a string of the form "3 DAI + 0.5 ETH + 10 USDC" which describe the
+     * user's donations to the Gitcoin grant
+     */
     donationsToGitcoinString() {
-      const totals = this.donationsToGitcoin;
-      let string = '';
-
-      if (!totals) {
+      if (!this.donationsToGitcoin) {
         return undefined;
       }
 
-      Object.keys(totals).forEach(key => {
+      let string = '';
+
+      Object.keys(this.donationsToGitcoin).forEach(key => {
         // Round to 2 digits
-        const amount = totals[key];
+        const amount = this.donationsToGitcoin[key];
         const formattedAmount = amount.toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
@@ -158,48 +170,20 @@ Vue.component('grants-cart', {
         };
       });
 
-      // Now we calculate the additional donations to Gitcoin
-      const gitcoinDonations = {};
-
-      this.grantData.forEach((grant) => {
-        const currency = grant.grant_donation_currency;
-        const amount = grant.grant_donation_amount;
-        const amountToGitcoin = (gitcoinFactor * amount);
-
-        if (gitcoinDonations[currency]) {
-          gitcoinDonations[currency] += amountToGitcoin;
-        } else {
-          gitcoinDonations[currency] = amountToGitcoin;
-        }
-      });
-
       // Append the Gitcoin donations
-      Object.keys(gitcoinDonations).forEach((token) => {
+      Object.keys(this.donationsToGitcoin).forEach((token) => {
         const tokenDetails = this.getTokenByName(token);
 
         donations.push({
-          amount: String(gitcoinDonations[token] * 10 ** tokenDetails.decimals),
+          amount: String(this.donationsToGitcoin[token] * 10 ** tokenDetails.decimals),
           token: tokenDetails.addr,
           dest: gitcoinAddress,
           name: token
         });
       });
 
-      // Now, `donations` contains an array of all donations to make.
-      // For convenience we generate a condensed version containing the totals by token
-      const condensedDonations = {};
-
-      donations.forEach(donation => {
-        if (condensedDonations[donation.name]) {
-          condensedDonations[donation.name] += Number(donation.amount);
-        } else {
-          condensedDonations[donation.name] = Number(donation.amount);
-        }
-      });
-
       // Get token approvals
-      // TODO this can be more efficient by looping over condensedDonations
-      const selectedTokens = Object.keys(condensedDonations);
+      const selectedTokens = Object.keys(this.donationTotals);
 
       for (let i = 0; i < selectedTokens.length; i += 1) {
         const tokenDetails = this.getTokenByName(selectedTokens[i]);
@@ -209,7 +193,7 @@ Vue.component('grants-cart', {
           continue;
         }
 
-        // Check allowance
+        // Get current allowance
         const tokenContract = new web3.eth.Contract(erc20Abi, tokenDetails.addr);
         const allowance = new BN(
           await tokenContract.methods
@@ -217,17 +201,20 @@ Vue.component('grants-cart', {
             .call({ from: userAddress })
         );
 
-        // Check allowance against the total being donated of that token
-        const requiredAllowance = new BN(String(condensedDonations[tokenDetails.name]));
+        // Get required allowance based on donation amounts
+        const requiredAllowance = this.donationTotals[tokenDetails.name] * 10 ** tokenDetails.decimals;
 
-        if (allowance.lt(requiredAllowance)) {
-          // Allowance is too small, ask for approval
+        // Compare allowances and request approval if needed
+        if (allowance.lt(new BN(String(requiredAllowance)))) {
           indicateMetamaskPopup();
-          const txHash = await tokenContract.methods.approve(bulkCheckoutAddress, MAX_UINT256).send({ from: userAddress });
+          const txHash = await tokenContract.methods
+            .approve(bulkCheckoutAddress, MAX_UINT256)
+            .send({ from: userAddress });
 
+          console.log('approval tx hash: ', txHash);
           indicateMetamaskPopup(true);
         }
-      } // end for each donation
+      } // end for each token being used for donations
 
       // Get the total ETH we need to send
       const initialValue = new BN('0');
@@ -259,7 +246,7 @@ Vue.component('grants-cart', {
         .send({ from: userAddress, gas: gasLimit, value: ethAmountString })
         .on('transactionHash', (txHash) => {
           indicateMetamaskPopup(true);
-          console.log('txHash: ', txHash);
+          console.log('donation txHash: ', txHash);
         })
         .on('receipt', (receipt) => {
           console.log(receipt);
