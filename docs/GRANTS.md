@@ -48,5 +48,5 @@ For more information on the subminer for grants, checkout
 
 * https://github.com/gitcoinco/web/issues/2424
 * https://github.com/gitcoinco/web/pull/3055
-* https://gitcoin.co/slack
+https://chat.gitcoin.co/
 * http://1337alliance.com

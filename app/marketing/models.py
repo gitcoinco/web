@@ -407,3 +407,21 @@ class RoundupEmail(SuperModel):
 
     def __str__(self):
         return self.subject
+
+class UpcomingDate(SuperModel):
+    """Define the upcoming date model"""
+
+    title = models.CharField(max_length=255)
+    date = models.DateTimeField(db_index=True)
+    img_url = models.URLField(db_index=True, blank=True)
+    url = models.URLField(db_index=True)
+    comment = models.TextField(max_length=255, default='', blank=True)
+
+    @property
+    def naturaltime(self):
+         from django.contrib.humanize.templatetags.humanize import naturaltime
+         return naturaltime(self.date)
+
+
+    def __str__(self):
+        return f"{self.title}"
