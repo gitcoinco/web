@@ -415,6 +415,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#grants" title="grants" class="md-nav__link">
+    grants
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fields_1" title="Fields" class="md-nav__link">
+    Fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#url-parameters_1" title="URL Parameters" class="md-nav__link">
+    URL Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-request_1" title="Example Request" class="md-nav__link">
+    Example Request
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -2160,6 +2194,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#grants" title="grants" class="md-nav__link">
+    grants
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fields_1" title="Fields" class="md-nav__link">
+    Fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#url-parameters_1" title="URL Parameters" class="md-nav__link">
+    URL Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-request_1" title="Example Request" class="md-nav__link">
+    Example Request
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -2462,6 +2530,231 @@
 
 </code></pre>
 
+<h3 id="grants"><code>grants</code></h3>
+<p>The grants endpoint provides a listing of grants and all it's information. There is one endpoint that access grants:</p>
+<ul>
+<li><code>https://gitcoin.co/api/v0.1/grants/</code> - Returns a list of grants</li>
+</ul>
+<h4 id="fields_1">Fields</h4>
+<table>
+<thead>
+<tr>
+<th>Field Key</th>
+<th>Datatype</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>active</code></td>
+<td><code>boolean</code></td>
+<td>Whether or not the Grant is active</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>string</code></td>
+<td>Title of the Grant</td>
+</tr>
+<tr>
+<td><code>slug</code></td>
+<td><code>string</code></td>
+<td>Slug for the Grant populated from <code>title</code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>Description of the Grant</td>
+</tr>
+<tr>
+<td><code>reference_url</code></td>
+<td><code>string</code></td>
+<td>Associated reference URL of the Grant</td>
+</tr>
+<tr>
+<td><code>logo</code></td>
+<td><code>string</code></td>
+<td>URL of the Grant logo image</td>
+</tr>
+<tr>
+<td><code>admin_address</code></td>
+<td><code>ethereum_address</code></td>
+<td>Wallet address of the Grant Admin where subscription funds will be sent</td>
+</tr>
+<tr>
+<td><code>amount_received</code></td>
+<td><code>float</code></td>
+<td>Total amount of contributions received by the Grant in USDT/DAI</td>
+</tr>
+<tr>
+<td><code>token_address</code></td>
+<td><code>ethereum_address</code></td>
+<td>Address of the token to be used with the Grant</td>
+</tr>
+<tr>
+<td><code>token_symbol</code></td>
+<td><code>token_type</code></td>
+<td>Type of token to be used with the Grant</td>
+</tr>
+<tr>
+<td><code>contract_address</code></td>
+<td><code>ethereum_address</code></td>
+<td>Contract address of the Grant</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>dictionary</code></td>
+<td>Misc metadata about the Grant</td>
+</tr>
+<tr>
+<td><code>network</code></td>
+<td><code>string</code></td>
+<td>Network in which the Grant contract resides</td>
+</tr>
+<tr>
+<td><code>required_gas_price</code></td>
+<td><code>float</code></td>
+<td>Required gas price for the Grant</td>
+</tr>
+<tr>
+<td><code>admin_profile</code></td>
+<td><code>dictionary</code></td>
+<td>Grant Admin's profile</td>
+</tr>
+<tr>
+<td><code>team_members</code></td>
+<td><code>array</code></td>
+<td>Array of Dictionaries of team members contributing to this Grant</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Profile</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field Key</th>
+<th>Datatype</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>integer</code></td>
+<td>Profile ID</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><code>string</code></td>
+<td>URL to the Gitcoin profile</td>
+</tr>
+<tr>
+<td><code>handle</code></td>
+<td><code>string</code></td>
+<td>GitHub handle/username associated with the Profile</td>
+</tr>
+<tr>
+<td><code>keywords</code></td>
+<td><code>array</code></td>
+<td>Array of keywords associated with the Profile</td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>integer</code></td>
+<td>Position of the Profile in the <code>Weekly Earners</code> leaderboard</td>
+</tr>
+<tr>
+<td><code>avatar_url</code></td>
+<td><code>string</code></td>
+<td>URL to the Gitcoin Avatar of the Profile</td>
+</tr>
+<tr>
+<td><code>github_url</code></td>
+<td><code>string</code></td>
+<td>URL to the GitHub profile</td>
+</tr>
+<tr>
+<td><code>total_earned</code></td>
+<td><code>float</code></td>
+<td>Sum of  ETH collected by the profile</td>
+</tr>
+<tr>
+<td><code>organizations</code></td>
+<td><code>dictionary</code></td>
+<td>Dictionary containing profiles that this user works with</td>
+</tr>
+</tbody>
+</table>
+<h4 id="url-parameters_1">URL Parameters</h4>
+<p><strong>Filters</strong></p>
+<p>You can filter the data returned from the API by providing these keys as URL parameters <code>title</code>, <code>description</code>, <code>keyword</code>, <code>grant_type</code> and <code>pk</code> that takes an ID and returns a single grant.</p>
+<h4 id="example-request_1">Example Request</h4>
+<pre><code class="shell">~ % curl &quot;https://gitcoin.co/api/v0.1/grants/?grant_type=tech&quot;
+
+[
+  {
+    &quot;active&quot;: true,
+    &quot;title&quot;: &quot;Cipher Dogs Team&quot;,
+    &quot;slug&quot;: &quot;cipher-dogs-team&quot;,
+    &quot;description&quot;: &quot;Our team is interested in electronic art/hack/social activity and blockchain/decentralized technology and other technologies. We are aimed at promoting blockchain technology among people. Our team creates various libraries, websites, artwork and other projects in the field of blockchain technologies. We also help blockchain projects. We believe that blockchain technology is the future.\r\n&quot;,
+    &quot;reference_url&quot;: &quot;https://github.com/CipherDogs&quot;,
+    &quot;logo&quot;: &quot;https://c.gitcoin.co/grants/1a573aca695eada7c2f9badf1ed84b10/cipher1.png&quot;,
+    &quot;admin_address&quot;: &quot;0xD12Dd8aEb8F96D0bFF6aA9C74bDf92009741d3Aa&quot;,
+    &quot;amount_received&quot;: &quot;0.0000&quot;,
+    &quot;token_address&quot;: &quot;0x0000000000000000000000000000000000000000&quot;,
+    &quot;token_symbol&quot;: &quot;Any Token&quot;,
+    &quot;contract_address&quot;: &quot;0xbcAE3e2893722698535aaf355F0aA92CA846354F&quot;,
+    &quot;metadata&quot;: {},
+    &quot;network&quot;: &quot;mainnet&quot;,
+    &quot;required_gas_price&quot;: &quot;0&quot;,
+    &quot;admin_profile&quot;: {
+      &quot;id&quot;: 82330,
+      &quot;url&quot;: &quot;/deadblackclover&quot;,
+      &quot;handle&quot;: &quot;deadblackclover&quot;,
+      &quot;keywords&quot;: [
+        &quot;Rust&quot;,
+        &quot;Scala&quot;,
+        &quot;JavaScript&quot;,
+        &quot;HTML&quot;,
+        &quot;CSS&quot;,
+        &quot;Emacs Lisp&quot;,
+        &quot;C#&quot;,
+        &quot;Vue&quot;,
+        &quot;Shell&quot;
+      ],
+      &quot;position&quot;: 0,
+      &quot;avatar_url&quot;: &quot;https://c.gitcoin.co/avatars/0aee35065024a0382c19e5a30fb2349c/deadblackclover.png&quot;,
+      &quot;github_url&quot;: &quot;https://github.com/deadblackclover&quot;,
+      &quot;total_earned&quot;: 0,
+      &quot;organizations&quot;: {}
+    },
+    &quot;team_members&quot;: [
+      {
+        &quot;id&quot;: 82330,
+        &quot;url&quot;: &quot;/deadblackclover&quot;,
+        &quot;handle&quot;: &quot;deadblackclover&quot;,
+        &quot;keywords&quot;: [
+          &quot;Rust&quot;,
+          &quot;Scala&quot;,
+          &quot;JavaScript&quot;,
+          &quot;HTML&quot;,
+          &quot;CSS&quot;,
+          &quot;Emacs Lisp&quot;,
+          &quot;C#&quot;,
+          &quot;Vue&quot;,
+          &quot;Shell&quot;
+        ],
+        &quot;position&quot;: 0,
+        &quot;avatar_url&quot;: &quot;https://c.gitcoin.co/avatars/0aee35065024a0382c19e5a30fb2349c/deadblackclover.png&quot;,
+        &quot;github_url&quot;: &quot;https://github.com/deadblackclover&quot;,
+        &quot;total_earned&quot;: 0,
+        &quot;organizations&quot;: {}
+      }
+    ]
+  },
+  ...
+]
+</code></pre>
+
 <h1 id="web3-api">WEB3 API</h1>
 <p>You may interact with the HTTPS API as follows</p>
 <pre><code class="shell">truffle(development)&gt; BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd').bountydetails.call('https://github.com/owocki/pytrader/pull/83');
@@ -2485,7 +2778,7 @@
 </ul>
 <p>Further information on the smart contract interface is available at <a href="https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol">https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol</a></p>
 <p>_bountydetails function returns the following fields:</p>
-<h4 id="fields_1">Fields</h4>
+<h4 id="fields_2">Fields</h4>
 <table>
 <thead>
 <tr>
