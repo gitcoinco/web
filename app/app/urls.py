@@ -335,8 +335,8 @@ urlpatterns = [
     url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
     url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
-    url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
-    url(r'^tip/?', dashboard.tip_views.send_tip_2, name='tip'),
+    url(r'^send/?$', dashboard.tip_views.send_tip, name='tip'),
+    url(r'^tip/?$', dashboard.tip_views.send_tip_2, name='tip'),
     url(r'^requestmoney/?', dashboard.tip_views.request_money, name='request_money'),
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
@@ -345,7 +345,7 @@ urlpatterns = [
     re_path(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     re_path(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     re_path(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
-    re_path(r'^legal/?', dashboard.views.terms, name='legal'),
+    url(r'^legal/?$', dashboard.views.terms, name='legal'),
 
     # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
@@ -364,7 +364,7 @@ urlpatterns = [
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
     url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
-    url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
+    url(r'^gas/?$', dashboard.gas_views.gas, name='gas'),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
@@ -672,7 +672,7 @@ urlpatterns = [
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
 
     # ENS urls
-    re_path(r'^ens/', enssubdomain.views.ens_subdomain, name='ens'),
+    url(r'^ens/?$', enssubdomain.views.ens_subdomain, name='ens'),
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
