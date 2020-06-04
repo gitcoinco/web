@@ -654,10 +654,10 @@ var show_interest_modal = function() {
         });
         projectForm.on('submit', function(e) {
           e.preventDefault();
-          let elements = $(this)[0];
-          let logo = elements['logo'].files[0];
-          let summary = elements['summary'].value;
-          let data = $(this).serializeArray();
+          const elements = $(this)[0];
+          const logo = elements['logo'].files[0];
+          const summary = elements['summary'].value;
+          const data = $(this).serializeArray();
 
           submitInterest(document.result['pk'], summary, self, () => {
             appBounty.fetchBounty();
