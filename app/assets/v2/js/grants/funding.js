@@ -13,6 +13,14 @@ $(document).ready(function() {
         showSideCart();
     });
 
+    $('.js-addDetailToCart-form').submit(function(event) {
+        event.preventDefault();
+
+        const formData = objectifySerialized($(this).serializeArray());
+        addToCart(formData);
+        console.log("CART", loadCart());
+    });
+
     $("#close-side-cart").click(function() {
         hideSideCart();
     });

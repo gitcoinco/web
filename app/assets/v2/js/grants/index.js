@@ -25,13 +25,13 @@ $(document).ready(() => {
 
   $('.select2-selection__rendered').removeAttr('title');
 
-  $(document).on('click keypress', '.flip-card', e => {
-    if ($(e.target).is('a') || $(e.target).is('img')) {
-      e.stopPropagation();
-      return;
-    }
-    $(e.currentTarget).toggleClass('turn');
-  });
+  // $(document).on('click keypress', '.flip-card', e => {
+  //   if ($(e.target).is('a') || $(e.target).is('img')) {
+  //     e.stopPropagation();
+  //     return;
+  //   }
+  //   $(e.currentTarget).toggleClass('turn');
+  // });
 
   waitforWeb3(() => {
     let _network = $('#grant-network').html();
