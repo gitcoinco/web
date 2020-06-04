@@ -8,7 +8,7 @@
 const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-const DEV_GRANT_ADDRESS = '0x0000000000000000000000000001000000000000'; // rinkeby grants seem unable to accept ETH, so use dummy address
+const DEV_GRANT_ADDRESS = '0x058e6afe3590A7DA1A5Ad7A6fE0df7060c7d12cF'; // rinkeby grants seem unable to accept ETH, so use dummy address
 const gitcoinFactor = 0.05; // 5% of donation amount goes to Gitcoin
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
 
