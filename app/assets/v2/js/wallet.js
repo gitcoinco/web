@@ -137,7 +137,7 @@ function initWallet() {
 }
 
 function walletStateChanges() {
-  if (load_tokens) {
+  if (typeof load_tokens !== 'undefined') {
     load_tokens();
   }
 }

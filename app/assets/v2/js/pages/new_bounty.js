@@ -24,7 +24,6 @@ const updateOnNetworkOrTokenChange = () => {
     $('.web3-alert').hide();
 
   } else {
-    // listen_for_web3_changes();
     if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
       onConnect().then(()=> {
         changeUi();
@@ -40,11 +39,7 @@ const updateOnNetworkOrTokenChange = () => {
           return;
         }
       });
-
-
     }
-
-
   }
 };
 
@@ -71,13 +66,6 @@ function changeUi() {
     $('.web3-alert').addClass('wallet-success');
   }
 }
-
-window.addEventListener('load', function() {
-  // updateOnNetworkOrTokenChange()
-  // setTimeout(() => {
-  //   setInterval(updateOnNetworkOrTokenChange, 1000);
-  // }, 5000);
-});
 
 var localStorage = window.localStorage ? window.localStorage : {};
 const quickstartURL = document.location.origin + '/bounty/quickstart';
