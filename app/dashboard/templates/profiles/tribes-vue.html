@@ -762,7 +762,7 @@
                                     <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                                       <i class="fab fa-linkedin-in"></i>
                                     </a>
-                                    <a @click="chatWindow(user.handle);" href="#" v-if="user.chat_id">
+                                    <a @click="chatWindow(user.handle, true);" href="#" v-if="user.chat_id">
                                       <i class="fas fa-comment-dots"></i>
                                     </a>
                                   </div>

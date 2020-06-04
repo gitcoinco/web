@@ -10,17 +10,17 @@ Vue.mixin({
   },
   methods: {
     chatWindow: function(channel, dm) {
-      dm = dm || !channel;
+      dm = dm || channel.indexOf('@') >= 0;
       channel = channel || 'town-square';
-
       let vm = this;
       const hackathonTeamSlug = 'hackathons';
       const gitcoinTeamSlug = 'gitcoin';
       const isHackathon = (document.hackathon_id !== null);
 
-      const url = channel ? `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channel'}/@${channel}` : `${vm.chatURL}/`;
 
-      window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+      const url = `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${dm ? '@' + channel : channel}`;
+
+      window.open(url, 'Loading', 'top=0,left=0,width=650,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
     }
   }
 });
