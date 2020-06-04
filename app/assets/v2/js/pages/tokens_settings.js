@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
-load_tokens_from_network('mainnet');
+// load_tokens_from_network('mainnet');
+load_tokens();
 
 $(document).ready(function() {
   // avoid multiple submissions

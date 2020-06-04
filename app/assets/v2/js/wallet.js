@@ -136,6 +136,12 @@ function initWallet() {
   });
 }
 
+function walletStateChanges() {
+  if (load_tokens) {
+    load_tokens();
+  }
+}
+
 async function fetchAccountData(provider) {
 
   // Get a Web3 instance for the wallet
@@ -144,10 +150,18 @@ async function fetchAccountData(provider) {
   console.log('Web3 instance is', web3);
 
   // Get connected chain id from Ethereum node
-  chainId = await web3.eth.currentProvider.chainId;
-  networkId = await web3.eth.net.getId();
+  // if (web3.eth.currentProvider) {
+  //   chainId = await web3.eth.currentProvider.chainId;
+  // } else {
+  // }
+  chainId = await web3.eth.givenProvider.chainId;
+  await web3.eth.net.getId().then(id => {
+    networkId = id;
+    networkName = getDataChains(id, 'chainId')[0].network;
+  });
   // web3.currentProvider.chainId
-  networkName = await web3.eth.net.getNetworkType();
+  // networkName = await web3.eth.net.getNetworkType();
+
   // chainName = getNetwork(chainId);
   // if (provider.isFortmatic) {
 
@@ -244,6 +258,7 @@ async function fetchAccountData(provider) {
   // Display fully loaded UI for wallet data
   // document.querySelector("#prepare").style.display = "none";
   // document.querySelector("#connected").style.display = "block";
+  walletStateChanges();
 }
 
 // const provider = await web3Modal.connect();
@@ -299,17 +314,17 @@ async function onConnect() {
   if (provider.on) {
     // Subscribe to accounts change
     provider.on('accountsChanged', (accounts) => {
-      fetchAccountData();
+      fetchAccountData(provider);
     });
 
     // Subscribe to chainId change
     provider.on('chainChanged', (chainId) => {
-      fetchAccountData();
+      fetchAccountData(provider);
     });
 
     // Subscribe to networkId change
     provider.on('networkChanged', (networkId) => {
-      fetchAccountData();
+      fetchAccountData(provider);
     });
   }
 
@@ -384,12 +399,12 @@ window.addEventListener('load', async() => {
       console.log('metamask');
       window.ethereum.on('accountsChanged', function(accounts) {
         console.log('accountsChanged');
-        fetchAccountData();
+        fetchAccountData(provider);
       });
       window.ethereum.on('networkChanged', function(networkId) {
         console.log('networkChanged');
 
-        fetchAccountData();
+        fetchAccountData(provider);
       });
     }
   }
