@@ -723,9 +723,9 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
         return None, error, None
     else:
 
-        #if profile.bulk_transfer_redemptions.filter(coupon=coupon).exists():
-        #    error = f'You have already redeemed this kudos.'
-        #    return None, error, None
+        if profile.bulk_transfer_redemptions.filter(coupon=coupon).exists():
+            error = f'You have already redeemed this kudos.'
+            return None, error, None
 
 
         signed = w3.eth.account.signTransaction(tx, private_key)
