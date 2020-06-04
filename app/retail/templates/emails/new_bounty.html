@@ -24,6 +24,7 @@
     width: 45%;
     height: 35%;
     margin-top: 40px;
+    max-width: 250px;
   }
 
   .upcoming-events-container h4 {
@@ -169,6 +170,19 @@
 <BR>
 <a href={{base_url}}>
 This action expires at end of day, so act soon!
+</a>
+
+<HR>
+{% endif %}
+
+{% if chats_count %}
+
+<h3 class="no-subtitle" style="margin-top: 15px;">💬 {{chats_count}} New Chat Messages</h3>
+
+<a href={{base_url}}>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button large" href="https://chat.gitcoin.co">{% trans "Read Messages" %}</a>
+  </div>
 </a>
 
 <HR>
