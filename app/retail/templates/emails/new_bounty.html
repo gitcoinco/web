@@ -124,7 +124,9 @@
 
     <div class="upcoming-events-container">
       {% for event in upcoming_dates %}
-        <img class="event-img" src="{{event.img_url}}">
+        {% if event.img_url %}
+          <img class="event-img" src="{{event.img_url}}">
+        {% endif %}
         <h4 style="">{{event.title}}</h4>
         <p>{{event.date}}</p>
         <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
@@ -133,7 +135,9 @@
 
     <div class="upcoming-events-container">
       {% for event in upcoming_events %}
-        <img class="event-img" src="{{event.image_url}}">
+        {% if event.img_url %}
+          <img class="event-img" src="{{event.image_url}}">
+        {% endif %}
         <h4 style="">{{event.title}}</h4>
         <p>{{event.date}}</p>
         <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
