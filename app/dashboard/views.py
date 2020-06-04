@@ -460,51 +460,6 @@ def post_comment(request):
         })
 
 
-@require_POST
-def post_comment_project(request):
-    profile_id = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-    if profile_id is None:
-        return JsonResponse({
-            'success': False,
-            'msg': '',
-        })
-
-    bounty_id = request.POST.get('bounty_id')
-    bountyObj = Bounty.objects.get(pk=bounty_id)
-    receiver_profile = Profile.objects.filter(handle=request.POST.get('review[receiver]').lower()).first()
-    fbAmount = FeedbackEntry.objects.filter(
-        sender_profile=profile_id,
-        receiver_profile=receiver_profile,
-        bounty=bountyObj
-    ).count()
-    if fbAmount > 0:
-        return JsonResponse({
-            'success': False,
-            'msg': 'There is already an approval comment',
-        })
-
-    kwargs = {
-        'bounty': bountyObj,
-        'sender_profile': profile_id,
-        'receiver_profile': receiver_profile,
-        'rating': request.POST.get('review[rating]', '0'),
-        'satisfaction_rating': request.POST.get('review[satisfaction_rating]', '0'),
-        'private': not bool(request.POST.get('review[public]', '0') == "1"),
-        'communication_rating': request.POST.get('review[communication_rating]', '0'),
-        'speed_rating': request.POST.get('review[speed_rating]', '0'),
-        'code_quality_rating': request.POST.get('review[code_quality_rating]', '0'),
-        'recommendation_rating': request.POST.get('review[recommendation_rating]', '0'),
-        'comment': request.POST.get('review[comment]', 'No comment.'),
-        'feedbackType': request.POST.get('review[reviewType]','approver')
-    }
-
-    feedback = FeedbackEntry.objects.create(**kwargs)
-    feedback.save()
-    return JsonResponse({
-            'success': True,
-            'msg': 'Finished.'
-        })
-
 def rating_modal(request, bounty_id, username):
     # TODO: will be changed to the new share
     """Rating modal.

@@ -34,7 +34,7 @@ from bounty_requests.models import (
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent,
-    HackathonProject, HackathonProjectFeedbackEntry, Interest, Profile, ProfileSerializer,
+    HackathonProject, Interest, Profile, ProfileSerializer,
     SearchHistory, TribeMember
 )
 from .tasks import increment_view_count
@@ -199,23 +199,14 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         return bounty
 
 
-class HackathonProjectFeedbackSerializer(serializers.ModelSerializer):
-
-    sender = ProfileSerializer()
-
-    class Meta:
-        model = HackathonProjectFeedbackEntry
-        fields = ('pk', 'sender', 'comment', 'rating')
-
 class HackathonProjectSerializer(serializers.ModelSerializer):
     bounty = BountySerializer()
     profiles = ProfileSerializer(many=True)
     hackathon = HackathonEventSerializer()
-    project_feedbacks_got = HackathonProjectFeedbackSerializer(many=True)
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'project_feedbacks_got', 'winner', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url')
         depth = 1
 
 
@@ -249,11 +240,11 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
 
             if sponsor:
                 queryset = queryset.filter(
-                    Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username__in=[sponsor])
+                    Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
                 )
         elif sponsor:
             queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
-                bounty__bounty_owner_github_username__in=[sponsor])).exclude(
+                bounty__bounty_owner_github_username=sponsor)).exclude(
                 status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
 
         if q:

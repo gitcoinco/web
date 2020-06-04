@@ -10,13 +10,13 @@ Vue.mixin({
   },
   methods: {
     chatWindow: function(channel, dm) {
-      dm = dm | !channel;
-      channel = channel | 'town-square';
+      dm = dm || !channel;
+      channel = channel || 'town-square';
 
       let vm = this;
-      let hackathonTeamSlug = 'hackathon';
-      let gitcoinTeamSlug = 'gitcoin';
-      let isHackathon = (document.hackathon_id !== null);
+      const hackathonTeamSlug = 'hackathons';
+      const gitcoinTeamSlug = 'gitcoin';
+      const isHackathon = (document.hackathon_id !== null);
 
       const url = channel ? `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channel'}/@${channel}` : `${vm.chatURL}/`;
 
@@ -199,11 +199,10 @@ Vue.component('project-directory', {
     markWinner: function($event, project) {
       let vm = this;
 
-
       const url = '/api/v0.1/hackathon_project/set_winner/';
       const markWinner = fetchData(url, 'POST', {project_id: project.pk, winner: $event ? 1 : 0}, {'X-CSRFToken': vm.csrf});
 
-      $.when(markWinner).then((response) => {
+      $.when(markWinner).then(response => {
         if (response.message) {
           alert(response.message);
         }
@@ -237,9 +236,9 @@ Vue.component('project-directory', {
         delete vm.params['search'];
       }
 
-      let searchParams = new URLSearchParams(vm.params);
+      const searchParams = new URLSearchParams(vm.params);
 
-      let apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
+      const apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
 
       const getProjects = fetchData(apiUrlProjects, 'GET');
 
