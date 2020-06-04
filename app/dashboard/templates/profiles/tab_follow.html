@@ -17,14 +17,14 @@
     {% for user in followers %}
       <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
         <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-          <a href="/{{user.org.handle}}">
+          <a href="/{{user.profile.handle}}">
           <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.profile.handle }}" alt="">
           </a>
         </div>
         <div class="tab-projects__item-details col-3 d-flex flex-column bounty-detail">
           <div class="d-flex flex-column">
             <div class="font-weight-semibold font-header">{{user.profile.name}}</div>
-            <a href="/{{user.org.handle}}">
+            <a href="/{{user.profile.handle}}">
               <div class="text-highlight-gc-blue  font-smaller-1">{{user.profile.handle}}</div>
             </a>
           </div>
