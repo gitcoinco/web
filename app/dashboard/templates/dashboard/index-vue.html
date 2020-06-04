@@ -394,7 +394,7 @@
                       <span class="nav-badge d-none d-sm-inline">({{projects_count}})</span>
                     </div>
                   </template>
-                  <project-directory inline-template>
+                  <project-directory inline-template user-id={{ user.profile.id | safe }}>
                     <div class="ml-4">
                     <div class="sidebar-container flex-column flex-lg-row">
                       <transition name="fade">
@@ -450,59 +450,19 @@
                           <p class="mt-4 font-weight-bold mb-0">No projects found</p>
                           <button class="btn blue" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
                         </div>
-                        <div class="project-grid ml-2">
-                          <div v-for="project in hackathonProjects" class="card card-user shadow-sm border-0" :key="project.id">
-                            <div class="card card-project">
-                                <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
-
-                                <div class="card-bg rounded-top" style="">
-                                  <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
-                                  <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
-                                </div>
-                                <div class="card-body">
-                                <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
-                                <div class="my-2">
-                                  <p class="text-left text-muted font-smaller-1">
-                                    [[ project.summary | truncate(500) ]]
-                                  </p>
-                                  <div class="text-left">
-                                    <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
-                                    <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                                    <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
-                                     <template v-slot:button-content>
-                                       <i class='fas fa-comment-dots'></i>
-                                     </template>
-                                     <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
-                                       @ [[ profile.handle ]]
-                                     </b-dropdown-item-button>
-                                    </b-dropdown>
-                                  </div>
-                                </div>
-
-                                <div class="my-3 mb-2 text-left">
-                                  <b class="font-weight-bold font-smaller-3">Team Members</b>
-                                  <div class="mt-1">
-                                      <a v-for="profile in project.profiles" :href=`/profile/${profile.handle}` class="">
-                                        <b-img-lazy :src="profile.avatar_url" :alt=`"@${profile.handle}"` :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
-                                      </a>
-                                  </div>
-                                </div>
-
-                                <div v-if="project.looking_members || project.message" class="my-3 looking-team">
-                                  <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
-                                  <p v-if="project.message" class="info-card-desc">
-                                    [[ project.message ]]
-                                  </p>
-                                </div>
-
-                                <div class="font-smaller-2 mt-4">
-                                  <b class="font-weight-bold">Sponsored by</b>
-                                  <img class="" width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
-                                  <a :href=`/profile/${project.bounty.org_name}`>[[ project.bounty.org_name ]]</a>
-                                </div>
-                              </div>
-                              </div>
+                        <div v-if="userProjects.length > 0">
+                          <h1 class="font-title title ml-2">
+                            My Projects
+                          </h1>
+                          <div class="project-grid ml-2">
+                            <project-card v-for="project in userProjects" v-bind:project="project" v-bind:edit="true" :key="project.id"/>
                           </div>
+                          <h1 class="font-title title ml-2 mt-4">
+                            All Projects
+                          </h1>
+                        </div>
+                        <div class="project-grid ml-2">
+                          <project-card v-for="project in hackathonProjects" v-bind:project="project" :key="project.id"/>
                         </div>
                         <loading-screen v-if="isLoading"></loading-screen>
                       </div>
@@ -923,5 +883,8 @@
     <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
     <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
     <script src='{% static "v2/js/users.js" %}'></script>
+    <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
+    {% include 'shared/current_profile.html' %}
+    <script src='{% static "v2/js/user-search.js" %}'></script>
   </body>
 </html>
