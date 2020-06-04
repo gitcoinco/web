@@ -74,6 +74,34 @@
           </div>
         </div>
         {% endfor %}
+        <hr>
+        <li>
+          <a data-type="about" data-category="" class="mr-1 px-1 {% if type == 'about' %}selected{% endif %}">
+            About
+          </a>
+        </li>
+        <li>
+          <a data-type="stats" data-category="" class="mr-1 px-1 {% if type == 'stats' %}selected{% endif %}">
+            Stats
+          </a>
+        </li>
+        <li>
+          <a data-type="activity" data-category="" class="mr-1 px-1 {% if type == 'activity' %}selected{% endif %}">
+            Activity
+          </a>
+        </li>
+        {% if github_handle %}
+        <li>
+          <a target="new" href='/{{github_handle}}/grants' class="mr-1 px-1 ">
+            My Grants <i class="fas fa-external-link-alt"></i>
+          </a>
+        </li>
+        {% endif %}
+        <li>
+          <a target="new" href='/wiki/grants' class="mr-1 px-1 ">
+            FAQ <i class="fas fa-external-link-alt"></i>
+          </a>
+        </li>
       </ul>
     </div>
 
