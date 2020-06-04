@@ -240,17 +240,6 @@ const ethCreateBounty = async (data) => {
       web3Callback(undefined, err);
       console.log(err);
     });
-    // .estimateGas({
-    //   from: account,
-    //   value: eth_amount,
-    //   gas: web3.utils.toHex(318730),
-    //   gasLimit: web3.utils.toHex(318730)
-    // }, function(error, gasAmount){
-    //   if(gasAmount == 5000000)
-    //       console.log('Method ran out of gas');
-    // }).then((result) => {web3Callback(result)}).catch(err => {
-    //   console.log(err);
-    // });
   }
 
   var do_bounty = function(callback) {
