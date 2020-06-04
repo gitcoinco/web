@@ -2928,9 +2928,14 @@ def profile(request, handle, tab=None):
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
 
-    context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
-    context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
+    follow_page_size = 10
+    page_number = request.GET.get('page', 1)
+    context['all_followers'] = TribeMember.objects.filter(org=profile) if request.user.is_authenticated else TribeMember.objects.none()
+    context['all_following'] = TribeMember.objects.filter(profile=profile) if request.user.is_authenticated else TribeMember.objects.none()
+    context['followers'] = Paginator(context['all_followers'], follow_page_size).get_page(page_number)
+    context['following'] = Paginator(context['all_following'], follow_page_size).get_page(page_number)
     context['foltab'] = request.GET.get('sub', 'followers')
+    context['page_obj'] = context['followers'] if context['foltab'] == 'follower' else context['following']
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
