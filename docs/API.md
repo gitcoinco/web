@@ -119,6 +119,125 @@ By passing an `order_by` parameter you can order the data by the provided key. E
 
 ```
 
+### `grants`
+
+The grants endpoint provides a listing of grants and all it's information. There is one endpoint that access grants:
+
+- `https://gitcoin.co/api/v0.1/grants/` - Returns a list of grants
+
+#### Fields
+
+| Field Key          |  Datatype          | Description                                                       |
+|--------------------|--------------------|-------------------------------------------------------------------|
+| `active`           | `boolean`          | Whether or not the Grant is active                                |
+| `title`            | `string`           | Title of the Grant                                                |
+| `slug`             | `string`           | Slug for the Grant populated from `title`                         |
+| `description`      | `string`           | Description of the Grant                                          |
+| `reference_url`    | `string`           | Associated reference URL of the Grant                             |
+| `logo`             | `string`           | URL of the Grant logo image                                       |
+| `admin_address`    | `ethereum_address` | Wallet address of the Grant Admin where subscription funds will be sent |
+| `amount_received`  | `float`            | Total amount of contributions received by the Grant in USDT/DAI   |
+| `token_address`    | `ethereum_address` | Address of the token to be used with the Grant                    |
+| `token_symbol`     | `token_type`       | Type of token to be used with the Grant                           |
+| `contract_address` | `ethereum_address` | Contract address of the Grant                                     |
+| `metadata`         | `dictionary`       | Misc metadata about the Grant                                     |
+| `network`          | `string`           | Network in which the Grant contract resides                       |
+| `required_gas_price`| `float`           | Required gas price for the Grant                                  |
+| `admin_profile`    | `dictionary`       | Grant Admin's profile                                             |
+| `team_members`     | `array`            | Array of Dictionaries of team members contributing to this Grant  |
+
+**Profile**:
+
+|  Field Key         | Datatype           |  Description                                             |
+|--------------------|--------------------|----------------------------------------------------------|
+| `id`               | `integer`          | Profile ID                                               |
+| `url`              | `string`           | URL to the Gitcoin profile                               |
+| `handle`           | `string`           | GitHub handle/username associated with the Profile       |
+| `keywords`         | `array`            | Array of keywords associated with the Profile            |
+| `position`         | `integer`          | Position of the Profile in the `Weekly Earners` leaderboard |
+| `avatar_url`       | `string`           | URL to the Gitcoin Avatar of the Profile                 |
+| `github_url`       | `string`           | URL to the GitHub profile                                |
+| `total_earned`     | `float`            | Sum of  ETH collected by the profile                     |
+| `organizations`    | `dictionary`       | Dictionary containing profiles that this user works with |
+
+
+#### URL Parameters
+
+**Filters**
+
+You can filter the data returned from the API by providing these keys as URL parameters `title`, `description`, `keyword`, `grant_type` and `pk` that takes an ID and returns a single grant.
+
+
+#### Example Request
+
+```shell
+~ % curl "https://gitcoin.co/api/v0.1/grants/?grant_type=tech"
+
+[
+  {
+    "active": true,
+    "title": "Cipher Dogs Team",
+    "slug": "cipher-dogs-team",
+    "description": "Our team is interested in electronic art/hack/social activity and blockchain/decentralized technology and other technologies. We are aimed at promoting blockchain technology among people. Our team creates various libraries, websites, artwork and other projects in the field of blockchain technologies. We also help blockchain projects. We believe that blockchain technology is the future.\r\n",
+    "reference_url": "https://github.com/CipherDogs",
+    "logo": "https://c.gitcoin.co/grants/1a573aca695eada7c2f9badf1ed84b10/cipher1.png",
+    "admin_address": "0xD12Dd8aEb8F96D0bFF6aA9C74bDf92009741d3Aa",
+    "amount_received": "0.0000",
+    "token_address": "0x0000000000000000000000000000000000000000",
+    "token_symbol": "Any Token",
+    "contract_address": "0xbcAE3e2893722698535aaf355F0aA92CA846354F",
+    "metadata": {},
+    "network": "mainnet",
+    "required_gas_price": "0",
+    "admin_profile": {
+      "id": 82330,
+      "url": "/deadblackclover",
+      "handle": "deadblackclover",
+      "keywords": [
+        "Rust",
+        "Scala",
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "Emacs Lisp",
+        "C#",
+        "Vue",
+        "Shell"
+      ],
+      "position": 0,
+      "avatar_url": "https://c.gitcoin.co/avatars/0aee35065024a0382c19e5a30fb2349c/deadblackclover.png",
+      "github_url": "https://github.com/deadblackclover",
+      "total_earned": 0,
+      "organizations": {}
+    },
+    "team_members": [
+      {
+        "id": 82330,
+        "url": "/deadblackclover",
+        "handle": "deadblackclover",
+        "keywords": [
+          "Rust",
+          "Scala",
+          "JavaScript",
+          "HTML",
+          "CSS",
+          "Emacs Lisp",
+          "C#",
+          "Vue",
+          "Shell"
+        ],
+        "position": 0,
+        "avatar_url": "https://c.gitcoin.co/avatars/0aee35065024a0382c19e5a30fb2349c/deadblackclover.png",
+        "github_url": "https://github.com/deadblackclover",
+        "total_earned": 0,
+        "organizations": {}
+      }
+    ]
+  },
+  ...
+]
+```
+
 # WEB3 API
 
 You may interact with the HTTPS API as follows
