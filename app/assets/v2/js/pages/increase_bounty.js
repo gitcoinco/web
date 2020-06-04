@@ -160,7 +160,7 @@ $(document).ready(async function() {
 
     var errormsg = undefined;
 
-    if (bountyAmount == 0 || isOpen !== "True") {
+    if (bountyAmount == 0 || isOpen !== 'True') {
       errormsg = gettext('No active funded issue found at this address on ' + document.web3network + '. Are you sure this is an active funded issue?');
     }
 
@@ -215,7 +215,9 @@ $(document).ready(async function() {
         from: account,
         value: String(ethAmount),
         gas: web3.utils.toHex(652690)
-      }).then((result) => {web3Callback(result)}).catch(err => {
+      }).then((result) => {
+        web3Callback(result);
+      }).catch(err => {
         web3Callback(undefined, err);
         console.log(err);
       });
@@ -249,9 +251,9 @@ $(document).ready(async function() {
           const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
           const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-          token_contract.methods.transfer(to_address, web3.utils.toHex(amountInWei)).send({from: selectedAccount},
-            function(error, txnId) {
-            indicateMetamaskPopup(true);
+          token_contract.methods.transfer(to_address, web3.utils.toHex(amountInWei)).send(
+            {from: selectedAccount}, function(error, txnId) {
+              indicateMetamaskPopup(true);
               if (error) {
                 _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
               } else {

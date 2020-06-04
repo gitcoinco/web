@@ -313,7 +313,6 @@ $(document).ready(function() {
 
       const payFeaturedBounty = function() {
         indicateMetamaskPopup();
-        console.log(ethFeaturedPrice)
         web3.eth.sendTransaction({
           to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
           from: selectedAccount,
