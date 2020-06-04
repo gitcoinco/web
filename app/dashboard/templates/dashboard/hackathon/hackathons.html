@@ -25,12 +25,30 @@
     <style>
 
       img.card-top {
-        max-height: 6rem;
+        max-height: 8rem;
+        max-width: 11rem;
       }
 
       @media (min-width: 1200px) {
         .container.custom-container {
           max-width: 1400px;
+        }
+      }
+
+
+      @media (max-width: 920px) {
+        img.card-top {
+          max-width: 100%;
+        }
+      }
+
+      @media (min-width: 1020px) and (max-width: 1250px) {
+        .hackathon-actions {
+          text-align: center;
+        }
+
+        .hackathon-actions > a {
+          width: 7rem;
         }
       }
     </style>
@@ -47,7 +65,7 @@
 
       <div class="row justify-content-md-center">
         <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe"
-          method="post" id="mc-embedded-subscribe-form" class="col-12 col-md-6 col-lg-4 text-center white pb-5 px-5" name="mc-embedded-subscribe-form" target="_blank">
+          method="post" id="mc-embedded-subscribe-form" class="col-12 col-md-6 col-xl-4 text-center white pb-5 px-5" name="mc-embedded-subscribe-form" target="_blank">
           <div class="form-row pt-1">
             <div class="col">
               <input name="EMAIL" id="newsletter-input" class="form-control px-3 font-body" placeholder="Enter your email" required>
@@ -71,26 +89,27 @@
           <div class="row my-5">
               {% for hackathon in hackathons %}
                 <style>
-                  #{{hackathon.slug}} .card-img-top {
+                  #{{hackathon.slug}} .card-header {
                     background: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
+                    background-color: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
                   }
                 </style>
-                <div class="col-xs-12 col-md-6 col-lg-4">
+                <div class="col-xs-12 col-md-9 col-lg-8 col-xl-5 mx-auto">
 
                   <div class="card flex-row flex-wrap mb-5" id="{{hackathon.slug}}">
 
-                    <div class="card-header text-center col-3 px-0 my-auto bg-white border-0">
+                    <div class="card-header text-center col-3 col-sm-4 px-0 border-0 my-auto">
                       {% firstof hackathon.logo_svg or hackathon.logo as logo %}
                       {% if logo %}
-                        <img class="card-top mw-100" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
+                        <img class="card-top" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
                       {% else %}
-                        <div class="card-top mw-100 text-center px-3 font-caption">
+                        <div class="card-top text-center px-3 font-caption">
                           {{ hackathon.name }}
                         </div>
                       {% endif %}
                     </div>
 
-                    <div class="card-body col-9">
+                    <div class="card-body col-9 col-sm-8">
                       <h5 class="font-subheader font-weight-semibold">
                         <a href="{% url 'hackathon' hackathon.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
                           {{ hackathon.name }}
@@ -102,21 +121,21 @@
                         <span>To</span>
                         <time class="font-weight-bold" datetime="{{ hackathon.end_date|date:'c' }}">{{ hackathon.end_date|date:"m/d/Y" }}</time>
                       </div>
-                      <div class="mt-3">
+                      <div class="mt-3 hackathon-actions">
                         {% if hackathon.end_date|timesince <= "1 min" %}
-                          <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2 mb-lg-0">
+                          <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
                             <i class="fas fa-user-plus mr-2 d-none d-sm-inline"></i>
                             Join
                           </a>
                         {% endif %}
                         {% if hackathon.start_date|timesince >= "1 min" %}
-                          <a href="{% url 'hackathon_prizes' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2 mb-lg-0">
+                          <a href="{% url 'hackathon_prizes' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
                             <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
                             Prizes
                           </a>
                         {% endif %}
                         {% if hackathon.show_results %}
-                          <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2 mb-lg-0">
+                          <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
                             <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
                             Projects
                           </a>
