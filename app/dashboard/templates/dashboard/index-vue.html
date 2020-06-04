@@ -366,7 +366,7 @@
                     <div class="feed_container col-12 col-lg-8">
                       <div class="feed_container_child">
                         {% csrf_token %}
-                        {% include 'townsquare/shared/shareactivity.html' %}
+                        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="What are you thinking?" max_length=1000 suppress_data_toggle=1 what="hackathon" whatid=hackathon_event.id %}
 
                         <div id="activities" class="activity_stream {% if not is_search %}mt-4{% endif %}">
                           <span id=activity_subheader>

@@ -42,12 +42,15 @@ from django.views.decorators.csrf import csrf_exempt
 from app.utils import get_default_network, get_profiles_from_text
 from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import (
-    Activity, Bounty, HackathonEvent, Profile, Tip, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
+    Activity, Bounty, HackathonRegistration, HackathonEvent, Profile, Tip, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tasks import grant_update_email_task
 from economy.models import Token
-from marketing.mails import mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email
+from marketing.mails import (
+    mention_email, new_funding_limit_increase_request, new_token_request, wall_post_email, hackathon_wall_post_email
+)
+
 from marketing.models import Alumni, Job, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from perftools.models import JSONStore
@@ -1179,6 +1182,7 @@ def create_status_update(request):
             result = tab.split(':')[1]
             if key == 'hackathon':
                 kwargs['hackathonevent'] = HackathonEvent.objects.get(pk=result)
+                kwargs['activity_type'] = 'wall_post'
             if key == 'tribe':
                 kwargs['other_profile'] = Profile.objects.get(handle=result.lower())
 
@@ -1194,6 +1198,9 @@ def create_status_update(request):
             if kwargs['activity_type'] == 'wall_post':
                 if 'Email Grant Funders' in activity.metadata.get('ask'):
                     grant_update_email_task.delay(activity.pk)
+                if 'Email Hackathon Participants' in activity.metadata.get('ask'):
+                    participants = HackathonRegistration.objects.filter(hackathon=activity.hackathonevent).all()
+                    hackathon_wall_post_email(activity, participants)
                 else:
                     wall_post_email(activity)
 

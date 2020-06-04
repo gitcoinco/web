@@ -1,0 +1,4 @@
+💬 Message from @{{activity.profile.handle}} 💬
+
+To view the update click here: {{activity.url}}
+

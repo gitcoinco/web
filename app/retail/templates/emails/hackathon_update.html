@@ -1,0 +1,51 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<h1>💬@{{activity.profile.handle}} writes: 💬</h1>
+
+<p>
+
+<a href="{{activity.profile.url}}">@{{activity.profile.handle}}</a> sent a message to the participants of {{activity.hackathonevent.name}}. This is what they said:
+
+<pre>
+  {{activity.metadata.title}}
+</pre>
+
+<div style="margin-bottom: 2em; margin-top: 2em;">
+  <a class="button" href="{{ activity.url }}">View Message</a>
+</div>
+- OR -
+<div style="margin-bottom: 1em; margin-top: 1em;">
+  <a class="" href="{{ activity.hackathonevent.quest_link }}?unsubscribe=1">Unsubscribe to Messages from @{{activity.hackathonevent.name}}</a>
+</div>
+- OR -
+<div style="margin-bottom: 1em; margin-top: 1em;">
+  <a class="" href="{% url "email_settings" subscriber.priv %}{% if email_type %}?type={{email_type}}{% endif %}">Unsubscribe From ALL Hackathon Event Updates</a>
+</div>
+
+</p>
+
+<br>
+
+
+
+
+{% endblock %}

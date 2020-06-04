@@ -3611,6 +3611,7 @@ def hackathon(request, hackathon='', panel='prizes'):
             org__in=hackathon_event.sponsor_profiles.all()
         ).values_list('org__handle', flat=True)
 
+
     for sponsor_profile in hackathon_event.sponsor_profiles.all():
         org = {
             'display_name': sponsor_profile.name,
@@ -3622,15 +3623,25 @@ def hackathon(request, hackathon='', panel='prizes'):
         }
         orgs.append(org)
 
+
+    is_sponsor_tribe_admin = False
+    for sponsor in hackathon_event.sponsors.all():
+        if sponsor.tribe is not None:
+            for tribe_member in sponsor.tribe.tribe_members.all():
+                if request.user.username == tribe_member.profile.handle \
+                                                    and tribe_member.leader == True:
+                    is_sponsor_tribe_admin = True
+                    break
+
     if hasattr(request.user, 'profile') == False:
         is_registered = False
     else:
         is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                              hackathon=hackathon_event) if request.user and request.user.profile else None
 
+
     hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).all().count()
     projects_count = HackathonProject.objects.filter(hackathon=hackathon_event).all().count()
-    view_tags = get_tags(request)
     active_tab = 0
     if panel == "prizes":
         active_tab = 0
@@ -3669,13 +3680,14 @@ def hackathon(request, hackathon='', panel='prizes'):
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
         'user': request.user,
-        'avatar_url': avatar_url,
-        'tags': view_tags,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
+        'tags': None,
         'activities': [],
         'SHOW_DRESSING': False,
         'use_pic_card': True,
         'projects': [],
-        'panel': active_tab
+        'panel': active_tab,
+        'options': [(f'Email Hackathon Participants ({hacker_count})', 'bullhorn', 'Select this option to email your status update to all the hackathon participants.')] if is_sponsor_tribe_admin else [],
     }
 
     if hackathon_event.identifier == 'grow-ethereum-2019':

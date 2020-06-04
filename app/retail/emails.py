@@ -816,6 +816,18 @@ def render_mention(to_email, post):
     return response_html, response_txt
 
 
+def render_hackathon_update(to_email, activity):
+    params = {
+        'activity': activity,
+        'email_type': 'hackathonevent_updates',
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/hackathon_update.html", params))
+    response_txt = render_to_string("emails/hackathon_update.txt", params)
+
+    return response_html, response_txt
+
 def render_grant_update(to_email, activity):
     params = {
         'activity': activity,
