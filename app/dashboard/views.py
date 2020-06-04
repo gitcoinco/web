@@ -3938,8 +3938,25 @@ def hackathon_save_project(request):
         'summary': clean(request.POST.get('summary'), strip=True),
         'work_url': clean(request.POST.get('work_url'), strip=True),
         'looking_members': looking_members,
-        'message': message,
+        'message': '',
+        'extra': {
+            'has_gitcoin_chat': False,
+            'has_other_contact_method': False,
+            'other_contact_method': '',
+        }
     }
+
+    if looking_members:
+        has_gitcoin_chat = request.POST.get('has_gitcoin_chat', '') == 'on'
+        has_other_contact_method = request.POST.get('has_other_contact_method', '') == 'on'
+        other_contact_method = request.POST.get('other_contact_method', '')[:150]
+        kwargs['message'] = message
+        kwargs['extra'] = {
+            'has_gitcoin_chat': has_gitcoin_chat,
+            'has_other_contact_method': has_other_contact_method,
+            'other_contact_method': other_contact_method,
+            'message': message,
+        }
 
     try:
 
