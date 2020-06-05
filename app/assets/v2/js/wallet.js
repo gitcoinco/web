@@ -21,92 +21,7 @@ const needWalletConnection = () => {
   }
 };
 
-const qrcodeConnect = function() {
-  // return new Promise(async (resolve, reject) => {
-  //   const qrcode = true
-  //   const provider = qrcode.getProvider();
-  //   provider.qrcode = qrcode;
-  //   try {
-  //     await provider.enable();
-  //     resolve(provider);
-  //   } catch (error) {
-  //     return reject(error);
-  //   }
-  // });
-  // return true;
-  // localStorage['WEB3_CONNECT_CACHED_PROVIDER'] = '"injected"';
-  // web3Modal.toggleModal();
-
-
-  const provider = {
-    chainId: 1,
-    account: 'none'
-  };
-
-  // if (window.ethereum) {
-  //   provider = window.ethereum;
-  //   try {
-  //     await window.ethereum.enable();
-  //   } catch (error) {
-  //     throw new Error("User Rejected");
-  //   }
-  // } else if (window.web3) {
-  //   provider = window.web3.currentProvider;
-  // } else {
-  //   throw new Error("No Web3 Provider found");
-  // }
-  return provider;
-
-
-};
-
 function initWallet() {
-  // window.Web3Modal.providers.push({
-  //   id: 'injected',
-  //   name: 'QRcode',
-  //   logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' fill='none'%3E%3Cpath fill='url(%23paint0_radial)' fill-rule='evenodd' d='M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z' clip-rule='evenodd'/%3E%3Cpath fill='%23fff' d='M165 243v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zM269 165h78v78h-78v-78zm61.75 61.75v-45.5h-45.5v45.5h45.5zM165 347v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zm13 13h19.5v19.5h-19.5v-19.5zm0-104h19.5v19.5h-19.5v-19.5zm123.5 19.5h-19.5v-19.5h19.5v19.5zM334 269h13v52h-52v-13h-13v39h-13v-78h39v13h26v-13zm0 65h13v13h-13v-13zm-26 0h13v13h-13v-13z'/%3E%3Cdefs%3E%3CradialGradient id='paint0_radial' cx='0' cy='0' r='1' gradientTransform='translate(9.283 256) scale(502.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%237C89FF'/%3E%3Cstop offset='1' stop-color='%231E34FF'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E",
-  //   type: 'injected',
-  //   check: 'isQRcode',
-  //   styled: {
-  //     noShadow: true
-  //   }
-  // });
-
-  // custom code for qcode
-  // "custom-qrcode": {
-  //   display: {
-  //     logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' fill='none'%3E%3Cpath fill='url(%23paint0_radial)' fill-rule='evenodd' d='M256 0c141.385 0 256 114.615 256 256S397.385 512 256 512 0 397.385 0 256 114.615 0 256 0z' clip-rule='evenodd'/%3E%3Cpath fill='%23fff' d='M165 243v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zM269 165h78v78h-78v-78zm61.75 61.75v-45.5h-45.5v45.5h45.5zM165 347v-78h78v78h-78zm16.25-61.75v45.5h45.5v-45.5h-45.5zm13 13h19.5v19.5h-19.5v-19.5zm0-104h19.5v19.5h-19.5v-19.5zm123.5 19.5h-19.5v-19.5h19.5v19.5zM334 269h13v52h-52v-13h-13v39h-13v-78h39v13h26v-13zm0 65h13v13h-13v-13zm-26 0h13v13h-13v-13z'/%3E%3Cdefs%3E%3CradialGradient id='paint0_radial' cx='0' cy='0' r='1' gradientTransform='translate(9.283 256) scale(502.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%237C89FF'/%3E%3Cstop offset='1' stop-color='%231E34FF'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E",
-  //     name: "QRcode",
-  //     type: "qrcode",
-  //     check: "isQRcode",
-  //     description: "Connect to your example provider account"
-  //   },
-  //   package: qrcodeConnect,
-  //   connector: async (ProviderPackage) => {
-  //     console.log(ProviderPackage)
-  //       const provider = new ProviderPackage();
-
-  //       // await provider.enable()
-
-  //       // return true;
-  //       // let provider = null;
-  //       // if (window.ethereum) {
-  //       //   provider = window.ethereum;
-  //       //   try {
-  //       //     await window.ethereum.enable();
-  //       //   } catch (error) {
-  //       //     throw new Error("User Rejected");
-  //       //   }
-  //       // } else if (window.web3) {
-  //       //   provider = window.web3.currentProvider;
-  //       // } else {
-  //       //   throw new Error("No Web3 Provider found");
-  //       // }
-  //       return provider;
-  //   }
-  // }
-
-
   // Determine if we're on prod or not
   const isProd = document.location.href.startsWith('https://gitcoin.co');
   const formaticKey = isProd ? document.contxt['fortmatic_live_key'] : document.contxt['fortmatic_test_key'];
@@ -177,17 +92,10 @@ async function fetchAccountData(provider) {
   document.querySelector('.network-name').textContent = networkName;
   document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
   document.querySelector('.wallet-network').classList.add(networkName.split(' ').join('-'));
+  document.querySelector('#wallet-btn').innerText = 'Change Wallet';
 
   // Get list of accounts of the connected wallet
   const accounts = await web3.eth.getAccounts();
-  // const accounts = await web3.eth.accounts;
-
-  // if (!accounts.length) {
-  //   console.log(accounts, 'dentro')
-  //   accounts = [provider.account];
-  // }
-  // console.log(accounts, 'fora')
-
 
   // MetaMask does not give you all accounts, only the selected account
   console.log('Got accounts', accounts);
@@ -196,9 +104,8 @@ async function fetchAccountData(provider) {
 
   document.querySelector('.selected-account').textContent = truncate(selectedAccount);
 
-  // Get a handl
   const template = document.querySelector('#template-balance');
-  const accountContainer = document.querySelector('#accounts');
+  const accountContainer = document.querySelector('#wallet-accounts');
 
   // Purge UI elements any previously loaded accounts
   accountContainer.innerHTML = '';
@@ -212,8 +119,9 @@ async function fetchAccountData(provider) {
 
     const clone = template.content.cloneNode(true);
 
-    clone.querySelector('.address').textContent = truncate(selectedAccount);
-    clone.querySelector('.balance').textContent = humanFriendlyBalance;
+    clone.querySelector('.wallet-address').textContent = truncate(selectedAccount);
+    clone.querySelector('.wallet-address').setAttribute('data-address', selectedAccount);
+    clone.querySelector('.wallet-balance').textContent = `${humanFriendlyBalance} ETH`;
     accountContainer.appendChild(clone);
   }
 
@@ -230,10 +138,6 @@ async function fetchAccountData(provider) {
       balance = result;
       const ethBalance = web3.utils.fromWei(result, 'ether');
 
-      // console.log(web3.fromWei(result, "ether"));
-      // }
-      // const ethBalance = await balance.toNumber();
-      // const ethBalance = web3.fromWei(balance, "ether");
       // ethBalance is a BigNumber instance
       // https://github.com/indutny/bn.js/
       // console.log(ethBalance)
@@ -242,8 +146,9 @@ async function fetchAccountData(provider) {
       // Fill in the templated row and put in the document
       const clone = template.content.cloneNode(true);
 
-      clone.querySelector('.address').textContent = truncate(address);
-      clone.querySelector('.balance').textContent = humanFriendlyBalance;
+      clone.querySelector('.wallet-address').textContent = truncate(address);
+      clone.querySelector('.wallet-address').setAttribute('data-address', address);
+      clone.querySelector('.wallet-balance').textContent = `${humanFriendlyBalance} ETH`;
       accountContainer.appendChild(clone);
     });
 
@@ -259,6 +164,13 @@ async function fetchAccountData(provider) {
   // document.querySelector("#prepare").style.display = "none";
   // document.querySelector("#connected").style.display = "block";
   walletStateChanges();
+  $('.wallet-option').on('click', changeWallet);
+}
+
+function changeWallet(e) {
+  e.stopPropagation();
+  selectedAccount = $(e.currentTarget).children('.wallet-address').data('address');
+  $('.selected-account').text(truncate(selectedAccount));
 }
 
 // const provider = await web3Modal.connect();
@@ -347,6 +259,7 @@ async function onDisconnect() {
   selectedAccount = null;
 
   $('.wallet-hidden').addClass('d-none');
+  document.querySelector('#wallet-btn').innerText = 'Connect Wallet';
 
   // Set the UI back to the initial state
   // document.querySelector("#prepare").style.display = "block";
@@ -366,9 +279,10 @@ async function refreshAccountData() {
   // fetchAccountData() will take a while as it communicates
   // with Ethereum node via JSON-RPC and loads chain data
   // over an API call.
-  document.querySelector('#wallet-btn').setAttribute('disabled', 'disabled');
+  // document.querySelector('#wallet-btn').setAttribute('disabled', 'disabled');
+  document.querySelector('#wallet-btn').innerText = 'Change Wallet';
   await fetchAccountData(provider);
-  document.querySelector('#wallet-btn').removeAttribute('disabled');
+  // document.querySelector('#wallet-btn').removeAttribute('disabled');
 }
 
 
@@ -411,3 +325,125 @@ window.addEventListener('load', async() => {
   document.querySelector('#wallet-btn').addEventListener('click', onConnect);
   document.querySelector('#btn-disconnect').addEventListener('click', onDisconnect);
 });
+
+
+let minABI = [
+  // balanceOf
+  {
+    'constant': true,
+    'inputs': [{
+      'name': '_owner',
+      'type': 'address'
+    }],
+    'name': 'balanceOf',
+    'outputs': [{
+      'name': 'balance',
+      'type': 'uint256'
+    }],
+    'type': 'function'
+  },
+  // decimals
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'decimals',
+    'outputs': [{
+      'name': '',
+      'type': 'uint8'
+    }],
+    'type': 'function'
+  },
+  // symbol
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'symbol',
+    'outputs': [{
+      'name': '',
+      'type': 'string'
+    }],
+    'payable': false,
+    'type': 'function'
+  },
+  // token name
+  {
+    'constant': true,
+    'inputs': [],
+    'name': 'name',
+    'outputs': [{
+      'name': '',
+      'type': 'string'
+    }],
+    'payable': false,
+    'type': 'function'
+  },
+  // allowance
+  {
+    'constant': true,
+    'inputs': [{
+      'name': '_owner',
+      'type': 'address'
+    },
+    {
+      'name': '_spender',
+      'type': 'address'
+    }],
+    'name': 'allowance',
+    'outputs': [{
+      'name': 'remaining',
+      'type': 'uint256'
+    }],
+    'payable': false,
+    'type': 'function'
+  }
+];
+
+/**
+ *  * Check the balance of a ERC20 token.
+ *  * @param {string} tokenAddress - the ERC20 token address
+ *  */
+async function getTokenBalances(tokenAddress) {
+  let balance;
+  let decimals;
+  let symbol;
+  let name;
+  let result;
+  let balanceHuman;
+  // The minimum ABI to get ERC20 Token balance
+
+  // Get ERC20 Token contract instance
+  let tokensContract = new web3.eth.Contract(minABI, tokenAddress);
+
+  // Call balanceOf function
+  balance = tokensContract.methods.balanceOf(selectedAccount).call({from: selectedAccount});
+  decimals = tokensContract.methods.decimals().call({from: selectedAccount});
+  symbol = tokensContract.methods.symbol().call({from: selectedAccount});
+  name = tokensContract.methods.name().call({from: selectedAccount});
+  balanceHuman = Number(await balance) / Math.pow(10, await decimals);
+
+  try {
+    result = {
+      'balance': balanceHuman,
+      'balance_rounded': Math.round(balanceHuman * 10) / 10,
+      'symbol': await symbol,
+      'name': await name
+    };
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ *  * Check the allowance remaining on a contract address.
+ *  * @param {string} address - the contract address
+ *  * @param {string} tokenAddress - the token address
+ *  */
+async function getAllowance(address, tokenAddress) {
+  let allowance;
+  let tokensContract = new web3.eth.Contract(minABI, tokenAddress);
+
+  allowance = tokensContract.methods.allowance(selectedAccount, address).call({from: selectedAccount});
+  console.log(await allowance);
+  return await allowance;
+}
