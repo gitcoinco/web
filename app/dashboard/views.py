@@ -5313,6 +5313,9 @@ def bulkDM(request):
                 if not to_profile:
                     continue
                 to_user_id = to_profile.chat_id
+                if not to_user_id:
+                    messages.error(request, f'{to_handle} is not on Gitcoin Chat yet.')
+                    continue
                 try:
                     response = chat_driver.client.make_request('post', 
                         '/channels/direct', 
@@ -5337,7 +5340,7 @@ def bulkDM(request):
 
     context = {
         'message': message,
-        'handles': handles,
+        'handles': request.POST.get('handles', ''),
     }
 
     return TemplateResponse(request, 'bulk_DM.html', context)
