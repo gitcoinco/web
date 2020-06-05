@@ -36,6 +36,7 @@ import premailer
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
+from premailer import Premailer
 from retail.utils import strip_double_chars, strip_html
 
 logger = logging.getLogger(__name__)
@@ -44,9 +45,9 @@ logger = logging.getLogger(__name__)
 
 # key, name, frequency
 MARKETING_EMAILS = [
+    ('new_bounty_notifications', _('Daily Emails'), _('(up to) Daily')),
     ('welcome_mail', _('Welcome Emails'), _('First 3 days after you sign up')),
     ('roundup', _('Roundup Emails'), _('Weekly')),
-    ('new_bounty_notifications', _('Daily Bounty Action Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
 	('general', _('General Email Updates'), _('as it comes')),
 	('quarterly', _('Quarterly Email Updates'), _('Quarterly')),
@@ -349,6 +350,18 @@ def render_quarterly_stats(to_email, platform_wide_stats):
 
     return response_html, response_txt
 
+def render_tax_report(to_email, tax_year):
+    from dashboard.models import Profile
+    profile = Profile.objects.filter(email=to_email).first()
+    params = {}
+    params['user'] = profile
+    params['tax_year'] = tax_year
+    params['email_type'] = 'tax_report'
+    response_html = premailer_transform(render_to_string("emails/tax_report.html", params))
+    response_text = render_to_string("emails/tax_report.txt", params)
+
+    return response_html, response_text
+
 
 def render_funder_payout_reminder(**kwargs):
     kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(profile__handle=kwargs['github_username']).last()
@@ -517,20 +530,66 @@ appreciate you being a part of the community + let us know if you'd like some Gi
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3, trending_quests=[]):
+def get_notification_count(profile, days_ago, from_date):
+    from_date = from_date + timedelta(days=1)
+    to_date = from_date - timedelta(days=days_ago)
+
+    notifications_count = 0
+    from inbox.models import Notification
+    try:
+        notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
+    except Notification.DoesNotExist:
+        pass        
+    except AttributeError:
+        pass        
+    return notifications_count
+
+def email_to_profile(to_email):
+    from dashboard.models import Profile
+    try:
+        profile = Profile.objects.filter(email__iexact=to_email).last()
+    except Profile.DoesNotExist:
+        pass
+    return profile
+
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-    email_style = (int(timezone.now().strftime("%-j")) + offset) % 24
+    from marketing.views import upcoming_dates, email_announcements
     sub = get_or_save_email_subscriber(to_email, 'internal')
+    
+    email_style = 26
+
+    # Get notifications count from the Profile.User of to_email
+    profile = email_to_profile(to_email)
+
+    notifications_count = get_notification_count(profile, days_ago, from_date)
+
+    upcoming_events = []
+    if upcoming_hackathon:
+        for hackathon in upcoming_hackathon:
+            upcoming_events.append({
+                'event': hackathon,
+                'title': hackathon.name,
+                'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+                'url': hackathon.url,
+                'date': hackathon.start_date.strftime("%Y-%d-%m")
+            })
+
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
+        'upcoming_dates': upcoming_dates(),
+        'email_announcements': email_announcements(),
         'subscriber': sub,
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
         'email_style': email_style,
 		'email_type': 'new_bounty_notifications',
         'base_url': settings.BASE_URL,
         'show_action': True,
-        'trending_quests': trending_quests,
+        'quest_of_the_day': quest_of_the_day,
+        'upcoming_events': upcoming_events,
+        'activities': latest_activities,
+        'notifications_count': notifications_count,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
@@ -548,7 +607,7 @@ def render_unread_notification_email_weekly_roundup(to_email, from_date=date.tod
     from_date = from_date + timedelta(days=1)
     to_date = from_date - timedelta(days=days_ago)
 
-    notifications = Notification.objects.filter(to_user=profile.id, is_read=False, created_on__range=[to_date, from_date]).count()
+    notifications = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
 
     params = {
         'subscriber': subscriber,
@@ -1134,7 +1193,7 @@ def weekly_recap(request):
 
 @staff_member_required
 def unread_notification_email_weekly_roundup(request):
-    response_html, _ = render_unread_notification_email_weekly_roundup('mark.beacom@consensys.net')
+    response_html, _, _ = render_unread_notification_email_weekly_roundup('sebastian.tharakan97@gmail.com')
     return HttpResponse(response_html)
 
 @staff_member_required
@@ -1212,9 +1271,10 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
+    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties, int(request.GET.get('offset', 2)))
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), upcoming_hackathon=upcoming_hackathon(), latest_activities=latest_activities(request.user))
     return HttpResponse(response_html)
 
 

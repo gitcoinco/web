@@ -3,10 +3,10 @@
 {% if not hidden %}
 <div id="profile-tabs" class="tab-container font-body mt-3 mb-4">
   <button type="button" id="nav-description" href="{{profile.url}}/follow?sub=followers" class="text-center section-tab {% if foltab == "followers" %} active {% endif %}">
-    {% trans "FOLLOWERS" %} <span  class="nav-badge">({{followers.count}})</span>
+    {% trans "FOLLOWERS" %} <span  class="nav-badge">({{all_followers.count}})</span>
   </button>
   <button type="button" id="nav-description" href="{{profile.url}}/follow?sub=following" class="text-center section-tab {% if foltab == "following" %} active {% endif %}">
-    {% trans "FOLLOWING" %} <span  class="nav-badge">({{following.count}})</span>
+    {% trans "FOLLOWING" %} <span  class="nav-badge">({{all_following.count}})</span>
   </button>
 </div>
 {% endif %}
@@ -117,5 +117,24 @@
         </div>
       </div>
       {% endfor %}
+
 </div>
 {% endif %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?sub={{foltab}}&page=1">&laquo; first</a>
+            <a href="?sub={{foltab}}&page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?sub={{foltab}}&page={{ page_obj.next_page_number }}">next</a>
+            <a href="?sub={{foltab}}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>

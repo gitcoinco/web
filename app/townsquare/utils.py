@@ -7,6 +7,11 @@ def is_user_townsquare_enabled(user):
     if not user.is_authenticated:
         return False
 
+    # roll out emails to 20% of userbase to start. see if we get blowback
+    # KO 6/2/2020 - we got no complaints about the daily email yesterday, so upping to 40%
+    if user.pk % 100 < 40:
+        return True
+
     if user.is_staff:
         return True
 
@@ -34,6 +39,10 @@ def can_pin(request, what):
             [lookup.lower() == org.lower() for org in request.user.profile.organizations])
     elif key == 'my_threads':
         permission = False
+    elif key in ['search-announce', 'search-mentor', 'search-jobs', 'search-bounty', 'search-help', 'search-meme', 'search-music', 'search-other']:
+        if request.user.is_staff:
+            permission = True
+
     else:
         if request.user.is_staff:
             permission = True

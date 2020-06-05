@@ -57,6 +57,13 @@ class Comment(SuperModel):
     activity = models.ForeignKey('dashboard.Activity',
         on_delete=models.CASCADE, related_name='comments', blank=True, db_index=True)
     comment = models.TextField(default='', blank=True)
+    tip = models.ForeignKey(
+        'dashboard.Tip',
+        related_name='awards',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
     likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
     likes_handles = ArrayField(models.CharField(max_length=200, blank=True), default=list, blank=True) #handles of users who like this post
     tip_count_eth = models.DecimalField(default=0, decimal_places=5, max_digits=50)
@@ -68,6 +75,16 @@ class Comment(SuperModel):
     @property
     def profile_handle(self):
         return self.profile.handle
+
+    @property
+    def redeem_link(self):
+        if self.tip:
+            return self.tip.receive_url
+        return ''
+
+    @property
+    def tip_able(self):
+        return self.activity.metadata.get("tip_able", False)
 
     @property
     def url(self):
@@ -197,6 +214,7 @@ class Announcement(SuperModel):
         ('townsquare', 'townsquare'),
         ('header', 'header'),
         ('footer', 'footer'),
+        ('founders_note_daily_email', 'founders_note_daily_email'),
     ]
     key = models.CharField(max_length=50, db_index=True, choices=_TYPES)
     title = models.TextField(default='', blank=True)

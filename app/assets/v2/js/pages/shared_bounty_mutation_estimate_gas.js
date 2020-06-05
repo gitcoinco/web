@@ -3,6 +3,8 @@ var gas_amount = function(page_url) {
 
   if (page_url.indexOf('issue/fulfill') != -1) {
     gasLimitEstimate = 207103;
+  } else if (page_url.indexOf('grants/matic/new') != -1) {
+    gasLimitEstimate = 3000000;
   } else if (page_url.indexOf('grants/new') != -1) { // new grant contribution
     gasLimitEstimate = 3000000;
   } else if (page_url.indexOf('/new') != -1) { // new fulfill funding page

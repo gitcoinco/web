@@ -480,6 +480,37 @@ $(document).ready(function() {
   });
 
 
+  $(document).on('click', '.award', function(e) {
+    e.preventDefault();
+    if (!document.contxt.github_handle) {
+      _alert('Please login first.', 'error');
+      return;
+    }
+
+    activityId = $(this).data('activity');
+    commentId = $(this).data('comment');
+
+    // remote post
+    var params = {
+      'method': 'award',
+      'comment': commentId,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + activityId;
+    var parent = $(this).parents('.row.box');
+
+    parent.find('.loading').removeClass('hidden');
+    $.post(url, params, function(response) {
+      // no message to be sent
+      $('button[data-activity=' + activityId + ']').remove();
+      parent.find('.loading').addClass('hidden');
+      _alert('Tip user successful!');
+    }).fail(function() {
+      parent.find('.error').removeClass('hidden');
+    });
+  });
+
+
   // like activity
   $(document).on('click', '.like_activity, .flag_activity, .favorite_activity, .pin_activity', function(e) {
     e.preventDefault();
@@ -728,20 +759,27 @@ $(document).ready(function() {
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
+
         the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
         const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         const show_tip = true;
         const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
+
+        const can_award = (
+          response.author === document.contxt.github_handle &&
+          response.has_tip == true &&
+          response.tip_available == true);
+        const can_redeem = response.can_redeem;
+
         const is_edited = typeof comment['is_edited'] !== 'undefined' ? comment['is_edited'] : false;
+
         var sorted_match_curve_html = '';
 
         if (comment['sorted_match_curve']) {
-
           var match_curve = Array.from(convert_to_dict(comment['sorted_match_curve']).values());
 
           for (let j = 0; j < match_curve.length; j++) {
             let ele = match_curve[j];
-
 
             sorted_match_curve_html += '<li>';
             sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 1000) / 1000} in matching.`;
@@ -826,6 +864,16 @@ $(document).ready(function() {
             <div class="activity_comments_main_comment pt-1 pb-1">
               ${the_comment}
             </div>
+            ${can_award && `
+             <button data-comment=${comment['id']} data-user=${comment['profile_handle']}
+                     data-activity=${comment['activity']}
+                     class="award btn mt-1 mb-1 btn-radio font-smaller-5">
+                     <i class="fas fa-gift mr-2"></i> award
+             </button>` || ''}
+            ${!!comment['redeem_link'] && can_redeem && `
+              <a class="btn mt-1 mb-1 btn-radio font-smaller-5" href="${comment['redeem_link']}">Redeem tip</a>` || ''}
+            ${!!comment['redeem_link'] && !can_redeem && `
+              <a class="btn mt-1 mb-1 btn-radio font-smaller-5" href="${comment['redeem_link']}">Tip redeemed</a>` || ''}
           </div>
 
         </div>

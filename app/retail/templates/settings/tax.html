@@ -1,0 +1,21 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+<form id="settings" name="location" method="POST">
+  <div class="form-group">
+    {% include 'ftux/tax.html' %}
+  </div>
+  {% csrf_token %}
+  <div class="col-md-8 m-auto">
+    <button class='button button--primary' type="button" onClick="save_tax_settings()">{% trans "Save" %}</button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+  var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&libraries=places&callback=initPlacecomplete"></script>
+<script src="{% static 'v2/js/tax.js' %}"></script>
+{{ block.super }}
+{% endblock %}

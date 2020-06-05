@@ -19,12 +19,153 @@
 
 {% block content %}
 
+<style>
+  .event-img {
+    width: 45%;
+    height: 35%;
+    margin-top: 40px;
+  }
+
+  .upcoming-events-container h4 {
+    padding: 0;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 1.2em;
+  }
+  
+  .upcoming-events-container p,
+  .upcoming-events-container a {
+    margin: 0;
+    color: #ffffff;
+    display: block;
+    font-weight: 300;
+  }
+
+  .activity_stream {
+    margin-bottom: 40px;
+  }
+
+  .activity_stream .activity_detail a {
+    font-size: 0.75rem;
+  }
+
+  .btn-clean {
+    color: #666666;
+    border: none;
+    background-color: transparent;
+    user-select: none;
+    outline: none;
+  }
+
+  .staff_tag {
+    display: inline-block;
+    margin-top: 3px;
+  }
+  .arrow-up{
+  width: 0; 
+  height: 0; 
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 15px solid #ddd; 
+  margin-left: auto;
+  margin-right: auto;
+}
+  #founder_announce {
+    background-color: #fafafa;
+    margin-bottom: 15px;
+
+  }
+  #founder_announce a{
+    font-weight: bold;
+  }
+
+</style>
+
+<div>
+  <h1 class="text-centre">{% trans "Gitcoin Daily Digest" %}</h1>
+</div>
+
+{% if email_announcements %}
+
+<a href="https://gitcoin.co/owocki">
+<img style="width: 100px; height: 100px;" src="https://gitcoin.co/dynamic/avatar/owocki">
+</a>
+<div class="arrow-up">&nbsp;</div>
+<div id="founder_announce" style="border: 1px solid #ddd; max-width: 500px; text-align: center; margin-left: auto; margin-right: auto;">
+<h3 class="no-subtitle" style="margin-top: 5px; margin-bottom: 5px;">{{email_announcements.title}}</h3>
+<p style="margin: 5px; border-radius: 5px;">
+  {{email_announcements.desc|safe}}
+</p>
+</div>  
+
+<HR>
+{% endif %}
+
+{% if activities %}
+  <h3 class="no-subtitle" style="margin-top: 15px;">{% trans "💬Town Square Posts You've Missed" %}</h3>
+  <div class="container" style="text-align: left; padding: 20px 10px">
+    <div class="col-12 col-md-10 col-lg-8 mx-auto">
+      {% include 'shared/activity_container.html' with hide_loading=1 for_email=1 %} 
+    </div>
+    <div style="text-align: center;">
+      {% if notifications_count %}
+        <p style="margin-bottom: 45px;">You have <a href="{% url 'inbox:inbox_view' %}" style="font-weight: bold;">{{ notifications_count }} unread notifications</a>. Check them out to see the latest comments on your post!</p>
+      {% endif %}
+      {% include 'emails/shared_activities_actions.html' with action='custom' action_copy='View More' action_url='/townsquare' %}
+  </div>
+  </div>
+{% endif %}
+</div>
+
+{% if upcoming_events or upcoming_dates %}
+  <div class="full-width text-center" style="background-color: #000000; color: #ffffff; margin: 0 auto; padding-top: 15px; padding-bottom:15px">
+    <h3 style="color: #ffffff;">{% trans "⏰Save The Date" %}</h3>
+    <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
+
+    <div class="upcoming-events-container">
+      {{upcoming_dates|length}}
+      {% for event in upcoming_dates %}
+        {% if event.img_url %}
+          <img class="event-img" src="{{event.img_url}}">
+        {% endif %}
+        <h4 style="">{{event.title}}</h4>
+        <p>{{event.date}}</p>
+        <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
+      {% endfor %}
+    </div>
+
+    <div class="upcoming-events-container">
+      {% for event in upcoming_events %}
+        {% if event.img_url %}
+          <img class="event-img" src="{{event.image_url}}">
+        {% endif %}
+        <h4 style="">{{event.title}}</h4>
+        <p>{{event.date}}</p>
+        <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
+      {% endfor %}
+    </div>
+    <br>
+    <br>
+  </div>
+{% endif %}
+
+<div class="primary-content text-center" {% if not upcoming_events %} style="padding-top: 0;" {% endif %}>
+  {% if not upcoming_events %} <hr>  {% endif %}
+{% if quest_of_the_day %}
+  <h3 class="no-subtitle" style="margin-top: 50px">{% trans "🎯Quest of The Day" %}</h3>
+  {% include 'emails/quest_small.html' with quest=quest_of_the_day small=1 %}
+{% endif %}
+
+<br>
+<br>
+<hr>
+
 {% if show_action %}
 
-<h1>1 New Daily Action</h1>
+<h3 class="no-subtitle" style="margin-top: 15px;">{% trans "🌈1 New Daily Action" %}</h3>
 
 <a href={{base_url}}>
-<img src={{base_url}}static/v2/images/offer.gif>
+<img style="width: 306px; height: 80px; margin-top: 5px; margin-bottom: 5px;" src={{base_url}}static/v2/images/offer.gif>
 </a> 
 <BR>
 <a href={{base_url}}>
@@ -33,18 +174,18 @@ This action expires at end of day, so act soon!
 
 <HR>
 {% endif %}
-<h1>{{ trending_quests|length }} {% trans "Trending Quests" %}</h1>
 
-{% for quest in trending_quests %}
-  {% include 'emails/quest_small.html' with quest=quest count=forloop.counter %}
-{% endfor %}
 
-<h1>{{ bounties|length }} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{% endif %}</h1>
-<h3>{% trans "Matching your profile" %}</h3>
+{% if bounties %}
+  <div style="margin-bottom: 5em;">
+    <h3 class="no-subtitle">{% trans "💰Start Earning!" %}</h3>
 
-{% for bounty in bounties %}
-  {% include 'emails/bounty_small.html' with bounty=bounty count=forloop.counter  %}
-{% endfor %}
+    {% for bounty in bounties %}
+      {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1%}
+    {% endfor %}
+
+  </div>
+{% endif %}
 
 {% if old_bounties %}
 
@@ -59,9 +200,7 @@ This action expires at end of day, so act soon!
 {% endif %}
 
 <p>
-  {% if keywords %}
-  {% trans "You are receiving this email because your email preferences matched with these keywords:" %} {{ keywords }}.  <a href="{% url 'email_settings' subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
-  {% endif %}
+  {% trans "You are receiving this email because you are subscribed to daily emails." %}  <a href="{% url 'email_settings' subscriber.priv %}" style="text-decoration: underline;">{% trans "Manage Email Settings" %}</a> | <a href="{% url 'email_settings' subscriber.priv %}?type=new_bounty_notifications" style="text-decoration: underline;">{% trans "Unsubscribe" %}</a>.
 </p>
 
 {% endblock %}

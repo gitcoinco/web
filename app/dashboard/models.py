@@ -1303,6 +1303,7 @@ class BountyEvent(SuperModel):
         ('expire_bounty', 'Expire Bounty'),
         ('extend_expiration', 'Extend Expiration'),
         ('close_bounty', 'Close Bounty'),
+        ('worker_paid', 'Worker Paid')
     )
 
     bounty = models.ForeignKey('dashboard.Bounty', on_delete=models.CASCADE,
@@ -1355,12 +1356,12 @@ class BountyFulfillment(SuperModel):
     # TODO: RETIRE
     fulfiller_metadata = JSONField(default=dict, blank=True)
 
-    fulfiller_address = models.CharField(max_length=50, help_text="address to which amount is credited")
-    funder_address = models.CharField(max_length=50, null=True, help_text="address from which amount is deducted")
+    fulfiller_address = models.CharField(max_length=50, null=True, blank=True, help_text="address to which amount is credited")
+    funder_address = models.CharField(max_length=50, null=True, blank=True, help_text="address from which amount is deducted")
 
     # TODO: rename to fulfiller_profile
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True, help_text="fulfillers's profile")
-    funder_profile = models.ForeignKey('dashboard.Profile', null=True, on_delete=models.CASCADE, help_text="funder's profile")
+    funder_profile = models.ForeignKey('dashboard.Profile', null=True, blank=True, on_delete=models.CASCADE, help_text="funder's profile")
 
 
     # TODO: rename to hours_worked
@@ -1372,8 +1373,8 @@ class BountyFulfillment(SuperModel):
     accepted = models.BooleanField(default=False, help_text="has the fulfillment been accepted by the funder")
     accepted_on = models.DateTimeField(null=True, blank=True, help_text="date when the fulfillment was accepted by the funder")
 
-    payout_type = models.CharField(max_length=20, null=True, blank=True,choices=PAYOUT_TYPE, help_text="payment type used to make the payment")
-    tenant = models.CharField(max_length=10, null=True, blank=True,choices=TENANT, help_text="specific tenant type under the payout_type")
+    payout_type = models.CharField(max_length=20, null=True, blank=True, choices=PAYOUT_TYPE, help_text="payment type used to make the payment")
+    tenant = models.CharField(max_length=10, null=True, blank=True, choices=TENANT, help_text="specific tenant type under the payout_type")
 
     funder_identifier = models.CharField(max_length=50, null=True, blank=True, help_text="unique funder identifier used by when payout_type is fiat")
     fulfiller_identifier = models.CharField(max_length=50, null=True, blank=True, help_text="unique fulfiller identifier used by when payout_type is fiat")
@@ -1395,12 +1396,16 @@ class BountyFulfillment(SuperModel):
 
     @property
     def fulfiller_email(self):
-        return self.profile.email
+        if self.profile:
+            return self.profile.email
+        return None
 
 
     @property
     def fulfiller_github_username(self):
-        return self.profile.handle
+        if self.profile:
+            return self.profile.handle
+        return None
 
 
     @property
@@ -2659,6 +2664,8 @@ class Profile(SuperModel):
     )
     job_salary = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     job_location = JSONField(default=dict, blank=True)
+    location = JSONField(default=dict, blank=True)
+    address = models.CharField(max_length=255, default='', blank=True, null=True)
     linkedin_url = models.CharField(max_length=255, default='', blank=True, null=True)
     resume = models.FileField(upload_to=get_upload_filename, null=True, blank=True, help_text=_('The profile resume.'))
     profile_wallpaper = models.CharField(max_length=255, default='', blank=True, null=True)
@@ -3119,12 +3126,13 @@ class Profile(SuperModel):
         plural = 's' if total_funded_participated != 1 else ''
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
-               f"funded issue{plural} on Gitcoin"
+               f"transaction{plural} on Gitcoin"
+               
 
     @property
     def desc(self):
-        bounties1 = self.get_funded_bounties() if not self.is_org else Bounty.objects.none()
-        bounties2 = self.get_orgs_bounties() if self.is_org else self.get_fulfilled_bounties() 
+        bounties1 = self.sent_earnings if not self.is_org else Earning.objects.none()
+        bounties2 = self.earnings if not self.is_org else self.org_earnings
         return self.get_desc(bounties1, bounties2)
 
     @property
@@ -4563,10 +4571,6 @@ class HackathonEvent(SuperModel):
         return f'{self.name} - {self.start_date}'
 
     @property
-    def url(self):
-        return self.get_absolute_url()
-
-    @property
     def relative_url(self):
         return f'hackathon/{self.slug}'
 
@@ -4602,7 +4606,7 @@ class HackathonEvent(SuperModel):
 
     @property
     def url(self):
-        return settings.BASE_URL + self.slug
+        return self.get_absolute_url()
 
     @property
     def stats(self):
@@ -4973,6 +4977,10 @@ class Question(SuperModel):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True, blank=True)
     question_type = models.CharField(choices=TYPE_QUESTIONS, max_length=50, blank=False, null=False)
     text = models.CharField(max_length=350, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0, blank=False, null=False)
+
+    class Meta(object):
+        ordering = ['order']
 
     def __str__(self):
         return f'Question.{self.id} {self.text}'
@@ -5071,3 +5079,17 @@ class Investigation(SuperModel):
             key='sybil',
         )
 
+
+class ObjectView(SuperModel):
+    """Records object views ."""
+    viewer = models.ForeignKey(User, related_name='objectviews', on_delete=models.SET_NULL, null=True, db_index=True)
+    target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    target_id = models.PositiveIntegerField(db_index=True)
+    target = GenericForeignKey('target_type', 'target_id')
+    view_type = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ['-pk']
+
+    def __str__(self):
+        return f"{self.viewer} => {self.target} on {self.created_on}"

@@ -24,8 +24,6 @@
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
 
   <nav class="navbar-nav mx-auto gc-megamenu">
-    <!-- <a class="nav-link {% if '/landing' in request.path %} selected {% endif %} interior" href="/landing">{% trans "Home" %}</a> -->
-
     <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
 
     <div class="nav-item dropdown interior gc-megamenu-fw">
@@ -303,6 +301,14 @@
         </div>
       </div>
     </div>
+
+
+    {% endif %}
+    {% if is_townsquare %}
+     <div class="nav-item interior ">
+       <a href="{% url "tribes" %}" class="gc-text-green nav-link selected">Looking for developers?</a>
+     </div>
+    {% endif %}
   </nav>
   <div class="d-flex justify-content-md-around justify-content-around justify-content-md-end">
     {% if user.is_authenticated %}

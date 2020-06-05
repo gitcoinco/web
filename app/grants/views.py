@@ -44,6 +44,7 @@ from app.utils import get_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, Profile, SearchHistory
+from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -306,6 +307,12 @@ def grants(request):
 
     now = datetime.datetime.now()
 
+    # record view 
+    pks = list([grant.pk for grant in grants])
+    if len(pks):
+        increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
+
+
     current_partners = partners.filter(end_date__gte=now).order_by('-amount')
     past_partners = partners.filter(end_date__lt=now).order_by('-amount')
     current_partners_fund = 0
@@ -329,6 +336,9 @@ def grants(request):
     health_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='health'
     ).count()
+    matic_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='matic'
+    ).count()
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
@@ -339,7 +349,9 @@ def grants(request):
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
-        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count}
+        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
+        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
+
     ]
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
@@ -440,6 +452,7 @@ def grant_details(request, grant_id, grant_slug):
         grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
             pk=grant_id, slug=grant_slug
         )
+        increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
 
@@ -544,7 +557,6 @@ def grant_details(request, grant_id, grant_slug):
         'target': f'/activity?what={what}',
         'pinned': pinned,
         'what': what,
-        'can_pin': can_pin(request, what),
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
@@ -599,6 +611,33 @@ def flag(request, grant_id):
     return JsonResponse({
         'success': True,
     })
+
+
+def grant_new_whitelabel(request):
+    """Create a new grant, with a branded creation form for specific tribe"""
+
+    profile = get_profile(request)
+
+    params = {
+        'active': 'new_grant',
+        'title': _('Matic Build-n-Earn x Gitcoin'),
+        'card_desc': _('Earn Rewards by Making Your DApps Superior'),
+        'card_player_thumb_override': request.build_absolute_uri(static('v2/images/grants/maticxgitcoin.png')),
+        'profile': profile,
+        'is_logged_in': 1 if profile else 0,
+        'grant': {},
+        'keywords': get_keywords(),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'gas_advisories': gas_advisories(),
+        'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT
+    }
+    return TemplateResponse(request, 'grants/new-whitelabel.html', params)
+
 
 
 @login_required
