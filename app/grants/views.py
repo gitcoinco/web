@@ -621,6 +621,7 @@ def grant_new_whitelabel(request):
         'active': 'new_grant',
         'title': _('Matic Build-n-Earn x Gitcoin'),
         'card_desc': _('Earn Rewards by Making Your DApps Superior'),
+        'card_player_thumb_override': request.build_absolute_uri(static('v2/images/grants/maticxgitcoin.png')),
         'profile': profile,
         'grant': {},
         'keywords': get_keywords(),
