@@ -143,6 +143,21 @@ Vue.component('grants-cart', {
       window.localStorage.setItem('grants_cart', JSON.stringify(this.grantData));
     },
 
+    handleError(err) {
+      console.error(err); // eslint-disable-line no-console
+      let message = 'There was an error';
+
+      if (err.message)
+        message = err.message;
+      else if (err.msg)
+        message = err.msg;
+      else if (typeof err === 'string')
+        message = err;
+
+      _alert(message, 'error');
+      indicateMetamaskPopup(true);
+    },
+
     /**
      * @notice Get token address and decimals
      * @dev We use this instead of tokenNameToDetails in tokens.js because we use a different
@@ -162,107 +177,104 @@ Vue.component('grants-cart', {
     },
 
     async checkout() {
-      await window.ethereum.enable();
-      const isDev = network === 'rinkeby'; // True if in development mode
-      const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
+      try {
+        await window.ethereum.enable();
+        const isDev = network === 'rinkeby'; // True if in development mode
+        const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
-      // Generate array of objects containing donation info from cart
-      const donations = this.grantData.map((grant) => {
-        const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
+        // Generate array of objects containing donation info from cart
+        const donations = this.grantData.map((grant) => {
+          const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
 
-        return {
-          token: tokenDetails.addr,
-          amount: String(grant.grant_donation_amount * 10 ** tokenDetails.decimals),
-          dest: isDev ? DEV_GRANT_ADDRESS : grant.grant_contract_address,
-          name: grant.grant_donation_currency
-        };
-      });
-
-      // Append the Gitcoin donations
-      Object.keys(this.donationsToGitcoin).forEach((token) => {
-        const tokenDetails = this.getTokenByName(token);
-
-        donations.push({
-          amount: String(this.donationsToGitcoin[token] * 10 ** tokenDetails.decimals),
-          token: tokenDetails.addr,
-          dest: gitcoinAddress,
-          name: token
+          return {
+            token: tokenDetails.addr,
+            amount: String(grant.grant_donation_amount * 10 ** tokenDetails.decimals),
+            dest: isDev ? DEV_GRANT_ADDRESS : grant.grant_contract_address,
+            name: grant.grant_donation_currency
+          };
         });
-      });
 
-      // Get token approvals
-      const selectedTokens = Object.keys(this.donationTotals);
+        // Append the Gitcoin donations
+        Object.keys(this.donationsToGitcoin).forEach((token) => {
+          const tokenDetails = this.getTokenByName(token);
 
-      for (let i = 0; i < selectedTokens.length; i += 1) {
-        const tokenDetails = this.getTokenByName(selectedTokens[i]);
-
-        // If ETH donation, no approval necessary
-        if (tokenDetails.name === 'ETH') {
-          continue;
-        }
-
-        // Get current allowance
-        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-
-        const allowance = new BN(
-          await tokenContract.methods
-            .allowance(userAddress, bulkCheckoutAddress)
-            .call({ from: userAddress })
-        );
-
-        // Get required allowance based on donation amounts
-        const requiredAllowance = this.donationTotals[tokenDetails.name] * 10 ** tokenDetails.decimals;
-
-        // Compare allowances and request approval if needed
-        if (allowance.lt(new BN(String(requiredAllowance)))) {
-          indicateMetamaskPopup();
-          const txHash = await tokenContract.methods
-            .approve(bulkCheckoutAddress, MAX_UINT256)
-            .send({ from: userAddress });
-
-          console.log('approval tx hash: ', txHash);
-          indicateMetamaskPopup(true);
-        }
-      } // end for each token being used for donations
-
-      // Get the total ETH we need to send
-      const initialValue = new BN('0');
-      const ethAmountBN = donations.reduce((accumulator, currentValue) => {
-        return currentValue.token === ETH_ADDRESS
-          ? accumulator.add(new BN(currentValue.amount)) // ETH donation
-          : accumulator.add(new BN('0')); // token donation
-      }, initialValue);
-      const ethAmountString = ethAmountBN.toString();
-
-      // Configure our donation inputs
-      const donationInputs = donations.map(donation => {
-        delete donation.name;
-        return donation;
-      });
-
-      // Estimate gas to send all of them
-      // Arbitrarily choose to use a gas limit 10% higher than estimated gas
-      bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
-      const estimatedGas = await bulkTransaction.methods
-        .donate(donationInputs)
-        .estimateGas({ from: userAddress, value: ethAmountString});
-      const gasLimit = Math.ceil(1.1 * estimatedGas);
-
-      // Send the transaction
-      indicateMetamaskPopup();
-      bulkTransaction.methods
-        .donate(donationInputs)
-        .send({ from: userAddress, gas: gasLimit, value: ethAmountString })
-        .on('transactionHash', (txHash) => {
-          indicateMetamaskPopup(true);
-          console.log('donation txHash: ', txHash);
-        })
-        .on('receipt', (receipt) => {
-          console.log(receipt);
-        })
-        .on('error', (err) => {
-          console.error(err);
+          donations.push({
+            amount: String(this.donationsToGitcoin[token] * 10 ** tokenDetails.decimals),
+            token: tokenDetails.addr,
+            dest: gitcoinAddress,
+            name: token
+          });
         });
+
+        // Get token approvals
+        const selectedTokens = Object.keys(this.donationTotals);
+
+        for (let i = 0; i < selectedTokens.length; i += 1) {
+          const tokenDetails = this.getTokenByName(selectedTokens[i]);
+
+          // If ETH donation, no approval necessary
+          if (tokenDetails.name === 'ETH') {
+            continue;
+          }
+
+          // Get current allowance
+          const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+
+          const allowance = new BN(
+            await tokenContract.methods
+              .allowance(userAddress, bulkCheckoutAddress)
+              .call({ from: userAddress })
+          );
+
+          // Get required allowance based on donation amounts
+          const requiredAllowance = this.donationTotals[tokenDetails.name] * 10 ** tokenDetails.decimals;
+
+          // Compare allowances and request approval if needed
+          if (allowance.lt(new BN(String(requiredAllowance)))) {
+            indicateMetamaskPopup();
+            const txHash = await tokenContract.methods
+              .approve(bulkCheckoutAddress, MAX_UINT256)
+              .send({ from: userAddress });
+
+            console.log('approval tx hash: ', txHash);
+            indicateMetamaskPopup(true);
+          }
+        } // end for each token being used for donations
+
+        // Get the total ETH we need to send
+        const initialValue = new BN('0');
+        const ethAmountBN = donations.reduce((accumulator, currentValue) => {
+          return currentValue.token === ETH_ADDRESS
+            ? accumulator.add(new BN(currentValue.amount)) // ETH donation
+            : accumulator.add(new BN('0')); // token donation
+        }, initialValue);
+        const ethAmountString = ethAmountBN.toString();
+
+        // Configure our donation inputs
+        const donationInputs = donations.map(donation => {
+          delete donation.name;
+          return donation;
+        });
+
+        // Estimate gas to send all of them
+        // Arbitrarily choose to use a gas limit 10% higher than estimated gas
+        bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
+        const estimatedGas = await bulkTransaction.methods
+          .donate(donationInputs)
+          .estimateGas({ from: userAddress, value: ethAmountString});
+        const gasLimit = Math.ceil(1.1 * estimatedGas);
+
+        // Send the transaction
+        indicateMetamaskPopup();
+        const txHash = await bulkTransaction.methods
+          .donate(donationInputs)
+          .send({ from: userAddress, gas: gasLimit, value: ethAmountString });
+
+        console.log('donation txHash: ', txHash);
+        indicateMetamaskPopup(true);
+      } catch (err) {
+        this.handleError(err);
+      }
     },
 
     sleep(ms) {
