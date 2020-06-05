@@ -37,6 +37,8 @@
     <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/hackathons/explorer.css" %}'/>
 
+    <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
+
     <style type="text/css">
       @media only screen and (max-width : 320px) {
         .chatWrapper {
@@ -467,12 +469,15 @@
                                     <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
                                     <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
                                     <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
-                                     <template v-slot:button-content>
-                                       <i class='fas fa-comment-dots'></i>
-                                     </template>
-                                     <b-dropdown-item-button @click.prevent="chatWindow(profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
-                                       @ [[ profile.handle ]]
-                                     </b-dropdown-item-button>
+                                      <template v-slot:button-content>
+                                        <i class='fas fa-comment-dots'></i>
+                                      </template>
+                                      <b-dropdown-item-button @click.prevent="chatWindow(project.chat_channel_id, false);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                       Chat With Team
+                                      </b-dropdown-item-button>
+                                      <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
+                                        @ [[ profile.handle ]]
+                                      </b-dropdown-item-button>
                                     </b-dropdown>
                                   </div>
                                 </div>
@@ -518,7 +523,7 @@
                 <template>
                   <div class="ml-4">
                     <div class="chatWrapper col-12">
-                      <iframe frameborder="0" :src="`${chatURL}/hackathons/channels/${hackathonObj.chat_channel_id}`" allowfullscreen></iframe>
+                      {% include 'shared/embed_chat_iframe.html' with chat_url_embed=chat_url_embed %}
                     </div>
                   </div>
                 </template>

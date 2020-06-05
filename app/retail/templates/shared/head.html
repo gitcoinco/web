@@ -76,8 +76,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 {% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
 {% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
-<script async src="{% static "v2/js/metamask-approval.js" %}"></script>
+<script async src='{% static "v2/js/metamask-approval.js" %}'></script>
+<script type="text/javascript">
+  document.chatSocketTest = function(iframe) {
+    iframe = $(iframe);
+    const spinner = iframe.siblings('.rhombus-spinner');
+    const chat_url = document.contxt.chat_url;
+    let socket = new WebSocket(`wss://${chat_url.replace(/(^\w+:|^)\/\//, '')}/api/v4/websocket`);
+    let url = `${chat_url}/oauth/gitcoin/login?redirect_to=${window.location}`;
 
+    socket.onmessage = function(event) {
+
+      this.removeEventListener('close', socket.onclose);
+      this.removeEventListener('message', socket.onmessage);
+      url = '';
+      socket.close();
+      iframe.toggle();
+      spinner.toggle();
+    };
+
+    socket.onclose = function(event) {
+      if (url) {
+        window.location.href = url;
+      }
+    };
+  };
+</script>
 {% if env == 'prod' %}
 <!-- Hotjar Tracking Code for gitcoin.co -->
 <script>
