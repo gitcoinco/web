@@ -8,7 +8,6 @@
 const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-const gitcoinFactor = 0.05; // 5% of donation amount goes to Gitcoin
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
 
 // Contract parameters
@@ -25,10 +24,11 @@ Vue.component('grants-cart', {
 
   data: function() {
     return {
+      currencies: undefined,
       isLoading: undefined,
+      gitcoinFactor: 0.05, // 5% of donation amount goes to Gitcoin
       grantHeaders,
-      grantData,
-      currencies: undefined
+      grantData
     };
   },
 
@@ -44,10 +44,10 @@ Vue.component('grants-cart', {
       this.grantData.forEach(grant => {
         if (!totals[grant.grant_donation_currency]) {
           // First time seeing this token, set the field and initial value
-          totals[grant.grant_donation_currency] = grant.grant_donation_amount;
+          totals[grant.grant_donation_currency] = grant.grant_donation_amount * (1 - this.gitcoinFactor);
         } else {
           // We've seen this token, so just update the total
-          totals[grant.grant_donation_currency] += grant.grant_donation_amount;
+          totals[grant.grant_donation_currency] += grant.grant_donation_amount * (1 - this.gitcoinFactor);
         }
       });
       return totals;
@@ -93,10 +93,10 @@ Vue.component('grants-cart', {
       this.grantData.forEach(grant => {
         if (!totals[grant.grant_donation_currency]) {
           // First time seeing this token, set the field and initial value
-          totals[grant.grant_donation_currency] = grant.grant_donation_amount * 0.05;
+          totals[grant.grant_donation_currency] = grant.grant_donation_amount * this.gitcoinFactor;
         } else {
           // We've seen this token, so just update the total
-          totals[grant.grant_donation_currency] += (grant.grant_donation_amount * 0.05);
+          totals[grant.grant_donation_currency] += (grant.grant_donation_amount * this.gitcoinFactor);
         }
       });
       return totals;
@@ -119,6 +119,56 @@ Vue.component('grants-cart', {
         const formattedAmount = amount.toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 4
+        });
+
+        if (string === '') {
+          string += `${formattedAmount} ${key}`;
+        } else {
+          string += `+ ${formattedAmount} ${key}`;
+        }
+      });
+      return string;
+    },
+
+    /**
+     * @notice Generates an object where keys are token names and value are the total amount
+     * being donated in that token. Similar to donationTotals but also incudes gitcoin donation
+     * @dev The addition here is based on human-readable numbers so BN is not needed
+     */
+    absoluteDonationTotals() {
+      const totals = {};
+
+      this.grantData.forEach(grant => {
+        if (!totals[grant.grant_donation_currency]) {
+          // First time seeing this token, set the field and initial value
+          totals[grant.grant_donation_currency] = grant.grant_donation_amount;
+        } else {
+          // We've seen this token, so just update the total
+          totals[grant.grant_donation_currency] += grant.grant_donation_amount;
+        }
+      });
+      return totals;
+    },
+
+
+    /**
+     * @notice Returns a string of the form "3 DAI + 0.5 ETH + 10 USDC" which describe the
+     * user's donations to the Gitcoin grant. Similar to donationsToGitcoinString but also
+     * incudes gitcoin donation
+     */
+    absoluteDonationTotalsString() {
+      if (!this.absoluteDonationTotals) {
+        return undefined;
+      }
+
+      let string = '';
+
+      Object.keys(this.absoluteDonationTotals).forEach(key => {
+        // Round to 2 digits
+        const amount = this.absoluteDonationTotals[key];
+        const formattedAmount = amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
         });
 
         if (string === '') {
