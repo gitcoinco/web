@@ -613,15 +613,18 @@ def flag(request, grant_id):
     })
 
 
-@login_required
 def grant_new_whitelabel(request):
     """Create a new grant, with a branded creation form for specific tribe"""
 
+    profile = get_profile(request)
+
     params = {
         'active': 'new_grant',
-        'title': _('New Grant'),
-        'card_desc': _('Provide sustainable funding for Open Source with Gitcoin Grants'),
+        'title': _('Matic Build-n-Earn x Gitcoin'),
+        'card_desc': _('Earn Rewards by Making Your DApps Superior'),
+        'card_player_thumb_override': request.build_absolute_uri(static('v2/images/grants/maticxgitcoin.png')),
         'profile': profile,
+        'is_logged_in': 1 if profile else 0,
         'grant': {},
         'keywords': get_keywords(),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
