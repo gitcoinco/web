@@ -8,7 +8,6 @@ $(document).ready(function() {
 
         const formData = objectifySerialized($(this).serializeArray());
         addToCart(formData);
-        console.log("CART", loadCart());
 
         showSideCart();
     });
@@ -18,7 +17,6 @@ $(document).ready(function() {
 
         const formData = objectifySerialized($(this).serializeArray());
         addToCart(formData);
-        console.log("CART", loadCart());
 
         showSideCart();
     });
@@ -51,27 +49,11 @@ function sideCartRowForGrant(grant) {
                 </div>
                 <div class="col-5">
                     <select id="side-cart-currency-${grant.grant_id}" class="form-control">
-    `
+    `;
 
-    const tokenDataList = tokens(network);
-
-    for (let index = 0; index < tokenDataList.length; index++) {
-        const tokenData = tokenDataList[index];
-
-        if (tokenData.divider) {
-            cartRow += `
-                <option disabled>_________</option>
-            `;
-        } else {
-            cartRow += `
-                <option value="${tokenData.name}">${tokenData.name}</option>
-            `;
-        }
-    }
+    cartRow += tokenOptionsForGrant(grant);
 
     cartRow += `
-                        <option value="DAI">DAI</option>
-                        <option value="ETH">ETH</option>
                     </select>
                 </div>
             </div>
@@ -79,6 +61,39 @@ function sideCartRowForGrant(grant) {
     `;
 
     return cartRow;
+}
+
+function tokenOptionsForGrant(grant) {
+    let tokenDataList = tokens(network);
+    const acceptsAllTokens = (grant.grant_token_address === "0x0000000000000000000000000000000000000000");
+
+    let options = "";
+
+    if (!acceptsAllTokens) {
+        options +=  `
+            <option value="ETH">ETH</option>
+        `;
+
+        tokenDataList = tokenDataList.filter( tokenData => {
+            return (tokenData.addr === grant.grant_token_address);
+        });
+    }
+
+    for (let index = 0; index < tokenDataList.length; index++) {
+        const tokenData = tokenDataList[index];
+
+        if (tokenData.divider) {
+            options += `
+                <option disabled>_________</option>
+            `;
+        } else {
+            options += `
+                <option value="${tokenData.name}">${tokenData.name}</option>
+            `;
+        }
+    }
+
+    return options;
 }
 
 function showSideCart() {
@@ -178,8 +193,18 @@ function addToCart(grantData) {
     }
 
     // Add donation defaults
-    grantData.grant_donation_amount = 1;
-    grantData.grant_donation_currency = 'DAI';
+
+    const acceptsAllTokens = (grantData.grant_token_address === "0x0000000000000000000000000000000000000000");
+    const accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
+
+    if (acceptsAllTokens || 'DAI' == accptedTokenName) {
+        grantData.grant_donation_amount = 1;
+        grantData.grant_donation_currency = 'DAI';
+    } else {
+        grantData.grant_donation_amount = 0.01;
+        grantData.grant_donation_currency = 'ETH';
+    }
+
     grantData.grant_donation_num_rounds = 1;
     grantData.grant_donation_clr_match = 250;
 
