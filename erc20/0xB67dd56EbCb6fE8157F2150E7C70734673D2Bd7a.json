@@ -1,0 +1,17 @@
+{
+    "symbol": "RIFT",
+    "address": "0xB67dd56EbCb6fE8157F2150E7C70734673D2Bd7a",
+    "overview":{
+          "en": "RIFT is committed to building a blockchain financial ecological payment system that truly has a compound business model and is applied on the ground. Based on the peer-to-peer network technology, a new form of global financial payment is built based on blockchain and smart contract technology.",
+          "zh": "RIFT致力于打造真正具备复合商业模式和落地应用于一体的区块链金融生态支付系统。在点对点网络技术的基础上，基于区块链和智能合约技术构建全球金融支付新形态。"
+    },
+    "email": "admin@riftoffical.com",
+    "website": "https://riftmember.com/",
+    "whitepaper": "https://riftmember.com/pdf/wp_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-07-08",
+    "links": {
+        "telegram": "https://t.me/RIFTGROUP",
+        "twitter": "https://twitter.com/Rift_com"
+      }
+}
