@@ -832,8 +832,14 @@ next_valid_timestamp: {next_valid_timestamp}
             args['nonce'],
             ).call()
 
-    def get_converted_amount(self, ignore_gitcoin_fee=False):
-        amount = self.amount_per_period if ignore_gitcoin_fee else self.amount_per_period_minus_gas_price
+    def get_converted_amount(self, ignore_gitcoin_fee=False, only_gitcoin_fee=False):
+        if ignore_gitcoin_fee:
+            amount = self.amount_per_period
+        elif only_gitcoin_fee:
+            amount = self.amount_per_period_to_gitcoin
+        else:
+            amount = self.amount_per_period_minus_gas_price
+            
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
                 return Decimal(float(amount) * float(eth_usd_conv_rate()))
