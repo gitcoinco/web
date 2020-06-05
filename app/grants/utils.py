@@ -21,7 +21,12 @@ import os
 from secrets import token_hex
 
 from perftools.models import JSONStore
+from decimal import Decimal
+from gas.utils import eth_usd_conv_rate
+from economy.utils import ConversionRateNotFoundError, convert_amount
 
+import logging
+logger = logging.getLogger(__name__)
 
 def get_upload_filename(instance, filename):
     salt = token_hex(16)
@@ -83,3 +88,57 @@ def is_grant_team_member(grant, profile):
                 is_team_member = True
                 break
     return is_team_member
+
+def amount_in_wei(tokenAddress, amount):
+    from dashboard.tokens import addr_to_token
+    token = addr_to_token(tokenAddress)
+    decimals = token['decimals'] if token else 18
+    return float(amount) * 10**decimals
+
+def which_clr_round(timestamp):
+    import datetime, pytz
+    utc = pytz.UTC
+
+    date_ranges = {
+        1: [(2019, 2, 1), (2019, 2, 15)],   # Round 1: 2/1/2019 – 2/15/2019
+        2: [(2019, 3, 5), (2019, 4, 19)],   # Round 2: 3/5/2019 - 4/19/2019
+        3: [(2019, 9, 16), (2019, 9, 30)],  # Round 3: 9/16/2019 - 9/30/2019
+        4: [(2020, 1, 6), (2020, 1, 21)],   # Round 4: 1/6/2020 — 1/21/2020
+        5: [(2020, 3, 23), (2020, 4, 7)],   # Round 5: 3/23/2020 — 4/7/2020
+        6: [(2020, 6, 15), (2020, 6, 29)],  # Round 6: 6/15/2020 — 6/29/2020
+        7: [(2020, 9, 14), (2020, 9, 28)],  # Round 7: 9/14/2020 — 9/28/2020
+    }
+
+    for round, dates in date_ranges.items():
+        round_start = utc.localize(datetime.datetime(*dates[0]))
+        round_end = utc.localize(datetime.datetime(*dates[1]))
+
+        if round_start < timestamp < round_end:
+            return round
+    
+    return None
+
+def get_converted_amount(amount, token_symbol):            
+    try:
+        if token_symbol == "ETH" or token_symbol == "WETH":
+            return Decimal(float(amount) * float(eth_usd_conv_rate()))
+        else:
+            value_token_to_eth = Decimal(convert_amount(
+                amount,
+                token_symbol,
+                "ETH")
+            )
+
+        value_eth_to_usdt = Decimal(eth_usd_conv_rate())
+        value_usdt = value_token_to_eth * value_eth_to_usdt
+        return value_usdt
+
+    except ConversionRateNotFoundError as e:
+        try:
+            return Decimal(convert_amount(
+                amount,
+                token_symbol,
+                "USDT"))
+        except ConversionRateNotFoundError as no_conversion_e:
+            logger.info(no_conversion_e)
+            return None
