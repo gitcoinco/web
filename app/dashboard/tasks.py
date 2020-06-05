@@ -6,8 +6,8 @@ from app.redis_service import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Activity, Bounty, ObjectView, Profile
-from marketing.mails import func_name, grant_update_email, send_mail
+from dashboard.models import Activity, Bounty, ObjectView, Profile, HackathonRegistration
+from marketing.mails import func_name, grant_update_email, send_mail, hackathon_wall_post_email
 from retail.emails import render_share_bounty
 
 logger = get_task_logger(__name__)
@@ -124,6 +124,16 @@ def grant_update_email_task(self, pk, retry: bool = True) -> None:
     activity = Activity.objects.get(pk=pk)
     grant_update_email(activity)
 
+@app.shared_task(bind=True, max_retries=3)
+def hackathon_wall_post_email_task(self, pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    activity = Activity.objects.get(pk=pk)
+    participants = HackathonRegistration.objects.filter(hackathon=activity.hackathonevent).all()
+    hackathon_wall_post_email(activity, participants)
 
 @app.shared_task(bind=True)
 def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:

@@ -3624,6 +3624,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         orgs.append(org)
 
 
+    import pdb; pdb.set_trace()
     is_sponsor_tribe_admin = False
     for sponsor in hackathon_event.sponsors.all():
         if sponsor.tribe is not None:
