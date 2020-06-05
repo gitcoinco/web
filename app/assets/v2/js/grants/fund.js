@@ -641,7 +641,9 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
   indicateMetamaskPopup();
 
-  deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).estimateGas(function(err, gas_amount) {
+  deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).estimateGas({
+    from: account
+  }, function(err, gas_amount) {
     if (err) {
       _alert('There was an error', 'error');
       set_form_disabled(false);
