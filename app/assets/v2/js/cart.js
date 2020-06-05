@@ -24,15 +24,20 @@ Vue.component('grants-cart', {
 
   data: function() {
     return {
+      adjustGitcoinFactor: false,
       currencies: undefined,
       isLoading: undefined,
-      gitcoinFactor: 0.05, // 5% of donation amount goes to Gitcoin
+      gitcoinFactorRaw: 5, // 5% of donation amount goes to Gitcoin
       grantHeaders,
       grantData
     };
   },
 
   computed: {
+    gitcoinFactor() {
+      return this.gitcoinFactorRaw / 100;
+    },
+
     /**
      * @notice Generates an object where keys are token names and value are the total amount
      * being donated in that token

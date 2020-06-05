@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
@@ -184,15 +185,67 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </div>
               </div>
 
-              {% comment %} Contribution to Gitcoin notice {% endcomment %}
+              {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
               <div class="flex-container text-left cart-section black" style="margin-top: 1rem">
                 <div style="width: 100%">
                   <div class="flex-container" style="justify-content: start">
-                    <div>
-                      {% trans "By using this service, you’ll also be contributing" %}
-                      <span class="gitcoin-grant-percent">5</span>{% trans "% of your contribution to the" %}
-                      <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="blank">Gitcoin Grants
-                        Round 6+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
+                    <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
+                      <div class="row">
+                        <div class="col-12 mb-3">
+                          <p class="font-body">
+                            {% trans "By using this service, you’ll also be contributing" %}
+                            <span class="gitcoin-grant-percent">5</span>
+                            {% trans "% of your contribution to the" %} <a
+                              href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin
+                              Grants Round 6+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
+                            <div class="font-smaller-1 hyperlink" @click="adjustGitcoinFactor=true">
+                              Adjust &gt;&gt;
+                            </div>
+                          </p>
+                        </div>
+                        <div v-if="adjustGitcoinFactor" class="col-12 col-xl-8 text-center text-xl-left fee-slider">
+                          {% include './heart.html' %}
+                          <div class="d-xl-inline ml-xl-3 mt-4 mt-xl-0">
+                            <div class="badge badge-active font-title font-weight-normal"
+                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 5}"
+                              @click="gitcoinFactorRaw=5">
+                              5%</div>
+                            <div class="badge badge-active font-title font-weight-normal ml-xl-2"
+                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 10}"
+                              @click="gitcoinFactorRaw=10">
+                              10%</div>
+                            <div class="badge badge-active font-title font-weight-normal ml-xl-2"
+                              :class="{inactive: ![5,10,15].includes(gitcoinFactorRaw), 'badge-inactive': gitcoinFactorRaw != 15}"
+                              @click="gitcoinFactorRaw=15">
+                              15%</div>
+                          </div>
+                        </div>
+                        <div v-if="adjustGitcoinFactor"
+                          class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary">
+                          <div class="text-center custom d-inline-block">
+                            <input type="number" min="0" max="99" id="gitcoin-grant-input-amount"
+                              name="gitcoin-grant-input-amount" class="form__input text-center"
+                              :class="{inactive: [5,10,15].includes(gitcoinFactorRaw)}" value="5"
+                              v-model="gitcoinFactorRaw">
+                            <p class="mb-0 text-center helper-text mx-0 font-caption">custom %</p>
+                          </div>
+                          {% comment %} COMMENTED OUT THE NUMBER OF ROUNDS PART {% endcomment %}
+                          {% comment %} <div class="ml-3 gitcoin-grant-summary d-inline-block">
+                            <p class="font-title mb-0 text-center">
+                              <i class="fas fa-equals font-caption mr-2"></i>
+                              <span class="summary-gitcoin-amount">5</span>
+                              <span class="summary-token">
+                                {% if grant_has_no_token %} - {% else %} {{ grant.token_symbol }} {% endif %}
+                              </span>
+                            </p>
+                            <p class="mb-0 mx-0 font-caption text-center summary-rollup-gitcoin">
+                              {% trans "for" %} <span class="font-caption summary-period">-</span>
+                              <span class="font-caption summary-frequency-unit-gitcoin">-</span>
+                              (<span class="summary-frequency-gitcoin">-</span> times)
+                            </p>
+                          </div> {% endcomment %}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -269,7 +322,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
   <script src="{% static "v2/js/status.js" %}"></script>
   <script src="{% static "v2/js/pages/tabs.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
-  <script src="{% static "v2/js/grants/info.js" %}"></script>
+  <script src="{% static "v2/js/grants/fund.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract1.js" %}"></script>
