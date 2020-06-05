@@ -37,7 +37,7 @@
     <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/hackathons/explorer.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
-
+    <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
 
     <style type="text/css">
       .hackathon-logo {
@@ -308,7 +308,7 @@
                                         <i class='fas fa-comment-dots'></i>
                                       </template>
                                       <b-dropdown-item-button @click.prevent="chatWindow(project.chat_channel_id, false);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
-                                       [[ project.name ]]'s Chat Channel
+                                       Chat With Team
                                       </b-dropdown-item-button>
                                       <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label">
                                         @ [[ profile.handle ]]
@@ -357,7 +357,7 @@
                 <template>
                   <div class="ml-4">
                     <div class="chatWrapper col-12">
-                      <iframe frameborder="0" :src="`${chatURL}/hackathons/channels/${hackathonObj.chat_channel_id}`" allowfullscreen></iframe>
+                      {% include 'shared/embed_chat_iframe.html' with chat_url_embed=chat_url_embed %}
                     </div>
                   </div>
                 </template>
