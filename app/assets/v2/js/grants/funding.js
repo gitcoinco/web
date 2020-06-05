@@ -31,7 +31,7 @@ $(document).ready(function() {
 // HELPERS
 
 function sideCartRowForGrant(grant) {
-    const cartRow = `
+    let cartRow = `
         <div id="side-cart-row-${grant.grant_id}" class="side-cart-row mb-3">
             <div class="form-row mb-2">
                 <div class="col-2">
@@ -51,6 +51,25 @@ function sideCartRowForGrant(grant) {
                 </div>
                 <div class="col-5">
                     <select id="side-cart-currency-${grant.grant_id}" class="form-control">
+    `
+
+    const tokenDataList = tokens(network);
+
+    for (let index = 0; index < tokenDataList.length; index++) {
+        const tokenData = tokenDataList[index];
+
+        if (tokenData.divider) {
+            cartRow += `
+                <option disabled>_________</option>
+            `;
+        } else {
+            cartRow += `
+                <option value="${tokenData.name}">${tokenData.name}</option>
+            `;
+        }
+    }
+
+    cartRow += `
                         <option value="DAI">DAI</option>
                         <option value="ETH">ETH</option>
                     </select>
