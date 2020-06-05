@@ -8,7 +8,6 @@
 const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-const DEV_GRANT_ADDRESS = '0x058e6afe3590A7DA1A5Ad7A6fE0df7060c7d12cF'; // rinkeby grants seem unable to accept ETH, so use dummy address
 const gitcoinFactor = 0.05; // 5% of donation amount goes to Gitcoin
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
 
@@ -176,6 +175,20 @@ Vue.component('grants-cart', {
       return tokens(network).filter(token => token.name === name)[0];
     },
 
+    /**
+     * @notice Returns a string of the human-readable value, in "Wei", where by wei we refer
+     * to the proper integer value based on the number of token decimals
+     * @param {Number} number Human-readable number to convert, e.g. 0.1 or 3
+     * @param {Number} decimals Number of decimals for conversion to Wei
+     */
+    toWeiString(number, decimals) {
+      const wei = web3.utils.toWei(String(number));
+      const base = new BN(10, 10);
+      const factor = base.pow(new BN(18 - decimals, 10));
+
+      return (new BN(wei)).div(factor).toString(10);
+    },
+
     async checkout() {
       try {
         await window.ethereum.enable();
@@ -188,8 +201,8 @@ Vue.component('grants-cart', {
 
           return {
             token: tokenDetails.addr,
-            amount: String(grant.grant_donation_amount * 10 ** tokenDetails.decimals),
-            dest: isDev ? DEV_GRANT_ADDRESS : grant.grant_contract_address,
+            amount: this.toWeiString(grant.grant_donation_amount, tokenDetails.decimals),
+            dest: grant.grant_admin_address,
             name: grant.grant_donation_currency
           };
         });
@@ -199,7 +212,7 @@ Vue.component('grants-cart', {
           const tokenDetails = this.getTokenByName(token);
 
           donations.push({
-            amount: String(this.donationsToGitcoin[token] * 10 ** tokenDetails.decimals),
+            amount: this.toWeiString(this.donationsToGitcoin[token], tokenDetails.decimals),
             token: tokenDetails.addr,
             dest: gitcoinAddress,
             name: token
@@ -227,16 +240,16 @@ Vue.component('grants-cart', {
           );
 
           // Get required allowance based on donation amounts
-          const requiredAllowance = this.donationTotals[tokenDetails.name] * 10 ** tokenDetails.decimals;
+          const requiredAllowance = this.toWeiString(this.donationTotals[tokenDetails.name], tokenDetails.decimals);
 
           // Compare allowances and request approval if needed
-          if (allowance.lt(new BN(String(requiredAllowance)))) {
+          if (allowance.lt(new BN(requiredAllowance))) {
             indicateMetamaskPopup();
             const txHash = await tokenContract.methods
               .approve(bulkCheckoutAddress, MAX_UINT256)
               .send({ from: userAddress });
 
-            console.log('approval tx hash: ', txHash);
+            console.log('Approval transaction: ', txHash);
             indicateMetamaskPopup(true);
           }
         } // end for each token being used for donations
@@ -270,7 +283,7 @@ Vue.component('grants-cart', {
           .donate(donationInputs)
           .send({ from: userAddress, gas: gasLimit, value: ethAmountString });
 
-        console.log('donation txHash: ', txHash);
+        console.log('Donation transaction: ', txHash);
         indicateMetamaskPopup(true);
       } catch (err) {
         this.handleError(err);
@@ -302,7 +315,7 @@ Vue.component('grants-cart', {
       try {
         this.currencies = tokens(network).map(token => token.name);
       } catch (err) {}
-      await this.sleep(50); // every 100 ms
+      await this.sleep(50); // every 50 ms
     }
     // Cart is now ready
     this.isLoading = false;
