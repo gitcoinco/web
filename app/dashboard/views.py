@@ -4104,7 +4104,7 @@ def hackathon_registration(request):
                                                                   hackathon=hackathon_event)
                     answer.checked = entry['value'] == 'on'
                     answer.save()
-                if question.question_type == 'SINGLE_CHOICE':
+                elif question.question_type == 'SINGLE_CHOICE':
                     option = get_object_or_404(Option, id=int(entry['value']))
                     answer, status = Answer.objects.get_or_create(user=request.user, question=question,
                                                                   hackathon=hackathon_event)
@@ -4118,9 +4118,8 @@ def hackathon_registration(request):
                     values.append(int(entry['value']))
                     set_questions[entry['name']] = values
                 else:
-                    answer, status = Answer.objects.get_or_create(user=request.user, question=question,
-                                                                  hackathon=hackathon_event,
-                                                                  open_response=entry['value'])
+                    answer, status = Answer.objects.get_or_create(user=request.user, open_response=entry['value'],
+                                                                  hackathon=hackathon_event, question=question)
                     answer.save()
 
             for (question, choices) in set_questions.items():
