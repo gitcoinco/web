@@ -950,6 +950,7 @@ textarea.status-textarea {
   color: orange;
 }
 
-.wallet-option {
+.wallet-option,
+.selected-account {
   cursor: pointer;
 }
