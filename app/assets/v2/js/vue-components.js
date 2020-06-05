@@ -9,10 +9,16 @@ Vue.mixin({
     };
   },
   methods: {
-    chatWindow: function(handle) {
+    chatWindow: function(channel, dm) {
+      dm = dm || channel.indexOf('@') >= 0;
+      channel = channel || 'town-square';
       let vm = this;
+      const hackathonTeamSlug = 'hackathons';
+      const gitcoinTeamSlug = 'gitcoin';
+      const isHackathon = (document.hackathon_id !== null);
 
-      const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
+
+      const url = `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${dm ? '@' + channel : channel}`;
 
       window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
     }
@@ -190,6 +196,20 @@ Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
   props: ['tribe'],
   methods: {
+    markWinner: function($event, project) {
+      let vm = this;
+
+      const url = '/api/v0.1/hackathon_project/set_winner/';
+      const markWinner = fetchData(url, 'POST', {project_id: project.pk, winner: $event ? 1 : 0}, {'X-CSRFToken': vm.csrf});
+
+      $.when(markWinner).then(response => {
+        if (response.message) {
+          alert(response.message);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    },
     fetchProjects: function(newPage) {
       let vm = this;
 
@@ -216,20 +236,19 @@ Vue.component('project-directory', {
         delete vm.params['search'];
       }
 
-      let searchParams = new URLSearchParams(vm.params);
+      const searchParams = new URLSearchParams(vm.params);
 
-      let apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
+      const apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
 
-      var getProjects = fetchData(apiUrlProjects, 'GET');
+      const getProjects = fetchData(apiUrlProjects, 'GET');
 
       $.when(getProjects).then(function(response) {
         vm.hackathonProjects = [];
-        response.data.forEach(function(item) {
+        response.results.forEach(function(item) {
           vm.hackathonProjects.push(item);
         });
 
-        vm.projectsNumPages = response.num_pages;
-        vm.projectsHasNext = response.has_next;
+        vm.projectsHasNext = response.next;
         vm.numProjects = response.count;
         if (vm.projectsHasNext) {
           vm.projectsPage = ++vm.projectsPage;
@@ -258,6 +277,7 @@ Vue.component('project-directory', {
   data: function() {
 
     return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       sponsor: this.tribe || null,
       hackathonSponsors: document.hackathonSponsors || [],
       hackathonProjects: document.hackathonProjects || [],
@@ -269,7 +289,9 @@ Vue.component('project-directory', {
       media_url,
       searchTerm: null,
       bottom: false,
-      params: {},
+      params: {
+        filters: []
+      },
       isFunder: false,
       showModal: false,
       showFilters: true,
