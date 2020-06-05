@@ -19,7 +19,7 @@ def get_preview_img(key):
 
 def get_artist_bio(key):
     if key == 'metacartel':
-        return 'This piece was originally created by <a target="blank" href="https://twitter.com/frankynines">@frankynies</a>, an amazing artist of Mexican heritage who works at Dapper Labs.'
+        return 'This piece was originally created by <a target="_blank" href="https://twitter.com/frankynines">@frankynies</a>, an amazing artist of Mexican heritage who works at Dapper Labs.'
     if key == 'comic':
         return 'This piece was created by <a target=new href="/TheDataDesigner">@TheDataDesigner</a>.'
     if key == 'square_bot':
@@ -33,7 +33,7 @@ def get_artist_bio(key):
     if key == 'bot':
         return 'This piece was created by <a target=new href="/GuistF">@GuistF</a>.'
     if key == 'bufficorn':
-        return 'The Bufficorn was created by <a target="blank" href="https://twitter.com/EthereumDenver">@EthereumDenver</a>.'
+        return 'The Bufficorn was created by <a target="_blank" href="https://twitter.com/EthereumDenver">@EthereumDenver</a>.'
     return ''
 
 
