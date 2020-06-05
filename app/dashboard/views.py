@@ -3647,9 +3647,11 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 3
     elif panel == "participants":
         active_tab = 4
+    filter = ''
+    if request.GET.get('filter'):
+        filter = f':{request.GET.get("filter")}'
 
-
-    what = f'hackathon:{hackathon_event.id}'
+    what = f'hackathon:{hackathon_event.id}{filter}'
     from townsquare.utils import can_pin
     try:
         pinned = PinnedPost.objects.get(what=what)
@@ -4068,7 +4070,6 @@ def hackathon_save_project(request):
 @require_POST
 def hackathon_registration(request):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
     poll = request.POST.get('poll')
@@ -4098,10 +4099,16 @@ def hackathon_registration(request):
             for entry in poll:
                 question = get_object_or_404(Question, id=int(entry['name']))
 
-                if question.question_type == 'SINGLE_CHOICE':
+                if question.question_type == 'SINGLE_OPTION':
                     answer, status = Answer.objects.get_or_create(user=request.user, question=question,
                                                                   hackathon=hackathon_event)
                     answer.checked = entry['value'] == 'on'
+                    answer.save()
+                if question.question_type == 'SINGLE_CHOICE':
+                    option = get_object_or_404(Option, id=int(entry['value']))
+                    answer, status = Answer.objects.get_or_create(user=request.user, question=question,
+                                                                  hackathon=hackathon_event)
+                    answer.choice = option
                     answer.save()
                 elif question.question_type == 'MULTIPLE_CHOICE':
                     option = get_object_or_404(Option, id=int(entry['value']))
@@ -4112,13 +4119,13 @@ def hackathon_registration(request):
                     set_questions[entry['name']] = values
                 else:
                     answer, status = Answer.objects.get_or_create(user=request.user, question=question,
-                                                                  hackathon=hackathon_event)
-                    answer.open_response = entry['value']
+                                                                  hackathon=hackathon_event,
+                                                                  open_response=entry['value'])
                     answer.save()
 
             for (question, choices) in set_questions.items():
-                    Answer.objects.filter(user=request.user, question__id=int(question),
-                                          hackathon=hackathon_event).exclude(choice__in=choices).delete()
+                Answer.objects.filter(user=request.user, question__id=int(question),
+                                      hackathon=hackathon_event).exclude(choice__in=choices).delete()
 
     except Exception as e:
         logger.error('Error while saving registration', e)
@@ -5314,12 +5321,12 @@ def bulkDM(request):
                     continue
                 to_user_id = to_profile.chat_id
                 try:
-                    response = chat_driver.client.make_request('post', 
-                        '/channels/direct', 
-                        options=None, 
-                        params=None, 
-                        data=f'["{to_user_id}", "{from_user_id}"]', 
-                        files=None, 
+                    response = chat_driver.client.make_request('post',
+                        '/channels/direct',
+                        options=None,
+                        params=None,
+                        data=f'["{to_user_id}", "{from_user_id}"]',
+                        files=None,
                         basepath=None)
                     channel_id = response.json()['id']
                     chat_driver.posts.create_post(options={

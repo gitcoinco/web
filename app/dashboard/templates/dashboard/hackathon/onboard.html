@@ -312,10 +312,22 @@
                 {% for question in poll.question_set.all %}
                   <fieldset style="min-height: 200px" class="carousel-item {% if forloop.first %}active first{% elif forloop.last %}last{% endif %}" data-question="{{ question.id }}" data-step="{{ forloop.counter0 }}" data-rstep="{{ forloop.revcounter0 }}">
                   <div>
-                    {% if question.question_type == 'SINGLE_CHOICE' %}
+                    {% if question.question_type == 'SINGLE_OPTION' %}
                         <div class="form__checkbox">
                           <input type="checkbox" id="single_{{ question.id }}" name="{{ question.id }}">
                           <label class="form__label" for="single_{{ question.id }}">{{ question.text }}</label>
+                        </div>
+                    {% elif question.question_type == 'SINGLE_CHOICE' %}
+                        <div class="question">
+                        <h4 class="font-header font-weight-bold pt-0 mb-5">{{ forloop.counter }}. {{ question.text }}</h4>
+                        <div class="options">
+                        {% for option in question.option_set.all %}
+                          <div class="px-1">
+                            <input type="radio" id="multiple_{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
+                       		  <label for="multiple_{{ option.id }}">{{ option.text }}</label>
+                          </div>
+                        {% endfor %}
+                        </div>
                         </div>
                     {% elif question.question_type == 'MULTIPLE_CHOICE' %}
                         <div class="question">

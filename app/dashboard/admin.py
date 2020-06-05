@@ -435,7 +435,7 @@ class FundRequestAdmin(admin.ModelAdmin):
 
 
 class QuestionInline(SortableInlineAdminMixin, admin.TabularInline):
-    fields = ['id', 'poll', 'question_type', 'text']
+    fields = ['id', 'poll', 'question_type', 'text', 'hook']
     readonly_fields = ['id']
     raw_id_fields = ['poll']
     show_change_link = True

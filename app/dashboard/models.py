@@ -2156,6 +2156,7 @@ class Activity(SuperModel):
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
         ('hackathon_registration', 'Hackathon Registration'),
+        ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
     ]
@@ -2754,12 +2755,12 @@ class Profile(SuperModel):
         chat_driver = Driver(driver_opts)
         chat_driver.login()
 
-        response = chat_driver.client.make_request('get', 
-            '/users/me/teams/unread', 
-            options=None, 
-            params=None, 
-            data=None, 
-            files=None, 
+        response = chat_driver.client.make_request('get',
+            '/users/me/teams/unread',
+            options=None,
+            params=None,
+            data=None,
+            files=None,
             basepath=None)
         total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
         return total_unread
@@ -3166,7 +3167,7 @@ class Profile(SuperModel):
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"transaction{plural} on Gitcoin"
-               
+
 
     @property
     def desc(self):
@@ -5011,13 +5012,20 @@ class Poll(SuperModel):
     hackathon = models.ManyToManyField(HackathonEvent)
 
 
-
 class Question(SuperModel):
     TYPE_QUESTIONS = (
+        ('SINGLE_OPTION', 'Single option'),
         ('SINGLE_CHOICE', 'Single Choice'),
         ('MULTIPLE_CHOICE', 'Multiple Choices'),
         ('OPEN', 'Open'),
     )
+
+    TYPE_HOOKS = (
+        ('NO_ACTION', 'No trigger any action'),
+        ('TOWNSQUARE_INTRO', 'Create intro on Townsquare')
+    )
+
+    hook = models.CharField(default='NO_ACTION', choices=TYPE_HOOKS, max_length=50)
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True, blank=True)
     question_type = models.CharField(choices=TYPE_QUESTIONS, max_length=50, blank=False, null=False)
     text = models.CharField(max_length=350, blank=True, null=True)
@@ -5045,6 +5053,25 @@ class Answer(SuperModel):
     choice = models.ForeignKey(Option, on_delete=models.CASCADE, null=True, blank=True)
     checked = models.BooleanField(default=False)
     hackathon = models.ForeignKey(HackathonEvent, null=True, on_delete=models.CASCADE)
+
+
+@receiver(post_save, sender=Answer, dispatch_uid='hooks_on_question_response')
+def psave_answer(sender, instance, created, **kwargs):
+    if created:
+        if instance.question.hook == 'TOWNSQUARE_INTRO':
+            looking_members = HackathonProject.objects.filter(hackathon=instance.hackathon,
+                                                              profiles__id=instance.user.profile.id,
+                                                              looking_members=True).exists()
+            Activity.objects.create(
+                profile=instance.user.profile,
+                hackathonevent=instance.hackathon,
+                activity_type='hackathon_new_hacker',
+                metadata={
+                    'answer': instance.id,
+                    'intro_text': f'{instance.open_response or ""} #intro',
+                    'looking_members': looking_members,
+                }
+            )
 
 
 class Investigation(SuperModel):
