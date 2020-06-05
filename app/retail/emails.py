@@ -1330,6 +1330,10 @@ def grant_update(request):
     response_html, _ = render_grant_update(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post', grant__isnull=False).last())
     return HttpResponse(response_html)
 
+@staff_member_required
+def grant_recontribute(request):
+    response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
 
 @staff_member_required
 def wallpost(request):
