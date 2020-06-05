@@ -48,10 +48,11 @@
           Connect Wallet
         </a>
         <div class="dropdown-item wallet-hidden d-none">
-          <span class="network-name"></span>
-          <span class="selected-account"></span>
+          <small>connected to:</small>
+          <div class="network-name"></div>
+          <div class="selected-account"></div>
         </div>
-        <div id="accounts" class="dropdown-item wallet-hidden d-none"></div>
+        <div id="wallet-accounts" class="dropdown-item wallet-hidden d-none"></div>
         <div class="dropdown-divider wallet-hidden d-none"></div>
         <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
           Disconnect
@@ -62,10 +63,10 @@
   </div>
   <div id="templates" style="display: none">
     <template id="template-balance">
-      <tr>
-        <th class="address"></th>
-        <td class="balance"></td>
-      </tr>
+      <div class="wallet-option">
+      	<div class="wallet-address"></div>
+      	<small class="wallet-balance"></small>
+      </div>
     </template>
   </div>
   {% else %}
