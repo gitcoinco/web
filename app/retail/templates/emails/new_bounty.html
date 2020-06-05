@@ -24,6 +24,7 @@
     width: 45%;
     height: 35%;
     margin-top: 40px;
+    max-width: 250px;
   }
 
   .upcoming-events-container h4 {
@@ -123,9 +124,10 @@
     <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
 
     <div class="upcoming-events-container">
-      {{upcoming_dates|length}}
       {% for event in upcoming_dates %}
-        <img class="event-img" src="{{event.img_url}}">
+        {% if event.img_url %}
+          <img class="event-img" src="{{event.img_url}}">
+        {% endif %}
         <h4 style="">{{event.title}}</h4>
         <p>{{event.date}}</p>
         <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
@@ -134,7 +136,9 @@
 
     <div class="upcoming-events-container">
       {% for event in upcoming_events %}
-        <img class="event-img" src="{{event.image_url}}">
+        {% if event.img_url %}
+          <img class="event-img" src="{{event.image_url}}">
+        {% endif %}
         <h4 style="">{{event.title}}</h4>
         <p>{{event.date}}</p>
         <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
@@ -166,6 +170,19 @@
 <BR>
 <a href={{base_url}}>
 This action expires at end of day, so act soon!
+</a>
+
+<HR>
+{% endif %}
+
+{% if chats_count %}
+
+<h3 class="no-subtitle" style="margin-top: 15px;">💬 {{chats_count}} New Chat Messages</h3>
+
+<a href={{base_url}}>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button large" href="https://chat.gitcoin.co">{% trans "Read Messages" %}</a>
+  </div>
 </a>
 
 <HR>

@@ -3,10 +3,10 @@
 {% if not hidden %}
 <div id="profile-tabs" class="tab-container font-body mt-3 mb-4">
   <button type="button" id="nav-description" href="{{profile.url}}/follow?sub=followers" class="text-center section-tab {% if foltab == "followers" %} active {% endif %}">
-    {% trans "FOLLOWERS" %} <span  class="nav-badge">({{followers.count}})</span>
+    {% trans "FOLLOWERS" %} <span  class="nav-badge">({{all_followers.count}})</span>
   </button>
   <button type="button" id="nav-description" href="{{profile.url}}/follow?sub=following" class="text-center section-tab {% if foltab == "following" %} active {% endif %}">
-    {% trans "FOLLOWING" %} <span  class="nav-badge">({{following.count}})</span>
+    {% trans "FOLLOWING" %} <span  class="nav-badge">({{all_following.count}})</span>
   </button>
 </div>
 {% endif %}
@@ -17,12 +17,16 @@
     {% for user in followers %}
       <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
         <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+          <a href="/{{user.profile.handle}}">
           <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.profile.handle }}" alt="">
+          </a>
         </div>
         <div class="tab-projects__item-details col-3 d-flex flex-column bounty-detail">
           <div class="d-flex flex-column">
             <div class="font-weight-semibold font-header">{{user.profile.name}}</div>
-            <div class="text-highlight-gc-blue  font-smaller-1">{{user.profile.handle}}</div>
+            <a href="/{{user.profile.handle}}">
+              <div class="text-highlight-gc-blue  font-smaller-1">{{user.profile.handle}}</div>
+            </a>
           </div>
         </div>
         <div class="mb-0 mt-1 col-5 d-flex flex-row align-items-center">
@@ -56,13 +60,6 @@
           {% endwith %}
         </div>
         </div>
-        <div class="col-12 col-md-4 col-lg-3 font-caption my-auto text-right">
-          {% if user.mutual_follow %}
-            <button class="btn btn-sm m-2 px-4 font-caption py-1 font-weight-bold btn-outline-gc-green" style="border-width: 2px !important;" data-tribe="{{user.profile.handle}}">Following</button>
-          {% else %}
-            <button class="btn btn-gc-blue btn-sm m-2 px-2 font-caption" data-jointribe="{{user.profile.handle}}">Follow<i class="fas fa-user-plus font-smaller-4 ml-2"></i></button>
-          {% endif %}
-        </div>
       </div>
     {% endfor %}
 
@@ -71,12 +68,16 @@
       {% for user in following %}
       <div class="tab-projects__item d-flex mb-0 pt-1 pb-1 bounty_row">
         <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-          <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.org.handle }}" alt="">
+          <a href="/{{user.org.handle}}">
+            <img class="profile-header__avatar mr-3" src="/dynamic/avatar/{{ user.org.handle }}" alt="">
+          </a>
         </div>
         <div class="tab-projects__item-details col-3 d-flex flex-column bounty-detail">
           <div class="d-flex flex-column">
-            <div class="font-weight-semibold font-header">{{user.org.name}}</div>
-            <div class="text-highlight-gc-blue  font-smaller-1">{{user.org.handle}}</div>
+              <div class="font-weight-semibold font-header">{{user.org.name}}</div>
+              <a href="/{{user.org.handle}}">
+                <div class="text-highlight-gc-blue  font-smaller-1">{{user.org.handle}}</div>
+              </a>
           </div>
         </div>
         <div class="mb-0 mt-1 col-5 d-flex flex-row align-items-center">
@@ -86,11 +87,6 @@
               title="Chat @{{ user.org.handle }}">
             </i>
           </button>
-        </div>
-        <div style="height: fit-content">
-          <a class="btn btn-sm flex-grow-1 mr-5 font-smaller-5 position-relative quick-link btn-outline-gc-blue" {% if not user.org.email %} hidden {% endif %} href="mailto:{{user.org.email}}"  data-placement="bottom" data-toggle="tooltip" data-html="true" title="@{{ user.org.handle }}'s Email">
-            <i class="far fa-envelope"></i>
-          </a>
         </div>
         <div class="d-flex align-items-center" style="height: fit-content">
           {%  with followers=user.mutual_follower|slice:":4" %}
@@ -112,10 +108,26 @@
         </div>
 
         </div>
-        <div class="col-12 col-md-3 col-lg-3 font-caption my-auto text-right">
-          <button class="btn btn-sm m-4 px-4 font-caption py-1 font-weight-bold btn-outline-gc-green" style="border-width: 2px !important;" data-tribe="{{user.org.handle}}">Following</button>
-        </div>
       </div>
       {% endfor %}
+
 </div>
 {% endif %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?sub={{foltab}}&page=1">&laquo; first</a>
+            <a href="?sub={{foltab}}&page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?sub={{foltab}}&page={{ page_obj.next_page_number }}">next</a>
+            <a href="?sub={{foltab}}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
