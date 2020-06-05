@@ -2884,9 +2884,14 @@ def profile(request, handle, tab=None):
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
 
-    context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
-    context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
+    follow_page_size = 10
+    page_number = request.GET.get('page', 1)
+    context['all_followers'] = TribeMember.objects.filter(org=profile)
+    context['all_following'] = TribeMember.objects.filter(profile=profile)
+    context['following'] = Paginator(context['all_following'], follow_page_size).get_page(page_number)
+    context['followers'] = Paginator(context['all_followers'], follow_page_size).get_page(page_number)
     context['foltab'] = request.GET.get('sub', 'followers')
+    context['page_obj'] = context['followers'] if context['foltab'] == 'followers' else context['following']
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
@@ -3896,8 +3901,25 @@ def hackathon_save_project(request):
         'summary': clean(request.POST.get('summary'), strip=True),
         'work_url': clean(request.POST.get('work_url'), strip=True),
         'looking_members': looking_members,
-        'message': message,
+        'message': '',
+        'extra': {
+            'has_gitcoin_chat': False,
+            'has_other_contact_method': False,
+            'other_contact_method': '',
+        }
     }
+
+    if looking_members:
+        has_gitcoin_chat = request.POST.get('has_gitcoin_chat', '') == 'on'
+        has_other_contact_method = request.POST.get('has_other_contact_method', '') == 'on'
+        other_contact_method = request.POST.get('other_contact_method', '')[:150]
+        kwargs['message'] = message
+        kwargs['extra'] = {
+            'has_gitcoin_chat': has_gitcoin_chat,
+            'has_other_contact_method': has_other_contact_method,
+            'other_contact_method': other_contact_method,
+            'message': message,
+        }
 
     try:
 

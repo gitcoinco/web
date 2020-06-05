@@ -1184,16 +1184,27 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
     grant = upcoming_grant()
     dates = list(upcoming_hackathon()) + list(upcoming_dates())
     announcements = email_announcements()
+    chats_count = 0
 
     offers = f""
     if to_emails:
         offers = ""
 
         profile = email_to_profile(to_emails[0])
+        chat = ""
+        if profile:
+            try:
+                chats_count = profile.chat_num_unread_msgs
+            except:
+                chats_count = 0
+            if chats_count:
+                plural = 's' if chats_count > 1 else ''
+                chat = f"💬 {chats_count} Chat{plural}"
+
         notifications = get_notification_count(profile, 7, timezone.now())
         if notifications:
             plural = 's' if notifications > 1 else ''
-            notifications = f"💬 {notifications} Notification{plural}"
+            notifications = f"🔵 {notifications} Notification{plural}"
         else:
             notifications = ''
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
@@ -1225,7 +1236,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         def comma(a):
             return ", " if a and (new_bounties or new_quests or new_dates or new_announcements or notifications) else ""
 
-        subject = f"{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}"
+        subject = f"{chat}{comma(chat)}{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}"
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -1237,7 +1248,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
             user = User.objects.filter(email__iexact=to_email).first()
             activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities)
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities, chats_count=chats_count)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])

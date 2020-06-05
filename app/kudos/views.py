@@ -688,7 +688,7 @@ def receive(request, key, txid, network):
     return TemplateResponse(request, 'transaction/receive.html', params)
 
 
-def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
+def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, submit_later=False, exit_after_sending_tx=False):
     try:
         address = Web3.toChecksumAddress(address)
     except:
@@ -730,11 +730,20 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
 
         signed = w3.eth.account.signTransaction(tx, private_key)
         retry_later = False
-        try:
-            txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-        except Exception as e:
-            txid = "pending_celery"
-            retry_later = True
+        tx_status = 'pending'
+
+        if submit_later:
+            txid = ''
+            tx_status = 'not_subed'
+        else:
+            try:
+                txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+            except Exception as e:
+                txid = "pending_celery"
+                retry_later = True
+
+        if exit_after_sending_tx:
+            return txid, None, None
 
         with transaction.atomic():
             kudos_transfer = KudosTransfer.objects.create(
@@ -757,8 +766,8 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
                 sender_profile=coupon.sender_profile,
                 txid=txid,
                 receive_txid=txid,
-                tx_status='pending',
-                receive_tx_status='pending',
+                tx_status=tx_status,
+                receive_tx_status=tx_status,
                 receive_address=address,
             )
 
@@ -809,7 +818,9 @@ def receive_bulk(request, secret):
         if request.user.is_anonymous:
             error = "You must login."
         if not error:
-            success, error, _ = redeem_bulk_coupon(coupon, request.user.profile, request.POST.get('forwarding_address'), get_ip(request), request.POST.get('save_addr'))
+            submit_later = (recommend_min_gas_price_to_confirm_in_time(1)) > 10 and not coupon.is_paid_right_now
+            submit_later = False
+            success, error, _ = redeem_bulk_coupon(coupon, request.user.profile, request.POST.get('forwarding_address'), get_ip(request), request.POST.get('save_addr'), submit_later=submit_later)
         if error:
             messages.error(request, error)
 

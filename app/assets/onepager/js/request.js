@@ -1,4 +1,11 @@
 $(document).ready(function() {
+  waitforWeb3(function() {
+    if (!$('#address').val() && web3 && web3.eth.coinbase) {
+      $('#address').val(web3.eth.coinbase);
+    }
+  });
+
+
   $('#network').change(function(e) {
     if ($(this).val() !== 'ETH') {
       $('#token').prop('disabled', 'disabled');
@@ -14,6 +21,7 @@ $(document).ready(function() {
 
     if (!$('#tos').is(':checked')) {
       _alert('Please accept the terms and conditions before submit.', 'warning');
+      return;
     }
     loading_button($(this));
     // get form data
@@ -22,6 +30,19 @@ $(document).ready(function() {
     const network = $('#network').val();
     const address = $('#address').val();
     const comments = $('#comments').val();
+
+    if (!document.contxt['github_handle']) {
+      _alert('You must be logged in to use this form', 'warning');
+      return;
+    }
+    if (username == document.contxt['github_handle']) {
+      _alert('You cannot request money from yourself.', 'warning');
+      return;
+    }
+    if (!comments || comments.length < 5) {
+      _alert('Please leave a comment describing why this user should send you money.', 'warning');
+      return;
+    }
     const tokenAddress = (
       ($('#token').val() == '0x0') ?
         '0x0000000000000000000000000000000000000000'
@@ -96,3 +117,8 @@ function requestFunds(username, amount, comments, tokenAddress, tokenName, netwo
     failure_callback();
   });
 }
+
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 5000);
+  listen_for_web3_changes();
+});

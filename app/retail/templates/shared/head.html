@@ -80,25 +80,27 @@
 <script type="text/javascript">
   document.chatSocketTest = function(iframe) {
     iframe = $(iframe);
-    const spinner = iframe.siblings('.rhombus-spinner');
+    const loading_frame = iframe.siblings('.iframe-embed-loading');
+    const spinner = loading_frame.children('.rhombus-spinner');
+    const login_button = loading_frame.children('.chat-login-button');
     const chat_url = document.contxt.chat_url;
     let socket = new WebSocket(`wss://${chat_url.replace(/(^\w+:|^)\/\//, '')}/api/v4/websocket`);
-    let url = `${chat_url}/oauth/gitcoin/login?redirect_to=${window.location}`;
+
+    $(login_button).attr('href', `${chat_url}/oauth/gitcoin/login?redirect_to=${window.location}`);
 
     socket.onmessage = function(event) {
-
       this.removeEventListener('close', socket.onclose);
       this.removeEventListener('message', socket.onmessage);
       url = '';
       socket.close();
-      iframe.toggle();
-      spinner.toggle();
+      iframe.show();
+      loading_frame.addClass('d-none');
     };
 
     socket.onclose = function(event) {
-      if (url) {
-        window.location.href = url;
-      }
+      this.removeEventListener('close', socket.onclose);
+      spinner.addClass('d-none');
+      login_button.removeClass('d-none');
     };
   };
 </script>
