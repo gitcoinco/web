@@ -247,13 +247,19 @@ function updateCartItem(grantId, field, value) {
 }
 
 function loadCart() {
-    let cartList = localStorage.getItem('grants_cart');
+    const cartList = localStorage.getItem('grants_cart');
 
     if (!cartList) {
         return [];
     }
 
-    return JSON.parse(cartList);
+    const parsedCart = JSON.parse(cartList);
+
+    if (!Array.isArray(parsedCart)) {
+        return [];
+    }
+
+    return parsedCart;
 }
 
 function setCart(list) {
