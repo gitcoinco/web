@@ -31,9 +31,9 @@ from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
 from perftools.models import JSONStore
 
+PREV_CLR_START_DATE = 
+PREV_CLR_END_DATE = 
 CLR_START_DATE = dt.datetime(2020, 5, 6, 0, 0)
-
-ROUND_5_5_GRANTS = [656, 493, 494, 502, 504, 662]
 
 # TODO: MOVE TO DB
 THRESHOLD_TECH = 20.0
@@ -258,14 +258,14 @@ def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile')
     import pytz
 
     from_date = timezone.now()
+    
     # get all the eligible contributions and calculate total
     contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=CLR_START_DATE, created_on__lte=from_date, success=True)
 
-    if ROUND_5_5_GRANTS:
-        grants = Grant.objects.filter(id__in=ROUND_5_5_GRANTS)
-        threshold = THRESHOLD_HEALTH
-        total_pot = TOTAL_POT_HEALTH
-    elif clr_type == 'tech':
+    # gt all the previous eligible contributions and calculate total
+    contributions_prev = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=PREV_CLR_START_DATE, created_on__lte=PREV_CLR_END_DATE, success=True)
+
+    if clr_type == 'tech':
         grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', link_to_new_grant=None)
         threshold = THRESHOLD_TECH
         total_pot = TOTAL_POT_TECH
@@ -282,78 +282,68 @@ def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile')
         return None, None, None, None
 
     # set up data to load contributions for each grant
-    positive_contrib_data = []
-    negative_contrib_data = []
+    contrib_data_list = []
+    contrib_data_list_prev = []
 
     for grant in grants:
         grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
 
-        # Get the +ve and -ve contributions
-        positive_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True)
-        negative_contributions = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=False)
+        # this round and last round contributions
+        contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True)
+        contribs_prev = copy.deepcopy(contributions_prev).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True)
 
-        # Generate list of profiles who've made +ve and -ve contributions to the grant
+        # this round and last round phantom funding profiles
         phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
+        phantom_funding_profiles_prev = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=PREV_CLR_START_DATE, created_on__lte=PREV_CLR_END_DATE)
 
-        # filter out new github profiles
-        positive_contribution_ids = [ele.pk for ele in positive_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
-        positive_contributions = positive_contributions.filter(pk__in=positive_contribution_ids)
-        negative_contribution_ids = [ele.pk for ele in negative_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
-        negative_contributions = negative_contributions.filter(pk__in=negative_contribution_ids)
-        phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
+        # only allow github profiles created after clr round
+        contribs_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)]
+        contribs = contribs.filter(pk__in=contribs_ids)
+        
+        # only allow github profiles created after previous clr round
+        contribs_ids_prev = [ele.pk for ele in contribs_prev if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < PREV_CLR_START_DATE.replace(tzinfo=pytz.UTC)]
+        contribs_prev = contribs_prev.filter(pk__in=negative_contribution_ids)
 
-        positive_contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in positive_contributions] + [p.profile_id for p in phantom_funding_profiles]))
-        negative_contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in negative_contributions]))
+        # phantom - only allow github profiles created after clr round
+        phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] 
+        phantom_funding_profiles_prev = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < PREV_CLR_START_DATE.replace(tzinfo=pytz.UTC)] 
 
-        # print(f'positive contrib profiles : {positive_contributing_profile_ids}')
-        # print(f'negative contrib profiles : {negative_contributing_profile_ids}')
-        # print(f'positive contributions : {positive_contributions}')
-        # print(f'negative contributions : {negative_contributions}')
+        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in phantom_funding_profiles]))
+        contributing_profile_ids_prev = list(set([c.identity_identifier(mechanism) for c in contribs_prev]))
 
-        positive_summed_contributions = []
-        negative_summed_contributions = []
+        summed_contributions = []
+        summed_contributions_prev = []
 
-        # POSITIVE CONTRIBUTIONS
-        if len(positive_contributing_profile_ids) > 0:
-            for profile_id in positive_contributing_profile_ids:
-                # get sum of contributions per grant for each profile
-                if mechanism == 'originated_address':
-                    profile_positive_contributions = positive_contributions.filter(originated_address=profile_id)
-                else:
-                    profile_positive_contributions = positive_contributions.filter(subscription__contributor_profile_id=profile_id)
-                sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_positive_contributions if c.subscription.amount_per_period_usdt]))
-
-                if mechanism != 'originated_address':
-                    phantom_funding = PhantomFunding.objects.filter(created_on__gte=CLR_START_DATE, grant_id=grant.id, profile_id=profile_id, created_on__lte=from_date)
-                    if phantom_funding.exists():
-                        sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
-
-                positive_summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
-
+        # CONTRIBUTIONS
+        if len(contributing_profile_ids) > 0:
+            for profile_id in contributing_profile_ids:
+                profile_contributions = contribs.filter(subscription__contributor_profile_id=profile_id)
+                sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_contributions if c.subscription.amount_per_period_usdt]))
+                if phantom_funding.exists():
+                    sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
+                summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
             # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
-            positive_contrib_data.append({
+            contrib_data_list.append({
                 'id': grant_id,
-                'contributions': positive_summed_contributions
+                'contributions': summed_contributions
             })
 
-        # NEGATIVE CONTRIBUTIONS
-        if len(negative_contributing_profile_ids) > 0:
-            for profile_id in negative_contributing_profile_ids:
-                if mechanism == 'originated_address':
-                    profile_negative_contributions = negative_contributions.filter(originated_address=profile_id)
-                else:
-                    profile_negative_contributions = negative_contributions.filter(subscription__contributor_profile_id=profile_id)
-                sum_of_each_negative_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_negative_contributions if c.subscription.amount_per_period_usdt]))
-                negative_summed_contributions.append({str(profile_id): sum_of_each_negative_contributions})
-
-            negative_contrib_data.append({
+        # PREVIOUS CONTRIBUTIONS
+        if len(contributing_profile_ids_prev) > 0:
+            for profile_id in contributing_profile_ids_prev:
+                profile_contributions_prev = contribs_prev.filter(subscription__contributor_profile_id=profile_id)
+                sum_of_each_profiles_contributions_prev = float(sum([c.subscription.amount_per_period_usdt for c in profile_contributions_prev if c.subscription.amount_per_period_usdt]))
+                if phantom_funding.exists():
+                    sum_of_each_profiles_contributions_prev = sum_of_each_profiles_contributions_prev + phantom_funding.first().value
+                summed_contributions_prev.append({str(profile_id): sum_of_each_profiles_contributions_prev})
+            # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
+            contrib_data_list_prev.append({
                 'id': grant_id,
-                'contributions': negative_summed_contributions
+                'contributions': summed_contributions_prev
             })
 
-    # print(f'\n positive contributions data: {positive_contrib_data} \n')
-    # print(f'\n negative contributions data: {negative_contrib_data} \n')
-    return (grants, positive_contrib_data, negative_contrib_data, total_pot, threshold)
+    return (grants, contrib_data_list, contrib_data_list_prev, total_pot, threshold)
+
 
 
 def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainnet', mechanism='profile'):
