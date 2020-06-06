@@ -1374,6 +1374,9 @@ def grant_update(request):
 @staff_member_required
 def grant_recontribute(request):
     response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
+def grant_txn_failed(request):
+    failed_contrib = Contribution.objects.filter(subscription__contributor_profile__user__email=settings.CONTACT_EMAIL).exclude(validator_passed=True).first()
+    response_html, _ = render_grant_txn_failed(settings.CONTACT_EMAIL, failed_contrib.subscription.grant, failed_contrib.tx_id)
     return HttpResponse(response_html)
 
 @staff_member_required
