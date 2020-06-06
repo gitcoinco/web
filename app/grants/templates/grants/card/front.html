@@ -86,6 +86,8 @@
           {% include 'grants/card/clr_estimate.html' with short=True %}
         </div>
         <div class="col-12 pb-4">
+          {% is_team_member grant profile as is_on_team %}
+          {% if not is_on_team %}
           <form class="js-addDetailToCart-form">
             <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">
             <input type="hidden" id="grant_slug" name="grant_slug" value="{{ grant.slug }}">
@@ -101,6 +103,7 @@
               + Add to Cart
             </button>
           </form>
+          {% endif %}
         </div>
       {% endif %}
   </div>

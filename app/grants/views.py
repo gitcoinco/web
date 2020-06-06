@@ -246,6 +246,7 @@ def grants(request):
     grant_type = request.GET.get('type', 'all')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
+    profile = get_profile(request)
     _grants = None
     bg = 4
     bg = f"{bg}.jpg"
@@ -419,7 +420,8 @@ def grants(request):
         'show_past_clr': show_past_clr,
         'is_staff': request.user.is_staff,
         'selected_category': category,
-        'round_5_5_grants': round_5_5_grants
+        'round_5_5_grants': round_5_5_grants,
+        'profile': profile
     }
 
     # log this search, it might be useful for matching purposes down the line
