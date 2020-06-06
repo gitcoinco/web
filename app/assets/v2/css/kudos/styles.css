@@ -615,9 +615,9 @@ a.cellarius-partner:before {
   outline: none;
   background-color: transparent;
   display: flex; }
-/* .flip-card:focus .flip-card__flipper {
+.flip-card:focus .flip-card__flipper {
   transform: rotateY(-10deg);
-  box-shadow: 2px 0px 7px 1px rgba(0, 0, 0, 0.1); } */
+  box-shadow: 2px 0px 7px 1px rgba(0, 0, 0, 0.1); }
 .flip-card__hold {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden; }
@@ -635,9 +635,9 @@ a.cellarius-partner:before {
   border-radius: .25rem;
   z-index: 2;
   transform: rotateY(0); }
-/* .flip-card__flipper:hover {
+.flip-card__flipper:hover {
   transform: rotateY(-10deg);
-  box-shadow: 2px 0px 7px 1px rgba(0, 0, 0, 0.1); } */
+  box-shadow: 2px 0px 7px 1px rgba(0, 0, 0, 0.1); }
 .flip-card.turn .flip-card__flipper {
   transform: rotateY(-0.5turn); }
 .flip-card__back {
