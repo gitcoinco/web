@@ -4610,10 +4610,6 @@ class HackathonEvent(SuperModel):
         return f'{self.name} - {self.start_date}'
 
     @property
-    def url(self):
-        return self.get_absolute_url()
-
-    @property
     def relative_url(self):
         return f'hackathon/{self.slug}'
 
@@ -4649,7 +4645,7 @@ class HackathonEvent(SuperModel):
 
     @property
     def url(self):
-        return settings.BASE_URL + self.slug
+        return self.get_absolute_url()
 
     @property
     def stats(self):
