@@ -102,6 +102,29 @@ class TokenAdmin(admin.ModelAdmin):
     def view_count(self, instance):
         return instance.get_view_count
 
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "btc_coupon" in request.POST:
+            # TODO: mint this token
+            import random
+            from kudos.views import get_profile
+            gitcoinbot = get_profile('gitcoinbot')
+            btc = BulkTransferCoupon.objects.create(
+                token=obj,
+                tag='admin',
+                num_uses_remaining=1,
+                num_uses_total=1,
+                current_uses=0,
+                secret=random.randint(10**19, 10**20),
+                comments_to_put_in_kudos_transfer=f"Hi from the admin",
+                sender_profile=gitcoinbot,
+                metadata={
+                },
+                make_paid_for_first_minutes=0,
+                )
+            self.message_user(request, f"Created Bulk Transfer Coupon with default settings")
+            return redirect(btc.admin_url)
+
 
 class TransferAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token', 'kudos_token_cloned_from']
