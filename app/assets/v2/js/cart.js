@@ -27,162 +27,46 @@ Vue.component('grants-cart', {
       adjustGitcoinFactor: false,
       currencies: undefined,
       isLoading: undefined,
-      gitcoinFactorRaw: 5, // 5% of donation amount goes to Gitcoin
+      gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
       grantHeaders,
       grantData
     };
   },
 
   computed: {
+    // Percentage of donation that goes to Gitcoin
     gitcoinFactor() {
       return this.gitcoinFactorRaw / 100;
     },
 
-    /**
-     * @notice Generates an object where keys are token names and value are the total amount
-     * being donated in that token
-     * @dev The addition here is based on human-readable numbers so BN is not needed
-     */
-    donationTotals() {
-      const totals = {};
-
-      this.grantData.forEach(grant => {
-        if (!totals[grant.grant_donation_currency]) {
-          // First time seeing this token, set the field and initial value
-          totals[grant.grant_donation_currency] = grant.grant_donation_amount * (1 - this.gitcoinFactor);
-        } else {
-          // We've seen this token, so just update the total
-          totals[grant.grant_donation_currency] += grant.grant_donation_amount * (1 - this.gitcoinFactor);
-        }
-      });
-      return totals;
+    // Amounts being donated to grants
+    donationsToGrants() {
+      return this.donationSummaryTotals(1 - this.gitcoinFactor);
     },
 
-    /**
-     * @notice Returns a string of the form "3 DAI + 0.5 ETH + 10 USDC" which describe the
-     * user's donations to grants
-     */
-    donationTotalsString() {
-      if (!this.donationTotals) {
-        return undefined;
-      }
-
-      let string = '';
-
-      Object.keys(this.donationTotals).forEach(key => {
-        // Round to 2 digits
-        const amount = this.donationTotals[key];
-        const formattedAmount = amount.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-
-        if (string === '') {
-          string += `${formattedAmount} ${key}`;
-        } else {
-          string += `+ ${formattedAmount} ${key}`;
-        }
-      });
-      return string;
-    },
-
-    /**
-     * @notice Generates an object where keys are token names and value are the total amount
-     * being donated in that token to Gitcoin
-     * @dev The addition here is based on human-readable numbers so BN is not needed. However,
-     * we do get some floating point error
-     */
+    // Amounts being donated to Gitcoin
     donationsToGitcoin() {
-      const totals = {};
-
-      this.grantData.forEach(grant => {
-        if (!totals[grant.grant_donation_currency]) {
-          // First time seeing this token, set the field and initial value
-          totals[grant.grant_donation_currency] = grant.grant_donation_amount * this.gitcoinFactor;
-        } else {
-          // We've seen this token, so just update the total
-          totals[grant.grant_donation_currency] += (grant.grant_donation_amount * this.gitcoinFactor);
-        }
-      });
-      return totals;
+      return this.donationSummaryTotals(this.gitcoinFactor);
     },
 
-    /**
-     * @notice Returns a string of the form "3 DAI + 0.5 ETH + 10 USDC" which describe the
-     * user's donations to the Gitcoin grant
-     */
+    // Total amounts being donated
+    donationsTotal() {
+      return this.donationSummaryTotals(1);
+    },
+
+    // String describing user's donations to grants
+    donationsToGrantsString() {
+      return this.donationSummaryString('donationsToGrants', 2);
+    },
+
+    // String describing user's donations to Gitcoin
     donationsToGitcoinString() {
-      if (!this.donationsToGitcoin) {
-        return undefined;
-      }
-
-      let string = '';
-
-      Object.keys(this.donationsToGitcoin).forEach(key => {
-        // Round to 2 digits
-        const amount = this.donationsToGitcoin[key];
-        const formattedAmount = amount.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 4
-        });
-
-        if (string === '') {
-          string += `${formattedAmount} ${key}`;
-        } else {
-          string += `+ ${formattedAmount} ${key}`;
-        }
-      });
-      return string;
+      return this.donationSummaryString('donationsToGitcoin', 4);
     },
 
-    /**
-     * @notice Generates an object where keys are token names and value are the total amount
-     * being donated in that token. Similar to donationTotals but also incudes gitcoin donation
-     * @dev The addition here is based on human-readable numbers so BN is not needed
-     */
-    absoluteDonationTotals() {
-      const totals = {};
-
-      this.grantData.forEach(grant => {
-        if (!totals[grant.grant_donation_currency]) {
-          // First time seeing this token, set the field and initial value
-          totals[grant.grant_donation_currency] = grant.grant_donation_amount;
-        } else {
-          // We've seen this token, so just update the total
-          totals[grant.grant_donation_currency] += grant.grant_donation_amount;
-        }
-      });
-      return totals;
-    },
-
-
-    /**
-     * @notice Returns a string of the form "3 DAI + 0.5 ETH + 10 USDC" which describe the
-     * user's donations to the Gitcoin grant. Similar to donationsToGitcoinString but also
-     * incudes gitcoin donation
-     */
-    absoluteDonationTotalsString() {
-      if (!this.absoluteDonationTotals) {
-        return undefined;
-      }
-
-      let string = '';
-
-      Object.keys(this.absoluteDonationTotals).forEach(key => {
-        // Round to 2 digits
-        const amount = this.absoluteDonationTotals[key];
-        const formattedAmount = amount.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-
-        if (string === '') {
-          string += `${formattedAmount} ${key}`;
-        } else {
-          string += `+ ${formattedAmount} ${key}`;
-        }
-      });
-      return string;
+    // String describing user's total donations
+    donationsTotalString() {
+      return this.donationSummaryString('donationsTotal', 2);
     }
   },
 
@@ -195,6 +79,54 @@ Vue.component('grants-cart', {
     removeGrantFromCart(id) {
       this.grantData = this.grantData.filter(grant => grant.grant_id !== id);
       window.localStorage.setItem('grants_cart', JSON.stringify(this.grantData));
+    },
+
+    /**
+     * @notice Generates an object where keys are token names and value are the total amount
+     * being donated in that token. Scale factor scales the amounts used by a constant
+     * @dev The addition here is based on human-readable numbers so BN is not needed
+     */
+    donationSummaryTotals(scaleFactor = 1) {
+      const totals = {};
+
+      this.grantData.forEach(grant => {
+        if (!totals[grant.grant_donation_currency]) {
+          // First time seeing this token, set the field and initial value
+          totals[grant.grant_donation_currency] = grant.grant_donation_amount * scaleFactor;
+        } else {
+          // We've seen this token, so just update the total
+          totals[grant.grant_donation_currency] += (grant.grant_donation_amount * scaleFactor);
+        }
+      });
+      return totals;
+    },
+
+    /**
+     * @notice Returns a string of the form "3 DAI + 0.5 ETH + 10 USDC" which describe the
+     * user's donations for a given property
+     */
+    donationSummaryString(propertyName, maximumFractionDigits = 2) {
+      if (!this[propertyName]) {
+        return undefined;
+      }
+
+      let string = '';
+
+      Object.keys(this[propertyName]).forEach(key => {
+        // Round to 2 digits
+        const amount = this[propertyName][key];
+        const formattedAmount = amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits
+        });
+
+        if (string === '') {
+          string += `${formattedAmount} ${key}`;
+        } else {
+          string += `+ ${formattedAmount} ${key}`;
+        }
+      });
+      return string;
     },
 
     handleError(err) {
@@ -244,6 +176,9 @@ Vue.component('grants-cart', {
       return (new BN(wei)).div(factor).toString(10);
     },
 
+    /**
+     * @notice Checkout flow
+     */
     async checkout() {
       try {
         await window.ethereum.enable();
@@ -275,7 +210,7 @@ Vue.component('grants-cart', {
         });
 
         // Get token approvals
-        const selectedTokens = Object.keys(this.donationTotals);
+        const selectedTokens = Object.keys(this.donationsToGrants);
 
         for (let i = 0; i < selectedTokens.length; i += 1) {
           const tokenDetails = this.getTokenByName(selectedTokens[i]);
@@ -295,7 +230,7 @@ Vue.component('grants-cart', {
           );
 
           // Get required allowance based on donation amounts
-          const requiredAllowance = this.toWeiString(this.donationTotals[tokenDetails.name], tokenDetails.decimals);
+          const requiredAllowance = this.toWeiString(this.donationsToGrants[tokenDetails.name], tokenDetails.decimals);
 
           // Compare allowances and request approval if needed
           if (allowance.lt(new BN(requiredAllowance))) {
@@ -327,6 +262,7 @@ Vue.component('grants-cart', {
         // Estimate gas to send all of them
         // Arbitrarily choose to use a gas limit 10% higher than estimated gas
         bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
+        console.log('donationInputs: ', donationInputs);
         const estimatedGas = await bulkTransaction.methods
           .donate(donationInputs)
           .estimateGas({ from: userAddress, value: ethAmountString});
