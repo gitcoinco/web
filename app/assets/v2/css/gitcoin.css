@@ -943,9 +943,11 @@ textarea.status-textarea {
   margin-left: 17px;
   color: red;
 }
+
 .wallet-network.mainnet {
   color: #0fce7c;
 }
+
 .wallet-network.rinkeby {
   color: orange;
 }
@@ -953,4 +955,9 @@ textarea.status-textarea {
 .wallet-option,
 .selected-account {
   cursor: pointer;
+}
+
+.svg-animated-logo {
+  height: 42px;
+  max-width: 100%;
 }
