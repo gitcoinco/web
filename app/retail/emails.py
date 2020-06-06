@@ -69,6 +69,7 @@ TRANSACTIONAL_EMAILS = [
     ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
     ('wall_post', _('Wall Post Emails'), _('Only when someone writes on your wall')),
     ('grant_updates', _('Grant Update Emails'), _('Updates from Grant Owners about grants you\'ve funded.')),
+    ('grant_txn_failed', _('Grant Transaction Failed Emails'), _('Notifies Grant contributors when their contribution txn has failed.')),
 ]
 
 
@@ -884,6 +885,19 @@ def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_rou
 
     response_html = premailer_transform(render_to_string("emails/grant_recontribute.html", params))
     response_txt = render_to_string("emails/grant_recontribute.txt", params)
+def render_grant_txn_failed(to_email, grant, tx_id):
+    email_style = 27
+
+    params = {
+        'grant_title': grant.title,
+        'tx_id': tx_id,
+        'tx_url': "https://etherscan.io/tx/"+tx_id,
+        'email_style': email_style,
+        'hide_bottom_logo': True,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/grant_txn_failed.html", params))
+    response_txt = render_to_string("emails/grant_txn_failed.txt", params)
 
     return response_html, response_txt
 
