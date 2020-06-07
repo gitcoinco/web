@@ -32,6 +32,15 @@ if [ "$IS_PROD" -eq "1" ]; then
     # ignore tables
     $PG_DUMP gitcoin -U gitcoin -h $HOST --schema-only | s3cmd put - s3://gitcoinbackups/$YEAR/$MONTH/$DAY/create-$BACKUPSTR-$(hostname).sql
     $PG_DUMP gitcoin -U gitcoin -h $HOST --data-only --exclude-table=marketing_emailevent --exclude-table=marketing_stat --exclude-table=gas_gasprofile --exclude-table=marketing_githubevent --exclude-table=gas_gasguzzler --exclude-table=marketing_slackpresence | s3cmd put - s3://gitcoinbackups/$YEAR/$MONTH/$DAY/litedata-$BACKUPSTR-$(hostname).sql
+
+    #clean backup
+    export BACKUP_PGPASSWORD=$(cat app/app/.env | grep "BACKUP_DB_URL" | awk -F "=" '{print $2}' | awk -F "@" '{print $1}' | awk -F ":" '{print $3}')
+    export BACKUP_HOST=$(cat app/app/.env | grep "BACKUP_DB_URL" | awk -F "=" '{print $2}' | awk -F "@" '{print $2}' | awk -F ":" '{print $1}')
+    # send prod backup to a proxy server
+    $PG_DUMP gitcoin -U gitcoin -h $HOST --exclude-table=marketing_emailevent --exclude-table=marketing_stat --exclude-table=gas_gasprofile --exclude-table=marketing_githubevent --exclude-table=gas_gasguzzler --exclude-table=marketing_slackpresence | PGPASSWORD=$BACKUP_PGPASSWORD psql --username=gitcoin --host=$BACKUP_HOST
+    # TODO: Drop rows that arent related to the 10 sample rows
+    # TODO: Clean rows that are left. remove passwords.
+    # TODO: Upload this backup to a common place.
 else
     echo "not prod"
 fi
