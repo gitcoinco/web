@@ -77,62 +77,92 @@ def translate_data(grants_data):
 
 
 '''
-    combine previous round 1/3 contributions with current round contributions
-
-    args: previous round contributions list of lists
-
-    returns: list of lists of combined contributions
-        [[grant_id (str), user_id (str), contribution_amount (float)]]
-
-'''
-def combine_previous_round(previous, current):
-    for x in previous:
-        x[2] = x[2]/3.0
-    combined = current + previous
-
-    return combined
-
-
-
-'''
     aggregates contributions by contributor, and calculates total contributions by unique pairs
 
     args: 
         list of lists of grant data
             [[grant_id (str), user_id (str), contribution_amount (float)]]
+        round
+            str ('current' or 'previous') only
 
     returns: 
-        aggregated contributions by pair & total contributions by pair
-            {grant_id (str): {user_id (str): aggregated_amount (float)}}
-            {user_id (str): {user_id (str): pair_total (float)}}
+        aggregated contributions by pair in nested list
+            {
+                round: {
+                    grant_id (str): {
+                        user_id (str): aggregated_amount (float)
+                    }
+                }
+            }
 '''
-def aggregate_contributions(grant_contributions):
+def aggregate_contributions(grant_contributions, round='current'):
+    round_dict = {}
     contrib_dict = {}
     for proj, user, amount in grant_contributions:
         if proj not in contrib_dict:
             contrib_dict[proj] = {}
         contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
+    round_dict[round] = contrib_dict
 
+    return round_dict
+
+
+
+'''
+    gets pair totals between current round, current and previous round
+
+    args:
+        aggregated contributions by pair in nested dict
+            {
+                round: {
+                    grant_id (str): {
+                        user_id (str): aggregated_amount (float)
+                    }
+                }
+            }
+
+    returns:
+        pair totals between current round, current and previous round
+            {user_id (str): {user_id (str): pair_total (float)}}
+
+'''
+def get_totals_by_pair(contrib_dict):
     tot_overlap = {}
-    for proj, contribz in contrib_dict.items():
+    
+    # start pairwise match
+    for proj, contribz in contrib_dict['current'].items():
         for k1, v1 in contribz.items():
             if k1 not in tot_overlap:
                 tot_overlap[k1] = {}
+            
+            # pairwise matches to current round
             for k2, v2 in contribz.items():
                 if k2 not in tot_overlap[k1]:
                     tot_overlap[k1][k2] = 0
                 tot_overlap[k1][k2] += (v1 * v2) ** 0.5
+            
+            # pairwise matches to last round
+            if contrib_dict['previous'].get(proj):
+                for x1, y1 in contrib_dict['previous'][proj].items():
+                    if x1 not in tot_overlap[k1]:
+                        tot_overlap[k1][x1] = 0
+                    tot_overlap[k1][x1] += (v1 * y1) ** 0.5
 
-    return contrib_dict, tot_overlap
+    return tot_overlap
 
 
 
 '''
     calculates the clr amount at the given threshold and total pot
-
     args:
-        aggregated_contributions
-            {grant_id (str): {user_id (str): aggregated_amount (float)}}
+        aggregated_contributions by pair in nested dict
+            {
+                round: {
+                    grant_id (str): {
+                        user_id (str): aggregated_amount (float)
+                    }
+                }
+            }
         pair_totals
             {user_id (str): {user_id (str): pair_total (float)}}
         threshold
@@ -146,17 +176,32 @@ def aggregate_contributions(grant_contributions):
         saturation point
             boolean
 '''
-def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_pot=0.0):
+def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_pot=100000.0):
+    saturation_point = False
     bigtot = 0
     totals = []
-    for proj, contribz in aggregated_contributions.items():
+    for proj, contribz in aggregated_contributions['current'].items():
         tot = 0
+
+        # start pairwise matches
         for k1, v1 in contribz.items():
+
+            # pairwise matches to current round
             for k2, v2 in contribz.items():
-                if k2 > k1:  # removes single donations, vitalik's formula
+                if k2 > k1:
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / threshold + 1)
+
+            # pairwise matches to last round
+            if aggregated_contributions['previous'].get(proj):
+                for x1, y1 in aggregated_contributions['previous'][proj].items():
+                    if x1 > k1:
+                        tot += ((v1 * y1) ** 0.5) / (pair_totals[k1][x1] / threshold + 1)
+
         bigtot += tot
         totals.append({'id': proj, 'clr_amount': tot})
+
+    if bigtot >= total_pot:
+        saturation_point = True
 
     # find normalization factor
     normalization_factor = bigtot / total_pot
@@ -165,7 +210,7 @@ def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_p
     for result in totals:
         result['clr_amount'] = result['clr_amount'] / normalization_factor
 
-    return totals
+    return totals, saturation_point
 
 
 
@@ -204,13 +249,17 @@ def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, threshold=20.0, tota
     # get data
     curr_round = translate_data(grant_contribs_curr)
     prev_round = translate_data(grant_contribs_prev)
+
+    # aggregate data
+    curr_agg = aggregate_contributions(curr_round, 'current')
+    prev_agg = aggregate_contributions(prev_round, 'previous')
+    combinedagg = {**prev_agg, **curr_agg}
     
-    # combined round
-    comb_round = combine_previous_round(prev_round, curr_round)
+    # get pair totals
+    ptots = get_totals_by_pair(combinedagg)
     
-    # clr calcluations
-    agg_contribs, pair_tots = aggregate_contributions(comb_round)
-    totals = calculate_clr(agg_contribs, pair_tots, threshold=threshold, total_pot=total_pot)
+    # clr calcluation
+    totals, _ = calculate_clr(combinedagg, ptots, threshold=threshold, total_pot=total_pot)
  
     return totals
 
@@ -254,16 +303,13 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_co
         total_pot: float
         threshold : int
 '''
-def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile'):
+def db_data_call(clr_type=None, network='mainnet', start_date=dt.datetime(2020, 1, 1, 0, 0), from_date=timezone.now()):
     import pytz
 
-    from_date = timezone.now()
+    # from_date = timezone.now()
     
     # get all the eligible contributions and calculate total
-    contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=CLR_START_DATE, created_on__lte=from_date, success=True)
-
-    # gt all the previous eligible contributions and calculate total
-    contributions_prev = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=PREV_CLR_START_DATE, created_on__lte=PREV_CLR_END_DATE, success=True)
+    contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=start_date, created_on__lte=from_date, success=True)
 
     if clr_type == 'tech':
         grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', link_to_new_grant=None)
@@ -281,40 +327,55 @@ def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile')
         # print('error: populate_data_for_clr missing clr_type')
         return None, None, None, None
 
+    phantom_funding_profiles = PhantomFunding.objects.filter(created_on__gte=start_date, created_on__lte=from_date)
+
+    return contributions, grants, phantom_funding_profiles
+
+
+
+'''
+    Populate Data needed to calculate CLR
+
+    Args:
+        clr_type    :   media | tech | None
+        network     :   mainnet | rinkeby
+
+    Returns:
+        grants: list of grants based on clr_type
+        positive_contrib_data: [{'id': <int>, 'contributions': <Object>}]
+        negative_contrib_data: [{'id': <int>, 'contributions': <Object>}]
+        total_pot: float
+        threshold : int
+'''
+def populate_data_for_clr(contributions, grants, phantom_funding_profiles, mechanism='profile', clr_start_date=dt.datetime(2020, 1, 1, 0, 0), clr_end_date=timezone.now()):
+
     # set up data to load contributions for each grant
     contrib_data_list = []
-    contrib_data_list_prev = []
 
     for grant in grants:
         grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
 
-        # this round and last round contributions
+        # contributions
         contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True)
-        contribs_prev = copy.deepcopy(contributions_prev).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True)
 
-        # this round and last round phantom funding profiles
-        phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
-        phantom_funding_profiles_prev = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=PREV_CLR_START_DATE, created_on__lte=PREV_CLR_END_DATE)
+        # phantom funding
+        phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
         # only allow github profiles created after clr round
-        contribs_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)]
-        contribs = contribs.filter(pk__in=contribs_ids)
-        
-        # only allow github profiles created after previous clr round
-        contribs_ids_prev = [ele.pk for ele in contribs_prev if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < PREV_CLR_START_DATE.replace(tzinfo=pytz.UTC)]
-        contribs_prev = contribs_prev.filter(pk__in=negative_contribution_ids)
+        contribs_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < clr_start_date.replace(tzinfo=pytz.UTC)]
+        contribs = contribs.filter(pk__in=contribs_ids)  
+        ### FILTER BY CLR DATES?
 
-        # phantom - only allow github profiles created after clr round
-        phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] 
-        phantom_funding_profiles_prev = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < PREV_CLR_START_DATE.replace(tzinfo=pytz.UTC)] 
+        # only allow phantom github profiles created after clr round
+        phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < clr_start_date.replace(tzinfo=pytz.UTC)] 
+        ### ADD PHANTOM FILTERING BY CLR DATES?
 
+        # combine
         contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in phantom_funding_profiles]))
-        contributing_profile_ids_prev = list(set([c.identity_identifier(mechanism) for c in contribs_prev]))
 
         summed_contributions = []
-        summed_contributions_prev = []
 
-        # CONTRIBUTIONS
+        # contributions
         if len(contributing_profile_ids) > 0:
             for profile_id in contributing_profile_ids:
                 profile_contributions = contribs.filter(subscription__contributor_profile_id=profile_id)
@@ -327,22 +388,9 @@ def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile')
                 'id': grant_id,
                 'contributions': summed_contributions
             })
+        ### DO WE NEED TO FILTER THE GRANTS OBJECT TOO?
 
-        # PREVIOUS CONTRIBUTIONS
-        if len(contributing_profile_ids_prev) > 0:
-            for profile_id in contributing_profile_ids_prev:
-                profile_contributions_prev = contribs_prev.filter(subscription__contributor_profile_id=profile_id)
-                sum_of_each_profiles_contributions_prev = float(sum([c.subscription.amount_per_period_usdt for c in profile_contributions_prev if c.subscription.amount_per_period_usdt]))
-                if phantom_funding.exists():
-                    sum_of_each_profiles_contributions_prev = sum_of_each_profiles_contributions_prev + phantom_funding.first().value
-                summed_contributions_prev.append({str(profile_id): sum_of_each_profiles_contributions_prev})
-            # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
-            contrib_data_list_prev.append({
-                'id': grant_id,
-                'contributions': summed_contributions_prev
-            })
-
-    return (grants, contrib_data_list, contrib_data_list_prev, total_pot, threshold)
+    return (grants, contrib_data_list, total_pot, threshold)
 
 
 
@@ -350,12 +398,18 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
     # setup
     clr_calc_start_time = timezone.now()
     debug_output = []
-    grants, grant_contributions_curr, grant_contributions_prev, total_pot, threshold = populate_data_for_clr(clr_type, network, mechanism=mechanism)
+
+    grants, contributions, phantom_funding_profiles = db_data_call(clr_type, network)
+    
+    # one for previous, one for current
+    grants, grant_contributions, total_pot, threshold = populate_data_for_clr(mechanism=mechanism)
+    grants, grant_contributions, total_pot, threshold = populate_data_for_clr(mechanism=mechanism)
 
     # print(f'GRANT {len(grants)}')
     # print(f'CONTRIB {len(positive_contrib_data)}')
 
-    # calculate clr given additional donations
+    # calculate clr given additional donations  
+    ### HOW DOES THIS CHANGE WITH INPUTS ABOVE?
     for grant in grants:
         # five potential additional donations plus the base case of 0
         potential_donations = [0, 1, 10, 100, 1000, 10000]
