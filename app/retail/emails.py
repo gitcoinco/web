@@ -554,7 +554,7 @@ def email_to_profile(to_email):
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-    from marketing.views import upcoming_dates, email_announcements
+    from marketing.views import upcoming_dates, email_announcements, trending_avatar
     sub = get_or_save_email_subscriber(to_email, 'internal')
     
     email_style = 26
@@ -594,6 +594,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
+        'trending_avatar': trending_avatar(),
         'email_announcements': email_announcements(),
         'subscriber': sub,
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
