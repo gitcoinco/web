@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import timezone, datetime
 
 from dashboard.models import Activity
 
@@ -22,7 +22,7 @@ def record_ptoken_activity(event_name, ptoken, user_profile, metadata=None):
         metadata = {}
     if user_profile:
         return Activity.objects.create(
-            created_on=timezone.now(),
+            created_on=datetime.now(),
             profile=user_profile,
             activity_type=event_name,
             ptoken=ptoken,

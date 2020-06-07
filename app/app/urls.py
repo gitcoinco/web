@@ -84,10 +84,11 @@ urlpatterns = [
     # personal_tokens
     re_path(r'^token/quickstart/?', ptokens.views.quickstart, name='ptoken_quickstart'),
     re_path(r'^token/faq/?', ptokens.views.faq, name='ptokens_faq'),
-    re_path('^tokens/redemptions/(?P<redemptionId>.*)/?', ptokens.views.ptoken_redemption, name='token_redemption'),
-    re_path('^tokens/(?P<tokenId>.*)/redemptions/?', ptokens.views.ptoken_redemptions, name='token_redemption'),
-    re_path('^tokens/(?P<tokenId>.*)/?', ptokens.views.ptoken, name='token'),
-    re_path('^tokens/', ptokens.views.tokens, name='tokens'),
+    path('tokens/redemptions/<int:redemptionId>/', ptokens.views.ptoken_redemption, name='token_redemption'),
+    path('tokens/<int:tokenId>/purchase/', ptokens.views.ptoken_purchases, name='token_purchase'),
+    path('tokens/<int:tokenId>/redemptions/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
+    path('tokens/<int:tokenId>/', ptokens.views.ptoken, name='token'),
+    path('tokens/', ptokens.views.tokens, name='tokens'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
