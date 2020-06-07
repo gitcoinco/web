@@ -3,8 +3,17 @@ const TX_STATUS_SUCCESS = 'success';
 const TX_STATUS_ERROR = 'error';
 const TX_STATUS_UNKNOWN = 'unknown';
 const TX_STATUS_DROPPED = 'dropped';
+const redemption_states = [ 'request', 'accepted', 'denied', 'completed' ];
 
 function get_ptokens() {
+  return fetchData('/tokens/', 'GET');
+}
+
+function get_ptoken_redemptions(tokenId, state) {
+  if (redemption_states.indexOf(state)) {
+    return fetchData(`/tokens/${tokenId}/redemptions?state=${state}`, 'GET');
+  }
+
   return fetchData('/tokens/', 'GET');
 }
 

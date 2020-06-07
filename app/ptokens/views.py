@@ -200,6 +200,7 @@ def ptoken_redemptions(request, tokenId):
     ptoken = get_object_or_404(PersonalToken, id=tokenId)
     network = request.POST.get('network')
     total = request.POST.get('total', 0)
+    redemptions_state = request.GET.get('state')
 
     if request.method == 'POST':
         if not request.user:
@@ -209,6 +210,10 @@ def ptoken_redemptions(request, tokenId):
         RedemptionToken.objects.create(ptoken=ptoken, network=network, total=total, redemption_requester=request.user.profile)
 
     redemptions = RedemptionToken.objects.filter(redemption_requester=request.user.profile)
+
+    if redemptions_state in ['request', 'accepted', 'denied', 'completed']:
+        redemptions = redemptions.filter(redemption_state=redemptions_state)
+
 
     return JsonResponse({
         'error': False,
