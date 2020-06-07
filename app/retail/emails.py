@@ -554,7 +554,7 @@ def email_to_profile(to_email):
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-    from marketing.views import upcoming_dates, email_announcements
+    from marketing.views import upcoming_dates, email_announcements, trending_avatar
     sub = get_or_save_email_subscriber(to_email, 'internal')
     
     email_style = 26
@@ -565,20 +565,36 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     notifications_count = get_notification_count(profile, days_ago, from_date)
 
     upcoming_events = []
-    if upcoming_hackathon:
-        for hackathon in upcoming_hackathon:
-            upcoming_events.append({
-                'event': hackathon,
-                'title': hackathon.name,
-                'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
-                'url': hackathon.url,
-                'date': hackathon.start_date.strftime("%Y-%d-%m")
-            })
+    for hackathon in upcoming_hackathon:
+        upcoming_events = upcoming_events + [{
+            'event': hackathon,
+            'title': f"Hackathon Start: {hackathon.name}",
+            'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+            'url': hackathon.url,
+            'date': hackathon.start_date.strftime("%Y-%m-%d")
+        }]
+    for hackathon in upcoming_hackathon:
+        upcoming_events = upcoming_events + [{
+            'event': hackathon,
+            'title': f"Hackathon End: {hackathon.name}",
+            'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+            'url': hackathon.url,
+            'date': hackathon.end_date.strftime("%Y-%m-%d")
+        }]
+    for ele in upcoming_dates():
+        upcoming_events = upcoming_events + [{
+            'event': ele,
+            'title': ele.title,
+            'image_url': ele.img_url,
+            'url': ele.url,
+            'date': ele.date.strftime("%Y-%m-%d")
+        }]
+    upcoming_events = sorted(upcoming_events, key=lambda ele: ele['date'])
 
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
-        'upcoming_dates': upcoming_dates(),
+        'trending_avatar': trending_avatar(),
         'email_announcements': email_announcements(),
         'subscriber': sub,
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
