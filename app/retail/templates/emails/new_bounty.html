@@ -124,22 +124,11 @@
     <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
 
     <div class="upcoming-events-container">
-      {% for event in upcoming_dates %}
-        {% if event.img_url %}
-          <img class="event-img" src="{{event.img_url}}">
-        {% endif %}
-        <h4 style="">{{event.title}}</h4>
-        <p>{{event.date|date:'Y-m-d' }}</p>
-        <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
-      {% endfor %}
-    </div>
-
-    <div class="upcoming-events-container">
       {% for event in upcoming_events %}
         {% if event.img_url %}
           <img class="event-img" src="{{event.image_url}}">
         {% endif %}
-        <h4 style="">Hackathon: {{event.title}}</h4>
+        <h4 style="">{{event.title}}</h4>
         <p>{{event.date}}</p>
         <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
       {% endfor %}

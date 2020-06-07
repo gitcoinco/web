@@ -565,20 +565,35 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     notifications_count = get_notification_count(profile, days_ago, from_date)
 
     upcoming_events = []
-    if upcoming_hackathon:
-        for hackathon in upcoming_hackathon:
-            upcoming_events = upcoming_events + [{
-                'event': hackathon,
-                'title': hackathon.name,
-                'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
-                'url': hackathon.url,
-                'date': hackathon.start_date.strftime("%Y-%m-%d")
-            }]
+    for hackathon in upcoming_hackathon:
+        upcoming_events = upcoming_events + [{
+            'event': hackathon,
+            'title': f"Hackathon Start: {hackathon.name}",
+            'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+            'url': hackathon.url,
+            'date': hackathon.start_date.strftime("%Y-%m-%d")
+        }]
+    for hackathon in upcoming_hackathon:
+        upcoming_events = upcoming_events + [{
+            'event': hackathon,
+            'title': f"Hackathon End: {hackathon.name}",
+            'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+            'url': hackathon.url,
+            'date': hackathon.end_date.strftime("%Y-%m-%d")
+        }]
+    for ele in upcoming_dates():
+        upcoming_events = upcoming_events + [{
+            'event': ele,
+            'title': ele.title,
+            'image_url': ele.img_url,
+            'url': ele.url,
+            'date': ele.date.strftime("%Y-%m-%d")
+        }]
+    upcoming_events = sorted(upcoming_events, key=lambda ele: ele['date'])
 
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
-        'upcoming_dates': upcoming_dates(),
         'email_announcements': email_announcements(),
         'subscriber': sub,
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
