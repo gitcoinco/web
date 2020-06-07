@@ -1,0 +1,26 @@
+{
+    "symbol": "ECU",
+    "address": "0xd3CDc4e75750DC1e59F8342200742B6B29490e70",
+    "overview":{
+          "en": "We at ECU are introducing an alternative to the current instabilities of cryptos with a token that will not depend on current BTC price thereby giving confidence to its holders and users that Decurian will always have a value in both digital and real worlds. Decurian will have an upper hand on most crypto assets because of it’s primary use as the sole token accepted by the meagainstu.com site.",
+          "zh": ""
+    },
+    "email": "info@ecucoins.com",
+    "website": "https://ecucoins.com",
+    "state": "NORMAL",
+    "published_on": "2019-12-11",
+    "initial_price":{
+          "ETH":"",
+          "USD":"5 USD",
+          "BTC":""
+    },
+    "links": {
+      "facebook": "https://www.facebook.com/decuriancrypto",
+      "twitter": "https://twitter.com/DecurianCrypto",
+      "telegram": "",
+      "github": "",
+      "reddit": "",
+      "medium": "",
+      "discord": ""
+    }
+} 
