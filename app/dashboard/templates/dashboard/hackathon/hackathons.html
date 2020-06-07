@@ -180,82 +180,74 @@
       </div>
 
       <div class="row my-4">
-      {% for event in events %}
       {% if events|length %}
-        <div class="container custom-container">
-          <div class="row my-5">
-              {% for hackathon in hackathons %}
-                <style>
-                  #{{event.hackathon.slug}} .card-header {
-                    background: {% firstof event.hackathon.background_color or 'rgb(25, 0, 63)' %};
-                  }
-                </style>
+      <div class="container custom-container">
+      <div class="row">
+      {% for event in events %}
+          <style>
+            #{{event.hackathon.slug}} .card-header {
+              background: {% firstof event.hackathon.background_color or 'rgb(25, 0, 63)' %};
+            }
+          </style>
 
-                <div class="col-xs-12 col-md-9 col-lg-8 col-xl-5 mx-auto hackathon-list {{ event.title }} {% if event.title != default_tab %}hidden{% endif %}">
+          <div class="col-xs-12 col-md-9 col-lg-8 col-xl-5 mx-auto hackathon-list {{ event.title }} {% if event.title != default_tab %}hidden{% endif %}">
 
-                  <div class="card flex-row flex-wrap mb-5" id="{{ event.hackathon.slug }}">
+            <div class="card flex-row flex-wrap mb-5" id="{{ event.hackathon.slug }}">
 
-                    <div class="card-header text-center col-3 col-sm-4 px-0 border-0 my-auto">
-                      {% firstof event.hackathon.logo_svg or event.hackathon.logo as logo %}
-                      {% if logo %}
-                        <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ logo }}" alt="Hackathon logo" />
-                      {% else %}
-                        <div class="hackathon-card-logo text-center px-3 font-caption">
-                          {{ event.hackathon.name }}
-                        </div>
-                      {% endif %}
-                    </div>
-
-                    <div class="card-body col-9 col-sm-8">
-                      <h5 class="font-subheader font-weight-semibold">
-                        <a href="{% url 'hackathon' event.hackathon.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
-                          {{ event.hackathon.name }}
-                        </a>
-                      </h5>
-                      <div class="font-smaller-2">
-                        <span class>From</span>
-                        <time class="font-weight-bold" datetime="{{ event.hackathon.start_date|date:'c' }}">{{ event.hackathon.start_date|date:"m/d/Y" }}</time>
-                        <span>To</span>
-                        <time class="font-weight-bold" datetime="{{ event.hackathon.end_date|date:'c' }}">{{ event.hackathon.end_date|date:"m/d/Y" }}</time>
-                      </div>
-                      <div class="row">
-                        <div class="col-4 font-smaller-2"><strong>${{ event.value_in_usdt }}</strong> in prizes</div>
-                        <div class="col-4 font-smaller-2"><i class="fas fa-user-alt"></i> {{ event.registrants }} builders</div>
-                      </div>
-                      <div class="mt-3 hackathon-actions">
-                        {% if event.hackathon.end_date|timesince <= "1 min" %}
-                          <a href="{% url 'hackathon_onboard' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                            <i class="fas fa-user-plus mr-2 d-none d-sm-inline"></i>
-                            Join
-                          </a>
-                        {% endif %}
-                        {% if event.hackathon.start_date|timesince >= "1 min" %}
-                          <a href="{% url 'hackathon_prizes' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                            <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
-                            Prizes
-                          </a>
-                        {% endif %}
-                        {% if event.hackathon.show_results %}
-                          <a href="{% url 'hackathon_projects' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                            <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
-                            Projects
-                          </a>
-                        {% endif %}
-                        {% if hackathon.display_showcase %}
-                          <a href="{% url 'hackathon_showcase_proxy' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                            <i class="fas fa-rocket mr-2 d-none d-sm-inline"></i>
-                            Showcase
-                          </a>
-                        {% endif %}
-                      </div>
-                    </div>
+              <div class="card-header text-center col-3 col-sm-4 px-0 border-0 my-auto">
+                {% firstof event.hackathon.logo_svg or event.hackathon.logo as logo %}
+                {% if logo %}
+                  <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ logo }}" alt="Hackathon logo" />
+                {% else %}
+                  <div class="hackathon-card-logo text-center px-3 font-caption">
+                    {{ event.hackathon.name }}
                   </div>
+                {% endif %}
+              </div>
+
+              <div class="card-body col-9 col-sm-8">
+                <h5 class="font-subheader font-weight-semibold">
+                  <a href="{% url 'hackathon' event.hackathon.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
+                    {{ event.hackathon.name }}
+                  </a>
+                </h5>
+                <div class="font-smaller-2">
+                  <span class>From</span>
+                  <time class="font-weight-bold" datetime="{{ event.hackathon.start_date|date:'c' }}">{{ event.hackathon.start_date|date:"m/d/Y" }}</time>
+                  <span>To</span>
+                  <time class="font-weight-bold" datetime="{{ event.hackathon.end_date|date:'c' }}">{{ event.hackathon.end_date|date:"m/d/Y" }}</time>
                 </div>
-              {% endfor %}
+                <div class="row">
+                  <div class="col-4 font-smaller-2"><strong>${{ event.value_in_usdt }}</strong> in prizes</div>
+                  <div class="col-4 font-smaller-2"><i class="fas fa-user-alt"></i> {{ event.registrants }} builders</div>
+                </div>
+                <div class="mt-3 hackathon-actions">
+                  {% if event.hackathon.end_date|timesince <= "1 min" %}
+                    <a href="{% url 'hackathon_onboard' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-user-plus mr-2 d-none d-sm-inline"></i>
+                      Join
+                    </a>
+                  {% endif %}
+                  {% if event.hackathon.start_date|timesince >= "1 min" %}
+                    <a href="{% url 'hackathon_prizes' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
+                      Prizes
+                    </a>
+                  {% endif %}
+                  {% if event.hackathon.show_results %}
+                    <a href="{% url 'hackathon_projects' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
+                      Projects
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      {% endif %}
       {% endfor %}
+      </div>
+      </div>
+      {% endif %}
       </div>
 
       <div class="row my-4">
