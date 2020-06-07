@@ -1,0 +1,11 @@
+{
+	"symbol": "CC",
+	"address": "0xc6A8522e24a1d33Af8cE3fd6F2ea0aBB806b5315",
+	"overview": {
+		"en": "CC,Is a decentralized Oracle network used for smart contracts to safely interact with resources outside the blockchain.",
+		"zh": "CC,是一个分散的Oracle网络,用于智能合约,以安全地与区块链外部的资源交互"
+	},
+	"website": "http://www.ctb.life/",
+	"whitepaper": "http://www.ctb.life/doc/book.pdf",
+	"published_on": "2020-06-08"
+}
