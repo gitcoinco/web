@@ -129,7 +129,7 @@
           <img class="event-img" src="{{event.img_url}}">
         {% endif %}
         <h4 style="">{{event.title}}</h4>
-        <p>{{event.date}}</p>
+        <p>{{event.date|date:'Y-m-d' }}</p>
         <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
       {% endfor %}
     </div>
@@ -139,7 +139,7 @@
         {% if event.img_url %}
           <img class="event-img" src="{{event.image_url}}">
         {% endif %}
-        <h4 style="">{{event.title}}</h4>
+        <h4 style="">Hackathon: {{event.title}}</h4>
         <p>{{event.date}}</p>
         <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
       {% endfor %}

@@ -567,13 +567,13 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     upcoming_events = []
     if upcoming_hackathon:
         for hackathon in upcoming_hackathon:
-            upcoming_events.append({
+            upcoming_events = upcoming_events + [{
                 'event': hackathon,
                 'title': hackathon.name,
                 'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
                 'url': hackathon.url,
-                'date': hackathon.start_date.strftime("%Y-%d-%m")
-            })
+                'date': hackathon.start_date.strftime("%Y-%m-%d")
+            }]
 
     params = {
         'old_bounties': old_bounties,
