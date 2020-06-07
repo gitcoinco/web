@@ -111,7 +111,7 @@ class PersonalToken(SuperModel):
     token_symbol = models.CharField(max_length=10, null=True)
     token_address = models.CharField(max_length=50)
     token_owner_address = models.CharField(max_length=255, blank=True)
-    token_owner_profile = models.OneToOneField(
+    token_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='token_created', blank=True
     )
     total_minted = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True, help_text='Total minted')
@@ -161,7 +161,7 @@ def psave_ptoken(sender, instance, **kwargs):
 
 
 class PurchasePToken(SuperModel):
-    ptoken = models.OneToOneField(PersonalToken, null=True, on_delete=models.SET_NULL)
+    ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
     amount = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
