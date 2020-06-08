@@ -95,19 +95,27 @@ Vue.mixin({
 
       switch (token_name) {
         case 'ETC':
-          qr_string = `ethereum:${address}`;
+          qr_string = value ?
+            `ethereum:${address}?value=${value}` :
+            `ethereum:${address}`;
           break;
 
         case 'cUSD':
-          qr_string = `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]`;
+          qr_string = value ?
+            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]` :
+            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address)?args=[${address}]`;
           break;
 
         case 'cGLD':
-          qr_string = `celo:${address}?value=${value}`;
+          qr_string = value ?
+            `celo:${address}?value=${value}` :
+            `celo:${address}`;
           break;
 
         case 'ZIL':
-          qr_string = `zilliqa:${address}`;
+          qr_string = value ?
+            `zilliqa://${address}?amount=${value}e12` :
+            `zilliqa://${address}`;
           break;
       }
 
@@ -512,6 +520,7 @@ if (document.getElementById('gc-bounty-detail')) {
         isOwnerAddress: false,
         fulfillment_context: {
           active_step: 'check_wallet_owner',
+          include_amount_in_qr: true,
           amount: 0
         },
         decimals: 18,
