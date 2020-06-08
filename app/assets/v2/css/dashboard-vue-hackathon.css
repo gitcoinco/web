@@ -160,10 +160,6 @@
   height: 50vh;
 }
 
-form .col:first-child {
-  border-top: none;
-}
-
 .card-bg {
   background-color: #0C1A27;
   padding: 1.8em;
