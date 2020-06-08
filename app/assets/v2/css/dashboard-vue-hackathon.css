@@ -297,7 +297,7 @@ form .col:first-child {
 }
 
 @media (max-width: 767.98px) {
-  .navbar-brand img {
+  .navbar-brand img, .navbar-brand svg {
     height: 20px;
   }
 
