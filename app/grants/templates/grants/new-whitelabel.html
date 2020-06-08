@@ -209,4 +209,11 @@
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/grants/new.js" %}"></script>
+  <script>
+    is_logged_in = {{ is_logged_in }};
+    if (is_logged_in == 0) {
+        _alert("You must be logged in to register your DApp");
+        $('#new_button').prop('disabled', true);
+    }
+  </script>
 </html>

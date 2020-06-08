@@ -201,7 +201,7 @@ class Command(BaseCommand):
             print(rankings.count(), " to announce")
             for ranking in rankings:
                 profile_link = f"<a href=/{ranking.profile}>@{ranking.profile}</a>"
-                copy += f" - {profile_link} was ranked <strong>#{ranking.number}</strong>. <BR>"
+                copy += f" - {profile_link} was ranked <strong>#{ranking.number}</strong> & was paid <strong>{ranking.match_total} DAI</strong>. <BR>"
             metadata = {
                 'copy': copy,
             }

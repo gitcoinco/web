@@ -17,15 +17,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
 import os
+from decimal import Decimal
 from secrets import token_hex
 
-from perftools.models import JSONStore
-from decimal import Decimal
-from gas.utils import eth_usd_conv_rate
 from economy.utils import ConversionRateNotFoundError, convert_amount
+from gas.utils import eth_usd_conv_rate
+from perftools.models import JSONStore
 
-import logging
 logger = logging.getLogger(__name__)
 
 def get_upload_filename(instance, filename):

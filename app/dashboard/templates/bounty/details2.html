@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/rating.css" %}"/>
     {% include 'shared/fbpixel.html' %}
   </head>
 
@@ -482,6 +482,16 @@
                                 </a>
                               </p>
 
+                              <div class="text-center py-3">
+                                <qrcode v-if="fulfillment_context.include_amount_in_qr" :string="getQRString(bounty.token_name, fulfillment.fulfiller_address, fulfillment_context.amount)"></qrcode>
+                                <qrcode v-else :string="getQRString(bounty.token_name, fulfillment.fulfiller_address)"></qrcode>
+
+                                <div class="custom-control custom-switch mt-4">
+                                  <input type="checkbox" class="custom-control-input" id="include_amount_in_qr" v-model="fulfillment_context.include_amount_in_qr" checked>
+                                  <label class="custom-control-label" for="include_amount_in_qr">Include amount in QR code</label>
+                                </div>
+                              </div>
+
                               <div class="font-caption payout-summary-container p-3 mb-4">
                                 <p class="mb-1">
                                   From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
@@ -499,9 +509,6 @@
                                 </p>
                               </div>
 
-                              <div class="text-center py-3">
-                                <qrcode :string="getQRString(bounty.token_name, fulfillment.fulfiller_address)"></qrcode>
-                              </div>
                               <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
                                 @click="fulfillmentComplete(fulfillment.pk, $event)"
                               >I have paid
@@ -533,7 +540,19 @@
                                 to make the payment with the details below:
                               </p>
 
-                              <div class="font-caption payout-summary-container p-3 mb-4">
+                              <p class="font-caption text-medium-dark-grey mb-2">
+                                Input the
+                                <span class="font-weight-bold">Transaction ID</span>
+                                of the payment:
+                              </p>
+                              <div class="payout-tx-container">
+                                <input v-model="fulfillment_context.payout_tx_id"
+                                  name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
+                                  class="w-100 p-2 font-smaller-5 border-0"
+                                >
+                              </div>
+
+                              <div class="font-caption payout-summary-container p-3 my-4">
                                 <p class="mb-1">
                                   From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
                                 </p>
@@ -548,18 +567,6 @@
                                     Copy
                                   </a>
                                 </p>
-                              </div>
-
-                              <p class="font-caption text-medium-dark-grey mb-2">
-                                Input the
-                                <span class="font-weight-bold">Transaction ID</span>
-                                of the payment:
-                              </p>
-                              <div class="payout-tx-container">
-                                <input v-model="fulfillment_context.payout_tx_id"
-                                  name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
-                                  class="w-100 p-2 font-smaller-5 border-0"
-                                >
                               </div>
 
                               <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
