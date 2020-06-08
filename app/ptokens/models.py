@@ -115,7 +115,7 @@ class PersonalToken(SuperModel):
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='token_created', blank=True
     )
     total_minted = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True, help_text='Total minted')
-    txid = models.CharField(max_length=255, default='')
+    txid = models.CharField(max_length=255, unique=True)
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     value = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     objects = PersonalTokenQuerySet.as_manager()
@@ -144,9 +144,9 @@ class RedemptionToken(SuperModel):
     ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
     redemption_state = models.CharField(max_length=50, choices=REDEMPTION_STATUS_CHOICES, default='request', db_index=True)
     network = models.CharField(max_length=255, default='')
-    reason = models.CharField(max_length=1000, default='')
+    reason = models.CharField(max_length=1000, blank=True)
     total = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True, help_text='Total ptokens to redeem')
-    txid = models.CharField(max_length=255, default='')
+    txid = models.CharField(max_length=255, blank=True)
     redemption_accepted = models.DateTimeField(null=True)
     redemption_requester = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='redemptions', blank=True
@@ -162,11 +162,11 @@ def psave_ptoken(sender, instance, **kwargs):
 
 class PurchasePToken(SuperModel):
     ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
-    amount = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
+    amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    network = models.CharField(max_length=255, default='')
-    txid = models.CharField(max_length=255, default='')
+    network = models.CharField(max_length=255)
+    txid = models.CharField(max_length=255, unique=True)
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     web3_created = models.DateTimeField(db_index=True)
     token_holder_address = models.CharField(max_length=255, blank=True)
