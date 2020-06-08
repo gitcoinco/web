@@ -930,3 +930,8 @@ textarea.status-textarea {
 .dark-mode .bg-light {
   background-color: var(--bg-shade-0)!important;
 }
+
+.svg-animated-logo {
+  height: 42px;
+  max-width: 100%;
+}
