@@ -14,7 +14,7 @@ const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'in
 const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
 
 // Grant data
-let grantHeaders = [ 'Grant', 'Amount', 'Type', 'Total CLR Match Amount' ]; // cart column headers
+let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
 let grantData = []; // data for grants in cart, initialized in mounted hook
 
 
