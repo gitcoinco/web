@@ -235,14 +235,22 @@ Vue.component('grants-cart', {
           // Compare allowances and request approval if needed
           if (allowance.lt(new BN(requiredAllowance))) {
             indicateMetamaskPopup();
-            const txHash = await tokenContract.methods
+            tokenContract.methods
               .approve(bulkCheckoutAddress, MAX_UINT256)
-              .send({ from: userAddress });
-
-            console.log('Approval transaction: ', txHash);
-            indicateMetamaskPopup(true);
+              .send({ from: userAddress })
+              .on('transactionHash', (txHash) => { // eslint-disable-line no-loop-func
+                console.log('Approval transaction: ', txHash);
+                indicateMetamaskPopup(true);
+              })
+              .on('confirmation', (confirmationNumber, receipt) => {
+                // TODO?
+              })
+              .on('error', (error, receipt) => {
+                // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+                this.handleError(error);
+              });
           }
-        } // end for each token being used for donations
+        } // end approvals for each token being used for donations
 
         // Get the total ETH we need to send
         const initialValue = new BN('0');
@@ -259,23 +267,33 @@ Vue.component('grants-cart', {
           return donation;
         });
 
-        // Estimate gas to send all of them
-        // Arbitrarily choose to use a gas limit 10% higher than estimated gas
-        bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
-        console.log('donationInputs: ', donationInputs);
-        const estimatedGas = await bulkTransaction.methods
-          .donate(donationInputs)
-          .estimateGas({ from: userAddress, value: ethAmountString});
-        const gasLimit = Math.ceil(1.1 * estimatedGas);
+        // Estimate gas
+        // Based on tests, use heuristic to get gas estimate
+        const gasLimit = donations.reduce((accumulator, currentValue) => {
+          return currentValue.token === ETH_ADDRESS
+            ? accumulator + 50000// ETH donation gas estimate
+            : accumulator + 100000; // token donation gas estimate
+        }, 0);
 
         // Send the transaction
-        indicateMetamaskPopup();
-        const txHash = await bulkTransaction.methods
-          .donate(donationInputs)
-          .send({ from: userAddress, gas: gasLimit, value: ethAmountString });
+        const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
 
-        console.log('Donation transaction: ', txHash);
-        indicateMetamaskPopup(true);
+        indicateMetamaskPopup();
+        bulkTransaction.methods
+          .donate(donationInputs)
+          .send({ from: userAddress, gas: gasLimit, value: ethAmountString })
+          .on('transactionHash', (txHash) => {
+            console.log('Donation transaction: ', txHash);
+            indicateMetamaskPopup(true);
+          })
+          .on('confirmation', (confirmationNumber, receipt) => {
+            // TODO?
+          })
+          .on('error', (error, receipt) => {
+            // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+            this.handleError(error);
+          });
+
       } catch (err) {
         this.handleError(err);
       }
