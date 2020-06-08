@@ -155,6 +155,21 @@ Vue.component('grants-cart', {
       }, 0);
 
       return gasLimit;
+    },
+
+    maxPossibleTransactions() {
+      if (!this.donationsTotal) {
+        return '-';
+      }
+
+      let number = 1;
+
+      Object.keys(this.donationsTotal).forEach((token) => {
+        if (token !== 'ETH') {
+          number += 1;
+        }
+      });
+      return number;
     }
   },
 
