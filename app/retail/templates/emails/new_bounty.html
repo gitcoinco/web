@@ -24,6 +24,7 @@
     width: 45%;
     height: 35%;
     margin-top: 40px;
+    max-width: 250px;
   }
 
   .upcoming-events-container h4 {
@@ -101,18 +102,43 @@
 <HR>
 {% endif %}
 
+{% if chats_count %}
+
+<h3 class="no-subtitle" style="margin-top: 15px;">💬 {{chats_count}} New Chat Messages</h3>
+
+  <p style="margin-bottom: 25px;">You have <a href="{{base_url}}{% url 'inbox:inbox_view' %}" style="font-weight: bold;">{{ chats_count }} unread chats</a>.Check them out</p>
+
+<a href={{base_url}}>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button large" href="https://chat.gitcoin.co">{% trans "Read Messages" %}</a>
+  </div>
+</a>
+
+<HR>
+{% endif %}
+
+<div style="text-align: center;">
+  {% if notifications_count %}
+  <h3 class="no-subtitle" style="margin-top: 15px;">🔵  {{notifications_count}} Unread Notifications</h3>
+
+    <p style="margin-bottom: 25px;">You have <a href="{{base_url}}{% url 'inbox:inbox_view' %}" style="font-weight: bold;">{{ notifications_count }} unread notifications</a>.Check them out</p>
+  <div style="margin-bottom: 2em; margin-top: 2em;">
+    <a class="button large" href="https://gitcoin.co/inbox">{% trans "Read Notifications" %}</a>
+  </div>
+  <HR>
+  {% endif %}
+</div>
+
+
 {% if activities %}
   <h3 class="no-subtitle" style="margin-top: 15px;">{% trans "💬Town Square Posts You've Missed" %}</h3>
   <div class="container" style="text-align: left; padding: 20px 10px">
     <div class="col-12 col-md-10 col-lg-8 mx-auto">
       {% include 'shared/activity_container.html' with hide_loading=1 for_email=1 %} 
     </div>
-    <div style="text-align: center;">
-      {% if notifications_count %}
-        <p style="margin-bottom: 45px;">You have <a href="{% url 'inbox:inbox_view' %}" style="font-weight: bold;">{{ notifications_count }} unread notifications</a>. Check them out to see the latest comments on your post!</p>
-      {% endif %}
-      {% include 'emails/shared_activities_actions.html' with action='custom' action_copy='View More' action_url='/townsquare' %}
-  </div>
+  <div style="text-align: center;">
+    {% include 'emails/shared_activities_actions.html' with action='custom' action_copy='View More' action_url='/townsquare' %}
+    </div>
   </div>
 {% endif %}
 </div>
@@ -123,17 +149,10 @@
     <h5 style="color: #ffffff;">{% trans "Upcoming events from the Gitcoin universe!" %}</h5>
 
     <div class="upcoming-events-container">
-      {% for event in upcoming_dates %}
-        <img class="event-img" src="{{event.img_url}}">
-        <h4 style="">{{event.title}}</h4>
-        <p>{{event.date}}</p>
-        <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
-      {% endfor %}
-    </div>
-
-    <div class="upcoming-events-container">
       {% for event in upcoming_events %}
-        <img class="event-img" src="{{event.image_url}}">
+        {% if event.img_url %}
+          <img class="event-img" src="{{event.image_url}}">
+        {% endif %}
         <h4 style="">{{event.title}}</h4>
         <p>{{event.date}}</p>
         <a style="text-decoration: underline;" href="{{event.url}}">Read More ></a>
@@ -145,7 +164,23 @@
 {% endif %}
 
 <div class="primary-content text-center" {% if not upcoming_events %} style="padding-top: 0;" {% endif %}>
-  {% if not upcoming_events %} <hr>  {% endif %}
+
+
+{% if trending_avatar %}
+  <div style="margin-bottom: 5em;">
+    <h3 class="no-subtitle">{% trans "👤 Trending Avatar" %}: {{trending_avatar.humanized_name}}</h3>
+    <div style="margin-top: 25px; ">
+      <a href="{{trending_avatar.url}}">
+        <img src='{{trending_avatar.img_url}}' style="max-width: 200px; height: 200px; border-radius: 100px;">
+      </a>
+    </div>
+    <br>
+    <div style="margin-top: 25px; ">
+      <a class="button" style="text-decoration: underline;" href="{{trending_avatar.url}}">Try it on ></a>
+    </div>
+  </div>
+<HR>
+{% endif %}
 {% if quest_of_the_day %}
   <h3 class="no-subtitle" style="margin-top: 50px">{% trans "🎯Quest of The Day" %}</h3>
   {% include 'emails/quest_small.html' with quest=quest_of_the_day small=1 %}
@@ -170,7 +205,6 @@ This action expires at end of day, so act soon!
 <HR>
 {% endif %}
 
-
 {% if bounties %}
   <div style="margin-bottom: 5em;">
     <h3 class="no-subtitle">{% trans "💰Start Earning!" %}</h3>
@@ -181,6 +215,7 @@ This action expires at end of day, so act soon!
 
   </div>
 {% endif %}
+
 
 {% if old_bounties %}
 

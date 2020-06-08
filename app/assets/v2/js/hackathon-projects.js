@@ -1,4 +1,35 @@
 // document.result.pk
+const submitProject = (logo, data) => {
+  let formData = new FormData();
+
+  formData.append('logo', logo);
+
+  for (let i = 0; i < data.length; i++) {
+    formData.append(data[i].name, data[i].value);
+  }
+
+  const sendConfig = {
+    url: '/modal/save_project/',
+    method: 'POST',
+    data: formData,
+    processData: false,
+    dataType: 'json',
+    contentType: false
+  };
+
+  $.ajax(sendConfig).done(function(response) {
+    if (!response.success) {
+      return _alert(response.msg, 'error');
+    }
+    delete localStorage['pendingProject'];
+    $('#modalProject').bootstrapModal('hide');
+    return _alert({message: response.msg}, 'info');
+
+  }).fail(function(data) {
+    _alert(data.responseJSON['error'], 'error');
+  });
+};
+
 const projectModal = (bountyId, projectId) => {
   $('#modalProject').bootstrapModal('hide');
   const modalUrl = projectId ? `/modal/new_project/${bountyId}/${projectId}/` : `/modal/new_project/${bountyId}/`;
@@ -14,40 +45,14 @@ const projectModal = (bountyId, projectId) => {
     userSearch('.team-users', false, '', data, true, false);
     $('#modalProject').bootstrapModal('show');
     $('[data-toggle="tooltip"]').bootstrapTooltip();
-
+    $('#looking-members').on('click', function() {
+      $('.looking-members').toggle();
+    });
     $('#projectForm').on('submit', function(e) {
-      e.preventDefault();
       let logo = $(this)[0]['logo'].files[0];
-      let formData = new FormData();
       let data = $(this).serializeArray();
 
-      formData.append('logo', logo);
-
-      for (let i = 0; i < data.length; i++) {
-        formData.append(data[i].name, data[i].value);
-      }
-
-      const sendConfig = {
-        url: '/modal/save_project/',
-        method: 'POST',
-        data: formData,
-        processData: false,
-        dataType: 'json',
-        contentType: false
-      };
-
-      $.ajax(sendConfig).done(function(response) {
-        if (!response.success) {
-          return _alert(response.msg, 'error');
-        }
-        delete localStorage['pendingProject'];
-        $('#modalProject').bootstrapModal('hide');
-        return _alert({message: response.msg}, 'info');
-
-      }).fail(function(data) {
-        _alert(data.responseJSON['error'], 'error');
-      });
-
+      submitProject(logo, data);
     });
   });
 
