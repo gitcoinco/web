@@ -125,6 +125,36 @@ Vue.component('grants-cart', {
         });
       });
       return donations;
+    },
+
+    // Amount of ETH that needs to be sent along with the transaction
+    donationInputsEthAmount() {
+      // Get the total ETH we need to send
+      const initialValue = new BN('0');
+      const ethAmountBN = this.donationInputs.reduce((accumulator, currentValue) => {
+        return currentValue.token === ETH_ADDRESS
+          ? accumulator.add(new BN(currentValue.amount)) // ETH donation
+          : accumulator.add(new BN('0')); // token donation
+      }, initialValue);
+
+      return ethAmountBN.toString(10);
+    },
+
+    // Estimated gas limit for the transaction
+    donationInputsGasLimit() {
+      // Based on contract tests, we use the heuristic below to get gas estimate. This is done
+      // instead of `estimateGas()` so we can send the donation transaction before the approval txs
+      // are confirmed, because if the approval txs are not confirmed then estimateGas will fail.
+      // The estimates used here are based on single donations (i.e. one item in the cart). Because
+      // gas prices go down with batched transactions, whereas this assumes they're constant,
+      // this gives us a conservative estimate
+      const gasLimit = this.donationInputs.reduce((accumulator, currentValue) => {
+        return currentValue.token === ETH_ADDRESS
+          ? accumulator + 50000// ETH donation gas estimate
+          : accumulator + 100000; // token donation gas estimate
+      }, 0);
+
+      return gasLimit;
     }
   },
 
@@ -243,11 +273,16 @@ Vue.component('grants-cart', {
      */
     async checkout() {
       try {
+        // Setup -----------------------------------------------------------------------------------
         await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
-        // Get token approvals
+        // Get list of tokens user is donating with
         const selectedTokens = Object.keys(this.donationsToGrants);
+
+        // Token approval checks -------------------------------------------------------------------
+        // For each token, check if an approval is needed, and if so save off the data
+        let allowanceData = [];
 
         for (let i = 0; i < selectedTokens.length; i += 1) {
           const tokenDetails = this.getTokenByName(selectedTokens[i]);
@@ -259,7 +294,6 @@ Vue.component('grants-cart', {
 
           // Get current allowance
           const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-
           const allowance = new BN(
             await tokenContract.methods
               .allowance(userAddress, bulkCheckoutAddress)
@@ -276,71 +310,80 @@ Vue.component('grants-cart', {
               : accumulator.add(new BN('0')); // ETH donation
           }, initialValue);
 
-          // Compare allowances and request approval if needed
-          if (allowance.lt(new BN(requiredAllowance))) {
-            indicateMetamaskPopup();
-            tokenContract.methods
-              .approve(bulkCheckoutAddress, requiredAllowance.toString())
-              .send({ from: userAddress })
+          // If no allowance is needed, continue to next token
+          if (allowance.gte(new BN(requiredAllowance))) {
+            continue;
+          }
+
+          // If we do need to set the allowance, save off the required info
+          allowanceData.push({
+            allowance: requiredAllowance.toString(),
+            contract: tokenContract
+          });
+        } // end checking approval requirements for each token being used for donations
+
+        // Send donation if no approvals -----------------------------------------------------------
+        if (allowanceData.length === 0) {
+          // Send transaction and exit function
+          this.sendDonationTx(userAddress);
+          return;
+        }
+
+        // Get approvals then send donation --------------------------------------------------------
+        indicateMetamaskPopup();
+        for (let i = 0; i < allowanceData.length; i += 1) {
+          const allowance = allowanceData[i].allowance;
+          const contract = allowanceData[i].contract;
+          const approvalTx = contract.methods.approve(bulkCheckoutAddress, allowance);
+
+          // We split this into two very similar branches, because on the last approval
+          // we send the main donation transaction after we get the transaction hash
+          if (i !== allowanceData.length - 1) {
+            approvalTx.send({ from: userAddress })
+              .on('error', (error, receipt) => {
+                // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+                this.handleError(error);
+              });
+          } else {
+            approvalTx.send({ from: userAddress })
               .on('transactionHash', (txHash) => { // eslint-disable-line no-loop-func
-                console.log('Approval transaction: ', txHash);
                 indicateMetamaskPopup(true);
-              })
-              .on('confirmation', (confirmationNumber, receipt) => {
-                // TODO?
+                this.sendDonationTx(userAddress);
               })
               .on('error', (error, receipt) => {
                 // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
                 this.handleError(error);
               });
           }
-        } // end approvals for each token being used for donations
-
-        // Get the total ETH we need to send
-        const initialValue = new BN('0');
-        const ethAmountBN = this.donationInputs.reduce((accumulator, currentValue) => {
-          return currentValue.token === ETH_ADDRESS
-            ? accumulator.add(new BN(currentValue.amount)) // ETH donation
-            : accumulator.add(new BN('0')); // token donation
-        }, initialValue);
-        const ethAmountString = ethAmountBN.toString();
-
-        // Configure our donation inputs
-        const donationInputs = this.donationInputs.map(donation => {
-          delete donation.name;
-          return donation;
-        });
-
-        // Estimate gas
-        // Based on tests, use heuristic to get gas estimate
-        const gasLimit = this.donationInputs.reduce((accumulator, currentValue) => {
-          return currentValue.token === ETH_ADDRESS
-            ? accumulator + 50000// ETH donation gas estimate
-            : accumulator + 100000; // token donation gas estimate
-        }, 0);
-
-        // Send the transaction
-        const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
-
-        indicateMetamaskPopup();
-        bulkTransaction.methods
-          .donate(donationInputs)
-          .send({ from: userAddress, gas: gasLimit, value: ethAmountString })
-          .on('transactionHash', (txHash) => {
-            console.log('Donation transaction: ', txHash);
-            indicateMetamaskPopup(true);
-          })
-          .on('confirmation', (confirmationNumber, receipt) => {
-            // TODO?
-          })
-          .on('error', (error, receipt) => {
-            // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
-            this.handleError(error);
-          });
-
+        }
       } catch (err) {
         this.handleError(err);
       }
+    },
+
+    sendDonationTx(userAddress) {
+      // Configure our donation inputs
+      const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
+      const donationInputs = this.donationInputs.map(donation => {
+        delete donation.name;
+        return donation;
+      });
+
+      indicateMetamaskPopup();
+      bulkTransaction.methods
+        .donate(donationInputs)
+        .send({ from: userAddress, gas: this.donationInputsGasLimit, value: this.donationInputsEthAmount })
+        .on('transactionHash', (txHash) => {
+          console.log('Donation transaction: ', txHash);
+          indicateMetamaskPopup(true);
+        })
+        .on('confirmation', (confirmationNumber, receipt) => {
+          // TODO?
+        })
+        .on('error', (error, receipt) => {
+          // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+          this.handleError(error);
+        });
     },
 
     sleep(ms) {
