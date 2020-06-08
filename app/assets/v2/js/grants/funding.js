@@ -135,8 +135,11 @@ function showSideCart() {
         toggleSideCart();
     }
 
-    const cartTop = $('#side-cart').position().top;
-    window.scrollTo(0, cartTop);
+    // Scroll To top on mobile
+    if (window.innerWidth < 768) {
+        const cartTop = $('#side-cart').position().top;
+        window.scrollTo(0, cartTop);
+    }
 }
 
 function hideSideCart() {
