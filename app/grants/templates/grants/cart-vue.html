@@ -99,7 +99,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </div>
               </div>
               {% comment %} Cart contents {% endcomment %}
-              <div v-for="grant in grantData" class="grant-row">
+              <div v-for="(grant, index) in grantData" class="grant-row">
                 <div class="grant-row-style">
                   <div class="flex-container">
                     {% comment %} Title and logo {% endcomment %}
@@ -117,8 +117,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             placeholder="Amount">
                         </div>
                         <div class="form__select2" style="width: 60%">
-                          <select2 :options="currencies" v-model="grant.grant_donation_currency" class="form-control"
-                            placeholder="Select token">
+                          <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
+                            class="form-control" placeholder="Select token">
                           </select2>
                         </div>
                       </div>

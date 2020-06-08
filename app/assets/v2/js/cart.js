@@ -24,8 +24,8 @@ Vue.component('grants-cart', {
 
   data: function() {
     return {
-      adjustGitcoinFactor: false,
-      currencies: undefined,
+      adjustGitcoinFactor: false, // if true, show section for user to adjust Gitcoin's percentage
+      tokenList: undefined, // array of all tokens for selected network
       isLoading: undefined,
       gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
       grantHeaders,
@@ -34,6 +34,31 @@ Vue.component('grants-cart', {
   },
 
   computed: {
+    // Array of arrays, item i lists supported tokens for donating to grant given by grantData[i]
+    currencies() {
+      if (!this.grantData || !this.tokenList)
+        return undefined;
+
+      // Get supported tokens for each grant
+      const currencies = this.grantData.map(grant => {
+        // Return full list if grant accepts all tokens
+        if (grant.grant_token_address === '0x0000000000000000000000000000000000000000') {
+          return this.tokenList.map(token => token.name);
+        }
+
+        // Return ETH + selected token otherwise
+        let allowedTokens = ['ETH'];
+
+        this.tokenList.forEach(tokenData => {
+          if (tokenData.addr === grant.grant_token_address)
+            allowedTokens.push(tokenData.name);
+        });
+        return allowedTokens;
+      });
+
+      return currencies;
+    },
+
     // Percentage of donation that goes to Gitcoin
     gitcoinFactor() {
       return this.gitcoinFactorRaw / 100;
@@ -320,9 +345,9 @@ Vue.component('grants-cart', {
     // Read array of grants in cart from localStorage
     this.grantData = JSON.parse(window.localStorage.getItem('grants_cart'));
     // Wait until we can load token list
-    while (!this.currencies) {
+    while (!this.tokenList) {
       try {
-        this.currencies = tokens(network).map(token => token.name);
+        this.tokenList = tokens(network);
       } catch (err) {}
       await this.sleep(50); // every 50 ms
     }
