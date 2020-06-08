@@ -8,7 +8,9 @@ Vue.mixin({
     };
   },
   methods: {
-    chatWindow: function(handle) {
+    chatWindow: function(handle, event) {
+      event.preventDefault();
+
       let vm = this;
 
       const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
