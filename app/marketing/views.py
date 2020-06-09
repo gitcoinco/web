@@ -990,6 +990,12 @@ def trending_quests():
         ).order_by('-recent_attempts').all()[0:10]
     return quests
 
+def trending_avatar():
+    from avatar.models import AvatarTheme
+    cutoff_date = timezone.now() - timezone.timedelta(days=45)
+    avatar = AvatarTheme.objects.order_by("?")
+    return avatar.first()
+
 def quest_of_the_day():
     quest = trending_quests()[0]
     return quest
