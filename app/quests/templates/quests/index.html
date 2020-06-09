@@ -74,7 +74,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
     {% endif %}
     {% for unlocked, beaten, cooldown, quest in the_quests %}
-    <div id="{{difficulty_level}}" style="{% cycle 'background-color: #fafafa;' '' %}; width: 100px; display: contents; float: left; border-radius: 10px; height: 530px; text-align: center;" class="{{quest.style}} m-3 p-2 quest-card {% if not unlocked %} locked {% elif beaten %} beaten {% else %} available {% endif %} {% if cooldown %} cooldown {% endif %}">
+    <div id="{{difficulty_level}}" style="{% cycle 'background-color: #fafafa;' '' %}; width: 100px; tbody: 300px; overflow-y: auto; display: contents; float: left; border-radius: 10px; height: 530px; text-align: center;" class="{{quest.style}} m-3 p-2 quest-card {% if not unlocked %} locked {% elif beaten %} beaten {% else %} available {% endif %} {% if cooldown %} cooldown {% endif %}">
       <!-- Quest table -->
       <div class="container-fluid py-4">
          <table class="table table-hover" id="myTable">
