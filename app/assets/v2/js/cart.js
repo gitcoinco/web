@@ -482,7 +482,7 @@ Vue.component('grants-cart', {
         const comment = donation.comment === undefined ? '' : donation.comment;
 
         // Configure saveSubscription payload
-        const saveSubscriptionPayload = {
+        const saveSubscriptionPayload = new URLSearchParams({
           admin_address: donation.grant.grant_admin_address,
           amount_per_period: donation.grant.grant_donation_amount,
           comment,
@@ -509,29 +509,36 @@ Vue.component('grants-cart', {
           subscription_hash: '',
           token_address: tokenAddress,
           token_symbol: tokenName
-        };
+        });
 
         // Configure saveSplitTx payload
-        const saveSplitTxPayload = {
+        const saveSplitTxPayload = new URLSearchParams({
           csrfmiddlewaretoken: undefined, // TBD: Where is this from?
           signature: 'onetime',
           confirmed: false, // TBD: Is this sufficient? Who/when/how should it be updated in DB?
           split_tx_id: txHash, // TBD: This txhash is our bulk donation hash which seems to be what we want here
           sub_new_approve_tx_id: undefined, // TBD: Unlike saveSubscription, we have our txHash above so maybe this is unnecessary?
           subscription_hash: 'onetime'
-        };
+        });
 
         console.log('saveSubscriptionPayload: ', saveSubscriptionPayload);
         console.log('saveSplitTxPayload: ', saveSplitTxPayload);
 
+        // Configure headers
+        const headers = {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        };
+
         // Define parameter objects for POST request
         const saveSubscriptionParams = {
-          body: saveSubscriptionPayload,
-          method: 'POST'
+          method: 'POST',
+          headers,
+          body: saveSubscriptionPayload
         };
         const saveSplitTxParams = {
-          body: saveSplitTxPayload,
-          method: 'POST'
+          method: 'POST',
+          headers,
+          body: saveSplitTxPayload
         };
 
         // Send request
