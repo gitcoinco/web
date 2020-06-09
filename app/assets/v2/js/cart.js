@@ -29,7 +29,8 @@ Vue.component('grants-cart', {
       gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
       grantHeaders,
       grantData,
-      hideWalletAddress: true
+      hideWalletAddress: true,
+      windowWidth: window.innerWidth
     };
   },
 
@@ -37,6 +38,11 @@ Vue.component('grants-cart', {
     // Returns true if user is logged in with GitHub, false otherwise
     isLoggedIn() {
       return document.contxt.github_handle;
+    },
+
+    // Returns true of screen size is smaller than 576 pixels (Bootstrap's small size)
+    isMobileDevice() {
+      return this.windowWidth < 576;
     },
 
     // Array of arrays, item i lists supported tokens for donating to grant given by grantData[i]
@@ -438,6 +444,10 @@ Vue.component('grants-cart', {
       } catch (err) {}
       await this.sleep(50); // every 50 ms
     }
+    // Support responsive design
+    window.addEventListener('resize', () => {
+      this.windowWidth = window.innerWidth;
+    });
     // Cart is now ready
     this.isLoading = false;
   }

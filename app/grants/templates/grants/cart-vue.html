@@ -77,67 +77,86 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
             <div v-else class="container" style="padding-bottom: 10rem;">
               {% comment %} Cart header {% endcomment %}
-              <div class="flex-container font-smaller-2 text-left grant-header-row">
-                <div style="width: 25%">
-                  <div class="flex-container" style="justify-content: start">
-                    Grant
-                  </div>
+              <div v-if="!isMobileDevice"
+                class="row align-items-center justify-content-between font-smaller-2 text-left grant-header-row">
+                <div class="col-4">
+                  Grant
                 </div>
-                <div style="width: 20%">
+                <div class="col-3">
                   Amount
                 </div>
-                <div style="width: 15%">
-                  <div class="flex-container">
-                    Total CLR Match Amount
-                  </div>
+                <div class="col-2">
+                  Total CLR Match Amount
                 </div>
-                <div style="width: 3%; opacity: 40%; margin-left: 5rem;">
+                <div class="col-1">
                   &nbsp;
                 </div>
               </div>
-              {% comment %} Cart contents {% endcomment %}
-              <div v-for="(grant, index) in grantData" class="grant-row">
-                <div class="grant-row-style">
-                  <div class="flex-container">
-                    {% comment %} Title and logo {% endcomment %}
-                    <div style="width: 25%">
-                      <div class="flex-container" style="justify-content: start">
-                        <img :src="grant.grant_logo" alt="Grant logo" width="30">
-                        <div class="grant-name black">[[grant.grant_title]]</div>
-                      </div>
-                    </div>
-                    {% comment %} Grant amount and currency {% endcomment %}
-                    <div style="width: 20%; padding-right: 2rem">
-                      <div class="flex-container" style="justify-content: start">
-                        <div style="width: 60%; margin-right: 1rem">
-                          <input class="form-control" v-model.number="grant.grant_donation_amount" type="number"
-                            placeholder="Amount">
+              {% comment %} Cart Contents: MOBILE {% endcomment %}
+              <div v-if="isMobileDevice">
+                <div v-for="(grant, index) in grantData" class="grant-row">
+                  <div class="grant-row-style">
+                    <div class="row align-items-center justify-content-between">
+                      {% comment %} Logo, title, and delete button {% endcomment %}
+                      <div class="col-12">
+                        <div class="row flex-nowrap">
+                          <img class="col-2" style="padding:0 0.5rem" :src="grant.grant_logo" alt="Grant logo"
+                            width="40">
+                          <div class="col-8 grant-name black" style="padding:0">[[grant.grant_title]]</div>
+                          <div class="col-1" style="opacity: 40%">
+                            <i class="fas fa-trash-alt" style="cursor: pointer"
+                              @click="removeGrantFromCart(grant.grant_id)"></i>
+                          </div>
                         </div>
-                        <div class="form__select2" style="width: 60%">
+                      </div>
+                      {% comment %} Grant amount and curency {% endcomment %}
+                      <div class="col-12" style="margin-top:1rem;">
+                        <div class="row flex-nowrap justify-content-between">
+                          <input class="col-5 form-control" style="margin-left:0.5rem"
+                            v-model.number="grant.grant_donation_amount" type="number" placeholder="Amount">
                           <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
-                            class="form-control" placeholder="Select token">
+                            class="col-6 form-control" style="margin-right:0.5rem" placeholder="Select token">
                           </select2>
                         </div>
                       </div>
-                      <div class="font-smaller-3">
-                        + Add comment to owner
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% comment %} Cart Contents: NOT MOBILE {% endcomment %}
+              <div v-if="!isMobileDevice" v-for="(grant, index) in grantData" class="grant-row">
+                <div class="row align-items-center justify-content-between grant-row-style">
+                  {% comment %} Title and logo {% endcomment %}
+                  <div class="col-4">
+                    <div class="row">
+                      <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30">
+                      <div class="grant-name black">[[grant.grant_title]]</div>
+                    </div>
+                  </div>
+                  {% comment %} Grant amount and currency {% endcomment %}
+                  <div class="col-3">
+                    <div class="row flex-nowrap align-items-center justify-content-start">
+                      <input class="col-6 form-control" v-model.number="grant.grant_donation_amount" type="number"
+                        placeholder="Amount" style="margin-right: 1rem">
+                      <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
+                        class="col-6 form-control" placeholder="Select token">
+                      </select2>
+                    </div>
+                  </div>
+                  {% comment %} CLR Match Amount {% endcomment %}
+                  <div class="col-2">
+                    <div class="row align-items-center justify-content-between clr-match-box">
+                      <div>
+                        [[grant.grant_donation_clr_match]] [[grant.grant_donation_currency]]
                       </div>
+                      <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
+                        width="20">
                     </div>
-                    {% comment %} CLR match amount {% endcomment %}
-                    <div class="clr-match-box" style="width: 15%;">
-                      <div class="flex-container">
-                        <div>
-                          [[grant.grant_donation_clr_match]] [[grant.grant_donation_currency]]
-                        </div>
-                        <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
-                          width="20">
-                      </div>
-                    </div>
-                    {% comment %} Delete icon {% endcomment %}
-                    <div style="width: 3%; opacity: 40%; margin-left: 5rem;">
-                      <i class="fas fa-trash-alt" style="cursor: pointer"
-                        @click="removeGrantFromCart(grant.grant_id)"></i>
-                    </div>
+                  </div>
+                  {% comment %} Delete Icon {% endcomment %}
+                  <div class="col-1">
+                    <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
+                      @click="removeGrantFromCart(grant.grant_id)"></i>
                   </div>
                 </div>
               </div>
@@ -157,23 +176,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               </div>
 
               {% comment %} Hide wallet option {% endcomment %}
-              <div class="flex-container text-left cart-section black">
+              <div class="flex-container text-left grant-header-row black">
                 <div style="width: 100%">
                   <div class="flex-container" style="justify-content: start">
-                    <div>
-                      <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address">
-                      <span class="font-smaller-1 darker-gray"
-                        for="hide_wallet_address">{% trans "Hide my wallet address" %}</span>
-                      <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
-                        style="margin-left: 0.5rem;">
-                        {% trans "If this option is chosen, your wallet address will be hidden" %}</span>
-                    </div>
+                    <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address"
+                      style="margin-right:1rem">
+                    <span class="font-smaller-1 darker-gray"
+                      for="hide_wallet_address">{% trans "Hide my wallet address" %}</span>
+                    <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
+                      style="margin-left: 0.5rem;">
+                      {% trans "If this option is chosen, your wallet address will be hidden" %}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {% comment %} Contribution to Gitcoin notice / adjustment {% endcomment %}
-              <div class="flex-container text-left cart-section black" style="margin-top: 1rem">
+              <div class="flex-container text-left grant-header-row black">
                 <div style="width: 100%">
                   <div class="flex-container" style="justify-content: start">
                     <div id="gitcoin-grant-section" class="form__group-horizontal mt-2 mb-2">
@@ -216,21 +235,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                               v-model="gitcoinFactorRaw">
                             <p class="mb-0 text-center helper-text mx-0 font-caption">custom %</p>
                           </div>
-                          {% comment %} COMMENTED OUT THE NUMBER OF ROUNDS PART {% endcomment %}
-                          {% comment %} <div class="ml-3 gitcoin-grant-summary d-inline-block">
-                            <p class="font-title mb-0 text-center">
-                              <i class="fas fa-equals font-caption mr-2"></i>
-                              <span class="summary-gitcoin-amount">5</span>
-                              <span class="summary-token">
-                                {% if grant_has_no_token %} - {% else %} {{ grant.token_symbol }} {% endif %}
-                              </span>
-                            </p>
-                            <p class="mb-0 mx-0 font-caption text-center summary-rollup-gitcoin">
-                              {% trans "for" %} <span class="font-caption summary-period">-</span>
-                              <span class="font-caption summary-frequency-unit-gitcoin">-</span>
-                              (<span class="summary-frequency-gitcoin">-</span> times)
-                            </p>
-                          </div> {% endcomment %}
                         </div>
                       </div>
                     </div>
@@ -240,7 +244,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
               {% comment %} Summary {% endcomment %}
               <div class="flex-container font-bigger-1 text-left grant-header-row black"
-                style="font-weight: bold; margin-top: 3rem;">
+                style="font-weight: bold; margin-top: 1rem;">
                 <div style="width: 100%">
                   <div class="flex-container" style="justify-content: start">
                     SUMMARY
