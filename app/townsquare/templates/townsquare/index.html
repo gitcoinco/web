@@ -24,10 +24,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/theme_switcher.css" %}">
+    <link rel="stylesheet" href='{% static "v2/css/town_square.css" %}'>
+    <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'>
+    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'>
+    <link rel="stylesheet" href='{% static "v2/css/theme_switcher.css" %}'>
     <style>
       img.hackathon-card-logo{
         max-height: 5rem;
@@ -79,7 +79,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         margin: 0;
       }
     </style>
-    <script src="{% static "v2/js/theme_switcher.js" %}"></script> <!-- needs to be in the head section -->
+    <link rel="stylesheet" href='{% static "v2/css/bootstrap-vue.min.css" %}'/>
+    <script src='{% static "v2/js/theme_switcher.js" %}'></script>
   </head>
 
   <body class="{{ active }} bg-lightblue g-font-muli" >
@@ -278,17 +279,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
     </div>
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer_scripts.html' with slim=1 vue=1 %}
     {% include 'shared/activity_scripts.html' %}
-
     <!-- Send direct tip on comments -->
-    <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-    <script src="{% static "v2/js/ipfs.js" %}"></script>
-    <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
-    <script src="{% static "v2/js/abi.js" %}"></script>
-
-    <script src="{% static "v2/js/status.js" %}"></script>
-    <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
-    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
+    <script src='{% static "v2/js/lib/ipfs-api.js" %}'></script>
+    <script src='{% static "v2/js/ipfs.js" %}'></script>
+    <script src='{% static "v2/js/ethereumjs-accounts.js" %}'></script>
+    <script src='{% static "v2/js/abi.js" %}'></script>
+    <script src='{% static "v2/js/status.js" %}'></script>
+    <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
+    <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
   </body>
 </html>
