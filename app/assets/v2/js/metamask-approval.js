@@ -9,7 +9,7 @@ async function metamaskApproval() {
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
 
     try {
-      if (is_metamask_unlocked && is_metamask_approved) {
+      if (!is_metamask_unlocked || !is_metamask_approved) {
         var start_time = ((new Date()).getTime() / 1000);
 
         await ethereum.enable();
