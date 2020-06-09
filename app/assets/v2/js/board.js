@@ -1,4 +1,5 @@
 let contributorBounties = {};
+let pTokens = {};
 let bounties = {};
 let authProfile = document.contxt.profile_id;
 let skills = document.skills;
@@ -17,6 +18,19 @@ Vue.mixin({
         vm.isLoading[type] = false;
         vm.error[type] = 'Error fetching bounties. Please contact founders@gitcoin.co';
       });
+    },
+    fetchTokens: function(type) {
+      let vm = this;
+      let api = `/tokens/${type}/`;
+      let getTokens = fetchData (api, 'GET');
+
+      $.when(getTokens).then(function(response) {
+        vm.$set(vm.pTokens, type, response)
+        vm.isLoading[type] = false
+      }).catch(function() {
+        vm.isLoading[type] = false;
+        vm.error[type] = 'Error fetching tokens. Please contact founders@gitcoin.co';
+      })
     },
     fetchApplicants: function(id, key, type) {
       let vm = this;
@@ -155,6 +169,12 @@ Vue.mixin({
         vm.fetchContributorBounties('work_submitted');
         vm.fetchContributorBounties('interested');
       }
+      if (!Object.keys(vm.pTokens).length && persona === 'personal-tokens') {
+        vm.fetchTokens('open');
+        vm.fetchTokens('in_progress');
+        vm.fetchTokens('completed');
+        vm.fetchTokens('denied');
+      }
     },
     tabOnLoad() {
       let vm = this;
@@ -169,9 +189,14 @@ Vue.mixin({
     },
     redirect(url) {
       document.location.href = url;
+    },
+    createPToken() {
+      console.log(this.newPToken);
+      console.log(web3);
     }
   }
 });
+
 
 if (document.getElementById('gc-board')) {
   var app = new Vue({
@@ -185,11 +210,18 @@ if (document.getElementById('gc-board')) {
       expiredBounties: [],
       contributors: [],
       contributorBounties: contributorBounties,
+      pTokens: pTokens,
       expandedGroup: {'submitted': [], 'open': [], 'started': [], 'bountiesMatch': []},
       disabledBtn: false,
       authProfile: authProfile,
       skills: skills,
       matchingBounties: [],
+      newPToken: {
+        name: '',
+        symbol: '',
+        price: '',
+        supply: ''
+      },
       isLoading: {
         'open': true,
         'openContrib': true,
