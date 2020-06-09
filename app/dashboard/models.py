@@ -2576,6 +2576,8 @@ class HackathonRegistration(SuperModel):
         blank=True
     )
     referer = models.URLField(null=True, blank=True, help_text='Url comes from')
+    looking_team_members = models.BooleanField(default=False)
+    looking_project = models.BooleanField(default=False)
     registrant = models.ForeignKey(
         'dashboard.Profile',
         related_name='hackathon_registration',
@@ -5018,7 +5020,8 @@ class Question(SuperModel):
 
     TYPE_HOOKS = (
         ('NO_ACTION', 'No trigger any action'),
-        ('TOWNSQUARE_INTRO', 'Create intro on Townsquare')
+        ('TOWNSQUARE_INTRO', 'Create intro on Townsquare'),
+        ('LOOKING_TEAM_PROJECT', 'Looking for team or project')
     )
 
     hook = models.CharField(default='NO_ACTION', choices=TYPE_HOOKS, max_length=50)
@@ -5055,9 +5058,9 @@ class Answer(SuperModel):
 def psave_answer(sender, instance, created, **kwargs):
     if created:
         if instance.question.hook == 'TOWNSQUARE_INTRO':
-            looking_members = HackathonProject.objects.filter(hackathon=instance.hackathon,
-                                                              profiles__id=instance.user.profile.id,
-                                                              looking_members=True).exists()
+            registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
+                                                                registrant=instance.user.profile).first()
+
             Activity.objects.create(
                 profile=instance.user.profile,
                 hackathonevent=instance.hackathon,
@@ -5065,10 +5068,33 @@ def psave_answer(sender, instance, created, **kwargs):
                 metadata={
                     'answer': instance.id,
                     'intro_text': f'{instance.open_response or ""} #intro',
-                    'looking_members': looking_members,
+                    'looking_members': registration.looking_team_members if registration else False,
+                    'looking_project': registration.looking_project if registration else False,
+                    'hackathon_registration': registration.id if registration else 0
                 }
             )
+        elif instance.question.hook == 'LOOKING_TEAM_PROJECT':
+            registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
+                                                                registrant=instance.user.profile).first()
+            print(instance)
+            if registration:
+                if instance.choice.text.lower().find('team') != -1:
+                    registration.looking_team_members = True
 
+                if instance.choice.text.lower().find('project') != -1:
+                    registration.looking_project = True
+
+                registration.save()
+
+                activity = Activity.objects.filter(
+                    profile=instance.user.profile,
+                    hackathonevent=instance.hackathon,
+                    activity_type='hackathon_new_hacker').last()
+
+                if activity:
+                    activity.metadata['looking_team_members'] = registration.looking_team_members
+                    activity.metadata['looking_project'] = registration.looking_project
+                    activity.save()
 
 class Investigation(SuperModel):
     profile = models.ForeignKey(

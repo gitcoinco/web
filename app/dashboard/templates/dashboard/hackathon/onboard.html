@@ -298,12 +298,12 @@
       </div>
     </div>
     <div class="modal" id="questions-form" tabindex="-1" data-backdrop="static"  role="dialog" style="height: auto">
-      <div class="" role="document">
+      <div role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <a class="close" data-dismiss="modal" aria-label="Close" rel="modal:close">
               <span aria-hidden="true">&times;</span>
-            </button>
+            </a>
           </div>
           <div class="px-5">
               <form id="hackathon-poll">
@@ -484,7 +484,6 @@
         }
         poll_manager.carousel('prev');
       })
-
     </script>
     <script src="{% static 'v2/js/pages/hackathon-onboard.js' %}"></script>
 

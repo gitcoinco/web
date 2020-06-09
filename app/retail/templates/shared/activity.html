@@ -62,8 +62,17 @@
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
          <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
-
-         {% if row.hackathonevent %}
+         {% if row.metadata.looking_team_members %}
+           <span class="text-black"> is
+             <i class="fas fa-users gc-text-blue"></i>
+             <span>Looking for Team Members</span>
+           </span>
+         {% elif row.metadata.looking_project %}
+           <span class="text-black"> is
+             <i class="far font-body fa-lightbulb gc-text-blue"></i>
+             <span>Looking for a Project</span>
+           </span>
+         {% elif row.hackathonevent %}
             <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag" data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
             <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" data-toggle="tooltip" title="Filter {{ row.hackathonevent.name }} Posts">
               <i class="fas fa-filter"></i>
@@ -138,6 +147,7 @@
             {{row.hackathonevent.name}}
           </a>
         {% elif row.activity_type == 'hackathon_new_hacker' %}
+          <br>
           {% if row.metadata.intro_text %}
             {{ row.metadata.intro_text }}
             <br>

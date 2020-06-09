@@ -1231,6 +1231,26 @@ body.green.offer_view .announce {
   display: block;
   background: linear-gradient(to right, #B572D4 0%, #F9DD5B 37%, #75EDB5 100%);
 }
+
+.activity.hackathon_new_hacker {
+  z-index: 2;
+}
+.activity.hackathon_new_hacker:after {
+    content: '';
+    position: absolute;
+    top: 58px;
+    left: 3%;
+    height: 143px;
+    width: 94%;
+    display: block;
+    background: rgb(211, 250, 235);
+    z-index: -1;
+}
+
+.activity.hackathon_new_hacker .avatar:before {
+
+}
+
 .new_hackathon_project {
   border-top: 6px solid rgba(15, 206, 124, 0.25);
 }

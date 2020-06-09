@@ -1116,6 +1116,12 @@ def users_fetch(request):
         follower_count = followers.count()
         profile_json['follower_count'] = follower_count
 
+        if hackathon_id:
+            registration = HackathonRegistration.objects.filter(hackathon_id=hackathon_id, registrant=user).last()
+            if registration:
+                profile_json['looking_team_members'] = registration.looking_team_members
+                profile_json['looking_project'] = registration.looking_project
+
         if user.is_org:
             profile_dict = user.__dict__
             profile_json['count_bounties_on_repo'] = profile_dict.get('as_dict').get('count_bounties_on_repo')
@@ -4106,8 +4112,11 @@ def hackathon_registration(request):
                     answer.save()
                 elif question.question_type == 'SINGLE_CHOICE':
                     option = get_object_or_404(Option, id=int(entry['value']))
-                    answer, status = Answer.objects.get_or_create(user=request.user, question=question,
-                                                                  hackathon=hackathon_event)
+                    answer = Answer.objects.filter(user=request.user, question=question,
+                                                   hackathon=hackathon_event).first()
+                    if not answer:
+                        answer = Answer(user=request.user, question=question, hackathon=hackathon_event)
+
                     answer.choice = option
                     answer.save()
                 elif question.question_type == 'MULTIPLE_CHOICE':
