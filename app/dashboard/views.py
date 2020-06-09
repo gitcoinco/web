@@ -65,7 +65,8 @@ from chat.tasks import (
 from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
-    ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
+    ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
+    profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
@@ -2928,9 +2929,14 @@ def profile(request, handle, tab=None):
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
 
-    context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
-    context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
+    follow_page_size = 10
+    page_number = request.GET.get('page', 1)
+    context['all_followers'] = TribeMember.objects.filter(org=profile)
+    context['all_following'] = TribeMember.objects.filter(profile=profile)
+    context['following'] = Paginator(context['all_following'], follow_page_size).get_page(page_number)
+    context['followers'] = Paginator(context['all_followers'], follow_page_size).get_page(page_number)
     context['foltab'] = request.GET.get('sub', 'followers')
+    context['page_obj'] = context['followers'] if context['foltab'] == 'followers' else context['following']
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
@@ -3938,8 +3944,25 @@ def hackathon_save_project(request):
         'summary': clean(request.POST.get('summary'), strip=True),
         'work_url': clean(request.POST.get('work_url'), strip=True),
         'looking_members': looking_members,
-        'message': message,
+        'message': '',
+        'extra': {
+            'has_gitcoin_chat': False,
+            'has_other_contact_method': False,
+            'other_contact_method': '',
+        }
     }
+
+    if looking_members:
+        has_gitcoin_chat = request.POST.get('has_gitcoin_chat', '') == 'on'
+        has_other_contact_method = request.POST.get('has_other_contact_method', '') == 'on'
+        other_contact_method = request.POST.get('other_contact_method', '')[:150]
+        kwargs['message'] = message
+        kwargs['extra'] = {
+            'has_gitcoin_chat': has_gitcoin_chat,
+            'has_other_contact_method': has_other_contact_method,
+            'other_contact_method': other_contact_method,
+            'message': message,
+        }
 
     try:
 
@@ -4852,9 +4875,7 @@ def create_bounty_v1(request):
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     response = {
         'status': 204,
@@ -4916,9 +4937,8 @@ def cancel_bounty_v1(request):
 
     event_name = 'killed_bounty'
     record_bounty_activity(bounty, user, event_name)
-    # maybe_market_to_email(bounty, event_name)
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    maybe_market_to_email(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     bounty.bounty_state = 'cancelled'
     bounty.idx_status = 'cancelled'
@@ -5007,8 +5027,8 @@ def fulfill_bounty_v1(request):
     event_name = 'work_submitted'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    profile_pairs = build_profile_pairs(bounty)
+    maybe_market_to_github(bounty, event_name, profile_pairs)
 
     if bounty.bounty_state != 'work_submitted':
         bounty.bounty_state = 'work_submitted'
@@ -5247,6 +5267,8 @@ def close_bounty_v1(request, bounty_id):
 
     event_name = 'work_done'
     record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     bounty.bounty_state = 'done'
     bounty.idx_status = 'done' # TODO: RETIRE
@@ -5260,3 +5282,65 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+@staff_member_required
+def bulkDM(request):
+    handles = request.POST.get('handles', '')
+    message = request.POST.get('message', '')
+
+    if message and handles:
+        try:
+            from mattermostdriver import Driver
+            from chat.tasks import driver_opts
+
+            from_profile = request.user.profile
+            from_user_id = from_profile.chat_id
+            driver_opts = {
+                'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
+                'url': settings.CHAT_SERVER_URL,
+                'port': settings.CHAT_PORT,
+                'token': from_profile.gitcoin_chat_access_token
+            }
+
+            chat_driver = Driver(driver_opts)
+            chat_driver.login()
+            handles = list(set(handles.split(',')))
+
+            for to_handle in handles:
+                to_handle = to_handle.lower().strip()
+                to_profile = Profile.objects.filter(handle=to_handle).first()
+                if not to_profile:
+                    continue
+                to_user_id = to_profile.chat_id
+                if not to_user_id:
+                    messages.error(request, f'{to_handle} is not on Gitcoin Chat yet.')
+                    continue
+                try:
+                    response = chat_driver.client.make_request('post', 
+                        '/channels/direct', 
+                        options=None, 
+                        params=None, 
+                        data=f'["{to_user_id}", "{from_user_id}"]', 
+                        files=None, 
+                        basepath=None)
+                    channel_id = response.json()['id']
+                    chat_driver.posts.create_post(options={
+                        'channel_id': channel_id,
+                        'message': message
+                        })
+                except Exception as e:
+                    messages.error(request, f'{to_handle} : {e}')
+
+
+            messages.success(request, 'sent')
+        except Exception as e:
+            messages.error(request, str(e))
+
+
+    context = {
+        'message': message,
+        'handles': request.POST.get('handles', ''),
+    }
+
+    return TemplateResponse(request, 'bulk_DM.html', context)

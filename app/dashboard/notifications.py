@@ -483,7 +483,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     openwork_msg = f"* ${amount_open_work} more funded OSS Work available on the " \
                    f"[Gitcoin Issue Explorer](https://gitcoin.co/explorer)"
     help_msg = "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
-        f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+        f"<a href='https://chat.gitcoin.co/'>Gitcoin Chat</a>"
     claim_msg = f"* If you want to claim the bounty you can do so " \
                 f"[here]({absolute_url})"
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
@@ -714,7 +714,7 @@ def maybe_market_tip_to_github(tip):
         addon_msg = f"\n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
                     f"https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
                     f"<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
-                    f"Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+                    f"Fund a PR</a>\n * No Email? Get help on the <a href='https://chat.gitcoin.co/'>Gitcoin Chat</a>"
         msg += redeem_instructions + addon_msg
     else:
         msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has " \

@@ -1457,6 +1457,10 @@ class SendCryptoAssetQuerySet(models.QuerySet):
         """Filter results down to successful sends only."""
         return self.filter(tx_status='success').exclude(txid='')
 
+    def not_submitted(self):
+        """Filter results down to successful sends only."""
+        return self.filter(tx_status='not_subed')
+
     def send_pending(self):
         """Filter results down to pending sends only."""
         return self.filter(tx_status='pending').exclude(txid='')
@@ -1496,6 +1500,7 @@ class SendCryptoAsset(SuperModel):
         ('error', 'error'),
         ('unknown', 'unknown'),
         ('dropped', 'dropped'),
+        ('not_subed', 'not_subed'), # not submitted to chain yet
     )
 
     web3_type = models.CharField(max_length=50, default='v3')
@@ -1793,10 +1798,17 @@ class FundRequest(SuperModel):
     token_name = models.CharField(max_length=255, default='ETH')
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments = models.TextField(default='', blank=True)
-    tip = models.OneToOneField(Tip, on_delete=models.CASCADE, null=True)
+    tip = models.OneToOneField(Tip, on_delete=models.CASCADE, null=True, blank=True)
     network = models.CharField(max_length=255, default='')
     address = models.CharField(max_length=255, default='')
     created_on = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def url(self):
+        return settings.BASE_URL + f'tip?request={self.pk}'
+
+    def get_absolute_url(self):
+        return self.url
 
 
 @receiver(post_save, sender=FundRequest, dispatch_uid="post_save_fund_request")
@@ -2727,6 +2739,33 @@ class Profile(SuperModel):
         return suggested_bounties if suggested_bounties else []
 
     @property
+    def chat_num_unread_msgs(self):
+        from mattermostdriver import Driver
+        if not self.gitcoin_chat_access_token:
+            return 0
+
+        driver_opts = {
+            'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
+            'url': settings.CHAT_SERVER_URL,
+            'port': settings.CHAT_PORT,
+            'token': self.gitcoin_chat_access_token
+        }
+
+        chat_driver = Driver(driver_opts)
+        chat_driver.login()
+
+        response = chat_driver.client.make_request('get', 
+            '/users/me/teams/unread', 
+            options=None, 
+            params=None, 
+            data=None, 
+            files=None, 
+            basepath=None)
+        total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
+        return total_unread
+
+
+    @property
     def subscribed_threads(self):
         tips = Tip.objects.filter(Q(pk__in=self.received_tips.all()) | Q(pk__in=self.sent_tips.all())).filter(comments_priv__icontains="activity:").all()
         tips = [tip.comments_priv.split(':')[1] for tip in tips]
@@ -2853,7 +2892,7 @@ class Profile(SuperModel):
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
         )
-        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
 
         # remove this line IFF we ever move to showing multiple kudos transfers on a profile
         kudos_transfers = kudos_transfers.distinct('id')
@@ -2869,7 +2908,7 @@ class Profile(SuperModel):
         kt_sender_profile = KudosTransfer.objects.filter(sender_profile=self)
 
         kudos_transfers = kt_address | kt_sender_profile
-        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending()
+        kudos_transfers = kudos_transfers.send_success() | kudos_transfers.send_pending() | kudos_transfers.not_submitted()
         kudos_transfers = kudos_transfers.filter(
             kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
         )
@@ -4571,10 +4610,6 @@ class HackathonEvent(SuperModel):
         return f'{self.name} - {self.start_date}'
 
     @property
-    def url(self):
-        return self.get_absolute_url()
-
-    @property
     def relative_url(self):
         return f'hackathon/{self.slug}'
 
@@ -4610,7 +4645,7 @@ class HackathonEvent(SuperModel):
 
     @property
     def url(self):
-        return settings.BASE_URL + self.slug
+        return self.get_absolute_url()
 
     @property
     def stats(self):
@@ -4716,6 +4751,7 @@ class HackathonProject(SuperModel):
     )
     looking_members = models.BooleanField(default=False)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+    extra = JSONField(default=dict, blank=True, null=True)
 
     class Meta:
         ordering = ['-name']

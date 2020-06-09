@@ -95,6 +95,7 @@ def request_money(request):
         'class': 'send2',
         'title': 'Request Money | Gitcoin',
         'card_desc': 'Request money from any user at the click of a button.',
+        'preferred_payout_address': request.user.profile.preferred_payout_address if request.user.is_authenticated else '',
     }
 
     return TemplateResponse(request, 'request_payment.html', params)
