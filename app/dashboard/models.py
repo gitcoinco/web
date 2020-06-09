@@ -5445,7 +5445,6 @@ class HackathonWorkshop(SuperModel):
     name = models.CharField(max_length=255)
     start_date = models.DateTimeField()
     cover = models.ImageField()
-    cover_max_width = models.PositiveSmallIntegerField(default=275, help_text="Custom image max-width. Default max-width of 275.")
     hackathon = models.ForeignKey(
         'dashboard.HackathonEvent',
         related_name='workshop_event',
