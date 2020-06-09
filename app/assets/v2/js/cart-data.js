@@ -36,7 +36,7 @@ class CartData {
 
         let cartList = this.loadCart()
         cartList.push(grantData);
-        setCart(cartList);
+        this.setCart(cartList);
     }
 
     static removeIdFromCart(grantId) {
@@ -46,7 +46,7 @@ class CartData {
             return (grant.grant_id !== grantId);
         });
 
-        setCart(newList);
+        this.setCart(newList);
     }
 
     static updateCartItem(grantId, field, value) {
@@ -69,7 +69,7 @@ class CartData {
 
         grant[field] = value;
 
-        setCart(cartList);
+        this.setCart(cartList);
     }
 
     static loadCart() {
@@ -90,5 +90,6 @@ class CartData {
 
     static setCart(list) {
         localStorage.setItem('grants_cart', JSON.stringify(list));
+        applyCartMenuStyles();
     }
 }

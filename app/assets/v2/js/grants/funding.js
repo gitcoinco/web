@@ -7,7 +7,7 @@ $(document).ready(function() {
         event.preventDefault();
 
         const formData = objectifySerialized($(this).serializeArray());
-        addToCart(formData);
+        CartData.addToCart(formData);
 
         showSideCart();
     });
@@ -16,7 +16,7 @@ $(document).ready(function() {
         event.preventDefault();
 
         const formData = objectifySerialized($(this).serializeArray());
-        addToCart(formData);
+        CartData.addToCart(formData);
 
         showSideCart();
     });
@@ -103,7 +103,7 @@ function showSideCart() {
         .remove();
 
     // Add all elements in side cart
-    let cartData = loadCart();
+    let cartData = CartData.loadCart();
     cartData.forEach( grant => {
         const cartRowHtml = sideCartRowForGrant(grant);
         $("#side-cart-data").append(cartRowHtml);
@@ -111,13 +111,13 @@ function showSideCart() {
         // Register remove click handler
         $(`#side-cart-row-remove-${grant.grant_id}`).click(function() {
             $(`#side-cart-row-${grant.grant_id}`).remove();
-            removeIdFromCart(grant.grant_id);
+            CartData.removeIdFromCart(grant.grant_id);
         });
 
         // Register change amount handler
         $(`#side-cart-amount-${grant.grant_id}`).change(function() {
             const newAmount = parseFloat($(this).val());
-            updateCartItem(grant.grant_id, 'grant_donation_amount', newAmount);
+            CartData.updateCartItem(grant.grant_id, 'grant_donation_amount', newAmount);
         });
 
         // Select appropriate currency
@@ -125,7 +125,7 @@ function showSideCart() {
 
         // Register currency change handler
         $(`#side-cart-currency-${grant.grant_id}`).change(function() {
-            updateCartItem(grant.grant_id, 'grant_donation_currency', $(this).val());
+            CartData.updateCartItem(grant.grant_id, 'grant_donation_currency', $(this).val());
         });
     });
 
@@ -179,92 +179,4 @@ function objectifySerialized(data) {
     }
 
     return objectData;
-}
-
-function cartContainsGrantWithId(grantId) {
-    const cart = loadCart();
-    const idList = cart.map(grant => {
-        return grant.grant_id;
-    });
-
-    return idList.includes(grantId);
-}
-
-function addToCart(grantData) {
-    if (cartContainsGrantWithId(grantData.grant_id)) {
-        return;
-    }
-
-    // Add donation defaults
-
-    const acceptsAllTokens = (grantData.grant_token_address === "0x0000000000000000000000000000000000000000");
-    const accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
-
-    if (acceptsAllTokens || 'DAI' == accptedTokenName) {
-        grantData.grant_donation_amount = 1;
-        grantData.grant_donation_currency = 'DAI';
-    } else {
-        grantData.grant_donation_amount = 0.01;
-        grantData.grant_donation_currency = 'ETH';
-    }
-
-    grantData.grant_donation_num_rounds = 1;
-    grantData.grant_donation_clr_match = 250;
-
-    let cartList = loadCart()
-    cartList.push(grantData);
-    setCart(cartList);
-}
-
-function removeIdFromCart(grantId) {
-    let cartList = loadCart();
-
-    const newList = cartList.filter(grant => {
-        return (grant.grant_id !== grantId);
-    });
-
-    setCart(newList);
-}
-
-function updateCartItem(grantId, field, value) {
-    let cartList = loadCart();
-
-    let grant = null;
-
-    for (let index = 0; index < cartList.length; index++) {
-        const maybeGrant = cartList[index];
-
-        if (maybeGrant.grant_id === grantId) {
-            grant = maybeGrant;
-            break;
-        }
-    }
-
-    if (null === grant) {
-        throw new Error(`Tried to update grant with Id ${grantId} that is not in cart`);
-    }
-
-    grant[field] = value;
-
-    setCart(cartList);
-}
-
-function loadCart() {
-    const cartList = localStorage.getItem('grants_cart');
-
-    if (!cartList) {
-        return [];
-    }
-
-    const parsedCart = JSON.parse(cartList);
-
-    if (!Array.isArray(parsedCart)) {
-        return [];
-    }
-
-    return parsedCart;
-}
-
-function setCart(list) {
-    localStorage.setItem('grants_cart', JSON.stringify(list));
 }
