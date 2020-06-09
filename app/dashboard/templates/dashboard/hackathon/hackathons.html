@@ -233,8 +233,8 @@
                   <time class="font-weight-bold" datetime="{{ event.hackathon.end_date|date:'c' }}">{{ event.hackathon.end_date|date:"m/d/Y" }}</time>
                 </div>
                 <div class="row">
-                  <div class="col-4 font-smaller-2"><strong>${{ event.value_in_usdt }}</strong> in prizes</div>
-                  <div class="col-4 font-smaller-2"><i class="fas fa-user-alt"></i> {{ event.registrants }} builders</div>
+                  <div class="col-5 font-smaller-2"><strong>${{ event.value_in_usdt }}</strong> in prizes</div>
+                  <div class="col-5 font-smaller-2"><i class="fas fa-user-alt"></i> {{ event.registrants }} builders</div>
                 </div>
                 <div class="mt-3 hackathon-actions">
                   {% if event.hackathon.end_date|timesince <= "1 min" %}
