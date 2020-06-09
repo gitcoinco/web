@@ -105,7 +105,7 @@ class PersonalToken(SuperModel):
     ]
 
     token_state = models.CharField(max_length=50, choices=TOKEN_STATUS_CHOICES, default='open', db_index=True)
-    network = models.CharField(max_length=255, default='')
+    network = models.CharField(max_length=255, default='', db_index=True)  # `db_index` for `/users` search
     web3_created = models.DateTimeField(db_index=True)
     token_name = models.CharField(max_length=50)
     token_symbol = models.CharField(max_length=10, null=True)
