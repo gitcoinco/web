@@ -28,7 +28,8 @@ Vue.component('grants-cart', {
       isLoading: undefined,
       gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
       grantHeaders,
-      grantData
+      grantData,
+      hideWalletAddress: true
     };
   },
 

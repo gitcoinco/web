@@ -161,8 +161,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div style="width: 100%">
                   <div class="flex-container" style="justify-content: start">
                     <div>
-                      <input type="checkbox" name="hide_wallet_address" id="hide_wallet_address"
-                        {% if profile.hide_wallet_address %} checked="checked" {% endif %}>
+                      <input v-model="hideWalletAddress" type="checkbox" id="hide_wallet_address">
                       <span class="font-smaller-1 darker-gray"
                         for="hide_wallet_address">{% trans "Hide my wallet address" %}</span>
                       <span id="hide_wallet_address_help" class="font-smaller-2 medium-dark-gray"
