@@ -2107,6 +2107,14 @@ class Activity(SuperModel):
         ('hackathon_registration', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
+        # ptokens
+        ('create_ptoken', 'Create personal token'),
+        ('mint_ptoken', 'Mint personal token'),
+        ('edit_price_ptoken', 'Edit personal token price'),
+        ('accept_redemption_ptoken', 'Accepts a redemption requess of ptoken'),
+        ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
+        ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
+        ('incoming_redemption_ptoken', 'Has an incoming redemption finalized by the Buyer')
     ]
 
     profile = models.ForeignKey(
@@ -2164,6 +2172,18 @@ class Activity(SuperModel):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
+    ptoken = models.ForeignKey(
+        'ptokens.PersonalToken',
+        related_name='ptoken_activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    redemption = models.ForeignKey(
+        'ptokens.RedemptionToken',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+
 
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
@@ -4902,7 +4922,7 @@ class TribeMember(SuperModel):
         max_length=20,
         blank=True
     )
-    
+
     @property
     def mutual_follow(self):
         return TribeMember.objects.filter(profile=self.org, org=self.profile).exists()
@@ -4917,7 +4937,7 @@ class TribeMember(SuperModel):
         tribe_following = Subquery(TribeMember.objects.filter(org=self.profile).values_list('profile', flat=True))
         return TribeMember.objects.filter(org__in=tribe_following, profile=self.org).exclude(org=self.org)
 
-      
+
 class Poll(SuperModel):
     title = models.CharField(max_length=350, blank=True, null=True)
     active = models.BooleanField(default=False)

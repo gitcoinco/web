@@ -82,9 +82,13 @@ urlpatterns = [
     re_path(r'^dashboard/?', dashboard.views.board, name='dashboard'),
 
     # personal_tokens
-    re_path(r'^token/quickstart/?', ptokens.views.quickstart, name='ptoken_quickstart'),
-    re_path(r'^token/faq/?', ptokens.views.faq, name='ptokens_faq'),
-    path('tokens/<str:token_state>/', ptokens.views.tokens, name='token'),
+    re_path(r'^ptoken/quickstart/?', ptokens.views.quickstart, name='ptoken_quickstart'),
+    re_path(r'^ptoken/faq/?', ptokens.views.faq, name='ptokens_faq'),
+    path('ptokens/redemptions/<int:redemptionId>/', ptokens.views.ptoken_redemption, name='token_redemption'),
+    path('ptokens/<int:tokenId>/purchase/', ptokens.views.ptoken_purchases, name='token_purchase'),
+    path('ptokens/<int:tokenId>/redemptions/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
+    path('ptokens/<int:tokenId>/', ptokens.views.ptoken, name='token'),
+    path('ptokens/', ptokens.views.tokens, name='tokens'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),

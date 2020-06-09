@@ -60,6 +60,15 @@ from web3 import Web3
 
 logger = logging.getLogger(__name__)
 
+TX_STATUS_CHOICES = (
+    ('na', 'na'),  # not applicable
+    ('pending', 'pending'),
+    ('success', 'success'),
+    ('error', 'error'),
+    ('unknown', 'unknown'),
+    ('dropped', 'dropped'),
+)
+
 
 class PersonalTokenQuerySet(models.QuerySet):
     """Handle the manager queryset for Personal Tokens."""
@@ -84,6 +93,7 @@ class PersonalTokenQuerySet(models.QuerySet):
             Q(tags__icontains=keyword)
         )
 
+
 class PersonalToken(SuperModel):
     """Define the structure of a Personal Token"""
 
@@ -95,22 +105,21 @@ class PersonalToken(SuperModel):
     ]
 
     token_state = models.CharField(max_length=50, choices=TOKEN_STATUS_CHOICES, default='open', db_index=True)
-    web3_type = models.CharField(max_length=50, default='token_network')
-    title = models.CharField(max_length=1000)
+    network = models.CharField(max_length=255, default='')
     web3_created = models.DateTimeField(db_index=True)
     token_name = models.CharField(max_length=50)
+    token_symbol = models.CharField(max_length=10, null=True)
     token_address = models.CharField(max_length=50)
-    token_owner_name = models.CharField(max_length=255, blank=True)
     token_owner_address = models.CharField(max_length=255, blank=True)
     token_owner_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='token_created', blank=True
     )
-    total_minted = models.IntegerField(default=0, db_index=True, help_text='Total minted')
-    token_holders_count = models.IntegerField(default=0, db_index=True, help_text='How many users hold this token?')
-    txid = models.CharField(max_length=255, default='')
-
+    total_minted = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True, help_text='Total minted')
+    txid = models.CharField(max_length=255, unique=True)
+    tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    value = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     objects = PersonalTokenQuerySet.as_manager()
-    
+
     def save(self, *args, **kwargs):
         if self.token_owner_address:
             self.token_owner_address = to_checksum_address(self.token_owner_address)
@@ -121,3 +130,46 @@ class PersonalToken(SuperModel):
     @property
     def title(self):
         return self.title
+
+
+class RedemptionToken(SuperModel):
+    """Define the structure of a Redemption PToken"""
+
+    REDEMPTION_STATUS_CHOICES = [
+        ('request', 'requested'),
+        ('accepted', 'accepted'),
+        ('denied', 'denied'),
+        ('completed', 'completed')
+    ]
+    ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
+    redemption_state = models.CharField(max_length=50, choices=REDEMPTION_STATUS_CHOICES, default='request', db_index=True)
+    network = models.CharField(max_length=255, default='')
+    reason = models.CharField(max_length=1000, blank=True)
+    total = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True, help_text='Total ptokens to redeem')
+    txid = models.CharField(max_length=255, blank=True)
+    redemption_accepted = models.DateTimeField(null=True)
+    redemption_requester = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='redemptions', blank=True
+    )
+    tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    web3_created = models.DateTimeField(null=True)
+
+
+@receiver(post_save, sender=PersonalToken, dispatch_uid="PTokenActivity")
+def psave_ptoken(sender, instance, **kwargs):
+    pass
+
+
+class PurchasePToken(SuperModel):
+    ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
+    amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    token_name = models.CharField(max_length=50)
+    token_address = models.CharField(max_length=50)
+    network = models.CharField(max_length=255)
+    txid = models.CharField(max_length=255, unique=True)
+    tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    web3_created = models.DateTimeField(db_index=True)
+    token_holder_address = models.CharField(max_length=255, blank=True)
+    token_holder_profile = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='ptoken_purchases', blank=True
+    )

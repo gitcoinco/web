@@ -22,5 +22,4 @@ from django.apps import AppConfig
 
 
 class PTokensConfig(AppConfig):
-
-    name = 'ptoken'
+    name = 'ptokens'
