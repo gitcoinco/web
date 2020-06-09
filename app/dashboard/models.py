@@ -2158,6 +2158,14 @@ class Activity(SuperModel):
         ('hackathon_registration', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
+        # ptokens
+        ('create_ptoken', 'Create personal token'),
+        ('mint_ptoken', 'Mint personal token'),
+        ('edit_price_ptoken', 'Edit personal token price'),
+        ('accept_redemption_ptoken', 'Accepts a redemption requess of ptoken'),
+        ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
+        ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
+        ('incoming_redemption_ptoken', 'Has an incoming redemption finalized by the Buyer')
     ]
 
     profile = models.ForeignKey(
@@ -2215,6 +2223,18 @@ class Activity(SuperModel):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
+    ptoken = models.ForeignKey(
+        'ptokens.PersonalToken',
+        related_name='ptoken_activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    redemption = models.ForeignKey(
+        'ptokens.RedemptionToken',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+
 
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True, db_index=True)
@@ -2444,8 +2464,6 @@ def post_add_activity(sender, instance, created, **kwargs):
             dupe.delete()
 
 
-
-
 class LabsResearch(SuperModel):
     """Define the structure of Labs Research object."""
 
@@ -2651,6 +2669,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, Gitcoin will not auto-follow users you do business with',
     )
 
+    tokens = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     organizations_fk = models.ManyToManyField('dashboard.Profile', blank=True)

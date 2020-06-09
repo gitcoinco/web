@@ -63,11 +63,11 @@
           {% endif %}
 
           {% if not hidden %}
-            <div class="col-12 col-lg-6 profile-header__main-infos">
+            <div class="col-12 col-lg-3 profile-header__main-infos">
               {% include 'profiles/header_avatar.html' %}
               {% include 'profiles/header_details.html' %}
             </div>
-
+            {% include 'profiles/scorecard_ptoken.html' %}
             {% if profile.is_org %}
               {% include 'profiles/organization.html' %}
             {% elif profile.cascaded_persona == 'funder' %}
@@ -89,6 +89,10 @@
     </div>
 
     {% include 'profiles/tabs_close.html' %}
+    {% include 'ptokens/buy_token_modal.html' %}
+    {% include 'ptokens/redeem_token_modal.html' %}
+    {% include 'ptokens/buy_receipt.html' %}
+    {% include 'ptokens/redeem_receipt.html' %}
 
     </div>
   </div>
@@ -116,6 +120,7 @@
     <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
     <script src="{% static "v2/js/pages/tribe_title.js" %}"></script>
     <script src="{% static "v2/js/pages/profile-edit.js" %}"></script>
+    <script src="{% static "v2/js/pages/profile_tokens.js" %}"></script>
     <script src="{% static "v2/js/rating.js" %}"></script>
     <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/tribe-edit.js" %}"></script>

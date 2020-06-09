@@ -1,0 +1,48 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="modal fade g-modal" id="buy_ptoken_modal" tabindex="-1" role="dialog" aria-labelledby="buy_ptoken_modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5>Buy Proof</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="ptokenAmountDiv" class="">
+            <label class="font-caption letter-spacing text-black-60 text-uppercase" for="ptokenAmount">{% trans 'Amount' %}</label>
+            <input name='ptokenAmount' id="ptokenAmount" class="form__input" type="text" placeholder="10 PROOF"/>
+          </div>
+          <div id="ptokenCostDiv" class="">
+            <label class="font-caption letter-spacing text-black-60 text-uppercase" for="ptokenCost">{% trans 'Cost' %}</label>
+            <input name='ptokenCostDiv' id="ptokenCost" class="form__input" type="text" placeholder="400 DAI"/>
+          </div>
+          <div class="form__checkbox">
+            <input name='ptokenTerms' id='ptokenTerms' type="checkbox"  />
+            <label class="form__label" for=ptokenTerms>{% trans "I have read, understand, and agree to, the ." %}<a href="{% url "_terms" %}">{% trans "Terms of Service" %}</a>
+            </label>
+          </div>
+        </div>
+        <div class="p-2 text-right">
+          <button type="button" class="btn btn-outline-gc-blue btn-md" data-dismiss="modal" aria-label="Close">Cancel</button>
+          <button class="btn btn-gc-blue btn-md ml-2" id="sendInvites">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>

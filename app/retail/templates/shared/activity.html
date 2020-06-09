@@ -92,11 +92,17 @@
           </a>
         {% elif row.activity_type == 'mini_clr_payout' %}
           {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
-        {% elif row.activity_type == 'created_kudos' %}
+       {% elif row.activity_type == 'created_kudos' %}
           a new kudos has been minted:
           <a href="{{ row.kudos.external_url }}">
             {{ row.kudos.ui_name }}
           </a>
+        {% elif row.activity_type == 'create_ptoken' %}
+          {{ row.ptoken.token_owner_name }} {% trans "created" %} {{ row.ptoken.token_name }} tokens
+        {% elif row.activity_type == 'create_ptoken' %}
+           {{ row.ptoken.token_owner_profile.name }} {% trans "completed a request from" %} {{ row.redemption.buyer_profile.name }} for {{ row.ptoken.token_name }} tokens
+        {% elif row.activity_type == 'create_ptoken' %}
+           {{ row.ptoken.token_owner_profile.name }} {% trans "marked his BIG token request from" %}  {{ row.redemption.buyer_profile.name }} {% trans "as complete" %}
         {% elif row.activity_type == 'new_kudos' %}
           {% trans "sent a" %}
           Kudos
