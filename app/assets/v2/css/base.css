@@ -1,6 +1,34 @@
 /* stylelint-disable no-descending-specificity */
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
+
+@media only screen and (max-width: 320px) {
+  .chatWrapper {
+    height: 100vh !important;
+  }
+
+  .chatWrapper iframe {
+    height: 92vh !important;
+  }
+}
+
+#sidebar-chat .b-sidebar-body {
+  overflow-y: hidden;
+}
+
+.iframe-embed-loading {
+  margin-top:25% !important;
+}
+
+
+.chatWrapper iframe {
+  width: 100%;
+  min-height: 100vh;
+
+}
+.b-sidebar.chat-sidebar {
+  width: 90vw;
+}
 div.body {
   min-height: 400px;
 }

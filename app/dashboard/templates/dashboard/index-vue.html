@@ -27,6 +27,7 @@
       {% include 'shared/cards.html' %}
     {% endif %}
     <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/bootstrap-vue.min.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/featured-bounties.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/users.css" %}' />
@@ -203,7 +204,7 @@
                   </div>
                 </div>
               </b-tab>
-                <b-tab class="col-12" title-item-class="navigation" lazy>
+              <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Projects" %}
@@ -296,20 +297,6 @@
                     </div>
                   </project-directory>
                 </b-tab>
-              <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Chat" %}
-                  </div>
-                </template>
-                <template>
-                  <div class="ml-4">
-                    <div class="chatWrapper col-12">
-                      {% include 'shared/embed_chat_iframe.html' with chat_url_embed=chat_url_embed %}
-                    </div>
-                  </div>
-                </template>
-              </b-tab>
               <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation"lazy>
                   <template v-slot:title>
                     <div class="mt-4">

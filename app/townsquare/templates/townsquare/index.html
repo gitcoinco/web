@@ -28,6 +28,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/theme_switcher.css" %}">
+    <link rel="stylesheet" href='{% static "v2/css/bootstrap-vue.min.css" %}'/>
     <script src="{% static "v2/js/theme_switcher.js" %}"></script> <!-- needs to be in the head section -->
   </head>
 
@@ -213,7 +214,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
     </div>
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/footer_scripts.html' with slim=1 vue=1 %}
     {% include 'shared/activity_scripts.html' %}
 
     <!-- Send direct tip on comments -->
