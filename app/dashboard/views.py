@@ -88,6 +88,8 @@ from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
+
+from ptokens.models import PersonalToken
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
@@ -908,7 +910,8 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
             hackathon_registration__hackathon=hackathon_id
         )
     if only_with_tokens:
-        profile_list = profile_list  # FIXME
+        token_ids = PersonalToken.objects.filter(network=network).values_list('token_owner_profile_id', flat=True)
+        profile_list = profile_list.filter(pk__in=token_ids)
     return profile_list
 
 
