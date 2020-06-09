@@ -119,45 +119,64 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                           </select2>
                         </div>
                       </div>
+                      {% comment %} Add comment {% endcomment %}
+                      <div @click="addComment(index)" class="col-12 font-smaller-3"
+                        style="cursor:pointer; margin-top:1rem">
+                        + Add comment to owner
+                      </div>
+                      <div v-if="comments[index] !== undefined" class="col-12" style="margin-top:1rem;">
+                        <div class="row flex-nowrap justify-content-between">
+                          <input class="form-control" style="margin-left:0.5rem" v-model.number="comments[index]"
+                            type="textarea" placeholder="Enter message">
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>
               </div>
               {% comment %} Cart Contents: NOT MOBILE {% endcomment %}
               <div v-if="!isMobileDevice" v-for="(grant, index) in grantData" class="grant-row">
-                <div class="row align-items-center justify-content-between grant-row-style">
-                  {% comment %} Title and logo {% endcomment %}
-                  <div class="col-4">
-                    <div class="row">
-                      <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30">
-                      <div class="grant-name black">[[grant.grant_title]]</div>
-                    </div>
-                  </div>
-                  {% comment %} Grant amount and currency {% endcomment %}
-                  <div class="col-3">
-                    <div class="row flex-nowrap align-items-center justify-content-start">
-                      <input class="col-6 form-control" v-model.number="grant.grant_donation_amount" type="number"
-                        placeholder="Amount" style="margin-right: 1rem">
-                      <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
-                        class="col-6 form-control" placeholder="Select token">
-                      </select2>
-                    </div>
-                  </div>
-                  {% comment %} CLR Match Amount {% endcomment %}
-                  <div class="col-2">
-                    <div class="row align-items-center justify-content-between clr-match-box">
-                      <div>
-                        [[grant.grant_donation_clr_match]] [[grant.grant_donation_currency]]
+                <div class="grant-row-style">
+                  <div class="row align-items-center justify-content-between" style="margin-left:0.5rem">
+                    {% comment %} Title and logo {% endcomment %}
+                    <div class="col-4">
+                      <div class="row">
+                        <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30">
+                        <div class="grant-name black">[[grant.grant_title]]</div>
                       </div>
-                      <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
-                        width="20">
+                    </div>
+                    {% comment %} Grant amount and currency {% endcomment %}
+                    <div class="col-3">
+                      <div class="row flex-nowrap align-items-center justify-content-start">
+                        <input class="col-6 form-control" v-model.number="grant.grant_donation_amount" type="number"
+                          placeholder="Amount" style="margin-right: 1rem">
+                        <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
+                          class="col-6 form-control" placeholder="Select token">
+                        </select2>
+                      </div>
+                    </div>
+                    {% comment %} CLR Match Amount {% endcomment %}
+                    <div class="col-2">
+                      <div class="row align-items-center justify-content-between clr-match-box">
+                        <div>
+                          [[grant.grant_donation_clr_match]] [[grant.grant_donation_currency]]
+                        </div>
+                        <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
+                          width="20">
+                      </div>
+                    </div>
+                    {% comment %} Delete Icon {% endcomment %}
+                    <div class="col-1">
+                      <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
+                        @click="removeGrantFromCart(grant.grant_id)"></i>
                     </div>
                   </div>
-                  {% comment %} Delete Icon {% endcomment %}
-                  <div class="col-1">
-                    <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
-                      @click="removeGrantFromCart(grant.grant_id)"></i>
+                  <div @click="addComment(index)" class="font-smaller-3" style="cursor:pointer; margin-left:0.5rem">
+                    + Add comment to owner
                   </div>
+                  <input v-if="comments[index] !== undefined" style="margin-top:0.5rem; margin-left:0.5rem"
+                    class="form-control" v-model.number="comments[index]" type="textarea" placeholder="Enter message">
                 </div>
               </div>
 

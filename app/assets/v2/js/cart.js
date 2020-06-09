@@ -29,6 +29,7 @@ Vue.component('grants-cart', {
       gitcoinFactorRaw: 5, // By default, 5% of donation amount goes to Gitcoin
       grantHeaders,
       grantData,
+      comments: undefined,
       hideWalletAddress: true,
       windowWidth: window.innerWidth
     };
@@ -198,6 +199,11 @@ Vue.component('grants-cart', {
     removeGrantFromCart(id) {
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
+    },
+
+    addComment(id) {
+      // Set comment at this index to an empty string to show textarea
+      this.comments.splice(id, 1, ''); // we use splice to ensure it's reactive
     },
 
     /**
@@ -437,6 +443,8 @@ Vue.component('grants-cart', {
     this.isLoading = true;
     // Read array of grants in cart from localStorage
     this.grantData = CartData.loadCart();
+    // Initialize array of empty comments
+    this.comments = this.grantData.map(grant => undefined);
     // Wait until we can load token list
     while (!this.tokenList) {
       try {
