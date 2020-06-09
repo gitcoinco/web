@@ -27,6 +27,7 @@ from itertools import combinations
 from django.conf import settings
 from django.utils import timezone
 
+import pytz
 from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
 from perftools.models import JSONStore
@@ -41,15 +42,14 @@ THRESHOLD_MEDIA = 20.0
 THRESHOLD_HEALTH = 20.0
 
 TOTAL_POT_TECH = 101000.0
-TOTAL_POT_MEDIA = 50120.0 #50k + 120 from negative voting per https://twitter.com/owocki/status/1249420758167588864
+TOTAL_POT_MEDIA = 50120.0
 TOTAL_POT_HEALTH = 50000.0
-
 
 
 '''
     translates django grant data structure to a list of lists
 
-    args: 
+    args:
         django grant data structure
             {
                 'id': (string) ,
@@ -60,8 +60,8 @@ TOTAL_POT_HEALTH = 50000.0
                 ]
             }
 
-    returns: 
-        list of lists of grant data 
+    returns:
+        list of lists of grant data
             [[grant_id (str), user_id (str), contribution_amount (float)]]
 '''
 def translate_data(grants_data):
@@ -79,13 +79,13 @@ def translate_data(grants_data):
 '''
     aggregates contributions by contributor, and calculates total contributions by unique pairs
 
-    args: 
+    args:
         list of lists of grant data
             [[grant_id (str), user_id (str), contribution_amount (float)]]
         round
             str ('current' or 'previous') only
 
-    returns: 
+    returns:
         aggregated contributions by pair in nested list
             {
                 round: {
@@ -131,19 +131,19 @@ def aggregate_contributions(grant_contributions, _round='current'):
 '''
 def get_totals_by_pair(contrib_dict):
     tot_overlap = {}
-    
+
     # start pairwise match
     for proj, contribz in contrib_dict['current'].items():
         for k1, v1 in contribz.items():
             if k1 not in tot_overlap:
                 tot_overlap[k1] = {}
-            
+
             # pairwise matches to current round
             for k2, v2 in contribz.items():
                 if k2 not in tot_overlap[k1]:
                     tot_overlap[k1][k2] = 0
                 tot_overlap[k1][k2] += (v1 * v2) ** 0.5
-            
+
             # pairwise matches to last round
             if contrib_dict['previous'].get(proj):
                 for x1, y1 in contrib_dict['previous'][proj].items():
@@ -166,12 +166,9 @@ def get_totals_by_pair(contrib_dict):
                     }
                 }
             }
-        pair_totals
-            {user_id (str): {user_id (str): pair_total (float)}}
-        threshold
-            float
-        total_pot
-            float
+        pair_totals :   {user_id (str): {user_id (str): pair_total (float)}}
+        threshold   :   float
+        total_pot   :   float
 
     returns:
         total clr award by grant, normalized by the normalization factor
@@ -217,10 +214,10 @@ def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_p
 
 
 
-''' 
+'''
     clubbed function that runs all calculation functions
 
-    args: 
+    args:
         grant_contribs_curr
             {
                 'id': (string) ,
@@ -239,16 +236,14 @@ def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_p
                     }
                 ]
             }
-        threshold
-            float
-        total_pot
-            float
+        threshold   :   float
+        total_pot   :   float
 
-    returns: 
+    returns:
         grants clr award amounts
 '''
 def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, threshold=20.0, total_pot=100000.0):
-    
+
     # get data
     curr_round = translate_data(grant_contribs_curr)
     prev_round = translate_data(grant_contribs_prev)
@@ -257,13 +252,13 @@ def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, threshold=20.0, tota
     curr_agg = aggregate_contributions(curr_round, 'current')
     prev_agg = aggregate_contributions(prev_round, 'previous')
     combinedagg = {**prev_agg, **curr_agg}
-    
+
     # get pair totals
     ptots = get_totals_by_pair(combinedagg)
-    
+
     # clr calcluation
     totals, _ = calculate_clr(combinedagg, ptots, threshold=threshold, total_pot=total_pot)
- 
+
     return totals
 
 
@@ -296,24 +291,26 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_co
     Populate Data needed to calculate CLR
 
     Args:
-        clr_type    :   media | tech | None
-        network     :   mainnet | rinkeby
-
+        clr_type        :   media | tech | None
+        network         :   mainnet | rinkeby
+        clr_end_date    :   datetime
+        clr_end_date    :   datetime
     Returns:
-        contributions: contributions data object
-        grants: list of grants based on clr_type
-        phantom_funding_profiles: phantom funding data object
+        contributions               : contributions data object
+        grants                      : list of grants based on clr_type
+        phantom_funding_profiles    : phantom funding data object
+        total_pot                   : total pot for clr_type
+        threshold                   : threshold for clr_type
+
 '''
-def db_data_call(clr_type=None, network='mainnet', start_date=dt.datetime(2020, 1, 1, 0, 0), from_date=timezone.now()):
-    import pytz
+def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_date=timezone.now()):
 
     if not clr_start_date:
-        print('error: db_data_call - missing start_date')
-    
-    # get all the eligible contributions data
-    contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=start_date, created_on__lte=from_date, success=True)
+        print('error: fetch_data - missing start_date')
+        return None, None, None, None
 
-    # get grants data
+    contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True)
+
     if clr_type == 'tech':
         grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', link_to_new_grant=None)
         threshold = THRESHOLD_TECH
@@ -329,10 +326,9 @@ def db_data_call(clr_type=None, network='mainnet', start_date=dt.datetime(2020, 
     else:
         return None, None, None, None
 
-    # get phantom funding data
-    phantom_funding_profiles = PhantomFunding.objects.filter(created_on__gte=start_date, created_on__lte=from_date)
+    phantom_funding_profiles = PhantomFunding.objects.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-    return contributions, grants, phantom_funding_profiles
+    return grants, contributions, phantom_funding_profiles, total_pot, threshold
 
 
 
@@ -340,24 +336,21 @@ def db_data_call(clr_type=None, network='mainnet', start_date=dt.datetime(2020, 
     Populate Data needed to calculate CLR
 
     Args:
-        contributions: contributions data object
-        grants: list of grants based on clr_type
-        phantom_funding_profiles: phantom funding data object
-        mechanism
-        clr start date
-        clr end date
+        grants                  : grants list
+        contributions           : contributions list for thoe grants
+        phantom_funding_profiles: phantom funding for those grants
+        mechanism               : verification mechanism (profile_
+        clr start date          : datetime
+        clr end date            : datetime
 
     Returns:
-        grants: list of grants based on clr_type
         contrib_data_list: {
-                'id': grant_id,
-                'contributions': summed_contributions
-            } 
-        total_pot: float
-        threshold : int
+            'id': grant_id,
+            'contributions': summed_contributions
+        }
+
 '''
-def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism='profile', clr_start_date=dt.datetime(2020, 1, 1, 0, 0), clr_end_date=timezone.now()):
-    import pytz
+def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, clr_start_date=None, clr_end_date=timezone.now()):
 
     if not clr_start_date:
         print('Error: populate_data_for_clr - missing clr_start_date')
@@ -365,24 +358,24 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
     # set up data to load contributions for each grant
     contrib_data_list = []
 
-    for grant in grants:  # DO WE NEED TO FILTER GRANTS OBJECT BY CLR DATES?
+    for grant in grants:
         grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
 
         # contributions
         contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
         # phantom funding
-        phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
+        grant_phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
         # only allow github profiles created after clr round
         contribs_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < clr_start_date.replace(tzinfo=pytz.UTC)]
         contribs = contribs.filter(pk__in=contribs_ids)
 
         # only allow phantom github profiles created after clr round
-        phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < clr_start_date.replace(tzinfo=pytz.UTC)] 
+        grant_phantom_funding_profiles_list = [ele for ele in grant_phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < clr_start_date.replace(tzinfo=pytz.UTC)]
 
         # combine
-        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in phantom_funding_profiles]))
+        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_profiles_list]))
 
         summed_contributions = []
 
@@ -391,6 +384,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
             for profile_id in contributing_profile_ids:
                 profile_contributions = contribs.filter(subscription__contributor_profile_id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_contributions if c.subscription.amount_per_period_usdt]))
+                phantom_funding = grant_phantom_funding_profiles.filter(profile_id=profile_id)
                 if phantom_funding.exists():
                     sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
                 summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
@@ -400,7 +394,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
                 'contributions': summed_contributions
             })
 
-    return (grants, contrib_data_list, total_pot, threshold)
+    return contrib_data_list
 
 
 
@@ -410,16 +404,16 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
     debug_output = []
 
     # one-time data call
-    grants, contributions, phantom_funding_profiles = db_data_call(clr_type, network)
-    
+    grants, contributions, phantom_funding_profiles, total_pot, threshold = fetch_data(clr_type, network, PREV_CLR_START_DATE)
+
     # one for previous, one for current
-    grants_curr, grant_contributions_curr, total_pot_curr, threshold_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=PREV_CLR_START_DATE)
-    grants_prev, grant_contributions_prev, total_pot_prev, threshold_prev = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=CLR_START_DATE)
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=CLR_START_DATE)
+    grant_contributions_prev = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=PREV_CLR_START_DATE, clr_end_date=PREV_CLR_END_DATE)
 
     # print(f'GRANT {len(grants)}')
     # print(f'CONTRIB {len(positive_contrib_data)}')
 
-    # calculate clr given additional donations  
+    # calculate clr given additional donations
     for grant in grants:
         # five potential additional donations plus the base case of 0
         potential_donations = [0, 1, 10, 100, 1000, 10000]
@@ -478,12 +472,6 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                         key=_grant.title[0:43] + "_pctrbs",
                         val=_grant.positive_round_contributor_count,
                         )
-                if _grant.negative_round_contributor_count:
-                    Stat.objects.create(
-                        created_on=from_date,
-                        key=_grant.title[0:43] + "_nctrbs",
-                        val=_grant.negative_round_contributor_count,
-                        )
                 if _grant.amount_received_in_round:
                     Stat.objects.create(
                         created_on=from_date,
@@ -496,89 +484,5 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
             if from_date > (clr_calc_start_time - timezone.timedelta(hours=1)):
                 _grant.save()
 
-
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
     return debug_output
-
-
-'''
-###########################################
-LIVE GRANTS FUNDING PAGE METHODS START HERE
-###########################################
-'''
-
-'''
-    Predicts the new clr distribution when a contributor wants to fund a grant
-    for a certain amount
-
-    Args:
-        grant: <Grant> - grant to be funded
-        contributor: <Profile> - contributor making a contribution
-        amount: <float> - amount with which is grant is to be funded
-        is_postive_vote: <boolean>
-        positive_grant_contributions: [Object]
-        negative_grant_contributions: [Object]
-        total_pot: <float>
-        threshold: <float>
-
-    Returns:
-        clr_amount
-'''
-def calculate_clr_for_donation_live(grant, contributor, amount, grant_contributions_curr, grant_contributions_prev, total_pot, threshold):
-
-    if amount == 0:
-        return 0
-
-    _grant_contributions_curr = copy.deepcopy(grant_contributions_curr)
-    _grant_contributions_prev = copy.deepcopy(grant_contributions_prev)
-
-    profile_id = str(contributor.pk)
-
-    for grant_contribution in _grant_contributions_curr:
-        if grant_contribution['id'] == grant.id:
-            grant_contribution['contributions'].append({
-                profile_id: amount
-            })
-
-    grants_clr = run_clr_calcs(_grant_contributions_curr, _grant_contributions_prev, threshold=threshold, total_pot=total_pot)
-
-    # find grant we added the contribution to and get the new clr amount
-    for grant_clr in grants_clr:
-        if grant_clr['id'] == grant.id:
-            return grant_clr['clr_amount']
-
-    print(f'info: no contributions found for grant {grant}')
-    return None
-
-
-'''
-    Calculates potential CLR match based on the contributor + amount + grant
-    they would like to contribute.
-
-    Args:
-        grant: <Grant>
-        contributor: <Profile>
-        amount: <float>
-        is_postive_vote: <boolean>
-
-    Returns:
-        predicted_clr_match
-'''
-def predict_clr_live(grant, contributor, amount):
-
-    if not grant or not contributor:
-        print('error: predict_clr_live - missing parameters')
-        return None
-
-    if amount == 0:
-        return 0
-
-    clr_type = grant.grant_type
-    network = grant.network
-    _, grant_contributions_curr, grant_contributions_prev, total_pot, threshold = populate_data_for_clr(clr_type, network)
-
-    predicted_clr_match = calculate_clr_for_donation_live(
-        grant, contributor, amount, grant_contributions_curr, grant_contributions_prev, total_pot, threshold
-    )
-
-    return predicted_clr_match

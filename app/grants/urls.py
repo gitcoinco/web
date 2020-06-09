@@ -21,8 +21,7 @@ from django.urls import path, re_path
 
 from grants.views import (
     flag, grant_categories, grant_details, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json,
-    grants_stats_view, invoice, leaderboard, new_matching_partner, predict_clr_v1, profile, quickstart,
-    subscription_cancel,
+    grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart, subscription_cancel,
 )
 
 app_name = 'grants'
@@ -50,6 +49,5 @@ urlpatterns = [
         'invoice/contribution/<int:contribution_pk>',
         invoice,
         name='contribution_invoice'
-    ),
-    path('api/v1/<int:grant_id>/predict-clr', predict_clr_v1, name='predict_clr_v1')
+    )
 ]
