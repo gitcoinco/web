@@ -338,11 +338,6 @@ Vue.component('grants-cart', {
         await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
-        const txHash = 'bulk donation txHash would go here';
-
-        this.postToDatabase(txHash, userAddress);
-        return;
-
         // Get list of tokens user is donating with
         const selectedTokens = Object.keys(this.donationsToGrants);
 
@@ -429,8 +424,9 @@ Vue.component('grants-cart', {
 
     sendDonationTx(userAddress) {
       // Configure our donation inputs
+      // We use parse and stringify to avoid mutating this.donationInputs since we use it later
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
-      const donationInputs = this.donationInputs.map(donation => {
+      const donationInputs = JSON.parse(JSON.stringify(this.donationInputs)).map(donation => {
         delete donation.name;
         delete donation.grant;
         delete donation.comment;
@@ -460,6 +456,7 @@ Vue.component('grants-cart', {
       // We loop through each donation and POST the required data
       const donations = this.donationInputs;
 
+      console.log('donationInputs', this.donationInputs);
       for (let i = 0; i < donations.length; i += 1) {
         console.log('============================================================');
         console.log(`DONATION ${i}`);
@@ -527,7 +524,6 @@ Vue.component('grants-cart', {
         console.log('saveSubscriptionPayload: ', saveSubscriptionPayload);
         console.log('saveSplitTxPayload: ', saveSplitTxPayload);
 
-        continue;
         // Define parameter objects for POST request
         const saveSubscriptionParams = {
           body: saveSubscriptionPayload,
@@ -539,8 +535,20 @@ Vue.component('grants-cart', {
         };
 
         // Send request
-        fetch(url, saveSubscriptionParams).catch(err => this.handleError(err));
-        fetch(url, saveSplitTxParams).catch(err => this.handleError(err));
+        fetch(url, saveSubscriptionParams)
+          .then(data => console.log('data, saveSubscription', data))
+          .then(res => console.log('res, saveSubscription', res))
+          .catch(err => {
+            console.log('error, saveSubscription');
+            this.handleError(err);
+          });
+        fetch(url, saveSplitTxParams)
+          .then(data => console.log('data, saveSplitTx', data))
+          .then(res => console.log('res, saveSplitTx', res))
+          .catch(err => {
+            console.log('error, saveSplitTx');
+            this.handleError(err);
+          });
       }
     },
 
