@@ -67,7 +67,7 @@ Vue.mixin({
     },
     fetchTokens: function(type) {
       let vm = this;
-      let api = `/tokens/${type}/`;
+      let api = `/ptokens/redemptions/${type}/`;
       let getTokens = fetchData (api, 'GET');
 
       $.when(getTokens).then(function(response) {
@@ -216,8 +216,8 @@ Vue.mixin({
         vm.fetchContributorBounties('interested');
       }
       if (!Object.keys(vm.pTokens).length && persona === 'personal-tokens') {
-        vm.fetchTokens('open');
-        vm.fetchTokens('in_progress');
+        vm.fetchTokens('request');
+        vm.fetchTokens('accepted');
         vm.fetchTokens('completed');
         vm.fetchTokens('denied');
       }

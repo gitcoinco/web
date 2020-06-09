@@ -55,11 +55,10 @@ def faq(request):
     return TemplateResponse(request, 'buy_a_token.html', context)
 
 @csrf_exempt
-def tokens(request):
+def tokens(request, token_state=None):
     """List JSON data for the user tokens"""
     error = None
     user = request.user if request.user.is_authenticated else None
-    token_state = request.GET.get('token_state')
 
     if request.method == 'POST':
         if not user:
@@ -136,10 +135,9 @@ def tokens(request):
 
     if token_state in ['open', 'in_progress', 'completed', 'denied']:
         query = PersonalToken.objects.filter(token_state=token_state)
-        return JsonResponse({
-            'error': False,
-            'data': [token.to_standard_dict() for token in query]
-        })
+        return JsonResponse(
+            [token.to_standard_dict() for token in query], safe=False
+        )
 
 
 @csrf_exempt
@@ -195,30 +193,27 @@ def ptoken(request, tokenId):
 
 
 @csrf_exempt
-def ptoken_redemptions(request, tokenId):
+def ptoken_redemptions(request, tokenId=None, redemption_state=None):
     """List and create token redemptions"""
-    ptoken = get_object_or_404(PersonalToken, id=tokenId)
-    network = request.POST.get('network')
-    total = request.POST.get('total', 0)
-    redemptions_state = request.GET.get('state')
 
-    if request.method == 'POST':
-        if not request.user:
-            return JsonResponse(
-                {'error': _('You must be authenticated via github to use this feature!')},
-                status=401)
-        RedemptionToken.objects.create(ptoken=ptoken, network=network, total=total, redemption_requester=request.user.profile)
+    if tokenId:
+        ptoken = get_object_or_404(PersonalToken, id=tokenId)
+        network = request.POST.get('network')
+        total = request.POST.get('total', 0)
+
+        if request.method == 'POST':
+            if not request.user:
+                return JsonResponse(
+                    {'error': _('You must be authenticated via github to use this feature!')},
+                    status=401)
+            RedemptionToken.objects.create(ptoken=ptoken, network=network, total=total, redemption_requester=request.user.profile)
 
     redemptions = RedemptionToken.objects.filter(redemption_requester=request.user.profile)
 
-    if redemptions_state in ['request', 'accepted', 'denied', 'completed']:
-        redemptions = redemptions.filter(redemption_state=redemptions_state)
+    if redemption_state in ['request', 'accepted', 'denied', 'completed']:
+        redemptions = redemptions.filter(redemption_state=redemption_state)
 
-
-    return JsonResponse({
-        'error': False,
-        'data': [redemption.to_standard_dict() for redemption in redemptions]
-    })
+    return JsonResponse([redemption.to_standard_dict() for redemption in redemptions], safe=False)
 
 
 @csrf_exempt
