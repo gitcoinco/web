@@ -4589,6 +4589,15 @@ class HackathonEvent(SuperModel):
     def town_square_link(self):
         return f'townsquare/?tab=hackathon:{self.pk}'
 
+    def is_sponsor_tribe_admin(self, username):
+        for sponsor in self.sponsors.all():
+            if sponsor.tribe is not None:
+                for tribe_member in sponsor.tribe.tribe_members.all():
+                    if username == tribe_member.profile.handle:
+                        return tribe_member.leader
+        return False
+
+
     def get_absolute_url(self):
         """Get the absolute URL for the HackathonEvent.
 

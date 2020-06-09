@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 '''
     Copyright (C) 2020 Gitcoin Core
 
@@ -3623,17 +3624,6 @@ def hackathon(request, hackathon='', panel='prizes'):
         }
         orgs.append(org)
 
-
-    import pdb; pdb.set_trace()
-    is_sponsor_tribe_admin = False
-    for sponsor in hackathon_event.sponsors.all():
-        if sponsor.tribe is not None:
-            for tribe_member in sponsor.tribe.tribe_members.all():
-                if request.user.username == tribe_member.profile.handle \
-                                                    and tribe_member.leader == True:
-                    is_sponsor_tribe_admin = True
-                    break
-
     if hasattr(request.user, 'profile') == False:
         is_registered = False
     else:
@@ -3688,7 +3678,11 @@ def hackathon(request, hackathon='', panel='prizes'):
         'use_pic_card': True,
         'projects': [],
         'panel': active_tab,
-        'options': [(f'Email Hackathon Participants ({hacker_count})', 'bullhorn', 'Select this option to email your status update to all the hackathon participants.')] if is_sponsor_tribe_admin else [],
+        'options': [(
+            f'Email Hackathon Participants ({hacker_count})',
+            'bullhorn', 
+            'Select this option to email your status update to all the hackathon participants.'
+        )] if hackathon_event.is_sponsor_tribe_admin(request.user.username) else [],
     }
 
     if hackathon_event.identifier == 'grow-ethereum-2019':
