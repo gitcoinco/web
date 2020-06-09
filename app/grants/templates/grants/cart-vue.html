@@ -45,7 +45,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
     <div>
       <div id="gc-grants-cart" v-cloak>
-        <grants-cart inline-template>
+        <grants-cart ref="cart" inline-template>
           <div>
 
             {% comment %} Heading section {% endcomment %}
@@ -309,6 +309,49 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               </div>
 
             </div>
+            		          <b-modal id="sms-modal" :visible="showValidation" center hide-header hide-footer>
+            <template v-slot:default="{ hide }">
+            <div class="mx-5 mt-5 mb-4 text-center" v-if="validationStep == 'intro'">
+              <h1 class="font-bigger-4 font-weight-bold mb-5">Verify your phone number</h1>
+              <p class="mb-4 font-subheader text-left">For sybil resistance, we require you to verify your phone number to get your contribution matched.</p>
+              <p class="mb-4 font-subheader text-left">You can still contribute to grants  without verifying your phone number, but your contribution will not be matched</p>
+              <p class="mb-5 font-subheader text-left">Gitcoin does NOT store your phone number</p>
+              <b-button @click="validationStep='requestVerification'" class="btn-gc-blue mb-2" size="lg">Verify Phone Number</b-button>
+              <br>
+              <b-button @click="dismissVerification()" variant="link">Skip</b-button>
+            </div>
+            <div class="mx-5 my-5 text-center" v-if="validationStep == 'requestVerification'">
+              <h1 class="font-bigger-4 mb-2">Verify your phone number</h1>
+              <p class="mb-5 font-subheader">We will send you a verification code.</p>
+              <vue-tel-input ref="tel-input" :validCharactersOnly="true" @validate="isValidNumber" v-model="phone" :enabledCountryCode="true" :autofocus="true" :required="true" mode="international" inputClasses="form-control"></vue-tel-input>
+              <div v-if="timeInterval > timePassed">
+                <span class="label-warning" >Wait [[ timeInterval - timePassed ]] second before request another code</span>
+              </div>
+              <div v-if="errorMessage">
+                <span class="label-warning" >[[ errorMessage ]]</span>
+              </div>
+              <b-button @click="requestVerification()" class="btn-gc-blue mt-5 mb-2" size="lg">Send verification code</b-button>
+              <br>
+              <b-button @click="hide()" variant="link">Cancel</b-button>
+            </div>
+            <div class="mx-5 my-5 text-center" v-if="validationStep == 'verifyNumber'">
+              <h1 class="font-bigger-4 mb-4">Verify your phone number</h1>
+              <p class="mb-5 font-subheader">Enter the verification code sent to your number.</p>
+              <input class="form-control" type="number" required v-model="code">
+              <div v-if="timeInterval > timePassed">
+                <span class="label-warning" >Wait [[ timeInterval - timePassed ]] second before request another code</span>
+              </div>
+              <div v-if="errorMessage">
+                <span class="label-warning" >[[ errorMessage ]]</span>
+              </div>
+              <b-button @click="validateCode()" class="btn-gc-blue mt-5" size="lg">Submit</b-button>
+              <br>
+              <b-button @click="startVerification()" variant="link">Change number</b-button>
+              <b-button @click="resendCode()" variant="link">Resend Code</b-button>
+            </div>
+
+            </template>
+          </b-modal>
           </div>
         </grants-cart>
       </div>
@@ -328,7 +371,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
 
+    <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
     <script src="{% static "v2/js/vue-components.js" %}"></script>
+    <script>
+      document.verified = {{ verified|yesno:"true,false" }};
+    </script>
     <script src="{% static "v2/js/cart.js" %}"></script>
   </body>
 

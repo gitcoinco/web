@@ -17,6 +17,7 @@ const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
 let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
 let grantData = []; // data for grants in cart, initialized in mounted hook
 
+Vue.use(VueTelInput);
 
 Vue.component('grants-cart', {
   delimiters: [ '[[', ']]' ],
@@ -31,7 +32,18 @@ Vue.component('grants-cart', {
       grantData,
       comments: undefined,
       hideWalletAddress: true,
-      windowWidth: window.innerWidth
+      windowWidth: window.innerWidth,
+      // SMS validation
+      csrf: $("input[name='csrfmiddlewaretoken']").val(),
+      validationStep: 'intro',
+      showValidation: false,
+      phone: '',
+      validNumber: false,
+      errorMessage: '',
+      verified: document.verified,
+      code: '',
+      timePassed: 0,
+      timeInterval: 0
     };
   },
 
@@ -187,6 +199,102 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    dismissVerification() {
+      localStorage.setItem('dismiss-sms-validation', true);
+      this.showValidation = false;
+    },
+    showSMSValidationModal() {
+      if (!this.verified) {
+        this.showValidation = true;
+      } else {
+        _alert('You have been verified previously');
+      }
+    },
+    validateCode() {
+      const vm = this;
+
+      if (vm.code) {
+        const verificationRequest = fetchData('/sms/validate/', 'POST', {
+          code: vm.code
+        }, {'X-CSRFToken': vm.csrf});
+
+        $.when(verificationRequest).then(response => {
+          vm.verificationEnabled = false;
+          vm.verified = true;
+          vm.validationStep = 'verifyNumber';
+          vm.showValidation = false;
+          _alert('You have been verified', 'success');
+        }).catch((e) => {
+          vm.errorMessage = e.responseJSON.msg;
+        });
+      }
+    },
+    startVerification() {
+      this.phone = '';
+      this.validationStep = 'requestVerification';
+      this.validNumber = false;
+      this.errorMessage = '';
+      this.code = '';
+      this.timePassed = 0;
+      this.timeInterval = 0;
+    },
+    countdown() {
+      const vm = this;
+
+      if (vm.timePassed < vm.timeInterval) {
+        setInterval(() => {
+          vm.timePassed += 1;
+        }, 1000);
+      }
+    },
+    resendCode() {
+      const e164 = this.phone.replace(/\s/g, '');
+      const vm = this;
+
+      vm.errorMessage = '';
+
+      if (vm.validNumber) {
+        const verificationRequest = fetchData('/sms/request', 'POST', {
+          phone: e164
+        }, {'X-CSRFToken': vm.csrf});
+
+        vm.errorMessage = '';
+
+        $.when(verificationRequest).then(response => {
+          // set the cooldown time to one minute
+          this.timePassed = 0;
+          this.timeInterval = 60;
+          this.countdown();
+        }).catch((e) => {
+          vm.errorMessage = e.responseJSON.msg;
+        });
+      }
+    },
+    requestVerification(event) {
+      const e164 = this.phone.replace(/\s/g, '');
+      const vm = this;
+
+      if (vm.validNumber) {
+        const verificationRequest = fetchData('/sms/request', 'POST', {
+          phone: e164
+        }, {'X-CSRFToken': vm.csrf});
+
+        vm.errorMessage = '';
+
+        $.when(verificationRequest).then(response => {
+          vm.validationStep = 'verifyNumber';
+          this.timePassed = 0;
+          this.timeInterval = 60;
+          this.countdown();
+        }).catch((e) => {
+          vm.errorMessage = e.responseJSON.msg;
+        });
+      }
+    },
+    isValidNumber(validation) {
+      console.log(validation);
+      this.validNumber = validation.isValid;
+    },
     loginWithGitHub() {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
     },
@@ -463,7 +571,7 @@ Vue.component('grants-cart', {
 
 if (document.getElementById('gc-grants-cart')) {
 
-  var app = new Vue({
+  const app = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-grants-cart',
     data: {
@@ -471,4 +579,8 @@ if (document.getElementById('gc-grants-cart')) {
       grantData
     }
   });
+
+  if (!document.verified && !localStorage.getItem('dismiss-sms-validation')) {
+    app.$refs.cart.showSMSValidationModal();
+  }
 }

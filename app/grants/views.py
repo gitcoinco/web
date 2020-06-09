@@ -308,7 +308,7 @@ def grants(request):
 
     now = datetime.datetime.now()
 
-    # record view 
+    # record view
     pks = list([grant.pk for grant in grants])
     if len(pks):
         increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
@@ -354,7 +354,7 @@ def grants(request):
         {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
 
     ]
-    
+
     sub_categories = []
     for keyword in [grant_type['keyword'] for grant_type in grant_types]:
         sub_category = {}
@@ -1041,8 +1041,12 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
     return TemplateResponse(request, 'grants/cancel.html', params)
 
+
 def grants_cart_view(request):
-    response =  TemplateResponse(request, 'grants/cart-vue.html')
+    context = {
+        'verified': request.user.profile.sms_verification
+    }
+    response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 

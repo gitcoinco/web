@@ -2251,7 +2251,7 @@ class Activity(SuperModel):
         if not self.metadata.get('video'):
             return 0
         try:
-            from app.redis_service import RedisService
+            from app.services import RedisService
             redis = RedisService().redis
             result = redis.get(self.pk)
             if not result:
@@ -2728,6 +2728,7 @@ class Profile(SuperModel):
     following_count = models.IntegerField(default=0, db_index=True, help_text='how many users are they following')
     earnings_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user earned crypto with Gitcoin')
     spent_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user spent crypto with Gitcoin')
+    sms_verification = models.BooleanField(default=False, help_text=_('SMS verification process'))
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
@@ -2754,12 +2755,12 @@ class Profile(SuperModel):
         chat_driver = Driver(driver_opts)
         chat_driver.login()
 
-        response = chat_driver.client.make_request('get', 
-            '/users/me/teams/unread', 
-            options=None, 
-            params=None, 
-            data=None, 
-            files=None, 
+        response = chat_driver.client.make_request('get',
+            '/users/me/teams/unread',
+            options=None,
+            params=None,
+            data=None,
+            files=None,
             basepath=None)
         total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
         return total_unread
@@ -2973,7 +2974,7 @@ class Profile(SuperModel):
         if not self.chat_id:
             return 'offline'
         try:
-            from app.redis_service import RedisService
+            from app.services import RedisService
             redis = RedisService().redis
             status = redis.get(f"chat:{self.chat_id}")
             if not status:
@@ -3166,7 +3167,7 @@ class Profile(SuperModel):
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"transaction{plural} on Gitcoin"
-               
+
 
     @property
     def desc(self):

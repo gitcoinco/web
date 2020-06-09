@@ -83,3 +83,26 @@
   color: var(--link-color);
   cursor: pointer;
 }
+
+.modal-backdrop {
+   background-color: rgba(0, 0, 0, 0.8);
+}
+
+.vti__dropdown-item {
+  height: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.vti__dropdown {
+  height: 50px;
+  outline: none;
+}
+
+.vue-tel-input input {
+  height: 50px;
+}
+
+.vti__dropdown-list.below {
+    top: 50px !important;
+}
