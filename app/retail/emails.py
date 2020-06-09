@@ -77,12 +77,11 @@ NOTIFICATION_EMAILS = [
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 
-# per speed notes at https://pypi.org/project/premailer/
-premailer = Premailer(base_url=settings.BASE_URL)
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
-    return premailer.transform(html)
+    p = premailer.Premailer(html, base_url=settings.BASE_URL)
+    return p.transform()
 
 
 def render_featured_funded_bounty(bounty):
@@ -553,7 +552,7 @@ def email_to_profile(to_email):
         pass
     return profile
 
-def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7):
+def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     from marketing.views import upcoming_dates, email_announcements
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -591,6 +590,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
         'upcoming_events': upcoming_events,
         'activities': latest_activities,
         'notifications_count': notifications_count,
+        'chats_count': chats_count,
         'show_action': is_email_townsquare_enabled(to_email) and is_there_an_action_available()
     }
 
@@ -1275,7 +1275,7 @@ def new_bounty(request):
     from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), upcoming_hackathon=upcoming_hackathon(), latest_activities=latest_activities(request.user))
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties='', offset=int(request.GET.get('offset', 2)), quest_of_the_day=quest_of_the_day(), upcoming_grant=upcoming_grant(), upcoming_hackathon=upcoming_hackathon(), latest_activities=latest_activities(request.user), chats_count=7)
     return HttpResponse(response_html)
 
 

@@ -113,11 +113,11 @@
       </div>
       <div class="pb-1 my-3 address">
         <label>{% trans "Address" %}:</label> <br>
-        <input name="address" type="text" id="address" value="">
+        <input name="address" type="text" id="address" value="{{preferred_payout_address}}">
       </div>
       <div class="my-2 comments">
         {% trans "Comments" %}:
-        <textarea id="comments"></textarea>
+        <textarea id="comments" placeholder="I did X work for you."></textarea>
       </div>
       <div class="terms pb-1">
         <input type="checkbox" id="tos" value="1" >
