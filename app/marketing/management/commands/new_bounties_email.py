@@ -32,6 +32,14 @@ warnings.filterwarnings("ignore")
 
 override_in_dev = True
 
+def validate_email(email):  
+  
+    import re 
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    if(re.search(regex,email)):  
+        return True 
+    return False
+
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
@@ -83,11 +91,13 @@ class Command(BaseCommand):
                 should_eval = keywords or town_square_enabled
                 if not should_eval:
                     continue
+                if not validate_email(to_email):
+                    continue
                 counter_total += 1
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
 
                 # stats
-                speed = round((time.time() - start_time) / counter_grant_total, 2)
+                speed = round((time.time() - start_time) / counter_grant_btal, 2)
                 ETA = round((total_count - counter_grant_total) / speed / 3600, 1)
                 print(f"{counter_sent} sent/{counter_total} enabled/{counter_grant_total} evaluated, {speed}/s, ETA:{ETA}h, working on {to_email} ")
 
