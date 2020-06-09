@@ -61,3 +61,7 @@ def modulo(num, val):
 @register.simple_tag
 def is_team_member(grant, profile):
     return is_grant_team_member(grant, profile)
+
+@register.simple_tag
+def is_grants_path(path):
+    return path.lower().startswith('/grants/')

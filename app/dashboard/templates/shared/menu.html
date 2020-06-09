@@ -15,13 +15,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static matches %}
+{% load i18n static matches grants_extra %}
 
 <div class="d-flex order-0 order-md-last">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
+  {% is_grants_path request.path as should_show_cart %}
+  {% if should_show_cart %}
+    {% include 'shared/cart_nav.html' %}
+  {% endif %}
   {% if user.is_authenticated %}
     {% include 'shared/chat_nav.html' %}
     {% include 'shared/notifications.html' %}

@@ -17,6 +17,8 @@ $(document).ready(function() {
     });
   }
 
+  applyCartMenuStyles();
+
   $('body').on('click', '.copy_me', function() {
     $(this).focus();
     $(this).select();
@@ -498,3 +500,17 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
 });
+
+function applyCartMenuStyles() {
+  console.log("HELLO WORLD");
+  console.log("CART DATA", CartData.loadCart());
+
+  let dot = $('#cart-notification-dot');
+
+  if (CartData.hasItems()) {
+    dot.addClass("notification__dot_active")
+  } else {
+    dot.removeClass("notification__dot_active")
+  }
+  console.log("DOT", dot);
+}
