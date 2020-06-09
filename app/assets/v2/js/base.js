@@ -502,9 +502,6 @@ $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
 });
 
 function applyCartMenuStyles() {
-  console.log("HELLO WORLD");
-  console.log("CART DATA", CartData.loadCart());
-
   let dot = $('#cart-notification-dot');
 
   if (CartData.hasItems()) {
@@ -512,5 +509,4 @@ function applyCartMenuStyles() {
   } else {
     dot.removeClass("notification__dot_active")
   }
-  console.log("DOT", dot);
 }

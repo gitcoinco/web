@@ -185,13 +185,13 @@ Vue.component('grants-cart', {
     },
 
     clearCart() {
-      window.localStorage.setItem('grants_cart', JSON.stringify([]));
+      CartData.setCart([]);
       this.grantData = [];
     },
 
     removeGrantFromCart(id) {
-      this.grantData = this.grantData.filter(grant => grant.grant_id !== id);
-      window.localStorage.setItem('grants_cart', JSON.stringify(this.grantData));
+      CartData.removeIdFromCart(id);
+      this.grantData = CartData.loadCart();
     },
 
     /**
@@ -420,7 +420,7 @@ Vue.component('grants-cart', {
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
       handler() {
-        window.localStorage.setItem('grants_cart', JSON.stringify(this.grantData));
+        CartData.setCart(this.grantData);
       },
       deep: true
     }
@@ -430,7 +430,7 @@ Vue.component('grants-cart', {
     // Show loading dialog
     this.isLoading = true;
     // Read array of grants in cart from localStorage
-    this.grantData = JSON.parse(window.localStorage.getItem('grants_cart'));
+    this.grantData = CartData.loadCart();
     // Wait until we can load token list
     while (!this.tokenList) {
       try {
