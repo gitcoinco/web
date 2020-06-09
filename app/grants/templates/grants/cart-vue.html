@@ -273,7 +273,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               <div class="flex-container" style="margin-top: 3rem;">
                 <div style="width: 100%">
                   <div class="flex-container" style="justify-content: start">
-                    <button class="btn btn-gc-blue button--full shadow-none py-3" id='js-fundGrants-button'
+                    <button v-if="!isLoggedIn" class="btn btn-gc-blue button--full shadow-none py-3"
+                      id='js-fundGrants-button' @click="loginWithGitHub">
+                      <i class="fab fa-github"></i>
+                      Login with GitHub to Continue
+                    </button>
+                    <button v-else class="btn btn-gc-blue button--full shadow-none py-3" id='js-fundGrants-button'
                       @click="checkout">
                       Fund [[this.grantData.length]] Items
                     </button>

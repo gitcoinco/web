@@ -33,6 +33,11 @@ Vue.component('grants-cart', {
   },
 
   computed: {
+    // Returns true if user is logged in with GitHub, false otherwise
+    isLoggedIn() {
+      return document.contxt.github_handle;
+    },
+
     // Array of arrays, item i lists supported tokens for donating to grant given by grantData[i]
     currencies() {
       if (!this.grantData || !this.tokenList)
@@ -174,6 +179,10 @@ Vue.component('grants-cart', {
   },
 
   methods: {
+    loginWithGitHub() {
+      window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
+    },
+
     clearCart() {
       window.localStorage.setItem('grants_cart', JSON.stringify([]));
       this.grantData = [];
