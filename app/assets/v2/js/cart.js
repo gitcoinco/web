@@ -113,7 +113,7 @@ Vue.component('grants-cart', {
 
       // Generate array of objects containing donation info from cart
       let gitcoinFactor = 100 * this.gitcoinFactor;
-      const donations = this.grantData.map((grant) => {
+      const donations = this.grantData.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
         const amount = this.toWeiString(grant.grant_donation_amount, tokenDetails.decimals, 100 - gitcoinFactor);
 
@@ -121,7 +121,9 @@ Vue.component('grants-cart', {
           token: tokenDetails.addr,
           amount,
           dest: grant.grant_admin_address,
-          name: grant.grant_donation_currency
+          name: grant.grant_donation_currency, // token abbreviation, e.g. DAI
+          grant, // all grant data from localStorage
+          comment: this.comments[index] // comment left by donor to grant owner
         };
       });
 
@@ -130,11 +132,33 @@ Vue.component('grants-cart', {
         const tokenDetails = this.getTokenByName(token);
         const amount = this.toWeiString(this.donationsToGitcoin[token], tokenDetails.decimals);
 
+        // TBD: Confirm these are suitable values for the automatic Gitcoin donations
+        const gitcoinGrantInfo = {
+          // Manually fill this in so we can access it for the POST requests.
+          // We use empty strings for fields that are not needed here
+          grant_admin_address: gitcoinAddress,
+          grant_contract_address: '',
+          grant_contract_version: '',
+          grant_donation_amount: this.donationsToGitcoin[token],
+          grant_donation_clr_match: '',
+          grant_donation_currency: token,
+          grant_donation_num_rounds: 1,
+          grant_id: '',
+          grant_image_css: '',
+          grant_logo: '',
+          grant_slug: '',
+          grant_title: '',
+          grant_token_address: '0x0000000000000000000000000000000000000000',
+          grant_token_symbol: ''
+        };
+
         donations.push({
           amount,
           token: tokenDetails.addr,
           dest: gitcoinAddress,
-          name: token
+          name: token, // token abbreviation, e.g. DAI
+          grant: gitcoinGrantInfo, // equivalent to grant data from localStorage
+          comment: '' // comment left by donor to grant owner
         });
       });
       return donations;
@@ -314,6 +338,11 @@ Vue.component('grants-cart', {
         await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
+        const txHash = 'bulk donation txHash would go here';
+
+        this.postToDatabase(txHash, userAddress);
+        return;
+
         // Get list of tokens user is donating with
         const selectedTokens = Object.keys(this.donationsToGrants);
 
@@ -403,6 +432,8 @@ Vue.component('grants-cart', {
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputs = this.donationInputs.map(donation => {
         delete donation.name;
+        delete donation.grant;
+        delete donation.comment;
         return donation;
       });
 
@@ -411,8 +442,9 @@ Vue.component('grants-cart', {
         .donate(donationInputs)
         .send({ from: userAddress, gas: this.donationInputsGasLimit, value: this.donationInputsEthAmount })
         .on('transactionHash', (txHash) => {
-          console.log('Donation transaction: ', txHash);
+          console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
+          this.postToDatabase(txHash, userAddress);
         })
         .on('confirmation', (confirmationNumber, receipt) => {
           // TODO?
@@ -421,6 +453,95 @@ Vue.component('grants-cart', {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
           this.handleError(error);
         });
+    },
+
+    postToDatabase(txHash, userAddress) {
+      // this.donationInputs is the array used for bulk donations
+      // We loop through each donation and POST the required data
+      const donations = this.donationInputs;
+
+      for (let i = 0; i < donations.length; i += 1) {
+        console.log('============================================================');
+        console.log(`DONATION ${i}`);
+        // Get URL to POST to
+        const donation = donations[i];
+        const grantId = donation.grant.grant_id;
+        const grantSlug = donation.grant.grant_slug;
+        const url = `/grants/${grantId}/${grantSlug}/fund`;
+
+        console.log('input data', donation);
+
+        // Get token information
+        const tokenName = donation.grant.grant_donation_currency;
+        const tokenDetails = this.getTokenByName(tokenName);
+
+        // Gitcoin uses the zero address to represent ETH, but the contract does not. Therefore we
+        // get the value of denomination and token_address using the below logic instead of
+        // using tokenDetails.addr
+        const isEth = tokenName === 'ETH';
+        const tokenAddress = isEth ? '0x0000000000000000000000000000000000000000' : tokenDetails.addr;
+
+        // Replace undefined comments with empty strings
+        const comment = donation.comment === undefined ? '' : donation.comment;
+
+        // Configure saveSubscription payload
+        const saveSubscriptionPayload = {
+          admin_address: donation.grant.grant_admin_address,
+          amount_per_period: donation.grant.grant_donation_amount,
+          comment,
+          contract_address: donation.grant.grant_contract_address,
+          contract_version: donation.grant.grant_contract_version,
+          contributor_address: userAddress,
+          csrfmiddlewaretoken: undefined, // TBD: Where is this from?
+          denomination: tokenAddress,
+          frequency_count: '1',
+          frequency_unit: 'rounds',
+          gas_price: undefined, // TBD: Do we need this? Simplest way to get it without waiting for receipt?
+          'gitcoin-grant-input-amount': this.gitcoinFactorRaw, // TBD: I'm assuming this is the percentage to Gitcoin
+          gitcoin_donation_address: gitcoinAddress,
+          grant_id: grantId,
+          hide_wallet_address: this.hideWalletAddress,
+          match_direction: '+',
+          network,
+          num_periods: '1',
+          real_period_seconds: 0,
+          recurring_or_not: 'once',
+          signature: '',
+          splitter_contract_address: bulkCheckoutAddress,
+          sub_new_approve_tx_id: txHash, // TBD: This txhash is our bulk donation hash, not an approval tx. But I'd think we want our txHash here somewhere
+          subscription_hash: '',
+          token_address: tokenAddress,
+          token_symbol: tokenName
+        };
+
+        // Configure saveSplitTx payload
+        const saveSplitTxPayload = {
+          csrfmiddlewaretoken: undefined, // TBD: Where is this from?
+          signature: 'onetime',
+          confirmed: false, // TBD: Is this sufficient? Who/when/how should it be updated in DB?
+          split_tx_id: txHash, // TBD: This txhash is our bulk donation hash which seems to be what we want here
+          sub_new_approve_tx_id: undefined, // TBD: Unlike saveSubscription, we have our txHash above so maybe this is unnecessary?
+          subscription_hash: 'onetime'
+        };
+
+        console.log('saveSubscriptionPayload: ', saveSubscriptionPayload);
+        console.log('saveSplitTxPayload: ', saveSplitTxPayload);
+
+        continue;
+        // Define parameter objects for POST request
+        const saveSubscriptionParams = {
+          body: saveSubscriptionPayload,
+          method: 'POST'
+        };
+        const saveSplitTxParams = {
+          body: saveSplitTxPayload,
+          method: 'POST'
+        };
+
+        // Send request
+        fetch(url, saveSubscriptionParams).catch(err => this.handleError(err));
+        fetch(url, saveSplitTxParams).catch(err => this.handleError(err));
+      }
     },
 
     sleep(ms) {
