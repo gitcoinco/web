@@ -42,7 +42,7 @@ THRESHOLD_HEALTH = 20.0
 
 TOTAL_POT_TECH = 101000.0
 TOTAL_POT_MEDIA = 50120.0 #50k + 120 from negative voting per https://twitter.com/owocki/status/1249420758167588864
-TOTAL_POT_HEALTH = 50000.0
+TOTAL_POT_HEALTH = 25000.0
 
 '''
     Helper function that translates existing grant data structure
@@ -316,10 +316,11 @@ def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile')
         phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
 
         # filter out new github profiles
-        positive_contribution_ids = [ele.pk for ele in positive_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
-        positive_contributions = positive_contributions.filter(pk__in=positive_contribution_ids)
-        negative_contribution_ids = [ele.pk for ele in negative_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
-        negative_contributions = negative_contributions.filter(pk__in=negative_contribution_ids)
+        # disable for giving block
+        # positive_contribution_ids = [ele.pk for ele in positive_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
+        # positive_contributions = positive_contributions.filter(pk__in=positive_contribution_ids)
+        # negative_contribution_ids = [ele.pk for ele in negative_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
+        # negative_contributions = negative_contributions.filter(pk__in=negative_contribution_ids)
         phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
 
         positive_contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in positive_contributions] + [p.profile_id for p in phantom_funding_profiles]))
