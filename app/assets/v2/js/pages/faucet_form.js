@@ -51,10 +51,7 @@ $('document').ready(function() {
         trigger_faucet_form_web3_hooks(provider);
       });
     }
-    // if (document.web3network != 'mainnet') {
-    //   _alert({ message: gettext('You must be on mainnet')}, 'error');
-    //   return;
-    // }
+
     if ($(this).hasClass('disabled')) {
       return;
     }

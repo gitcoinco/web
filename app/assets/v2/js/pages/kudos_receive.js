@@ -169,12 +169,10 @@ $(document).ready(function() {
           from: holding_address,
           data: data
         };
-        // console.log(rawTx)
 
         var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
 
         console.log(kudosPriceInEth);
-        // var kudosPriceInWei = new web3.utils.BN(kudosPriceInEth * 1.0 * Math.pow(10, 18));
         var kudosPriceInWei = new web3.utils.BN(web3.utils.toWei(String(kudosPriceInEth)));
         var params = {
           forwarding_address: forwarding_address,

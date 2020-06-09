@@ -388,21 +388,15 @@ const ethCreateBounty = async (data) => {
     };
 
     if (tokenAddress == '0x0000000000000000000000000000000000000000') {
-      // let ethBalance = getBalance(from);
-
       const walletBalance = Number(balance);
+
       return checkBalance(walletBalance, total, token_name);
-      // ethBalance.then(
-      //   function(result) {
-      //     const walletBalance = result.toNumber() / Math.pow(10, token_decimals);
-      //     return checkBalance(walletBalance, total, token_name);
-      //   }
-      // );
+
     } else {
       token_contract.methods.balanceOf(from).call({from: from}, function(error, result) {
         if (error) return;
-        // const walletBalance = result.toNumber() / Math.pow(10, token_decimals);
         const walletBalance = Number(balance);
+
         return checkBalance(walletBalance, total, token_name);
       });
     }

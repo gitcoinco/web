@@ -651,13 +651,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   });
 }
 
-// web3.currentProvider.publicConfigStore.on('update', function(e) {
 var error;
 
-// if (window.ethereum && window.ethereum.publicConfigStore) {
-//   window.ethereum.publicConfigStore.on('update', checkNetwork);
-// }
-// if (!provider && !web3Modal.cachedProvider || provider === 'undefined' ) {
 if (web3Modal) {
   web3Modal.onConnect().then(() => {
     if (networkId === '4' || networkId === '1') {
@@ -669,19 +664,3 @@ if (web3Modal) {
 
   });
 }
-// function checkNetwork(e) {
-//   if (error) {
-//     return;
-//   }
-
-//   var network = e ? e.networkVersion : web3.version.network;
-//   console.log(network)
-//   console.log(web3.currentProvider);
-//   if (network === '4' || network === '1') {
-//     console.log(network);
-//   } else {
-//     error = true;
-//     _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-//   }
-// }
-// checkNetwork();
