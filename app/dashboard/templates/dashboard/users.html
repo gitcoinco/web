@@ -115,6 +115,10 @@
                 </fieldset>
               </div>
             </div>
+            <div class="g-multiselect pb-4 border-bottom form-group">
+              <label for="only-with-token" class="font-weight-bold">Only with tokens</label>
+              <input v-model.lazy="params.only_with_token" type="checkbox" id="only-with-token" />
+            </div>
             <div v-if="persona != 'tribe'" class="g-multiselect pb-4 border-bottom form-group">
               <label for="organisations" class="font-weight-bold">Tribe</label>
               <div class="font-smaller">

@@ -864,7 +864,7 @@ def users_directory(request):
     return TemplateResponse(request, 'dashboard/users.html', params)
 
 
-def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = ""):
+def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = "", only_with_tokens = False):
     if not settings.DEBUG:
         network = 'mainnet'
     else:
@@ -907,6 +907,8 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
         profile_list = profile_list.filter(
             hackathon_registration__hackathon=hackathon_id
         )
+    if only_with_tokens:
+        profile_list = profile_list  # FIXME
     return profile_list
 
 
@@ -947,6 +949,7 @@ def users_fetch(request):
     tribe = request.GET.get('tribe', '')
     hackathon_id = request.GET.get('hackathon', '')
     user_filter = request.GET.get('user_filter', '')
+    only_with_tokens = request.GET.get('only_with_token', '') != ''
 
     user_id = request.GET.get('user', None)
     if user_id:
@@ -1004,7 +1007,8 @@ def users_fetch(request):
         leaderboard_rank,
         rating,
         organisation,
-        hackathon_id
+        hackathon_id,
+        only_with_tokens
     )
 
     def previous_worked():
@@ -5274,12 +5278,12 @@ def bulkDM(request):
                     messages.error(request, f'{to_handle} is not on Gitcoin Chat yet.')
                     continue
                 try:
-                    response = chat_driver.client.make_request('post', 
-                        '/channels/direct', 
-                        options=None, 
-                        params=None, 
-                        data=f'["{to_user_id}", "{from_user_id}"]', 
-                        files=None, 
+                    response = chat_driver.client.make_request('post',
+                        '/channels/direct',
+                        options=None,
+                        params=None,
+                        data=f'["{to_user_id}", "{from_user_id}"]',
+                        files=None,
                         basepath=None)
                     channel_id = response.json()['id']
                     chat_driver.posts.create_post(options={
