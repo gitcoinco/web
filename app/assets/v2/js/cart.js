@@ -580,7 +580,7 @@ if (document.getElementById('gc-grants-cart')) {
     }
   });
 
-  if (!document.verified && !localStorage.getItem('dismiss-sms-validation')) {
+  if (document.authenticated && !document.verified && !localStorage.getItem('dismiss-sms-validation')) {
     app.$refs.cart.showSMSValidationModal();
   }
 }
