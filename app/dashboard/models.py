@@ -2642,6 +2642,10 @@ class Profile(SuperModel):
         default=True,
         help_text='If this option is chosen, we will remove your wallet information all together',
     )
+    pref_do_not_track = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will not put GA/FB tracking on pages that you browse',
+    )
     trust_profile = models.BooleanField(
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
