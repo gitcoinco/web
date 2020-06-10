@@ -49,13 +49,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
           <div>
 
             {% comment %} Heading section {% endcomment %}
-            <div class="container" style="margin-top:2rem;">
-              <h1 class="text-center font-bigger-2">
-                Grant Cart ([[ grantData.length ]] items)
-              </h1>
+            <div class="container" style="margin:2rem auto;">
               <img src="{% static 'v2/images/grants/torchbearer.svg' %}" alt="Robot with torch" width="150">
-              <div class="font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;" @click="clearCart">
-                Clear my cart
+
+              <div class="row align-items-end justify-content-between" style="margin-top:2rem; width:100%">
+                <h1 class="col-auto text-left font-bigger-2 black" style="font-weight: bold; margin-bottom: 0">
+                  GRANT CART ([[ grantData.length ]] ITEM<span v-if="grantData.length !== 1">S</span>)
+                </h1>
+                <div class="col-auto text-right font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;"
+                  @click="clearCart">
+                  Clear my cart
+                </div>
               </div>
             </div>
 
