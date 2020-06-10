@@ -82,6 +82,8 @@ round_5_5_grants = [] # special grants for round 5.5
 # Round 6 - June 15th — June 29th 2020
 # Round 7 - September 14th — September 28th 2020
 
+last_round_start = timezone.datetime(2020, 3, 23, 12, 0)
+last_round_end = timezone.datetime(2020, 4, 7, 12, 0)
 next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
 after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
 round_end = timezone.datetime(2020, 6, 29, 12, 0)
@@ -380,6 +382,12 @@ def grants(request):
         pinned = PinnedPost.objects.get(what=what)
     except PinnedPost.DoesNotExist:
         pinned = None
+
+    prev_grants = Grant.objects.none()
+    if request.user.is_authenticated:
+        prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
+        prev_grants = Grant.objects.filter(pk__in=prev_grants)
+        
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -399,6 +407,7 @@ def grants(request):
         'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,
         'sub_categories': sub_categories,
+        'prev_grants': prev_grants,
         'grant_types': grant_types,
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,

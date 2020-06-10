@@ -40,18 +40,22 @@ along with this program. If not, see
         <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
           <div
             style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
+            {% if prev_grants.count %}
             <div class="row">
               <div class="col-12 mt-3">
                 <div class="info-box large mx-auto p-3">
-                  <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="#">+
-                    Add to Cart</a> <!-- TODO: Add proper href -->
-                  <p class="mb-2">Sustain these projects with <b>recurring</b> funding. You funded 6 grants last time. Fund
-                    them again?</p> <!-- TODO: Load correct count of grants -->
-                  <span class="font-smaller-3"><a href="">DAppNode</a>, <a href="">White Hat Hacking</a>, <a href="">Burner
-                      Wallet</a> and 4 more.</span> <!-- TODO: Load previous grants and count -->
+                  <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for prev_grant in prev_grants %}{{prev_grant.pk}},{% endfor %}">+
+                    Add to Cart</a>
+                  <p class="mb-2">Want to contribute to <a href="https://vitalik.ca/general/2020/04/30/round5.html" target="_blank">stability of ecosystem funding</a>? You funded {{prev_grants.count}} grant{{ prev_grants.count|pluralize }} last time. Fund
+                    them again?</p> 
+                  <span class="font-smaller-3">{% for prev_grant in prev_grants %}
+                  <a href="{{prev_grant.url}}">{{prev_grant.title}}</a>
+                  {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
+                  {%endfor%}</span>
                 </div>
               </div>
             </div>
+            {% endif %}
             <div class="row">
               <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container">
                 {% include 'grants/shared/sidebar_search.html' %}
