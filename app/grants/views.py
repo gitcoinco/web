@@ -340,6 +340,9 @@ def grants(request):
     matic_grants_count = Grant.objects.filter(
         network=network, hidden=False, grant_type='matic'
     ).count()
+    change_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='change'
+    ).count()
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
@@ -352,6 +355,7 @@ def grants(request):
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
         {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
         {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
+        {'label': 'Crypto for Change', 'keyword': 'change', 'count': change_count},
 
     ]
 
@@ -1221,6 +1225,8 @@ def basic_grant_categories(grant_type):
         categories = GrantCategory.media_categories()
     elif grant_type == 'health':
         categories = GrantCategory.health_categories()
+    elif grant_type == 'change':
+        categories = GrantCategory.change_categories()
     else:
         categories = GrantCategory.all_categories()
 
