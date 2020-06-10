@@ -571,7 +571,8 @@ Vue.component('grants-cart', {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
           this.postToDatabase(txHash, userAddress);
-          // Redirect back to grants page and show success alert
+          // Clear cart, redirect back to grants page, and show success alert
+          this.clearCart();
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
           window.location.href = `${window.location.origin}/grants`;
