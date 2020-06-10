@@ -455,6 +455,7 @@ Vue.component('grants-cart', {
       // this.donationInputs is the array used for bulk donations
       // We loop through each donation and POST the required data
       const donations = this.donationInputs;
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
       console.log('donationInputs', this.donationInputs);
       for (let i = 0; i < donations.length; i += 1) {
@@ -489,7 +490,7 @@ Vue.component('grants-cart', {
           contract_address: donation.grant.grant_contract_address,
           contract_version: donation.grant.grant_contract_version,
           contributor_address: userAddress,
-          csrfmiddlewaretoken: undefined, // TBD: Where is this from?
+          csrfmiddlewaretoken,
           denomination: tokenAddress,
           frequency_count: '1',
           frequency_unit: 'rounds',
@@ -513,7 +514,7 @@ Vue.component('grants-cart', {
 
         // Configure saveSplitTx payload
         const saveSplitTxPayload = new URLSearchParams({
-          csrfmiddlewaretoken: undefined, // TBD: Where is this from?
+          csrfmiddlewaretoken,
           signature: 'onetime',
           confirmed: false, // TBD: Is this sufficient? Who/when/how should it be updated in DB?
           split_tx_id: txHash, // TBD: This txhash is our bulk donation hash which seems to be what we want here
