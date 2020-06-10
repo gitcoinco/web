@@ -894,9 +894,7 @@
       methods: {
         tabChange: function(input) {
           let vm = this;
-
           addPopover();
-
 
           switch (input) {
             default:
@@ -912,9 +910,6 @@
             case 3:
               newPathName = 'participants';
               break;
-          }
-          if (chatMode) {
-            vm.chatMode = true;
           }
 
           let newUrl = `/hackathon/${vm.hackathonObj['slug']}/${newPathName}/${window.location.search}`;

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Close this Window</title>
+</head>
+<body>
+  <script type="text/javascript">
+    (() => {
+      window.opener.chatSidebar.renderKey = "chat-iframe-logged-in";
+      window.opener.chatSidebar.isLoggedIn = true;
+      window.opener.chatSidebar.isLoading = false;
+      window.close();
+    })();
+  </script>
+</body>
+</html>
