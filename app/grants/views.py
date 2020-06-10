@@ -1043,12 +1043,23 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
 
 def grants_cart_view(request):
-    context = {}
+    context = {
+        'title': 'Grants Cart',
+    }
     if request.user.is_authenticated:
         context['verified'] = request.user.profile.sms_verification
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
+
+def grants_bulk_add(request, grant_ids):
+    grant_ids = grant_ids.split(',')
+    context = {
+        'grants': Grant.objects.filter(pk__in=grant_ids)
+    }
+    response = TemplateResponse(request, 'grants/bulk_add_to_cart.html', context=context)
     return response
 
 
