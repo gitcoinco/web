@@ -325,6 +325,12 @@ class Grant(SuperModel):
 
 
     @property
+    def configured_to_receieve_funding(self):
+        if self.contract_version == 2:
+            return True
+        return self.contract_address != '0x0'
+
+    @property
     def clr_match_estimate_this_round(self):
         try:
             return self.clr_prediction_curve[0][1]

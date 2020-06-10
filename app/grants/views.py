@@ -714,22 +714,6 @@ def grant_new(request):
 
             add_form_categories_to_grant(form_category_ids, grant, grant_type)
 
-            return JsonResponse({
-                'success': True,
-            })
-
-        if 'contract_address' in request.POST:
-            tx_hash = request.POST.get('transaction_hash', '')
-            if not tx_hash:
-                return JsonResponse({
-                    'success': False,
-                    'info': 'no tx hash',
-                    'url': None,
-                })
-
-            grant = Grant.objects.filter(deploy_tx_id=tx_hash).first()
-            grant.contract_address = request.POST.get('contract_address', '')
-            print(tx_hash, grant.contract_address)
             messages.info(
                 request,
                 _('Thank you for posting this Grant.  Share the Grant URL with your friends/followers to raise your first tokens.')
@@ -737,10 +721,12 @@ def grant_new(request):
             grant.save()
             record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
+
             return JsonResponse({
                 'success': True,
-                'url': reverse('grants:details', args=(grant.pk, grant.slug))
+                'url': grant.url,
             })
+
 
 
     params = {
@@ -816,7 +802,7 @@ def grant_fund(request, grant_id, grant_slug):
         }
         return TemplateResponse(request, 'grants/shared/error.html', params)
 
-    if grant.contract_address == '0x0':
+    if not grant.configured_to_receieve_funding:
         messages.info(
             request,
             _('This grant is not configured to accept funding at this time.  Please contact founders@gitcoin.co if you believe this message is in error!')
