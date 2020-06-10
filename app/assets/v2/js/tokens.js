@@ -27,7 +27,8 @@ const tokenNameToDetails = (network, token_name) => {
   return _tokens.filter(_token => _token.name == token_name)[0];
 };
 
-var load_tokens_from_network = function(network) {
+var eventTokensReady = new Event('tokensReady', {bubbles: true});
+var load_tokens_from_network =  function(network) {
   // add tokens to the submission form
   var tokenAddress = localStorage['tokenAddress'];
 
@@ -36,6 +37,7 @@ var load_tokens_from_network = function(network) {
   }
   var _tokens = tokens(network);
 
+  _tokens = removeDuplicates(_tokens, 'addr');
   // remove previus
   $('select[name=denomination]').find('option').remove();
   for (var i = 0; i < _tokens.length; i++) {
@@ -49,13 +51,13 @@ var load_tokens_from_network = function(network) {
       value: token['addr'],
       text: token['name']
     };
-
     if (token['addr'] == tokenAddress) {
       select['selected'] = 'selected';
     }
 
     $('select[name=denomination]').append($('<option>', select));
   }
+  document.dispatchEvent(eventTokensReady);
 };
 
 var load_tokens = function() {
@@ -89,3 +91,8 @@ var load_tokens = function() {
   });
 
 };
+
+function removeDuplicates(array, prop) {
+  let uniq = {};
+  return array.filter(obj => !uniq[obj[prop]] && (uniq[obj[prop]] = true))
+}

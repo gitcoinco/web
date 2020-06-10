@@ -15,12 +15,6 @@ if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
 
-const needWalletConnection = () => {
-  if (!web3Modal.cachedProvider) {
-    return onConnect();
-  }
-};
-
 function initWallet() {
   // Determine if we're on prod or not
   const isProd = document.location.href.startsWith('https://gitcoin.co');
@@ -52,10 +46,16 @@ function initWallet() {
 }
 
 function walletStateChanges() {
-  if (typeof load_tokens !== 'undefined') {
+  if (typeof load_tokens !== 'undefined' && typeof tokens !== 'undefined') {
     load_tokens();
   }
 }
+
+const needWalletConnection = async () => {
+  if (!web3Modal.cachedProvider) {
+    return await onConnect();
+  }
+};
 
 async function fetchAccountData(provider) {
 
@@ -261,11 +261,22 @@ async function onDisconnect() {
   $('.wallet-hidden').addClass('d-none');
   document.querySelector('#wallet-btn').innerText = 'Connect Wallet';
 
+  cleanUpWalletData();
+
   // Set the UI back to the initial state
   // document.querySelector("#prepare").style.display = "block";
   // document.querySelector("#connected").style.display = "none";
 }
 
+function cleanUpWalletData() {
+  selectedAccount = undefined;
+  balance = undefined;
+  chainId = undefined;
+  networkId = undefined;
+  networkName = undefined;
+  chainName = undefined;
+  humanFriendlyBalance = undefined;
+}
 
 async function refreshAccountData() {
 
@@ -281,6 +292,7 @@ async function refreshAccountData() {
   // over an API call.
   // document.querySelector('#wallet-btn').setAttribute('disabled', 'disabled');
   document.querySelector('#wallet-btn').innerText = 'Change Wallet';
+  cleanUpWalletData();
   await fetchAccountData(provider);
   // document.querySelector('#wallet-btn').removeAttribute('disabled');
 }
