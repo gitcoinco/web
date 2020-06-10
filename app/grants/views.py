@@ -68,24 +68,24 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
-matching_live = '(💰$50K Match LIVE!) '
-live_now = '❇️ LIVE NOW! Up to $50k Matching Funding on Gitcoin Grants'
+matching_live = '(💰$175K Match LIVE!) '
+live_now = '❇️ LIVE NOW! Up to $150k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
-total_clr_pot = 250000
-clr_round = 5
+total_clr_pot = 175000
+clr_round = 6
 clr_active = True
 show_clr_card = True
-round_5_5_grants = [656, 493, 494, 502, 504, 662] # special grants for round 5.5
+round_5_5_grants = [] # special grants for round 5.5
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
 # Round 6 - June 15th — June 29th 2020
 # Round 7 - September 14th — September 28th 2020
 
-next_round_start = timezone.datetime(2020, 3, 23, 12, 0)
-after_that_next_round_begin = timezone.datetime(2020, 6, 15, 12, 0)
-round_end = timezone.datetime(2020, 4, 10, 10, 0)
-round_types = ['media', 'tech', 'health']
+next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
+after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
+round_end = timezone.datetime(2020, 6, 29, 12, 0)
+round_types = ['media', 'tech', 'change']
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 
@@ -355,7 +355,7 @@ def grants(request):
         {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
         {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
         {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
-        {'label': 'Crypto for Change', 'keyword': 'change', 'count': change_count},
+        {'label': 'Crypto for Black Lives', 'keyword': 'change', 'count': change_count},
 
     ]
 
