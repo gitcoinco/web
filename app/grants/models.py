@@ -341,7 +341,7 @@ class Grant(SuperModel):
 
     @property
     def negative_voting_enabled(self):
-        return self.grant_type == 'media'
+        return False
 
     @property
     def org_name(self):

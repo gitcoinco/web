@@ -101,9 +101,6 @@
 
             {% if not is_team_member %}
             <div class="pt-2 mb-1">
-                <div class="float-left">
-                    <a href="/grants/{{grant.id}}/{{grant.slug}}/fund">Give Recurring</a>
-                </div>
                 <div class="float-right">
                     {% if grant.negative_voting_enabled %}
                         <a id="negative_fund" href="{% url 'grants:fund' grant.id grant.slug %}?direction=-">Negative Fund <i class="fas fa-user-minus"></i></a>
