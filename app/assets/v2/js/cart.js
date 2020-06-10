@@ -449,15 +449,23 @@ Vue.component('grants-cart', {
         // Get list of tokens user is donating with
         const selectedTokens = Object.keys(this.donationsToGrants);
 
-        // Token approval checks -------------------------------------------------------------------
+        // Token approval and balance checks -------------------------------------------------------
         // For each token, check if an approval is needed, and if so save off the data
         let allowanceData = [];
 
         for (let i = 0; i < selectedTokens.length; i += 1) {
           const tokenDetails = this.getTokenByName(selectedTokens[i]);
 
-          // If ETH donation, no approval necessary
+          // If ETH donation no approval is necessary, just check balance
           if (tokenDetails.name === 'ETH') {
+            const userEthBalance = await web3.eth.getBalance(userAddress);
+
+            if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsEthAmount, 10))) {
+              // Balance is too small, exit checkout flow
+              _alert('Insufficient ETH balance to complete checkout', 'error');
+              return;
+            }
+            // Balance is sufficient, continue to next iteration since no approval check
             continue;
           }
 
@@ -478,6 +486,15 @@ Vue.component('grants-cart', {
               ? accumulator.add(new BN(currentValue.amount)) // correct token donation
               : accumulator.add(new BN('0')); // ETH donation
           }, initialValue);
+
+          // Check user token balance against requiredAllowance
+          const userTokenBalance = await tokenContract.methods.balanceOf(userAddress).call({ from: userAddress });
+
+          if (new BN(userTokenBalance, 10).lt(requiredAllowance)) {
+            // Balance is too small, exit checkout flow
+            _alert(`Insufficient ${selectedTokens[i]} balance to complete checkout`, 'error');
+            return;
+          }
 
           // If no allowance is needed, continue to next token
           if (allowance.gte(new BN(requiredAllowance))) {
@@ -558,9 +575,6 @@ Vue.component('grants-cart', {
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
           window.location.href = `${window.location.origin}/grants`;
-        })
-        .on('confirmation', (confirmationNumber, receipt) => {
-          // TODO?
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
