@@ -2729,6 +2729,9 @@ class Profile(SuperModel):
     earnings_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user earned crypto with Gitcoin')
     spent_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user spent crypto with Gitcoin')
     sms_verification = models.BooleanField(default=False, help_text=_('SMS verification process'))
+    validation_attempts = models.PositiveSmallIntegerField(default=0, help_text=_('Number of generated SMS codes to validate account'))
+    last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
+    encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
@@ -5134,3 +5137,15 @@ class ObjectView(SuperModel):
 
     def __str__(self):
         return f"{self.viewer} => {self.target} on {self.created_on}"
+
+
+class ProfileVerification(SuperModel):
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='verifications')
+    caller_type = models.CharField(max_length=20, null=True, blank=True)
+    carrier_error_code = models.CharField(max_length=10, null=True, blank=True)
+    mobile_network_code = models.CharField(max_length=10, null=True, blank=True)
+    mobile_country_code = models.PositiveSmallIntegerField(default=0, null=True)
+    carrier_name = models.CharField(max_length=100, null=True, blank=True)
+    carrier_type = models.CharField(max_length=20, null=True, blank=True)
+    country_code = models.CharField(max_length=5, null=True, blank=True)
+    phone_number = models.CharField(max_length=50, null=True, blank=True)

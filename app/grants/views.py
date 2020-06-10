@@ -1046,7 +1046,6 @@ def grants_cart_view(request):
     context = {}
     if request.user.is_authenticated:
         context['verified'] = request.user.profile.sms_verification
-        context['authenticated'] = request.user.profile.sms_verification
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
