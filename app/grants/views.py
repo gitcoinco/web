@@ -246,6 +246,7 @@ def grants(request):
     grant_type = request.GET.get('type', 'all')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
+    profile = get_profile(request)
     _grants = None
     bg = 4
     bg = f"{bg}.jpg"
@@ -307,7 +308,7 @@ def grants(request):
 
     now = datetime.datetime.now()
 
-    # record view 
+    # record view
     pks = list([grant.pk for grant in grants])
     if len(pks):
         increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
@@ -353,6 +354,13 @@ def grants(request):
         {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
 
     ]
+
+    sub_categories = []
+    for keyword in [grant_type['keyword'] for grant_type in grant_types]:
+        sub_category = {}
+        sub_category[keyword] = [tuple[0] for tuple in basic_grant_categories(keyword)]
+        sub_categories.append(sub_category)
+
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
     grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
@@ -386,6 +394,7 @@ def grants(request):
         'bottom_back': bottom_back,
         'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,
+        'sub_categories': sub_categories,
         'grant_types': grant_types,
         'current_partners_fund': current_partners_fund,
         'current_partners': current_partners,
@@ -411,7 +420,8 @@ def grants(request):
         'show_past_clr': show_past_clr,
         'is_staff': request.user.is_staff,
         'selected_category': category,
-        'round_5_5_grants': round_5_5_grants
+        'round_5_5_grants': round_5_5_grants,
+        'profile': profile
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -1030,6 +1040,15 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     }
 
     return TemplateResponse(request, 'grants/cancel.html', params)
+
+
+def grants_cart_view(request):
+    context = {
+        'verified': request.user.profile.sms_verification
+    }
+    response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 
 @login_required

@@ -1,0 +1,116 @@
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static get_categories_from_list %}
+<div class="sidebar_search font-body pr-0 pl-4">
+  <div class="search font-caption mb-4" style="width: 110%;">
+    <div class="search-area col-12">
+      <form method="POST" id="search_form">
+        {% csrf_token %}
+        <input class="form__input form__input_lg" type="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Muli', sans-serif; font-weight: 900;" placeholder="&#xF002; Search Grant" />
+      </form>
+    </div>
+  </div>
+
+  <p id="expand" class="text-right font-caption font-weight-semibold">
+    {% trans "Expand Filter" %}
+    <i class="fas fa-chevron-down"></i>
+  </p>
+  <p id="minimize" class="text-right font-caption font-weight-semibold">
+    {% trans "Minimize Filter" %}
+    <i class="fas fa-chevron-up"></i>
+  </p>
+
+  <form id="filters">
+
+    <div class="col border-top-0">
+      <div class="subheading">
+        {% trans "Categories" as cats %}{{ cats|upper }}
+      </div>
+      <ul class="nav d-inline-block font-body mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
+        <li class="mr-1 ">
+        <a data-type="all" data-category="" class="mr-1 {% if type == 'all' %}selected{% endif %} ">
+          All Categories
+        </a>
+      </li>
+
+        {% for grant_type in grant_types %}
+        <li class="mr-1 accordion">
+          <a data-type="{{grant_type.keyword}}" data-category="" class="mr-1 {% if type == grant_type.keyword %}selected{% endif %}">
+            {{grant_type.label}}
+          </a>
+        </li>
+
+        <div class="panel">
+          <div class="col-12 options">
+              <ul class="nav d-inline-block font-body mb-2 grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-xl-left font-body font-weight-semibold">
+                <li class="mr-1 ">
+                <a data-type="{{grant_type.keyword}}" data-category="" class="mr-3 mr-md-2 mr-lg-3 {% if type == grant_type.keyword and selected_category == '' %} selected {% endif %}">
+                  All {{grant_type.label}}
+                </a>
+              </li>
+
+                {% for category in sub_categories|get_categories_from_list:grant_type.keyword %}
+                <li class="mr-1 ">
+                  <a data-type="{{grant_type.keyword}}" data-category="{{category}}" class="mr-3 mr-md-2 mr-lg-3 {% if selected_category == category %} selected {% endif %}">
+                    {{category|title}}
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+          </div>
+        </div>
+        {% endfor %}
+        <hr>
+        <li>
+          <a data-type="about" data-category="" class="mr-1 px-1 {% if type == 'about' %}selected{% endif %}">
+            About
+          </a>
+        </li>
+        <li>
+          <a data-type="stats" data-category="" class="mr-1 px-1 {% if type == 'stats' %}selected{% endif %}">
+            Stats
+          </a>
+        </li>
+        <li>
+          <a data-type="activity" data-category="" class="mr-1 px-1 {% if type == 'activity' %}selected{% endif %}">
+            Activity
+          </a>
+        </li>
+        {% if github_handle %}
+        <li>
+          <a target="new" href='/{{github_handle}}/grants' class="mr-1 px-1 ">
+            My Grants <i class="fas fa-external-link-alt"></i>
+          </a>
+        </li>
+        {% endif %}
+        <li>
+          <a target="new" href='/wiki/grants' class="mr-1 px-1 ">
+            FAQ <i class="fas fa-external-link-alt"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </form>
+
+    <div class="col p-0">
+      <div class="info-box p-2 mt-4">
+        <p class="mb-1"><b>💡Do you know?</b></p>
+        <span class="font-smaller-3">Recurring contribution for the next <b>3 Rounds</b> will result in <b>X% more match amount!</b></span> <!-- TODO: Load correct X% -->
+      </div>
+    </div>
+</div>

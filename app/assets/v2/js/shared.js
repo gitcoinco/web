@@ -1427,6 +1427,17 @@ const updateParams = (key, value) => {
   window.location.href = '/grants/?' + decodeURIComponent(params.toString());
 };
 
+const updateMultipleParams = (newParams) => {
+  params = new URLSearchParams(window.location.search);
+  newParams = Object.entries(newParams);
+  for (const [ key, value ] of newParams) {
+    params.set(key, value);
+  }
+
+  window.location.href = '/grants/?' + decodeURIComponent(params.toString());
+};
+
+
 /**
  * shrinks text if it exceeds a given length which introduces a button
  * which can expand / shrink the text.

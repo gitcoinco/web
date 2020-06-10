@@ -315,12 +315,12 @@ def populate_data_for_clr(clr_type=None, network='mainnet', mechanism='profile')
         # Generate list of profiles who've made +ve and -ve contributions to the grant
         phantom_funding_profiles = PhantomFunding.objects.filter(grant_id=grant.id, created_on__gte=CLR_START_DATE, created_on__lte=from_date)
 
-        # filter out new github profiles
-        positive_contribution_ids = [ele.pk for ele in positive_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
+        # filter out non sms verified profiles
+        positive_contribution_ids = [ele.pk for ele in positive_contributions if ele.subscription.contributor_profile.sms_verification] # only allow verified profiles
         positive_contributions = positive_contributions.filter(pk__in=positive_contribution_ids)
-        negative_contribution_ids = [ele.pk for ele in negative_contributions if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
+        negative_contribution_ids = [ele.pk for ele in negative_contributions if ele.subscription.contributor_profile.sms_verification] # only allow verified profiles
         negative_contributions = negative_contributions.filter(pk__in=negative_contribution_ids)
-        phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < CLR_START_DATE.replace(tzinfo=pytz.UTC)] # only allow github profiles created after CLR Round
+        phantom_funding_profiles = [ele for ele in phantom_funding_profiles if ele.subscription.contributor_profile.sms_verification] # only allow verified profiles
 
         positive_contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in positive_contributions] + [p.profile_id for p in phantom_funding_profiles]))
         negative_contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in negative_contributions]))
