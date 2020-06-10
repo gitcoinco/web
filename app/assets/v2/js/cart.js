@@ -569,6 +569,12 @@ Vue.component('grants-cart', {
   }
 });
 
+$(document).ready(function(){
+  var num_grants = JSON.parse(localStorage.getItem('grants_cart')).length
+  let new_title = "Grants Cart ("+num_grants+") | Gitcoin";
+  $('title').text(new_title);
+});
+
 if (document.getElementById('gc-grants-cart')) {
 
   const app = new Vue({
