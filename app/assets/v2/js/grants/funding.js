@@ -14,6 +14,7 @@ $(document).ready(function() {
         _alert(message, 'success');
         localStorage.removeItem('contributions_were_successful');
         localStorage.removeItem('contributions_count');
+        $('#tweetModal').css('display', 'block');
     }
 
     $('#js-addToCart-form').submit(function(event) {
