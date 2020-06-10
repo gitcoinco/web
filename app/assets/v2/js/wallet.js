@@ -51,7 +51,7 @@ function walletStateChanges() {
   }
 }
 
-const needWalletConnection = async () => {
+const needWalletConnection = async() => {
   if (!web3Modal.cachedProvider) {
     return await onConnect();
   }
@@ -65,11 +65,11 @@ async function fetchAccountData(provider) {
   console.log('Web3 instance is', web3);
 
   // Get connected chain id from Ethereum node
-  // if (web3.eth.currentProvider) {
-  //   chainId = await web3.eth.currentProvider.chainId;
-  // } else {
-  // }
-  chainId = await web3.eth.givenProvider.chainId;
+  if (web3.eth.currentProvider) {
+    chainId = await web3.eth.currentProvider.chainId;
+  } else {
+    chainId = await web3.eth.givenProvider.chainId;
+  }
   await web3.eth.net.getId().then(id => {
     networkId = id;
     networkName = getDataChains(id, 'chainId')[0].network;
@@ -260,7 +260,7 @@ async function onDisconnect() {
 
   $('.wallet-hidden').addClass('d-none');
   document.querySelector('#wallet-btn').innerText = 'Connect Wallet';
-
+  document.querySelector('.wallet-network').classList.remove('rinkeby', 'mainnet');
   cleanUpWalletData();
 
   // Set the UI back to the initial state

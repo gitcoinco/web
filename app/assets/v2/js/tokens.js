@@ -28,7 +28,7 @@ const tokenNameToDetails = (network, token_name) => {
 };
 
 var eventTokensReady = new Event('tokensReady', {bubbles: true});
-var load_tokens_from_network =  function(network) {
+var load_tokens_from_network = function(network) {
   // add tokens to the submission form
   var tokenAddress = localStorage['tokenAddress'];
 
@@ -51,6 +51,7 @@ var load_tokens_from_network =  function(network) {
       value: token['addr'],
       text: token['name']
     };
+
     if (token['addr'] == tokenAddress) {
       select['selected'] = 'selected';
     }
@@ -94,5 +95,6 @@ var load_tokens = function() {
 
 function removeDuplicates(array, prop) {
   let uniq = {};
-  return array.filter(obj => !uniq[obj[prop]] && (uniq[obj[prop]] = true))
+
+  return array.filter(obj => !uniq[obj[prop]] && (uniq[obj[prop]] = true));
 }

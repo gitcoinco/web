@@ -5,11 +5,11 @@ let description = new Quill('#input-description', {
 });
 
 function changeTokens() {
-  $("#js-token option[value='0x0000000000000000000000000000000000000000']").text( 'Any Token');
+  $("#js-token option[value='0x0000000000000000000000000000000000000000']").text('Any Token');
   $('#js-token').select2();
 }
 
-window.addEventListener("tokensReady", function(e) {
+window.addEventListener('tokensReady', function(e) {
   changeTokens();
 }, false);
 
