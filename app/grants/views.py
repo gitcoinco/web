@@ -1032,8 +1032,6 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     return TemplateResponse(request, 'grants/cancel.html', params)
 
 
-<<<<<<< Updated upstream
-=======
 def grants_cart_view(request):
     context = {
         'verified': request.user.profile.sms_verification,
@@ -1053,7 +1051,6 @@ def grants_bulk_add(request, grant_ids):
     return response
 
 
->>>>>>> Stashed changes
 @login_required
 def profile(request):
     """Show grants profile of logged in user."""
