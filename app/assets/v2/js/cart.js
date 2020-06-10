@@ -589,17 +589,13 @@ Vue.component('grants-cart', {
       const donations = this.donationInputs;
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-      console.log('donationInputs', this.donationInputs);
       for (let i = 0; i < donations.length; i += 1) {
-        console.log('============================================================');
-        console.log(`DONATION ${i}`);
         // Get URL to POST to
         const donation = donations[i];
         const grantId = donation.grant.grant_id;
         const grantSlug = donation.grant.grant_slug;
         const url = `/grants/${grantId}/${grantSlug}/fund`;
 
-        console.log('input data', donation);
 
         // Get token information
         const tokenName = donation.grant.grant_donation_currency;
@@ -654,9 +650,6 @@ Vue.component('grants-cart', {
           subscription_hash: 'onetime'
         });
 
-        console.log('saveSubscriptionPayload: ', saveSubscriptionPayload);
-        console.log('saveSplitTxPayload: ', saveSplitTxPayload);
-
         // Configure headers
         const headers = {
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -677,11 +670,9 @@ Vue.component('grants-cart', {
         // Send saveSubscription request
         fetch(url, saveSubscriptionParams)
           .then(res => {
-            console.log('res, saveSubscription', res);
             // Once we get a response we can send the saveSplitTx request, since this is
             // dependent on the first one
             fetch(url, saveSplitTxParams)
-              .then(res => console.log('res, saveSplitTx', res))
               .catch(err => {
                 this.handleError(err);
               });
