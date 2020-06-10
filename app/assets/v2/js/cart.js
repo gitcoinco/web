@@ -494,8 +494,8 @@ Vue.component('grants-cart', {
           denomination: tokenAddress,
           frequency_count: 1,
           frequency_unit: 'rounds',
-          gas_price: 0, // TBD: Do we need this? Simplest way to get it without waiting for receipt?
-          'gitcoin-grant-input-amount': this.gitcoinFactorRaw, // TBD: I'm assuming this is the percentage to Gitcoin
+          gas_price: 0, // TBD: Do we need a real value here? Simplest way to get it without waiting for receipt?
+          'gitcoin-grant-input-amount': this.gitcoinFactorRaw, // TBD: It seems this is the percentage to Gitcoin
           gitcoin_donation_address: gitcoinAddress,
           grant_id: grantId,
           hide_wallet_address: this.hideWalletAddress,
@@ -506,7 +506,7 @@ Vue.component('grants-cart', {
           recurring_or_not: 'once',
           signature: '',
           splitter_contract_address: bulkCheckoutAddress,
-          sub_new_approve_tx_id: txHash, // TBD: This txhash is our bulk donation hash, not an approval tx. But I'd think we want our txHash here somewhere
+          sub_new_approve_tx_id: txHash, // TBD: This txhash is our bulk donation hash, not an approval tx. But I think we want that tx hash here anyway?
           subscription_hash: '',
           token_address: tokenAddress,
           token_symbol: tokenName
@@ -518,7 +518,7 @@ Vue.component('grants-cart', {
           signature: 'onetime',
           confirmed: false, // TBD: Is this sufficient? Who/when/how should it be updated in DB?
           split_tx_id: txHash, // TBD: This txhash is our bulk donation hash which seems to be what we want here
-          sub_new_approve_tx_id: '', // TBD: Unlike saveSubscription, we have our txHash above so maybe this is unnecessary?
+          sub_new_approve_tx_id: txHash, // TBD: A txhash is also required here, so use the same one?
           subscription_hash: 'onetime'
         });
 
@@ -542,19 +542,19 @@ Vue.component('grants-cart', {
           body: saveSplitTxPayload
         };
 
-        // Send request
+        // Send saveSubscription request
         fetch(url, saveSubscriptionParams)
-          .then(data => console.log('data, saveSubscription', data))
-          .then(res => console.log('res, saveSubscription', res))
+          .then(res => {
+            console.log('res, saveSubscription', res);
+            // Once we get a response we can send the saveSplitTx request, since this is
+            // dependent on the first one
+            fetch(url, saveSplitTxParams)
+              .then(res => console.log('res, saveSplitTx', res))
+              .catch(err => {
+                this.handleError(err);
+              });
+          })
           .catch(err => {
-            console.log('error, saveSubscription');
-            this.handleError(err);
-          });
-        fetch(url, saveSplitTxParams)
-          .then(data => console.log('data, saveSplitTx', data))
-          .then(res => console.log('res, saveSplitTx', res))
-          .catch(err => {
-            console.log('error, saveSplitTx');
             this.handleError(err);
           });
       }
