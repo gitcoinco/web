@@ -695,6 +695,24 @@ Vue.component('grants-cart', {
         CartData.setCart(this.grantData);
       },
       deep: true
+    },
+
+    // We watch this variable to update the robot image
+    gitcoinFactorRaw: {
+      handler() {
+        $('.bot-heart').hide();
+        if (this.gitcoinFactorRaw == 0) {
+          $('#bot-heartbroken').show();
+        } else if (this.gitcoinFactorRaw >= 20) {
+          $('#bot-heart-20').show();
+        } else if (this.gitcoinFactorRaw >= 15) {
+          $('#bot-heart-15').show();
+        } else if (this.gitcoinFactorRaw >= 10) {
+          $('#bot-heart-10').show();
+        } else if (this.gitcoinFactorRaw > 0) {
+          $('#bot-heart-5').show();
+        }
+      }
     }
   },
 
