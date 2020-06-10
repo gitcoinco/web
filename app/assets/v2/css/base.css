@@ -17,7 +17,7 @@
 }
 
 .iframe-embed-loading {
-  margin-top:25% !important;
+  margin-top:50% !important;
 }
 
 
@@ -27,7 +27,7 @@
 
 }
 .b-sidebar.chat-sidebar {
-  width: 90vw;
+  width: 50vw;
 }
 div.body {
   min-height: 400px;

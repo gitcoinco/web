@@ -896,9 +896,7 @@
       methods: {
         tabChange: function(input) {
           let vm = this;
-
           addPopover();
-
 
           switch (input) {
             default:
@@ -918,9 +916,6 @@
               newPathName = 'showcase';
               break;
 
-          }
-          if (chatMode) {
-            vm.chatMode = true;
           }
 
           let newUrl = `/hackathon/${vm.hackathonObj['slug']}/${newPathName}/${window.location.search}`;

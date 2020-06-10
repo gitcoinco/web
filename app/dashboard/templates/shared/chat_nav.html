@@ -21,7 +21,7 @@
           </div>
           <div v-if="!isLoggedIn && !isLoading" class="iframe-embed-loading">
             <b-row style="max-height:50%;">
-              <b-col class="align-self-center" cols="12">
+              <b-col class="align-self-center pb-5" cols="12">
                 <b-img src='{% static "v2/images/about/robot.png" %}' height="200"></b-img>
               </b-col>
               <b-col class="align-self-center" cols="12">
@@ -30,7 +30,7 @@
             </b-row>
           </div>
         </div>
-        <iframe v-show="!isLoading && isLoggedIn" class="chat-embed" onload="window.chatSidebar.chatSocketTest(this);" frameborder="0" :src="loadURL"
+        <iframe :key="renderKey" id="gitcoin-chat-iframe" v-show="!isLoading && isLoggedIn" class="chat-embed" onload="window.chatSidebar.chatSocketTest(this);" frameborder="0" :src="loadURL"
                 allowfullscreen></iframe>
       </div>
     </template>

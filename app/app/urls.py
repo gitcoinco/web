@@ -167,6 +167,7 @@ urlpatterns = [
     # chat
     url(r'^chat/landing', chat.views.chat, name='landing_chat'),
     url(r'^chat/landing/', chat.views.chat, name='landing_chat2'),
+    url(r'^chat/login/', chat.views.chat_login, name='chat_login'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),

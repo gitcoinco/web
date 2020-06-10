@@ -65,6 +65,11 @@ def chat_presence(request):
     return JsonResponse({'status': 'OK'})
 
 
+def chat_login(request):
+
+    return TemplateResponse(request, 'chat_login.html')
+
+
 def chat(request):
     """Render chat landing page response."""
 
