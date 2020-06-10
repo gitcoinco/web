@@ -433,9 +433,14 @@ Vue.component('grants-cart', {
         return donation;
       });
 
+      // Remove donations of zero value
+      const donationInputsFiltered = donationInputs.filter(donation => {
+        return Number(donation.amount) !== 0;
+      });
+
       indicateMetamaskPopup();
       bulkTransaction.methods
-        .donate(donationInputs)
+        .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimit, value: this.donationInputsEthAmount })
         .on('transactionHash', (txHash) => {
           console.log('Donation transaction hash: ', txHash);
