@@ -492,16 +492,16 @@ Vue.component('grants-cart', {
           contributor_address: userAddress,
           csrfmiddlewaretoken,
           denomination: tokenAddress,
-          frequency_count: '1',
+          frequency_count: 1,
           frequency_unit: 'rounds',
-          gas_price: undefined, // TBD: Do we need this? Simplest way to get it without waiting for receipt?
+          gas_price: 0, // TBD: Do we need this? Simplest way to get it without waiting for receipt?
           'gitcoin-grant-input-amount': this.gitcoinFactorRaw, // TBD: I'm assuming this is the percentage to Gitcoin
           gitcoin_donation_address: gitcoinAddress,
           grant_id: grantId,
           hide_wallet_address: this.hideWalletAddress,
           match_direction: '+',
           network,
-          num_periods: '1',
+          num_periods: 1,
           real_period_seconds: 0,
           recurring_or_not: 'once',
           signature: '',
@@ -518,7 +518,7 @@ Vue.component('grants-cart', {
           signature: 'onetime',
           confirmed: false, // TBD: Is this sufficient? Who/when/how should it be updated in DB?
           split_tx_id: txHash, // TBD: This txhash is our bulk donation hash which seems to be what we want here
-          sub_new_approve_tx_id: undefined, // TBD: Unlike saveSubscription, we have our txHash above so maybe this is unnecessary?
+          sub_new_approve_tx_id: '', // TBD: Unlike saveSubscription, we have our txHash above so maybe this is unnecessary?
           subscription_hash: 'onetime'
         });
 
