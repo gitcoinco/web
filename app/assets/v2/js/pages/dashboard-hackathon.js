@@ -912,10 +912,6 @@
               newPathName = 'projects';
               break;
             case 3:
-              newPathName = 'chat';
-              chatMode = true;
-              break;
-            case 4:
               newPathName = 'participants';
               break;
             case 5:

@@ -127,8 +127,8 @@
               </p>
             </div>
           </div>
-          <div class="col-12 col-xl-10 body hackathon-explorer">
-            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
+          <div class="col-12 col-xl-9 body hackathon-explorer">
+            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" :content-class="`col-12 ${chatMode ? 'px-3' : 'px-4 mt-4'} light-blue`" class="row">
               <template v-slot:tabs-start>
                 <div class="hack-logo-wrapper d-none d-xl-block">
                   <div class="mb-1 hackathon-logo">
@@ -501,7 +501,31 @@
                                         <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
                                       </template>
                                     </div>
-                                    <div class="text-center mt-1">
+
+                                    <div class="text-center my-1 font-smaller-1">
+                                      <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
+                                        <i class="fab fa-github"></i>
+                                      </a>
+                                      <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
+                                        <i class="fas fa-home"></i>
+                                      </a>
+                                      <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
+                                        <i class="fab fa-linkedin-in"></i>
+                                      </a>
+                                      <a @click="chatWindow('@' + user.handle);" href="javascript:" v-if="user.chat_id">
+                                        <i class="fas fa-comment-dots"></i>
+                                      </a>
+                                    </div>
+                                    <div class="text-center" id="job_status" v-if="user.show_job_status">
+                                      <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
+                                      </a>
+                                    </div>
+                                    <div class="text-left">
+                                      <p class="mb-0">
+                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                        <b>[[ user.follower_count ]]</b> followers
+                                      </p>
                                       <p v-if="!isFunder" class="mb-0">
                                         <b>[[ user.work_done ]]</b> bounties completed
                                       </p>
@@ -815,7 +839,7 @@
         <slot></slot>
       </select>
     </script>
-    <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
+    <script src='{% static "v2/js/lib/markdown-it.js" %}'></script>
     <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{orgs|json_script:"sponsor-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}

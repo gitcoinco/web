@@ -8,18 +8,8 @@ Vue.mixin({
     };
   },
   methods: {
-    chatWindow: function(channel, dm) {
-      dm = dm || channel ? channel.indexOf('@') >= 0 : false;
-      channel = channel || 'town-square';
-      let vm = this;
-      const hackathonTeamSlug = 'hackathons';
-      const gitcoinTeamSlug = 'gitcoin';
-      const isHackathon = (document.hackathon_id !== null);
-
-
-      const url = `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${dm ? '@' + channel : channel}`;
-
-      window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+    chatWindow: function(channel) {
+      window.chatSidebar.chatWindow(channel);
     }
   }
 });
@@ -526,7 +516,7 @@ Vue.component('project-card', {
             <b-dropdown-item-button v-if="project.chat_channel_id" @click.prevent="chatWindow(project.chat_channel_id);" aria-describedby="dropdown-header-label" :key="project.chat_channel_id || project.id">
               Chat With Team
             </b-dropdown-item-button>
-            <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
+            <b-dropdown-item-button @click.prevent="chatWindow('@' +profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
               @ [[ profile.handle ]]
             </b-dropdown-item-button>
             </b-dropdown>

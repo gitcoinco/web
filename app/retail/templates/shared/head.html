@@ -90,7 +90,6 @@
     socket.onmessage = function(event) {
       this.removeEventListener('close', socket.onclose);
       this.removeEventListener('message', socket.onmessage);
-      url = '';
       socket.close();
       iframe.show();
       loading_frame.addClass('d-none');
