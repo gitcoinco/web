@@ -12,7 +12,7 @@ $(document).ready(function() {
         showSideCart();
     });
 
-    $('.js-addDetailToCart-form').submit(function(event) {
+    $('.infinite-container').on('submit', '.js-addDetailToCart-form', function(event) {
         event.preventDefault();
 
         const formData = objectifySerialized($(this).serializeArray());
