@@ -1,0 +1,20 @@
+{
+  "symbol": "JT",
+  "address": "0xEb7355C2f217b3485a591332Fe13C8c5A76A581D",
+  "overview":{
+    "en": "JT is the abbreviation of Jubi Token, which is a global universal point issued by Blockchain technology based on blockchain technology, nicknamed \"Chicken Leg\". The total circulation of JT is 1 billion, the initial circulation is 10%, and the subsequent circulation will be disclosed in real time. JT assumes an important pivotal role in the Jucoin ecosystem. In addition to granting its holders the relevant rights and interests of Jucoin, it will also rely on the payment network of the parent company Uniweb Group to open offline payments and expand more application scenarios to promote digital finance and The accelerated integration of traditional finance.",
+    "zh": "JT为Jubi Token的简称，昵称“鸡腿”，总发行量10亿枚，是聚币Jubi平台基于区块链技术发行的去中心化数字资产，JT不仅将在聚币Jubi生态体系下拥有多种流通场景，也将会是聚币Jubi未来拓展全球业务的重要媒介。"
+  },
+  "email": "m@ju.com",
+  "website": "https://ju.com/",
+  "state": "NORMAL",
+  "published_on": "2020-06-10",
+  "initial_price":{
+    "USD":"0.100 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/JUBIEX",
+    "twitter": "https://twitter.com/JBEXCOM",
+    "blog": "https://weibo.com/u/7437432596"
+  }
+}
