@@ -87,20 +87,3 @@ def chat(request):
     }
 
     return TemplateResponse(request, 'chat.html', context)
-
-
-def embed(request):
-    """Handle the chat embed view."""
-
-    chat_url = get_chat_url(front_end=True)
-
-    context = {
-        'is_outside': True,
-        'active': 'chat',
-        'title': 'Chat',
-        'card_title': _('Community Chat'),
-        'card_desc': _('Come chat with the community'),
-        'chat_url': chat_url
-    }
-
-    return TemplateResponse(request, 'embed.html', context)

@@ -96,7 +96,7 @@
             </div>
           </div>
           <div class="col-12 col-xl-9 body hackathon-explorer">
-            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
+            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" :content-class="`col-12 ${chatMode ? 'px-3' : 'px-4 mt-4'} light-blue`" class="row">
               <template v-slot:tabs-start>
                 <div class="hack-logo-wrapper d-none d-xl-block">
                   <div class="mb-1 hackathon-logo">
@@ -481,7 +481,7 @@
                                       <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
                                         <i class="fab fa-linkedin-in"></i>
                                       </a>
-                                      <a @click="messageUser(user.handle);" href="#" v-if="user.chat_id">
+                                      <a @click="chatWindow('@' + user.handle);" href="javascript:" v-if="user.chat_id">
                                         <i class="fas fa-comment-dots"></i>
                                       </a>
                                     </div>

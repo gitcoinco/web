@@ -1,26 +1,39 @@
+{% load i18n static %}
 <div id="sidebar-chat-app">
   <a class="chat_icon dropdown-toggle-no-caret nav-link" href="javascript:" role="button" v-b-toggle.sidebar-chat>
     <i class="fas fa-comments fa-fw"></i>
     <span id="chat-notification-dot" class="notification__dot"></span>
   </a>
-  <b-sidebar class="chat-sidebar" v-cloak id="sidebar-chat" lazy no-header-close no-header backdrop width="92vw">
-    <div class="chatWrapper">
-      <div class="iframe-embed-loading text-center justify-content-center">
-        <div class="rhombus-spinner mt-5 pt-5">
-          <div class="rhombus child-1"></div>
-          <div class="rhombus child-2"></div>
-          <div class="rhombus child-3"></div>
-          <div class="rhombus child-4"></div>
-          <div class="rhombus child-5"></div>
-          <div class="rhombus child-6"></div>
-          <div class="rhombus child-7"></div>
-          <div class="rhombus child-8"></div>
-          <div class="rhombus big"></div>
+  <b-sidebar @change="showHandler($event)" v-bind:visible="openChat" lazy class="chat-sidebar justify-content-center" backdrop no-slide v-cloak id="sidebar-chat" no-header-close no-header width="50vw">
+    <template v-slot:default>
+      <div class="chatWrapper">
+        <div v-if="isLoading || !isLoggedIn" class="text-center justify-content-center">
+            <div v-if="isLoading" class="iframe-embed-loading rhombus-spinner mt-5 pt-5">
+            <div class="rhombus child-1"></div>
+            <div class="rhombus child-2"></div>
+            <div class="rhombus child-3"></div>
+            <div class="rhombus child-4"></div>
+            <div class="rhombus child-5"></div>
+            <div class="rhombus child-6"></div>
+            <div class="rhombus child-7"></div>
+            <div class="rhombus child-8"></div>
+            <div class="rhombus big"></div>
+          </div>
+          <div v-if="!isLoggedIn && !isLoading" class="iframe-embed-loading">
+            <b-row style="max-height:50%;">
+              <b-col class="align-self-center" cols="12">
+                <b-img src='{% static "v2/images/about/robot.png" %}' height="200"></b-img>
+              </b-col>
+              <b-col class="align-self-center" cols="12">
+                <a :href="chatLoginURL" class="btn btn-outline-gc-green mx-auto chat-login-button">{% trans "You're not logged into Gitcoin Chat, click Here" %}</a>
+              </b-col>
+            </b-row>
+          </div>
         </div>
-        <a href="javascript:" class="btn btn-outline-gc-green mx-auto chat-login-button d-none">You're not logged into Gitcoin Chat, click Here</a>
+        <iframe v-show="!isLoading && isLoggedIn" class="chat-embed" onload="window.chatSidebar.chatSocketTest(this);" frameborder="0" :src="loadURL"
+                allowfullscreen></iframe>
       </div>
-      <iframe class="chat-embed" onload="document.chatSocketTest(this);" frameborder="0" :src="chatURL" allowfullscreen style="display:none;"></iframe>
-    </div>
+    </template>
   </b-sidebar>
 </div>
 
