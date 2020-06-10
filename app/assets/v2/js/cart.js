@@ -85,7 +85,7 @@ Vue.component('grants-cart', {
 
     // Percentage of donation that goes to Gitcoin
     gitcoinFactor() {
-      return this.gitcoinFactorRaw / 100;
+      return Number(this.gitcoinFactorRaw) / 100;
     },
 
     // Amounts being donated to grants
@@ -127,7 +127,11 @@ Vue.component('grants-cart', {
       let gitcoinFactor = 100 * this.gitcoinFactor;
       const donations = this.grantData.map((grant, index) => {
         const tokenDetails = this.getTokenByName(grant.grant_donation_currency);
-        const amount = this.toWeiString(grant.grant_donation_amount, tokenDetails.decimals, 100 - gitcoinFactor);
+        const amount = this.toWeiString(
+          Number(grant.grant_donation_amount),
+          tokenDetails.decimals,
+          100 - gitcoinFactor
+        );
 
         return {
           token: tokenDetails.addr,
@@ -349,10 +353,10 @@ Vue.component('grants-cart', {
       this.grantData.forEach(grant => {
         if (!totals[grant.grant_donation_currency]) {
           // First time seeing this token, set the field and initial value
-          totals[grant.grant_donation_currency] = grant.grant_donation_amount * scaleFactor;
+          totals[grant.grant_donation_currency] = Number(grant.grant_donation_amount) * scaleFactor;
         } else {
           // We've seen this token, so just update the total
-          totals[grant.grant_donation_currency] += (grant.grant_donation_amount * scaleFactor);
+          totals[grant.grant_donation_currency] += (Number(grant.grant_donation_amount) * scaleFactor);
         }
       });
       return totals;
@@ -613,7 +617,7 @@ Vue.component('grants-cart', {
         // Configure saveSubscription payload
         const saveSubscriptionPayload = new URLSearchParams({
           admin_address: donation.grant.grant_admin_address,
-          amount_per_period: donation.grant.grant_donation_amount,
+          amount_per_period: Number(donation.grant.grant_donation_amount),
           comment,
           contract_address: donation.grant.grant_contract_address,
           contract_version: donation.grant.grant_contract_version,
