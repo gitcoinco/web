@@ -24,7 +24,6 @@ import logging
 import os
 import time
 from copy import deepcopy
-from crypt import crypt, METHOD_MD5
 from datetime import datetime, timedelta
 from decimal import Decimal
 
