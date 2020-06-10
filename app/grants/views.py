@@ -354,7 +354,7 @@ def grants(request):
 
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
-        {'label': 'Media', 'keyword': 'media', 'count': media_grants_count},
+        {'label': 'Community', 'keyword': 'media', 'count': media_grants_count},
         {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
         {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
         {'label': 'Crypto for Black Lives', 'keyword': 'change', 'count': change_count},
@@ -370,6 +370,8 @@ def grants(request):
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
     grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
+    if grant_type_title_if_any == "Media":
+        grant_type_title_if_any = "Community"
     grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
     if has_real_grant_type:
         title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"
