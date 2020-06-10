@@ -27,10 +27,9 @@ $(document).ready(function() {
 
         const formData = objectifySerialized($(this).serializeArray());
         CartData.addToCart(formData);
-        console.log('here');
     });
     setTimeout(function(){
         document.location.href = "/grants/cart";
-    }, 100);
+    }, 50);
 });
 </script>
