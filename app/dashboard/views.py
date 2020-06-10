@@ -5351,7 +5351,7 @@ def bulkDM(request):
 def validate_number(user_id, twilio, phone, redis):
     validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
 
-    if validation.caller_name and validation.caller_name["caller_type"] == 'CONSUMER':
+    if validation.caller_name and validation.caller_name["caller_type"] != 'CONSUMER':
         return JsonResponse({
             'success': False,
             'msg': 'Only support consumer numbers'
