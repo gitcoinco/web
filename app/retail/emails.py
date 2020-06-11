@@ -847,7 +847,7 @@ def render_grant_update(to_email, activity):
 
     return response_html, response_txt
 
-def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_round_end=(2020, 4, 7), next_round=6, next_round_start=(2020, 6, 15), next_round_end=(2020, 6, 29), match_pool='250k'): # Round 5: 3/23/2020 — 4/7/2020; Round 6: 6/15/2020 — 6/29/2020
+def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_round_end=(2020, 4, 7), next_round=6, next_round_start=(2020, 6, 15), next_round_end=(2020, 6, 29), match_pool='175k'): # Round 5: 3/23/2020 — 4/7/2020; Round 6: 6/15/2020 — 6/29/2020 175k
     email_style = 27
     
     next_round_start = datetime.datetime(*next_round_start).strftime("%B %dth")
