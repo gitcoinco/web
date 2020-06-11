@@ -449,6 +449,14 @@ Vue.component('grants-cart', {
     async checkout() {
       try {
         // Setup -----------------------------------------------------------------------------------
+        // Exit if there's negative values in the cart
+        this.donationInputs.forEach(donation => {
+          if (Number(donation.amount) < 0) {
+            throw new Error('Cannot have negative donation amounts');
+          }
+        });
+
+        // Configure web3 info
         await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
@@ -469,8 +477,7 @@ Vue.component('grants-cart', {
 
             if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsEthAmount, 10))) {
               // Balance is too small, exit checkout flow
-              _alert('Insufficient ETH balance to complete checkout', 'error');
-              return;
+              throw new Error('Insufficient ETH balance to complete checkout');
             }
             // Balance is sufficient, continue to next iteration since no approval check
             continue;
@@ -499,8 +506,7 @@ Vue.component('grants-cart', {
 
           if (new BN(userTokenBalance, 10).lt(requiredAllowance)) {
             // Balance is too small, exit checkout flow
-            _alert(`Insufficient ${tokenName} balance to complete checkout`, 'error');
-            return;
+            throw new Error(`Insufficient ${tokenName} balance to complete checkout`);
           }
 
           // If no allowance is needed, continue to next token
