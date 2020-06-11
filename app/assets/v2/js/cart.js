@@ -576,10 +576,14 @@ Vue.component('grants-cart', {
           indicateMetamaskPopup(true);
           this.postToDatabase(txHash, userAddress);
           // Clear cart, redirect back to grants page, and show success alert
-          this.clearCart();
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
-          window.location.href = `${window.location.origin}/grants`;
+          this.clearCart();
+          if (network === 'rinkeby') {
+            window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
+          } else {
+            window.location.href = `${window.location.origin}/grants`;
+          }
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
