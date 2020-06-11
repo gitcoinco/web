@@ -17,17 +17,12 @@
 {% endcomment %}
 {% load i18n static matches %}
 
-<div class="d-flex order-0 order-md-last">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  {% if user.is_authenticated %}
-    {% include 'shared/chat_nav.html' %}
-    {% include 'shared/notifications.html' %}
-  {% endif %}
-</div>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
+
   <nav class="navbar-nav mx-auto gc-megamenu">
     <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
 
@@ -230,7 +225,6 @@
         </div>
       </div>
     </div>
-    {% if not user.is_authenticated %}
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCompany" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -307,13 +301,20 @@
         </div>
       </div>
     </div>
-    {% endif %}
     {% if is_townsquare %}
      <div class="nav-item interior ">
        <a href="{% url "tribes" %}" class="gc-text-green nav-link selected">Looking for developers?</a>
      </div>
     {% endif %}
   </nav>
+  <div class="d-flex justify-content-md-around justify-content-around justify-content-md-end">
+    {% if user.is_authenticated %}
+    {% include 'shared/chat_nav.html' %}
+    {% include 'shared/notifications.html' %}
+    {% include 'shared/search.html' %}
+    {% endif %}
+  </div>
+
   <nav class="navbar-nav mr-3">
     {% include 'shared/nav_auth.html' with source='authed' %}
   </nav>

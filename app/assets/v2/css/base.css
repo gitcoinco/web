@@ -33,6 +33,10 @@ div.body {
   min-height: 400px;
 }
 
+body {
+  overflow-anchor: auto;
+}
+
 .hidden {
   display: none !important;
 }
@@ -96,6 +100,8 @@ a {
 
 .navbar-nav .dropdown-menu {
   min-width: 9rem;
+  overflow-y: auto;
+  max-height: 88vh;
 }
 
 .nav_avatar,
@@ -1562,7 +1568,7 @@ div.busyOverlay {
 .gc-megamenu .dropdown {
   position: static;
   overflow: auto;
-  max-height: 100vh;
+  max-height: 60vh;
 }
 
 .gc-megamenu .container {

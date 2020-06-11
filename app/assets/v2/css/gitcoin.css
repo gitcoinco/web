@@ -931,6 +931,32 @@ textarea.status-textarea {
   background-color: var(--bg-shade-0)!important;
 }
 
+.image-provider {
+  width: 24px;
+  vertical-align: top;
+}
+
+.wallet-network {
+  margin-top: -14px;
+  position: absolute;
+  display: block;
+  margin-left: 17px;
+  color: red;
+}
+
+.wallet-network.mainnet {
+  color: #0fce7c;
+}
+
+.wallet-network.rinkeby {
+  color: orange;
+}
+
+.wallet-option,
+.selected-account {
+  cursor: pointer;
+}
+
 .svg-animated-logo {
   height: 42px;
   max-width: 100%;
