@@ -1145,18 +1145,45 @@ class Contribution(SuperModel):
 
     def update_tx_status(self):
         """Updates tx status."""
+        from economy.tx import grants_transaction_validator
         from dashboard.utils import get_tx_status
         if self.tx_override:
             return
+
+        # handle replace of tx_id
         tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        if tx_status in ['pending', 'dropped', 'unknown', '']:
+            new_tx = getReplacedTX(self.tx_id)
+            if new_tx:
+                self.tx_id = new_tx
+            else:
+                # TODO: do stuff related to long running pending txns
+                pass
+            return
+        # handle replace of split_tx_id
         if self.split_tx_id:
             split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-        if tx_status != 'pending':
-            self.success = tx_status == 'success'
-            self.tx_cleared = True
-        if self.split_tx_id and split_tx_status != 'pending':
-            self.success = split_tx_status == 'success'
-            self.split_tx_confirmed = True
+            if split_tx_status in ['pending', 'dropped', 'unknown', '']:
+                new_tx = getReplacedTX(self.split_tx_id)
+                if new_tx:
+                    self.split_tx_id = new_tx
+                return
+
+        # actually validate token transfers
+        response = grants_transaction_validator(self)
+        if len(response['originator']):
+            self.originated_address = response['originator'][0]
+        self.validator_passed = response['validation']['passed']
+        self.validator_comment = response['validation']['comment']
+        self.tx_cleared = True
+        self.split_tx_confirmed = True
+        self.success = self.validator_passed
+
+        if self.success:
+            print("TODO: do stuff related to successful contribs, like emails")
+        else:
+            print("TODO: do stuff related to failed contribs, like emails")
+
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
 def psave_contrib(sender, instance, **kwargs):
