@@ -994,11 +994,12 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 
 def grants_cart_view(request):
     context = {
-        'verified': request.user.profile.sms_verification,
         'title': 'Grants Cart',
     }
     if request.user.is_authenticated:
         context['verified'] = request.user.profile.sms_verification
+    else:
+        return redirect('/login/github?next=' + request.get_full_path())
 
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'

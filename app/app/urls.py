@@ -192,7 +192,6 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
-
     re_path(r'^sms/request/?$', dashboard.views.send_verification, name='request_verification'),
     re_path(r'^sms/validate/?$', dashboard.views.validate_verification, name='request_verification'),
 
@@ -680,7 +679,6 @@ urlpatterns = [
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
-
     url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
 
     # users

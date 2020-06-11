@@ -425,6 +425,7 @@ Vue.component('grants-cart', {
         };
       }
       var network = document.web3network;
+
       return tokens(network).filter(token => token.name === name)[0];
     },
 
@@ -601,6 +602,7 @@ Vue.component('grants-cart', {
           localStorage.setItem('contributions_count', String(this.grantData.length));
           this.clearCart();
           var network = document.web3network;
+
           if (network === 'rinkeby') {
             window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
           } else {
@@ -742,7 +744,8 @@ Vue.component('grants-cart', {
     while (!this.tokenList) {
       try {
         var network = document.web3network;
-        if (typeof network != 'undefined'){
+
+        if (typeof network != 'undefined') {
           this.tokenList = tokens(network);
         }
       } catch (err) {}
@@ -757,13 +760,14 @@ Vue.component('grants-cart', {
   }
 });
 
-var update_cart_title = function(){
-  var num_grants = JSON.parse(localStorage.getItem('grants_cart')).length
-  let new_title = "Grants Cart ("+num_grants+") | Gitcoin";
-  $('title').text(new_title);
-}
+var update_cart_title = function() {
+  var num_grants = JSON.parse(localStorage.getItem('grants_cart')).length;
+  let new_title = 'Grants Cart (' + num_grants + ') | Gitcoin';
 
-$(document).ready(function(){
+  $('title').text(new_title);
+};
+
+$(document).ready(function() {
   update_cart_title();
 });
 

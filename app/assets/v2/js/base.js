@@ -306,9 +306,9 @@ const _alert = function(msg, _class, remove_after_ms) {
   $('body').append(html);
 
   $(document).keydown(function(e) {
-      if (e.keyCode == 27) {
-          $(`#${id}`).remove();
-      }
+    if (e.keyCode == 27) {
+      $(`#${id}`).remove();
+    }
   });
 
   if (typeof remove_after_ms != 'undefined') {
@@ -511,8 +511,8 @@ function applyCartMenuStyles() {
   let dot = $('#cart-notification-dot');
 
   if (CartData.hasItems()) {
-    dot.addClass("notification__dot_active")
+    dot.addClass('notification__dot_active');
   } else {
-    dot.removeClass("notification__dot_active")
+    dot.removeClass('notification__dot_active');
   }
 }
