@@ -64,4 +64,4 @@ def is_team_member(grant, profile):
 
 @register.simple_tag
 def is_grants_path(path):
-    return path.lower().startswith('/grants/')
+    return path.lower().startswith('/grants')

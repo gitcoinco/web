@@ -109,6 +109,7 @@ from .models import (
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileView,
     Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
+    ProfileVerification,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -5348,10 +5349,25 @@ def bulkDM(request):
 
     return TemplateResponse(request, 'bulk_DM.html', context)
 
-def validate_number(user_id, twilio, phone, redis):
-    validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
 
-    if validation.caller_name and validation.caller_name["caller_type"] != 'CONSUMER':
+def validate_number(user, twilio, phone, redis):
+    validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+    profile = user.profile
+    hash_number = hashlib.md5(phone.encode()).hexdigest()
+
+    if user.profile.sms_verification:
+        return JsonResponse({
+            'success': False,
+            'msg': 'Your account has been validated previously.'
+        }, status=401)
+
+    if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(pk=user.profile.id).exists():
+        return JsonResponse({
+            'success': False,
+            'msg': 'The phone number has been associated with other account.'
+        }, status=401)
+
+    if validation.caller_name and validation.caller_name["caller_type"] == 'BUSINESS':
         return JsonResponse({
             'success': False,
             'msg': 'Only support consumer numbers'
@@ -5362,41 +5378,57 @@ def validate_number(user_id, twilio, phone, redis):
             'msg': 'Phone type isn\'t supported'
         }, status=401)
 
-    verification = twilio.verify.verifications.create(to=phone, channel='sms')
-    redis.set(f'verification:{user_id}:timestamp', timezone.now().isoformat())
-    redis.set(f'verification:{user_id}:phone', phone)
+    twilio.verify.verifications.create(to=phone, channel='sms')
+    profile.last_validation_request = timezone.now()
+    profile.validation_attempts += 1
+    profile.encoded_number = hash_number
+    profile.save()
+
+    ProfileVerification.objects.create(profile=user.profile,
+                                       caller_type=validation.caller_name[
+                                           "caller_type"] if validation.caller_name else '',
+                                       carrier_error_code=validation.carrier['error_code'],
+                                       mobile_network_code=validation.carrier['mobile_network_code'],
+                                       mobile_country_code=validation.carrier['mobile_country_code'],
+                                       carrier_name=validation.carrier['name'],
+                                       carrier_type=validation.carrier['type'],
+                                       country_code=validation.country_code,
+                                       phone_number=hash_number)
+
+    redis.set(f'verification:{user.id}:phone', phone)
 
 
 
 @login_required
 def send_verification(request):
+    profile = request.user.profile
     phone = request.POST.get('phone')
     redis = RedisService().redis
     twilio = TwilioService()
-    has_previous_validation = redis.get(f'verification:{request.user.id}:timestamp')
-    validation_attempts = redis.get(f'verification:{request.user.id}:attempts')
+    has_previous_validation = profile.last_validation_request
+    validation_attempts = profile.validation_attempts
+
     if not has_previous_validation:
-        response = validate_number(request.user.id, twilio, phone, redis)
+        response = validate_number(request.user, twilio, phone, redis)
         if response:
             return response
-
-        redis.set(f'verification:{request.user.id}:attempts', 0)
     else:
-        cooldown = dateutil.parser.isoparse(has_previous_validation.decode('utf-8')) + timedelta(minutes=1)
+        cooldown = has_previous_validation + timedelta(minutes=1)
         if cooldown > datetime.now():
             return JsonResponse({
                 'success': False,
                 'msg': 'Wait a minute to try again.'
             }, status=401)
 
-        if int(validation_attempts.decode('utf-8')) > 10:
+        if validation_attempts > 4:
             return JsonResponse({
                 'success': False,
                 'msg': 'Attempt numbers exceeded.'
             }, status=401)
 
-        validate_number(request.user.id, twilio, phone, redis)
-        redis.set(f'verification:{request.user.id}:attempts', int(validation_attempts.decode('utf-8')) + 1)
+        response = validate_number(request.user, twilio, phone, redis)
+        if response:
+            return response
 
     return JsonResponse({
         'success': True,
@@ -5409,22 +5441,30 @@ def validate_verification(request):
     redis = RedisService().redis
     twilio = TwilioService().verify
     code = request.POST.get('code')
+    profile = request.user.profile
 
-    has_previous_validation = redis.get(f'verification:{request.user.id}:timestamp')
+    has_previous_validation = profile.last_validation_request
     phone = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
+    hash_number = hashlib.md5(phone.encode()).hexdigest()
+
+    if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(
+        pk=profile.id).exists():
+        return JsonResponse({
+            'success': False,
+            'msg': 'The phone number has been associated with other account.'
+        }, status=401)
+
     if has_previous_validation:
         verification = twilio.verification_checks.create(to=phone, code=code)
         if verification.status == 'approved':
-            redis.delete(f'verification:{request.user.id}:timestamp')
             redis.delete(f'verification:{request.user.id}:phone')
-            redis.delete(f'verification:{request.user.id}:attempts')
             request.user.profile.sms_verification = True
             request.user.profile.save()
 
             return JsonResponse({
                     'success': True,
                     'msg': 'Verification completed'
-                })
+            })
 
         return JsonResponse({
             'success': False,

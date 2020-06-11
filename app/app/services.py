@@ -5,6 +5,9 @@ from twilio.rest import Client
 
 from app.settings import account_sid, auth_token
 
+import random
+from django.conf import settings
+
 
 class RedisService:
     __redis = None
@@ -38,9 +41,10 @@ class TwilioService:
 
         if not TwilioService._client:
             TwilioService._client = Client(account_sid, auth_token)
-
+            friendly_names = settings.TWILIO_FRIENDLY_NAMES
+            friendly_name = random.choice(friendly_names)
             TwilioService._service = TwilioService._client.verify.services.create(
-                friendly_name='Gitcoin Verify Service'
+                friendly_name=friendly_name
             )
             redis.set(f"validation:twilio:sid", TwilioService._service.sid)
 

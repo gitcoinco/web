@@ -66,6 +66,9 @@ RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
+TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
+
+
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 

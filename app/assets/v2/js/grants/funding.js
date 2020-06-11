@@ -3,6 +3,20 @@
 
 $(document).ready(function() {
 
+    // Check localStorage to see if we need to show alert
+    const shouldShowAlert = Boolean(localStorage.getItem('contributions_were_successful'));
+
+    if (shouldShowAlert) {
+        const numberOfContributions = Number(localStorage.getItem('contributions_count'));
+        const grantWord = numberOfContributions === 1 ? 'grant' : 'grants';
+        const message = `You have successfully funded ${numberOfContributions} ${grantWord}. Thank you for your contribution!`;
+
+        _alert(message, 'success');
+        localStorage.removeItem('contributions_were_successful');
+        localStorage.removeItem('contributions_count');
+        $('#tweetModal').css('display', 'block');
+    }
+
     $('#js-addToCart-form').submit(function(event) {
         event.preventDefault();
 
@@ -12,7 +26,7 @@ $(document).ready(function() {
         showSideCart();
     });
 
-    $('.js-addDetailToCart-form').submit(function(event) {
+    $('.infinite-container').on('submit', '.js-addDetailToCart-form', function(event) {
         event.preventDefault();
 
         const formData = objectifySerialized($(this).serializeArray());
