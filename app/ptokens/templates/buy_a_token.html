@@ -66,8 +66,8 @@
     <div class="container pt-5 font-body">
       <div class="col-12 offset-lg-1 col-lg-10">
         <div id="quickstart-tabs" class="tab-container mb-3">
-          <button type="button" id="fund" class="section-tab">{%trans "Buy a Token" %}</button>
           <button type="button" id="start" class="section-tab">{%trans "Make a Token" %}</button>
+          <button type="button" id="fund" class="section-tab">{%trans "Buy a Token" %}</button>
         </div>
 
         <div id="quickstart-tabs-sections" class="tab-sections section mt-4">
@@ -104,11 +104,15 @@
                     {%trans "Enjoy a vetted redemption cycle directly in Gitcoin - providing you with an end-to-end experience for working with our top talent." %} <br>
                   </p>
 
-                  <p class="my-3">
+                  <p class="text-center my-3">
                     {%trans "Ready to dive in? Check out our top creators!" %} <br>
                   </p>
 
-                  <a class="btn btn-gc-blue" href="{% url "users_directory" %}">{%trans "Explore" %}</a>
+                  <p class="text-center my-3">
+                    <a class="btn btn-gc-blue" href="{% url "users_directory" %}">{%trans "Explore" %}</a>
+                  </p>
+
+                  <hr/>
 
                   <p class="my-4">
                       <i>{% trans "Disclaimer: Gitcoin personal tokens are currently in beta. Creators remain full control over whether or not they accept a redemption request." %}</i>
@@ -116,6 +120,7 @@
                   </p>
                 </div>
               </div>
+              {% include 'shared/ptokens_buy_faq.html' %}
             </div>
           </div>
           <div id="section-start" class="tab-section">
@@ -151,23 +156,29 @@
                     {%trans "Let Gitcoin’s coveted reputation act as a glowing example of your standing in the ever-evolving digital world." %} <br>
                   </p>
 
-                  <p class="my-4">
+                  <p class="text-center my-3">
                     {%trans "What are you waiting for?" %} <br>
                   </p>
 
-                  <a class="btn btn-gc-blue" href="{% url 'dashboard' %}">{%trans "Get Started" %}</a>
+                  <p class="text-center my-3">
+                    <a class="btn btn-gc-blue" href="{% url 'dashboard' %}">{%trans "Get Started" %}</a>
+                  </p>
+
+                  <hr/>
 
                   <p class="my-4">
                     <i>{% trans "Disclaimer: Personal tokens are highly experimental. Users who issue personal tokens and are unresponsive to redemption requests are likely to suffer penalties or be removed from the platform." %}</i>
                   </p>
+
                 </div>
               </div>
             </div>
+            {% include 'shared/ptokens_make_faq.html' %}
           </div>
         </div>
       </div>
     </div>
-    {% include 'shared/ptokens_faq.html' %}
+    
 
   </body>
   {% include 'shared/analytics.html' %}
