@@ -396,9 +396,19 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
 
 
 class HackathonProjectAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon', 'usernames', 'status', 'sponsor']
+    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'usernames', 'status', 'sponsor']
     raw_id_fields = ['profiles', 'bounty', 'hackathon']
     search_fields = ['name', 'summary', 'status']
+
+    def hackathon_link(self, instance):
+        """Returns a formatted HTML <a> node.
+
+        Returns:
+            str: A formatted HTML <a> node.
+        """
+
+        url = f'/hackathon/{instance.hackathon.slug}'
+        return mark_safe(f'<a href="{url}">{instance.hackathon}</a>')
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonProject has no logo.

@@ -20,6 +20,7 @@
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
   document.contxt = {{ json_context|safe }};
+
 </script>
 <script src="{% url 'javascript-catalog' %}"></script>
 {% if not ignore_inject_web3 %}

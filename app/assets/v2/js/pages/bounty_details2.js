@@ -95,19 +95,27 @@ Vue.mixin({
 
       switch (token_name) {
         case 'ETC':
-          qr_string = `ethereum:${address}`;
+          qr_string = value ?
+            `ethereum:${address}?value=${value}` :
+            `ethereum:${address}`;
           break;
 
         case 'cUSD':
-          qr_string = `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]`;
+          qr_string = value ?
+            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]` :
+            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address)?args=[${address}]`;
           break;
 
         case 'cGLD':
-          qr_string = `celo:${address}?value=${value}`;
+          qr_string = value ?
+            `celo:${address}?value=${value}` :
+            `celo:${address}`;
           break;
 
         case 'ZIL':
-          qr_string = `zilliqa:${address}`;
+          qr_string = value ?
+            `zilliqa://${address}?amount=${value}e12` :
+            `zilliqa://${address}`;
           break;
       }
 
@@ -514,6 +522,7 @@ if (document.getElementById('gc-bounty-detail')) {
         isOwnerAddress: false,
         fulfillment_context: {
           active_step: 'check_wallet_owner',
+          include_amount_in_qr: true,
           amount: 0
         },
         decimals: 18,
@@ -612,6 +621,27 @@ var extend_expiration = function(bounty_pk, data) {
   });
 };
 
+const submitInterest = (bounty, msg, self, onSuccess) => {
+  add_interest(bounty, {
+    issue_message: msg
+  }).then(success => {
+    if (success) {
+      $(self).attr('href', '/uninterested');
+      $(self).find('span').text(gettext('Stop Work'));
+      $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+  }).catch((error) => {
+    if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+      return;
+    throw error;
+  });
+};
+
 var show_interest_modal = function() {
   var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
@@ -621,8 +651,35 @@ var show_interest_modal = function() {
     modalBody.load(modalUrl, ()=> {
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
+      let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
+      let projectForm = $('#projectForm');
 
+      userSearch('.team-users', false, '', data, true, false);
+      $('#looking-members').on('click', function() {
+        $('.looking-members').toggle();
+      });
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
+      if (document.result.event) {
+        $(document).on('change', '#project_logo', function() {
+          previewFile($(this));
+        });
+        projectForm.on('submit', function(e) {
+          e.preventDefault();
+          const elements = $(this)[0];
+          const logo = elements['logo'].files[0];
+          const summary = elements['summary'].value;
+          const data = $(this).serializeArray();
+
+          submitInterest(document.result['pk'], summary, self, () => {
+            appBounty.fetchBounty();
+
+            submitProject(logo, data);
+            modals.bootstrapModal('hide');
+          });
+        });
+
+        return;
+      }
 
       actionPlanForm.on('submit', function(event) {
         event.preventDefault();

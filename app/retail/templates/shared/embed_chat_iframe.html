@@ -1,0 +1,16 @@
+<div class="iframe-embed-loading text-center">
+  <div class="rhombus-spinner mt-5">
+    <div class="rhombus child-1"></div>
+    <div class="rhombus child-2"></div>
+    <div class="rhombus child-3"></div>
+    <div class="rhombus child-4"></div>
+    <div class="rhombus child-5"></div>
+    <div class="rhombus child-6"></div>
+    <div class="rhombus child-7"></div>
+    <div class="rhombus child-8"></div>
+    <div class="rhombus big"></div>
+  </div>
+  <a href="javascript:" class="btn btn-outline-gc-green mx-auto chat-login-button d-none">You're not logged into Gitcoin Chat, click Here</a>
+</div>
+<iframe class="chat-embed" onload="document.chatSocketTest(this);" frameborder="0" src="{{chat_url}}{% if chat_url_embed %}{{chat_url_embed}}{% endif %}" allowfullscreen style="display:none;"></iframe>
+

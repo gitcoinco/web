@@ -335,8 +335,8 @@ urlpatterns = [
     url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
     url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
-    url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
-    url(r'^tip/?', dashboard.tip_views.send_tip_2, name='tip'),
+    url(r'^send/?$', dashboard.tip_views.send_tip, name='tip'),
+    url(r'^tip/?$', dashboard.tip_views.send_tip_2, name='tip'),
     url(r'^requestmoney/?', dashboard.tip_views.request_money, name='request_money'),
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
@@ -345,7 +345,7 @@ urlpatterns = [
     re_path(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     re_path(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     re_path(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
-    re_path(r'^legal/?', dashboard.views.terms, name='legal'),
+    url(r'^legal/?$', dashboard.views.terms, name='legal'),
 
     # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
@@ -364,7 +364,7 @@ urlpatterns = [
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
     url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
-    url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
+    url(r'^gas/?$', dashboard.gas_views.gas, name='gas'),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
@@ -573,6 +573,7 @@ urlpatterns = [
         faucet.views.process_faucet_request,
         name='process_faucet_request'
     ),
+    re_path(r'^_administration/bulkDM/', dashboard.views.bulkDM, name='bulkDM'),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
     ),
@@ -677,12 +678,11 @@ urlpatterns = [
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
 
+    url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
+
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
-
-    #projets
-    url(r'^api/v0.1/projects_fetch/', dashboard.views.projects_fetch, name='projects_fetch'),
 
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),

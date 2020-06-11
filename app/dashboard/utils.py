@@ -583,7 +583,16 @@ def build_profile_pairs(bounty):
         if fulfillment.profile and fulfillment.profile.handle.strip() and fulfillment.profile.absolute_url:
             profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
         else:
-            addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
+            if bounty.tenant == 'ETH':
+                addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'ZIL':
+                addr = f"https://viewblock.io/zilliqa/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'CELO':
+                addr = f"https://alfajores-blockscout.celo-testnet.org/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'ETC':
+                addr = f"https://blockscout.com/etc/mainnet/address/{fulfillment.fulfiller_address}"
+            else:
+                addr = None
             profile_handles.append((fulfillment.fulfiller_address, addr))
     return profile_handles
 

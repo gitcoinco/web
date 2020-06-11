@@ -204,7 +204,7 @@
 
                       <div class="card m-3 p-1">
                         {% for profile in project.profiles.all %}
-                          {% if profile_id == profile.id %}
+                          {% if profile_id == profile.id and project.status == '' %}
                             <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
                           {% endif %}
                         {% endfor %}
