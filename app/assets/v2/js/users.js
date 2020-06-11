@@ -8,7 +8,7 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 
 Vue.mixin({
   methods: {
-    chatWindow: function(handle) {
+    messageUser: function(handle) {
       let vm = this;
       const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
 
