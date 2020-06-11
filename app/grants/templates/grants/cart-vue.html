@@ -178,10 +178,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <i class="fas fa-trash-alt" style="cursor: pointer; opacity: 40%"
                         @click="removeGrantFromCart(grant.grant_id)"></i>
 
-                      <a @href="/grants/[[grant.id]]/[[grant.slug]]/fund">
-                        <i class="fas fa-long-arrow-right" style="cursor: pointer; opacity: 40%"></i>
-                      </a>
-
                     </div>
                   </div>
                   <div class="row font-smaller-3" style="margin-left:0.5rem">
@@ -399,16 +395,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
     <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script>
-      document.verified = {
-        {
-          verified | yesno: "true,false"
-        }
-      };
-      document.authenticated = {
-        {
-          authenticated | yesno: "true,false"
-        }
-      };
+      document.verified = {{ verified|yesno:"true,false" }};
+      document.authenticated = {{ authenticated|yesno:"true,false" }};
 
     </script>
     <script src="{% static "v2/js/cart.js" %}"></script>

@@ -19,7 +19,10 @@ class CartData {
         }
 
         // Add donation defaults
-
+        var network = document.web3network;
+        if(!network){
+            network = 'mainnet';
+        }
         const acceptsAllTokens = (grantData.grant_token_address === "0x0000000000000000000000000000000000000000");
         const accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
 

@@ -422,6 +422,7 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
+      var network = document.web3network;
       return tokens(network).filter(token => token.name === name)[0];
     },
 
@@ -597,6 +598,7 @@ Vue.component('grants-cart', {
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
           this.clearCart();
+          var network = document.web3network;
           if (network === 'rinkeby') {
             window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
           } else {
@@ -641,7 +643,7 @@ Vue.component('grants-cart', {
         // 100 makes it easier to search the DB to find which Gitcoin donations were automatic
         const isAutomatic = donation.grant.isAutomatic;
         const gitcoinGrantInputAmt = isAutomatic ? 100 : Number(this.gitcoinFactorRaw);
-
+        var network = document.web3network;
         // Configure saveSubscription payload
         const saveSubscriptionPayload = new URLSearchParams({
           admin_address: donation.grant.grant_admin_address,
@@ -737,7 +739,10 @@ Vue.component('grants-cart', {
     // Wait until we can load token list
     while (!this.tokenList) {
       try {
-        this.tokenList = tokens(network);
+        var network = document.web3network;
+        if (typeof network != 'undefined'){
+          this.tokenList = tokens(network);
+        }
       } catch (err) {}
       await this.sleep(50); // every 50 ms
     }

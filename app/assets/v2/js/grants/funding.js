@@ -78,6 +78,11 @@ function sideCartRowForGrant(grant) {
 }
 
 function tokenOptionsForGrant(grant) {
+    var network = document.web3network;
+    if(!network){
+        network = 'mainnet';
+    }
+
     let tokenDataList = tokens(network);
     const acceptsAllTokens = (grant.grant_token_address === "0x0000000000000000000000000000000000000000");
 
