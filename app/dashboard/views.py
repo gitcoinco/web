@@ -27,7 +27,6 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
 
-import dateutil
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -52,8 +51,8 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import dateutil
 import magic
-
 from app.services import RedisService, TwilioService
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme

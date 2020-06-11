@@ -1,9 +1,8 @@
 from django.conf import settings
 
+from app.settings import account_sid, auth_token
 from redis import Redis
 from twilio.rest import Client
-
-from app.settings import account_sid, auth_token
 
 
 class RedisService:

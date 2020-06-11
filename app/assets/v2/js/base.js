@@ -505,8 +505,8 @@ function applyCartMenuStyles() {
   let dot = $('#cart-notification-dot');
 
   if (CartData.hasItems()) {
-    dot.addClass("notification__dot_active")
+    dot.addClass('notification__dot_active');
   } else {
-    dot.removeClass("notification__dot_active")
+    dot.removeClass('notification__dot_active');
   }
 }

@@ -192,7 +192,6 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
-
     re_path(r'^sms/request/?$', dashboard.views.send_verification, name='request_verification'),
     re_path(r'^sms/validate/?$', dashboard.views.validate_verification, name='request_verification'),
 
