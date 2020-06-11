@@ -147,7 +147,9 @@ $(document).ready(function() {
         $('#token').append(html);
       }
     });
-    $('#token').val('0x0000000000000000000000000000000000000000').select2();
+    let addr = tokenNameToDetails(document.web3network, document.default_token)['addr'];
+    console.log(addr);
+    $('#token').val(addr).select2();
     jQuery('#token').select2();
   });
 
