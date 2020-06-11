@@ -42,13 +42,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
     {% include 'grants/shared/waiting_state.html' %}
 
-
     <div>
       <div id="gc-grants-cart" v-cloak>
         <grants-cart ref="cart" inline-template>
           <div>
 
-            {% comment %} Heading section {% endcomment %}
+        <a id="cart_backgrants" class="font-caption" href="/grants">
+          <i class="fas fa-chevron-left mr-1"></i>
+          Back to Grants
+        </a>
+          {% comment %} Heading section {% endcomment %}
             <div class="container" style="margin:3rem auto 1rem;">
               <img src="{% static 'v2/images/grants/triangles.png' %}" alt="Triangles" width="150">
 

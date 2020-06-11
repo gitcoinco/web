@@ -925,71 +925,8 @@ def grant_fund(request, grant_id, grant_slug):
                 'success': True,
                 'url': reverse('grants:details', args=(grant.pk, grant.slug))
             })
+    raise Http404
 
-    # handle phantom funding
-    active_tab = 'normal'
-    fund_reward = None
-    round_number = clr_round
-    can_phantom_fund = request.user.is_authenticated and request.user.groups.filter(name='phantom_funders_round_5').exists() and clr_active
-    phantom_funds = PhantomFunding.objects.filter(profile=request.user.profile, round_number=round_number).order_by('created_on').nocache() if request.user.is_authenticated else PhantomFunding.objects.none()
-    is_phantom_funding_this_grant = can_phantom_fund and phantom_funds.filter(grant=grant).exists()
-    show_tweet_modal = False
-    fund_reward = get_fund_reward(request, grant)
-    if can_phantom_fund and request.POST.get('toggle_phantom_fund'):
-        if is_phantom_funding_this_grant:
-            msg = "You are no longer signaling for this grant."
-            phantom_funds.filter(grant=grant).delete()
-        else:
-            msg = "You are now signaling for this grant."
-            show_tweet_modal = True
-            pt = PhantomFunding.objects.create(grant=grant, profile=request.user.profile, round_number=round_number)
-            record_grant_activity_helper('new_grant_contribution', grant, request.user.profile, amount=pt.value, token='DAI')
-
-        messages.info(
-            request,
-            msg
-        )
-        is_phantom_funding_this_grant = not is_phantom_funding_this_grant
-    images = [
-        'new.svg',
-        'torchbearer.svg',
-        'robots.png',
-        'profile/fund.svg',
-    ]
-    img = random.choice(images)
-    params = {
-        'profile': profile,
-        'active': 'fund_grant',
-        'title': matching_live + grant.title + " | Fund Now",
-        'card_desc': grant.description,
-        'avatar_url': grant.logo.url if grant.logo else None,
-        'subscription': {},
-        'show_tweet_modal': show_tweet_modal,
-        'direction': request.GET.get('direction', '+'),
-        'grant_has_no_token': True if grant.token_address == '0x0000000000000000000000000000000000000000' else False,
-        'grant': grant,
-        'img': img,
-        'clr_prediction_curve': [c[1] for c in grant.clr_prediction_curve] if grant.clr_prediction_curve and len(grant.clr_prediction_curve[0]) > 1 else [0, 0, 0, 0, 0, 0],
-        'keywords': get_keywords(),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(4),
-        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(120),
-        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(15),
-        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(1),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'gas_advisories': gas_advisories(),
-        'splitter_contract_address': settings.SPLITTER_CONTRACT_ADDRESS,
-        'gitcoin_donation_address': settings.GITCOIN_DONATION_ADDRESS,
-        'can_phantom_fund': can_phantom_fund,
-        'is_phantom_funding_this_grant': is_phantom_funding_this_grant,
-        'active_tab': active_tab,
-        'fund_reward': fund_reward,
-        'phantom_funds': phantom_funds,
-        'clr_round': clr_round,
-        'clr_active': clr_active,
-        'total_clr_pot': total_clr_pot,
-    }
-    return TemplateResponse(request, 'grants/fund.html', params)
 
 
 @login_required

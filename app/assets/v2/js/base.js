@@ -305,6 +305,12 @@ const _alert = function(msg, _class, remove_after_ms) {
 
   $('body').append(html);
 
+  $(document).keydown(function(e) {
+      if (e.keyCode == 27) {
+          $(`#${id}`).remove();
+      }
+  });
+
   if (typeof remove_after_ms != 'undefined') {
     setTimeout(function() {
       $('#' + id).remove();

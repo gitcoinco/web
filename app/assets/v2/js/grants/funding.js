@@ -15,6 +15,13 @@ $(document).ready(function() {
         localStorage.removeItem('contributions_were_successful');
         localStorage.removeItem('contributions_count');
         $('#tweetModal').css('display', 'block');
+
+        $(document).keydown(function(e) {
+            if (e.keyCode == 27) {
+                $('#tweetModal').remove();
+            }
+        });
+
     }
 
     $('#js-addToCart-form').submit(function(event) {

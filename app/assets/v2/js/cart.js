@@ -332,11 +332,13 @@ Vue.component('grants-cart', {
     clearCart() {
       CartData.setCart([]);
       this.grantData = [];
+      update_cart_title();
     },
 
     removeGrantFromCart(id) {
       CartData.removeIdFromCart(id);
       this.grantData = CartData.loadCart();
+      update_cart_title();
     },
 
     addComment(id) {
@@ -755,10 +757,14 @@ Vue.component('grants-cart', {
   }
 });
 
-$(document).ready(function(){
+var update_cart_title = function(){
   var num_grants = JSON.parse(localStorage.getItem('grants_cart')).length
   let new_title = "Grants Cart ("+num_grants+") | Gitcoin";
   $('title').text(new_title);
+}
+
+$(document).ready(function(){
+  update_cart_title();
 });
 
 if (document.getElementById('gc-grants-cart')) {
