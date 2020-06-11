@@ -109,7 +109,9 @@ Vue.mixin({
     },
     fetchMatchingBounties: function() {
       let vm = this;
-      const apiUrlbounties = `/api/v0.1/bounties/slim/?network=${network}&idx_status=open&applicants=ALL&keywords=${vm.skills}&order_by=-web3_created&offset=0&limit=10`;
+
+      vm.network = document.web3network;
+      const apiUrlbounties = `/api/v0.1/bounties/slim/?network=${vm.network}&idx_status=open&applicants=ALL&keywords=${vm.skills}&order_by=-web3_created&offset=0&limit=10`;
 
       if (vm.matchingBounties.length) {
         return;
@@ -271,7 +273,7 @@ if (document.getElementById('gc-board')) {
     delimiters: [ '[[', ']]' ],
     el: '#gc-board',
     data: {
-      network: network,
+      network: document.web3network,
       bounties: bounties,
       openBounties: [],
       submittedBounties: [],

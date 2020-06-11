@@ -45,12 +45,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <img src="{% static "v2/images/prime.png" %}">
       </div>
     </div>
+
     <div class="row" id="grants_form">
       <div class="col-12 text-left mt-md-3">
         <a href="{{ grant.url }}" class="float-left ml-2">< Back to {{ grant.title }}</a>
       </div>
-    </div>
-    <div class="row" id="grants_form">
+
       <div class="col-12 text-center mt-md-3">
         <img src="/static/v2/images/grants/{{img}}" style="max-width: 200px; max-height: 200px; ">
         <h2 class="font-title-lg my-4">{% if direction == '-' %} Negative {%endif%}  {% trans "Fund Grant" %}</h2>
@@ -375,12 +375,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     {% include 'shared/grant_thanks_modal.html' %}
 
-
     {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
 
     <script>
       {% if show_tweet_modal %}

@@ -65,7 +65,8 @@ from chat.tasks import (
 from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
-    ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
+    ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
+    profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
@@ -458,6 +459,7 @@ def post_comment(request):
             'success': True,
             'msg': 'Finished.'
         })
+
 
 def rating_modal(request, bounty_id, username):
     # TODO: will be changed to the new share
@@ -908,70 +910,25 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
     return profile_list
 
 
+@require_POST
+def set_project_winner(request):
+    if not request.user.is_authenticated and request.user.is_staff:
+        return JsonResponse({
+            'message': 'UNAUTHORIZED'
+        })
 
-@require_GET
-def projects_fetch(request):
-    q = clean(request.GET.get('search', ''), strip=True)
-    order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
-    skills = clean(request.GET.get('skills', ''), strip=True)
-    filters = clean(request.GET.get('filters', ''), strip=True)
-    sponsor = clean(request.GET.get('sponsor', ''), strip=True)
-    # TODO: refactor for pagination
-    page = clean(request.GET.get('page', 1))
-    hackathon_id = clean(request.GET.get('hackathon', ''))
+    winner = request.POST.get('winner', False)
+    project_id = request.POST.get('project_id', None)
+    if not project_id:
+        return JsonResponse({
+            'message': 'Invalid Project'
+        })
+    project = HackathonProject.objects.get(pk=project_id)
+    project.winner = winner
+    project.save()
 
-    if hackathon_id:
-        try:
-            hackathon_event = HackathonEvent.objects.get(id=hackathon_id)
-        except HackathonEvent.DoesNotExist:
-            hackathon_event = HackathonEvent.objects.last()
+    return JsonResponse({})
 
-        projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
-            status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
-
-        if sponsor:
-            projects = projects.filter(
-                Q(bounty__github_url__icontains=sponsor)
-            )
-    elif sponsor:
-        sponsor_profile = Profile.objects.get(handle__iexact=sponsor)
-        if sponsor_profile:
-            projects = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__in=[sponsor_profile]) | Q(bounty__bounty_owner_github_username__in=[sponsor])).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
-        else:
-            projects = []
-    if q:
-        projects = projects.filter(
-            Q(name__icontains=q) |
-            Q(summary__icontains=q) |
-            Q(profiles__handle__icontains=q)
-        )
-
-    if skills:
-        projects = projects.filter(
-            Q(profiles__keywords__icontains=skills)
-        )
-
-    if filters == 'winners':
-        projects = projects.filter(
-            Q(badge__isnull=False)
-        )
-
-    if filters == 'lfm':
-        projects = projects.filter(
-            Q(looking_members=True)
-        )
-
-    projects_data = HackathonProjectSerializer(projects.distinct('created_on', 'id').all(), many=True)
-
-    params = {
-        'data': projects_data.data,
-        'has_next': False,
-        'count': projects.all().count(),
-        'num_pages': 1
-    }
-
-    return JsonResponse(params, status=200, safe=False)
 
 @require_GET
 def users_fetch(request):
@@ -3696,6 +3653,8 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     params['keywords'] = programming_languages + programming_languages_full
     params['active'] = 'users'
+    from chat.tasks import get_chat_url
+    params['chat_url_embed'] = f"/hackathons/channels/{hackathon_event.chat_channel_id}"
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
@@ -4026,9 +3985,8 @@ def hackathon_save_project(request):
             created, channel_details = create_channel_if_not_exists({
                 'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                 'channel_purpose': kwargs["summary"][:200],
-                'channel_display_name': f'project-{project_channel_name}'[:60],
-                'channel_name': project_channel_name[:60],
-                'channel_type': 'P'
+                'channel_display_name': f'PRJ{"-"+ bounty_obj.event.short_code if bounty_obj.event and bounty_obj.event.short_code else ""}-{project_channel_name}'[:60],
+                'channel_name': project_channel_name[:60]
             })
             try:
                 bounty_profile = Profile.objects.get(handle=bounty_obj.bounty_owner_github_username.lower())
@@ -4874,9 +4832,7 @@ def create_bounty_v1(request):
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     response = {
         'status': 204,
@@ -4938,9 +4894,8 @@ def cancel_bounty_v1(request):
 
     event_name = 'killed_bounty'
     record_bounty_activity(bounty, user, event_name)
-    # maybe_market_to_email(bounty, event_name)
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    maybe_market_to_email(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     bounty.bounty_state = 'cancelled'
     bounty.idx_status = 'cancelled'
@@ -5029,8 +4984,8 @@ def fulfill_bounty_v1(request):
     event_name = 'work_submitted'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    profile_pairs = build_profile_pairs(bounty)
+    maybe_market_to_github(bounty, event_name, profile_pairs)
 
     if bounty.bounty_state != 'work_submitted':
         bounty.bounty_state = 'work_submitted'
@@ -5269,6 +5224,8 @@ def close_bounty_v1(request, bounty_id):
 
     event_name = 'work_done'
     record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     bounty.bounty_state = 'done'
     bounty.idx_status = 'done' # TODO: RETIRE
@@ -5313,6 +5270,9 @@ def bulkDM(request):
                 if not to_profile:
                     continue
                 to_user_id = to_profile.chat_id
+                if not to_user_id:
+                    messages.error(request, f'{to_handle} is not on Gitcoin Chat yet.')
+                    continue
                 try:
                     response = chat_driver.client.make_request('post', 
                         '/channels/direct', 
@@ -5337,7 +5297,7 @@ def bulkDM(request):
 
     context = {
         'message': message,
-        'handles': handles,
+        'handles': request.POST.get('handles', ''),
     }
 
     return TemplateResponse(request, 'bulk_DM.html', context)

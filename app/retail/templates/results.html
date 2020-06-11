@@ -108,9 +108,9 @@
           </div>
           <div class="single-stat">
             <img src="{% static "v2/images/results/bounty-hunters-hired.svg" %}" />
-            <h3 class="single-stat__title">{{ alumni_count }}</h3>
-            <p class="single-stat__subtitle">{% trans "Full Time Jobs Placed" %}</p>
-            <p class="single-stat__fineprint">(that we know of, at least 🤷‍♀️)</p>
+            <h3 class="single-stat__title">${{last_month_amount_hourly_business_hours|floatformat:0}}</h3>
+            <p class="single-stat__subtitle">{% trans "Value Created/Business-Hour" %}</p>
+            <p class="single-stat__fineprint">(assumes 40 business hours per week⚡️)</p>
           </div>
         </div>
       </div>

@@ -1,4 +1,6 @@
 window.onload = function() {
+  needWalletConnection();
+
   $('#register')[0].onclick = function(e) {
     if ($('#tos')[0].checked === false) {
       return _alert({ message: gettext('Please check the TOS checkbox.')}, 'error');

@@ -1,9 +1,4 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 $(document).ready(function() {
 
   var linkify = function(new_text) {
@@ -406,6 +401,10 @@ $(document).ready(function() {
       return;
     }
 
+    if (!provider) {
+      return onConnect();
+    }
+
     var $amount = $parent.find('.amount');
     var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
 
@@ -446,7 +445,7 @@ $(document).ready(function() {
         view_comments($target, false, undefined, true);
       }, 1000);
 
-      _alert(msg, 'info', 1000);
+      _alert(msg, 'info');
       // todo: update amount
     };
 

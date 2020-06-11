@@ -73,20 +73,13 @@
   </p>
 
 </form>
-
-<script>
-document.gas_price = {{gas_price}};
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
-</script>
-<script src="{% url 'javascript-catalog' %}"></script>
-<script src="{% static "v2/js/lib/jquery.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="/dynamic/js/tokens_dynamic.js"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/pages/tokens_settings.js" %}"></script>
-
+{% endblock %}
+{% block scripts %}
+  <script>
+    document.gas_price = {{gas_price}};
+  </script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/tokens_settings.js" %}"></script>
 {% endblock %}

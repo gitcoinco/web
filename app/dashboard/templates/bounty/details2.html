@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-    <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    <link rel="stylesheet" href="{% static "v2/css/rating.css" %}"/>
     {% include 'shared/fbpixel.html' %}
   </head>
 
@@ -248,7 +248,7 @@
                     </a>
                   </div>
                   <div class="col-md-4 my-auto text-center text-md-left">
-                    <a :href="`/profile/${fulfillment.profile.handle}`" class="user-popover" :data-username="[[ fulfillment.profile.handle ]]"
+                    <a :href="`/profile/${fulfillment.profile.handle}`" class="user-popover" :data-usercard="[[ fulfillment.profile.handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ fulfillment.profile.handle ]]
@@ -482,6 +482,16 @@
                                 </a>
                               </p>
 
+                              <div class="text-center py-3">
+                                <qrcode v-if="fulfillment_context.include_amount_in_qr" :string="getQRString(bounty.token_name, fulfillment.fulfiller_address, fulfillment_context.amount)"></qrcode>
+                                <qrcode v-else :string="getQRString(bounty.token_name, fulfillment.fulfiller_address)"></qrcode>
+
+                                <div class="custom-control custom-switch mt-4">
+                                  <input type="checkbox" class="custom-control-input" id="include_amount_in_qr" v-model="fulfillment_context.include_amount_in_qr" checked>
+                                  <label class="custom-control-label" for="include_amount_in_qr">Include amount in QR code</label>
+                                </div>
+                              </div>
+
                               <div class="font-caption payout-summary-container p-3 mb-4">
                                 <p class="mb-1">
                                   From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
@@ -499,9 +509,6 @@
                                 </p>
                               </div>
 
-                              <div class="text-center py-3">
-                                <qrcode :string="getQRString(bounty.token_name, fulfillment.fulfiller_address)"></qrcode>
-                              </div>
                               <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
                                 @click="fulfillmentComplete(fulfillment.pk, $event)"
                               >I have paid
@@ -533,7 +540,19 @@
                                 to make the payment with the details below:
                               </p>
 
-                              <div class="font-caption payout-summary-container p-3 mb-4">
+                              <p class="font-caption text-medium-dark-grey mb-2">
+                                Input the
+                                <span class="font-weight-bold">Transaction ID</span>
+                                of the payment:
+                              </p>
+                              <div class="payout-tx-container">
+                                <input v-model="fulfillment_context.payout_tx_id"
+                                  name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
+                                  class="w-100 p-2 font-smaller-5 border-0"
+                                >
+                              </div>
+
+                              <div class="font-caption payout-summary-container p-3 my-4">
                                 <p class="mb-1">
                                   From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
                                 </p>
@@ -548,18 +567,6 @@
                                     Copy
                                   </a>
                                 </p>
-                              </div>
-
-                              <p class="font-caption text-medium-dark-grey mb-2">
-                                Input the
-                                <span class="font-weight-bold">Transaction ID</span>
-                                of the payment:
-                              </p>
-                              <div class="payout-tx-container">
-                                <input v-model="fulfillment_context.payout_tx_id"
-                                  name="payout_tx_id" id="payout_tx_id" placeholder="Transaction ID"
-                                  class="w-100 p-2 font-smaller-5 border-0"
-                                >
                               </div>
 
                               <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
@@ -600,7 +607,7 @@
                     </a>
                   </div>
                   <div class="col-md-4 my-auto text-center text-md-left">
-                    <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-username="[[ interest.profile.handle ]]"
+                    <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-usercard="[[ interest.profile.handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ interest.profile.handle ]]
@@ -656,7 +663,7 @@
                     </a>
                   </div>
                   <div class="col-lg-3 col-md-3 my-auto text-center text-md-left">
-                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-username="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">
+                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-usercard="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">
                       [[ activity.profile.handle ]]
                     </a>
                   </div>
@@ -688,7 +695,7 @@
                     <div v-if="activity.activity_type === 'new_kudos'">
                       show value
                     </div>
-                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-username="[[ activity.metadata.worker_handle ]]"
+                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-usercard="[[ activity.metadata.worker_handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ activity.metadata.worker_handle ]]
@@ -715,7 +722,7 @@
                     </a>
                   </div>
                   <div class="col-md-10 col-lg-9 my-auto text-center text-md-left">
-                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" class="user-popover" :data-username="[[ bounty.bounty_owner_github_username ]]"
+                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" class="user-popover" :data-usercard="[[ bounty.bounty_owner_github_username ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ bounty.bounty_owner_github_username ]]
@@ -861,16 +868,6 @@
         selector: '[data-toggle="tooltip"]',
         template: '<div class="no-tooltip" role="tooltip"><div class="tooltip-inner font-smaller-2"></div></div>'
       });
-
-      $('[data-toggle="popover"]').popover()
-      $('body').on('mouseover', '[data-username]', function(e) {
-        openContributorPopOver($(this).data('username'), $(this));
-      });
-
-      $('body').on('show.bs.popover', '[data-username]', function () {
-        $('body [data-username]').not(this).popover('hide');
-      })
-
       const csrftoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
     </script>
     <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
@@ -879,7 +876,6 @@
     <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
     <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
-    <script src="{% static "v2/js/user_popover.js" %}"></script>
     <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/user-search.js" %}"></script>
