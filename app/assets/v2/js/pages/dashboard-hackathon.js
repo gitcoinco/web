@@ -894,6 +894,7 @@
       methods: {
         tabChange: function(input) {
           let vm = this;
+
           addPopover();
 
           switch (input) {

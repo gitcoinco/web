@@ -4,7 +4,7 @@
     <i class="fas fa-comments fa-fw"></i>
     <span id="chat-notification-dot" class="notification__dot"></span>
   </a>
-  <b-sidebar @change="showHandler($event)" v-bind:visible="openChat" lazy class="chat-sidebar justify-content-center" backdrop no-slide v-cloak id="sidebar-chat" no-header-close no-header width="50vw">
+  <b-sidebar @change="changeHandler($event)" class="chat-sidebar justify-content-center" backdrop v-cloak id="sidebar-chat" no-header-close no-header width="50vw">
     <template v-slot:default>
       <div class="chatWrapper">
         <div v-if="isLoading || !isLoggedIn" class="text-center justify-content-center">
