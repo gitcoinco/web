@@ -1,0 +1,27 @@
+{
+  "symbol": "DFT",
+  "address": "0x4ac363455468C22F7F656E994B67f2275Fb3badd",
+  "overview":{
+        "en": "DFT (DigiFinex Token) is the native cryptocurrency of DigiFinexc exchange. DFT’s current token supply is 2.1 Billion. After several token burns, DFT’s current circulating supply reaches 137,996,103. DFT can be utilised in DigiFinex for transaction fee deduction, VIP level privileges, brand identity, authorization licensing and many other aspects. DFT plays an important role in driving the DigiFinex Ecosystem.",
+        "zh": "DFT（炖粉条）为DigiFinex数字币交易所平台通用Token，DFT的发行总量为21亿个，经过多次销毁后，DFT的可流通数量为1.37996103亿个。DFT的应用场景体现在手续费抵扣优惠/VIP等级特权/身份品牌授权等方方面面。"
+  },
+  "email": "support@digifinex.com",
+  "website": "https:www.digifinex.com",
+  "whitepaper": "https://www.digifinex.com/download/doc/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-16",
+  "initial_price":{
+        "ETH":"0.00013699 ETH",
+        "USD":"0.07 USD",
+        "BTC":"0.0000087 BTC"
+  },
+  "links": {
+    "blog": "https://blog.digifinex.com/",
+    "twitter": "https://twitter.com/digifinex",
+    "telegram": "https://t.me/DigiFinexEN",
+    "github": "https://github.com/DigiFinex",
+    "facebook": "https://www.facebook.com/digifinex.global",
+    "reddit": "https://www.reddit.com/r/DigiFinex/",
+    "medium": "https://medium.com/@digifinex"
+  }
+}
