@@ -75,7 +75,6 @@ total_clr_pot = 175000
 clr_round = 6
 clr_active = True
 show_clr_card = True
-round_5_5_grants = [] # special grants for round 5.5
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
@@ -355,8 +354,8 @@ def grants(request):
     grant_types = [
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Community', 'keyword': 'media', 'count': media_grants_count},
-        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
-        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
+#        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
+#        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
         {'label': 'Crypto for Black Lives', 'keyword': 'change', 'count': change_count},
 
     ]
@@ -435,7 +434,6 @@ def grants(request):
         'show_past_clr': show_past_clr,
         'is_staff': request.user.is_staff,
         'selected_category': category,
-        'round_5_5_grants': round_5_5_grants,
         'profile': profile
     }
 
@@ -589,7 +587,7 @@ def grant_details(request, grant_id, grant_slug):
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
-        'is_round_5_5': grant.id in round_5_5_grants,
+        'is_round_5_5': False,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
     }
 
