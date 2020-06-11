@@ -133,7 +133,6 @@ window.addEventListener('load', async() => {
     });
   } else {
     web3Modal.on('connect', async(data) => {
-      console.log('connected', data)
       $('#address').val(data.selectedAddress);
     });
   }

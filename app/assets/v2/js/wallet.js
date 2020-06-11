@@ -308,6 +308,10 @@ $('.selected-account').click(function(e) {
 });
 
 window.addEventListener('load', async() => {
+  if (!document.contxt['github_handle']) {
+    return;
+  }
+
   initWallet();
   if (web3Modal.cachedProvider) {
     try {
