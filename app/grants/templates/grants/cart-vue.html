@@ -64,7 +64,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   Clear my cart
                 </div>
                 <div class="col-auto text-right font-smaller-1 hyperlink"
-                  @click="showValidation = true">
+                  @click="showSMSValidationModal()">
                   Verifiy my number
                 </div>
               </div>
@@ -328,7 +328,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               </div>
 
             </div>
-            <b-modal id="sms-modal" :visible="showValidation" center hide-header hide-footer>
+            <b-modal id="sms-modal" @hide="dismissVerification()" :visible="showValidation" center hide-header hide-footer>
               <template v-slot:default="{ hide }">
                 <div class="mx-5 mt-5 mb-4 text-center" v-if="validationStep == 'intro'">
                   <div class="mb-3">
@@ -353,7 +353,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   <p class="mb-5 font-subheader">We will send you a verification code.</p>
                   <vue-tel-input ref="tel-input" :validCharactersOnly="true" @validate="isValidNumber" v-model="phone"
                     :enabledCountryCode="true" :autofocus="true" :required="true" mode="international"
-                    inputClasses="form-control"></vue-tel-input>
+                    inputClasses="form-control" placeholder="+1 8827378273"
+                    :inputOptions="{showDialCode: true}"
+                  ></vue-tel-input>
                   <div v-if="timeInterval > timePassed">
                     <span class="label-warning">Wait [[ timeInterval - timePassed ]] second before request another
                       code</span>
