@@ -453,6 +453,18 @@ Vue.component('grants-cart', {
     async checkout() {
       try {
         // Setup -----------------------------------------------------------------------------------
+        // Throw if invalid Gitcoin contribution percentage
+        if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
+          throw new Error('Gitcoin contribution amount must be between 0% and 99%');
+        }
+
+        // Throw if there's negative values in the cart
+        this.donationInputs.forEach(donation => {
+          if (Number(donation.amount) < 0) {
+            throw new Error('Cannot have negative donation amounts');
+          }
+        });
+
         await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
@@ -482,11 +494,7 @@ Vue.component('grants-cart', {
 
           // Get current allowance
           const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-          const allowance = new BN(
-            await tokenContract.methods
-              .allowance(userAddress, bulkCheckoutAddress)
-              .call({ from: userAddress })
-          );
+          const allowance = new BN(await getAllowance(bulkCheckoutAddress, tokenDetails.addr), 10);
 
           // Get required allowance based on donation amounts
           // We use reduce instead of this.donationsTotal because this.donationsTotal will
@@ -702,7 +710,12 @@ Vue.component('grants-cart', {
 
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
+    },
+
+    onResize() {
+      this.windowWidth = window.innerWidth;
     }
+
   },
 
   watch: {
@@ -718,7 +731,7 @@ Vue.component('grants-cart', {
     gitcoinFactorRaw: {
       handler() {
         $('.bot-heart').hide();
-        if (Number(this.gitcoinFactorRaw) == 0) {
+        if (Number(this.gitcoinFactorRaw) <= 0) {
           $('#bot-heartbroken').show();
         } else if (Number(this.gitcoinFactorRaw) >= 20) {
           $('#bot-heart-20').show();
@@ -752,11 +765,13 @@ Vue.component('grants-cart', {
       await this.sleep(50); // every 50 ms
     }
     // Support responsive design
-    window.addEventListener('resize', () => {
-      this.windowWidth = window.innerWidth;
-    });
+    window.addEventListener('resize', this.onResize);
     // Cart is now ready
     this.isLoading = false;
+  },
+
+  beforeDestroy() {
+    window.removeEventListener('resize', this.onResize);
   }
 });
 
