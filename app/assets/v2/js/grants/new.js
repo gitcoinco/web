@@ -161,6 +161,7 @@ const init = () => {
 
       let formData = new FormData();
       let file = $('#img-project')[0].files[0];
+
       formData.append('input_image', file);
       formData.append('title', $('#input_title').val());
       formData.append('handle1', $('#input-handle1').val());
