@@ -1,0 +1,21 @@
+{
+  "symbol": "CTB",
+  "address": "0x59a7a62C317d0411a7aeFfB7Df21F4809aA1a244",
+  "overview":{
+    "en": "CTB (Caitex Points) is a point system based on blockchain. It is the only point officially issued by Caitex. CTB will support Caitex's global business and a full range of products, such as: VIP fee discounts, certified merchant deposits, Caitex points exclusive activities, transactions with popular currencies, participation in Caitex's business, etc.",
+    "zh": "CTB（彩童积分）是基于区块链发行和管理的积分系统，为Caitex交易所官方发行的唯一积分。CTB将支持彩童全球业务、全线产品，如：VIP手续费折扣、认证商家保证金、彩童积分专享活动、与热门币种交易、参与彩童业务等。"
+  },
+  "email": "caitex@163.com",
+  "website": "https://www.caitex.io/",
+  "whitepaper": "https://caitex.zendesk.com/hc/zh-cn/article_attachments/900001397943/Caitex.io-Whitepaper-ENG.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-10-18",
+  "initial_price":{
+    "ETH":"0.00006 ETH",
+    "USD":"0.015 USD",
+    "BTC":"0.00000015 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Caitex2020"
+  }
+}
