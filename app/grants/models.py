@@ -326,7 +326,7 @@ class Grant(SuperModel):
 
     @property
     def recurring_funding_supported(self):
-        return self.contract_version < 2:
+        return self.contract_version < 2
 
     @property
     def configured_to_receieve_funding(self):
@@ -855,7 +855,7 @@ next_valid_timestamp: {next_valid_timestamp}
             amount = self.amount_per_period_to_gitcoin
         else:
             amount = self.amount_per_period_minus_gas_price
-            
+
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
                 return Decimal(float(amount) * float(eth_usd_conv_rate()))

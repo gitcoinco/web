@@ -43,7 +43,9 @@ Vue.component('grants-cart', {
       verified: document.verified,
       code: '',
       timePassed: 0,
-      timeInterval: 0
+      timeInterval: 0,
+      display_email_option: false,
+      countDownActive: false
     };
   },
 
@@ -267,17 +269,20 @@ Vue.component('grants-cart', {
       this.code = '';
       this.timePassed = 0;
       this.timeInterval = 0;
+      this.display_email_option = false;
     },
     countdown() {
       const vm = this;
 
-      if (vm.timePassed < vm.timeInterval) {
+      if (!vm.countDownActive) {
+        vm.countDownActive = true;
+
         setInterval(() => {
           vm.timePassed += 1;
         }, 1000);
       }
     },
-    resendCode() {
+    resendCode(delivery_method) {
       const e164 = this.phone.replace(/\s/g, '');
       const vm = this;
 
@@ -285,16 +290,19 @@ Vue.component('grants-cart', {
 
       if (vm.validNumber) {
         const verificationRequest = fetchData('/sms/request', 'POST', {
-          phone: e164
+          phone: e164,
+          delivery_method: delivery_method || 'sms'
         }, {'X-CSRFToken': vm.csrf});
 
         vm.errorMessage = '';
 
         $.when(verificationRequest).then(response => {
+          console.log(response);
           // set the cooldown time to one minute
           this.timePassed = 0;
           this.timeInterval = 60;
           this.countdown();
+          this.display_email_option = response.allow_email;
         }).catch((e) => {
           vm.errorMessage = e.responseJSON.msg;
         });
@@ -316,6 +324,7 @@ Vue.component('grants-cart', {
           this.timePassed = 0;
           this.timeInterval = 60;
           this.countdown();
+          this.display_email_option = response.allow_email;
         }).catch((e) => {
           vm.errorMessage = e.responseJSON.msg;
         });

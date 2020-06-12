@@ -40,6 +40,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
+from app.settings import EMAIL_ACCOUNT_VALIDATION
 from app.utils import get_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
@@ -981,6 +982,7 @@ def subscription_cancel(request, grant_id, grant_slug, subscription_id):
 def grants_cart_view(request):
     context = {
         'title': 'Grants Cart',
+        'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
     }
     if request.user.is_authenticated:
         context['verified'] = request.user.profile.sms_verification
