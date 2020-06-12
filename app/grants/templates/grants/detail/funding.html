@@ -53,22 +53,7 @@
             </button>
           </a>
         {% else %}
-          <form id="js-addToCart-form" class="mt-3">
-            <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">
-            <input type="hidden" id="grant_slug" name="grant_slug" value="{{ grant.slug }}">
-            <input type="hidden" id="grant_title" name="grant_title" value="{{ grant.title }}">
-            <input type="hidden" id="grant_contract_version" name="grant_contract_version" value="{{ grant.contract_version }}">
-            <input type="hidden" id="grant_contract_address" name="grant_contract_address" value="{{ grant.contract_address }}">
-            <input type="hidden" id="grant_token_symbol" name="grant_token_symbol" value="{{ grant.grant.token_symbol }}">
-            <input type="hidden" id="grant_admin_address" name="grant_admin_address" value="{{ grant.admin_address }}">
-            <input type="hidden" id="grant_token_address" name="grant_token_address" value="{{ grant.token_address }}">
-            <input type="hidden" id="grant_logo" name="grant_logo" value="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
-            <input type="hidden" id="grant_image_css" name="grant_image_css" value="{{ grant.image_css }}">
-            <input type="hidden" id="grant_clr_prediction_curve" name="grant_clr_prediction_curve" value="{{ grant.clr_prediction_curve }}">
-            <button class="btn btn-gc-blue button--full shadow-none font-weight-bold py-3" id='js-addToCart-button'>
-              ADD TO CART
-            </button>
-          </form>
+
           <div class="text-center">
           </div>
         {% endif %}
