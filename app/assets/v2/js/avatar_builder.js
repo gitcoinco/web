@@ -196,7 +196,7 @@ function purchaseOption(option, value, target) {
       cost = ele.find('div').data('cost');
     }
     var cost_eth = parseFloat(cost.replace('ETH', ''));
-    var cost_wei = web3.toWei(cost_eth);
+    var cost_wei = web3.utils.toWei(String(cost_eth));
 
     to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // TODO: make dynamic
     indicateMetamaskPopup();
