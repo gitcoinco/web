@@ -384,7 +384,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
         contribs = contribs.filter(pk__in=contribs_ids)
 
         # only allow verified profiles
-        grant_phantom_funding_profiles_list = [ele for ele in grant_phantom_funding_profiles if ele.subscription.contributor_profile.sms_verification]
+        grant_phantom_funding_profiles_list = [ele for ele in grant_phantom_funding_profiles if ele.profile.sms_verification]
 
         # combine
         contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_profiles_list]))
