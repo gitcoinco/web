@@ -53,7 +53,10 @@ from django.views.decorators.http import require_GET, require_POST
 
 import dateutil
 import magic
+import pytz
+
 from app.services import RedisService, TwilioService
+from app.settings import SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, EMAIL_ACCOUNT_VALIDATION, PHONE_SALT
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
@@ -5306,10 +5309,9 @@ def bulkDM(request):
     return TemplateResponse(request, 'bulk_DM.html', context)
 
 
-def validate_number(user, twilio, phone, redis):
-    validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+def validate_number(user, twilio, phone, redis, delivery_method='sms'):
     profile = user.profile
-    hash_number = hashlib.md5(phone.encode()).hexdigest()
+    hash_number = hashlib.pbkdf2_hmac('sha256', phone.encode(), PHONE_SALT.encode(), 100000).hex()
 
     if user.profile.sms_verification:
         return JsonResponse({
@@ -5323,6 +5325,8 @@ def validate_number(user, twilio, phone, redis):
             'msg': 'The phone number has been associated with other account.'
         }, status=401)
 
+    validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+
     if validation.caller_name and validation.caller_name["caller_type"] == 'BUSINESS':
         return JsonResponse({
             'success': False,
@@ -5334,7 +5338,10 @@ def validate_number(user, twilio, phone, redis):
             'msg': 'Phone type isn\'t supported'
         }, status=401)
 
-    twilio.verify.verifications.create(to=phone, channel='sms')
+    if delivery_method == 'email':
+        twilio.verify.verifications.create(to=user.profile.email, channel='email')
+    else:
+        twilio.verify.verifications.create(to=phone, channel='sms')
     profile.last_validation_request = timezone.now()
     profile.validation_attempts += 1
     profile.encoded_number = hash_number
@@ -5349,7 +5356,8 @@ def validate_number(user, twilio, phone, redis):
                                        carrier_name=validation.carrier['name'],
                                        carrier_type=validation.carrier['type'],
                                        country_code=validation.country_code,
-                                       phone_number=hash_number)
+                                       phone_number=hash_number,
+                                       delivery_method=delivery_method)
 
     redis.set(f'verification:{user.id}:phone', phone)
 
@@ -5359,35 +5367,39 @@ def validate_number(user, twilio, phone, redis):
 def send_verification(request):
     profile = request.user.profile
     phone = request.POST.get('phone')
+    delivery_method = request.POST.get('delivery_method', 'sms')
     redis = RedisService().redis
     twilio = TwilioService()
-    has_previous_validation = profile.last_validation_request
+    has_previous_validation = profile.last_validation_request.replace(tzinfo=pytz.utc)
     validation_attempts = profile.validation_attempts
+    allow_email = False
 
     if not has_previous_validation:
-        response = validate_number(request.user, twilio, phone, redis)
+        response = validate_number(request.user, twilio, phone, redis, delivery_method)
         if response:
             return response
     else:
-        cooldown = has_previous_validation + timedelta(minutes=1)
-        if cooldown > datetime.now():
+        cooldown = has_previous_validation + timedelta(minutes=SMS_COOLDOWN_IN_MINUTES)
+
+        if cooldown > datetime.now().replace(tzinfo=pytz.utc):
             return JsonResponse({
                 'success': False,
                 'msg': 'Wait a minute to try again.'
             }, status=401)
 
-        if validation_attempts > 4:
+        if validation_attempts > SMS_MAX_VERIFICATION_ATTEMPTS:
             return JsonResponse({
                 'success': False,
                 'msg': 'Attempt numbers exceeded.'
             }, status=401)
 
-        response = validate_number(request.user, twilio, phone, redis)
+        response = validate_number(request.user, twilio, phone, redis, delivery_method)
         if response:
             return response
 
     return JsonResponse({
         'success': True,
+        'allow_email': EMAIL_ACCOUNT_VALIDATION and validation_attempts > 1,
         'msg': 'The verification number was sent.'
     })
 

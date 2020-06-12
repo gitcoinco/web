@@ -5151,4 +5151,8 @@ class ProfileVerification(SuperModel):
     carrier_name = models.CharField(max_length=100, null=True, blank=True)
     carrier_type = models.CharField(max_length=20, null=True, blank=True)
     country_code = models.CharField(max_length=5, null=True, blank=True)
-    phone_number = models.CharField(max_length=50, null=True, blank=True)
+    phone_number = models.CharField(max_length=150, null=True, blank=True)
+    delivery_method = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.phone_number} ({self.caller_type}) from {self.country_code} request ${self.delivery_method} code at {self.created_on}'
