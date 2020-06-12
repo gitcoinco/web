@@ -326,7 +326,7 @@ class Grant(SuperModel):
 
     @property
     def recurring_funding_supported(self):
-        return self.contract_version < 2:
+        return self.contract_version < 2
 
     @property
     def configured_to_receieve_funding(self):

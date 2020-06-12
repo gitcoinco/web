@@ -51,7 +51,6 @@ urlpatterns = [
         invoice,
         name='contribution_invoice'
     ),
-    path('api/v1/<int:grant_id>/predict-clr', predict_clr_v1, name='predict_clr_v1'),
     path('cart/bulk-add/<str:grant_ids>', grants_bulk_add, name='grants_bulk_add'),
     path('cart', grants_cart_view, name='cart')
 ]
