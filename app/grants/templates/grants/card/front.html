@@ -95,6 +95,7 @@
             <input type="hidden" id="grant_token_address" name="grant_token_address" value="{{ grant.token_address }}">
             <input type="hidden" id="grant_logo" name="grant_logo" value="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
             <input type="hidden" id="grant_image_css" name="grant_image_css" value="{{ grant.image_css }}">
+            <input type="hidden" id="grant_clr_prediction_curve" name="grant_clr_prediction_curve" value="{{ grant.clr_prediction_curve }}">
             <button class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
               + Add to Cart
             </button>
