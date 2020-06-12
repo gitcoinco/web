@@ -297,7 +297,6 @@ Vue.component('grants-cart', {
         vm.errorMessage = '';
 
         $.when(verificationRequest).then(response => {
-          console.log(response);
           // set the cooldown time to one minute
           this.timePassed = 0;
           this.timeInterval = 60;
