@@ -28,7 +28,7 @@ class CartData {
     const accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
 
     if (acceptsAllTokens || 'DAI' == accptedTokenName) {
-      grantData.grant_donation_amount = 1;
+      grantData.grant_donation_amount = 5;
       grantData.grant_donation_currency = 'DAI';
     } else {
       grantData.grant_donation_amount = 0.01;
@@ -36,7 +36,7 @@ class CartData {
     }
 
     grantData.grant_donation_num_rounds = 1;
-    grantData.grant_donation_clr_match = 250;
+    grantData.grant_donation_clr_match = 0;
 
     let cartList = this.loadCart();
 
