@@ -514,5 +514,8 @@ function applyCartMenuStyles() {
     dot.addClass('notification__dot_active');
   } else {
     dot.removeClass('notification__dot_active');
+    if(document.location.href.indexOf('/grants') == -1){
+      $("#cart-nav").addClass('hidden');
+    }
   }
 }

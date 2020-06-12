@@ -6,12 +6,13 @@ import hashlib
 handle = 'owocki'
 phone = '1234567809'
 
+profile = Profile.objects.get(handle=handle)
 hash_number = hashlib.pbkdf2_hmac('sha256', phone.encode(), PHONE_SALT.encode(), 100000).hex()
-ProfileVerification.objects.create(profile=user.profile,
+ProfileVerification.objects.create(profile=profile,
                                    caller_type="MANUAL",
                                    carrier_error_code="MANUAL",
                                    mobile_network_code="NA",
-                                   mobile_country_code="NA",
+                                   mobile_country_code="1",
                                    carrier_name="NA",
                                    carrier_type="NA",
                                    country_code="NA",

@@ -343,10 +343,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
       {% include 'shared/chat_nav.html' %}
       {% include 'shared/notifications.html' %}
       {% include 'shared/search.html' %}
-      {% is_grants_path request.path as should_show_cart %}
-      {% if should_show_cart %}
-        {% include 'shared/cart_nav.html' %}
-      {% endif %}
+      {% include 'shared/cart_nav.html' %}
       {% endif %}
     </div>
 

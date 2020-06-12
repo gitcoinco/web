@@ -285,7 +285,6 @@ Vue.component('grants-cart', {
     resendCode(delivery_method) {
       const e164 = this.phone.replace(/\s/g, '');
       const vm = this;
-      debugger;
 
       vm.errorMessage = '';
 
@@ -880,7 +879,7 @@ var update_cart_title = function() {
 $(document).ready(function() {
   $(document).on('click', '#verify_offline', function(e) {
     $(this).remove();
-    $("#verify_offline_target").css('display', 'block');
+    $('#verify_offline_target').css('display', 'block');
   });
 
   update_cart_title();
