@@ -43,15 +43,9 @@
                 <span class="font-weight-bold">
                     {{grant.amount_received_in_round|floatformat:0|intcomma}} DAI
                 </span>
-                <BR>
+                <br>
                 {{grant.positive_round_contributor_count}} contributors 
-                {% if grant.negative_round_contributor_count %}
-                <BR>
-                {{grant.negative_round_contributor_count}}
-                negative contributors 
-                {% endif %}
                 </p>
-
             </div>
 
             </div>
