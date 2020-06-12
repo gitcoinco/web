@@ -1671,7 +1671,15 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        
+        #handle scenario in which a txn has been replaced
+        if self.tx_status in ['pending', 'dropped', 'unknown', '']:
+            new_tx = getReplacedTX(self.txid)
+            if new_tx:
+                self.txid = new_tx
+
         return bool(self.tx_status)
 
     def update_receive_tx_status(self):
