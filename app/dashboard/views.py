@@ -5380,7 +5380,7 @@ def send_verification(request):
             return response
     else:
         cooldown = has_previous_validation + timedelta(minutes=SMS_COOLDOWN_IN_MINUTES)
-        
+
         if cooldown > datetime.now().replace(tzinfo=pytz.utc):
             return JsonResponse({
                 'success': False,
