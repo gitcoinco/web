@@ -754,15 +754,20 @@ Vue.component('grants-cart', {
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
     // Wait until we can load token list
+    let elapsedTime = 0;
+    let delay = 50; // 50 ms debounce
+
     while (!this.tokenList) {
       try {
-        var network = document.web3network;
+        // Default to mainnet if nothing found after 5s
+        var network = elapsedTime >= 5000 ? 'mainnet' : document.web3network;
 
         if (typeof network != 'undefined') {
           this.tokenList = tokens(network);
         }
       } catch (err) {}
-      await this.sleep(50); // every 50 ms
+      elapsedTime += delay;
+      await this.sleep(delay);
     }
     // Support responsive design
     window.addEventListener('resize', this.onResize);

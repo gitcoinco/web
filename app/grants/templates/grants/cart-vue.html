@@ -113,7 +113,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="col-12">
                         <div class="row flex-nowrap">
                           <img class="col-2" style="padding:0 0.5rem" :src="grant.grant_logo" alt="Grant logo"
-                            width="40">
+                            width="40" height="24">
                           <div class="col-8 grant-name black" style="padding:0">[[grant.grant_title]]</div>
                           <div class="col-1" style="opacity: 40%">
                             <i class="fas fa-trash-alt" style="cursor: pointer"
@@ -157,7 +157,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     {% comment %} Title and logo {% endcomment %}
                     <div class="col-4">
                       <div class="row">
-                        <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30">
+                        <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30"
+                          height="24">
                         <div class="grant-name black">[[grant.grant_title]]</div>
                       </div>
                     </div>
