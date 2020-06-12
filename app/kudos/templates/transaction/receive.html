@@ -59,6 +59,7 @@
   </header>
   <div id="receove_eth" {% if kudos_transfer.receive_txid %} style="display:none;" {% endif %} >
     <form method="POST">
+      {% csrf_token %}
       <div class="form-group">
         <label for="">{% trans "Forward it to a permanent address" %}:</label>
         <input type="text" name="forwarding_address" id="forwarding_address" class="form-control" placeholder="0x0" {% if disable_inputs %}disabled=disabled{% endif %}>

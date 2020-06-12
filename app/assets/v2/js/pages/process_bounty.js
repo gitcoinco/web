@@ -1,10 +1,4 @@
 /* eslint-disable no-console */
-
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 window.onload = function() {
 
   const rateUser = () => {
@@ -187,7 +181,7 @@ window.onload = function() {
         return;
       }
 
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+      var bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
       loading_button($(this));
 
@@ -209,85 +203,87 @@ window.onload = function() {
         var bountyAmount = parseInt(result['value_in_token'], 10);
         var fromAddress = result['bounty_owner_address'];
         var claimeeAddress = result['fulfiller_address'];
-        var open = result['is_open'];
+        var is_open = result['is_open'];
         var initialized = true;
         var bountyId = result['standard_bounties_id'];
 
         var errormsg = undefined;
 
-        if (bountyAmount == 0 || open == false || initialized == false) {
+        if (bountyAmount == 0 || is_open == false || initialized == false) {
           errormsg = gettext('No active funding found at this address.  Are you sure this is an active funded issue?');
         } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
           errormsg = gettext('No claimee found for this bounty.');
         }
 
-        web3.eth.getCoinbase(function(_, coinbase) {
-          if (fromAddress != coinbase) {
-            errormsg = gettext('You can only process a funded issue if you submitted it initially.');
-          }
+        if (fromAddress != selectedAccount) {
+          errormsg = gettext('You can only process a funded issue if you submitted it initially.');
+        }
 
-          if (errormsg) {
-            _alert({ message: errormsg }, 'error');
-            unloading_button($('.submitBounty'));
-            return;
-          }
+        if (errormsg) {
+          _alert({ message: errormsg }, 'error');
+          unloading_button($('.submitBounty'));
+          return;
+        }
 
-          var final_callback = function(error, result) {
-            indicateMetamaskPopup();
-            var next = function() {
-              web3.eth.getAccounts(function(_, accounts) {
-                // setup inter page state
-                localStorage[issueURL] = JSON.stringify({
-                  'timestamp': timestamp(),
-                  'dataHash': null,
-                  'issuer': accounts[0],
-                  'txid': result
-                });
-              });
+        var final_callback = function(result, error) {
+          indicateMetamaskPopup();
+          var next = function() {
+            // setup inter page state
+            localStorage[issueURL] = JSON.stringify({
+              'timestamp': timestamp(),
+              'dataHash': null,
+              'issuer': selectedAccount,
+              'txid': result
+            });
 
-              _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
+            _alert({ message: gettext('Submitted transaction to web3, saving comment(s)...') }, 'info');
 
-              var finishedComment = function() {
-                _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
-                setTimeout(() => {
-                  document.location.href = '/funding/details?url=' + issueURL;
-                }, 1000);
-              };
-
-              finishedComment();
+            var finishedComment = function() {
+              _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
+              setTimeout(() => {
+                document.location.href = '/funding/details?url=' + issueURL;
+              }, 1000);
             };
 
-            if (error) {
-              _alert({ message: gettext('There was an error') }, 'error');
-              console.error(error);
-              unloading_button($('.submitBounty'));
-            } else {
-              next();
-            }
-          };
-          // just sent payout
-          var send_payout = function() {
-            web3.eth.getAccounts(function(_, accounts) {
-              bounty.acceptFulfillment(bountyId, fulfillmentId, {from: accounts[0]}, final_callback);
-            });
+            finishedComment();
           };
 
-          // send both tip and payout
-          var send_tip_and_payout_callback = function() {
-            indicateMetamaskPopup();
-            if ($('#tipPercent').val() > 0) {
-              attach_and_send_tip(send_payout);
-            } else {
-              send_payout();
-            }
-          };
-
-          if ($('.kudos-search').select2('data')[0].id) {
-            attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
+          if (error) {
+            _alert({ message: gettext('There was an error') }, 'error');
+            console.error(error);
+            unloading_button($('.submitBounty'));
           } else {
-            send_tip_and_payout_callback();
+            next();
           }
-        });
+        };
+        // just sent payout
+        var send_payout = function() {
+          bounty.methods.acceptFulfillment(bountyId, fulfillmentId).send({
+            from: selectedAccount
+          }).then((result) => {
+            final_callback(result);
+          }).catch(err => {
+            final_callback(undefined, err);
+            console.log(err);
+          });
+        };
+
+        // send both tip and payout
+        var send_tip_and_payout_callback = function() {
+          indicateMetamaskPopup();
+          if ($('#tipPercent').val() > 0) {
+            attach_and_send_tip(send_payout);
+          } else {
+            send_payout();
+          }
+        };
+
+        if ($('.kudos-search').select2('data')[0].id) {
+          attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
+        } else {
+          send_tip_and_payout_callback();
+        }
+
       };
       // Get bountyId from the database
 

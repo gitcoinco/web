@@ -76,7 +76,7 @@ class GrantCategory(SuperModel):
     def all_categories():
         all_tech_categories = GrantCategory.tech_categories()
         filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
-        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories()
+        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories() + GrantCategory.change_categories()
 
     @staticmethod
     def tech_categories():
@@ -108,6 +108,11 @@ class GrantCategory(SuperModel):
             'COVID19 response',
         ]
 
+    @staticmethod
+    def change_categories():
+        return [
+        ]
+
     category = models.CharField(
         max_length=50,
         blank=False,
@@ -131,7 +136,8 @@ class Grant(SuperModel):
     GRANT_TYPES = [
         ('tech', 'tech'),
         ('health', 'health'),
-        ('media', 'media'),
+        ('Community', 'media'),
+        ('Crypto for Black Lives', 'change'),
         ('matic', 'matic')
     ]
 
@@ -319,6 +325,16 @@ class Grant(SuperModel):
 
 
     @property
+    def recurring_funding_supported(self):
+        return self.contract_version < 2:
+
+    @property
+    def configured_to_receieve_funding(self):
+        if self.contract_version == 2:
+            return True
+        return self.contract_address != '0x0'
+
+    @property
     def clr_match_estimate_this_round(self):
         try:
             return self.clr_prediction_curve[0][1]
@@ -335,7 +351,7 @@ class Grant(SuperModel):
 
     @property
     def negative_voting_enabled(self):
-        return self.grant_type == 'media'
+        return False
 
     @property
     def org_name(self):

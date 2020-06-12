@@ -2,7 +2,7 @@ import time
 
 from django.conf import settings
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
 from dashboard.utils import get_web3

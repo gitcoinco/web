@@ -367,12 +367,12 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
         # phantom funding
         grant_phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-        # only allow github profiles created after clr round
-        contribs_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.github_created_on.replace(tzinfo=pytz.UTC) < clr_start_date.replace(tzinfo=pytz.UTC)]
+        # only allow verified profiles
+        contribs_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.sms_verification]
         contribs = contribs.filter(pk__in=contribs_ids)
 
-        # only allow phantom github profiles created after clr round
-        grant_phantom_funding_profiles_list = [ele for ele in grant_phantom_funding_profiles if ele.profile.github_created_on.replace(tzinfo=pytz.UTC) < clr_start_date.replace(tzinfo=pytz.UTC)]
+        # only allow verified profiles
+        grant_phantom_funding_profiles_list = [ele for ele in grant_phantom_funding_profiles if ele.subscription.contributor_profile.sms_verification]
 
         # combine
         contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_profiles_list]))

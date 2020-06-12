@@ -931,6 +931,57 @@ textarea.status-textarea {
   background-color: var(--bg-shade-0)!important;
 }
 
+.image-provider {
+  width: 24px;
+  vertical-align: top;
+}
+
+.wallet-network {
+  margin-top: -14px;
+  position: absolute;
+  display: block;
+  margin-left: 17px;
+  color: red;
+}
+
+.wallet-network.mainnet {
+  color: #0fce7c;
+}
+
+.wallet-network.rinkeby {
+  color: orange;
+}
+
+.wallet-option,
+.selected-account {
+  cursor: pointer;
+}
+
+.info-box {
+  background: rgba(62, 0, 255, 0.05);
+  border: 1px solid rgba(62, 0, 255, 0.5);
+  box-sizing: border-box;
+  border-radius: 4px;
+  line-height: 16px;
+}
+
+.info-box.large {
+  width: 95%;
+}
+
+.cart-btn {
+  border-radius: 4px !important;
+}
+
+.cart-btn.large {
+  width: 100%;
+  padding: 10px 0;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  z-index: 100;
+}
+
 .svg-animated-logo {
   height: 42px;
   max-width: 100%;

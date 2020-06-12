@@ -135,6 +135,7 @@ def preprocess(request):
         'max_length': max_length,
         'max_length_offset': max_length_offset,
         'chat_url': chat_url,
+        'base_url': settings.BASE_URL,
         'chat_id': chat_id,
         'chat_access_token': chat_access_token,
         'github_handle': request.user.username.lower() if user_is_authenticated else False,
