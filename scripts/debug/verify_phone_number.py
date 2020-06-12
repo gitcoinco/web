@@ -1,7 +1,9 @@
-from dashboard.models import ProfileVerification, Profile
-from django.utils import timezone
-from app.settings import PHONE_SALT
 import hashlib
+
+from django.utils import timezone
+
+from app.settings import PHONE_SALT
+from dashboard.models import Profile, ProfileVerification
 
 handle = 'owocki'
 phone = '1234567809'
