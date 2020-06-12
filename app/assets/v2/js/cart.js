@@ -737,6 +737,7 @@ Vue.component('grants-cart', {
       const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
       const response = await fetch(url);
       const newAmount = await response.json();
+
       return newAmount.usdt;
     },
 
@@ -745,7 +746,7 @@ Vue.component('grants-cart', {
       let amount = await this.valueToDai(rawAmount, grant.grant_donation_currency);
 
       const clr_prediction_curve_2d = JSON.parse(grant.grant_clr_prediction_curve);
-      const clr_prediction_curve = clr_prediction_curve_2d.map(row => row[2])
+      const clr_prediction_curve = clr_prediction_curve_2d.map(row => row[2]);
 
       if (amount > 10000) {
         amount = 10000;
@@ -807,7 +808,8 @@ Vue.component('grants-cart', {
         CartData.setCart(this.grantData);
         for (let i = 0; i < this.grantData.length; i += 1) {
           const grant = this.grantData[i];
-          const matchAmount = await this.predictCLRMatch(grant)
+          const matchAmount = await this.predictCLRMatch(grant);
+
           this.grantData[i].grant_donation_clr_match = matchAmount.toFixed(2);
         }
       },

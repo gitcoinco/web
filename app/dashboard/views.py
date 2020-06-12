@@ -54,9 +54,8 @@ from django.views.decorators.http import require_GET, require_POST
 import dateutil
 import magic
 import pytz
-
 from app.services import RedisService, TwilioService
-from app.settings import SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS, EMAIL_ACCOUNT_VALIDATION, PHONE_SALT
+from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user

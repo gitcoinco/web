@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import datetime
 import logging
 from datetime import date, timedelta
 from functools import partial
@@ -33,7 +34,6 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
-import datetime
 from grants.models import Contribution, Grant, Subscription
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
