@@ -1,14 +1,15 @@
 {% load i18n static %}
-<div id="sidebar-chat-app">
-  <a class="chat_icon dropdown-toggle-no-caret nav-link" href="javascript:" role="button" v-b-toggle.sidebar-chat>
-    <i class="fas fa-comments fa-fw"></i>
-    <span id="chat-notification-dot" class="notification__dot"></span>
+<div id="sidebar-chat-app" class="nav-item dropdown notifications">
+  <a href="" class="notification__icon nav-link" v-b-toggle.sidebar-chat role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-comments fa-fw">
+      <span id="chat-notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadCount > 0}"></span>
+    </i>
   </a>
-  <b-sidebar @change="changeHandler($event)" class="chat-sidebar justify-content-center" backdrop v-cloak id="sidebar-chat" no-header-close no-header width="50vw">
+  <b-sidebar id="sidebar-chat" @shown="showHandler($event)" @change="changeHandler($event)" class="chat-sidebar justify-content-center" backdrop lazy v-cloak :no-header-close="!isMobile" :no-header="!isMobile" :width="`${isMobile ? '100vw' : '50vw'}`">
     <template v-slot:default>
       <div class="chatWrapper">
-        <div v-if="isLoading || !isLoggedIn" class="text-center justify-content-center">
-            <div v-if="isLoading" class="iframe-embed-loading rhombus-spinner mt-5 pt-5">
+        <div class="text-center justify-content-center">
+          <div v-if="isLoading" class="iframe-embed-loading rhombus-spinner mt-5 pt-5">
             <div class="rhombus child-1"></div>
             <div class="rhombus child-2"></div>
             <div class="rhombus child-3"></div>
@@ -29,9 +30,8 @@
               </b-col>
             </b-row>
           </div>
+          <iframe v-if="isLoggedIn" id="gitcoin-chat-iframe" :key="renderKey"  class="chat-embed" :onload="chatAppOnload(this)" frameborder="0" :src="loadURL" allowfullscreen></iframe>
         </div>
-        <iframe :key="renderKey" id="gitcoin-chat-iframe" v-show="!isLoading && isLoggedIn" class="chat-embed" onload="window.chatSidebar.chatSocketTest(this);" frameborder="0" :src="loadURL"
-                allowfullscreen></iframe>
       </div>
     </template>
   </b-sidebar>
