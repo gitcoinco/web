@@ -733,14 +733,17 @@ Vue.component('grants-cart', {
       return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
     },
 
-    valueToDai(amount, tokenAddr) {
-      // TODO convert token amount of token address to equivalent amount in DAI
-      return amount
+    async valueToDai(amount, tokenSymbol) {
+      const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
+      const response = await fetch(url);
+      const newAmount = await response.json();
+      return newAmount.usdt;
     },
 
-    predictCLRMatch(grant) {
+    async predictCLRMatch(grant) {
       const rawAmount = Number(grant.grant_donation_amount);
-      let amount = this.valueToDai(rawAmount, grant.grant_token_address);
+      let amount = await this.valueToDai(rawAmount, grant.grant_donation_currency);
+
       const clr_prediction_curve_2d = JSON.parse(grant.grant_clr_prediction_curve);
       const clr_prediction_curve = clr_prediction_curve_2d.map(row => row[2])
 
@@ -748,11 +751,10 @@ Vue.component('grants-cart', {
         amount = 10000;
       }
 
-      let predicted_clr = 0;
-
       const contributions_axis = [ 0, 1, 10, 100, 1000, 10000 ];
-
+      let predicted_clr = 0;
       let index = 0;
+
       if (isNaN(amount)) {
         predicted_clr = clr_prediction_curve[index];
       } else if (contributions_axis.indexOf(amount) >= 0) {
@@ -801,11 +803,13 @@ Vue.component('grants-cart', {
   watch: {
     // Use watcher to keep local storage in sync with Vue state
     grantData: {
-      handler() {
+      async handler() {
         CartData.setCart(this.grantData);
-        this.grantData.forEach((grant, index) => {
-          this.grantData[index].grant_donation_clr_match = this.predictCLRMatch(grant).toFixed(2);
-        })
+        for (let i = 0; i < this.grantData.length; i += 1) {
+          const grant = this.grantData[i];
+          const matchAmount = await this.predictCLRMatch(grant)
+          this.grantData[i].grant_donation_clr_match = matchAmount.toFixed(2);
+        }
       },
       deep: true
     },
@@ -834,9 +838,6 @@ Vue.component('grants-cart', {
     this.isLoading = true;
     // Read array of grants in cart from localStorage
     this.grantData = CartData.loadCart();
-    this.grantData.forEach((grant, index) => {
-      this.grantData[index].grant_donation_clr_match = this.predictCLRMatch(grant).toFixed(2);
-    })
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
     // Wait until we can load token list
