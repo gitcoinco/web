@@ -451,60 +451,6 @@ const gitcoinUpdates = () => {
   });
 
 };
-
-
-if (document.contxt.chat_access_token && document.contxt.chat_id) {
-  // setup polling check for any updated data from chat
-  // and set users as active on chat just by browsing gitcoin
-  // scope our polling function so any potential js crashes won't affect it.
-  (($) => {
-
-    const checkChatNotifications = () => {
-      $.ajax({
-        beforeSend: function(request) {
-          request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
-        },
-        url: `${document.contxt.chat_url}/api/v4/users/me/teams/unread`,
-        dataType: 'json',
-        success: (JSONUnread) => {
-          let notified = false;
-
-          JSONUnread.forEach((team) => {
-            if ((team.msg_count > 0 || team.mention_count > 0) && !notified) {
-              $('#chat-notification-dot').addClass('notification__dot_active');
-              notified = true;
-            }
-          });
-
-        },
-        error: (error => {
-          console.log(error);
-        })
-      });
-    };
-
-    const set_as_active = () => {
-      $.ajax({
-        url: '/api/v0.1/chat/presence',
-        dataType: 'json',
-        success: (response) => {
-          console.log(response);
-        },
-        error: (error => {
-          console.log(error);
-        })
-      });
-    };
-
-
-    setInterval(() => {
-      checkChatNotifications();
-      set_as_active();
-    }, document.contxt.chat_persistence_frequency);
-    checkChatNotifications();
-    set_as_active();
-  })(jQuery);
-}
 // carousel/collabs/... inside menu
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
