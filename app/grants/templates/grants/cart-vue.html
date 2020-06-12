@@ -341,15 +341,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
                     <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why does Gitcoin need our my SMS number? <b>&rArr;</b></a>
                   </div>
-                  <p class="mb-4 font-subheader text-left">For sybil resistance, we require you to verify your phone
-                    number to get your contribution matched.</p>
+                  <p class="mb-2 font-subheader text-left">For sybil resistance, <strong>we require you to verify your phone
+                    number</strong> to get your contribution matched.</p>
                   <p class="mb-4 font-subheader text-left">You can still contribute to grants without verifying your
-                    phone number, but your contribution will not be matched</p>
-                  <p class="mb-5 font-subheader text-left">Gitcoin does NOT store your phone number</p>
+                    phone number, but your contribution will not be matched.</p>
                   <b-button @click="validationStep='requestVerification'" class="btn-gc-blue mb-2" size="lg">Verify
-                    Phone Number</b-button>
-                  <br>
-                  <b-button @click="dismissVerification()" variant="link">Skip</b-button>
+                   Instantly</b-button>
+                  <p class="mb-1 font-subheader text-center font-smaller-2 grey">(For privacy preservation purposes, Gitcoin does NOT store your phone number)</p>
+                  <div class="mb-1 font-subheader text-center">
+                    - or -
+                    <a id="verify_offline" href="#">
+                    <br>
+                    Verify Offline</a>
+                    <div id='verify_offline_target' style="display:none">
+                      <strong>Verify Offline</strong>
+                      <BR>
+                      <a href="mailto:kyc@gitcoin.co">Email Gitcoin</a> or <a href="https://keybase.io/gitcoin_verify">Message Gitcoin on Keybase</a>, and we will verify your information within 1-2 business days.
+                      <br>
+                      IMPORTANT: Be sure to include (1) your gitcoin username (2) proof of ownership of a SMS number.
+                    </div>
+                    <br>
+                    - or - 
+                    <br>
+                    <a href="#" @click="dismissVerification()" variant="link">Skip</a>
+                  </div>
                 </div>
                 <div class="mx-5 my-5 text-center" v-if="validationStep == 'requestVerification'">
                   <div class="mb-3">

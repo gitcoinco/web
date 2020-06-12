@@ -877,6 +877,11 @@ var update_cart_title = function() {
 };
 
 $(document).ready(function() {
+  $(document).on('click', '#verify_offline', function(e) {
+    $(this).remove();
+    $("#verify_offline_target").css('display', 'block');
+  });
+
   update_cart_title();
 });
 
