@@ -215,7 +215,7 @@ window.onload = function() {
           errormsg = gettext('No claimee found for this bounty.');
         }
 
-        if (fromAddress != selectedAccount) {
+        if (fromAddress.toLowerCase() != selectedAccount.toLowerCase()) {
           errormsg = gettext('You can only process a funded issue if you submitted it initially.');
         }
 
