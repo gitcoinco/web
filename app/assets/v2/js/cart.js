@@ -790,7 +790,7 @@ if (document.getElementById('gc-grants-cart')) {
     }
   });
 
-  if (document.contxt.github_handle && !document.verified && !localStorage.getItem('dismiss-sms-validation')) {
+  if (document.contxt.github_handle && !document.verified && localStorage.getItem('dismiss-sms-validation') !== 'true') {
     app.$refs.cart.showSMSValidationModal();
   }
 }
