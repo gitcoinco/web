@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
-        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health'])
+        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health', 'change', 'matic'])
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
 
     def handle(self, *args, **options):

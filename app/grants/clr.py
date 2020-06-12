@@ -40,10 +40,14 @@ CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
 THRESHOLD_TECH = 20.0
 THRESHOLD_MEDIA = 20.0
 THRESHOLD_HEALTH = 20.0
+THRESHOLD_CHANGE = 20.0
+THRESHOLD_MATIC = 20.0
 
 TOTAL_POT_TECH = 101000.0
 TOTAL_POT_MEDIA = 50120.0
 TOTAL_POT_HEALTH = 50000.0
+TOTAL_POT_CHANGE = 50000.0
+TOTAL_POT_MATIC = 50000.0
 
 
 '''
@@ -323,6 +327,14 @@ def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_da
         grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='health', link_to_new_grant=None)
         threshold = THRESHOLD_HEALTH
         total_pot = TOTAL_POT_HEALTH
+    elif clr_type == 'change':
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='change', link_to_new_grant=None)
+        threshold = THRESHOLD_CHANGE
+        total_pot = TOTAL_POT_CHANGE
+    elif clr_type == 'matic':
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='matic', link_to_new_grant=None)
+        threshold = THRESHOLD_MATIC
+        total_pot = TOTAL_POT_MATIC
     else:
         return None, None, None, None
 
