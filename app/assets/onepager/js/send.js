@@ -1,4 +1,19 @@
 /* eslint-disable no-console */
+
+function changeTokens() {
+  if (document.fundRequest.token_name) {
+    const is_token_selected = document.fundRequest.token_name;
+
+    $(`#token option:contains(${is_token_selected})`).attr('selected', 'selected');
+    $('#amount').val(document.fundRequest.amount);
+  }
+  $('#token').select2().trigger('change');
+}
+
+window.addEventListener('tokensReady', function(e) {
+  changeTokens();
+}, false);
+
 var get_gas_price = function() {
   if (typeof defaultGasPrice != 'undefined') {
     return defaultGasPrice;
@@ -137,19 +152,6 @@ $(document).ready(function() {
 
     return sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
 
-  });
-
-  waitforWeb3(function() {
-    tokens(document.web3network).forEach(function(ele) {
-      if (ele && ele.addr) {
-        const is_token_selected = $('#token').data('token') === ele.name ? ' selected' : ' ';
-        const html = '<option value=' + ele.addr + is_token_selected + '>' + ele.name + '</option>';
-
-        $('#token').append(html);
-      }
-    });
-    $('#token').val('0x0000000000000000000000000000000000000000').select2();
-    jQuery('#token').select2();
   });
 
 });
@@ -326,7 +328,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
           var send_erc20 = function() {
             var token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-            token_contract.methods.transfer(destinationAccount, web3.utils.toHex(amountInDenom)).send({from: fromAccount}, post_send_callback);
+            token_contract.methods.transfer(destinationAccount, web3.utils.toWei(String(amount))).send({from: fromAccount}, post_send_callback);
           };
           var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
