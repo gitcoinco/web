@@ -993,7 +993,7 @@ def grants_cart_view(request):
 
 
 def grants_bulk_add(request, grant_ids):
-    grant_ids = grant_ids.split(',')
+    grant_ids = [int(ele) for ele in grant_ids.split(',') if ele and ele.isnumeric() ]
     context = {
         'grants': Grant.objects.filter(pk__in=grant_ids)
     }
