@@ -453,6 +453,11 @@ Vue.component('grants-cart', {
     async checkout() {
       try {
         // Setup -----------------------------------------------------------------------------------
+        // Prompt web3 login if not connected
+        if (!provider) {
+          await onConnect();
+        }
+
         // Throw if invalid Gitcoin contribution percentage
         if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
           throw new Error('Gitcoin contribution amount must be between 0% and 99%');
