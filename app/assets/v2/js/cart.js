@@ -285,6 +285,7 @@ Vue.component('grants-cart', {
     resendCode(delivery_method) {
       const e164 = this.phone.replace(/\s/g, '');
       const vm = this;
+      debugger;
 
       vm.errorMessage = '';
 
