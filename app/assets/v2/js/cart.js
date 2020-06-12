@@ -813,7 +813,8 @@ Vue.component('grants-cart', {
       async handler() {
         CartData.setCart(this.grantData);
         for (let i = 0; i < this.grantData.length; i += 1) {
-          if (!document.verified) {
+          const verification_required_to_get_match = false;
+          if (!document.verified && verification_required_to_get_match) {
             this.grantData[i].grant_donation_clr_match = 0;
           } else {
             const grant = this.grantData[i];
@@ -887,6 +888,15 @@ var update_cart_title = function() {
 };
 
 $(document).ready(function() {
+  $(document).on('keyup', 'input[name=telephone]', function(e) {
+    var number = $(this).val();
+    if(number[0] != '+'){
+      number = "+" + number;
+      $(this).val(number);
+    }
+  });
+
+
   $(document).on('click', '#verify_offline', function(e) {
     $(this).remove();
     $('#verify_offline_target').css('display', 'block');
