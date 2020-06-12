@@ -446,7 +446,13 @@ Vue.component('grants-cart', {
      * means multiply by scale factor of 1
      */
     toWeiString(number, decimals, scaleFactor = 100) {
-      const wei = web3.utils.toWei(String(number));
+      let wei;
+      try {
+        wei = web3.utils.toWei(String(number));
+      } catch {
+        // When numbers are too small toWei fails because there's too many decimal places
+        wei = Math.round(number * 10 ** 18);
+      }
       const base = new BN(10, 10);
       const factor = base.pow(new BN(18 - decimals, 10));
       const scale = new BN(scaleFactor, 10);
@@ -807,10 +813,14 @@ Vue.component('grants-cart', {
       async handler() {
         CartData.setCart(this.grantData);
         for (let i = 0; i < this.grantData.length; i += 1) {
-          const grant = this.grantData[i];
-          const matchAmount = await this.predictCLRMatch(grant);
+          if (!document.verified) {
+            this.grantData[i].grant_donation_clr_match = 0;
+          } else {
+            const grant = this.grantData[i];
+            const matchAmount = await this.predictCLRMatch(grant);
 
-          this.grantData[i].grant_donation_clr_match = matchAmount.toFixed(2);
+            this.grantData[i].grant_donation_clr_match = matchAmount.toFixed(2);
+          }
         }
       },
       deep: true
