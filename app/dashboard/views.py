@@ -5370,7 +5370,7 @@ def send_verification(request):
     delivery_method = request.POST.get('delivery_method', 'sms')
     redis = RedisService().redis
     twilio = TwilioService()
-    has_previous_validation = profile.last_validation_request.replace(tzinfo=pytz.utc)
+    has_previous_validation = profile.last_validation_request and profile.last_validation_request.replace(tzinfo=pytz.utc)
     validation_attempts = profile.validation_attempts
     allow_email = False
 
