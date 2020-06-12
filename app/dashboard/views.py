@@ -5412,7 +5412,7 @@ def validate_verification(request):
 
     has_previous_validation = profile.last_validation_request
     phone = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
-    hash_number = hashlib.md5(phone.encode()).hexdigest()
+    hash_number = hashlib.pbkdf2_hmac('sha256', phone.encode(), PHONE_SALT.encode(), 100000).hex()
 
     if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(
         pk=profile.id).exists():
