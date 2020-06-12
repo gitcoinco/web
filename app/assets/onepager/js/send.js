@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 function changeTokens() {
-  if (document.fundRequest.token_name) {
+  if (document.fundRequest && document.fundRequest.token_name) {
     const is_token_selected = document.fundRequest.token_name;
 
     $(`#token option:contains(${is_token_selected})`).attr('selected', 'selected');
