@@ -1202,6 +1202,8 @@ def basic_grant_categories(grant_type):
         categories = GrantCategory.media_categories()
     elif grant_type == 'health':
         categories = GrantCategory.health_categories()
+    elif grant_type == 'change':
+        categories = GrantCategory.objects.none()
     else:
         categories = GrantCategory.all_categories()
 
