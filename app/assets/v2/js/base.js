@@ -441,6 +441,7 @@ const gitcoinUpdates = () => {
 
 };
 // carousel/collabs/... inside menu
+
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
 });
