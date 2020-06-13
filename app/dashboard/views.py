@@ -3654,7 +3654,7 @@ def hackathon(request, hackathon='', panel='prizes'):
     params['keywords'] = programming_languages + programming_languages_full
     params['active'] = 'users'
     from chat.tasks import get_chat_url
-    params['chat_url_embed'] = f"/hackathons/channels/{hackathon_event.chat_channel_id}"
+    params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
