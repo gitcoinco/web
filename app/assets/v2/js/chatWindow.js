@@ -208,17 +208,6 @@ class WebSocketClient {
   // doc ready
   let teams = {};
   let lookupExpiry;
-
-  try {
-    lookupExpiry = localStorage['chatTeamsExpiry'] ? moment().isAfter(localStorage['chatTeamsExpiry']) : true;
-
-    teams = localStorage['chatTeams'] ? JSON.parse(localStorage['chatTeams']) : fetchTeams();
-  } catch (e) {
-    fetchTeams();
-    lookupExpiry = false;
-  }
-
-
   const fetchTeams = () => {
     if (!Object.values(teams).length || lookupExpiry) {
       if (document.contxt.chat_url && document.contxt.chat_access_token) {
@@ -252,6 +241,15 @@ class WebSocketClient {
       }
     }
   };
+
+  try {
+    lookupExpiry = localStorage['chatTeamsExpiry'] ? moment().isAfter(localStorage['chatTeamsExpiry']) : true;
+
+    teams = localStorage['chatTeams'] ? JSON.parse(localStorage['chatTeams']) : fetchTeams();
+  } catch (e) {
+    fetchTeams();
+    lookupExpiry = false;
+  }
 
 
   let requestedNotificationPermission = false;
@@ -353,6 +351,7 @@ class WebSocketClient {
 
     // Mac desktop app notification dismissal is handled by the OS
     setTimeout(() => {
+      window.chatSidebar.unreadCount += 1;
       notification.close();
     }, 5000);
 
@@ -380,8 +379,9 @@ class WebSocketClient {
               let unread = 0;
 
               JSONUnread.forEach((team) => {
-                vm.unreadCount += team.msg_count + team.mention_count;
+                unread += team.msg_count + team.mention_count;
               });
+              vm.unreadCount = unread;
             },
             error: (error => {
               console.log(error);
@@ -434,15 +434,17 @@ class WebSocketClient {
           let frameTest = new WebSocket(vm.chatSocketURL);
 
           frameTest.onmessage = (event) => {
+            frameTest.removeEventListener('message', this);
             setTimeout(() => {
               vm.isLoggedInFrame = true;
               vm.isLoading = false;
-            }, 650)
+            }, 1000);
             frameTest.close(1000);
-            frameTest.removeEventListener('message', this);
           };
           frameTest.onclose = (event) => {
-            if (event.code !== 1000 && !loginWindow) {
+            console.log(event);
+            if (!vm.frameLoginAttempting && event.code !== 1000 && !loginWindow) {
+              vm.frameLoginAttempting = true;
               frameTest.removeEventListener('close', this);
               loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
             }
@@ -457,7 +459,9 @@ class WebSocketClient {
       created() {
         let vm = this;
 
-        vm.checkChatNotifications();
+        setInterval(() => {
+          vm.checkChatNotifications();
+        }, 15000);
         let client = new WebSocketClient();
 
         client.setEventCallback((msgData) => {
