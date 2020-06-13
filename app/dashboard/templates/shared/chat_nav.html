@@ -9,7 +9,7 @@
     <template v-slot:default>
       <div class="chatWrapper">
         <div class="text-center justify-content-center">
-          <div v-if="isLoading" class="iframe-embed-loading rhombus-spinner mt-5 pt-5">
+          <div v-show="isLoading" class="iframe-embed-loading rhombus-spinner mt-5 pt-5">
             <div class="rhombus child-1"></div>
             <div class="rhombus child-2"></div>
             <div class="rhombus child-3"></div>
@@ -20,17 +20,7 @@
             <div class="rhombus child-8"></div>
             <div class="rhombus big"></div>
           </div>
-          <div v-if="!isLoggedIn && !isLoading" class="iframe-embed-loading">
-            <b-row style="max-height:50%;">
-              <b-col class="align-self-center pb-5" cols="12">
-                <b-img src='{% static "v2/images/about/robot.png" %}' height="200"></b-img>
-              </b-col>
-              <b-col class="align-self-center" cols="12">
-                <a :href="chatLoginURL" class="btn btn-outline-gc-green mx-auto chat-login-button">{% trans "You're not logged into Gitcoin Chat, click Here" %}</a>
-              </b-col>
-            </b-row>
-          </div>
-          <iframe v-if="isLoggedIn" id="gitcoin-chat-iframe" :key="renderKey"  class="chat-embed" :onload="chatAppOnload(this)" frameborder="0" :src="loadURL" allowfullscreen></iframe>
+          <iframe v-show="isLoggedInFrame" id="gitcoin-chat-iframe" :key="renderKey"  class="chat-embed" onload="window.chatSidebar.chatAppOnload(this)" frameborder="0" :src="loadURL" allowfullscreen></iframe>
         </div>
       </div>
     </template>

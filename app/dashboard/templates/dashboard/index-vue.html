@@ -856,7 +856,9 @@
       document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
-      document.chatURL = "{{ chat_url | safe}}";
+      {% if is_registered %}
+      document.chat_url_override = "{{ chat_override_url | safe}}";
+      {% endif %}
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
     </script>
     <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>
