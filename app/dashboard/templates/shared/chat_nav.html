@@ -5,7 +5,7 @@
       <span id="chat-notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadCount > 0}"></span>
     </i>
   </a>
-  <b-sidebar id="sidebar-chat" @shown="showHandler($event)" @change="changeHandler($event)" class="chat-sidebar justify-content-center" backdrop lazy v-cloak :no-header-close="!isMobile" :no-header="!isMobile" :width="`${isMobile ? '100vw' : '50vw'}`">
+  <b-sidebar id="sidebar-chat" @shown="showHandler($event)" @change="changeHandler($event)" class="chat-sidebar justify-content-center" backdrop lazy v-cloak title="close to go back" :no-header-close="!isMobile" :no-header="!isMobile" :width="`${isMobile ? '100vw' : '50vw'}`">
     <template v-slot:default>
       <div class="chatWrapper">
         <div class="text-center justify-content-center">
