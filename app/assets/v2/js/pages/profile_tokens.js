@@ -1,15 +1,22 @@
-$(document).ready(function () {
-  $("#buy_ptoken").on("click", function () {
-    $("#buy_ptoken_modal").bootstrapModal("show");
-  });
-  $("#redeem_ptoken").on("click", function () {
-    $("#redeem_ptoken_modal").bootstrapModal("show");
-  });
+$(document).on("click", "#submit_create_token", (event) => {
+  event.preventDefault();
+  let tokenName = $("#createPTokenName").val();
+  let tokenSymbol = $("#createPTokenSymbol").val();
+  let tokenPrice = $("#createPTokenPrice").val();
+  let tokenSupply = $("#createPTokenSupply").val();
 
-  $(document, "#buy_ptoken_modal").on("hidden.bs.modal", function (e) {
-    $("#redeem_ptoken_modal").remove();
-    $("#buy_ptoken_modal").remove();
-    $("#buy_ptoken_modal").bootstrapModal("dispose");
-    $("#redeem_ptoken_modal").bootstrapModal("dispose");
-  });
+  deployToken(tokenName, tokenSymbol, tokenPrice, tokenSupply);
 });
+
+async function deployToken(tokenName, tokenSymbol, tokenPrice, tokenSupply) {
+  console.log("Deploying token");
+  [user] = await web3.eth.getAccounts();
+  const factoryAddress = "0x7bE324A085389c82202BEb90D979d097C5b3f2E8";
+  const factory = await new web3.eth.Contract(ptoken_abi.abi, factoryAddress);
+
+  await factory.methods
+    .createPToken(tokenName, tokenSymbol, tokenPrice, tokenSupply)
+    .send({
+      from: user,
+    });
+}
