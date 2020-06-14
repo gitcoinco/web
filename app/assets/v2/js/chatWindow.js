@@ -1,214 +1,216 @@
-const MAX_WEBSOCKET_FAILS = 7;
-const MIN_WEBSOCKET_RETRY_TIME = 3000; // 3 sec
-const MAX_WEBSOCKET_RETRY_TIME = 300000; // 5 mins
-
-class WebSocketClient {
-  // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
-  constructor() {
-    this.conn = null;
-    this.connectionUrl = null;
-    this.sequence = 1;
-    this.eventSequence = 0;
-    this.connectFailCount = 0;
-    this.eventCallback = null;
-    this.responseCallbacks = {};
-    this.firstConnectCallback = null;
-    this.reconnectCallback = null;
-    this.missedEventCallback = null;
-    this.errorCallback = null;
-    this.closeCallback = null;
-  }
-
-  initialize(connectionUrl = this.connectionUrl, token) {
-    if (this.conn) {
-      return;
-    }
-
-    if (connectionUrl == null) {
-      console.log('websocket must have connection url'); //eslint-disable-line no-console
-      return;
-    }
-
-    if (this.connectFailCount === 0) {
-      console.log('websocket connecting to ' + connectionUrl); //eslint-disable-line no-console
-    }
-
-    this.conn = new WebSocket(connectionUrl);
-    this.connectionUrl = connectionUrl;
-
-    this.conn.onopen = () => {
-      this.eventSequence = 0;
-
-      if (token) {
-        this.sendMessage('authentication_challenge', {token});
-      }
-
-      if (this.connectFailCount > 0) {
-        console.log('websocket re-established connection'); //eslint-disable-line no-console
-        if (this.reconnectCallback) {
-          this.reconnectCallback();
-        }
-      } else if (this.firstConnectCallback) {
-        this.firstConnectCallback();
-      }
-
-      this.connectFailCount = 0;
-    };
-
-    this.conn.onclose = () => {
-      this.conn = null;
-      this.sequence = 1;
-
-      if (this.connectFailCount === 0) {
-        console.log('websocket closed'); //eslint-disable-line no-console
-      }
-
-      this.connectFailCount++;
-
-      if (this.closeCallback) {
-        this.closeCallback(this.connectFailCount);
-      }
-
-      let retryTime = MIN_WEBSOCKET_RETRY_TIME;
-
-      // If we've failed a bunch of connections then start backing off
-      if (this.connectFailCount > MAX_WEBSOCKET_FAILS) {
-        retryTime = MIN_WEBSOCKET_RETRY_TIME * this.connectFailCount * this.connectFailCount;
-        if (retryTime > MAX_WEBSOCKET_RETRY_TIME) {
-          retryTime = MAX_WEBSOCKET_RETRY_TIME;
-        }
-      }
-
-      setTimeout(
-        () => {
-          this.initialize(connectionUrl, token);
-        },
-        retryTime
-      );
-    };
-
-    this.conn.onerror = (evt) => {
-      if (this.connectFailCount <= 1) {
-        console.log('websocket error'); //eslint-disable-line no-console
-        console.log(evt); //eslint-disable-line no-console
-      }
-
-      if (this.errorCallback) {
-        this.errorCallback(evt);
-      }
-    };
-
-    this.conn.onmessage = (evt) => {
-      const msg = JSON.parse(evt.data);
-      if (msg.seq_reply) {
-        if (msg.error) {
-          console.log(msg); //eslint-disable-line no-console
-        }
-
-        if (this.responseCallbacks[msg.seq_reply]) {
-          this.responseCallbacks[msg.seq_reply](msg);
-          Reflect.deleteProperty(this.responseCallbacks, msg.seq_reply);
-        }
-      } else if (this.eventCallback) {
-        if (msg.seq !== this.eventSequence && this.missedEventCallback) {
-          console.log('missed websocket event, act_seq=' + msg.seq + ' exp_seq=' + this.eventSequence); //eslint-disable-line no-console
-          this.missedEventCallback();
-        }
-        this.eventSequence = msg.seq + 1;
-        this.eventCallback(msg);
-      }
-    };
-  }
-
-  setEventCallback(callback) {
-    this.eventCallback = callback;
-  }
-
-  setFirstConnectCallback(callback) {
-    this.firstConnectCallback = callback;
-  }
-
-  setReconnectCallback(callback) {
-    this.reconnectCallback = callback;
-  }
-
-  setMissedEventCallback(callback) {
-    this.missedEventCallback = callback;
-  }
-
-  setErrorCallback(callback) {
-    this.errorCallback = callback;
-  }
-
-  setCloseCallback(callback) {
-    this.closeCallback = callback;
-  }
-
-  close() {
-    this.connectFailCount = 0;
-    this.sequence = 1;
-    if (this.conn && this.conn.readyState === WebSocket.OPEN) {
-      this.conn.onclose = () => {
-      }; //eslint-disable-line no-empty-function
-      this.conn.close();
-      this.conn = null;
-      console.log('websocket closed'); //eslint-disable-line no-console
-    }
-  }
-
-  sendMessage(action, data, responseCallback) {
-    const msg = {
-      action,
-      seq: this.sequence++,
-      data,
-    };
-
-    if (responseCallback) {
-      this.responseCallbacks[msg.seq] = responseCallback;
-    }
-
-    if (this.conn && this.conn.readyState === WebSocket.OPEN) {
-      this.conn.send(JSON.stringify(msg));
-    } else if (!this.conn || this.conn.readyState === WebSocket.CLOSED) {
-      this.conn = null;
-      this.initialize();
-    }
-  }
-
-  userTyping(channelId, parentId, callback) {
-    const data = {};
-    data.channel_id = channelId;
-    data.parent_id = parentId;
-
-    this.sendMessage('user_typing', data, callback);
-  }
-
-  userUpdateActiveStatus(userIsActive, manual, callback) {
-    const data = {
-      user_is_active: userIsActive,
-      manual,
-    };
-    this.sendMessage('user_update_active_status', data, callback);
-  }
-
-  getStatuses(callback) {
-    this.sendMessage('get_statuses', null, callback);
-  }
-
-  getStatusesByIds(userIds, callback) {
-    const data = {};
-    data.user_ids = userIds;
-    this.sendMessage('get_statuses_by_ids', data, callback);
-  }
-}
-
+let lookupExpiry;
 
 (async function ($) {
-  document.domain = 'androolloyd.com'; // TODO: set this to be the proper value, as well as in the chat application
+
+  const MAX_WEBSOCKET_FAILS = 7;
+  const MIN_WEBSOCKET_RETRY_TIME = 3000; // 3 sec
+  const MAX_WEBSOCKET_RETRY_TIME = 300000; // 5 mins
+
+  class WebSocketClient {
+    // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+    constructor() {
+      this.conn = null;
+      this.connectionUrl = null;
+      this.sequence = 1;
+      this.eventSequence = 0;
+      this.connectFailCount = 0;
+      this.eventCallback = null;
+      this.responseCallbacks = {};
+      this.firstConnectCallback = null;
+      this.reconnectCallback = null;
+      this.missedEventCallback = null;
+      this.errorCallback = null;
+      this.closeCallback = null;
+    }
+
+    initialize(connectionUrl = this.connectionUrl, token) {
+      if (this.conn) {
+        return;
+      }
+
+      if (connectionUrl == null) {
+        console.log('websocket must have connection url'); //eslint-disable-line no-console
+        return;
+      }
+
+      if (this.connectFailCount === 0) {
+        console.log('websocket connecting to ' + connectionUrl); //eslint-disable-line no-console
+      }
+
+      this.conn = new WebSocket(connectionUrl);
+      this.connectionUrl = connectionUrl;
+
+      this.conn.onopen = () => {
+        this.eventSequence = 0;
+
+        if (token) {
+          this.sendMessage('authentication_challenge', {token});
+        }
+
+        if (this.connectFailCount > 0) {
+          console.log('websocket re-established connection'); //eslint-disable-line no-console
+          if (this.reconnectCallback) {
+            this.reconnectCallback();
+          }
+        } else if (this.firstConnectCallback) {
+          this.firstConnectCallback();
+        }
+
+        this.connectFailCount = 0;
+      };
+
+      this.conn.onclose = () => {
+        this.conn = null;
+        this.sequence = 1;
+
+        if (this.connectFailCount === 0) {
+          console.log('websocket closed'); //eslint-disable-line no-console
+        }
+
+        this.connectFailCount++;
+
+        if (this.closeCallback) {
+          this.closeCallback(this.connectFailCount);
+        }
+
+        let retryTime = MIN_WEBSOCKET_RETRY_TIME;
+
+        // If we've failed a bunch of connections then start backing off
+        if (this.connectFailCount > MAX_WEBSOCKET_FAILS) {
+          retryTime = MIN_WEBSOCKET_RETRY_TIME * this.connectFailCount * this.connectFailCount;
+          if (retryTime > MAX_WEBSOCKET_RETRY_TIME) {
+            retryTime = MAX_WEBSOCKET_RETRY_TIME;
+          }
+        }
+
+        setTimeout(
+          () => {
+            this.initialize(connectionUrl, token);
+          },
+          retryTime
+        );
+      };
+
+      this.conn.onerror = (evt) => {
+        if (this.connectFailCount <= 1) {
+          console.log('websocket error'); //eslint-disable-line no-console
+          console.log(evt); //eslint-disable-line no-console
+        }
+
+        if (this.errorCallback) {
+          this.errorCallback(evt);
+        }
+      };
+
+      this.conn.onmessage = (evt) => {
+        const msg = JSON.parse(evt.data);
+        if (msg.seq_reply) {
+          if (msg.error) {
+            console.log(msg); //eslint-disable-line no-console
+          }
+
+          if (this.responseCallbacks[msg.seq_reply]) {
+            this.responseCallbacks[msg.seq_reply](msg);
+            Reflect.deleteProperty(this.responseCallbacks, msg.seq_reply);
+          }
+        } else if (this.eventCallback) {
+          if (msg.seq !== this.eventSequence && this.missedEventCallback) {
+            console.log('missed websocket event, act_seq=' + msg.seq + ' exp_seq=' + this.eventSequence); //eslint-disable-line no-console
+            this.missedEventCallback();
+          }
+          this.eventSequence = msg.seq + 1;
+          this.eventCallback(msg);
+        }
+      };
+    }
+
+    setEventCallback(callback) {
+      this.eventCallback = callback;
+    }
+
+    setFirstConnectCallback(callback) {
+      this.firstConnectCallback = callback;
+    }
+
+    setReconnectCallback(callback) {
+      this.reconnectCallback = callback;
+    }
+
+    setMissedEventCallback(callback) {
+      this.missedEventCallback = callback;
+    }
+
+    setErrorCallback(callback) {
+      this.errorCallback = callback;
+    }
+
+    setCloseCallback(callback) {
+      this.closeCallback = callback;
+    }
+
+    close() {
+      this.connectFailCount = 0;
+      this.sequence = 1;
+      if (this.conn && this.conn.readyState === WebSocket.OPEN) {
+        this.conn.onclose = () => {
+        }; //eslint-disable-line no-empty-function
+        this.conn.close();
+        this.conn = null;
+        console.log('websocket closed'); //eslint-disable-line no-console
+      }
+    }
+
+    sendMessage(action, data, responseCallback) {
+      const msg = {
+        action,
+        seq: this.sequence++,
+        data,
+      };
+
+      if (responseCallback) {
+        this.responseCallbacks[msg.seq] = responseCallback;
+      }
+
+      if (this.conn && this.conn.readyState === WebSocket.OPEN) {
+        this.conn.send(JSON.stringify(msg));
+      } else if (!this.conn || this.conn.readyState === WebSocket.CLOSED) {
+        this.conn = null;
+        this.initialize();
+      }
+    }
+
+    userTyping(channelId, parentId, callback) {
+      const data = {};
+      data.channel_id = channelId;
+      data.parent_id = parentId;
+
+      this.sendMessage('user_typing', data, callback);
+    }
+
+    userUpdateActiveStatus(userIsActive, manual, callback) {
+      const data = {
+        user_is_active: userIsActive,
+        manual,
+      };
+      this.sendMessage('user_update_active_status', data, callback);
+    }
+
+    getStatuses(callback) {
+      this.sendMessage('get_statuses', null, callback);
+    }
+
+    getStatusesByIds(userIds, callback) {
+      const data = {};
+      data.user_ids = userIds;
+      this.sendMessage('get_statuses_by_ids', data, callback);
+    }
+  }
+
   // doc ready
-  let teams = {};
-  let lookupExpiry;
-  const fetchTeams = () => {
+
+  const fetchTeams = async () => {
+    let teams = {};
+
     if (!Object.values(teams).length || lookupExpiry) {
       if (document.contxt.chat_url && document.contxt.chat_access_token) {
         $.ajax({
@@ -232,6 +234,7 @@ class WebSocketClient {
               }
               localStorage['chatTeamsExpiry'] = moment().add(1, 'days').format('MMMM Do YYYY, h:mm:ss');
               localStorage['chatTeams'] = JSON.stringify(teams);
+              return teams;
             }
           },
           error: (error => {
@@ -241,13 +244,14 @@ class WebSocketClient {
       }
     }
   };
+  let teams = {};
 
   try {
     lookupExpiry = localStorage['chatTeamsExpiry'] ? moment().isAfter(localStorage['chatTeamsExpiry']) : true;
 
-    teams = localStorage['chatTeams'] ? JSON.parse(localStorage['chatTeams']) : fetchTeams();
+    teams = localStorage['chatTeams'] ? JSON.parse(localStorage['chatTeams']) : await fetchTeams();
   } catch (e) {
-    fetchTeams();
+    teams = await fetchTeams();
     lookupExpiry = false;
   }
 
@@ -415,7 +419,7 @@ class WebSocketClient {
 
 
         },
-        open: function() {
+        open: function () {
           if (!this.isVisible) {
             this.$root.$emit('bv::toggle::collapse', 'sidebar-chat');
           }
@@ -428,29 +432,52 @@ class WebSocketClient {
           this.isLoggedInFrame = false;
           this.isVisible = visible;
         },
-        chatAppOnload: function (iframe) {
+        iframeOnFocus: function () {
+          vm.iframeHasFocus = true;
+        },
+        chatAppOnLoad: function (iframe) {
           let loginWindow = null;
           let vm = this;
-          let frameTest = new WebSocket(vm.chatSocketURL);
 
-          frameTest.onmessage = (event) => {
-            frameTest.removeEventListener('message', this);
-            setTimeout(() => {
-              vm.isLoggedInFrame = true;
-              vm.isLoading = false;
-            }, 1000);
-            frameTest.close(1000);
-          };
-          frameTest.onclose = (event) => {
-            console.log(event);
-            if (!vm.frameLoginAttempting && event.code !== 1000 && !loginWindow) {
-              vm.frameLoginAttempting = true;
-              frameTest.removeEventListener('close', this);
-              loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+          vm.$watch('isLoggedInFrame', function (newVal) {
+            if (newVal && vm.validSessionInterval) {
+              clearInterval(vm.validSessionInterval);
             }
-          };
-          vm.iframe = iframe;
+          });
           let count = 0;
+
+          $(iframe)
+            .contents().find('head')
+            .append($('<style type="text/css">.scrollbar--view {overflow:auto !important;}</style>')
+            );
+          $(iframe.contentDocument).ready(() => {
+
+            vm.validSessionInterval = setInterval(() => {
+
+              if (!vm.isLoggedInFrame) {
+                if (!vm.frameLoginAttempting && $(iframe)[0].contentWindow.window.location.pathname === '/login' || count === 5) {
+                  vm.frameLoginAttempting = true;
+                  console.log('location at login')
+                  if (!loginWindow) {
+                    loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+                  }
+                } else if ($(iframe.contentDocument).find('#sidebarSwitcherButton').length > 0) {
+                  console.log('found switcher')
+                  vm.isLoggedInFrame = true;
+                  vm.frameLoginAttempting = false;
+                  vm.isLoading = false;
+                  clearInterval(vm.validSessionInterval);
+                } else {
+                  count++;
+                }
+              } else {
+                clearInterval(vm.validSessionInterval);
+              }
+            }, 1000);
+
+          });
+
+          vm.iframe = iframe;
         }
       },
       destroy() {
@@ -466,25 +493,27 @@ class WebSocketClient {
 
         client.setEventCallback((msgData) => {
 
-          if (vm.isLoggedInClient && (!vm.iframe || (vm.iframe.contentWindow && !vm.iframe.contentWindow.isActive))) {
+          if (vm.isLoggedInClient) {
             try {
-              if (msgData.event === 'posted') {
-                let channelData = msgData.data;
-                let postData = JSON.parse(channelData.post);
+              if (vm.iframe && !vm.iframe.contentWindow.window.isActive) {
+                if (msgData.event === 'posted') {
+                  let channelData = msgData.data;
+                  let postData = JSON.parse(channelData.post);
 
-                if (postData.user_id !== document.contxt.chat_id) {
-                  let formattedNotification = formatMessage(channelData, postData);
+                  if (postData.user_id !== document.contxt.chat_id) {
+                    let formattedNotification = formatMessage(channelData, postData);
 
-                  showNotification(formattedNotification).then();
+                    showNotification(formattedNotification).then();
+                  }
                 }
-
               }
             } catch (e) {
               console.log(e);
             }
-          } else {
-            vm.isLoggedInClient = true;
           }
+        });
+        client.setFirstConnectCallback(() => {
+          vm.isLoggedInClient = true;
         });
         client.initialize(vm.chatSocketURL, document.contxt.chat_access_token)
 
@@ -537,6 +566,8 @@ class WebSocketClient {
 
         return {
           isMobile,
+          validSessionInterval: false,
+          frameHasFocus: false,
           frameLoginAttempting: false,
           chatSocketURL: `wss://${document.contxt.chat_url.replace(/(^\w+:|^)\/\//, '')}/api/v4/websocket`,
           unreadCount: 0,
