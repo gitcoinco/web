@@ -1,0 +1,38 @@
+  <div class="modal fade" id="createTokenModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create a Personal Token</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form class="modal-body">
+          <div class="form-group">
+            <label for="createPTokenName">Token Name</label>
+            <input type="text" class="form-control" id="createPTokenName" aria-describedby="tokenName" placeholder="My Token" v-model="newPToken.name">
+          </div>
+          <div class="form-group">
+            <label for="createPTokenSymbol">Symbol</label>
+            <input type="text" class="form-control" id="createPTokenSymbol" aria-describedby="tokenSymbol" placeholder="TOK" v-model="newPToken.symbol">
+          </div>
+          <div class="form-group">
+            <label for="createPTokenPrice">Price (in DAI)</label>
+            <input type="number" class="form-control" id="createPTokenPrice" aria-describedby="tokenPrice" placeholder="50" v-model="newPToken.price">
+          </div>
+          <div class="form-group">
+            <label for="createPTokenSupply">Supply</label>
+            <input type="number" class="form-control" id="createPTokenSupply" aria-describedby="tokenSupply" placeholder="10" v-model="newPToken.supply">
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" required id="TOSCheck">
+            <small id="TOSText" class="form-check-label">I have read, understand, and agree to, the Terms of Service.</small>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="submit_create_token">Confirm</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          </div>
+      </form>
+    </div>
+    </div>
+  </div>
