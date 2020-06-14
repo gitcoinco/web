@@ -5013,6 +5013,19 @@ class Poll(SuperModel):
     hackathon = models.ManyToManyField(HackathonEvent)
 
 
+class PollMedia(SuperModel):
+    name = models.CharField(max_length=350)
+    image = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Poll media asset')
+    )
+
+    def __str__(self):
+        return f'{self.id} - {self.name}'
+
+
 class Question(SuperModel):
     TYPE_QUESTIONS = (
         ('SINGLE_OPTION', 'Single option'),
@@ -5032,6 +5045,7 @@ class Question(SuperModel):
     question_type = models.CharField(choices=TYPE_QUESTIONS, max_length=50, blank=False, null=False)
     text = models.CharField(max_length=350, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
+    header = models.ForeignKey(PollMedia, null=True, on_delete=models.SET_NULL)
 
     class Meta(object):
         ordering = ['order']
@@ -5098,6 +5112,7 @@ def psave_answer(sender, instance, created, **kwargs):
                     activity.metadata['looking_team_members'] = registration.looking_team_members
                     activity.metadata['looking_project'] = registration.looking_project
                     activity.save()
+
 
 class Investigation(SuperModel):
     profile = models.ForeignKey(

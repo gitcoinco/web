@@ -30,7 +30,7 @@ from .models import (
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
     ObjectView, Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
-    TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    TokenApproval, TribeMember, UserAction, UserVerificationModel, PollMedia,
 )
 
 
@@ -470,10 +470,18 @@ class PollsAdmin(admin.ModelAdmin):
 
 
 class QuestionsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'poll', 'question_type', 'text']
-    raw_id_fields = ['poll']
+    list_display = ['id', 'poll', 'question_type', 'text', 'img']
+    raw_id_fields = ['poll', 'header']
     search_fields = ['question_type', 'text']
     inlines = [OptionsInline]
+
+    def img(self, instance):
+        header = instance.header
+        if not header or not header.image:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(header.image.url))
+        return img_html
+
 
 
 class OptionsAdmin(admin.ModelAdmin):
@@ -486,6 +494,17 @@ class AnswersAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'question', 'open_response', 'choice', 'checked', 'hackathon']
     raw_id_fields = ['user', 'question', 'choice', 'hackathon']
     unique_together = ('user', 'question', 'choice')
+
+
+class PollMediaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'img']
+
+    def img(self, instance):
+        image = instance.image
+        if not image:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(image.url))
+        return img_html
 
 
 admin.site.register(BountyEvent, BountyEventAdmin)
@@ -525,3 +544,4 @@ admin.site.register(Question, QuestionsAdmin)
 admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
+admin.site.register(PollMedia, PollMediaAdmin)
