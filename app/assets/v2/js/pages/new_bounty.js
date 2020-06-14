@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 /* eslint-disable no-lonely-if */
-document.web3network = 'mainnet';
+// document.web3network = 'mainnet';
 load_tokens();
 
 const qr_tokens = [ 'ETC', 'cGLD', 'cUSD', 'ZIL' ];
@@ -38,41 +38,52 @@ const updateOnNetworkOrTokenChange = () => {
     }
 
   } else {
-    listen_for_web3_changes();
-
-    $('.eth-chain').show();
-    FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
-
-    $('#navbar-network-banner').show();
-    $('.navbar-network').show();
-
-    $('.funder-address-container').hide();
-    $('#funderAddress').removeAttr('required');
-    $('#funderAddress').val('');
-    $('#fiat_text').addClass('d-none');
-
-    $('.web3-alert').show();
-    if (!document.web3network) {
-      $('.web3-alert').html('To continue, please setup a web3 wallet.');
-      $('.web3-alert').addClass('wallet-not-connected');
-    } else if (document.web3network == 'locked') {
-      $('.web3-alert').html('To continue, please unlock your web3 wallet');
-      $('.web3-alert').addClass('wallet-not-connected');
-    } else if (document.web3network == 'rinkeby') {
-      $('.web3-alert').html(`connected to address <b>${web3.eth.coinbase}</b> on rinkeby`);
-      $('.web3-alert').addClass('wallet-success');
+    if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
+      onConnect().then(()=> {
+        changeUi();
+      });
     } else {
-      $('.web3-alert').html(`connected to address <b>${web3.eth.coinbase}</b> on mainnet`);
-      $('.web3-alert').addClass('wallet-success');
+      web3Modal.on('connect', async() => {
+        try {
+          provider = await web3Modal.connect().then(()=> {
+            changeUi();
+          });
+        } catch (e) {
+          console.log('Could not get a wallet connection', e);
+          return;
+        }
+      });
     }
   }
 };
 
-window.addEventListener('load', function() {
-  setTimeout(() => {
-    setInterval(updateOnNetworkOrTokenChange, 1000);
-  }, 5000);
-});
+function changeUi() {
+  $('.eth-chain').show();
+  FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
+  
+  $('#navbar-network-banner').show();
+  $('.navbar-network').show();
+
+  $('.funder-address-container').hide();
+  $('#funderAddress').removeAttr('required');
+  $('#funderAddress').val('');
+  $('#fiat_text').addClass('d-none');
+
+  $('.web3-alert').show();
+  if (!document.web3network) {
+    $('.web3-alert').html('To continue, please setup a web3 wallet.');
+    $('.web3-alert').addClass('wallet-not-connected');
+  } else if (document.web3network == 'locked') {
+    $('.web3-alert').html('To continue, please unlock your web3 wallet');
+    $('.web3-alert').addClass('wallet-not-connected');
+  } else if (document.web3network == 'rinkeby') {
+    $('.web3-alert').html(`connected to address <b>${selectedAccount}</b> on rinkeby`);
+    $('.web3-alert').addClass('wallet-success');
+  } else {
+    $('.web3-alert').html(`connected to address <b>${selectedAccount}</b> on mainnet`);
+    $('.web3-alert').addClass('wallet-success');
+  }
+}
 
 var localStorage = window.localStorage ? window.localStorage : {};
 const quickstartURL = document.location.origin + '/bounty/quickstart';
@@ -255,19 +266,17 @@ const handleTokenAuth = () => {
       tokenAuthAlert(isTokenAuthed);
       resolve(isTokenAuthed);
     } else {
-      const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+      const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
       const to = bounty_address();
 
-      web3.eth.getCoinbase(function(_, from) {
-        token_contract.allowance.call(from, to, (error, result) => {
-
-          if (error || result.toNumber() == 0) {
-            isTokenAuthed = false;
-          }
-          tokenAuthAlert(isTokenAuthed, tokenName);
-          resolve(isTokenAuthed);
-        });
+      token_contract.methods.allowance(selectedAccount, to).call({from: selectedAccount}, (error, result) => {
+        if (error || Number(result) == 0) {
+          isTokenAuthed = false;
+        }
+        tokenAuthAlert(isTokenAuthed, tokenName);
+        resolve(isTokenAuthed);
       });
+
     }
   });
 };
@@ -376,8 +385,12 @@ $(function() {
 
     const tokendetails = isQRToken(tokenName) || isFiatToken(tokenName) ?
       tokenAddressToDetailsByNetwork(token_address, 'mainnet') :
+
       tokenAddressToDetails(token_address);
 
+    if (!tokendetails) {
+      return;
+    }
     const token = tokendetails['name'];
 
     $('#summary-bounty-token').html(token);

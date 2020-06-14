@@ -36,136 +36,9 @@
     <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/sidebar_search.css" %}'/>
     <link rel="stylesheet" href='{% static "v2/css/hackathons/explorer.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
 
     <style type="text/css">
-      @media only screen and (max-width : 320px) {
-        .chatWrapper {
-          height: 76vh !important;
-        }
-
-        .chatWrapper iframe {
-          height: 92vh !important;
-        }
-      }
-
-      .show>.btn-secondary.dropdown-toggle {
-        background-color: var(--gc-blue-hover) !important;
-      }
-
-      .chatWrapper iframe {
-        width: 100%;
-        height: 50vh;
-      }
-
-      form .col:first-child {
-        border-top: none;
-      }
-
-      .card-bg {
-        background-color: #0C1A27;
-        padding: 1.8em;
-        background-size: cover;
-      }
-
-      .card-project {
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-      }
-
-      .card-badge {
-        right: 1em;
-        top: 1em;
-        filter: drop-shadow(0 0.3rem 0.2rem rgba(0,0,0,0.25));
-        width: 4em;
-      }
-
-      .b-avatar img {
-        height: 100%;
-        width: 100%;
-      }
-
-      #sponsor_sidebar {
-        background-color: #F9F9F9;
-        height: 100%;
-      }
-
-      .card-project-logo {
-        background-color: rgba(255, 255, 255, 0.30);
-        object-fit: contain;
-      }
-
-      .project-grid {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr);
-        grid-gap: 5rem 3rem;
-      }
-
-      @media (min-width: 1200px) {
-        .project-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      @media (min-width: 1800px) {
-        .project-grid {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-
-      .page-link-gc {
-        color: #3e24fb;
-      }
-
-      .page-item.active .page-link-gc {
-        background-color: #3e24fb;
-        border-color: #3e24fb;
-      }
-
-      .nav-list-dashboard {
-        position:absolute;
-        bottom:0;
-      }
-
-      .hackathon-banner {
-        background: {% firstof hackathon.background_color or 'white' %};
-        color: {% firstof hackathon.text_color or 'black' %};
-        height: 225px;
-        {% if hackathon.banner %}
-          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
-        {% endif %}
-      }
-
-      .bounty_row img.avatar {
-        max-width: 50px;
-      }
-
-      .hackathon-title {
-          font-size: 1.4rem;
-      }
-
-      .hackathon-countdown {
-          font-size: 1rem;
-      }
-
-      .bounty_row {
-        background-color: white;
-        margin-bottom: 15px;
-        border-radius: 4px;
-      }
-
-      .hack-logo-wrapper {
-          position: absolute;
-          max-width: 240px;
-          top: -200px;
-          left: -32%;
-      }
-
-      .townsquare_header {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
-
       .hackathon-logo {
         height: 13rem;
         width: 13rem;
@@ -178,72 +51,15 @@
         align-items: center;
       }
 
-      .hackathon-logo img {
-        height: 185px;
-        object-fit: contain;
+      .hackathon-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+        height: 225px;
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
       }
-
-      .register {
-        width: 100%;
-      }
-
-      .card-bg {
-        background-color: #0C1A27;
-        padding: 1.8em;
-        background-size: cover;
-      }
-
-      .card-project {
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-      }
-
-      .card-badge {
-        right: 1em;
-        top: 1em;
-        filter: drop-shadow(0 0.3rem 0.2rem rgba(0,0,0,0.25));
-        width: 4em;
-      }
-
-      .controls .form-control, .controls .btn, .controls label {
-        font-size: 0.7rem;
-      }
-
-      .looking-team {
-        background-color: rgba(62, 0, 255, 0.05);
-        border-radius: 8px;
-        padding: 11px 15px;
-      }
-
-      .info-card-title {
-        font-weight: bold;
-        font-size: 12px;
-        line-height: 22px;
-        letter-spacing: 1px;
-        color: #3E00FF;
-      }
-
-      .info-card-desc {
-        font-style: italic;
-        font-weight: normal;
-        font-size: 12px;
-        line-height: 18px;
-        color: #666666;
-      }
-
-      .ui-selectmenu-button.ui-button {
-        background: none !important;
-      }
-
-      @media(max-width: 767.98px) {
-        .navbar .navbar-brand img {
-          height:20px;
-        }
-        li.navigation > a.nav-link {
-           font-size:14px;
-        }
-      }
-      </style>
+    </style>
       {% include 'shared/fbpixel.html' %}
   </head>
 
@@ -399,53 +215,63 @@
                   </template>
                   <project-directory inline-template user-id={{ user.profile.id | safe }}>
                     <div class="ml-4">
-                    <div class="sidebar-container flex-column flex-lg-row">
-                      <transition name="fade">
-                        <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
-                          <div class="pb-4 border-bottom form-group">
-                            <div class="d-flex flex-grow-1" id="search_projects">
-                              <form class="form-inline my-2 flex-fill justify-content-center">
-                                <div class="input-group w-100">
-                                  <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
-                                  <div class="input-group-append">
-                                    <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
-                                  </div>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                          <div class="pb-4 border-bottom form-group">
+                      <loading-screen v-if="isLoading"></loading-screen>
+                      <div v-if="!isLoading" class="sidebar-container flex-column flex-lg-row">
+                        <transition name="fade">
+                          <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
                             <div class="pb-4 border-bottom form-group">
-                              <b-form-checkbox v-model="params.lfm" name="check-button" switch>
+                              <div class="d-flex flex-grow-1" id="search_projects">
+                                <form class="form-inline my-2 flex-fill justify-content-center">
+                                  <div class="input-group w-100 pt-0">
+                                    <input class="form-control form-control-lg" v-model="searchTerm" type="search" placeholder="Search" aria-label="Search">
+                                    <div class="input-group-append">
+                                      <button type="submit" class="btn input-group-text btn-search" @click.prevent="searchProjects();"> <i class="fas fa-search"></i></button>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                            <div class="pb-4 border-bottom form-group">
+                              {% if is_staff %}
+                                <b-form-checkbox value="winners" v-model="params.filters" name="winners" switch>
+                                  Winners
+                                </b-form-checkbox>
+                                <b-form-checkbox value="submitted" v-model="params.filters" name="submitted" switch>
+                                  Have Submitted
+                                </b-form-checkbox>
+                              {% endif %}
+                              <b-form-checkbox value="lfm" v-model="params.filters" name="lfm" switch>
                                 Looking for Members
                               </b-form-checkbox>
                             </div>
-                          <div class="pb-4 border-bottom form-group">
-                            <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
-                            <div id="project_sponsors" class="form__select2">
-                              <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
-                                <option value="" selected="true">All</option>
-                                <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
-                                  [[ option.display_name ]]
-                                </option>
-                              </select2>
+                            <div class="pb-4 border-bottom form-group">
+                              <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
+                              <div id="project_sponsors" class="form__select2">
+                                <select2 v-model.trim="params.sponsor" data-minimum-results-for-search="Infinity" class="form-control">
+                                  <option value="" selected="true">All</option>
+                                  <option v-for="option in hackathonSponsors" v-bind:value="option.org_name">
+                                    [[ option.display_name ]]
+                                  </option>
+                                </select2>
+                              </div>
                             </div>
-                          </div>
-                          <div class="g-multiselect pb-4 border-bottom form-group">
-                            <label for="skills" class="font-weight-bold">Member Skills</label>
-                            <div class="form__select2">
-                              <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
-                                <option disabled value="0">Select one</option>
-                              </select2>
+                            <div class="g-multiselect pb-4 border-bottom form-group">
+                              <label for="skills" class="font-weight-bold">Member Skills</label>
+                              <div class="form__select2">
+                                <select2 :options="skills" v-model="params.skills" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control">
+                                  <option disabled value="0">Select one</option>
+                                </select2>
+                              </div>
                             </div>
-                          </div>
-                          <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
-                          <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                            <span class="font-weight-bold">[[ numProjects ]]</span> projects found
-                          </p>
-                        </nav>
-                      </transition>
-                      <div class="container pt-4" @scroll.passive="onScroll($event)">
+
+
+                            <button class="btn blue font-caption px-0 btn-block font-weight-semibold" @click="params = {}; searchTerm = ''; searchProjects();">Reset Filters</button>
+                            <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
+                              <span class="font-weight-bold">[[ numProjects ]]</span> projects found
+                            </p>
+                          </nav>
+                        </transition>
+                        <div class="container pt-4" @scroll.passive="onScroll($event)">
                         <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
                         <div class="mt-4">
                         <div v-if="noResults" class="text-center">
@@ -465,13 +291,12 @@
                           </h1>
                         </div>
                         <div class="project-grid ml-2">
-                          <project-card v-for="project in hackathonProjects" v-bind:project="project" :key="project.id"/>
+                          <project-card {% if is_staff %} v-bind:is_staff="true" {% endif %} v-for="project in hackathonProjects" v-bind:project="project" :key="project.id"/>
                         </div>
-                        <loading-screen v-if="isLoading"></loading-screen>
-                      </div>
                       </div>
                     </div>
-                </div>
+                      </div>
+                    </div>
                   </project-directory>
                 </b-tab>
               <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
@@ -483,7 +308,7 @@
                 <template>
                   <div class="ml-4">
                     <div class="chatWrapper col-12">
-                      <iframe frameborder="0" :src="`${chatURL}/hackathons/channels/${hackathonObj.chat_channel_id}`" allowfullscreen></iframe>
+                      {% include 'shared/embed_chat_iframe.html' with chat_url_embed=chat_url_embed %}
                     </div>
                   </div>
                 </template>
@@ -770,7 +595,7 @@
                   <ul class="list-unstyled">
                     <b-media v-for="sponsor in tribesData" tag="li"  class="bg-white rounded m-4" vertical-align="center">
                       <template v-slot:aside>
-                        <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-n3"></b-avatar>
+                        <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-n3 tribes-logo"></b-avatar>
                       </template>
                       <div class="py-3 pr-3">
                         <div class="d-flex justify-content-between">

@@ -1,5 +1,6 @@
 *.DS_Store*
 *.pyc
+chatconfig/config.json
 static/*
 sftp-config.json
 app/app/local_settings.py

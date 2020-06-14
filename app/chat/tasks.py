@@ -20,7 +20,8 @@ driver_opts = {
     'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
     'url': settings.CHAT_SERVER_URL,
     'port': settings.CHAT_PORT,
-    'token': settings.CHAT_DRIVER_TOKEN
+    'token': settings.CHAT_DRIVER_TOKEN,
+    'verify': False
 }
 
 
