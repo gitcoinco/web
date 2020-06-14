@@ -305,11 +305,11 @@ const init = () => {
 window.addEventListener('load', async() => {
   if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
     onConnect().then(() => {
-      init()
+      init();
     });
   } else {
     web3Modal.on('connect', async(data) => {
-      init()
+      init();
     });
   }
 });
