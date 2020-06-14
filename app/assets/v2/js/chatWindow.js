@@ -439,6 +439,8 @@ let lookupExpiry;
           let loginWindow = null;
           let vm = this;
 
+          vm.iframe = iframe;
+
           vm.$watch('isLoggedInFrame', function (newVal) {
             if (newVal && vm.validSessionInterval) {
               clearInterval(vm.validSessionInterval);
@@ -450,19 +452,18 @@ let lookupExpiry;
             .contents().find('head')
             .append($('<style type="text/css">.scrollbar--view {overflow:auto !important;}</style>')
             );
-          $(iframe.contentDocument).ready(() => {
+          $(iframe).contents().ready(() => {
 
             vm.validSessionInterval = setInterval(() => {
 
               if (!vm.isLoggedInFrame) {
-                if (!vm.frameLoginAttempting && $(iframe)[0].contentWindow.window.location.pathname === '/login' || count === 5) {
+                if (!vm.frameLoginAttempting && vm.iframe.contentWindow.window.location.pathname === '/login' || count >= 5) {
+                  count = 0;
                   vm.frameLoginAttempting = true;
-                  console.log('location at login')
                   if (!loginWindow) {
                     loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
                   }
                 } else if ($(iframe.contentDocument).find('#sidebarSwitcherButton').length > 0) {
-                  console.log('found switcher')
                   vm.isLoggedInFrame = true;
                   vm.frameLoginAttempting = false;
                   vm.isLoading = false;
@@ -477,7 +478,6 @@ let lookupExpiry;
 
           });
 
-          vm.iframe = iframe;
         }
       },
       destroy() {
