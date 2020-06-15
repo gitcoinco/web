@@ -22,7 +22,9 @@ import time
 from datetime import datetime
 
 from django.db.models import Count, F, Q
+
 import django_filters.rest_framework
+from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -33,9 +35,8 @@ from bounty_requests.models import (
 )
 
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent,
-    HackathonProject, Interest, Profile, ProfileSerializer,
-    SearchHistory, TribeMember
+    Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
+    ProfileSerializer, SearchHistory, TribeMember,
 )
 from .tasks import increment_view_count
 

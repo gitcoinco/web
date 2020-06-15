@@ -18,6 +18,12 @@
           <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile altogether" %}</small>
       </div>
       <div>
+          <input type="checkbox" name="pref_do_not_track" id=pref_do_not_track value="1" {% if profile.pref_do_not_track %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+          <label class="form__label" for="pref_do_not_track">{% trans "Do not Track" %}</label>
+          <br>
+          <small id="pref_do_not_track_help" class="form__input-help">{% trans "If this option is chosen, we will not put GA/FB tracking on pages that you browse" %}</small>
+      </div>
+      <div>
         <input type="checkbox" name="hide_wallet_address" id=hide_wallet_address {% if profile.hide_wallet_address %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
         <label class="form__label" for="hide_wallet_address">{% trans "Hide my wallet address" %}</label>
         <br>
