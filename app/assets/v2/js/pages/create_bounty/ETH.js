@@ -115,6 +115,8 @@ const ethCreateBounty = async (data) => {
   const amountNoDecimal = amount;
 
   amount = amount * decimalDivisor;
+  const bigAmount = new web3.utils.BN(web3.utils.toWei(String(BigInt(amount), 'ether'))).toString();
+
   // Create the bounty object.
   // This function instantiates a contract from the existing deployed Standard Bounties Contract.
   // bounty_abi is a giant object containing the different network options
@@ -211,29 +213,21 @@ const ethCreateBounty = async (data) => {
     // The Ethereum network requires using ether to do stuff on it
     // issueAndActivateBounty is a method defined in the StandardBounties solidity contract.
 
-    const eth_amount = isETH ? amount : 0;
+    const eth_amount = isETH ? bigAmount : 0;
     const _paysTokens = !isETH;
-    console.log(
-      account,
-      mock_expire_date,
-      result,
-      String(amount),
-      '0xf209d2b723b6417cbf04c07e733bee776105a073',
-      _paysTokens,
-      tokenAddress,
-      String(amount))
+
     bounty.methods.issueAndActivateBounty(
       account, // _issuer
       mock_expire_date, // _deadline
       result, // _data (ipfs hash)
-      String(amount), // _fulfillmentAmount
+      bigAmount, // _fulfillmentAmount
       '0xf209d2b723b6417cbf04c07e733bee776105a073', // _arbiter
       _paysTokens, // _paysTokens
       tokenAddress, // _tokenContract
-      String(amount) // _value
+      bigAmount, // _value
     ).send({
       from: account,
-      value: String(eth_amount),
+      value: eth_amount,
       gas: web3.utils.toHex(318730),
       gasLimit: web3.utils.toHex(318730)
     }).then((result) => {web3Callback(result)}).catch(err => {
@@ -242,10 +236,27 @@ const ethCreateBounty = async (data) => {
     });
   }
 
+  const checkTokenAllowance = async () => {
+    let currentAllowance = await getAllowance(bounty_address(), tokenAddress);
+
+    if (currentAllowance < bigAmount) {
+      let approvedAllowance;
+
+      approvedAllowance = await approveAllowance(
+        bounty_address(),
+        tokenAddress,
+        bigAmount
+      );
+    }
+  }
+
   var do_bounty = function(callback) {
-    handleTokenAuth().then(() => {
+    handleTokenAuth().then(async () => {
       const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
       const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      if (!isETH) {
+        await checkTokenAllowance();
+      }
       console.log(fee)
       indicateMetamaskPopup();
       if (FEE_PERCENTAGE == 0) {

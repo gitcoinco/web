@@ -411,6 +411,25 @@ let minABI = [
     }],
     'payable': false,
     'type': 'function'
+  },
+  // approve allowance
+  {
+    'constant': false,
+    'inputs': [{
+      'name': '_spender',
+      'type': 'address'
+    },
+    {
+      'name': '_value',
+      'type': 'uint256'
+    }],
+    'name': 'approve',
+    'outputs': [{
+      'name': 'success',
+      'type': 'bool'
+    }],
+    'payable': false,
+    'type': 'function'
   }
 ];
 
@@ -453,7 +472,7 @@ async function getTokenBalances(tokenAddress) {
 /**
  *  * Check the allowance remaining on a contract address.
  *  * @param {string} address - the contract address
- *  * @param {string} tokenAddress - the token address
+ *  * @param {string} tokenAddress - the token address contract
  *  */
 async function getAllowance(address, tokenAddress) {
   let allowance;
@@ -462,4 +481,20 @@ async function getAllowance(address, tokenAddress) {
   allowance = tokensContract.methods.allowance(selectedAccount, address).call({from: selectedAccount});
   console.log(await allowance);
   return await allowance;
+}
+
+/**
+ *  * Approve allowance for a contract address.
+ *  * @param {string} address - the contract address
+ *  * @param {string} tokenAddress - the token address contract
+ *  * @param {string} weiamount (optional)- the token address
+ *  */
+async function approveAllowance(address, tokenAddress, weiamount) {
+  let defaultAmount = new web3.utils.BN(String(10 * 18 * 9999999999999999999999999999999999999999999999999999)).toNumber();
+  let amount = weiamount || defaultAmount; // uint256
+  let approved;
+  let tokensContract = new web3.eth.Contract(minABI, tokenAddress);
+
+  approved = tokensContract.methods.approve(address, amount).send({from: selectedAccount});
+  return await approved;
 }
