@@ -207,12 +207,12 @@ def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_p
     if bigtot >= total_pot:
         saturation_point = True
 
-    # find normalization factor
-    normalization_factor = bigtot / total_pot
-
-    # modify totals
-    for result in totals:
-        result['clr_amount'] = result['clr_amount'] / normalization_factor
+    if saturation_point == True:
+        # find normalization factor
+        normalization_factor = bigtot / total_pot
+        # modify totals
+        for result in totals:
+            result['clr_amount'] = result['clr_amount'] / normalization_factor
 
     return totals, saturation_point
 
