@@ -350,7 +350,7 @@ class MatchRanking(SuperModel):
         return od
 
 
-def get_eligible_input_data(mr):
+def get_eligible_input_data(mr, no_flat=False):
     from dashboard.models import Tip
     from django.db.models import Q, F
     from dashboard.models import Earning, Profile
@@ -358,7 +358,7 @@ def get_eligible_input_data(mr):
     network = 'mainnet'
     earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
     # filter out earnings that have invalid info (due to profile deletion), or dont have a USD value, or are not on the correct network
-    earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
+    earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False)
     # filter out staff earnings
     earnings = earnings.exclude(to_profile__user__is_staff=True)
     # filter out self earnings
@@ -375,6 +375,9 @@ def get_eligible_input_data(mr):
     earnings = earnings.exclude(from_profile__in=excluded_profiles)
 
     # output
+    if no_flat:
+        return earnings
+
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
     return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
 
@@ -406,7 +409,7 @@ class PinnedPost(SuperModel):
 
     user = models.ForeignKey('dashboard.Profile',
         on_delete=models.CASCADE, related_name='pins')
-    activity = models.ForeignKey('dashboard.Activity', 
+    activity = models.ForeignKey('dashboard.Activity',
         on_delete=models.CASCADE, related_name='pin')
     what = models.CharField(max_length=100, default='', unique=True)
     created = models.DateTimeField(auto_now=True)
