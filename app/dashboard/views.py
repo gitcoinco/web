@@ -5325,12 +5325,13 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
         }, status=401)
 
     validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+    country_code = validation.carrier['mobile_country_code'] if validation.carrier['mobile_country_code'] else 0
     pv = ProfileVerification.objects.create(profile=user.profile,
                                        caller_type=validation.caller_name[
                                            "caller_type"] if validation.caller_name else '',
                                        carrier_error_code=validation.carrier['error_code'],
                                        mobile_network_code=validation.carrier['mobile_network_code'],
-                                       mobile_country_code=validation.carrier['mobile_country_code'],
+                                       mobile_country_code=country_code,
                                        carrier_name=validation.carrier['name'],
                                        carrier_type=validation.carrier['type'],
                                        country_code=validation.country_code,
