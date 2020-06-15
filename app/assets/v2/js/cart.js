@@ -450,7 +450,7 @@ Vue.component('grants-cart', {
 
       try {
         wei = web3.utils.toWei(String(number));
-      } catch(e) { 
+      } catch (e) {
         // When numbers are too small toWei fails because there's too many decimal places
         wei = Math.round(number * 10 ** 18);
       }
