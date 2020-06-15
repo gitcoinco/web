@@ -341,6 +341,7 @@ var show_persona_modal = function(e) {
 };
 
 if (
+  !document.noShowPModal &&
   document.contxt.github_handle &&
   !document.contxt.persona_is_funder &&
   !document.contxt.persona_is_hunter

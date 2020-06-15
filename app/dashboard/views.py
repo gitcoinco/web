@@ -90,7 +90,7 @@ from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
-from townsquare.models import Comment, PinnedPost
+from townsquare.models import Comment, PinnedPost, get_eligible_input_data, MatchRound
 from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
 
@@ -5274,12 +5274,12 @@ def bulkDM(request):
                     messages.error(request, f'{to_handle} is not on Gitcoin Chat yet.')
                     continue
                 try:
-                    response = chat_driver.client.make_request('post', 
-                        '/channels/direct', 
-                        options=None, 
-                        params=None, 
-                        data=f'["{to_user_id}", "{from_user_id}"]', 
-                        files=None, 
+                    response = chat_driver.client.make_request('post',
+                        '/channels/direct',
+                        options=None,
+                        params=None,
+                        data=f'["{to_user_id}", "{from_user_id}"]',
+                        files=None,
                         basepath=None)
                     channel_id = response.json()['id']
                     chat_driver.posts.create_post(options={
@@ -5301,3 +5301,30 @@ def bulkDM(request):
     }
 
     return TemplateResponse(request, 'bulk_DM.html', context)
+
+
+@staff_member_required
+def get_clrs(request, match_round_id):
+    match_round = get_object_or_404(MatchRound, pk=match_round_id)
+    eligible = get_eligible_input_data(match_round, no_flat=True)
+
+    eligible = [{
+        'from_user': {
+            'id': e.from_profile.id,
+            'handle': e.from_profile.handle
+        },
+        'to_user': {
+            'id': e.to_profile.id,
+            'handle': e.to_profile.handle
+        }
+    } for e in eligible]
+    return JsonResponse(eligible, safe=False)
+
+
+@staff_member_required
+def modtools(request):
+    context = {
+        'last_round': MatchRound.objects.all().last(),
+        'rounds': MatchRound.objects.all(),
+    }
+    return TemplateResponse(request, 'modtools.html', context)

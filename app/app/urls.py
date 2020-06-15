@@ -74,6 +74,10 @@ urlpatterns = [
     re_path(r'.*api/v0.1/chat/presence$', chat.views.chat_presence, name='chat_presence'),
     re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
 
+    # modtools
+    re_path(r'^modtools', dashboard.views.modtools, name='modtools'),
+    path('api/v1/clr/<int:match_round_id>', dashboard.views.get_clrs, name='clrs'),
+
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
 
