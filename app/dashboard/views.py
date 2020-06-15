@@ -4005,6 +4005,14 @@ def hackathon_save_project(request):
                     created, bounty_profile = associate_chat_to_profile(bounty_profile)
 
                 profiles_to_connect.append(bounty_profile.chat_id)
+
+                mentors = Profile.objects.filter(user__groups__name=f'bounty-{project.bounty.id}-mentors')
+
+                for mentor in mentors:
+                    if mentor.chat_id is '' or mentor.chat_id is None:
+                        created, mentor = associate_chat_to_profile(mentor)
+                    profiles_to_connect.append(mentor.chat_id)
+
             except Exception as e:
                 logger.info("Bounty Profile owner not apart of gitcoin")
 
