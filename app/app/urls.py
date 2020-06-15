@@ -77,7 +77,7 @@ urlpatterns = [
     # modtools
     re_path(r'^modtools', dashboard.views.modtools, name='modtools'),
     path('api/v1/clr/<int:match_round_id>', dashboard.views.get_clrs, name='clrs'),
-
+    path('api/v1/contribution/<int:contribution_id>/flag/', dashboard.views.contribution_flag, name='flag_contribution'),
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
 

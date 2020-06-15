@@ -1,0 +1,169 @@
+{% extends "admin/base_site.html" %}
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}
+  {% include 'shared/head.html' %}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
+  <link rel="stylesheet" type="text/css" href="{% static "v2/css/admin/dashboard.css" %}">
+{% endblock %}
+
+{% block coltype %}w-100{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+<div id="modtools" class="w-100">
+  <h1>Round [[ round ]]</h1>
+  <b-dropdown id="rounds" text="Select round" class="m-md-2">
+    {% for round in rounds %}
+    <b-dropdown-item @click="changeRound({{ round.id }}, '{{ round }}', $event)">{{ round }}</b-dropdown-item>
+    {% endfor %}
+    {% csrf_token %}
+  </b-dropdown>
+  <div class="d-inline-block w-50">
+    <b-form-input @update="get_clr()" v-model="search" placeholder="Search by handle, eth address and earning id"></b-form-input>
+  </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Created on</th>
+          <th scope="col">From Profile</th>
+          <th scope="col">From Account age</th>
+          <th scope="col">From Ip address</th>
+          <th scope="col">From Eth address</th>
+          <th scope="col">To Profile</th>
+          <th scope="col">To Account age</th>
+          <th scope="col">To Ip address</th>
+          <th scope="col">To Eth address</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-for="earning in earnings">
+        <tr :key="earning.id">
+        <td>[[earning.id]]</td>
+
+        <td>[[earning.created_on]]</td>
+        <td class="inline-avatar" :data-usercard="earning.from_user.handle"><img alt="Avatar" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle" :src="earning.from_user.avatar"> @[[earning.from_user.handle]]</td>
+        <td>[[earning.from_user.account_age]]</td>
+        <td>[[earning.from_user.ip_address]]<br><small>[[earning.from_user.location]]</small></td>
+        <td>[[earning.from_user.eth_address]]</td>
+        <td class="inline-avatar" :data-usercard="earning.to_user.handle"><img alt="Avatar" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle" :src="earning.to_user.avatar"> @[[earning.to_user.handle]]</td>
+        <td>[[earning.to_user.account_age]]</td>
+        <td>[[earning.to_user.ip_address]]<br><small>[[earning.to_user.location]]</small></td>
+        <td>[[earning.to_user.eth_address]]</td>
+        <td>
+          <a @click="flag_earning(earning.id, $event)" id="flag" href="#" class="flag" > Flag <i class="far fa-flag "></i> <span class="badge"></span></a>
+          <button class="btn btn-link font-smaller-3 p-0 m-0" type="button" data-toggle="collapse" :data-target="`#collapse-${earning.id}`"
+                  aria-expanded="false" aria-controls="`#collapse-${earning.id}`">
+            Show [[earning.flags.length]]
+          </button>
+        </td>
+        <div class="collapse" :id="`collapse-${earning.id}`">
+          <div class="card card-body">
+            <ol>
+              <li v-for="flag in earning.flags">
+                <h3 class="font-body">[[flag.comments]]</h3> -
+                <small><img alt="Avatar" width="40" height="40" class="flex-shrink-0 mr-2 rounded-circle" :src="earning.to_user.avatar"> @[[flag.profile]]</small>
+              </li>
+            </ol>
+          </div>
+        </div>
+        </tr>
+        </template>
+      </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+{% block footer %}{{ block.super }}
+  {% include 'shared/footer_scripts_lite.html' with vue=True ignore_inject_web3=True no_base=True%}
+  <script src="{% static "v2/js/lib/purify.min.js" %}"></script>
+
+  <script>
+  document.round = {{ last_round.id |default:0}};
+  document.noShowPModal = true;
+  Vue.component('modtools', {});
+
+  if (document.getElementById('modtools')) {
+    var app = new Vue({
+      delimiters: ['[[', ']]'],
+      el: '#modtools',
+      data() {
+        return {
+          earnings: [],
+          round: document.round,
+          search: ''
+        };
+      },
+      mounted() {
+        let vm = this;
+        vm.get_clr()
+      },
+      methods: {
+        changeRound: function (round, desc, $event) {
+          let vm = this;
+
+          vm.round = round;
+          vm.get_clr();
+        },
+        get_clr: function () {
+          let vm = this;
+
+          fetch(`api/v1/clr/${vm.round}?q=${vm.search}`).then(res => res.json()).then(res => {
+            vm.earnings = res
+          }).catch(e => console.log(e))
+        },
+        flag_earning: function(contribution, e) {
+          e.preventDefault();
+          const comment = prompt('What is your reason for flagging this contribution?');
+
+          if (!comment) {
+            return;
+          }
+          const data = {
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+            'comment': comment
+          };
+
+          $.ajax({
+            type: 'post',
+            url: `api/v1/contribution/${contribution}/flag/`,
+            data,
+            success: function(json) {
+              _alert({ message: gettext('Your flag has been sent to Owocki.') }, 'success', 6000);
+            },
+            error: function() {
+              _alert({ message: gettext('Your report failed to save Please try again.') }, 'error', 6000);
+            }
+          });
+        }
+      }
+    });
+  }
+  </script>
+{% endblock %}

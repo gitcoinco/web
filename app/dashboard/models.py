@@ -2754,12 +2754,12 @@ class Profile(SuperModel):
         chat_driver = Driver(driver_opts)
         chat_driver.login()
 
-        response = chat_driver.client.make_request('get', 
-            '/users/me/teams/unread', 
-            options=None, 
-            params=None, 
-            data=None, 
-            files=None, 
+        response = chat_driver.client.make_request('get',
+            '/users/me/teams/unread',
+            options=None,
+            params=None,
+            data=None,
+            files=None,
             basepath=None)
         total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
         return total_unread
@@ -3166,7 +3166,7 @@ class Profile(SuperModel):
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"transaction{plural} on Gitcoin"
-               
+
 
     @property
     def desc(self):
@@ -5136,3 +5136,27 @@ class ObjectView(SuperModel):
 
     def __str__(self):
         return f"{self.viewer} => {self.target} on {self.created_on}"
+
+
+class ContributionFlag(SuperModel):
+    contribution = models.ForeignKey(
+        Earning,
+        related_name='contribution_flag',
+        on_delete=models.CASCADE,
+        null=False,
+        help_text=_('The associated Grant.'),
+    )
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='contribution_flags',
+        on_delete=models.SET_NULL,
+        help_text=_("The flagger's profile."),
+        null=True,
+    )
+    comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
+    processed = models.BooleanField(default=False, help_text=_('Was it processed?'))
+    comments_admin = models.TextField(default='', blank=True, help_text=_('The comments of an admin.'))
+
+    def __str__(self):
+        """Return the string representation of a Contribution."""
+        return f"id: {self.pk}, processed: {self.processed}, comments: {self.comments} "

@@ -32,6 +32,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
@@ -52,7 +53,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 import magic
-from app.utils import clean_str, ellipses, get_default_network
+from app.utils import clean_str, ellipses, get_default_network, get_location_from_ip
 from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
 from avatar.views_3d import avatar3dids_helper
@@ -77,7 +78,7 @@ from git.utils import (
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
-from marketing.mails import admin_contact_funder, bounty_uninterested
+from marketing.mails import admin_contact_funder, bounty_uninterested, new_contribution_flag_admin
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
@@ -106,6 +107,7 @@ from .models import (
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileView,
     Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
+    ContributionFlag,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -5305,20 +5307,79 @@ def bulkDM(request):
 
 @staff_member_required
 def get_clrs(request, match_round_id):
+    search = request.GET.get('q')
+    earning = []
     match_round = get_object_or_404(MatchRound, pk=match_round_id)
-    eligible = get_eligible_input_data(match_round, no_flat=True)
+    eligible = get_eligible_input_data(match_round, no_flat=True).prefetch_related('from_profile', 'to_profile')
 
-    eligible = [{
-        'from_user': {
-            'id': e.from_profile.id,
-            'handle': e.from_profile.handle
-        },
-        'to_user': {
-            'id': e.to_profile.id,
-            'handle': e.to_profile.handle
-        }
-    } for e in eligible]
-    return JsonResponse(eligible, safe=False)
+    if search:
+        eligible = eligible.filter(Q(id__icontains=search) |
+                                   Q(from_profile__handle__icontains=search) |
+                                   Q(to_profile__handle__contains=search) |
+                                   Q(to_profile__preferred_payout_address__contains=search) |
+                                   Q(from_profile__preferred_payout_address__contains=search))
+
+    for e in eligible:
+        to_profile = e.to_profile
+        from_profile = e.from_profile
+        if e and to_profile and from_profile:
+            to_location = None
+            has_ip_address = to_profile.actions.filter(created_on__lte=e.created_on).exclude(ip_address=None).last()
+            if has_ip_address:
+                to_location = get_location_from_ip(has_ip_address.ip_address)
+
+            from_location = None
+            has_from_ip_address = from_profile.actions.filter(created_on__lte=e.created_on).exclude(ip_address=None).last()
+            if has_from_ip_address:
+                from_location = get_location_from_ip(has_from_ip_address.ip_address)
+
+            flags = ContributionFlag.objects.filter(contribution=e)
+
+            earning.append({
+                'id': e.id,
+                'created_on': naturaltime(e.created_on),
+                'from_user': {
+                    'id': e.from_profile.id,
+                    'handle': e.from_profile.handle,
+                    'avatar': e.from_profile.avatar_url,
+                    'account_age': naturaltime(e.from_profile.created_on),
+                    'ip_address': has_from_ip_address.ip_address if has_from_ip_address else '',
+                    'location': f'{from_location.get("city")}, {from_location.get("country_code")}' if from_location else '',
+                    'eth_address': e.from_profile.preferred_payout_address,
+                },
+                'to_user': {
+                    'id': e.to_profile.id,
+                    'handle': e.to_profile.handle,
+                    'avatar': e.to_profile.avatar_url,
+                    'account_age': naturaltime(e.to_profile.created_on),
+                    'ip_address': has_ip_address.ip_address if has_ip_address else '',
+                    'location': f'{to_location.get("city")}, {to_location.get("country_code")}' if to_location else '',
+                    'eth_address': e.to_profile.preferred_payout_address,
+                },
+                'flags': [{
+                    'comments': flag.comments,
+                    'processed': flag.processed,
+                    'profile': flag.profile.handle
+                } for flag in flags]
+            })
+    return JsonResponse(earning, safe=False)
+
+
+@staff_member_required
+def contribution_flag(request, contribution_id):
+    comment = request.POST.get("comment", '')
+    contribution = Earning.objects.get(pk=contribution_id)
+    if comment and contribution:
+        flag = ContributionFlag.objects.create(
+            comments=comment,
+            profile=request.user.profile,
+            contribution=contribution,
+            )
+        new_contribution_flag_admin(flag)
+
+    return JsonResponse({
+        'success': True,
+    })
 
 
 @staff_member_required

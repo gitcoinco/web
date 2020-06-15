@@ -30,7 +30,7 @@ from .models import (
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
     ObjectView, Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
-    TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    TokenApproval, TribeMember, UserAction, UserVerificationModel, ContributionFlag,
 )
 
 
@@ -488,6 +488,11 @@ class AnswersAdmin(admin.ModelAdmin):
     unique_together = ('user', 'question', 'choice')
 
 
+class ContributionFlagAdmin(admin.ModelAdmin):
+    list_display = ['contribution', 'profile', 'comments', 'processed', 'comments_admin']
+    raw_id_fields = ['contribution', 'profile']
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -525,3 +530,4 @@ admin.site.register(Question, QuestionsAdmin)
 admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
+admin.site.register(ContributionFlag, ContributionFlagAdmin)

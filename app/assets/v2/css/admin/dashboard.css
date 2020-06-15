@@ -1,0 +1,13 @@
+.inline-avatar {
+  display: flex;
+  align-items: center;
+}
+
+.flag {
+  color: var(--gc-pink) !important;
+}
+
+.collapse {
+  position: absolute;
+  width: 94%;
+}
