@@ -2149,6 +2149,47 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 <pre><code class="python">HackathonProjectSerializer.Meta(self, /, *args, **kwargs)
 </code></pre>
 
+<h2 id="dashboard.router.HackathonProjectsPagination">HackathonProjectsPagination</h2>
+
+<pre><code class="python">HackathonProjectsPagination(self, /, *args, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.router.HackathonProjectsPagination.page_size">page_size</h3>
+
+<p>int([x]) -&gt; integer
+int(x, base=10) -&gt; integer</p>
+<p>Convert a number or string to an integer, or return 0 if no arguments
+are given.  If x is a number, return x.<strong>int</strong>().  For floating point
+numbers, this truncates towards zero.</p>
+<p>If x is not a number or if base is given, then x must be a string,
+bytes, or bytearray instance representing an integer literal in the
+given base.  The literal can be preceded by '+' or '-' and be surrounded
+by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
+Base 0 means to interpret the base from the string as an integer literal.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>int('0b100', base=0)
+4
+<h2 id="dashboard.router.HackathonProjectsViewSet">HackathonProjectsViewSet</h2></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code class="python">HackathonProjectsViewSet(self, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.router.HackathonProjectsViewSet.queryset">queryset</h3>
+
+<p>Represent a lazy database lookup for a set of objects.
+<h3 id="dashboard.router.HackathonProjectsViewSet.serializer_class">HackathonProjectSerializer</h3></p>
+<pre><code class="python">HackathonProjectsViewSet.HackathonProjectSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.router.HackathonProjectsViewSet.pagination_class">HackathonProjectsPagination</h3>
+
+<pre><code class="python">HackathonProjectsViewSet.HackathonProjectsPagination(self, /, *args, **kwargs)
+</code></pre>
+
 <h2 id="dashboard.router.BountySerializerSlim">BountySerializerSlim</h2>
 
 <pre><code class="python">BountySerializerSlim(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)

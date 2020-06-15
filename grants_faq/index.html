@@ -1380,23 +1380,43 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#rounds-6" title="Rounds 6+" class="md-nav__link">
+    Rounds 6+
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rounds-15" title="Rounds 1–5" class="md-nav__link">
+    Rounds 1–5
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#how-grants-works" title="How Grants works" class="md-nav__link">
     How Grants works
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#sub-miner" title="Sub Miner" class="md-nav__link">
     Sub Miner
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#more-information" title="More information" class="md-nav__link">
     More information
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2102,23 +2122,43 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#rounds-6" title="Rounds 6+" class="md-nav__link">
+    Rounds 6+
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rounds-15" title="Rounds 1–5" class="md-nav__link">
+    Rounds 1–5
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#how-grants-works" title="How Grants works" class="md-nav__link">
     How Grants works
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#sub-miner" title="Sub Miner" class="md-nav__link">
     Sub Miner
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#more-information" title="More information" class="md-nav__link">
     More information
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2140,13 +2180,30 @@
                 
                 
                 <h1 id="grants-general-documentation">Grants General Documentation</h1>
+<h2 id="rounds-6">Rounds 6+</h2>
+<p>In round 6 we transitioned away from the <a href="https://1337alliance.org">EIP 1337</a> contract and replaced
+it with a single contract that enables bulk donations for all grants. The source of this <code>BulkCheckout</code> contract
+can be found <a href="https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BulkCheckout.sol">here</a>,
+and it has been deployed to the mainnet at
+<a href="https://etherscan.io/address/0x7d655c57f71464B6f83811C55D84009Cd9f5221C">0x7d655c57f71464B6f83811C55D84009Cd9f5221C</a>.
+It works as follows:</p>
+<ol>
+<li>Instead of funding each grant individually, grants are now added to your cart</li>
+<li>For each grant in your cart, you select the token and amount you want to donate</li>
+<li>Upon checking out, all donations are handled in a single transaction thanks to the <code>BulkCheckout</code> contract.</li>
+<li>This contract has one main function, <code>donate()</code> which takes an array of structs.</li>
+<li>Each struct contains all information required for a donation—the token to donate with, the amount to donate, and the grant to donate to</li>
+<li>Prior to calling this function, the Gitcoin frontend will ensure you have approved the <code>BulkCheckout</code> contract to spend your tokens. If you haven't, you will be prompted to confirm an approval transaction for the exact amount to be donated. You are free to adjust the approval amount to remove the need to re-approve the contract in subsequent donations.</li>
+<li>After the approval transactions are submitted, the bulk checkout transaction is submitted through the <code>donate()</code> function.</li>
+</ol>
+<h2 id="rounds-15">Rounds 1–5</h2>
 <p>grants is built upon <a href="https://1337alliance.org">EIP 1337</a>.</p>
 <p>specifically, it is built upon <a href="https://github.com/gitcoinco/grants1337/blob/master/contracts/Subscription.sol">this smart contract</a> which <a href="https://hackmd.io/s/HJ1QgH8F7">was audit'ed by ZKLabs in Q4 2018</a>.</p>
-<h2 id="how-grants-works">How Grants works</h2>
+<h3 id="how-grants-works">How Grants works</h3>
 <p>When you create a new grant at <code>/grants/new</code>, you are deploying a new version of this contract.</p>
 <p>When you fund a new grant at <code>/grants/&lt;pk&gt;/&lt;slug&gt;/fund</code>, you are <code>approve()</code>ing a batch of ERC20 tokens to be sent, and you are signing a message that will be used to create recurring transactions down the line.</p>
-<p>How are those transactions created, you say?  Well, it's via a <em>sub-miner</em>....</p>
-<h2 id="sub-miner">Sub Miner</h2>
+<p>How are those transactions created, you say? Well, it's via a <em>sub-miner</em>....</p>
+<h3 id="sub-miner">Sub Miner</h3>
 <p>The subminer takes the signed message you created in the frontend (see above), and runs <code>executeSubscription</code> every <em>periodSeconds</em> interval.</p>
 <p>Here's what it does in psuedocode:</p>
 <pre><code class="python">iterate through all subscriptions:
@@ -2164,14 +2221,14 @@
 <pre><code class="shell">./manage.py subminer rinkeby --live
 </code></pre>
 
-<p>When you run this code, it looks through all of the active grants on your local on <code>&lt;network&gt;</code>, and then runs <code>executeSubscription()</code> on them.  if <code>executeSubscription()</code> succeeds, it will trigger some other actions (mostly emails, db mutations, etc)</p>
+<p>When you run this code, it looks through all of the active grants on your local on <code>&lt;network&gt;</code>, and then runs <code>executeSubscription()</code> on them. if <code>executeSubscription()</code> succeeds, it will trigger some other actions (mostly emails, db mutations, etc)</p>
 <p>Heres an example successful tx created by the subminer: https://rinkeby.etherscan.io/tx/0x274c159a6d89513c3f0b533a5329bef4ce02b3ffc770bece9a8ce5d269319f72</p>
-<h2 id="more-information">More information</h2>
+<h3 id="more-information">More information</h3>
 <p>For more information on the subminer for grants, checkout</p>
 <ul>
 <li>https://github.com/gitcoinco/web/issues/2424</li>
 <li>https://github.com/gitcoinco/web/pull/3055
-https://chat.gitcoin.co/</li>
+  https://chat.gitcoin.co/</li>
 <li>http://1337alliance.com</li>
 </ul>
                 
