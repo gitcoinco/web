@@ -5340,22 +5340,28 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
 
     redis.set(f'verification:{user.id}:pv', pv.pk)
 
+    validate_consumer_number = False
+    validate_carrier = False
+
     if validation.caller_name and validation.caller_name["caller_type"] == 'BUSINESS':
         pv.validation_passed = False
         pv.validation_comment = 'Only support consumer numbers, not business or cloud numbers.'
         pv.save()
-        return JsonResponse({
-            'success': False,
-            'msg': pv.validation_comment
-        }, status=401)
+        if validate_consumer_number:
+            return JsonResponse({
+                'success': False,
+                'msg': pv.validation_comment
+            }, status=401)
+
     if validation.carrier and validation.carrier['type'] != 'mobile':
         pv.validation_passed = False
         pv.validation_comment = 'Phone type isn\'t supported'
         pv.save()
-        return JsonResponse({
-            'success': False,
-            'msg': pv.validation_comment
-        }, status=401)
+        if validate_carrier:
+            return JsonResponse({
+                'success': False,
+                'msg': pv.validation_comment
+            }, status=401)
 
     if delivery_method == 'email':
         twilio.verify.verifications.create(to=user.profile.email, channel='email')

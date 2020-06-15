@@ -83,6 +83,7 @@ show_clr_card = True
 
 last_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 last_round_end = timezone.datetime(2020, 4, 7, 12, 0)
+# TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
 next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
 after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
 round_end = timezone.datetime(2020, 6, 29, 12, 0)
@@ -371,6 +372,8 @@ def grants(request):
     grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
     if grant_type_title_if_any == "Media":
         grant_type_title_if_any = "Community"
+    if grant_type_title_if_any == "Change":
+        grant_type_title_if_any = "Crypto for Black Lives"
     grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
     if has_real_grant_type:
         title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"
