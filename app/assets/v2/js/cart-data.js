@@ -26,11 +26,12 @@ class CartData {
     }
     const acceptsAllTokens = (grantData.grant_token_address === '0x0000000000000000000000000000000000000000');
 
+    var accptedTokenName = 'DAI';
     try {
-      const accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
+      accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
     } catch (e) {
       // When numbers are too small toWei fails because there's too many decimal places
-      const accptedTokenName = 'DAI';
+      console.log(e);
     }
 
     if (acceptsAllTokens || 'DAI' == accptedTokenName) {
