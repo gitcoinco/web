@@ -1474,7 +1474,6 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
-@cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']

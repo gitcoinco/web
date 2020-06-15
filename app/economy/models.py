@@ -40,7 +40,7 @@ from django.utils.html import escape
 from django.utils.timezone import localtime
 
 import pytz
-from app.redis_service import RedisService
+from app.services import RedisService
 
 
 class EncodeAnything(DjangoJSONEncoder):

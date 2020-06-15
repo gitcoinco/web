@@ -159,9 +159,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="row">
                       <div class="col-12 col-sm-8 font-body">
                         <label class="form__label">{% trans "Contribution Type" %}</label>
-                        <select name="recurring_or_not" id="recurring_or_not" class="js-select2" style="width: 100%">
-                          <option value="once" selected="selected">{% trans "One Time" %}</option>
-                          <option value="recurring">{% trans "Recurring" %}</option>
+                        <select name="recurring_or_not" id="recurring_or_not" class="js-select2" style="width: 100%" disabled="true">
+                          <option value="recurring" selected="selected">{% trans "Recurring" %}</option>
                         </select>
                       </div>
 
