@@ -912,10 +912,6 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
 
 @require_POST
 def set_project_winner(request):
-    if not request.user.is_authenticated and request.user.is_staff:
-        return JsonResponse({
-            'message': 'UNAUTHORIZED'
-        })
 
     winner = request.POST.get('winner', False)
     project_id = request.POST.get('project_id', None)
@@ -923,7 +919,13 @@ def set_project_winner(request):
         return JsonResponse({
             'message': 'Invalid Project'
         })
-    project = HackathonProject.objects.get(pk=project_id)
+    project = HackathonProject.objects.get(pk=project_id).prefetch_related('bounty')
+
+    if not request.user.is_authenticated and (request.user.is_staff or request.user.profile.handle == project.bounty.bounty_owner_github_username):
+        return JsonResponse({
+            'message': 'UNAUTHORIZED'
+        })
+
     project.winner = winner
     project.save()
 
