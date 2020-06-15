@@ -5358,7 +5358,7 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
                                        phone_number=hash_number,
                                        delivery_method=delivery_method)
 
-    redis.set(f'verification:{user.id}:phone', phone)
+    redis.set(f'verification:{user.id}:phone', hash_number)
 
 
 
@@ -5408,11 +5408,11 @@ def validate_verification(request):
     redis = RedisService().redis
     twilio = TwilioService().verify
     code = request.POST.get('code')
+    phone = request.POST.get('phone')
     profile = request.user.profile
 
     has_previous_validation = profile.last_validation_request
-    phone = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
-    hash_number = hashlib.pbkdf2_hmac('sha256', phone.encode(), PHONE_SALT.encode(), 100000).hex()
+    hash_number = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
 
     if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(
         pk=profile.id).exists():

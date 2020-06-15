@@ -247,7 +247,8 @@ Vue.component('grants-cart', {
 
       if (vm.code) {
         const verificationRequest = fetchData('/sms/validate/', 'POST', {
-          code: vm.code
+          code: vm.code,
+          phone: vm.phone
         }, {'X-CSRFToken': vm.csrf});
 
         $.when(verificationRequest).then(response => {
