@@ -32,9 +32,9 @@ from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
 from perftools.models import JSONStore
 
-PREV_CLR_START_DATE = dt.datetime(2020, 1, 6, 0, 0)
-PREV_CLR_END_DATE = dt.datetime(2020, 1, 21, 0, 0)
-CLR_START_DATE = dt.datetime(2020, 3, 23, 0, 0)
+PREV_CLR_START_DATE = dt.datetime(2020, 3, 23, 12, 0)
+PREV_CLR_END_DATE = dt.datetime(2020, 4, 7, 12, 0)
+CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0)
 
 # TODO: MOVE TO DB
 THRESHOLD_TECH = 20.0
