@@ -174,6 +174,7 @@ def preprocess(request):
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
+        'ptoken_abi': settings.PTOKEN_ABI
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)

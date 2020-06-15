@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import os
 import socket
 
@@ -831,3 +832,10 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/abi.js')
+
+PTOKEN_ABI = ''
+
+if PTOKEN_ABI_PATH:
+    with open(str(root.path(PTOKEN_ABI_PATH))) as f:
+        PTOKEN_ABI = json.load(f)
