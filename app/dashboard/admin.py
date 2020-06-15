@@ -27,10 +27,10 @@ from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
-    BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
-    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory, 
-    Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel, ContributionFlag,
+    BountySyncRequest, CoinRedemption, CoinRedemptionRequest, ContributionFlag, Coupon, Earning, FeedbackEntry,
+    FundRequest, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation,
+    LabsResearch, ObjectView, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question,
+    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel,
 )
 
 

@@ -54,7 +54,6 @@ from django.views.decorators.http import require_GET, require_POST
 
 import dateutil
 import magic
-
 import pytz
 from app.services import RedisService, TwilioService
 from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
@@ -83,11 +82,11 @@ from git.utils import (
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
-from marketing.mails import admin_contact_funder, bounty_uninterested, new_contribution_flag_admin
+from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
-    new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
-    wall_post_email,
+    new_contribution_flag_admin, new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant,
+    start_work_rejected, wall_post_email,
 )
 from marketing.models import EmailSubscriber, Keyword
 from oauth2_provider.decorators import protected_resource
@@ -96,7 +95,7 @@ from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
-from townsquare.models import Comment, PinnedPost, get_eligible_input_data, MatchRound
+from townsquare.models import Comment, MatchRound, PinnedPost, get_eligible_input_data
 from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
 
@@ -109,10 +108,10 @@ from .helpers import (
 )
 from .models import (
     Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
-    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
-    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember,
-    UserAction, UserVerificationModel, ContributionFlag
+    CoinRedemptionRequest, ContributionFlag, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject,
+    HackathonRegistration, HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile,
+    ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
+    TribeMember, UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
