@@ -372,6 +372,8 @@ def grants(request):
     grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
     if grant_type_title_if_any == "Media":
         grant_type_title_if_any = "Community"
+    if grant_type_title_if_any == "Change":
+        grant_type_title_if_any = "Crypto for Black Lives"
     grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
     if has_real_grant_type:
         title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"

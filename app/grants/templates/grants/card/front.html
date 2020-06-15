@@ -90,6 +90,10 @@
               + Add to Cart
             </button>
           </form>
+          {% else %}
+            <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1">
+              <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
+            </button>
           {% endif %}
         </div>
       {% endif %}
