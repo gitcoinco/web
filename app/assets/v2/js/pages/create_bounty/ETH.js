@@ -244,8 +244,7 @@ const ethCreateBounty = async (data) => {
 
       approvedAllowance = await approveAllowance(
         bounty_address(),
-        tokenAddress,
-        bigAmount
+        tokenAddress
       );
     }
   }
