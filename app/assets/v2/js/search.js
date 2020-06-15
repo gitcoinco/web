@@ -64,7 +64,7 @@ if (document.getElementById('gc-search')) {
     }
   });
 }
-document.current_search = new Date()
+document.current_search = new Date();
 
 const groupBySource = results => {
   let grouped_result = {};
