@@ -183,6 +183,6 @@ $(document).ready(function() {
     }
   }
 
-  compiledSplitter = compiledSplitter0 ? compiledSplitter0 : null;
+  compiledSplitter = typeof compiledSplitter0 != 'undefined' ? compiledSplitter0 : null;
 
 });

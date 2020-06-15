@@ -29,8 +29,8 @@ from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
-    TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory,
+    Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel,
 )
 
 
@@ -488,6 +488,12 @@ class AnswersAdmin(admin.ModelAdmin):
     unique_together = ('user', 'question', 'choice')
 
 
+class ProfileVerificationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
+                    'phone_number', 'carrier_error_code']
+    raw_id_fields = ['profile']
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -525,3 +531,4 @@ admin.site.register(Question, QuestionsAdmin)
 admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
+admin.site.register(ProfileVerification, ProfileVerificationAdmin)

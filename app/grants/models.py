@@ -76,7 +76,7 @@ class GrantCategory(SuperModel):
     def all_categories():
         all_tech_categories = GrantCategory.tech_categories()
         filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
-        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories()
+        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories() + GrantCategory.change_categories()
 
     @staticmethod
     def tech_categories():
@@ -108,6 +108,11 @@ class GrantCategory(SuperModel):
             'COVID19 response',
         ]
 
+    @staticmethod
+    def change_categories():
+        return [
+        ]
+
     category = models.CharField(
         max_length=50,
         blank=False,
@@ -131,7 +136,8 @@ class Grant(SuperModel):
     GRANT_TYPES = [
         ('tech', 'tech'),
         ('health', 'health'),
-        ('media', 'media'),
+        ('Community', 'media'),
+        ('Crypto for Black Lives', 'change'),
         ('matic', 'matic')
     ]
 
@@ -319,6 +325,16 @@ class Grant(SuperModel):
 
 
     @property
+    def recurring_funding_supported(self):
+        return self.contract_version < 2
+
+    @property
+    def configured_to_receieve_funding(self):
+        if self.contract_version == 2:
+            return True
+        return self.contract_address != '0x0'
+
+    @property
     def clr_match_estimate_this_round(self):
         try:
             return self.clr_prediction_curve[0][1]
@@ -335,7 +351,7 @@ class Grant(SuperModel):
 
     @property
     def negative_voting_enabled(self):
-        return self.grant_type == 'media'
+        return False
 
     @property
     def org_name(self):
@@ -839,7 +855,7 @@ next_valid_timestamp: {next_valid_timestamp}
             amount = self.amount_per_period_to_gitcoin
         else:
             amount = self.amount_per_period_minus_gas_price
-            
+
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
                 return Decimal(float(amount) * float(eth_usd_conv_rate()))
@@ -1145,18 +1161,45 @@ class Contribution(SuperModel):
 
     def update_tx_status(self):
         """Updates tx status."""
+        from economy.tx import grants_transaction_validator
         from dashboard.utils import get_tx_status
         if self.tx_override:
             return
+
+        # handle replace of tx_id
         tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        if tx_status in ['pending', 'dropped', 'unknown', '']:
+            new_tx = getReplacedTX(self.tx_id)
+            if new_tx:
+                self.tx_id = new_tx
+            else:
+                # TODO: do stuff related to long running pending txns
+                pass
+            return
+        # handle replace of split_tx_id
         if self.split_tx_id:
             split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-        if tx_status != 'pending':
-            self.success = tx_status == 'success'
-            self.tx_cleared = True
-        if self.split_tx_id and split_tx_status != 'pending':
-            self.success = split_tx_status == 'success'
-            self.split_tx_confirmed = True
+            if split_tx_status in ['pending', 'dropped', 'unknown', '']:
+                new_tx = getReplacedTX(self.split_tx_id)
+                if new_tx:
+                    self.split_tx_id = new_tx
+                return
+
+        # actually validate token transfers
+        response = grants_transaction_validator(self)
+        if len(response['originator']):
+            self.originated_address = response['originator'][0]
+        self.validator_passed = response['validation']['passed']
+        self.validator_comment = response['validation']['comment']
+        self.tx_cleared = True
+        self.split_tx_confirmed = True
+        self.success = self.validator_passed
+
+        if self.success:
+            print("TODO: do stuff related to successful contribs, like emails")
+        else:
+            print("TODO: do stuff related to failed contribs, like emails")
+
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
 def psave_contrib(sender, instance, **kwargs):
