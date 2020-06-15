@@ -137,7 +137,7 @@ class Grant(SuperModel):
         ('tech', 'tech'),
         ('health', 'health'),
         ('Community', 'media'),
-        ('Crypto for Black Lives', 'change'),
+        ('change', 'change'),
         ('matic', 'matic')
     ]
 
