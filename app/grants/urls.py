@@ -22,7 +22,7 @@ from django.urls import path, re_path
 from grants.views import (
     flag, grant_categories, grant_details, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json,
     grants_bulk_add, grants_cart_view, grants_stats_view, invoice, leaderboard, new_matching_partner, profile,
-    quickstart, subscription_cancel,
+    quickstart, subscription_cancel, grants_by_grant_type,
 )
 
 app_name = 'grants'
@@ -52,5 +52,7 @@ urlpatterns = [
         name='contribution_invoice'
     ),
     path('cart/bulk-add/<str:grant_ids>', grants_bulk_add, name='grants_bulk_add'),
-    path('cart', grants_cart_view, name='cart')
+    path('cart', grants_cart_view, name='cart'),
+    path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
+    path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
 ]
