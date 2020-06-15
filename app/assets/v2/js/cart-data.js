@@ -25,6 +25,7 @@ class CartData {
       network = 'mainnet';
     }
     const acceptsAllTokens = (grantData.grant_token_address === '0x0000000000000000000000000000000000000000');
+
     try {
       const accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
     } catch (e) {
