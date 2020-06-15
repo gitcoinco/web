@@ -5325,28 +5325,7 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
         }, status=401)
 
     validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
-
-    if validation.caller_name and validation.caller_name["caller_type"] == 'BUSINESS':
-        return JsonResponse({
-            'success': False,
-            'msg': 'Only support consumer numbers'
-        }, status=401)
-    if validation.carrier and validation.carrier['type'] != 'mobile':
-        return JsonResponse({
-            'success': False,
-            'msg': 'Phone type isn\'t supported'
-        }, status=401)
-
-    if delivery_method == 'email':
-        twilio.verify.verifications.create(to=user.profile.email, channel='email')
-    else:
-        twilio.verify.verifications.create(to=phone, channel='sms')
-    profile.last_validation_request = timezone.now()
-    profile.validation_attempts += 1
-    profile.encoded_number = hash_number
-    profile.save()
-
-    ProfileVerification.objects.create(profile=user.profile,
+    pv = ProfileVerification.objects.create(profile=user.profile,
                                        caller_type=validation.caller_name[
                                            "caller_type"] if validation.caller_name else '',
                                        carrier_error_code=validation.carrier['error_code'],
@@ -5358,15 +5337,49 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
                                        phone_number=hash_number,
                                        delivery_method=delivery_method)
 
+    redis.set(f'verification:{user.id}:pv', pv.pk)
+
+    if validation.caller_name and validation.caller_name["caller_type"] == 'BUSINESS':
+        pv.validation_passed = False
+        pv.validation_comment = 'Only support consumer numbers, not business or cloud numbers.'
+        pv.save()
+        return JsonResponse({
+            'success': False,
+            'msg': pv.validation_comment
+        }, status=401)
+    if validation.carrier and validation.carrier['type'] != 'mobile':
+        pv.validation_passed = False
+        pv.validation_comment = 'Phone type isn\'t supported'
+        pv.save()
+        return JsonResponse({
+            'success': False,
+            'msg': pv.validation_comment
+        }, status=401)
+
+    if delivery_method == 'email':
+        twilio.verify.verifications.create(to=user.profile.email, channel='email')
+    else:
+        twilio.verify.verifications.create(to=phone, channel='sms')
+
+    pv.validation_passed = True
+    pv.save()
+
+    profile.last_validation_request = timezone.now()
+    profile.validation_attempts += 1
+    profile.encoded_number = hash_number
+    profile.save()
+
     redis.set(f'verification:{user.id}:phone', hash_number)
 
 
 
 @login_required
 def send_verification(request):
-    profile = request.user.profile
+    user = request.user
+    profile = user.profile
     phone = request.POST.get('phone')
     delivery_method = request.POST.get('delivery_method', 'sms')
+    delivery_method = 'sms' # always SMS, not email
     redis = RedisService().redis
     twilio = TwilioService()
     has_previous_validation = profile.last_validation_request and profile.last_validation_request.replace(tzinfo=pytz.utc)
@@ -5427,6 +5440,11 @@ def validate_verification(request):
             redis.delete(f'verification:{request.user.id}:phone')
             request.user.profile.sms_verification = True
             request.user.profile.save()
+
+            pv_id = redis.get(f'verification:{request.user.id}:pv').decode('utf-8')
+            pv = ProfileVerification.objects.get(pk=int(pv_id))
+            pv.success = True
+            pv.save()
 
             return JsonResponse({
                     'success': True,
