@@ -21,8 +21,8 @@ from django.urls import path, re_path
 
 from grants.views import (
     flag, grant_categories, grant_details, grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json,
-    grants_bulk_add, grants_cart_view, grants_stats_view, invoice, leaderboard, new_matching_partner, profile,
-    quickstart, subscription_cancel, grants_by_grant_type,
+    grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_stats_view, invoice, leaderboard,
+    new_matching_partner, profile, quickstart, subscription_cancel,
 )
 
 app_name = 'grants'

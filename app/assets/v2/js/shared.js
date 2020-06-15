@@ -1027,11 +1027,12 @@ const updateMultipleParams = (newParams) => {
     params.set(key, value);
   }
   let category_str = '';
-  if(params.get('type')){
+
+  if (params.get('type')) {
     category_str = params.get('type') + '/';
     params.delete('type');
   }
-  if(!params.get('category')){
+  if (!params.get('category')) {
     params.delete('category');
   }
 
