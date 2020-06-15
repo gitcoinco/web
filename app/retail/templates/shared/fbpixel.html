@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% not pref_do_not_track %}
+{% if not pref_do_not_track %}
 {% if env == 'prod' %}
 <!-- Facebook Pixel Code -->
 <script>
