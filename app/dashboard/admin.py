@@ -29,8 +29,8 @@ from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
-    TokenApproval, TribeMember, UserAction, UserVerificationModel, ContributionFlag,
+    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory, 
+    Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel, ContributionFlag,
 )
 
 
@@ -492,6 +492,12 @@ class ContributionFlagAdmin(admin.ModelAdmin):
     list_display = ['contribution', 'profile', 'comments', 'processed', 'comments_admin']
     raw_id_fields = ['contribution', 'profile']
 
+    
+class ProfileVerificationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
+                    'phone_number', 'carrier_error_code']
+    raw_id_fields = ['profile']
+
 
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
@@ -531,3 +537,4 @@ admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
 admin.site.register(ContributionFlag, ContributionFlagAdmin)
+admin.site.register(ProfileVerification, ProfileVerificationAdmin)
