@@ -1314,6 +1314,7 @@ class MatchPledge(SuperModel):
         ('tech', 'tech'),
         ('media', 'media'),
         ('health', 'health')
+        ('change', 'change')
     ]
 
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
