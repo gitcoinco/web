@@ -250,7 +250,7 @@ def grants_by_grant_type(request, grant_type):
 
     # hack for vivek
     if grant_type == 'change':
-        new_url = request.get_full_path().replace('/change','/crypto-for-change')
+        new_url = request.get_full_path().replace('/change','/crypto-for-black-lives')
         return redirect(new_url)
     if grant_type == 'crypto-for-change':
         grant_type = 'change'
