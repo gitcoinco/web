@@ -108,6 +108,7 @@ $(document).ready(function() {
 
     if (!username && !secret_link) {
       _alert('Please enter a recipient', 'error');
+      unloading_button($('#send'));
       return;
     }
 
@@ -147,7 +148,10 @@ $(document).ready(function() {
         $('#token').append(html);
       }
     });
-    $('#token').val('0x0000000000000000000000000000000000000000').select2();
+    let addr = tokenNameToDetails(document.web3network, document.default_token)['addr'];
+
+    console.log(addr);
+    $('#token').val(addr).select2();
     jQuery('#token').select2();
   });
 
@@ -177,202 +181,195 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
     return;
   }
   // setup
-  web3.eth.getAccounts(function(error, accounts) {
-    if (error) {
-      _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
-      failure_callback();
-      return;
-    }
+  if (selectedAccount === 'undefined') {
 
-    const fromAccount = accounts[0] ? accounts[0] : document.web3_address;
+    _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
+    failure_callback();
+    return;
+  }
+  const fromAccount = selectedAccount;
 
-    if (typeof fromAccount == 'undefined') {
-      _alert({ message: gettext('You must unlock & enable Gitcoin via your web3 wallet to continue.') }, 'warning');
-      failure_callback();
-      return;
-    }
+  if (username.indexOf('@') == -1) {
+    username = '@' + username;
+  }
+  var gas_multiplier = 1.008;
+  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((get_gas_price() * gas_multiplier) / Math.pow(10, 9)));
+  var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
+  var tokenDetails = tokenAddressToDetails(tokenAddress);
+  var tokenName = 'ETH';
+  var denomFactor = Math.pow(10, 18);
+  var creation_time = Math.round((new Date()).getTime() / 1000);
+  var salt = parseInt((Math.random() * 1000000));
 
-    if (username.indexOf('@') == -1) {
-      username = '@' + username;
-    }
+  if (!isSendingETH) {
+    tokenName = tokenDetails.name;
+    denomFactor = Math.pow(10, tokenDetails.decimals);
+  }
 
-    var gas_multiplier = 1.008;
-    var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((get_gas_price() * gas_multiplier) / Math.pow(10, 9)));
-    var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
-    var tokenDetails = tokenAddressToDetails(tokenAddress);
-    var tokenName = 'ETH';
-    var denomFactor = Math.pow(10, 18);
-    var creation_time = Math.round((new Date()).getTime() / 1000);
-    var salt = parseInt((Math.random() * 1000000));
+  check_balance_and_alert_user_if_not_enough(
+    tokenAddress,
+    amount,
+    'You do not have enough ' + tokenName + ' to send this tip.');
 
-    if (!isSendingETH) {
-      tokenName = tokenDetails.name;
-      denomFactor = Math.pow(10, tokenDetails.decimals);
-    }
+  var amountInDenom = amount * 1.0 * denomFactor;
+  // validation
+  var hasEmail = email != '';
 
-    check_balance_and_alert_user_if_not_enough(
-      tokenAddress,
-      amount,
-      'You do not have enough ' + tokenName + ' to send this tip.');
+  // validation
+  if (hasEmail && !validateEmail(email)) {
+    _alert({ message: gettext('To Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
+    failure_callback();
+    return;
+  }
+  if (from_email != '' && !validateEmail(from_email)) {
+    _alert({ message: gettext('From Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
+    failure_callback();
+    return;
+  }
+  if (!isNumeric(amountInDenom) || amountInDenom == 0) {
+    _alert({ message: gettext('You must enter an number for the amount!') }, 'warning');
+    failure_callback();
+    return;
+  }
+  if (username == '') {
+    _alert({ message: gettext('You must enter a username.') }, 'warning');
+    failure_callback();
+    return;
+  }
+  if (!accept_tos) {
+    _alert({ message: gettext('You must accept the terms.') }, 'warning');
+    failure_callback();
+    return;
+  }
 
-    var amountInDenom = amount * 1.0 * denomFactor;
-    // validation
-    var hasEmail = email != '';
+  var got_metadata_callback = function(metadata) {
+    const url = '/tip/send/3';
 
-    // validation
-    if (hasEmail && !validateEmail(email)) {
-      _alert({ message: gettext('To Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
-      failure_callback();
-      return;
-    }
-    if (from_email != '' && !validateEmail(from_email)) {
-      _alert({ message: gettext('From Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
-      failure_callback();
-      return;
-    }
+    metadata['creation_time'] = creation_time;
+    metadata['salt'] = salt;
+    metadata['source_url'] = document.location.href;
 
-    if (!isNumeric(amountInDenom) || amountInDenom == 0) {
-      _alert({ message: gettext('You must enter a number for the amount!') }, 'warning');
-      failure_callback();
-      return;
-    }
+    fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        username: username,
+        email: email,
+        tokenName: tokenName,
+        amount: amount,
+        comments_priv: comments_priv,
+        comments_public: comments_public,
+        expires_date: expires,
+        github_url: github_url,
+        from_email: from_email,
+        from_name: from_name,
+        tokenAddress: tokenAddress,
+        network: document.web3network,
+        from_address: fromAccount,
+        is_for_bounty_fulfiller: is_for_bounty_fulfiller,
+        metadata: metadata
+      })
+    }).then(function(response) {
+      return response.json();
+    }).then(function(json) {
+      var is_success = json['status'] == 'OK';
+      var _class = is_success ? 'info' : 'error';
 
-    if (username == '' && !noAvailableUser) {
-      _alert({ message: gettext('You must enter a username.') }, 'warning');
-      failure_callback();
-      return;
-    }
+      if (!is_success) {
+        _alert(json['message'], _class);
+        failure_callback();
+      } else {
+        var is_direct_to_recipient = metadata['is_direct'];
+        var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
+        var post_send_callback = function(errors, txid) {
+          indicateMetamaskPopup(true);
+          if (errors) {
+            _alert({ message: gettext('There was an error.') }, 'warning');
+            failure_callback();
+          } else {
+            const url = '/tip/send/4';
 
-    if (!accept_tos) {
-      _alert({ message: gettext('You must accept the terms.') }, 'warning');
-      failure_callback();
-      return;
-    }
+            fetch(url, {
+              method: 'POST',
+              credentials: 'include',
+              body: JSON.stringify({
+                destinationAccount: destinationAccount,
+                txid: txid,
+                is_direct_to_recipient: is_direct_to_recipient,
+                creation_time: creation_time,
+                salt: salt
+              })
+            }).then(function(response) {
+              return response.json();
+            }).then(function(json) {
+              var is_success = json['status'] == 'OK';
 
-    var got_metadata_callback = function(metadata) {
-      const url = '/tip/send/3';
+              if (!is_success) {
+                _alert(json, _class);
+              } else {
+                clear_metadata();
+                set_metadata();
+                success_callback(txid);
+              }
+            });
+          }
+        };
 
-      metadata['creation_time'] = creation_time;
-      metadata['salt'] = salt;
-      metadata['source_url'] = document.location.href;
-
-      fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify({
-          username: username,
-          email: email,
-          tokenName: tokenName,
-          amount: amount,
-          comments_priv: comments_priv,
-          comments_public: comments_public,
-          expires_date: expires,
-          github_url: github_url,
-          from_email: from_email,
-          from_name: from_name,
-          tokenAddress: tokenAddress,
-          network: document.web3network,
-          from_address: fromAccount,
-          is_for_bounty_fulfiller: is_for_bounty_fulfiller,
-          metadata: metadata
-        })
-      }).then(function(response) {
-        return response.json();
-      }).then(function(json) {
-        var is_success = json['status'] == 'OK';
-        var _class = is_success ? 'info' : 'error';
-
-        if (!is_success) {
-          _alert(json['message'], _class);
-          failure_callback();
+        indicateMetamaskPopup();
+        if (isSendingETH) {
+          web3.eth.sendTransaction({
+            from: fromAccount,
+            to: destinationAccount,
+            value: amountInDenom
+          }).once('transactionHash', (txnHash, errors) => {
+            console.log(txnHash);
+            post_send_callback(errors, txnHash);
+          });
         } else {
-          var is_direct_to_recipient = metadata['is_direct'];
-          var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
-          var post_send_callback = function(errors, txid) {
-            indicateMetamaskPopup(true);
-            if (errors) {
-              _alert({ message: gettext('There was an error.') }, 'warning');
-              failure_callback();
-            } else {
-              const url = '/tip/send/4';
+          var send_erc20 = function() {
+            var token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-              fetch(url, {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify({
-                  destinationAccount: destinationAccount,
-                  txid: txid,
-                  is_direct_to_recipient: is_direct_to_recipient,
-                  creation_time: creation_time,
-                  salt: salt
-                })
-              }).then(function(response) {
-                return response.json();
-              }).then(function(json) {
-                var is_success = json['status'] == 'OK';
-
-                if (!is_success) {
-                  _alert(json, _class);
-                } else {
-                  clear_metadata();
-                  set_metadata();
-                  success_callback(txid);
-                }
-              });
-            }
+            token_contract.methods.transfer(destinationAccount, web3.utils.toHex(amountInDenom)).send({from: fromAccount}, post_send_callback);
           };
+          var send_gas_money_and_erc20 = function() {
+            _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
 
-          indicateMetamaskPopup();
-          if (isSendingETH) {
             web3.eth.sendTransaction({
               from: fromAccount,
               to: destinationAccount,
-              value: amountInDenom
-            }, post_send_callback);
+              value: gas_money
+            }).once('transactionHash', send_erc20);
+          };
+
+          if (is_direct_to_recipient) {
+            send_erc20();
           } else {
-            var send_erc20 = function() {
-              var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-
-              token_contract.transfer(destinationAccount, amountInDenom, {}, post_send_callback);
-            };
-            var send_gas_money_and_erc20 = function() {
-              _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
-              web3.eth.sendTransaction({
-                to: destinationAccount,
-                value: gas_money
-              }, send_erc20);
-            };
-
-            if (is_direct_to_recipient) {
-              send_erc20();
-            } else {
-              send_gas_money_and_erc20();
-            }
-
+            send_gas_money_and_erc20();
           }
+
         }
-      });
-    };
-
-    // send direct, or not?
-    const url = '/tip/address/' + username;
-
-    fetch(url, {method: 'GET', credentials: 'include'}).then(function(response) {
-      return response.json();
-    }).then(function(json) {
-      if (json.addresses.length > 0) {
-        // pay out directly
-        got_metadata_callback({
-          'is_direct': true,
-          'direct_address': json.addresses[0],
-          'creation_time': creation_time,
-          'salt': salt
-        });
-      } else {
-        // pay out via secret sharing algo
-        wait_for_metadata(got_metadata_callback);
       }
     });
+  };
+
+  // send direct, or not?
+  const url = '/tip/address/' + username;
+
+  fetch(url, {method: 'GET', credentials: 'include'}).then(function(response) {
+    return response.json();
+  }).then(function(json) {
+    if (json.addresses.length > 0) {
+      // pay out directly
+      got_metadata_callback({
+        'is_direct': true,
+        'direct_address': json.addresses[0],
+        'creation_time': creation_time,
+        'salt': salt
+      });
+    } else {
+      // pay out via secret sharing algo
+      wait_for_metadata(got_metadata_callback);
+    }
   });
 }
 

@@ -3,6 +3,14 @@ $(document).ready(function() {
     document.location = $(this).attr('href');
   });
 
+  if ($('.load-more').length) {
+    $(window).scroll(function() {
+      if ($('.load-more').isInViewport()) {
+        $('.load-more').click();
+      }
+    });
+  }
+
   $('#kudos-section').on('click keypress', '.flip-card', e => {
     if ($(e.target).is('a')) {
       e.stopPropagation();
@@ -178,7 +186,15 @@ $(document).ready(function() {
 
   }
 
+  let loadingKudos = false;
+
   $(document).on('click', '.load-more', function() {
+
+    if (loadingKudos) {
+      return;
+    }
+
+    loadingKudos = true;
     var address = $('#preferred-address').prop('title');
     var link = $(this);
     var page = link.data('page');
@@ -200,6 +216,7 @@ $(document).ready(function() {
         'csrfmiddlewaretoken': '{{csrf_token}}' // from index.html
       },
       success: function(data) {
+        loadingKudos = false;
         // if there are still more pages to load,
         // add 1 to the "Load More Posts" link's page data attribute
         // else hide the link
@@ -207,6 +224,7 @@ $(document).ready(function() {
           link.data('page', page + 1);
         } else {
           link.hide();
+          $(window).off('scroll');
         }
         // append html to the posts div
         var elem = '#' + request;
@@ -214,6 +232,7 @@ $(document).ready(function() {
         $(elem + ' div').first().append(data.kudos_html);
       },
       error: function(xhr, status, error) {
+        loadingKudos = false;
         // shit happens friends!
       }
     });

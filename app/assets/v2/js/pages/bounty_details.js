@@ -2,11 +2,6 @@
 /* eslint no-redeclare: "warn" */
 /* eslint no-loop-func: "warn" */
 
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 const _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
@@ -536,6 +531,7 @@ var update_title = function() {
 };
 
 var showWarningMessage = function(txid) {
+  console.log(txid);
   const secondsBetweenQuoteChanges = 30;
   let interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 
@@ -598,7 +594,7 @@ var showWarningMessage = function(txid) {
 var wait_for_tx_to_mine_and_then_ping_server = function() {
   console.log('checking for updates');
   if (typeof document.pendingIssueMetadata != 'undefined') {
-    var txid = document.pendingIssueMetadata['txid'];
+    var txid = document.pendingIssueMetadata.txid.transactionHash;
 
     console.log('waiting for web3 to be available');
     callFunctionWhenweb3Available(function() {
@@ -1741,7 +1737,7 @@ var main = function() {
 
         if (isWithinAcceptableTimeRange) {
           // update from web3
-          const txid = document.pendingIssueMetadata['txid'];
+          const txid = document.pendingIssueMetadata.txid.transactionHash;
 
           showWarningMessage(txid);
           wait_for_tx_to_mine_and_then_ping_server();

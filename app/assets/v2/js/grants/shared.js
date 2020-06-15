@@ -183,36 +183,6 @@ $(document).ready(function() {
     }
   }
 
-  compiledSplitter = compiledSplitter0 ? compiledSplitter0 : null;
+  compiledSplitter = typeof compiledSplitter0 != 'undefined' ? compiledSplitter0 : null;
 
-  const listen_web3_1_changes = () => {
-    if (typeof web3 == 'undefined' || typeof web3.eth.getCoinbase() == 'undefined') {
-      return;
-    }
-    web3.eth.getCoinbase().then(function(result) {
-      show_error_banner(result);
-      if (result) {
-        web3.eth.getBalance(result, function(err, balance) {
-          document.balance = balance;
-        });
-
-        web3.eth.net.getId((err, network) => {
-          currentNetwork(getNetwork(network));
-        });
-
-        web3.eth.getAccounts((error, accounts) => {
-          if (accounts && accounts[0]) {
-            document.web3_address = accounts[0];
-          }
-        });
-      } else {
-        currentNetwork('locked');
-      }
-    }).catch(err => {
-      show_error_banner(null, true);
-    });
-  };
-
-  setInterval(listen_web3_1_changes, 5000);
-  listen_web3_1_changes();
 });

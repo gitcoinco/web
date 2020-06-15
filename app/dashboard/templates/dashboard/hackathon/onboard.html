@@ -20,7 +20,7 @@
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
+    {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static 'v2/css/lib/quill-snow.css' %}">
 
     <style>
@@ -140,7 +140,7 @@
                 <p class="pt-4 mb-4">Until then, we recommend a few different ways to prepare:</p>
                 {% endif %}
                 <ul  class="mt-4">
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="{% url 'hackathon' hackathon.slug %}?tab=hackathon:{{hackathon.id}}">Introduce yourself on Townsquare</a> </li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="{% url 'hackathon' hackathon.slug %}townsquare">Introduce yourself on Townsquare</a> </li>
                     <li class="mb-3 gc-text-blue font-weight-bold">Look out for upcoming workshop invites in your email inbox</li>
                     <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors">Checkout sponsors below and build your team</a></li>
                     <li class="mb-3 gc-text-blue font-weight-bold">Invite your friends to hack and earn a Kudos</li>
