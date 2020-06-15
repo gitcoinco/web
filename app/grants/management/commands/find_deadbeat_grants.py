@@ -30,6 +30,6 @@ class Command(BaseCommand):
         from grants.models import Grant
         from django.utils import timezone
         before = timezone.now() - timezone.timedelta(hours=6)
-        grants = Grant.objects.filter(contract_address='0x0', active=True, created_on__lt=before)
+        grants = Grant.objects.filter(contract_address='0x0', contract_version__lt=2, active=True, created_on__lt=before)
         if grants.count():
             notify_deadbeat_grants(grants)
