@@ -241,10 +241,20 @@ def grants_stats_view(request):
 
 def grants(request):
     """Handle grants explorer."""
-    return grants_by_grant_type(request, request.GET.get('type', 'all'))
+    
+    _type = request.GET.get('type', 'all')
+    return grants_by_grant_type(request, _type)
 
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
+
+    # hack for vivek
+    if grant_type == 'change':
+        new_url = request.get_full_path().replace('/change','/crypto-for-change')
+        return redirect(new_url)
+    if grant_type == 'crypto-for-change':
+        grant_type = 'change'
+
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
