@@ -490,7 +490,7 @@ async function getAllowance(address, tokenAddress) {
  *  * @param {string} weiamount (optional)- the token address
  *  */
 async function approveAllowance(address, tokenAddress, weiamount) {
-  let defaultAmount = new web3.utils.BN(String(10 * 18 * 9999999999999999999999999999999999999999999999999999)).toNumber();
+  let defaultAmount = new web3.utils.BN(BigInt(10 * 18 * 9999999999999999999999999999999999999999999999999999)).toString();
   let amount = weiamount || defaultAmount; // uint256
   let approved;
   let tokensContract = new web3.eth.Contract(minABI, tokenAddress);
