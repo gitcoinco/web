@@ -1,0 +1,26 @@
+{% load i18n static humanize grants_extra %}
+
+{% for grant in grants %}
+  <form class="js-addDetailToCart-form">
+        {% include 'grants/shared/hidden_inputs.html' %}
+  </form>
+{% endfor %}
+
+    {% include 'shared/footer_scripts.html' %}
+  <script src="{% static "v2/js/grants/funding.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+
+<script>
+$(document).ready(function() {
+
+    $('.js-addDetailToCart-form').each(function() {
+
+        const formData = objectifySerialized($(this).serializeArray());
+        CartData.addToCart(formData);
+    });
+    setTimeout(function(){
+        document.location.href = "/grants/cart";
+    }, 50);
+});
+</script>

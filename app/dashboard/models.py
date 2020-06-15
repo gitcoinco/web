@@ -1671,7 +1671,15 @@ class SendCryptoAsset(SuperModel):
 
         """
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        
+        #handle scenario in which a txn has been replaced
+        if self.tx_status in ['pending', 'dropped', 'unknown', '']:
+            new_tx = getReplacedTX(self.txid)
+            if new_tx:
+                self.txid = new_tx
+
         return bool(self.tx_status)
 
     def update_receive_tx_status(self):
@@ -2252,7 +2260,7 @@ class Activity(SuperModel):
         if not self.metadata.get('video'):
             return 0
         try:
-            from app.redis_service import RedisService
+            from app.services import RedisService
             redis = RedisService().redis
             result = redis.get(self.pk)
             if not result:
@@ -2645,6 +2653,10 @@ class Profile(SuperModel):
         default=True,
         help_text='If this option is chosen, we will remove your wallet information all together',
     )
+    pref_do_not_track = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will not put GA/FB tracking on pages that you browse',
+    )
     trust_profile = models.BooleanField(
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
@@ -2731,6 +2743,10 @@ class Profile(SuperModel):
     following_count = models.IntegerField(default=0, db_index=True, help_text='how many users are they following')
     earnings_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user earned crypto with Gitcoin')
     spent_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user spent crypto with Gitcoin')
+    sms_verification = models.BooleanField(default=False, help_text=_('SMS verification process'))
+    validation_attempts = models.PositiveSmallIntegerField(default=0, help_text=_('Number of generated SMS codes to validate account'))
+    last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
+    encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
@@ -2976,7 +2992,7 @@ class Profile(SuperModel):
         if not self.chat_id:
             return 'offline'
         try:
-            from app.redis_service import RedisService
+            from app.services import RedisService
             redis = RedisService().redis
             status = redis.get(f"chat:{self.chat_id}")
             if not status:
@@ -5204,3 +5220,19 @@ class ObjectView(SuperModel):
 
     def __str__(self):
         return f"{self.viewer} => {self.target} on {self.created_on}"
+
+
+class ProfileVerification(SuperModel):
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='verifications')
+    caller_type = models.CharField(max_length=20, null=True, blank=True)
+    carrier_error_code = models.CharField(max_length=10, null=True, blank=True)
+    mobile_network_code = models.CharField(max_length=10, null=True, blank=True)
+    mobile_country_code = models.PositiveSmallIntegerField(default=0, null=True)
+    carrier_name = models.CharField(max_length=100, null=True, blank=True)
+    carrier_type = models.CharField(max_length=20, null=True, blank=True)
+    country_code = models.CharField(max_length=5, null=True, blank=True)
+    phone_number = models.CharField(max_length=150, null=True, blank=True)
+    delivery_method = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.phone_number} ({self.caller_type}) from {self.country_code} request ${self.delivery_method} code at {self.created_on}'
