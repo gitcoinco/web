@@ -1313,7 +1313,7 @@ class MatchPledge(SuperModel):
     PLEDGE_TYPES = [
         ('tech', 'tech'),
         ('media', 'media'),
-        ('health', 'health')
+        ('health', 'health'),
         ('change', 'change')
     ]
 
