@@ -447,12 +447,14 @@ Vue.component('grants-cart', {
      */
     toWeiString(number, decimals, scaleFactor = 100) {
       let wei;
+
       try {
         wei = web3.utils.toWei(String(number));
-      } catch {
+      } catch(e) { 
         // When numbers are too small toWei fails because there's too many decimal places
         wei = Math.round(number * 10 ** 18);
       }
+
       const base = new BN(10, 10);
       const factor = base.pow(new BN(18 - decimals, 10));
       const scale = new BN(scaleFactor, 10);
@@ -814,6 +816,7 @@ Vue.component('grants-cart', {
         CartData.setCart(this.grantData);
         for (let i = 0; i < this.grantData.length; i += 1) {
           const verification_required_to_get_match = false;
+
           if (!document.verified && verification_required_to_get_match) {
             this.grantData[i].grant_donation_clr_match = 0;
           } else {
@@ -890,8 +893,9 @@ var update_cart_title = function() {
 $(document).ready(function() {
   $(document).on('keyup', 'input[name=telephone]', function(e) {
     var number = $(this).val();
-    if(number[0] != '+'){
-      number = "+" + number;
+
+    if (number[0] != '+') {
+      number = '+' + number;
       $(this).val(number);
     }
   });
