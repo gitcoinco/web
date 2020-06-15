@@ -121,6 +121,10 @@ h4,
   color: #0FCE7C;
 }
 
+.gc-text-yellow {
+  color: #FFCE08;
+}
+
 .text-black-60 {
   color: rgba(0, 0, 0, 0.6)!important;
 }
