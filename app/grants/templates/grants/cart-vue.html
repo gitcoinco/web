@@ -339,13 +339,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div class="mx-5 mt-5 mb-4 text-center" v-if="validationStep == 'intro'">
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
-                    <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why is Gitcoin asking for my SMS number? <b>&rArr;</b></a>
                   </div>
-                  <p class="mb-2 font-subheader text-left"><strong>Please verify your phone number.</strong></p>
-                  <p class="mb-4 font-subheader text-left">This process is optional - verifying increases your trust level + the impact of your contributions. You can still contribute to grants without verifying, but your matching impact may be reduced, especially in cases of many contributions, until you are verified. </p>
+                  <p class="mb-2 font-subheader text-left"><strong>It's instant, private & secure.</strong></p>
+                  <p class="mb-4 font-subheader text-left">
+                  1) This process is optional.
+                  <BR>
+                  2) Verifying increases your trust level + the impact of your contributions. 
+                  <BR>
+                  3) You can still contribute to grants without verifying, but your matching impact may be reduced until you are verified, especially in cases of many contributions.
+                  <BR>
+                  4) Gitcoin has gone to <a target="_blank" rel="noopener noreferrer" class="gc-text-blue" href="https://twitter.com/owocki/status/1272149204287160320">extreme lengths to preserve your privacy</a>.  Please only verify your SMS on sites you know and trust.
+                  <BR>
+                  5) <a target="_blank" rel="noopener noreferrer" class="gc-text-blue" href="https://twitter.com/owocki/status/1271088915982675974">Click here to read more on why Gitcoin is asking for your SMS number.</a>
+                </p>
+
                   <b-button @click="validationStep='requestVerification'" class="btn-gc-blue mb-2" size="lg">Verify
                    Instantly</b-button>
-                  <p class="mb-1 font-subheader text-center font-smaller-2 grey">(For privacy preservation purposes, Gitcoin does NOT store your phone number)</p>
+                  <p class="mb-1 font-subheader text-center font-smaller-2 grey">
+                    (For privacy preservation purposes, Gitcoin does NOT store your phone number <i class="fas fa-lock"></i>)
+                  </p>
                   <div class="mb-1 font-subheader text-center">
                     - or -
                     <a id="verify_offline" href="#">
@@ -367,7 +379,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div class="mx-5 my-5 text-center" v-if="validationStep == 'requestVerification'">
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
-                    <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why is Gitcoin asking for my SMS number? <b>&rArr;</b></a>
                   </div>
                   <p class="mb-5 font-subheader">We will send you a verification code.</p>
                   <vue-tel-input ref="tel-input" :validCharactersOnly="true" @validate="isValidNumber" v-model="phone"
@@ -390,7 +401,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div class="mx-5 my-5 text-center" v-if="validationStep == 'verifyNumber'">
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
-                    <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why is Gitcoin asking for my SMS number? <b>&rArr;</b></a>
                   </div>
                   <p class="mb-5 font-subheader">Enter the verification code sent to your number.</p>
                   <input class="form-control" type="number" required v-model="code">
