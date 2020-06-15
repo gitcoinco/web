@@ -69,7 +69,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
 matching_live = '(💰$175K Match LIVE!) '
-live_now = '❇️ LIVE NOW! Up to $150k Matching Funding on Gitcoin Grants'
+live_now = '❇️ LIVE NOW! Up to $175k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
 total_clr_pot = 175000
 clr_round = 6
