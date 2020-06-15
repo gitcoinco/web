@@ -308,6 +308,10 @@
     {% endif %}
   </nav>
   <div class="d-flex justify-content-md-around justify-content-around justify-content-md-end">
+    <a class="nav-link position-relative" href="https://github.com/gitcoinco/web/issues/new/choose" role="button" target="_blank">
+      <img src="{% static 'v2/images/help_bot.png' %}" class="help-bot">
+      <span class="nav-label">Help</span>
+    </a>
     {% if user.is_authenticated %}
     {% include 'shared/chat_nav.html' %}
     {% include 'shared/notifications.html' %}
