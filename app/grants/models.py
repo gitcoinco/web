@@ -34,7 +34,6 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
-from economy.tx import getReplacedTX
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
@@ -1164,6 +1163,7 @@ class Contribution(SuperModel):
         """Updates tx status."""
         from economy.tx import grants_transaction_validator
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
         if self.tx_override:
             return
 
