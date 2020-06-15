@@ -30,10 +30,6 @@ from rest_framework import routers, serializers, viewsets
 from rest_framework.pagination import PageNumberPagination
 from retail.helpers import get_ip
 
-from bounty_requests.models import (
-    BountyRequest
-)
-
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
     ProfileSerializer, SearchHistory, TribeMember,
