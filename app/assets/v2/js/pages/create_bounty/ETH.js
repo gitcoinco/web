@@ -115,7 +115,7 @@ const ethCreateBounty = async (data) => {
   const amountNoDecimal = amount;
 
   amount = amount * decimalDivisor;
-  const bigAmount = new web3.utils.BN(web3.utils.toWei(String(BigInt(amount), 'ether'))).toString();
+  const bigAmount = new web3.utils.BN(String(BigInt(amount))).toString();
 
   // Create the bounty object.
   // This function instantiates a contract from the existing deployed Standard Bounties Contract.
