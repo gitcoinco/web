@@ -159,9 +159,12 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
         print(key)
         result = redis.incr(key)
         if pk:
-            ObjectView.objects.create(
-                viewer=user,
-                target_id=pk,
-                target_type=ContentType.objects.filter(model=content_type).first(),
-                view_type=view_type,
-                )
+            try:
+                ObjectView.objects.create(
+                    viewer=user,
+                    target_id=pk,
+                    target_type=ContentType.objects.filter(model=content_type).first(),
+                    view_type=view_type,
+                    )
+            except:
+                pass # fix for https://sentry.io/organizations/gitcoin/issues/1715509732/
