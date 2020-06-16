@@ -47,7 +47,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.frequency_unit = package.get('frequency_unit', 'days')
         subscription.token_address = package.get('token_address', '')
         subscription.token_symbol = package.get('token_symbol', '')
-        subscription.gas_price = (float(subscription.amount_per_period) / (fee_pct*100))
+        subscription.gas_price = (float(subscription.amount_per_period) * (fee_pct/100))
         subscription.new_approve_tx_id = package.get('sub_new_approve_tx_id', '0x0')
         subscription.split_tx_id = package.get('split_tx_id', '0x0')
         subscription.num_tx_approved = package.get('num_tx_approved', 1)

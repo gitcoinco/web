@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from grants.models import *
 from grants.models import Contribution, PhantomFunding
-from grants.views import next_round_start, round_end, clr_round
+from grants.views import clr_round, next_round_start, round_end
 
 ############################################################################3
 # total stats
