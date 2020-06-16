@@ -376,9 +376,9 @@ def grants_by_grant_type(request, grant_type):
     ]
 
     sub_categories = []
-    for keyword in [grant_type['keyword'] for grant_type in grant_types]:
+    for _keyword in [grant_type['keyword'] for grant_type in grant_types]:
         sub_category = {}
-        sub_category[keyword] = [tuple[0] for tuple in basic_grant_categories(keyword)]
+        sub_category[_keyword] = [tuple[0] for tuple in basic_grant_categories(_keyword)]
         sub_categories.append(sub_category)
 
     title = matching_live + str(_('Grants'))
