@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% if not pref_do_not_track %}
 {% if env == 'prod' %}
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVPQHKX"
@@ -26,4 +26,5 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVPQHKX&gtm_auth=r-MIGnPm-IKb853B2LYvsg&gtm_preview=env-5&gtm_cookies_win=x"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
+{% endif %}
 {% endif %}

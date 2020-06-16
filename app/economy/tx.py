@@ -53,7 +53,6 @@ get_decimals = lambda contract : int(contract.functions.decimals().call())
 
 # scrapes etherscan to get the replaced tx
 def getReplacedTX(tx):
-    sleep(2)  # 2s delay to avoid getting the finger from etherscan
     response = requests.get(ethurl + tx, headers=headers)
     soup = BeautifulSoup(response.content, "html.parser")
     # look for span that contains the dropped&replaced msg
