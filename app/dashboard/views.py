@@ -2556,7 +2556,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         if profile.is_org:
             activity_tabs = [
                 (_('All Activity'), all_activities),
-                ]
+                (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
+            ]
 
         page = request.GET.get('p', None)
 
