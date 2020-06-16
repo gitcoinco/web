@@ -52,17 +52,12 @@
                 CLR MATCH ROUND 6
             </h2>
           </div>
-          <div class="col-6 float-right">
+          <div class="col-6 float-right pr-0">
             <h2 class="font-title font-weight-bold amount pt-1 mb-2">
               {{grant.amount_received_in_round|floatformat:2}} DAI
             </h2>
             <p class="amount mb-2 font-caption font-weight-semibold">
             raised from {{grant.positive_round_contributor_count}} contributors 
-            {% if grant.negative_round_contributor_count %}
-              &
-              {{grant.negative_round_contributor_count}}
-              negative 
-            {% endif %}
             </p>
           </div>
           <div class="col-6">
@@ -90,6 +85,10 @@
               + Add to Cart
             </button>
           </form>
+          {% else %}
+            <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1">
+              <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
+            </button>
           {% endif %}
         </div>
       {% endif %}

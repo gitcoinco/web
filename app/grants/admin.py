@@ -229,7 +229,7 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'github_created_on', 'from_ip_address', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
+    list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'txn_url', 'amount', 'token', 'tx_cleared', 'success']
     readonly_fields = ['etherscan_links']
 
     def txn_url(self, obj):
@@ -242,6 +242,9 @@ class ContributionAdmin(GeneralAdmin):
 
     def token(self, obj):
         return obj.subscription.token_symbol
+
+    def grant(self, obj):
+        return obj.subscription.grant.title
 
     def amount(self, obj):
         return obj.subscription.amount_per_period

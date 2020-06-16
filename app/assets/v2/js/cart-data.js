@@ -13,6 +13,27 @@ class CartData {
     return idList.includes(grantId);
   }
 
+  static share_url(title) {
+    const donations = this.loadCart();
+    let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
+
+    for (let i = 0; i < donations.length; i += 1) {
+      const donation = donations[i];
+
+      bulk_add_cart += String(donation['grant_id']) + ',';
+    }
+
+    if (document.contxt['github_handle']) {
+      bulk_add_cart += ':' + document.contxt['github_handle'];
+    }
+
+    if (title && typeof title != 'undefined') {
+      bulk_add_cart += ':' + encodeURI(title);
+    }
+
+    return bulk_add_cart;
+  }
+
   static addToCart(grantData) {
     if (this.cartContainsGrantWithId(grantData.grant_id)) {
       return;

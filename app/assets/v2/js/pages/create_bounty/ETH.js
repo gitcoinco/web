@@ -113,9 +113,9 @@ const ethCreateBounty = async (data) => {
   const account = selectedAccount;
   console.log(selectedAccount)
   const amountNoDecimal = amount;
-
   amount = amount * decimalDivisor;
-  const bigAmount = new web3.utils.BN(String(BigInt(amount))).toString();
+
+  const bigAmount = new web3.utils.BN(BigInt(amount)).toString();
 
   // Create the bounty object.
   // This function instantiates a contract from the existing deployed Standard Bounties Contract.
@@ -244,8 +244,7 @@ const ethCreateBounty = async (data) => {
 
       approvedAllowance = await approveAllowance(
         bounty_address(),
-        tokenAddress,
-        bigAmount
+        tokenAddress
       );
     }
   }
@@ -287,9 +286,10 @@ const ethCreateBounty = async (data) => {
           });
         } else {
           const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+          const amountAsString = new web3.utils.BN(BigInt(amountInWei)).toString();
           const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-          token_contract.methods.transfer(to_address, web3.utils.toHex(amountInWei)).send({from: selectedAccount},
+          token_contract.methods.transfer(to_address, web3.utils.toHex(amountAsString)).send({from: selectedAccount},
             function(error, txnId) {
               indicateMetamaskPopup(true);
               if (error) {

@@ -83,7 +83,6 @@ $(document).ready(function() {
   if (typeof userSearch != 'undefined') {
     userSearch('.username-search', true);
   }
-  set_metadata();
   // jquery bindings
   $('#advanced_toggle').on('click', function() {
     advancedToggle();
@@ -174,6 +173,7 @@ function isNumeric(n) {
 
 
 function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller, noAvailableUser) {
+  set_metadata();
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();

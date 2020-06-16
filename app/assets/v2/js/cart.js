@@ -338,10 +338,20 @@ Vue.component('grants-cart', {
       window.location.href = `${window.location.origin}/login/github/?next=/grants/cart`;
     },
 
+    confirmClearCart() {
+      if (confirm('are you sure')) {
+        this.clearCart();
+      }
+    },
+
     clearCart() {
       CartData.setCart([]);
       this.grantData = [];
       update_cart_title();
+    },
+    shareCart() {
+      _alert('Cart URL copied to clipboard', 'success', 1000);
+      copyToClipboard(CartData.share_url());
     },
 
     removeGrantFromCart(id) {
@@ -630,14 +640,15 @@ Vue.component('grants-cart', {
           // Clear cart, redirect back to grants page, and show success alert
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
-          this.clearCart();
           var network = document.web3network;
 
-          if (network === 'rinkeby') {
-            window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
-          } else {
-            window.location.href = `${window.location.origin}/grants`;
-          }
+          setTimeout(function() {
+            if (network === 'rinkeby') {
+              window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
+            } else {
+              window.location.href = `${window.location.origin}/grants`;
+            }
+          }, 1500);
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
