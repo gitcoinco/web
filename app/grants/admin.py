@@ -148,7 +148,7 @@ class GrantAdmin(GeneralAdmin):
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
             eles.append(html)
-            for ele in instance.contributions.order_by('-subscription__amount_per_period_usdt'):
+            for ele in instance.contributions.filter(success=i).order_by('-subscription__amount_per_period_usdt'):
                 html = f" - <a href='{ele.admin_url}'>{ele}</a>"
                 eles.append(html)
 
