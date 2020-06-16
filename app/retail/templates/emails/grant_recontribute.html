@@ -36,9 +36,13 @@
 
 {% for grant in prev_grants %}
   <div class="grant-tile">
-    <img class="grant-image mr-2" src="{{ grant.image_url }}">
+    <a href="{{base_url}}{{ grant.url }}">
+      <img class="grant-image mr-2" src="{{ grant.image_url }}">
+    </a>
     <p class="grant-detail">
-      <b>{{ grant.title }}</b>
+      <a href="{{base_url}}{{ grant.url }}">
+        <b>{{ grant.title }}</b>
+      </a>
       <br>
       <span class="grey">You funded <b>{{ grant.amount }} {{ grant.token_symbol }} </b>last round</span>
     </p>

@@ -41,4 +41,7 @@ class Command(BaseCommand):
         contributor_profiles = Profile.objects.filter(grant_contributor__subscription_contribution__success=True, grant_contributor__subscription_contribution__created_on__gte=datetime.datetime(*prev_round_start), grant_contributor__subscription_contribution__created_on__lte=datetime.datetime(*prev_round_end)).distinct()
         
         for contributor_profile in contributor_profiles:
-            grant_recontribute(contributor_profile, prev_round_start, prev_round_end, next_round, next_round_start, next_round_end, match_pool)
+            try:
+                grant_recontribute(contributor_profile, prev_round_start, prev_round_end, next_round, next_round_start, next_round_end, match_pool)
+            except:
+                pass

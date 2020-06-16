@@ -865,6 +865,7 @@ def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_rou
         if total_contribution_to_grant:
             prev_grants.append({
                 'id': grant.id,
+                'url': grant.url[1:],
                 'title': grant.title,
                 'image_url': grant.logo.url if grant.logo else f'{settings.STATIC_URL}v2/images/emails/grants-symbol-pos.png',
                 'amount': format(total_contribution_to_grant, '.3f'),
@@ -878,6 +879,7 @@ def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_rou
         'match_pool': match_pool,
         'email_style': email_style,
         'prev_grants': prev_grants,
+        'base_url': settings.BASE_URL,
         'bulk_add_url': "https://gitcoin.co/grants/cart/bulk-add/"+','.join(str(grant['id']) for grant in prev_grants),
         'hide_bottom_logo': True,
     }
