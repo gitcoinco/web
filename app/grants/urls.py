@@ -51,7 +51,7 @@ urlpatterns = [
         invoice,
         name='contribution_invoice'
     ),
-    path('cart/bulk-add/<str:grant_ids>', grants_bulk_add, name='grants_bulk_add'),
+    path('cart/bulk-add/<str:grant_str>', grants_bulk_add, name='grants_bulk_add'),
     path('cart', grants_cart_view, name='cart'),
     path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),

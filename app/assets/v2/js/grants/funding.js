@@ -19,12 +19,11 @@ $(document).ready(function() {
 
     if (donations.length) {
       let cart_html = 'You just funded: ';
-      let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
+      let bulk_add_cart = CartData.share_url();
 
       for (let i = 0; i < donations.length; i += 1) {
         const donation = donations[i];
 
-        bulk_add_cart += String(donation['grant_id']) + ',';
         cart_html += '<li><a href=' + donation.grant_url + ' target=_blank>' + donation['grant_title'] + '</a> for ' + donation['grant_donation_amount'] + ' ' + donation['grant_donation_currency'] + ' (+' + donation['grant_donation_clr_match'] + ' DAI match)</li>';
       }
       cart_html += '<HR><a href=' + bulk_add_cart + ' target=_blank>Here is a handy link</a> for sharing this collection with others.';

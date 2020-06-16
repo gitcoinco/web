@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import datetime
+import hashlib
 import json
 import logging
 import random
@@ -40,6 +41,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
+from app.services import RedisService
 from app.settings import EMAIL_ACCOUNT_VALIDATION
 from app.utils import get_profile
 from cacheops import cached_view
@@ -917,10 +919,31 @@ def grants_cart_view(request):
     return response
 
 
-def grants_bulk_add(request, grant_ids):
-    grant_ids = [int(ele) for ele in grant_ids.split(',') if ele and ele.isnumeric() ]
+def grants_bulk_add(request, grant_str):
+    
+    redis = RedisService().redis
+    key = hashlib.md5(grant_str.encode('utf')).hexdigest()
+    views = redis.incr(key)
+
+    grant_ids = grant_str.split(':')[0].split(',')
+    grant_ids = [int(ele) for ele in grant_ids if ele and ele.isnumeric() ]
+    by_whom = ""
+    prefix = ""
+    try:
+        by_whom = f"by {grant_str.split(':')[1]}"
+        prefix = f"{grant_str.split(':')[2]} : "
+    except:
+        pass
+    grants = Grant.objects.filter(pk__in=grant_ids)
+    grant_titles = ", ".join([grant.title for grant in grants])
+    title = f"{prefix}{grants.count()} Grants in Shared Cart {by_whom} : Viewed {views} times"
+
     context = {
-        'grants': Grant.objects.filter(pk__in=grant_ids)
+        'grants': Grant.objects.filter(pk__in=grant_ids),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+        'title': title,
+        'card_desc': "Click to Add All to Cart: " + grant_titles
+
     }
     response = TemplateResponse(request, 'grants/bulk_add_to_cart.html', context=context)
     return response
