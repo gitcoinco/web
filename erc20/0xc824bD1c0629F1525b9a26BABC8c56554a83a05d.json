@@ -1,0 +1,20 @@
+{
+    "symbol": "EMC",
+    "address": "0xc824bD1c0629F1525b9a26BABC8c56554a83a05d",
+    "overview": {
+        "en": "Easy Mobile Chain is committed to building a public blockchain platform for the global cross-business industry.",
+        "zh": "EMC 跨界商业生态系统运行链致力于打造全球跨商行业的公共区块链平台！"
+    },
+    "email": "info@silverpond.com",
+    "website": "http://ezmobilechain.com/",
+    "whitepaper": "http://ezmobilechain.com/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-03-26",
+    "initial_price": {
+        "ETH": "0.0145 ETH",
+        "USD": "2.9 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/EMCOfficial3"
+    }
+}
