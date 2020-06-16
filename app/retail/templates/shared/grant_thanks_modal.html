@@ -49,9 +49,10 @@
                 {% trans "Tweet About this Grant" %} 🐦
               </a>
             {% else %}
-              <a class="button button--primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded grants on @gitcoin => https://{{ request.META.HTTP_HOST }}grants"
-                target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Tweet Button', 'click', 'Grant Funder')">
-                {% trans "Tweet About It" %} 🐦
+              <a class="button button--primary" role="button"
+                href="https://gitcoin.co/grants/"
+                target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Fund New Grant', 'click', 'Grant Funder')">
+                {% trans "Fund a New Grant" %} 
               </a>
             {% endif %}
           </div>

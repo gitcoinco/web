@@ -387,6 +387,14 @@
   color: white;
 }
 
+.grants-hero .title-round{
+  font-size: 24px; 
+}
+
+.grants-hero .amount-round{
+  color: #25E899;
+}
+
 .grants-hero .font-header,
 .grants-hero h1,
 .explore_grants {
