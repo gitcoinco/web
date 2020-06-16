@@ -113,7 +113,7 @@ function tokenOptionsForGrant(grant) {
 
     if (tokenData.divider) {
       options += `
-                <option disabled>_________</option>
+                <option disabled>&mdash;&mdash;&mdash;&mdash;</option>
             `;
     } else {
       options += `
