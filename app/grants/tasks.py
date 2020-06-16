@@ -37,6 +37,8 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
             is_postive_vote = True
         subscription.is_postive_vote = is_postive_vote
 
+        fee_pct = float(package.get('gitcoin-grant-input-amount', 0))
+
         subscription.active = False
         subscription.contributor_address = package.get('contributor_address', '')
         subscription.amount_per_period = package.get('amount_per_period', 0)
@@ -45,7 +47,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.frequency_unit = package.get('frequency_unit', 'days')
         subscription.token_address = package.get('token_address', '')
         subscription.token_symbol = package.get('token_symbol', '')
-        subscription.gas_price = package.get('gas_price', 0)
+        subscription.gas_price = (float(subscription.amount_per_period) / (fee_pct*100))
         subscription.new_approve_tx_id = package.get('sub_new_approve_tx_id', '0x0')
         subscription.split_tx_id = package.get('split_tx_id', '0x0')
         subscription.num_tx_approved = package.get('num_tx_approved', 1)

@@ -230,7 +230,7 @@ class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
     list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'txn_url', 'amount', 'token', 'tx_cleared', 'success']
-    readonly_fields = ['etherscan_links']
+    readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
@@ -260,11 +260,27 @@ class ContributionAdmin(GeneralAdmin):
         visits = [visit for visit in visits if visit]
         return " , ".join(visits)
 
-
     def etherscan_links(self, instance):
         html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id}</a><BR>"
         html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
         return mark_safe(html)
+
+    def amount_per_period(self, instance):
+        return instance.subscription.amount_per_period
+
+    def amount_per_period_to_gitcoin(self, instance):
+        return instance.subscription.amount_per_period_to_gitcoin
+
+    def amount_per_period_minus_gas_price(self, instance):
+        return instance.subscription.amount_per_period_minus_gas_price
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_update_tx_status" in request.POST:
+            obj.update_tx_status()
+            obj.save()
+            self.message_user(request, "tx status pulled from alethio/rpc nodes")
+        return redirect(obj.admin_url)
 
 
 class PhantomFundingAdmin(admin.ModelAdmin):

@@ -630,7 +630,6 @@ class Subscription(SuperModel):
             return "PAST DUE"
         return "CURRENT"
 
-
     @property
     def amount_per_period_minus_gas_price(self):
         amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
@@ -640,6 +639,12 @@ class Subscription(SuperModel):
     def amount_per_period_to_gitcoin(self):
         from dashboard.tokens import addr_to_token
         token = addr_to_token(self.token_address, self.network)
+
+        # gas prices no longer take this amount times 10**18 decimals
+        import pytz
+        if self.created_on > timezone.datetime(2020, 6, 16, 15, 0).replace(tzinfo=pytz.utc):
+            return self.gas_price
+
         try:
             decimals = token.get('decimals', 0)
             return (float(self.gas_price) / 10 ** decimals)
@@ -1104,6 +1109,7 @@ class Contribution(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction ID of the Contribution.'),
+        blank=True,
     )
     split_tx_id = models.CharField(
         default='',
