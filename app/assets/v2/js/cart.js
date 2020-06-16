@@ -339,7 +339,7 @@ Vue.component('grants-cart', {
     },
 
     confirmClearCart() {
-      if(confirm("are you sure")){
+      if (confirm('are you sure')) {
         this.clearCart();
       }
     },
@@ -350,7 +350,7 @@ Vue.component('grants-cart', {
       update_cart_title();
     },
     shareCart() {
-      _alert("Cart URL copied to clipboard", 'success', 1000);
+      _alert('Cart URL copied to clipboard', 'success', 1000);
       copyToClipboard(CartData.share_url());
     },
 
@@ -641,7 +641,8 @@ Vue.component('grants-cart', {
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
           var network = document.web3network;
-          setTimeout(function(){
+
+          setTimeout(function() {
             if (network === 'rinkeby') {
               window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
             } else {

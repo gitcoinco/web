@@ -16,11 +16,13 @@ class CartData {
   static share_url() {
     const donations = this.loadCart();
     let bulk_add_cart = 'http://localhost:8000/grants/cart/bulk-add/';
+
     for (let i = 0; i < donations.length; i += 1) {
-        const donation = donations[i];
-        bulk_add_cart += String(donation['grant_id']) + ',';
-      }
-      return bulk_add_cart
+      const donation = donations[i];
+
+      bulk_add_cart += String(donation['grant_id']) + ',';
+    }
+    return bulk_add_cart;
   }
 
   static addToCart(grantData) {

@@ -3,11 +3,11 @@ from django.conf import settings
 from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
-from marketing.mails import thank_you_for_supporting, new_supporter
-from grants.models import Subscription, Grant
 from dashboard.models import Profile
-from townsquare.models import Comment
+from grants.models import Grant, Subscription
 from grants.views import record_subscription_activity_helper
+from marketing.mails import new_supporter, thank_you_for_supporting
+from townsquare.models import Comment
 
 logger = get_task_logger(__name__)
 
@@ -83,4 +83,3 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
 
         new_supporter(grant, subscription)
         thank_you_for_supporting(grant, subscription)
-
