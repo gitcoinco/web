@@ -26,7 +26,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from chat.tasks import get_chat_url, get_driver
 from marketing.models import Stat
 

@@ -24,7 +24,7 @@ import logging
 import os
 import time
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.conf import settings
@@ -51,7 +51,11 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import dateutil
 import magic
+import pytz
+from app.services import RedisService, TwilioService
+from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
@@ -63,8 +67,10 @@ from chat.tasks import (
     add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
 )
 from dashboard.context import quickstart as qs
+from dashboard.tasks import increment_view_count
 from dashboard.utils import (
-    ProfileHiddenException, ProfileNotFoundException, get_bounty_from_invite_url, get_orgs_perms, profile_helper,
+    ProfileHiddenException, ProfileNotFoundException, build_profile_pairs, get_bounty_from_invite_url, get_orgs_perms,
+    profile_helper,
 )
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from eth_utils import to_checksum_address, to_normalized_address
@@ -88,7 +94,7 @@ from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
-from townsquare.models import Comment
+from townsquare.models import Comment, PinnedPost
 from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
 
@@ -102,8 +108,9 @@ from .helpers import (
 from .models import (
     Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileView,
-    Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
+    HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember,
+    UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -178,7 +185,7 @@ def record_user_action(user, event_name, instance):
         logger.error(f"error in record_action: {e} - {event_name} - {instance}")
 
 
-def record_bounty_activity(bounty, user, event_name, interest=None):
+def record_bounty_activity(bounty, user, event_name, interest=None, fulfillment=None):
     """Creates Activity object.
 
     Args:
@@ -214,6 +221,11 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
     elif event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
+    elif event_name == 'worker_paid' and fulfillment:
+        kwargs['metadata']['from'] = fulfillment.funder_profile.handle
+        kwargs['metadata']['to'] = fulfillment.profile.handle
+        kwargs['metadata']['payout_amount'] = fulfillment.payout_amount
+        kwargs['metadata']['token_name'] = fulfillment.token_name
 
     try:
         if event_name in bounty_activity_event_adapter:
@@ -452,6 +464,7 @@ def post_comment(request):
             'success': True,
             'msg': 'Finished.'
         })
+
 
 def rating_modal(request, bounty_id, username):
     # TODO: will be changed to the new share
@@ -902,70 +915,25 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
     return profile_list
 
 
+@require_POST
+def set_project_winner(request):
+    if not request.user.is_authenticated and request.user.is_staff:
+        return JsonResponse({
+            'message': 'UNAUTHORIZED'
+        })
 
-@require_GET
-def projects_fetch(request):
-    q = clean(request.GET.get('search', ''), strip=True)
-    order_by = clean(request.GET.get('order_by', '-created_on'), strip=True)
-    skills = clean(request.GET.get('skills', ''), strip=True)
-    filters = clean(request.GET.get('filters', ''), strip=True)
-    sponsor = clean(request.GET.get('sponsor', ''), strip=True)
-    # TODO: refactor for pagination
-    page = clean(request.GET.get('page', 1))
-    hackathon_id = clean(request.GET.get('hackathon', ''))
+    winner = request.POST.get('winner', False)
+    project_id = request.POST.get('project_id', None)
+    if not project_id:
+        return JsonResponse({
+            'message': 'Invalid Project'
+        })
+    project = HackathonProject.objects.get(pk=project_id)
+    project.winner = winner
+    project.save()
 
-    if hackathon_id:
-        try:
-            hackathon_event = HackathonEvent.objects.get(id=hackathon_id)
-        except HackathonEvent.DoesNotExist:
-            hackathon_event = HackathonEvent.objects.last()
+    return JsonResponse({})
 
-        projects = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
-            status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
-
-        if sponsor:
-            projects = projects.filter(
-                Q(bounty__github_url__icontains=sponsor)
-            )
-    elif sponsor:
-        sponsor_profile = Profile.objects.get(handle__iexact=sponsor)
-        if sponsor_profile:
-            projects = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__in=[sponsor_profile]) | Q(bounty__bounty_owner_github_username__in=[sponsor])).exclude(
-                status='invalid').prefetch_related('profiles', 'bounty').order_by(order_by, 'id')
-        else:
-            projects = []
-    if q:
-        projects = projects.filter(
-            Q(name__icontains=q) |
-            Q(summary__icontains=q) |
-            Q(profiles__handle__icontains=q)
-        )
-
-    if skills:
-        projects = projects.filter(
-            Q(profiles__keywords__icontains=skills)
-        )
-
-    if filters == 'winners':
-        projects = projects.filter(
-            Q(badge__isnull=False)
-        )
-
-    if filters == 'lfm':
-        projects = projects.filter(
-            Q(looking_members=True)
-        )
-
-    projects_data = HackathonProjectSerializer(projects.distinct('created_on', 'id').all(), many=True)
-
-    params = {
-        'data': projects_data.data,
-        'has_next': False,
-        'count': projects.all().count(),
-        'num_pages': 1
-    }
-
-    return JsonResponse(params, status=200, safe=False)
 
 @require_GET
 def users_fetch(request):
@@ -1009,7 +977,7 @@ def users_fetch(request):
             ).exclude(hide_profile=True)
 
     if q:
-        profile_list = profile_list.filter(Q(follower__org__handle__in=[tribe]) | Q(organizations_fk__handle__in=[tribe])).distinct()
+        profile_list = profile_list.filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).distinct()
 
     if tribe:
 
@@ -1060,7 +1028,7 @@ def users_fetch(request):
             filter=Q(
                 bounties_funded__fulfillments__bounty__network=network,
                 bounties_funded__fulfillments__accepted=True,
-                bounties_funded__fulfillments__fulfiller_github_username=current_user.profile.handle
+                bounties_funded__fulfillments__profile__handle=current_user.profile.handle
             )
         )
 
@@ -1933,6 +1901,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if request.GET.get('sb') == '1' or (bounty and bounty.is_bounties_network):
         return TemplateResponse(request, 'bounty/details.html', params)
 
+    params['PYPL_CLIENT_ID'] = settings.PYPL_CLIENT_ID
     return TemplateResponse(request, 'bounty/details2.html', params)
 
 
@@ -1965,7 +1934,7 @@ def funder_payout_reminder(request, bounty_network, stdbounties_id):
     except Bounty.DoesNotExist:
         raise Http404
 
-    has_fulfilled = bounty.fulfillments.filter(fulfiller_github_username=github_user_data['login']).count()
+    has_fulfilled = bounty.fulfillments.filter(profile__handle=github_user_data['login']).count()
     if has_fulfilled == 0:
         return JsonResponse({
             'success': False,
@@ -2478,6 +2447,37 @@ def profile_backup(request):
 
     return JsonResponse(response, status=response.get('status', 200))
 
+@require_POST
+@login_required
+def profile_tax_settings(request, handle):
+    """ Save profile tax info (country location and address).
+
+    Args:
+        handle (str): The profile handle.
+    """
+    try:
+        profile = profile_helper(handle, True)
+        if request.user.profile.id != profile.id:
+            return JsonResponse(
+                {'error': 'Bad request'},
+                status=401)
+        location_component = request.POST.get('locationComponent')
+        address_component = request.POST.get('addressComponent')
+        if json.loads(location_component):
+            profile.location = location_component
+        if address_component:
+            profile.address = address_component
+        profile.save()
+    except (ProfileNotFoundException, ProfileHiddenException):
+        raise Http404
+
+    response = {
+        'status': 200,
+        'message': 'Tax settings saved'
+    }
+    return JsonResponse(response)
+
+
 def invalid_file_response(uploaded_file, supported):
     response = None
     forbidden_content = ['<script>']
@@ -2774,6 +2774,7 @@ def profile(request, handle, tab=None):
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
     context = {}
+    context['tags'] = [('#announce', 'bullhorn'), ('#mentor', 'terminal'), ('#jobs', 'code'), ('#help', 'laptop-code'), ('#other', 'briefcase'), ]
     # get this user
     try:
         if not handle and not request.user.is_authenticated:
@@ -2782,11 +2783,11 @@ def profile(request, handle, tab=None):
             handle = request.user.username
             profile = None
             if not profile:
-                profile = profile_helper(handle, disable_cache=disable_cache, full_profile=True)
+                profile = profile_helper(handle.lower(), disable_cache=disable_cache, full_profile=True)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
-            profile = profile_helper(handle, current_user=request.user, disable_cache=disable_cache)
+            profile = profile_helper(handle.lower(), current_user=request.user, disable_cache=disable_cache)
 
     except (Http404, ProfileHiddenException, ProfileNotFoundException):
         status = 404
@@ -2845,16 +2846,26 @@ def profile(request, handle, tab=None):
         if request.user.is_authenticated and not context['is_my_org']:
             ProfileView.objects.create(target=profile, viewer=request.user.profile)
         try:
+            context['tags'] = get_tags(request)
             network = get_default_network()
             orgs_bounties = profile.get_orgs_bounties(network=network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
             context['sum_eth_on_repos'] = profile.get_eth_sum(bounties=orgs_bounties)
             context['works_with_org'] = profile.get_who_works_with(work_type='org', bounties=orgs_bounties)
             context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
-            context['target'] = f'/activity?what=tribe:{profile.handle}'
+            what = f'tribe:{profile.handle}'
+            try:
+                context['pinned'] = PinnedPost.objects.get(what=what)
+            except PinnedPost.DoesNotExist:
+                context['pinned'] = None
+            context['target'] = f'/activity?what={what}'
+            context['what'] = what
             context['is_on_tribe'] = json.dumps(context['is_on_tribe'])
             context['is_my_org'] = json.dumps(context['is_my_org'])
             context['profile_handle'] = profile.handle
+            context['title'] = profile.handle
+            context['card_desc'] = profile.desc
+
 
             return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
         except Exception as e:
@@ -2878,10 +2889,15 @@ def profile(request, handle, tab=None):
     context['feedbacks_sent'] = [fb.pk for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
     context['feedbacks_got'] = [fb.pk for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
     context['all_feedbacks'] = context['feedbacks_got'] + context['feedbacks_sent']
-    context['tags'] = [('#announce','bullhorn'), ('#mentor','terminal'), ('#jobs','code'), ('#help','laptop-code'), ('#other','briefcase'), ]
-    context['followers'] = TribeMember.objects.filter(org=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
-    context['following'] = TribeMember.objects.filter(profile=request.user.profile) if request.user.is_authenticated else TribeMember.objects.none()
+
+    follow_page_size = 10
+    page_number = request.GET.get('page', 1)
+    context['all_followers'] = TribeMember.objects.filter(org=profile)
+    context['all_following'] = TribeMember.objects.filter(profile=profile)
+    context['following'] = Paginator(context['all_following'], follow_page_size).get_page(page_number)
+    context['followers'] = Paginator(context['all_followers'], follow_page_size).get_page(page_number)
     context['foltab'] = request.GET.get('sub', 'followers')
+    context['page_obj'] = context['followers'] if context['foltab'] == 'followers' else context['following']
 
     tab = get_profile_tab(request, profile, tab, context)
     if type(tab) == dict:
@@ -3197,7 +3213,7 @@ def new_bounty(request):
             .filter(
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
                 bounty__idx_status='done'
-            ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
+            ).values('profile__handle', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')[:5]
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
@@ -3275,7 +3291,7 @@ def get_suggested_contributors(request):
             .filter(
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
                 bounty__idx_status='done'
-            ).values('fulfiller_github_username', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
+            ).values('profile__handle', 'profile__id').annotate(fulfillment_count=Count('bounty')) \
             .order_by('-fulfillment_count')
 
     keywords_filter = Q()
@@ -3285,9 +3301,9 @@ def get_suggested_contributors(request):
         Q(bounty__issue_description__icontains=keyword)
 
     recommended_developers = BountyFulfillment.objects.prefetch_related('bounty', 'profile') \
-        .filter(keywords_filter).values('fulfiller_github_username', 'profile__id') \
-        .exclude(fulfiller_github_username__isnull=True) \
-        .exclude(fulfiller_github_username__exact='').distinct()[:10]
+        .filter(keywords_filter).values('profile__handle', 'profile__id') \
+        .exclude(profile__handle__isnull=True) \
+        .exclude(profile__handle__exact='').distinct()[:10]
 
     verified_developers = UserVerificationModel.objects.filter(verified=True).values('user__profile__handle', 'user__profile__id')
 
@@ -3567,10 +3583,13 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
+        increment_view_count.delay([hackathon_event.pk], hackathon_event.content_type, request.user.id, 'individual')
     except HackathonEvent.DoesNotExist:
         return redirect(reverse('get_hackathons'))
 
     title = hackathon_event.name.title()
+    description = f"{title} | Gitcoin Virtual Hackathon"
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
     # if hackathon_not_started:
@@ -3618,13 +3637,22 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 4
 
 
-
+    what = f'hackathon:{hackathon_event.id}'
+    from townsquare.utils import can_pin
+    try:
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     params = {
         'active': 'dashboard',
         'prize_count': hackathon_event.get_current_bounties.count(),
         'type': 'hackathon',
         'title': title,
-        'target': f'/activity?what=hackathon:{hackathon_event.id}',
+        'card_desc': description,
+        'what': what,
+        'can_pin': can_pin(request, what),
+        'pinned': pinned,
+        'target': f'/activity?what={what}',
         'orgs': orgs,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
@@ -3634,7 +3662,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
         'user': request.user,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
+        'avatar_url': avatar_url,
         'tags': view_tags,
         'activities': [],
         'SHOW_DRESSING': False,
@@ -3656,6 +3684,8 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     params['keywords'] = programming_languages + programming_languages_full
     params['active'] = 'users'
+    from chat.tasks import get_chat_url
+    params['chat_url_embed'] = f"/hackathons/channels/{hackathon_event.chat_channel_id}"
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
@@ -3903,8 +3933,25 @@ def hackathon_save_project(request):
         'summary': clean(request.POST.get('summary'), strip=True),
         'work_url': clean(request.POST.get('work_url'), strip=True),
         'looking_members': looking_members,
-        'message': message,
+        'message': '',
+        'extra': {
+            'has_gitcoin_chat': False,
+            'has_other_contact_method': False,
+            'other_contact_method': '',
+        }
     }
+
+    if looking_members:
+        has_gitcoin_chat = request.POST.get('has_gitcoin_chat', '') == 'on'
+        has_other_contact_method = request.POST.get('has_other_contact_method', '') == 'on'
+        other_contact_method = request.POST.get('other_contact_method', '')[:150]
+        kwargs['message'] = message
+        kwargs['extra'] = {
+            'has_gitcoin_chat': has_gitcoin_chat,
+            'has_other_contact_method': has_other_contact_method,
+            'other_contact_method': other_contact_method,
+            'message': message,
+        }
 
     try:
 
@@ -3969,9 +4016,8 @@ def hackathon_save_project(request):
             created, channel_details = create_channel_if_not_exists({
                 'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                 'channel_purpose': kwargs["summary"][:200],
-                'channel_display_name': f'project-{project_channel_name}'[:60],
-                'channel_name': project_channel_name[:60],
-                'channel_type': 'P'
+                'channel_display_name': f'PRJ{"-"+ bounty_obj.event.short_code if bounty_obj.event and bounty_obj.event.short_code else ""}-{project_channel_name}'[:60],
+                'channel_name': project_channel_name[:60]
             })
             try:
                 bounty_profile = Profile.objects.get(handle=bounty_obj.bounty_owner_github_username.lower())
@@ -4040,16 +4086,28 @@ def hackathon_registration(request):
             set_questions = {}
             for entry in poll:
                 question = get_object_or_404(Question, id=int(entry['name']))
-                option = get_object_or_404(Option, id=int(entry['value']))
 
-                Answer.objects.get_or_create(user=request.user, question=question, choice=option)
-
-                values = set_questions.get(entry['name'], []) or []
-                values.append(int(entry['value']))
-                set_questions[entry['name']] = values
+                if question.question_type == 'SINGLE_CHOICE':
+                    answer, status = Answer.objects.get_or_create(user=request.user, question=question,
+                                                                  hackathon=hackathon_event)
+                    answer.checked = entry['value'] == 'on'
+                    answer.save()
+                elif question.question_type == 'MULTIPLE_CHOICE':
+                    option = get_object_or_404(Option, id=int(entry['value']))
+                    Answer.objects.get_or_create(user=request.user, question=question, choice=option,
+                                                 hackathon=hackathon_event)
+                    values = set_questions.get(entry['name'], []) or []
+                    values.append(int(entry['value']))
+                    set_questions[entry['name']] = values
+                else:
+                    answer, status = Answer.objects.get_or_create(user=request.user, question=question,
+                                                                  hackathon=hackathon_event)
+                    answer.open_response = entry['value']
+                    answer.save()
 
             for (question, choices) in set_questions.items():
-                Answer.objects.exclude(user=request.user, question__id=int(question), choice__in=choices).delete()
+                    Answer.objects.filter(user=request.user, question__id=int(question),
+                                          hackathon=hackathon_event).exclude(choice__in=choices).delete()
 
     except Exception as e:
         logger.error('Error while saving registration', e)
@@ -4103,6 +4161,11 @@ def get_hackathons(request):
         'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
         'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
     }
+
+    pks = HackathonEvent.objects.filter(visible=True).values_list('pk', flat=True)
+    if len(pks):
+        increment_view_count.delay(list(pks), 'hackathon event', request.user.id, 'index')
+
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
@@ -4800,9 +4863,7 @@ def create_bounty_v1(request):
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     response = {
         'status': 204,
@@ -4864,9 +4925,8 @@ def cancel_bounty_v1(request):
 
     event_name = 'killed_bounty'
     record_bounty_activity(bounty, user, event_name)
-    # maybe_market_to_email(bounty, event_name)
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    maybe_market_to_email(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     bounty.bounty_state = 'cancelled'
     bounty.idx_status = 'cancelled'
@@ -4927,16 +4987,6 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: user can submit once per bounty'
         return JsonResponse(response)
 
-    fulfiller_address = request.POST.get('fulfiller_address')
-    if not fulfiller_address:
-        response['message'] = 'error: missing fulfiller_address'
-        return JsonResponse(response)
-
-    fulfiller_email = request.POST.get('email')
-    if not fulfiller_email:
-        response['message'] = 'error: missing email'
-        return JsonResponse(response)
-
     hours_worked = request.POST.get('hoursWorked')
     if not hours_worked or not hours_worked.isdigit():
         response['message'] = 'error: missing hoursWorked'
@@ -4947,11 +4997,26 @@ def fulfill_bounty_v1(request):
         response['message'] = 'error: missing githubPRLink'
         return JsonResponse(response)
 
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing payout_type'
+        return JsonResponse(response)
+
+    fulfiller_identifier = request.POST.get('fulfiller_identifier', None)
+    fulfiller_address = request.POST.get('fulfiller_address', None)
+
+    if payout_type == 'fiat' and not fulfiller_identifier:
+        response['message'] = 'error: missing fulfiller_identifier'
+        return JsonResponse(response)
+    elif payout_type == 'qr' and not fulfiller_address:
+        response['message'] = 'error: missing fulfiller_address'
+        return JsonResponse(response)
+
     event_name = 'work_submitted'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
-    # maybe_market_to_slack(bounty, event_name)
-    # maybe_market_to_user_slack(bounty, event_name)
+    profile_pairs = build_profile_pairs(bounty)
+    maybe_market_to_github(bounty, event_name, profile_pairs)
 
     if bounty.bounty_state != 'work_submitted':
         bounty.bounty_state = 'work_submitted'
@@ -4970,13 +5035,16 @@ def fulfill_bounty_v1(request):
     fulfillment.modified_on = now
     fulfillment.funder_last_notified_on = now
     fulfillment.token_name = bounty.token_name
-    fulfillment.fulfiller_github_username = profile.handle
+    fulfillment.payout_type = payout_type
 
-    # fulfillment.fulfiller_name    ETC-TODO: REMOVE ?
+    if fulfiller_identifier:
+        fulfillment.fulfiller_identifier = fulfiller_identifier
+        fulfillment.tenant = 'PYPL'
+    elif fulfiller_address:
+        fulfillment.fulfiller_address = fulfiller_address
+
     # fulfillment.fulfillment_id    ETC-TODO: REMOVE ?
 
-    fulfillment.fulfiller_address = fulfiller_address
-    fulfillment.fulfiller_email = fulfiller_email
     fulfillment.fulfiller_hours_worked = hours_worked
     fulfillment.fulfiller_github_url = fulfiller_github_url
 
@@ -5039,7 +5107,6 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: bounty fulfillment not found'
         return JsonResponse(response)
 
-
     if bounty.bounty_state in ['cancelled', 'done']:
         response['message'] = 'error: bounty in ' + bounty.bounty_state + ' state cannot be paid out'
         return JsonResponse(response)
@@ -5050,14 +5117,18 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: payout is bounty funder operation'
         return JsonResponse(response)
 
-    if not bounty.bounty_owner_address:
-        bounty_owner_address = request.POST.get('bounty_owner_address')
-        if not bounty_owner_address:
-            response['message'] = 'error: missing parameter bounty_owner_address'
-            return JsonResponse(response)
+    payout_type = request.POST.get('payout_type')
+    if not payout_type:
+        response['message'] = 'error: missing parameter payout_type'
+        return JsonResponse(response)
+    if payout_type not in ['fiat', 'qr']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr'
+        return JsonResponse(response)
 
-        bounty.bounty_owner_address = bounty_owner_address
-        bounty.save()
+    tenant = request.POST.get('tenant')
+    if not tenant:
+        response['message'] = 'error: missing parameter tenant'
+        return JsonResponse(response)
 
     amount = request.POST.get('amount')
     if not amount:
@@ -5069,16 +5140,55 @@ def payout_bounty_v1(request, fulfillment_id):
         response['message'] = 'error: missing parameter token_name'
         return JsonResponse(response)
 
+    if payout_type == 'fiat':
+
+        payout_status = request.POST.get('payout_status')
+        if not payout_status :
+            response['message'] = 'error: missing parameter payout_status for fiat payment'
+            return JsonResponse(response)
+
+        funder_identifier = request.POST.get('funder_identifier')
+        if not funder_identifier :
+            response['message'] = 'error: missing parameter funder_identifier for fiat payment'
+            return JsonResponse(response)
+
+        fulfillment.funder_identifier = funder_identifier
+        fulfillment.payout_status = payout_status
+
+    elif payout_type == 'qr':
+
+        if not bounty.bounty_owner_address:
+            bounty_owner_address = request.POST.get('bounty_owner_address')
+            if not bounty_owner_address:
+                response['message'] = 'error: missing parameter bounty_owner_address'
+                return JsonResponse(response)
+
+            bounty.bounty_owner_address = bounty_owner_address
+            bounty.save()
+
+        fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
+        fulfillment.payout_status = 'pending'
+
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
         fulfillment.payout_tx_id = payout_tx_id
 
+    fulfillment.funder_profile = profile
+    fulfillment.payout_type = payout_type
+    fulfillment.tenant = tenant
     fulfillment.payout_amount = amount
-    fulfillment.payout_status = 'pending'
     fulfillment.token_name = token_name
+
+    if payout_type == 'fiat':
+        fulfillment.payout_status = 'done'
+        fulfillment.accepted_on = timezone.now()
+        fulfillment.accepted = True
+        record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
+
     fulfillment.save()
 
-    sync_payout(fulfillment)
+    if payout_type == 'qr':
+        sync_payout(fulfillment)
 
     response = {
         'status': 204,
@@ -5145,6 +5255,8 @@ def close_bounty_v1(request, bounty_id):
 
     event_name = 'work_done'
     record_bounty_activity(bounty, user, event_name)
+    maybe_market_to_email(bounty, event_name)
+    maybe_market_to_github(bounty, event_name)
 
     bounty.bounty_state = 'done'
     bounty.idx_status = 'done' # TODO: RETIRE
@@ -5158,3 +5270,201 @@ def close_bounty_v1(request, bounty_id):
     }
 
     return JsonResponse(response)
+
+
+@staff_member_required
+def bulkDM(request):
+    handles = request.POST.get('handles', '')
+    message = request.POST.get('message', '')
+
+    if message and handles:
+        try:
+            from mattermostdriver import Driver
+            from chat.tasks import driver_opts
+
+            from_profile = request.user.profile
+            from_user_id = from_profile.chat_id
+            driver_opts = {
+                'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
+                'url': settings.CHAT_SERVER_URL,
+                'port': settings.CHAT_PORT,
+                'token': from_profile.gitcoin_chat_access_token
+            }
+
+            chat_driver = Driver(driver_opts)
+            chat_driver.login()
+            handles = list(set(handles.split(',')))
+
+            for to_handle in handles:
+                to_handle = to_handle.lower().strip()
+                to_profile = Profile.objects.filter(handle=to_handle).first()
+                if not to_profile:
+                    continue
+                to_user_id = to_profile.chat_id
+                if not to_user_id:
+                    messages.error(request, f'{to_handle} is not on Gitcoin Chat yet.')
+                    continue
+                try:
+                    response = chat_driver.client.make_request('post',
+                        '/channels/direct',
+                        options=None,
+                        params=None,
+                        data=f'["{to_user_id}", "{from_user_id}"]',
+                        files=None,
+                        basepath=None)
+                    channel_id = response.json()['id']
+                    chat_driver.posts.create_post(options={
+                        'channel_id': channel_id,
+                        'message': message
+                        })
+                except Exception as e:
+                    messages.error(request, f'{to_handle} : {e}')
+
+
+            messages.success(request, 'sent')
+        except Exception as e:
+            messages.error(request, str(e))
+
+
+    context = {
+        'message': message,
+        'handles': request.POST.get('handles', ''),
+    }
+
+    return TemplateResponse(request, 'bulk_DM.html', context)
+
+
+def validate_number(user, twilio, phone, redis, delivery_method='sms'):
+    profile = user.profile
+    hash_number = hashlib.pbkdf2_hmac('sha256', phone.encode(), PHONE_SALT.encode(), 100000).hex()
+
+    if user.profile.sms_verification:
+        return JsonResponse({
+            'success': False,
+            'msg': 'Your account has been validated previously.'
+        }, status=401)
+
+    if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(pk=user.profile.id).exists():
+        return JsonResponse({
+            'success': False,
+            'msg': 'The phone number has been associated with other account.'
+        }, status=401)
+
+    validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+
+    if validation.caller_name and validation.caller_name["caller_type"] == 'BUSINESS':
+        return JsonResponse({
+            'success': False,
+            'msg': 'Only support consumer numbers'
+        }, status=401)
+    if validation.carrier and validation.carrier['type'] != 'mobile':
+        return JsonResponse({
+            'success': False,
+            'msg': 'Phone type isn\'t supported'
+        }, status=401)
+
+    if delivery_method == 'email':
+        twilio.verify.verifications.create(to=user.profile.email, channel='email')
+    else:
+        twilio.verify.verifications.create(to=phone, channel='sms')
+    profile.last_validation_request = timezone.now()
+    profile.validation_attempts += 1
+    profile.encoded_number = hash_number
+    profile.save()
+
+    ProfileVerification.objects.create(profile=user.profile,
+                                       caller_type=validation.caller_name[
+                                           "caller_type"] if validation.caller_name else '',
+                                       carrier_error_code=validation.carrier['error_code'],
+                                       mobile_network_code=validation.carrier['mobile_network_code'],
+                                       mobile_country_code=validation.carrier['mobile_country_code'],
+                                       carrier_name=validation.carrier['name'],
+                                       carrier_type=validation.carrier['type'],
+                                       country_code=validation.country_code,
+                                       phone_number=hash_number,
+                                       delivery_method=delivery_method)
+
+    redis.set(f'verification:{user.id}:phone', phone)
+
+
+
+@login_required
+def send_verification(request):
+    profile = request.user.profile
+    phone = request.POST.get('phone')
+    delivery_method = request.POST.get('delivery_method', 'sms')
+    redis = RedisService().redis
+    twilio = TwilioService()
+    has_previous_validation = profile.last_validation_request and profile.last_validation_request.replace(tzinfo=pytz.utc)
+    validation_attempts = profile.validation_attempts
+    allow_email = False
+
+    if not has_previous_validation:
+        response = validate_number(request.user, twilio, phone, redis, delivery_method)
+        if response:
+            return response
+    else:
+        cooldown = has_previous_validation + timedelta(minutes=SMS_COOLDOWN_IN_MINUTES)
+
+        if cooldown > datetime.now().replace(tzinfo=pytz.utc):
+            return JsonResponse({
+                'success': False,
+                'msg': 'Wait a minute to try again.'
+            }, status=401)
+
+        if validation_attempts > SMS_MAX_VERIFICATION_ATTEMPTS:
+            return JsonResponse({
+                'success': False,
+                'msg': 'Attempt numbers exceeded.'
+            }, status=401)
+
+        response = validate_number(request.user, twilio, phone, redis, delivery_method)
+        if response:
+            return response
+
+    return JsonResponse({
+        'success': True,
+        'allow_email': EMAIL_ACCOUNT_VALIDATION and validation_attempts > 1,
+        'msg': 'The verification number was sent.'
+    })
+
+
+@login_required
+def validate_verification(request):
+    redis = RedisService().redis
+    twilio = TwilioService().verify
+    code = request.POST.get('code')
+    profile = request.user.profile
+
+    has_previous_validation = profile.last_validation_request
+    phone = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
+    hash_number = hashlib.pbkdf2_hmac('sha256', phone.encode(), PHONE_SALT.encode(), 100000).hex()
+
+    if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(
+        pk=profile.id).exists():
+        return JsonResponse({
+            'success': False,
+            'msg': 'The phone number has been associated with other account.'
+        }, status=401)
+
+    if has_previous_validation:
+        verification = twilio.verification_checks.create(to=phone, code=code)
+        if verification.status == 'approved':
+            redis.delete(f'verification:{request.user.id}:phone')
+            request.user.profile.sms_verification = True
+            request.user.profile.save()
+
+            return JsonResponse({
+                    'success': True,
+                    'msg': 'Verification completed'
+            })
+
+        return JsonResponse({
+            'success': False,
+            'msg': 'Failed verification'
+        }, status=401)
+
+    return JsonResponse({
+        'success': False,
+        'msg': 'No verification process associated'
+    }, status=401)

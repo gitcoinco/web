@@ -22,8 +22,8 @@
   </a>
   <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
   <a class="navbar-brand ml-2 py-0" href="{% url 'grants:grants' %}">
-    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/grants-neg.svg" %}" alt="Grants" height="35">
-    <!-- <img class="mw-100 logo-animated" src="{% static "v2/images/grants/grants-white.gif" %}" alt="Grants" height="50"> -->
+    <!-- <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/grants-neg.svg" %}" alt="Grants" height="35"> -->
+    {% include 'shared/svg-embed/h35px_grants.svg' %}
   </a>
   {% if request.path|matches:"^\/((.*new)|(.*cancel)|(.*fund))$" %}
     <button id="wallet-button" class="navbar-network ml-xl-5 py-1 px-2 hidden btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

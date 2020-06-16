@@ -1,4 +1,3 @@
-
 Vue.mixin({
   data: function() {
     const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
@@ -9,10 +8,16 @@ Vue.mixin({
     };
   },
   methods: {
-    chatWindow: function(handle) {
+    chatWindow: function(channel, dm) {
+      dm = dm || channel ? channel.indexOf('@') >= 0 : false;
+      channel = channel || 'town-square';
       let vm = this;
+      const hackathonTeamSlug = 'hackathons';
+      const gitcoinTeamSlug = 'gitcoin';
+      const isHackathon = (document.hackathon_id !== null);
 
-      const url = handle ? `${vm.chatURL}/hackathons/messages/@${handle}` : `${vm.chatURL}/`;
+
+      const url = `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${dm ? '@' + channel : channel}`;
 
       window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
     }
@@ -188,7 +193,7 @@ Vue.component('tribes-settings', {
 
 Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
-  props: ['tribe'],
+  props: [ 'tribe', 'userId' ],
   methods: {
     fetchProjects: function(newPage) {
       let vm = this;
@@ -216,20 +221,29 @@ Vue.component('project-directory', {
         delete vm.params['search'];
       }
 
-      let searchParams = new URLSearchParams(vm.params);
+      const searchParams = new URLSearchParams(vm.params);
 
-      let apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
+      const apiUrlProjects = `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
 
-      var getProjects = fetchData(apiUrlProjects, 'GET');
+      const getProjects = fetchData(apiUrlProjects, 'GET');
 
       $.when(getProjects).then(function(response) {
         vm.hackathonProjects = [];
-        response.data.forEach(function(item) {
+        response.results.forEach(function(item) {
           vm.hackathonProjects.push(item);
         });
 
-        vm.projectsNumPages = response.num_pages;
-        vm.projectsHasNext = response.has_next;
+        vm.userProjects = [];
+        if (vm.userId) {
+          vm.userProjects = vm.hackathonProjects.filter(
+            ({ profiles }) => profiles.some(
+              ({ id }) => id === parseInt(vm.userId, 10)
+            )
+          );
+        }
+        vm.projectsNumPages = response.count;
+        vm.projectsHasNext = response.next;
+
         vm.numProjects = response.count;
         if (vm.projectsHasNext) {
           vm.projectsPage = ++vm.projectsPage;
@@ -258,9 +272,11 @@ Vue.component('project-directory', {
   data: function() {
 
     return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       sponsor: this.tribe || null,
       hackathonSponsors: document.hackathonSponsors || [],
       hackathonProjects: document.hackathonProjects || [],
+      userProjects: document.userProjects || [],
       projectsPage: 1,
       hackathonId: document.hackathon_id || null,
       projectsNumPages: 0,
@@ -269,7 +285,9 @@ Vue.component('project-directory', {
       media_url,
       searchTerm: null,
       bottom: false,
-      params: {},
+      params: {
+        filters: []
+      },
       isFunder: false,
       showModal: false,
       showFilters: true,
@@ -304,6 +322,94 @@ Vue.component('project-directory', {
       this.bottom = this.bottomVisible();
     });
   }
+});
+
+Vue.component('project-card', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || ''
+    };
+  },
+  props: [ 'project', 'edit', 'is_staff' ],
+  methods: {
+    markWinner: function($event, project) {
+      let vm = this;
+
+      const url = '/api/v0.1/hackathon_project/set_winner/';
+      const markWinner = fetchData(url, 'POST', {project_id: project.pk, winner: $event ? 1 : 0}, {'X-CSRFToken': vm.csrf});
+
+      $.when(markWinner).then(response => {
+        if (response.message) {
+          alert(response.message);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    projectModal() {
+      let project = this.$props.project;
+
+      projectModal(project.bounty.pk, project.pk);
+    }
+  },
+  template: `<div class="card card-user shadow-sm border-0">
+    <div class="card card-project">
+      <b-form-checkbox v-if="is_staff" switch v-model="project.winner" style="padding:0;float:left;" @change="markWinner($event, project)">mark winner</b-form-checkbox>
+      <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
+      <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
+      <div class="card-bg rounded-top">
+        <div v-if="project.winner" class="ribbon ribbon-top-right"><span>winner</span></div>
+        <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
+        <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
+      </div>
+      <div class="card-body">
+        <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+        <div class="my-2">
+          <p class="text-left text-muted font-smaller-1">
+            [[ project.summary | truncate(500) ]]
+          </p>
+          <div class="text-left">
+            <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+            <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+            <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
+            <template v-slot:button-content>
+              <i class='fas fa-comment-dots'></i>
+            </template>
+            <b-dropdown-item-button v-if="project.chat_channel_id" @click.prevent="chatWindow(project.chat_channel_id);" aria-describedby="dropdown-header-label" :key="project.chat_channel_id || project.id">
+              Chat With Team
+            </b-dropdown-item-button>
+            <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
+              @ [[ profile.handle ]]
+            </b-dropdown-item-button>
+            </b-dropdown>
+          </div>
+        </div>
+
+        <div class="my-3 mb-2 text-left">
+          <b class="font-weight-bold font-smaller-3">Team Members</b>
+          <div class="mt-1">
+              <a v-for="profile in project.profiles" :href="'/profile/' + profile.handle">
+                <b-img-lazy :src="profile.avatar_url" :alt="profile.handle" :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
+              </a>
+          </div>
+        </div>
+
+        <div v-if="project.looking_members || project.message" class="my-3 looking-team">
+          <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
+          <p v-if="project.message" class="info-card-desc">
+            [[ project.message ]]
+          </p>
+        </div>
+
+        <div class="font-smaller-2 mt-4">
+          <b class="font-weight-bold">Sponsored by</b>
+          <img width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
+          <a :href="/profile/[[project.bounty.org_name]]">[[ project.bounty.org_name ]]</a>
+        </div>
+      </div>
+    </div>
+  </div>`
 });
 
 

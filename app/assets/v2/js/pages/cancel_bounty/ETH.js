@@ -3,12 +3,6 @@
  * Data is stored on IPFS + the data is stored in
  * standard bounties contract on the ethereum blockchain
  */
-
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 const ethCancelBounty = data => {
 
   if (is_bounties_network) {
@@ -33,7 +27,7 @@ const ethCancelBounty = data => {
   loading_button($('.js-submit'));
   const issueURL = data.issueURL;
 
-  let bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+  let bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
   const apiCallback = function(results, status) {
     if (status != 'success') {
@@ -69,64 +63,58 @@ const ethCancelBounty = data => {
       );
     }
 
-    web3.eth.getCoinbase(function(_, coinbase) {
-      if (fromAddress != coinbase) {
-        errormsg = gettext(
-          'Only the address that submitted this funded issue may kill the bounty.'
-        );
-      }
+    if (fromAddress != selectedAccount) {
+      errormsg = gettext(
+        'Only the address that submitted this funded issue may kill the bounty.'
+      );
+    }
 
-      if (errormsg) {
-        _alert({ message: errormsg });
-        unloading_button($('.js-submit'));
-        return;
-      }
+    if (errormsg) {
+      _alert({ message: errormsg });
+      unloading_button($('.js-submit'));
+      return;
+    }
 
-      const final_callback = function(error, result) {
-        indicateMetamaskPopup(true);
-        const next = function() {
-          web3.eth.getAccounts(function(_, accounts) {
-            // setup inter page state
-            localStorage[issueURL] = JSON.stringify({
-              timestamp: timestamp(),
-              dataHash: null,
-              issuer: accounts[0],
-              txid: result
-            });
-          });
+    const final_callback = function(result, error) {
+      indicateMetamaskPopup(true);
+      const next = function() {
+        // setup inter page state
+        localStorage[issueURL] = JSON.stringify({
+          timestamp: timestamp(),
+          dataHash: null,
+          issuer: selectedAccount,
+          txid: result
+        });
 
-          _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
-          setTimeout(() => {
-            document.location.href = '/funding/details/?url=' + issueURL;
-          }, 1000);
-        };
-
-        if (error) {
-          console.error('err', error);
-          _alert({ message: gettext('There was an error') });
-          unloading_button($('.js-submit'));
-        } else {
-          next();
-        }
+        _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
+        setTimeout(() => {
+          document.location.href = '/funding/details/?url=' + issueURL;
+        }, 1000);
       };
 
-      indicateMetamaskPopup();
-      web3.eth.getAccounts(function(_, accounts) {
-        bounty.killBounty(
-          bountyId,
-          {
-            from: accounts[0],
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-          },
-          final_callback
-        );
-      });
-    });
+      if (error) {
+        console.error('err', error);
+        _alert({ message: gettext('There was an error') });
+        unloading_button($('.js-submit'));
+      } else {
+        next();
+      }
+    };
 
+    indicateMetamaskPopup();
+
+    bounty.methods.killBounty(bountyId).send({
+      from: selectedAccount
+    }).then((result) => {
+      final_callback(result)
+    }).catch(err => {
+      final_callback(undefined, err);
+      console.log(err);
+    });
   };
 
-  const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + 
-    issueURL + '&network=' + $('input[name=network]').val() + 
+  const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' +
+    issueURL + '&network=' + $('input[name=network]').val() +
     '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
   $.get(uri, apiCallback);

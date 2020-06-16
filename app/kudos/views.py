@@ -42,6 +42,7 @@ from django.views.decorators.csrf import csrf_exempt
 import boto3
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.notifications import maybe_market_kudos_to_email, maybe_market_kudos_to_github
+from dashboard.tasks import increment_view_count
 from dashboard.utils import get_nonce, get_web3, is_valid_eth_address
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -51,6 +52,7 @@ from kudos.utils import kudos_abi
 from marketing.mails import new_kudos_request
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from townsquare.models import PinnedPost
 from web3 import Web3
 
 from .forms import KudosSearchForm
@@ -140,6 +142,11 @@ def marketplace(request):
             logger.debug(e)
             pass
 
+    # increment view counts
+    pks = list(token_list.values_list('pk', flat=True))
+    if len(pks):
+        increment_view_count.delay(pks, token_list.first().content_type, request.user.id, 'index')
+
     listings = token_list.order_by(order_by).cache()
     context = {
         'is_outside': True,
@@ -196,6 +203,11 @@ def details(request, kudos_id, name):
     if kudos.hidden_token_details_page:
         raise Http404
 
+    what = f'kudos:{kudos.pk}'
+    try:
+        pinned = PinnedPost.objects.get(what=what)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     context = {
         'send_enabled': kudos.send_enabled_for(request.user),
         'is_outside': True,
@@ -206,6 +218,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/kudos/assets/kudos-image.png')),
         'kudos': kudos,
+        'pinned': pinned,
         'related_handles': list(set(kudos.owners_handles))[:num_kudos_limit],
         'target': f'/activity?what=kudos:{kudos.pk}',
     }
@@ -214,6 +227,9 @@ def details(request, kudos_id, name):
             token_id=kudos.cloned_from_id,
             contract__address=kudos.contract.address,
         )
+        # increment view counts
+        increment_view_count.delay([token.pk], token.content_type, request.user.id, 'individual')
+
         # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
         kudos.num_clones_in_wild = token.num_clones_in_wild
         # Create a new attribute to reference number of gen0 clones allowed
@@ -672,7 +688,7 @@ def receive(request, key, txid, network):
     return TemplateResponse(request, 'transaction/receive.html', params)
 
 
-def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
+def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, submit_later=False, exit_after_sending_tx=False):
     try:
         address = Web3.toChecksumAddress(address)
     except:
@@ -688,7 +704,7 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
     private_key = settings.KUDOS_PRIVATE_KEY if not coupon.sender_pk else coupon.sender_pk
     kudos_owner_address = settings.KUDOS_OWNER_ACCOUNT if not coupon.sender_address else coupon.sender_address
     gas_price_confirmation_time = 1 if not coupon.sender_address else 60
-    gas_price_multiplier = 1.5 if not coupon.sender_address else 1
+    gas_price_multiplier = 1.3 if not coupon.sender_address else 1
     kudos_contract_address = Web3.toChecksumAddress(settings.KUDOS_CONTRACT_MAINNET)
     kudos_owner_address = Web3.toChecksumAddress(kudos_owner_address)
     w3 = get_web3(coupon.token.contract.network)
@@ -714,11 +730,20 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
 
         signed = w3.eth.account.signTransaction(tx, private_key)
         retry_later = False
-        try:
-            txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-        except Exception as e:
-            txid = "pending_celery"
-            retry_later = True
+        tx_status = 'pending'
+
+        if submit_later:
+            txid = ''
+            tx_status = 'not_subed'
+        else:
+            try:
+                txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+            except Exception as e:
+                txid = "pending_celery"
+                retry_later = True
+
+        if exit_after_sending_tx:
+            return txid, None, None
 
         with transaction.atomic():
             kudos_transfer = KudosTransfer.objects.create(
@@ -741,8 +766,8 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False):
                 sender_profile=coupon.sender_profile,
                 txid=txid,
                 receive_txid=txid,
-                tx_status='pending',
-                receive_tx_status='pending',
+                tx_status=tx_status,
+                receive_tx_status=tx_status,
                 receive_address=address,
             )
 
@@ -793,7 +818,9 @@ def receive_bulk(request, secret):
         if request.user.is_anonymous:
             error = "You must login."
         if not error:
-            success, error, _ = redeem_bulk_coupon(coupon, request.user.profile, request.POST.get('forwarding_address'), get_ip(request), request.POST.get('save_addr'))
+            submit_later = (recommend_min_gas_price_to_confirm_in_time(1)) > 10 and not coupon.is_paid_right_now
+            submit_later = False
+            success, error, _ = redeem_bulk_coupon(coupon, request.user.profile, request.POST.get('forwarding_address'), get_ip(request), request.POST.get('save_addr'), submit_later=submit_later)
         if error:
             messages.error(request, error)
 
@@ -806,6 +833,7 @@ def receive_bulk(request, secret):
     title = f"Redeem {coupon.token.humanized_name} Kudos from @{coupon.sender_profile.handle}"
     desc = f"This Kudos has been AirDropped to you.  About this Kudos: {coupon.token.description}"
     tweet_text = f"I just got a {coupon.token.humanized_name} Kudos on @gitcoin.  " if not request.GET.get('tweet', None) else request.GET.get('tweet')
+    gas_amount = round(0.00035 * 1.3 * float(recommend_min_gas_price_to_confirm_in_time(1)), 4)
     params = {
         'title': title,
         'card_title': title,
@@ -815,6 +843,7 @@ def receive_bulk(request, secret):
         'coupon': coupon,
         'user': request.user,
         'class': _class,
+        'gas_amount': gas_amount,
         'is_authed': request.user.is_authenticated,
         'kudos_transfer': kudos_transfer,
         'tweet_text': urllib.parse.quote_plus(tweet_text),

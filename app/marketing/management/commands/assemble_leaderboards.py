@@ -95,7 +95,9 @@ def profile_to_location(handle):
 
 
 def profile_to_location_helper(handle):
-
+    if not handle:
+        return []
+    
     profiles = Profile.objects.filter(handle=handle.lower())
     if handle and profiles.exists():
         profile = profiles.first()
@@ -106,7 +108,7 @@ def profile_to_location_helper(handle):
 def bounty_to_location(bounty):
     locations = profile_to_location(bounty.bounty_owner_github_username)
     fulfiller_usernames = list(
-        bounty.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
+        bounty.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True)
     )
     for username in fulfiller_usernames:
         locations = locations + profile_to_location(username)
@@ -232,7 +234,7 @@ def add_element(key, index_term, amount):
 
 
 def sum_bounty_helper(b, time, index_term, val_usd):
-    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
+    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True))
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
     if index_term == b.bounty_owner_github_username and index_term not in IGNORE_PAYERS:

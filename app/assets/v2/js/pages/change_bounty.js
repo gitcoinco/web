@@ -7,9 +7,10 @@ let usersBySkills;
 let processedData;
 
 const populateFromAPI = bounty => {
-  bounty.is_featured ?
-    $('#featuredBounty').prop('checked', true) :
+  if (bounty.is_featured) {
+    $('#featuredBounty').prop('checked', true);
     $('#featuredBounty').prop('disabled', true);
+  }
 
   $.each(bounty, function(key, value) {
     let ctrl = $('[name=' + key + ']', $('#submitBounty'));
@@ -131,7 +132,7 @@ const getSuggestions = () => {
       }
 
       obj.children.forEach(children => {
-        children.text = children.fulfiller_github_username || children.user__profile__handle;
+        children.text = children.profile__handle || children.user__profile__handle;
         children.id = generalIndex;
         generalIndex++;
       });
@@ -221,33 +222,35 @@ $(document).ready(function() {
 
   userSearch('#reservedFor', false, '', reservedForHandle, true);
 
+  if ($('input[name=amount]').length) {
 
-  setTimeout(setUsdAmount, 1000);
+    setTimeout(setUsdAmount, 1000);
 
-  $('input[name=hours]').keyup(setUsdAmount);
-  $('input[name=hours]').blur(setUsdAmount);
-  $('input[name=amount]').keyup(setUsdAmount);
+    $('input[name=hours]').keyup(setUsdAmount);
+    $('input[name=hours]').blur(setUsdAmount);
+    $('input[name=amount]').keyup(setUsdAmount);
 
-  $('input[name=usd_amount]').on('focusin', function() {
-    $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
-    $('input[name=amount]').trigger('change');
-  });
+    $('input[name=usd_amount]').on('focusin', function() {
+      $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+      $('input[name=amount]').trigger('change');
+    });
 
-  $('input[name=usd_amount]').on('focusout', function() {
-    $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
-    $('input[name=amount]').trigger('change');
-  });
+    $('input[name=usd_amount]').on('focusout', function() {
+      $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
+      $('input[name=amount]').trigger('change');
+    });
 
-  $('input[name=usd_amount]').keyup(() => {
-    const prev_usd_amount = $('input[name=usd_amount]').attr('prev_usd_amount');
-    const usd_amount = $('input[name=usd_amount').val();
+    $('input[name=usd_amount]').keyup(() => {
+      const prev_usd_amount = $('input[name=usd_amount]').attr('prev_usd_amount');
+      const usd_amount = $('input[name=usd_amount').val();
 
-    $('input[name=amount]').trigger('change');
+      $('input[name=amount]').trigger('change');
 
-    if (prev_usd_amount != usd_amount) {
-      usdToAmount(usd_amount);
-    }
-  });
+      if (prev_usd_amount != usd_amount) {
+        usdToAmount(usd_amount);
+      }
+    });
+  }
 
   form.validate({
     errorPlacement: function(error, element) {
@@ -310,30 +313,28 @@ $(document).ready(function() {
 
       const payFeaturedBounty = function() {
         indicateMetamaskPopup();
-        web3.eth.getCoinbase(function(_, coinbase) {
-          web3.eth.sendTransaction({
-            to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-            from: coinbase,
-            value: web3.toWei(ethFeaturedPrice, 'ether'),
-            gasPrice: web3.toHex(5 * Math.pow(10, 9)),
-            gas: web3.toHex(318730),
-            gasLimit: web3.toHex(318730)
-          },
-          function(error, result) {
-            indicateMetamaskPopup(true);
-            if (error) {
-              _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
-              console.log(error);
-            } else {
-              saveAttestationData(
-                result,
-                ethFeaturedPrice,
-                '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-                'featuredbounty'
-              );
-              saveBountyChanges();
-            }
-          });
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: selectedAccount,
+          value: web3.utils.toWei(String(ethFeaturedPrice)),
+          gasPrice: web3.utils.toHex(5 * Math.pow(10, 9)),
+          gas: web3.utils.toHex(318730),
+          gasLimit: web3.utils.toHex(318730)
+        },
+        function(error, result) {
+          indicateMetamaskPopup(true);
+          if (error) {
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            console.log(error);
+          } else {
+            saveAttestationData(
+              result,
+              ethFeaturedPrice,
+              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              'featuredbounty'
+            );
+            saveBountyChanges();
+          }
         });
       };
 

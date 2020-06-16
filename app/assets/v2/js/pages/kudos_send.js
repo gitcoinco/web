@@ -1,9 +1,6 @@
 /* eslint-disable no-console */
 
 var get_gas_price = function() {
-  if ($('#gasPrice').length) {
-    return $('#gasPrice').val() * Math.pow(10, 9);
-  }
   if (typeof defaultGasPrice != 'undefined') {
     return defaultGasPrice;
   }
@@ -275,7 +272,7 @@ $(document).ready(function() {
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-    kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
+    kudosPriceInWei = new web3.utils.BN((kudosPriceInEth * 1.0 * Math.pow(10, 18)));
 
     var formData = {
       email: email,
@@ -449,7 +446,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     if ($('.redemptions select').length) {
       num_redemptions = $('.redemptions select').val();
     }
-    
+
     web3.eth.getCoinbase(function(_, account) {
       var formbody = {
         username: username,
@@ -541,14 +538,17 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // end post_send_callback
 
           // Pull up Kudos contract instance
-          var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
+          var kudos_contract = new web3.eth.Contract(kudos_abi, kudos_address(), {
+            from: account, // default from address
+            gasPrice: web3.utils.toHex(get_gas_price()) // default gas price in wei, 20 gwei in this case
+          });
 
           var numClones = 1;
 
           console.log('destinationAccount:' + destinationAccount);
 
           var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')) || $('.kudos-search').select2('data')[0].price_finney;
-          var kudosPriceInWei = new web3.BigNumber((kudosPriceInEth * 1.0 * Math.pow(10, 18)).toString());
+          var kudosPriceInWei = new web3.utils.BN((kudosPriceInEth * 1.0 * Math.pow(10, 18)));
 
           if (is_direct_to_recipient) {
             // Step 9
@@ -556,12 +556,16 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             console.log('Using Kudos Direct Send (KDS)');
 
 
-            kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
-            }, function(cloneError, cloneTxid) {
-              // getLatestId yields the last kudos_id
-              kudos_contract.getLatestId(function(error, kudos_id) {
-                post_send_callback(cloneError, cloneTxid, kudos_id);
+            kudos_contract.methods.clone(destinationAccount, tokenId, numClones).send({
+              from: account,
+              value: kudosPriceInWei
+            }).on('transactionHash', function(hash) {
+              kudos_contract.methods.getLatestId().call(function(cloneError, kudos_id) {
+                post_send_callback(cloneError, hash, kudos_id);
               });
+            }).catch(err => {
+              console.log(err);
+              post_send_callback(err);
             });
 
             // Send Indirectly
@@ -578,7 +582,10 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               value: kudosPriceInWei.toString()
             };
 
-            kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei, gasPrice: web3.toHex(get_gas_price())
+            kudos_contract.methods.clone(destinationAccount, tokenId, numClones).estimateGas({
+              from: account,
+              gas: web3.utils.toHex(get_gas_price()),
+              value: kudosPriceInWei
             }, function(err, kudosGasEstimate) {
               if (err) {
                 unloading_button($('#send'));
@@ -602,14 +609,14 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               if ($('.redemptions select').length) {
                 num_redemptions = $('.redemptions select').val();
               }
-              var total_send = ((gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber()) * new web3.BigNumber(num_redemptions)).toString();
+              var total_send = ((gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber()) * new web3.utils.BN(num_redemptions)).toString();
 
               web3.eth.sendTransaction({
                 from: account,
                 to: destinationAccount,
                 // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
                 value: total_send,
-                gasPrice: web3.toHex(get_gas_price())
+                gasPrice: web3.utils.toHex(get_gas_price())
               }, post_send_callback);
             });
           }
@@ -644,25 +651,16 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   });
 }
 
-// web3.currentProvider.publicConfigStore.on('update', function(e) {
 var error;
 
-if (window.ethereum.publicConfigStore) {
-  window.ethereum.publicConfigStore.on('update', checkNetwork);
-}
-function checkNetwork(e) {
-  if (error) {
-    return;
-  }
+if (web3Modal) {
+  web3Modal.onConnect().then(() => {
+    if (networkId === '4' || networkId === '1') {
+      console.log(networkId);
+    } else {
+      error = true;
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+    }
 
-  var network = e ? e.networkVersion : web3.version.network;
-
-  console.log(web3.currentProvider);
-  if (network === '4' || network === '1') {
-    console.log(network);
-  } else {
-    error = true;
-    _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-  }
+  });
 }
-checkNetwork();

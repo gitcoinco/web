@@ -38,7 +38,7 @@ class Command(BaseCommand):
     help = 'creates payouts'
 
     def add_arguments(self, parser):
-        parser.add_argument('what', 
+        parser.add_argument('what',
             default='finalize',
             type=str,
             help="what do we do? (finalize, payout, announce)"
@@ -62,7 +62,7 @@ class Command(BaseCommand):
         network = 'mainnet' if not settings.DEBUG else 'rinkeby'
         from_address = settings.MINICLR_ADDRESS
         from_pk = settings.MINICLR_PRIVATE_KEY
-        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x8f2e097e79b1c51be9cba42658862f0192c3e487'
+        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D'
 
         # find a round that has recently expired
         minutes_ago = options['minutes_ago']
@@ -89,6 +89,12 @@ class Command(BaseCommand):
             rankings = mr.ranking.filter(final=True, paid=False).order_by('-match_total')
             print(rankings.count(), " to pay")
             w3 = get_web3(network)
+
+            print(f"pls make sure there is enough DAI in {from_address}")
+            print('------------------------------')
+            user_input = input("continue? (y/n) ")
+            if user_input != 'y':
+                return
 
             num_rankings = rankings.count()
             num_handles = len(set(list(rankings.values_list('profile__handle', flat=True))))
@@ -186,7 +192,7 @@ class Command(BaseCommand):
 
                 print("paid ", ranking)
                 time.sleep(30)
-            
+
         # announce finalists (round must be finalized first)
         from_profile = Profile.objects.get(handle='gitcoinbot')
         if options['what'] == 'announce':
@@ -195,7 +201,7 @@ class Command(BaseCommand):
             print(rankings.count(), " to announce")
             for ranking in rankings:
                 profile_link = f"<a href=/{ranking.profile}>@{ranking.profile}</a>"
-                copy += f" - {profile_link} was ranked <strong>#{ranking.number}</strong>. <BR>"
+                copy += f" - {profile_link} was ranked <strong>#{ranking.number}</strong> & was paid <strong>{ranking.match_total} DAI</strong>. <BR>"
             metadata = {
                 'copy': copy,
             }

@@ -20,7 +20,7 @@
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
+    {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static 'v2/css/lib/quill-snow.css' %}">
 
     <style>
@@ -69,12 +69,6 @@
 
       .modal-header, .modal-body, .modal-footer {
         border: none;
-      }
-
-      @media screen and (min-width: 598px) {
-        .options {
-          grid-template-columns: repeat(2, 1fr);
-        }
       }
     </style>
   </head>
@@ -145,13 +139,12 @@
                 </h4>
                 <p class="pt-4 mb-4">Until then, we recommend a few different ways to prepare:</p>
                 {% endif %}
-                <ul  class="list-unstyled">
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="{% url 'hackathon' hackathon.slug %}?tab=hackathon:{{hackathon.id}}"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Introduce yourself on Townsquare</a> </li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Look out for upcoming workshop invites in your email inbox</li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Checkout sponsors below and build your team</a></li>
-                    <li class="mb-3 gc-text-blue font-weight-bold"><i class="mr-1 fas fa-check-circle gc-text-blue"></i> Invite your friends to hack and earn a Kudos</li>
+                <ul  class="mt-4">
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="{% url 'hackathon' hackathon.slug %}townsquare">Introduce yourself on Townsquare</a> </li>
+                    <li class="mb-3 gc-text-blue font-weight-bold">Look out for upcoming workshop invites in your email inbox</li>
+                    <li class="mb-3 gc-text-blue font-weight-bold"><a href="#sponsors">Checkout sponsors below and build your team</a></li>
+                    <li class="mb-3 gc-text-blue font-weight-bold">Invite your friends to hack and earn a Kudos</li>
                 </ul>
-
               </div>
             {% if not hackathon.start_date|timesince >= "1 min"%}
                 <div class="d-md-flex d-none mt-5 col-2 justify-content-end align-items-center">
@@ -312,37 +305,53 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="">
+          <div class="px-5">
               <form id="hackathon-poll">
+                <div id="poll_container" class="carousel slide" data-ride="carousel">
+                  <div class="carousel-inner">
                 {% for question in poll.question_set.all %}
+                  <fieldset style="min-height: 200px" class="carousel-item {% if forloop.first %}active first{% elif forloop.last %}last{% endif %}" data-question="{{ question.id }}" data-step="{{ forloop.counter0 }}" data-rstep="{{ forloop.revcounter0 }}">
+                  <div>
                     {% if question.question_type == 'SINGLE_CHOICE' %}
-                        <div class="question">
-                          <input type="checkbox" id="{{ question.id }}" name="{{ question.id }}">
-                          <label for="{{ question.id }}">{{ question.text }}</label>
+                        <div class="form__checkbox">
+                          <input type="checkbox" id="single_{{ question.id }}" name="{{ question.id }}">
+                          <label class="form__label" for="single_{{ question.id }}">{{ question.text }}</label>
                         </div>
-                    {% elif question.question_type == 'MUTIPLE_CHOICE' %}
+                    {% elif question.question_type == 'MULTIPLE_CHOICE' %}
                         <div class="question">
-                        <h4 class="font-header text-center font-weight-bold pt-0 mb-5">{{ question.text }}</h4>
+                        <h4 class="font-header font-weight-bold pt-0 mb-5">{{ forloop.counter }}. {{ question.text }}</h4>
                         <div class="options">
                         {% for option in question.option_set.all %}
-                          <div>
-                            <input type="checkbox" id="{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
-                       		<label for="{{ option.id }}">{{ option.text }}</label>
+                          <div class="px-1">
+                            <input type="checkbox" id="multiple_{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
+                       		  <label for="multiple_{{ option.id }}">{{ option.text }}</label>
                           </div>
                         {% endfor %}
                         </div>
                         </div>
                     {% else %}
                         <div class="question">
-                        <h4 class="font-header text-center">{{ question.text }}</h4>
-                        <input type="text" name="{{ question.id }}">
+                          <h4 class="font-header font-weight-bold pt-0 mb-5">{{ question.text }}</h4>
+                          <textarea class="form-control" style="height: 120px" cols="10" rows="2"  name="{{ question.id }}" ></textarea>
                         </div>
                     {% endif %}
+                  </div>
+                  </fieldset>
                 {% endfor %}
+                  </div>
+                  <div class="mt-5 mb-3 d-flex justify-content-between align-items-center">
+                    <a id="poll-prev" class="btn-link gc-text-blue d-none" href="#" role="button" data-slide="prev">
+                      < Previous
+                    </a>
+                    <div id="poll-empty"></div>
+                    <a id="poll-submit" class="btn btn-lg btn-gc-blue {% if poll.question_set.count > 1%} d-none{% endif %}" href="#">Submit</a>
+                    <a id="poll-next" class="btn btn-lg btn-gc-blue {% if poll.question_set.count <= 1%}d-none{% endif %}" href="#" role="button" data-slide="next">
+                      Next >
+                    </a>
+
+                  </div>
+                </div>
               </form>
-          </div>
-          <div class="modal-footer justify-content-center">
-            <button id="send_poll" class="btn btn-lg font-header btn-gc-blue mt-4 mb-4 px-4 px-md-5">Join Hackathon Now</button>
           </div>
         </div>
       </div>
@@ -373,8 +382,8 @@
           });
         } else {
           $('#questions-form').modal('show');
-          $('#send_poll').unbind('click')
-          $('#send_poll').on('click', function () {
+          $('#poll-submit').unbind('click')
+          $('#poll-submit').on('click', function () {
 
             const poll = $('#hackathon-poll').serializeArray();
             const url = '/register_hackathon/';
@@ -423,6 +432,46 @@
 
         }, 1000);
       }
+
+      const poll_manager = $('#poll_container').carousel({
+        interval: false
+      })
+
+      $('[data-slide="next"]').click(function (e) {
+        e.preventDefault();
+        const fieldset = $('fieldset.active');
+
+        if (fieldset.data('rstep') === 1) {
+          $("#poll-prev").removeClass('d-none')
+          $("#poll-next").addClass('d-none')
+          $('#poll-empty').addClass('d-none')
+          $('#poll-submit').removeClass('d-none')
+        } else {
+          $("#poll-prev").removeClass('d-none')
+          $("#poll-next").removeClass('d-none')
+          $('#poll-empty').addClass('d-none')
+          $('#poll-submit').addClass('d-none')
+        }
+        poll_manager.carousel('next');
+      })
+
+      $('[data-slide="prev"]').click(function (e) {
+        e.preventDefault();
+        const fieldset = $('fieldset.active');
+
+        if (fieldset.data('step') === 1) {
+          $("#poll-prev").addClass('d-none')
+          $("#poll-next").removeClass('d-none')
+          $('#poll-empty').removeClass('d-none')
+          $('#poll-submit').addClass('d-none')
+        } else {
+          $("#poll-prev").removeClass('d-none')
+          $("#poll-next").removeClass('d-none')
+          $('#poll-empty').addClass('d-none')
+          $('#poll-submit').addClass('d-none')
+        }
+        poll_manager.carousel('prev');
+      })
 
     </script>
     <script src="{% static 'v2/js/pages/hackathon-onboard.js' %}"></script>

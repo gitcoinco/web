@@ -361,10 +361,6 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             try:
                 created_on = timezone.now()
                 modified_on = timezone.now()
-                fulfiller_email = fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('email', '')
-                fulfiller_name = fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('name', '')
                 fulfiller_github_url = fulfillment.get('data', {}).get(
                     'payload', {}).get('fulfiller', {}).get('githubPRLink', '')
                 hours_worked = fulfillment.get('data', {}).get(
@@ -377,10 +373,12 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     hours_worked = None
 
                 new_bounty.fulfillments.create(
+                    funder_profile=new_bounty.bounty_owner_profile,
+                    funder_address=new_bounty.bounty_owner_address,
+                    payout_type='bounties_network',
+                    tenant = 'ETH',
+                    token_name=new_bounty.token_name,
                     fulfiller_address=fulfiller_address,
-                    fulfiller_email=fulfiller_email,
-                    fulfiller_github_username=github_username,
-                    fulfiller_name=fulfiller_name,
                     fulfiller_metadata=fulfillment,
                     fulfillment_id=fulfillment.get('id'),
                     fulfiller_github_url=fulfiller_github_url,
@@ -583,6 +581,9 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     except Exception as e:
         logger.error(e)
 
+    if latest_old_bounty:
+        new_bounty.set_view_count(latest_old_bounty.get_view_count)
+
     if latest_old_bounty and latest_old_bounty.event:
         new_bounty.event = latest_old_bounty.event
         new_bounty.save()
@@ -773,7 +774,6 @@ def get_fulfillment_data_for_activity(fulfillment):
         'fulfiller_address': fulfillment.fulfiller_address,
         'fulfiller_email': fulfillment.fulfiller_email,
         'fulfiller_github_username': fulfillment.fulfiller_github_username,
-        'fulfiller_name': fulfillment.fulfiller_name,
         'fulfiller_metadata': fulfillment.fulfiller_metadata,
         'fulfillment_id': fulfillment.fulfillment_id,
         'fulfiller_hours_worked': str(fulfillment.fulfiller_hours_worked),
@@ -792,7 +792,8 @@ bounty_activity_event_adapter = {
     'killed_bounty': 'cancel_bounty',
     'work_submitted': 'submit_work',
     'stop_work': 'stop_work',
-    'work_done': 'payout_bounty'
+    'work_done': 'payout_bounty',
+    'worker_paid': 'worker_paid'
 }
 
 
@@ -828,8 +829,8 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                     fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-            if fulfillment:
-                user_profile = Profile.objects.filter(handle=fulfillment.fulfiller_github_username.lower()).first()
+            if fulfillment and fulfillment.profile:
+                user_profile = fulfillment.profile
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
 

@@ -18,7 +18,8 @@
 {% endcomment %}
 {% load static %}
 
-<script src="{% static "v2/js/lib/web3.0.20.6.min.js" %}"></script>
+<script src="{% static "v2/js/lib/web3.min.js" %}"></script>
+
 <script>
     var web3 = window.web3 ? new Web3(window.web3.currentProvider) : new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/{{INFURA_V3_PROJECT_ID}}"));
 </script>

@@ -70,10 +70,6 @@
   bottom: 2px;
 }
 
-#accordion-set-own-limit {
-  font-size: 12px;
-}
-
 #gitcoin-grant-section .custom {
   width: 4.25rem;
   position: relative;
@@ -154,25 +150,6 @@
   left: 0;
   right: 0;
   bottom: -1.2rem;
-}
-
-.nav {
-  text-align: center;
-}
-
-.nav-link {
-  border-right: 1px solid black;
-  border-top: 1px solid black;
-  border-left: 1px solid black;
-  margin-right: 10px;
-}
-
-.nav-link:visited {
-  color: black;
-}
-
-.nav-item.active {
-  text-decoration: underline;
 }
 
 .clr_estimate {

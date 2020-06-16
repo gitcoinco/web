@@ -132,6 +132,11 @@ urlpatterns = [
         dashboard.views.profile_job_opportunity,
         name='profile_job_opportunity'
     ),
+    url(
+        r'^api/v0.1/profile/(.*)?/setTaxSettings',
+        dashboard.views.profile_tax_settings,
+        name='profile_set_tax_settings'
+    ),
     url(r'^api/v0.1/profile/(?P<handle>.*)', dashboard.views.profile_details, name='profile_details'),
     url(r'^api/v0.1/user_card/(?P<handle>.*)', dashboard.views.user_card, name='user_card'),
     url(r'^api/v0.1/banners', dashboard.views.load_banners, name='load_banners'),
@@ -187,6 +192,8 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
+    re_path(r'^sms/request/?$', dashboard.views.send_verification, name='request_verification'),
+    re_path(r'^sms/validate/?$', dashboard.views.validate_verification, name='request_verification'),
 
     # quests
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
@@ -332,8 +339,8 @@ urlpatterns = [
     url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
     url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
-    url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
-    url(r'^tip/?', dashboard.tip_views.send_tip_2, name='tip'),
+    url(r'^send/?$', dashboard.tip_views.send_tip, name='tip'),
+    url(r'^tip/?$', dashboard.tip_views.send_tip_2, name='tip'),
     url(r'^requestmoney/?', dashboard.tip_views.request_money, name='request_money'),
     # Legal
     re_path(r'^terms/?', dashboard.views.terms, name='_terms'),
@@ -342,7 +349,7 @@ urlpatterns = [
     re_path(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     re_path(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     re_path(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
-    re_path(r'^legal/?', dashboard.views.terms, name='legal'),
+    url(r'^legal/?$', dashboard.views.terms, name='legal'),
 
     # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
@@ -361,7 +368,7 @@ urlpatterns = [
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
     url(r'^gas/heatmap/?', dashboard.gas_views.gas_heatmap, name='gas_heatmap'),
-    url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
+    url(r'^gas/?$', dashboard.gas_views.gas, name='gas'),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
@@ -535,6 +542,7 @@ urlpatterns = [
     path('_administration/email/mention', retail.emails.mention, name='mention_email'),
     path('_administration/email/wallpost', retail.emails.wallpost, name='wallpost_email'),
     path('_administration/email/grant_update', retail.emails.grant_update, name='grant_update_email'),
+    path('_administration/email/grant_recontribute', retail.emails.grant_recontribute, name='grant_recontribute_email'),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,
@@ -571,6 +579,7 @@ urlpatterns = [
         faucet.views.process_faucet_request,
         name='process_faucet_request'
     ),
+    re_path(r'^_administration/bulkDM/', dashboard.views.bulkDM, name='bulkDM'),
     re_path(
         r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
     ),
@@ -615,6 +624,7 @@ urlpatterns = [
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
     re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
     re_path(r'^settings/organizations/?', marketing.views.org_settings, name='org_settings'),
+    re_path(r'^settings/tax/?', marketing.views.tax_settings, name='tax_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
     re_path(r'^settings$', marketing.views.org_settings, name='settings2'),
 
@@ -668,18 +678,16 @@ urlpatterns = [
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
 
     # ENS urls
-    re_path(r'^ens/', enssubdomain.views.ens_subdomain, name='ens'),
+    url(r'^ens/?$', enssubdomain.views.ens_subdomain, name='ens'),
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
+    url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
 
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
-
-    #projets
-    url(r'^api/v0.1/projects_fetch/', dashboard.views.projects_fetch, name='projects_fetch'),
 
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),
@@ -702,12 +710,14 @@ if settings.DEBUG:
 
 urlpatterns += [
     re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/([a-z|A-Z|0-9|\.]+)/?$',
         dashboard.views.profile,
         name='profile_min'
     ),
     re_path(
-        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[a-z\d]))+)/?$', dashboard.views.profile, name='profile_min'
+        r'^(?!wiki)([a-z|A-Z|0-9|\.](?:[a-z\d]|[A-Z\d]|-(?=[A-Z|a-z\d]))+)/?$',
+        dashboard.views.profile,
+        name='profile_min'
     ),
 ]
 

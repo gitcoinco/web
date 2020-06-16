@@ -17,9 +17,6 @@ window.onload = function() {
       $('input[name=githubUsername]').val(localStorage['githubUsername']);
     }
   }
-  if (typeof localStorage['notificationEmail'] != 'undefined') {
-    $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
-  }
   if (getParam('source')) {
     $('input[name=issueURL]').val(getParam('source'));
   }
@@ -45,6 +42,6 @@ window.onload = function() {
 const fetchFromWeb3Wallet = () => {
   web3.eth.getAccounts(function(_, accounts) {
     $('#payoutAddress').val(accounts[0]);
-    $('#payoutAddress').attr('disabled', true);
+    $('#payoutAddress').attr('readonly', true);
   });
 }
