@@ -828,106 +828,13 @@ def grant_fund(request, grant_id, grant_slug):
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == 'POST':
-        if 'contributor_address' in request.POST:
-            subscription = Subscription()
+        from grants.tasks import process_grant_contribution
+        process_grant_contribution.delay(grant_id, grant_slug, profile.pk, request.POST)
 
-            if grant.negative_voting_enabled:
-                #is_postive_vote = True if request.POST.get('is_postive_vote', 1) else False
-                is_postive_vote = request.POST.get('match_direction', '+') == '+'
-            else:
-                is_postive_vote = True
-            subscription.is_postive_vote = is_postive_vote
+        return JsonResponse({
+            'success': True,
+        })
 
-            subscription.active = False
-            subscription.contributor_address = request.POST.get('contributor_address', '')
-            subscription.amount_per_period = request.POST.get('amount_per_period', 0)
-            subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
-            subscription.frequency = request.POST.get('frequency', 30)
-            subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
-            subscription.token_address = request.POST.get('token_address', '')
-            subscription.token_symbol = request.POST.get('token_symbol', '')
-            subscription.gas_price = request.POST.get('gas_price', 0)
-            subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '0x0')
-            subscription.num_tx_approved = request.POST.get('num_tx_approved', 1)
-            subscription.network = request.POST.get('network', '')
-            subscription.contributor_profile = profile
-            subscription.grant = grant
-            subscription.comments = request.POST.get('comment', '')
-            subscription.save()
-
-            # one time payments
-            activity = None
-            if int(subscription.num_tx_approved) == 1:
-                subscription.successful_contribution(subscription.new_approve_tx_id);
-                subscription.error = True #cancel subs so it doesnt try to bill again
-                subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
-                subscription.save()
-                activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
-            else:
-                activity = record_subscription_activity_helper('new_grant_subscription', subscription, profile)
-
-            if 'comment' in request.POST:
-                comment = request.POST.get('comment')
-                if comment and activity:
-                    profile = request.user.profile
-                    if subscription and subscription.negative:
-                        profile = Profile.objects.filter(handle='gitcoinbot').first()
-                        comment = f"Comment from contributor: {comment}"
-                    comment = Comment.objects.create(
-                        profile=profile,
-                        activity=activity,
-                        comment=comment)
-
-            message = 'Your contribution has succeeded. Thank you for supporting Public Goods on Gitcoin !'
-            if request.session.get('send_notification'):
-                msg_html = request.session.get('msg_html')
-                cta_text = request.session.get('cta_text')
-                cta_url = request.session.get('cta_url')
-                to_user = request.user
-                send_notification_to_user_from_gitcoinbot(to_user, cta_url, cta_text, msg_html)
-            if int(subscription.num_tx_approved) > 1:
-                message = 'Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Public Goods on Gitcoin !'
-
-            messages.info(
-                request,
-                message
-            )
-
-            return JsonResponse({
-                'success': True,
-            })
-
-        if 'hide_wallet_address' in request.POST:
-            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
-            profile.save()
-
-        if 'signature' in request.POST:
-            sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
-            subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
-            subscription.active = True
-
-            subscription.subscription_hash = request.POST.get('subscription_hash', '')
-            subscription.contributor_signature = request.POST.get('signature', '')
-            if 'split_tx_id' in request.POST:
-                subscription.split_tx_id = request.POST.get('split_tx_id', '')
-                subscription.save_split_tx_to_contribution()
-            if 'split_tx_confirmed' in request.POST:
-                subscription.split_tx_confirmed = bool(request.POST.get('split_tx_confirmed', False))
-                subscription.save_split_tx_to_contribution()
-            subscription.save()
-
-            value_usdt = subscription.get_converted_amount()
-            if value_usdt:
-                grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-
-            grant.save()
-            if not subscription.negative:
-                new_supporter(grant, subscription)
-                thank_you_for_supporting(grant, subscription)
-            return JsonResponse({
-                'success': True,
-                'url': reverse('grants:details', args=(grant.pk, grant.slug))
-            })
     raise Http404
 
 
