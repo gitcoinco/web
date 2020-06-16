@@ -1,5 +1,6 @@
-const hackathon_slug = document.hackathon_slug
-const sponsors = document.sponsors
+const hackathon_slug = document.hackathon_slug;
+const sponsors = document.sponsors;
+
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.mixin({
   methods: {
@@ -8,7 +9,8 @@ Vue.mixin({
 
       if (!url) {
         vm.errorIssueDetails = undefined;
-        return vm.issueDetails = null;
+        vm.issueDetails = null;
+        return vm.issueDetails;
       }
 
       if (url.indexOf('github.com/') < 0) {
@@ -38,22 +40,23 @@ Vue.mixin({
         //   vm.errorIssueDetails = 'This issue wasn\'t bountied yet.';
         // }
       }).catch((err) => {
-        console.log(err)
+        console.log(err);
         vm.errorIssueDetails = err.responseJSON.message;
       });
 
     },
-    getTokens: function(){
+    getTokens: function() {
       let vm = this;
       const apiUrlTokens = '/api/v1/tokens/';
       const getTokensData = fetchData(apiUrlTokens, 'GET');
+
       $.when(getTokensData).then((response) => {
         vm.tokens = response;
-        vm.form.token = vm.filterByNetwork[0]
-        vm.getAmount(vm.form.token.symbol)
+        vm.form.token = vm.filterByNetwork[0];
+        vm.getAmount(vm.form.token.symbol);
 
       }).catch((err) => {
-        console.log(err)
+        console.log(err);
         // vm.errorIssueDetails = err.responseJSON.message;
       });
 
@@ -66,36 +69,40 @@ Vue.mixin({
       }
       const apiUrlAmount = `/sync/get_amount?amount=1&denomination=${token}`;
       const getAmountData = fetchData(apiUrlAmount, 'GET');
+
       $.when(getAmountData).then((response) => {
         vm.coinValue = response.usdt;
-        vm.calcValues('usd')
+        vm.calcValues('usd');
 
       }).catch((err) => {
-        console.log(err)
+        console.log(err);
         // vm.errorIssueDetails = err.responseJSON.message;
       });
     },
     calcValues: function(direction) {
       let vm = this;
+
       if (direction == 'usd') {
-        let usdValue = vm.form.amount * vm.coinValue
+        let usdValue = vm.form.amount * vm.coinValue;
+
         vm.form.amountusd = Number(usdValue.toFixed(2));
-        console.log(vm.form.amountusd)
+        console.log(vm.form.amountusd);
       } else {
         vm.form.amount = Number(vm.form.amountusd * 1 / vm.coinValue).toFixed(4);
-        console.log(vm.form.amount)
+        console.log(vm.form.amount);
       }
 
     },
     addKeyword: function(item) {
       let vm = this;
 
-      vm.form.keywords.push(item)
+      vm.form.keywords.push(item);
     },
     checkForm: function(e) {
       let vm = this;
+
       if (vm.form.bounty_categories.length < 1) {
-        vm.errors.push('Select at least one category')
+        vm.errors.push('Select at least one category');
         e.preventDefault();
       } else {
         return;
@@ -110,38 +117,36 @@ Vue.mixin({
 
       } else if (network === 'custom') {
         // vm.sendData(form)
-
       }
-
-
-    },
-    sendData: function() {
-      // api post method
-
-    },
-    blockchainSend: function() {
-
     }
+    // sendData: function() {
+    //   // api post method
+
+    // },
+    // blockchainSend: function() {
+
+    // }
   },
   computed: {
     sortByPriority: function() {
       // console.log(elem)
       return this.tokens.sort(function(a, b) {
-        return b.priority - a.priority
-      })
+        return b.priority - a.priority;
+      });
     },
     filterByNetwork: function() {
       const vm = this;
-      if( vm.network == ''){
+
+      if (vm.network == '') {
         return vm.tokens;
       }
       return vm.sortByPriority.filter((item)=>{
 
         return item.network.toLowerCase().indexOf(vm.network.toLowerCase()) >= 0;
-      })
+      });
     }
   }
-})
+});
 
 if (document.getElementById('gc-hackathon-new-bounty')) {
   // var vueSelect = import('vue-select');
@@ -165,15 +170,15 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         coinValue: null,
         form: {
           gitcoinIssueUrl: '',
-          bounty_categories:[],
-          project_type:'',
-          permission_type:'',
+          bounty_categories: [],
+          project_type: '',
+          permission_type: '',
           keywords: [],
           amount: 0.001,
           amountusd: null,
-          token: {},
-        },
-      }
+          token: {}
+        }
+      };
     },
     mounted() {
       this.getTokens();
