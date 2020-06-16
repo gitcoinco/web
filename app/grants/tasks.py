@@ -47,6 +47,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         subscription.token_symbol = package.get('token_symbol', '')
         subscription.gas_price = package.get('gas_price', 0)
         subscription.new_approve_tx_id = package.get('sub_new_approve_tx_id', '0x0')
+        subscription.split_tx_id = package.get('split_tx_id', '0x0')
         subscription.num_tx_approved = package.get('num_tx_approved', 1)
         subscription.network = package.get('network', '')
         subscription.contributor_profile = profile
