@@ -190,7 +190,8 @@ $(document).ready(function() {
         } else {
 
           // send ERC20
-          var data = token_contract.methods.transfer(forwarding_address, amount_in_wei.toString()).encodeABI();
+          var encoded_amount = new web3.utils.BN(BigInt(document.tip['amount_in_wei'])).toString();
+          var data = token_contract.methods.transfer(forwarding_address, encoded_amount ).encodeABI();
 
           rawTx = {
             nonce: web3.utils.toHex(nonce),
