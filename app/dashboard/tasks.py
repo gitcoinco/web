@@ -158,7 +158,7 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
         key = f"{content_type}_{pk}"
         print(key)
         result = redis.incr(key)
-        if pk:
+        if pk and view_type == 'individual':
             try:
                 ObjectView.objects.create(
                     viewer=user,
