@@ -24,6 +24,30 @@ Vue.mixin({
   }
 });
 
+Vue.component('hackathon-sponsor-dashboard', {
+  props: [],
+  data: function () {
+    return {
+      isFunder: false,
+      funderBounties: []
+    };
+  },
+  methods: {
+    fetchBounties: function() {
+      let vm = this;
+
+      // fetch bounties
+      let apiUrlBounties = '/api/v0.1/user_bounties/';
+
+      let getBounties = fetchData(apiUrlBounties, 'GET');
+
+      $.when(getBounties).then((response) => {
+        vm.isFunder = response.is_funder;
+        vm.funderBounties = response.data;
+      });
+    }
+  }
+});
 
 Vue.component('modal', {
   props: [ 'user', 'size', 'id', 'issueDetails' ],

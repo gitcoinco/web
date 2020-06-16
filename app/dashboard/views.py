@@ -3704,6 +3704,10 @@ def hackathon(request, hackathon='', panel='prizes'):
     from chat.tasks import get_chat_url
     params['chat_url_embed'] = f"/hackathons/channels/{hackathon_event.chat_channel_id}"
 
+    params['is_sponsor'] = request.user.is_authenticated and any(
+        [request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() for bounty in Bounty.objects.filter(event=hackathon)]
+    )
+
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
 

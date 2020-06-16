@@ -137,6 +137,23 @@
                   </div>
                 </div>
               </template>
+              {% if can_manage %}
+              <b-tab v-if="is_on_tribe" class="col-12" title-item-class="navigation" lazy>
+                <template v-slot:title>
+                  <div class="mt-3">
+                    {% trans "Dashboard" %}
+                  </div>
+                </template>
+                <manage-sponsor inline-template>
+                  <b-row>
+                    <b-col xs="12">
+                      <h2>Overview</h2>
+                    </b-col>
+                    <b-col></b-col>
+                  </b-row>
+                </manage-sponsor>
+              </b-tab>
+              {% endif %}
               <b-tab class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
@@ -238,7 +255,7 @@
                   </div>
                 </div>
               </b-tab>
-                <b-tab class="col-12" title-item-class="navigation" lazy>
+              <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Projects" %}
@@ -330,7 +347,7 @@
                       </div>
                     </div>
                   </project-directory>
-                </b-tab>
+              </b-tab>
               <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
@@ -744,6 +761,7 @@
                 </div>
 
               </b-tab>
+
               <template v-slot:tabs-end>
                 <li role="presentation" class="nav-item navigation">
                   <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
@@ -839,5 +857,8 @@
     <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
     {% include 'shared/current_profile.html' %}
     <script src='{% static "v2/js/user-search.js" %}'></script>
+    {% if can_manage %}
+    <script src='{% static "v2/js/user-search.js" %}'></script>
+    {% endif %}
   </body>
 </html>
