@@ -64,13 +64,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <h1 class="col-auto text-left font-bigger-2 black" style="font-weight: bold; margin-bottom: 0">
                   GRANT CART ([[ grantData.length ]] ITEM<span v-if="grantData.length !== 1">S</span>)
                 </h1>
-                <div class="col-auto text-right font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;"
-                  @click="clearCart">
-                  Clear my cart
-                </div>
                 <div class="col-auto text-right font-smaller-1 hyperlink"
                   @click="showSMSValidationModal()">
                   Verify my number
+                </div>
+                <div class="col-auto text-right font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;"
+                  @click="confirmClearCart">
+                  Clear cart <i class="fa fa-times" aria-hidden="true"></i>
+                </div>
+                <div class="col-auto text-right font-smaller-1 hyperlink"
+                  @click="shareCart">
+                  Share cart <i class="fa fa-share-alt" aria-hidden="true"></i>
                 </div>
               </div>
             </div>
