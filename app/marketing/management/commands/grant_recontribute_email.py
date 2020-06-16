@@ -32,10 +32,10 @@ class Command(BaseCommand):
         prev_round_start = (2020, 3, 23)
         prev_round_end = (2020, 4, 7)
 
-        # Round 6: 6/15/2020 — 6/29/2020
+        # Round 6: 6/15/2020 — 7/3/2020
         next_round = 6
         next_round_start = (2020, 6, 15)
-        next_round_end = (2020, 6, 29)
+        next_round_end = (2020, 7, 3)
         match_pool = '175k'
 
         contributor_profiles = Profile.objects.filter(grant_contributor__subscription_contribution__success=True, grant_contributor__subscription_contribution__created_on__gte=datetime.datetime(*prev_round_start), grant_contributor__subscription_contribution__created_on__lte=datetime.datetime(*prev_round_end)).distinct()

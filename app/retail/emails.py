@@ -867,7 +867,7 @@ def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_rou
                 'id': grant.id,
                 'title': grant.title,
                 'image_url': grant.logo.url if grant.logo else f'{settings.STATIC_URL}v2/images/emails/grants-symbol-pos.png',
-                'amount': format(total_contribution_to_grant, '.0f'),
+                'amount': format(total_contribution_to_grant, '.3f'),
                 'token_symbol': subscription.token_symbol
             })
 
