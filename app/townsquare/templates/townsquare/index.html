@@ -28,6 +28,44 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/theme_switcher.css" %}">
+    <style>
+      img.hackathon-card-logo{
+        max-height: 4rem;
+        max-width: 4rem;
+      }
+
+      .townsquare_block-header.box-collapse {
+        background: #fff;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-transform: none;
+      }
+      
+      .box-hackathons {
+        background: #ffff;
+        border-bottom: 1px solid #ddd;
+      }
+      
+      .box-hackathons .card {
+        border: none;
+      }
+
+      .box-hackathons .card-header {
+        padding: 1.75rem 1.25rem;
+        border-bottom: none;
+        background-color: transparent;
+      }
+
+      .box-hackathons-townsquare .hackathon-actions {
+        font-weight: 700;
+      }
+
+      .box-hackathons .view-all {
+        background-color: #fff;
+        padding: 0px 0px 0px 20px;
+        font-weight: 700;
+      }
+    </style>
     <script src="{% static "v2/js/theme_switcher.js" %}"></script> <!-- needs to be in the head section -->
   </head>
 
@@ -140,6 +178,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% if SHOW_DRESSING %}
 
                 {% include 'townsquare/shared/tribe.html' %}
+               
+
+                {% if hackathon_tabs|length %}
+                  <div class="townsquare_block-header box-collapse  mt-1" data-target="hackathons">
+                    Gitcoin Hackathons
+                  </div>
+                  {% include 'townsquare/shared/hackathons.html' %}
+                {% endif %}
+
                 {% include 'townsquare/shared/reflink.html' %}
 
                 <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
