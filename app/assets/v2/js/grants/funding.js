@@ -19,7 +19,7 @@ $(document).ready(function() {
 
     if (donations.length) {
       let cart_html = 'You just funded: ';
-      let bulk_add_cart = 'http://localhost:8000/grants/cart/bulk-add/';
+      let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
 
       for (let i = 0; i < donations.length; i += 1) {
         const donation = donations[i];
