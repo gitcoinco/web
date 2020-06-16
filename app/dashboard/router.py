@@ -473,6 +473,11 @@ class BountiesViewSet(viewsets.ModelViewSet):
             if self.request.query_params.get('misc') == 'hiring':
                 queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
 
+        if 'event' in param_keys:
+            queryset = queryset.filter(
+                repo_type=self.request.query_params.get('event'),
+            )
+
         # Keyword search to search all comma separated keywords
         queryset_original = queryset
         if 'keywords' in param_keys:
@@ -492,7 +497,6 @@ class BountiesViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 repo_type=self.request.query_params.get('repo_type'),
             )
-
         # order
         order_by = self.request.query_params.get('order_by')
         if order_by and order_by != 'null':
