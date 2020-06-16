@@ -189,6 +189,17 @@ def grants_transaction_validator(contribution):
         if token_transfer['token_name'] != contribution.subscription.token_symbol:
             validation['comment'] = f"Tokens do not match, {token_transfer['token_name']} != {contribution.subscription.token_symbol}"
             validation['passed'] = False
+
+            from_address = Web3.toChecksumAddress(contribution.subscription.contributor_address)
+            recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
+            token_address = Web3.toChecksumAddress(contribution.subscription.token_address)
+            _transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers')
+            failsafe = _transfers['token_name'] == contribution.subscription.token_symbol
+            if failsafe:
+                validation['comment'] = f"Token Transfer Passed on the second try"
+                validation['passed'] = True
+                token_transfer = _transfers
+
         else:
             delta = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period_minus_gas_price)
             # TODO what about gitcoin transfers
