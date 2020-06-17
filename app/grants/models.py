@@ -943,7 +943,7 @@ def psave_grant(sender, instance, **kwargs):
     from grants.clr import CLR_START_DATE
     import pytz
     from django.utils.text import slugify
-    instance.slug = slugify(instance.title)
+    instance.slug = slugify(instance.title)[:49]
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
     instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
