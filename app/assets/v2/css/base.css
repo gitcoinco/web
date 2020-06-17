@@ -2,33 +2,27 @@
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
 
-@media only screen and (max-width: 320px) {
-  .chatWrapper {
-    height: 100vh !important;
-  }
 
-  .chatWrapper iframe {
-    height: 92vh !important;
-  }
-}
-
-#sidebar-chat .b-sidebar-body {
-  overflow-y: hidden;
-}
 
 .iframe-embed-loading {
   margin-top:50% !important;
 }
 
-
 .chatWrapper iframe {
   width: 100%;
   min-height: 100vh;
+}
 
+@media only screen and (min-width: 320px) {
+  .chatWrapper {
+    height: 100vh !important;
+  }
+
+  .chatWrapper iframe {
+    min-height: 75vh !important;
+  }
 }
-.b-sidebar.chat-sidebar {
-  width: 50vw;
-}
+
 div.body {
   min-height: 400px;
 }

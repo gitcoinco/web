@@ -5,7 +5,7 @@
       <span id="chat-notification-dot" class="notification__dot" :class="{'notification__dot_active': unreadCount > 0}"></span>
     </i>
   </a>
-  <b-sidebar id="sidebar-chat" @shown="showHandler($event)" @change="changeHandler($event)" class="chat-sidebar justify-content-center" backdrop lazy v-cloak title="close to go back" :no-header-close="!isMobile" :no-header="!isMobile" :width="`${isMobile ? '100vw' : '50vw'}`">
+  <b-sidebar id="sidebar-chat" @shown="showHandler($event)" @change="changeHandler($event)" @hidden="hideHandler($event)" class="chat-sidebar justify-content-center" backdrop lazy v-cloak title="close to go back" :no-header-close="!isMobile" :no-header="!isMobile" :width="`${isMobile ? '100vw' : '50vw'}`">
     <template v-slot:default>
       <div class="chatWrapper">
         <div class="text-center justify-content-center">
@@ -19,6 +19,9 @@
             <div class="rhombus child-7"></div>
             <div class="rhombus child-8"></div>
             <div class="rhombus big"></div>
+          </div>
+          <div v-if="frameLoginAttempting">
+            <h2>Attempting to log into Gitcoin Chat, you may be asked to allow popups.</h2>
           </div>
         </div>
         <iframe v-show="isLoggedInFrame" id="gitcoin-chat-iframe" :key="renderKey" class="chat-embed" onload="window.chatSidebar.chatAppOnLoad(this)" frameborder="0" :src="loadURL" allowfullscreen></iframe>

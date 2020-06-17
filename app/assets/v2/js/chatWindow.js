@@ -303,12 +303,6 @@ let lookupExpiry;
       silent
     }
   ) {
-    // let icon = icon50;
-    //
-    // if (UserAgent.isEdge()) {
-    //   icon = iconWS;
-    // }
-
 
     if (!('Notification' in window)) {
       throw new Error('Notification not supported');
@@ -353,9 +347,8 @@ let lookupExpiry;
       throw new Error('Notification failed to show.');
     };
 
-    // Mac desktop app notification dismissal is handled by the OS
     setTimeout(() => {
-      window.chatSidebar.unreadCount += 1;
+      window.chatSidebar.unreadCount++;
       notification.close();
     }, 5000);
 
@@ -424,19 +417,47 @@ let lookupExpiry;
             this.$root.$emit('bv::toggle::collapse', 'sidebar-chat');
           }
         },
+        socketSessionLoginTest: function () {
+          let vm = this;
+
+          let client = new WebSocketClient();
+
+          client.setFirstConnectCallback(() => {
+            vm.isLoggedInFrame = true;
+            vm.frameLoginAttempting = false;
+            vm.isLoading = false;
+          });
+          client.setCloseCallback((closeMsg) => {
+            vm.isLoggedInFrame = false;
+            vm.frameLoginAttempting = true;
+            vm.isLoading = true;
+            vm.chatLogin();
+          });
+
+          client.initialize(vm.chatSocketURL);
+        },
+        chatLogin: function () {
+          let vm = this;
+
+          if (!vm.loginWindow) {
+            vm.loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+          }
+        },
         showHandler: function (event) {
           this.isLoading = true;
         },
+        hideHandler: function (event) {
+          this.isLoggedInFrame = false;
+          this.iframe = null;
+        },
         changeHandler: function (visible) {
           this.isLoading = visible;
-          this.isLoggedInFrame = false;
           this.isVisible = visible;
         },
         iframeOnFocus: function () {
           vm.iframeHasFocus = true;
         },
         chatAppOnLoad: function (iframe) {
-          let loginWindow = null;
           let vm = this;
 
           vm.iframe = iframe;
@@ -456,23 +477,43 @@ let lookupExpiry;
 
             vm.validSessionInterval = setInterval(() => {
 
-              if (!vm.isLoggedInFrame) {
-                if (!vm.frameLoginAttempting && vm.iframe.contentWindow.window.location.pathname === '/login' || count >= 5) {
-                  count = 0;
-                  vm.frameLoginAttempting = true;
-                  if (!loginWindow) {
-                    loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+              try {
+                if (!vm.isLoggedInFrame) {
+
+                  if (!vm.frameLoginAttempting) {
+
+                    if (vm.iframe) {
+
+                      let $frameElement = $(vm.iframe);
+                      let frameElement = $frameElement[0];
+                      let frameContents = frameElement.contents();
+                      let frameWindow = (frameElement && frameElement.contentWindow && frameElement.contentWindow.window) ? frameElement.contentWindow.window : null;
+
+                      if (frameWindow.location.pathname === '/login' || count >= 5) {
+                        count = 0;
+                        vm.frameLoginAttempting = true;
+                        vm.chatLogin();
+
+                      } else if (frameWindow.location.pathname === '/select_team' || frameContents.find('#sidebarSwitcherButton').length > 0) {
+                        vm.isLoggedInFrame = true;
+                        vm.frameLoginAttempting = false;
+                        vm.isLoading = false;
+                        clearInterval(vm.validSessionInterval);
+                      } else {
+                        count++;
+                      }
+                    } else {
+                      vm.socketSessionLoginTest();
+                    }
+                  } else {
+                    clearInterval(vm.validSessionInterval);
                   }
-                } else if ($(iframe.contentDocument).find('#sidebarSwitcherButton').length > 0) {
-                  vm.isLoggedInFrame = true;
-                  vm.frameLoginAttempting = false;
-                  vm.isLoading = false;
-                  clearInterval(vm.validSessionInterval);
                 } else {
-                  count++;
+                  clearInterval(vm.validSessionInterval);
                 }
-              } else {
+              } catch (e) {
                 clearInterval(vm.validSessionInterval);
+                vm.socketSessionLoginTest();
               }
             }, 1000);
 
@@ -482,6 +523,7 @@ let lookupExpiry;
       },
       destroy() {
         vm.iframe = null;
+        clearInterval(vm.validSessionInterval);
       },
       created() {
         let vm = this;
@@ -493,18 +535,19 @@ let lookupExpiry;
 
         client.setEventCallback((msgData) => {
 
-          if (vm.isLoggedInClient) {
+          if (vm.isLoggedInClient && msgData.event === 'posted') {
             try {
-              if (vm.iframe && !vm.iframe.contentWindow.window.isActive) {
-                if (msgData.event === 'posted') {
-                  let channelData = msgData.data;
-                  let postData = JSON.parse(channelData.post);
+              let frameElement = $(vm.iframe)[0];
+              let frameWindow = (frameElement && frameElement.contentWindow && frameElement.contentWindow.window) ? frameElement.contentWindow.window : null;
 
-                  if (postData.user_id !== document.contxt.chat_id) {
-                    let formattedNotification = formatMessage(channelData, postData);
+              if (!(vm.iframe && frameWindow && frameWindow.isActive)) {
+                let channelData = msgData.data;
+                let postData = JSON.parse(channelData.post);
 
-                    showNotification(formattedNotification).then();
-                  }
+                if (postData.user_id !== document.contxt.chat_id) {
+                  let formattedNotification = formatMessage(channelData, postData);
+
+                  showNotification(formattedNotification).then();
                 }
               }
             } catch (e) {
@@ -515,43 +558,15 @@ let lookupExpiry;
         client.setFirstConnectCallback(() => {
           vm.isLoggedInClient = true;
         });
+        client.setCloseCallback((closeMsg) => {
+          vm.isLoggedInClient = false;
+        });
+        client.setReconnectCallback((msg) => {
+          vm.isLoggedInClient = true;
+        });
         client.initialize(vm.chatSocketURL, document.contxt.chat_access_token)
 
-        // vm.socket = new WebSocket();
         vm.socket = client;
-        // vm.socket.onmessage = function (messageEvent) {
-        //   if (document.activeElement !== vm.iframe) {
-        //     if (vm.isLoggedIn && event.type && event.type === 'message') {
-        //       try {
-        //         let msgData = JSON.parse(messageEvent.data);
-        //
-        //         if (msgData.event === 'posted') {
-        //           let channelData = msgData.data;
-        //           let postData = JSON.parse(channelData.post);
-        //
-        //           if (postData.user_id !== document.contxt.chat_id) {
-        //             let formattedNotification = formatMessage(channelData, postData);
-        //
-        //             showNotification(formattedNotification).then();
-        //           }
-        //
-        //         }
-        //       } catch (e) {
-        //         console.log(e);
-        //       }
-        //     } else {
-        //       vm.isLoading = false;
-        //       vm.isLoggedIn = true;
-        //     }
-        //   }
-        //
-        // };
-        // vm.socket.onclose = function (event) {
-        //   vm.socket.removeEventListener('close', vm.socket.onclose);
-        //   if (event.code !== 1000 && !loginWindow && !vm.isLoggedIn) {
-        //     loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
-        //   }
-        // };
       },
       computed: {
         chatLoginURL: function () {
