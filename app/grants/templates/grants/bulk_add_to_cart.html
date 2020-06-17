@@ -1,5 +1,8 @@
 {% load i18n static humanize grants_extra %}
 
+{% include 'shared/head.html' with slim=1 %}
+{% include 'shared/cards_pic.html' %}
+
 {% for grant in grants %}
   <form class="js-addDetailToCart-form">
         {% include 'grants/shared/hidden_inputs.html' %}

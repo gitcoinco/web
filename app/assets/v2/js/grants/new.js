@@ -68,9 +68,12 @@ $('#new_button').on('click', function(e) {
 });
 
 const init = () => {
+  /*
+  KO - commenting out during grants deploy, double check with Octavio
   if (!provider) {
     return onConnect();
   }
+  */
 
   if (localStorage['grants_quickstart_disable'] !== 'true') {
     window.location = document.location.origin + '/grants/quickstart';
@@ -106,7 +109,8 @@ const init = () => {
         validator.showErrors({
           'admin_address': 'Please check your address!'
         });
-        return _alert({ message: gettext('Please check your address and try again.') }, 'error');
+        _alert({ message: gettext('Please check your address and try again.') }, 'error');
+        return false;
       });
     }
   });
@@ -121,7 +125,7 @@ const init = () => {
       var msg = 'You have specified ' + recipient_addr + ' as the grant funding recipient address. Please TRIPLE CHECK that this is the correct address to receive funds for contributions to this grant.  If access to this address is lost, you will not be able to access funds from contributors to this grant.';
 
       if (!confirm(msg)) {
-        return;
+        return false;
       }
 
       $(form).find(':input:disabled').removeAttr('disabled');
@@ -201,3 +205,15 @@ const init = () => {
     $(this).removeAttr('title');
   });
 };
+
+window.addEventListener('load', async() => {
+  if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
+    onConnect().then(() => {
+      init();
+    });
+  } else {
+    web3Modal.on('connect', async(data) => {
+      init();
+    });
+  }
+});
