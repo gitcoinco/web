@@ -11,7 +11,7 @@ def is_user_townsquare_enabled(user):
     # KO 6/2/2020 - we got no complaints about the daily email yesterday, so upping to 40%
     # KO 6/3/2020, upping to 55%
 
-    if user.pk % 100 < 55:
+    if user.pk % 100 < 80:
         return True
 
     if user.is_staff:

@@ -137,7 +137,7 @@ class Grant(SuperModel):
         ('tech', 'tech'),
         ('health', 'health'),
         ('Community', 'media'),
-        ('Crypto for Black Lives', 'change'),
+        ('change', 'change'),
         ('matic', 'matic')
     ]
 
@@ -630,7 +630,6 @@ class Subscription(SuperModel):
             return "PAST DUE"
         return "CURRENT"
 
-
     @property
     def amount_per_period_minus_gas_price(self):
         amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
@@ -640,6 +639,12 @@ class Subscription(SuperModel):
     def amount_per_period_to_gitcoin(self):
         from dashboard.tokens import addr_to_token
         token = addr_to_token(self.token_address, self.network)
+
+        # gas prices no longer take this amount times 10**18 decimals
+        import pytz
+        if self.created_on > timezone.datetime(2020, 6, 16, 15, 0).replace(tzinfo=pytz.utc):
+            return self.gas_price
+
         try:
             decimals = token.get('decimals', 0)
             return (float(self.gas_price) / 10 ** decimals)
@@ -937,7 +942,7 @@ def psave_grant(sender, instance, **kwargs):
     instance.contributor_count = instance.get_contributor_count()
     from grants.clr import CLR_START_DATE
     import pytz
-    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc) if instance.grant_type == 'health' else timezone.datetime(2020, 3, 23, 12, 0).replace(tzinfo=pytz.utc)
+    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
     instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
     instance.amount_received_in_round = 0
@@ -999,6 +1004,18 @@ class Flag(SuperModel):
     processed = models.BooleanField(default=False, help_text=_('Was it processed?'))
     comments_admin = models.TextField(default='', blank=True, help_text=_('The comments of an admin.'))
     tweet = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+
+    def post_flag(self):
+        from dashboard.models import Activity, Profile
+        from townsquare.models import Comment
+        profile = Profile.objects.filter(handle='gitcoinbot').first()
+        activity = Activity.objects.create(profile=profile, activity_type='flagged_grant', grant=self.grant)
+        comment = Comment.objects.create(
+            profile=profile,
+            activity=activity,
+            comment=f"Comment from anonymous user: {self.comments}")
+
+
 
     def __str__(self):
         """Return the string representation of a Grant."""
@@ -1104,6 +1121,7 @@ class Contribution(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction ID of the Contribution.'),
+        blank=True,
     )
     split_tx_id = models.CharField(
         default='',
@@ -1163,6 +1181,7 @@ class Contribution(SuperModel):
         """Updates tx status."""
         from economy.tx import grants_transaction_validator
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
         if self.tx_override:
             return
 
@@ -1312,7 +1331,8 @@ class MatchPledge(SuperModel):
     PLEDGE_TYPES = [
         ('tech', 'tech'),
         ('media', 'media'),
-        ('health', 'health')
+        ('health', 'health'),
+        ('change', 'change')
     ]
 
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))
