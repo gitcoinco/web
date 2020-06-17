@@ -105,7 +105,7 @@ if not clr_active:
 def get_stats(round_type):
     if not round_type:
         round_type = 'tech'
-    created_on = next_round_start
+    created_on = next_round_start + timezone.timedelta(days=1)
     charts = []
     minute = 15 if not settings.DEBUG else 60
     key_titles = [
