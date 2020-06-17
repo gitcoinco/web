@@ -199,16 +199,47 @@ Vue.component('grants-cart', {
 
     // Estimated gas limit for the transaction
     donationInputsGasLimit() {
-      // Based on contract tests, we use the heuristic below to get gas estimate. This is done
-      // instead of `estimateGas()` so we can send the donation transaction before the approval txs
-      // are confirmed, because if the approval txs are not confirmed then estimateGas will fail.
-      // The estimates used here are based on single donations (i.e. one item in the cart). Because
-      // gas prices go down with batched transactions, whereas this assumes they're constant,
-      // this gives us a conservative estimate
+      // The below heuristics are used instead of `estimateGas()` so we can send the donation
+      // transaction before the approval txs are confirmed, because if the approval txs
+      // are not confirmed then estimateGas will fail.
+
+      // If we have a cart where all donations are in Dai, we use a linear regression to
+      // estimate gas costs based on real checkout transaction data, and add a 50% margin
+      const donationCurrencies = this.donationInputs.map(donation => donation.token);
+      const isAllDai = donationCurrencies.every((addr, index, array) => addr === array[0]);
+
+      if (isAllDai) {
+        if (donationCurrencies.length === 1) {
+          // Special case since we overestimate here otherwise
+          return 80000;
+        }
+        // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
+        // then generating a conservative best-fit line
+        // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
+        return 25000 * donationCurrencies.length + 125000;
+      }
+
+      // Otherwise, based on contract tests, we use the more conservative heuristic below to get
+      // a gas estimate. The estimates used here are based on testing the cost of a single
+      // donation (i.e. one item in the cart). Because gas prices go down with batched
+      // transactions, whereas this assumes they're constant, this gives us a conservative estimate
       const gasLimit = this.donationInputs.reduce((accumulator, currentValue) => {
-        return currentValue.token === ETH_ADDRESS
-          ? accumulator + 50000// ETH donation gas estimate
-          : accumulator + 100000; // token donation gas estimate
+        const tokenAddr = currentValue.token.toLowerCase();
+
+        if (currentValue.token === ETH_ADDRESS) {
+          return accumulator + 50000; // ETH donation gas estimate
+
+        } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
+          return accumulator + 170000; // ANT donation gas estimate
+
+        } else if (tokenAddr === '0xfC1E690f61EFd961294b3e1Ce3313fBD8aa4f85d'.toLowerCase()) {
+          return accumulator + 500000; // aDAI donation gas estimate
+
+        } else if (tokenAddr === '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643'.toLowerCase()) {
+          return accumulator + 450000; // cDAI donation gas estimate
+
+        }
+        return accumulator + 100000; // generic token donation gas estimate
       }, 0);
 
       return gasLimit;
