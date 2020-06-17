@@ -22,12 +22,11 @@ import random
 import time
 import warnings
 from datetime import datetime
-from dashboard.models import Earning
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Activity, Profile
+from dashboard.models import Activity, Earning, Profile
 from grants.models import *
 from grants.models import CartActivity, Contribution, PhantomFunding
 from grants.views import clr_round, next_round_start, round_end
