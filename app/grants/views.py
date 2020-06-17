@@ -1191,12 +1191,15 @@ def grant_categories(request):
 
 
 @login_required
-def grant_activity(request, grant_id):
+def grant_activity(request, grant_id=None):
     action = request.POST.get('action')
     metadata = request.POST.get('metadata')
     bulk = request.POST.get('bulk') == 'true'
 
-    grant = get_object_or_404(Grant, pk=grant_id)
+    if grant_id == None:
+        grant = None
+    else:
+        grant = get_object_or_404(Grant, pk=grant_id)
 
     CartActivity.objects.create(grant=grant, profile=request.user.profile, action=action,
                                 metadata=json.loads(metadata), bulk=bulk)

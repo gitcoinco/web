@@ -47,25 +47,19 @@ class CartData {
 
     fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
       action: 'ADD_ITEM',
-      metadata: JSON.stringify(grantData)
+      metadata: JSON.stringify(cartList)
     }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
   }
 
   static removeIdFromCart(grantId) {
     let cartList = this.loadCart();
 
-    const newList = cartList.filter(grant => {
-      if (grant.grant_id === grantId) {
-        fetchData(`/grants/${grant.grant_id}/activity`, 'POST', {
-          action: 'REMOVE_ITEM',
-          metadata: JSON.stringify(grant)
-        }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    const newList = cartList.filter(grant => grant.grant_id !== grantId);
 
-        return false;
-      }
-
-      return true;
-    });
+    fetchData(`/grants/${grantId}/activity`, 'POST', {
+      action: 'REMOVE_ITEM',
+      metadata: JSON.stringify(newList)
+    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
 
     this.setCart(newList);
   }
@@ -97,9 +91,9 @@ class CartData {
     let cartList = this.loadCart();
 
     cartList.map(grant => {
-      fetchData(`/grants/${grant.grant_id}/activity`, 'POST', {
+      fetchData('/grants/activity', 'POST', {
         action: 'REMOVE_ITEM',
-        metadata: JSON.stringify(grant),
+        metadata: JSON.stringify(cartList),
         bulk: true
       }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
     });

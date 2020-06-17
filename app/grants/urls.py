@@ -32,6 +32,7 @@ urlpatterns = [
     path('grants.json', grants_addr_as_json, name='grants_json'),
     path('flag/<int:grant_id>', flag, name='grantflag'),
     path('<int:grant_id>/activity', grant_activity, name='log_activity'),
+    path('activity', grant_activity, name='log_activity'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
     re_path(r'^matic/new', grant_new_whitelabel, name='new_whitelabel'),

@@ -1388,7 +1388,7 @@ class CartActivity(SuperModel):
         ('ADD_ITEM', 'Add item to cart'),
         ('REMOVE_ITEM', 'Remove item to cart')
     )
-    grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='cart_actions',
+    grant = models.ForeignKey(Grant, null=True, on_delete=models.CASCADE, related_name='cart_actions',
                               help_text=_('Related Grant Activity '))
     profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='cart_activity',
                                 help_text=_('User Cart Activity'))
@@ -1397,4 +1397,4 @@ class CartActivity(SuperModel):
     bulk = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.action} {self.grant.id} from the cart {self.profile.handle}'
+        return f'{self.action} {self.grant.id if self.grant else "bulk"} from the cart {self.profile.handle}'
