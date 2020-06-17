@@ -885,6 +885,9 @@ def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_rou
 
     response_html = premailer_transform(render_to_string("emails/grant_recontribute.html", params))
     response_txt = render_to_string("emails/grant_recontribute.txt", params)
+
+    return response_html, response_txt
+
 def render_grant_txn_failed(to_email, grant, tx_id):
     email_style = 27
 
@@ -1388,6 +1391,8 @@ def grant_update(request):
 @staff_member_required
 def grant_recontribute(request):
     response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+    
 def grant_txn_failed(request):
     failed_contrib = Contribution.objects.filter(subscription__contributor_profile__user__email=settings.CONTACT_EMAIL).exclude(validator_passed=True).first()
     response_html, _ = render_grant_txn_failed(settings.CONTACT_EMAIL, failed_contrib.subscription.grant, failed_contrib.tx_id)
