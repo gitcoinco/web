@@ -1,10 +1,4 @@
 $(document).ready(function() {
-  waitforWeb3(function() {
-    if (!$('#address').val() && web3 && web3.eth.coinbase) {
-      $('#address').val(web3.eth.coinbase);
-    }
-  });
-
 
   $('#network').change(function(e) {
     if ($(this).val() !== 'ETH') {
@@ -17,13 +11,13 @@ $(document).ready(function() {
   $('#request').on('click', function(e) {
     e.preventDefault();
     if ($(this).hasClass('disabled'))
-      return;
+      return false;
 
     if (!$('#tos').is(':checked')) {
       _alert('Please accept the terms and conditions before submit.', 'warning');
-      return;
+      return false;
     }
-    loading_button($(this));
+
     // get form data
     const username = $('.username-search').select2('data')[0] ? $('.username-search').select2('data')[0].text : '';
     const amount = parseFloat($('#amount').val());
@@ -33,16 +27,30 @@ $(document).ready(function() {
 
     if (!document.contxt['github_handle']) {
       _alert('You must be logged in to use this form', 'warning');
-      return;
+      return false;
     }
+
+    if (!provider) {
+      return onConnect().then(() => {
+        return false;
+      });
+    }
+
+    if (!username || !amount || !address) {
+      _alert('Please fill all the fields.', 'warning');
+      return false;
+    }
+
     if (username == document.contxt['github_handle']) {
       _alert('You cannot request money from yourself.', 'warning');
-      return;
+      return false;
     }
     if (!comments || comments.length < 5) {
       _alert('Please leave a comment describing why this user should send you money.', 'warning');
-      return;
+      return false;
     }
+    loading_button($(this));
+
     const tokenAddress = (
       ($('#token').val() == '0x0') ?
         '0x0000000000000000000000000000000000000000'
@@ -118,7 +126,14 @@ function requestFunds(username, amount, comments, tokenAddress, tokenName, netwo
   });
 }
 
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
+window.addEventListener('load', async() => {
+  if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
+    onConnect().then(() => {
+      $('#address').val(selectedAccount);
+    });
+  } else {
+    web3Modal.on('connect', async(data) => {
+      $('#address').val(data.selectedAddress);
+    });
+  }
 });

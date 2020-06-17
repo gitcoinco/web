@@ -60,7 +60,7 @@ const updateOnNetworkOrTokenChange = () => {
 function changeUi() {
   $('.eth-chain').show();
   FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
-  
+
   $('#navbar-network-banner').show();
   $('.navbar-network').show();
 
