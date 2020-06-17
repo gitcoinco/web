@@ -44,8 +44,8 @@ class Command(BaseCommand):
     def process_acm(self):
         non_terminal_states = ['pending', 'na', 'unknown']
         for obj_type in all_sendcryptoasset_models():
-            sent_txs = obj_type.objects.filter(tx_status__in=non_terminal_states).exclude(txid='')
-            receive_txs = obj_type.objects.filter(receive_tx_status__in=non_terminal_states).exclude(txid='').exclude(receive_txid='')
+            sent_txs = obj_type.objects.filter(tx_status__in=non_terminal_states).exclude(txid='').exclude(txid='pending_celery')
+            receive_txs = obj_type.objects.filter(receive_tx_status__in=non_terminal_states).exclude(txid='').exclude(receive_txid='').exclude(receive_txid='pending_celery')
             objects = (sent_txs | receive_txs).distinct('id')
             for obj in objects:
                 print(f"syncing {obj_type} / {obj.pk} / {obj.network}")
