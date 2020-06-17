@@ -491,9 +491,16 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
     try:
-        grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
-            pk=grant_id, slug=grant_slug
-        )
+        grant = None
+        try:
+            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+                pk=grant_id, slug=grant_slug
+            )
+        except Grant.DoesNotExist:
+            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+                pk=grant_id
+            )
+
         increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
