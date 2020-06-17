@@ -58,7 +58,7 @@ class CartData {
 
     grantData.uuid = get_UUID();
 
-    if (acceptsAllTokens || 'DAI' == acceptedTokenName) {
+    if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       grantData.grant_donation_amount = 5;
       grantData.grant_donation_currency = 'DAI';
     } else {
