@@ -950,46 +950,9 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-    instance.contribution_count = instance.get_contribution_count
-    instance.contributor_count = instance.get_contributor_count()
-    from grants.clr import CLR_START_DATE
-    import pytz
-    from django.utils.text import slugify
-    instance.slug = slugify(instance.title)[:49]
-    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
-    instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
-    instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
-    instance.amount_received_in_round = 0
-    instance.amount_received = 0
-    instance.monthly_amount_subscribed = 0
-    for subscription in instance.subscriptions.all():
-        value_usdt = subscription.get_converted_amount(False)
-        for contrib in subscription.subscription_contribution.filter(success=True):
-            if value_usdt:
-                instance.amount_received += Decimal(value_usdt)
-                if contrib.created_on > round_start_date:
-                    instance.amount_received_in_round += Decimal(value_usdt)
-
-        if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
-            if subscription.num_tx_approved != 1:
-                instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-
-    from django.contrib.contenttypes.models import ContentType
-    from search.models import SearchResult
-    if instance.pk:
-        SearchResult.objects.update_or_create(
-            source_type=ContentType.objects.get(app_label='grants', model='grant'),
-            source_id=instance.pk,
-            defaults={
-                "created_on":instance.created_on,
-                "title":instance.title,
-                "description":instance.description,
-                "url":instance.url,
-                "visible_to":None,
-                'img_url': instance.logo.url if instance.logo else None,
-            }
-            )
-    instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
+    if instance.modified_on < (timezone.now() - timezone.timedelta(minutes=5)):
+        from grants.tasks import update_grant_metadata
+        update_grant_metadata.delay(instance.pk)
 
 class DonationQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
