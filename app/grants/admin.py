@@ -39,6 +39,9 @@ class FlagAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_post_flag" in request.POST:
+            obj.post_flag()
+            self.message_user(request, "posted flag to activity feed")
         if "_tweet" in request.POST:
             import twitter
             from django.conf import settings
@@ -54,6 +57,7 @@ class FlagAdmin(admin.ModelAdmin):
             obj.processed = True
             obj.tweet = f"https://twitter.com/{result['user']['screen_name']}/statuses/{result['id']}"
             obj.save()
+            self.message_user(request, "posted flag to twitter feed")
         return redirect(obj.admin_url)
 
 

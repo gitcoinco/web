@@ -12,7 +12,7 @@ from grants.views import clr_round, next_round_start, round_end
 
 start = next_round_start
 end = round_end
-must_be_successful = False
+must_be_successful = True
 
 
 contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end)
@@ -84,13 +84,14 @@ print(subs.filter(is_postive_vote=False).count())
 
 start = next_round_start
 end = round_end
-
-contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
-print("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
-for contribution in contributions:
-    print(contribution.tx_id, 
-        contribution.split_tx_id,
-        contribution.subscription.contributor_address,
-        contribution.subscription.amount_per_period, 
-        contribution.subscription.amount_per_period_minus_gas_price,
-        contribution.subscription.token_address)
+export = False
+if export:
+    contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
+    print("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
+    for contribution in contributions:
+        print(contribution.tx_id, 
+            contribution.split_tx_id,
+            contribution.subscription.contributor_address,
+            contribution.subscription.amount_per_period, 
+            contribution.subscription.amount_per_period_minus_gas_price,
+            contribution.subscription.token_address)

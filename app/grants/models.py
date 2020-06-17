@@ -1005,6 +1005,18 @@ class Flag(SuperModel):
     comments_admin = models.TextField(default='', blank=True, help_text=_('The comments of an admin.'))
     tweet = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
 
+    def post_flag(self):
+        from dashboard.models import Activity, Profile
+        from townsquare.models import Comment
+        profile = Profile.objects.filter(handle='gitcoinbot').first()
+        activity = Activity.objects.create(profile=profile, activity_type='flagged_grant', grant=self.grant)
+        comment = Comment.objects.create(
+            profile=profile,
+            activity=activity,
+            comment=f"Comment from anonymous user: {self.comments}")
+
+
+
     def __str__(self):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, processed: {self.processed}, comments: {self.comments} "

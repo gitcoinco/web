@@ -16,7 +16,8 @@
         {% elif 'economy/token/' in request.build_absolute_uri %}
             <input type="submit" value="Approve Request" name="_approve_token" value="1">
         {% elif 'grants/flag/' in request.build_absolute_uri %}
-            <input type="submit" value="Tweet" name="_tweet" value="1">
+            <input type="submit" value="Post Activity Feed" name="_post_flag" value="1">
+            <input type="submit" value="Post Tweet" name="_tweet" value="1">
         {% elif 'kudos/token/' in request.build_absolute_uri %}
             <input type="submit" value="Make into Bulk Transfer Coupon" name="btc_coupon" value="1">
         {% elif 'grants/contribution' in request.build_absolute_uri %}

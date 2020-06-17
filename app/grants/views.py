@@ -642,12 +642,6 @@ def flag(request, grant_id):
             grant=grant,
             )
         new_grant_flag_admin(flag)
-        profile = Profile.objects.filter(handle='gitcoinbot').first()
-        activity = Activity.objects.create(profile=profile, activity_type='flagged_grant', grant=grant)
-        comment = Comment.objects.create(
-            profile=profile,
-            activity=activity,
-            comment=f"Comment from anonymous user: {comment}")
 
 
     return JsonResponse({
