@@ -534,6 +534,7 @@ def grant_details(request, grant_id, grant_slug):
     is_team_member = is_grant_team_member(grant, profile)
 
     if request.method == 'POST' and (is_team_member or request.user.is_staff):
+        grant.last_update = timezone.now()
         if request.FILES.get('input_image'):
             logo = request.FILES.get('input_image', None)
             grant.logo = logo
@@ -712,6 +713,7 @@ def grant_new(request):
                 'twitter_handle_1': request.POST.get('handle1', ''),
                 'twitter_handle_2': request.POST.get('handle2', ''),
                 'metadata': receipt,
+                'last_update': timezone.now(),
                 'admin_profile': profile,
                 'logo': logo,
                 'hidden': False,

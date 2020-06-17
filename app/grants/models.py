@@ -302,6 +302,11 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
+    last_update = models.DateTimeField(
+        help_text=_('The last grant admin update date'),
+        null=True,
+        blank=True,
+    )
     categories = models.ManyToManyField(GrantCategory, blank=True)
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
@@ -351,6 +356,13 @@ class Grant(SuperModel):
 
     @property
     def negative_voting_enabled(self):
+        return False
+
+    def is_on_team(self, profile):
+        if profile.pk == self.admin_profile.pk:
+            return True
+        if profile.grant_teams.filter(pk=self.pk).exists():
+            return True
         return False
 
     @property

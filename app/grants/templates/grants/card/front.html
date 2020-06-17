@@ -28,6 +28,11 @@
   <div class="grant-item__content px-3">
     <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title|truncatechars:60 }}</a></h2>
     <p class="grant-item__pitch font-caption mb-2">{{ grant.description|truncatechars:145 }}</p>
+    <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
+      <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
+      Last Update: {% if grant.last_update %}{{ grant.last_update|naturaltime }} {% else %} Before Round 6{% endif %}
+    </p>
+
     <div class="grant-item__owner">
         <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
         <a href="{% url 'profile' grant.admin_profile.handle %}" target="_blank" rel="noopener noreferrer">
