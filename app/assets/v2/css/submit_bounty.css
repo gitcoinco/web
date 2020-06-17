@@ -236,7 +236,7 @@ input:read-only {
 }
 
 .release-after-form-group-required {
-  border: 1px solid red;
+  border: none;
   padding: 5px;
 }
 
