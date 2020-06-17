@@ -339,6 +339,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#a-note-on-performance" title="A note on performance" class="md-nav__link">
+    A note on performance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#integration-setup-recommended" title="Integration Setup (recommended)" class="md-nav__link">
     Integration Setup (recommended)
   </a>
@@ -2340,6 +2347,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#a-note-on-performance" title="A note on performance" class="md-nav__link">
+    A note on performance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#integration-setup-recommended" title="Integration Setup (recommended)" class="md-nav__link">
     Integration Setup (recommended)
   </a>
@@ -2624,6 +2638,16 @@ docker-compose version 1.24.1, build 4667896b
 <p><em>Note: Running <code>docker-compose logs --tail=50 -f &lt;optional container_name&gt;</code> will follow all container output in the active terminal window, while specifying a container name will follow that specific container's output. <code>--tail</code> is optional.</em>
 Check out the <a href="https://docs.docker.com/compose/reference/">Docker Compose CLI Reference</a> for more information.</p>
 <p>You will need to edit the <code>app/.env</code> file with your local environment variables. Look for config items that are marked <code># required</code>.</p>
+<h2 id="a-note-on-performance">A note on performance</h2>
+<p>The Gitcoin docker containers contain serval containers for many purposes (web development, task pipeline dev, ganache for blockchain development). Because of this, the whole package can take several GB of RAM.   If all you want to do is work on the site, and you experience slowness while running Gitcoin, we recommend running these commands</p>
+<blockquote>
+<p>docker stop web_worker_1; docker stop web_testrpc_1; docker stop web_ipfs_1; docker stop web_chat_1</p>
+</blockquote>
+<p>and adding this line to your .env file:</p>
+<blockquote>
+<p>SUPRESS_DEBUG_TOOLBAR=1</p>
+</blockquote>
+<p>If you run <code>docker-compose restart web</code> after doing these things, you should find the performance footprint to be less.</p>
 <h2 id="integration-setup-recommended">Integration Setup (recommended)</h2>
 <p>If you plan on using the Github integration, please read the <a href="https://docs.gitcoin.co/mk_third_party_integrations/">third party integration guide</a>.</p>
 <h2 id="static-asset-handling-optional">Static Asset Handling (optional)</h2>
