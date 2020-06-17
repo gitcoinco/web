@@ -64,13 +64,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <h1 class="col-auto text-left font-bigger-2 black" style="font-weight: bold; margin-bottom: 0">
                   GRANT CART ([[ grantData.length ]] ITEM<span v-if="grantData.length !== 1">S</span>)
                 </h1>
-                <div class="col-auto text-right font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;"
-                  @click="clearCart">
-                  Clear my cart
-                </div>
                 <div class="col-auto text-right font-smaller-1 hyperlink"
                   @click="showSMSValidationModal()">
                   Verify my number
+                </div>
+                <div class="col-auto text-right font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;"
+                  @click="confirmClearCart">
+                  Clear cart <i class="fa fa-times" aria-hidden="true"></i>
+                </div>
+                <div class="col-auto text-right font-smaller-1 hyperlink"
+                  @click="shareCart">
+                  Share cart <i class="fa fa-share-alt" aria-hidden="true"></i>
                 </div>
               </div>
             </div>
@@ -110,7 +114,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               </div>
               {% comment %} Cart Contents: MOBILE {% endcomment %}
               <div v-if="isMobileDevice">
-                <div v-for="(grant, index) in grantData" class="grant-row">
+                <div v-for="(grant, index) in grantData" :key="grant.grant_id" class="grant-row">
                   <div class="grant-row-style">
                     <div class="row align-items-center justify-content-between">
                       {% comment %} Logo, title, and delete button {% endcomment %}
@@ -118,7 +122,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div class="row flex-nowrap">
                           <img class="col-2" style="padding:0 0.5rem" :src="grant.grant_logo" alt="Grant logo"
                             width="40" height="24">
-                          <div class="col-8 grant-name black" style="padding:0">[[grant.grant_title]]</div>
+                          <div class="col-8 grant-name black" style="padding:0"><a :href="grant.grant_url">[[grant.grant_title]]</a></div>
                           <div class="col-1" style="opacity: 40%">
                             <i class="fas fa-trash-alt" style="cursor: pointer"
                               @click="removeGrantFromCart(grant.grant_id)"></i>
@@ -130,8 +134,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div class="row flex-nowrap justify-content-between">
                           <input class="col-5 form-control" style="margin-left:0.5rem" min="0"
                             v-model="grant.grant_donation_amount" type="number" placeholder="Amount">
-                          <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
-                            class="col-6 form-control" style="margin-right:0.5rem" placeholder="Select token">
+                          <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
+                            style="margin-right:0.5rem" placeholder="Select token">
+                            <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
+                              <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
+                              <span v-else>[[ option ]]</span>
+                            </option>
                           </select2>
                         </div>
                       </div>
@@ -163,7 +171,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="row">
                         <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30"
                           height="24">
-                        <div class="grant-name black">[[grant.grant_title]]</div>
+                        <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
                       </div>
                     </div>
                     {% comment %} Grant amount and currency {% endcomment %}
@@ -171,8 +179,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="row flex-nowrap align-items-center justify-content-start">
                         <input class="col-6 form-control" v-model="grant.grant_donation_amount" type="number" min="0"
                           placeholder="Amount" style="margin-right: 1rem">
-                        <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
-                          class="col-6 form-control" placeholder="Select token">
+                        <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
+                          placeholder="Select token">
+                          <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
+                            <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
+                            <span v-else>[[ option ]]</span>
+                          </option>
                         </select2>
                       </div>
                     </div>
@@ -369,7 +381,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div class="mx-5 my-5 text-center" v-if="validationStep == 'requestVerification'">
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
-                    <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why is Gitcoin asking for my SMS number? <b>&rArr;</b></a>
                   </div>
                   <p class="mb-5 font-subheader">We will send you a verification code.</p>
                   <vue-tel-input ref="tel-input" :validCharactersOnly="true" @validate="isValidNumber" v-model="phone"
@@ -392,9 +403,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div class="mx-5 my-5 text-center" v-if="validationStep == 'verifyNumber'">
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
-                    <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why is Gitcoin asking for my SMS number? <b>&rArr;</b></a>
                   </div>
                   <p class="mb-5 font-subheader">Enter the verification code sent to your number.</p>
+
                   <input class="form-control" type="number" required v-model="code">
                   <div v-if="timeInterval > timePassed">
                     <span class="label-warning">Wait [[ timeInterval - timePassed ]] second before request another

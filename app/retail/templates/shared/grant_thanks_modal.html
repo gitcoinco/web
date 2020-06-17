@@ -25,11 +25,11 @@
             </button>
           </div>
           <div class="modal-body mt-4 mx-5 font-body">
-            <div class="row mb-3 justify-content-center">
+            <div class="row mb-1 justify-content-center">
               {% if not fund_reward %}
                 <img class="icon w-75 h-75" src="{% static "v2/images/grants/torchbearer.svg" %}" />
                 <h5>Thanks for Contributing!</h5>
-                <span>{% trans "Tell your network about this Gitcoin Grant. If they fund a grant, the grant owner will get even more Matching Funds!" %}</span>
+                <span class="copy">{% trans "Tell your network about these Gitcoin Grants. If they fund a grant, the grant owner will get even more Matching Funds!" %}</span>
               {% else %}
                 <img class="icon w-75 h-75" src="{{fund_reward.token.preview_img_url}}" />
                 <h5>Thanks for Contributing! You Earned a Kudos</h5>
@@ -37,17 +37,12 @@
               {% endif %}
             </div>
           </div>
-          <div class="row my-4 justify-content-center">
+          <div class="row mt-1 mb-4 justify-content-center">
             {% if fund_reward %}
               <a class="button button--primary" role="button" href="{{fund_reward.url}}?tweet=I just funded a grant on @gitcoin (https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}) and got this sweet Kudos! => "
                 target="_blank" rel="noopener noreferrer" >
                 {% trans "Redeem Kudos" %} 🌈
-              </a> |
-            {% elif grant.id %}
-              <a class="button button--primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on @gitcoin => https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}"
-                target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Tweet Button', 'click', 'Grant Funder')">
-                {% trans "Tweet About this Grant" %} 🐦
-              </a>
+              </a> 
             {% else %}
               <a class="button button--primary" role="button"
                 href="https://gitcoin.co/grants/"
