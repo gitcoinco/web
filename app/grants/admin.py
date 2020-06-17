@@ -39,6 +39,9 @@ class FlagAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_post_flag" in request.POST:
+            obj.post_flag()
+            self.message_user(request, "posted flag to activity feed")
         if "_tweet" in request.POST:
             import twitter
             from django.conf import settings
@@ -54,6 +57,7 @@ class FlagAdmin(admin.ModelAdmin):
             obj.processed = True
             obj.tweet = f"https://twitter.com/{result['user']['screen_name']}/statuses/{result['id']}"
             obj.save()
+            self.message_user(request, "posted flag to twitter feed")
         return redirect(obj.admin_url)
 
 
@@ -148,7 +152,7 @@ class GrantAdmin(GeneralAdmin):
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
             eles.append(html)
-            for ele in instance.contributions.order_by('-subscription__amount_per_period_usdt'):
+            for ele in instance.contributions.filter(success=i).order_by('-subscription__amount_per_period_usdt'):
                 html = f" - <a href='{ele.admin_url}'>{ele}</a>"
                 eles.append(html)
 
@@ -229,11 +233,13 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'github_created_on', 'from_ip_address', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
-    readonly_fields = ['etherscan_links']
+    list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'txn_url', 'amount', 'token', 'tx_cleared', 'success']
+    readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
+        if not tx_id:
+            tx_id = obj.split_tx_id
         tx_url = 'https://etherscan.io/tx/' + tx_id
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
@@ -242,6 +248,9 @@ class ContributionAdmin(GeneralAdmin):
 
     def token(self, obj):
         return obj.subscription.token_symbol
+
+    def grant(self, obj):
+        return obj.subscription.grant.title
 
     def amount(self, obj):
         return obj.subscription.amount_per_period
@@ -257,11 +266,27 @@ class ContributionAdmin(GeneralAdmin):
         visits = [visit for visit in visits if visit]
         return " , ".join(visits)
 
-
     def etherscan_links(self, instance):
         html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id}</a><BR>"
         html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
         return mark_safe(html)
+
+    def amount_per_period(self, instance):
+        return instance.subscription.amount_per_period
+
+    def amount_per_period_to_gitcoin(self, instance):
+        return instance.subscription.amount_per_period_to_gitcoin
+
+    def amount_per_period_minus_gas_price(self, instance):
+        return instance.subscription.amount_per_period_minus_gas_price
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "_update_tx_status" in request.POST:
+            obj.update_tx_status()
+            obj.save()
+            self.message_user(request, "tx status pulled from alethio/rpc nodes")
+        return redirect(obj.admin_url)
 
 
 class PhantomFundingAdmin(admin.ModelAdmin):

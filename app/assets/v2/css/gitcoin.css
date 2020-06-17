@@ -121,6 +121,10 @@ h4,
   color: #0FCE7C;
 }
 
+.gc-text-yellow {
+  color: #FFCE08;
+}
+
 .text-black-60 {
   color: rgba(0, 0, 0, 0.6)!important;
 }
@@ -929,4 +933,60 @@ textarea.status-textarea {
 
 .dark-mode .bg-light {
   background-color: var(--bg-shade-0)!important;
+}
+
+.image-provider {
+  width: 24px;
+  vertical-align: top;
+}
+
+.wallet-network {
+  margin-top: -14px;
+  position: absolute;
+  display: block;
+  margin-left: 17px;
+  color: red;
+}
+
+.wallet-network.mainnet {
+  color: #0fce7c;
+}
+
+.wallet-network.rinkeby {
+  color: orange;
+}
+
+.wallet-option,
+.selected-account {
+  cursor: pointer;
+}
+
+.info-box {
+  background: rgba(62, 0, 255, 0.05);
+  border: 1px solid rgba(62, 0, 255, 0.5);
+  box-sizing: border-box;
+  border-radius: 4px;
+  line-height: 16px;
+}
+
+.info-box.large {
+  width: 95%;
+}
+
+.cart-btn {
+  border-radius: 4px !important;
+}
+
+.cart-btn.large {
+  width: 100%;
+  padding: 10px 0;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  z-index: 100;
+}
+
+.svg-animated-logo {
+  height: 42px;
+  max-width: 100%;
 }

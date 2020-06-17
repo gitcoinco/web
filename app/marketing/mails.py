@@ -36,11 +36,11 @@ from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_request, render_bounty_startwork_expire_warning,
     render_bounty_unintersted, render_comment, render_faucet_rejected, render_faucet_request,
     render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
-    render_gdpr_update, render_grant_cancellation_email, render_grant_update, render_kudos_email,
-    render_match_distribution, render_match_email, render_mention, render_new_bounty, render_new_bounty_acceptance,
-    render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email,
-    render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign, render_quarterly_stats,
-    render_request_amount_email, render_reserved_issue, render_share_bounty,
+    render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute, render_grant_update,
+    render_kudos_email, render_match_distribution, render_match_email, render_mention, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
+    render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
+    render_quarterly_stats, render_request_amount_email, render_reserved_issue, render_share_bounty,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
     render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
     render_successful_contribution_email, render_support_cancellation_email, render_tax_report,
@@ -538,6 +538,25 @@ def wall_post_email(activity):
             pass
     translation.activate(cur_language)
 
+def grant_recontribute(profile, prev_round_start, prev_round_end, next_round, next_round_start, next_round_end, match_pool):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
+
+    cur_language = translation.get_language()
+
+    subject = f"Grants CLR Round {next_round} Is Here! Fund the grants you supported last round"
+
+    try:
+        setup_lang(to_email)
+        html, text = render_grant_recontribute(to_email, prev_round_start, prev_round_end, next_round, next_round_start, next_round_end, match_pool)
+        send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
+    finally:
+        translation.activate(cur_language)
 
 def grant_update_email(activity):
 
@@ -1236,7 +1255,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         def comma(a):
             return ", " if a and (new_bounties or new_quests or new_dates or new_announcements or notifications) else ""
 
-        subject = f"{chat}{comma(chat)}{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}"
+        subject = f"{chat}{comma(chat)}{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}{comma(True)}👤1 Trending Avatar"
 
     for to_email in to_emails:
         cur_language = translation.get_language()

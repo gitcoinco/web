@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import datetime
 import logging
 from datetime import date, timedelta
 from functools import partial
@@ -51,6 +52,7 @@ MARKETING_EMAILS = [
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
 	('general', _('General Email Updates'), _('as it comes')),
 	('quarterly', _('Quarterly Email Updates'), _('Quarterly')),
+	('grant_recontribute', _('Recontribute to previously funded grants'), _('Quarterly')),
 ]
 
 TRANSACTIONAL_EMAILS = [
@@ -554,7 +556,7 @@ def email_to_profile(to_email):
 
 def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_day={}, upcoming_grant={}, upcoming_hackathon={}, latest_activities={}, from_date=date.today(), days_ago=7, chats_count=0):
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
-    from marketing.views import upcoming_dates, email_announcements
+    from marketing.views import upcoming_dates, email_announcements, trending_avatar
     sub = get_or_save_email_subscriber(to_email, 'internal')
     
     email_style = 26
@@ -565,20 +567,36 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     notifications_count = get_notification_count(profile, days_ago, from_date)
 
     upcoming_events = []
-    if upcoming_hackathon:
-        for hackathon in upcoming_hackathon:
-            upcoming_events.append({
-                'event': hackathon,
-                'title': hackathon.name,
-                'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
-                'url': hackathon.url,
-                'date': hackathon.start_date.strftime("%Y-%d-%m")
-            })
+    for hackathon in upcoming_hackathon:
+        upcoming_events = upcoming_events + [{
+            'event': hackathon,
+            'title': f"Hackathon Start: {hackathon.name}",
+            'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+            'url': hackathon.url,
+            'date': hackathon.start_date.strftime("%Y-%m-%d")
+        }]
+    for hackathon in upcoming_hackathon:
+        upcoming_events = upcoming_events + [{
+            'event': hackathon,
+            'title': f"Hackathon End: {hackathon.name}",
+            'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+            'url': hackathon.url,
+            'date': hackathon.end_date.strftime("%Y-%m-%d")
+        }]
+    for ele in upcoming_dates():
+        upcoming_events = upcoming_events + [{
+            'event': ele,
+            'title': ele.title,
+            'image_url': ele.img_url,
+            'url': ele.url,
+            'date': ele.date.strftime("%Y-%m-%d")
+        }]
+    upcoming_events = sorted(upcoming_events, key=lambda ele: ele['date'])
 
     params = {
         'old_bounties': old_bounties,
         'bounties': bounties,
-        'upcoming_dates': upcoming_dates(),
+        'trending_avatar': trending_avatar(),
         'email_announcements': email_announcements(),
         'subscriber': sub,
         'keywords': ",".join(sub.keywords) if sub and sub.keywords else '',
@@ -829,6 +847,47 @@ def render_grant_update(to_email, activity):
 
     return response_html, response_txt
 
+def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_round_end=(2020, 4, 7), next_round=6, next_round_start=(2020, 6, 15), next_round_end=(2020, 6, 29), match_pool='175k'): # Round 5: 3/23/2020 — 4/7/2020; Round 6: 6/15/2020 — 6/29/2020 175k
+    email_style = 27
+    
+    next_round_start = datetime.datetime(*next_round_start).strftime("%B %dth")
+    next_round_end = datetime.datetime(*next_round_end).strftime("%B %dth %Y")
+    
+    prev_grants = []
+    profile = email_to_profile(to_email)
+    subscriptions = profile.grant_contributor.all()
+    for subscription in subscriptions:
+        grant = subscription.grant
+        total_contribution_to_grant = 0
+        contributions_count = subscription.subscription_contribution.filter(success=True, created_on__gte=datetime.datetime(*prev_round_start), created_on__lte=datetime.datetime(*prev_round_end)).count()
+        total_contribution_to_grant = subscription.amount_per_period * contributions_count
+
+        if total_contribution_to_grant:
+            prev_grants.append({
+                'id': grant.id,
+                'url': grant.url[1:],
+                'title': grant.title,
+                'image_url': grant.logo.url if grant.logo else f'{settings.STATIC_URL}v2/images/emails/grants-symbol-pos.png',
+                'amount': format(total_contribution_to_grant, '.3f'),
+                'token_symbol': subscription.token_symbol
+            })
+
+    params = {
+        'next_round': next_round,
+        'next_round_start': next_round_start,
+        'next_round_end': next_round_end,
+        'match_pool': match_pool,
+        'email_style': email_style,
+        'prev_grants': prev_grants,
+        'base_url': settings.BASE_URL,
+        'bulk_add_url': "https://gitcoin.co/grants/cart/bulk-add/"+','.join(str(grant['id']) for grant in prev_grants),
+        'hide_bottom_logo': True,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/grant_recontribute.html", params))
+    response_txt = render_to_string("emails/grant_recontribute.txt", params)
+
+    return response_html, response_txt
 
 def render_wallpost(to_email, activity):
     params = {
@@ -1314,6 +1373,10 @@ def grant_update(request):
     response_html, _ = render_grant_update(settings.CONTACT_EMAIL, Activity.objects.filter(activity_type='wall_post', grant__isnull=False).last())
     return HttpResponse(response_html)
 
+@staff_member_required
+def grant_recontribute(request):
+    response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
 
 @staff_member_required
 def wallpost(request):

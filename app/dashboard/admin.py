@@ -29,8 +29,8 @@ from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
-    TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory,
+    Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel,
 )
 
 
@@ -396,9 +396,19 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
 
 
 class HackathonProjectAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon', 'usernames', 'status', 'sponsor']
+    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'usernames', 'status', 'sponsor']
     raw_id_fields = ['profiles', 'bounty', 'hackathon']
     search_fields = ['name', 'summary', 'status']
+
+    def hackathon_link(self, instance):
+        """Returns a formatted HTML <a> node.
+
+        Returns:
+            str: A formatted HTML <a> node.
+        """
+
+        url = f'/hackathon/{instance.hackathon.slug}'
+        return mark_safe(f'<a href="{url}">{instance.hackathon}</a>')
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonProject has no logo.
@@ -478,6 +488,12 @@ class AnswersAdmin(admin.ModelAdmin):
     unique_together = ('user', 'question', 'choice')
 
 
+class ProfileVerificationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'profile', 'success', 'validation_passed', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
+                    'phone_number', 'carrier_error_code']
+    raw_id_fields = ['profile']
+
+
 admin.site.register(BountyEvent, BountyEventAdmin)
 admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
@@ -515,3 +531,4 @@ admin.site.register(Question, QuestionsAdmin)
 admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
+admin.site.register(ProfileVerification, ProfileVerificationAdmin)

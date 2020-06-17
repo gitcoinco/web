@@ -66,6 +66,9 @@ RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
+TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
+
+
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
@@ -830,3 +833,12 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+
+account_sid = env('TWILIO_ACCOUNT_SID', default='')
+auth_token = env('TWILIO_AUTH_TOKEN', default='')
+verify_service = env('TWILIO_VERIFY_SERVICE', default='')
+
+SMS_MAX_VERIFICATION_ATTEMPTS = env('SMS_MAX_VERIFICATION_ATTEMPTS', default=4)
+SMS_COOLDOWN_IN_MINUTES = env('SMS_COOLDOWN_IN_MINUTES', default=1)
+EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
+PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')

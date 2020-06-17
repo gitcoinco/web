@@ -21,7 +21,6 @@ var set_form_disabled = function(is_disabled) {
 
 $(document).ready(function() {
 
-
   // set defaults
   var set_defaults = function() {
     var lookups = {
@@ -146,7 +145,7 @@ $(document).ready(function() {
       $('.hide_wallet_address_container').addClass('hidden');
     }
   });
-  
+
   $('#js-token').change(function(e) {
     const val = $(this).val();
     const is_eth = val == '0x0000000000000000000000000000000000000000';
@@ -194,8 +193,14 @@ $(document).ready(function() {
 
   $('#js-fundGrant').submit(function(e) {
     e.preventDefault();
+
+    if (!provider) {
+      return onConnect();
+    }
+
     var data = {};
     var form = $(this).serializeArray();
+
 
     $.each(form, function() {
       data[this.name] = this.value;
@@ -214,7 +219,7 @@ $(document).ready(function() {
     localStorage.setItem('grantsgitcoin-grant-input-amount', $('#gitcoin-grant-input-amount').val());
 
     data.is_postive_vote = (data.match_direction == '-') ? 0 : 1;
-  
+
     if (data.frequency_unit) {
 
       // translate timeAmount&timeType to requiredPeriodSeconds
@@ -357,7 +362,7 @@ $(document).ready(function() {
       let realTokenAmount = Number(data.amount_per_period * Math.pow(10, decimals));
       let realApproval;
       const approve_buffer = 100000;
-      
+
       if (data.contract_version == 1 || data.num_periods == 1) {
 
         realApproval = Number(((grant_amount + gitcoin_grant_amount) * data.num_periods * Math.pow(10, decimals)) + approve_buffer);
@@ -438,6 +443,9 @@ $(document).ready(function() {
   }); // validate
 
   waitforWeb3(function() {
+    if (!provider) {
+      needWalletConnection();
+    }
     if (document.web3network != $('#network').val()) {
       $('#js-fundGrant-button').prop('disabled', true);
       let network = $('#network').val();
@@ -641,7 +649,9 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
 
   indicateMetamaskPopup();
 
-  deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).estimateGas(function(err, gas_amount) {
+  deployedSplitter.methods.splitTransfer(toFirst, toSecond, valueFirst, valueSecond, tokenAddress).estimateGas({
+    from: account
+  }, function(err, gas_amount) {
     if (err) {
       _alert('There was an error', 'error');
       set_form_disabled(false);

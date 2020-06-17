@@ -118,11 +118,12 @@
                       <option selected value="tech">{% trans "Tech" %}</option>
                       <option value="media">{% trans "Media" %}</option>
                       <option value="health">{% trans "Public Health" %}</option>
+                      <option value="change">{% trans "Crypto for Black Lives" %}</option>
                     </select>
                   </div>
                 </div>
 
- 
+
                 <div class="form__group-horizontal pb-3">
                   <label class="font-body">{% trans "Grant SubCategory" %}</label>
                   <div class="form__select2 g-multiselect">
@@ -153,11 +154,6 @@
                   <label class="font-body" for="input-admin_address"><i class="fas fa-exclamation-circle"></i> - {% trans "IMPORTANT NOTE - Contributions to this grant will be sent directly via the Ethereum blockchain to *this address*.  Gitcoin does *not* escrow any funds. Gitcoin does *not* have the ability to reverse any transactions.  As a preventative measure, please confirm that someone working on the project has access to funds that are sent to this address!" %}</label>
                 </div>
 
-                <h5 class="mt-4">Contract Deployment</h5>
-                <hr>
-                <div class="text-left m-0 p-0">
-                  <p class="font-caption mb-3 text-black-60 m-0 p-0"><i class="fas fa-lock"></i> - Because subscription support is so important to provide recurring income to Gitcoin Grantees, Each Grant is an EIP 1337 compatible smart contract!  Gitcoin's implementation of EIP 1337 has been audited by smart contract auditors to enable trustless & secure on-chain subscriptions - <a class="m-0 p-0" href="https://github.com/gitcoinco/web/blob/master/docs/GRANTS.md">Learn More Here</a></p>
-                </div>
                 <div class="form__footer text-center">
                   <button class="button button--primary button--full" id="new_button">{% trans "Create Grant" %}</button>
                 </div>
@@ -166,7 +162,7 @@
                   <input type="hidden" id="transaction_hash" name="transaction_hash" />
                   <input type="hidden" id="contract_address" name="contract_address" />
                   <input type="hidden" id="contract_owner_address" name="contract_owner_address">
-                  <input type="hidden" id="contract_version" name="contract_version" value="1">
+                  <input type="hidden" id="contract_version" name="contract_version" value="2">
                   <input type="hidden" id="token_address" name="token_address" value="">
                   <input type="hidden" id="token_symbol" name="token_symbol" value="">
                   <input type="hidden" id="category" name="category" value="">
@@ -180,12 +176,12 @@
       </div>
     </div>
 
-    {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/current_profile.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
   </body>
 
   <script src="{% static "v2/js/abi.js" %}"></script>

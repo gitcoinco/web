@@ -4,7 +4,7 @@
     <span id="chat-notification-dot" class="notification__dot"></span>
   </a>
   <div class="dropdown-menu dropdown-menu-right dropdo" aria-labelledby="chatNavbarDropdown">
-    <a class="dropdown-item" href="{% url 'chat' %}">Web Chat</a>
+    <a class="dropdown-item" href="{{chat_url}}/oauth/gitcoin/login?redirect_to={{base_url}}chat">Web Chat</a>
     <a class="dropdown-item" href="{% url 'landing_chat' %}">Desktop & Mobile Apps</a>
   </div>
 </div>

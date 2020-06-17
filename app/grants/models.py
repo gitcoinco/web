@@ -76,7 +76,7 @@ class GrantCategory(SuperModel):
     def all_categories():
         all_tech_categories = GrantCategory.tech_categories()
         filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
-        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories()
+        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories() + GrantCategory.change_categories()
 
     @staticmethod
     def tech_categories():
@@ -108,6 +108,11 @@ class GrantCategory(SuperModel):
             'COVID19 response',
         ]
 
+    @staticmethod
+    def change_categories():
+        return [
+        ]
+
     category = models.CharField(
         max_length=50,
         blank=False,
@@ -131,7 +136,8 @@ class Grant(SuperModel):
     GRANT_TYPES = [
         ('tech', 'tech'),
         ('health', 'health'),
-        ('media', 'media'),
+        ('Community', 'media'),
+        ('change', 'change'),
         ('matic', 'matic')
     ]
 
@@ -319,6 +325,16 @@ class Grant(SuperModel):
 
 
     @property
+    def recurring_funding_supported(self):
+        return self.contract_version < 2
+
+    @property
+    def configured_to_receieve_funding(self):
+        if self.contract_version == 2:
+            return True
+        return self.contract_address != '0x0'
+
+    @property
     def clr_match_estimate_this_round(self):
         try:
             return self.clr_prediction_curve[0][1]
@@ -335,7 +351,7 @@ class Grant(SuperModel):
 
     @property
     def negative_voting_enabled(self):
-        return self.grant_type == 'media'
+        return False
 
     @property
     def org_name(self):
@@ -614,7 +630,6 @@ class Subscription(SuperModel):
             return "PAST DUE"
         return "CURRENT"
 
-
     @property
     def amount_per_period_minus_gas_price(self):
         amount = float(self.amount_per_period) - float(self.amount_per_period_to_gitcoin)
@@ -624,6 +639,12 @@ class Subscription(SuperModel):
     def amount_per_period_to_gitcoin(self):
         from dashboard.tokens import addr_to_token
         token = addr_to_token(self.token_address, self.network)
+
+        # gas prices no longer take this amount times 10**18 decimals
+        import pytz
+        if self.created_on > timezone.datetime(2020, 6, 16, 15, 0).replace(tzinfo=pytz.utc):
+            return self.gas_price
+
         try:
             decimals = token.get('decimals', 0)
             return (float(self.gas_price) / 10 ** decimals)
@@ -832,8 +853,14 @@ next_valid_timestamp: {next_valid_timestamp}
             args['nonce'],
             ).call()
 
-    def get_converted_amount(self, ignore_gitcoin_fee=False):
-        amount = self.amount_per_period if ignore_gitcoin_fee else self.amount_per_period_minus_gas_price
+    def get_converted_amount(self, ignore_gitcoin_fee=False, only_gitcoin_fee=False):
+        if ignore_gitcoin_fee:
+            amount = self.amount_per_period
+        elif only_gitcoin_fee:
+            amount = self.amount_per_period_to_gitcoin
+        else:
+            amount = self.amount_per_period_minus_gas_price
+
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
                 return Decimal(float(amount) * float(eth_usd_conv_rate()))
@@ -915,7 +942,7 @@ def psave_grant(sender, instance, **kwargs):
     instance.contributor_count = instance.get_contributor_count()
     from grants.clr import CLR_START_DATE
     import pytz
-    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc) if instance.grant_type == 'health' else timezone.datetime(2020, 3, 23, 12, 0).replace(tzinfo=pytz.utc)
+    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
     instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
     instance.amount_received_in_round = 0
@@ -977,6 +1004,18 @@ class Flag(SuperModel):
     processed = models.BooleanField(default=False, help_text=_('Was it processed?'))
     comments_admin = models.TextField(default='', blank=True, help_text=_('The comments of an admin.'))
     tweet = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+
+    def post_flag(self):
+        from dashboard.models import Activity, Profile
+        from townsquare.models import Comment
+        profile = Profile.objects.filter(handle='gitcoinbot').first()
+        activity = Activity.objects.create(profile=profile, activity_type='flagged_grant', grant=self.grant)
+        comment = Comment.objects.create(
+            profile=profile,
+            activity=activity,
+            comment=f"Comment from anonymous user: {self.comments}")
+
+
 
     def __str__(self):
         """Return the string representation of a Grant."""
@@ -1082,6 +1121,7 @@ class Contribution(SuperModel):
         max_length=255,
         default='0x0',
         help_text=_('The transaction ID of the Contribution.'),
+        blank=True,
     )
     split_tx_id = models.CharField(
         default='',
@@ -1139,18 +1179,46 @@ class Contribution(SuperModel):
 
     def update_tx_status(self):
         """Updates tx status."""
+        from economy.tx import grants_transaction_validator
         from dashboard.utils import get_tx_status
+        from economy.tx import getReplacedTX
         if self.tx_override:
             return
+
+        # handle replace of tx_id
         tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+        if tx_status in ['pending', 'dropped', 'unknown', '']:
+            new_tx = getReplacedTX(self.tx_id)
+            if new_tx:
+                self.tx_id = new_tx
+            else:
+                # TODO: do stuff related to long running pending txns
+                pass
+            return
+        # handle replace of split_tx_id
         if self.split_tx_id:
             split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-        if tx_status != 'pending':
-            self.success = tx_status == 'success'
-            self.tx_cleared = True
-        if self.split_tx_id and split_tx_status != 'pending':
-            self.success = split_tx_status == 'success'
-            self.split_tx_confirmed = True
+            if split_tx_status in ['pending', 'dropped', 'unknown', '']:
+                new_tx = getReplacedTX(self.split_tx_id)
+                if new_tx:
+                    self.split_tx_id = new_tx
+                return
+
+        # actually validate token transfers
+        response = grants_transaction_validator(self)
+        if len(response['originator']):
+            self.originated_address = response['originator'][0]
+        self.validator_passed = response['validation']['passed']
+        self.validator_comment = response['validation']['comment']
+        self.tx_cleared = True
+        self.split_tx_confirmed = True
+        self.success = self.validator_passed
+
+        if self.success:
+            print("TODO: do stuff related to successful contribs, like emails")
+        else:
+            print("TODO: do stuff related to failed contribs, like emails")
+
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
 def psave_contrib(sender, instance, **kwargs):
@@ -1263,7 +1331,8 @@ class MatchPledge(SuperModel):
     PLEDGE_TYPES = [
         ('tech', 'tech'),
         ('media', 'media'),
-        ('health', 'health')
+        ('health', 'health'),
+        ('change', 'change')
     ]
 
     active = models.BooleanField(default=False, help_text=_('Whether or not the MatchingPledge is active.'))

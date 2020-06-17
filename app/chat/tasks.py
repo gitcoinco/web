@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.utils.text import slugify
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from celery import app, group
 from dashboard.models import Bounty, HackathonEvent, HackathonRegistration, HackathonSponsor, Profile
 from marketing.utils import should_suppress_notification_email
@@ -20,7 +20,8 @@ driver_opts = {
     'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
     'url': settings.CHAT_SERVER_URL,
     'port': settings.CHAT_PORT,
-    'token': settings.CHAT_DRIVER_TOKEN
+    'token': settings.CHAT_DRIVER_TOKEN,
+    'verify': False
 }
 
 

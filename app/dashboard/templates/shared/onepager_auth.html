@@ -26,34 +26,48 @@
     {% endif %}
   </a>
 
-  <button id="wallet-button" class="navbar-network ml-xl-5 py-1 px-2 hidden btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-circle pr-1"></i>
-    <span id="current-network"></span>
-  </button>
-  <div id="wallet-dropdown" class="dropdown-menu" aria-labelledby="wallet-button" style="top: 50px; left: 40vw;">
-    <a id="copy-address" class="dropdown-item" href="javascript:;">
-      <i class="fas fa-copy"></i>
-      Copy Wallet Address
-    </a>
-    <a id="go-to-wallet" class="dropdown-item" href="#" target="_blank">
-      <i class="fas fa-wallet"></i>
-      Go to Your Wallet
-    </a>
-    <a id="change-wallet" class="dropdown-item" href="#">
-      <i class="fas fa-exchange-alt"></i>
-      Change Wallet Provider
-    </a>
-  </div>
+
 
   {% if user.is_authenticated %}
   <div class="d-flex order-0 order-md-last">
+    {% include 'shared/notifications.html' %}
+    {% include 'shared/chat_nav.html' %}
     <a class="nav-link login" href="{% url 'profile' %}">
       <img class="nav_avatar" width=25 height=25
         src="{% if user.profile.active_avatar %}{{ user.profile.active_avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
       {{ user }}
     </a>
-    {% include 'shared/notifications.html' %}
-    {% include 'shared/chat_nav.html' %}
+    <div class="nav-item dropdown interior">
+
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
+        <a class="dropdown-item" href="#" id="wallet-btn">
+          Connect Wallet
+        </a>
+        <div class="dropdown-item wallet-hidden d-none">
+          <small>connected to:</small>
+          <div class="network-name"></div>
+          <div class="selected-account" data-toggle="tooltip" title="Click to copy"></div>
+        </div>
+        <div id="wallet-accounts" class="dropdown-item wallet-hidden d-none"></div>
+        <div class="dropdown-divider wallet-hidden d-none"></div>
+        <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
+          Disconnect
+        </a>
+      </div>
+
+    </div>
+  </div>
+  <div id="templates" style="display: none">
+    <template id="template-balance">
+      <div class="wallet-option">
+      	<div class="wallet-address"></div>
+      	<small class="wallet-balance"></small>
+      </div>
+    </template>
   </div>
   {% else %}
   <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
