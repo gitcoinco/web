@@ -119,13 +119,11 @@ class CartData {
   static clearCart() {
     let cartList = this.loadCart();
 
-    cartList.map(grant => {
-      fetchData('/grants/activity', 'POST', {
-        action: 'REMOVE_ITEM',
-        metadata: JSON.stringify(cartList),
-        bulk: true
-      }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
-    });
+    fetchData(`/grants/0/activity`, 'POST', {
+      action: 'CLEAR_CART',
+      metadata: JSON.stringify(cartList),
+      bulk: true
+    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
 
     localStorage.setItem('grants_cart', JSON.stringify([]));
     applyCartMenuStyles();

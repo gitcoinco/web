@@ -1144,13 +1144,17 @@ def grant_activity(request, grant_id=None):
     metadata = request.POST.get('metadata')
     bulk = request.POST.get('bulk') == 'true'
 
-    if grant_id == None:
+    if not grant_id:
         grant = None
     else:
         grant = get_object_or_404(Grant, pk=grant_id)
 
-    CartActivity.objects.create(grant=grant, profile=request.user.profile, action=action,
-                                metadata=json.loads(metadata), bulk=bulk)
+    _ca = CartActivity.objects.create(grant=grant, profile=request.user.profile, action=action,
+                                metadata=json.loads(metadata), bulk=bulk, latest=True)
+
+    for ca in CartActivity.objects.filter(profile=request.user.profile, latest=True, pk__lt=_ca.pk):
+        ca.latest = False
+        ca.save()
 
     return JsonResponse({
         'error': False

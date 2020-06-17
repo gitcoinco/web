@@ -309,7 +309,7 @@ class PhantomFundingAdmin(admin.ModelAdmin):
 
 
 class CartActivityAdmin(admin.ModelAdmin):
-    list_display = ['id', 'grant', 'profile', 'action', 'bulk', 'created_on']
+    list_display = ['id', 'grant', 'profile', 'action', 'bulk', 'latest', 'created_on']
     raw_id_fields = ['grant', 'profile']
     search_fields = ['bulk', 'action', 'grant']
 
