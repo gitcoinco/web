@@ -1,6 +1,6 @@
 let lookupExpiry;
 
-(async function ($) {
+(async function($) {
 
   const MAX_WEBSOCKET_FAILS = 7;
   const MIN_WEBSOCKET_RETRY_TIME = 3000; // 3 sec
@@ -29,12 +29,12 @@ let lookupExpiry;
       }
 
       if (connectionUrl == null) {
-        console.log('websocket must have connection url'); //eslint-disable-line no-console
+        console.log('websocket must have connection url'); // eslint-disable-line no-console
         return;
       }
 
       if (this.connectFailCount === 0) {
-        console.log('websocket connecting to ' + connectionUrl); //eslint-disable-line no-console
+        console.log('websocket connecting to ' + connectionUrl); // eslint-disable-line no-console
       }
 
       this.conn = new WebSocket(connectionUrl);
@@ -48,7 +48,7 @@ let lookupExpiry;
         }
 
         if (this.connectFailCount > 0) {
-          console.log('websocket re-established connection'); //eslint-disable-line no-console
+          console.log('websocket re-established connection'); // eslint-disable-line no-console
           if (this.reconnectCallback) {
             this.reconnectCallback();
           }
@@ -64,7 +64,7 @@ let lookupExpiry;
         this.sequence = 1;
 
         if (this.connectFailCount === 0) {
-          console.log('websocket closed'); //eslint-disable-line no-console
+          console.log('websocket closed'); // eslint-disable-line no-console
         }
 
         this.connectFailCount++;
@@ -93,8 +93,8 @@ let lookupExpiry;
 
       this.conn.onerror = (evt) => {
         if (this.connectFailCount <= 1) {
-          console.log('websocket error'); //eslint-disable-line no-console
-          console.log(evt); //eslint-disable-line no-console
+          console.log('websocket error'); // eslint-disable-line no-console
+          console.log(evt); // eslint-disable-line no-console
         }
 
         if (this.errorCallback) {
@@ -104,9 +104,10 @@ let lookupExpiry;
 
       this.conn.onmessage = (evt) => {
         const msg = JSON.parse(evt.data);
+
         if (msg.seq_reply) {
           if (msg.error) {
-            console.log(msg); //eslint-disable-line no-console
+            console.log(msg); // eslint-disable-line no-console
           }
 
           if (this.responseCallbacks[msg.seq_reply]) {
@@ -115,7 +116,7 @@ let lookupExpiry;
           }
         } else if (this.eventCallback) {
           if (msg.seq !== this.eventSequence && this.missedEventCallback) {
-            console.log('missed websocket event, act_seq=' + msg.seq + ' exp_seq=' + this.eventSequence); //eslint-disable-line no-console
+            console.log('missed websocket event, act_seq=' + msg.seq + ' exp_seq=' + this.eventSequence); // eslint-disable-line no-console
             this.missedEventCallback();
           }
           this.eventSequence = msg.seq + 1;
@@ -152,11 +153,10 @@ let lookupExpiry;
       this.connectFailCount = 0;
       this.sequence = 1;
       if (this.conn && this.conn.readyState === WebSocket.OPEN) {
-        this.conn.onclose = () => {
-        }; //eslint-disable-line no-empty-function
+        this.conn.onclose = () => {}; // eslint-disable-line no-empty-function
         this.conn.close();
         this.conn = null;
-        console.log('websocket closed'); //eslint-disable-line no-console
+        console.log('websocket closed'); // eslint-disable-line no-console
       }
     }
 
@@ -164,7 +164,7 @@ let lookupExpiry;
       const msg = {
         action,
         seq: this.sequence++,
-        data,
+        data
       };
 
       if (responseCallback) {
@@ -181,6 +181,7 @@ let lookupExpiry;
 
     userTyping(channelId, parentId, callback) {
       const data = {};
+
       data.channel_id = channelId;
       data.parent_id = parentId;
 
@@ -190,8 +191,9 @@ let lookupExpiry;
     userUpdateActiveStatus(userIsActive, manual, callback) {
       const data = {
         user_is_active: userIsActive,
-        manual,
+        manual
       };
+
       this.sendMessage('user_update_active_status', data, callback);
     }
 
@@ -201,6 +203,7 @@ let lookupExpiry;
 
     getStatusesByIds(userIds, callback) {
       const data = {};
+
       data.user_ids = userIds;
       this.sendMessage('get_statuses_by_ids', data, callback);
     }
@@ -208,13 +211,13 @@ let lookupExpiry;
 
   // doc ready
 
-  const fetchTeams = async () => {
+  const fetchTeams = async() => {
     let teams = {};
 
     if (!Object.values(teams).length || lookupExpiry) {
       if (document.contxt.chat_url && document.contxt.chat_access_token) {
         $.ajax({
-          beforeSend: function (request) {
+          beforeSend: function(request) {
             request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
           },
           url: `${document.contxt.chat_url}/api/v4/teams`,
@@ -293,7 +296,7 @@ let lookupExpiry;
       console.log(e);
     }
   };
-  const showNotification = async function (
+  const showNotification = async function(
     {
       title,
       channel,
@@ -359,14 +362,14 @@ let lookupExpiry;
 
   $(() => {
     window.chatSidebar = new Vue({
-      delimiters: ['[[', ']]'],
+      delimiters: [ '[[', ']]' ],
       el: '#sidebar-chat-app',
       methods: {
-        checkChatNotifications: function () {
+        checkChatNotifications: function() {
           let vm = this;
 
           $.ajax({
-            beforeSend: function (request) {
+            beforeSend: function(request) {
               request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
             },
             url: `${document.contxt.chat_url}/api/v4/users/me/teams/unread`,
@@ -385,7 +388,7 @@ let lookupExpiry;
             })
           });
         },
-        chatWindow: function (channel) {
+        chatWindow: function(channel) {
           let vm = this;
           const isExactChannel = channel.indexOf('channel');
           const dm = channel ? channel.indexOf('@') >= 0 : false;
@@ -412,12 +415,12 @@ let lookupExpiry;
 
 
         },
-        open: function () {
+        open: function() {
           if (!this.isVisible) {
             this.$root.$emit('bv::toggle::collapse', 'sidebar-chat');
           }
         },
-        socketSessionLoginTest: function () {
+        socketSessionLoginTest: function() {
           let vm = this;
 
           let client = new WebSocketClient();
@@ -436,33 +439,33 @@ let lookupExpiry;
 
           client.initialize(vm.chatSocketURL);
         },
-        chatLogin: function () {
+        chatLogin: function() {
           let vm = this;
 
           if (!vm.loginWindow) {
             vm.loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
           }
         },
-        showHandler: function (event) {
+        showHandler: function(event) {
           this.isLoading = true;
         },
-        hideHandler: function (event) {
+        hideHandler: function(event) {
           this.isLoggedInFrame = false;
           this.iframe = null;
         },
-        changeHandler: function (visible) {
+        changeHandler: function(visible) {
           this.isLoading = visible;
           this.isVisible = visible;
         },
-        iframeOnFocus: function () {
+        iframeOnFocus: function() {
           vm.iframeHasFocus = true;
         },
-        chatAppOnLoad: function (iframe) {
+        chatAppOnLoad: function(iframe) {
           let vm = this;
 
           vm.iframe = iframe;
 
-          vm.$watch('isLoggedInFrame', function (newVal) {
+          vm.$watch('isLoggedInFrame', function(newVal) {
             if (newVal && vm.validSessionInterval) {
               clearInterval(vm.validSessionInterval);
             }
@@ -564,19 +567,19 @@ let lookupExpiry;
         client.setReconnectCallback((msg) => {
           vm.isLoggedInClient = true;
         });
-        client.initialize(vm.chatSocketURL, document.contxt.chat_access_token)
+        client.initialize(vm.chatSocketURL, document.contxt.chat_access_token);
 
         vm.socket = client;
       },
       computed: {
-        chatLoginURL: function () {
+        chatLoginURL: function() {
           return `${this.chatURL}/oauth/gitcoin/login?redirect_to=${window.location.protocol}//${window.location.host}/chat/login/`;
         },
-        loadURL: function () {
+        loadURL: function() {
           return (this.chatURLOverride !== null) ? this.chatURLOverride : this.chatURL;
         }
       },
-      data: function () {
+      data: function() {
         const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
 
         return {
