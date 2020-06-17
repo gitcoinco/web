@@ -508,7 +508,7 @@ class PollMediaAdmin(admin.ModelAdmin):
 
       
 class ProfileVerificationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
+    list_display = ['id', 'profile', 'success', 'validation_passed', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
                     'phone_number', 'carrier_error_code']
     raw_id_fields = ['profile']
 

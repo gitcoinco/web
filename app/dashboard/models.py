@@ -5233,6 +5233,10 @@ class ProfileVerification(SuperModel):
     country_code = models.CharField(max_length=5, null=True, blank=True)
     phone_number = models.CharField(max_length=150, null=True, blank=True)
     delivery_method = models.CharField(max_length=255, null=True, blank=True)
+    validation_passed = models.BooleanField(help_text=_('Did the initial validation pass?'), default=False)
+    validation_comment = models.CharField(max_length=255, null=True, blank=True)
+    success = models.BooleanField(help_text=_('Was a successful transaction verification?'), default=False)
+
 
     def __str__(self):
         return f'{self.phone_number} ({self.caller_type}) from {self.country_code} request ${self.delivery_method} code at {self.created_on}'
