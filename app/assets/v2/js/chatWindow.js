@@ -209,8 +209,6 @@ let lookupExpiry;
     }
   }
 
-  // doc ready
-
   const fetchTeams = async() => {
     let teams = {};
 
@@ -375,7 +373,6 @@ let lookupExpiry;
             url: `${document.contxt.chat_url}/api/v4/users/me/teams/unread`,
             dataType: 'json',
             success: (JSONUnread) => {
-              let notified = false;
               let unread = 0;
 
               JSONUnread.forEach((team) => {
@@ -402,17 +399,18 @@ let lookupExpiry;
             channel = `/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${channel}`;
           }
 
-          if (vm.iframe && vm.iframe.contentWindow && vm.iframe.contentWindow.isActive) {
-            if (vm.iframe.contentWindow.browserHistory) {
-              vm.iframe.contentWindow.browserHistory.push(channel);
+          let openFrame = vm.getOpenFrame();
+
+          if (openFrame.frameWindow && openFrame.frameWindow.isActive) {
+            if (openFrame.frameWindow.browserHistory) {
+              openFrame.frameWindow.browserHistory.push(channel);
             } else {
-              vm.iframe.contentWindow.location.go(channel);
+              openFrame.frameWindow.location.go(channel);
             }
           } else {
             vm.chatURLOverride = `${vm.chatURL}${channel}`;
             vm.open();
           }
-
 
         },
         open: function() {
@@ -445,6 +443,19 @@ let lookupExpiry;
           if (!vm.loginWindow) {
             vm.loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
           }
+        },
+        getOpenFrame: function() {
+
+          let $frameElement = $(vm.iframe);
+          let frameElement = $frameElement[0];
+          let frameContents = frameElement.contents();
+          let frameWindow = (frameElement && frameElement.contentWindow && frameElement.contentWindow.window) ? frameElement.contentWindow.window : null;
+
+          return {
+            frameElement,
+            frameWindow,
+            frameContents
+          };
         },
         showHandler: function(event) {
           this.isLoading = true;
@@ -487,17 +498,14 @@ let lookupExpiry;
 
                     if (vm.iframe) {
 
-                      let $frameElement = $(vm.iframe);
-                      let frameElement = $frameElement[0];
-                      let frameContents = frameElement.contents();
-                      let frameWindow = (frameElement && frameElement.contentWindow && frameElement.contentWindow.window) ? frameElement.contentWindow.window : null;
-
-                      if (frameWindow.location.pathname === '/login' || count >= 5) {
+                      let openFrame = vm.getOpenFrame();
+                      
+                      if (openFrame.frameWindow.location.pathname === '/login' || count >= 5) {
                         count = 0;
                         vm.frameLoginAttempting = true;
                         vm.chatLogin();
 
-                      } else if (frameWindow.location.pathname === '/select_team' || frameContents.find('#sidebarSwitcherButton').length > 0) {
+                      } else if (openFrame.frameWindow.location.pathname === '/select_team' || openFrame.frameContents.find('#sidebarSwitcherButton').length > 0) {
                         vm.isLoggedInFrame = true;
                         vm.frameLoginAttempting = false;
                         vm.isLoading = false;
@@ -540,10 +548,10 @@ let lookupExpiry;
 
           if (vm.isLoggedInClient && msgData.event === 'posted') {
             try {
-              let frameElement = $(vm.iframe)[0];
-              let frameWindow = (frameElement && frameElement.contentWindow && frameElement.contentWindow.window) ? frameElement.contentWindow.window : null;
-
-              if (!(vm.iframe && frameWindow && frameWindow.isActive)) {
+              
+              let openFrame = vm.getOpenFrame();
+              
+              if (!(vm.iframe && openFrame.frameWindow && openFrame.frameWindow.isActive)) {
                 let channelData = msgData.data;
                 let postData = JSON.parse(channelData.post);
 
