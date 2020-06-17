@@ -20,6 +20,7 @@ import logging
 import re
 import sys
 from datetime import datetime, timedelta
+from http import HTTPStatus
 
 from django.conf import settings
 from django.contrib import messages
@@ -356,6 +357,69 @@ def handle_marketing_callback(_input, request):
                 messages.info(request, "You have been selected to receive a $5.00 Gitcoin Grants voucher. Login to use it.")
 
 
+def add_user_to_mailchimp_list(list_id, profile):
+    client = MailChimp(mc_api=MAILCHIMP_API_KEY, mc_user=MAILCHIMP_USER)
+    try:
+        client.lists.members.create(
+            list_id=LIST_ID,
+            data={
+            'email_address': profile.email_address,
+            'status': 'subscribed',
+            'merge_fields': {
+                'FNAME': profile.first_name,
+                'LNAME': profile.last_name,
+            }
+        })
+    except Exception as e:
+        logger.debug(e)
+
+
+def unsubscribe_user_from_mailchimp_list(list_id, email_address):
+    client = MailChimp(mc_api=MAILCHIMP_API_KEY, mc_user=MAILCHIMP_USER)
+    result = None
+    try:
+        result = client.search_members.get(query=email_address)
+        if result:
+            subscriber_hash = result.get('exact_matches', {}).get('members', [{}])[0].get('id', None)
+    except Exception as e:
+        logger.debug(e)
+
+        try:
+            client.lists.members.update(
+                list_id=list_id,
+                subscriber_hash=subscriber_hash,
+                data={
+                    'status': 'unsubscribed',
+                }
+            )
+        except Exception as e:
+            logger.debug(e)
+
+
+def add_email_to_sendgrid_suppression_group(email_address, group_id):
+    api_request_link = f"asm/groups/{group_id}/suppressions"
+    api_post_data = {
+        "recipient_emails": [email_address],
+    }
+
+    try:
+        response = sg.client._(api_request_link).post(api_post_data)
+        if response.status_code == HTTPStatus.CREATED:
+            print(response.body)
+    except Exception as e:
+        logger.debug(e)
+
+def delete_email_from_sendgrid_suppression_group(email_address, group_id):
+    api_request_link = f"asm/groups/{group_id}/suppressions/{email_address}"
+
+    try:
+        response = sg.client._(api_request_link).delete()
+        if response.status_code == HTTPStatus.NO_CONTENT:
+            print(response.body)
+    except Exception as e:
+        logger.debug(e)
+
+
 def func_name():
     """Determine the calling function's name.
 
@@ -368,3 +432,5 @@ def func_name():
     except Exception as e:
         logger.error(e)
         return 'NA'
+
+
