@@ -1,6 +1,6 @@
 {
     "ServiceSettings": {
-        "SiteURL": "http://localhost:8065",
+        "SiteURL": "https://chat.androolloyd.com",
         "WebsocketURL": "",
         "LicenseFileLocation": "",
         "ListenAddress": ":8065",
@@ -39,7 +39,7 @@
         "EnableMultifactorAuthentication": false,
         "EnforceMultifactorAuthentication": false,
         "EnableUserAccessTokens": true,
-        "AllowCorsFrom": "http://localhost:8000 http://localhost:8065",
+        "AllowCorsFrom": "https://dapp.androolloyd.com https://chat.androolloyd.com http://localhost:8065",
         "CorsExposedHeaders": "",
         "CorsAllowCredentials": true,
         "CorsDebug": true,
@@ -263,7 +263,7 @@
         "Secret": "xhLXNqXnOlkUiGCDFJLxQJjPb3CltLZNFZtzOsLgFfvwbYY60kYWRRBmqyjzfrnNyT6WWdIbfQEPpU854K2UiofmXtybFD1QkfIR9VVQyK3ttJpET7GormIBjK9CQRap",
         "Id": "VkHFfFlxnVCMYtYCWRxphbvPQUJjmER4cWtwqe7Q",
         "Scope": "read",
-        "AuthEndpoint": "http://localhost:8000/login/github/?next=",
+        "AuthEndpoint": "https://dapp.androolloyd.com/login/github/?next=",
         "TokenEndpoint": "http://web:8000/o/token/",
         "UserApiEndpoint": "http://web:8000/api/user/me"
     },
