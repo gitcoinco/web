@@ -1458,16 +1458,16 @@ class SendCryptoAssetQuerySet(models.QuerySet):
         return self.filter(tx_status='success').exclude(txid='')
 
     def not_submitted(self):
-        """Filter results down to successful sends only."""
+        """Filter results down to not submitted results only."""
         return self.filter(tx_status='not_subed')
 
     def send_pending(self):
         """Filter results down to pending sends only."""
-        return self.filter(tx_status='pending').exclude(txid='')
+        return self.filter(Q(tx_status='pending') | Q(txid='pending_celery')).exclude(txid='')
 
     def send_happy_path(self):
         """Filter results down to pending/success sends only."""
-        return self.filter(tx_status__in=['pending', 'success']).exclude(txid='')
+        return self.filter(Q(tx_status__in=['pending', 'success']) | Q(txid='pending_celery')).exclude(txid='')
 
     def send_fail(self):
         """Filter results down to failed sends only."""
