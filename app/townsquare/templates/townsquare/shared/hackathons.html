@@ -8,7 +8,7 @@
                     <img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
                     {% else %}
                     <div class="hackathon-card-logo text-center px-3 font-caption">
-                        {{ hackathon.title }}
+                        <a href="{% url 'hackathon_onboard' hackathon.slug %}">  {{ hackathon.title }} </a>
                     </div>
                     {% endif %}
                 </div>
