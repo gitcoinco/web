@@ -1026,8 +1026,17 @@ const updateMultipleParams = (newParams) => {
   for (const [ key, value ] of newParams) {
     params.set(key, value);
   }
+  let category_str = '';
 
-  window.location.href = '/grants/?' + decodeURIComponent(params.toString());
+  if (params.get('type')) {
+    category_str = params.get('type') + '/';
+    params.delete('type');
+  }
+  if (!params.get('category')) {
+    params.delete('category');
+  }
+
+  window.location.href = '/grants/' + category_str + '?' + decodeURIComponent(params.toString());
 };
 
 

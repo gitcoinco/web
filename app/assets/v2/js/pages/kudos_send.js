@@ -167,7 +167,6 @@ $(document).ready(function() {
     });
   }, 100);
 
-  set_metadata();
   // jquery bindings
   $('#advanced_toggle').on('click', function(e) {
     e.preventDefault();
@@ -212,6 +211,7 @@ $(document).ready(function() {
   $('#send').on('click', function(e) {
 
     e.preventDefault();
+    set_metadata();
 
     if (typeof web3 == 'undefined') {
       _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');

@@ -836,6 +836,7 @@ ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
 
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')
+verify_service = env('TWILIO_VERIFY_SERVICE', default='')
 
 SMS_MAX_VERIFICATION_ATTEMPTS = env('SMS_MAX_VERIFICATION_ATTEMPTS', default=4)
 SMS_COOLDOWN_IN_MINUTES = env('SMS_COOLDOWN_IN_MINUTES', default=1)

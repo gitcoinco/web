@@ -13,6 +13,27 @@ class CartData {
     return idList.includes(grantId);
   }
 
+  static share_url(title) {
+    const donations = this.loadCart();
+    let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
+
+    for (let i = 0; i < donations.length; i += 1) {
+      const donation = donations[i];
+
+      bulk_add_cart += String(donation['grant_id']) + ',';
+    }
+
+    if (document.contxt['github_handle']) {
+      bulk_add_cart += ':' + document.contxt['github_handle'];
+    }
+
+    if (title && typeof title != 'undefined') {
+      bulk_add_cart += ':' + encodeURI(title);
+    }
+
+    return bulk_add_cart;
+  }
+
   static addToCart(grantData) {
     if (this.cartContainsGrantWithId(grantData.grant_id)) {
       return;
@@ -25,7 +46,15 @@ class CartData {
       network = 'mainnet';
     }
     const acceptsAllTokens = (grantData.grant_token_address === '0x0000000000000000000000000000000000000000');
-    const accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
+
+    let accptedTokenName;
+
+    try {
+      accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
+    } catch (e) {
+      // When numbers are too small toWei fails because there's too many decimal places
+      accptedTokenName = 'DAI';
+    }
 
     if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       grantData.grant_donation_amount = 5;
