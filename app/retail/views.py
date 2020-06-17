@@ -1504,6 +1504,8 @@ def json_tokens(request):
             'address': token.address,
             'symbol': token.symbol,
             'network': token.network,
+            'networkId': token.network_id,
+            'chainId': token.chain_id,
             'decimals': token.decimals,
             'priority': token.priority
         }
