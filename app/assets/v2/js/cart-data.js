@@ -56,6 +56,8 @@ class CartData {
       accptedTokenName = 'DAI';
     }
 
+    grantData.uuid = get_UUID();
+
     if (acceptsAllTokens || 'DAI' == accptedTokenName) {
       grantData.grant_donation_amount = 5;
       grantData.grant_donation_currency = 'DAI';
@@ -71,14 +73,22 @@ class CartData {
 
     cartList.push(grantData);
     this.setCart(cartList);
+
+    fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
+      action: 'ADD_ITEM',
+      metadata: JSON.stringify(cartList)
+    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
   }
 
   static removeIdFromCart(grantId) {
     let cartList = this.loadCart();
 
-    const newList = cartList.filter(grant => {
-      return (grant.grant_id !== grantId);
-    });
+    const newList = cartList.filter(grant => grant.grant_id !== grantId);
+
+    fetchData(`/grants/${grantId}/activity`, 'POST', {
+      action: 'REMOVE_ITEM',
+      metadata: JSON.stringify(newList)
+    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
 
     this.setCart(newList);
   }
@@ -104,6 +114,21 @@ class CartData {
     grant[field] = value;
 
     this.setCart(cartList);
+  }
+
+  static clearCart() {
+    let cartList = this.loadCart();
+
+    cartList.map(grant => {
+      fetchData('/grants/activity', 'POST', {
+        action: 'REMOVE_ITEM',
+        metadata: JSON.stringify(cartList),
+        bulk: true
+      }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    });
+
+    localStorage.setItem('grants_cart', JSON.stringify([]));
+    applyCartMenuStyles();
   }
 
   static loadCart() {

@@ -22,7 +22,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
+from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription, CartActivity
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -147,7 +147,7 @@ class GrantAdmin(GeneralAdmin):
 
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
-        eles = []   
+        eles = []
 
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
@@ -308,6 +308,12 @@ class PhantomFundingAdmin(admin.ModelAdmin):
         return " , ".join(visits)
 
 
+class CartActivityAdmin(admin.ModelAdmin):
+    list_display = ['id', 'grant', 'profile', 'action', 'bulk', 'created_on']
+    raw_id_fields = ['grant', 'profile']
+    search_fields = ['bulk', 'action', 'grant']
+
+
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
@@ -315,3 +321,4 @@ admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, CLRMatchAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
+admin.site.register(CartActivity, CartActivityAdmin)

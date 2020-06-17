@@ -51,7 +51,8 @@ from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
-from grants.models import Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription
+from grants.models import Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription, \
+    CartActivity
 from grants.utils import get_leaderboard, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -407,7 +408,7 @@ def grants_by_grant_type(request, grant_type):
     if request.user.is_authenticated:
         prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
         prev_grants = Grant.objects.filter(pk__in=prev_grants)
-        
+
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -1134,4 +1135,23 @@ def grant_categories(request):
 
     return JsonResponse({
         'categories': categories
+    })
+
+
+@login_required
+def grant_activity(request, grant_id=None):
+    action = request.POST.get('action')
+    metadata = request.POST.get('metadata')
+    bulk = request.POST.get('bulk') == 'true'
+
+    if grant_id == None:
+        grant = None
+    else:
+        grant = get_object_or_404(Grant, pk=grant_id)
+
+    CartActivity.objects.create(grant=grant, profile=request.user.profile, action=action,
+                                metadata=json.loads(metadata), bulk=bulk)
+
+    return JsonResponse({
+        'error': False
     })
