@@ -25,9 +25,11 @@ class CartData {
       network = 'mainnet';
     }
     const acceptsAllTokens = (grantData.grant_token_address === '0x0000000000000000000000000000000000000000');
-    const accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
+    const acceptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
 
-    if (acceptsAllTokens || 'DAI' == accptedTokenName) {
+    grantData.uuid = get_UUID();
+
+    if (acceptsAllTokens || 'DAI' == acceptedTokenName) {
       grantData.grant_donation_amount = 5;
       grantData.grant_donation_currency = 'DAI';
     } else {
@@ -42,13 +44,27 @@ class CartData {
 
     cartList.push(grantData);
     this.setCart(cartList);
+
+    fetchData(`/grants/${grantData.grant_id}/activity`, 'POST', {
+      action: 'ADD_ITEM',
+      metadata: JSON.stringify(grantData)
+    }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
   }
 
   static removeIdFromCart(grantId) {
     let cartList = this.loadCart();
 
     const newList = cartList.filter(grant => {
-      return (grant.grant_id !== grantId);
+      if (grant.grant_id === grantId) {
+        fetchData(`/grants/${grant.grant_id}/activity`, 'POST', {
+          action: 'REMOVE_ITEM',
+          metadata: JSON.stringify(grant)
+        }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+
+        return false;
+      }
+
+      return true;
     });
 
     this.setCart(newList);
@@ -75,6 +91,21 @@ class CartData {
     grant[field] = value;
 
     this.setCart(cartList);
+  }
+
+  static clearCart() {
+    let cartList = this.loadCart();
+
+    cartList.map(grant => {
+      fetchData(`/grants/${grant.grant_id}/activity`, 'POST', {
+        action: 'REMOVE_ITEM',
+        metadata: JSON.stringify(grant),
+        bulk: true
+      }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()});
+    });
+
+    localStorage.setItem('grants_cart', JSON.stringify([]));
+    applyCartMenuStyles();
   }
 
   static loadCart() {

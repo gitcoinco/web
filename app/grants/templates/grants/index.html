@@ -47,7 +47,7 @@ along with this program. If not, see
                   <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for prev_grant in prev_grants %}{{prev_grant.pk}},{% endfor %}">+
                     Add to Cart</a>
                   <p class="mb-2">Want to contribute to <a href="https://vitalik.ca/general/2020/04/30/round5.html" target="_blank">stability of ecosystem funding</a>? You funded {{prev_grants.count}} grant{{ prev_grants.count|pluralize }} last time. Fund
-                    them again?</p> 
+                    them again?</p>
                   <span class="font-smaller-3">{% for prev_grant in prev_grants %}
                   <a href="{{prev_grant.url}}">{{prev_grant.title}}</a>
                   {% if not forloop.last %}{% ifequal forloop.revcounter 2 %} and {% else %}, {% endifequal %}{% else %}{% endif %}
@@ -89,6 +89,7 @@ along with this program. If not, see
             </div>
           </div>
         </div>
+        {% csrf_token %}
       </div>
       <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
         {% include 'grants/detail/side-cart.html' %}

@@ -338,7 +338,7 @@ Vue.component('grants-cart', {
     },
 
     clearCart() {
-      CartData.setCart([]);
+      CartData.clearCart();
       this.grantData = [];
       update_cart_title();
     },
