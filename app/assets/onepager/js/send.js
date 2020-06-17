@@ -4,7 +4,11 @@ function changeTokens() {
   if (document.fundRequest && document.fundRequest.token_name) {
     const is_token_selected = document.fundRequest.token_name;
 
-    $(`#token option:contains(${is_token_selected})`).attr('selected', 'selected');
+    $(`#token option:contains(${is_token_selected})`).each(function() {
+      if ($(this).text() == is_token_selected) {
+        $(this).attr('selected', 'selected');
+      }
+    });
     $('#amount').val(document.fundRequest.amount);
   }
   $('#token').select2().trigger('change');
@@ -98,6 +102,7 @@ $(document).ready(function() {
     if (!provider) {
       await onConnect();
     }
+
     // get form data
     var email = $('#email').val();
     var github_url = $('#issueURL').val();

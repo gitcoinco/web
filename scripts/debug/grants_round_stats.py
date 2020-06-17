@@ -3,7 +3,7 @@ import operator
 from django.utils import timezone
 
 from grants.models import *
-from grants.models import Contribution, PhantomFunding, CartActivity
+from grants.models import CartActivity, Contribution, PhantomFunding
 from grants.views import clr_round, next_round_start, round_end
 
 ############################################################################3
