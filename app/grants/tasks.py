@@ -1,10 +1,11 @@
+from decimal import Decimal
+
 from django.conf import settings
 
 from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
-from decimal import Decimal
 from grants.models import Grant, Subscription
 from grants.views import record_subscription_activity_helper
 from marketing.mails import new_supporter, thank_you_for_supporting
