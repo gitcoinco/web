@@ -37,12 +37,14 @@
           <div class="nav nav-tabs" id="myTab" role="tablist">
             <a class="nav-item nav-link nav-line active" id="funder-tab" data-toggle="tab" href="#nav-funder" role="tab" aria-controls="funder" aria-selected="false" @click="checkData('funder')">Funder</a>
             <a class="nav-item nav-link nav-line " id="contributor-tab" data-toggle="tab" href="#nav-contributor" role="tab" aria-controls="contributor" aria-selected="true" @click="checkData('contributor')">Contributor</a>
+            <a class="nav-item nav-link nav-line " id="ptokens-tab" data-toggle="tab" href="#nav-ptokens" role="tab" aria-controls="ptokens" aria-selected="true" @click="checkData('personal-tokens')">Personal Tokens</a>
           </div>
         </nav>
       </div>
       <div class="tab-content" id="nav-tabContent">
         {% include 'board/funder.html' %}
         {% include 'board/contributor.html' %}
+        {% include 'board/ptokens.html' %}
       </div>
 
     </div>

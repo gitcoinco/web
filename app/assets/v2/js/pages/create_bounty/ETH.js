@@ -24,7 +24,7 @@ const ethCreateBounty = async (data) => {
     unloading_button($('.js-submit'));
     return;
   }
-
+  console.log(data)
   const githubUsername = data.githubUsername;
   const issueURL = data.issueURL.replace(/#.*$/, '');
   const notificationEmail = data.notificationEmail;
@@ -108,8 +108,10 @@ const ethCreateBounty = async (data) => {
   // TODO: web3 is using the web3.js file.  In the future we will move
   // to the node.js package.  github.com/ethereum/web3.js
   const isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
-  web3.eth.contract(token_abi).at(tokenAddress);
-  const account = await promisify(web3.eth.getCoinbase);
+  new web3.eth.Contract(token_abi, tokenAddress)
+  // const account = await promisify(web3.eth.getCoinbase);
+  const account = selectedAccount;
+  console.log(selectedAccount)
   const amountNoDecimal = amount;
 
   amount = amount * decimalDivisor;
@@ -117,7 +119,7 @@ const ethCreateBounty = async (data) => {
   // This function instantiates a contract from the existing deployed Standard Bounties Contract.
   // bounty_abi is a giant object containing the different network options
   // bounty_address() is a function that looks up the name of the network and returns the hash code
-  var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+  var bounty = new web3.eth.Contract(bounty_abi, bounty_address());
   // StandardBounties integration begins here
   // Set up Interplanetary file storage
   // IpfsApi is defined in the ipfs-api.js.
@@ -152,7 +154,9 @@ const ethCreateBounty = async (data) => {
   }
 
   // web3 callback
-  function web3Callback(error, result) {
+  function web3Callback(result, error) {
+    console.log(error,result);
+
     indicateMetamaskPopup(true);
     if (error) {
       console.error(error);
@@ -185,6 +189,7 @@ const ethCreateBounty = async (data) => {
   }
 
   function newIpfsCallback(error, result) {
+    console.log(error, result)
     indicateMetamaskPopup();
     if (error) {
       console.error(error);
@@ -208,50 +213,61 @@ const ethCreateBounty = async (data) => {
 
     const eth_amount = isETH ? amount : 0;
     const _paysTokens = !isETH;
-    bounty.issueAndActivateBounty(
+    console.log(
+      account,
+      mock_expire_date,
+      result,
+      String(amount),
+      '0xf209d2b723b6417cbf04c07e733bee776105a073',
+      _paysTokens,
+      tokenAddress,
+      String(amount))
+    bounty.methods.issueAndActivateBounty(
       account, // _issuer
       mock_expire_date, // _deadline
       result, // _data (ipfs hash)
-      amount, // _fulfillmentAmount
-      0x0, // _arbiter
+      String(amount), // _fulfillmentAmount
+      '0xf209d2b723b6417cbf04c07e733bee776105a073', // _arbiter
       _paysTokens, // _paysTokens
       tokenAddress, // _tokenContract
-      amount, // _value
-      {
-        from: account,
-        value: eth_amount,
-        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
-        gas: web3.toHex(318730),
-        gasLimit: web3.toHex(318730)
-      },
-      web3Callback // callback for web3
-    );
+      String(amount) // _value
+    ).send({
+      from: account,
+      value: String(eth_amount),
+      gas: web3.utils.toHex(318730),
+      gasLimit: web3.utils.toHex(318730)
+    }).then((result) => {web3Callback(result)}).catch(err => {
+      web3Callback(undefined, err);
+      console.log(err);
+    });
   }
 
   var do_bounty = function(callback) {
     handleTokenAuth().then(() => {
       const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
       const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-      const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
-
+      console.log(fee)
       indicateMetamaskPopup();
       if (FEE_PERCENTAGE == 0) {
         deductBountyAmount(fee, '');
       } else {
         if (isETH) {
+          console.log(to_address,account, fee )
           web3.eth.sendTransaction({
             to: to_address,
             from: account,
-            value: web3.toWei(fee, 'ether'),
-            gasPrice: gas_price
-          }, function(error, txnId) {
+            value: web3.utils.toWei(String(fee), "ether"),
+          }).once('transactionHash', (txnHash, errors) => {
+
+            console.log(txnHash, errors);
             indicateMetamaskPopup(true);
-            if (error) {
+            if (errors) {
               _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
             } else {
-              deductBountyAmount(fee, txnId);
+              console.log('saveAttestationData', result,fee)
+              deductBountyAmount(fee, txnHash);
               saveAttestationData(
-                result,
+                txnHash,
                 fee,
                 '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
                 'bountyfee'
@@ -260,9 +276,9 @@ const ethCreateBounty = async (data) => {
           });
         } else {
           const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
-          const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+          const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price },
+          token_contract.methods.transfer(to_address, web3.utils.toHex(amountInWei)).send({from: selectedAccount},
             function(error, txnId) {
               indicateMetamaskPopup(true);
               if (error) {
@@ -279,6 +295,7 @@ const ethCreateBounty = async (data) => {
   };
 
   const deductBountyAmount = function(fee, txnId) {
+    console.log('account',account)
     ipfsBounty.payload.issuer.address = account;
     ipfsBounty.payload.fee_tx_id = txnId;
     ipfsBounty.payload.fee_amount = fee;
@@ -304,10 +321,9 @@ const ethCreateBounty = async (data) => {
     web3.eth.sendTransaction({
       to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
       from: web3.account,
-      value: web3.toWei(ethFeaturedPrice, 'ether'),
-      gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
-      gas: web3.toHex(318730),
-      gasLimit: web3.toHex(318730)
+      value: web3.utils.toWei(ethFeaturedPrice, 'ether'),
+      gas: web3.utils.toHex(318730),
+      gasLimit: web3.utils.toHex(318730)
     },
     function(error, result) {
       indicateMetamaskPopup(true);
@@ -342,7 +358,7 @@ const ethCreateBounty = async (data) => {
   }
 
   function check_balance_and_alert_user_if_not_enough(tokenAddress, amount, msg) {
-    const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+    const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
     const from = account;
     const token_details = tokenAddressToDetails(tokenAddress);
     const token_decimals = token_details['decimals'];
@@ -352,7 +368,7 @@ const ethCreateBounty = async (data) => {
                   (data.featuredBounty ? ethFeaturedPrice : 0);
 
     const checkBalance = (balance, total, token_name) => {
-
+      console.log(balance, total, token_name)
       if (parseFloat(total) > balance) {
         let isFeaturedToken = token_name !== 'ETH' && data.featuredBounty;
 
@@ -372,18 +388,15 @@ const ethCreateBounty = async (data) => {
     };
 
     if (tokenAddress == '0x0000000000000000000000000000000000000000') {
-      let ethBalance = getBalance(from);
+      const walletBalance = Number(balance);
 
-      ethBalance.then(
-        function(result) {
-          const walletBalance = result.toNumber() / Math.pow(10, token_decimals);
-          return checkBalance(walletBalance, total, token_name);
-        }
-      );
+      return checkBalance(walletBalance, total, token_name);
+
     } else {
-      token_contract.balanceOf.call(from, function(error, result) {
+      token_contract.methods.balanceOf(from).call({from: from}, function(error, result) {
         if (error) return;
-        const walletBalance = result.toNumber() / Math.pow(10, token_decimals);
+        const walletBalance = Number(balance);
+
         return checkBalance(walletBalance, total, token_name);
       });
     }

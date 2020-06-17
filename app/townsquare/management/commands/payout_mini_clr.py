@@ -90,6 +90,12 @@ class Command(BaseCommand):
             print(rankings.count(), " to pay")
             w3 = get_web3(network)
 
+            print(f"pls make sure there is enough DAI in {from_address}")
+            print('------------------------------')
+            user_input = input("continue? (y/n) ")
+            if user_input != 'y':
+                return
+
             num_rankings = rankings.count()
             num_handles = len(set(list(rankings.values_list('profile__handle', flat=True))))
             if num_handles != num_rankings:
@@ -195,7 +201,7 @@ class Command(BaseCommand):
             print(rankings.count(), " to announce")
             for ranking in rankings:
                 profile_link = f"<a href=/{ranking.profile}>@{ranking.profile}</a>"
-                copy += f" - {profile_link} was ranked <strong>#{ranking.number}</strong>. <BR>"
+                copy += f" - {profile_link} was ranked <strong>#{ranking.number}</strong> & was paid <strong>{ranking.match_total} DAI</strong>. <BR>"
             metadata = {
                 'copy': copy,
             }

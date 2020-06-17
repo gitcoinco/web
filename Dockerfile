@@ -38,6 +38,7 @@ RUN mkdir -p /usr/share/GeoIP/ && \
 RUN pip3 install --upgrade pip setuptools wheel dumb-init pipenv
 
 COPY requirements/ /code/
+RUN apt-get update
 RUN apt-get install -y build-essential libssl-dev python3-dev
 RUN apt-get install -y libsecp256k1-dev
 RUN pip3 install --upgrade -r test.txt

@@ -1,9 +1,4 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 $(document).ready(function() {
 
   var linkify = function(new_text) {
@@ -213,7 +208,8 @@ $(document).ready(function() {
     }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
-        max_pk = $('#activities .box').first().data('pk');
+        max_pk = $('#activities div.box[data-pk]').first().data('pk');
+
         if (!max_pk) {
           return;
         }
@@ -280,7 +276,13 @@ $(document).ready(function() {
     for (var i = document.buffered_rows.length; i > 0; i -= 1) {
       var html = document.buffered_rows[i - 1];
 
-      $('.infinite-container').prepend($(html));
+      let pin = $('.pinned-activity');
+
+      if (pin.length > 0) {
+        $(html).insertAfter($(pin));
+      } else {
+        $('.infinite-container').prepend($(html));
+      }
     }
     $(this).remove();
     document.buffered_rows = [];
@@ -399,6 +401,10 @@ $(document).ready(function() {
       return;
     }
 
+    if (!provider) {
+      return onConnect();
+    }
+
     var $amount = $parent.find('.amount');
     var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
 
@@ -439,7 +445,7 @@ $(document).ready(function() {
         view_comments($target, false, undefined, true);
       }, 1000);
 
-      _alert(msg, 'info', 1000);
+      _alert(msg, 'info');
       // todo: update amount
     };
 
@@ -474,8 +480,39 @@ $(document).ready(function() {
   });
 
 
+  $(document).on('click', '.award', function(e) {
+    e.preventDefault();
+    if (!document.contxt.github_handle) {
+      _alert('Please login first.', 'error');
+      return;
+    }
+
+    activityId = $(this).data('activity');
+    commentId = $(this).data('comment');
+
+    // remote post
+    var params = {
+      'method': 'award',
+      'comment': commentId,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + activityId;
+    var parent = $(this).parents('.row.box');
+
+    parent.find('.loading').removeClass('hidden');
+    $.post(url, params, function(response) {
+      // no message to be sent
+      $('button[data-activity=' + activityId + ']').remove();
+      parent.find('.loading').addClass('hidden');
+      _alert('Tip user successful!');
+    }).fail(function() {
+      parent.find('.error').removeClass('hidden');
+    });
+  });
+
+
   // like activity
-  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity, .pin_activity', function(e) {
     e.preventDefault();
     const current_tab = getURLParams('tab');
 
@@ -484,19 +521,43 @@ $(document).ready(function() {
       return;
     }
 
+    let method = $(this).data('action');
+    let state = $(this).data('state');
+    // remote post
+    var params = {
+      'method': method,
+      'direction': state,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+
+
     var is_unliked = $(this).data('state') == $(this).data('negative');
     var num = $(this).find('span.num').html();
 
-    if (is_unliked) { // like
-      $(this).find('span.action').addClass('open');
-      $(this).data('state', $(this).data('affirmative'));
-      $(this).addClass('animate-sparkle');
+    if (method === 'pin') {
+      let message = state === 'pin' ? 'This action will pin the selected post, only one Pin may be active at a time' : 'This action will un-pin this post, are you sure?';
 
+      if (confirm(message)) {
+        params['what'] = $('.infinite-container').data('what');
+      } else {
+        return false;
+      }
+    } else if (is_unliked) { // like
+      $(this).find('span.action').addClass('open');
+      let newState = $(this).data('affirmative');
+
+      $(this).data('state', newState);
+      params.direction = newState;
+      $(this).addClass('animate-sparkle');
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
       $(this).find('i').removeClass('far').addClass('fas');
     } else { // unlike
       $(this).find('span.action').removeClass('open');
+      let newState = $(this).data('negative');
+
+      $(this).data('state', newState);
+      params.direction = newState;
       $(this).data('state', $(this).data('negative'));
       $(this).removeClass('animate-sparkle');
       num = parseInt(num) - 1;
@@ -504,14 +565,7 @@ $(document).ready(function() {
       $(this).find('i').removeClass('fas').addClass('far');
     }
 
-    // remote post
-    var params = {
-      'method': $(this).data('action'),
-      'direction': $(this).data('state'),
-      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-    };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
-
     var parent = $(this).parents('.activity.box');
     var self = $(this);
 
@@ -523,6 +577,32 @@ $(document).ready(function() {
       if (!is_unliked && current_tab === 'my_favorites') {
         self.parentsUntil('.activity_stream').remove();
       }
+
+      if (method === 'pin') {
+        if (state === 'unpin') {
+          $('.box').removeClass('pinned-activity');
+          self.data('state', 'pin');
+          self.find('.pin-title').html('Pin Post');
+          parent.remove();
+          _alert('Sucess unpin.', 'success', 1000);
+        } else {
+          let curr_pinn = $('.pinned-activity');
+
+          parent.addClass('pinned-activity');
+
+          self.data('state', 'unpin');
+          self.find('.pin-title').html('Unpin Post');
+          if (curr_pinn.length > 0) {
+            $(curr_pinn).replaceWith(parent);
+          } else {
+            $('.activity_stream').prepend($('<div id="temp-pin"></div>'));
+            $('#temp-pin').replaceWith(parent);
+            window.scrollTo(0, 0);
+          }
+          _alert('Status pinned.', 'success', 1000);
+        }
+      }
+
     }).fail(function() {
       parent.find('.error').removeClass('hidden');
     });
@@ -679,20 +759,27 @@ $(document).ready(function() {
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
+
         the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
         const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         const show_tip = true;
         const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
+
+        const can_award = (
+          response.author === document.contxt.github_handle &&
+          response.has_tip == true &&
+          response.tip_available == true);
+        const can_redeem = response.can_redeem;
+
         const is_edited = typeof comment['is_edited'] !== 'undefined' ? comment['is_edited'] : false;
+
         var sorted_match_curve_html = '';
 
         if (comment['sorted_match_curve']) {
-
           var match_curve = Array.from(convert_to_dict(comment['sorted_match_curve']).values());
 
           for (let j = 0; j < match_curve.length; j++) {
             let ele = match_curve[j];
-
 
             sorted_match_curve_html += '<li>';
             sorted_match_curve_html += `Your contribution of ${ele.name} could yield $${Math.round(ele.value * 1000) / 1000} in matching.`;
@@ -777,6 +864,16 @@ $(document).ready(function() {
             <div class="activity_comments_main_comment pt-1 pb-1">
               ${the_comment}
             </div>
+            ${can_award && `
+             <button data-comment=${comment['id']} data-user=${comment['profile_handle']}
+                     data-activity=${comment['activity']}
+                     class="award btn mt-1 mb-1 btn-radio font-smaller-5">
+                     <i class="fas fa-gift mr-2"></i> award
+             </button>` || ''}
+            ${!!comment['redeem_link'] && can_redeem && `
+              <a class="btn mt-1 mb-1 btn-radio font-smaller-5" href="${comment['redeem_link']}">Redeem tip</a>` || ''}
+            ${!!comment['redeem_link'] && !can_redeem && `
+              <a class="btn mt-1 mb-1 btn-radio font-smaller-5" href="${comment['redeem_link']}">Tip redeemed</a>` || ''}
           </div>
 
         </div>
@@ -979,7 +1076,7 @@ $(document).ready(function() {
         if (response.status <= 204) {
           _alert('comment successfully deleted.', 'success', 1000);
           $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
-          console.log(response);
+
         } else {
           _alert(`Unable to delete commment: ${response.message}`, 'error');
           console.log(`error deleting commment: ${response.message}`);
@@ -1044,6 +1141,7 @@ $(document).ready(function() {
       $target.removeClass('open');
     }, 300);
   });
+
 
   $(document).on('click', '.fund_issue', function(e) {
     e.preventDefault();

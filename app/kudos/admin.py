@@ -45,6 +45,7 @@ class TokenRequestAdmin(admin.ModelAdmin):
             from marketing.mails import notify_kudos_rejected
             notify_kudos_rejected(obj)
             self.message_user(request, f"Notified user of rejection")
+            return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
         if "_mint_kudos" in request.POST:
             from kudos.tasks import mint_token_request
             try:
@@ -52,6 +53,7 @@ class TokenRequestAdmin(admin.ModelAdmin):
                 self.message_user(request, f"Mint/sync submitted to chain")
             except Exception as e:
                 self.message_user(request, str(e))
+            return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
 
         if "_change_owner" in request.POST:
             obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
@@ -91,11 +93,37 @@ class TokenAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['name', 'description']
     raw_id_fields = ['contract']
-    readonly_fields = ['link']
+    readonly_fields = ['link', 'view_count']
 
     def link(self, instance):
         html = f"<a href={instance.url}>{instance.url}</a>"
         return mark_safe(html)
+
+    def view_count(self, instance):
+        return instance.get_view_count
+
+    def response_change(self, request, obj):
+        from django.shortcuts import redirect
+        if "btc_coupon" in request.POST:
+            # TODO: mint this token
+            import random
+            from kudos.views import get_profile
+            gitcoinbot = get_profile('gitcoinbot')
+            btc = BulkTransferCoupon.objects.create(
+                token=obj,
+                tag='admin',
+                num_uses_remaining=1,
+                num_uses_total=1,
+                current_uses=0,
+                secret=random.randint(10**19, 10**20),
+                comments_to_put_in_kudos_transfer=f"Hi from the admin",
+                sender_profile=gitcoinbot,
+                metadata={
+                },
+                make_paid_for_first_minutes=0,
+                )
+            self.message_user(request, f"Created Bulk Transfer Coupon with default settings")
+            return redirect(btc.admin_url)
 
 
 class TransferAdmin(admin.ModelAdmin):

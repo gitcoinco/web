@@ -45,12 +45,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <img src="{% static "v2/images/prime.png" %}">
       </div>
     </div>
+
     <div class="row" id="grants_form">
       <div class="col-12 text-left mt-md-3">
         <a href="{{ grant.url }}" class="float-left ml-2">< Back to {{ grant.title }}</a>
       </div>
-    </div> 
-    <div class="row" id="grants_form">
+
       <div class="col-12 text-center mt-md-3">
         <img src="/static/v2/images/grants/{{img}}" style="max-width: 200px; max-height: 200px; ">
         <h2 class="font-title-lg my-4">{% if direction == '-' %} Negative {%endif%}  {% trans "Fund Grant" %}</h2>
@@ -145,7 +145,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         <label class="form__label" id="token_label">{% trans "Token" %}</label>
                         {% if grant_has_no_token %}
                           <div class="form__select2">
-                            <select class='js-select2' name='denomination' id='js-token'> </select>
+                            <select class='js-select2' name='denomination' id='js-token'>
+                              <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
+                            </select>
                           </div>
                         {% else %}
                           <p class="my-2">{{ grant.token_symbol }}</p>
@@ -231,7 +233,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         <p class="font-body">
                           {% trans "By using this service, you’ll also be contributing" %}
                           <span class="gitcoin-grant-percent">5</span>
-                          {% trans "% of your contribution to the" %} <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="blank">Gitcoin Grants Round 6+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
+                          {% trans "% of your contribution to the" %} <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin Grants Round 6+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
                           <br>
                           <a href="#" id="adjust">Adjust &gt;&gt;</a>
                         </p>
@@ -262,17 +264,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             <span class="font-caption summary-frequency-unit-gitcoin">-</span>
                             (<span class="summary-frequency-gitcoin">-</span> times)
                           </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div id="gas-section" class="form__group-horizontal">
-                    <div class="row">
-                      <div class="col-12">
-                        <h5 class="form__label">{% trans "Gas Settings" %}</h5>
-                        <div>
-                          {% include 'shared/wallet_estimate.html' %}
                         </div>
                       </div>
                     </div>
@@ -384,12 +375,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     {% include 'shared/grant_thanks_modal.html' %}
 
-
     {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
 
     <script>
       {% if show_tweet_modal %}
@@ -413,7 +403,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   </body>
 
-  <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract1.js" %}"></script>

@@ -123,9 +123,10 @@ def preprocess(request):
     header_msg, footer_msg, nav_salt = get_sitewide_announcements()
 
     # town square wall post max length
-    max_length_offset = abs(
-        ((request.user.profile.created_on if hasattr(request.user, 'profile') and request.user.is_authenticated else timezone.now()) - timezone.now()).days
-    )
+    max_length_offset = abs(((
+        request.user.profile.created_on
+        if hasattr(request.user, 'profile') and request.user.is_authenticated else timezone.now()
+    ) - timezone.now()).days)
     max_length = 600 + max_length_offset
 
     context = {
@@ -134,6 +135,7 @@ def preprocess(request):
         'max_length': max_length,
         'max_length_offset': max_length_offset,
         'chat_url': chat_url,
+        'base_url': settings.BASE_URL,
         'chat_id': chat_id,
         'chat_access_token': chat_access_token,
         'github_handle': request.user.username.lower() if user_is_authenticated else False,
@@ -172,6 +174,8 @@ def preprocess(request):
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
+        'ptoken_abi': settings.PTOKEN_ABI,
+        'ptoken_factory_abi': settings.PTOKEN_FACTORY_ABI
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)

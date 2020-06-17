@@ -23,12 +23,14 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
+from adminsortable2.admin import SortableInlineAdminMixin
+
 from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
-    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, LabsResearch, Option, Poll,
-    PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember,
-    UserAction, UserVerificationModel,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
+    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
+    TokenApproval, TribeMember, UserAction, UserVerificationModel,
 )
 
 
@@ -39,10 +41,10 @@ class BountyEventAdmin(admin.ModelAdmin):
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
+    readonly_fields = ['fulfiller_github_username']
     list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
     search_fields = [
-        'fulfiller_address', 'fulfiller_email', 'fulfiller_github_username',
-        'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url'
+        'fulfiller_address', 'fulfiller_metadata', 'fulfiller_github_url'
     ]
     ordering = ['-id']
 
@@ -50,6 +52,17 @@ class BountyFulfillmentAdmin(admin.ModelAdmin):
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
+
+
+class ObjectViewAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['viewer']
+
+class InvestigationAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['created_on', '__str__']
+    raw_id_fields = ['profile']
 
 
 class TipPayoutAdmin(admin.ModelAdmin):
@@ -159,7 +172,7 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
-    readonly_fields = ['active_bounties_list']
+    readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
 
     def active_bounties_list(self, instance):
@@ -171,6 +184,13 @@ class ProfileAdmin(admin.ModelAdmin):
                 htmls.append(f"<a href='{bounty.url}'>{bounty.title_or_desc}</a>")
         html = format_html("<BR>".join(htmls))
         return html
+
+    def user_sybil_info(self, instance):
+        investigation = instance.investigations.filter(key='sybil').first()
+        html = f"Refreshed {investigation.created_on.strftime('%m/%d/%Y')}<BR><BR>"
+        html += investigation.description
+        return format_html(html)
+    user_sybil_info.allow_tags = True
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
@@ -253,7 +273,7 @@ class BountyAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'bounty_state', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
     readonly_fields = [
         'what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link',
-        '_action_urls', 'coupon_link'
+        '_action_urls', 'coupon_link', 'view_count'
     ]
 
     def img(self, instance):
@@ -265,6 +285,9 @@ class BountyAdmin(admin.ModelAdmin):
 
     def what(self, instance):
         return str(instance)
+
+    def view_count(self, instance):
+        return instance.get_view_count
 
     def fulfillments_link(self, instance):
         copy = f'fulfillments({instance.num_fulfillments})'
@@ -328,7 +351,10 @@ class HackathonEventAdmin(admin.ModelAdmin):
     raw_id_fields = ['sponsor_profiles']
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
     list_filter = ('sponsor_profiles', )
-    readonly_fields = ['img', 'explorer_link', 'stats']
+    readonly_fields = ['img', 'explorer_link', 'stats', 'view_count']
+
+    def view_count(self, instance):
+        return instance.get_view_count
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonEvent has no logo.
@@ -370,9 +396,19 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
 
 
 class HackathonProjectAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon', 'usernames', 'status', 'sponsor']
+    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'usernames', 'status', 'sponsor']
     raw_id_fields = ['profiles', 'bounty', 'hackathon']
     search_fields = ['name', 'summary', 'status']
+
+    def hackathon_link(self, instance):
+        """Returns a formatted HTML <a> node.
+
+        Returns:
+            str: A formatted HTML <a> node.
+        """
+
+        url = f'/hackathon/{instance.hackathon.slug}'
+        return mark_safe(f'<a href="{url}">{instance.hackathon}</a>')
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonProject has no logo.
@@ -408,7 +444,7 @@ class FundRequestAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile', 'requester', 'tip']
 
 
-class QuestionInline(admin.TabularInline):
+class QuestionInline(SortableInlineAdminMixin, admin.TabularInline):
     fields = ['id', 'poll', 'question_type', 'text']
     readonly_fields = ['id']
     raw_id_fields = ['poll']
@@ -427,7 +463,7 @@ class OptionsInline(admin.TabularInline):
 
 
 class PollsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'active', 'hackathon', 'created_on']
+    list_display = ['id', 'title', 'active']
     raw_id_fields = ['hackathon']
     search_fields = ['title']
     inlines = [QuestionInline]
@@ -447,8 +483,8 @@ class OptionsAdmin(admin.ModelAdmin):
 
 
 class AnswersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'question', 'open_response', 'choice']
-    raw_id_fields = ['user', 'question', 'choice']
+    list_display = ['id', 'user', 'question', 'open_response', 'choice', 'checked', 'hackathon']
+    raw_id_fields = ['user', 'question', 'choice', 'hackathon']
     unique_together = ('user', 'question', 'choice')
 
 
@@ -479,11 +515,13 @@ admin.site.register(HackathonRegistration, HackathonRegistrationAdmin)
 admin.site.register(HackathonProject, HackathonProjectAdmin)
 admin.site.register(FeedbackEntry, FeedbackAdmin)
 admin.site.register(LabsResearch)
+admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
 admin.site.register(FundRequest, FundRequestAdmin)
 admin.site.register(Poll, PollsAdmin)
 admin.site.register(Question, QuestionsAdmin)
+admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)

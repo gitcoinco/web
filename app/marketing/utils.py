@@ -229,7 +229,7 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
         else:
             es = EmailSubscriber.objects.create(**defaults)
             created = True
-        print("EmailSubscriber:", es, "- created" if created else "- updated")
+        #print("EmailSubscriber:", es, "- created" if created else "- updated")
     except EmailSubscriber.MultipleObjectsReturned:
         email_subscriber_ids = EmailSubscriber.objects.filter(email__iexact=email) \
             .values_list('id', flat=True) \
@@ -241,7 +241,7 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
         es = EmailSubscriber.objects.create(**defaults)
         created = True
     except Exception as e:
-        print(f'Failed to update or create email subscriber: ({email}) - {e}')
+        #print(f'Failed to update or create email subscriber: ({email}) - {e}')
         return ''
 
     if created or not es.priv:

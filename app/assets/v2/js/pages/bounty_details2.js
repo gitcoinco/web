@@ -95,25 +95,35 @@ Vue.mixin({
 
       switch (token_name) {
         case 'ETC':
-          qr_string = `ethereum:${address}`;
+          qr_string = value ?
+            `ethereum:${address}?value=${value}` :
+            `ethereum:${address}`;
           break;
 
         case 'cUSD':
-          qr_string = `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]`;
+          qr_string = value ?
+            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]` :
+            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address)?args=[${address}]`;
           break;
 
         case 'cGLD':
-          qr_string = `celo:${address}?value=${value}`;
+          qr_string = value ?
+            `celo:${address}?value=${value}` :
+            `celo:${address}`;
           break;
 
         case 'ZIL':
-          qr_string = `zilliqa:${address}`;
+          qr_string = value ?
+            `zilliqa://${address}?amount=${value}e12` :
+            `zilliqa://${address}`;
           break;
       }
 
       return qr_string;
     },
     syncBounty: function() {
+      // NOT USED FOR NOW UNTIL MIGRATION OF ETH BOUNTIES TO VUE
+      // ALSO THEN NO SENSE TO MIGRATE BECAUSE STANDARD BOUNTIES REMOVAL
       let vm = this;
 
       if (!localStorage[document.issueURL]) {
@@ -238,6 +248,30 @@ Vue.mixin({
         });
       }
     },
+    getTenant: function(token_name) {
+      let tenant;
+
+      switch (token_name) {
+
+        case 'ETC':
+          tenant = 'ETC';
+          break;
+
+        case 'cUSD':
+        case 'cGLD':
+          tenant = 'CELO';
+          break;
+
+        case 'ZIL':
+          tenant = 'ZIL';
+          break;
+
+        default:
+          tenant = 'ETH';
+      }
+
+      return tenant;
+    },
     fulfillmentComplete: function(fulfillment_id, event) {
       let vm = this;
 
@@ -246,8 +280,11 @@ Vue.mixin({
       const amount = vm.fulfillment_context.amount;
       const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
       const bounty_owner_address = vm.bounty.bounty_owner_address;
+      const tenant = vm.getTenant(token_name);
 
       const payload = {
+        payout_type: 'qr',
+        tenant: tenant,
         amount: amount * 10 ** decimals,
         token_name: token_name,
         bounty_owner_address: bounty_owner_address,
@@ -277,6 +314,18 @@ Vue.mixin({
       }).catch(function(error) {
         event.target.disabled = false;
         _alert('Unable to make payout bounty. Please try again later', 'error');
+      });
+    },
+    nextStepAndLoadPYPLButton: function(fulfillment_id, fulfiller_identifier) {
+      let vm = this;
+
+      Promise.resolve(vm.goToStep('submit_transaction', 'payout_amount')).then(() => {
+        const ele = '#payout-with-pypl';
+
+        $(ele).html('');
+        const modal = this.$refs['payout-modal'][0];
+
+        payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
       });
     },
     closeBounty: function() {
@@ -361,10 +410,6 @@ Vue.mixin({
         return [];
       }
 
-      if (vm.is_bounties_network) {
-        return vm.bounty.fulfillments.filter(fulfillment => fulfillment.accepted);
-      }
-
       return vm.bounty.fulfillments.filter(fulfillment =>
         fulfillment.accepted &&
           fulfillment.payout_status == 'done'
@@ -425,6 +470,15 @@ Vue.mixin({
       }
       vm.fulfillment_context.referrer = currentStep;
       vm.fulfillment_context.active_step = nextStep;
+    },
+    initFulfillmentContext: function(fulfillment) {
+      let vm = this;
+
+      if (fulfillment.payout_type == 'fiat') {
+        vm.fulfillment_context.active_step = 'payout_amount';
+      } else if (fulfillment.payout_type == 'qr') {
+        vm.fulfillment_context.active_step = 'check_wallet_owner';
+      }
     }
   },
   computed: {
@@ -439,9 +493,11 @@ Vue.mixin({
       let activities = this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
 
       if (decimals) {
-        activities.forEach(activity => {
+        activities.forEach((activity, index) => {
           if (activity.metadata) {
-            if (activity.metadata.new_bounty) {
+            if (activity.metadata.token_name == 'USD' && activity.activity_type == 'worker_paid') {
+              activity.metadata['token_value'] = activity.metadata.payout_amount;
+            } else {
               activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
             }
           }
@@ -464,12 +520,12 @@ if (document.getElementById('gc-bounty-detail')) {
         cb_address: cb_address,
         isOwner: false,
         isOwnerAddress: false,
-        is_bounties_network: is_bounties_network,
         fulfillment_context: {
           active_step: 'check_wallet_owner',
+          include_amount_in_qr: true,
           amount: 0
         },
-        decimals: 18, // TODO: UPDATE BASED ON TOKEN
+        decimals: 18,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
         quickLinks: []
@@ -565,6 +621,27 @@ var extend_expiration = function(bounty_pk, data) {
   });
 };
 
+const submitInterest = (bounty, msg, self, onSuccess) => {
+  add_interest(bounty, {
+    issue_message: msg
+  }).then(success => {
+    if (success) {
+      $(self).attr('href', '/uninterested');
+      $(self).find('span').text(gettext('Stop Work'));
+      $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+  }).catch((error) => {
+    if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+      return;
+    throw error;
+  });
+};
+
 var show_interest_modal = function() {
   var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
@@ -574,8 +651,35 @@ var show_interest_modal = function() {
     modalBody.load(modalUrl, ()=> {
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
+      let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
+      let projectForm = $('#projectForm');
 
+      userSearch('.team-users', false, '', data, true, false);
+      $('#looking-members').on('click', function() {
+        $('.looking-members').toggle();
+      });
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
+      if (document.result.event) {
+        $(document).on('change', '#project_logo', function() {
+          previewFile($(this));
+        });
+        projectForm.on('submit', function(e) {
+          e.preventDefault();
+          const elements = $(this)[0];
+          const logo = elements['logo'].files[0];
+          const summary = elements['summary'].value;
+          const data = $(this).serializeArray();
+
+          submitInterest(document.result['pk'], summary, self, () => {
+            appBounty.fetchBounty();
+
+            submitProject(logo, data);
+            modals.bootstrapModal('hide');
+          });
+        });
+
+        return;
+      }
 
       actionPlanForm.on('submit', function(event) {
         event.preventDefault();

@@ -131,7 +131,8 @@ class Grant(SuperModel):
     GRANT_TYPES = [
         ('tech', 'tech'),
         ('health', 'health'),
-        ('media', 'media')
+        ('media', 'media'),
+        ('matic', 'matic')
     ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
@@ -831,8 +832,14 @@ next_valid_timestamp: {next_valid_timestamp}
             args['nonce'],
             ).call()
 
-    def get_converted_amount(self, ignore_gitcoin_fee=False):
-        amount = self.amount_per_period if ignore_gitcoin_fee else self.amount_per_period_minus_gas_price
+    def get_converted_amount(self, ignore_gitcoin_fee=False, only_gitcoin_fee=False):
+        if ignore_gitcoin_fee:
+            amount = self.amount_per_period
+        elif only_gitcoin_fee:
+            amount = self.amount_per_period_to_gitcoin
+        else:
+            amount = self.amount_per_period_minus_gas_price
+            
         try:
             if self.token_symbol == "ETH" or self.token_symbol == "WETH":
                 return Decimal(float(amount) * float(eth_usd_conv_rate()))
@@ -913,7 +920,8 @@ def psave_grant(sender, instance, **kwargs):
     instance.contribution_count = instance.get_contribution_count
     instance.contributor_count = instance.get_contributor_count()
     from grants.clr import CLR_START_DATE
-    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
+    import pytz
+    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc) if instance.grant_type == 'health' else timezone.datetime(2020, 3, 23, 12, 0).replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
     instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
     instance.amount_received_in_round = 0

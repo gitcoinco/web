@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
 import os
 import socket
 
@@ -56,6 +57,7 @@ YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY'
 VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
 FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
+PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='YOUR-SupEr-SecRet-TeSt-PYPL-KeY')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -141,8 +143,8 @@ INSTALLED_APPS = [
     'wiki.plugins.notifications.apps.NotificationsConfig',
     'wiki.plugins.images.apps.ImagesConfig',
     'wiki.plugins.macros.apps.MacrosConfig',
+    'adminsortable2',
     'debug_toolbar',
-
 ]
 
 MIDDLEWARE = [
@@ -175,7 +177,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'ptokens/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -239,7 +241,7 @@ if DEBUG and not SUPRESS_DEBUG_TOOLBAR:
         "SHOW_TOOLBAR_CALLBACK" : callback,
     }
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
-    
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
@@ -813,6 +815,7 @@ MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=6
 MINICLR_ADDRESS = env('MINICLR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
+
 AVATAR_ADDRESS = env('AVATAR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 AVATAR_PRIVATE_KEY = env('AVATAR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
@@ -829,3 +832,15 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+PTOKEN_ABI_PATH = env('PTOKEN_ABI_PATH', default='assets/v2/js/ptokens/ptoken-abi.json')
+PTOKEN_FACTORY_ABI_PATH = env('PTOKEN_FACTORY_ABI_PATH', default='assets/v2/js/ptokens/factory-abi.json')
+PTOKEN_ABI = ''
+PTOKEN_FACTORY_ABI = ''
+
+if PTOKEN_ABI_PATH:
+    with open(str(root.path(PTOKEN_ABI_PATH))) as f:
+        PTOKEN_ABI = json.load(f)
+
+if PTOKEN_FACTORY_ABI_PATH:
+    with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
+        PTOKEN_FACTORY_ABI = json.load(f)

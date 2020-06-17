@@ -114,10 +114,10 @@
       </div>
     </div>
     {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    
+
 
   {% csrf_token %}
   <script>
@@ -129,6 +129,5 @@
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/faucet_form.js" %}"></script>
 </html>

@@ -4,6 +4,15 @@ let description = new Quill('#input-description', {
   theme: 'snow'
 });
 
+function changeTokens() {
+  $("#js-token option[value='0x0000000000000000000000000000000000000000']").text('Any Token');
+  $('#js-token').select2();
+}
+
+window.addEventListener('tokensReady', function(e) {
+  changeTokens();
+}, false);
+
 $(document).ready(function() {
 
   $('.select2-selection__choice').removeAttr('title');
@@ -28,7 +37,7 @@ function saveGrant(grantData, isFinal) {
 
   $.ajax({
     type: 'post',
-    url: '',
+    url: '/grants/new',
     processData: false,
     contentType: false,
     data: grantData,
@@ -59,8 +68,18 @@ const processReceipt = receipt => {
   saveGrant(formData, true);
 };
 
+$('#new_button').on('click', function(e) {
+  if (!provider) {
+    e.preventDefault();
+    return onConnect().then(() => init());
+  }
+});
 
 const init = () => {
+  if (!provider) {
+    return onConnect();
+  }
+
   if (localStorage['grants_quickstart_disable'] !== 'true') {
     window.location = document.location.origin + '/grants/quickstart';
   }
@@ -70,14 +89,16 @@ const init = () => {
     $('#contract_owner_address').val(accounts[0]);
   });
 
-  $('#js-token').append("<option value='0x0000000000000000000000000000000000000000'>Any Token");
-
   userSearch('.team_members', false, undefined, false, false, true);
 
   addGrantLogo();
 
   $('.js-select2, #frequency_unit').each(function() {
     $(this).select2();
+  });
+
+  jQuery.validator.setDefaults({
+    ignore: ":hidden, [contenteditable='true']:not([name])"
   });
 
   $('#input-admin_address').on('change', function() {
@@ -149,21 +170,6 @@ const init = () => {
           // trusted relayer
           web3.utils.toChecksumAddress(data.trusted_relayer)
         ];
-      } else if ($('#contract_version').val() == 0) {
-        args = [
-          // admin_address
-          web3.utils.toChecksumAddress(data.admin_address),
-          // required token
-          web3.utils.toChecksumAddress(data.denomination),
-          // required tokenAmount
-          web3.utils.toTwosComplement(0),
-          // data.frequency
-          web3.utils.toTwosComplement(0),
-          // data.gas_price
-          web3.utils.toTwosComplement(0),
-          // contract version
-          web3.utils.toTwosComplement(0)
-        ];
       }
 
       web3.eth.getAccounts(function(err, accounts) {
@@ -174,7 +180,6 @@ const init = () => {
             arguments: args
           }).send({
             from: accounts[0],
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9)),
             gas: web3.utils.toHex(gas_amount(document.location.href)),
             gasLimit: web3.utils.toHex(gas_amount(document.location.href))
           }).on('error', function(error) {
@@ -283,24 +288,6 @@ const init = () => {
       });
       return false;
     }
-  });
-
-  waitforWeb3(function() {
-    tokens(document.web3network).forEach(function(ele) {
-      let option = document.createElement('option');
-
-      option.text = ele.name;
-      option.value = ele.addr;
-
-      $('#js-token').append($('<option>', {
-        value: ele.addr,
-        text: ele.name
-      }));
-    });
-
-    $('#js-token').select2();
-    $("#js-token option[value='0x0000000000000000000000000000000000000000']").remove();
-    $('#js-token').append("<option value='0x0000000000000000000000000000000000000000' selected='selected'>Any Token");
   });
 
   grantCategoriesSelection('.categories', '/grants/categories?type=tech');

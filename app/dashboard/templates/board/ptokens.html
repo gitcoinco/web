@@ -1,0 +1,262 @@
+{% comment %}
+  Copyright (C) 2019 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see
+  <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static add_url_schema avatar_tags %}
+
+<div class="tab-pane fade " id="nav-ptokens" role="tabpanel" aria-labelledby="nav-ptokens-tab">
+  <header class="container position-relative">
+    <div class="row mb-2">
+      <div class="col-12">
+        <div class="bg-white rounded d-flex p-3 font-smaller-3">
+
+          <div class="my-3 mx-4 head-number">
+            <span class="head-number_title">OPEN</span>
+            <span class="head-number_value">[[ pTokens.open ? pTokens.open.length : '0' ]]</span>
+          </div>
+          <div class="my-3 mx-4 head-number">
+            <span class="head-number_title">IN PROGRESS</span>
+            <span class="head-number_value">[[ pTokens.in_progress ? pTokens.in_progress.length : '0' ]]</span>
+          </div>
+          <div class="my-3 mx-4 head-number">
+            <span class="head-number_title">COMPLETED</span>
+            <span class="head-number_value">[[ pTokens.completed ? pTokens.completed.length : '0' ]]</span>
+          </div>
+          <div class="my-3 mx-4 head-number">
+            <span class="head-number_title">DENIED</span>
+            <span class="head-number_value">[[ pTokens.denied ? pTokens.denied.length : '0' ]]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="bg-white rounded border my-4">
+          <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+            <div>
+              Create a personal token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
+            </div>
+            <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="bg-white rounded border my-4">
+          <div class="p-4 border-bottom font-weight-bold" v-if="pTokens.open">[[ pTokens.open.length ]] Open</div>
+
+          <ul class="list-unstyled list-bounty">
+            <li v-for="(token, key) in pTokens.open" :key="token.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+              <span class="fa-stack mr-2">
+                <i class="fas fa-circle fa-stack-2x green"></i>
+                <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+              </span>
+              <span>You are redeeming <span class="font-weight-bold"> [[ token.amount ]] [[ token.token_name ]] </span> for work from @[[ token.creator ]].</span>
+              <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                <div class="list-bounty-item_content my-auto">
+                  <div class="d-flex flex-column flex-md-row">
+                    <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                    <div class="d-flex flex-column w-100 ml-md-3">
+                      <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
+                      <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                        <span class="my-1">[[ token.amount ]] [[ token.token_name ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
+                        <a href="#" class="mx-md-2 my-1" target="_blank">Chat</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
+                </div>
+              </div>
+            </li>
+            <li class="text-center my-5" :class="{'d-none': isLoading.open || pTokens.open && pTokens.open.length > 0}" v-cloak>
+              <p>[[ error.open || 'You don\'t have any open tokens.' ]]</p>
+            </li>
+          </ul>
+          <loading-screen v-if="isLoading.open"></loading-screen>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="bg-white rounded border my-4">
+          <div class="p-4 border-bottom font-weight-bold" v-if="pTokens.in_progress">[[ pTokens.in_progress.length ]] In Progress </div>
+
+          <ul class="list-unstyled list-bounty">
+            <li v-for="(token, key) in pTokens.in_progress" :key="token.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+              <span class="fa-stack mr-2">
+                <i class="fas fa-circle fa-stack-2x green"></i>
+                <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+              </span>
+              <span>You are redeeming <span class="font-weight-bold"> [[ token.amount ]] [[ token.token_name ]] </span> for work from @[[ token.creator ]].</span>
+              <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                <div class="list-bounty-item_content my-auto">
+                  <div class="d-flex flex-column flex-md-row">
+                    <img :src="bounty.avatar_url" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                    <div class="d-flex flex-column w-100 ml-md-3">
+                      <a :href="bounty.absolute_url" class="text-truncate mb-2 text-dark">[[ bounty.title ]]</a>
+                      <div class="d-flex flex-column flex-md-row justify-content-between font-smaller-2">
+                        <span class="my-1">[[ token.amount ]] [[ token.token_name ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
+                        <a href="#" class="mx-md-2 my-1" target="_blank">Chat</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <button @click="complete(token.id)" class="btn btn-sm m-2" :disabled="key === disabledBtn">Complete</button>
+                  <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
+                </div>
+              </div>
+            </li>
+            <li class="text-center my-5" :class="{'d-none': isLoading.in_progress || pTokens.in_progress && pTokens.in_progress.length > 0}" v-cloak>
+              <p>[[ error.in_progress || 'You don\'t have any token in progress.' ]]</p>
+            </li>
+          </ul>
+          <loading-screen v-if="isLoading.in_progress"></loading-screen>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="bg-white rounded border my-4">
+          <div class="p-4 border-bottom font-weight-bold"  v-if="pTokens.completed">[[ pTokens.completed ? pTokens.completed.length : '0' ]] Completed</div>
+
+          <ul class="list-unstyled list-bounty">
+            <li v-for="(token, key) in pTokens.completed" :key="token.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+              <span class="fa-stack mr-2">
+                <i class="fas fa-circle fa-stack-2x light-blue"></i>
+                <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+              </span>
+              <span>You redeemed <span class="font-weight-bold"> [[ token.amount ]] [[ token.token_name ]] </span> for work from @[[ token.creator ]].</span>
+              <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                <div class="list-bounty-item_content my-auto">
+                  <div class="d-flex flex-column flex-md-row">
+                    <img :src="token.token_symbol" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                    <div class="d-flex flex-column w-100 ml-md-3">
+                      <a :href="token.absolute_url" title="View token details" class="text-truncate mb-2 text-dark">[[ token.title ]]</a>
+                      <div class="d-flex flex-column flex-md-row font-smaller-2">
+                        <span class="my-1">[[ token.amount ]] [[ token.token_name ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
+                        <a href="#" class="mx-md-2 my-1" target="_blank">Chat</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="text-center my-5" :class="{'d-none': isLoading.completed || pTokens.completed && pTokens.completed.length > 0}" v-cloak>
+              <p>[[ error.completed || "You don't have any completed tokens." ]]</p>
+            </li>
+          </ul>
+          <loading-screen v-if="isLoading.completed"></loading-screen>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="bg-white rounded border my-4">
+          <div class="p-4 border-bottom font-weight-bold" v-if="pTokens.denied">[[ pTokens.denied ? pTokens.denied.length : '0' ]] Denied</div>
+
+          <ul class="list-unstyled list-bounty">
+            <li v-for="(token, key) in pTokens.denied" :key="token.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+              <span class="fa-stack mr-2">
+                <i class="fas fa-circle fa-stack-2x light-blue"></i>
+                <i class="fas fa-user fa-stack-1x fa-inverse"></i>
+              </span>
+              <span>You request to redeem<span class="font-weight-bold"> [[ token.token_name ]] </span> for work from @[[ token.creator ]] was denied. Please try redeeming again with feedback from the Creator.</span>
+              <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
+                <div class="list-bounty-item_content my-auto">
+                  <div class="d-flex flex-column flex-md-row">
+                    <img :src="token.token_symbol" alt="" width="60" height="60" class="rounded-circle flex-shrink-0 m-auto list-bounty-item_logo">
+                    <div class="d-flex flex-column w-100 ml-md-3">
+                      <a :href="token.absolute_url" title="View token details" class="text-truncate mb-2 text-dark">[[ token.title ]]</a>
+                      <div class="d-flex flex-column flex-md-row font-smaller-2">
+                        <span class="my-1">[[ token.amount ]] [[ token.token_name ]]</span> <span class="d-md-block d-none mx-2 my-auto">&bull;</span>
+                        <a href="#" class="mx-md-2 my-1" target="_blank">Chat</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="text-center my-5" :class="{'d-none': isLoading.denied || pTokens.denied && pTokens.denied.length > 0}" v-cloak>
+              <p>[[ error.denied || "You don't have any denied tokens." ]]</p>
+            </li>
+          </ul>
+          <loading-screen v-if="isLoading.denied"></loading-screen>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal fade" id="createTokenModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create a Personal Token</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form class="modal-body">
+          <div class="form-group">
+            <label for="tokenName">Token Name</label>
+            <input type="text" class="form-control" id="tokenName" aria-describedby="tokenName" placeholder="My Token" v-model="newPToken.name">
+          </div>
+          <div class="form-group">
+            <label for="symbol">Symbol</label>
+            <input type="text" class="form-control" id="symbol" aria-describedby="tokenSymbol" placeholder="TOK" v-model="newPToken.symbol">
+          </div>
+          <div class="form-group">
+            <label for="price">Price (in DAI)</label>
+            <input type="number" class="form-control" id="price" aria-describedby="tokenPrice" placeholder="50" v-model="newPToken.price">
+          </div>
+          <div class="form-group">
+            <label for="supply">Supply</label>
+            <input type="number" class="form-control" id="supply" aria-describedby="tokenSupply" placeholder="10" v-model="newPToken.supply">
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="TOSCheck">
+            <small id="TOSText" class="form-check-label">I have read, understand, and agree to, the Terms of Service.</small>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="createPToken()">Confirm</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
