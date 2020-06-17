@@ -196,5 +196,13 @@
       _alert("Sorry, we can't find the user");
     }, 1000);
     </script>
+
   {% endif %}
+  <script>
+    {% if fund_request %}
+    document.default_token='{{fund_request.token_name}}';
+    {% else %}
+    document.default_token='ETH';
+    {% endif %}
+  </script>
 {% endblock %}

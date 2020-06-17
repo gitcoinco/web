@@ -1020,6 +1020,26 @@ const updateParams = (key, value) => {
   window.location.href = '/grants/?' + decodeURIComponent(params.toString());
 };
 
+const updateMultipleParams = (newParams) => {
+  params = new URLSearchParams(window.location.search);
+  newParams = Object.entries(newParams);
+  for (const [ key, value ] of newParams) {
+    params.set(key, value);
+  }
+  let category_str = '';
+
+  if (params.get('type')) {
+    category_str = params.get('type') + '/';
+    params.delete('type');
+  }
+  if (!params.get('category')) {
+    params.delete('category');
+  }
+
+  window.location.href = '/grants/' + category_str + '?' + decodeURIComponent(params.toString());
+};
+
+
 /**
  * shrinks text if it exceeds a given length which introduces a button
  * which can expand / shrink the text.

@@ -83,18 +83,21 @@ $(document).ready(function() {
   if (typeof userSearch != 'undefined') {
     userSearch('.username-search', true);
   }
-  set_metadata();
   // jquery bindings
   $('#advanced_toggle').on('click', function() {
     advancedToggle();
   });
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
-  $('#send').on('click', function(e) {
+  $('#send').on('click', async function(e) {
     e.preventDefault();
     if ($(this).hasClass('disabled'))
       return;
     loading_button($(this));
+
+    if (!provider) {
+      await onConnect();
+    }
     // get form data
     var email = $('#email').val();
     var github_url = $('#issueURL').val();
@@ -174,6 +177,7 @@ function isNumeric(n) {
 
 
 function sendTip(email, github_url, from_name, username, amount, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller, noAvailableUser) {
+  set_metadata();
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     failure_callback();
@@ -328,7 +332,7 @@ function sendTip(email, github_url, from_name, username, amount, comments_public
           var send_erc20 = function() {
             var token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-            token_contract.methods.transfer(destinationAccount, web3.utils.toWei(String(amount))).send({from: fromAccount}, post_send_callback);
+            token_contract.methods.transfer(destinationAccount, new web3.utils.BN(BigInt(amountInDenom)).toString()).send({from: fromAccount}, post_send_callback);
           };
           var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');

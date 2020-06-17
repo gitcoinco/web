@@ -53,7 +53,6 @@ get_decimals = lambda contract : int(contract.functions.decimals().call())
 
 # scrapes etherscan to get the replaced tx
 def getReplacedTX(tx):
-    sleep(2)  # 2s delay to avoid getting the finger from etherscan
     response = requests.get(ethurl + tx, headers=headers)
     soup = BeautifulSoup(response.content, "html.parser")
     # look for span that contains the dropped&replaced msg
@@ -190,11 +189,23 @@ def grants_transaction_validator(contribution):
         if token_transfer['token_name'] != contribution.subscription.token_symbol:
             validation['comment'] = f"Tokens do not match, {token_transfer['token_name']} != {contribution.subscription.token_symbol}"
             validation['passed'] = False
+
+            from_address = Web3.toChecksumAddress(contribution.subscription.contributor_address)
+            recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
+            token_address = Web3.toChecksumAddress(contribution.subscription.token_address)
+            _transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers')
+            failsafe = _transfers['token_name'] == contribution.subscription.token_symbol
+            if failsafe:
+                validation['comment'] = f"Token Transfer Passed on the second try"
+                validation['passed'] = True
+                token_transfer = _transfers
+
         else:
-            delta = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period_minus_gas_price)
+            delta1 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period_minus_gas_price)
+            delta2 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period)
             # TODO what about gitcoin transfers
-            validation['comment'] = f"Transfer Amount is off by {round(delta, 2)}"
-            validation['passed'] = abs(delta) <= 0.01
+            validation['passed'] = abs(delta1) <= 0.01 or abs(delta2) <= 0.01
+            validation['comment'] = f"Transfer Amount is off by {round(delta1, 2)} / {round(delta2, 2)}"
 
 
     return {

@@ -227,6 +227,7 @@
 
   #preferred_payout a {
     font-size: 1em;
+    color: #70b2ff;
   }
 
   #footer p {
@@ -273,6 +274,53 @@
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     line-height: 20px;
+  }
+  
+  .grant-recontrib-msg {
+    margin: 0 auto;
+  }
+
+  .grant-tile {
+    margin: 0 auto; 
+    border-bottom: 1px solid #EFEFEF;
+    text-align: left; 
+    padding: 10px;
+  }
+
+  .grant-tile .grant-image {
+    width: 5em;
+    height: 5em;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .grant-tile .grant-detail {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  @media (min-width: 768px) {
+    .grant-recontrib-msg, .grant-tile {
+      width: 75%;
+    }
+    .grant-tile {
+      padding: 20px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .grant-recontrib-msg {
+      width: 66%;
+    }
+    .grant-tile {
+      width: 55%;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .grant-recontrib-msg, .grant-tile {
+      width: 35%;
+    }
   }
   
   /* Bootstrap styles used for activities -- START */
