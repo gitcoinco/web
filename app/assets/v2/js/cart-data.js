@@ -119,7 +119,7 @@ class CartData {
   static clearCart() {
     let cartList = this.loadCart();
 
-    fetchData(`/grants/0/activity`, 'POST', {
+    fetchData('/grants/0/activity', 'POST', {
       action: 'CLEAR_CART',
       metadata: JSON.stringify(cartList),
       bulk: true

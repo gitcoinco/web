@@ -51,8 +51,9 @@ from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
-from grants.models import Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription, \
-    CartActivity
+from grants.models import (
+    CartActivity, Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription,
+)
 from grants.utils import get_leaderboard, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token

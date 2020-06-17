@@ -3,7 +3,7 @@ import operator
 from django.utils import timezone
 
 from grants.models import *
-from grants.models import Contribution, PhantomFunding
+from grants.models import Contribution, PhantomFunding, CartActivity
 from grants.views import clr_round, next_round_start, round_end
 
 ############################################################################3
@@ -21,12 +21,23 @@ if must_be_successful:
 pfs = PhantomFunding.objects.filter(created_on__gt=start, created_on__lt=end)
 total = contributions.count() + pfs.count()
 
+current_carts = CartActivity.objects.filter(latest=True)
+num_carts = 0
+amount_in_carts = {}
+for ca in current_carts:
+    for item in ca.metadata:
+        currency, amount = item['grant_donation_currency'], item['grant_donation_amount']
+        if currency not in amount_in_carts.keys():
+            amount_in_carts[currency] = 0
+        amount_in_carts[currency] += amount
+
 contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
 amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions] + [float(pf.value) for pf in pfs])
 
 print("contributions", total)
 print("contributors", contributors)
 print('amount', amount)
+print("in carts", amount_in_carts)
 
 ############################################################################3
 # top contributors
@@ -48,7 +59,7 @@ all_contributors_by_amount = sorted(all_contributors_by_amount.items(), key=oper
 all_contributors_by_num.reverse()
 all_contributors_by_amount.reverse()
 
-limit = 50
+limit = 25
 print(f"Top Contributors by Num Contributions (Round {clr_round})")
 counter = 0
 for obj in all_contributors_by_num[0:limit]:

@@ -22,7 +22,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription, CartActivity
+from grants.models import CartActivity, CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
