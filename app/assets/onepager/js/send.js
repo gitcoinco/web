@@ -9,6 +9,7 @@ function changeTokens() {
         $(this).attr('selected', 'selected');
       }
     });
+    localStorage['amount'] = document.fundRequest.amount;
     $('#amount').val(document.fundRequest.amount);
   }
   $('#token').select2().trigger('change');
