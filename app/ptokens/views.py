@@ -44,7 +44,6 @@ from dashboard.models import Profile
 from ptokens.helpers import record_ptoken_activity
 from ptokens.models import PersonalToken, RedemptionToken, PurchasePToken
 
-
 def quickstart(request):
     context = {}
     return TemplateResponse(request, 'personal_tokens.html', context)
