@@ -106,3 +106,26 @@
 .vti__dropdown-list.below {
     top: 50px !important;
 }
+
+.comment-option {
+  cursor:pointer;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+
+.comment-option .radio-input {
+  display: none;
+}
+
+.comment-option .radio-label {
+  border: 1px solid var(--gc-blue);
+  color: var(--gc-blue);
+  padding: 4px 9px;
+}
+
+.comment-option .radio-input:checked + .radio-label,
+.comment-option .radio-label:hover {
+  background-color: var(--gc-blue);
+  color: white !important;
+  font-weight: 600;
+}
