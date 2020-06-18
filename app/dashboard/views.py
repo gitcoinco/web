@@ -31,7 +31,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
@@ -1144,6 +1144,32 @@ def users_fetch(request):
         pass
 
     return JsonResponse(params, status=200, safe=False)
+
+@require_POST
+def bounty_mentor(request):
+
+    bounty_id = request.POST.get('bounty_id')
+    bounty_mentors = request.POST.get('mentors[]')
+
+    if not bounty_id or not bounty_mentors:
+        return JsonResponse({'message': 'Request Data invalid'}, status=400)
+
+    bounty = Bounty.objects.get(id=bounty_id)
+    can_manage = request.user.is_authenticated and (request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() or request.user.is_staff)
+
+    if not can_manage:
+        return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
+
+    bounty_group = Group.objects.get_or_create(name=f'bounty-{bounty_id}-mentors')[0]
+
+    mentor_pks = [int(mentorpk) for mentorpk in bounty_mentors]
+
+    mentors = User.objects.filter(id__in=mentor_pks)
+
+    for mentor in mentors:
+        mentor.groups.add(bounty_group)
+
+    return JsonResponse({'message': f'Mentors Updated Successfully for: {bounty.title}'}, status=200, safe=False)
 
 
 def get_user_bounties(request):
@@ -3704,8 +3730,8 @@ def hackathon(request, hackathon='', panel='prizes'):
     from chat.tasks import get_chat_url
     params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
 
-    params['is_sponsor'] = request.user.is_authenticated and any(
-        [request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() for bounty in Bounty.objects.filter(event=hackathon)]
+    params['can_manage'] = request.user.is_authenticated and any(
+        [request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() for bounty in Bounty.objects.filter(event=hackathon_event)]
     )
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)

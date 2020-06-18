@@ -204,6 +204,49 @@ Vue.component('tribes-settings', {
   methods: {}
 });
 
+Vue.component('manage-sponsor', {
+  methods: {
+    onMentorChange: function(event) {
+      let bounty_id = event.target.id.split('-')[1];
+
+      this.bountyMentors[bounty_id] = $.map(event.target.selectedOptions, (n, idx) => {
+        return [n.value];
+      });
+    },
+    updateBountyMentors: function(bounty_id) {
+      let vm = this;
+      const url = '/api/v0.1/bounty_mentor/';
+
+      const updateBountyMentor = fetchData (url, 'POST', {
+        bounty_id,
+        mentors: vm.bountyMentors[bounty_id]
+      }, {'X-CSRFToken': vm.csrf});
+
+      $.when(updateBountyMentor).then((response) => {
+        _alert({ message: gettext(response.message) }, 'success');
+      }).catch((error) => {
+        _alert({ message: gettext(error.message) }, 'error');
+      });
+    }
+  },
+  mounted() {
+    this.fetchBounties();
+  },
+  updated() {
+    this.$nextTick(() => {
+      userSearch('.mentor-users', false, undefined, false, false, true, this.onMentorChange);
+    });
+  },
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      isFunder: false,
+      funderBounties: [],
+      bountyMentors: {}
+    };
+  }
+})
+
 
 Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
