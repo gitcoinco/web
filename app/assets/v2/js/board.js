@@ -4,52 +4,6 @@ let bounties = {};
 let authProfile = document.contxt.profile_id;
 let skills = document.skills;
 
-const PTokenFactory = {
-  abi: [
-    {
-      'anonymous': false,
-      'inputs': [
-        {
-          'indexed': false,
-          'internalType': 'contract PToken',
-          'name': 'token',
-          'type': 'address'
-        }
-      ],
-      'name': 'NewPToken',
-      'type': 'event'
-    },
-    {
-      'inputs': [
-        {
-          'internalType': 'string',
-          'name': '_name',
-          'type': 'string'
-        },
-        {
-          'internalType': 'string',
-          'name': '_symbol',
-          'type': 'string'
-        },
-        {
-          'internalType': 'uint256',
-          'name': '_cost',
-          'type': 'uint256'
-        },
-        {
-          'internalType': 'uint256',
-          'name': '_supply',
-          'type': 'uint256'
-        }
-      ],
-      'name': 'createPToken',
-      'outputs': [],
-      'stateMutability': 'nonpayable',
-      'type': 'function'
-    }
-  ]
-};
-
 Vue.mixin({
   methods: {
     fetchBounties: function(type) {
@@ -253,13 +207,15 @@ Vue.mixin({
       [user] = await web3.eth.getAccounts();
       // TODO: This is a deterministic localhost address. Should be an env variable for rinkeby/mainnet.
       const factoryAddress = '0x7bE324A085389c82202BEb90D979d097C5b3f2E8';
-      const factory = await new web3.eth.Contract(PTokenFactory.abi, factoryAddress);
+      const mockDaiAddress = '0x6b67DD1542ef11153141037734D21E7Cbd7D9817';
+      const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
 
       await factory.methods.createPToken(
         this.newPToken.name,
         this.newPToken.symbol,
         this.newPToken.price,
-        this.newPToken.supply
+        this.newPToken.supply,
+        mockDaiAddress
       ).send({
         from: user
       });
