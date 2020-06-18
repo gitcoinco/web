@@ -133,3 +133,6 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
 
         new_supporter(grant, subscription)
         thank_you_for_supporting(grant, subscription)
+
+        update_grant_metadata.delay(instance.pk)
+
