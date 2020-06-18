@@ -55,8 +55,9 @@
   padding: 0rem 1rem;
 }
 
-.grant-name {
+.grant-name a{
   font-weight: bold;
+  color: black;
   /* margin-left: 0.5rem; */
 }
 
@@ -108,7 +109,7 @@
 }
 
 .comment-option {
-  cursor:pointer;
+  cursor:pointer !important;
   padding-left: 7px;
   padding-right: 7px;
 }
@@ -118,14 +119,15 @@
 }
 
 .comment-option .radio-label {
-  border: 1px solid var(--gc-blue);
-  color: var(--gc-blue);
+  border: 1px solid #9a96ac;
+  color: #9a96ac;
   padding: 4px 9px;
 }
 
 .comment-option .radio-input:checked + .radio-label,
 .comment-option .radio-label:hover {
-  background-color: var(--gc-blue);
+  cursor: pointer;
+  background-color: #9a96ac;
   color: white !important;
   font-weight: 600;
 }
