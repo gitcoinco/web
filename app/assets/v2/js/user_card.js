@@ -69,7 +69,6 @@ const renderPopOverData = function(data) {
       'strings': stringsOverwrite
     };
   }
-
   let tips_total = data.profile_dict.total_tips_sent + data.profile_dict.total_tips_received;
   let bounties_total = data.profile_dict.funded_bounties_count + data.profile_dict.count_bounties_completed;
   let grants_total = data.profile_dict.total_grant_created + data.profile_dict.total_grant_contributions;
@@ -82,6 +81,14 @@ const renderPopOverData = function(data) {
     '#89CD69',
     '#BFE1AF',
     {'type': 'Tips', 'sent': 'Sent', 'received': 'Received'}
+  );
+  let token_total_percent = objSetup(
+    data.profile_dict.purchased_count || 0,
+    data.profile_dict.redeemed_count || 0,
+    total,
+    '#D8C667',
+    '#FFED90',
+    {'type': 'Token', 'sent': 'Purch', 'received': 'Redeem'}
   );
   let bounties_total_percent = objSetup(
     data.profile_dict.funded_bounties_count,
@@ -100,7 +107,7 @@ const renderPopOverData = function(data) {
     {'type': 'Grants', 'sent': 'Fund', 'received': 'Contrib'}
   );
 
-  let mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
+  let mount_graph = [ tips_total_percent, token_total_percent, bounties_total_percent, grants_total_percent ];
   let graphs = mount_graph.map((graph) => {
     return `<circle class="donut-segment" cx="50%" cy="50%" r="38%" fill="transparent" stroke="${graph.color}" stroke-width="8%" stroke-dasharray="${graph.percent} ${100 - graph.percent}" stroke-dashoffset="${graph.dashoffset}"></circle>`;
   }).join(' ');
