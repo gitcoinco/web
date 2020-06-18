@@ -1,0 +1,17 @@
+{
+  "symbol": "cUSDT",
+  "address": "0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9",
+  "overview":{
+        "en": "cUSDT is like an instant USDT savings account. By Compound.",
+        "zh": "cUSDT 由 Compound 发行，类似于一个即时的 USDT 存储账户。 "
+  },
+  "website": "https://app.compound.finance/asset/cUSDT",
+  "whitepaper": "https://compound.finance/documents/Compound.Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-05-07",
+  "links": {
+    "blog": "https://medium.com/compound-finance",
+    "twitter": "https://twitter.com/compoundfinance",
+    "github": "https://github.com/compound-finance/compound-protocol"
+  }
+}
