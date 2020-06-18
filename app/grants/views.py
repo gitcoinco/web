@@ -78,7 +78,6 @@ matching_live_tiny = '💰'
 total_clr_pot = 175000
 clr_round = 6
 clr_active = True
-show_clr_card = True
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
@@ -449,7 +448,6 @@ def grants_by_grant_type(request, grant_type):
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
-        'show_clr_card': show_clr_card,
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
@@ -612,7 +610,6 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
-        'show_clr_card': show_clr_card,
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,

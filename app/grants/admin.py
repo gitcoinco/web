@@ -90,11 +90,11 @@ class GrantAdmin(GeneralAdmin):
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count'
+        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
-        'team_member_list',
+        'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count'
     ]
