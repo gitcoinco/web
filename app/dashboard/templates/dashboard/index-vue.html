@@ -805,7 +805,7 @@
                   <ul class="list-unstyled">
                     <b-media v-for="(sponsor, index) in tribesData" :key="index" tag="li"  class="rounded my-4 ml-4" vertical-align="center">
                       <template v-slot:aside>
-                        <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-n3 tribes-logo"></b-avatar>
+                        <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-3 tribes-logo"></b-avatar>
                       </template>
                       <div>
                         <a class="mb-1 font-body font-weight-semibold w-50" :href="`/profile/${sponsor.org_name}`">
