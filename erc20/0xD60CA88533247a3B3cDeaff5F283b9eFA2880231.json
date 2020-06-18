@@ -1,0 +1,18 @@
+{
+    "symbol": "SMN",
+    "address": "0xD60CA88533247a3B3cDeaff5F283b9eFA2880231",
+    "overview": {
+        "zh": "SMN布道者——全球首个数字产业和区块链应用生态社群联盟自组织。——SMN布道者综合生活服务平台，依托区块链技术，构建⼀个去中心化的，集新支付+新零售+新社交+新生态等多功能于⼀体的数字货币聚合支付系统，主要应用于交易赋能、分享赋能、存储孵化、社交聊天、直播售货、移动支付等，实现全球范围内的低成本价值流通和转移，推动整个⽀付、零售、社交和文化行业的革新。"
+    },
+    "email": "hailang9103@163.com",
+    "website": "http://www.1smn.com/",
+    "whitepaper": "http://www.1smn.com/pdf/SMN.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-01",
+    "initial_price":{
+        "USD":"0.15 USD"
+  	},
+    "links": {
+      "medium": "https://www.jinse.com/blockchain/581310.html"
+  	}
+}
