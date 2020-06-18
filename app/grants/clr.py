@@ -316,23 +316,23 @@ def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_da
     contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True)
 
     if clr_type == 'tech':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', link_to_new_grant=None)
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', is_clr_eligible=True, link_to_new_grant=None)
         threshold = THRESHOLD_TECH
         total_pot = TOTAL_POT_TECH
     elif clr_type == 'media':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='media', link_to_new_grant=None)
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='media', is_clr_eligible=True, link_to_new_grant=None)
         threshold = THRESHOLD_MEDIA
         total_pot = TOTAL_POT_MEDIA
     elif clr_type == 'health':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='health', link_to_new_grant=None)
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='health', is_clr_eligible=True, link_to_new_grant=None)
         threshold = THRESHOLD_HEALTH
         total_pot = TOTAL_POT_HEALTH
     elif clr_type == 'change':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='change', link_to_new_grant=None)
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='change', is_clr_eligible=True, link_to_new_grant=None)
         threshold = THRESHOLD_CHANGE
         total_pot = TOTAL_POT_CHANGE
     elif clr_type == 'matic':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='matic', link_to_new_grant=None)
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='matic', is_clr_eligible=True, link_to_new_grant=None)
         threshold = THRESHOLD_MATIC
         total_pot = TOTAL_POT_MATIC
     else:

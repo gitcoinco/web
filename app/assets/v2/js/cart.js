@@ -830,13 +830,16 @@ Vue.component('grants-cart', {
         for (let i = 0; i < this.grantData.length; i += 1) {
           const verification_required_to_get_match = false;
 
-          if (!document.verified && verification_required_to_get_match) {
+          if (
+            (!document.verified && verification_required_to_get_match) ||
+            grantData.is_clr_eligible == 'False'
+          ) {
             this.grantData[i].grant_donation_clr_match = 0;
           } else {
             const grant = this.grantData[i];
             const matchAmount = await this.predictCLRMatch(grant);
 
-            this.grantData[i].grant_donation_clr_match = matchAmount.toFixed(2);
+            this.grantData[i].grant_donation_clr_match = matchAmount ? matchAmount.toFixed(2) : 0;
           }
         }
       },
