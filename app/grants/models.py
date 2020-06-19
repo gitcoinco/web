@@ -136,7 +136,7 @@ class Grant(SuperModel):
     GRANT_TYPES = [
         ('tech', 'tech'),
         ('health', 'health'),
-        ('Community', 'media'),
+        ('media', 'Community'),
         ('change', 'change'),
         ('matic', 'matic')
     ]
