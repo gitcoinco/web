@@ -50,6 +50,7 @@ from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
+from economy.models import Token as FTokens
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription,
@@ -244,7 +245,7 @@ def grants_stats_view(request):
 
 def grants(request):
     """Handle grants explorer."""
-    
+
     _type = request.GET.get('type', 'all')
     return grants_by_grant_type(request, _type)
 
@@ -922,13 +923,26 @@ def grants_cart_view(request):
 
 
 def grants_bulk_add(request, grant_str):
-    
+    grants = {}
     redis = RedisService().redis
     key = hashlib.md5(grant_str.encode('utf')).hexdigest()
     views = redis.incr(key)
 
-    grant_ids = grant_str.split(':')[0].split(',')
-    grant_ids = [int(ele) for ele in grant_ids if ele and ele.isnumeric() ]
+    grants_data = grant_str.split(':')[0].split(',')
+
+    for ele in grants_data:
+        # new format will support amount and token in the URL separated by ;
+        grant_data = ele.split(';')
+        if len(grant_data) > 0 and grant_data[0].isnumeric():
+            grant_id = grant_data[0]
+            grants[grant_id] = {
+                'id': int(grant_id)
+            }
+
+            if len(grant_data) == 3:  # backward compatibility
+                grants[grant_id]['amount'] = grant_data[1]
+                grants[grant_id]['token'] = FTokens.objects.filter(id=int(grant_data[2])).first()
+
     by_whom = ""
     prefix = ""
     try:
@@ -936,12 +950,20 @@ def grants_bulk_add(request, grant_str):
         prefix = f"{grant_str.split(':')[2]} : "
     except:
         pass
-    grants = Grant.objects.filter(pk__in=grant_ids)
-    grant_titles = ", ".join([grant.title for grant in grants])
-    title = f"{prefix}{grants.count()} Grants in Shared Cart {by_whom} : Viewed {views} times"
+
+    # search valid grants and associate with its amount and token
+    grants_info = grants.values()
+    grant_ids = [grant['id'] for grant in grants_info]
+    for grant in Grant.objects.filter(pk__in=grant_ids):
+        grants[str(grant.id)]['obj'] = grant
+
+    grants = [grant for grant in grants_info if grant.get('obj')]
+
+    grant_titles = ", ".join([grant['obj'].title for grant in grants])
+    title = f"{prefix}{len(grants)} Grants in Shared Cart {by_whom} : Viewed {views} times"
 
     context = {
-        'grants': Grant.objects.filter(pk__in=grant_ids),
+        'grants': grants,
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
         'title': title,
         'card_desc': "Click to Add All to Cart: " + grant_titles
@@ -958,6 +980,7 @@ def profile(request):
         raise Http404
     handle = request.user.profile.handle
     return redirect(f'/profile/{handle}/grants')
+
 
 def quickstart(request):
     """Display quickstart guide."""
