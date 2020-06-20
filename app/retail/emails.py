@@ -77,7 +77,14 @@ NOTIFICATION_EMAILS = [
     ('mention', _('Mentions'), _('Only when other users mention you on posts')),
 ]
 
-ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
+HACKATHON_EMAILS = [
+    ('hackathon_admin', _('Hackathon Admin Emails'), _('(up to) Daily')),
+    ('hackathon_reminder', _('Hackathon Reminder Emails'), _('(up to) Daily')),
+    ('hackathon_workshop_invite', _('Hackathon Workshop Invite Emails'), _('(up to) Daily')),
+    ('hackathon_sponsors', _('Emails from Sponsors'), _('(up to) Daily')),
+]
+
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS + HACKATHON_EMAILS
 
 
 def premailer_transform(html):
