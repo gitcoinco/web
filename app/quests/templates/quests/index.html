@@ -73,8 +73,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       Try again or <a href="/quests/new/">create your own</a>.
     </div>
     {% endif %}
-    
-      <!-- Quest table -->
+     <!-- Quest table -->
   <div id="{{difficulty_level}}">    
     <table  class="table table-fixed">
      <thead>
@@ -126,61 +125,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
              </tbody>
       {% endfor %}
     </table>
-      
-      <!-- Quest Cards -->
-      <!-- <div class="card_head">
-        <span class="boss">#boss</span>
-        <img class="card_img boss" data-src="{{quest.art_url}}" title="{{quest.game_metadata.enemy.title}}">
-        <span class="reward">#prize</span>
-        <img class="card_img reward" data-src="{{quest.kudos_reward.img_url}}" title="{{quest.kudos_reward.humanized_name}} Kudos">
-      </div>
-      <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="pr-3 pt-3 pl-3 pb-1 mb-1 mt-3">
-        <span style="position: relative; top: -50px; font-size: 30px;">
-          {% if cooldown %}
-            🥶
-          {% elif beaten %}
-            ✅
-          {% else %}
-            🔒
-          {% endif %}
-        </span>
-        <a href="{{quest.url}}">
-          <h2 style="margin-top: -50px; font-size: 20px;">
-            {{quest.title}}
-          </h2>
-        </a>
-        <ul class='tags mb-1'>
-          {% for tag in quest.ui_data.tags %}
-            <li>#{{tag|lower}}</li>
-          {% endfor %}
-        </ul>
-        <p style="color: #222; font-size: 11px; margin-bottom: 3px;"><strong>{{quest.ui_data.attempts_count}}</strong> Attempts | <strong>{{quest.ui_data.success_pct}}%</strong> Winners | Created by <a href="{{quest.ui_data.creator.url}}">@{{quest.ui_data.creator.handle}}</a> | Prize: <a href="{{quest.kudos_reward.url}}">{{quest.kudos_reward.humanized_name}} Kudos</a> </p>
-        <p class="desc" style=" max-height: 90px; overflow-y: scroll; font-size: 10px; border-top: 1px solid #333;">{{quest.description}}</p>
-      </div>
-      {% if beaten %}
-        ( ✅ Quest Beaten)
-      {% elif cooldown %}
-        ( 🥶 In Cooldown Period)
-      {% elif unlocked %}
-       <p style="font-size: 10px;">
-          <span style="font-weight: bold;">Play Time:</span> <br>
-          {{quest.est_total_time_required}} mins (reading) <br>
-          {{quest.est_skim_time_mins}} mins (skimming)
-        </p>
-
-        <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Play Quest</a>
-      {% else %}
-        🔒Locked; To unlock
-        {% if quest.unlocked_by_hackathon %}
-          register for <a href="{{quest.unlocked_by_hackathon.onboard_url}}">{{quest.unlocked_by_hackathon.name}}</a>.
-        {% else %}
-          beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
-        {% endif %}
-      {% endif %}
-      {% if difficulty_level == 'Created' %}
-        <BR>
-        <a class="mt-2" role="button" href="{{quest.edit_url}}">(Edit Quest)</a>
-      {% endif %} -->
     </div>
   </div>
   {% endfor %}
