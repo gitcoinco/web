@@ -99,6 +99,14 @@
                   {{ hackathon.name }}
                 </h1>
                 <div class="col-12 col-md-3 px-0 mt-md-1 mt-4">
+                {% for email_type in email_types %}
+                  <div class="email_pref_container">
+                    <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{ email_type.0 }}" value="1">
+                    <label class="form__label" for="{{ email_type.0 }}">{% trans "Don't send me" %} <strong>{{ email_type.1 }}</strong></label>
+                    <small id="{{ email_type.0 }}" class="form__input-help">{% trans "Frequency" %}: {{ email_type.2 }}</small>
+                    <br>
+                  </div>
+                {% endfor %}
                 {% if not github_handle %}
                   <a class="btn btn-gc-blue col-12" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?registration={{hackathon.slug}}&referer={{referer}}"
                     onclick="dataLayer.push({'event': 'login'});">Join Now</a>
@@ -362,6 +370,30 @@
     {% include 'shared/footer.html' %}
 
     <script>
+      $(document).ready(function(){
+        // select / deselect all
+        $('#select_all').on('click', function(e) {
+          e.preventDefault();
+          if($(this).data('direction') == '+'){
+            $('.priv_checkbox').prop('checked', true);
+            $(this).text('[Deselect All]');
+            $(this).data('direction','-');
+          } else {
+            $('.priv_checkbox').prop('checked', false);
+            $(this).text('[Select All]');
+            $(this).data('direction','+');
+          }
+        });
+
+        // suppression preferences form
+        var suppression_preferences = {{ suppression_preferences|safe }};
+
+        for (var key in suppression_preferences) {
+          var pref = suppression_preferences[key];
+          $('#'+key).prop('checked', pref);
+        }
+      });
+
       // Send registration
       const is_registered = {{ is_registered|yesno:"true,false" }};
       const hackathon_slug = '{{ hackathon.slug|safe }}';

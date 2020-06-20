@@ -81,6 +81,7 @@ from git.utils import (
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
 from mailchimp3 import MailChimp
+from marketing.utils import delete_user_from_mailchimp, get_or_save_email_subscriber, validate_slack_integration
 from marketing.mails import admin_contact_funder, bounty_uninterested
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.mails import (
@@ -3663,6 +3664,53 @@ def hackathon(request, hackathon='', panel='prizes'):
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
+# copied from marketing.views
+def settings_helper_get_auth(request, key=None):
+    # setup
+    github_handle = request.user.username if request.user.is_authenticated else False
+    is_logged_in = bool(request.user.is_authenticated)
+    es = EmailSubscriber.objects.none()
+
+    # find the user info
+    if key is None or not EmailSubscriber.objects.filter(priv=key).exists():
+        email = request.user.email if request.user.is_authenticated else None
+        if not email:
+            github_handle = request.user.username if request.user.is_authenticated else None
+        if hasattr(request.user, 'profile'):
+            if request.user.profile.email_subscriptions.exists():
+                es = request.user.profile.email_subscriptions.first()
+            if not es or es and not es.priv:
+                es = get_or_save_email_subscriber(
+                    request.user.email, 'settings', profile=request.user.profile)
+    else:
+        try:
+            es = EmailSubscriber.objects.get(priv=key)
+            email = es.email
+        except EmailSubscriber.DoesNotExist:
+            pass
+
+    # lazily create profile if needed
+    profiles = Profile.objects.none()
+    if github_handle:
+        profiles = Profile.objects.prefetch_related('alumni').filter(handle=github_handle.lower())
+    profile = None if not profiles.exists() else profiles.first()
+    if not profile and github_handle:
+        profile = sync_profile(github_handle, user=request.user)
+
+    # lazily create email settings if needed
+    if not es:
+        if request.user.is_authenticated and request.user.email:
+            es = EmailSubscriber.objects.create(
+                email=request.user.email,
+                source='settings_page',
+                profile=request.user.profile,
+            )
+            es.set_priv()
+            es.save()
+
+    return profile, es, request.user, is_logged_in
+
+
 
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
@@ -3704,6 +3752,43 @@ def hackathon_onboard(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
+
+
+
+    profile, es, __, __ = settings_helper_get_auth(request, 'email')
+    if not request.user.is_authenticated and (not es and key) or (
+        request.user.is_authenticated and not hasattr(request.user, 'profile')
+    ):
+        return redirect('/login/github?next=' + request.get_full_path())
+
+    email_types = {}
+    from retail.emails import HACKATHON_EMAILS
+    for em in HACKATHON_EMAILS:
+        email_types[em[0]] = str(em[1])
+    email_type = request.GET.get('type')
+    if email_type in email_types:
+        email = es.email
+        if es:
+            key = get_or_save_email_subscriber(email, 'settings')
+            es.email = email
+            unsubscribed_email_type = {}
+            unsubscribed_email_type[email_type] = True
+            if email_type == 'chat' and profile:
+                update_chat_notifications(profile, 'email', False)
+            es.build_email_preferences(unsubscribed_email_type)
+            es = record_form_submission(request, es, 'email')
+            ip = get_ip(request)
+            if not es.metadata.get('ip', False):
+                es.metadata['ip'] = [ip]
+            else:
+                es.metadata['ip'].append(ip)
+            es.save()
+        context = {
+            'title': _('Email unsubscription successful'),
+            'type': email_types[email_type]
+        }
+        return TemplateResponse(request, 'email_unsubscribed.html', context)
+
     params = {
         'active': 'hackathon_onboard',
         'title': f'{hackathon_event.name.title()} Onboard',
@@ -3712,7 +3797,9 @@ def hackathon_onboard(request, hackathon=''):
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'is_registered': is_registered,
         'sponsors': sponsors,
-        'onboard': True
+        'onboard': True,
+        'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
+        'email_types': HACKATHON_EMAILS
     }
 
     if Poll.objects.filter(hackathon=hackathon_event).exists():
