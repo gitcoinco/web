@@ -796,7 +796,7 @@ if ENABLE_DDTRACE:
 
 WIKI_ACCOUNT_HANDLING = True
 WIKI_ACCOUNT_SIGNUP_ALLOWED = True
-WIKI_CACHE_TIMEOUT = False
+WIKI_CACHE_TIMEOUT = 600
 
 # Sending an email when a bounty is funded below a threshold
 LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
