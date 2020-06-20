@@ -2,7 +2,7 @@ import random
 
 from django.conf import settings
 
-from app.settings import account_sid, auth_token
+from app.settings import account_sid, auth_token, verify_service
 from redis import Redis
 from twilio.rest import Client
 
@@ -39,10 +39,7 @@ class TwilioService:
 
         if not TwilioService._client:
             TwilioService._client = Client(account_sid, auth_token)
-            friendly_names = settings.TWILIO_FRIENDLY_NAMES
-            friendly_name = random.choice(friendly_names)
-            TwilioService._service = TwilioService._client.verify.services.create(friendly_name=friendly_name)
-            redis.set(f"validation:twilio:sid", TwilioService._service.sid)
+            TwilioService._service = TwilioService._client.verify.services(verify_service)
 
     def __init__(self):
         self.__create_connection()
@@ -54,5 +51,4 @@ class TwilioService:
     @property
     def verify(self):
         redis = RedisService().redis
-        sid = redis.get(f"validation:twilio:sid")
-        return TwilioService._client.verify.services(sid.decode('utf-8'))
+        return TwilioService._client.verify.services(verify_service)
