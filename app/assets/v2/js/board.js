@@ -4,6 +4,13 @@ let bounties = {};
 let authProfile = document.contxt.profile_id;
 let skills = document.skills;
 
+const TX_STATUS_PENDING = 'pending';
+const TX_STATUS_SUCCESS = 'success';
+const TX_STATUS_ERROR = 'error';
+const TX_STATUS_UNKNOWN = 'unknown';
+const TX_STATUS_DROPPED = 'dropped';
+const redemption_states = [ 'request', 'accepted', 'denied', 'completed' ];
+
 Vue.mixin({
   methods: {
     fetchBounties: function(type) {
@@ -210,7 +217,7 @@ Vue.mixin({
       const mockDaiAddress = '0x6b67DD1542ef11153141037734D21E7Cbd7D9817';
       const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
 
-      await factory.methods.createPToken(
+      let result = await factory.methods.createPToken(
         this.newPToken.name,
         this.newPToken.symbol,
         this.newPToken.price,
@@ -219,6 +226,20 @@ Vue.mixin({
       ).send({
         from: user
       });
+
+      let result = await fetchData('/ptokens/', 'POST', {
+        'token_name': this.newPToken.name,
+        'token_symbol': this.newPToken.symbol,
+        'token_address': user, // need to fetch this information from the result response
+        'token_owner_address': user,
+        'network': 'local', // not sure what network to set this.
+        'tx_status': TX_STATUS_PENDING,
+        'txid': result, // todo replace this with the real txId
+        'total_minted': this.newPToken.supply,
+        'value': this.newPToken.price,
+        'web3_created': (new Date()).toISOString()
+      });
+      console.log('Result from board ', result)
     }
   }
 });
