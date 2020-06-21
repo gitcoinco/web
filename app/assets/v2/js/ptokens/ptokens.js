@@ -23,7 +23,7 @@ function create_ptoken(name, symbol, address, value, minted, owner_address, txId
     'token_symbol': symbol,
     'token_address': address,
     'token_owner_address': owner_address,
-    'network': network,
+    'network': 'localhost', // TODO: detect network
     'tx_status': TX_STATUS_PENDING,
     'txid': txId,
     'total_minted': minted,

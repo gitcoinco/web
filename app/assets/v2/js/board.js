@@ -4,13 +4,6 @@ let bounties = {};
 let authProfile = document.contxt.profile_id;
 let skills = document.skills;
 
-const TX_STATUS_PENDING = 'pending';
-const TX_STATUS_SUCCESS = 'success';
-const TX_STATUS_ERROR = 'error';
-const TX_STATUS_UNKNOWN = 'unknown';
-const TX_STATUS_DROPPED = 'dropped';
-const redemption_states = [ 'request', 'accepted', 'denied', 'completed' ];
-
 Vue.mixin({
   methods: {
     fetchBounties: function(type) {
@@ -203,21 +196,21 @@ Vue.mixin({
       try {
         // TODO: Show loading while deploying
         this.newPToken.deploying = true;
-        await this.deployToken();
+        await this.deployAndSaveToken();
         this.newPToken.deploying = false;
       } catch (error) {
         console.log(error);
       }
-      // this.saveToDB();
     },
-    async deployToken() {
+    async deployAndSaveToken() {
       [user] = await web3.eth.getAccounts();
       // TODO: This is a deterministic localhost address. Should be an env variable for rinkeby/mainnet.
       const factoryAddress = '0x7bE324A085389c82202BEb90D979d097C5b3f2E8';
       const mockDaiAddress = '0x6b67DD1542ef11153141037734D21E7Cbd7D9817';
       const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
 
-      let result = await factory.methods.createPToken(
+      // Deploy on-chain
+      factory.methods.createPToken(
         this.newPToken.name,
         this.newPToken.symbol,
         this.newPToken.price,
@@ -225,21 +218,19 @@ Vue.mixin({
         mockDaiAddress
       ).send({
         from: user
+      }).on('transactionHash', function(transactionHash) {
+        // Save to database
+        create_ptoken(
+          this.newPToken.name,
+          this.newPToken.symbol,
+          '0x0',
+          this.newPToken.price,
+          this.newPToken.supply,
+          user,
+          transactionHash,
+          (new Date()).toISOString()
+        );
       });
-
-      let result = await fetchData('/ptokens/', 'POST', {
-        'token_name': this.newPToken.name,
-        'token_symbol': this.newPToken.symbol,
-        'token_address': user, // need to fetch this information from the result response
-        'token_owner_address': user,
-        'network': 'local', // not sure what network to set this.
-        'tx_status': TX_STATUS_PENDING,
-        'txid': result, // todo replace this with the real txId
-        'total_minted': this.newPToken.supply,
-        'value': this.newPToken.price,
-        'web3_created': (new Date()).toISOString()
-      });
-      console.log('Result from board ', result)
     }
   }
 });
