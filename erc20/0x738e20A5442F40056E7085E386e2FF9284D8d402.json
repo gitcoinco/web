@@ -1,0 +1,17 @@
+{
+    "symbol": "SPO",
+    "address": "0x738e20A5442F40056E7085E386e2FF9284D8d402",
+    "overview":{
+          "en": "SPO Chain is an intelligent and trusted decentralized blockchain platform designed to reshape the value ecology of the Internet of Things and the value of data. ",
+          "zh": "超生物体链是个旨在重塑物联网价值生态以及数据价值的智能可信的去中心化区块链平台。"
+    },
+    "email": "spochain@gmail.com",
+    "website": "http://spochain.club/",
+    "whitepaper": "http://spochain.club/enwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-21",
+    "links": {
+        "telegram": "https://t.me/spogroups",
+        "twitter": "https://twitter.com/spochain1"
+      }
+}
