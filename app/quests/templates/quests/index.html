@@ -73,33 +73,34 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       Try again or <a href="/quests/new/">create your own</a>.
     </div>
     {% endif %}
-     <!-- Quest table -->
+    
+      <!-- Quest table -->
   <div id="{{difficulty_level}}">    
     <table  class="table table-fixed">
      <thead>
-       <tr>
-         <th scope="row"></th>
-           <th scope="col">Quest Name</th>
-           <th scope="col">Quest Prize</th>
-           <th scope="col">Difficulty</th>
-           <th scope="col">Attempts</th>
-           <th scope="col">Description</th>
-           <th scope="col">Play Time</th>
-           <th scope="col">Play</th>
-           <th scope="col"></th>
-           <th scope="col">{% if difficulty_level == 'Created' %} Ownership {% endif %} </th>
-        </tr>
-     </thead>
+         <tr>
+            <th scope="row"></th>
+                  <th scope="col">Quest Name</th>
+                  <th scope="col">Quest Prize</th>
+                  <th scope="col">Difficulty</th>
+                  <th scope="col">Attempts</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Play Time</th>
+                  <th scope="col">Play</th>
+                  <th scope="col"></th>
+                  <th scope="col">{% if difficulty_level == 'Created' %} Ownership {% endif %} </th>
+         </tr>
+      </thead>
       {% for unlocked, beaten, cooldown, quest in the_quests %}
-         <tbody>
+            <tbody>
                <tr>
                <th scope="row"></th>
-                 <td> {{quest.title}}</td>
-                 <td> {{quest.kudos_reward.humanized_name}}</td>
-                 <td> {{difficulty_level}}</td>
-                 <td> {{quest.ui_data.attempts_count}}</td>
-                 <td> {{quest.description</th>
-                 <td>{{quest.est_total_time_required}} mins (reading) <br> {{quest.est_skim_time_mins}} mins (skimming)<br></td>
+                    <td> {{quest.title}}</td>
+                    <td> {{quest.kudos_reward.humanized_name}}</td>
+                    <td> {{difficulty_level}}</td>
+                    <td> {{quest.ui_data.attempts_count}}</td>
+                    <td> {{quest.description}}</td>
+                    <td>{{quest.est_total_time_required}} mins (reading) <br> {{quest.est_skim_time_mins}} mins (skimming)<br></td>
                  {% if beaten %}
                  <td>( ✅ Quest Beaten)
                  </td>
@@ -577,7 +578,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% block 'scripts' %}
 <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
 <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
-<script src="{% static "v2/js/user_card.js" %}"></script>
 <script>
   $(document).ready(function() {
     setInterval(function(){
