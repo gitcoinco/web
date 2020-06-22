@@ -101,7 +101,8 @@ def profile_to_location_helper(handle):
     profiles = Profile.objects.filter(handle=handle.lower())
     if handle and profiles.exists():
         profile = profiles.first()
-        return profile.locations
+        if len(profile.locations):
+            return [profile.locations[0]]
     return []
 
 

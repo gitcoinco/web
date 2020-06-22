@@ -4210,7 +4210,7 @@ class Profile(SuperModel):
     def locations(self):
         from app.utils import get_location_from_ip
         locations = []
-        for login in self.actions.filter(action='Login'):
+        for login in self.actions.filter(action='Login').order_by('-created_on'):
             if login.location_data:
                 locations.append(login.location_data)
             else:
