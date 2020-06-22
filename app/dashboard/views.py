@@ -89,7 +89,7 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
 
-from ptokens.models import PersonalToken
+from ptokens.models import PersonalToken, RedemptionToken
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
@@ -2911,6 +2911,16 @@ def profile(request, handle, tab=None):
     if request.user.is_authenticated and not context['is_my_profile']:
         ProfileView.objects.create(target=profile, viewer=request.user.profile)
 
+    if request.user.is_authenticated:
+        ptoken = PersonalToken.objects.filter(token_owner_profile=request.user.profile).first()
+
+        if ptoken:
+            context['ptoken'] = ptoken
+            context['total_minted'] = ptoken.total_minted
+            context['total_purchases'] = ptoken.ptoken_purchases.count()
+            context['total_redemptions'] = RedemptionToken.objects.filter(ptoken=ptoken,
+                                                                          redemption_state='completed').count()
+            context['total_holders'] = len(ptoken.get_holders())
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 

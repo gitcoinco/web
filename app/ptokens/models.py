@@ -131,6 +131,34 @@ class PersonalToken(SuperModel):
     def title(self):
         return self.title
 
+    def get_holders(self):
+        holders = []
+        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self, tx_status='success')
+        total_purchases = {
+            purchase['token_holder_profile']: purchase['amount']
+            for purchase in purchases_ptoken.values('token_holder_profile').annotate(Sum('amount'))
+        }
+
+        redemptions = RedemptionToken.objects.filter(ptoken=self, tx_status='success')
+        total_redemptions = redemptions.values('redemption_requester').annotate(Sum('total'))
+
+        print('======== WIP ==========')
+        print(total_purchases)
+        print(total_redemptions)
+        print('=======================')
+        for redemption in total_redemptions:
+            requester = redemption['redemption_requester']
+            print(f'Requester has total {redemption["total"] < total_purchases[requester]} tokens')
+            if redemption['total'] < total_purchases[requester]:
+                holders.append(requester)
+
+        print('=======================')
+
+        return holders
+
+
+
+
 
 class RedemptionToken(SuperModel):
     """Define the structure of a Redemption PToken"""
@@ -161,7 +189,7 @@ def psave_ptoken(sender, instance, **kwargs):
 
 
 class PurchasePToken(SuperModel):
-    ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
+    ptoken = models.ForeignKey(PersonalToken, null=True, related_name='ptoken_purchases', on_delete=models.SET_NULL)
     amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
