@@ -2660,6 +2660,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         for ele in contributions:
             history.append(ele.normalized_data)
         context['history'] = history
+        context['subs'] = profile.grant_contributor.filter(num_tx_approved__gt=1)
     elif tab == 'active':
         context['active_bounties'] = active_bounties
     elif tab == 'resume':
