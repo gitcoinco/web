@@ -142,16 +142,15 @@ def grants_transaction_validator(contribution):
                 transaction_hash = transaction_receipt.transactionHash.hex()
                 transaction = check_transaction(transaction_hash)
                 if transaction.value > 0.001:
-                    token_transfer = {
-                        'to': transaction.to,
-                        'token_name': 'ETH',
-                        'token_address': '0x0',
-                        'token_amount_int': Decimal(transaction.value),
-                        'token_amount_decimal': Decimal(transaction.value / 10 **18),
-                        'decimals': 18,
-                        }
+                    recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
+                    transfers = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers')
+                    for transfer in transfers:
+                        delta = abs(abs(contribution.subscription.amount_per_period_minus_gas_price) - abs(transfer['token_amount_decimal']))
+                        if delta < 0.001:
+                            token_transfer = transfer
                 maybeprint(148, round(time.time(),2))
                 if not token_originators:
+
                     token_originators = get_token_originators(from_address, '0x0', from_address=None, return_what='originators')
 
             maybeprint(150, round(time.time(),2))
@@ -282,10 +281,10 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
 
     endpoint = 'token-transfers' if token != '0x0' else 'ether-transfers'
     url = f'https://api.aleth.io/v1/{endpoint}?filter[to]=' + address + '&filter[token]=' + token + '&page%5Blimit%5D=100'
-    if from_address:
-        url += '&filter[from]=' + from_address
     if token == '0x0':
         url = f'https://api.aleth.io/v1/{endpoint}?filter[account]=' + address + '&page%5Blimit%5D=100'
+    if from_address:
+        url += '&filter[from]=' + from_address
 
     transfers = requests.get(
         url,
