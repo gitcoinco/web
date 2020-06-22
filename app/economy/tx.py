@@ -143,11 +143,9 @@ def grants_transaction_validator(contribution):
                 transaction = check_transaction(transaction_hash)
                 if transaction.value > 0.001:
                     recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
-                    transfers = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx)
-                    for transfer in transfers:
-                        delta = abs(abs(contribution.subscription.amount_per_period_minus_gas_price) - abs(transfer['token_amount_decimal']))
-                        if delta < 0.001:
-                            token_transfer = transfer
+                    transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx)
+                    if transfer:
+                        token_transfer = transfer
                 maybeprint(148, round(time.time(),2))
                 if not token_originators:
 
