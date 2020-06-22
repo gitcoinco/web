@@ -296,7 +296,7 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
 
     if return_what == 'transfers':
         for transfer in transfers.get('data', {}):
-            if tx_id and tx_id.lower() == trasnfer.get('id').lower():
+            if tx_id and tx_id.lower() == transfer.get('id').lower():
                 if transfer.get('type') == 'TokenTransfer':
                     return {
                             'token_amount_decimal': Decimal(int(transfer['attributes']['value']) / 10 ** transfer['attributes']['decimals']),
