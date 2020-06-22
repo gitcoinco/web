@@ -183,6 +183,10 @@
   width: 100%;
 }
 
+.tribes-logo.badge-secondary {
+  background-color: #fff;
+}
+
 #sponsor_sidebar {
   background-color: #F9F9F9;
   height: 100%;

@@ -146,8 +146,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       {% comment %} Add comment {% endcomment %}
                       <div class="col-12 font-smaller-3" style="margin-top:1rem">
                         <div class="row">
-                          <div class="col-auto" @click="addComment(index)" style="cursor:pointer;">
-                            + Add comment to owner
+                          <div class="comment-option col-auto" @click="addComment(index)">
+                            <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
+                          </div>
+                          <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
+                            <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
+                          </div>
+                          <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
+                            <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
+                          </div>
+                          <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
+                            <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
+                          </div>
+                          <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
+                            <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
                           </div>
                         </div>
                       </div>
@@ -191,11 +208,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     {% comment %} CLR Match Amount {% endcomment %}
                     <div class="col-2">
                       <div class="row align-items-center justify-content-between clr-match-box">
-                        <div>
-                          [[grant.grant_donation_clr_match]] DAI
-                        </div>
-                        <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
+                        <template v-if="grant.is_clr_eligible == 'True'">
+                          <div>[[grant.grant_donation_clr_match]] DAI</div>
+                          <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
                           width="20">
+                        </template>
+                        <div v-else class="font-caption font-weight-semibold">
+                          Not Eligible for CLR
+                        </div>
                       </div>
                     </div>
                     {% comment %} Delete Icon {% endcomment %}
@@ -205,9 +225,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
                     </div>
                   </div>
-                  <div class="row font-smaller-3" style="margin-left:0.5rem">
-                    <div @click="addComment(index)" class="col-auto" style="cursor:pointer;">
-                      + Add comment to owner
+                  <div class="row font-smaller-3 mt-3"  style="margin-left:0.5rem">
+                    <div class="comment-option col-auto" @click="addComment(index)">
+                      <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
+                    </div>
+                    <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
+                      <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
+                    </div>
+                    <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
+                      <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
+                    </div>
+                    <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
+                      <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
+                    </div>
+                    <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
+                      <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
                     </div>
                   </div>
                   <input v-if="comments[index] !== undefined" style="margin-top:0.5rem; margin-left:0.5rem"

@@ -907,15 +907,14 @@ def new_feedback(email, feedback):
     from_email = settings.SERVER_EMAIL
     subject = "New Feedback"
     body = f"New feedback from {email}: {feedback}"
-    if not should_suppress_notification_email(to_email, 'admin'):
-        send_mail(
-            from_email,
-            to_email,
-            subject,
-            body,
-            from_name="No Reply from Gitcoin.co",
-            categories=['admin', func_name()],
-        )
+    send_mail(
+        from_email,
+        to_email,
+        subject,
+        body,
+        from_name="No Reply from Gitcoin.co",
+        categories=['admin', func_name()],
+    )
 
 
 def gdpr_reconsent(email):
@@ -1229,6 +1228,8 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
             offers = f"⚡️ 1 New Action"
+        else:
+            offers = ""
 
         new_bounties = ""
         if bounties:
