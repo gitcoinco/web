@@ -1,0 +1,19 @@
+{
+  "symbol": "GLE",
+  "address": "0x6a460191d5B14af96B892D4635c6A3d4E963AA24",
+  "overview":{
+        "en":"Open unlimited intelligence in a trusted ecosystem, dedicated to promoting the development of the artificial intelligence economy and industrial chain",
+        "zh":"在可信生态中开启无限智能, 底层区块技术构建机器人自制矩阵,服务全球人工智能行业, 致力于推动人工智能经济和产业链发展"
+  },
+  "email": "web@glecoin.net",
+  "website": "http://www.glecoin.net",
+  "whitepaper": "http://www.glecoin.net/index/book/index.html",
+  "published_on": "2020-06-05",
+  "state": "NORMAL",
+  "initial_price":{
+        "ETH":"0.000025 ETH",
+        "BTC":"0.0000002 BTC"
+  },
+  "links": {
+  }
+}
