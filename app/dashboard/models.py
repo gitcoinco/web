@@ -2773,12 +2773,12 @@ class Profile(SuperModel):
         chat_driver = Driver(driver_opts)
         chat_driver.login()
 
-        response = chat_driver.client.make_request('get', 
-            '/users/me/teams/unread', 
-            options=None, 
-            params=None, 
-            data=None, 
-            files=None, 
+        response = chat_driver.client.make_request('get',
+            '/users/me/teams/unread',
+            options=None,
+            params=None,
+            data=None,
+            files=None,
             basepath=None)
         total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
         return total_unread
@@ -3185,7 +3185,7 @@ class Profile(SuperModel):
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"transaction{plural} on Gitcoin"
-               
+
 
     @property
     def desc(self):
@@ -4059,6 +4059,10 @@ class Profile(SuperModel):
             dict: The profile card context.
 
         """
+        # Avoid circular ref error
+        from ptokens.models import PurchasePToken
+        from ptokens.models import RedemptionToken
+
         params = {}
         network = self.get_network()
         query_kwargs = {'network': network}
@@ -4091,6 +4095,10 @@ class Profile(SuperModel):
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
+
+        purchased_count = PurchasePToken.objects.filter(token_holder_profile=self, tx_status='completed').count()
+        redeemed_count = RedemptionToken.objects.filter(redemption_requester=self, tx_status='completed').count()
+
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
@@ -4111,6 +4119,8 @@ class Profile(SuperModel):
             'sum_all_funded_tokens': sum_all_funded_tokens,
             'sum_all_collected_tokens': sum_all_collected_tokens,
             'bounties': list(bounties.values_list('pk', flat=True)),
+            'purchased_count': purchased_count,
+            'redeemed_count': redeemed_count
         }
 
         if self.cascaded_persona == 'org':
