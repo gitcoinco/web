@@ -197,8 +197,10 @@ $(document).ready(function() {
         }
       };
       // cache calls for the same URL on the document
-      if(typeof document[url] == 'undefined'){
+
+      if (typeof document[url] == 'undefined') {
         const getMetadata = fetchData('service/metadata/?url=' + url);
+
         $.when(getMetadata).then(metadata_callback);
       } else {
         metadata_callback(document[url]);
