@@ -345,7 +345,7 @@ Vue.component('grants-cart', {
     },
 
     clearCart() {
-      CartData.setCart([]);
+      CartData.clearCart();
       this.grantData = [];
       update_cart_title();
     },
@@ -360,9 +360,10 @@ Vue.component('grants-cart', {
       update_cart_title();
     },
 
-    addComment(id) {
+    addComment(id, text) {
       // Set comment at this index to an empty string to show textarea
-      this.comments.splice(id, 1, ''); // we use splice to ensure it's reactive
+      this.comments.splice(id, 1, text ? text : ''); // we use splice to ensure it's reactive
+      $('input[type=textarea]').focus();
     },
 
     /**
@@ -829,13 +830,16 @@ Vue.component('grants-cart', {
         for (let i = 0; i < this.grantData.length; i += 1) {
           const verification_required_to_get_match = false;
 
-          if (!document.verified && verification_required_to_get_match) {
+          if (
+            (!document.verified && verification_required_to_get_match) ||
+            grantData.is_clr_eligible == 'False'
+          ) {
             this.grantData[i].grant_donation_clr_match = 0;
           } else {
             const grant = this.grantData[i];
             const matchAmount = await this.predictCLRMatch(grant);
 
-            this.grantData[i].grant_donation_clr_match = matchAmount.toFixed(2);
+            this.grantData[i].grant_donation_clr_match = matchAmount ? matchAmount.toFixed(2) : 0;
           }
         }
       },

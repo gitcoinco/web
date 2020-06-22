@@ -907,15 +907,14 @@ def new_feedback(email, feedback):
     from_email = settings.SERVER_EMAIL
     subject = "New Feedback"
     body = f"New feedback from {email}: {feedback}"
-    if not should_suppress_notification_email(to_email, 'admin'):
-        send_mail(
-            from_email,
-            to_email,
-            subject,
-            body,
-            from_name="No Reply from Gitcoin.co",
-            categories=['admin', func_name()],
-        )
+    send_mail(
+        from_email,
+        to_email,
+        subject,
+        body,
+        from_name="No Reply from Gitcoin.co",
+        categories=['admin', func_name()],
+    )
 
 
 def gdpr_reconsent(email):

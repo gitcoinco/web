@@ -29,7 +29,9 @@
     <div class="col">
 
     {% if hackathon %}
+
       <a v-if="!is_registered" href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue btn-block text-uppercase mb-4">Register</a>
+      <a href='#' class="btn btn-gc-blue mb-4">#intros</a>
       <div class="col-12 subheading left-ribbon">
         {% trans "Hackathon Sponsors" %}
       </div>

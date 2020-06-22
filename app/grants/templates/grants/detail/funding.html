@@ -22,7 +22,7 @@
     <div class="card-body">
       <div class="row progress-container  {% if clr_active %} mb-2 {% endif %} {% if not is_team_member %} mt-4 {% endif %}">
         <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-xl-0 ">
-          {% if clr_active or show_clr_card %}
+          {% if grant.is_clr_eligible and clr_active %}
             {% include 'grants/card/clr_match.html' %}
           {% else %}
             <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">MONTHLY RECURRING</p>
@@ -35,7 +35,7 @@
         <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6">
           <p class="sub-title mb-1 font-weight-semibold font-caption mb-1 pt-1">
             ROUND {{ clr_round }}
-            </p>
+          </p>
           <p class="font-subtitle mb-0">
             <span class="font-weight-bold">
               {{grant.amount_received_in_round|floatformat:0|intcomma}} DAI
@@ -44,32 +44,20 @@
             {{grant.positive_round_contributor_count}} contributors 
             </p>
         </div>
-
       </div>
 
-            {% if grant_is_inactive %}
-            <button type="button" class="button button--primary shadow-none font-weight-bold button--full py-3" disabled>
-                {% trans "Grant Has Ended" %}
-            </button>
-          </a>
-        {% else %}
-
-          <div class="text-center">
-          </div>
-        {% endif %}
-
-      {% if clr_active or show_clr_card %}
-       {% include 'grants/card/clr_estimate.html' %}
+      {% if grant.is_clr_eligible and clr_active and not grant_is_inactive %}
+        {% include 'grants/card/clr_estimate.html' %}
       {% endif %}
 
       {% if grant_is_inactive %}
-        <button type="button" class="button button--primary shadow-none font-weight-bold button--full py-3" disabled>
+        <button type="button" class="mt-3 button button--primary shadow-none font-weight-bold button--full py-3" disabled>
           {% trans "Grant Has Ended" %}
         </button>
 
 
       {% elif is_team_member %}
-        <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1">
+        <button class="mt-3 btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1">
           <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
         </button>
 
@@ -77,13 +65,13 @@
 
         {% if user_non_errored_subscription %}
           <a href="{% url 'grants:subscription_cancel' grant.id grant.slug user_subscription.id %}">
-            <button class="button button--primary button--warning button--full shadow-none font-weight-bold py-3">
+            <button class="mt-3 button button--primary button--warning button--full shadow-none font-weight-bold py-3">
               {% trans "Cancel Your Funding" %}
             </button>
           </a>
         {% elif grant.link_to_new_grant %}
           <a href="{{ grant.link_to_new_grant.url }}">
-            <button class="button button--primary shadow-none font-weight-bold button--full py-3">
+            <button class="mt-3 button button--primary shadow-none font-weight-bold button--full py-3">
               Visit the active grant to fund
             </button>
           </a>
@@ -101,8 +89,10 @@
 
       {% if not is_team_member %}
         <div class="pt-2 mb-1">
-          <div class="float-right">
-            <a id="flag" href="#" data-href="/grants/flag/{{grant.id}}">Flag <i class="far fa-flag"></i></a>
+          <div class="text-right">
+            <a id="flag" href="#" data-href="/grants/flag/{{grant.id}}" class="font-caption font-weight-semibold px-3">
+              Flag <i class="ml-2 far fa-flag"></i>
+            </a>
           </div>
         </div>
       {% endif %}

@@ -37,11 +37,17 @@ PREV_CLR_END_DATE = dt.datetime(2020, 4, 7, 12, 0)
 CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0)
 
 # TODO: MOVE TO DB
-THRESHOLD_TECH = 20.0
-THRESHOLD_MEDIA = 20.0
-THRESHOLD_HEALTH = 20.0
-THRESHOLD_CHANGE = 20.0
-THRESHOLD_MATIC = 20.0
+V_THRESHOLD_TECH = 25.0
+V_THRESHOLD_MEDIA = 25.0
+V_THRESHOLD_HEALTH = 25.0
+V_THRESHOLD_CHANGE = 25.0
+V_THRESHOLD_MATIC = 25.0
+
+UV_THRESHOLD_TECH = 5.0
+UV_THRESHOLD_MEDIA = 5.0
+UV_THRESHOLD_HEALTH = 5.0
+UV_THRESHOLD_CHANGE = 5.0
+UV_THRESHOLD_MATIC = 5.0
 
 TOTAL_POT_TECH = 100000.0
 TOTAL_POT_MEDIA = 50000.0
@@ -66,17 +72,41 @@ TOTAL_POT_MATIC = 0.0
 
     returns:
         list of lists of grant data
-            [[grant_id (str), user_id (str), contribution_amount (float)]]
+            [[grant_id (str), user_id (str), verification_status (boolean), contribution_amount (float)]]
 '''
 def translate_data(grants_data):
     grants_list = []
     for g in grants_data:
         grant_id = g.get('id')
         for c in g.get('contributions'):
-            val = [grant_id] + [list(c.keys())[0], list(c.values())[0]]
-            grants_list.append(val)
+            profile_id = c.get('id')
+            if profile_id:
+                val = [grant_id] + [c.get('id')] + [c.get('is_verified')] + [c.get('sum_of_each_profiles_contributions')]
+                grants_list.append(val)
 
     return grants_list
+
+
+
+'''
+    gets list of verified profile ids
+
+    args:
+        list of lists of grant data
+            [[grant_id (str), user_id (str), verification_status (str), contribution_amount (float)]]
+
+    returns:
+        set list of verified user_ids
+            [user_id (str)]
+
+'''
+def get_verified_list(grant_contributions):
+    verified_list = []
+    for _, user, ver_stat, _ in grant_contributions:
+        if ver_stat and user not in verified_list:
+            verified_list.append(user)
+
+    return verified_list
 
 
 
@@ -85,7 +115,7 @@ def translate_data(grants_data):
 
     args:
         list of lists of grant data
-            [[grant_id (str), user_id (str), contribution_amount (float)]]
+            [[grant_id (str), user_id (str), verification_status (boolean), contribution_amount (float)]]
         round
             str ('current' or 'previous') only
 
@@ -102,13 +132,12 @@ def translate_data(grants_data):
 def aggregate_contributions(grant_contributions, _round='current'):
     round_dict = {}
     contrib_dict = {}
-    for proj, user, amount in grant_contributions:
+    for proj, user, _, amount in grant_contributions:
         if _round == 'previous':
             amount = amount / 3
         if proj not in contrib_dict:
             contrib_dict[proj] = {}
         contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
-
     round_dict[_round] = contrib_dict
 
     return round_dict
@@ -170,9 +199,10 @@ def get_totals_by_pair(contrib_dict):
                     }
                 }
             }
-        pair_totals :   {user_id (str): {user_id (str): pair_total (float)}}
-        threshold   :   float
-        total_pot   :   float
+        pair_totals   :   {user_id (str): {user_id (str): pair_total (float)}}
+        v_threshold   :   float
+        uv_threshold  :   float
+        total_pot     :   float
 
     returns:
         total clr award by grant, normalized by the normalization factor
@@ -180,7 +210,7 @@ def get_totals_by_pair(contrib_dict):
         saturation point
             boolean
 '''
-def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_pot=100000.0):
+def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_threshold, uv_threshold, total_pot):
     saturation_point = False
     bigtot = 0
     totals = []
@@ -192,14 +222,18 @@ def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_p
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
-                if k2 > k1:
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / threshold + 1)
+                if k2 > k1 and all(i in verified_list for i in [k2, k1]):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / v_threshold + 1)
+                else:
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
 
             # pairwise matches to last round
             if aggregated_contributions['previous'].get(proj):
                 for x1, y1 in aggregated_contributions['previous'][proj].items():
-                    if x1 > k1:
-                        tot += ((v1 * y1) ** 0.5) / (pair_totals[k1][x1] / threshold + 1)
+                    if x1 != k1 and all(i in verified_list for i in [x1, k1]):
+                        tot += ((v1 * y1) ** 0.5) / (pair_totals[k1][x1] / v_threshold + 1)
+                    else:
+                        tot += ((v1 * y1) ** 0.5) / (pair_totals[k1][x1] / uv_threshold + 1)
 
         bigtot += tot
         totals.append({'id': proj, 'clr_amount': tot})
@@ -246,11 +280,13 @@ def calculate_clr(aggregated_contributions, pair_totals, threshold=25.0, total_p
     returns:
         grants clr award amounts
 '''
-def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, threshold=20.0, total_pot=100000.0):
+def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, v_threshold, uv_threshold, total_pot):
 
     # get data
     curr_round = translate_data(grant_contribs_curr)
     prev_round = translate_data(grant_contribs_prev)
+
+    vlist = get_verified_list(curr_round + prev_round)
 
     # aggregate data
     curr_agg = aggregate_contributions(curr_round, 'current')
@@ -261,13 +297,13 @@ def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, threshold=20.0, tota
     ptots = get_totals_by_pair(combinedagg)
 
     # clr calcluation
-    totals, _ = calculate_clr(combinedagg, ptots, threshold=threshold, total_pot=total_pot)
+    totals, _ = calculate_clr(combinedagg, ptots, vlist, v_threshold, uv_threshold, total_pot)
 
     return totals
 
 
 
-def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_contributions_prev, total_pot, threshold):
+def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_contributions_prev, total_pot, v_threshold, uv_threshold):
 
     _grant_contributions_curr = copy.deepcopy(grant_contributions_curr)
     _grant_contributions_prev = copy.deepcopy(grant_contributions_prev)
@@ -277,9 +313,13 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_co
         for grant_contribution in _grant_contributions_curr:
             if grant_contribution['id'] == grant.id:
                 # add this donation with a new profile (id 99999999999) to get impact
-                grant_contribution['contributions'].append({'999999999999': amount})
+                grant_contribution['contributions'].append({
+                    'id': '999999999999',
+                    'sum_of_each_profiles_contributions': amount,
+                    'is_verified': True
+                })
 
-    grants_clr = run_clr_calcs(_grant_contributions_curr, _grant_contributions_prev, threshold=threshold, total_pot=total_pot)
+    grants_clr = run_clr_calcs(_grant_contributions_curr, _grant_contributions_prev, v_threshold, uv_threshold, total_pot)
 
     # find grant we added the contribution to and get the new clr amount
     for grant_clr in grants_clr:
@@ -304,7 +344,8 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_co
         grants                      : list of grants based on clr_type
         phantom_funding_profiles    : phantom funding data object
         total_pot                   : total pot for clr_type
-        threshold                   : threshold for clr_type
+        v_threshold                 : verified threshold for clr_type
+        uv_threshold                : unverified threshold for clr_type
 
 '''
 def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_date=timezone.now()):
@@ -316,31 +357,41 @@ def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_da
     contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True)
 
     if clr_type == 'tech':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', link_to_new_grant=None)
-        threshold = THRESHOLD_TECH
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='tech', is_clr_eligible=True, link_to_new_grant=None)
+        v_threshold = V_THRESHOLD_TECH
+        uv_threshold = UV_THRESHOLD_TECH
         total_pot = TOTAL_POT_TECH
+
     elif clr_type == 'media':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='media', link_to_new_grant=None)
-        threshold = THRESHOLD_MEDIA
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='media', is_clr_eligible=True, link_to_new_grant=None)
+        v_threshold = V_THRESHOLD_MEDIA
+        uv_threshold = UV_THRESHOLD_MEDIA
         total_pot = TOTAL_POT_MEDIA
+
     elif clr_type == 'health':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='health', link_to_new_grant=None)
-        threshold = THRESHOLD_HEALTH
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='health', is_clr_eligible=True, link_to_new_grant=None)
+        v_threshold = V_THRESHOLD_HEALTH
+        uv_threshold = UV_THRESHOLD_HEALTH
         total_pot = TOTAL_POT_HEALTH
+
     elif clr_type == 'change':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='change', link_to_new_grant=None)
-        threshold = THRESHOLD_CHANGE
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='change', is_clr_eligible=True, link_to_new_grant=None)
+        v_threshold = V_THRESHOLD_CHANGE
+        uv_threshold = UV_THRESHOLD_CHANGE
         total_pot = TOTAL_POT_CHANGE
+
     elif clr_type == 'matic':
-        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='matic', link_to_new_grant=None)
-        threshold = THRESHOLD_MATIC
+        grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type='matic', is_clr_eligible=True, link_to_new_grant=None)
+        v_threshold = V_THRESHOLD_MATIC
+        uv_threshold = UV_THRESHOLD_MATIC
         total_pot = TOTAL_POT_MATIC
+
     else:
-        return None, None, None, None
+        return None, None, None, None, None, None
 
     phantom_funding_profiles = PhantomFunding.objects.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-    return grants, contributions, phantom_funding_profiles, total_pot, threshold
+    return grants, contributions, phantom_funding_profiles, total_pot, v_threshold, uv_threshold
 
 
 
@@ -379,15 +430,13 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
         # phantom funding
         grant_phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-        # only allow verified profiles
-        contribs_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.sms_verification]
-        contribs = contribs.filter(pk__in=contribs_ids)
-
-        # only allow verified profiles
-        grant_phantom_funding_profiles_list = [ele for ele in grant_phantom_funding_profiles if ele.profile.sms_verification]
+        # verified profiles
+        verified_profile_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.sms_verification]
+        verified_phantom_funding_profile_ids = [ele.profile_id for ele in grant_phantom_funding_profiles if ele.profile.sms_verification]
+        verified_profile = list(set(verified_profile_ids + verified_phantom_funding_profile_ids))
 
         # combine
-        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_profiles_list]))
+        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_profiles]))
 
         summed_contributions = []
 
@@ -399,8 +448,13 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
                 phantom_funding = grant_phantom_funding_profiles.filter(profile_id=profile_id)
                 if phantom_funding.exists():
                     sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
-                summed_contributions.append({str(profile_id): sum_of_each_profiles_contributions})
-            # for each grant, list the contributions in key value pairs like {'profile id': sum of contributions}
+
+                summed_contributions.append({
+                    'id': str(profile_id),
+                    'sum_of_each_profiles_contributions': sum_of_each_profiles_contributions,
+                    'is_verified': True if profile_id in verified_profile else False
+                })
+
             contrib_data_list.append({
                 'id': grant_id,
                 'contributions': summed_contributions
@@ -416,14 +470,11 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
     debug_output = []
 
     # one-time data call
-    grants, contributions, phantom_funding_profiles, total_pot, threshold = fetch_data(clr_type, network, PREV_CLR_START_DATE)
+    grants, contributions, phantom_funding_profiles, total_pot, v_threshold, uv_threshold = fetch_data(clr_type, network, PREV_CLR_START_DATE)
 
     # one for previous, one for current
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=CLR_START_DATE)
     grant_contributions_prev = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=PREV_CLR_START_DATE, clr_end_date=PREV_CLR_END_DATE)
-
-    # print(f'GRANT {len(grants)}')
-    # print(f'CONTRIB {len(positive_contrib_data)}')
 
     # calculate clr given additional donations
     for grant in grants:
@@ -439,7 +490,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                 grant_contributions_curr,
                 grant_contributions_prev,
                 total_pot,
-                threshold
+                v_threshold,
+                uv_threshold
             )
             potential_clr.append(predicted_clr)
 
