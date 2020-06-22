@@ -1164,15 +1164,16 @@ class Contribution(SuperModel):
             return
 
         # handle replace of tx_id
-        tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
-        if tx_status in ['pending', 'dropped', 'unknown', '']:
-            new_tx = getReplacedTX(self.tx_id)
-            if new_tx:
-                self.tx_id = new_tx
-            else:
-                # TODO: do stuff related to long running pending txns
-                pass
-            return
+        if self.tx_id:
+            tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+            if tx_status in ['pending', 'dropped', 'unknown', '']:
+                new_tx = getReplacedTX(self.tx_id)
+                if new_tx:
+                    self.tx_id = new_tx
+                else:
+                    # TODO: do stuff related to long running pending txns
+                    pass
+                return
         # handle replace of split_tx_id
         if self.split_tx_id:
             split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
