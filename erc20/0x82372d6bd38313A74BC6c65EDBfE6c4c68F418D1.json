@@ -1,0 +1,17 @@
+{
+    "symbol": "UTC",
+    "address": "0x82372d6bd38313A74BC6c65EDBfE6c4c68F418D1",
+    "overview":{
+          "en": "Utah Chain is a new way of social media. Based on the blockchain method, it is more convenient for users. It is a social network composed of strong authentication, high privacy, weak relationships, and strong personalized users. Interested individuals and organizations can join Utah. In the Chain ecology, it participates in ecological construction, so that users and platforms form a whole new media.",
+          "zh": "Utah Chain作为社交媒体新方式，基于区块链的方式，更多让利用户，是强认证、高隐私、弱关系，强个性用户构成的社交网络，让感兴趣的个人与组织均可加入到Utah Chain生态中，参与生态建设，使用户和平台形成一个整体的新媒体。"
+    },
+    "email": "utahchain@outlook.com",
+    "website": "http://www.utahchain.cn",
+    "whitepaper": "http://www.utahchain.cn/Utah%20Chain%20White%20Paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-04-30",
+    "links": {
+        "telegram": "https://t.me/utcgroup",
+        "twitter": "https://twitter.com/utahchain"
+      }
+}
