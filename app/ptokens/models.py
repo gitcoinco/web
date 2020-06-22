@@ -132,32 +132,23 @@ class PersonalToken(SuperModel):
         return self.title
 
     def get_holders(self):
+        # Initially will be supporting DAI, so isn't necessary check the price for other tokens
         holders = []
-        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self, tx_status='success')
+        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self)
         total_purchases = {
-            purchase['token_holder_profile']: purchase['amount']
-            for purchase in purchases_ptoken.values('token_holder_profile').annotate(Sum('amount'))
+            purchase['token_holder_profile']: purchase['total_amount']
+            for purchase in purchases_ptoken.values('token_holder_profile').annotate(total_amount=Sum('amount'))
         }
 
-        redemptions = RedemptionToken.objects.filter(ptoken=self, tx_status='success')
-        total_redemptions = redemptions.values('redemption_requester').annotate(Sum('total'))
+        redemptions = RedemptionToken.objects.filter(ptoken=self)
+        total_redemptions = redemptions.values('redemption_requester').annotate(total_amount=Sum('total'))
 
-        print('======== WIP ==========')
-        print(total_purchases)
-        print(total_redemptions)
-        print('=======================')
         for redemption in total_redemptions:
             requester = redemption['redemption_requester']
-            print(f'Requester has total {redemption["total"] < total_purchases[requester]} tokens')
-            if redemption['total'] < total_purchases[requester]:
+            if redemption['total_amount'] < total_purchases[requester]:
                 holders.append(requester)
 
-        print('=======================')
-
         return holders
-
-
-
 
 
 class RedemptionToken(SuperModel):

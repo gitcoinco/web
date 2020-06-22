@@ -2,16 +2,17 @@
 <div class="col-12 col-lg-3">
   <div class="profile-header__stats profile-header__stats--contributor card mb-4">
     <div class="card-header font-subheader">
-        <b>{{ ptoken.token_symbol|upper }}</b>
+        <b>{% if ptoken %}{{ ptoken.token_symbol|upper }}{% else %}PRSNAL{% endif %}</b>
       {% trans "Token" %}
       <div id="tooltip" class="float-right mt-2">
         <i class='fa fa-info-circle' data-toggle="tooltip"
-          data-placement="bottom" title="{{ ptoken.token_name }} token">
+          data-placement="bottom" title="{% if ptoken %}{{ ptoken.token_name }} token{% else %}What is a Personal Token?{% endif %} ">
         </i>
       </div>
     </div>
     <div class="card-body">
       <ul>
+        {% if ptoken %}
         <li>
             <b>{{ ptoken.value }} DAI</b> per token
             <div><small>Worth one hour of {{profile.handle}}'s time</small></div>
@@ -23,6 +24,7 @@
         <li>
           <!-- todo: add holders with holders -->
         </li>
+        {% endif %}
         <li id="ptoken-action" data-address="{{ ptoken.token_address }}" data-id="{{ ptoken.id }}">
           {% if not ptoken %}
             <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" data-toggle="modal" data-target="#createTokenModal">CREATE A PERSONAL TOKEN</button>
