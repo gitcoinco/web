@@ -1216,8 +1216,63 @@ body.green.offer_view .announce {
   border-top: 6px solid rgba(62, 0, 255, 0.4);
 }
 
+.activity.hackathon_new_hacker {
+  position: relative;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.activity.hackathon_new_hacker:before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  display: block;
+  background: linear-gradient(to right, #B572D4 0%, #F9DD5B 37%, #75EDB5 100%);
+}
+
+.activity.hackathon_new_hacker:after {
+  content: '';
+  position: absolute;
+  top: 58px;
+  left: 3%;
+  height: 143px;
+  width: 94%;
+  display: block;
+  background: --var(--gc-light-green);
+  z-index: -2;
+}
+
+.activity.hackathon_new_hacker .activity-avatar::after {
+  height: 6.1rem;
+  content: '';
+  background-image: url(/static/v2/images/townsquare-nh.svg);
+  width: 6.1rem;
+  position: absolute;
+  top: -24px;
+  left: 8px;
+  z-index: -1;
+}
+
+.activity.hackathon_new_hacker .activity_detail::after {
+  height: 100%;
+  content: '';
+  background: url(/static/v2/images/townsqure-party.png) 0 0 no-repeat;
+  width: 100%;
+  position: absolute;
+  top: 55px;
+  right: -309px;
+  z-index: -1;
+}
+
 .new_hackathon_project {
   border-top: 6px solid rgba(15, 206, 124, 0.25);
+}
+
+.activity_main .bg_hackathon_new_hacker {
+  background-color: #D3FAEB;
 }
 
 .bg-gc-blue {
@@ -1298,4 +1353,15 @@ body.green.offer_view .announce {
 .dark-mode .web3modal-modal-card {
   background: var(--gc-dark-violet);
   color: white;
+}
+
+.tag-list .tag-list__item {
+  background: #E8F0FA;
+  padding: 4px;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #6487AE;
+  display: inline-block;
+  margin-bottom: 2px;
+  margin-top: 2px;
 }
