@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='PinnedPost',
+            model_name='pinnedpost',
             name='activity',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pin', to='dashboard.Activity'),
         ),
