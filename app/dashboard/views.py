@@ -36,6 +36,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Prefetch, Q
+from django.core.validators import validate_email
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
@@ -95,6 +96,7 @@ from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
+from retail.emails import ALL_EMAILS, render_new_bounty, render_nth_day_email_campaign
 from townsquare.models import Comment, PinnedPost
 from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
@@ -3711,6 +3713,14 @@ def settings_helper_get_auth(request, key=None):
     return profile, es, request.user, is_logged_in
 
 
+def record_form_submission(request, obj, submission_type):
+    obj.form_submission_records.append({
+        'ip': get_ip(request),
+        'timestamp': int(timezone.now().timestamp()),
+        'type': submission_type,
+        })
+    return obj
+
 
 def hackathon_onboard(request, hackathon=''):
     referer = request.META.get('HTTP_REFERER', '')
@@ -3775,6 +3785,7 @@ def hackathon_onboard(request, hackathon=''):
             unsubscribed_email_type[email_type] = True
             if email_type == 'chat' and profile:
                 update_chat_notifications(profile, 'email', False)
+            import pdb; pdb.set_trace()
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
             ip = get_ip(request)
@@ -3788,6 +3799,57 @@ def hackathon_onboard(request, hackathon=''):
             'type': email_types[email_type]
         }
         return TemplateResponse(request, 'email_unsubscribed.html', context)
+
+
+    if request.POST and request.POST.get('submit'):
+        email = request.user.email
+        level = request.POST.get('level')
+        validation_passed = True
+        try:
+            email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
+            email_used_marketing = EmailSubscriber.objects.filter(email=email).select_related('profile')
+            logged_in = request.user.is_authenticated
+            email_already_used = (email_in_use or email_used_marketing)
+            user = request.user if logged_in else None
+            email_used_by_me = (user and (user.email == email or user.profile.email == email))
+            email_changed = es.email != email
+
+            if email_changed and email_already_used and not email_used_by_me:
+                raise ValueError(f'{request.user} attempting to use an email which is already in use on the platform')
+            validate_email(email)
+        except Exception as e:
+            print(e)
+            validation_passed = False
+            msg = str(e)
+        if validation_passed:
+            if es:
+                key = get_or_save_email_subscriber(email, 'settings')
+                es.preferences['level'] = level
+                es.email = email
+                form = dict(request.POST)
+                # form was not sending falses, so default them if not there
+                for email_tuple in ALL_EMAILS:
+                    key = email_tuple[0]
+                    if key not in form.keys():
+                        form[key] = False
+
+                if form['chat'] and profile:
+                    update_chat_notifications(profile, 'email', False)
+
+                import pdb; pdb.set_trace()
+                es.build_email_preferences(form)
+                #es.build_hackathon_preferences(form)
+                es = record_form_submission(request, es, 'email')
+                ip = get_ip(request)
+                es.active = level != 'nothing'
+                es.newsletter = level in ['regular', 'lite1']
+                if not es.metadata.get('ip', False):
+                    es.metadata['ip'] = [ip]
+                else:
+                    es.metadata['ip'].append(ip)
+                es.save()
+            msg = _('Updated your preferences.')
+
 
     params = {
         'active': 'hackathon_onboard',

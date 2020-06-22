@@ -99,14 +99,7 @@
                   {{ hackathon.name }}
                 </h1>
                 <div class="col-12 col-md-3 px-0 mt-md-1 mt-4">
-                {% for email_type in email_types %}
-                  <div class="email_pref_container">
-                    <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{ email_type.0 }}" value="1">
-                    <label class="form__label" for="{{ email_type.0 }}">{% trans "Don't send me" %} <strong>{{ email_type.1 }}</strong></label>
-                    <small id="{{ email_type.0 }}" class="form__input-help">{% trans "Frequency" %}: {{ email_type.2 }}</small>
-                    <br>
-                  </div>
-                {% endfor %}
+
                 {% if not github_handle %}
                   <a class="btn btn-gc-blue col-12" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}?registration={{hackathon.slug}}&referer={{referer}}"
                     onclick="dataLayer.push({'event': 'login'});">Join Now</a>
@@ -119,6 +112,19 @@
                 {% endif %}
                 </div>
               </div>
+              <form id="email-settings" method="POST" class="mt-md-1 mt-4">
+                <a href="#" id="select_all" data-direction="+" >[{% trans "Select All" %}]</a>
+                {% for email_type in email_types %}
+                  <div class="email_pref_container">
+                    <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{ email_type.0 }}" value="1">
+                    <label class="form__label" for="{{ email_type.0 }}">{% trans "Don't send me" %} <strong>{{ email_type.1 }}</strong></label>
+                    <small id="{{ email_type.0 }}" class="form__input-help">{% trans "Frequency" %}: {{ email_type.2 }}</small>
+                    <br>
+                  </div>
+                {% endfor %}
+                {% csrf_token %}
+                <input class='button button--primary' type='submit' name='submit' value="Save">
+              </form>
               <p class="mt-md-1 mt-4">
                 {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
               </p>
