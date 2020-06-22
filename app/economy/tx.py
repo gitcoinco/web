@@ -190,7 +190,7 @@ def grants_transaction_validator(contribution):
             from_address = Web3.toChecksumAddress(contribution.subscription.contributor_address)
             recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
             token_address = Web3.toChecksumAddress(contribution.subscription.token_address)
-            _transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers')
+            _transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers', tx_id=tx)
             failsafe = _transfers['token_name'] == contribution.subscription.token_symbol
             if failsafe:
                 validation['comment'] = f"Token Transfer Passed on the second try"
