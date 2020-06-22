@@ -51,7 +51,9 @@ from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
-from grants.models import Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription
+from grants.models import (
+    CartActivity, Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription,
+)
 from grants.utils import get_leaderboard, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -76,7 +78,6 @@ matching_live_tiny = '💰'
 total_clr_pot = 175000
 clr_round = 6
 clr_active = True
-show_clr_card = True
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
@@ -103,7 +104,7 @@ if not clr_active:
 def get_stats(round_type):
     if not round_type:
         round_type = 'tech'
-    created_on = next_round_start
+    created_on = next_round_start + timezone.timedelta(days=1)
     charts = []
     minute = 15 if not settings.DEBUG else 60
     key_titles = [
@@ -407,7 +408,7 @@ def grants_by_grant_type(request, grant_type):
     if request.user.is_authenticated:
         prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
         prev_grants = Grant.objects.filter(pk__in=prev_grants)
-        
+
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -447,7 +448,6 @@ def grants_by_grant_type(request, grant_type):
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
-        'show_clr_card': show_clr_card,
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
@@ -491,9 +491,16 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
     try:
-        grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
-            pk=grant_id, slug=grant_slug
-        )
+        grant = None
+        try:
+            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+                pk=grant_id, slug=grant_slug
+            )
+        except Grant.DoesNotExist:
+            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+                pk=grant_id
+            )
+
         increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
@@ -525,6 +532,7 @@ def grant_details(request, grant_id, grant_slug):
     is_team_member = is_grant_team_member(grant, profile)
 
     if request.method == 'POST' and (is_team_member or request.user.is_staff):
+        grant.last_update = timezone.now()
         if request.FILES.get('input_image'):
             logo = request.FILES.get('input_image', None)
             grant.logo = logo
@@ -602,7 +610,6 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
-        'show_clr_card': show_clr_card,
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
@@ -703,6 +710,7 @@ def grant_new(request):
                 'twitter_handle_1': request.POST.get('handle1', ''),
                 'twitter_handle_2': request.POST.get('handle2', ''),
                 'metadata': receipt,
+                'last_update': timezone.now(),
                 'admin_profile': profile,
                 'logo': logo,
                 'hidden': False,
@@ -1127,4 +1135,27 @@ def grant_categories(request):
 
     return JsonResponse({
         'categories': categories
+    })
+
+
+@login_required
+def grant_activity(request, grant_id=None):
+    action = request.POST.get('action')
+    metadata = request.POST.get('metadata')
+    bulk = request.POST.get('bulk') == 'true'
+
+    if not grant_id:
+        grant = None
+    else:
+        grant = get_object_or_404(Grant, pk=grant_id)
+
+    _ca = CartActivity.objects.create(grant=grant, profile=request.user.profile, action=action,
+                                metadata=json.loads(metadata), bulk=bulk, latest=True)
+
+    for ca in CartActivity.objects.filter(profile=request.user.profile, latest=True, pk__lt=_ca.pk):
+        ca.latest = False
+        ca.save()
+
+    return JsonResponse({
+        'error': False
     })

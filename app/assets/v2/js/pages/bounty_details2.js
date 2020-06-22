@@ -114,7 +114,7 @@ Vue.mixin({
 
         case 'ZIL':
           qr_string = value ?
-            `zilliqa://${address}?amount=${value}e12` :
+            `zilliqa://${address}?amount=${value}` :
             `zilliqa://${address}`;
           break;
       }
