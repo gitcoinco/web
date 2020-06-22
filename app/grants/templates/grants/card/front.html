@@ -28,6 +28,11 @@
   <div class="grant-item__content px-3">
     <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title|truncatechars:60 }}</a></h2>
     <p class="grant-item__pitch font-caption mb-2">{{ grant.description|truncatechars:145 }}</p>
+    <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
+      <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
+      Last Update: {% if grant.last_update %}{{ grant.last_update|naturaltime }} {% else %} Before Round 6{% endif %}
+    </p>
+
     <div class="grant-item__owner">
         <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
         <a href="{% url 'profile' grant.admin_profile.handle %}" target="_blank" rel="noopener noreferrer">
@@ -52,30 +57,45 @@
                 CLR MATCH ROUND 6
             </h2>
           </div>
-          <div class="col-6 float-right pr-0">
+          <div class="col-6 float-right px-0">
             <h2 class="font-title font-weight-bold amount pt-1 mb-2">
               {{grant.amount_received_in_round|floatformat:2}} DAI
             </h2>
             <p class="amount mb-2 font-caption font-weight-semibold">
-            raised from {{grant.positive_round_contributor_count}} contributors 
+            raised from {{grant.positive_round_contributor_count}} contributors
             </p>
           </div>
           <div class="col-6">
-            <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-              {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
-            </h2>
-            <p class="amount mb-2 font-caption font-weight-semibold">
-            {% if grant.id in round_5_5_grants %}
-              Current Round 5.5 Match
+            {% if grant.is_clr_eligible %}
+              <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
+              </h2>
+              <p class="amount mb-2 font-caption font-weight-semibold">
+              {% if grant.id in round_5_5_grants %}
+                Current Round 5.5 Match
+              {% else %}
+                Estimated CLR Match
+              {% endif %}
+              </p>
             {% else %}
-              Estimated CLR Match
+              <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+              </h2>
+              <p class="amount mb-2 font-caption font-weight-semibold">MONTHLY RECURRING</p>
             {% endif %}
-            </p>
           </div>
         </div>
-        <div class="col-12 pb-3">
-          {% include 'grants/card/clr_estimate.html' with short=True %}
-        </div>
+
+        {% if grant.is_clr_eligible %}
+          <div class="col-12 pb-3">
+            {% include 'grants/card/clr_estimate.html' with short=True %}
+          </div>
+        {% else %}
+          <h2 class="font-subheader text-center amount pt-4 mb-3" style="color:#069953">
+            NOT ELIGIBLE FOR CLR
+          </h2>
+        {% endif%}
+
         <div class="col-12 pb-4">
           {% is_team_member grant profile as is_on_team %}
           {% if not is_on_team %}

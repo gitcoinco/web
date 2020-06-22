@@ -42,7 +42,7 @@ class BountyEventAdmin(admin.ModelAdmin):
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
     readonly_fields = ['fulfiller_github_username']
-    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
+    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url', 'payout_status']
     search_fields = [
         'fulfiller_address', 'fulfiller_metadata', 'fulfiller_github_url'
     ]

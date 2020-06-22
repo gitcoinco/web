@@ -1546,3 +1546,20 @@ def tribes_home(request):
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)
+
+def admin_index(request):
+    from dashboard.utils import get_all_urls # avoid circular import
+    urls = get_all_urls()
+    search_str = '_administration/email'
+    def clean_url(url):
+        url = "".join(url)
+        url = url.replace('$', '')
+        url = url.replace('^', '')
+        return url
+    urls = [clean_url(url) for url in urls]
+    urls = [url for url in urls if search_str in url]
+    context = {
+        'urls': urls,
+    }
+
+    return TemplateResponse(request, 'admin_index.html', context)

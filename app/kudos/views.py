@@ -737,6 +737,10 @@ def redeem_bulk_coupon(coupon, profile, address, ip_address, save_addr=False, su
             tx_status = 'not_subed'
         else:
             try:
+                # TODO - in the future, override this if the user pays for expediated processing
+                if recommend_min_gas_price_to_confirm_in_time(1) > 15:
+                    raise Exception("gas price is too high.  try again when its not pls")
+
                 txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
             except Exception as e:
                 txid = "pending_celery"
