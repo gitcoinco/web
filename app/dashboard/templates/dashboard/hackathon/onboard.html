@@ -70,6 +70,21 @@
       .modal-header, .modal-body, .modal-footer {
         border: none;
       }
+
+      .gc-bg-blue {
+        background-color: #4100FF;
+        height: 100px;
+        background-image: url(/static/v2/images/dots.svg);
+        ackground-position: center;
+      }
+
+      .negative-offset {
+        top: -55px;
+        max-height: 160px;
+      }
+      .overflow-show {
+        overflow: visible !important;
+      }
     </style>
   </head>
   <body class="interior {{active}} g-font-muli">
@@ -297,25 +312,44 @@
         </div>
       </div>
     </div>
-    <div class="modal" id="questions-form" tabindex="-1" data-backdrop="static"  role="dialog" style="height: auto">
-      <div class="" role="document">
+    <div class="modal p-0 overflow-show" id="questions-form" tabindex="-1" data-backdrop="static"  role="dialog" style="height: auto">
+      <div role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+          <div class="header-images gc-bg-blue position-relative text-center d-flex justify-content-center">
+            {% for question in poll.question_set.all %}
+              {% if question.header %}
+              <img id="header-{{ question.id }}" class="negative-offset position-absolute {% if not forloop.first %}d-none{% endif %}" src="{{ question.header.image.url }}" alt="">
+              {% endif %}
+            {% endfor %}
           </div>
-          <div class="px-5">
+          <div class="modal-header">
+            <a class="close" data-dismiss="modal" aria-label="Close" rel="modal:close">
+              <span aria-hidden="true">&times;</span>
+            </a>
+          </div>
+          <div class="px-5 mb-4 mx-3">
               <form id="hackathon-poll">
                 <div id="poll_container" class="carousel slide" data-ride="carousel">
                   <div class="carousel-inner">
                 {% for question in poll.question_set.all %}
                   <fieldset style="min-height: 200px" class="carousel-item {% if forloop.first %}active first{% elif forloop.last %}last{% endif %}" data-question="{{ question.id }}" data-step="{{ forloop.counter0 }}" data-rstep="{{ forloop.revcounter0 }}">
                   <div>
-                    {% if question.question_type == 'SINGLE_CHOICE' %}
+                    {% if question.question_type == 'SINGLE_OPTION' %}
                         <div class="form__checkbox">
                           <input type="checkbox" id="single_{{ question.id }}" name="{{ question.id }}">
                           <label class="form__label" for="single_{{ question.id }}">{{ question.text }}</label>
+                        </div>
+                    {% elif question.question_type == 'SINGLE_CHOICE' %}
+                        <div class="question">
+                        <h4 class="font-header font-weight-bold pt-0 mb-5">{{ forloop.counter }}. {{ question.text }}</h4>
+                        <div class="options">
+                        {% for option in question.option_set.all %}
+                          <div class="px-1">
+                            <input type="radio" id="multiple_{{ option.id }}" name="{{ question.id }}" value="{{ option.id }}">
+                       		  <label for="multiple_{{ option.id }}">{{ option.text }}</label>
+                          </div>
+                        {% endfor %}
+                        </div>
                         </div>
                     {% elif question.question_type == 'MULTIPLE_CHOICE' %}
                         <div class="question">
@@ -440,6 +474,8 @@
       $('[data-slide="next"]').click(function (e) {
         e.preventDefault();
         const fieldset = $('fieldset.active');
+        $('.negative-offset').addClass('d-none')
+        $(`#header-${fieldset.next().data('question')}`).removeClass('d-none')
 
         if (fieldset.data('rstep') === 1) {
           $("#poll-prev").removeClass('d-none')
@@ -470,9 +506,10 @@
           $('#poll-empty').addClass('d-none')
           $('#poll-submit').addClass('d-none')
         }
+        $('.negative-offset').addClass('d-none')
+        $(`#header-${fieldset.prev().data('question')}`).removeClass('d-none')
         poll_manager.carousel('prev');
       })
-
     </script>
     <script src="{% static 'v2/js/pages/hackathon-onboard.js' %}"></script>
 
