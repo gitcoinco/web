@@ -5111,8 +5111,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr'
+    if payout_type not in ['fiat', 'qr', 'web3_modal']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal'
         return JsonResponse(response)
 
     tenant = request.POST.get('tenant')
@@ -5159,6 +5159,20 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
         fulfillment.payout_status = 'pending'
 
+    elif payout_type == 'web3_modal':
+        payout_status = request.POST.get('payout_status')
+        if not payout_status :
+            response['message'] = 'error: missing parameter payout_status for web3 modal payment'
+            return JsonResponse(response)
+
+        funder_address = request.POST.get('funder_address')
+        if not funder_address :
+            response['message'] = 'error: missing parameter funder_address for web3 modal payment'
+            return JsonResponse(response)
+
+        fulfillment.funder_address = fulfillment.funder_address
+        fulfillment.payout_status = payout_status
+
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
         fulfillment.payout_tx_id = payout_tx_id
@@ -5169,7 +5183,7 @@ def payout_bounty_v1(request, fulfillment_id):
     fulfillment.payout_amount = amount
     fulfillment.token_name = token_name
 
-    if payout_type == 'fiat':
+    if payout_type == 'fiat' or payout_type == 'web3_modal':
         fulfillment.payout_status = 'done'
         fulfillment.accepted_on = timezone.now()
         fulfillment.accepted = True
@@ -5393,7 +5407,6 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
     profile.save()
 
     redis.set(f'verification:{user.id}:phone', hash_number)
-
 
 
 @login_required

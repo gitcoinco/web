@@ -328,6 +328,12 @@ Vue.mixin({
         payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
       });
     },
+    payWithWeb3Step: function(fulfillment_id, fulfiller_address) {
+      let vm = this;
+      const modal = this.$refs['payout-modal'][0];
+
+      payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
+    },
     closeBounty: function() {
 
       let vm = this;
@@ -478,6 +484,8 @@ Vue.mixin({
         vm.fulfillment_context.active_step = 'payout_amount';
       } else if (fulfillment.payout_type == 'qr') {
         vm.fulfillment_context.active_step = 'check_wallet_owner';
+      } else if (fulfillment.payout_type == 'web3_modal') {
+        vm.fulfillment_context.active_step = 'payout_amount';
       }
     }
   },
