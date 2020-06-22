@@ -493,6 +493,7 @@ urlpatterns = [
         marketing.views.new_bounty_daily_preview,
         name='admin_new_bounty_daily'
     ),
+    path('_administration/email/', retail.views.admin_index, name='admin_index_emails'),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
     path(
         '_administration/email/featured_funded_bounty',
@@ -684,6 +685,7 @@ urlpatterns = [
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
+    url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
     url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
 
     # users

@@ -125,6 +125,14 @@
             </p>
           </div>
         {% endif %}
+          {% if grant.last_update %}
+          <div class="font-body mb-2">
+            <i style="width: 14px;" class="fas fa-clock mr-2 text-center"></i>
+            <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant.">
+              Last Update: {{ grant.last_update|naturaltime }}
+            </p>
+          </div>
+        {% endif %}
   
         {% if user_non_errored_subscription %}
           <div class="font-body mb-2">

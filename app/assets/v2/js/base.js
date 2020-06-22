@@ -17,7 +17,10 @@ $(document).ready(function() {
     });
   }
 
-  applyCartMenuStyles();
+  // TODO: MOVE TO GRANTS shared
+  if (typeof CartData != 'undefined') {
+    applyCartMenuStyles();
+  }
 
   $('body').on('click', '.copy_me', function() {
     $(this).focus();

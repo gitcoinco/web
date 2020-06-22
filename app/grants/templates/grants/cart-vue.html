@@ -64,13 +64,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <h1 class="col-auto text-left font-bigger-2 black" style="font-weight: bold; margin-bottom: 0">
                   GRANT CART ([[ grantData.length ]] ITEM<span v-if="grantData.length !== 1">S</span>)
                 </h1>
-                <div class="col-auto text-right font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;"
-                  @click="clearCart">
-                  Clear my cart
-                </div>
                 <div class="col-auto text-right font-smaller-1 hyperlink"
                   @click="showSMSValidationModal()">
-                  Verifiy my number
+                  Verify my number
+                </div>
+                <div class="col-auto text-right font-smaller-1 hyperlink" style="margin: 2rem 0 0 auto;"
+                  @click="confirmClearCart">
+                  Clear cart <i class="fa fa-times" aria-hidden="true"></i>
+                </div>
+                <div class="col-auto text-right font-smaller-1 hyperlink"
+                  @click="shareCart">
+                  Share cart <i class="fa fa-share-alt" aria-hidden="true"></i>
                 </div>
               </div>
             </div>
@@ -110,7 +114,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               </div>
               {% comment %} Cart Contents: MOBILE {% endcomment %}
               <div v-if="isMobileDevice">
-                <div v-for="(grant, index) in grantData" class="grant-row">
+                <div v-for="(grant, index) in grantData" :key="grant.grant_id" class="grant-row">
                   <div class="grant-row-style">
                     <div class="row align-items-center justify-content-between">
                       {% comment %} Logo, title, and delete button {% endcomment %}
@@ -118,7 +122,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div class="row flex-nowrap">
                           <img class="col-2" style="padding:0 0.5rem" :src="grant.grant_logo" alt="Grant logo"
                             width="40" height="24">
-                          <div class="col-8 grant-name black" style="padding:0">[[grant.grant_title]]</div>
+                          <div class="col-8 grant-name black" style="padding:0"><a :href="grant.grant_url">[[grant.grant_title]]</a></div>
                           <div class="col-1" style="opacity: 40%">
                             <i class="fas fa-trash-alt" style="cursor: pointer"
                               @click="removeGrantFromCart(grant.grant_id)"></i>
@@ -130,16 +134,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div class="row flex-nowrap justify-content-between">
                           <input class="col-5 form-control" style="margin-left:0.5rem" min="0"
                             v-model="grant.grant_donation_amount" type="number" placeholder="Amount">
-                          <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
-                            class="col-6 form-control" style="margin-right:0.5rem" placeholder="Select token">
+                          <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
+                            style="margin-right:0.5rem" placeholder="Select token">
+                            <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
+                              <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
+                              <span v-else>[[ option ]]</span>
+                            </option>
                           </select2>
                         </div>
                       </div>
                       {% comment %} Add comment {% endcomment %}
                       <div class="col-12 font-smaller-3" style="margin-top:1rem">
                         <div class="row">
-                          <div class="col-auto" @click="addComment(index)" style="cursor:pointer;">
-                            + Add comment to owner
+                          <div class="comment-option col-auto" @click="addComment(index)">
+                            <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
+                          </div>
+                          <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
+                            <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
+                          </div>
+                          <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
+                            <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
+                          </div>
+                          <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
+                            <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
+                          </div>
+                          <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
+                            <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
                           </div>
                         </div>
                       </div>
@@ -163,7 +188,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="row">
                         <img :src="grant.grant_logo" style="margin-right: 0.5rem" alt="Grant logo" width="30"
                           height="24">
-                        <div class="grant-name black">[[grant.grant_title]]</div>
+                        <div class="grant-name black"><a :href="grant.grant_url" target="_blank">[[grant.grant_title]]</a></div>
                       </div>
                     </div>
                     {% comment %} Grant amount and currency {% endcomment %}
@@ -171,19 +196,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="row flex-nowrap align-items-center justify-content-start">
                         <input class="col-6 form-control" v-model="grant.grant_donation_amount" type="number" min="0"
                           placeholder="Amount" style="margin-right: 1rem">
-                        <select2 :options="currencies[index]" v-model="grant.grant_donation_currency"
-                          class="col-6 form-control" placeholder="Select token">
+                        <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
+                          placeholder="Select token">
+                          <option v-for="option in currencies[index]" v-bind:value="option" :disabled="!option">
+                            <span v-if="!option" style="height:1px; font-size:1px">&mdash;&mdash;&mdash;&mdash;</span>
+                            <span v-else>[[ option ]]</span>
+                          </option>
                         </select2>
                       </div>
                     </div>
                     {% comment %} CLR Match Amount {% endcomment %}
                     <div class="col-2">
                       <div class="row align-items-center justify-content-between clr-match-box">
-                        <div>
-                          [[grant.grant_donation_clr_match]] DAI
-                        </div>
-                        <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
+                        <template v-if="grant.is_clr_eligible == 'True'">
+                          <div>[[grant.grant_donation_clr_match]] DAI</div>
+                          <img src="{% static 'v2/images/diamonds_high_fiving.gif' %}" alt="Diamonds high-fiving"
                           width="20">
+                        </template>
+                        <div v-else class="font-caption font-weight-semibold">
+                          Not Eligible for CLR
+                        </div>
                       </div>
                     </div>
                     {% comment %} Delete Icon {% endcomment %}
@@ -193,9 +225,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
 
                     </div>
                   </div>
-                  <div class="row font-smaller-3" style="margin-left:0.5rem">
-                    <div @click="addComment(index)" class="col-auto" style="cursor:pointer;">
-                      + Add comment to owner
+                  <div class="row font-smaller-3 mt-3"  style="margin-left:0.5rem">
+                    <div class="comment-option col-auto" @click="addComment(index)">
+                      <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
+                    </div>
+                    <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
+                      <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
+                    </div>
+                    <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
+                      <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
+                    </div>
+                    <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
+                      <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
+                    </div>
+                    <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
+                      <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
                     </div>
                   </div>
                   <input v-if="comments[index] !== undefined" style="margin-top:0.5rem; margin-left:0.5rem"
@@ -339,13 +388,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div class="mx-5 mt-5 mb-4 text-center" v-if="validationStep == 'intro'">
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
-                    <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why is Gitcoin asking for my SMS number? <b>&rArr;</b></a>
                   </div>
-                  <p class="mb-2 font-subheader text-left"><strong>Please verify your phone number.</strong></p>
-                  <p class="mb-4 font-subheader text-left">This process is optional - verifying increases your trust level + the impact of your contributions. You can still contribute to grants without verifying, but your matching impact may be reduced, especially in cases of many contributions, until you are verified. </p>
+                  <p class="mb-2 font-subheader text-left"><strong>It's instant, private & secure.</strong></p>
+                  <p class="mb-4 font-subheader text-left">
+                  1) This process is optional.
+                  <BR>
+                  2) Verifying increases your trust level + the impact of your contributions.
+                  <BR>
+                  3) You can still contribute to grants without verifying, but your matching impact may be reduced until you are verified, especially in cases of many contributions.
+                  <BR>
+                  4) Gitcoin has gone to <a target="_blank" rel="noopener noreferrer" class="gc-text-blue" href="https://twitter.com/owocki/status/1272149204287160320">extreme lengths to preserve your privacy</a>.  Please only verify your SMS on sites you know and trust.
+                  <BR>
+                  5) <a target="_blank" rel="noopener noreferrer" class="gc-text-blue" href="https://twitter.com/owocki/status/1271088915982675974">Click here to read more on why Gitcoin is asking for your SMS number.</a>
+                </p>
+
                   <b-button @click="validationStep='requestVerification'" class="btn-gc-blue mb-2" size="lg">Verify
                    Instantly</b-button>
-                  <p class="mb-1 font-subheader text-center font-smaller-2 grey">(For privacy preservation purposes, Gitcoin does NOT store your phone number)</p>
+                  <p class="mb-1 font-subheader text-center font-smaller-2 grey">
+                    (For privacy preservation purposes, Gitcoin does NOT store your phone number <i class="fas fa-lock"></i>)
+                  </p>
                   <div class="mb-1 font-subheader text-center">
                     - or -
                     <a id="verify_offline" href="#">
@@ -359,7 +420,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       IMPORTANT: Be sure to include (1) your gitcoin username (2) proof of ownership of a SMS number.
                     </div>
                     <br>
-                    - or - 
+                    - or -
                     <br>
                     <a href="#" @click="dismissVerification()" variant="link">Skip</a>
                   </div>
@@ -367,7 +428,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div class="mx-5 my-5 text-center" v-if="validationStep == 'requestVerification'">
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
-                    <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why is Gitcoin asking for my SMS number? <b>&rArr;</b></a>
                   </div>
                   <p class="mb-5 font-subheader">We will send you a verification code.</p>
                   <vue-tel-input ref="tel-input" :validCharactersOnly="true" @validate="isValidNumber" v-model="phone"
@@ -390,9 +450,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 <div class="mx-5 my-5 text-center" v-if="validationStep == 'verifyNumber'">
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
-                    <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1" href="https://twitter.com/owocki/status/1271088915982675974"> Why is Gitcoin asking for my SMS number? <b>&rArr;</b></a>
                   </div>
                   <p class="mb-5 font-subheader">Enter the verification code sent to your number.</p>
+
                   <input class="form-control" type="number" required v-model="code">
                   <div v-if="timeInterval > timePassed">
                     <span class="label-warning">Wait [[ timeInterval - timePassed ]] second before request another

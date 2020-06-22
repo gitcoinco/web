@@ -20,9 +20,7 @@ def find_txn_on_zil_explorer(fulfillment, network='mainnet'):
     payeeAddress = fulfillment.fulfiller_address
 
     url = f'https://api.viewblock.io/v1/zilliqa/addresses/{funderAddress}/txs?network={network}'
-
     response = requests.get(url, headers=headers).json()
-
     if len(response):
         for txn in response:
             if (
@@ -37,12 +35,11 @@ def find_txn_on_zil_explorer(fulfillment, network='mainnet'):
 
 
 def get_zil_txn_status(txnid, network='mainnet'):
-    if not txnid:
+    if not txnid or txnid == "0x0":
         return None
 
     url = f'https://api.viewblock.io/v1/zilliqa/txs/{txnid}?network={network}'
     view_block_response = requests.get(url, headers=headers).json()
-
     if view_block_response:
 
         response = {
@@ -60,10 +57,11 @@ def get_zil_txn_status(txnid, network='mainnet'):
 
 
 def sync_zil_payout(fulfillment):
-    if not fulfillment.payout_tx_id:
+    if not fulfillment.payout_tx_id or fulfillment.payout_tx_id == "0x0":
         txn = find_txn_on_zil_explorer(fulfillment)
         if txn:
             fulfillment.payout_tx_id = txn['hash']
+            fulfillment.save()
 
     if fulfillment.payout_tx_id:
         txn_status = get_zil_txn_status(fulfillment.payout_tx_id)
@@ -71,5 +69,6 @@ def sync_zil_payout(fulfillment):
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
+            fulfillment.save()
+
             record_payout_activity(fulfillment)
-        fulfillment.save()

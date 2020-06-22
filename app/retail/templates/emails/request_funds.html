@@ -42,7 +42,7 @@
   <div>
     <h1>🕑️ {% trans "Request funds" %} 🕑️</h1>
     <h3>
-        {{request.requester.handle}} {% blocktrans %} request funds worth {{amount}} {{tokenName}}{% endblocktrans %}
+        {{request.requester.handle}} {% blocktrans %} requested {{amount}} {{tokenName}}{% endblocktrans %}
         {% if address %}
         Recipient Address: {{ address }}
         {% endif %}
@@ -64,6 +64,11 @@
     {% if not already_redeemed %}
       <div style="margin-bottom: 1.5em;">
         <a class="button" href="{{link}}">{% trans "Fund this Request" %}</a>
+        <br>
+        <br>
+        - or -
+        <br>
+        <a class="" href="https://gitcoin.co/{{request.requester.handle}}">{% trans "Write them a message" %}</a>
       </div>
     {% endif %}
   </div>

@@ -60,7 +60,7 @@ const updateOnNetworkOrTokenChange = () => {
 function changeUi() {
   $('.eth-chain').show();
   FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
-  
+
   $('#navbar-network-banner').show();
   $('.navbar-network').show();
 
@@ -185,7 +185,7 @@ const getSuggestions = () => {
       }
 
       obj.children.forEach((children, childIndex) => {
-        children.text = children.fulfiller_github_username || children.user__profile__handle || children.handle;
+        children.text = children.fulfiller_github_username || children.user__profile__handle || children.profile__handle || children.handle;
         children.id = generalIndex;
         if (obj.text == 'Invites') {
           children.selected = true;

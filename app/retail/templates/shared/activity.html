@@ -18,7 +18,7 @@
 
 {% load humanize i18n static grants_extra %}
 <div class="box d-block m-0 mb-3 activity {% if is_pin %} pinned-activity {% else %} infinite-item {% endif %} {{ row.activity_type }} px-sm-3 py-4" {% if not is_pin %} data-pk="{{row.pk}}" {% endif %}>
-  <div class="activity_main row">
+  <div class="activity_main row bg_{{ row.activity_type }}">
     <div class="col-2 p-0">
       <div class="activity-avatar">
         <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
@@ -62,8 +62,17 @@
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
          <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
-
-         {% if row.hackathonevent %}
+         {% if row.metadata.looking_team_members %}
+           <span class="font-body"> is
+             <i class="fas fa-users gc-text-blue"></i>
+             <span>Looking for Team Members</span>
+           </span>
+         {% elif row.metadata.looking_project %}
+           <span class="font-body"> is
+             <i class="far font-body fa-lightbulb gc-text-blue"></i>
+             <span>Looking for a Project</span>
+           </span>
+         {% elif row.hackathonevent %}
             <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag" data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
             <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" data-toggle="tooltip" title="Filter {{ row.hackathonevent.name }} Posts">
               <i class="fas fa-filter"></i>
@@ -137,7 +146,18 @@
           <a href="/{{row.hackathonevent.relative_url}}">
             {{row.hackathonevent.name}}
           </a>
-
+        {% elif row.activity_type == 'hackathon_new_hacker' %}
+          <br>
+          {% if row.metadata.intro_text %}
+            {{ row.metadata.intro_text }}
+            <br>
+          {% endif %}
+          <span class="font-weight-bold mt-2">{% trans "Skills" %}</span>
+          <div class="tag-list mt-1">
+            {% for keyword in row.profile.keywords %}
+              <small class="tag-list__item">{{keyword}}</small>
+            {% endfor %}
+          </div>
         {% elif row.activity_type == 'update_grant' %}
           {% trans "updated" %}
           <a href="{{ row.metadata.grant_url }}" >
@@ -416,6 +436,10 @@
           <img height="15" src="{% static 'v2/images/top-bar/kudos-symbol-neg.svg' %}" alt="">
           <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New kudos</span>
         </div>
+      {% elif row.activity_type == 'hackathon_new_hacker' %}
+      <div class="bg-gc-dark-blue card-ribbon px-2 text-center">
+        <span class="text-white font-weight-bold font-smaller-2 text-capitalize">New Hacker</span>
+      </div>
       {% elif row.activity_type == 'new_hackathon_project' %}
         <div class="bg-gc-green card-ribbon px-2 text-center">
           <img height="15" src="{% static 'v2/images/top-bar/hackathons-symbol-neg.svg' %}" alt="">

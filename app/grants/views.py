@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import datetime
+import hashlib
 import json
 import logging
 import random
@@ -40,6 +41,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
+from app.services import RedisService
 from app.settings import EMAIL_ACCOUNT_VALIDATION
 from app.utils import get_profile
 from cacheops import cached_view
@@ -49,7 +51,9 @@ from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
-from grants.models import Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription
+from grants.models import (
+    CartActivity, Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription,
+)
 from grants.utils import get_leaderboard, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
@@ -69,12 +73,11 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 clr_matching_banners_style = 'pledging'
 matching_live = '(💰$175K Match LIVE!) '
-live_now = '❇️ LIVE NOW! Up to $150k Matching Funding on Gitcoin Grants'
+live_now = '❇️ LIVE NOW! Up to $175k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
 total_clr_pot = 175000
 clr_round = 6
 clr_active = True
-show_clr_card = True
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
@@ -83,9 +86,10 @@ show_clr_card = True
 
 last_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 last_round_end = timezone.datetime(2020, 4, 7, 12, 0)
+# TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
 next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
 after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
-round_end = timezone.datetime(2020, 6, 29, 12, 0)
+round_end = timezone.datetime(2020, 7, 3, 12, 0)
 round_types = ['media', 'tech', 'change']
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
@@ -100,7 +104,7 @@ if not clr_active:
 def get_stats(round_type):
     if not round_type:
         round_type = 'tech'
-    created_on = next_round_start
+    created_on = next_round_start + timezone.timedelta(days=1)
     charts = []
     minute = 15 if not settings.DEBUG else 60
     key_titles = [
@@ -237,14 +241,28 @@ def grants_stats_view(request):
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
+
 def grants(request):
     """Handle grants explorer."""
+    
+    _type = request.GET.get('type', 'all')
+    return grants_by_grant_type(request, _type)
+
+def grants_by_grant_type(request, grant_type):
+    """Handle grants explorer."""
+
+    # hack for vivek
+    if grant_type == 'change':
+        new_url = request.get_full_path().replace('/change','/crypto-for-black-lives')
+        return redirect(new_url)
+    if grant_type == 'crypto-for-black-lives':
+        grant_type = 'change'
+
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
-    grant_type = request.GET.get('type', 'all')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
     profile = get_profile(request)
@@ -361,9 +379,9 @@ def grants(request):
     ]
 
     sub_categories = []
-    for keyword in [grant_type['keyword'] for grant_type in grant_types]:
+    for _keyword in [grant_type['keyword'] for grant_type in grant_types]:
         sub_category = {}
-        sub_category[keyword] = [tuple[0] for tuple in basic_grant_categories(keyword)]
+        sub_category[_keyword] = [tuple[0] for tuple in basic_grant_categories(_keyword)]
         sub_categories.append(sub_category)
 
     title = matching_live + str(_('Grants'))
@@ -371,6 +389,8 @@ def grants(request):
     grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
     if grant_type_title_if_any == "Media":
         grant_type_title_if_any = "Community"
+    if grant_type_title_if_any == "Change":
+        grant_type_title_if_any = "Crypto for Black Lives"
     grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
     if has_real_grant_type:
         title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"
@@ -388,7 +408,7 @@ def grants(request):
     if request.user.is_authenticated:
         prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
         prev_grants = Grant.objects.filter(pk__in=prev_grants)
-        
+
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -428,7 +448,6 @@ def grants(request):
         'grant_amount': grant_amount,
         'total_clr_pot': total_clr_pot,
         'clr_active': clr_active,
-        'show_clr_card': show_clr_card,
         'sort_by_index': sort_by_index,
         'clr_round': clr_round,
         'show_past_clr': show_past_clr,
@@ -472,9 +491,16 @@ def grant_details(request, grant_id, grant_slug):
     profile = get_profile(request)
     add_cancel_params = False
     try:
-        grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
-            pk=grant_id, slug=grant_slug
-        )
+        grant = None
+        try:
+            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+                pk=grant_id, slug=grant_slug
+            )
+        except Grant.DoesNotExist:
+            grant = Grant.objects.prefetch_related('subscriptions','team_members').get(
+                pk=grant_id
+            )
+
         increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
         subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
         cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
@@ -506,6 +532,7 @@ def grant_details(request, grant_id, grant_slug):
     is_team_member = is_grant_team_member(grant, profile)
 
     if request.method == 'POST' and (is_team_member or request.user.is_staff):
+        grant.last_update = timezone.now()
         if request.FILES.get('input_image'):
             logo = request.FILES.get('input_image', None)
             grant.logo = logo
@@ -583,7 +610,6 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': clr_active,
-        'show_clr_card': show_clr_card,
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
@@ -623,12 +649,6 @@ def flag(request, grant_id):
             grant=grant,
             )
         new_grant_flag_admin(flag)
-        profile = Profile.objects.filter(handle='gitcoinbot').first()
-        activity = Activity.objects.create(profile=profile, activity_type='flagged_grant', grant=grant)
-        comment = Comment.objects.create(
-            profile=profile,
-            activity=activity,
-            comment=f"Comment from anonymous user: {comment}")
 
 
     return JsonResponse({
@@ -690,6 +710,7 @@ def grant_new(request):
                 'twitter_handle_1': request.POST.get('handle1', ''),
                 'twitter_handle_2': request.POST.get('handle2', ''),
                 'metadata': receipt,
+                'last_update': timezone.now(),
                 'admin_profile': profile,
                 'logo': logo,
                 'hidden': False,
@@ -811,106 +832,13 @@ def grant_fund(request, grant_id, grant_slug):
         return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
 
     if request.method == 'POST':
-        if 'contributor_address' in request.POST:
-            subscription = Subscription()
+        from grants.tasks import process_grant_contribution
+        process_grant_contribution.delay(grant_id, grant_slug, profile.pk, request.POST)
 
-            if grant.negative_voting_enabled:
-                #is_postive_vote = True if request.POST.get('is_postive_vote', 1) else False
-                is_postive_vote = request.POST.get('match_direction', '+') == '+'
-            else:
-                is_postive_vote = True
-            subscription.is_postive_vote = is_postive_vote
+        return JsonResponse({
+            'success': True,
+        })
 
-            subscription.active = False
-            subscription.contributor_address = request.POST.get('contributor_address', '')
-            subscription.amount_per_period = request.POST.get('amount_per_period', 0)
-            subscription.real_period_seconds = request.POST.get('real_period_seconds', 2592000)
-            subscription.frequency = request.POST.get('frequency', 30)
-            subscription.frequency_unit = request.POST.get('frequency_unit', 'days')
-            subscription.token_address = request.POST.get('token_address', '')
-            subscription.token_symbol = request.POST.get('token_symbol', '')
-            subscription.gas_price = request.POST.get('gas_price', 0)
-            subscription.new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '0x0')
-            subscription.num_tx_approved = request.POST.get('num_tx_approved', 1)
-            subscription.network = request.POST.get('network', '')
-            subscription.contributor_profile = profile
-            subscription.grant = grant
-            subscription.comments = request.POST.get('comment', '')
-            subscription.save()
-
-            # one time payments
-            activity = None
-            if int(subscription.num_tx_approved) == 1:
-                subscription.successful_contribution(subscription.new_approve_tx_id);
-                subscription.error = True #cancel subs so it doesnt try to bill again
-                subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
-                subscription.save()
-                activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
-            else:
-                activity = record_subscription_activity_helper('new_grant_subscription', subscription, profile)
-
-            if 'comment' in request.POST:
-                comment = request.POST.get('comment')
-                if comment and activity:
-                    profile = request.user.profile
-                    if subscription and subscription.negative:
-                        profile = Profile.objects.filter(handle='gitcoinbot').first()
-                        comment = f"Comment from contributor: {comment}"
-                    comment = Comment.objects.create(
-                        profile=profile,
-                        activity=activity,
-                        comment=comment)
-
-            message = 'Your contribution has succeeded. Thank you for supporting Public Goods on Gitcoin !'
-            if request.session.get('send_notification'):
-                msg_html = request.session.get('msg_html')
-                cta_text = request.session.get('cta_text')
-                cta_url = request.session.get('cta_url')
-                to_user = request.user
-                send_notification_to_user_from_gitcoinbot(to_user, cta_url, cta_text, msg_html)
-            if int(subscription.num_tx_approved) > 1:
-                message = 'Your subscription has been created. It will bill within the next 5 minutes or so. Thank you for supporting Public Goods on Gitcoin !'
-
-            messages.info(
-                request,
-                message
-            )
-
-            return JsonResponse({
-                'success': True,
-            })
-
-        if 'hide_wallet_address' in request.POST:
-            profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
-            profile.save()
-
-        if 'signature' in request.POST:
-            sub_new_approve_tx_id = request.POST.get('sub_new_approve_tx_id', '')
-            subscription = Subscription.objects.filter(new_approve_tx_id=sub_new_approve_tx_id).first()
-            subscription.active = True
-
-            subscription.subscription_hash = request.POST.get('subscription_hash', '')
-            subscription.contributor_signature = request.POST.get('signature', '')
-            if 'split_tx_id' in request.POST:
-                subscription.split_tx_id = request.POST.get('split_tx_id', '')
-                subscription.save_split_tx_to_contribution()
-            if 'split_tx_confirmed' in request.POST:
-                subscription.split_tx_confirmed = bool(request.POST.get('split_tx_confirmed', False))
-                subscription.save_split_tx_to_contribution()
-            subscription.save()
-
-            value_usdt = subscription.get_converted_amount()
-            if value_usdt:
-                grant.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-
-            grant.save()
-            if not subscription.negative:
-                new_supporter(grant, subscription)
-                thank_you_for_supporting(grant, subscription)
-            return JsonResponse({
-                'success': True,
-                'url': reverse('grants:details', args=(grant.pk, grant.slug))
-            })
     raise Http404
 
 
@@ -993,10 +921,31 @@ def grants_cart_view(request):
     return response
 
 
-def grants_bulk_add(request, grant_ids):
-    grant_ids = [int(ele) for ele in grant_ids.split(',') if ele and ele.isnumeric() ]
+def grants_bulk_add(request, grant_str):
+    
+    redis = RedisService().redis
+    key = hashlib.md5(grant_str.encode('utf')).hexdigest()
+    views = redis.incr(key)
+
+    grant_ids = grant_str.split(':')[0].split(',')
+    grant_ids = [int(ele) for ele in grant_ids if ele and ele.isnumeric() ]
+    by_whom = ""
+    prefix = ""
+    try:
+        by_whom = f"by {grant_str.split(':')[1]}"
+        prefix = f"{grant_str.split(':')[2]} : "
+    except:
+        pass
+    grants = Grant.objects.filter(pk__in=grant_ids)
+    grant_titles = ", ".join([grant.title for grant in grants])
+    title = f"{prefix}{grants.count()} Grants in Shared Cart {by_whom} : Viewed {views} times"
+
     context = {
-        'grants': Grant.objects.filter(pk__in=grant_ids)
+        'grants': Grant.objects.filter(pk__in=grant_ids),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+        'title': title,
+        'card_desc': "Click to Add All to Cart: " + grant_titles
+
     }
     response = TemplateResponse(request, 'grants/bulk_add_to_cart.html', context=context)
     return response
@@ -1186,4 +1135,27 @@ def grant_categories(request):
 
     return JsonResponse({
         'categories': categories
+    })
+
+
+@login_required
+def grant_activity(request, grant_id=None):
+    action = request.POST.get('action')
+    metadata = request.POST.get('metadata')
+    bulk = request.POST.get('bulk') == 'true'
+
+    if not grant_id:
+        grant = None
+    else:
+        grant = get_object_or_404(Grant, pk=grant_id)
+
+    _ca = CartActivity.objects.create(grant=grant, profile=request.user.profile, action=action,
+                                metadata=json.loads(metadata), bulk=bulk, latest=True)
+
+    for ca in CartActivity.objects.filter(profile=request.user.profile, latest=True, pk__lt=_ca.pk):
+        ca.latest = False
+        ca.save()
+
+    return JsonResponse({
+        'error': False
     })
