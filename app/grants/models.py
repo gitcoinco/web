@@ -89,6 +89,8 @@ class GrantCategory(SuperModel):
             'community',
             'eth2.0',
             'eth1.x',
+            'devEx',
+            'usability',
         ]
 
     @staticmethod
