@@ -143,7 +143,7 @@ def grants_transaction_validator(contribution):
                 transaction = check_transaction(transaction_hash)
                 if transaction.value > 0.001:
                     recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
-                    transfers = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers')
+                    transfers = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx)
                     for transfer in transfers:
                         delta = abs(abs(contribution.subscription.amount_per_period_minus_gas_price) - abs(transfer['token_amount_decimal']))
                         if delta < 0.001:
@@ -166,7 +166,7 @@ def grants_transaction_validator(contribution):
                 maybeprint(160, round(time.time(),2))
                 # get token transfers
                 if not token_transfer:
-                    transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers')
+                    transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers', tx_id=tx)
                     if transfers:
                         token_transfer = transfers
                 maybeprint(169, round(time.time(),2))
@@ -253,7 +253,7 @@ def get_token_recipient_senders(recipient_address, token_address):
 auth = settings.ALETHIO_KEY
 headers = {'Authorization': f'Bearer {auth}'}
 
-def get_token_originators(to_address, token, from_address='', return_what='transfers'):
+def get_token_originators(to_address, token, from_address='', return_what='transfers', tx_id=''):
     address = to_address
 
     #is_address = requests.get('https://api.aleth.io/v1/accounts/' + address, headers=headers).status_code
@@ -296,16 +296,25 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
 
     if return_what == 'transfers':
         for transfer in transfers.get('data', {}):
-            if transfer.get('type') == 'TokenTransfer':
-                # todo: check txid to make sure it matches (to prevent multiple transfers from this address to this address from falsy validating positively)
-                return {
-                        'token_amount_decimal': Decimal(int(transfer['attributes']['value']) / 10 ** transfer['attributes']['decimals']),
-                        'token_name': transfer['attributes']['symbol'],
-                        'to': address,
-                        'token_address': token,
-                        'token_amount_int': int(transfer['attributes']['value']),
-                        'decimals': transfer['attributes']['decimals'],
-                }
+            if tx_id and tx_id.lower() == trasnfer.get('id').lower():
+                if transfer.get('type') == 'TokenTransfer':
+                    return {
+                            'token_amount_decimal': Decimal(int(transfer['attributes']['value']) / 10 ** transfer['attributes']['decimals']),
+                            'token_name': transfer['attributes']['symbol'],
+                            'to': address,
+                            'token_address': token,
+                            'token_amount_int': int(transfer['attributes']['value']),
+                            'decimals': transfer['attributes']['decimals'],
+                    }
+                if transfer.get('type') == 'EtherTransfer':
+                    return {
+                            'token_amount_decimal': Decimal(int(transfer['attributes']['value']) / 10 ** 18),
+                            'token_name': 'ETH',
+                            'to': address,
+                            'token_address': '0x0',
+                            'token_amount_int': int(transfer['attributes']['value']),
+                            'decimals': 18,
+                    }
         return None
 
     # TokenTransfer events, value field
