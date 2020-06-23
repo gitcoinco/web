@@ -645,12 +645,13 @@ Vue.component('grants-cart', {
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
           var network = document.web3network;
-          let timeout_amount = 1500 + (CartData.loadCart().length * 500)
+          let timeout_amount = 1500 + (CartData.loadCart().length * 500);
+
           _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
 
           setTimeout(function() {
             _alert('Contributions saved', 'success', 1000);
-            setTimeout(function(){
+            setTimeout(function() {
               if (network === 'rinkeby') {
                 window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
               } else {
