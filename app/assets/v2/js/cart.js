@@ -773,8 +773,13 @@ Vue.component('grants-cart', {
 
     async predictCLRMatch(grant) {
       const rawAmount = Number(grant.grant_donation_amount);
-      let amount = await this.valueToDai(rawAmount, grant.grant_donation_currency);
-
+      
+      let currency = grant.grant_donation_currency;
+      let amount =
+        currency === 'DAI'
+          ? rawAmount
+          : await this.valueToDai(rawAmount, currency);
+      
       const clr_prediction_curve_2d = JSON.parse(grant.grant_clr_prediction_curve);
       const clr_prediction_curve = clr_prediction_curve_2d.map(row => row[2]);
 
