@@ -287,7 +287,7 @@ def hackathon_project_chat_sync(self, hackathon_id: str = None, bounty_owner_han
 
         if project_id is not None:
             projects = HackathonProject.objects.filter(id=project_id)
-            bounty_owner_handle = projects[0].bounty.bounty_owner_github_username
+            bounty_owner_handle = projects.first().bounty.bounty_owner_github_username
         else:
             projects = HackathonProject.objects.get(bounty__event__id=hackathon_id)
 
