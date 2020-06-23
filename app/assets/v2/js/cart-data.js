@@ -17,10 +17,22 @@ class CartData {
     const donations = this.loadCart();
     let bulk_add_cart = 'https://gitcoin.co/grants/cart/bulk-add/';
 
+    let network = document.web3network;
+
+    if (!network) {
+      network = 'mainnet';
+    }
+
     for (let i = 0; i < donations.length; i += 1) {
       const donation = donations[i];
+      // eslint-disable-next-line no-loop-func
+      const token = tokens(network).filter(t => t.name === donation.grant_donation_currency);
+      let token_id = '';
 
-      bulk_add_cart += String(donation['grant_id']) + ',';
+      if (token.length) {
+        token_id = token[0].id;
+      }
+      bulk_add_cart += `${donation['grant_id']};${donation['grant_donation_amount']};${token_id},`;
     }
 
     if (document.contxt['github_handle']) {
@@ -50,19 +62,33 @@ class CartData {
     let accptedTokenName;
 
     try {
-      accptedTokenName = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network).name;
+      const token = tokenAddressToDetailsByNetwork(grantData.grant_token_address, network);
+
+      grantData.token_local_id = token.id;
+      accptedTokenName = token.name;
     } catch (e) {
       // When numbers are too small toWei fails because there's too many decimal places
+      const dai = tokens(network).filter(t => t.name === 'DAI');
+
+      if (dai.length) {
+        grantData.token_local_id = dai[0].id;
+      }
       accptedTokenName = 'DAI';
     }
 
     grantData.uuid = get_UUID();
 
     if (acceptsAllTokens || 'DAI' == accptedTokenName) {
-      grantData.grant_donation_amount = 5;
-      grantData.grant_donation_currency = 'DAI';
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 5;
+      }
+      if (!grantData.grant_donation_currency) {
+        grantData.grant_donation_currency = 'DAI';
+      }
     } else {
-      grantData.grant_donation_amount = 0.01;
+      if (!grantData.grant_donation_amount) {
+        grantData.grant_donation_amount = 0.01;
+      }
       grantData.grant_donation_currency = 'ETH';
     }
 
