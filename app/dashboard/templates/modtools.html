@@ -37,15 +37,14 @@
   <h1>Round [[ round ]]</h1>
   <b-dropdown id="rounds" text="Select round" class="m-md-2">
     {% for round in rounds %}
-    <b-dropdown-item @click="changeRound({{ round.id }}, '{{ round }}', $event)">{{ round }}</b-dropdown-item>
+    <b-dropdown-item @click="changeRound({{ round.id }}, '{{ round }}', $event)">Round {{ round.number }}</b-dropdown-item>
     {% endfor %}
     {% csrf_token %}
   </b-dropdown>
   <div class="d-inline-block w-50">
     <b-form-input @update="get_clr()" v-model="search" placeholder="Search by handle, eth address and earning id"></b-form-input>
   </div>
-
-    <table>
+  <table id="contributions" >
       <thead>
         <tr>
           <th scope="col">#</th>
@@ -96,12 +95,27 @@
         </template>
       </tbody>
     </table>
+  <paginate
+    v-model="currentPage"
+    :page-count="pageCount"
+    :click-handler="get_clr"
+    container-class="pagination  justify-content-center"
+    page-class="page-item"
+    page-link-class="page-link"
+    prev-class="page-item"
+    prev-link-class="page-link"
+    next-class="page-item"
+    next-link-class="page-link"
+    :first-last-button="true"
+  >
+  </paginate>
 </div>
 
 
 {% endblock %}
 {% block footer %}{{ block.super }}
   {% include 'shared/footer_scripts_lite.html' with vue=True ignore_inject_web3=True no_base=True%}
+  <script src="{% static "v2/js/lib/vuejs-paginate.js" %}"></script>
   <script src="{% static "v2/js/lib/purify.min.js" %}"></script>
 
   <script>
@@ -110,6 +124,8 @@
   Vue.component('modtools', {});
 
   if (document.getElementById('modtools')) {
+    Vue.component('paginate', VuejsPaginate)
+
     var app = new Vue({
       delimiters: ['[[', ']]'],
       el: '#modtools',
@@ -117,7 +133,10 @@
         return {
           earnings: [],
           round: document.round,
-          search: ''
+          search: '',
+          currentPage: 1,
+          rows: 30,
+          pageCount: 1
         };
       },
       mounted() {
@@ -134,8 +153,10 @@
         get_clr: function () {
           let vm = this;
 
-          fetch(`api/v1/clr/${vm.round}?q=${vm.search}`).then(res => res.json()).then(res => {
-            vm.earnings = res
+          fetch(`api/v1/clrs/?round=${vm.round}&q=${vm.search}&page=${vm.currentPage}`).then(res => res.json()).then(res => {
+            console.log(res)
+            vm.pageCount = Math.trunc(res.count / vm.rows);
+            vm.earnings = res.results;
           }).catch(e => console.log(e))
         },
         flag_earning: function(contribution, e) {

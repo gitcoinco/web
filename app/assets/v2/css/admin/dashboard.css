@@ -10,4 +10,5 @@
 .collapse {
   position: absolute;
   width: 94%;
+  z-index: 10;
 }

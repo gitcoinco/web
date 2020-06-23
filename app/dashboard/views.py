@@ -55,6 +55,10 @@ from django.views.decorators.http import require_GET, require_POST
 import dateutil
 import magic
 import pytz
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+
 from app.services import RedisService, TwilioService
 from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
 from app.utils import clean_str, ellipses, get_default_network, get_location_from_ip
@@ -5325,67 +5329,87 @@ def bulkDM(request):
     return TemplateResponse(request, 'bulk_DM.html', context)
 
 
-@staff_member_required
-def get_clrs(request, match_round_id):
-    search = request.GET.get('q')
-    earning = []
-    match_round = get_object_or_404(MatchRound, pk=match_round_id)
-    eligible = get_eligible_input_data(match_round, no_flat=True).prefetch_related('from_profile', 'to_profile')
-
-    if search:
-        eligible = eligible.filter(Q(id__icontains=search) |
-                                   Q(from_profile__handle__icontains=search) |
-                                   Q(to_profile__handle__contains=search) |
-                                   Q(to_profile__preferred_payout_address__contains=search) |
-                                   Q(from_profile__preferred_payout_address__contains=search))
-
-    for e in eligible:
-        to_profile = e.to_profile
-        from_profile = e.from_profile
-        if e and to_profile and from_profile:
-            to_location = None
-            has_ip_address = to_profile.actions.filter(created_on__lte=e.created_on).exclude(ip_address=None).last()
-            if has_ip_address:
-                to_location = get_location_from_ip(has_ip_address.ip_address)
-
-            from_location = None
-            has_from_ip_address = from_profile.actions.filter(created_on__lte=e.created_on).exclude(ip_address=None).last()
-            if has_from_ip_address:
-                from_location = get_location_from_ip(has_from_ip_address.ip_address)
-
-            flags = ContributionFlag.objects.filter(contribution=e)
-
-            earning.append({
-                'id': e.id,
-                'created_on': naturaltime(e.created_on),
-                'from_user': {
-                    'id': e.from_profile.id,
-                    'handle': e.from_profile.handle,
-                    'avatar': e.from_profile.avatar_url,
-                    'account_age': naturaltime(e.from_profile.created_on),
-                    'ip_address': has_from_ip_address.ip_address if has_from_ip_address else '',
-                    'location': f'{from_location.get("city")}, {from_location.get("country_code")}' if from_location else '',
-                    'eth_address': e.from_profile.preferred_payout_address,
-                },
-                'to_user': {
-                    'id': e.to_profile.id,
-                    'handle': e.to_profile.handle,
-                    'avatar': e.to_profile.avatar_url,
-                    'account_age': naturaltime(e.to_profile.created_on),
-                    'ip_address': has_ip_address.ip_address if has_ip_address else '',
-                    'location': f'{to_location.get("city")}, {to_location.get("country_code")}' if to_location else '',
-                    'eth_address': e.to_profile.preferred_payout_address,
-                },
-                'flags': [{
-                    'comments': flag.comments,
-                    'processed': flag.processed,
-                    'profile': flag.profile.handle
-                } for flag in flags]
-            })
-    return JsonResponse(earning, safe=False)
+class CLRSView(generics.ListAPIView):
+    pagination_class = PageNumberPagination
 
 
-@staff_member_required
+    def get_queryset(self):
+        match_round_id = self.request.query_params.get('round')
+        search = self.request.query_params.get('q')
+        match_round = get_object_or_404(MatchRound, pk=int(match_round_id))
+        eligible = get_eligible_input_data(match_round, no_flat=True).prefetch_related('from_profile', 'to_profile')
+
+        if search:
+            eligible = eligible.filter(Q(id__icontains=search) |
+                                       Q(from_profile__handle__icontains=search) |
+                                       Q(to_profile__handle__contains=search) |
+                                       Q(to_profile__preferred_payout_address__contains=search) |
+                                       Q(from_profile__preferred_payout_address__contains=search))
+
+        return eligible.distinct()
+
+    def serialize(self, queryset):
+        earning = []
+
+        for e in queryset:
+            to_profile = e.to_profile
+            from_profile = e.from_profile
+            if e and to_profile and from_profile:
+                to_location = None
+                has_ip_address = to_profile.actions.filter(created_on__lte=e.created_on).exclude(ip_address=None).last()
+                if has_ip_address:
+                    to_location = get_location_from_ip(has_ip_address.ip_address)
+
+                from_location = None
+                has_from_ip_address = from_profile.actions.filter(created_on__lte=e.created_on).exclude(
+                    ip_address=None).last()
+                if has_from_ip_address:
+                    from_location = get_location_from_ip(has_from_ip_address.ip_address)
+
+                flags = ContributionFlag.objects.filter(contribution=e)
+
+                earning.append({
+                    'id': e.id,
+                    'created_on': naturaltime(e.created_on),
+                    'from_user': {
+                        'id': e.from_profile.id,
+                        'handle': e.from_profile.handle,
+                        'avatar': e.from_profile.avatar_url,
+                        'account_age': naturaltime(e.from_profile.created_on),
+                        'ip_address': has_from_ip_address.ip_address if has_from_ip_address else '',
+                        'location': f'{from_location.get("city")}, {from_location.get("country_code")}' if from_location else '',
+                        'eth_address': e.from_profile.preferred_payout_address,
+                    },
+                    'to_user': {
+                        'id': e.to_profile.id,
+                        'handle': e.to_profile.handle,
+                        'avatar': e.to_profile.avatar_url,
+                        'account_age': naturaltime(e.to_profile.created_on),
+                        'ip_address': has_ip_address.ip_address if has_ip_address else '',
+                        'location': f'{to_location.get("city")}, {to_location.get("country_code")}' if to_location else '',
+                        'eth_address': e.to_profile.preferred_payout_address,
+                    },
+                    'flags': [{
+                        'comments': flag.comments,
+                        'processed': flag.processed,
+                        'profile': flag.profile.handle
+                    } for flag in flags]
+                })
+
+        return earning
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            data = self.serialize(page)
+            return self.get_paginated_response(data)
+
+        data = self.serialize(queryset)
+        return Response(data)
+
+
 def contribution_flag(request, contribution_id):
     comment = request.POST.get("comment", '')
     contribution = Earning.objects.get(pk=contribution_id)
@@ -5410,7 +5434,7 @@ def modtools(request):
     }
     return TemplateResponse(request, 'modtools.html', context)
 
-                                           
+
 def validate_number(user, twilio, phone, redis, delivery_method='sms'):
     profile = user.profile
     hash_number = hashlib.pbkdf2_hmac('sha256', phone.encode(), PHONE_SALT.encode(), 100000).hex()
