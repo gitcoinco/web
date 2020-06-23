@@ -1,0 +1,19 @@
+{
+    "symbol": "BT",
+    "address": "0xBC52a198619553fc1A0F925bB5B2E6EfaA9e45F1",
+    "overview":{
+          "en": "BPassword is a blockchain and cryptography based user/password management, identity verification tool. It's client directly interacts with blockchain and has no backend server. So it's immune to hacker attack and can be proved safe.",
+          "zh": "BPassword(密码宝)是一款通过区块链和加密技术,为用户提供用户名/密码管理以及身份验证的数字身份管理产品。它的特点是使用客户端直接和区块链交互,没有后端服务器的存在,免于数据泄漏和黑客攻击,并且BPassword的安全性是可被数学证明的。"
+    },
+    "email": "bpassword@tutanota.com",
+    "website": "https://sites.google.com/view/bpwd/",
+    "whitepaper": "https://drive.google.com/file/d/1CZ8xYhhZdFT3Kt_9dnbAqLMSJqJcqaOr/view",
+    "state": "NORMAL",
+    "published_on": "2020-05-27",
+    "initial_price":{
+          "ETH":"0.0007 ETH"
+    },
+    "links": {
+      "twitter": "https://twitter.com/BPassword1"
+    }
+}
