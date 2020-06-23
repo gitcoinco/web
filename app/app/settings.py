@@ -408,7 +408,7 @@ if ENV in ['prod', 'stage']:
     MEDIA_URL = env(
         'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
     )
-    WIKI_STORAGE_BACKEND = DEFAULT_FILESTORAGE
+                                   
 else:
     # Handle local static file storage
     STATIC_HOST = BASE_URL
