@@ -892,9 +892,11 @@ def render_grant_txn_failed(to_email, grant, tx_id):
     email_style = 27
 
     params = {
+        'id': grant.id,
         'grant_title': grant.title,
         'tx_id': tx_id,
         'tx_url': "https://etherscan.io/tx/"+tx_id,
+        'bulk_add_url': "https://gitcoin.co/grants/cart/bulk-add/" + str(grant.id),
         'email_style': email_style,
         'hide_bottom_logo': True,
     }
