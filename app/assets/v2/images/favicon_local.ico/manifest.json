@@ -7,7 +7,7 @@
           "type": "image/png"
       }
     ],
-    "start_url": "https://dapp.androolloyd.com",
+    "start_url": "http://localhost:8000",
     "theme_color": "#0d023b",
     "background_color": "#0d023b",
     "display": "standalone"
