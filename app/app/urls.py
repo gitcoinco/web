@@ -192,6 +192,8 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
+    re_path(r'^sms/request/?$', dashboard.views.send_verification, name='request_verification'),
+    re_path(r'^sms/validate/?$', dashboard.views.validate_verification, name='request_verification'),
 
     # quests
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
@@ -487,6 +489,7 @@ urlpatterns = [
         marketing.views.new_bounty_daily_preview,
         name='admin_new_bounty_daily'
     ),
+    path('_administration/email/', retail.views.admin_index, name='admin_index_emails'),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
     path(
         '_administration/email/featured_funded_bounty',
@@ -537,6 +540,7 @@ urlpatterns = [
     path('_administration/email/mention', retail.emails.mention, name='mention_email'),
     path('_administration/email/wallpost', retail.emails.wallpost, name='wallpost_email'),
     path('_administration/email/grant_update', retail.emails.grant_update, name='grant_update_email'),
+    path('_administration/email/grant_recontribute', retail.emails.grant_recontribute, name='grant_recontribute_email'),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,
@@ -677,7 +681,7 @@ urlpatterns = [
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
-
+    url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
     url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
 
     # users

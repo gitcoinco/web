@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
@@ -124,6 +124,11 @@ def grant_update_email_task(self, pk, retry: bool = True) -> None:
     activity = Activity.objects.get(pk=pk)
     grant_update_email(activity)
 
+    from django.utils import timezone
+    grant = activity.grant
+    grant.last_update = timezone.now()
+    grant.save()
+
 
 @app.shared_task(bind=True)
 def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
@@ -158,10 +163,13 @@ def increment_view_count(self, pks, content_type, user_id, view_type, retry: boo
         key = f"{content_type}_{pk}"
         print(key)
         result = redis.incr(key)
-        if pk:
-            ObjectView.objects.create(
-                viewer=user,
-                target_id=pk,
-                target_type=ContentType.objects.filter(model=content_type).first(),
-                view_type=view_type,
-                )
+        if pk and view_type == 'individual':
+            try:
+                ObjectView.objects.create(
+                    viewer=user,
+                    target_id=pk,
+                    target_type=ContentType.objects.filter(model=content_type).first(),
+                    view_type=view_type,
+                    )
+            except:
+                pass # fix for https://sentry.io/organizations/gitcoin/issues/1715509732/

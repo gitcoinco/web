@@ -52,6 +52,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <input type="hidden" name="standardBountiesId" value="{{bounty.standard_bounties_id}}">
             <input type="hidden" name="bountyOwnerAddress" value="{{bounty.bounty_owner_address}}">
             <input type="hidden" name="valueInToken" value="{{bounty.value_in_token}}">
+            <input type="hidden" name="isOpen" value="{{bounty.is_open}}">
 
             <div class="col-lg-7 col-sm-12 my-5 pt-5" id="primary_form">
               <div id="primary_subform">
@@ -61,7 +62,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
                   <div class="mt-4">
-                    <label class="form__label mb-0" for=issueURL>Issue URL</label>
+                    <label class="form__label mb-0" for=issueURL>Title</label>
                     <p class="font-subheader">{{ bounty.title }}</p>
                   </div>
                   <div>
@@ -165,7 +166,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
-    
+
 
   </body>
 

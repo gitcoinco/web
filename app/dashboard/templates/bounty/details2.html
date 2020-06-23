@@ -248,7 +248,7 @@
                     </a>
                   </div>
                   <div class="col-md-4 my-auto text-center text-md-left">
-                    <a :href="`/profile/${fulfillment.profile.handle}`" class="user-popover" :data-username="[[ fulfillment.profile.handle ]]"
+                    <a :href="`/profile/${fulfillment.profile.handle}`" class="user-popover" :data-usercard="[[ fulfillment.profile.handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ fulfillment.profile.handle ]]
@@ -607,7 +607,7 @@
                     </a>
                   </div>
                   <div class="col-md-4 my-auto text-center text-md-left">
-                    <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-username="[[ interest.profile.handle ]]"
+                    <a :href="`/profile/${interest.profile.handle}`" class="user-popover" :data-usercard="[[ interest.profile.handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ interest.profile.handle ]]
@@ -663,7 +663,7 @@
                     </a>
                   </div>
                   <div class="col-lg-3 col-md-3 my-auto text-center text-md-left">
-                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-username="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">
+                    <a :href="`/profile/${activity.profile.handle}`" class="user-popover" :data-usercard="[[ activity.profile.handle ]]" data-html="true" data-toggle="popover" data-container="body">
                       [[ activity.profile.handle ]]
                     </a>
                   </div>
@@ -695,7 +695,7 @@
                     <div v-if="activity.activity_type === 'new_kudos'">
                       show value
                     </div>
-                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-username="[[ activity.metadata.worker_handle ]]"
+                    <a v-if="activity.activity_type === 'worker_approved'" :href="`/profile/${activity.metadata.worker_handle}`" class="user-popover" :data-usercard="[[ activity.metadata.worker_handle ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ activity.metadata.worker_handle ]]
@@ -722,7 +722,7 @@
                     </a>
                   </div>
                   <div class="col-md-10 col-lg-9 my-auto text-center text-md-left">
-                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" class="user-popover" :data-username="[[ bounty.bounty_owner_github_username ]]"
+                    <a :href="`/profile/${bounty.bounty_owner_github_username}`" class="user-popover" :data-usercard="[[ bounty.bounty_owner_github_username ]]"
                       data-html="true" data-toggle="popover" data-container="body"
                     >
                       [[ bounty.bounty_owner_github_username ]]
@@ -868,16 +868,6 @@
         selector: '[data-toggle="tooltip"]',
         template: '<div class="no-tooltip" role="tooltip"><div class="tooltip-inner font-smaller-2"></div></div>'
       });
-
-      $('[data-toggle="popover"]').popover()
-      $('body').on('mouseover', '[data-username]', function(e) {
-        openContributorPopOver($(this).data('username'), $(this));
-      });
-
-      $('body').on('show.bs.popover', '[data-username]', function () {
-        $('body [data-username]').not(this).popover('hide');
-      })
-
       const csrftoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
     </script>
     <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
@@ -886,7 +876,6 @@
     <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
     <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
-    <script src="{% static "v2/js/user_popover.js" %}"></script>
     <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/user-search.js" %}"></script>

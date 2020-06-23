@@ -987,13 +987,7 @@ def get_orgs_perms(profile):
         response_data.append(org_perms)
     return response_data
 
-
-def get_url_first_indexes():
-    
-    return ['_administration','about','action','actions','activity','api','avatar','blog','bounties','bounty','btctalk','casestudies','casestudy','chat','community','contributor','contributor_dashboard','credit','dashboard','docs','dynamic','ens','explorer','extension','faucet','fb','feedback','funder','funder_dashboard','funding','gas','ghlogin','github','gitter','grant','grants','hackathon','hackathonlist','hackathons','health','help','home','how','impersonate','inbox','interest','issue','itunes','jobs','jsi18n','kudos','l','labs','landing','lazy_load_kudos','lbcheck','leaderboard','legacy','legal','livestream','login','logout','mailing_list','medium','mission','modal','new','not_a_token','o','onboard','podcast','postcomment','press','presskit','products','profile','quests','reddit','refer','register_hackathon','requestincrease','requestmoney','requests','results','revenue','robotstxt','schwag','send','service','settings','sg_sendgrid_event_processor','sitemapsectionxml','sitemapxml','slack','spec','strbounty_network','submittoken','sync','terms','tip','townsquare','tribe','tribes','twitter','users','verified','vision','wallpaper','wallpapers','web3','whitepaper','wiki','wikiazAZ09azdAZdazd','youtube']
-    # TODO: figure out the recursion issue with the URLs at a later date
-    # or just cache them in the backend dynamically
-    
+def get_all_urls():
     urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
     def list_urls(lis, acc=None):
@@ -1009,8 +1003,16 @@ def get_url_first_indexes():
 
         yield from list_urls(lis[1:], acc)
 
+    return list_urls(urlconf.urlpatterns)
+
+def get_url_first_indexes():
+
+    return ['_administration','about','action','actions','activity','api','avatar','blog','bounties','bounty','btctalk','casestudies','casestudy','chat','community','contributor','contributor_dashboard','credit','dashboard','docs','dynamic','ens','explorer','extension','faucet','fb','feedback','funder','funder_dashboard','funding','gas','ghlogin','github','gitter','grant','grants','hackathon','hackathonlist','hackathons','health','help','home','how','impersonate','inbox','interest','issue','itunes','jobs','jsi18n','kudos','l','labs','landing','lazy_load_kudos','lbcheck','leaderboard','legacy','legal','livestream','login','logout','mailing_list','medium','mission','modal','new','not_a_token','o','onboard','podcast','postcomment','press','presskit','products','profile','quests','reddit','refer','register_hackathon','requestincrease','requestmoney','requests','results','revenue','robotstxt','schwag','send','service','settings','sg_sendgrid_event_processor','sitemapsectionxml','sitemapxml','slack','spec','strbounty_network','submittoken','sync','terms','tip','townsquare','tribe','tribes','twitter','users','verified','vision','wallpaper','wallpapers','web3','whitepaper','wiki','wikiazAZ09azdAZdazd','youtube']
+    # TODO: figure out the recursion issue with the URLs at a later date
+    # or just cache them in the backend dynamically
+    
     urls = []
-    for p in list_urls(urlconf.urlpatterns):
+    for p in get_all_urls():
         url = p[0].split('/')[0]
         url = re.sub(r'\W+', '', url)
         urls.append(url)

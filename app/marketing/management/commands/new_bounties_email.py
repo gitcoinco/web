@@ -32,6 +32,14 @@ warnings.filterwarnings("ignore")
 
 override_in_dev = True
 
+def validate_email(email):  
+  
+    import re 
+    regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    if(re.search(regex,email)):  
+        return True 
+    return False
+
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
@@ -82,6 +90,8 @@ class Command(BaseCommand):
                 town_square_enabled = is_email_townsquare_enabled(to_email)
                 should_eval = keywords or town_square_enabled
                 if not should_eval:
+                    continue
+                if not validate_email(to_email):
                     continue
                 counter_total += 1
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)

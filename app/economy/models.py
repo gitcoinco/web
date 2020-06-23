@@ -40,7 +40,7 @@ from django.utils.html import escape
 from django.utils.timezone import localtime
 
 import pytz
-from app.redis_service import RedisService
+from app.services import RedisService
 
 
 class EncodeAnything(DjangoJSONEncoder):
@@ -219,7 +219,7 @@ class Token(SuperModel):
 
     @property
     def to_dict(self):
-        return {'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
+        return {'id': self.id, 'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
 
     @property
     def to_json(self):

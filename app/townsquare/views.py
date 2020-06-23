@@ -9,7 +9,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 import metadata_parser
-from app.redis_service import RedisService
+from app.services import RedisService
 from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,

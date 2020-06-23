@@ -1,39 +1,10 @@
-var cloneKudos = function(name, numClones) {
-  console.log('name: ' + name);
-  console.log('numClones: ' + numClones);
-
-  var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
-
-  web3.eth.getCoinbase(function(_, account) {
-    kudosContractInstance.clone(name, numClones, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
-      console.log('txid:' + txid);
-      return true;
-    });
-  });
-};
-
-var getKudosById = function(kudosId) {
-  $.get('/api/v0.1/kudos/' + kudosId, function(results, status) {
-    return results;
-  });
-};
-
-
 $(document).ready(function() {
   // stop_kudos_levitate();
-  // let kudosId = window.location.pathname.split('/')[2];
-  // let kudosId = $('#kudosId').text()
-  // let kudosName = $('#kudosName').text()
-  let kudosNumClonesAvailable = parseInt($('#kudosNumClonesAvailable').text());
-  let kudosNumClonesAllowed = parseInt($('#kudosNumClonesAllowed').text());
-  let numClones = kudosNumClonesAvailable - kudosNumClonesAllowed;
-
   $('#kudos-image').hover(function() {
     start_kudos_levitate();
   }, function() {
     stop_kudos_levitate();
   });
-
 
   $('.kudos_levitate_container, #kudos-image').on('click', function() {
 
@@ -59,18 +30,6 @@ $(document).ready(function() {
     return;
   }
 
-  $('#getKudos').on('click', function() {
-    if (numClones > kudosNumClonesAvailable) {
-      _alert({ message: gettext('Cannot make ' + numClones + ' clone(s).  ' + kudosNumClonesAvailable + ' clones available!')}, 'error');
-      return;
-    }
-
-    $.get('/api/v0.1/kudos/' + kudosId, function(results, status) {
-      let kudosName = results.name;
-
-      cloneKudos(kudosName, numClones);
-    });
-  });
 
 });
 

@@ -114,7 +114,7 @@ Vue.mixin({
 
         case 'ZIL':
           qr_string = value ?
-            `zilliqa://${address}?amount=${value}e12` :
+            `zilliqa://${address}?amount=${value}` :
             `zilliqa://${address}`;
           break;
       }
@@ -122,6 +122,8 @@ Vue.mixin({
       return qr_string;
     },
     syncBounty: function() {
+      // NOT USED FOR NOW UNTIL MIGRATION OF ETH BOUNTIES TO VUE
+      // ALSO THEN NO SENSE TO MIGRATE BECAUSE STANDARD BOUNTIES REMOVAL
       let vm = this;
 
       if (!localStorage[document.issueURL]) {
