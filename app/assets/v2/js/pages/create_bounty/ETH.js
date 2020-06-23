@@ -239,7 +239,7 @@ const ethCreateBounty = async (data) => {
   const checkTokenAllowance = async () => {
     let currentAllowance = await getAllowance(bounty_address(), tokenAddress);
 
-    if (currentAllowance < bigAmount) {
+    if (BigInt(currentAllowance) < BigInt(bigAmount)) {
       let approvedAllowance;
 
       approvedAllowance = await approveAllowance(
@@ -386,7 +386,7 @@ const ethCreateBounty = async (data) => {
         total = isFeaturedToken ? total - ethFeaturedPrice : total;
         const balance_rounded = Math.round(balance * 10) / 10;
         let msg = gettext('You do not have enough tokens to fund this bounty. You have ') +
-          balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + total +
+          balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + BigInt(total) +
           ' ' + token_name;
 
         if (isFeaturedToken) {
