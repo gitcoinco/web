@@ -5,7 +5,7 @@ from django.utils.text import slugify
 
 from app.services import RedisService
 from celery import app, group
-from dashboard.models import Bounty, HackathonEvent, HackathonRegistration, HackathonSponsor, Profile
+from dashboard.models import Bounty, HackathonEvent, HackathonRegistration, HackathonSponsor, HackathonProject, Profile
 from marketing.utils import should_suppress_notification_email
 from mattermostdriver import Driver
 from mattermostdriver.exceptions import ResourceNotFound
@@ -276,6 +276,85 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
 
     except Exception as e:
         logger.info(str(e))
+
+
+@app.shared_task(bind=True, max_retries=3)
+def hackathon_project_chat_sync(self, hackathon_id: str = None, bounty_owner_handle: str = None, project_id: str = None,
+                                retry: bool = True) -> None:
+    try:
+        if not hackathon_id:
+            return
+
+        if project_id is not None:
+            projects = HackathonProject.objects.filter(id=project_id)
+            bounty_owner_handle = projects[0].bounty.bounty_owner_github_username
+        else:
+            projects = HackathonProject.objects.get(bounty__event__id=hackathon_id)
+
+        chat_driver.login()
+        admins = []
+        mentors = []
+
+        try:
+            bounty_profile = Profile.objects.get(handle__iexact=bounty_owner_handle)
+            if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
+                created, bounty_profile = associate_chat_to_profile(bounty_profile)
+
+            mentors.append(bounty_profile.chat_id)
+        except Exception as e:
+            logger.info("Bounty Profile owner not apart of gitcoin")
+
+        bounty_mentors = Profile.objects.filter(
+            user__groups__name=f'sponsor-org-{bounty_owner_handle}-mentors')
+
+        for mentor in bounty_mentors:
+            if mentor.chat_id is '' or mentor.chat_id is None:
+                created, mentor = associate_chat_to_profile(mentor)
+            mentors.append(mentor.chat_id)
+
+        hackathon_admins = Profile.objects.filter(user__groups__name='hackathon-admin')
+
+        for hack_admin in hackathon_admins:
+            if hack_admin.chat_id is '' or hack_admin.chat_id is None:
+                created, hack_admin = associate_chat_to_profile(hack_admin)
+            admins.append(hack_admin.chat_id)
+
+
+
+        for project in projects:
+
+            bounty_obj = project.bounty
+            profiles_to_connect = admins + mentors
+
+            project_channel_name = slugify(
+                f'{"-" + bounty_obj.event.short_code if bounty_obj.event and project.bounty_obj.short_code else ""}{project.name}')
+            project_display_name = f'PRJ-{project_channel_name}'
+
+            created, channel_details = create_channel_if_not_exists({
+                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                'channel_purpose': project.summary[:200],
+                'channel_display_name': project_display_name[:60],
+                'channel_name': project_channel_name[:60]
+            })
+
+            for profile_id in project.profiles:
+                curr_profile = Profile.objects.get(id=profile_id)
+                if not curr_profile.chat_id:
+                    created, curr_profile = associate_chat_to_profile(curr_profile)
+                profiles_to_connect.append(curr_profile.chat_id)
+
+            try:
+                current_channel_members = chat_driver.channels.get_channel_members(channel_details['id'])
+
+                current_channel_users = [member['user_id'] for member in current_channel_members]
+                connect = list(set(profiles_to_connect) - set(current_channel_users))
+                if len(connect) > 0:
+                    add_to_channel.delay(channel_details, connect)
+
+            except Exception as e:
+                logger.debug(str(e))
+    except Exception as e:
+        logger.debug(str(e))
 
 
 @app.shared_task(bind=True, max_retries=3)

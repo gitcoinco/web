@@ -213,14 +213,15 @@ Vue.component('manage-sponsor', {
         return [n.value];
       });
     },
-    updateBountyMentors: function(bounty_id) {
+    updateBountyMentors: function() {
       let vm = this;
       const url = '/api/v0.1/bounty_mentor/';
 
       const updateBountyMentor = fetchData (url, 'POST', {
-        bounty_id,
-        mentors: vm.bountyMentors[bounty_id]
-      }, {'X-CSRFToken': vm.csrf});
+        has_overrides: false,
+        set_default_mentors: true,
+        new_default_mentors: vm.bountyMentors
+      }, {'X-CSRFToken': vm.csrf, 'Content-Type': 'application/json; charset=utf-8'});
 
       $.when(updateBountyMentor).then((response) => {
         _alert({ message: gettext(response.message) }, 'success');
