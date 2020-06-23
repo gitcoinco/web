@@ -150,6 +150,11 @@ class PersonalToken(SuperModel):
 
         return holders
 
+    def update_tx_status(self):
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)
+
 
 class RedemptionToken(SuperModel):
     """Define the structure of a Redemption PToken"""
@@ -173,6 +178,11 @@ class RedemptionToken(SuperModel):
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     web3_created = models.DateTimeField(null=True)
 
+    def update_tx_status(self):
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)
+
 
 @receiver(post_save, sender=PersonalToken, dispatch_uid="PTokenActivity")
 def psave_ptoken(sender, instance, **kwargs):
@@ -192,3 +202,8 @@ class PurchasePToken(SuperModel):
     token_holder_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='ptoken_purchases', blank=True
     )
+
+    def update_tx_status(self):
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)
