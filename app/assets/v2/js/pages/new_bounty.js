@@ -3,6 +3,7 @@
 /* eslint-disable no-lonely-if */
 // document.web3network = 'mainnet';
 load_tokens();
+needWalletConnection();
 
 const qr_tokens = [ 'ETC', 'cGLD', 'cUSD', 'ZIL' ];
 const fiat_tokens = ['USD'];
@@ -38,7 +39,7 @@ const updateOnNetworkOrTokenChange = () => {
     }
 
   } else {
-    if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
+    if (!provider) {
       onConnect().then(()=> {
         changeUi();
       });
@@ -593,6 +594,10 @@ $('#submitBounty').validate({
     }
   },
   submitHandler: function(form) {
+    if (!provider) {
+      return onConnect();
+    }
+
     if (typeof ga != 'undefined') {
       dataLayer.push({
         'event': 'new_bounty',

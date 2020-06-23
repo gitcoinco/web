@@ -3,9 +3,13 @@
  * @dev If you need to interact with the Rinkeby Dai contract (e.g. to reset allowances for
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
+let BN;
 
+needWalletConnection();
+window.addEventListener('dataWalletReady', function(e) {
+  BN = web3.utils.BN;
+}, false);
 // Constants
-const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
 
@@ -483,7 +487,7 @@ Vue.component('grants-cart', {
         // Setup -----------------------------------------------------------------------------------
         // Prompt web3 login if not connected
         if (!provider) {
-          await onConnect();
+          return await onConnect();
         }
 
         // Throw if invalid Gitcoin contribution percentage
@@ -642,12 +646,13 @@ Vue.component('grants-cart', {
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
           var network = document.web3network;
-          let timeout_amount = 1500 + (CartData.loadCart().length * 500)
+          let timeout_amount = 1500 + (CartData.loadCart().length * 500);
+
           _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
 
           setTimeout(function() {
             _alert('Contributions saved', 'success', 1000);
-            setTimeout(function(){
+            setTimeout(function() {
               if (network === 'rinkeby') {
                 window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
               } else {
