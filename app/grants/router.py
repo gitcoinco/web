@@ -110,6 +110,7 @@ class GrantViewSet(viewsets.ModelViewSet):
         else:
             to_timestamp = datetime.now()
         grants_queryset = grants_queryset.filter(subscriptions__subscription_contribution__created_on__lte=to_timestamp)
+        grants_queryset = grants_queryset.distinct()
 
         grantee_data = grantee_serializer(grants_queryset, many=True).data
         donor_data = donor_serializer(contributions_queryset, many=True).data
