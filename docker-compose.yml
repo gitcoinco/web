@@ -21,7 +21,8 @@ services:
     ports:
       - "8065:8065"
     volumes:
-      - ./chatconfig:/mattermost/config/
+      - ./chatdata/config:/mattermost/config/
+      - ./chatdata/root.html:/mattermost/client/root.html
     depends_on:
       - db
     deploy:
@@ -31,6 +32,26 @@ services:
           memory: 1024M
         reservations:
           memory: 128M
+
+
+  nginx:
+    image: nginx:1.15-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    volumes:
+      - ./data/nginx/conf.d:/etc/nginx/conf.d
+      - ./data/nginx/params:/etc/nginx/params
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
   ipfs:
     image: ipfs/go-ipfs:release
@@ -81,18 +102,18 @@ services:
         reservations:
           memory: 512M
 
-  testrpc:
-    image: trufflesuite/ganache-cli
-    ports:
-      - "8545:8545"
-    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 1024M
-        reservations:
-          memory: 128M
+#  testrpc:
+#    image: trufflesuite/ganache-cli
+#    ports:
+#      - "8545:8545"
+#    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+#    deploy:
+#      replicas: 1
+#      resources:
+#        limits:
+#          memory: 1024M
+#        reservations:
+#          memory: 128M
 
   redis:
     restart: unless-stopped

@@ -206,9 +206,6 @@ Vue.component('project-directory', {
         vm.projectsPage = newPage;
       }
 
-      vm.params.page = vm.projectsPage;
-
-
       if (vm.hackathonId) {
         vm.params.hackathon = hackathonId;
       }
@@ -230,7 +227,6 @@ Vue.component('project-directory', {
       const getProjects = fetchData(apiUrlProjects, 'GET');
 
       $.when(getProjects).then(function(response) {
-        vm.hackathonProjects = [];
         response.results.forEach(function(item) {
           vm.hackathonProjects.push(item);
         });
@@ -271,7 +267,7 @@ Vue.component('project-directory', {
       const pageHeight = document.documentElement.scrollHeight - 500;
       const bottomOfPage = visible + scrollY >= pageHeight;
 
-      if (bottomOfPage || pageHeight < visible) {
+      if (!vm.isLoading && (bottomOfPage || pageHeight < visible)) {
         if (vm.projectsHasNext) {
           vm.fetchProjects();
         }
@@ -345,7 +341,10 @@ Vue.component('project-card', {
       let vm = this;
 
       const url = '/api/v0.1/hackathon_project/set_winner/';
-      const markWinner = fetchData(url, 'POST', {project_id: project.pk, winner: $event ? 1 : 0}, {'X-CSRFToken': vm.csrf});
+      const markWinner = fetchData(url, 'POST', {
+        project_id: project.pk,
+        winner: $event ? 1 : 0
+      }, {'X-CSRFToken': vm.csrf});
 
       $.when(markWinner).then(response => {
         if (response.message) {
