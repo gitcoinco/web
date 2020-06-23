@@ -29,8 +29,8 @@ from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory,
-    Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification, ProfileView, Question, SearchHistory, 
+    Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel, 
 )
 
 
@@ -42,7 +42,7 @@ class BountyEventAdmin(admin.ModelAdmin):
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
     readonly_fields = ['fulfiller_github_username']
-    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
+    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url', 'payout_status']
     search_fields = [
         'fulfiller_address', 'fulfiller_metadata', 'fulfiller_github_url'
     ]
@@ -445,7 +445,7 @@ class FundRequestAdmin(admin.ModelAdmin):
 
 
 class QuestionInline(SortableInlineAdminMixin, admin.TabularInline):
-    fields = ['id', 'poll', 'question_type', 'text']
+    fields = ['id', 'poll', 'question_type', 'text', 'hook']
     readonly_fields = ['id']
     raw_id_fields = ['poll']
     show_change_link = True
@@ -470,10 +470,18 @@ class PollsAdmin(admin.ModelAdmin):
 
 
 class QuestionsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'poll', 'question_type', 'text']
-    raw_id_fields = ['poll']
+    list_display = ['id', 'poll', 'question_type', 'text', 'img']
+    raw_id_fields = ['poll', 'header']
     search_fields = ['question_type', 'text']
     inlines = [OptionsInline]
+
+    def img(self, instance):
+        header = instance.header
+        if not header or not header.image:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(header.image.url))
+        return img_html
+
 
 
 class OptionsAdmin(admin.ModelAdmin):
@@ -488,6 +496,17 @@ class AnswersAdmin(admin.ModelAdmin):
     unique_together = ('user', 'question', 'choice')
 
 
+class PollMediaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'img']
+
+    def img(self, instance):
+        image = instance.image
+        if not image:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(image.url))
+        return img_html
+
+      
 class ProfileVerificationAdmin(admin.ModelAdmin):
     list_display = ['id', 'profile', 'success', 'validation_passed', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
                     'phone_number', 'carrier_error_code']
@@ -531,4 +550,5 @@ admin.site.register(Question, QuestionsAdmin)
 admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
+admin.site.register(PollMedia, PollMediaAdmin)
 admin.site.register(ProfileVerification, ProfileVerificationAdmin)

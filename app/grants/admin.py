@@ -22,7 +22,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
+from grants.models import CartActivity, CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -90,11 +90,11 @@ class GrantAdmin(GeneralAdmin):
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count'
+        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
-        'team_member_list',
+        'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count'
     ]
@@ -147,7 +147,7 @@ class GrantAdmin(GeneralAdmin):
 
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
-        eles = []   
+        eles = []
 
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
@@ -233,7 +233,7 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'txn_url', 'amount', 'token', 'tx_cleared', 'success']
+    list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'etherscan_links', 'amount', 'token', 'tx_cleared', 'success']
     readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
 
     def txn_url(self, obj):
@@ -308,6 +308,12 @@ class PhantomFundingAdmin(admin.ModelAdmin):
         return " , ".join(visits)
 
 
+class CartActivityAdmin(admin.ModelAdmin):
+    list_display = ['id', 'grant', 'profile', 'action', 'bulk', 'latest', 'created_on']
+    raw_id_fields = ['grant', 'profile']
+    search_fields = ['bulk', 'action', 'grant']
+
+
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
@@ -315,3 +321,4 @@ admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, CLRMatchAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
+admin.site.register(CartActivity, CartActivityAdmin)

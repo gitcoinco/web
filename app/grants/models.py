@@ -136,7 +136,7 @@ class Grant(SuperModel):
     GRANT_TYPES = [
         ('tech', 'tech'),
         ('health', 'health'),
-        ('Community', 'media'),
+        ('media', 'Community'),
         ('change', 'change'),
         ('matic', 'matic')
     ]
@@ -148,6 +148,7 @@ class Grant(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
     description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+    is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',
         null=True,
@@ -302,6 +303,11 @@ class Grant(SuperModel):
         null=True,
         blank=True,
     )
+    last_update = models.DateTimeField(
+        help_text=_('The last grant admin update date'),
+        null=True,
+        blank=True,
+    )
     categories = models.ManyToManyField(GrantCategory, blank=True)
     twitter_handle_1 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
@@ -351,6 +357,13 @@ class Grant(SuperModel):
 
     @property
     def negative_voting_enabled(self):
+        return False
+
+    def is_on_team(self, profile):
+        if profile.pk == self.admin_profile.pk:
+            return True
+        if profile.grant_teams.filter(pk=self.pk).exists():
+            return True
         return False
 
     @property
@@ -938,44 +951,9 @@ next_valid_timestamp: {next_valid_timestamp}
 
 @receiver(pre_save, sender=Grant, dispatch_uid="psave_grant")
 def psave_grant(sender, instance, **kwargs):
-    instance.contribution_count = instance.get_contribution_count
-    instance.contributor_count = instance.get_contributor_count()
-    from grants.clr import CLR_START_DATE
-    import pytz
-    round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
-    instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
-    instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
-    instance.amount_received_in_round = 0
-    instance.amount_received = 0
-    instance.monthly_amount_subscribed = 0
-    for subscription in instance.subscriptions.all():
-        value_usdt = subscription.get_converted_amount(False)
-        for contrib in subscription.subscription_contribution.filter(success=True):
-            if value_usdt:
-                instance.amount_received += Decimal(value_usdt)
-                if contrib.created_on > round_start_date:
-                    instance.amount_received_in_round += Decimal(value_usdt)
-
-        if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
-            if subscription.num_tx_approved != 1:
-                instance.monthly_amount_subscribed += subscription.get_converted_monthly_amount()
-
-    from django.contrib.contenttypes.models import ContentType
-    from search.models import SearchResult
-    if instance.pk:
-        SearchResult.objects.update_or_create(
-            source_type=ContentType.objects.get(app_label='grants', model='grant'),
-            source_id=instance.pk,
-            defaults={
-                "created_on":instance.created_on,
-                "title":instance.title,
-                "description":instance.description,
-                "url":instance.url,
-                "visible_to":None,
-                'img_url': instance.logo.url if instance.logo else None,
-            }
-            )
-    instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
+    if instance.modified_on < (timezone.now() - timezone.timedelta(minutes=5)):
+        from grants.tasks import update_grant_metadata
+        update_grant_metadata.delay(instance.pk)
 
 class DonationQuerySet(models.QuerySet):
     """Define the Contribution default queryset and manager."""
@@ -1186,15 +1164,16 @@ class Contribution(SuperModel):
             return
 
         # handle replace of tx_id
-        tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
-        if tx_status in ['pending', 'dropped', 'unknown', '']:
-            new_tx = getReplacedTX(self.tx_id)
-            if new_tx:
-                self.tx_id = new_tx
-            else:
-                # TODO: do stuff related to long running pending txns
-                pass
-            return
+        if self.tx_id:
+            tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+            if tx_status in ['pending', 'dropped', 'unknown', '']:
+                new_tx = getReplacedTX(self.tx_id)
+                if new_tx:
+                    self.tx_id = new_tx
+                else:
+                    # TODO: do stuff related to long running pending txns
+                    pass
+                return
         # handle replace of split_tx_id
         if self.split_tx_id:
             split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
@@ -1401,3 +1380,22 @@ class PhantomFunding(SuperModel):
         context['tx_cleared'] = True
         context['success'] = True
         return context
+
+
+class CartActivity(SuperModel):
+    ACTIONS = (
+        ('ADD_ITEM', 'Add item to cart'),
+        ('REMOVE_ITEM', 'Remove item to cart'),
+        ('CLEAR_CART', 'Clear cart')
+    )
+    grant = models.ForeignKey(Grant, null=True, on_delete=models.CASCADE, related_name='cart_actions',
+                              help_text=_('Related Grant Activity '))
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='cart_activity',
+                                help_text=_('User Cart Activity'))
+    action = models.CharField(max_length=20, choices=ACTIONS, help_text=_('Type of activity'))
+    metadata = JSONField(default=dict, blank=True, help_text=_('Related data to the action'))
+    bulk = models.BooleanField(default=False)
+    latest = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.action} {self.grant.id if self.grant else "bulk"} from the cart {self.profile.handle}'

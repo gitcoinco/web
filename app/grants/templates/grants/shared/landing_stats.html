@@ -21,7 +21,7 @@
       <div class="container-fluid pt-3 pb-1 grants-results">
         <div class="container">
           {% for round_type in round_types %}
-            <a href="/grants/stats/?category={{round_type}}" style="" class=" {% if selected_category == round_type  or not selected_category and round_type == 'tech' %}font-weight:bold{% endif %}">
+            <a href="/grants/getstats/?category={{round_type}}" style="" class=" {% if selected_category == round_type  or not selected_category and round_type == 'tech' %}font-weight:bold{% endif %}">
               {{round_type|title}} Round Stats
             </a>
           {% endfor %}

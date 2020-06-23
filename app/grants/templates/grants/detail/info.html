@@ -87,17 +87,25 @@
           {% if is_team_member %}
             <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
           {% else %}
-            <i style="width: 14px;" class="fab fa-github mr-2 text-center"></i>
+            <i style="width: 14px;" class="fa fa-link mr-2 text-center"></i>
             <a href="{{ grant.reference_url }}" target="_blank" data-toggle="tooltip" data-html="true" data-placement="top" title="Project URL">
               {{ grant.reference_url }}
             </a>
           {% endif %}
         </div>
+        {% if grant.twitter_handle_1 %}
+        <div class="font-body mb-2">
+          <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center"></i>
+          <p class="d-inline-block mb-0">
+            <a href="https://twitter.com/{{grant.twitter_handle_1}}" target="new" rel="nofollow"  data-toggle="tooltip" data-html="true" data-placement="top" title="Project Twitter Account">@{{grant.twitter_handle_1}}</a>
+          </p>
+        </div>
+      {% endif %}
   
         <div class="mb-2">
           <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
           <a id="wallet-address" class="wallet-address"
-            target="_blank" data-toggle="tooltip" data-placement="top" title="Recipient Funding Address">
+            target="_blank" data-toggle="tooltip" data-placement="top" title="Project Funding Address">
             {{ grant.admin_address }}
           </a>
         </div>
@@ -121,7 +129,15 @@
           <div class="font-body mb-2">
             <i style="width: 14px;" class="fas fa-coins mr-2 text-center"></i>
             <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="ERC20 Token">
-              Grant accepts {{ grant.token_symbol }}
+              Grant Accepts {{ grant.token_symbol }}
+            </p>
+          </div>
+        {% endif %}
+          {% if grant.last_update %}
+          <div class="font-body mb-2">
+            <i style="width: 14px;" class="fas fa-clock mr-2 text-center"></i>
+            <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant.">
+              Last Update: {{ grant.last_update|naturaltime }}
             </p>
           </div>
         {% endif %}

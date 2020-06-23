@@ -863,7 +863,7 @@ def leaderboard(request, key=''):
     which_leaderboard = f"{cadence}_{key}"
     all_ranks = LeaderboardRank.objects.filter(leaderboard=which_leaderboard, product=product)
     if keyword_search:
-        all_ranks = ranks.filter(tech_keywords__icontains=keyword_search)
+        all_ranks = all_ranks.filter(tech_keywords__icontains=keyword_search)
 
     amount = all_ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     ranks = all_ranks.filter(active=True)

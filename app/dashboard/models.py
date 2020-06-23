@@ -1458,16 +1458,16 @@ class SendCryptoAssetQuerySet(models.QuerySet):
         return self.filter(tx_status='success').exclude(txid='')
 
     def not_submitted(self):
-        """Filter results down to successful sends only."""
+        """Filter results down to not submitted results only."""
         return self.filter(tx_status='not_subed')
 
     def send_pending(self):
         """Filter results down to pending sends only."""
-        return self.filter(tx_status='pending').exclude(txid='')
+        return self.filter(Q(tx_status='pending') | Q(txid='pending_celery')).exclude(txid='')
 
     def send_happy_path(self):
         """Filter results down to pending/success sends only."""
-        return self.filter(tx_status__in=['pending', 'success']).exclude(txid='')
+        return self.filter(Q(tx_status__in=['pending', 'success']) | Q(txid='pending_celery')).exclude(txid='')
 
     def send_fail(self):
         """Filter results down to failed sends only."""
@@ -2164,6 +2164,7 @@ class Activity(SuperModel):
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
         ('hackathon_registration', 'Hackathon Registration'),
+        ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
     ]
@@ -2583,6 +2584,8 @@ class HackathonRegistration(SuperModel):
         blank=True
     )
     referer = models.URLField(null=True, blank=True, help_text='Url comes from')
+    looking_team_members = models.BooleanField(default=False)
+    looking_project = models.BooleanField(default=False)
     registrant = models.ForeignKey(
         'dashboard.Profile',
         related_name='hackathon_registration',
@@ -4207,7 +4210,7 @@ class Profile(SuperModel):
     def locations(self):
         from app.utils import get_location_from_ip
         locations = []
-        for login in self.actions.filter(action='Login'):
+        for login in self.actions.filter(action='Login').order_by('-created_on'):
             if login.location_data:
                 locations.append(login.location_data)
             else:
@@ -5026,17 +5029,39 @@ class Poll(SuperModel):
     hackathon = models.ManyToManyField(HackathonEvent)
 
 
+class PollMedia(SuperModel):
+    name = models.CharField(max_length=350)
+    image = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Poll media asset')
+    )
+
+    def __str__(self):
+        return f'{self.id} - {self.name}'
+
 
 class Question(SuperModel):
     TYPE_QUESTIONS = (
+        ('SINGLE_OPTION', 'Single option'),
         ('SINGLE_CHOICE', 'Single Choice'),
         ('MULTIPLE_CHOICE', 'Multiple Choices'),
         ('OPEN', 'Open'),
     )
+
+    TYPE_HOOKS = (
+        ('NO_ACTION', 'No trigger any action'),
+        ('TOWNSQUARE_INTRO', 'Create intro on Townsquare'),
+        ('LOOKING_TEAM_PROJECT', 'Looking for team or project')
+    )
+
+    hook = models.CharField(default='NO_ACTION', choices=TYPE_HOOKS, max_length=50)
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True, blank=True)
     question_type = models.CharField(choices=TYPE_QUESTIONS, max_length=50, blank=False, null=False)
     text = models.CharField(max_length=350, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
+    header = models.ForeignKey(PollMedia, null=True, on_delete=models.SET_NULL)
 
     class Meta(object):
         ordering = ['order']
@@ -5060,6 +5085,49 @@ class Answer(SuperModel):
     choice = models.ForeignKey(Option, on_delete=models.CASCADE, null=True, blank=True)
     checked = models.BooleanField(default=False)
     hackathon = models.ForeignKey(HackathonEvent, null=True, on_delete=models.CASCADE)
+
+
+@receiver(post_save, sender=Answer, dispatch_uid='hooks_on_question_response')
+def psave_answer(sender, instance, created, **kwargs):
+    if created:
+        if instance.question.hook == 'TOWNSQUARE_INTRO':
+            registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
+                                                                registrant=instance.user.profile).first()
+
+            Activity.objects.create(
+                profile=instance.user.profile,
+                hackathonevent=instance.hackathon,
+                activity_type='hackathon_new_hacker',
+                metadata={
+                    'answer': instance.id,
+                    'intro_text': f'{instance.open_response or ""} #intro',
+                    'looking_members': registration.looking_team_members if registration else False,
+                    'looking_project': registration.looking_project if registration else False,
+                    'hackathon_registration': registration.id if registration else 0
+                }
+            )
+        elif instance.question.hook == 'LOOKING_TEAM_PROJECT':
+            registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
+                                                                registrant=instance.user.profile).first()
+            print(instance)
+            if registration:
+                if instance.choice.text.lower().find('team') != -1:
+                    registration.looking_team_members = True
+
+                if instance.choice.text.lower().find('project') != -1:
+                    registration.looking_project = True
+
+                registration.save()
+
+                activity = Activity.objects.filter(
+                    profile=instance.user.profile,
+                    hackathonevent=instance.hackathon,
+                    activity_type='hackathon_new_hacker').last()
+
+                if activity:
+                    activity.metadata['looking_team_members'] = registration.looking_team_members
+                    activity.metadata['looking_project'] = registration.looking_project
+                    activity.save()
 
 
 class Investigation(SuperModel):

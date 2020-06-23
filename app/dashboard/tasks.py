@@ -124,6 +124,11 @@ def grant_update_email_task(self, pk, retry: bool = True) -> None:
     activity = Activity.objects.get(pk=pk)
     grant_update_email(activity)
 
+    from django.utils import timezone
+    grant = activity.grant
+    grant.last_update = timezone.now()
+    grant.save()
+
 
 @app.shared_task(bind=True)
 def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:

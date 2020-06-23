@@ -92,8 +92,15 @@
         <ul>
             <a href="{% url 'impersonate-list' %}">{% trans 'Impersonate Users' %}<a/>
         </ul>
+        <ul>
+            Grants: <a href="/_administrationgrants/contribution/?tx_cleared=f">Uncleared TXNS<a/> | <a href="/_administrationgrants/contribution/?success=f">Failed TXNS<a/>
+        </ul>
 
         <h2>{% trans 'Administrative Tasks' %}</h2>
+
+        <ul>
+            <a href="/_administration/email/">Preview Emails</a>
+        </ul>
 
         <ul>
             <a href="/_administrationfaucet/faucetrequest/?fulfilled=f&rejected=f">Process Faucet Requests</a>
