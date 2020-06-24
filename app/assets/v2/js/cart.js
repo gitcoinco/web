@@ -824,12 +824,11 @@ Vue.component('grants-cart', {
       return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
     },
 
-    async valueToDai(amount, tokenSymbol) {
-      const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
-      const response = await fetch(url);
-      const newAmount = await response.json()[0];
+    async valueToDai(amount, tokenSymbol, tokenPrices) {
+      const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
+      const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
 
-      return newAmount.usdt;
+      return Number(amount) * Number(amountOfOne); // convert based on quantity and return
     },
 
     async valueToEth(amount, tokenSymbol) {
@@ -840,10 +839,7 @@ Vue.component('grants-cart', {
       return newAmount.eth;
     },
 
-    async predictCLRMatch(grant) {
-      const rawAmount = Number(grant.grant_donation_amount);
-      let amount = await this.valueToDai(rawAmount, grant.grant_donation_currency);
-
+    async predictCLRMatch(grant, amount) {
       const clr_prediction_curve_2d = JSON.parse(grant.grant_clr_prediction_curve);
       const clr_prediction_curve = clr_prediction_curve_2d.map(row => row[2]);
 
@@ -905,6 +901,12 @@ Vue.component('grants-cart', {
     grantData: {
       async handler() {
         CartData.setCart(this.grantData);
+        const tokenNames = Array.from(new Set(this.grantData.map(grant => grant.grant_donation_currency)));
+
+        const priceUrl = `${window.location.origin}/sync/get_amount?denomination=${tokenNames}`;
+        const priceResponse = await fetch(priceUrl);
+        const tokenPrices = (await priceResponse.json());
+
         for (let i = 0; i < this.grantData.length; i += 1) {
           const verification_required_to_get_match = false;
 
@@ -915,7 +917,10 @@ Vue.component('grants-cart', {
             this.grantData[i].grant_donation_clr_match = 0;
           } else {
             const grant = this.grantData[i];
-            const matchAmount = await this.predictCLRMatch(grant);
+            // Convert amount to DAI
+            const rawAmount = Number(grant.grant_donation_amount);
+            const amount = this.valueToDai(rawAmount, grant.grant_donation_currency, tokenPrices);
+            const matchAmount = await this.predictCLRMatch(grant, amount);
 
             this.grantData[i].grant_donation_clr_match = matchAmount ? matchAmount.toFixed(2) : 0;
           }
