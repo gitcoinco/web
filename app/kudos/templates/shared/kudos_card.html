@@ -21,5 +21,11 @@
     <img id="kudosImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 2'%3E%3C/svg%3E" data-src="{{listing.preview_img_url}}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-transparent" loading="lazy" width="250" style="min-height: 200px;">
   </a>
   <span class="kd-price">{{ listing.price_in_eth }} ETH</span>
-  <div class="kd-name text-truncate" title="{{ listing.ui_name }}">{{ listing.ui_name }}</div>
+  <div class="kd-name text-truncate" title="{{ listing.ui_name }}">{{ listing.ui_name }}
+  {% if listing.artist %}
+  by <img loading="lazy" style="width: 30px; height: 30px;" data-src="/dynamic/avatar/{{listing.artist}}" > <a href="/profile/{{listing.artist}}/kudos" class="kudos-details__address" title="@{{ listing.artist }} has this kudos on {{listing.created_on}}">@{{listing.artist}}</a>
+  
+  {% endif %}
+  </div>
+
 </div>
