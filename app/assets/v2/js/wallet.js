@@ -1,6 +1,9 @@
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
+const eventWalletReady = new Event('walletReady', {bubbles: true});
+const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
+let web3;
 let web3Modal;
 let provider;
 let selectedAccount;
@@ -43,6 +46,7 @@ function initWallet() {
     cacheProvider: true,
     providerOptions
   });
+  document.dispatchEvent(eventWalletReady);
 }
 
 function walletStateChanges() {
@@ -52,15 +56,18 @@ function walletStateChanges() {
 }
 
 const needWalletConnection = async() => {
-  if (!web3Modal.cachedProvider) {
-    return await onConnect();
-  }
+  window.addEventListener('walletReady', async function(e) {
+    if (!web3Modal || !web3Modal.cachedProvider) {
+      return await onConnect().then(console.log);
+    }
+  }, false);
 };
 
 async function fetchAccountData(provider) {
 
   // Get a Web3 instance for the wallet
-  web3 = new Web3(provider);
+  // web3 = new Web3(provider);
+  web3 = Web3 ? new Web3(provider || 'ws://localhost:8546') : null;
 
   console.log('Web3 instance is', web3);
 
@@ -165,6 +172,7 @@ async function fetchAccountData(provider) {
   // document.querySelector("#connected").style.display = "block";
   walletStateChanges();
   $('.wallet-option').on('click', changeWallet);
+  document.dispatchEvent(eventDataWalletReady);
 }
 
 function changeWallet(e) {
@@ -211,7 +219,8 @@ async function onConnect() {
   // regardless if we play around with a cacheProvider settings
   // in our localhost.
   // TODO: A clean API needed here
-  web3Modal.providerController.cachedProvider = null;
+  // web3Modal.providerController.cachedProvider = null;
+  web3Modal.clearCachedProvider();
   // web3Modal.clearCachedProvider();
 
   console.log('Opening a dialog', web3Modal);

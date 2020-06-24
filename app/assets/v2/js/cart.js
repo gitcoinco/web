@@ -3,9 +3,13 @@
  * @dev If you need to interact with the Rinkeby Dai contract (e.g. to reset allowances for
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
+let BN;
 
+needWalletConnection();
+window.addEventListener('dataWalletReady', function(e) {
+  BN = web3.utils.BN;
+}, false);
 // Constants
-const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
 
@@ -517,7 +521,7 @@ Vue.component('grants-cart', {
         // Setup -----------------------------------------------------------------------------------
         // Prompt web3 login if not connected
         if (!provider) {
-          await onConnect();
+          return await onConnect();
         }
 
         // Throw if invalid Gitcoin contribution percentage
