@@ -47,6 +47,10 @@ class TokenRequestAdmin(admin.ModelAdmin):
             notify_kudos_rejected(obj)
             self.message_user(request, f"Notified user of rejection")
             return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
+        if "_change_owner" in request.POST:
+            obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
+            obj.save()
+            self.message_user(request, f"Changed owner to gitcoin")
         if "_mint_kudos" in request.POST:
             from kudos.tasks import mint_token_request
             try:
@@ -55,11 +59,6 @@ class TokenRequestAdmin(admin.ModelAdmin):
             except Exception as e:
                 self.message_user(request, str(e))
             return redirect('/_administrationkudos/tokenrequest/?approved=f&rejection_reason=')
-
-        if "_change_owner" in request.POST:
-            obj.to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F'
-            obj.save()
-            self.message_user(request, f"Changed owner to gitcoin")
         return redirect(obj.admin_url)
 
     def preview(self, instance):
@@ -125,6 +124,7 @@ class TokenAdmin(admin.ModelAdmin):
                 )
             self.message_user(request, f"Created Bulk Transfer Coupon with default settings")
             return redirect(btc.admin_url)
+        return redirect(obj.admin_url)
 
 
 class TransferAdmin(admin.ModelAdmin):

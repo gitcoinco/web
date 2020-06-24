@@ -17,7 +17,7 @@
 {% endcomment %}
 {% load i18n static %}
     <div class="modal" id="tweetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background-color: #eee;">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog" role="document" style="max-height: 100vh; overflow-y: scroll;">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="javascript:$('#tweetModal').remove();">
