@@ -1,9 +1,10 @@
-window.addEventListener('dataWalletReady', function(e) {
-  app.network = networkName;
-}, false);
-
+let appFormHackathon;
 const hackathon_slug = document.hackathon_slug;
 const sponsors = document.sponsors;
+
+window.addEventListener('dataWalletReady', function(e) {
+  appFormHackathon.network = networkName;
+}, false);
 
 Vue.component('v-select', VueSelect.VueSelect);
 Vue.mixin({
@@ -115,7 +116,7 @@ Vue.mixin({
     submitForm: function() {
       let vm = this;
 
-      if (network === 'mainnnet') {
+      if (network === 'mainnet') {
         // vm.blockchainSend(form)
         // vm.sendData(form)
 
@@ -168,7 +169,7 @@ Vue.mixin({
       };
 
       // api post method
-      const url  = '/api/v1/bounty/create';
+      const url = '/api/v1/bounty/create';
 
       $.post(url, params, function(response) {
         if (200 <= response.status && response.status <= 204) {
@@ -183,7 +184,7 @@ Vue.mixin({
         }
       });
 
-    },
+    }
     // blockchainSend: function() {
 
     // }
@@ -210,26 +211,26 @@ Vue.mixin({
       const vm = this;
       let result;
 
-      vm.form.token = {}
+      vm.form.token = {};
       // vm.chainId = form.bounty_chain;
       if (vm.chainId == '') {
         result = vm.filterByNetwork;
       } else {
         result = vm.filterByNetwork.filter((item)=>{
-          console.log(item.chainId, vm.chainId)
+          console.log(item.chainId, vm.chainId);
 
           return String(item.chainId) === vm.chainId;
         });
       }
       vm.form.token = result[0];
-      return result
+      return result;
     }
   }
 });
 
 if (document.getElementById('gc-hackathon-new-bounty')) {
   // var vueSelect = import('vue-select');
-  var app = new Vue({
+  appFormHackathon = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-hackathon-new-bounty',
     components: {
@@ -238,7 +239,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
     data() {
       return {
         tokens: [],
-        network: '',
+        network: 'mainnet',
         chainId: '',
         hackathon_slug: hackathon_slug,
         issueDetails: undefined,
