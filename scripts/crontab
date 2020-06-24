@@ -24,6 +24,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 0 */1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash kudos_revenue mainnet --account-address 0xdb282cee382244e05dd226c8809d2405b76fbdc9  >> /var/log/gitcoin/kudos_revenue.log  2>&1
 1,31 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash submit_pending_kudos  >> /var/log/gitcoin/submit_pending_kudos.log  2>&1
 
+## PTOKEN
+*/10 4,11,18 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash update_ptoken_tx_status >> /var/log/gitcoin/update_ptoken_tx_status.log 2>&1
 ## TOWN SQUARE
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash create_rankings >> /var/log/gitcoin/create_rankings.log 2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_user_presence && sleep 10 bash scripts/run_management_command_if_not_already_running.bash get_user_presence && sleep 10 && bash scripts/run_management_command_if_not_already_running.bash get_user_presence >> /var/log/gitcoin/get_user_presence.log 2>&1

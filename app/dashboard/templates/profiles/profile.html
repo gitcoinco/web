@@ -135,6 +135,12 @@
       {% if profile.automatic_backup and is_editable %}
         window.profile_automatic_backup = true;
       {% endif %}
+      {% if ptoken %}
+        document.current_ptoken_address = "{{ ptoken.token_address }}";
+        document.current_ptoken_symbol = "{{ ptoken.token_symbol }}";
+        document.current_ptoken_id = {{ ptoken.id }};
+        document.current_ptoken_value = {{ ptoken.value }};
+      {% endif %}
     </script>
   </body>
 </html>

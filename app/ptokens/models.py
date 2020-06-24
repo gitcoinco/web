@@ -131,6 +131,30 @@ class PersonalToken(SuperModel):
     def title(self):
         return self.title
 
+    def get_holders(self):
+        # Initially will be supporting DAI, so isn't necessary check the price for other tokens
+        holders = []
+        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self)
+        total_purchases = {
+            purchase['token_holder_profile']: purchase['total_amount']
+            for purchase in purchases_ptoken.values('token_holder_profile').annotate(total_amount=Sum('amount'))
+        }
+
+        redemptions = RedemptionToken.objects.filter(ptoken=self)
+        total_redemptions = redemptions.values('redemption_requester').annotate(total_amount=Sum('total'))
+
+        for redemption in total_redemptions:
+            requester = redemption['redemption_requester']
+            if redemption['total_amount'] < total_purchases[requester]:
+                holders.append(requester)
+
+        return holders
+
+    def update_tx_status(self):
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)
+
 
 class RedemptionToken(SuperModel):
     """Define the structure of a Redemption PToken"""
@@ -154,6 +178,11 @@ class RedemptionToken(SuperModel):
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     web3_created = models.DateTimeField(null=True)
 
+    def update_tx_status(self):
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)
+
 
 @receiver(post_save, sender=PersonalToken, dispatch_uid="PTokenActivity")
 def psave_ptoken(sender, instance, **kwargs):
@@ -161,7 +190,7 @@ def psave_ptoken(sender, instance, **kwargs):
 
 
 class PurchasePToken(SuperModel):
-    ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
+    ptoken = models.ForeignKey(PersonalToken, null=True, related_name='ptoken_purchases', on_delete=models.SET_NULL)
     amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
@@ -173,3 +202,8 @@ class PurchasePToken(SuperModel):
     token_holder_profile = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='ptoken_purchases', blank=True
     )
+
+    def update_tx_status(self):
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)

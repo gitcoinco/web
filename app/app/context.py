@@ -33,6 +33,7 @@ from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
 from perftools.models import JSONStore
+from ptokens.models import PersonalToken
 from retail.helpers import get_ip
 from townsquare.models import Announcement
 
@@ -74,6 +75,7 @@ def preprocess(request):
     chat_url = get_chat_url(front_end=True)
     chat_access_token = ''
     chat_id = ''
+    ptoken = None
 
     user_is_authenticated = request.user.is_authenticated
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
@@ -115,6 +117,9 @@ def preprocess(request):
 
         chat_access_token = profile.gitcoin_chat_access_token
         chat_id = profile.chat_id
+
+        ptoken = PersonalToken.objects.filter(token_owner_profile=profile).first()
+
     # handles marketing callbacks
     if request.GET.get('cb'):
         callback = request.GET.get('cb')
@@ -175,7 +180,9 @@ def preprocess(request):
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
         'ptoken_abi': settings.PTOKEN_ABI,
-        'ptoken_factory_abi': settings.PTOKEN_FACTORY_ABI
+        'ptoken_factory_abi': settings.PTOKEN_FACTORY_ABI,
+        'ptoken_address': ptoken.token_address if ptoken else '',
+        'ptoken_id': ptoken.id if ptoken else None
     }
     context['json_context'] = json.dumps(context)
     context['last_posts'] = cache.get_or_set('last_posts', fetchPost, 5000)
