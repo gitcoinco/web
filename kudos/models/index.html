@@ -2236,6 +2236,10 @@ relation.</p>
     place = OneToOneField(Place, related_name='restaurant')
 </code></pre>
 <p><code>Place.restaurant</code> is a <code>ReverseOneToOneDescriptor</code> instance.</p>
+<h3 id="kudos.models.Token.metadata">metadata</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="kudos.models.Token.name">name</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
