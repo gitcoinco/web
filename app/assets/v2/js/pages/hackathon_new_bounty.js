@@ -1,3 +1,7 @@
+window.addEventListener('dataWalletReady', function(e) {
+  app.network = networkName;
+}, false);
+
 const hackathon_slug = document.hackathon_slug;
 const sponsors = document.sponsors;
 
@@ -258,6 +262,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
     },
     mounted() {
       this.getTokens();
+
     }
   });
 }
