@@ -766,7 +766,7 @@ Vue.component('grants-cart', {
     async valueToDai(amount, tokenSymbol) {
       const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
       const response = await fetch(url);
-      const newAmount = await response.json();
+      const newAmount = await response.json()[0];
 
       return newAmount.usdt;
     },

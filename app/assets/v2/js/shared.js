@@ -512,7 +512,8 @@ var retrieveAmount = function() {
   }
 
   // if not, use remote one
-  $.get(request_url, function(result) {
+  $.get(request_url, function(results) {
+    const result = results[0];
 
     // update UI
     var usd_amount = result['usdt'];
