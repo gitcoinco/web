@@ -321,6 +321,21 @@ Vue.component('project-directory', {
     window.removeEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     });
+  },
+  bottomVisible: function() { // TODO: abstract this to the mixin, and have it take a callback which modifies the component state.
+    let vm = this;
+
+    const scrollY = window.scrollY;
+    const visible = document.documentElement.clientHeight;
+    const pageHeight = document.documentElement.scrollHeight - 500;
+    const bottomOfPage = visible + scrollY >= pageHeight;
+
+    if (bottomOfPage || pageHeight < visible) {
+      if (vm.projectsHasNext) {
+        vm.projectsHasNext = false;
+        vm.fetchProjects();
+      }
+    }
   }
 });
 

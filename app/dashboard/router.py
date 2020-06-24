@@ -208,7 +208,7 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
 
 class HackathonProjectsPagination(PageNumberPagination):
-    page_size = 100
+    page_size = 10
 
 
 class HackathonProjectsViewSet(viewsets.ModelViewSet):
