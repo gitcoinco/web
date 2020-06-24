@@ -116,7 +116,7 @@
                 <a href="#" id="select_all" data-direction="+" >[{% trans "Select All" %}]</a>
                 {% for email_type in email_types %}
                   <div class="email_pref_container">
-                    <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{ email_type.0 }}" value="1">
+                    <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{hackathon.slug}}_{{ email_type.0 }}" value="1">
                     <label class="form__label" for="{{ email_type.0 }}">{% trans "Don't send me" %} <strong>{{ email_type.1 }}</strong></label>
                     <small id="{{ email_type.0 }}" class="form__input-help">{% trans "Frequency" %}: {{ email_type.2 }}</small>
                     <br>
@@ -391,12 +391,14 @@
           }
         });
 
-        // suppression preferences form
+        // hackathon event suppression preferences form
         var suppression_preferences = {{ suppression_preferences|safe }};
+        var hack_prefs = suppression_preferences["hackathon_preferences"];
+        var hack = '{{hackathon.slug|safe}}';
 
-        for (var key in suppression_preferences) {
-          var pref = suppression_preferences[key];
-          $('#'+key).prop('checked', pref);
+        for (var key in hack_prefs[hack]) {
+          var pref = hack_prefs[hack][key];
+          $('#'+hack+'_'+key).prop('checked', pref);
         }
       });
 

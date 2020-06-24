@@ -32,6 +32,18 @@
       <br>
     </div>
     {% endfor %}
+    <h5>Hackathon event preferences:</h5>
+    {% for hack_pref in hack_prefs %}
+      <h6>{{ hack_pref }}</h6>
+      {% for email_type in hackathon_types %}
+      <div class="email_pref_container">
+        <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{ hack_pref }}_{{ email_type.0 }}" value="1">
+        <label class="form__label" for="{{ email_type.0 }}">{% trans "Don't send me" %} <strong>{{ email_type.1 }}</strong></label>
+        <small id="{{ email_type.0 }}" class="form__input-help">{% trans "Frequency" %}: {{ email_type.2 }}</small>
+        <br>
+      </div>
+      {% endfor %}
+    {% endfor %}
   </div>
   {% csrf_token %}
   <input class='button button--primary' type='submit' name='submit' value="Save">
@@ -61,6 +73,16 @@
     for (var key in suppression_preferences) {
       var pref = suppression_preferences[key];
       $('#'+key).prop('checked', pref);
+    }
+
+    // hackathon event suppression preferences form
+    var hack_prefs = suppression_preferences["hackathon_preferences"]
+
+    for (var hack in hack_prefs) {
+      for (var key in hack_prefs[hack]) {
+        var pref = hack_prefs[hack][key];
+        $('#'+hack+'_'+key).prop('checked', pref);
+      }
     }
   });
   // bust the cache every time the language changes

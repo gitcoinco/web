@@ -81,8 +81,35 @@ class EmailSubscriber(SuperModel):
         suppression_preferences[key] = not should_send #db = suppressed? request format = send?
         self.preferences['suppression_preferences'] = suppression_preferences
 
+    def build_hackathon_email_preferences(self, form=None, hackathon=None):
+        from retail.emails import HACKATHON_EMAILS
+        if form is None:
+            form = {}
+
+        suppression_preferences = self.preferences.get('suppression_preferences', {})
+
+        # update from hackathon event form
+        hack_prefs ={
+            'hackathon_admin': False,
+            'hackathon_reminder': False,
+            'hackathon_workshop_invite': False,
+            'hackathon_sponsors': False,
+        }
+
+        for email_tuple in HACKATHON_EMAILS:
+            key, __, __ = email_tuple
+            if key in form.keys():
+                hack_prefs[key] = bool(form[key])
+
+        print(hack_prefs)
+        suppression_preferences['hackathon_preferences'][hackathon] = hack_prefs
+        # save and return
+        self.preferences['suppression_preferences'] = suppression_preferences
+        return suppression_preferences
+
+
     def build_email_preferences(self, form=None):
-        from retail.emails import ALL_EMAILS, TRANSACTIONAL_EMAILS, MARKETING_EMAILS
+        from retail.emails import ALL_EMAILS, TRANSACTIONAL_EMAILS, MARKETING_EMAILS, HACKATHON_EMAILS, NOTIFICATION_EMAILS
         if form is None:
             form = {}
 

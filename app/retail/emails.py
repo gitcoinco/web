@@ -84,7 +84,7 @@ HACKATHON_EMAILS = [
     ('hackathon_sponsors', _('Emails from Sponsors'), _('(up to) Daily')),
 ]
 
-ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS + HACKATHON_EMAILS
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS + NOTIFICATION_EMAILS
 
 
 def premailer_transform(html):

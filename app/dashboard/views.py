@@ -3785,7 +3785,6 @@ def hackathon_onboard(request, hackathon=''):
             unsubscribed_email_type[email_type] = True
             if email_type == 'chat' and profile:
                 update_chat_notifications(profile, 'email', False)
-            import pdb; pdb.set_trace()
             es.build_email_preferences(unsubscribed_email_type)
             es = record_form_submission(request, es, 'email')
             ip = get_ip(request)
@@ -3836,9 +3835,7 @@ def hackathon_onboard(request, hackathon=''):
                 if form['chat'] and profile:
                     update_chat_notifications(profile, 'email', False)
 
-                import pdb; pdb.set_trace()
-                es.build_email_preferences(form)
-                #es.build_hackathon_preferences(form)
+                es.build_hackathon_email_preferences(form, hackathon)
                 es = record_form_submission(request, es, 'email')
                 ip = get_ip(request)
                 es.active = level != 'nothing'

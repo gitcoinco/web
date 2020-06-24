@@ -42,7 +42,7 @@ from app.utils import sync_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from chat.tasks import update_chat_notifications
-from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
+from dashboard.models import Activity, HackathonEvent, HackathonRegistration, Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -291,12 +291,18 @@ def email_settings(request, key):
     ):
         return redirect('/login/github?next=' + request.get_full_path())
 
+
+    # find hackathons this profile is registered for:
+    hackathons = HackathonRegistration.objects.filter(registrant=profile)
+    emailsub = EmailSubscriber.objects.filter(email=profile.email).first()
+    suppression_preferences = emailsub.preferences.get('suppression_preferences', {})
+
     # handle 'noinput' case
     email = ''
     level = ''
     msg = ''
     email_types = {}
-    from retail.emails import ALL_EMAILS
+    from retail.emails import ALL_EMAILS, HACKATHON_EMAILS
     for em in ALL_EMAILS:
         email_types[em[0]] = str(em[1])
     email_type = request.GET.get('type')
@@ -379,8 +385,10 @@ def email_settings(request, key):
         'msg': msg,
         'profile': request.user.profile if request.user.is_authenticated else None,
         'email_types': ALL_EMAILS,
+        'hackathon_types': HACKATHON_EMAILS,
         'navs': get_settings_navs(request),
-        'preferred_language': pref_lang
+        'preferred_language': pref_lang,
+        'hack_prefs': suppression_preferences["hackathon_preferences"]
     }
     return TemplateResponse(request, 'settings/email.html', context)
 
