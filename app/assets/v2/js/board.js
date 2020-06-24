@@ -208,28 +208,30 @@ Vue.mixin({
       const factoryAddress = '0x7bE324A085389c82202BEb90D979d097C5b3f2E8';
       const mockDaiAddress = '0x6b67DD1542ef11153141037734D21E7Cbd7D9817';
       const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
+      const newPToken = this.newPToken;
 
       // Deploy on-chain
       factory.methods.createPToken(
-        this.newPToken.name,
-        this.newPToken.symbol,
-        this.newPToken.price,
-        this.newPToken.supply,
+        newPToken.name,
+        newPToken.symbol,
+        newPToken.price,
+        newPToken.supply,
         mockDaiAddress
       ).send({
         from: user
       }).on('transactionHash', function(transactionHash) {
         // Save to database
         create_ptoken(
-          this.newPToken.name,
-          this.newPToken.symbol,
+          newPToken.name,
+          newPToken.symbol,
           '0x0',
-          this.newPToken.price,
-          this.newPToken.supply,
+          newPToken.price,
+          newPToken.supply,
           user,
           transactionHash,
           (new Date()).toISOString()
         );
+        console.log('Token Created!');
       });
     }
   }
