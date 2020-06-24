@@ -42,12 +42,17 @@
               <a class="button button--primary" role="button" href="{{fund_reward.url}}?tweet=I just funded a grant on @gitcoin (https://{{ request.META.HTTP_HOST }}{% url 'grants:details' grant.id grant.slug %}) and got this sweet Kudos! => "
                 target="_blank" rel="noopener noreferrer" >
                 {% trans "Redeem Kudos" %} 🌈
-              </a> 
+              </a> |
+            {% elif grant.id %}
+              <a class="button button--primary" role="button" href="https://twitter.com/intent/tweet?text=I just funded this grant on @gitcoin => https://{{ request.META.HTTP_HOST }}/{% url 'grants:details' grant.id grant.slug %}"
+                target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Tweet Button', 'click', 'Grant Funder')">
+                {% trans "Tweet About this Grant" %} 🐦
+              </a>
             {% else %}
               <a class="button button--primary" role="button"
                 href="https://gitcoin.co/grants/"
                 target="_blank" rel="noopener noreferrer" OnClick="ga('send', 'event', 'Fund New Grant', 'click', 'Grant Funder')">
-                {% trans "Fund a New Grant" %} 
+                {% trans "Fund a New Grant" %}
               </a>
             {% endif %}
           </div>
