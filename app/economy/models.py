@@ -167,7 +167,12 @@ class SuperModel(models.Model):
 
 class ConversionRate(SuperModel):
     """Define the conversion rate model."""
-
+    SOURCE_TYPES = [
+        ('cryptocompare', 'cryptocompare'),
+        ('poloniex', 'poloniex'),
+        ('uniswap', 'uniswap'),
+        ('manual', 'manual'),
+    ]
     from_amount = models.FloatField()
     to_amount = models.FloatField()
     timestamp = models.DateTimeField(null=False, default=get_time, db_index=True)
