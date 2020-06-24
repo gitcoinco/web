@@ -2899,8 +2899,7 @@ class Profile(SuperModel):
     @property
     def kudos_authored(self):
         from kudos.models import Token
-        return Token.objects.filter(artist=self.handle)
-
+        return Token.objects.filter(artist=self.handle, num_clones_allowed__gt=1, hidden=False)
 
     @property
     def get_my_kudos(self):

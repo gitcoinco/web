@@ -158,7 +158,7 @@ class Token(SuperModel):
     def artist_others(self):
         if not self.artist:
             return Token.objects.none()
-        return Token.objects.filter(artist=self.artist)
+        return Token.objects.filter(artist=self.artist, num_clones_allowed__gt=1, hidden=False)
 
     @property
     def static_image(self):
