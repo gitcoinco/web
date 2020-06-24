@@ -595,7 +595,8 @@ $('#submitBounty').validate({
   },
   submitHandler: function(form) {
     if (!provider) {
-      return onConnect();
+      onConnect();
+      return false;
     }
 
     if (typeof ga != 'undefined') {
