@@ -511,6 +511,16 @@ Vue.component('grants-cart', {
         // For each token, check if an approval is needed, and if so save off the data
         let allowanceData = [];
 
+        const calcTotalAllowance = (tokenDetails) => {
+          const initialValue = new BN('0');
+
+          return this.donationInputs.reduce((accumulator, currentValue) => {
+            return currentValue.token === tokenDetails.addr
+              ? accumulator.add(new BN(currentValue.amount)) // correct token donation
+              : accumulator.add(new BN('0')); // ETH donation
+          }, initialValue);
+        };
+
         for (let i = 0; i < selectedTokens.length; i += 1) {
           const tokenName = selectedTokens[i];
           const tokenDetails = this.getTokenByName(tokenName);
@@ -535,12 +545,8 @@ Vue.component('grants-cart', {
           // Get required allowance based on donation amounts
           // We use reduce instead of this.donationsTotal because this.donationsTotal will
           // not have floating point errors, but the actual amounts used will
-          const initialValue = new BN('0');
-          const requiredAllowance = this.donationInputs.reduce((accumulator, currentValue) => {
-            return currentValue.token === tokenDetails.addr
-              ? accumulator.add(new BN(currentValue.amount)) // correct token donation
-              : accumulator.add(new BN('0')); // ETH donation
-          }, initialValue);
+
+          const requiredAllowance = calcTotalAllowance(tokenDetails);
 
           // Check user token balance against requiredAllowance
           const userTokenBalance = await tokenContract.methods.balanceOf(userAddress).call({ from: userAddress });
