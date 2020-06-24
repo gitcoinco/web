@@ -52,7 +52,7 @@ Vue.mixin({
 
       $.when(getTokensData).then((response) => {
         vm.tokens = response;
-        vm.form.token = vm.filterByNetwork[0];
+        vm.form.token = vm.filterByChainId[0];
         vm.getAmount(vm.form.token.symbol);
 
       }).catch((err) => {
@@ -118,11 +118,68 @@ Vue.mixin({
       } else if (network === 'custom') {
         // vm.sendData(form)
       }
-    }
-    // sendData: function() {
-    //   // api post method
+    },
+    sendData: function() {
+      let vm = this;
 
-    // },
+      const params = {
+        'title': metadata.issueTitle,
+        'amount': data.amount,
+        'value_in_token': data.amount * 10 ** token.decimals,
+        'token_name': metadata.tokenName,
+        'token_address': tokenAddress,
+        'bounty_type': metadata.bountyType,
+        'project_length': metadata.projectLength,
+        'estimated_hours': metadata.estimatedHours,
+        'experience_level': metadata.experienceLevel,
+        'github_url': data.issueURL,
+        'bounty_owner_email': metadata.notificationEmail,
+        'bounty_owner_github_username': metadata.githubUsername,
+        'bounty_owner_name': metadata.fullName, // ETC-TODO REMOVE ?
+        'bounty_reserved_for': metadata.reservedFor,
+        'release_to_public': metadata.releaseAfter,
+        'expires_date': expiresDate,
+        'metadata': JSON.stringify(metadata),
+        'raw_data': {}, // ETC-TODO REMOVE ?
+        'network': network,
+        'issue_description': metadata.issueDescription,
+        'funding_organisation': metadata.fundingOrganisation,
+        'balance': data.amount * 10 ** token.decimals, // ETC-TODO REMOVE ?
+        'project_type': data.project_type,
+        'permission_type': data.permission_type,
+        'bounty_categories': metadata.bounty_categories,
+        'repo_type': data.repo_type,
+        'is_featured': is_featured,
+        'featuring_date': metadata.featuring_date,
+        'fee_amount': fee_amount,
+        'fee_tx_id': fee_tx_id,
+        'coupon_code': coupon_code,
+        'privacy_preferences': JSON.stringify(privacy_preferences),
+        'attached_job_description': hiring.jobDescription,
+        'eventTag': metadata.eventTag,
+        'auto_approve_workers': data.auto_approve_workers ? 'True' : 'False',
+        'web3_type': web3_type,
+        'activity': data.activity,
+        'bounty_owner_address': data.funderAddress
+      };
+
+      // api post method
+      const url  = '/api/v1/bounty/create';
+
+      $.post(url, params, function(response) {
+        if (200 <= response.status && response.status <= 204) {
+          console.log('success', response);
+          window.location.href = response.bounty_url;
+        } else if (response.status == 304) {
+          _alert('Bounty already exists for this github issue.', 'error');
+          console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
+        } else {
+          _alert('Unable to create a bounty. Please try again later', 'error');
+          console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
+        }
+      });
+
+    },
     // blockchainSend: function() {
 
     // }
@@ -138,12 +195,30 @@ Vue.mixin({
       const vm = this;
 
       if (vm.network == '') {
-        return vm.tokens;
+        return vm.sortByPriority;
       }
       return vm.sortByPriority.filter((item)=>{
 
         return item.network.toLowerCase().indexOf(vm.network.toLowerCase()) >= 0;
       });
+    },
+    filterByChainId: function() {
+      const vm = this;
+      let result;
+
+      vm.form.token = {}
+      // vm.chainId = form.bounty_chain;
+      if (vm.chainId == '') {
+        result = vm.filterByNetwork;
+      } else {
+        result = vm.filterByNetwork.filter((item)=>{
+          console.log(item.chainId, vm.chainId)
+
+          return String(item.chainId) === vm.chainId;
+        });
+      }
+      vm.form.token = result[0];
+      return result
     }
   }
 });
@@ -159,7 +234,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
     data() {
       return {
         tokens: [],
-        network: 'mainnet',
+        network: '',
+        chainId: '',
         hackathon_slug: hackathon_slug,
         issueDetails: undefined,
         errorIssueDetails: undefined,

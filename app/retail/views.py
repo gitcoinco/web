@@ -1482,7 +1482,7 @@ def web3(request):
 
 
 def tokens(request):
-    context = []
+    context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
     for network in networks:
         key = f"{network}_tokens"
