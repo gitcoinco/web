@@ -836,7 +836,7 @@ def grant_fund(request, grant_id, grant_slug):
 
     if request.method == 'POST':
         from grants.tasks import process_grant_contribution
-        process_grant_contribution.delay(grant_id, grant_slug, profile.pk, request.POST)
+        process_grant_contribution(grant_id, grant_slug, profile.pk, request.POST)
 
         return JsonResponse({
             'success': True,
