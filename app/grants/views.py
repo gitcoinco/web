@@ -266,6 +266,8 @@ def grants_by_grant_type(request, grant_type):
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
+    if keyword:
+        category = ''
     profile = get_profile(request)
     _grants = None
     bg = 4
