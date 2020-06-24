@@ -37,6 +37,7 @@ Vue.filter('markdownit', function(val) {
   if (!val)
     return '';
   const _markdown = new markdownit({
+    html: true,
     linkify: true,
     highlight: function(str, lang) {
       if (lang && hljs.getLanguage(lang)) {

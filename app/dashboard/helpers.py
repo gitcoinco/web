@@ -43,7 +43,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from git.utils import get_gh_issue_details, get_url_dict
+from git.utils import get_gh_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC
@@ -171,6 +171,16 @@ def issue_details(request):
     token = request.GET.get('token', None)
     url = request.GET.get('url')
     url_val = URLValidator()
+    hackathon_slug = request.GET.get('hackathon_slug')
+
+
+    if hackathon_slug:
+        sponsor_profiles = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).prefetch_related('sponsor_profiles').values_list('sponsor_profiles__handle', flat=True)
+        org_issue = org_name(url).lower()
+
+        if org_issue not in sponsor_profiles:
+            message = 'This issue is not under any sponsor repository'
+            return JsonResponse({'status':'false','message':message}, status=404)
 
     try:
         url_val(url)
@@ -190,7 +200,8 @@ def issue_details(request):
             response['message'] = 'could not parse Github url'
     except Exception as e:
         logger.warning(e)
-        response['message'] = 'could not pull back remote response'
+        message = 'could not pull back remote response'
+        return JsonResponse({'status':'false','message':message}, status=404)
     return JsonResponse(response)
 
 

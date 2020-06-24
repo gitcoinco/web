@@ -3260,6 +3260,32 @@ def new_bounty(request):
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
+@login_required
+def new_hackathon_bounty(request, hackathon=''):
+    """Create a new hackathon bounty."""
+    from .utils import clean_bounty_url
+
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
+    except HackathonEvent.DoesNotExist:
+        return redirect(reverse('get_hackathons'))
+
+    bounty_params = {
+        'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
+        'amount': request.GET.get('amount'),
+        'hackathon':hackathon_event
+    }
+
+    params = get_context(
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='submit_bounty',
+        title=_('Create Funded Issue'),
+        update=bounty_params
+    )
+    return TemplateResponse(request, 'dashboard/hackathon/new_bounty.html', params)
+
 @csrf_exempt
 def get_suggested_contributors(request):
     previously_worked_developers = []
