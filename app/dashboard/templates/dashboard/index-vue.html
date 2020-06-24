@@ -215,8 +215,7 @@
                   </template>
                   <project-directory inline-template user-id={{ user.profile.id | safe }}>
                     <div class="ml-4">
-                      <loading-screen v-if="isLoading"></loading-screen>
-                      <div v-if="!isLoading" class="sidebar-container flex-column flex-lg-row">
+                      <div class="sidebar-container flex-column flex-lg-row">
                         <transition name="fade">
                           <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
                             <div class="pb-4 border-bottom form-group">
@@ -293,6 +292,7 @@
                         <div class="project-grid ml-2">
                           <project-card {% if is_staff %} v-bind:is_staff="true" {% endif %} v-for="project in hackathonProjects" v-bind:project="project" :key="project.id"/>
                         </div>
+                          <loading-screen v-if="isLoading"></loading-screen>
                       </div>
                     </div>
                       </div>

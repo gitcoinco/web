@@ -924,7 +924,7 @@ def set_project_winner(request):
         return JsonResponse({
             'message': 'Invalid Project'
         })
-    project = HackathonProject.objects.get(pk=project_id).prefetch_related('bounty')
+    project = HackathonProject.objects.get(pk=project_id)
 
     if not request.user.is_authenticated and (request.user.is_staff or request.user.profile.handle == project.bounty.bounty_owner_github_username):
         return JsonResponse({
