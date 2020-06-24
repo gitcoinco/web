@@ -950,6 +950,26 @@ Vue.component('grants-cart', {
     this.grantData = CartData.loadCart();
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
+
+    // Get list of all grant IDs and unique tokens in the cart
+    const grantIds = this.grantData.map(grant => grant.grant_id);
+
+    // Fetch updated CLR curves for all grants
+    const url = `${window.location.origin}/grants/v1/api/clr?pks=${grantIds.join(',')}`;
+    const response = await fetch(url);
+    const clrCurves = (await response.json()).grants;
+
+    // Update CLR curves
+    this.grantData.forEach((grant, index) => {
+      // Find the clrCurves entry with the same grant ID as this grant
+      const clrIndex = clrCurves.findIndex(item => {
+        return Number(item.pk) === Number(grant.grant_id);
+      });
+
+      // Replace the CLR prediction curve
+      this.grantData[index].grant_clr_prediction_curve = clrCurves[clrIndex].clr_prediction_curve;
+    });
+
     // Wait until we can load token list
     let elapsedTime = 0;
     let delay = 50; // 50 ms debounce
