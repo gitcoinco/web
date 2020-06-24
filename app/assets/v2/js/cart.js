@@ -366,7 +366,10 @@ Vue.component('grants-cart', {
 
     addComment(id, text) {
       // Set comment at this index to an empty string to show textarea
-      this.comments.splice(id, 1, text ? text : ''); // we use splice to ensure it's reactive
+      this.grantData[id].grant_comments = text ? text : '';
+      CartData.setCart(this.grantData);
+      this.$forceUpdate();
+
       $('input[type=textarea]').focus();
     },
 
