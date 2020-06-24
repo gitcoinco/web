@@ -824,7 +824,7 @@ Vue.component('grants-cart', {
       return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
     },
 
-    async valueToDai(amount, tokenSymbol, tokenPrices) {
+    valueToDai(amount, tokenSymbol, tokenPrices) {
       const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
       const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
 
@@ -840,7 +840,7 @@ Vue.component('grants-cart', {
     },
 
     async predictCLRMatch(grant, amount) {
-      const clr_prediction_curve_2d = JSON.parse(grant.grant_clr_prediction_curve);
+      const clr_prediction_curve_2d = grant.grant_clr_prediction_curve;
       const clr_prediction_curve = clr_prediction_curve_2d.map(row => row[2]);
 
       if (amount > 10000) {
@@ -919,7 +919,13 @@ Vue.component('grants-cart', {
             const grant = this.grantData[i];
             // Convert amount to DAI
             const rawAmount = Number(grant.grant_donation_amount);
-            const amount = this.valueToDai(rawAmount, grant.grant_donation_currency, tokenPrices);
+            const STABLE_COINS = [ 'DAI', 'SAI', 'USDT', 'TUSD', 'aDAI', 'USDC' ];
+            // All stable coins are handled with USDT (see app/app/settings.py for list)
+            const tokenName = STABLE_COINS.includes(grant.grant_donation_currency)
+              ? 'USDT'
+              : grant.grant_donation_currency;
+
+            const amount = this.valueToDai(rawAmount, tokenName, tokenPrices);
             const matchAmount = await this.predictCLRMatch(grant, amount);
 
             this.grantData[i].grant_donation_clr_match = matchAmount ? matchAmount.toFixed(2) : 0;
