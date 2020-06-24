@@ -732,7 +732,7 @@ Vue.component('grants-cart', {
         const tokenAddress = isEth ? '0x0000000000000000000000000000000000000000' : tokenDetails.addr;
 
         // Replace undefined comments with empty strings
-        const comment = donation.comment === undefined ? '' : donation.comment;
+        const comment = donation.grant.grant_comments === undefined ? '' : donation.grant.grant_comments;
 
         // For automatic contributions to Gitcoin, set 'gitcoin-grant-input-amount' to 100.
         // Why 100? Because likely no one will ever use 100% or a normal grant, so using
