@@ -301,7 +301,9 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
             _value_decimal = Decimal(int(_value) / 10 ** _decimals)
             if amount:
                 delta = abs(float(abs(_value_decimal)) - float(abs(amount)))
-                this_is_the_one = delta < 0.001
+                threshold_pct = 0.05
+                threshold = (float(abs(amount)) * threshold_pct)
+                this_is_the_one = delta < threshold
             if this_is_the_one:
                 if transfer.get('type') in ['TokenTransfer', 'EtherTransfer']:
                     return {
