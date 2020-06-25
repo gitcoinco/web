@@ -145,6 +145,8 @@ def grants_transaction_validator(contribution):
                 if transaction.value > 0.001:
                     recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
                     transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
+                    if not transfer:
+                        transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx)
                     if transfer:
                         token_transfer = transfer
                 maybeprint(148, round(time.time(),2))
@@ -199,10 +201,9 @@ def grants_transaction_validator(contribution):
                 token_transfer = _transfers
 
         else:
-            delta1 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period_minus_gas_price)
-            delta2 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period)
-            # TODO what about gitcoin transfers
-            threshold = Decimal(Decimal(abs(contribution.subscription.amount_per_period_minus_gas_price)) * Decimal(validation_threshold_pct))
+            delta1 = float(token_transfer['token_amount_decimal']) - float(contribution.subscription.amount_per_period_minus_gas_price)
+            delta2 = float(token_transfer['token_amount_decimal']) - float(contribution.subscription.amount_per_period)
+            threshold = float(float(abs(contribution.subscription.amount_per_period_minus_gas_price)) * float(validation_threshold_pct))
             validation['passed'] = abs(delta1) <= threshold or abs(delta2) <= threshold
             validation['comment'] = f"Transfer Amount is off by {round(delta1, 2)} / {round(delta2, 2)}"
 
@@ -302,11 +303,13 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
             _symbol = transfer.get('attributes', {}).get('symbol', 'ETH')
             _value = transfer.get('attributes', {}).get('value', 0)
             _value_decimal = Decimal(int(_value) / 10 ** _decimals)
+            _this_is_the_one = False
             for amount in amounts:
                 delta = abs(float(abs(_value_decimal)) - float(abs(amount)))
                 threshold = (float(abs(amount)) * validation_threshold_pct)
                 if delta < threshold:
-                    this_is_the_one = True
+                    _this_is_the_one = True
+            this_is_the_one = not len(amounts) or _this_is_the_one
             if this_is_the_one:
                 if transfer.get('type') in ['TokenTransfer', 'EtherTransfer']:
                     return {
