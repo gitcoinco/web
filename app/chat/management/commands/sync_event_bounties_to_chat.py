@@ -72,7 +72,7 @@ class Command(BaseCommand):
                             task = add_to_channel.s({'id': bounty.chat_channel_id}, profiles_to_connect)
                         tasks.append(task)
                 except Exception as e:
-                    logger.error(str(e))
+                    logger.info(str(e))
                     continue
             if len(tasks) > 0:
                 job = group(tasks)
@@ -81,4 +81,4 @@ class Command(BaseCommand):
                 print("Nothing to Sync")
 
         except Exception as e:
-            logger.error(str(e))
+            logger.info(str(e))
