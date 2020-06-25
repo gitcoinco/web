@@ -513,6 +513,26 @@ Vue.component('grants-cart', {
       return amount.div(factor).toString(10);
     },
 
+    async applyAmountToAllGrants(grant) {
+      const preferredAmount = grant.grant_donation_amount;
+      const preferredTokenName = grant.grant_donation_currency;
+      const fallbackAmount = await this.valueToEth(preferredAmount, preferredTokenName);
+
+      this.grantData.forEach((grant, index) => {
+        const acceptedCurrencies = this.currencies[index]; // tokens accepted by this grant
+
+        if (!acceptedCurrencies.includes(preferredTokenName)) {
+          // If the selected token is not available, fallback to ETH
+          this.grantData[index].grant_donation_amount = fallbackAmount;
+          this.grantData[index].grant_donation_currency = 'ETH';
+        } else {
+          // Otherwise use the user selected option
+          this.grantData[index].grant_donation_amount = preferredAmount;
+          this.grantData[index].grant_donation_currency = preferredTokenName;
+        }
+      });
+    },
+
     /**
      * @notice Checkout flow
      */
@@ -810,6 +830,14 @@ Vue.component('grants-cart', {
       const newAmount = await response.json();
 
       return newAmount.usdt;
+    },
+
+    async valueToEth(amount, tokenSymbol) {
+      const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
+      const response = await fetch(url);
+      const newAmount = await response.json();
+
+      return newAmount.eth;
     },
 
     async predictCLRMatch(grant) {
