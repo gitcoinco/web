@@ -1,4 +1,4 @@
-function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_non_gitcoiners, onChangeCallback = null) {
+function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_non_gitcoiners, callbacks = {}) {
   var themeChoice = theme || undefined;
   var selectItem = elem || '.username-search';
 
@@ -56,8 +56,16 @@ function userSearch(elem, showAddress, theme, initialData, allowClear, suppress_
       templateSelection: showAddress ? formatUserSelectionWithAddress : formatUserSelection
     });
 
-    if (onChangeCallback) {
-      $(this).on('change', onChangeCallback);
+    if (callbacks['change']) {
+      $(this).on('change', callbacks['change']);
+    }
+
+    if (callbacks['select']) {
+      $(this).on('select2:select', callbacks['select']);
+    }
+
+    if (callbacks['unselect']) {
+      $(this).on('select2:unselect', callbacks['unselect']);
     }
 
     // fix for wrong position on select open

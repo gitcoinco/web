@@ -1,6 +1,6 @@
 let lookupExpiry;
 
-(async function ($) {
+(async function($) {
 
   const MAX_WEBSOCKET_FAILS = 7;
   const MIN_WEBSOCKET_RETRY_TIME = 3000; // 3 sec
@@ -153,8 +153,7 @@ let lookupExpiry;
       this.connectFailCount = 0;
       this.sequence = 1;
       if (this.conn && this.conn.readyState === WebSocket.OPEN) {
-        this.conn.onclose = () => {
-        }; // eslint-disable-line no-empty-function
+        this.conn.onclose = () => {}; // eslint-disable-line no-empty-function
         this.conn.close();
         this.conn = null;
         console.log('websocket closed'); // eslint-disable-line no-console
@@ -210,11 +209,12 @@ let lookupExpiry;
     }
   }
 
-  const fetchTeams = async () => {
+  const fetchTeams = async() => {
     let teams = {};
+
     if (document.contxt.chat_url && document.contxt.chat_access_token) {
       $.ajax({
-        beforeSend: function (request) {
+        beforeSend: function(request) {
           request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
         },
         url: `${document.contxt.chat_url}/api/v4/teams`,
@@ -291,7 +291,7 @@ let lookupExpiry;
       console.log(e);
     }
   };
-  const showNotification = async function (
+  const showNotification = async function(
     {
       title,
       channel,
@@ -357,15 +357,15 @@ let lookupExpiry;
 
   $(() => {
     window.chatSidebar = new Vue({
-      delimiters: ['[[', ']]'],
+      delimiters: [ '[[', ']]' ],
       el: '#sidebar-chat-app',
       methods: {
-        checkChatNotifications: function () {
+        checkChatNotifications: function() {
           let vm = this;
 
           if (document.contxt.chat_access_token && document.contxt.chat_url) {
             $.ajax({
-              beforeSend: function (request) {
+              beforeSend: function(request) {
                 request.setRequestHeader('Authorization', `Bearer ${document.contxt.chat_access_token}`);
               },
               url: `${document.contxt.chat_url}/api/v4/users/me/teams/unread`,
@@ -384,7 +384,7 @@ let lookupExpiry;
             });
           }
         },
-        chatWindow: function (channel) {
+        chatWindow: function(channel) {
           let vm = this;
           const isExactChannel = channel.indexOf('channel');
           const dm = channel ? channel.indexOf('@') >= 0 : false;
@@ -412,12 +412,12 @@ let lookupExpiry;
           }
 
         },
-        open: function () {
+        open: function() {
           if (!this.isVisible) {
             this.$root.$emit('bv::toggle::collapse', 'sidebar-chat');
           }
         },
-        socketSessionLoginTest: function () {
+        socketSessionLoginTest: function() {
           let vm = this;
 
           let client = new WebSocketClient();
@@ -436,14 +436,14 @@ let lookupExpiry;
 
           client.initialize(vm.chatSocketURL);
         },
-        chatLogin: function () {
+        chatLogin: function() {
           let vm = this;
 
           if (!vm.loginWindow) {
             vm.loginWindow = window.open(vm.chatLoginURL, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
           }
         },
-        getOpenFrame: function () {
+        getOpenFrame: function() {
 
           let $frameElement = $(vm.iframe);
           let frameElement = $frameElement[0];
@@ -456,26 +456,26 @@ let lookupExpiry;
             frameContents
           };
         },
-        showHandler: function (event) {
+        showHandler: function(event) {
           this.isLoading = true;
         },
-        hideHandler: function (event) {
+        hideHandler: function(event) {
           this.isLoggedInFrame = false;
           this.iframe = null;
         },
-        changeHandler: function (visible) {
+        changeHandler: function(visible) {
           this.isLoading = visible;
           this.isVisible = visible;
         },
-        iframeOnFocus: function () {
+        iframeOnFocus: function() {
           vm.iframeHasFocus = true;
         },
-        chatAppOnLoad: function (iframe) {
+        chatAppOnLoad: function(iframe) {
           let vm = this;
 
           vm.iframe = iframe;
 
-          vm.$watch('isLoggedInFrame', function (newVal) {
+          vm.$watch('isLoggedInFrame', function(newVal) {
             if (newVal && vm.validSessionInterval) {
               clearInterval(vm.validSessionInterval);
             }
@@ -579,14 +579,14 @@ let lookupExpiry;
         vm.socket = client;
       },
       computed: {
-        chatLoginURL: function () {
+        chatLoginURL: function() {
           return `${this.chatURL}/oauth/gitcoin/login?redirect_to=${window.location.protocol}//${window.location.host}/chat/login/`;
         },
-        loadURL: function () {
+        loadURL: function() {
           return (this.chatURLOverride !== null) ? this.chatURLOverride : this.chatURL;
         }
       },
-      data: function () {
+      data: function() {
         const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
 
         return {

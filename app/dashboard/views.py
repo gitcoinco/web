@@ -1153,30 +1153,34 @@ def bounty_mentor(request):
 
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
-
-    can_manage = request.user.is_authenticated and any(
-        [request.user.profile.handle.lower() == body.bounty_org.lower()]
-    )
-
-    if not can_manage:
-        return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
+    print(body)
+    print(request.body)
+    # can_manage = request.user.is_authenticated and any(
+    #     [request.user.profile.handle.lower() == body.bounty_org.lower()]
+    # )
+    #
+    # if not can_manage:
+    #     return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
 
     bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{request.user.profile.handle.lower()}-mentors')[0]
     message = f'Mentors Updated Successfully'
-    if body.set_default_mentors:
-        current_mentors = User.objects.filter(groups=bounty_org_default_mentors)
+    if body['set_default_mentors']:
+        current_mentors = Profile.objects.filter(user__groups=bounty_org_default_mentors)
+        print(current_mentors)
+        mentors_to_remove = list(set([current.id for current in current_mentors]) - set(body['new_default_mentors']))
 
-        mentors_to_remove = list(set([current.id for current in current_mentors]) - set(body.new_default_mentors))
-
+        mentors_to_remove = Profile.objects.filter(id__in=mentors_to_remove)
         for mentor_to_r in mentors_to_remove:
-            mentor_to_r.groups.remove(bounty_org_default_mentors)
+            print(mentor_to_r)
+            mentor_to_r.user.groups.remove(bounty_org_default_mentors)
 
-        mentors_to_add = User.objects.filter(id__in=body.new_default_mentors)
+        mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
+        print(mentors_to_add)
         for mentor in mentors_to_add:
-            mentor.groups.add(bounty_org_default_mentors)
+            mentor.user.groups.add(bounty_org_default_mentors)
 
-    if body.has_overrides:
-        for key, val in body.overrides:
+    if body['has_overrides']:
+        for key, val in body['overrides']:
             bounty = Bounty.objects.get(id=key)
             bounty_group = Group.objects.get_or_create(name=f'bounty-override-{key}-mentors')[0]
             mentor_pks = [int(mentorpk) for mentorpk in val.mentors]
@@ -1184,16 +1188,14 @@ def bounty_mentor(request):
             for mentor in mentors:
                 mentor.groups.add(bounty_group)
 
-    if body.hackathon_id:
+    if body['hackathon_id']:
         try:
-            # ensure hackathon exists
-            if HackathonEvent.objects.get(id=body.hackathon_id).exists():
-                from chat.tasks import hackathon_project_chat_sync
-                hackathon_project_chat_sync.delay(hackathon_id=body.hackathon_id, bounty_owner_handle=request.user.profile.handle)
-
+            hackathon_event = HackathonEvent.objects.get(id=int(body['hackathon_id']))
+            from chat.tasks import hackathon_project_chat_sync
+            hackathon_project_chat_sync.delay(hackathon_id=hackathon_event.id, bounty_owner_handle=request.user.profile.handle)
         except Exception as e:
             message = 'Hackathon does not exist'
-            logger.debug(str(e))
+            logger.info(str(e))
 
     return JsonResponse({'message': message}, status=200, safe=False)
 
@@ -3756,9 +3758,12 @@ def hackathon(request, hackathon='', panel='prizes'):
     from chat.tasks import get_chat_url
     params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
 
-    params['can_manage'] = request.user.is_authenticated and any(
+    can_manage = request.user.is_authenticated and any(
         [request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() for bounty in Bounty.objects.filter(event=hackathon_event)]
     )
+
+    params['can_manage'] = can_manage
+    params['default_mentors'] = Profile.objects.filter(user__groups__name=f'sponsor-org-{request.user.profile.handle}-mentors')
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
