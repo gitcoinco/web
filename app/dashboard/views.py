@@ -2912,7 +2912,7 @@ def profile(request, handle, tab=None):
         ProfileView.objects.create(target=profile, viewer=request.user.profile)
 
     if request.user.is_authenticated:
-        ptoken = PersonalToken.objects.filter(token_owner_profile=request.user.profile).first()
+        ptoken = PersonalToken.objects.filter(token_owner_profile=profile).first()
 
         if ptoken:
             context['ptoken'] = ptoken
