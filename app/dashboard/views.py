@@ -5174,33 +5174,15 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.funder_identifier = funder_identifier
         fulfillment.payout_status = payout_status
 
-    elif payout_type == 'qr':
-
-        if not bounty.bounty_owner_address:
-            bounty_owner_address = request.POST.get('bounty_owner_address')
-            if not bounty_owner_address:
-                response['message'] = 'error: missing parameter bounty_owner_address'
-                return JsonResponse(response)
-
-            bounty.bounty_owner_address = bounty_owner_address
-            bounty.save()
-
-        fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
-        fulfillment.payout_status = 'pending'
-
-    elif payout_type == 'web3_modal':
-        payout_status = request.POST.get('payout_status')
-        if not payout_status :
-            response['message'] = 'error: missing parameter payout_status for web3 modal payment'
-            return JsonResponse(response)
+    else:
 
         funder_address = request.POST.get('funder_address')
         if not funder_address :
-            response['message'] = 'error: missing parameter funder_address for web3 modal payment'
+            response['message'] = 'error: missing parameter funder_address for web3 modal / qr payment'
             return JsonResponse(response)
 
         fulfillment.funder_address = fulfillment.funder_address
-        fulfillment.payout_status = payout_status
+        fulfillment.payout_status = 'pending'
 
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
@@ -5212,7 +5194,7 @@ def payout_bounty_v1(request, fulfillment_id):
     fulfillment.payout_amount = amount
     fulfillment.token_name = token_name
 
-    if payout_type == 'fiat' or payout_type == 'web3_modal':
+    if payout_type == 'fiat':
         fulfillment.payout_status = 'done'
         fulfillment.accepted_on = timezone.now()
         fulfillment.accepted = True
@@ -5220,7 +5202,7 @@ def payout_bounty_v1(request, fulfillment_id):
 
     fulfillment.save()
 
-    if payout_type == 'qr':
+    if payout_type == 'qr' or payout_type == 'web3_modal':
         sync_payout(fulfillment)
 
     response = {

@@ -279,7 +279,7 @@ Vue.mixin({
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
       const amount = vm.fulfillment_context.amount;
       const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
-      const bounty_owner_address = vm.bounty.bounty_owner_address;
+      const funder_address = vm.bounty.bounty_owner_address;
       const tenant = vm.getTenant(token_name);
 
       const payload = {
@@ -287,7 +287,7 @@ Vue.mixin({
         tenant: tenant,
         amount: amount * 10 ** decimals,
         token_name: token_name,
-        bounty_owner_address: bounty_owner_address,
+        funder_address: funder_address,
         payout_tx_id: payout_tx_id
       };
 

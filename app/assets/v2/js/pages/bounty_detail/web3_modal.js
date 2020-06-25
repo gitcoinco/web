@@ -1,6 +1,4 @@
 const payWithWeb3 = (fulfillment_id, fulfiller_address,  vm, modal) => {
-
-  console.log("SHIT");
   
   const amount = vm.fulfillment_context.amount;
   const token_name = vm.bounty.token_name;
