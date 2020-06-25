@@ -1,10 +1,12 @@
-// on settings/token page
+var _selectedAccount = '0x8ff5c070e1f9bc771fc65132086e6e220bcfd989';
+var _tokenAddress = '0x6b175474e89094c44da98b954eedeac495271d0f';// DAI
+const _token_contract = new web3.eth.Contract(token_abi, _tokenAddress);
+const _to = bounty_address();
 
-var from = '0x7d96b5c4279e20bab1ca0043a65f2bb156b0c6eb';
-var token_address = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359';// DAI
-var to = '0x2af47a65da8cd66729b4209c22017d6a5c2d2400'; //stdbounties
-var token_contract = web3.eth.contract(token_abi).at(token_address);
-
-token_contract.allowance.call(from, to, function(error, result) {
-    console.log(result.toString())
+_token_contract.methods.allowance(_selectedAccount, _to).call({from: selectedAccount}, (error, result) => {
+if (error || Number(result) == 0) {
+  isTokenAuthed = false;
+}
+console.log(result)
 });
+

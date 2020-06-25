@@ -25,18 +25,20 @@
 
     {% include "profiles/earningsgraph.html" with graph_type="grants" %}
 
+    {% if subs.count %}
     <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in profile.grant_contributor.all %}{{subs.grant.pk}},{% endfor %}">+
       Add all to Cart</a>
-
-    <h2 class="font-body m-3 pb-3 title">Subscriptions ({{profile.grant_contributor.count}})</h3>
-
-    {% if not profile.grant_contributor.count %}
-      <h2 class="font-title m-3 pb-3 title">
-        No Grants Subscribed. <a href=grants/>Explore Grants &gt;</a>
-      </h2>
     {% endif %}
 
-    {% for subscription in profile.grant_contributor.all %}
+    <h2 class="font-body ml-0 mt-3 mb-3 pb-3 title">Subscriptions ({{subs.count}})</h3>
+
+    {% if not subs.count %}
+      <p>
+        No Grants Subscribed. <a href=grants/>Explore Grants &gt;</a>
+      </p>
+    {% endif %}
+
+    {% for subscription in subs.all %}
       {# FIXME: last_contribution_date is wrong. #}
       <div class="py-3 mx-sm-0 px-lg-0 row subscription-history bounty_row">
         <div class="col-auto px-0 justify-content-center special_tag">
@@ -69,12 +71,12 @@
       </div>
     {% endfor %}
 
-    <h2 class="font-body m-3 pb-3 title">Grants Created ({{profile.grant_admin.count}})</h3>
+    <h2 class="font-body mt-3 mb-3 ml-0 pb-3 title">Grants Created ({{profile.grant_admin.count}})</h3>
 
     {% if not profile.grant_admin.count %}
-      <h2 class="font-title m-3 pb-3 title">
+      <p>
         No Grants Created. <a href=grants/new>Create a Grant &gt;</a>
-      </h2>
+      </p>
     {% endif %}
 
     {% for transaction in profile.grant_admin.all %}
@@ -83,6 +85,7 @@
           {{ transaction.created_on|date:"Y-m-d" }}
         </div>
         <div class="col-2 col-md-2 px-0 justify-content-center special_tag">
+
           <img class="avatar" style="max-width: 70px;" src="{% if transaction.logo and transaction.logo.url %}{{ transaction.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=transaction.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
         </div>
         <div class="col-5 col-md-4 my-auto">
@@ -104,7 +107,7 @@
       </div>
     {% endfor %}
 
-    <h2 class="font-body mx-3 pb-2 mt-5 title">Grant Contribution History ({{history|length}})</h2>
+    <h2 class="font-body mt-3 mb-3 ml-0 pb-2 mt-5 title">Grant Contribution History ({{history|length}})</h2>
     <a class="btn btn-gc-blue cart-btn font-smaller-3 font-weight-semibold float-right mt-1 mr-1" href="/grants/cart/bulk-add/{% for subs in history %}{{subs.id}},{% endfor %}">+
       Add all to Cart</a>
 

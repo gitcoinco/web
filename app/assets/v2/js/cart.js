@@ -3,9 +3,13 @@
  * @dev If you need to interact with the Rinkeby Dai contract (e.g. to reset allowances for
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
+let BN;
 
+needWalletConnection();
+window.addEventListener('dataWalletReady', function(e) {
+  BN = web3.utils.BN;
+}, false);
 // Constants
-const BN = web3.utils.BN;
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
 
@@ -199,16 +203,47 @@ Vue.component('grants-cart', {
 
     // Estimated gas limit for the transaction
     donationInputsGasLimit() {
-      // Based on contract tests, we use the heuristic below to get gas estimate. This is done
-      // instead of `estimateGas()` so we can send the donation transaction before the approval txs
-      // are confirmed, because if the approval txs are not confirmed then estimateGas will fail.
-      // The estimates used here are based on single donations (i.e. one item in the cart). Because
-      // gas prices go down with batched transactions, whereas this assumes they're constant,
-      // this gives us a conservative estimate
+      // The below heuristics are used instead of `estimateGas()` so we can send the donation
+      // transaction before the approval txs are confirmed, because if the approval txs
+      // are not confirmed then estimateGas will fail.
+
+      // If we have a cart where all donations are in Dai, we use a linear regression to
+      // estimate gas costs based on real checkout transaction data, and add a 50% margin
+      const donationCurrencies = this.donationInputs.map(donation => donation.token);
+      const isAllDai = donationCurrencies.every((addr, index, array) => addr === array[0]);
+
+      if (isAllDai) {
+        if (donationCurrencies.length === 1) {
+          // Special case since we overestimate here otherwise
+          return 80000;
+        }
+        // Below curve found by running script at the repo below around 9AM PT on 2020-Jun-19
+        // then generating a conservative best-fit line
+        // https://github.com/mds1/Gitcoin-Checkout-Gas-Analysis
+        return 25000 * donationCurrencies.length + 125000;
+      }
+
+      // Otherwise, based on contract tests, we use the more conservative heuristic below to get
+      // a gas estimate. The estimates used here are based on testing the cost of a single
+      // donation (i.e. one item in the cart). Because gas prices go down with batched
+      // transactions, whereas this assumes they're constant, this gives us a conservative estimate
       const gasLimit = this.donationInputs.reduce((accumulator, currentValue) => {
-        return currentValue.token === ETH_ADDRESS
-          ? accumulator + 50000// ETH donation gas estimate
-          : accumulator + 100000; // token donation gas estimate
+        const tokenAddr = currentValue.token.toLowerCase();
+
+        if (currentValue.token === ETH_ADDRESS) {
+          return accumulator + 50000; // ETH donation gas estimate
+
+        } else if (tokenAddr === '0x960b236A07cf122663c4303350609A66A7B288C0'.toLowerCase()) {
+          return accumulator + 170000; // ANT donation gas estimate
+
+        } else if (tokenAddr === '0xfC1E690f61EFd961294b3e1Ce3313fBD8aa4f85d'.toLowerCase()) {
+          return accumulator + 500000; // aDAI donation gas estimate
+
+        } else if (tokenAddr === '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643'.toLowerCase()) {
+          return accumulator + 450000; // cDAI donation gas estimate
+
+        }
+        return accumulator + 100000; // generic token donation gas estimate
       }, 0);
 
       return gasLimit;
@@ -362,7 +397,10 @@ Vue.component('grants-cart', {
 
     addComment(id, text) {
       // Set comment at this index to an empty string to show textarea
-      this.comments.splice(id, 1, text ? text : ''); // we use splice to ensure it's reactive
+      this.grantData[id].grant_comments = text ? text : '';
+      CartData.setCart(this.grantData);
+      this.$forceUpdate();
+
       $('input[type=textarea]').focus();
     },
 
@@ -483,7 +521,7 @@ Vue.component('grants-cart', {
         // Setup -----------------------------------------------------------------------------------
         // Prompt web3 login if not connected
         if (!provider) {
-          await onConnect();
+          return await onConnect();
         }
 
         // Throw if invalid Gitcoin contribution percentage
@@ -507,6 +545,16 @@ Vue.component('grants-cart', {
         // Token approval and balance checks -------------------------------------------------------
         // For each token, check if an approval is needed, and if so save off the data
         let allowanceData = [];
+
+        const calcTotalAllowance = (tokenDetails) => {
+          const initialValue = new BN('0');
+
+          return this.donationInputs.reduce((accumulator, currentValue) => {
+            return currentValue.token === tokenDetails.addr
+              ? accumulator.add(new BN(currentValue.amount)) // correct token donation
+              : accumulator.add(new BN('0')); // ETH donation
+          }, initialValue);
+        };
 
         for (let i = 0; i < selectedTokens.length; i += 1) {
           const tokenName = selectedTokens[i];
@@ -532,12 +580,8 @@ Vue.component('grants-cart', {
           // Get required allowance based on donation amounts
           // We use reduce instead of this.donationsTotal because this.donationsTotal will
           // not have floating point errors, but the actual amounts used will
-          const initialValue = new BN('0');
-          const requiredAllowance = this.donationInputs.reduce((accumulator, currentValue) => {
-            return currentValue.token === tokenDetails.addr
-              ? accumulator.add(new BN(currentValue.amount)) // correct token donation
-              : accumulator.add(new BN('0')); // ETH donation
-          }, initialValue);
+
+          const requiredAllowance = calcTotalAllowance(tokenDetails);
 
           // Check user token balance against requiredAllowance
           const userTokenBalance = await tokenContract.methods.balanceOf(userAddress).call({ from: userAddress });
@@ -642,14 +686,20 @@ Vue.component('grants-cart', {
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
           var network = document.web3network;
+          let timeout_amount = 1500 + (CartData.loadCart().length * 500);
+
+          _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
 
           setTimeout(function() {
-            if (network === 'rinkeby') {
-              window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
-            } else {
-              window.location.href = `${window.location.origin}/grants`;
-            }
-          }, 1500);
+            _alert('Contributions saved', 'success', 1000);
+            setTimeout(function() {
+              if (network === 'rinkeby') {
+                window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
+              } else {
+                window.location.href = `${window.location.origin}/grants`;
+              }
+            }, 500);
+          }, timeout_amount);
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
