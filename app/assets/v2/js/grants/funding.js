@@ -56,11 +56,47 @@ $(document).ready(function() {
   $('#close-side-cart').click(function() {
     hideSideCart();
   });
+
+  $('#side-cart-data').on('click', '#apply-to-all', async function() {
+    // Get preferred cart data
+    let cartData = CartData.loadCart();
+    const network = document.web3network || 'mainnet';
+    const preferredAmount = cartData[0].grant_donation_amount;
+    const preferredTokenName = cartData[0].grant_donation_currency;
+    const preferredTokenAddress = tokens(network)
+      .filter(token => token.name === preferredTokenName)
+      .map(token => token.addr)[0];
+
+    // Get fallback amount in ETH (used when token is not available for a grant)
+    const url = `${window.location.origin}/sync/get_amount?amount=${preferredAmount}&denomination=${preferredTokenName}`;
+    const response = await fetch(url);
+    const fallbackAmount = (await response.json()).eth;
+
+    // Update cart values
+    cartData.forEach((grant, index) => {
+      const acceptsAllTokens = (grant.grant_token_address === '0x0000000000000000000000000000000000000000');
+      const acceptsSelectedToken = grant.grant_token_address === preferredTokenAddress;
+
+      if (acceptsAllTokens || acceptsSelectedToken) {
+        // Use the user selected option
+        cartData[index].grant_donation_amount = preferredAmount;
+        cartData[index].grant_donation_currency = preferredTokenName;
+      } else {
+        // If the selected token is not available, fallback to ETH
+        cartData[index].grant_donation_amount = fallbackAmount;
+        cartData[index].grant_donation_currency = 'ETH';
+      }
+    }); // end cartData.forEach
+
+    // Update cart
+    CartData.setCart(cartData);
+    showSideCart();
+  });
 });
 
 // HELPERS
 
-function sideCartRowForGrant(grant) {
+function sideCartRowForGrant(grant, index) {
   let cartRow = `
         <div id="side-cart-row-${grant.grant_id}" class="side-cart-row mb-3">
             <div class="form-row mb-2">
@@ -89,6 +125,19 @@ function sideCartRowForGrant(grant) {
                     </select>
                 </div>
             </div>
+  `;
+  if (index === 0) {
+    cartRow += `
+            <div class="form-row">
+                <div class="col-2"></div>
+                <div class="col-auto font-smaller-2" style="cursor:pointer; color:#3e00ff" id="apply-to-all">
+                  Apply to all
+                </div>
+            </div>
+    `;
+  }
+
+  cartRow += `
         </div>
     `;
 
@@ -143,8 +192,8 @@ function showSideCart() {
   // Add all elements in side cart
   let cartData = CartData.loadCart();
 
-  cartData.forEach(grant => {
-    const cartRowHtml = sideCartRowForGrant(grant);
+  cartData.forEach((grant, index) => {
+    const cartRowHtml = sideCartRowForGrant(grant, index);
 
     $('#side-cart-data').append(cartRowHtml);
 
