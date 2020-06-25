@@ -937,6 +937,7 @@ textarea.status-textarea {
 
 .image-provider {
   width: 24px;
+  max-height: 24px;
   vertical-align: top;
 }
 
