@@ -352,9 +352,9 @@ def hackathon_project_chat_sync(self, hackathon_id: str = None, bounty_owner_han
                     add_to_channel.delay(channel_details, connect)
 
             except Exception as e:
-                logger.debug(str(e))
+                logger.info(str(e))
     except Exception as e:
-        logger.debug(str(e))
+        logger.info(str(e))
 
 
 @app.shared_task(bind=True, max_retries=3)
