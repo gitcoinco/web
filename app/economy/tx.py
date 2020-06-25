@@ -201,7 +201,7 @@ def grants_transaction_validator(contribution):
             delta1 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period_minus_gas_price)
             delta2 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period)
             # TODO what about gitcoin transfers
-            threshold = Decimal(abs(contribution.subscription.amount_per_period_minus_gas_price)) * validation_threshold_pct
+            threshold = Decimal(Decimal(abs(contribution.subscription.amount_per_period_minus_gas_price)) * validation_threshold_pct)
             validation['passed'] = abs(delta1) <= threshold or abs(delta2) <= threshold
             validation['comment'] = f"Transfer Amount is off by {round(delta1, 2)} / {round(delta2, 2)}"
 
