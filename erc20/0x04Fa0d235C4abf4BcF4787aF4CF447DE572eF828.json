@@ -1,0 +1,15 @@
+{
+"symbol": "UMA",
+"address": "0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828",
+"overview": {
+  "en": "UMA defines an open-source protocol that allows any two counterparties to design and create their own financial contracts",
+  "zh": "UMA是一个去中心化的金融合约平台，使用UMA的合约设计模式可以创建独特的标准化产品，促进各种金融创新。"
+},
+"email": "hello@umaproject.org",
+"website": "https://umaproject.org/",
+"whitepaper": "https://github.com/UMAprotocol/whitepaper",
+"state": "NORMAL",
+"links": {
+  "twitter": "https://twitter.com/UMAprotocol",
+}
+}
