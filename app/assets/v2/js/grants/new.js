@@ -12,60 +12,8 @@ function changeTokens() {
 window.addEventListener('tokensReady', function(e) {
   changeTokens();
 }, false);
+needWalletConnection();
 
-$(document).ready(function() {
-
-  $('.select2-selection__choice').removeAttr('title');
-
-  if (web3 && web3.eth) {
-    web3.eth.net.isListening((error, connectionStatus) => {
-      if (connectionStatus)
-        init();
-      document.init = true;
-    });
-  }
-  // fix for triage bug https://gitcoincore.slack.com/archives/CAXQ7PT60/p1551220641086800
-  setTimeout(function() {
-    if (!document.init) {
-      show_error_banner();
-    }
-  }, 1000);
-});
-
-function saveGrant(grantData, isFinal) {
-  let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
-
-  $.ajax({
-    type: 'post',
-    url: '/grants/new',
-    processData: false,
-    contentType: false,
-    data: grantData,
-    headers: {'X-CSRFToken': csrftoken},
-    success: json => {
-      if (isFinal) {
-        if (json.url) {
-          document.suppress_loading_leave_code = true;
-          window.location = json.url;
-        } else {
-          console.error('Grant failed to save');
-        }
-      }
-    },
-    error: () => {
-      console.error('Grant failed to save');
-      _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
-    }
-  });
-}
-
-
-$('#new_button').on('click', function(e) {
-  if (!provider) {
-    e.preventDefault();
-    return onConnect().then(() => init());
-  }
-});
 
 const init = () => {
   /*
@@ -79,11 +27,8 @@ const init = () => {
     window.location = document.location.origin + '/grants/quickstart';
   }
 
-  web3.eth.getAccounts(function(err, accounts) {
-    $('#input-admin_address').val(accounts[0]);
-    $('#contract_owner_address').val(accounts[0]);
-  });
-
+  $('#input-admin_address').val(selectedAccount);
+  $('#contract_owner_address').val(selectedAccount);
   userSearch('.team_members', false, undefined, false, false, true);
 
   addGrantLogo();
@@ -206,14 +151,47 @@ const init = () => {
   });
 };
 
-window.addEventListener('load', async() => {
-  if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
-    onConnect().then(() => {
-      init();
-    });
-  } else {
-    web3Modal.on('connect', async(data) => {
-      init();
-    });
+window.addEventListener('dataWalletReady', function(e) {
+  init();
+}, false);
+
+$(document).ready(function() {
+
+  $('.select2-selection__choice').removeAttr('title');
+
+});
+
+function saveGrant(grantData, isFinal) {
+  let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
+
+  $.ajax({
+    type: 'post',
+    url: '/grants/new',
+    processData: false,
+    contentType: false,
+    data: grantData,
+    headers: {'X-CSRFToken': csrftoken},
+    success: json => {
+      if (isFinal) {
+        if (json.url) {
+          document.suppress_loading_leave_code = true;
+          window.location = json.url;
+        } else {
+          console.error('Grant failed to save');
+        }
+      }
+    },
+    error: () => {
+      console.error('Grant failed to save');
+      _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
+    }
+  });
+}
+
+
+$('#new_button').on('click', function(e) {
+  if (!provider) {
+    e.preventDefault();
+    return onConnect().then(() => init());
   }
 });

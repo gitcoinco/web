@@ -132,7 +132,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       {% comment %} Grant amount and curency {% endcomment %}
                       <div class="col-12" style="margin-top:1rem;">
                         <div class="row flex-nowrap justify-content-between">
-                          <input class="col-5 form-control" style="margin-left:0.5rem" min="0"
+                          <input class="col-5 form-control" style="margin-left:0.5rem" min="0" step="any"
                             v-model="grant.grant_donation_amount" type="number" placeholder="Amount">
                           <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
                             style="margin-right:0.5rem" placeholder="Select token">
@@ -204,7 +204,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     {% comment %} Grant amount and currency {% endcomment %}
                     <div class="col-3">
                       <div class="row flex-nowrap align-items-center justify-content-start">
-                        <input class="col-6 form-control" v-model="grant.grant_donation_amount" type="number" min="0"
+                        <input class="col-6 form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
                           placeholder="Amount" style="margin-right: 1rem">
                         <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
                           placeholder="Select token">
@@ -340,7 +340,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div v-if="adjustGitcoinFactor"
                           class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary">
                           <div class="text-center custom d-inline-block">
-                            <input type="number" min="0" max="99" id="gitcoin-grant-input-amount"
+                            <input type="number" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
                               name="gitcoin-grant-input-amount" class="form__input text-center"
                               :class="{inactive: [5,10,15].includes(gitcoinFactorRaw)}" value="5"
                               v-model="gitcoinFactorRaw">

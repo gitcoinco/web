@@ -14,7 +14,7 @@ $(document).ready(function() {
     _alert(message, 'success');
     localStorage.removeItem('contributions_were_successful');
     localStorage.removeItem('contributions_count');
-    $('#tweetModal').css('display', 'block');
+    $('#tweetModal').modal('show');
     let donations = CartData.loadCart();
 
     if (donations.length) {
@@ -31,13 +31,6 @@ $(document).ready(function() {
       $('#tweetModal a.button').attr('href', 'https://twitter.com/intent/tweet?text=I%20just%20funded%20these%20' + donations.length + '%20grants%20on%20@gitcoin%20=%3E%20' + bulk_add_cart);
     }
     CartData.setCart([]);
-
-    $(document).keydown(function(e) {
-      if (e.keyCode == 27) {
-        $('#tweetModal').remove();
-      }
-    });
-
   }
 
   $('#js-addToCart-form').submit(function(event) {

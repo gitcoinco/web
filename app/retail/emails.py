@@ -69,6 +69,7 @@ TRANSACTIONAL_EMAILS = [
     ('comment', _('Comment Emails'), _('Only when you are sent a comment')),
     ('wall_post', _('Wall Post Emails'), _('Only when someone writes on your wall')),
     ('grant_updates', _('Grant Update Emails'), _('Updates from Grant Owners about grants you\'ve funded.')),
+    ('grant_txn_failed', _('Grant Transaction Failed Emails'), _('Notifies Grant contributors when their contribution txn has failed.')),
 ]
 
 
@@ -889,6 +890,24 @@ def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_rou
 
     return response_html, response_txt
 
+def render_grant_txn_failed(to_email, grant, tx_id):
+    email_style = 27
+
+    params = {
+        'id': grant.id,
+        'grant_title': grant.title,
+        'tx_id': tx_id,
+        'tx_url': "https://etherscan.io/tx/"+tx_id,
+        'bulk_add_url': "https://gitcoin.co/grants/cart/bulk-add/" + str(grant.id),
+        'email_style': email_style,
+        'hide_bottom_logo': True,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/grant_txn_failed.html", params))
+    response_txt = render_to_string("emails/grant_txn_failed.txt", params)
+
+    return response_html, response_txt
+
 def render_wallpost(to_email, activity):
     params = {
         'activity': activity,
@@ -1376,6 +1395,11 @@ def grant_update(request):
 @staff_member_required
 def grant_recontribute(request):
     response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+    
+def grant_txn_failed(request):
+    failed_contrib = Contribution.objects.filter(subscription__contributor_profile__user__email=settings.CONTACT_EMAIL).exclude(validator_passed=True).first()
+    response_html, _ = render_grant_txn_failed(settings.CONTACT_EMAIL, failed_contrib.subscription.grant, failed_contrib.tx_id)
     return HttpResponse(response_html)
 
 @staff_member_required

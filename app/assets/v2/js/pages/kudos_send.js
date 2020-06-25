@@ -213,6 +213,10 @@ $(document).ready(function() {
     e.preventDefault();
     set_metadata();
 
+    if (!provider) {
+      return onConnect();
+    }
+
     if (typeof web3 == 'undefined') {
       _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
       return;
