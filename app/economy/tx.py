@@ -201,7 +201,8 @@ def grants_transaction_validator(contribution):
             delta1 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period_minus_gas_price)
             delta2 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period)
             # TODO what about gitcoin transfers
-            validation['passed'] = abs(delta1) <= 0.01 or abs(delta2) <= 0.01
+            threshold = Decimal(abs(amount)) * validation_threshold_pct
+            validation['passed'] = abs(delta1) <= threshold or abs(delta2) <= threshold
             validation['comment'] = f"Transfer Amount is off by {round(delta1, 2)} / {round(delta2, 2)}"
 
 
@@ -250,6 +251,7 @@ def get_token_recipient_senders(recipient_address, token_address):
 
 auth = settings.ALETHIO_KEY
 headers = {'Authorization': f'Bearer {auth}'}
+validation_threshold_pct = 0.05
 
 def get_token_originators(to_address, token, from_address='', return_what='transfers', tx_id='', amount=None):
     address = to_address
@@ -301,8 +303,7 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
             _value_decimal = Decimal(int(_value) / 10 ** _decimals)
             if amount:
                 delta = abs(float(abs(_value_decimal)) - float(abs(amount)))
-                threshold_pct = 0.05
-                threshold = (float(abs(amount)) * threshold_pct)
+                threshold = (float(abs(amount)) * validation_threshold_pct)
                 this_is_the_one = delta < threshold
             if this_is_the_one:
                 if transfer.get('type') in ['TokenTransfer', 'EtherTransfer']:
