@@ -284,6 +284,7 @@ def grants():
 
     all_contributors_by_amount = {}
     all_contributors_by_num = {}
+    all_contributions_by_token = {}
     for contrib in contributions:
         key = contrib.subscription.contributor_profile.handle
         if key not in all_contributors_by_amount.keys():
@@ -293,10 +294,18 @@ def grants():
         all_contributors_by_num[key] += 1
         all_contributors_by_amount[key] += contrib.subscription.amount_per_period_usdt
 
+        key = contrib.subscription.token_symbol
+        if key not in all_contributions_by_token.keys():
+            all_contributions_by_token[key] = 0
+        all_contributions_by_token[key] += contrib.subscription.amount_per_period_usdt
+
+
     all_contributors_by_num = sorted(all_contributors_by_num.items(), key=operator.itemgetter(1))
-    all_contributors_by_amount = sorted(all_contributors_by_amount.items(), key=operator.itemgetter(1))
     all_contributors_by_num.reverse()
+    all_contributors_by_amount = sorted(all_contributors_by_amount.items(), key=operator.itemgetter(1))
     all_contributors_by_amount.reverse()
+    all_contributions_by_token = sorted(all_contributions_by_token.items(), key=operator.itemgetter(1))
+    all_contributions_by_token.reverse()
 
     pprint("")
     pprint("=======================")
@@ -318,6 +327,16 @@ def grants():
     for obj in all_contributors_by_amount[0:limit]:
         counter += 1
         pprint(f"{counter} - ${str(round(obj[1], 2))} by @{obj[0]}")
+
+    pprint("")
+    pprint("=======================")
+    pprint("")
+
+    counter = 0
+    pprint(f"Contributions by Token (Round {clr_round})")
+    for obj in all_contributions_by_token[0:limit]:
+        counter += 1
+        pprint(f"{counter} - ${str(round(obj[1], 2))} in {obj[0]}")
 
 
 
