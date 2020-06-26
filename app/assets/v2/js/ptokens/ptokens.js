@@ -32,6 +32,13 @@ function create_ptoken(name, symbol, address, value, minted, owner_address, txId
   });
 }
 
+function update_ptoken_address(tokenId, token_address) {
+  return fetchData(`/ptokens/${tokenId}/`, 'POST', {
+    'event_name': 'update_address',
+    'token_address': token_address
+  });
+}
+
 function mint_tokens(tokenId, amount) {
   return fetchData(`/ptokens/${tokenId}/`, 'POST', {
     'event_name': 'mint_ptoken',

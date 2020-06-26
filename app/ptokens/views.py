@@ -39,8 +39,11 @@ from django.utils import timezone, translation
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from web3 import Web3
 
+from app.settings import PTOKEN_ABI
 from dashboard.models import Profile
+from dashboard.utils import get_web3
 from ptokens.helpers import record_ptoken_activity
 from ptokens.models import PersonalToken, RedemptionToken, PurchasePToken
 
@@ -181,9 +184,28 @@ def ptoken(request, tokenId):
             metadata['previous_price'] = float(ptoken.value)
         elif event_name == 'tx_update':
             kwargs['tx_status'] = request.POST.get('tx_status')
+        elif event_name == 'update_address':
+            kwargs['token_address'] = request.POST.get('token_address')
+
+            # Experimental
+            # if PTOKEN_ABI:
+            #    web3 = get_web3(ptoken.network)
+            #    ptoken_contract = web3.eth.contract(Web3.toChecksumAddress(kwargs['token_address']), abi=PTOKEN_ABI)
+
+            #    try:
+            #        token_name = ptoken_contract.functions.symbol().call()
+            #        if token_name != ptoken.token_name:
+            #            return JsonResponse(
+            #                {'error': _('Token name should match to the previous token registered!')},
+            #                status=401)
+            #    except:
+            #        return JsonResponse(
+            #            {'error': _('Invalid ptoken contract address!')},
+            #            status=401)
 
         if kwargs:
             PersonalToken.objects.filter(pk=ptoken.id).update(**kwargs)
+            ptoken.refresh_from_db()
 
             if metadata:
                 record_ptoken_activity(event_name, ptoken, user.profile, metadata)
