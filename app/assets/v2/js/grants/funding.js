@@ -61,11 +61,12 @@ $(document).ready(function() {
     // Get preferred cart data
     let cartData = CartData.loadCart();
     const network = document.web3network || 'mainnet';
-    const preferredAmount = cartData[0].grant_donation_amount;
-    const preferredTokenName = cartData[0].grant_donation_currency;
+    const selected_grant_index = $(this).data('id');
+    const preferredAmount = cartData[selected_grant_index].grant_donation_amount;
+    const preferredTokenName = cartData[selected_grant_index].grant_donation_currency;
     const preferredTokenAddress = tokens(network)
       .filter(token => token.name === preferredTokenName)
-      .map(token => token.addr)[0];
+      .map(token => token.addr)[selected_grant_index];
 
     // Get fallback amount in ETH (used when token is not available for a grant)
     const url = `${window.location.origin}/sync/get_amount?amount=${preferredAmount}&denomination=${preferredTokenName}`;
@@ -98,48 +99,41 @@ $(document).ready(function() {
 
 function sideCartRowForGrant(grant, index) {
   let cartRow = `
-        <div id="side-cart-row-${grant.grant_id}" class="side-cart-row mb-3">
-            <div class="form-row mb-2">
-                <div class="col-2">
-                    <img src="${grant.grant_logo}" alt="Grant logo" width="40">
-                </div>
-                <div class="col-9">
-                    ${grant.grant_title}
-                </div>
-                <div class="col-1" style="opacity: 40%">
-                    <i id="side-cart-row-remove-${grant.grant_id}" class="fas fa-trash-alt" style="cursor: pointer"></i>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="col-2"></div>
-                <div class="col-5">
-                    <input type="number" id="side-cart-amount-${grant.grant_id}" class="form-control" value="${grant.grant_donation_amount}">
-                </div>
-                <div class="col-5">
-                    <select id="side-cart-currency-${grant.grant_id}" class="form-control">
+      <div id="side-cart-row-${grant.grant_id}" class="side-cart-row mb-3">
+        <div class="form-row mb-2">
+          <div class="col-2">
+            <img src="${grant.grant_logo}" alt="Grant logo" width="40">
+          </div>
+          <div class="col-9">
+              ${grant.grant_title}
+          </div>
+          <div class="col-1" style="opacity: 40%">
+            <i id="side-cart-row-remove-${grant.grant_id}" class="fas fa-trash-alt" style="cursor: pointer"></i>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-2"></div>
+          <div class="col-5">
+            <input type="number" id="side-cart-amount-${grant.grant_id}" class="form-control" value="${grant.grant_donation_amount}">
+          </div>
+          <div class="col-5">
+            <select id="side-cart-currency-${grant.grant_id}" class="form-control">
     `;
 
   cartRow += tokenOptionsForGrant(grant);
 
   cartRow += `
-                    </select>
-                </div>
-            </div>
-  `;
-  if (index === 0) {
-    cartRow += `
-            <div class="form-row">
-                <div class="col-2"></div>
-                <div class="col-auto font-smaller-2" style="cursor:pointer; color:#3e00ff" id="apply-to-all">
-                  Apply to all
-                </div>
-            </div>
-    `;
-  }
-
-  cartRow += `
+            </select>
+          </div>
         </div>
-    `;
+        <div class="form-row">
+          <div class="col-2"></div>
+          <div class="col-auto font-smaller-3 pt-1 text-highlight-gc-blue" style="cursor:pointer;" data-id="${index}" id="apply-to-all">
+            Apply to all
+          </div>
+        </div>
+      </div>
+  `;
 
   return cartRow;
 }
