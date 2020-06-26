@@ -142,6 +142,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             </option>
                           </select2>
                         </div>
+                        <div class="font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant, index)">
+                          Apply to all
+                        </div>
                       </div>
                       {% comment %} Add comment {% endcomment %}
                       <div class="col-12 font-smaller-3" style="margin-top:1rem">
@@ -213,6 +216,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <span v-else>[[ option ]]</span>
                           </option>
                         </select2>
+                      </div>
+                      <div class="row flex-nowrap align-items-center justify-content-start">
+                        <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
+                          Apply to all
+                        </div>
                       </div>
                     </div>
                     {% comment %} CLR Match Amount {% endcomment %}
