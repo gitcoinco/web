@@ -142,7 +142,8 @@ Vue.mixin({
       vm.form.web3_type = type;
       return type;
     },
-    submitForm: function() {
+    submitForm: function(event) {
+      event.preventDefault();
       let vm = this;
 
       const metadata = {
