@@ -233,7 +233,7 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'etherscan_links', 'amount', 'token', 'tx_cleared', 'success']
+    list_display = ['pk', 'created_on_nt', 'created_on', 'id', 'user_sybil_score', 'etherscan_links', 'amount_str', 'profile', 'grant', 'tx_cleared', 'success', 'validator_comment']
     readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
     search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']
 
@@ -247,11 +247,21 @@ class ContributionAdmin(GeneralAdmin):
     def profile(self, obj):
         return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
 
+    def created_on_nt(self, obj):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(obj.created_on)
+
+    def amount_str(self, obj):
+        return f"{round(obj.subscription.amount_per_period, 2)} {obj.subscription.token_symbol} (${round(obj.subscription.amount_per_period_usdt,2)})"
+
     def token(self, obj):
         return obj.subscription.token_symbol
 
+    def user_sybil_score(self, obj):
+        return f"{obj.subscription.contributor_profile.sybil_score} ({obj.subscription.contributor_profile.sybil_score_str})"
+
     def grant(self, obj):
-        return obj.subscription.grant.title
+        return mark_safe(f"<a href={obj.subscription.grant.url}>{obj.subscription.grant.title}</a>")
 
     def amount(self, obj):
         return obj.subscription.amount_per_period
@@ -268,8 +278,8 @@ class ContributionAdmin(GeneralAdmin):
         return " , ".join(visits)
 
     def etherscan_links(self, instance):
-        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id}</a><BR>"
-        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
+        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id[0:25]}...</a><BR>"
+        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id[0:25]}...</a>"
         return mark_safe(html)
 
     def amount_per_period(self, instance):

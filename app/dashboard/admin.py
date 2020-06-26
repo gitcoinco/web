@@ -171,9 +171,12 @@ class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
     ordering = ['-id']
     search_fields = ['email', 'data']
-    list_display = ['handle', 'created_on']
+    list_display = ['handle', 'user_sybil_score', 'created_on']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
+
+    def user_sybil_score(self, obj):
+        return f"{obj.sybil_score} ({obj.sybil_score_str})"
 
     def active_bounties_list(self, instance):
         interests = instance.active_bounties
@@ -194,6 +197,12 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_recalc_sybil" in request.POST:
+            Investigation.investigate_sybil(obj)
+            obj.calculate_all()
+            obj.save()
+            self.message_user(request, "Recalc done")
+            return redirect(obj.admin_url)
         if "_recalc_flontend" in request.POST:
             obj.calculate_all()
             obj.save()
