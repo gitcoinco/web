@@ -235,6 +235,7 @@ class ContributionAdmin(GeneralAdmin):
     raw_id_fields = ['subscription']
     list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'etherscan_links', 'amount', 'token', 'tx_cleared', 'success']
     readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
+    search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
