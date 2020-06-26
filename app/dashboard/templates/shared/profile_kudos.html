@@ -16,26 +16,6 @@
 {% endcomment %}
 {% load i18n static kudos_extras %}
 
-{% if profile.kudos_authored.count %}
-<div>
-
-  <h3>
-    Artist of {{profile.kudos_authored.count}} Kudos 👩‍🎨🖼
-  </h3>
-  <p>
-    <a href="/kudos/marketplace?q={{profile.handle}}">
-      <hr>
-      {% for token in profile.kudos_authored %}
-        <img src="{{token.preview_img_url}}" style="width: 100px; height: 100px;">
-      {% endfor %}
-      <br>
-      Click here to see the Kudos that @{{profile.handle}} has authored.
-    </a>
-  </p>
-
-</div>
-{% endif %}
-
 <ul class="nav nav-tabs my-5" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link nav-line active" id="mykudos-tab" data-toggle="tab" href="#mykudos" role="tab" aria-controls="mykudos" aria-selected="true">{% if request.path == '/profile/' %}{% trans "Your Kudos" %}{% else %}{% trans "Kudos" %}{% endif %} ({{ kudos_count }})</a>

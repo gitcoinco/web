@@ -50,7 +50,6 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% block 'scripts' %}{% endblock %}
     <script>
-      needWalletConnection();
       if ('addEventListener' in window) {
         window.addEventListener('load', function () {
           document.body.className = document.body.className.replace(/\bis-loading\b/, '');

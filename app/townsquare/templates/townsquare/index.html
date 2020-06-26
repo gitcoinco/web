@@ -28,63 +28,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/theme_switcher.css" %}">
-    <style>
-      img.hackathon-card-logo{
-        max-height: 5rem;
-        max-width: 5rem;
-        border-radius: .3rem;
-        background: rgb(25, 0, 63);
-      }
-
-      .hackathon-card-logo a {
-        color: #000000;
-      }
-
-      .townsquare_block-header.box-collapse {
-        background: #fff;
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
-        text-transform: none;
-        border-radius: 5px 5px 0 0;
-      }
-      
-      .box-hackathons {
-        background: #ffff;
-        border-bottom: 1px solid #ddd;
-        border-radius: 0 0 5px 5px;
-      }
-      
-      .box-hackathons .card {
-        border: none;
-      }
-
-      .box-hackathons .card-header {
-        border-bottom: none;
-        background-color: transparent;
-      }
-
-      .box-hackathons-townsquare .hackathon-actions {
-        font-weight: 700;
-        margin: 0;
-      }
-
-      .box-hackathons-townsquare .card-body {
-        padding: 11px 0;
-      }
-
-      .box-hackathons-townsquare .card-body .font-smaller-2 {
-        color: #666666;
-      }
-
-      .box-hackathons-townsquare .card-body .font-weight-semibold {
-        margin: 0;
-      }
-      
-      .box-hackathons .view-all {
-        padding: 0px 0px 0px 20px;
-        font-weight: 700;
-      }
-    </style>
     <script src="{% static "v2/js/theme_switcher.js" %}"></script> <!-- needs to be in the head section -->
   </head>
 
@@ -197,15 +140,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {% if SHOW_DRESSING %}
 
                 {% include 'townsquare/shared/tribe.html' %}
-               
-
-                {% if hackathon_tabs|length %}
-                  <div class="townsquare_block-header box-collapse  mt-1" data-target="hackathons">
-                    Gitcoin Hackathons
-                  </div>
-                  {% include 'townsquare/shared/hackathons.html' %}
-                {% endif %}
-
                 {% include 'townsquare/shared/reflink.html' %}
 
                 <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
@@ -287,6 +221,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "onepager/js/send.js" %}"></script>
 
     <script src="{% static "v2/js/status.js" %}"></script>
     <script src="{% static "v2/js/pages/townsquare.js" %}"></script>

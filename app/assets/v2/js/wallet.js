@@ -1,9 +1,6 @@
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
-const eventWalletReady = new Event('walletReady', {bubbles: true});
-const eventDataWalletReady = new Event('dataWalletReady', {bubbles: true});
 
-let web3;
 let web3Modal;
 let provider;
 let selectedAccount;
@@ -46,7 +43,6 @@ function initWallet() {
     cacheProvider: true,
     providerOptions
   });
-  document.dispatchEvent(eventWalletReady);
 }
 
 function walletStateChanges() {
@@ -56,18 +52,15 @@ function walletStateChanges() {
 }
 
 const needWalletConnection = async() => {
-  window.addEventListener('walletReady', async function(e) {
-    if (!web3Modal || !web3Modal.cachedProvider) {
-      return await onConnect().then(console.log);
-    }
-  }, false);
+  if (!web3Modal.cachedProvider) {
+    return await onConnect();
+  }
 };
 
 async function fetchAccountData(provider) {
 
   // Get a Web3 instance for the wallet
-  // web3 = new Web3(provider);
-  web3 = Web3 ? new Web3(provider || 'ws://localhost:8546') : null;
+  web3 = new Web3(provider);
 
   console.log('Web3 instance is', web3);
 
@@ -172,7 +165,6 @@ async function fetchAccountData(provider) {
   // document.querySelector("#connected").style.display = "block";
   walletStateChanges();
   $('.wallet-option').on('click', changeWallet);
-  document.dispatchEvent(eventDataWalletReady);
 }
 
 function changeWallet(e) {
@@ -219,8 +211,7 @@ async function onConnect() {
   // regardless if we play around with a cacheProvider settings
   // in our localhost.
   // TODO: A clean API needed here
-  // web3Modal.providerController.cachedProvider = null;
-  web3Modal.clearCachedProvider();
+  web3Modal.providerController.cachedProvider = null;
   // web3Modal.clearCachedProvider();
 
   console.log('Opening a dialog', web3Modal);
@@ -317,10 +308,6 @@ $('.selected-account').click(function(e) {
 });
 
 window.addEventListener('load', async() => {
-  if (!document.contxt['github_handle']) {
-    return;
-  }
-
   initWallet();
   if (web3Modal.cachedProvider) {
     try {
@@ -420,25 +407,6 @@ let minABI = [
     }],
     'payable': false,
     'type': 'function'
-  },
-  // approve allowance
-  {
-    'constant': false,
-    'inputs': [{
-      'name': '_spender',
-      'type': 'address'
-    },
-    {
-      'name': '_value',
-      'type': 'uint256'
-    }],
-    'name': 'approve',
-    'outputs': [{
-      'name': 'success',
-      'type': 'bool'
-    }],
-    'payable': false,
-    'type': 'function'
   }
 ];
 
@@ -481,7 +449,7 @@ async function getTokenBalances(tokenAddress) {
 /**
  *  * Check the allowance remaining on a contract address.
  *  * @param {string} address - the contract address
- *  * @param {string} tokenAddress - the token address contract
+ *  * @param {string} tokenAddress - the token address
  *  */
 async function getAllowance(address, tokenAddress) {
   let allowance;
@@ -490,20 +458,4 @@ async function getAllowance(address, tokenAddress) {
   allowance = tokensContract.methods.allowance(selectedAccount, address).call({from: selectedAccount});
   console.log(await allowance);
   return await allowance;
-}
-
-/**
- *  * Approve allowance for a contract address.
- *  * @param {string} address - the contract address
- *  * @param {string} tokenAddress - the token address contract
- *  * @param {string} weiamount (optional)- the token address
- *  */
-async function approveAllowance(address, tokenAddress, weiamount) {
-  let defaultAmount = new web3.utils.BN(BigInt(10 * 18 * 9999999999999999999999999999999999999999999999999999)).toString();
-  let amount = weiamount || defaultAmount; // uint256
-  let approved;
-  let tokensContract = new web3.eth.Contract(minABI, tokenAddress);
-
-  approved = tokensContract.methods.approve(address, amount).send({from: selectedAccount});
-  return await approved;
 }

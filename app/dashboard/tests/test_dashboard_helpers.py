@@ -51,7 +51,7 @@ class DashboardHelpersTest(TestCase):
         """Test the dashboard helper amount method."""
         params = {'amount': '5', 'denomination': 'ETH'}
         request = self.factory.get('/sync/get_amount', params)
-        assert amount(request).content == b'[{"token": "ETH", "amount": 5, "eth": 5.0, "usdt": 10.0}]'
+        assert amount(request).content == b'{"eth": 5.0, "usdt": 10.0}'
 
     def test_lowball_bounty(self):
         assert is_lowball_bounty(settings.LOWBALL_BOUNTY_THRESHOLD - 1.0)

@@ -18,7 +18,7 @@ class GrantSerializer(serializers.ModelSerializer):
         fields = (
             'active', 'title', 'slug', 'description', 'reference_url', 'logo', 'admin_address',
             'amount_received', 'token_address', 'token_symbol', 'contract_address', 'metadata',
-            'network', 'required_gas_price', 'admin_profile', 'team_members', 'clr_prediction_curve',
+            'network', 'required_gas_price', 'admin_profile', 'team_members',
         )
 
 

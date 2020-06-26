@@ -2,13 +2,21 @@
 
 <div class="clr">
   <h2 class="label font-caption font-weight-semibold mb-1 p-1 text-center">
-    CLR MATCH ROUND 6
+    {% if is_round_5_5 %}
+    CLR MATCH ROUND 5.5
+    {% else %}
+    CLR MATCH ROUND 5
+    {% endif %}
   </h2>
 
   <h2 class="font-title font-weight-bold amount pt-1 mb-0">
     {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
   </h2>
   <p class="amount mb-2 font-caption font-weight-semibold">
+  {% if is_round_5_5 %}
   CURRENT MATCH
+  {% else %}
+  FINAL AMOUNT
+  {% endif %}
   </p>
 </div>

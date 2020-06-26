@@ -330,7 +330,8 @@ $(document).ready(function() {
             $('#transaction_url').attr('href', linkURL);
             enableWaitState('#grants_form');
             set_form_disabled(false);
-            $('#tweetModal').modal('show');
+            $('#tweetModal').css('display', 'block');
+
           };
 
           if (!gitcoin_amount) {
@@ -557,7 +558,7 @@ const signSubscriptionHash = (subscriptionHash) => {
     web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
       indicateMetamaskPopup(true);
       set_form_disabled(false);
-      $('#tweetModal').modal('show');
+      $('#tweetModal').css('display', 'block');
 
       if (signature) {
         $('#signature').val(signature);
@@ -668,7 +669,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
     }).on('transactionHash', function(transactionHash) {
       indicateMetamaskPopup(1);
       set_form_disabled(false);
-      $('#tweetModal').modal('show');
+      $('#tweetModal').css('display', 'block');
       data = {
         'subscription_hash': 'onetime',
         'signature': 'onetime',
@@ -689,7 +690,7 @@ const splitPayment = (account, toFirst, toSecond, valueFirst, valueSecond) => {
       $('#transaction_url').attr('href', linkURL);
       enableWaitState('#grants_form');
       set_form_disabled(false);
-      $('#tweetModal').modal('show');
+      $('#tweetModal').css('display', 'block');
     }).on('confirmation', function(confirmationNumber, receipt) {
       data = {
         'subscription_hash': 'onetime',

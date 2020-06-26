@@ -177,7 +177,6 @@ def preprocess(request):
         'is_alpha_tester': profile.is_alpha_tester if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
-        'pref_do_not_track': profile.pref_do_not_track if profile else False,
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
         'ptoken_abi': settings.PTOKEN_ABI,

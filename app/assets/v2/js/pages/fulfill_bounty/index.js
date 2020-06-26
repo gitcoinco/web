@@ -1,20 +1,4 @@
 /* eslint-disable no-console */
-needWalletConnection();
-
-const fetchFromWeb3Wallet = () => {
-  if (!provider) {
-    onConnect();
-  }
-  $('#payoutAddress').val(selectedAccount);
-  $('#payoutAddress').attr('readonly', true);
-}
-
-window.addEventListener('dataWalletReady', function(e) {
-  if (is_bounties_network) {
-    fetchFromWeb3Wallet();
-  }
-}, false);
-
 window.onload = function() {
 
   $('.rating input:radio').attr('checked', false);
@@ -23,6 +7,10 @@ window.onload = function() {
     $('.rating span').removeClass('checked');
     $(this).parent().addClass('checked');
   });
+
+  if (is_bounties_network) {
+    fetchFromWeb3Wallet();
+  }
 
   if (typeof localStorage['githubUsername'] != 'undefined') {
     if (!$('input[name=githubUsername]').val()) {
@@ -51,3 +39,9 @@ window.onload = function() {
   });
 };
 
+const fetchFromWeb3Wallet = () => {
+  web3.eth.getAccounts(function(_, accounts) {
+    $('#payoutAddress').val(accounts[0]);
+    $('#payoutAddress').attr('readonly', true);
+  });
+}

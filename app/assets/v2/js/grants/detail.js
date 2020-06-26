@@ -49,13 +49,6 @@ $(document).ready(function() {
     $('#backgrants').html('<i class="fas fa-chevron-left mr-2"></i> Back to ' + lgt);
   }
 
-  var algi = localStorage.getItem('last_all_grants_index');
-  var algt = localStorage.getItem('last_all_grants_title');
-
-  if (algi) {
-    $('#cart_backgrants').attr('href', algi);
-    $('#cart_backgrants').html('<i class="fas fa-chevron-left mr-2"></i> Back to ' + algt);
-  }
 
   setInterval (() => {
     notifyOwnerAddressMismatch(

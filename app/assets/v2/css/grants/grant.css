@@ -451,7 +451,7 @@
 }
 
 #search_form .sort_container .select2-container {
-
+  width: 270px !important;
 }
 
 #search_form .select2-network-container {
@@ -463,8 +463,7 @@
 }
 
 #search_form .select2-selection {
-  background: none;
-  outline: none;
+  background: #F2F6F9;
   border: none !important;
   color: var(--gc-blue);
 }
@@ -475,13 +474,13 @@
 }
 
 .grants_type_nav {
-  border-bottom: none;
+  border-bottom: 1px solid #979797;
   line-height: 37px;
 }
 
 .grants_type_nav a.selected {
   font-weight: bold;
-  border-bottom: none;
+  border-bottom: 4px solid #3E00FF;
   padding-bottom: 6px;
 }
 
@@ -556,7 +555,7 @@ background: linear-gradient(140deg, #659998 0%,#659998 0%,#659998 0%,#97dbca 37%
 background: linear-gradient(11deg, #e99907 0%,#207cca 63%,#2989d8 99%,#110f22 100%,#2989d8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 .tech_grants .grant-partners {
-background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+background: linear-gradient(11deg, #942f3d 0%,#9c602f 12%,#110f22 42%,#09060e 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 .grant-partners h2 {
   letter-spacing: 3px;
@@ -564,7 +563,7 @@ background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, 
 
 .grant-partners img {
   border-radius: 50px;
-  width: 3rem;
+  width: 4rem;
 }
 
 .grant-partners .nav-tabs {
@@ -587,51 +586,11 @@ background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, 
   font-weight: 700;
 }
 
-.grant-partners .partner-details-container {
-  padding: 10px;
-  display: inline-block;
-}
-
-.grant-partners .partner-details {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.grant-partners .partner-amount {
-  width: max-content;
-}
-
-.grant-partners .tab-content>.active {
-  display: inline-block;
-}
-
 .total_active_fund p {
   color: #25E899;
   font-size: 3rem;
   font-weight: 650;
 }
-
-/* sidebar_search.css */
-.accordion:after {
-  float: none;
-}
-
-.subheading {
-  margin-bottom: 0 !important;
-  letter-spacing: 2px;
-}
-
-@media (max-width: 991.98px) {
-  #sidebar_container form#filters {
-    height: 0;
-    display: none;
-  }
-  #sidebar_container form#search_form {
-    display: inline-block;
-    width: 95%;
-  }
-
-/* sidebar_search.css */
 
 @media (min-width: 1200px) {
   .header .container {

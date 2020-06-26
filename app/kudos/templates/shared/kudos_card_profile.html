@@ -29,9 +29,6 @@
               <a href="/kudos/{{ kudos_group.list.0.kudos_token_cloned_from.id }}/{{ kudos_group.list.0.kudos_token_cloned_from.name }}" class="kd-title" title="{% trans 'Go to ' %}{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
                 {{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}
               </a>
-              {% if kudos_group.list.0.kudos_token_cloned_from.artist %}
-              by <img loading="lazy" style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{kudos_group.list.0.kudos_token_cloned_from.artist}}" > <a style="color: #777;" href="/profile/{{kudos_group.list.0.kudos_token_cloned_from.artist}}/kudos" class="kudos-details__address" title="@{{ kudos_group.list.0.kudos_token_cloned_from.artist }} has this kudos on {{kudos_group.list.0.kudos_token_cloned_from.created_on}}">@{{kudos_group.list.0.kudos_token_cloned_from.artist}}</a>  
-              {% endif %}
             </div>
             <p>
               {{ kudos_group.list.0.kudos_token_cloned_from.description|truncatechars:60 }}
@@ -65,10 +62,6 @@
               <a href="/kudos/{{ kudos_group.list.0.kudos_token_cloned_from.id }}/{{ kudos_group.list.0.kudos_token_cloned_from.name }}" class="kd-title" title="{% trans 'Go to ' %}{{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
                 {{ kudos_group.list.0.kudos_token_cloned_from.name|humanize_name }}
               </a>
-              {% if kudos_group.list.0.kudos_token_cloned_from.artist %}
-              by <img loading="lazy" style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{kudos_group.list.0.kudos_token_cloned_from.artist}}" > <a style="color: #777;" href="/profile/{{kudos_group.list.0.kudos_token_cloned_from.artist}}/kudos" class="kudos-details__address" title="@{{ kudos_group.list.0.kudos_token_cloned_from.artist }} has this kudos on {{kudos_group.list.0.kudos_token_cloned_from.created_on}}">@{{kudos_group.list.0.kudos_token_cloned_from.artist}}</a>  
-              {% endif %}
-
             </div>
             <p>
               {{ kudos_group.list.0.kudos_token_cloned_from.description|truncatechars:60 }}

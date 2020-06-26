@@ -2,9 +2,8 @@
   cursor: pointer;
   font-size: 12px;
   padding: 3px;
-  background-color: #fff;
+  background-color: #ecf0f4;
   border: 0px solid;
-  color: #3d23fc;
 }
 
 .dark-mode #reflink {

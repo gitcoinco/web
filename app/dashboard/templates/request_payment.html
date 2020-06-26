@@ -105,7 +105,7 @@
       </div>
       <div class="my-3 pb-1 amount d-flex align-items-center justify-content-between">
         <label class="my-0 pl-0 col-3 text-left" style="height: 100%">{% trans "Amount of" %}</label>
-        <select class="col-4" id="token" class="mt-1 custom-select" name="denomination">
+        <select class="col-4" id="token" class="mt-1 custom-select">
           <option value="0x0">ETH</option>
           <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
         </select>
@@ -113,7 +113,7 @@
       </div>
       <div class="pb-1 my-3 address">
         <label>{% trans "Address" %}:</label> <br>
-        <input name="address" type="text" id="address" value="{{preferred_payout_address}}" readonly required placeholder="Connect your wallet">
+        <input name="address" type="text" id="address" value="{{preferred_payout_address}}">
       </div>
       <div class="my-2 comments">
         {% trans "Comments" %}:

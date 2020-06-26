@@ -60,8 +60,6 @@
         padding: 0;
         font: 11px courier;
         overflow: hidden;
-      }
-      body.dark {
         background: #12053a;
       }
       #graph-info {
@@ -406,7 +404,7 @@ Drawing.SimpleGraph = function(options) {
         {% for option in days %}
           <option {% if day == option %}selected=selected{%endif%}  >{{option}}</option>
         {% endfor %}
-      </select> (Beg OD)
+      </select>
        to
       <select name="to_year">
         {% for option in years %}
@@ -424,7 +422,7 @@ Drawing.SimpleGraph = function(options) {
         {% for option in days %}
           <option {% if to_day == option %}selected=selected{%endif%}  >{{option}}</option>
         {% endfor %}
-      </select>  (End OD)
+      </select>
         <input type="submit" name="submit" value="Go">
        </form>
       Rotate: Left Mouse Button and Move<br />

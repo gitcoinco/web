@@ -46,9 +46,6 @@
           {% endif %}
           <h3 id="kudosName" class="kudos-details__title">{{ kudos.ui_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
           <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
-          {% if kudos.artist %}
-            <div>Artist: <img style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{kudos.artist}}" > <a href="/profile/{{kudos.artist}}/kudos" class="kudos-details__address" title="@{{ kudos.artist }} has this kudos on {{kudos.created_on}}">{{kudos.artist}}</a> | <a href="/kudos/marketplace?q={{kudos.artist}}">View all {{kudos.artist_count}} Kudos by @{{kudos.artist}}</a></div>
-          {% endif %}
           {% if kudos.quests_reward.count %}
             Reward for beating
             {% for quest in reward_for %}

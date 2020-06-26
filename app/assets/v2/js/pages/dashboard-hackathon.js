@@ -776,8 +776,8 @@
     });
 
     $(`
-      #sidebar_container input[type=radio], #sidebar_container input[type=checkbox],
-      #sidebar_container .js-select2, #orgs`).on('change', function(e) {
+    #sidebar_container input[type=radio], #sidebar_container input[type=checkbox],
+    #sidebar_container .js-select2, #orgs`).on('change', function(e) {
       reset_offset();
       refreshBounties(null, 0, false);
       e.preventDefault();
@@ -861,15 +861,13 @@
           });
         }
       },
-      data: function() {
-        return {
-          csrf: $("input[name='csrfmiddlewaretoken']").val(),
-          tribesData: {},
-          hackathonSponsors: document.hackathonSponsors
-        };
-      }
+      data: () => ({
+        csrf: $("input[name='csrfmiddlewaretoken']").val(),
+        tribesData: {},
+        hackathonSponsors: document.hackathonSponsors
+      })
     });
-    window.hackathonApp = new Vue({
+    var app = new Vue({
       delimiters: [ '[[', ']]' ],
       el: '#dashboard-vue-app',
       updated: () => {

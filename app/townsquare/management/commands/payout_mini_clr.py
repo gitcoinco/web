@@ -38,7 +38,7 @@ class Command(BaseCommand):
     help = 'creates payouts'
 
     def add_arguments(self, parser):
-        parser.add_argument('what',
+        parser.add_argument('what', 
             default='finalize',
             type=str,
             help="what do we do? (finalize, payout, announce)"
@@ -62,7 +62,7 @@ class Command(BaseCommand):
         network = 'mainnet' if not settings.DEBUG else 'rinkeby'
         from_address = settings.MINICLR_ADDRESS
         from_pk = settings.MINICLR_PRIVATE_KEY
-        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D'
+        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x8f2e097e79b1c51be9cba42658862f0192c3e487'
 
         # find a round that has recently expired
         minutes_ago = options['minutes_ago']
@@ -192,7 +192,7 @@ class Command(BaseCommand):
 
                 print("paid ", ranking)
                 time.sleep(30)
-
+            
         # announce finalists (round must be finalized first)
         from_profile = Profile.objects.get(handle='gitcoinbot')
         if options['what'] == 'announce':

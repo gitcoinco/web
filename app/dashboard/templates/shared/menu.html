@@ -301,10 +301,9 @@
         </div>
       </div>
     </div>
-
     {% if is_townsquare %}
      <div class="nav-item interior ">
-       <a href="{% url "tribes" %}" class="gc-text-yellow nav-link selected">Looking for developers?</a>
+       <a href="{% url "tribes" %}" class="gc-text-green nav-link selected">Looking for developers?</a>
      </div>
     {% endif %}
   </nav>
@@ -313,7 +312,6 @@
     {% include 'shared/chat_nav.html' %}
     {% include 'shared/notifications.html' %}
     {% include 'shared/search.html' %}
-    {% include 'shared/cart_nav.html' %}
     {% endif %}
   </div>
 

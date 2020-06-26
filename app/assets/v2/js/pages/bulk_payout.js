@@ -11,12 +11,6 @@ const normalizeUsername = function(username) {
   return username;
 };
 
-needWalletConnection();
-
-window.addEventListener('dataWalletReady', function(e) {
-  update_registry(selectedAccount);
-}, false);
-
 $(document).ready(function($) {
 
   $(document).on('blur', '#amount', function(event) {
@@ -173,11 +167,6 @@ $(document).ready(function($) {
     getFulfillers();
     update_registry(selectedAccount);
 
-    if (!provider) {
-      onConnect();
-      return false;
-    }
-
     if (!$('#terms').is(':checked')) {
       _alert('Please accept the TOS.', 'error');
       return;
@@ -201,6 +190,7 @@ $(document).ready(function($) {
 
   $('document').ready(function() {
     add_row();
+    update_registry(selectedAccount);
 
     $('.add_another').on('click', function() {
       add_row();

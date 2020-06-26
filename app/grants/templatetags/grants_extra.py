@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django import template
 
-from grants.utils import is_grant_team_member
-
 register = template.Library()
 
 
@@ -58,11 +56,3 @@ def modulo(num, val):
 
     """
     return num % val
-
-@register.simple_tag
-def is_team_member(grant, profile):
-    return is_grant_team_member(grant, profile)
-
-@register.simple_tag
-def is_grants_path(path):
-    return path.lower().startswith('/grants')

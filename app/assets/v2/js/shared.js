@@ -512,8 +512,7 @@ var retrieveAmount = function() {
   }
 
   // if not, use remote one
-  $.get(request_url, function(results) {
-    const result = results[0];
+  $.get(request_url, function(result) {
 
     // update UI
     var usd_amount = result['usdt'];
@@ -1015,38 +1014,11 @@ const updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
-
-  let path = '/';
-
-  if (params.get('type', '')) {
-    path = '/' + params.get('type', '');
+  if (key != 'category') {
+    params.set('category', '');
   }
-  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
+  window.location.href = '/grants/?' + decodeURIComponent(params.toString());
 };
-
-const updateMultipleParams = (_newParams) => {
-  params = new URLSearchParams(window.location.search);
-  newParams = Object.entries(_newParams);
-  for (const [ key, value ] of newParams) {
-    params.set(key, value);
-  }
-  let path = '/';
-
-  if (params.get('type', '')) {
-    path = '/' + params.get('type', '');
-  }
-
-  if (params.get('type')) {
-    params.delete('type');
-  }
-  if (!params.get('category')) {
-    params.delete('category');
-  }
-  params.delete('keyword');
-
-  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
-};
-
 
 /**
  * shrinks text if it exceeds a given length which introduces a button
@@ -1251,16 +1223,4 @@ const fetchIssueDetailsFromGithub = issue_url => {
       reject(error);
     });
   });
-};
-
-const get_UUID = () => {
-  var dt = new Date().getTime();
-  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = (dt + Math.random() * 16) % 16 | 0;
-
-    dt = Math.floor(dt / 16);
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-  });
-
-  return uuid;
 };

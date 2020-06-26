@@ -396,6 +396,10 @@ $(document).ready(function() {
       _alert('Please login first.', 'error');
       return;
     }
+    if (!web3) {
+      _alert('Please enable and unlock your web3 wallet.', 'error');
+      return;
+    }
 
     if (!provider) {
       return onConnect();

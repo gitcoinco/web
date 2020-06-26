@@ -16,6 +16,13 @@
 {% endcomment %}
 {% load i18n static humanize grants_extra %}
 
-<div class="grant-item">
-    {% include 'grants/card/front.html' %}
+<div class="grant-item flip-card">
+  <div class="flip-card__flipper">
+    <div class="flip-card__hold flip-card__front w-100">
+      {% include 'grants/card/front.html' %}
+    </div>
+    <div class="content-hover flip-card__hold flip-card__back">
+      {% include 'grants/card/back.html' %}
+    </div>
+  </div>
 </div>

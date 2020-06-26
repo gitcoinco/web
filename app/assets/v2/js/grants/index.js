@@ -7,10 +7,6 @@ $(document).ready(() => {
     localStorage.setItem('last_grants_index', document.location.href);
     localStorage.setItem('last_grants_title', $('title').text().split('|')[0]);
   }
-  if (document.location.href.indexOf('/cart') == -1) {
-    localStorage.setItem('last_all_grants_index', document.location.href);
-    localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
-  }
 
   $('#network').select2({
     minimumResultsForSearch: Infinity
@@ -29,13 +25,13 @@ $(document).ready(() => {
 
   $('.select2-selection__rendered').removeAttr('title');
 
-  // $(document).on('click keypress', '.flip-card', e => {
-  //   if ($(e.target).is('a') || $(e.target).is('img')) {
-  //     e.stopPropagation();
-  //     return;
-  //   }
-  //   $(e.currentTarget).toggleClass('turn');
-  // });
+  $(document).on('click keypress', '.flip-card', e => {
+    if ($(e.target).is('a') || $(e.target).is('img')) {
+      e.stopPropagation();
+      return;
+    }
+    $(e.currentTarget).toggleClass('turn');
+  });
 
   waitforWeb3(() => {
     let _network = $('#grant-network').html();
@@ -96,12 +92,10 @@ $('.grants_nav a').on('click', function(event) {
     document.location.href = $(this).attr('href');
     return;
   }
-  
-  const typeValue = $(this).data('type');
-  const categoryValue = $(this).data('category');
-  const params = { 'type': typeValue, 'category': categoryValue};
+  const queryParam = $(this).data('type');
+  const queryParamValue = $(this).data('value');
 
-  updateMultipleParams(params);
+  updateParams(queryParam, queryParamValue);
 });
 
 var glow_skip = function() {
@@ -115,26 +109,4 @@ var glow_skip = function() {
 
 setInterval(glow_skip, 5000);
 glow_skip();
-
-$(document).ready(function() {
-  $('.selected').parents('.accordion').trigger('click');
-});
-
-$('#expand').on('click', () => {
-  $('#expand').hide();
-  $('#minimize').show();
-  $('#sidebar_container form#filters').css({
-    'height': 'auto',
-    'display': 'inherit'
-  });
-});
-
-$('#minimize').on('click', () => {
-  $('#minimize').hide();
-  $('#expand').show();
-  $('#sidebar_container form#filters').css({
-    'height': 0,
-    'display': 'none'
-  });
-});
 

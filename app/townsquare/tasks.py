@@ -1,6 +1,6 @@
 from django.db import connection, transaction
 
-from app.services import RedisService
+from app.redis_service import RedisService
 from cacheops import invalidate_obj
 from celery import app
 from celery.utils.log import get_task_logger

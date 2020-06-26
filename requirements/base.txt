@@ -96,4 +96,3 @@ django-bulk-update
 elasticsearch
 pdfrw
 django-admin-sortable2==0.7.6
-twilio

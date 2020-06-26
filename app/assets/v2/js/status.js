@@ -166,8 +166,9 @@ $(document).ready(function() {
     } else if (site && site.length > 1 && no_lb) {
       const url = site[0];
 
-      let metadata_callback = function(response) {
-        document[url] = response;
+      const getMetadata = fetchData('service/metadata/?url=' + url);
+
+      $.when(getMetadata).then(function(response) {
         if (response) {
           const desc = response.description && response.description.length > 200 ?
 
@@ -195,16 +196,7 @@ $(document).ready(function() {
           $('#thumbnail-desc').text('');
           embedded_resource = '';
         }
-      };
-      // cache calls for the same URL on the document
-
-      if (typeof document[url] == 'undefined') {
-        const getMetadata = fetchData('service/metadata/?url=' + url);
-
-        $.when(getMetadata).then(metadata_callback);
-      } else {
-        metadata_callback(document[url]);
-      }
+      });
     } else {
       $('#thumbnail-desc').text('');
       if (no_lb) {

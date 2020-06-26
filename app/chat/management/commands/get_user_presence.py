@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 import pytz
-from app.services import RedisService
+from app.redis_service import RedisService
 from chat.tasks import get_driver
 from dashboard.models import Profile
 from django_bulk_update.helper import bulk_update
@@ -112,15 +112,15 @@ class Command(BaseCommand):
                 manual = ele['manual']
                 update_ele = (manual and is_away_gc) or (not manual and is_away_mm)
                 if update_ele or settings.DEBUG:
-                    new_status = 'offline'
+                    new_status = 'offline' 
                     d.client.put(f'/users/{user_id}/status', {'user_id': user_id, 'status': new_status})
                     redis.set(user_id, 0)
-
+        
         # update all chat ids not in DB
         profiles = Profile.objects.filter(handle__in=all_usernames, chat_id='')
         for profile in profiles:
             _, _, profile.chat_id = all_user_statuses[profile.handle]
-        bulk_update(profiles, update_fields=['chat_id'])
+        bulk_update(profiles, update_fields=['chat_id'])  
 
         # update all chat info that is in redis
         # all_user_statuses[username] = (status, timestamp, user['id'])

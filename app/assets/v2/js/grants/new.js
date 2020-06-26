@@ -12,153 +12,24 @@ function changeTokens() {
 window.addEventListener('tokensReady', function(e) {
   changeTokens();
 }, false);
-needWalletConnection();
-
-
-const init = () => {
-  /*
-  KO - commenting out during grants deploy, double check with Octavio
-  if (!provider) {
-    return onConnect();
-  }
-  */
-
-  if (localStorage['grants_quickstart_disable'] !== 'true') {
-    window.location = document.location.origin + '/grants/quickstart';
-  }
-
-  $('#input-admin_address').val(selectedAccount);
-  $('#contract_owner_address').val(selectedAccount);
-  userSearch('.team_members', false, undefined, false, false, true);
-
-  addGrantLogo();
-
-  $('.js-select2, #frequency_unit').each(function() {
-    $(this).select2();
-  });
-
-  jQuery.validator.setDefaults({
-    ignore: ":hidden, [contenteditable='true']:not([name])"
-  });
-
-  $('#input-admin_address').on('change', function() {
-    $('.alert').remove();
-    const validator = $('#create-grant').validate();
-    let address = $(this).val();
-
-    if (isNaN(parseInt(address))) {
-      web3.eth.ens.getAddress(address).then(function(result) {
-        $('#input-admin_address').val(result);
-        return result;
-      }).catch(function() {
-        validator.showErrors({
-          'admin_address': 'Please check your address!'
-        });
-        _alert({ message: gettext('Please check your address and try again.') }, 'error');
-        return false;
-      });
-    }
-  });
-
-  $('#create-grant').submit(function(e) {
-    e.preventDefault();
-  }).validate({
-    submitHandler: function(form) {
-      let data = {};
-
-      var recipient_addr = $('#input-admin_address').val();
-      var msg = 'You have specified ' + recipient_addr + ' as the grant funding recipient address. Please TRIPLE CHECK that this is the correct address to receive funds for contributions to this grant.  If access to this address is lost, you will not be able to access funds from contributors to this grant.';
-
-      if (!confirm(msg)) {
-        return false;
-      }
-
-      $(form).find(':input:disabled').removeAttr('disabled');
-
-      $.each($(form).serializeArray(), function() {
-        data[this.name] = this.value;
-      });
-
-      $('#token_symbol').val($('#js-token option:selected').text());
-      $('#token_address').val($('#js-token option:selected').val());
-
-      if (document.web3network) {
-        $('#network').val(document.web3network);
-      }
-
-      // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
-      let args;
-
-      if ($('#contract_version').val() == 1) {
-        args = [
-          // admin_address
-          web3.utils.toChecksumAddress(data.admin_address),
-          // required token
-          web3.utils.toChecksumAddress(data.denomination),
-          // required tokenAmount
-          web3.utils.toTwosComplement(0),
-          // data.frequency
-          web3.utils.toTwosComplement(0),
-          // data.gas_price
-          web3.utils.toTwosComplement(0),
-          // contract version
-          web3.utils.toTwosComplement(1),
-          // trusted relayer
-          web3.utils.toChecksumAddress(data.trusted_relayer)
-        ];
-      }
-
-      let formData = new FormData();
-      let file = $('#img-project')[0].files[0];
-
-      formData.append('input_image', file);
-      formData.append('title', $('#input_title').val());
-      formData.append('handle1', $('#input-handle1').val());
-      formData.append('handle2', $('#input-handle2').val());
-      formData.append('description', description.getText());
-      formData.append('description_rich', JSON.stringify(description.getContents()));
-      formData.append('reference_url', $('#input-url').val());
-      formData.append('admin_address', $('#input-admin_address').val());
-      formData.append('contract_owner_address', $('#contract_owner_address').val());
-      formData.append('token_address', $('#token_address').val());
-      formData.append('token_symbol', $('#token_symbol').val());
-      formData.append('contract_version', $('#contract_version').val());
-      formData.append('transaction_hash', $('#transaction_hash').val());
-      formData.append('network', $('#network').val());
-      formData.append('team_members[]', $('#input-team_members').val());
-      formData.append('categories[]', $('#input-categories').val());
-      formData.append('grant_type', $('#input-grant_type').val().toLowerCase());
-      formData.append('contract_address', '0x0');
-      formData.append('transaction_hash', '0x0');
-
-      saveGrant(formData, true);
-
-      return false;
-    }
-  });
-
-  grantCategoriesSelection('.categories', '/grants/categories?type=tech');
-
-  $('#input-grant_type').on('change', function() {
-    $('.categories').val(null);
-    const type = this.value && this.value.toLowerCase();
-
-    grantCategoriesSelection('.categories', `/grants/categories?type=${type}`);
-  });
-
-  $('.select2-selection__rendered').hover(function() {
-    $(this).removeAttr('title');
-  });
-};
-
-window.addEventListener('dataWalletReady', function(e) {
-  init();
-}, false);
 
 $(document).ready(function() {
 
   $('.select2-selection__choice').removeAttr('title');
 
+  if (web3 && web3.eth) {
+    web3.eth.net.isListening((error, connectionStatus) => {
+      if (connectionStatus)
+        init();
+      document.init = true;
+    });
+  }
+  // fix for triage bug https://gitcoincore.slack.com/archives/CAXQ7PT60/p1551220641086800
+  setTimeout(function() {
+    if (!document.init) {
+      show_error_banner();
+    }
+  }, 1000);
 });
 
 function saveGrant(grantData, isFinal) {
@@ -188,6 +59,14 @@ function saveGrant(grantData, isFinal) {
   });
 }
 
+const processReceipt = receipt => {
+  let formData = new FormData();
+
+  formData.append('contract_address', receipt.contractAddress);
+  formData.append('transaction_hash', $('#transaction_hash').val());
+
+  saveGrant(formData, true);
+};
 
 $('#new_button').on('click', function(e) {
   if (!provider) {
@@ -195,3 +74,232 @@ $('#new_button').on('click', function(e) {
     return onConnect().then(() => init());
   }
 });
+
+const init = () => {
+  if (!provider) {
+    return onConnect();
+  }
+
+  if (localStorage['grants_quickstart_disable'] !== 'true') {
+    window.location = document.location.origin + '/grants/quickstart';
+  }
+
+  web3.eth.getAccounts(function(err, accounts) {
+    $('#input-admin_address').val(accounts[0]);
+    $('#contract_owner_address').val(accounts[0]);
+  });
+
+  userSearch('.team_members', false, undefined, false, false, true);
+
+  addGrantLogo();
+
+  $('.js-select2, #frequency_unit').each(function() {
+    $(this).select2();
+  });
+
+  jQuery.validator.setDefaults({
+    ignore: ":hidden, [contenteditable='true']:not([name])"
+  });
+
+  $('#input-admin_address').on('change', function() {
+    $('.alert').remove();
+    const validator = $('#create-grant').validate();
+    let address = $(this).val();
+
+    if (isNaN(parseInt(address))) {
+      web3.eth.ens.getAddress(address).then(function(result) {
+        $('#input-admin_address').val(result);
+        return result;
+      }).catch(function() {
+        validator.showErrors({
+          'admin_address': 'Please check your address!'
+        });
+        return _alert({ message: gettext('Please check your address and try again.') }, 'error');
+      });
+    }
+  });
+
+  $('#create-grant').submit(function(e) {
+    e.preventDefault();
+  }).validate({
+    submitHandler: function(form) {
+      let data = {};
+
+      var recipient_addr = $('#input-admin_address').val();
+      var msg = 'You have specified ' + recipient_addr + ' as the grant funding recipient address. Please TRIPLE CHECK that this is the correct address to receive funds for contributions to this grant.  If access to this address is lost, you will not be able to access funds from contributors to this grant.';
+
+      if (!confirm(msg)) {
+        return;
+      }
+
+      $(form).find(':input:disabled').removeAttr('disabled');
+
+      $.each($(form).serializeArray(), function() {
+        data[this.name] = this.value;
+      });
+
+      $('#token_symbol').val($('#js-token option:selected').text());
+      $('#token_address').val($('#js-token option:selected').val());
+
+      if (document.web3network) {
+        $('#network').val(document.web3network);
+      }
+
+      // Begin New Deploy Subscription Contract
+      let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
+
+      console.log(compiledSubscription.abi);
+
+      // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
+      let args;
+
+      if ($('#contract_version').val() == 1) {
+        args = [
+          // admin_address
+          web3.utils.toChecksumAddress(data.admin_address),
+          // required token
+          web3.utils.toChecksumAddress(data.denomination),
+          // required tokenAmount
+          web3.utils.toTwosComplement(0),
+          // data.frequency
+          web3.utils.toTwosComplement(0),
+          // data.gas_price
+          web3.utils.toTwosComplement(0),
+          // contract version
+          web3.utils.toTwosComplement(1),
+          // trusted relayer
+          web3.utils.toChecksumAddress(data.trusted_relayer)
+        ];
+      }
+
+      web3.eth.getAccounts(function(err, accounts) {
+        web3.eth.net.getId(function(err, network) {
+          indicateMetamaskPopup();
+          SubscriptionContract.deploy({
+            data: compiledSubscription.bytecode,
+            arguments: args
+          }).send({
+            from: accounts[0],
+            gas: web3.utils.toHex(gas_amount(document.location.href)),
+            gasLimit: web3.utils.toHex(gas_amount(document.location.href))
+          }).on('error', function(error) {
+            console.log('1', error);
+          }).on('transactionHash', function(transactionHash) {
+            console.log('2', transactionHash);
+            $('#transaction_hash').val(transactionHash);
+            const linkURL = get_etherscan_url(transactionHash);
+            let file = $('#img-project')[0].files[0];
+            let formData = new FormData();
+
+            if (!$('#contract_owner_address').val()) {
+              web3.eth.getAccounts(function(err, accounts) {
+                $('#contract_owner_address').val(accounts[0]);
+              });
+            }
+
+            formData.append('input_image', file);
+            formData.append('transaction_hash', $('#transaction_hash').val());
+            formData.append('title', $('#input_title').val());
+            formData.append('handle1', $('#input-handle1').val());
+            formData.append('handle2', $('#input-handle2').val());
+            formData.append('description', description.getText());
+            formData.append('description_rich', JSON.stringify(description.getContents()));
+            formData.append('reference_url', $('#input-url').val());
+            formData.append('admin_address', $('#input-admin_address').val());
+            formData.append('contract_owner_address', $('#contract_owner_address').val());
+            formData.append('token_address', $('#token_address').val());
+            formData.append('token_symbol', $('#token_symbol').val());
+            formData.append('contract_version', $('#contract_version').val());
+            formData.append('transaction_hash', $('#transaction_hash').val());
+            formData.append('network', $('#network').val());
+            formData.append('team_members[]', $('#input-team_members').val());
+            formData.append('categories[]', $('#input-categories').val());
+            formData.append('grant_type', $('#input-grant_type').val().toLowerCase());
+            saveGrant(formData, false);
+
+            document.issueURL = linkURL;
+            $('#transaction_url').attr('href', linkURL);
+            enableWaitState('#new-grant');
+
+            let checkedBlocks = [];
+            let blockToCheck = null;
+
+            const checkForContractCreation = transactionHash => {
+
+              web3.eth.getTransactionReceipt(transactionHash, (error, receipt) => {
+                if (receipt && receipt.contractAddress) {
+                  processReceipt(receipt);
+                } else if (blockToCheck === null) {
+                  // start watching for re-issued transaction with same sender, TODO: nonce, contract hash, etc?
+                  web3.eth.getBlockNumber((error, blockNumber) => {
+                    blockToCheck = blockNumber;
+                    setTimeout(() => {
+                      checkForContractCreation(transactionHash);
+                    }, 1000);
+                  });
+                } else if (blockToCheck in checkedBlocks) {
+                  setTimeout(() => {
+                    checkForContractCreation(transactionHash);
+                  }, 1000);
+                } else {
+                  web3.eth.getBlock(blockToCheck, true, (error, block) => {
+                    if (error) {
+                      setTimeout(() => {
+                        checkForContractCreation(transactionHash);
+                      }, 1000);
+                    } else if (block && block.transactions) {
+                      checkedBlocks.push(blockToCheck);
+                      blockToCheck = blockToCheck + 1;
+
+                      let didFindTransaction = false;
+
+                      for (let i = 0; i < block.transactions.length; i += 1) {
+                        if (block.transactions[i].from == accounts[0]) {
+                          didFindTransaction = true;
+                          web3.eth.getTransactionReceipt(block.transactions[i].hash, (error, result) => {
+                            if (result && result.contractAddress) {
+                              processReceipt(result);
+                              return;
+                            }
+                          });
+                        }
+                      }
+
+                      if (!didFindTransaction) {
+                        setTimeout(() => {
+                          checkForContractCreation(transactionHash);
+                        }, 1000);
+                      }
+
+                    } else {
+                      setTimeout(() => {
+                        checkForContractCreation(transactionHash);
+                      }, 1000);
+                    }
+                  });
+                }
+              });
+            };
+
+            checkForContractCreation(transactionHash);
+
+          });
+        });
+      });
+      return false;
+    }
+  });
+
+  grantCategoriesSelection('.categories', '/grants/categories?type=tech');
+
+  $('#input-grant_type').on('change', function() {
+    $('.categories').val(null);
+    const type = this.value && this.value.toLowerCase();
+
+    grantCategoriesSelection('.categories', `/grants/categories?type=${type}`);
+  });
+
+  $('.select2-selection__rendered').hover(function() {
+    $(this).removeAttr('title');
+  });
+};

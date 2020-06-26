@@ -14,7 +14,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% if not pref_do_not_track %}
 {% if env == 'prod' %}
 <!-- Facebook Pixel Code -->
 <script>
@@ -33,5 +32,4 @@
   src="https://www.facebook.com/tr?id=164477934970186&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Facebook Pixel Code -->
-{% endif %}
 {% endif %}

@@ -201,7 +201,6 @@ class KudosContract:
                 mapping['platform'] = attrib['value']
 
         mapping['tags'] = ', '.join(tags)
-        mapping['metadata'] = metadata
 
         # Add the rest of the fields
         kudos_map = {**mapping, **metadata}

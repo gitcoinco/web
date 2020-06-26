@@ -12,9 +12,6 @@ if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dar
 document.addEventListener('DOMContentLoaded', subscribe, false);
 
 function subscribe() {
-  if (!document.contxt['github_handle']) {
-    return;
-  }
   // Handle preferred user theme mode
   document.getElementById('theme-switcher').addEventListener('click', onToggleMode);
 

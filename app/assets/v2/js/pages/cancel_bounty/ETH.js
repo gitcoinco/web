@@ -63,7 +63,7 @@ const ethCancelBounty = data => {
       );
     }
 
-    if (fromAddress.toLowerCase() != selectedAccount.toLowerCase()) {
+    if (fromAddress != selectedAccount) {
       errormsg = gettext(
         'Only the address that submitted this funded issue may kill the bounty.'
       );

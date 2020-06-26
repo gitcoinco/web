@@ -22,7 +22,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CartActivity, CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
+from grants.models import CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -39,9 +39,6 @@ class FlagAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
-        if "_post_flag" in request.POST:
-            obj.post_flag()
-            self.message_user(request, "posted flag to activity feed")
         if "_tweet" in request.POST:
             import twitter
             from django.conf import settings
@@ -57,7 +54,6 @@ class FlagAdmin(admin.ModelAdmin):
             obj.processed = True
             obj.tweet = f"https://twitter.com/{result['user']['screen_name']}/statuses/{result['id']}"
             obj.save()
-            self.message_user(request, "posted flag to twitter feed")
         return redirect(obj.admin_url)
 
 
@@ -90,11 +86,11 @@ class GrantAdmin(GeneralAdmin):
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible'
+        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
-        'team_member_list', 'clr_prediction_curve',
+        'team_member_list',
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count'
     ]
@@ -147,12 +143,12 @@ class GrantAdmin(GeneralAdmin):
 
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
-        eles = []
+        eles = []   
 
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
             eles.append(html)
-            for ele in instance.contributions.filter(success=i).order_by('-subscription__amount_per_period_usdt'):
+            for ele in instance.contributions.order_by('-subscription__amount_per_period_usdt'):
                 html = f" - <a href='{ele.admin_url}'>{ele}</a>"
                 eles.append(html)
 
@@ -233,13 +229,11 @@ kevin (team gitcoin)
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
     raw_id_fields = ['subscription']
-    list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'etherscan_links', 'amount', 'token', 'tx_cleared', 'success']
-    readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
+    list_display = ['id', 'github_created_on', 'from_ip_address', 'txn_url', 'profile', 'created_on', 'amount', 'token', 'tx_cleared', 'success']
+    readonly_fields = ['etherscan_links']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
-        if not tx_id:
-            tx_id = obj.split_tx_id
         tx_url = 'https://etherscan.io/tx/' + tx_id
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
@@ -248,9 +242,6 @@ class ContributionAdmin(GeneralAdmin):
 
     def token(self, obj):
         return obj.subscription.token_symbol
-
-    def grant(self, obj):
-        return obj.subscription.grant.title
 
     def amount(self, obj):
         return obj.subscription.amount_per_period
@@ -266,27 +257,11 @@ class ContributionAdmin(GeneralAdmin):
         visits = [visit for visit in visits if visit]
         return " , ".join(visits)
 
+
     def etherscan_links(self, instance):
         html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id}</a><BR>"
         html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
         return mark_safe(html)
-
-    def amount_per_period(self, instance):
-        return instance.subscription.amount_per_period
-
-    def amount_per_period_to_gitcoin(self, instance):
-        return instance.subscription.amount_per_period_to_gitcoin
-
-    def amount_per_period_minus_gas_price(self, instance):
-        return instance.subscription.amount_per_period_minus_gas_price
-
-    def response_change(self, request, obj):
-        from django.shortcuts import redirect
-        if "_update_tx_status" in request.POST:
-            obj.update_tx_status()
-            obj.save()
-            self.message_user(request, "tx status pulled from alethio/rpc nodes")
-        return redirect(obj.admin_url)
 
 
 class PhantomFundingAdmin(admin.ModelAdmin):
@@ -308,12 +283,6 @@ class PhantomFundingAdmin(admin.ModelAdmin):
         return " , ".join(visits)
 
 
-class CartActivityAdmin(admin.ModelAdmin):
-    list_display = ['id', 'grant', 'profile', 'action', 'bulk', 'latest', 'created_on']
-    raw_id_fields = ['grant', 'profile']
-    search_fields = ['bulk', 'action', 'grant']
-
-
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
@@ -321,4 +290,3 @@ admin.site.register(Flag, FlagAdmin)
 admin.site.register(CLRMatch, CLRMatchAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
-admin.site.register(CartActivity, CartActivityAdmin)

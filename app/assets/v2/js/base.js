@@ -17,11 +17,6 @@ $(document).ready(function() {
     });
   }
 
-  // TODO: MOVE TO GRANTS shared
-  if (typeof CartData != 'undefined') {
-    applyCartMenuStyles();
-  }
-
   $('body').on('click', '.copy_me', function() {
     $(this).focus();
     $(this).select();
@@ -308,12 +303,6 @@ const _alert = function(msg, _class, remove_after_ms) {
 
   $('body').append(html);
 
-  $(document).keydown(function(e) {
-    if (e.keyCode == 27) {
-      $(`#${id}`).remove();
-    }
-  });
-
   if (typeof remove_after_ms != 'undefined') {
     setTimeout(function() {
       $('#' + id).remove();
@@ -509,16 +498,3 @@ if (document.contxt.chat_access_token && document.contxt.chat_id) {
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
 });
-
-function applyCartMenuStyles() {
-  let dot = $('#cart-notification-dot');
-
-  if (CartData.hasItems()) {
-    dot.addClass('notification__dot_active');
-  } else {
-    dot.removeClass('notification__dot_active');
-    if (document.location.href.indexOf('/grants') == -1) {
-      $('#cart-nav').addClass('hidden');
-    }
-  }
-}

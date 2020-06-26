@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-needWalletConnection();
 window.onload = function() {
 
   const rateUser = () => {
@@ -164,11 +163,6 @@ window.onload = function() {
 
       var isError = false;
 
-      if (!provider) {
-        onConnect();
-        return false;
-      }
-
       if ($('#terms:checked').length == 0) {
         _alert({ message: gettext('Please accept the terms of service.') }, 'warning');
         isError = true;
@@ -221,7 +215,7 @@ window.onload = function() {
           errormsg = gettext('No claimee found for this bounty.');
         }
 
-        if (fromAddress.toLowerCase() != selectedAccount.toLowerCase()) {
+        if (fromAddress != selectedAccount) {
           errormsg = gettext('You can only process a funded issue if you submitted it initially.');
         }
 
