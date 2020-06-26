@@ -74,7 +74,7 @@
         </div>
       {% endif %}
     </div>
-    <div class="container-fluid bg-lightblue pb-5" id="gc-hackathon-new-bounty">
+    <div class="container-fluid bg-lightblue pb-5" id="gc-hackathon-new-bounty" v-cloak>
       <form action="" @submit="checkForm">
         <div class="container mt-md-n5 mb-3 bg-white position-relative rounded">
           <div class="row p-4 p-md-5">
@@ -107,6 +107,10 @@
 
                   <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '102'}">
                     <input type="radio" name="bounty_chain" id="102_chain" value="102" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="24"> Zilliqa
+                  </label>
+
+                  <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '42220'}">
+                    <input type="radio" name="bounty_chain" id="42220_chain" value="42220" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="24"> Celo
                   </label>
 
                 </div>
@@ -365,10 +369,7 @@
                     <a href="/legal/terms" target="_blank" class="text-reset underline" rel="noopener noreferrer">Terms of Service</a>.
                   </label>
                 </div>
-                <div class="form__checkbox">
-                  <input name="blockchain_tos" id="blockchain_tos" type="checkbox" value="1" required="">
-                  <label class="form__label mt-0" for="blockchain_tos">I understand that this information is being submitted to a public, immutable, blockchain. No one, including Gitcoin Core, will be able to take my funds or change this information.</label>
-                </div>
+
               </div>
             </div>
           </div>

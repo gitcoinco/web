@@ -129,10 +129,12 @@ Vue.mixin({
           break;
         case '61':
           // ethereum classic
-          type = 'qr';
-          break;
         case '102':
           // zilliqa
+        case '42220':
+          // celo mainnet
+        case '44786':
+          // celo alfajores tesnet
           type = 'qr';
           break;
         default:
