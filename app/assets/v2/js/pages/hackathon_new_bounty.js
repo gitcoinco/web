@@ -1,5 +1,5 @@
 let appFormHackathon;
-const hackathon_slug = document.hackathon_slug;
+// const hackathonSlug = document.hackathon.slug;
 const sponsors = document.sponsors;
 
 window.addEventListener('dataWalletReady', function(e) {
@@ -14,12 +14,12 @@ Vue.mixin({
 
       if (!url) {
         vm.errorIssueDetails = undefined;
-        vm.issueDetails = null;
-        return vm.issueDetails;
+        vm.form.issueDetails = null;
+        return vm.form.issueDetails;
       }
 
       if (url.indexOf('github.com/') < 0) {
-        vm.issueDetails = null;
+        vm.form.issueDetails = null;
         vm.errorIssueDetails = 'Please paste a github issue url';
         return;
       }
@@ -28,16 +28,16 @@ Vue.mixin({
 
       vm.orgSelected = '';
 
-      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url)}&hackathon_slug=${vm.hackathon_slug}`;
+      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url)}&hackathon_slug=${vm.hackathonSlug}`;
 
       vm.errorIssueDetails = undefined;
-      vm.issueDetails = undefined;
+      vm.form.issueDetails = undefined;
       const getIssue = fetchData(apiUrldetails, 'GET');
 
       $.when(getIssue).then((response) => {
         vm.orgSelected = ghIssueUrl.pathname.split('/')[1];
 
-        vm.issueDetails = response;
+        vm.form.issueDetails = response;
         vm.errorIssueDetails = undefined;
         // if (response[0]) {
         // } else {
@@ -113,65 +113,113 @@ Vue.mixin({
         return;
       }
     },
+    web3Type() {
+      let vm = this;
+      let type;
+
+      switch (vm.chainId) {
+        case '1':
+          // ethereum
+          type = 'bounties_network';
+          break;
+        case '666':
+          // paypal
+          type = 'fiat';
+          break;
+        case '61':
+          // ethereum classic
+          type = 'qr';
+          break;
+        case '102':
+          // zilliqa
+          type = 'qr';
+          break;
+        default:
+          type = 'bounties_network';
+      }
+
+      vm.form.web3_type = type;
+    },
     submitForm: function() {
       let vm = this;
 
-      if (network === 'mainnet') {
-        // vm.blockchainSend(form)
-        // vm.sendData(form)
-
-      } else if (network === 'custom') {
-        // vm.sendData(form)
-      }
-    },
-    sendData: function() {
-      let vm = this;
+      const metadata = {
+        issueTitle: vm.form.issueDetails.title,
+        issueDescription: vm.form.issueDetails.description,
+        issueKeywords: vm.form.keywords,
+        githubUsername: vm.form.githubUsername,
+        notificationEmail: vm.form.notificationEmail,
+        fullName: vm.form.fullName,
+        experienceLevel: vm.form.experience_level,
+        projectLength: vm.form.project_length,
+        bountyType: vm.form.bounty_type,
+        estimatedHours: vm.form.hours,
+        fundingOrganisation: '',
+        eventTag: vm.form.eventTag,
+        is_featured: undefined,
+        repo_type: 'public',
+        featuring_date: 0,
+        reservedFor: '',
+        releaseAfter: '',
+        tokenName: vm.form.token.symbol,
+        invite: [],
+        bounty_categories: vm.form.bounty_categories,
+        activity: '',
+        chain_id: vm.chainId
+      };
 
       const params = {
         'title': metadata.issueTitle,
-        'amount': data.amount,
-        'value_in_token': data.amount * 10 ** token.decimals,
+        'amount': vm.form.amount,
+        'value_in_token': vm.form.amount * 10 ** vm.form.token.decimals,
         'token_name': metadata.tokenName,
-        'token_address': tokenAddress,
+        'token_address': vm.form.address,
         'bounty_type': metadata.bountyType,
         'project_length': metadata.projectLength,
         'estimated_hours': metadata.estimatedHours,
         'experience_level': metadata.experienceLevel,
-        'github_url': data.issueURL,
+        'github_url': vm.form.issueURL,
         'bounty_owner_email': metadata.notificationEmail,
         'bounty_owner_github_username': metadata.githubUsername,
         'bounty_owner_name': metadata.fullName, // ETC-TODO REMOVE ?
         'bounty_reserved_for': metadata.reservedFor,
         'release_to_public': metadata.releaseAfter,
-        'expires_date': expiresDate,
+        'expires_date': vm.hackathonEndDate,
         'metadata': JSON.stringify(metadata),
         'raw_data': {}, // ETC-TODO REMOVE ?
-        'network': network,
+        'network': vm.network,
         'issue_description': metadata.issueDescription,
         'funding_organisation': metadata.fundingOrganisation,
-        'balance': data.amount * 10 ** token.decimals, // ETC-TODO REMOVE ?
-        'project_type': data.project_type,
-        'permission_type': data.permission_type,
+        'balance': vm.form.amount * 10 ** vm.form.token.decimals, // ETC-TODO REMOVE ?
+        'project_type': vm.form.project_type,
+        'permission_type': vm.form.permission_type,
         'bounty_categories': metadata.bounty_categories,
-        'repo_type': data.repo_type,
-        'is_featured': is_featured,
+        'repo_type': metadata.repo_type,
+        'is_featured': metadata.is_featured,
         'featuring_date': metadata.featuring_date,
-        'fee_amount': fee_amount,
-        'fee_tx_id': fee_tx_id,
-        'coupon_code': coupon_code,
-        'privacy_preferences': JSON.stringify(privacy_preferences),
-        'attached_job_description': hiring.jobDescription,
+        'fee_amount': 0,
+        'fee_tx_id': null,
+        'coupon_code': '',
+        'privacy_preferences': JSON.stringify({
+          show_email_publicly: '1'
+        }),
+        'attached_job_description': '',
         'eventTag': metadata.eventTag,
-        'auto_approve_workers': data.auto_approve_workers ? 'True' : 'False',
-        'web3_type': web3_type,
-        'activity': data.activity,
-        'bounty_owner_address': data.funderAddress
+        'auto_approve_workers': 'True',
+        'web3_type': vm.web3Type(),
+        'activity': metadata.activity,
+        'bounty_owner_address': vm.form.funderAddress
       };
 
-      // api post method
-      const url = '/api/v1/bounty/create';
+      vm.sendBounty(params);
 
-      $.post(url, params, function(response) {
+    },
+    sendBounty(data) {
+      let vm = this;
+      const apiUrlBounty = '/api/v1/bounty/create';
+      const postBountyData = fetchData(apiUrlBounty, 'POST', data);
+
+      $.when(postBountyData).then((response) => {
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
           window.location.href = response.bounty_url;
@@ -182,6 +230,11 @@ Vue.mixin({
           _alert('Unable to create a bounty. Please try again later', 'error');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         }
+
+      }).catch((err) => {
+        console.log(err);
+        _alert('Unable to create a bounty. Please try again later', 'error');
+        // vm.errorIssueDetails = err.responseJSON.message;
       });
 
     }
@@ -241,8 +294,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
-        hackathon_slug: hackathon_slug,
-        issueDetails: undefined,
+        hackathonSlug: document.hackathon.slug,
+        hackathonEndDate: document.hackathon.endDate,
         errorIssueDetails: undefined,
         errors: [],
         sponsors: sponsors,
@@ -250,7 +303,13 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         selected: null,
         coinValue: null,
         form: {
-          gitcoinIssueUrl: '',
+          eventTag: document.hackathon.name,
+          issueDetails: undefined,
+          issueUrl: '',
+          githubUsername: document.contxt.github_handle,
+          notificationEmail: document.contxt.email,
+          fullName: document.contxt.name,
+          hours: '24',
           bounty_categories: [],
           project_type: '',
           permission_type: '',
