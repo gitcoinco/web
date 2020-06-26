@@ -27,6 +27,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Activity, Earning, Profile
+from economy.utils import convert_token_to_usdt
 from grants.models import *
 from grants.models import CartActivity, Contribution, PhantomFunding
 from grants.views import clr_round, next_round_start, round_end
@@ -254,9 +255,15 @@ def grants():
         for item in ca.metadata:
             currency, amount = item['grant_donation_currency'], item['grant_donation_amount']
             if currency not in amount_in_carts.keys():
-                amount_in_carts[currency] = 0
+                amount_in_carts[currency] = [0, 0]
             if amount:
-                amount_in_carts[currency] += float(amount)
+                usdt_amount = 0
+                try:
+                    usdt_amount = convert_token_to_usdt(currency) * float(amount)
+                except Exception as e:
+                    pass
+                amount_in_carts[currency][0] += float(amount)
+                amount_in_carts[currency][1] += float(usdt_amount)
 
     contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
     amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions] + [float(pf.value) for pf in pfs])
@@ -264,9 +271,12 @@ def grants():
     pprint(f"Contributions: {total}")
     pprint(f"Contributors: {contributors}")
     pprint(f'Amount Raised: ${round(amount, 2)}')
-    pprint(f"In carts, but not yet checked out yet:")
+    total_usdt_in_carts = 0
     for key, val in amount_in_carts.items():
-        pprint(f"- {round(val, 2)} {key}")
+        total_usdt_in_carts += val[1]
+    pprint(f"{round(total_usdt_in_carts/1000, 1)}k DAI-equivilent in carts, but not yet checked out yet:")
+    for key, val in amount_in_carts.items():
+        pprint(f"- {round(val[0], 2)} {key} (worth {round(val[1], 2)} DAI)")
 
     ############################################################################3
     # top contributors
