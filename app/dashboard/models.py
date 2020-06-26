@@ -2762,10 +2762,11 @@ class Profile(SuperModel):
             -2: 'Error',
             -1: 'N/A',
             0: 'Low',
+            1: 'Medium-Low',
             2: 'Medium',
-            3: 'High',
-            4: 'Very High',
-            5: 'Very Very High',
+            3: 'Medium-High',
+            4: 'High',
+            5: 'Very High',
         }
         score = self.sybil_score
         if score > 5:
