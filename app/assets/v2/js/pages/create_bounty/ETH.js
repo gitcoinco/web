@@ -113,8 +113,10 @@ const ethCreateBounty = async (data) => {
   const account = selectedAccount;
   console.log(selectedAccount)
   const amountNoDecimal = amount;
-
   amount = amount * decimalDivisor;
+
+  const bigAmount = new web3.utils.BN(BigInt(amount)).toString();
+
   // Create the bounty object.
   // This function instantiates a contract from the existing deployed Standard Bounties Contract.
   // bounty_abi is a giant object containing the different network options
@@ -211,29 +213,21 @@ const ethCreateBounty = async (data) => {
     // The Ethereum network requires using ether to do stuff on it
     // issueAndActivateBounty is a method defined in the StandardBounties solidity contract.
 
-    const eth_amount = isETH ? amount : 0;
+    const eth_amount = isETH ? bigAmount : 0;
     const _paysTokens = !isETH;
-    console.log(
-      account,
-      mock_expire_date,
-      result,
-      String(amount),
-      '0xf209d2b723b6417cbf04c07e733bee776105a073',
-      _paysTokens,
-      tokenAddress,
-      String(amount))
+
     bounty.methods.issueAndActivateBounty(
       account, // _issuer
       mock_expire_date, // _deadline
       result, // _data (ipfs hash)
-      String(amount), // _fulfillmentAmount
+      bigAmount, // _fulfillmentAmount
       '0xf209d2b723b6417cbf04c07e733bee776105a073', // _arbiter
       _paysTokens, // _paysTokens
       tokenAddress, // _tokenContract
-      String(amount) // _value
+      bigAmount, // _value
     ).send({
       from: account,
-      value: String(eth_amount),
+      value: eth_amount,
       gas: web3.utils.toHex(318730),
       gasLimit: web3.utils.toHex(318730)
     }).then((result) => {web3Callback(result)}).catch(err => {
@@ -242,10 +236,26 @@ const ethCreateBounty = async (data) => {
     });
   }
 
+  const checkTokenAllowance = async () => {
+    let currentAllowance = await getAllowance(bounty_address(), tokenAddress);
+
+    if (BigInt(currentAllowance) < BigInt(bigAmount)) {
+      let approvedAllowance;
+
+      approvedAllowance = await approveAllowance(
+        bounty_address(),
+        tokenAddress
+      );
+    }
+  }
+
   var do_bounty = function(callback) {
-    handleTokenAuth().then(() => {
+    handleTokenAuth().then(async () => {
       const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
       const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+      if (!isETH) {
+        await checkTokenAllowance();
+      }
       console.log(fee)
       indicateMetamaskPopup();
       if (FEE_PERCENTAGE == 0) {
@@ -276,9 +286,10 @@ const ethCreateBounty = async (data) => {
           });
         } else {
           const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
+          const amountAsString = new web3.utils.BN(BigInt(amountInWei)).toString();
           const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-          token_contract.methods.transfer(to_address, web3.utils.toHex(amountInWei)).send({from: selectedAccount},
+          token_contract.methods.transfer(to_address, web3.utils.toHex(amountAsString)).send({from: selectedAccount},
             function(error, txnId) {
               indicateMetamaskPopup(true);
               if (error) {
@@ -320,8 +331,8 @@ const ethCreateBounty = async (data) => {
     indicateMetamaskPopup();
     web3.eth.sendTransaction({
       to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-      from: web3.account,
-      value: web3.utils.toWei(ethFeaturedPrice, 'ether'),
+      from: selectedAccount,
+      value: web3.utils.toWei(String(ethFeaturedPrice), 'ether'),
       gas: web3.utils.toHex(318730),
       gasLimit: web3.utils.toHex(318730)
     },
@@ -354,12 +365,13 @@ const ethCreateBounty = async (data) => {
   if (check_balance_and_alert_user_if_not_enough(tokenAddress, amountNoDecimal)) {
     processBounty();
   } else {
-    return unloading_button($('.js-submit'));
+     unloading_button($('.js-submit'));
+     return false;
   }
 
   function check_balance_and_alert_user_if_not_enough(tokenAddress, amount, msg) {
     const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
-    const from = account;
+    const from = selectedAccount;
     const token_details = tokenAddressToDetails(tokenAddress);
     const token_decimals = token_details['decimals'];
     const token_name = token_details['name'];
@@ -388,14 +400,14 @@ const ethCreateBounty = async (data) => {
     };
 
     if (tokenAddress == '0x0000000000000000000000000000000000000000') {
-      const walletBalance = Number(balance);
+      const walletBalance = web3.utils.fromWei(new web3.utils.BN(BigInt(balance)),'ether');
 
       return checkBalance(walletBalance, total, token_name);
 
     } else {
       token_contract.methods.balanceOf(from).call({from: from}, function(error, result) {
         if (error) return;
-        const walletBalance = Number(balance);
+        const walletBalance = web3.utils.fromWei(new web3.utils.BN(BigInt(result)),'ether')
 
         return checkBalance(walletBalance, total, token_name);
       });

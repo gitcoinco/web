@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
-        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health'])
+        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health', 'change', 'matic'])
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
 
     def handle(self, *args, **options):
@@ -48,14 +48,12 @@ class Command(BaseCommand):
         # identity mechanism is profiles for traditional rounds. for experimental rounds, where we saw collusion
         # make the identity mechanism into funds originated addr
         # this is a stopgap until a "one identity mechanism to rule them all is round", probably in round 6.
-        mechanism = 'profile' if clr_type != 'health' else 'originated_address'
 
         predict_clr(
             save_to_db=True,
             from_date=timezone.now(),
             clr_type=clr_type,
-            network=network,
-            mechanism=mechanism,
+            network=network
         )
 
         print("finished CLR estimates")

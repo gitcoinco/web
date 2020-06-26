@@ -167,7 +167,6 @@ $(document).ready(function() {
     });
   }, 100);
 
-  set_metadata();
   // jquery bindings
   $('#advanced_toggle').on('click', function(e) {
     e.preventDefault();
@@ -212,6 +211,11 @@ $(document).ready(function() {
   $('#send').on('click', function(e) {
 
     e.preventDefault();
+    set_metadata();
+
+    if (!provider) {
+      return onConnect();
+    }
 
     if (typeof web3 == 'undefined') {
       _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
@@ -272,7 +276,7 @@ $(document).ready(function() {
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-    kudosPriceInWei = new web3.utils.BN((kudosPriceInEth * 1.0 * Math.pow(10, 18)));
+    kudosPriceInWei = new web3.utils.BN((BigInt(kudosPriceInEth * 1.0 * Math.pow(10, 18))));
 
     var formData = {
       email: email,
@@ -548,7 +552,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           console.log('destinationAccount:' + destinationAccount);
 
           var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')) || $('.kudos-search').select2('data')[0].price_finney;
-          var kudosPriceInWei = new web3.utils.BN((kudosPriceInEth * 1.0 * Math.pow(10, 18)));
+          var kudosPriceInWei = new web3.utils.BN((BigInt(kudosPriceInEth * 1.0 * Math.pow(10, 18))));
 
           if (is_direct_to_recipient) {
             // Step 9

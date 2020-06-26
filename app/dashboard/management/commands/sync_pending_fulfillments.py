@@ -35,7 +35,7 @@ class Command(BaseCommand):
             payout_status='pending'
         )
 
-        timeout_period = timezone.now() - timedelta(minutes=6)
+        timeout_period = timezone.now() - timedelta(minutes=20)
 
         pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
 

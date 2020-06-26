@@ -24,7 +24,7 @@ import logging
 import os
 import time
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.conf import settings
@@ -51,7 +51,11 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
+import dateutil
 import magic
+import pytz
+from app.services import RedisService, TwilioService
+from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
 from app.utils import clean_str, ellipses, get_default_network
 from avatar.models import AvatarTheme
 from avatar.utils import get_avatar_context_for_user
@@ -106,8 +110,9 @@ from .helpers import (
 from .models import (
     Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer, ProfileView,
-    Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember, UserAction, UserVerificationModel,
+    HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
+    ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember,
+    UserAction, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -917,10 +922,6 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
 
 @require_POST
 def set_project_winner(request):
-    if not request.user.is_authenticated and request.user.is_staff:
-        return JsonResponse({
-            'message': 'UNAUTHORIZED'
-        })
 
     winner = request.POST.get('winner', False)
     project_id = request.POST.get('project_id', None)
@@ -929,6 +930,12 @@ def set_project_winner(request):
             'message': 'Invalid Project'
         })
     project = HackathonProject.objects.get(pk=project_id)
+
+    if not request.user.is_authenticated and (request.user.is_staff or request.user.profile.handle == project.bounty.bounty_owner_github_username):
+        return JsonResponse({
+            'message': 'UNAUTHORIZED'
+        })
+
     project.winner = winner
     project.save()
 
@@ -1079,6 +1086,12 @@ def users_fetch(request):
 
         follower_count = followers.count()
         profile_json['follower_count'] = follower_count
+
+        if hackathon_id:
+            registration = HackathonRegistration.objects.filter(hackathon_id=hackathon_id, registrant=user).last()
+            if registration:
+                profile_json['looking_team_members'] = registration.looking_team_members
+                profile_json['looking_project'] = registration.looking_project
 
         if user.is_org:
             profile_dict = user.__dict__
@@ -2558,7 +2571,8 @@ def get_profile_tab(request, profile, tab, prev_context):
         if profile.is_org:
             activity_tabs = [
                 (_('All Activity'), all_activities),
-                ]
+                (_('Bounties'), ['new_bounty', 'start_work', 'work_submitted', 'work_done']),
+            ]
 
         page = request.GET.get('p', None)
 
@@ -2655,6 +2669,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         for ele in contributions:
             history.append(ele.normalized_data)
         context['history'] = history
+        context['subs'] = profile.grant_contributor.filter(num_tx_approved__gt=1)
     elif tab == 'active':
         context['active_bounties'] = active_bounties
     elif tab == 'resume':
@@ -3621,9 +3636,11 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 3
     elif panel == "participants":
         active_tab = 4
+    filter = ''
+    if request.GET.get('filter'):
+        filter = f':{request.GET.get("filter")}'
 
-
-    what = f'hackathon:{hackathon_event.id}'
+    what = f'hackathon:{hackathon_event.id}{filter}'
     from townsquare.utils import can_pin
     try:
         pinned = PinnedPost.objects.get(what=what)
@@ -4043,7 +4060,6 @@ def hackathon_save_project(request):
 @require_POST
 def hackathon_registration(request):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-
     hackathon = request.POST.get('name')
     referer = request.POST.get('referer')
     poll = request.POST.get('poll')
@@ -4073,10 +4089,19 @@ def hackathon_registration(request):
             for entry in poll:
                 question = get_object_or_404(Question, id=int(entry['name']))
 
-                if question.question_type == 'SINGLE_CHOICE':
+                if question.question_type == 'SINGLE_OPTION':
                     answer, status = Answer.objects.get_or_create(user=request.user, question=question,
                                                                   hackathon=hackathon_event)
                     answer.checked = entry['value'] == 'on'
+                    answer.save()
+                elif question.question_type == 'SINGLE_CHOICE':
+                    option = get_object_or_404(Option, id=int(entry['value']))
+                    answer = Answer.objects.filter(user=request.user, question=question,
+                                                   hackathon=hackathon_event).first()
+                    if not answer:
+                        answer = Answer(user=request.user, question=question, hackathon=hackathon_event)
+
+                    answer.choice = option
                     answer.save()
                 elif question.question_type == 'MULTIPLE_CHOICE':
                     option = get_object_or_404(Option, id=int(entry['value']))
@@ -4086,14 +4111,13 @@ def hackathon_registration(request):
                     values.append(int(entry['value']))
                     set_questions[entry['name']] = values
                 else:
-                    answer, status = Answer.objects.get_or_create(user=request.user, question=question,
-                                                                  hackathon=hackathon_event)
-                    answer.open_response = entry['value']
+                    answer, status = Answer.objects.get_or_create(user=request.user, open_response=entry['value'],
+                                                                  hackathon=hackathon_event, question=question)
                     answer.save()
 
             for (question, choices) in set_questions.items():
-                    Answer.objects.filter(user=request.user, question__id=int(question),
-                                          hackathon=hackathon_event).exclude(choice__in=choices).delete()
+                Answer.objects.filter(user=request.user, question__id=int(question),
+                                      hackathon=hackathon_event).exclude(choice__in=choices).delete()
 
     except Exception as e:
         logger.error('Error while saving registration', e)
@@ -5318,3 +5342,164 @@ def bulkDM(request):
     }
 
     return TemplateResponse(request, 'bulk_DM.html', context)
+
+
+def validate_number(user, twilio, phone, redis, delivery_method='sms'):
+    profile = user.profile
+    hash_number = hashlib.pbkdf2_hmac('sha256', phone.encode(), PHONE_SALT.encode(), 100000).hex()
+
+    if user.profile.sms_verification:
+        return JsonResponse({
+            'success': False,
+            'msg': 'Your account has been validated previously.'
+        }, status=401)
+
+    if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(pk=user.profile.id).exists():
+        return JsonResponse({
+            'success': False,
+            'msg': 'The phone number has been associated with other account.'
+        }, status=401)
+
+    validation = twilio.lookups.phone_numbers(phone).fetch(type=['caller-name', 'carrier'])
+    country_code = validation.carrier['mobile_country_code'] if validation.carrier['mobile_country_code'] else 0
+    pv = ProfileVerification.objects.create(profile=user.profile,
+                                       caller_type=validation.caller_name[
+                                           "caller_type"] if validation.caller_name else '',
+                                       carrier_error_code=validation.carrier['error_code'],
+                                       mobile_network_code=validation.carrier['mobile_network_code'],
+                                       mobile_country_code=country_code,
+                                       carrier_name=validation.carrier['name'],
+                                       carrier_type=validation.carrier['type'],
+                                       country_code=validation.country_code,
+                                       phone_number=hash_number,
+                                       delivery_method=delivery_method)
+
+    redis.set(f'verification:{user.id}:pv', pv.pk)
+
+    validate_consumer_number = False
+    validate_carrier = False
+
+    if validation.caller_name and validation.caller_name["caller_type"] == 'BUSINESS':
+        pv.validation_passed = False
+        pv.validation_comment = 'Only support consumer numbers, not business or cloud numbers.'
+        pv.save()
+        if validate_consumer_number:
+            return JsonResponse({
+                'success': False,
+                'msg': pv.validation_comment
+            }, status=401)
+
+    if validation.carrier and validation.carrier['type'] != 'mobile':
+        pv.validation_passed = False
+        pv.validation_comment = 'Phone type isn\'t supported'
+        pv.save()
+        if validate_carrier:
+            return JsonResponse({
+                'success': False,
+                'msg': pv.validation_comment
+            }, status=401)
+
+    if delivery_method == 'email':
+        twilio.verify.verifications.create(to=user.profile.email, channel='email')
+    else:
+        twilio.verify.verifications.create(to=phone, channel='sms')
+
+    pv.validation_passed = True
+    pv.save()
+
+    profile.last_validation_request = timezone.now()
+    profile.validation_attempts += 1
+    profile.encoded_number = hash_number
+    profile.save()
+
+    redis.set(f'verification:{user.id}:phone', hash_number)
+
+
+
+@login_required
+def send_verification(request):
+    user = request.user
+    profile = user.profile
+    phone = request.POST.get('phone')
+    delivery_method = request.POST.get('delivery_method', 'sms')
+    delivery_method = 'sms' # always SMS, not email
+    redis = RedisService().redis
+    twilio = TwilioService()
+    has_previous_validation = profile.last_validation_request and profile.last_validation_request.replace(tzinfo=pytz.utc)
+    validation_attempts = profile.validation_attempts
+    allow_email = False
+
+    if not has_previous_validation:
+        response = validate_number(request.user, twilio, phone, redis, delivery_method)
+        if response:
+            return response
+    else:
+        cooldown = has_previous_validation + timedelta(minutes=SMS_COOLDOWN_IN_MINUTES)
+
+        if cooldown > datetime.now().replace(tzinfo=pytz.utc):
+            return JsonResponse({
+                'success': False,
+                'msg': 'Wait a minute to try again.'
+            }, status=401)
+
+        if validation_attempts > SMS_MAX_VERIFICATION_ATTEMPTS:
+            return JsonResponse({
+                'success': False,
+                'msg': 'Attempt numbers exceeded.'
+            }, status=401)
+
+        response = validate_number(request.user, twilio, phone, redis, delivery_method)
+        if response:
+            return response
+
+    return JsonResponse({
+        'success': True,
+        'allow_email': EMAIL_ACCOUNT_VALIDATION and validation_attempts > 1,
+        'msg': 'The verification number was sent.'
+    })
+
+
+@login_required
+def validate_verification(request):
+    redis = RedisService().redis
+    twilio = TwilioService().verify
+    code = request.POST.get('code')
+    phone = request.POST.get('phone')
+    profile = request.user.profile
+
+    has_previous_validation = profile.last_validation_request
+    hash_number = redis.get(f'verification:{request.user.id}:phone').decode('utf-8')
+
+    if Profile.objects.filter(encoded_number=hash_number, sms_verification=True).exclude(
+        pk=profile.id).exists():
+        return JsonResponse({
+            'success': False,
+            'msg': 'The phone number has been associated with other account.'
+        }, status=401)
+
+    if has_previous_validation:
+        verification = twilio.verification_checks.create(to=phone, code=code)
+        if verification.status == 'approved':
+            redis.delete(f'verification:{request.user.id}:phone')
+            request.user.profile.sms_verification = True
+            request.user.profile.save()
+
+            pv_id = redis.get(f'verification:{request.user.id}:pv').decode('utf-8')
+            pv = ProfileVerification.objects.get(pk=int(pv_id))
+            pv.success = True
+            pv.save()
+
+            return JsonResponse({
+                    'success': True,
+                    'msg': 'Verification completed'
+            })
+
+        return JsonResponse({
+            'success': False,
+            'msg': 'Failed verification'
+        }, status=401)
+
+    return JsonResponse({
+        'success': False,
+        'msg': 'No verification process associated'
+    }, status=401)
