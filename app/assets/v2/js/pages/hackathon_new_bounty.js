@@ -4,6 +4,7 @@ const sponsors = document.sponsors;
 
 window.addEventListener('dataWalletReady', function(e) {
   appFormHackathon.network = networkName;
+  appFormHackathon.form.funderAddress = selectedAccount;
 }, false);
 
 Vue.component('v-select', VueSelect.VueSelect);
@@ -120,7 +121,7 @@ Vue.mixin({
       switch (vm.chainId) {
         case '1':
           // ethereum
-          type = 'bounties_network';
+          type = 'web3_modal';
           break;
         case '666':
           // paypal
@@ -135,10 +136,11 @@ Vue.mixin({
           type = 'qr';
           break;
         default:
-          type = 'bounties_network';
+          type = 'web3_modal';
       }
 
       vm.form.web3_type = type;
+      return type;
     },
     submitForm: function() {
       let vm = this;
@@ -146,7 +148,7 @@ Vue.mixin({
       const metadata = {
         issueTitle: vm.form.issueDetails.title,
         issueDescription: vm.form.issueDetails.description,
-        issueKeywords: vm.form.keywords,
+        issueKeywords: vm.form.keywords.join(),
         githubUsername: vm.form.githubUsername,
         notificationEmail: vm.form.notificationEmail,
         fullName: vm.form.fullName,
@@ -163,7 +165,7 @@ Vue.mixin({
         releaseAfter: '',
         tokenName: vm.form.token.symbol,
         invite: [],
-        bounty_categories: vm.form.bounty_categories,
+        bounty_categories: vm.form.bounty_categories.join(),
         activity: '',
         chain_id: vm.chainId
       };
@@ -173,12 +175,12 @@ Vue.mixin({
         'amount': vm.form.amount,
         'value_in_token': vm.form.amount * 10 ** vm.form.token.decimals,
         'token_name': metadata.tokenName,
-        'token_address': vm.form.address,
+        'token_address': vm.form.token.address,
         'bounty_type': metadata.bountyType,
         'project_length': metadata.projectLength,
         'estimated_hours': metadata.estimatedHours,
         'experience_level': metadata.experienceLevel,
-        'github_url': vm.form.issueURL,
+        'github_url': vm.form.issueUrl,
         'bounty_owner_email': metadata.notificationEmail,
         'bounty_owner_github_username': metadata.githubUsername,
         'bounty_owner_name': metadata.fullName, // ETC-TODO REMOVE ?
@@ -215,6 +217,7 @@ Vue.mixin({
 
     },
     sendBounty(data) {
+      console.log(data);
       let vm = this;
       const apiUrlBounty = '/api/v1/bounty/create';
       const postBountyData = fetchData(apiUrlBounty, 'POST', data);
