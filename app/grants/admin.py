@@ -283,6 +283,12 @@ class ContributionAdmin(GeneralAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_notify_contribution_failure" in request.POST:
+            from marketing.mails import grant_txn_failed
+            grant_txn_failed(obj)
+            obj.validator_comment += f"User Notified {timezone.now()}"
+            obj.save()
+            self.message_user(request, "notified user of failure")
         if "_update_tx_status" in request.POST:
             obj.update_tx_status()
             obj.save()
