@@ -232,7 +232,11 @@ def grants_addr_as_json(request):
 
 @cache_page(60 * 60)
 def grants_stats_view(request):
-    cht, chart_list = get_stats(request.GET.get('category'))
+    cht, chart_list = None, None
+    try:
+        cht, chart_list = get_stats(request.GET.get('category'))
+    except:
+        raise Http404
     params = {
         'cht': cht,
         'chart_list': chart_list,

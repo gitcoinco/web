@@ -122,7 +122,7 @@ class Token(SuperModel):
     image = models.CharField(max_length=255, null=True)
     rarity = models.CharField(max_length=255, null=True)
     tags = models.CharField(max_length=255, null=True, db_index=True)
-    artist = models.CharField(max_length=255, null=True, blank=True)
+    artist = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     platform = models.CharField(max_length=255, null=True, blank=True)
     external_url = models.CharField(max_length=255, null=True)
     background_color = models.CharField(max_length=255, null=True)
