@@ -49,8 +49,8 @@ from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
-from economy.utils import convert_amount
 from economy.models import Token as FTokens
+from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, MatchPledge, PhantomFunding, Subscription,
@@ -232,7 +232,11 @@ def grants_addr_as_json(request):
 
 @cache_page(60 * 60)
 def grants_stats_view(request):
-    cht, chart_list = get_stats(request.GET.get('category'))
+    cht, chart_list = None, None
+    try:
+        cht, chart_list = get_stats(request.GET.get('category'))
+    except:
+        raise Http404
     params = {
         'cht': cht,
         'chart_list': chart_list,
@@ -266,6 +270,8 @@ def grants_by_grant_type(request, grant_type):
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
+    if keyword:
+        category = ''
     profile = get_profile(request)
     _grants = None
     bg = 4
@@ -388,17 +394,19 @@ def grants_by_grant_type(request, grant_type):
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
     grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
+
     if grant_type_title_if_any == "Media":
         grant_type_title_if_any = "Community"
-    if grant_type_title_if_any == "Change":
+    elif grant_type_title_if_any == "Change":
         grant_type_title_if_any = "Crypto for Black Lives"
-    grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
+
     if has_real_grant_type:
         title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"
     if grant_type == 'stats':
         title = f"Round {clr_round} Stats"
     cht = []
     chart_list = ''
+
     try:
         what = 'all_grants'
         pinned = PinnedPost.objects.get(what=what)
@@ -1182,3 +1190,39 @@ def grant_activity(request, grant_id=None):
     return JsonResponse({
         'error': False
     })
+
+@require_GET
+def grants_clr(request):
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to fetch grant clr'
+    }
+
+    pks = request.GET.get('pks', None)
+
+    if not pks:
+        response['message'] = 'error: missing parameter pks'
+        return JsonResponse(response)
+
+    grants = []
+
+    try:
+        for grant in Grant.objects.filter(pk__in=pks.split(',')):
+           grants.append({
+               'pk': grant.pk,
+               'title': grant.title,
+               'clr_prediction_curve': grant.clr_prediction_curve
+           })
+    except Exception as e:
+        print(e)
+        response = {
+            'status': 500,
+            'message': 'error: something went wrong while fetching grants clr'
+        }
+        return JsonResponse(response)
+
+    response = {
+        'status': 200,
+        'grants': grants
+    }
+    return JsonResponse(response)
