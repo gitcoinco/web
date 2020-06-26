@@ -2757,6 +2757,11 @@ class Profile(SuperModel):
         suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
 
     @property
+    def squelched(self):
+        # true if the user has been auto squelched by the anti sybil scripts
+        return self.squelches.filter(active=True).exists()
+
+    @property
     def sybil_score_str(self):
         _map = {
             -2: 'Error',

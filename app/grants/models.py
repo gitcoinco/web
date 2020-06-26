@@ -927,7 +927,8 @@ next_valid_timestamp: {next_valid_timestamp}
             'tx_id': tx_id,
             'subscription': self,
             'split_tx_id': self.split_tx_id,
-            'split_tx_confirmed': self.split_tx_confirmed
+            'split_tx_confirmed': self.split_tx_confirmed,
+            'is_clr_eligible': not self.contributor_profile.squelched,
         }
         contribution = Contribution.objects.create(**contribution_kwargs)
         grant = self.grant
