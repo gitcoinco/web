@@ -2747,6 +2747,7 @@ class Profile(SuperModel):
     validation_attempts = models.PositiveSmallIntegerField(default=0, help_text=_('Number of generated SMS codes to validate account'))
     last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
     encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
+    sybil_score = models.IntegerField(default=-1)
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
@@ -2754,22 +2755,6 @@ class Profile(SuperModel):
     @property
     def suggested_bounties(self):
         suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
-
-    @property
-    def sybil_score(self):
-        try:
-            investigation = self.investigations.filter(key='sybil')
-            if not investigation.exists():
-                return -1
-            investigation = investigation.first()
-            score = investigation.description.split("SYBIL_SCORE:")[1].split(' ')[1]
-            if 'SYBIL_SCORE' not in investigation.description:
-                return -1
-            return int(score)
-        except IndexError as e:
-            return -1
-        except Exception as e:
-            return -2
 
     @property
     def sybil_score_str(self):
@@ -5272,6 +5257,8 @@ class Investigation(SuperModel):
             description=htmls,
             key='sybil',
         )
+
+        instance.sybil_score = total_sybil_score
 
 
 class ObjectView(SuperModel):

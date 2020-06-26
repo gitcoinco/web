@@ -199,7 +199,6 @@ class ProfileAdmin(admin.ModelAdmin):
         from django.shortcuts import redirect
         if "_recalc_sybil" in request.POST:
             Investigation.investigate_sybil(obj)
-            obj.calculate_all()
             obj.save()
             self.message_user(request, "Recalc done")
             return redirect(obj.admin_url)
