@@ -168,10 +168,10 @@ def recalculate_profile(modeladmin, request, queryset):
 recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['handle', 'sybil_score', 'user_sybil_score', 'created_on']
     raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
     ordering = ['-id']
     search_fields = ['email', 'data']
-    list_display = ['handle', 'user_sybil_score', 'created_on']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
 
