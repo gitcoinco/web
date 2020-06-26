@@ -98,9 +98,8 @@
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
 </form>
 <div class="col-md-8 m-auto">
-  {% if is_alpha_tester %}
   <div class="form-group">
-    <h4 class="font-title mb-4 text-left">{% trans "Account Financials -- ALPHA" %}</h4>
+    <h4 class="font-title mb-4 text-left">{% trans "Account Financials" %}</h4>
   </div>
   <div class="form-group mb-4">
     <div class="major_button_container">
@@ -124,7 +123,6 @@
       <p class="font-body">{% trans "Export all of your spending for @" %}{{ github_handle }}</p>
     </div>
   </div>
-  {% endif %}
   <h4 class="font-title mb-4 text-left">{% trans "Profile Photo" %}</h4>
   <div class="profile-avatar row mx-0 px-0 major_button_container">
     <div class="col-12 col-md-5 pl-0 pr-0 text-center">
