@@ -38,6 +38,7 @@ Vue.mixin({
           projectModal(vm.bounty.pk);
         }
         vm.staffOptions();
+        vm.fetchIfPendingFulfillments();
       }).catch(function(error) {
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
@@ -422,6 +423,23 @@ Vue.mixin({
       );
 
     },
+    fetchIfPendingFulfillments: function() {
+      let vm = this;
+
+      const pendingFulfillments = vm.bounty.fulfillments.filter(fulfillment =>
+        fulfillment.payout_status == 'pending'
+      );
+
+      if (pendingFulfillments.length > 0) {
+        if (!vm.pollInterval) {
+          vm.pollInterval = setInterval(vm.fetchBounty, 60000);
+        }
+      } else {
+        clearInterval(vm.pollInterval);
+        vm.pollInterval = null;
+      }
+      return;
+    },
     stopWork: function(isOwner) {
       let text = isOwner ?
         'Are you sure you would like to stop this user from working on this bounty ?' :
@@ -536,7 +554,8 @@ if (document.getElementById('gc-bounty-detail')) {
         decimals: 18,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
-        quickLinks: []
+        quickLinks: [],
+        pollInterval: null
       };
     },
     mounted() {
