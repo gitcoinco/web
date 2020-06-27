@@ -136,7 +136,7 @@
                   </label>
 
                 </div>
-                <div class="text-danger" v-if="errors.chainId">
+                <div class="text-danger" v-if="errors.chainId && !form.chainId">
                   [[errors.chainId]]
                 </div>
               </div>
@@ -185,7 +185,7 @@
                       <li class="select2-available__choice" v-for="keyword in form.issueDetails.keywords" @click="addKeyword(keyword)" :class="{'d-none': form.keywords.includes(keyword)}"><span class="text">[[keyword]]</span></li>
                     </ul>
                   </div>
-                  <div class="text-danger" v-if="errors.keywords">
+                  <div class="text-danger" v-if="errors.keywords && !form.keywords.length">
                     [[errors.keywords]]
                   </div>
                 </div>
@@ -217,7 +217,7 @@
                     <input type="checkbox" id="other_cat" value="other" v-model="form.bounty_categories"><i class="fas fa-briefcase mr-2 mb-2"></i> Other
                   </label>
                 </div>
-                <div class="text-danger" v-if="errors.bounty_categories">
+                <div class="text-danger" v-if="errors.bounty_categories && !form.bounty_categories.length">
                   [[errors.bounty_categories]]
                 </div>
               </div>
@@ -268,7 +268,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="text-danger" v-if="errors.project_type">
+                <div class="text-danger" v-if="errors.project_type && !form.project_type">
                   [[errors.project_type]]
                 </div>
               </div>
@@ -298,7 +298,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="text-danger" v-if="errors.permission_type">
+                <div class="text-danger" v-if="errors.permission_type && !form.permission_type">
                   [[errors.permission_type]]
                 </div>
               </div>
@@ -380,7 +380,7 @@
               <div class="funder-address-container" v-show="chainId !== '1'">
                 <label class="font-caption letter-spacing text-black-60" for="funderAddress">Funder Address</label>
                 <input name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out" v-model="form.funderAddress">
-                <div class="text-danger" v-if="errors.funderAddress">
+                <div class="text-danger" v-if="errors.funderAddress && !form.funderAddress">
                   [[errors.funderAddress]]
                 </div>
               </div>
@@ -408,10 +408,13 @@
               </div>
               <div class="py-4">
                 <div class="form__checkbox">
-                  <input name="terms" id="terms" type="checkbox" value="1" required="">
+                  <input name="terms" id="terms" type="checkbox" value="1" required="" v-model="terms">
                   <label class="form__label" for="terms">I have read, understand, and agree to, the
                     <a href="/legal/terms" target="_blank" class="text-reset underline" rel="noopener noreferrer">Terms of Service</a>.
                   </label>
+                </div>
+                <div class="text-danger" v-if="errors.terms && !terms">
+                  [[errors.terms]]
                 </div>
 
               </div>
@@ -423,11 +426,12 @@
             <div class="col-12 text-center">
               <button class="btn btn-gc-blue btn-lg mb-3 px-5 btn-lg-padding" type="submit" @click="submitForm($event)">Fund Issue</button>
             </div>
+            <div class="col-12 text-center" v-if="Object.keys(errors).length > 0">
+              Please verify forms errors and try again
+            </div>
           </div>
         </div>
       </form>
-      [[errors]]
-      <input v-model="chainId">[[form]]
     </div>
     <script type="text/x-template" id="select2-template">
       <select>

@@ -95,11 +95,11 @@ Vue.mixin({
 
       vm.form.keywords.push(item);
     },
-    checkForm: function(e) {
-      e.preventDefault();
+    checkForm: async function(e) {
       let vm = this;
 
       vm.errors = {};
+
       if (!vm.form.keywords.length) {
         vm.$set(vm.errors, 'keywords', 'Please select the prize keywords');
       }
@@ -123,6 +123,9 @@ Vue.mixin({
       }
       if (!vm.form.permission_type) {
         vm.$set(vm.errors, 'permission_type', 'Select the permission type');
+      }
+      if (!vm.terms) {
+        vm.$set(vm.errors, 'terms', 'You need to accept the terms');
       }
       if (Object.keys(vm.errors).length) {
         return false;
@@ -159,6 +162,11 @@ Vue.mixin({
       let vm = this;
 
       vm.checkForm(event);
+
+      if (!provider && vm.chainId === '1') {
+        onConnect();
+        return false;
+      }
 
       if (Object.keys(vm.errors).length) {
         return false;
@@ -290,6 +298,14 @@ Vue.mixin({
       vm.form.token = result[0];
       return result;
     }
+  },
+  watch: {
+    chainId: async function(val) {
+      if (!provider && val === '1') {
+        await onConnect();
+      }
+      await this.checkForm();
+    }
   }
 });
 
@@ -305,6 +321,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
+        terms: false,
         hackathonSlug: document.hackathon.slug,
         hackathonEndDate: document.hackathon.endDate,
         errors: {},
