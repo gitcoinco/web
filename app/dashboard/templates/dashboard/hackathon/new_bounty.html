@@ -28,33 +28,55 @@
 
     <style>
       .onboard-banner {
-          position: relative;
-          background: {% firstof hackathon.background_color or 'white' %};
-          color: {% firstof hackathon.text_color or 'black' %};
-          {% if hackathon.banner %}
-            background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
-          {% endif %}
-        }
+        position: relative;
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
+      }
 
-        .issue_description {
-          height: 400px;
-          padding: 1em;
-          overflow: auto;
-          resize: vertical;
-          background-color: #f5f5f5;
-        }
+      .issue_description {
+        height: 400px;
+        padding: 1em;
+        overflow: auto;
+        resize: vertical;
+        background-color: #f9f9f9;
+      }
 
-        .issue_description img {
-          max-width: 100%;
-        }
-        .sponsor-selected {
-          box-shadow: 0 0 4px 0 #d2d2d2;
-        }
+      .issue_description img {
+        max-width: 100%;
+      }
 
-        .vs__dropdown-toggle {
-          padding: 5px 5px 5px 5px;
-          border-radius: 2px;
-        }
+      .sponsors {
+        width: 170px;
+        color: black;
+        font-weight: 300;
+      }
+
+      .sponsors strong {
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .sponsor-selected {
+        box-shadow: 0 0 4px 0 #d2d2d2;
+      }
+
+      .vs__dropdown-toggle {
+        padding: 5px 5px 5px 5px;
+        border-radius: 2px;
+      }
+
+      .chain-btn {
+        min-height: 64px;
+      }
+
+      .chain-btn:hover {
+        background-color: #f9f9f9;
+        border-color: #3E00FF;
+      }
     </style>
   </head>
 
@@ -81,45 +103,51 @@
             <div class="col-12">
               <h1 class="text-center">Fund Prize</h1>
               <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers!</p>
-              <div class="d-flex">
-                <div class="sponsors d-flex flex-column align-items-center px-3 py-2 m-3 border rounded" v-for="sponsor in sponsors" :class="{'sponsor-selected': (sponsor.handle==orgSelected) }">
-                  <img :src="sponsor.avatar_url" alt="" width="60">
-                  [[sponsor.handle]]
-                </div>
+              <div class="d-flex flex-wrap justify-content-center">
+                <a :href=`/profile/${sponsor.handle}` target="_blank" class="sponsors d-flex flex-column align-items-center px-3 py-2 m-3 rounded" v-for="sponsor in sponsors" :class="{'sponsor-selected': (sponsor.handle==orgSelected) }">
+                  <img :src="sponsor.avatar_url" class="mb-1" :alt="sponsor.handle" width="60">
+                  <strong>[[sponsor.name == 'None' ?  sponsor.handle : sponsor.name]]</strong>
+                </a>
               </div>
               <div class="mb-3">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="issueURL">Bounty chain</label>
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="bounty_chain">Bounty chain</label>
                   <p class="font-body">Pick the chain you will fund the bounty</p>
 
-                <div class="btn-group-toggle d-flex">
+                <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
 
-                  <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1'}">
                     <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="24"> Ethereum
                   </label>
 
-                  <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
                     <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="24"> PayPal
                   </label>
 
-                  <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '61'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '61'}">
                     <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="24"> Ethereum Classic
                   </label>
 
-                  <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '102'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '102'}">
                     <input type="radio" name="bounty_chain" id="102_chain" value="102" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="24"> Zilliqa
                   </label>
 
-                  <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '42220'}">
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '42220'}">
                     <input type="radio" name="bounty_chain" id="42220_chain" value="42220" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="24"> Celo
                   </label>
 
+                </div>
+                <div class="text-danger" v-if="errors.chainId">
+                  [[errors.chainId]]
                 </div>
               </div>
               <div class="mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="issueURL">Github Issue Url <span class="badge badge-greylight text-capitalize">Required</span></label>
                 <input class="form-control" name='issueURL' id="issueURL" v-model="form.issueUrl" type="url" placeholder="https://github.com/org/repo/issues/n" @input="getIssueDetails(form.issueUrl)" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
-                <div class="text-danger">
-                  [[ errorIssueDetails ]]
+                <!-- <div class="text-danger"> -->
+                  <!-- [[ errorIssueDetails ]] -->
+                <!-- </div> -->
+                <div class="text-danger" v-if="errors.issueDetails">
+                  [[errors.issueDetails]]
                 </div>
               </div>
               <!-- [[issueDetails]] -->
@@ -157,6 +185,9 @@
                       <li class="select2-available__choice" v-for="keyword in form.issueDetails.keywords" @click="addKeyword(keyword)" :class="{'d-none': form.keywords.includes(keyword)}"><span class="text">[[keyword]]</span></li>
                     </ul>
                   </div>
+                  <div class="text-danger" v-if="errors.keywords">
+                    [[errors.keywords]]
+                  </div>
                 </div>
               </div>
               <div v-else>
@@ -186,10 +217,13 @@
                     <input type="checkbox" id="other_cat" value="other" v-model="form.bounty_categories"><i class="fas fa-briefcase mr-2 mb-2"></i> Other
                   </label>
                 </div>
+                <div class="text-danger" v-if="errors.bounty_categories">
+                  [[errors.bounty_categories]]
+                </div>
               </div>
 
               <div class="mt-4">
-                <div id="details-section" class="">
+                <div id="" class="">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="project_type">Project Type</label>
                   <div class="d-flex row">
                     <div class="col-12 col-md-6 btn-group-toggle">
@@ -233,7 +267,13 @@
                       </label>
                     </div>
                   </div>
-
+                </div>
+                <div class="text-danger" v-if="errors.project_type">
+                  [[errors.project_type]]
+                </div>
+              </div>
+              <div class="mt-4">
+                <div id="" class="">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">Permissions</label>
                   <div class="d-flex row">
                     <div class="col-12 col-md-6 btn-group-toggle">
@@ -257,6 +297,9 @@
                       </label>
                     </div>
                   </div>
+                </div>
+                <div class="text-danger" v-if="errors.permission_type">
+                  [[errors.permission_type]]
                 </div>
               </div>
 
@@ -302,7 +345,11 @@
                       </template>
                     </v-select>
                   </div>
+                  <div class="col-12 text-danger" v-if="errors.experience_level || errors.project_length || errors.bounty_type">
+                    [[errors.experience_level || errors.project_length || errors.bounty_type]]
+                  </div>
                 </div>
+
               </div>
 
               <div id="pricing-section" class="mt-4" data-select2-id="pricing-section">
@@ -321,11 +368,11 @@
                   </div>
                   <div class="col-12 col-md-4">
                     <label class="form__label" for="amount">Amount</label>
-                    <input name="amount" id="amount" class="form__input valid" type="number" step="any" min="0.001" v-model="form.amount" @input="calcValues('usd')">
+                    <input name="amount" id="amount" class="form__input" :class="{'valid': form.amount, 'error': !form.amount}" type="number" step="any" min="0.001" v-model="form.amount" @input="calcValues('usd')">
                   </div>
                   <div class="col-12 col-md-4" id="usd-amount-wrapper">
                     <label class="form__label" for="usd_amount">USD</label>
-                    <input name="usd_amount" id="usd_amount" class="form__input valid" type="number" step="any" min="0.00" v-model="form.amountusd" @input="calcValues('token')">
+                    <input name="usd_amount" id="usd_amount" class="form__input" :class="{'valid': form.amountusd, 'error': !form.amountusd}" type="number" step="any" min="0.00" v-model="form.amountusd" @input="calcValues('token')">
                   </div>
                 </div>
               </div>
@@ -333,6 +380,9 @@
               <div class="funder-address-container" v-show="chainId !== '1'">
                 <label class="font-caption letter-spacing text-black-60" for="funderAddress">Funder Address</label>
                 <input name="funderAddress" id="funderAddress" class="form__input" type="text" placeholder="Address with which the bounty will be paid out" v-model="form.funderAddress">
+                <div class="text-danger" v-if="errors.funderAddress">
+                  [[errors.funderAddress]]
+                </div>
               </div>
             </div>
           </div>
@@ -353,13 +403,7 @@
                     Bounty <span id="summary-bounty-amount" class="font-weight-bold">0.001</span>
                     <span id="summary-bounty-token" class="font-weight-bold">[[form.token.symbol]]</span> ($[[form.amountusd]])
                   </p>
-                  <p class="font-caption text-black-50 mb-0">
-                    You will have to approve
-                    <span class="font-weight-bold">
-                      <span id="confirmation"> 1 </span>
-                      web3 wallet confirmation.
-                    </span>
-                  </p>
+
                 </div>
               </div>
               <div class="py-4">
@@ -419,6 +463,7 @@
             {% if not forloop.first %},{% endif %}
             {
               handle: "{{ sponsor }}",
+              name: "{{ sponsor.data.name }}",
               avatar_url: "{{ sponsor.avatar_url }}",
             }
         {% endfor %}

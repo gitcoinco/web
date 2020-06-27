@@ -1,6 +1,4 @@
 let appFormHackathon;
-// const hackathonSlug = document.hackathon.slug;
-const sponsors = document.sponsors;
 
 window.addEventListener('dataWalletReady', function(e) {
   appFormHackathon.network = networkName;
@@ -14,14 +12,14 @@ Vue.mixin({
       let vm = this;
 
       if (!url) {
-        vm.errorIssueDetails = undefined;
+        vm.$set(vm.errors, 'issueDetails', undefined);
         vm.form.issueDetails = null;
         return vm.form.issueDetails;
       }
 
       if (url.indexOf('github.com/') < 0) {
         vm.form.issueDetails = null;
-        vm.errorIssueDetails = 'Please paste a github issue url';
+        vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url');
         return;
       }
 
@@ -29,25 +27,20 @@ Vue.mixin({
 
       vm.orgSelected = '';
 
-      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url)}&hackathon_slug=${vm.hackathonSlug}`;
+      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url.trim())}&hackathon_slug=${vm.hackathonSlug}`;
 
-      vm.errorIssueDetails = undefined;
+      vm.$set(vm.errors, 'issueDetails', undefined);
+
       vm.form.issueDetails = undefined;
       const getIssue = fetchData(apiUrldetails, 'GET');
 
       $.when(getIssue).then((response) => {
         vm.orgSelected = ghIssueUrl.pathname.split('/')[1];
-
         vm.form.issueDetails = response;
-        vm.errorIssueDetails = undefined;
-        // if (response[0]) {
-        // } else {
-        //   vm.issueDetails = null;
-        //   vm.errorIssueDetails = 'This issue wasn\'t bountied yet.';
-        // }
+        vm.$set(vm.errors, 'issueDetails', undefined);
       }).catch((err) => {
         console.log(err);
-        vm.errorIssueDetails = err.responseJSON.message;
+        vm.$set(vm.errors, 'issueDetails', err.responseJSON.message);
       });
 
     },
@@ -82,7 +75,6 @@ Vue.mixin({
 
       }).catch((err) => {
         console.log(err);
-        // vm.errorIssueDetails = err.responseJSON.message;
       });
     },
     calcValues: function(direction) {
@@ -92,7 +84,6 @@ Vue.mixin({
         let usdValue = vm.form.amount * vm.coinValue;
 
         vm.form.amountusd = Number(usdValue.toFixed(2));
-        console.log(vm.form.amountusd);
       } else {
         vm.form.amount = Number(vm.form.amountusd * 1 / vm.coinValue).toFixed(4);
         console.log(vm.form.amount);
@@ -105,13 +96,36 @@ Vue.mixin({
       vm.form.keywords.push(item);
     },
     checkForm: function(e) {
+      e.preventDefault();
       let vm = this;
 
+      vm.errors = {};
+      if (!vm.form.keywords.length) {
+        vm.$set(vm.errors, 'keywords', 'Please select the prize keywords');
+      }
+      if (!vm.form.experience_level || !vm.form.project_length || !vm.form.bounty_type) {
+        vm.$set(vm.errors, 'experience_level', 'Please select the details options');
+      }
+      if (!vm.chainId) {
+        vm.$set(vm.errors, 'chainId', 'Please select an option');
+      }
+      if (!vm.form.issueDetails || vm.form.issueDetails < 1) {
+        vm.$set(vm.errors, 'issueDetails', 'Please input a GitHub issue');
+      }
       if (vm.form.bounty_categories.length < 1) {
-        vm.errors.push('Select at least one category');
-        e.preventDefault();
-      } else {
-        return;
+        vm.$set(vm.errors, 'bounty_categories', 'Select at least one category');
+      }
+      if (!vm.form.funderAddress) {
+        vm.$set(vm.errors, 'funderAddress', 'Fill the owner wallet address');
+      }
+      if (!vm.form.project_type) {
+        vm.$set(vm.errors, 'project_type', 'Select the project type');
+      }
+      if (!vm.form.permission_type) {
+        vm.$set(vm.errors, 'permission_type', 'Select the permission type');
+      }
+      if (Object.keys(vm.errors).length) {
+        return false;
       }
     },
     web3Type() {
@@ -127,14 +141,10 @@ Vue.mixin({
           // paypal
           type = 'fiat';
           break;
-        case '61':
-          // ethereum classic
-        case '102':
-          // zilliqa
-        case '42220':
-          // celo mainnet
-        case '44786':
-          // celo alfajores tesnet
+        case '61': // ethereum classic
+        case '102': // zilliqa
+        case '42220': // celo mainnet
+        case '44786': // celo alfajores tesnet
           type = 'qr';
           break;
         default:
@@ -144,10 +154,15 @@ Vue.mixin({
       vm.form.web3_type = type;
       return type;
     },
-    submitForm: function(event) {
+    submitForm: async function(event) {
       event.preventDefault();
       let vm = this;
 
+      vm.checkForm(event);
+
+      if (Object.keys(vm.errors).length) {
+        return false;
+      }
       const metadata = {
         issueTitle: vm.form.issueDetails.title,
         issueDescription: vm.form.issueDetails.description,
@@ -220,7 +235,6 @@ Vue.mixin({
 
     },
     sendBounty(data) {
-      console.log(data);
       let vm = this;
       const apiUrlBounty = '/api/v1/bounty/create';
       const postBountyData = fetchData(apiUrlBounty, 'POST', data);
@@ -233,24 +247,19 @@ Vue.mixin({
           _alert('Bounty already exists for this github issue.', 'error');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         } else {
-          _alert('Unable to create a bounty. Please try again later', 'error');
+          _alert(`Unable to create a bounty. ${response.message}`, 'error');
           console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
         }
 
       }).catch((err) => {
         console.log(err);
         _alert('Unable to create a bounty. Please try again later', 'error');
-        // vm.errorIssueDetails = err.responseJSON.message;
       });
 
     }
-    // blockchainSend: function() {
-
-    // }
   },
   computed: {
     sortByPriority: function() {
-      // console.log(elem)
       return this.tokens.sort(function(a, b) {
         return b.priority - a.priority;
       });
@@ -271,13 +280,10 @@ Vue.mixin({
       let result;
 
       vm.form.token = {};
-      // vm.chainId = form.bounty_chain;
       if (vm.chainId == '') {
         result = vm.filterByNetwork;
       } else {
-        result = vm.filterByNetwork.filter((item)=>{
-          console.log(item.chainId, vm.chainId);
-
+        result = vm.filterByNetwork.filter((item) => {
           return String(item.chainId) === vm.chainId;
         });
       }
@@ -288,7 +294,6 @@ Vue.mixin({
 });
 
 if (document.getElementById('gc-hackathon-new-bounty')) {
-  // var vueSelect = import('vue-select');
   appFormHackathon = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-hackathon-new-bounty',
@@ -302,9 +307,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         chainId: '',
         hackathonSlug: document.hackathon.slug,
         hackathonEndDate: document.hackathon.endDate,
-        errorIssueDetails: undefined,
-        errors: [],
-        sponsors: sponsors,
+        errors: {},
+        sponsors: document.sponsors,
         orgSelected: '',
         selected: null,
         coinValue: null,
