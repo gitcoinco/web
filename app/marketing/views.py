@@ -331,6 +331,7 @@ def email_settings(request, key):
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
+        hackathons = request.POST.getlist('hackathons')
         validation_passed = True
         try:
             email_in_use = User.objects.filter(email=email) | User.objects.filter(profile__email=email)
@@ -362,6 +363,15 @@ def email_settings(request, key):
 
                 if form['chat'] and profile:
                     update_chat_notifications(profile, 'email', False)
+
+                hacks = ["hackathon_workshop_invite","hackathon_reminder","hackathon_sponsors","hackathon_admin"]
+                for hackathon in hackathons:
+                    new_form = {}
+                    for hack in hacks:
+                        key = f"{hackathon}_{hack}"
+                        if key in form:
+                            new_form[hack] = form[key]
+                    es.build_hackathon_email_preferences(new_form, hackathon)
 
                 es.build_email_preferences(form)
                 es = record_form_submission(request, es, 'email')

@@ -35,9 +35,10 @@
     <h5>Hackathon event preferences:</h5>
     {% for hack_pref in hack_prefs %}
       <h6>{{ hack_pref }}</h6>
+      <input type="hidden" value="{{ hack_pref }}" id="hackathons" name="hackathons" />
       {% for email_type in hackathon_types %}
       <div class="email_pref_container">
-        <input class='priv_checkbox' type=checkbox name="{{ email_type.0 }}" id="{{ hack_pref }}_{{ email_type.0 }}" value="1">
+        <input class='priv_checkbox' type=checkbox name="{{ hack_pref }}_{{ email_type.0 }}" id="{{ hack_pref }}_{{ email_type.0 }}" value="1">
         <label class="form__label" for="{{ email_type.0 }}">{% trans "Don't send me" %} <strong>{{ email_type.1 }}</strong></label>
         <small id="{{ email_type.0 }}" class="form__input-help">{% trans "Frequency" %}: {{ email_type.2 }}</small>
         <br>

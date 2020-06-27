@@ -89,7 +89,7 @@ class EmailSubscriber(SuperModel):
         suppression_preferences = self.preferences.get('suppression_preferences', {})
 
         # update from hackathon event form
-        hack_prefs ={
+        hack_prefs = {
             'hackathon_admin': False,
             'hackathon_reminder': False,
             'hackathon_workshop_invite': False,
@@ -101,7 +101,6 @@ class EmailSubscriber(SuperModel):
             if key in form.keys():
                 hack_prefs[key] = bool(form[key])
 
-        print(hack_prefs)
         suppression_preferences['hackathon_preferences'][hackathon] = hack_prefs
         # save and return
         self.preferences['suppression_preferences'] = suppression_preferences
