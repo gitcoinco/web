@@ -2753,6 +2753,14 @@ class Profile(SuperModel):
     objects_full = ProfileQuerySet.as_manager()
 
     @property
+    def latest_sybil_investigation(self):
+        try:
+            return self.investigations.filter(key='sybil').first().description
+        except:
+            return ''
+
+
+    @property
     def suggested_bounties(self):
         suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
 
@@ -2762,15 +2770,15 @@ class Profile(SuperModel):
             -2: 'Error',
             -1: 'N/A',
             0: 'Low',
-            1: 'Medium-Low',
-            2: 'Medium',
-            3: 'Medium-High',
+            1: 'Med-Low',
+            2: 'Med',
+            3: 'Med-High',
             4: 'High',
             5: 'Very High',
         }
         score = self.sybil_score
         if score > 5:
-            return 'Very Very High'
+            return f'VeryX{score} High'
         return _map.get(score, "Unknown") 
 
     @property
