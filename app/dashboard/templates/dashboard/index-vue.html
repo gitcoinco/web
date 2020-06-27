@@ -127,8 +127,8 @@
               </p>
             </div>
           </div>
-          <div class="col-12 col-xl-9 body hackathon-explorer">
-            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" :content-class="`col-12 ${chatMode ? 'px-3' : 'px-4 mt-4'} light-blue`" class="row">
+          <div class="col-12 col-xl-10 body hackathon-explorer">
+            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
               <template v-slot:tabs-start>
                 <div class="hack-logo-wrapper d-none d-xl-block">
                   <div class="mb-1 hackathon-logo">
@@ -201,7 +201,10 @@
                 <div class="ml-md-4 townsquare_header">
                   <div class="row">
                     <div class="ml-4 col-12 col-md-2 col-xl-3 d-lg-block">
-                      <a href="?filter=intro" class="btn gc-text-blue">
+                      <a href="{% url 'hackathon_ts' hackathon.slug %}" class="btn gc-text-blue">
+                        {% trans "All Posts" %}
+                      </a>
+                      <a href="{{ url  }}?filter=intro" class="btn gc-text-blue">
                         {% trans "#intros" %}
                       </a>
                       <div class="col-12 subheading left-ribbon font-body">
@@ -211,7 +214,7 @@
                         {% for org in orgs %}
                           <div class="">
                             <label class="filter-label townsquare-org-filter">
-                              <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}
+                              <a href="?filter=tribe:{{org.org_name}}"><img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}</a>
                             </label>
                           </div>
                         {% endfor %}
@@ -763,7 +766,7 @@
                   </div>
                 </template>
                 <manage-sponsor v-bind:hackathon_id="hackathonObj.id" inline-template>
-                  <div class="offset-3">
+                  <div class="offset-3 col-6">
                       <div class="from-group mb-3 mt-4">
                         <label class="font-weight-semibold" for="org-mentors">Bounty Mentors (Optional) <small>Add Gitcoin/Github Usernames</small></label>
                         <div class="form__select2 g-multiselect">

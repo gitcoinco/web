@@ -428,12 +428,12 @@ let lookupExpiry;
             vm.isLoading = false;
           });
           client.setCloseCallback((closeMsg) => {
-            vm.isLoggedInFrame = false;
             vm.frameLoginAttempting = true;
             vm.isLoading = true;
             vm.chatLogin();
           });
 
+          vm.socketClient = client;
           client.initialize(vm.chatSocketURL);
         },
         chatLogin: function() {
@@ -498,7 +498,6 @@ let lookupExpiry;
                     if (vm.iframe) {
 
                       let openFrame = vm.getOpenFrame();
-
                       if (openFrame.frameWindow.location.pathname === '/login' || count >= 5) {
                         count = 0;
                         vm.frameLoginAttempting = true;
@@ -591,6 +590,7 @@ let lookupExpiry;
 
         return {
           isMobile,
+          socketClient: null,
           validSessionInterval: false,
           frameHasFocus: false,
           frameLoginAttempting: false,

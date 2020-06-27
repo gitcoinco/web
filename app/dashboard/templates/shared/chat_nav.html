@@ -24,7 +24,7 @@
             <h2>Attempting to log into Gitcoin Chat, you may be asked to allow popups.</h2>
           </div>
         </div>
-        <iframe v-show="isLoggedInFrame" id="gitcoin-chat-iframe" :key="renderKey" class="chat-embed" onload="window.chatSidebar.chatAppOnLoad(this)" frameborder="0" :src="loadURL" allowfullscreen></iframe>
+        <iframe v-show="!isLoading && isLoggedInFrame" id="gitcoin-chat-iframe" :key="renderKey" class="chat-embed" onload="window.chatSidebar.chatAppOnLoad(this)" frameborder="0" :src="loadURL" allowfullscreen></iframe>
       </div>
     </template>
   </b-sidebar>

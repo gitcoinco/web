@@ -104,12 +104,10 @@
     }
     let _filters = filters.slice();
 
-    _filters.push('keywords', 'order_by', 'org', 'tab');
-    if (document.hackathon) {
-      resetFilters(true);
-      filters.push('org', 'tab');
+    resetFilters(true);
+    filters.push('org', 'tab', 'filter');
 
-    }
+
     _filters.forEach(filter => {
       if (getParam(filter)) {
         localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
