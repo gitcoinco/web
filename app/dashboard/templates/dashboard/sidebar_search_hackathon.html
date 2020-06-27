@@ -50,9 +50,7 @@
           <div class="form__radio option {{org.display_name}}">
             <input name="org" id="{{org.display_name}}" type="radio" value="{{org.org_name}}">
             <label class="filter-label" for="{{org.display_name}}">
-              <a href="?filter=tribe:{{org.org_name}}">
-                <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}
-              </a>
+              <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}
             </label>
           </div>
         {% endfor %}
