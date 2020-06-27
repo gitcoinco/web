@@ -27,6 +27,7 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address,  vm, modal) => {
         payout_status: 'done'
       };
 
+      modal.closeModal();
       const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;
 
       fetchData(apiUrlBounty, 'POST', payload).then(response => {
@@ -34,7 +35,6 @@ const payWithWeb3 = (fulfillment_id, fulfiller_address,  vm, modal) => {
           console.log('success', response);
 
           vm.fetchBounty();
-          modal.closeModal();
           _alert('Payment Successful');
 
         } else {
