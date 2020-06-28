@@ -959,7 +959,7 @@ def users_fetch(request):
     tribe = request.GET.get('tribe', '')
     hackathon_id = request.GET.get('hackathon', '')
     user_filter = request.GET.get('user_filter', '')
-    only_with_tokens = request.GET.get('only_with_token', '') != ''
+    only_with_tokens = request.GET.get('only_with_token', '') == 'true'
 
     user_id = request.GET.get('user', None)
     if user_id:
@@ -4192,6 +4192,7 @@ def board(request):
 
     user = request.user if request.user.is_authenticated else None
     keywords = user.profile.keywords
+    ptoken = PersonalToken.objects.filter(token_owner_profile=user.profile).first()
 
     context = {
         'is_outside': True,
@@ -4201,6 +4202,7 @@ def board(request):
         'card_desc': _('Manage all your activity.'),
         'avatar_url': static('v2/images/helmet.png'),
         'keywords': keywords,
+        'ptoken': ptoken,
     }
     return TemplateResponse(request, 'board/index.html', context)
 

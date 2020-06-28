@@ -6,8 +6,8 @@
         <b>{% if ptoken %}{{ ptoken.token_symbol|upper }}{% else %}PRSNL{% endif %}</b>
       {% trans "Token" %}
       <div id="tooltip" class="float-right mt-2">
-        <i class='fa fa-info-circle' data-toggle="tooltip"
-          data-placement="bottom" title="{% if ptoken %}{{ ptoken.token_name }} token{% else %}What is a Personal Token?{% endif %} ">
+        <i class='fa fa-info-circle' data-toggle="tooltip" data-html="true" data-delay="1000"
+          data-placement="bottom" title="{% if ptoken %}{{ ptoken.token_name }} token{% else %}Personal Tokens represent an hour of this users time. To learn more, please reference this <a href='{% url "ptokens_faq" %}'>resource</a>.{% endif %} ">
         </i>
       </div>
     </div>

@@ -178,16 +178,25 @@ Vue.mixin({
         vm.fetchTokens('denied');
       }
     },
-    tabOnLoad() {
+    tabOnLoad(init) {
       let vm = this;
+      const params = new URLSearchParams(window.location.search);
 
       if (document.contxt.persona_is_hunter) {
         vm.checkData('contributor');
-        $('#contributor-tab').tab('show');
       } else {
         vm.checkData('funder');
+      }
+
+      if (init && params.get('tab') === 'ptoken') {
+        vm.checkData('personal-tokens');
+        $('#ptokens-tab').tab('show');
+      } else if (document.contxt.persona_is_hunter) {
+        $('#contributor-tab').tab('show');
+      } else {
         $('#funder-tab').tab('show');
       }
+
     },
     redirect(url) {
       document.location.href = url;
@@ -203,6 +212,7 @@ Vue.mixin({
       }
     },
     async deployAndSaveToken() {
+      const vm = this;
       [user] = await web3.eth.getAccounts();
       // TODO: This is a deterministic localhost address. Should be an env variable for rinkeby/mainnet.
       const factoryAddress = '0x7bE324A085389c82202BEb90D979d097C5b3f2E8';
@@ -231,6 +241,7 @@ Vue.mixin({
           transactionHash,
           (new Date()).toISOString()
         );
+        vm.user_has_token = true;
         console.log('Token Created!');
       });
     }
@@ -244,6 +255,7 @@ if (document.getElementById('gc-board')) {
     el: '#gc-board',
     data: {
       network: document.web3network,
+      user_has_token: document.user_has_token,
       bounties: bounties,
       openBounties: [],
       submittedBounties: [],
@@ -290,7 +302,7 @@ if (document.getElementById('gc-board')) {
       }
     },
     mounted() {
-      this.tabOnLoad();
+      this.tabOnLoad(true);
     }
   });
 }
