@@ -132,7 +132,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       {% comment %} Grant amount and curency {% endcomment %}
                       <div class="col-12" style="margin-top:1rem;">
                         <div class="row flex-nowrap justify-content-between">
-                          <input class="col-5 form-control" style="margin-left:0.5rem" min="0"
+                          <input class="col-5 form-control" style="margin-left:0.5rem" min="0" step="any"
                             v-model="grant.grant_donation_amount" type="number" placeholder="Amount">
                           <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
                             style="margin-right:0.5rem" placeholder="Select token">
@@ -142,35 +142,48 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             </option>
                           </select2>
                         </div>
+                        <div class="font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant, index)">
+                          Apply to all
+                        </div>
                       </div>
                       {% comment %} Add comment {% endcomment %}
                       <div class="col-12 font-smaller-3" style="margin-top:1rem">
                         <div class="row">
                           <div class="comment-option col-auto" @click="addComment(index)">
-                            <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`"
+                                   :checked="grant.grant_comments === ''"
+                            >
                             <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
                           </div>
                           <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
-                            <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`"
+                                   :checked="grant.grant_comments === '🙌 Great Job'"
+                            >
                             <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
                           </div>
                           <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
-                            <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`"
+                                   :checked="grant.grant_comments === '👍 i appreciate you'"
+                            >
                             <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
                           </div>
                           <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
-                            <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`"
+                                   :checked="grant.grant_comments === '💪 keep up the great work'"
+                            >
                             <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
                           </div>
                           <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
-                            <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`">
+                            <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`"
+                                   :checked="grant.grant_comments === '😍 love the mission of your project'"
+                            >
                             <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
                           </div>
                         </div>
                       </div>
-                      <div v-if="comments[index] !== undefined" class="col-12" style="margin-top:1rem;">
+                      <div v-if="grant.grant_comments !== undefined" class="col-12" style="margin-top:1rem;">
                         <div class="row flex-nowrap justify-content-between">
-                          <input class="form-control" style="margin-left:0.5rem" v-model="comments[index]"
+                          <input class="form-control" style="margin-left:0.5rem" v-model="grant.grant_comments"
                             type="textarea" placeholder="Enter message">
                         </div>
                       </div>
@@ -194,7 +207,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     {% comment %} Grant amount and currency {% endcomment %}
                     <div class="col-3">
                       <div class="row flex-nowrap align-items-center justify-content-start">
-                        <input class="col-6 form-control" v-model="grant.grant_donation_amount" type="number" min="0"
+                        <input class="col-6 form-control" v-model="grant.grant_donation_amount" type="number" min="0" step="any"
                           placeholder="Amount" style="margin-right: 1rem">
                         <select2 v-model="grant.grant_donation_currency" class="col-6 form-control"
                           placeholder="Select token">
@@ -203,6 +216,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <span v-else>[[ option ]]</span>
                           </option>
                         </select2>
+                      </div>
+                      <div class="row flex-nowrap align-items-center justify-content-start">
+                        <div class="text-left font-smaller-2 hyperlink" @click="applyAmountToAllGrants(grant)">
+                          Apply to all
+                        </div>
                       </div>
                     </div>
                     {% comment %} CLR Match Amount {% endcomment %}
@@ -227,28 +245,38 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   </div>
                   <div class="row font-smaller-3 mt-3"  style="margin-left:0.5rem">
                     <div class="comment-option col-auto" @click="addComment(index)">
-                      <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <input :id="`comment-${index}-blank`" type="radio" class="radio-input" :name="`comment-${index}`"
+                             :checked="grant.grant_comments === ''"
+                      >
                       <label :for="`comment-${index}-blank`" class="radio-label">+ Add comment to owner</label>
                     </div>
                     <div class="comment-option col-auto" @click="addComment(index, '🙌 Great Job')">
-                      <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <input :id="`comment-${index}-job`" type="radio" class="radio-input" :name="`comment-${index}`"
+                             :checked="grant.grant_comments === '🙌 Great Job'"
+                      >
                       <label :for="`comment-${index}-job`" class="radio-label">🙌 Great Job</label>
                     </div>
                     <div class="comment-option col-auto" @click="addComment(index, '👍 i appreciate you')">
-                      <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <input :id="`comment-${index}-appreciate`" type="radio" class="radio-input" :name="`comment-${index}`"
+                             :checked="grant.grant_comments === '👍 i appreciate you'"
+                      >
                       <label :for="`comment-${index}-appreciate`" class="radio-label">👍 i appreciate you</label>
                     </div>
                     <div class="comment-option col-auto" @click="addComment(index, '💪 keep up the great work')">
-                      <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <input :id="`comment-${index}-work`" type="radio" class="radio-input" :name="`comment-${index}`"
+                             :checked="grant.grant_comments === '💪 keep up the great work'"
+                      >
                       <label :for="`comment-${index}-work`" class="radio-label">💪 keep up the great work</label>
                     </div>
                     <div class="comment-option col-auto" @click="addComment(index, '😍 love the mission of your project')">
-                      <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`">
+                      <input :id="`comment-${index}-love`" type="radio" class="radio-input" :name="`comment-${index}`"
+                             :checked="grant.grant_comments === '😍 love the mission of your project'"
+                      >
                       <label :for="`comment-${index}-love`" class="radio-label">😍 love the mission of your project</label>
                     </div>
                   </div>
-                  <input v-if="comments[index] !== undefined" style="margin-top:0.5rem; margin-left:0.5rem"
-                    class="form-control" v-model.number="comments[index]" type="textarea" placeholder="Enter message">
+                  <input v-if="grant.grant_comments !== undefined" style="margin-top:0.5rem; margin-left:0.5rem"
+                    class="form-control" v-model="grant.grant_comments" type="textarea" placeholder="Enter message">
                 </div>
               </div>
 
@@ -294,7 +322,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             <span class="gitcoin-grant-percent">[[gitcoinFactorRaw]]%</span>
                             {% trans "of your contribution to the" %} <a
                               href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund" target="_blank">Gitcoin
-                              Grants Round 6+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
+                              Grants Round 7+ Development Fund <i class="fas fa-external-link-alt"></i></a>.
                             <div class="font-smaller-1 hyperlink" @click="adjustGitcoinFactor=true">
                               Adjust &gt;&gt;
                             </div>
@@ -320,7 +348,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         <div v-if="adjustGitcoinFactor"
                           class="col-12 col-xl-4 mt-4 my-xl-auto px-xl-0 font-weight-semibold text-center text-xl-left fee-slider-summary">
                           <div class="text-center custom d-inline-block">
-                            <input type="number" min="0" max="99" id="gitcoin-grant-input-amount"
+                            <input type="number" min="0" max="99" step="any" id="gitcoin-grant-input-amount"
                               name="gitcoin-grant-input-amount" class="form__input text-center"
                               :class="{inactive: [5,10,15].includes(gitcoinFactorRaw)}" value="5"
                               v-model="gitcoinFactorRaw">

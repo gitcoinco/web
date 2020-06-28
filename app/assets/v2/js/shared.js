@@ -512,7 +512,8 @@ var retrieveAmount = function() {
   }
 
   // if not, use remote one
-  $.get(request_url, function(result) {
+  $.get(request_url, function(results) {
+    const result = results[0];
 
     // update UI
     var usd_amount = result['usdt'];
@@ -1014,29 +1015,36 @@ const updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
-  if (key != 'category') {
-    params.set('category', '');
+
+  let path = '/';
+
+  if (params.get('type', '')) {
+    path = '/' + params.get('type', '');
   }
-  window.location.href = '/grants/?' + decodeURIComponent(params.toString());
+  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
 };
 
-const updateMultipleParams = (newParams) => {
+const updateMultipleParams = (_newParams) => {
   params = new URLSearchParams(window.location.search);
-  newParams = Object.entries(newParams);
+  newParams = Object.entries(_newParams);
   for (const [ key, value ] of newParams) {
     params.set(key, value);
   }
-  let category_str = '';
+  let path = '/';
+
+  if (params.get('type', '')) {
+    path = '/' + params.get('type', '');
+  }
 
   if (params.get('type')) {
-    category_str = params.get('type') + '/';
     params.delete('type');
   }
   if (!params.get('category')) {
     params.delete('category');
   }
+  params.delete('keyword');
 
-  window.location.href = '/grants/' + category_str + '?' + decodeURIComponent(params.toString());
+  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
 };
 
 

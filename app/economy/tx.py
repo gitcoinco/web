@@ -113,6 +113,7 @@ def grants_transaction_validator(contribution):
         'comment': 'Default'
     }
     token_originators = []
+    amounts = [contribution.subscription.amount_per_period_minus_gas_price, contribution.subscription.amount_per_period]
 
     for tx in tx_list:
 
@@ -142,16 +143,15 @@ def grants_transaction_validator(contribution):
                 transaction_hash = transaction_receipt.transactionHash.hex()
                 transaction = check_transaction(transaction_hash)
                 if transaction.value > 0.001:
-                    token_transfer = {
-                        'to': transaction.to,
-                        'token_name': 'ETH',
-                        'token_address': '0x0',
-                        'token_amount_int': Decimal(transaction.value),
-                        'token_amount_decimal': Decimal(transaction.value / 10 **18),
-                        'decimals': 18,
-                        }
+                    recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
+                    transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
+                    if not transfer:
+                        transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx)
+                    if transfer:
+                        token_transfer = transfer
                 maybeprint(148, round(time.time(),2))
                 if not token_originators:
+
                     token_originators = get_token_originators(from_address, '0x0', from_address=None, return_what='originators')
 
             maybeprint(150, round(time.time(),2))
@@ -167,7 +167,7 @@ def grants_transaction_validator(contribution):
                 maybeprint(160, round(time.time(),2))
                 # get token transfers
                 if not token_transfer:
-                    transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers')
+                    transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
                     if transfers:
                         token_transfer = transfers
                 maybeprint(169, round(time.time(),2))
@@ -193,7 +193,7 @@ def grants_transaction_validator(contribution):
             from_address = Web3.toChecksumAddress(contribution.subscription.contributor_address)
             recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
             token_address = Web3.toChecksumAddress(contribution.subscription.token_address)
-            _transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers')
+            _transfers = get_token_originators(recipient_address, token_address, from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
             failsafe = _transfers['token_name'] == contribution.subscription.token_symbol
             if failsafe:
                 validation['comment'] = f"Token Transfer Passed on the second try"
@@ -201,10 +201,10 @@ def grants_transaction_validator(contribution):
                 token_transfer = _transfers
 
         else:
-            delta1 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period_minus_gas_price)
-            delta2 = Decimal(token_transfer['token_amount_decimal']) - Decimal(contribution.subscription.amount_per_period)
-            # TODO what about gitcoin transfers
-            validation['passed'] = abs(delta1) <= 0.01 or abs(delta2) <= 0.01
+            delta1 = float(token_transfer['token_amount_decimal']) - float(contribution.subscription.amount_per_period_minus_gas_price)
+            delta2 = float(token_transfer['token_amount_decimal']) - float(contribution.subscription.amount_per_period)
+            threshold = float(float(abs(contribution.subscription.amount_per_period_minus_gas_price)) * float(validation_threshold_pct))
+            validation['passed'] = abs(delta1) <= threshold or abs(delta2) <= threshold
             validation['comment'] = f"Transfer Amount is off by {round(delta1, 2)} / {round(delta2, 2)}"
 
 
@@ -253,8 +253,9 @@ def get_token_recipient_senders(recipient_address, token_address):
 
 auth = settings.ALETHIO_KEY
 headers = {'Authorization': f'Bearer {auth}'}
+validation_threshold_pct = 0.05
 
-def get_token_originators(to_address, token, from_address='', return_what='transfers'):
+def get_token_originators(to_address, token, from_address='', return_what='transfers', tx_id='', amounts=[]):
     address = to_address
 
     #is_address = requests.get('https://api.aleth.io/v1/accounts/' + address, headers=headers).status_code
@@ -282,10 +283,10 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
 
     endpoint = 'token-transfers' if token != '0x0' else 'ether-transfers'
     url = f'https://api.aleth.io/v1/{endpoint}?filter[to]=' + address + '&filter[token]=' + token + '&page%5Blimit%5D=100'
-    if from_address:
-        url += '&filter[from]=' + from_address
     if token == '0x0':
         url = f'https://api.aleth.io/v1/{endpoint}?filter[account]=' + address + '&page%5Blimit%5D=100'
+    if from_address:
+        url += '&filter[from]=' + from_address
 
     transfers = requests.get(
         url,
@@ -297,16 +298,28 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
 
     if return_what == 'transfers':
         for transfer in transfers.get('data', {}):
-            if transfer.get('type') == 'TokenTransfer':
-                # todo: check txid to make sure it matches (to prevent multiple transfers from this address to this address from falsy validating positively)
-                return {
-                        'token_amount_decimal': Decimal(int(transfer['attributes']['value']) / 10 ** transfer['attributes']['decimals']),
-                        'token_name': transfer['attributes']['symbol'],
-                        'to': address,
-                        'token_address': token,
-                        'token_amount_int': int(transfer['attributes']['value']),
-                        'decimals': transfer['attributes']['decimals'],
-                }
+            this_is_the_one = tx_id and tx_id.lower() in str(transfer).lower()
+            _decimals = transfer.get('attributes', {}).get('decimals', 18)
+            _symbol = transfer.get('attributes', {}).get('symbol', 'ETH')
+            _value = transfer.get('attributes', {}).get('value', 0)
+            _value_decimal = Decimal(int(_value) / 10 ** _decimals)
+            _this_is_the_one = False
+            for amount in amounts:
+                delta = abs(float(abs(_value_decimal)) - float(abs(amount)))
+                threshold = (float(abs(amount)) * validation_threshold_pct)
+                if delta < threshold:
+                    _this_is_the_one = True
+            this_is_the_one = not len(amounts) or _this_is_the_one
+            if this_is_the_one:
+                if transfer.get('type') in ['TokenTransfer', 'EtherTransfer']:
+                    return {
+                            'token_amount_decimal': _value_decimal,
+                            'token_name': _symbol,
+                            'to': address,
+                            'token_address': token,
+                            'token_amount_int': int(transfer['attributes']['value']),
+                            'decimals': _decimals,
+                    }
         return None
 
     # TokenTransfer events, value field

@@ -69,10 +69,10 @@
           {{ grant.title }}
         {% endif %}
       </h1>
-  
+
        <!-- SUMMARY INFO -->
       <div class="summary-info mb-0 pb-1">
-  
+
         {% if grant.hidden and not grant.link_to_new_grant %}
           <div class="mb-2 font-smaller-2">
             <i style="width: 14px; top:0.6rem" class="mb-2 mb-md-0 fas fa-eye-slash mr-2 text-center position-relative"></i>
@@ -81,27 +81,35 @@
             </p>
           </div>
         {% endif %}
-  
-  
+
+
         <div class="font-body mb-2">
           {% if is_team_member %}
             <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
           {% else %}
-            <i style="width: 14px;" class="fab fa-github mr-2 text-center"></i>
+            <i style="width: 14px;" class="fa fa-link mr-2 text-center"></i>
             <a href="{{ grant.reference_url }}" target="_blank" data-toggle="tooltip" data-html="true" data-placement="top" title="Project URL">
               {{ grant.reference_url }}
             </a>
           {% endif %}
         </div>
-  
+        {% if grant.twitter_handle_1 %}
+        <div class="font-body mb-2">
+          <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center"></i>
+          <p class="d-inline-block mb-0">
+            <a href="https://twitter.com/{{grant.twitter_handle_1}}" target="new" rel="nofollow"  data-toggle="tooltip" data-html="true" data-placement="top" title="Project Twitter Account">@{{grant.twitter_handle_1}}</a>
+          </p>
+        </div>
+      {% endif %}
+
         <div class="mb-2">
           <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
           <a id="wallet-address" class="wallet-address"
-            target="_blank" data-toggle="tooltip" data-placement="top" title="Recipient Funding Address">
+            target="_blank" data-toggle="tooltip" data-placement="top" title="Project Funding Address">
             {{ grant.admin_address }}
           </a>
         </div>
-  
+
         {% if is_unsubscribed_from_updates_from_this_grant %}
           <div class="font-body mb-2">
             <i style="width: 14px;" class="fas fa-comment-slash mr-2 text-center"></i>
@@ -109,19 +117,19 @@
             </p>
           </div>
         {% endif %}
-  
+
         {% if grant.link_to_new_grant %}
           <div class="font-body mb-2">
             <i style="width: 14px;" class="fas fa-times mr-2 text-center"></i>
             <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="The grant owner has migrated to a new grant. Click below to visit new grant and fund">
-              Not accepting contributions as a new grant was created to replace this one by the owner 
+              Not accepting contributions as a new grant was created to replace this one by the owner
             </p>
           </div>
         {% elif grant.token_symbol %}
           <div class="font-body mb-2">
             <i style="width: 14px;" class="fas fa-coins mr-2 text-center"></i>
             <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="ERC20 Token">
-              Grant accepts {{ grant.token_symbol }}
+              Grant Accepts {{ grant.token_symbol }}
             </p>
           </div>
         {% endif %}
@@ -133,7 +141,7 @@
             </p>
           </div>
         {% endif %}
-  
+
         {% if user_non_errored_subscription %}
           <div class="font-body mb-2">
             <i style="width: 14px;" class="fas fa-info-circle mr-2 text-center"></i>
@@ -144,7 +152,7 @@
             </p>
           </div>
         {% endif %}
-  
+
       </div>
     </div>
   </div>

@@ -14,3 +14,10 @@
 <input type="hidden" id="grant_clr_prediction_curve" name="grant_clr_prediction_curve" value="{{ grant.clr_prediction_curve }}">
 <input type="hidden" id="grant_image_css" name="grant_image_css" value="{{ grant.image_css }}">
 <input type="hidden" id="is_clr_eligible" name="is_clr_eligible" {% if grant.is_clr_eligible %} value="{{ grant.is_clr_eligible }}" {% endif %}>
+{% if amount %}
+<input type="hidden" id="grant_donation_amount" name="grant_donation_amount" value="{{ amount }}">
+{% endif %}
+{% if token %}
+<input type="hidden" id="grant_donation_currency" name="grant_donation_currency" value="{{ token.symbol }}">
+<input type="hidden" id="token_local_id" name="token_local_id" value="{{ token.id }}">
+{% endif %}

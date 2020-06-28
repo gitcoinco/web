@@ -167,11 +167,16 @@ class SuperModel(models.Model):
 
 class ConversionRate(SuperModel):
     """Define the conversion rate model."""
-
+    SOURCE_TYPES = [
+        ('cryptocompare', 'cryptocompare'),
+        ('poloniex', 'poloniex'),
+        ('uniswap', 'uniswap'),
+        ('manual', 'manual'),
+    ]
     from_amount = models.FloatField()
     to_amount = models.FloatField()
     timestamp = models.DateTimeField(null=False, default=get_time, db_index=True)
-    source = models.CharField(max_length=30, db_index=True)
+    source = models.CharField(max_length=30, db_index=True, choices=SOURCE_TYPES)
     from_currency = models.CharField(max_length=30, db_index=True)
     to_currency = models.CharField(max_length=30, db_index=True)
 
@@ -219,7 +224,7 @@ class Token(SuperModel):
 
     @property
     def to_dict(self):
-        return {'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
+        return {'id': self.id, 'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
 
     @property
     def to_json(self):

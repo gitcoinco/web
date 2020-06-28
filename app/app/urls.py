@@ -545,6 +545,7 @@ urlpatterns = [
     path('_administration/email/wallpost', retail.emails.wallpost, name='wallpost_email'),
     path('_administration/email/grant_update', retail.emails.grant_update, name='grant_update_email'),
     path('_administration/email/grant_recontribute', retail.emails.grant_recontribute, name='grant_recontribute_email'),
+    path('_administration/email/grant_txn_failed', retail.emails.grant_txn_failed, name='grant_txn_failed_email'),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,

@@ -71,9 +71,22 @@
 
       <br>
       <span id="kudosComment" class="d-block">
-        <h3><a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }} </span>{% trans "Kudos" %}</a></h3>
+        <h3 class="mb-0 pb-0">
+          <a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }}</span></a>
+          {% trans "Kudos" %}{% if coupon.token.artist %},{% endif %} 
+          </h3>
+          {% if coupon.token.artist %}
+          <h4 class="mt-0 pt-0">
+          created w 💓 by <img style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{coupon.token.artist}}" > <a href="/profile/{{coupon.token.artist}}/kudos" title="@{{ coupon.token.artist }} has this kudos on {{coupon.token.created_on}}" style="color:black; text-decoration: underline;"> digital artist, {{coupon.token.artist}}</a>. 
+            <hr>
+          </h4>
+          {% endif %}
+
+
+
         {% if coupon.comments_to_put_in_kudos_transfer %}
-        with an attached message, just for you:
+        <img style="max-height: 25px; max-width: 25px;" src="/dynamic/avatar/{{coupon.sender_profile.handle}}">
+      <a style='color:black; text-decoration: underline;' href="{{coupon.sender_profile.url}}">@{{coupon.sender_profile.handle}}</a> sent this kudos w. an attached message, just for you:
         <p style="
     width: 80%;
     height: 100px;
@@ -107,7 +120,7 @@
         {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {% endif %}
         <input type="text" placeholder="@username" id="user" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" disabled="disabled" class='form-control'  required >
         {% if not request.user.is_authenticated %}
-        <p style="color:red;">{% trans "You must be logged in to receive this kudos." %}</p>
+        <p style="color:red;">{% trans "You must be logged in to receive this coupon.token." %}</p>
         {% endif %}
       </div>
 

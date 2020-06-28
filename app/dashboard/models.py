@@ -2897,6 +2897,11 @@ class Profile(SuperModel):
         return Token.objects.filter(Q(name__icontains=self.name)|Q(name__icontains=self.handle)).filter(cloned_from_id=F('token_id')).visible()
 
     @property
+    def kudos_authored(self):
+        from kudos.models import Token
+        return Token.objects.filter(artist=self.handle, num_clones_allowed__gt=1, hidden=False)
+
+    @property
     def get_my_kudos(self):
         from kudos.models import KudosTransfer
         kt_owner_address = KudosTransfer.objects.filter(

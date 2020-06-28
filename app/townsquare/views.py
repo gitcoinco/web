@@ -180,6 +180,9 @@ def get_sidebar_tabs(request):
         for hackathon in hackathons:
             connect = {
                 'title': hackathon.name,
+                'logo': hackathon.logo,
+                'start': hackathon.start_date,
+                'end': hackathon.end_date,
                 'slug': f'hackathon:{hackathon.pk}',
                 'url_slug': hackathon.slug,
                 'helper_text': f'Go to {hackathon.name} Townsquare.',

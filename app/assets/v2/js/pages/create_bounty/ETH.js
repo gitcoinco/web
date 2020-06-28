@@ -239,7 +239,7 @@ const ethCreateBounty = async (data) => {
   const checkTokenAllowance = async () => {
     let currentAllowance = await getAllowance(bounty_address(), tokenAddress);
 
-    if (currentAllowance < bigAmount) {
+    if (BigInt(currentAllowance) < BigInt(bigAmount)) {
       let approvedAllowance;
 
       approvedAllowance = await approveAllowance(
@@ -331,8 +331,8 @@ const ethCreateBounty = async (data) => {
     indicateMetamaskPopup();
     web3.eth.sendTransaction({
       to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
-      from: web3.account,
-      value: web3.utils.toWei(ethFeaturedPrice, 'ether'),
+      from: selectedAccount,
+      value: web3.utils.toWei(String(ethFeaturedPrice), 'ether'),
       gas: web3.utils.toHex(318730),
       gasLimit: web3.utils.toHex(318730)
     },
@@ -365,12 +365,13 @@ const ethCreateBounty = async (data) => {
   if (check_balance_and_alert_user_if_not_enough(tokenAddress, amountNoDecimal)) {
     processBounty();
   } else {
-    return unloading_button($('.js-submit'));
+     unloading_button($('.js-submit'));
+     return false;
   }
 
   function check_balance_and_alert_user_if_not_enough(tokenAddress, amount, msg) {
     const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
-    const from = account;
+    const from = selectedAccount;
     const token_details = tokenAddressToDetails(tokenAddress);
     const token_decimals = token_details['decimals'];
     const token_name = token_details['name'];
@@ -399,14 +400,14 @@ const ethCreateBounty = async (data) => {
     };
 
     if (tokenAddress == '0x0000000000000000000000000000000000000000') {
-      const walletBalance = Number(balance);
+      const walletBalance = web3.utils.fromWei(new web3.utils.BN(BigInt(balance)),'ether');
 
       return checkBalance(walletBalance, total, token_name);
 
     } else {
       token_contract.methods.balanceOf(from).call({from: from}, function(error, result) {
         if (error) return;
-        const walletBalance = Number(balance);
+        const walletBalance = web3.utils.fromWei(new web3.utils.BN(BigInt(result)),'ether')
 
         return checkBalance(walletBalance, total, token_name);
       });
