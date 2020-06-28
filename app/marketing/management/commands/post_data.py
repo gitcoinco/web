@@ -251,6 +251,7 @@ def grants():
     current_carts = CartActivity.objects.filter(latest=True)
     num_carts = 0
     amount_in_carts = {}
+    discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling = 1000
     for ca in current_carts:
         for item in ca.metadata:
             currency, amount = item['grant_donation_currency'], item['grant_donation_amount']
@@ -262,8 +263,9 @@ def grants():
                     usdt_amount = convert_token_to_usdt(currency) * float(amount)
                 except Exception as e:
                     pass
-                amount_in_carts[currency][0] += float(amount)
-                amount_in_carts[currency][1] += float(usdt_amount)
+                if usdt_amount < discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling:
+                    amount_in_carts[currency][0] += float(amount)
+                    amount_in_carts[currency][1] += float(usdt_amount)
 
     contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
     amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions] + [float(pf.value) for pf in pfs])
@@ -333,10 +335,41 @@ def grants():
     pprint("")
 
     counter = 0
-    pprint(f"Contributions by Token (Round {clr_round})")
+    pprint(f"Saturation by Token (Round {clr_round})")
     for obj in all_contributions_by_token[0:limit]:
         counter += 1
         pprint(f"{counter} - ${str(round(obj[1], 2))} in {obj[0]}")
+
+    pprint("")
+    pprint("=======================")
+    pprint("")
+
+    active_rounds = ['tech', 'media', 'change']
+    from grants.clr import TOTAL_POT_TECH, TOTAL_POT_MEDIA, TOTAL_POT_CHANGE
+    active_round_threshold = {
+        'tech': TOTAL_POT_TECH,
+        'media': TOTAL_POT_MEDIA,
+        'change': TOTAL_POT_CHANGE,
+    }
+    active_rounds_allocation = {key: 0 for key in active_rounds}
+    for ar in active_rounds:
+        grants = Grant.objects.filter(active=True, grant_type=ar, is_clr_eligible=True, hidden=False)
+        for grant in grants:
+            try:
+                active_rounds_allocation[ar] += grant.clr_prediction_curve[0][1]
+            except:
+                pass
+
+    counter = 0
+    pprint(f"Total Saturation of Matching Funds By Round Type (Round {clr_round})")
+    for key, val in active_rounds_allocation.items():
+        counter += 1
+        allocation_target = active_round_threshold[key]
+        allocation_pct = round(100 * val/allocation_target)
+        if key == 'media':
+            key = 'community' #hack
+        pprint(f"{counter} {key} - ${round(val, 2)} ({allocation_pct}% allocated)")
+
 
 
 
