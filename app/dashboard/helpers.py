@@ -35,7 +35,7 @@ from app.utils import get_semaphore, sync_profile
 from bounty_requests.models import BountyRequest
 from dashboard.models import (
     Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
-    HackathonEvent, HackathonSponsor, UserAction,
+    HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
@@ -175,10 +175,10 @@ def issue_details(request):
 
 
     if hackathon_slug:
-        event = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).first()
-        sponsors = HackathonSponsor.objects.filter(hackathon=event).prefetch_related('sponsor__tribe').all()
+        sponsor_profiles = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).prefetch_related('sponsor_profiles').values_list('sponsor_profiles__handle', flat=True)
         org_issue = org_name(url).lower()
-        if org_issue not in [s.sponsor.tribe.handle for s in sponsors]:
+
+        if org_issue not in sponsor_profiles:
             message = 'This issue is not under any sponsor repository'
             return JsonResponse({'status':'false','message':message}, status=404)
 
