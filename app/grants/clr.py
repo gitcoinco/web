@@ -211,7 +211,6 @@ def get_totals_by_pair(contrib_dict):
             boolean
 '''
 def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_threshold, uv_threshold, total_pot):
-    saturation_point = False
     bigtot = 0
     totals = []
     for proj, contribz in aggregated_contributions['current'].items():
@@ -238,17 +237,12 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
         bigtot += tot
         totals.append({'id': proj, 'clr_amount': tot})
 
-    if bigtot >= total_pot:
-        saturation_point = True
+    if bigtot >= total_pot: # saturation reached
+        # print(f'saturation reached. Total Pot: ${total_pot} | Total Allocated ${bigtot}. Normalizing')
+        for t in totals:
+            t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
 
-    if saturation_point == True:
-        # find normalization factor
-        normalization_factor = bigtot / total_pot
-        # modify totals
-        for result in totals:
-            result['clr_amount'] = result['clr_amount'] / normalization_factor
-
-    return totals, saturation_point
+    return totals
 
 
 
@@ -297,7 +291,7 @@ def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, v_threshold, uv_thre
     ptots = get_totals_by_pair(combinedagg)
 
     # clr calcluation
-    totals, _ = calculate_clr(combinedagg, ptots, vlist, v_threshold, uv_threshold, total_pot)
+    totals = calculate_clr(combinedagg, ptots, vlist, v_threshold, uv_threshold, total_pot)
 
     return totals
 
