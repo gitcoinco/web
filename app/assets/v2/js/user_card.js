@@ -107,7 +107,15 @@ const renderPopOverData = function(data) {
     {'type': 'Grants', 'sent': 'Fund', 'received': 'Contrib'}
   );
 
-  let mount_graph = [ tips_total_percent, token_total_percent, bounties_total_percent, grants_total_percent ];
+  let mount_graph;
+
+  if (data.profile_dict.purchased_count === undefined && data.profile_dict.redeemed_count == undefined) {
+    mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
+  } else {
+    mount_graph = [ tips_total_percent, token_total_percent, bounties_total_percent, grants_total_percent ];
+  }
+
+
   let graphs = mount_graph.map((graph) => {
     return `<circle class="donut-segment" cx="50%" cy="50%" r="38%" fill="transparent" stroke="${graph.color}" stroke-width="8%" stroke-dasharray="${graph.percent} ${100 - graph.percent}" stroke-dashoffset="${graph.dashoffset}"></circle>`;
   }).join(' ');

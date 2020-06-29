@@ -129,7 +129,7 @@ class PersonalToken(SuperModel):
 
     @property
     def title(self):
-        return self.title
+        return self.token_symbol
 
     def get_holders(self):
         # Initially will be supporting DAI, so isn't necessary check the price for other tokens
