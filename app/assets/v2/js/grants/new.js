@@ -164,7 +164,7 @@ $(document).ready(function() {
 function saveGrant(grantData, isFinal) {
   let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
 
-  $("#new_button").attr('disabled', 'disabled')
+  $('#new_button').attr('disabled', 'disabled');
 
   $.ajax({
     type: 'post',
@@ -180,14 +180,14 @@ function saveGrant(grantData, isFinal) {
           window.location = json.url;
         } else {
           console.error('Grant failed to save');
-          $("#new_button").attr('disabled', false)
+          $('#new_button').attr('disabled', false);
         }
       }
     },
     error: () => {
       console.error('Grant failed to save');
       _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
-      $("#new_button").attr('disabled', false)
+      $('#new_button').attr('disabled', false);
     }
   });
 }
