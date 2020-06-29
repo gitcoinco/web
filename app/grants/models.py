@@ -1174,8 +1174,7 @@ class Contribution(SuperModel):
                     if new_tx:
                         self.tx_id = new_tx
                     else:
-                        # TODO: do stuff related to long running pending txns
-                        pass
+                        print('TODO: do stuff related to long running pending txns')
                     return
             # handle replace of split_tx_id
             if self.split_tx_id:
@@ -1184,6 +1183,8 @@ class Contribution(SuperModel):
                     new_tx = getReplacedTX(self.split_tx_id)
                     if new_tx:
                         self.split_tx_id = new_tx
+                    else:
+                        print('TODO: do stuff related to long running pending txns')
                     return
 
             # actually validate token transfers
