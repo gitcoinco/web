@@ -1,4 +1,9 @@
 {% load humanize %}
+      {% if is_staff and profile.sybil_score != -1 %}
+          Sybil Risk: <b class="mb-0 mt-1">{{ profile.sybil_score_str }}</b>
+          <i class='fa fa-info-circle' data-placement="bottom" data-toggle="tooltip" data-html="true" title="Staff Only: {{profile.latest_sybil_investigation|safe}}"></i>
+      {% endif %}
+
 {% if not profile.is_org %}
   <li>
     Last Seen: 

@@ -2747,15 +2747,39 @@ class Profile(SuperModel):
     validation_attempts = models.PositiveSmallIntegerField(default=0, help_text=_('Number of generated SMS codes to validate account'))
     last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
     encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
+    sybil_score = models.IntegerField(default=-1)
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
 
     @property
+    def latest_sybil_investigation(self):
+        try:
+            return self.investigations.filter(key='sybil').first().description
+        except:
+            return ''
+
+
+    @property
     def suggested_bounties(self):
         suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
 
-        return suggested_bounties if suggested_bounties else []
+    @property
+    def sybil_score_str(self):
+        _map = {
+            -2: 'Error',
+            -1: 'N/A',
+            0: 'Low',
+            1: 'Med-Low',
+            2: 'Med',
+            3: 'Med-High',
+            4: 'High',
+            5: 'Very High',
+        }
+        score = self.sybil_score
+        if score > 5:
+            return f'VeryX{score} High'
+        return _map.get(score, "Unknown") 
 
     @property
     def chat_num_unread_msgs(self):
@@ -5153,26 +5177,55 @@ class Investigation(SuperModel):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         ipAddresses = (userActions.values('ip_address').annotate(Count("id")).order_by('-id__count'))
         cities = (userActions.values('location_data__city').annotate(Count("id")).order_by('-id__count'))
+        total_sybil_score = 0
+        if instance.squelches.filter(active=True).exists():
+            htmls.append('USER HAS ACTIVE SQUELCHES')
+            total_sybil_score += 3
+            htmls.append('(DINGx3)')
 
         htmls += [f"<a href=/_administrationdashboard/useraction/?profile={instance.pk}>View Recent User Actions</a><BR>"]
 
         htmls += [ f"Github Created: {instance.github_created_on.strftime('%Y-%m-%d')} ({naturaltime(instance.github_created_on)})<BR>"]
+
+        if instance.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+            htmls.append('New Github (DING)')
+            total_sybil_score += 1
+        if instance.github_created_on > (timezone.now() - timezone.timedelta(days=1)):
+            total_sybil_score += 1
+            htmls.append('VERY New Github (DING)')
+        if instance.created_on > (timezone.now() - timezone.timedelta(days=1)):
+            total_sybil_score += 1
+            htmls.append('New Profile (DING)')
+
         print(f" - preferred payout {time.time()}")
         if instance.preferred_payout_address:
             htmls.append('Preferred Payout Address')
             htmls.append(f' - {instance.preferred_payout_address}')
             other_Profiles = Profile.objects.filter(preferred_payout_address=instance.preferred_payout_address).exclude(pk=instance.pk).values_list('handle', flat=True)
+            if other_Profiles.count() > 0:
+                total_sybil_score += 1
+                htmls.append('Other Profiles with this addr (DING)')
+            if other_Profiles.count() > 3:
+                total_sybil_score += 1
+                htmls.append('Many other Profiles with this addr (DING)')
             url = f'/_administrationdashboard/profile/?preferred_payout_address={instance.preferred_payout_address}'
             htmls += [f" -- <a href={url}>{len(other_Profiles)} other profiles share this ppa: {', '.join(list(other_Profiles))}</a><BR>"]
 
         print(f" - ip ({len(ipAddresses)}) {time.time()}")
         htmls.append('IP Addresses')
         htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        ip_flagged = False
         for ip in ipAddresses:
             html = f"- <a href=/_administrationdashboard/useraction/?ip_address={ip['ip_address']}>{ip['ip_address']} ({ip['id__count']} Visits)</a>"
             other_Profiles = UserAction.objects.filter(ip_address=ip['ip_address'], profile__isnull=False).exclude(profile=instance).distinct('profile').values_list('profile__handle', flat=True)
             if len(other_Profiles):
                 html += f"<BR> -- {len(other_Profiles)} other profiles share this IP: {', '.join(list(other_Profiles))}"
+            if other_Profiles.count() > 0:
+                if not ip_flagged:
+                    ip_flagged = True
+                    total_sybil_score += 1
+                    htmls.append('Other Profiles with this IP Addr (DING)')
+
             htmls.append(html)
         htmls.append("</div>'")
 
@@ -5191,6 +5244,7 @@ class Investigation(SuperModel):
         for earning in earnings:
             html = f"- <a href={earning.admin_url}>{earning}</a>"
             htmls.append(html)
+            #TODO: if shared with a known sybil, then total_sybil_score += 1
         htmls.append("</div>'")
 
         sent_earnings = instance.sent_earnings.filter(network='mainnet').all()
@@ -5202,6 +5256,8 @@ class Investigation(SuperModel):
             htmls.append(html)
         htmls.append("</div>'")
 
+        htmls += [f"SYBIL_SCORE: {total_sybil_score} "]
+
         print(f" - End {time.time()}")
         htmls = ("<BR>".join(htmls))
         instance.investigations.filter(key='sybil').delete()
@@ -5210,6 +5266,8 @@ class Investigation(SuperModel):
             description=htmls,
             key='sybil',
         )
+
+        instance.sybil_score = total_sybil_score
 
 
 class ObjectView(SuperModel):

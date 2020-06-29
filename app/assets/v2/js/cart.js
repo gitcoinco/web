@@ -836,7 +836,7 @@ Vue.component('grants-cart', {
       const response = await fetch(url);
       const newAmount = await response.json();
 
-      return newAmount.eth;
+      return newAmount[0].eth;
     },
 
     async predictCLRMatch(grant, amount) {
