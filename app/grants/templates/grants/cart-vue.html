@@ -417,29 +417,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   <div class="mb-3">
                     <h1 class="font-bigger-4 font-weight-bold">Verify your phone number</h1>
                   </div>
-                  <p class="mb-2 font-subheader text-left"><strong>It's instant, private & secure.</strong></p>
-                  <p class="mb-4 font-subheader text-left">
-                  1) This process is optional.
                   <BR>
-                  2) Verifying increases your trust level + the impact of your contributions.
+                  <p class="mb-4 font-subheader text-left">We'd like to verify your phone number to get your contribution matched. Phone number verification is optional.</p>
                   <BR>
-                  3) You can still contribute to grants without verifying, but your matching impact may be reduced until you are verified, especially in cases of many contributions.
+                  <p class="mb-4 font-subheader text-left">Verifying increases your trust level and impact of your contributions. You can still contribute to grants without
+                  verifying your phone number, but your contribution impact will be reduced.</p>
                   <BR>
-                  4) Gitcoin has gone to <a target="_blank" rel="noopener noreferrer" class="gc-text-blue" href="https://twitter.com/owocki/status/1272149204287160320">extreme lengths to preserve your privacy</a>.  Please only verify your SMS on sites you know and trust.
+                  <p class="mb-4 font-subheader text-left">Gitcoin does NOT store your phone number.</p>
                   <BR>
-                  5) <a target="_blank" rel="noopener noreferrer" class="gc-text-blue" href="https://twitter.com/owocki/status/1271088915982675974">Click here to read more on why Gitcoin is asking for your SMS number.</a>
-                </p>
-
+                  <p class="mb-4 font-subheader text-left">read more about <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
+                    href="https://twitter.com/owocki/status/1271088915982675974">why we are asking for your phone number</a> or how Gitcoin <a target="_blank" rel="noopener noreferrer" class="gc-text-blue font-smaller-1"
+                      href="https://twitter.com/owocki/status/1271088915982675974">preserves your privacy.</a></p>
                   <b-button @click="validationStep='requestVerification'" class="btn-gc-blue mb-2" size="lg">Verify
-                   Instantly</b-button>
-                  <p class="mb-1 font-subheader text-center font-smaller-2 grey">
-                    (For privacy preservation purposes, Gitcoin does NOT store your phone number <i class="fas fa-lock"></i>)
-                  </p>
+                   Phone Number</b-button>
                   <div class="mb-1 font-subheader text-center">
-                    - or -
                     <a id="verify_offline" href="#">
                     <br>
-                    Verify Offline</a>
+                    Verify Offline or</a>  <a href="#" @click="dismissVerification()" variant="link">Skip</a>
                     <div id='verify_offline_target' style="display:none">
                       <strong>Verify Offline</strong>
                       <BR>
@@ -447,10 +441,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <br>
                       IMPORTANT: Be sure to include (1) your gitcoin username (2) proof of ownership of a SMS number.
                     </div>
-                    <br>
-                    - or -
-                    <br>
-                    <a href="#" @click="dismissVerification()" variant="link">Skip</a>
                   </div>
                 </div>
                 <div class="mx-5 my-5 text-center" v-if="validationStep == 'requestVerification'">
