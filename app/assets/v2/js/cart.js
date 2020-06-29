@@ -556,7 +556,6 @@ Vue.component('grants-cart', {
           }
         });
 
-        await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
         // Get list of tokens user is donating with
