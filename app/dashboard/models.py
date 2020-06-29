@@ -374,6 +374,10 @@ class Bounty(SuperModel):
     attached_job_description = models.URLField(blank=True, null=True, db_index=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
+    bounty_org_profile = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='tribe_bounties', blank=True, help_text=_('Bounty Org Profile')
+    )
+
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
 
@@ -1673,7 +1677,7 @@ class SendCryptoAsset(SuperModel):
         from dashboard.utils import get_tx_status
         from economy.tx import getReplacedTX
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
-        
+
         #handle scenario in which a txn has been replaced
         if self.tx_status in ['pending', 'dropped', 'unknown', '']:
             new_tx = getReplacedTX(self.txid)
@@ -3861,9 +3865,7 @@ class Profile(SuperModel):
 
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
-        url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__startswith=url)
-        return bounties
+        return Bounty.objects.current().filter(network=network, bounty_org_profile__handle__iexact=self.handle)
 
     def get_leaderboard_index(self, key='weekly_earners'):
         try:

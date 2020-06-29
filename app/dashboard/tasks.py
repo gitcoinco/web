@@ -19,6 +19,24 @@ LOCK_TIMEOUT = 60 * 2
 
 
 @app.shared_task(bind=True, max_retries=3)
+def connect_org_bounties(self, org_handle:str = None) -> None:
+
+    try:
+        if not org_handle:
+            return
+
+        org_profile = Profile.objects.get(handle__iexact=org_handle, is_org=True)
+        all_bounties = Bounty.objects.filter(github_url__icontains=org_handle)
+
+        for bounty in all_bounties:
+            bounty.bounty_org_profile = org_profile
+            bounty.save()
+
+    except Exception as e:
+        logger.info(str(e))
+        return
+
+@app.shared_task(bind=True, max_retries=3)
 def bounty_on_create(self, team_id, new_bounty, retry: bool = True) -> None:
     # what has to happen that we want to chain data from one another together
     # from chat.tasks import create_channel

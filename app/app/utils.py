@@ -501,6 +501,12 @@ class CustomGithubOAuth2(GithubOAuth2):
             scope += ['public_repo', 'read:org']
             from dashboard.management.commands.sync_orgs_repos import Command
             Command().handle()
+            try:
+                from dashboard.tasks import connect_org_bounties
+                active_user = self.get_user_details()
+                connect_org_bounties.delay(org_handle=active_user['username'])
+            except Exception as e:
+                logger.info(str(e))
         return scope
 
 

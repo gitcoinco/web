@@ -2839,7 +2839,7 @@ def profile(request, handle, tab=None):
     else:
         context['is_on_tribe'] = False
 
-    if profile.is_org and profile.handle.lower() in ['gitcoinco']:
+    if profile.is_org:
 
         active_tab = 0
         if tab == "townsquare":

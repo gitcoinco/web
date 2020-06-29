@@ -237,11 +237,10 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
 
             if sponsor:
                 queryset = queryset.filter(
-                    Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
+                    Q(bounty__bounty_org_profile__handle__iexact=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
                 )
         elif sponsor:
-            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
-                bounty__bounty_owner_github_username=sponsor)).exclude(
+            queryset = HackathonProject.objects.filter(bounty__bounty_org_profile__handle__iexact=sponsor).exclude(
                 status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
 
         if q:
