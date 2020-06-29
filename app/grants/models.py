@@ -161,6 +161,7 @@ class Grant(SuperModel):
         upload_to=get_upload_filename,
         null=True,
         blank=True,
+        max_length=500,
         help_text=_('The Grant logo image.'),
     )
     logo_svg = models.FileField(
