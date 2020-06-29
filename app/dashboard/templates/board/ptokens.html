@@ -49,12 +49,17 @@
       <div class="col-12">
         <div class="bg-white rounded border my-4">
           <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
-            <div>
-              Create a personal token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
-            </div>
-            <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
-              Create
-            </button>
+            <template v-if="!user_has_token">
+              <div>
+                Create a personal token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
+              </div>
+              <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
+                Create
+              </button>
+            </template>
+            <template v-else>
+              <div>Modify your Personal Token</div>
+            </template>
           </div>
         </div>
       </div>
@@ -93,7 +98,7 @@
               </div>
             </li>
             <li class="text-center my-5" :class="{'d-none': isLoading.open || pTokens.open && pTokens.open.length > 0}" v-cloak>
-              <p>[[ error.open || 'You don\'t have any open tokens.' ]]</p>
+              <p>[[ error.open || 'You don’t have any (open, active, complete, denied) requests' ]]</p>
             </li>
           </ul>
           <loading-screen v-if="isLoading.open"></loading-screen>
