@@ -969,8 +969,8 @@ input.is-invalid {
 }
 
 .alpha-warning {
-  background-color: #fb9470;
-  color: #fbe0d6;
+  background-color: #ada7d4;
+  color: white;
   padding: 5px 10px;
   border-radius: 2px;
   margin-bottom: 15px;

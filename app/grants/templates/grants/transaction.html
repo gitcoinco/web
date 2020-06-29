@@ -42,6 +42,11 @@
         </a>
       </div>
     {% endif %}
+      {% if is_staff %}
+        <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
+          <a href="{{transaction.admin_url}}">[Staff]</a>
+        </div>
+     {% endif %}      
     <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
       <div class="tag tag-lg token">
         <p>

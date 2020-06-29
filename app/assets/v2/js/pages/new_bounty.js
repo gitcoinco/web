@@ -3,6 +3,7 @@
 /* eslint-disable no-lonely-if */
 // document.web3network = 'mainnet';
 load_tokens();
+needWalletConnection();
 
 const qr_tokens = [ 'ETC', 'cGLD', 'cUSD', 'ZIL' ];
 const fiat_tokens = ['USD'];
@@ -38,7 +39,7 @@ const updateOnNetworkOrTokenChange = () => {
     }
 
   } else {
-    if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
+    if (!provider) {
       onConnect().then(()=> {
         changeUi();
       });
@@ -60,7 +61,7 @@ const updateOnNetworkOrTokenChange = () => {
 function changeUi() {
   $('.eth-chain').show();
   FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
-  
+
   $('#navbar-network-banner').show();
   $('.navbar-network').show();
 
@@ -185,7 +186,7 @@ const getSuggestions = () => {
       }
 
       obj.children.forEach((children, childIndex) => {
-        children.text = children.fulfiller_github_username || children.user__profile__handle || children.handle;
+        children.text = children.fulfiller_github_username || children.user__profile__handle || children.profile__handle || children.handle;
         children.id = generalIndex;
         if (obj.text == 'Invites') {
           children.selected = true;
@@ -593,6 +594,11 @@ $('#submitBounty').validate({
     }
   },
   submitHandler: function(form) {
+    if (!provider) {
+      onConnect();
+      return false;
+    }
+
     if (typeof ga != 'undefined') {
       dataLayer.push({
         'event': 'new_bounty',

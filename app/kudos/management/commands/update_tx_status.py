@@ -21,6 +21,7 @@ import logging
 import warnings
 
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from dashboard.utils import all_sendcryptoasset_models
 
@@ -35,17 +36,27 @@ class Command(BaseCommand):
 
     def process_grants_contribs(self):
         from grants.models import Contribution
-        for contrib in Contribution.objects.filter(tx_cleared=False):
+        contributions = Contribution.objects.filter(tx_cleared=False)
+        for contrib in contributions:
             contrib.tx_id
             contrib.update_tx_status()
             print(f"syncing contrib / {contrib.pk} / {contrib.subscription.network}")
             contrib.save()
 
+        # retry contributions that failed
+        created_before = timezone.now()-timezone.timedelta(hours=12)
+        created_after = timezone.now()-timezone.timedelta(hours=1)
+        contributions = Contribution.objects.filter(created_on__gt=created_before, created_on__lt=created_after, tx_cleared=True, success=False)
+        for contrib in contributions:
+            contrib.update_tx_status()
+            contrib.save()
+
+
     def process_acm(self):
         non_terminal_states = ['pending', 'na', 'unknown']
         for obj_type in all_sendcryptoasset_models():
-            sent_txs = obj_type.objects.filter(tx_status__in=non_terminal_states).exclude(txid='')
-            receive_txs = obj_type.objects.filter(receive_tx_status__in=non_terminal_states).exclude(txid='').exclude(receive_txid='')
+            sent_txs = obj_type.objects.filter(tx_status__in=non_terminal_states).exclude(txid='').exclude(txid='pending_celery')
+            receive_txs = obj_type.objects.filter(receive_tx_status__in=non_terminal_states).exclude(txid='').exclude(receive_txid='').exclude(receive_txid='pending_celery')
             objects = (sent_txs | receive_txs).distinct('id')
             for obj in objects:
                 print(f"syncing {obj_type} / {obj.pk} / {obj.network}")

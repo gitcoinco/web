@@ -2,6 +2,7 @@
   border-radius: 5px;
   display: flex;
   flex-direction: column;
+  border: 1px solid #D3D3D3;
 }
 
 .grant-item__content {

@@ -94,7 +94,7 @@
               </p>
             </div>
           </div>
-          <div class="col-12 col-xl-9 body hackathon-explorer">
+          <div class="col-12 col-xl-10 body hackathon-explorer">
             <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
               <template v-slot:tabs-start>
                 <div class="hack-logo-wrapper d-none d-xl-block">
@@ -168,6 +168,9 @@
                 <div class="ml-md-4 townsquare_header">
                   <div class="row">
                     <div class="ml-4 col-12 col-md-2 col-xl-3 d-lg-block">
+                      <a href="?filter=intro" class="btn gc-text-blue">
+                        {% trans "#intros" %}
+                      </a>
                       <div class="col-12 subheading left-ribbon font-body">
                         {% trans "Hackathon Sponsors" %}
                       </div>
@@ -212,8 +215,7 @@
                   </template>
                   <project-directory inline-template user-id={{ user.profile.id | safe }}>
                     <div class="ml-4">
-                      <loading-screen v-if="isLoading"></loading-screen>
-                      <div v-if="!isLoading" class="sidebar-container flex-column flex-lg-row">
+                      <div class="sidebar-container flex-column flex-lg-row">
                         <transition name="fade">
                           <nav v-show="showFilters" class="sidebar flex-fill pr-4" role="navigation">
                             <div class="pb-4 border-bottom form-group">
@@ -290,6 +292,7 @@
                         <div class="project-grid ml-2">
                           <project-card {% if is_staff %} v-bind:is_staff="true" {% endif %} v-for="project in hackathonProjects" v-bind:project="project" :key="project.id"/>
                         </div>
+                          <loading-screen v-if="isLoading"></loading-screen>
                       </div>
                     </div>
                       </div>
@@ -341,19 +344,6 @@
                                   <option value="" selected="true">All</option>
                                   <option value="funder">Funder</option>
                                   <option value="coder">Coder</option>
-                                </select2>
-                              </div>
-                            </div>
-                            <div class="pb-4 border-bottom form-group">
-                              <label for="leaderboard_rank" class="font-weight-bold">Leaderboard Rank</label>
-                              <div class="form__select2">
-                                <select2 v-model.trim="params.leaderboard_rank" data-tags="true" class="form-control">
-                                  <option value="" selected="true">All</option>
-                                  <option value="1,5">1,5</option>
-                                  <option value="5,10">5,10</option>
-                                  <option value="10,15">10,15</option>
-                                  <option value="15,20">15,20</option>
-                                  <option value="20,25">20,25</option>
                                 </select2>
                               </div>
                             </div>
@@ -452,17 +442,8 @@
                                     <i class="far fa-star" :class="star <= user.avg_rating.overall.toFixed() ? 'fas' : 'far'" v-for="star in user.avg_rating.overall.toFixed(), 5"></i>
                                     ([[ user.avg_rating.total_rating ]] ratings)
                                   </div>
-                                  <small class="text-center pb-1" v-if="user.previously_worked">
-                                    <i class="far fa-handshake mr-1"></i>Worked with you
-                                  </small>
-                                </div>
-                                <div class="card-body d-flex flex-column justify-content-between">
-                                  <!-- TRIBE -->
                                   <template v-if="user.is_org">
                                     <div v-html="user.tribe_description" class="overflow-hidden mb-2 text-black-70" style="max-height: 4.5rem;">
-                                    </div>
-                                    <div class="text-left">
-                                      <span v-if="user.rank_org > 0"><b>#[[ user.rank_org ]]</b> Tribe</span>
                                     </div>
                                     <div class="text-left">
                                       <p class="mb-0">
@@ -479,55 +460,31 @@
 
                                   <!-- User : Funder / Contributor-->
                                   <template v-else>
-                                    <div v-if="user.keywords" class="text-center">
-                                      <template v-for="keyword in user.keywords">
+                                    <div v-if="user.keywords" class="text-center mt-1">
+                                      <template v-for="keyword in user.keywords.slice(0,4)">
                                         <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
                                       </template>
                                     </div>
-                                    <div class="text-center my-1 font-smaller-1">
-                                      <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
-                                        <i class="fab fa-github"></i>
-                                      </a>
-                                      <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
-                                        <i class="fas fa-home"></i>
-                                      </a>
-                                      <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
-                                        <i class="fab fa-linkedin-in"></i>
-                                      </a>
-                                      <a @click="messageUser(user.handle);" href="#" v-if="user.chat_id">
-                                        <i class="fas fa-comment-dots"></i>
-                                      </a>
-                                    </div>
-                                    <div class="text-center" id="job_status" v-if="user.show_job_status">
-                                      <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
-                                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
-                                      </a>
-                                    </div>
-                                    <div class="text-left">
-                                      <p class="mb-0">
-                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
-                                        <b>[[ user.follower_count ]]</b> followers
-                                      </p>
+                                    <div class="text-center mt-1">
                                       <p v-if="!isFunder" class="mb-0">
                                         <b>[[ user.work_done ]]</b> bounties completed
                                       </p>
-                                      <p class="mb-0">
-                                        <span v-if="user.position_contributor > 0">
-                                          <b>#[[ user.position_contributor ]]</b> contributor
-                                        </span>
-                                        <span v-if="user.position_funder > 0">
-                                          <b>#[[ user.position_funder ]]</b> funder
-                                        </span>
-                                      </p>
-                                    </div>
-                                    <div class="text-center mt-2">
-                                      <button v-if="funderBounties.length" data-toggle="modal" data-target="#userModal" class="btn btn-sm btn-outline-gc-blue font-caption font-weight-semibold button--full" @click="openBounties(user)">Invite to Bounty</button>
                                     </div>
                                   </template>
-
+                                </div>
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                  <!-- TRIBE -->
+                                  <div class="text-center my-3" v-if="user.looking_team_members">
+                                      <i class="fas fa-users gc-text-blue font-bigger-3"></i><br>
+                                      <span class="font-body">Looking for team members</span>
+                                  </div>
+                                  <div class="text-center my-3" v-if="user.looking_project">
+                                      <i class="far fa-lightbulb gc-text-blue font-bigger-3"></i><br>
+                                      <span class="font-body">Looking for a project</span>
+                                  </div>
                                   <div class="text-center mt-2">
-                                    <b-button v-bind:class="[user.is_following ? 'btn-outline-green' : 'btn-gc-blue', 'btn btn-sm font-caption font-weight-semibold button--full']" @click="joinTribe(user, $event)">
-                                      <i class="fas fa-user-minus mr-1"></i> [[ user.is_following ? "following" : "follow" ]]
+                                    <b-button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full" @click="chatWindow(user.handle, $event);">
+                                      <i class="fas fa-comment-dots mr-2"></i> Chat
                                     </b-button>
                                   </div>
 
@@ -627,31 +584,32 @@
               </template>
             </b-tabs>
           </div>
-          <div class="d-none d-xl-block col-xl-3">
+          <div class="d-none d-xl-block col-xl-2">
             <div id="sponsor_sidebar" class="font-body">
               <div class="sponsor-top"></div>
               <sponsor-tribes-widget v-if="hackathonSponsors.length > 0" inline-template>
-                <div class="p-xl-0 p-4">
+                <div class="p-xl-2 p-4">
                   <div class="offset-1 subheading left-ribbon">
                     {% trans "Sponsor Tribes" %}
                   </div>
                   <ul class="list-unstyled">
-                    <b-media v-for="sponsor in tribesData" tag="li"  class="bg-white rounded m-4" vertical-align="center">
+                    <b-media v-for="sponsor in tribesData" tag="li"  class="rounded my-4 ml-4" vertical-align="center">
                       <template v-slot:aside>
                         <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-n3 tribes-logo"></b-avatar>
                       </template>
-                      <div class="py-3 pr-3">
-                        <div class="d-flex justify-content-between">
-                          <a class="mb-1 font-bigger-1 text-truncate w-50" :href="`/profile/${sponsor.org_name}`">[[ sponsor.display_name ]]</a>
-                          <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)" v-bind:class="[sponsor.followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm']">[[ sponsor.followed ? "following" : "follow" ]]</b-button>
-                        </div>
-
-                        <div class="">
-                          <ul class="list-unstyled" class="mb-0">
-                            <li><i class="fas fa-fw fa-user"></i> [[ sponsor.follower_count ]] Followers</li>
-                            <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
-                          </ul>
-                        </div>
+                      <div>
+                        <a class="mb-1 font-body font-weight-semibold w-50" :href="`/profile/${sponsor.org_name}`">
+                          [[ sponsor.display_name ]]
+                        </a>
+                        <ul class="list-unstyled font-caption mb-1">
+                          <li><i class="fas fa-fw fa-user"></i> [[ sponsor.follower_count ]] Followers</li>
+                          <li><i class="fas fa-fw fa-trophy"></i> [[ sponsor.bounty_count ]] Bounties Funded</li>
+                        </ul>
+                        <b-button variant="outline-primary" @click="followTribe(sponsor.org_name, $event)"
+                          v-bind:class="[sponsor.followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm', 'font-smaller-5', 'font-weight-semibold']"
+                        >
+                          [[ sponsor.followed ? "following" : "follow" ]]
+                        </b-button>
                       </div>
                     </b-media>
                   </ul>

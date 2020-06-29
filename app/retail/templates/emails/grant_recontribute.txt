@@ -1,0 +1,12 @@
+
+Grants CLR Round {{ next_round }} is here!
+
+    From {{ next_round_start }} - {{ next_round_end }}, support open source projects across different categories and get them matched with ${{ match_pool }} matching pool!
+
+    Here are some of the grants you funded last time.
+    Fund them again?
+
+{% for grant in prev_grants %}
+      {{ grant.title }}
+      You funded {{ grant.amount }} {{ grant.token_symbol }} last round
+{% endfor %}

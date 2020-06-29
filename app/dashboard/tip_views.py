@@ -87,6 +87,10 @@ def request_money(request):
                 'requester': request.user.profile,
             }
             fund_request = FundRequest.objects.create(**kwargs)
+            if network == 'ETH':
+                if not profile.preferred_payout_address:
+                    profile.preferred_payout_address = address
+                    profile.save() #save preferred payout addr
             messages.success(request, f'Stay tuned, {profile.handle} has been notified by email.')
         else:
             messages.error(request, f'The user {username} doesn\'t exists.')

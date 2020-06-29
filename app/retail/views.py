@@ -63,7 +63,7 @@ from .utils import articles, press, programming_languages, reasons, testimonials
 
 logger = logging.getLogger(__name__)
 
-connect_types = ['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout']
+connect_types = ['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout', 'hackathon_new_hacker']
 
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
@@ -1021,8 +1021,14 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             if page > 1:
                 activities = Activity.objects.none()
     elif 'hackathon:' in what:
-        pk = what.split(':')[1]
-        activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
+        terms = what.split(':')
+        pk = terms[1]
+
+        if len(terms) > 2:
+            activities = activities.filter(activity_type__in=connect_types, metadata__icontains=terms[2]).filter(
+                Q(hackathonevent=pk) | Q(bounty__event=pk))
+        else:
+            activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
@@ -1477,7 +1483,6 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
-@cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1550,3 +1555,20 @@ def tribes_home(request):
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)
+
+def admin_index(request):
+    from dashboard.utils import get_all_urls # avoid circular import
+    urls = get_all_urls()
+    search_str = '_administration/email'
+    def clean_url(url):
+        url = "".join(url)
+        url = url.replace('$', '')
+        url = url.replace('^', '')
+        return url
+    urls = [clean_url(url) for url in urls]
+    urls = [url for url in urls if search_str in url]
+    context = {
+        'urls': urls,
+    }
+
+    return TemplateResponse(request, 'admin_index.html', context)
