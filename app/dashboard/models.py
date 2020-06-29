@@ -5187,6 +5187,12 @@ class Investigation(SuperModel):
             total_sybil_score += 3
             htmls.append('(DINGx3)')
 
+        if not instance.sms_verification:
+            htmls.append('Not SMS Verified (DING)')
+            total_sybil_score += 1
+        else:
+            htmls.append('SMS Verified')
+
         htmls += [f"<a href=/_administrationdashboard/useraction/?profile={instance.pk}>View Recent User Actions</a><BR>"]
 
         htmls += [ f"Github Created: {instance.github_created_on.strftime('%Y-%m-%d')} ({naturaltime(instance.github_created_on)})<BR>"]
