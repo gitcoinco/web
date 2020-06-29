@@ -5486,3 +5486,16 @@ def validate_verification(request):
         'success': False,
         'msg': 'No verification process associated'
     }, status=401)
+
+
+@staff_member_required
+def showcase(request, hackathon):
+    hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+
+    showcase = json.loads(request.body)
+    hackathon_event.showcase = showcase
+    hackathon_event.save()
+
+    return JsonResponse({
+        'success': True,
+    })

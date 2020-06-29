@@ -59,6 +59,30 @@
           background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
         {% endif %}
       }
+
+      .dark-section {
+        background-color: black;
+        color: white;
+        justify-content: space-evenly;
+      }
+
+      .sponsor-grid {
+        display: grid !important;
+        grid-gap: 16px;
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .avatar {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+      }
+
+      @media (max-width: 767.98px) {
+        .sponsor-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
     </style>
       {% include 'shared/fbpixel.html' %}
   </head>
@@ -313,7 +337,7 @@
                   </div>
                 </template>
               </b-tab>
-              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation"lazy>
+              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Participants" %}
@@ -575,6 +599,134 @@
                     </div>
                   </user-directory>
                 </b-tab>
+              <b-tab class="col-12" title-item-class="navigation">
+                <template v-slot:title>
+                    <div class="mt-4">
+                      {% trans "Showcase" %}
+                    </div>
+                </template>
+                <div id="showcase">
+                  <showcase inline-template>
+                    <div class="container">
+                      <div class="d-flex mt-4 justify-content-center position-relative ">
+                        <h2 class="text-center font-weight-bold">Hackathon Showcase</h2>
+                        <button style="right: 0" class="position-absolute btn btn-gc-blue" @click="saveShowcase" v-if="is_staff && isEditing">Save Changes</button>
+                        <button style="right: 0" class="position-absolute btn btn-gc-blue" @click="isEditing=true" v-if="is_staff && !isEditing">Edit</button>
+                      </div>
+                    <div class="col-12 mt-4 mb-4 col-md-offset-2 dark-section d-flex justify-content-around">
+                      <div class="d-flex justify-content-center align-items-center flex-column">
+                        <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.sponsor_profiles.length]]</p>
+                        <p class="mb-3">Sponsors</p>
+                      </div>
+                      <div class="d-flex justify-content-center align-items-center flex-column">
+                        <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.prizes]]</p>
+                        <p class="mb-3">Bounties</p>
+                      </div>
+                      <div class="d-flex justify-content-center align-items-center flex-column">
+                        <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.winners]]</p>
+                        <p class="mb-3">Winners</p>
+                      </div>
+                      <div class="d-flex justify-content-center align-items-center flex-column">
+                        <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[ prizes ]]</p>
+                        <p class="mb-3">Prizes</p>
+                      </div>
+                    </div>
+                      <div class="d-flex justify-content-center font-body mt-5">
+                        <textarea class="mb-4" v-model="showcase.content" name="content" id="" cols="80" rows="10"  v-if="isEditing">[[showcase.content]]</textarea>
+                        <p :inner-html.prop="showcase.content | markdownit" v-if="!isEditing"></p>
+                      </div>
+                      <div>
+                      <h3 class="font-weight-bold">The hack in numbers</h3>
+                      <div>
+                        <h4 class="font-bigger-1 font-weight-bold">Sponsors</h4>
+                        <div class="sponsor-grid mt-4">
+                          <div class="d-flex flex-column justify-content-center align-items-center" v-for="sponsor in hackathon.sponsor_profiles">
+                            <img :src="`https://gitcoin.co/dynamic/avatar/${sponsor.handle}`" height="100" :alt="`${sponsor.handle} logo`">
+                            <span class="font-body mt-2">[[sponsor.handle]]</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 class="font-bigger-1 font-weight-bold">#HackGoals</h4>
+                        <div class="sponsor-grid mt-4">
+                          <div class="d-flex justify-content-center align-items-center flex-column">
+                            <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.prizes]]</p>
+                            <p class="mb-3">Bounties</p>
+                          </div>
+                          <div class="d-flex justify-content-center align-items-center flex-column">
+                            <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4" v-if="!isEditing">[[ prizes ]]</p>
+                            <input type="text" v-model="prizes" v-if="isEditing">
+                            <p class="mb-3">Prizes</p>
+                          </div>
+                          <div class="d-flex justify-content-center align-items-center flex-column">
+                            <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.sponsor_profiles.length]]</p>
+                            <p class="mb-3">Coders Hacking</p>
+                          </div>
+                          <div class="d-flex justify-content-center align-items-center flex-column">
+                            <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4">[[hackathon.winners]]</p>
+                            <p class="mb-3">Bounty winners</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 class="font-bigger-1 font-weight-bold">Hacking Spotlights</h4>
+                        <div v-for="spotlight in spotlights">
+                          <div class="d-md-flex pt-2" v-if="!isEditing">
+                            <div class="col-12 col-md-3 d-flex  align-middle my-3">
+                              <div class="d-flex text-center ml-md-5 justify-content-center align-items-center">
+                                <img :src="`https://gitcoin.co/dynamic/avatar/${spotlight.sponsor.handle}`" height="32" :alt="`${spotlight.sponsor.handle} Logo`">
+                                <p class="ml-2 my-0 font-bigger-1 font-weight-bold">[[ spotlight.sponsor.handle ]]</p>
+                              </div>
+                            </div>
+                            <p class="col-12 col-md-8 mt-sm-3" :inner-html.prop="spotlight.content | markdownit" v-if="!isEditing"></p>
+                          </div>
+
+                          <div class="d-flex" v-if="isEditing">
+                            <select class="d-flex col-12 col-md-3 form-control" v-model="spotlight.sponsor">
+                              <option v-for="sponsor in hackathon.sponsor_profiles" :value="sponsor">
+                                <span>[[sponsor.handle]]</span>
+                              </option>
+                            </select>
+                            <textarea class="d-flex col-12 ml-md-3 col-md-8 form-control mb-4" v-model="spotlight.content" name="content" id="" cols="90" rows="8"></textarea>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="btn btn-link text-darkblue mt-4" @click="addSpotlight()" v-if="isEditing">+ Add Spotlight</button>
+                    </div>
+                      <div>
+                      <h4 class="font-bigger-1 font-weight-bold mb-3">Top [[hackathon.name]] Hackers</h4>
+                      <div class="d-flex flex-wrap mt-3">
+                        <div class="col-12 col-md-4 text-center mt-3">
+                          <span class="font-bigger-2 font-weight-bold gc-text-blue">#1</span>
+                          <div>
+                            <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[0]}`" alt="">
+                            <span class="font-weight-bold"  v-if="!isEditing">@[[ top[0] ]]</span>
+                            <input type="text" v-model="top[0]" v-else>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mt-3">
+                          <span class="font-bigger-2 font-weight-bold gc-text-blue">#2</span>
+                          <div>
+                            <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[1]}`" alt="">
+                            <span class="font-weight-bold" v-if="!isEditing">@[[ top[1] ]]</span>
+                            <input type="text" v-model="top[1]" v-else>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mt-3">
+                          <span class="font-bigger-2 font-weight-bold gc-text-blue">#3</span>
+                          <div>
+                            <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[2]}`" alt="">
+                            <span class="font-weight-bold" v-if="!isEditing">@[[ top[2] ]]</span>
+                            <input type="text" v-model="top[2]" v-else>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                  </showcase>
+                </div>
+
+              </b-tab>
               <template v-slot:tabs-end>
                 <li role="presentation" class="nav-item navigation">
                   <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
@@ -641,6 +793,7 @@
         <slot></slot>
       </select>
     </script>
+    <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
     <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{orgs|json_script:"sponsor-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
