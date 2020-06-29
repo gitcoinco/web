@@ -1204,6 +1204,7 @@ class Contribution(SuperModel):
         except Exception as e:
             self.validator_passed = False
             self.validator_comment = str(e)
+            print(f"Exception: {self.validator_comment}")
             self.tx_cleared = False
             self.split_tx_confirmed = False
             self.success = False
