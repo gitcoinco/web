@@ -36,6 +36,8 @@ PREV_CLR_START_DATE = dt.datetime(2020, 3, 23, 12, 0)
 PREV_CLR_END_DATE = dt.datetime(2020, 4, 7, 12, 0)
 CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0)
 
+CLR_PERCENTAGE_DISTRIBUTED = 0
+
 # TODO: MOVE TO DB
 V_THRESHOLD_TECH = 25.0
 V_THRESHOLD_MEDIA = 25.0
@@ -237,10 +239,15 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
         bigtot += tot
         totals.append({'id': proj, 'clr_amount': tot})
 
+    global CLR_PERCENTAGE_DISTRIBUTED
+
     if bigtot >= total_pot: # saturation reached
         # print(f'saturation reached. Total Pot: ${total_pot} | Total Allocated ${bigtot}. Normalizing')
+        CLR_PERCENTAGE_DISTRIBUTED = 100
         for t in totals:
             t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
+    else:
+        CLR_PERCENTAGE_DISTRIBUTED =  (bigtot / total_pot) * 100
 
     return totals
 
@@ -543,4 +550,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                 _grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
+
+    try :
+        Stat.objects.create(
+            key= clr_type + '_grants_round_6_saturation',
+            val=int(CLR_PERCENTAGE_DISTRIBUTED),
+        )
+    except:
+        pass
+
     return debug_output
