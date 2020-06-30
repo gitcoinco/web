@@ -50,6 +50,7 @@ $('document').ready(function() {
       onConnect().then(() => {
         trigger_faucet_form_web3_hooks(provider);
       });
+      return false;
     }
 
     if ($(this).hasClass('disabled')) {

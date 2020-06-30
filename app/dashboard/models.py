@@ -1670,17 +1670,21 @@ class SendCryptoAsset(SuperModel):
         """ Updates the tx status according to what infura says about the tx
 
         """
-        from dashboard.utils import get_tx_status
-        from economy.tx import getReplacedTX
-        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
-        
-        #handle scenario in which a txn has been replaced
-        if self.tx_status in ['pending', 'dropped', 'unknown', '']:
-            new_tx = getReplacedTX(self.txid)
-            if new_tx:
-                self.txid = new_tx
+        try:
+            from dashboard.utils import get_tx_status
+            from economy.tx import getReplacedTX
+            self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
 
-        return bool(self.tx_status)
+            #handle scenario in which a txn has been replaced
+            if self.tx_status in ['pending', 'dropped', 'unknown', '']:
+                new_tx = getReplacedTX(self.txid)
+                if new_tx:
+                    self.txid = new_tx
+
+            return bool(self.tx_status)
+        except:
+            self.tx_status = 'error'
+            return False
 
     def update_receive_tx_status(self):
         """ Updates the receive tx status according to what infura says about the receive tx
@@ -5182,6 +5186,12 @@ class Investigation(SuperModel):
             htmls.append('USER HAS ACTIVE SQUELCHES')
             total_sybil_score += 3
             htmls.append('(DINGx3)')
+
+        if not instance.sms_verification:
+            htmls.append('Not SMS Verified (DING)')
+            total_sybil_score += 1
+        else:
+            htmls.append('SMS Verified')
 
         htmls += [f"<a href=/_administrationdashboard/useraction/?profile={instance.pk}>View Recent User Actions</a><BR>"]
 
