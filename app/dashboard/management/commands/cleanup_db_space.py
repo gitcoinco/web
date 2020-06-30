@@ -48,6 +48,8 @@ class Command(BaseCommand):
             ).exclude(
                 from_currency='USDT',
                 to_currency='ETH'
+            ).exclude(
+                source='manual',
             ).delete()
         print(f'ConversionRate: {result}')
 

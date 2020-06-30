@@ -922,10 +922,6 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
 
 @require_POST
 def set_project_winner(request):
-    if not request.user.is_authenticated and request.user.is_staff:
-        return JsonResponse({
-            'message': 'UNAUTHORIZED'
-        })
 
     winner = request.POST.get('winner', False)
     project_id = request.POST.get('project_id', None)
@@ -934,6 +930,12 @@ def set_project_winner(request):
             'message': 'Invalid Project'
         })
     project = HackathonProject.objects.get(pk=project_id)
+
+    if not request.user.is_authenticated and (request.user.is_staff or request.user.profile.handle == project.bounty.bounty_owner_github_username):
+        return JsonResponse({
+            'message': 'UNAUTHORIZED'
+        })
+
     project.winner = winner
     project.save()
 
@@ -2665,6 +2667,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         for ele in contributions:
             history.append(ele.normalized_data)
         context['history'] = history
+        context['subs'] = profile.grant_contributor.filter(num_tx_approved__gt=1)
     elif tab == 'active':
         context['active_bounties'] = active_bounties
     elif tab == 'resume':

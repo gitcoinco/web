@@ -102,7 +102,7 @@
         {% elif row.activity_type == 'mini_clr_payout' %}
           {% trans "got a distribution of" %} <strong>{{row.metadata.amount|floatformat:2}} DAI</strong> in {{row.metadata.round_description}}
         {% elif row.activity_type == 'created_kudos' %}
-          a new kudos has been minted:
+          a new kudos, created by the illustrious <img style="height: 20px; width: 20px; border-radius: 20px;" src="/dynamic/avatar/{{row.kudos.artist}}"> <a href={{row.kudos.artist}}>@{{row.kudos.artist}}</a>, has been minted:
           <a href="{{ row.kudos.external_url }}">
             {{ row.kudos.ui_name }}
           </a>

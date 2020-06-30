@@ -23,6 +23,7 @@
         {% elif 'grants/contribution' in request.build_absolute_uri %}
             <input type="submit" value="Pull Contrib Status" name="_update_tx_status" value="1">
         {% elif 'kudos/tokenrequest' in request.build_absolute_uri %}
+            <input type="submit" value="Change Owner + Mint + Sync Kudos" name="_change_owner_mint_kudos" value="1">
             <input type="submit" value="Mint + Sync Kudos" name="_mint_kudos" value="1">
             <input type="submit" value="Reject Kudos" name="_reject_kudos" value="1">
             <input type="submit" value="Change Owner to Gitcoin" name="_change_owner" value="1">

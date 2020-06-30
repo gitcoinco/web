@@ -36,16 +36,16 @@ from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_request, render_bounty_startwork_expire_warning,
     render_bounty_unintersted, render_comment, render_faucet_rejected, render_faucet_request,
     render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
-    render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute, render_grant_update,
-    render_kudos_email, render_match_distribution, render_match_email, render_mention, render_new_bounty,
-    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_grant_email,
-    render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder, render_nth_day_email_campaign,
-    render_quarterly_stats, render_request_amount_email, render_reserved_issue, render_share_bounty,
-    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
-    render_successful_contribution_email, render_support_cancellation_email, render_tax_report,
-    render_thank_you_for_supporting_email, render_tip_email, render_unread_notification_email_weekly_roundup,
-    render_wallpost, render_weekly_recap,
+    render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute, render_grant_txn_failed,
+    render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
+    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
+    render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
+    render_nth_day_email_campaign, render_quarterly_stats, render_request_amount_email, render_reserved_issue,
+    render_share_bounty, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
+    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected,
+    render_subscription_terminated_email, render_successful_contribution_email, render_support_cancellation_email,
+    render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
+    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -310,6 +310,25 @@ def grant_cancellation(grant, subscription):
     finally:
         translation.activate(cur_language)
 
+def grant_txn_failed(profile, grant, tx_id):
+    from_email = settings.CONTACT_EMAIL
+    to_email = profile.email
+    if not to_email:
+        if profile and profile.user:
+            to_email = profile.user.email
+    if not to_email:
+        return
+
+    cur_language = translation.get_language()
+
+    subject = f"Your Grant transaction failed. Wanna try again?"
+
+    try:
+        setup_lang(to_email)
+        html, text = render_grant_txn_failed(to_email, grant, tx_id)
+        send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
 
 def subscription_terminated(grant, subscription):
     if subscription and subscription.negative:

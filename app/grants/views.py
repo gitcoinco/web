@@ -49,6 +49,7 @@ from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
+from economy.models import Token as FTokens
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
@@ -231,7 +232,11 @@ def grants_addr_as_json(request):
 
 @cache_page(60 * 60)
 def grants_stats_view(request):
-    cht, chart_list = get_stats(request.GET.get('category'))
+    cht, chart_list = None, None
+    try:
+        cht, chart_list = get_stats(request.GET.get('category'))
+    except:
+        raise Http404
     params = {
         'cht': cht,
         'chart_list': chart_list,
@@ -244,7 +249,7 @@ def grants_stats_view(request):
 
 def grants(request):
     """Handle grants explorer."""
-    
+
     _type = request.GET.get('type', 'all')
     return grants_by_grant_type(request, _type)
 
@@ -265,6 +270,8 @@ def grants_by_grant_type(request, grant_type):
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
+    if keyword:
+        category = ''
     profile = get_profile(request)
     _grants = None
     bg = 4
@@ -387,17 +394,19 @@ def grants_by_grant_type(request, grant_type):
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
     grant_type_title_if_any = grant_type.title() if has_real_grant_type else ''
+
     if grant_type_title_if_any == "Media":
         grant_type_title_if_any = "Community"
-    if grant_type_title_if_any == "Change":
+    elif grant_type_title_if_any == "Change":
         grant_type_title_if_any = "Crypto for Black Lives"
-    grant_type_gfx_if_any = grant_type if has_real_grant_type else 'total'
+
     if has_real_grant_type:
         title = f"{matching_live} {grant_type_title_if_any.title()} {category.title()} Grants"
     if grant_type == 'stats':
         title = f"Round {clr_round} Stats"
     cht = []
     chart_list = ''
+
     try:
         what = 'all_grants'
         pinned = PinnedPost.objects.get(what=what)
@@ -922,13 +931,26 @@ def grants_cart_view(request):
 
 
 def grants_bulk_add(request, grant_str):
-    
+    grants = {}
     redis = RedisService().redis
     key = hashlib.md5(grant_str.encode('utf')).hexdigest()
     views = redis.incr(key)
 
-    grant_ids = grant_str.split(':')[0].split(',')
-    grant_ids = [int(ele) for ele in grant_ids if ele and ele.isnumeric() ]
+    grants_data = grant_str.split(':')[0].split(',')
+
+    for ele in grants_data:
+        # new format will support amount and token in the URL separated by ;
+        grant_data = ele.split(';')
+        if len(grant_data) > 0 and grant_data[0].isnumeric():
+            grant_id = grant_data[0]
+            grants[grant_id] = {
+                'id': int(grant_id)
+            }
+
+            if len(grant_data) == 3:  # backward compatibility
+                grants[grant_id]['amount'] = grant_data[1]
+                grants[grant_id]['token'] = FTokens.objects.filter(id=int(grant_data[2])).first()
+
     by_whom = ""
     prefix = ""
     try:
@@ -936,12 +958,20 @@ def grants_bulk_add(request, grant_str):
         prefix = f"{grant_str.split(':')[2]} : "
     except:
         pass
-    grants = Grant.objects.filter(pk__in=grant_ids)
-    grant_titles = ", ".join([grant.title for grant in grants])
-    title = f"{prefix}{grants.count()} Grants in Shared Cart {by_whom} : Viewed {views} times"
+
+    # search valid grants and associate with its amount and token
+    grants_info = grants.values()
+    grant_ids = [grant['id'] for grant in grants_info]
+    for grant in Grant.objects.filter(pk__in=grant_ids):
+        grants[str(grant.id)]['obj'] = grant
+
+    grants = [grant for grant in grants_info if grant.get('obj')]
+
+    grant_titles = ", ".join([grant['obj'].title for grant in grants])
+    title = f"{prefix}{len(grants)} Grants in Shared Cart {by_whom} : Viewed {views} times"
 
     context = {
-        'grants': Grant.objects.filter(pk__in=grant_ids),
+        'grants': grants,
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
         'title': title,
         'card_desc': "Click to Add All to Cart: " + grant_titles
@@ -958,6 +988,7 @@ def profile(request):
         raise Http404
     handle = request.user.profile.handle
     return redirect(f'/profile/{handle}/grants')
+
 
 def quickstart(request):
     """Display quickstart guide."""
@@ -1159,3 +1190,39 @@ def grant_activity(request, grant_id=None):
     return JsonResponse({
         'error': False
     })
+
+@require_GET
+def grants_clr(request):
+    response = {
+        'status': 400,
+        'message': 'error: Bad Request. Unable to fetch grant clr'
+    }
+
+    pks = request.GET.get('pks', None)
+
+    if not pks:
+        response['message'] = 'error: missing parameter pks'
+        return JsonResponse(response)
+
+    grants = []
+
+    try:
+        for grant in Grant.objects.filter(pk__in=pks.split(',')):
+           grants.append({
+               'pk': grant.pk,
+               'title': grant.title,
+               'clr_prediction_curve': grant.clr_prediction_curve
+           })
+    except Exception as e:
+        print(e)
+        response = {
+            'status': 500,
+            'message': 'error: something went wrong while fetching grants clr'
+        }
+        return JsonResponse(response)
+
+    response = {
+        'status': 200,
+        'grants': grants
+    }
+    return JsonResponse(response)
