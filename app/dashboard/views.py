@@ -5336,8 +5336,8 @@ class CLRSView(generics.ListAPIView):
     def get_queryset(self):
         match_round_id = self.request.query_params.get('round')
         search = self.request.query_params.get('q')
-        match_round = get_object_or_404(MatchRound, pk=int(match_round_id))
-        eligible = get_eligible_input_data(match_round, no_flat=True).prefetch_related('from_profile', 'to_profile')
+        match_round = get_object_or_404(MatchRound, number=int(match_round_id))
+        eligible = Earning.objects.filter(id__in=match_round.elegible_round_data).exclude(Q(from_profile=None) | Q(to_profile=None)).prefetch_related('from_profile', 'to_profile')
 
         if search:
             eligible = eligible.filter(Q(id__icontains=search) |
@@ -5354,47 +5354,46 @@ class CLRSView(generics.ListAPIView):
         for e in queryset:
             to_profile = e.to_profile
             from_profile = e.from_profile
-            if e and to_profile and from_profile:
-                to_location = None
-                has_ip_address = to_profile.actions.filter(created_on__lte=e.created_on).exclude(ip_address=None).last()
-                if has_ip_address:
-                    to_location = get_location_from_ip(has_ip_address.ip_address)
+            to_location = None
+            has_ip_address = to_profile.actions.filter(created_on__lte=e.created_on).exclude(ip_address=None).last()
+            if has_ip_address:
+                to_location = get_location_from_ip(has_ip_address.ip_address)
 
-                from_location = None
-                has_from_ip_address = from_profile.actions.filter(created_on__lte=e.created_on).exclude(
-                    ip_address=None).last()
-                if has_from_ip_address:
-                    from_location = get_location_from_ip(has_from_ip_address.ip_address)
+            from_location = None
+            has_from_ip_address = from_profile.actions.filter(created_on__lte=e.created_on).exclude(
+                ip_address=None).last()
+            if has_from_ip_address:
+                from_location = get_location_from_ip(has_from_ip_address.ip_address)
 
-                flags = ContributionFlag.objects.filter(contribution=e)
+            flags = ContributionFlag.objects.filter(contribution=e)
 
-                earning.append({
-                    'id': e.id,
-                    'created_on': naturaltime(e.created_on),
-                    'from_user': {
-                        'id': e.from_profile.id,
-                        'handle': e.from_profile.handle,
-                        'avatar': e.from_profile.avatar_url,
-                        'account_age': naturaltime(e.from_profile.created_on),
-                        'ip_address': has_from_ip_address.ip_address if has_from_ip_address else '',
-                        'location': f'{from_location.get("city")}, {from_location.get("country_code")}' if from_location else '',
-                        'eth_address': e.from_profile.preferred_payout_address,
-                    },
-                    'to_user': {
-                        'id': e.to_profile.id,
-                        'handle': e.to_profile.handle,
-                        'avatar': e.to_profile.avatar_url,
-                        'account_age': naturaltime(e.to_profile.created_on),
-                        'ip_address': has_ip_address.ip_address if has_ip_address else '',
-                        'location': f'{to_location.get("city")}, {to_location.get("country_code")}' if to_location else '',
-                        'eth_address': e.to_profile.preferred_payout_address,
-                    },
-                    'flags': [{
-                        'comments': flag.comments,
-                        'processed': flag.processed,
-                        'profile': flag.profile.handle
-                    } for flag in flags]
-                })
+            earning.append({
+                'id': e.id,
+                'created_on': naturaltime(e.created_on),
+                'from_user': {
+                    'id': e.from_profile.id,
+                    'handle': e.from_profile.handle,
+                    'avatar': e.from_profile.avatar_url,
+                    'account_age': naturaltime(e.from_profile.created_on),
+                    'ip_address': has_from_ip_address.ip_address if has_from_ip_address else '',
+                    'location': f'{from_location.get("city")}, {from_location.get("country_code")}' if from_location else '',
+                    'eth_address': e.from_profile.preferred_payout_address,
+                },
+                'to_user': {
+                    'id': e.to_profile.id,
+                    'handle': e.to_profile.handle,
+                    'avatar': e.to_profile.avatar_url,
+                    'account_age': naturaltime(e.to_profile.created_on),
+                    'ip_address': has_ip_address.ip_address if has_ip_address else '',
+                    'location': f'{to_location.get("city")}, {to_location.get("country_code")}' if to_location else '',
+                    'eth_address': e.to_profile.preferred_payout_address,
+                },
+                'flags': [{
+                    'comments': flag.comments,
+                    'processed': flag.processed,
+                    'profile': flag.profile.handle
+                } for flag in flags]
+            })
 
         return earning
 

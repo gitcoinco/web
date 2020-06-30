@@ -252,11 +252,11 @@ class MatchRoundQuerySet(models.QuerySet):
 
 
 class MatchRound(SuperModel):
-
     valid_from = models.DateTimeField(db_index=True)
     valid_to = models.DateTimeField(db_index=True)
     number = models.IntegerField(default=1)
     amount = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    elegible_round_data = ArrayField(models.IntegerField(), default=list, blank=True)
 
     # Offer QuerySet Manager
     objects = MatchRoundQuerySet.as_manager()
@@ -278,11 +278,15 @@ class MatchRound(SuperModel):
         with transaction.atomic():
             mr.ranking.all().delete()
             data = get_eligible_input_data(mr)
+
+            mr.elegible_round_data = [entry[0] for entry in data]
+            mr.save()
+
             total_pot = mr.amount
             print(mr, f"{len(data)} earnings to process")
             results = []
             try:
-                results = clr.run_calc(data, total_pot)
+                results = clr.run_calc([entry[1:] for entry in data], total_pot)
             except ZeroDivisionError:
                 print('ZeroDivisionError; probably theres just not enough contribtuions in round')
             for result in results:
@@ -350,7 +354,7 @@ class MatchRanking(SuperModel):
         return od
 
 
-def get_eligible_input_data(mr, no_flat=False):
+def get_eligible_input_data(mr):
     from dashboard.models import Tip
     from django.db.models import Q, F
     from dashboard.models import Earning, Profile
@@ -358,7 +362,7 @@ def get_eligible_input_data(mr, no_flat=False):
     network = 'mainnet'
     earnings = Earning.objects.filter(created_on__gt=mr.valid_from, created_on__lt=mr.valid_to)
     # filter out earnings that have invalid info (due to profile deletion), or dont have a USD value, or are not on the correct network
-    earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False)
+    earnings = earnings.filter(to_profile__isnull=False, from_profile__isnull=False, value_usd__isnull=False, network=network)
     # filter out staff earnings
     earnings = earnings.exclude(to_profile__user__is_staff=True)
     # filter out self earnings
@@ -373,10 +377,6 @@ def get_eligible_input_data(mr, no_flat=False):
     excluded_profiles = SquelchProfile.objects.filter(active=True).values_list('profile__id', flat=True)
     earnings = earnings.exclude(to_profile__in=excluded_profiles)
     earnings = earnings.exclude(from_profile__in=excluded_profiles)
-
-    # output
-    if no_flat:
-        return earnings
 
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
     return [[ele[0], ele[1], float(ele[2])] for ele in earnings]
