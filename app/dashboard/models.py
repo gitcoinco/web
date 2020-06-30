@@ -279,8 +279,15 @@ class Bounty(SuperModel):
     WORK_IN_PROGRESS_STATUSES = ['reserved', 'open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
+    WEB3_TYPES = (
+        ('legacy_gitcoin', 'Legacy Bounty'),
+        ('bounties_network', 'Bounties Network'),
+        ('qr', 'QR Code'),
+        ('web3_modal', 'Web3 Modal')
+    )
+
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
-    web3_type = models.CharField(max_length=50, default='bounties_network')
+    web3_type = models.CharField(max_length=50, choices=WEB3_TYPES, default='bounties_network')
     title = models.CharField(max_length=1000)
     web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
@@ -1337,7 +1344,8 @@ class BountyFulfillment(SuperModel):
     PAYOUT_TYPE = [
         ('bounties_network', 'bounties_network'),
         ('qr', 'qr'),
-        ('fiat', 'fiat')
+        ('fiat', 'fiat'),
+        ('web3_modal', 'web3_modal')
     ]
 
     TENANT = [

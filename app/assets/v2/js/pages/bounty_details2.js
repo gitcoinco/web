@@ -38,6 +38,7 @@ Vue.mixin({
           projectModal(vm.bounty.pk);
         }
         vm.staffOptions();
+        vm.fetchIfPendingFulfillments();
       }).catch(function(error) {
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
@@ -279,7 +280,7 @@ Vue.mixin({
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
       const amount = vm.fulfillment_context.amount;
       const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
-      const bounty_owner_address = vm.bounty.bounty_owner_address;
+      const funder_address = vm.bounty.bounty_owner_address;
       const tenant = vm.getTenant(token_name);
 
       const payload = {
@@ -287,7 +288,7 @@ Vue.mixin({
         tenant: tenant,
         amount: amount * 10 ** decimals,
         token_name: token_name,
-        bounty_owner_address: bounty_owner_address,
+        funder_address: funder_address,
         payout_tx_id: payout_tx_id
       };
 
@@ -327,6 +328,12 @@ Vue.mixin({
 
         payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
       });
+    },
+    payWithWeb3Step: function(fulfillment_id, fulfiller_address) {
+      let vm = this;
+      const modal = this.$refs['payout-modal'][0];
+
+      payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
     },
     closeBounty: function() {
 
@@ -416,6 +423,23 @@ Vue.mixin({
       );
 
     },
+    fetchIfPendingFulfillments: function() {
+      let vm = this;
+
+      const pendingFulfillments = vm.bounty.fulfillments.filter(fulfillment =>
+        fulfillment.payout_status == 'pending'
+      );
+
+      if (pendingFulfillments.length > 0) {
+        if (!vm.pollInterval) {
+          vm.pollInterval = setInterval(vm.fetchBounty, 60000);
+        }
+      } else {
+        clearInterval(vm.pollInterval);
+        vm.pollInterval = null;
+      }
+      return;
+    },
     stopWork: function(isOwner) {
       let text = isOwner ?
         'Are you sure you would like to stop this user from working on this bounty ?' :
@@ -478,6 +502,8 @@ Vue.mixin({
         vm.fulfillment_context.active_step = 'payout_amount';
       } else if (fulfillment.payout_type == 'qr') {
         vm.fulfillment_context.active_step = 'check_wallet_owner';
+      } else if (fulfillment.payout_type == 'web3_modal') {
+        vm.fulfillment_context.active_step = 'payout_amount';
       }
     }
   },
@@ -528,7 +554,8 @@ if (document.getElementById('gc-bounty-detail')) {
         decimals: 18,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
-        quickLinks: []
+        quickLinks: [],
+        pollInterval: null
       };
     },
     mounted() {
