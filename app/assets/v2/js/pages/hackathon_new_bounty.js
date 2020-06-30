@@ -69,8 +69,8 @@ Vue.mixin({
       const apiUrlAmount = `/sync/get_amount?amount=1&denomination=${token}`;
       const getAmountData = fetchData(apiUrlAmount, 'GET');
 
-      $.when(getAmountData).then((response) => {
-        vm.coinValue = response.usdt;
+      $.when(getAmountData).then(tokens => {
+        vm.coinValue = tokens[0].usdt;
         vm.calcValues('usd');
 
       }).catch((err) => {
