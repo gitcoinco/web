@@ -542,9 +542,9 @@ def get_notification_count(profile, days_ago, from_date):
     try:
         notifications_count = Notification.objects.filter(to_user=profile.user.id, is_read=False, created_on__range=[to_date, from_date]).count()
     except Notification.DoesNotExist:
-        pass        
+        pass
     except AttributeError:
-        pass        
+        pass
     return notifications_count
 
 def email_to_profile(to_email):
@@ -559,7 +559,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
     from townsquare.utils import is_email_townsquare_enabled, is_there_an_action_available
     from marketing.views import upcoming_dates, email_announcements, trending_avatar
     sub = get_or_save_email_subscriber(to_email, 'internal')
-    
+
     email_style = 26
 
     # Get notifications count from the Profile.User of to_email
@@ -850,10 +850,10 @@ def render_grant_update(to_email, activity):
 
 def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_round_end=(2020, 4, 7), next_round=6, next_round_start=(2020, 6, 15), next_round_end=(2020, 6, 29), match_pool='175k'): # Round 5: 3/23/2020 — 4/7/2020; Round 6: 6/15/2020 — 6/29/2020 175k
     email_style = 27
-    
+
     next_round_start = datetime.datetime(*next_round_start).strftime("%B %dth")
     next_round_end = datetime.datetime(*next_round_end).strftime("%B %dth %Y")
-    
+
     prev_grants = []
     profile = email_to_profile(to_email)
     subscriptions = profile.grant_contributor.all()
@@ -1396,7 +1396,7 @@ def grant_update(request):
 def grant_recontribute(request):
     response_html, _ = render_grant_recontribute(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
-    
+
 def grant_txn_failed(request):
     failed_contrib = Contribution.objects.filter(subscription__contributor_profile__user__email=settings.CONTACT_EMAIL).exclude(validator_passed=True).first()
     response_html, _ = render_grant_txn_failed(settings.CONTACT_EMAIL, failed_contrib.subscription.grant, failed_contrib.tx_id)
@@ -1605,3 +1605,16 @@ def start_work_applicant_expired(request):
     bounty = Bounty.objects.last()
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
+
+
+def render_remember_your_cart(grants_query):
+    params = {
+        'base_url': settings.BASE_URL,
+        'desc': 'Only left 72 hours until the end of the match round and seems you have some grants on your cart',
+        'cart_query': grants_query
+    }
+
+    response_html = premailer_transform(render_to_string("emails/cart.html", params))
+    response_txt = render_to_string("emails/cart.txt", params)
+
+    return response_html, response_txt

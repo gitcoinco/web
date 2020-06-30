@@ -1,0 +1,5 @@
+Your cart is waiting for you
+
+{{ desc }}.
+
+Checkout your cart: {{base_url}}{%  url 'grants:grants_bulk_add' cart_query %}
