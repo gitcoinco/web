@@ -161,6 +161,7 @@ class Grant(SuperModel):
         upload_to=get_upload_filename,
         null=True,
         blank=True,
+        max_length=500,
         help_text=_('The Grant logo image.'),
     )
     logo_svg = models.FileField(
@@ -1137,6 +1138,8 @@ class Contribution(SuperModel):
         help_text=_('The why or why not validator passed'),
     )
 
+    def get_absolute_url(self):
+        return self.subscription.grant.url + '?tab=transactions'
 
     def __str__(self):
         """Return the string representation of this object."""

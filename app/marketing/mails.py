@@ -310,12 +310,13 @@ def grant_cancellation(grant, subscription):
     finally:
         translation.activate(cur_language)
 
-def grant_txn_failed(profile, grant, tx_id):
+def grant_txn_failed(failed_contrib):
+    profile, grant, tx_id = failed_contrib.subscription.contributor_profile, failed_contrib.subscription.grant, failed_contrib.tx_id
+
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
     if not to_email:
-        if profile and profile.user:
-            to_email = profile.user.email
+        to_email = profile.email
     if not to_email:
         return
 
@@ -325,7 +326,7 @@ def grant_txn_failed(profile, grant, tx_id):
 
     try:
         setup_lang(to_email)
-        html, text = render_grant_txn_failed(to_email, grant, tx_id)
+        html, text = render_grant_txn_failed(failed_contrib)
         send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)

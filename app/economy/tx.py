@@ -204,7 +204,7 @@ def grants_transaction_validator(contribution):
             delta1 = float(token_transfer['token_amount_decimal']) - float(contribution.subscription.amount_per_period_minus_gas_price)
             delta2 = float(token_transfer['token_amount_decimal']) - float(contribution.subscription.amount_per_period)
             threshold = float(float(abs(contribution.subscription.amount_per_period_minus_gas_price)) * float(validation_threshold_pct))
-            validation['passed'] = abs(delta1) <= threshold or abs(delta2) <= threshold
+            validation['passed'] = (abs(delta1) <= threshold or abs(delta2) <= threshold) or (abs(delta1) <= validation_threshold_total or abs(delta2) <= validation_threshold_total)
             validation['comment'] = f"Transfer Amount is off by {round(delta1, 2)} / {round(delta2, 2)}"
 
 
@@ -254,6 +254,7 @@ def get_token_recipient_senders(recipient_address, token_address):
 auth = settings.ALETHIO_KEY
 headers = {'Authorization': f'Bearer {auth}'}
 validation_threshold_pct = 0.05
+validation_threshold_total = 0.05
 
 def get_token_originators(to_address, token, from_address='', return_what='transfers', tx_id='', amounts=[]):
     address = to_address
@@ -307,7 +308,7 @@ def get_token_originators(to_address, token, from_address='', return_what='trans
             for amount in amounts:
                 delta = abs(float(abs(_value_decimal)) - float(abs(amount)))
                 threshold = (float(abs(amount)) * validation_threshold_pct)
-                if delta < threshold:
+                if delta < threshold or delta < validation_threshold_total:
                     _this_is_the_one = True
             this_is_the_one = not len(amounts) or _this_is_the_one
             if this_is_the_one:
