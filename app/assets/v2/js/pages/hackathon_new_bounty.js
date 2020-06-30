@@ -304,6 +304,7 @@ Vue.mixin({
       if (!provider && val === '1') {
         await onConnect();
       }
+      this.getTokens()
       await this.checkForm();
     }
   }
