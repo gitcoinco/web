@@ -35,7 +35,7 @@ window.onload = function() {
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
-
+      loading_button($('.js-submit'));
       let data = {};
 
       $.each($(form).serializeArray(), function() {
