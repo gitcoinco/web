@@ -127,25 +127,33 @@ def amount(request):
     response = {}
 
     try:
-        amount = str(request.GET.get('amount'))
+        amount = str(request.GET.get('amount', '1'))
+
         if not amount.replace('.','').isnumeric():
             return HttpResponseBadRequest('not number')
-        denomination = request.GET.get('denomination', 'ETH')
-        if not denomination:
-            denomination = 'ETH'
 
-        if denomination in settings.STABLE_COINS:
-            denomination = 'USDT'
-        if denomination == 'ETH':
-            amount_in_eth = float(amount)
-        else:
-            amount_in_eth = convert_amount(amount, denomination, 'ETH')
-        amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
-        response = {
-            'eth': amount_in_eth,
-            'usdt': amount_in_usdt,
-        }
-        return JsonResponse(response)
+        denomination = request.GET.get('denomination', 'ETH')
+        tokens = denomination.split(',')
+
+        response = []
+
+        for token in tokens:
+            if token in settings.STABLE_COINS:
+                token = 'USDT'
+            if token == 'ETH':
+                amount_in_eth = float(amount)
+            else:
+                amount_in_eth = convert_amount(amount, token, 'ETH')
+            amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
+
+            response.append({
+                'token': token,
+                'amount': float(amount),
+                'eth': amount_in_eth,
+                'usdt': amount_in_usdt
+            })
+
+        return JsonResponse(response, safe=False)
     except ConversionRateNotFoundError as e:
         logger.debug(e)
         raise Http404

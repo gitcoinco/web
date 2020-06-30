@@ -169,7 +169,7 @@ Vue.component('grants-cart', {
           grant_image_css: '',
           grant_logo: '',
           grant_slug: 'gitcoin-sustainability-fund',
-          grant_title: 'Gitcoin Grants Round 6+ Development Fund',
+          grant_title: 'Gitcoin Grants Round 7+ Development Fund',
           grant_token_address: '0x0000000000000000000000000000000000000000',
           grant_token_symbol: '',
           isAutomatic: true // we add this field to help properly format the POST requests
@@ -513,6 +513,26 @@ Vue.component('grants-cart', {
       return amount.div(factor).toString(10);
     },
 
+    async applyAmountToAllGrants(grant) {
+      const preferredAmount = grant.grant_donation_amount;
+      const preferredTokenName = grant.grant_donation_currency;
+      const fallbackAmount = await this.valueToEth(preferredAmount, preferredTokenName);
+
+      this.grantData.forEach((grant, index) => {
+        const acceptedCurrencies = this.currencies[index]; // tokens accepted by this grant
+
+        if (!acceptedCurrencies.includes(preferredTokenName)) {
+          // If the selected token is not available, fallback to ETH
+          this.grantData[index].grant_donation_amount = fallbackAmount;
+          this.grantData[index].grant_donation_currency = 'ETH';
+        } else {
+          // Otherwise use the user selected option
+          this.grantData[index].grant_donation_amount = preferredAmount;
+          this.grantData[index].grant_donation_currency = preferredTokenName;
+        }
+      });
+    },
+
     /**
      * @notice Checkout flow
      */
@@ -536,7 +556,6 @@ Vue.component('grants-cart', {
           }
         });
 
-        await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
         // Get list of tokens user is donating with
@@ -732,7 +751,7 @@ Vue.component('grants-cart', {
         const tokenAddress = isEth ? '0x0000000000000000000000000000000000000000' : tokenDetails.addr;
 
         // Replace undefined comments with empty strings
-        const comment = donation.comment === undefined ? '' : donation.comment;
+        const comment = donation.grant.grant_comments === undefined ? '' : donation.grant.grant_comments;
 
         // For automatic contributions to Gitcoin, set 'gitcoin-grant-input-amount' to 100.
         // Why 100? Because likely no one will ever use 100% or a normal grant, so using
@@ -804,19 +823,23 @@ Vue.component('grants-cart', {
       return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
     },
 
-    async valueToDai(amount, tokenSymbol) {
+    valueToDai(amount, tokenSymbol, tokenPrices) {
+      const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
+      const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
+
+      return Number(amount) * Number(amountOfOne); // convert based on quantity and return
+    },
+
+    async valueToEth(amount, tokenSymbol) {
       const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
       const response = await fetch(url);
       const newAmount = await response.json();
 
-      return newAmount.usdt;
+      return newAmount[0].eth;
     },
 
-    async predictCLRMatch(grant) {
-      const rawAmount = Number(grant.grant_donation_amount);
-      let amount = await this.valueToDai(rawAmount, grant.grant_donation_currency);
-
-      const clr_prediction_curve_2d = JSON.parse(grant.grant_clr_prediction_curve);
+    async predictCLRMatch(grant, amount) {
+      const clr_prediction_curve_2d = grant.grant_clr_prediction_curve;
       const clr_prediction_curve = clr_prediction_curve_2d.map(row => row[2]);
 
       if (amount > 10000) {
@@ -877,6 +900,12 @@ Vue.component('grants-cart', {
     grantData: {
       async handler() {
         CartData.setCart(this.grantData);
+        const tokenNames = Array.from(new Set(this.grantData.map(grant => grant.grant_donation_currency)));
+
+        const priceUrl = `${window.location.origin}/sync/get_amount?denomination=${tokenNames}`;
+        const priceResponse = await fetch(priceUrl);
+        const tokenPrices = (await priceResponse.json());
+
         for (let i = 0; i < this.grantData.length; i += 1) {
           const verification_required_to_get_match = false;
 
@@ -887,7 +916,16 @@ Vue.component('grants-cart', {
             this.grantData[i].grant_donation_clr_match = 0;
           } else {
             const grant = this.grantData[i];
-            const matchAmount = await this.predictCLRMatch(grant);
+            // Convert amount to DAI
+            const rawAmount = Number(grant.grant_donation_amount);
+            const STABLE_COINS = [ 'DAI', 'SAI', 'USDT', 'TUSD', 'aDAI', 'USDC' ];
+            // All stable coins are handled with USDT (see app/app/settings.py for list)
+            const tokenName = STABLE_COINS.includes(grant.grant_donation_currency)
+              ? 'USDT'
+              : grant.grant_donation_currency;
+
+            const amount = this.valueToDai(rawAmount, tokenName, tokenPrices);
+            const matchAmount = await this.predictCLRMatch(grant, amount);
 
             this.grantData[i].grant_donation_clr_match = matchAmount ? matchAmount.toFixed(2) : 0;
           }
@@ -922,6 +960,26 @@ Vue.component('grants-cart', {
     this.grantData = CartData.loadCart();
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
+
+    // Get list of all grant IDs and unique tokens in the cart
+    const grantIds = this.grantData.map(grant => grant.grant_id);
+
+    // Fetch updated CLR curves for all grants
+    const url = `${window.location.origin}/grants/v1/api/clr?pks=${grantIds.join(',')}`;
+    const response = await fetch(url);
+    const clrCurves = (await response.json()).grants;
+
+    // Update CLR curves
+    this.grantData.forEach((grant, index) => {
+      // Find the clrCurves entry with the same grant ID as this grant
+      const clrIndex = clrCurves.findIndex(item => {
+        return Number(item.pk) === Number(grant.grant_id);
+      });
+
+      // Replace the CLR prediction curve
+      this.grantData[index].grant_clr_prediction_curve = clrCurves[clrIndex].clr_prediction_curve;
+    });
+
     // Wait until we can load token list
     let elapsedTime = 0;
     let delay = 50; // 50 ms debounce

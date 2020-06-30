@@ -35,5 +35,6 @@ class Command(BaseCommand):
             start_time = time.time()
             print(f"{profile.pk} at {round(start_time,2)}")
             Investigation.investigate_sybil(profile)
+            profile.save()
             the_time = time.time() - start_time
             print(f"END {profile.pk} after {round(the_time,2)} s")

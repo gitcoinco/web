@@ -122,7 +122,7 @@ class Token(SuperModel):
     image = models.CharField(max_length=255, null=True)
     rarity = models.CharField(max_length=255, null=True)
     tags = models.CharField(max_length=255, null=True, db_index=True)
-    artist = models.CharField(max_length=255, null=True, blank=True)
+    artist = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     platform = models.CharField(max_length=255, null=True, blank=True)
     external_url = models.CharField(max_length=255, null=True)
     background_color = models.CharField(max_length=255, null=True)
@@ -158,7 +158,7 @@ class Token(SuperModel):
     def artist_others(self):
         if not self.artist:
             return Token.objects.none()
-        return Token.objects.filter(artist=self.artist)
+        return Token.objects.filter(artist=self.artist, num_clones_allowed__gt=1, hidden=False)
 
     @property
     def static_image(self):

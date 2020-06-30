@@ -906,6 +906,7 @@ body.green.offer_view .announce {
 .townsquare_block-header.closed::after {
   content: "^"
 }
+
 #status .btn-group-toggle .btn-radio {
   background-color: var(--badge-blue-bg);
   color: var(--badge-blue-text);
