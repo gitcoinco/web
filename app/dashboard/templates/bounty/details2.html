@@ -271,7 +271,7 @@
                         <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                         </span>
-                        <p v-if="fulfillment.payout_type == 'qr'" class="font-smaller-4 my-0">
+                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0">
                           <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
@@ -283,6 +283,12 @@
                         <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
+                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0">
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
                       </template>
 
                       <template v-else>
@@ -305,7 +311,7 @@
                         <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                         </span>
-                        <p class="font-smaller-4 my-0">
+                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0">
                           <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                             <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
@@ -316,7 +322,7 @@
                         <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
-                        <p class="font-smaller-4 my-0">
+                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0">
                           <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
@@ -899,10 +905,9 @@
       <p>{{ noscript.issue_description_text }}</p>
     </noscript>
 
-    <!-- <script src="https://www.paypal.com/sdk/js?client-id=ARv6LvORvfM1li08HYFgy9HLH919lF7KP8Piqfia1HyQ4y7hg6oRgz5C8K03LLLzKhjn91-Dpz2pWkoK"></script> -->
-
-    <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
-
+    {% if PYPL_CLIENT_ID %}
+      <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
+    {% endif %}
     <script>
       document.issueURL = '{{ issueURL }}';
 
