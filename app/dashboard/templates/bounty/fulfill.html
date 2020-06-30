@@ -95,7 +95,7 @@
 
                     <div class="mt-2">
                       <label class="form__label" for="payoutAddress">{% trans "Payout Address" %}</label>
-                      {% if is_bounties_network %}
+                      {% if is_bounties_network or bounty.web3_type == 'web3_modal' %}
                         <span class="font-weight-semibold" onclick="fetchFromWeb3Wallet()" style="cursor: pointer; color: grey; font-size: 10px;">
                           [ sync with web3 wallet ]
                         </span>

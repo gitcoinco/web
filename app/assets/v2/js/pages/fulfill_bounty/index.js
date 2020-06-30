@@ -10,7 +10,7 @@ const fetchFromWeb3Wallet = () => {
 }
 
 window.addEventListener('dataWalletReady', function(e) {
-  if (is_bounties_network) {
+  if (is_bounties_network || web3_type === 'web3_modal') {
     fetchFromWeb3Wallet();
   }
 }, false);
