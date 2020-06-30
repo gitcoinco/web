@@ -364,7 +364,7 @@ Vue.mixin({
         return;
       }
 
-      if (vm.contxt.is_staff) {
+      if (vm.contxt.is_staff && !vm.quickLinks.length) {
         vm.quickLinks.push({
           label: 'View in Admin',
           href: `/_administrationdashboard/bounty/${vm.bounty.pk}/change/`,
