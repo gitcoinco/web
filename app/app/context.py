@@ -31,6 +31,7 @@ from chat.tasks import get_chat_url
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
+from marketing.models import StatsTag
 from marketing.utils import handle_marketing_callback
 from perftools.models import JSONStore
 from retail.helpers import get_ip
@@ -46,6 +47,11 @@ def fetchPost(qt='2'):
     jsonstores = JSONStore.objects.filter(view='posts', key='posts')
     if jsonstores.exists():
         return jsonstores.first().data
+
+
+@cached_as(StatsTag.objects.filter(active=True).values_list('key', 'search_string', 'value'), timeout=1)
+def get_stats_tags():
+    return list(StatsTag.objects.filter(active=True).values_list('key', 'search_string', 'value'))
 
 
 @cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=1200)
@@ -129,15 +135,25 @@ def preprocess(request):
     ) - timezone.now()).days)
     max_length = 600 + max_length_offset
 
+    custom_ga_code = 'GTM-WVPQHKX'
+    stats_tags = get_stats_tags()
+    for ele in stats_tags:
+        # ('google_analytics', 'explorer', 'UA-103332191-8')
+        if ele[0] == 'google_analytics':
+            if request.path and ele[1].lower() in request.path.lower():
+                custom_ga_code = ele[2]
+
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
         'max_length': max_length,
         'max_length_offset': max_length_offset,
         'chat_url': chat_url,
+        'chat_url': chat_url,
         'base_url': settings.BASE_URL,
         'chat_id': chat_id,
         'chat_access_token': chat_access_token,
+        'custom_ga_code': custom_ga_code,
         'github_handle': request.user.username.lower() if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,

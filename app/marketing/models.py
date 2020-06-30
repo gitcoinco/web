@@ -28,7 +28,6 @@ from django.dispatch import receiver
 
 from economy.models import SuperModel
 
-
 class Alumni(SuperModel):
 
     profile = models.ForeignKey(
@@ -42,6 +41,23 @@ class Alumni(SuperModel):
 
     def __str__(self):
         return f"{self.profile} - {self.organization} - {self.comments}"
+
+
+class StatsTag(SuperModel):
+    # Custom Google Analytics/Tag Manager
+    
+    KEY_TYPES = [
+        ('google_analytics', 'google_analytics'),
+        ('other', 'other'),
+    ]
+
+    key = models.CharField(max_length=255, db_index=True, choices=KEY_TYPES)
+    search_string = models.CharField(max_length=255, db_index=True, blank=True)
+    value = models.TextField(max_length=5000, blank=True)
+    active = models.BooleanField(default=True, db_index=True)
+
+    def __str__(self):
+        return f"{self.key} - {self.value}"
 
 
 class EmailSubscriber(SuperModel):
