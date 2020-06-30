@@ -54,6 +54,21 @@
 </p>
 </div>
 
+<HR>
+
+<div>
+  <p style="margin: 5px; border-radius: 5px;">
+    You have in your cart the following grants:
+  </p>
+  <ol>
+    {% for grant in grants %}
+      <li><b>{{ grant.grant_title }}</b> ({{ grant.grant_donation_amount|default:5 }} {{ grant.grant_donation_currency|default:"DAI" }})</li>
+    {% endfor %}
+  </ol>
+</div>
+
+<HR>
+
 <a href={{base_url}}>
   <div style="margin-bottom: 2em; margin-top: 2em;">
     <a class="button large" href="{{base_url}}{%  url 'grants:grants_bulk_add' cart_query %}">{% trans "Go to cart" %}</a>

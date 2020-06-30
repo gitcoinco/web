@@ -27,7 +27,7 @@ from django.utils import timezone
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
 from grants.models import Contribution, Grant, CartActivity, Subscription
-from grants.views import clr_active
+from grants.views import clr_active, round_end, next_round_start
 from marketing.mails import warn_subscription_failed, remember_your_cart
 from townsquare.models import MatchRound
 
@@ -48,51 +48,45 @@ class Command(BaseCommand):
             type=bool,
             help="Should the cart being delivered partially"
         )
+        parser.add_argument(
+            '--hours',
+            type=int,
+            help="Should the cart being delivered partially"
+        )
+
 
     def handle(self, *args, **options):
-        mr = MatchRound.objects.current().first()
+        last_activity_by_user = CartActivity.objects.filter(latest=True, created_on__gt=next_round_start).exclude(metadata=[])
 
-        if mr:
-            valid_to = mr.valid_to
-            hours = int((valid_to - datetime.now()).total_seconds() / 3600)
-            if hours != 72:
-                print(f'This will be executed when left 72 hours, current left {hours}')
-                return
-
-            last_activity_by_user = (CartActivity.objects.filter(created_on__lte=valid_to,
-                                                                 created_on__gt=mr.valid_from)
-                                     .exclude(metadata=[]).values('profile')
-                                     .annotate(most_recent=Max('created_on')))
-
-            for activity_dict in last_activity_by_user:
-                activity = CartActivity.objects.get(profile_id=activity_dict['profile'],
-                                                    created_on=activity_dict['most_recent'])
-                print(activity)
-                # Check if this cart is still valid
-                no_checkout_grants = []
-                for grant_entry in activity.metadata:
-                    subscription = Subscription.objects.filter(grant_id=grant_entry['grant_id'],
-                                                               contributor_profile=activity.profile,
-                                                               created_on__gt=activity.created_on,
-                                                               created_on__lte=valid_to).first()
-
-                    if not subscription:
-                        no_checkout_grants.append(grant_entry)
-
-                if options['full_cart']:
-                    if len(no_checkout_grants) != len(activity.metadata):
-                        print(f' * Activity {activity.id}: The grants were partially contributed but no notification will be delivered')
-                        continue
-
-                cart_query = [f'{grant["grant_id"]};{grant.get("grant_donation_amount", 5)};{grant.get("token_local_id", 283)}'
-                              for grant in no_checkout_grants]
-
-                cart_query = ','.join(cart_query)
-
-                if not options['test']:
-                    remember_your_cart(activity.profile, cart_query)
-
+        if options.get('hours'):
+            hours = options.get('hours')
         else:
-            print('== No matching round active')
+            hours = int((round_end - datetime.now()).total_seconds() / 3600)
 
-        print("finished CLR estimates")
+        for activity in last_activity_by_user:
+            print(activity)
+
+            # Check if this cart is still valid
+            no_checkout_grants = []
+            for grant_entry in activity.metadata:
+                subscription = Subscription.objects.filter(grant_id=grant_entry['grant_id'],
+                                                           contributor_profile=activity.profile,
+                                                           created_on__gt=activity.created_on,
+                                                           created_on__lte=round_end).first()
+
+                if not subscription:
+                    no_checkout_grants.append(grant_entry)
+
+            if options['full_cart']:
+                if len(no_checkout_grants) != len(activity.metadata):
+                    print(f' * Activity {activity.id}: The grants were partially contributed but no notification will be delivered')
+                    continue
+
+            cart_query = [f'{grant["grant_id"]};{grant.get("grant_donation_amount", 5)};{grant.get("token_local_id", 283)}'
+                          for grant in no_checkout_grants]
+
+            cart_query = ','.join(cart_query)
+
+            if not options['test']:
+                remember_your_cart(activity.profile, cart_query, no_checkout_grants, hours)
+

@@ -1607,11 +1607,12 @@ def start_work_applicant_expired(request):
     return HttpResponse(response_html)
 
 
-def render_remember_your_cart(grants_query):
+def render_remember_your_cart(grants_query, grants, hours):
     params = {
         'base_url': settings.BASE_URL,
-        'desc': 'Only left 72 hours until the end of the match round and seems you have some grants on your cart',
-        'cart_query': grants_query
+        'desc': f'Only left {hours} hours until the end of the match round and seems you have some grants on your cart',
+        'cart_query': grants_query,
+        'grants': grants
     }
 
     response_html = premailer_transform(render_to_string("emails/cart.html", params))

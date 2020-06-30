@@ -2,4 +2,9 @@ Your cart is waiting for you
 
 {{ desc }}.
 
+Your cart grants:
+{% for grant in grants %}
+  - {{ grant.grant_title }}  ({{ grant.grant_donation_amount|default:5 }} {{ grant.grant_donation_currency|default:"DAI" }})
+{% endfor %}
+
 Checkout your cart: {{base_url}}{%  url 'grants:grants_bulk_add' cart_query %}

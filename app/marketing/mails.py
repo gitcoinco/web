@@ -1904,7 +1904,7 @@ def fund_request_email(request, to_emails, is_new=False):
             translation.activate(cur_language)
 
 
-def remember_your_cart(profile, cart_query):
+def remember_your_cart(profile, cart_query, grants, hours):
     to_email = profile.email
     from_email = settings.CONTACT_EMAIL
 
@@ -1912,7 +1912,7 @@ def remember_your_cart(profile, cart_query):
     try:
         setup_lang(to_email)
         subject = "🛒 Your grant cart is waiting for you 🛒"
-        html, text = render_remember_your_cart(cart_query)
+        html, text = render_remember_your_cart(cart_query, grants, hours)
 
         if not should_suppress_notification_email(to_email, 'grant_updates'):
             send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
