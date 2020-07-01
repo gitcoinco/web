@@ -106,7 +106,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     {% if difficulty_level == 'Created' %} 
                      <td>
                        <span> 
-                         <a class="btn btn-outline-secondary" style="position: relative; margin-left: 19.5px;" id="edit_quest" title="Edit your Quest" role="button" href="{{quest.edit_url}}"><span><i class="fa fa-cog"></i></span></a>
+                         <a class="btn btn-outline-secondary" style="position: relative; bottom: -2.5px; margin-left: 2.5px;" title="Edit your Quest" role="button" href="{{quest.edit_url}}"><span><i class="fa fa-cog"></i></span> Edit</a>
                        </span> 
                     </td>
                     {% endif %}
@@ -122,20 +122,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                  {% if beaten %}
                    <span>
                     <td>
-                    <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary" title="Quest Beaten"><span>✅</span></a>
+                    <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-outline-success disabled" title="Quest Beaten"><span>✅</span> Beaten</a>
                     </td>
                    </span>
                  {% elif cooldown %}
                     <td>
                     <span>
-                  <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary disabled" title="In Cooldown Period"><span> 🥶 </span></a>
+                  <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary disabled" title="In Cooldown Period"><span>🥶</span> Cold</a>
                     </td>
                     </span>
                  {% elif unlocked %}
                  <div>
                     <td>
                     <span> 
-                      <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;"  class="btn btn-outline-success" title="Live the web3" role="button" href="{{quest.url}}"><span><i class="fa fa-gamepad fa-6"></i></span></a>
+                      <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;"  class="btn btn-outline-primary" title="Live the web3" role="button" href="{{quest.url}}"><span><i class="fa fa-gamepad"></i></span> Play it</a>
                     </span>
                     </td>
                  </div>
@@ -144,7 +144,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <td>
                     <span>
                     {% if quest.unlocked_by_hackathon %}
-                    <a href="{{quest.unlocked_by_hackathon.url}}" target="_blank" style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒</a>
+                    <a href="{{quest.unlocked_by_hackathon.url}}" target="_blank" style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒Unlock</a>
                     {% else %}
                         beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
                     </span>
