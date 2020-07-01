@@ -1,8 +1,7 @@
-<div class="modal fade" id="createTokenModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
+  <div class="modal fade" id="createTokenModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" style="max-width: 576px;" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create a Personal Token</h5>
+      <form class="modal-body my-4 mx-5 py-3">
         <button
           type="button"
           class="close"
@@ -11,68 +10,96 @@
         >
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <form class="modal-body">
-        <div class="form-group">
-          <label for="createPTokenName">Token Name</label>
+        <h5 class="modal-title font-weight-semibold mb-5">Create a Personal Token</h5>
+
+        <div class="`form-group align-items-center mb-4">
+          <label style="width: 100px" class="d-inline-block font-weight-semibold" for="createPTokenName">Name:</label>
           <input
+            style="width: 75%"
             type="text"
-            class="form-control"
+            :class="`form-control d-inline-block ${newPToken.is_valid_name && 'is-invalid' || ''}`"
             id="createPTokenName"
             aria-describedby="tokenName"
-            placeholder="My Token"
+            placeholder="Auryn's Token"
+            required
             v-model="newPToken.name"
           />
+          <div class="invalid-feedback">
+            Please provide a name.
+          </div>
         </div>
-        <div class="form-group">
-          <label for="createPTokenSymbol">Symbol</label>
+        <div class="form-group align-items-center mb-4">
+          <label style="width: 100px" class="d-inline-block font-weight-semibold" for="createPTokenSymbol">Symbol:</label>
           <input
             type="text"
-            class="form-control"
+            style="width: 75%"
+            :class="`form-control d-inline-block ${newPToken.is_valid_symbol && 'is-invalid' || ''}`"
             id="createPTokenSymbol"
             aria-describedby="tokenSymbol"
-            placeholder="TOK"
+            required
+            placeholder="AUR"
             v-model="newPToken.symbol"
           />
+          <div class="invalid-feedback">
+            Please provide the token symbol
+          </div>
         </div>
-        <div class="form-group">
-          <label for="createPTokenPrice">Price (in DAI)</label>
+        <div class="`form-group align-items-center mb-4">
+          <label style="width: 100px" class="d-inline-block font-weight-semibold" for="createPTokenPrice">Price:</label>
           <input
             type="number"
-            class="form-control"
+            style="width: 75%"
+            :class="`form-control d-inline-block ${newPToken.is_invalid_price && 'is-invalid' || ''}`"
             id="createPTokenPrice"
             aria-describedby="tokenPrice"
-            placeholder="50"
+            required
+            placeholder="50 DAI"
             v-model="newPToken.price"
           />
+          <br>
+          <div class="invalid-feedback">
+            Please provide an initial price for your token
+          </div>
         </div>
-        <div class="form-group">
-          <label for="createPTokenSupply">Supply</label>
+        <div class="form-group align-items-center mb-4">
+          <label style="width: 100px" class="d-inline-block font-weight-semibold" for="createPTokenSupply">Supply:</label>
           <input
             type="number"
-            class="form-control"
+            style="width: 75%"
+            :class="`d-inline-block form-control ${newPToken.is_invalid_supply && 'is-invalid' || ''}`"
             id="createPTokenSupply"
             aria-describedby="tokenSupply"
-            placeholder="10"
+            required
+            placeholder="10 PROOF"
             v-model="newPToken.supply"
           />
+          <br>
+          <div class="invalid-feedback">
+            Please provide a supply amount
+          </div>
         </div>
-        <div class="form-check">
+        <div class="form-check mb-5">
           <input
             type="checkbox"
-            class="form-check-input"
+            :class="`form-check-input ${newPToken.is_invalid_tos && 'is-invalid' || ''}`"
+            v-model="newPToken.tos"
             required
             id="TOSCheck"
           />
           <small id="TOSText" class="form-check-label"
-            >I have read, understand, and agree to, the Terms of Service.</small
+            >I have read, understand, and agree to the <a href="https://gitcoin.co/terms">Terms of Servive</a> .</small
           >
+          <br>
+          <div class="invalid-feedback">
+            You must agree before submitting.
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="createPToken">
+        <div class="text-center">
+          <button type="button" class="btn btn-lg btn-gc-blue mb-3 px-5" @click="createPToken">
             Confirm
           </button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          <br>
+          <button type="button" class="btn btn-lg btn-outline-gc-blue px-5" data-dismiss="modal">
             Cancel
           </button>
         </div>

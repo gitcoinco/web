@@ -204,6 +204,48 @@ Vue.mixin({
     async createPToken() {
       try {
         // TODO: Show loading while deploying
+        let price = this.newPToken.price;
+        let supply = this.newPToken.supply;
+        let stopFlow;
+
+        if (this.newPToken.name === '') {
+          this.newPToken.is_invalid_name = true;
+          !stopFlow && (stopFlow = true);
+        } else {
+          this.newPToken.is_invalid_name = false;
+        }
+
+        if (this.newPToken.symbol === '') {
+          this.newPToken.is_invalid_symbol = true;
+          !stopFlow && (stopFlow = true);
+        } else {
+          this.newPToken.is_invalid_symbol = false;
+        }
+
+        if (isNaN(price) || price <= 0) {
+          this.newPToken.is_invalid_price = true;
+          !stopFlow && (stopFlow = true);
+        } else {
+          this.newPToken.is_invalid_price = false;
+        }
+
+        if (isNaN(supply) || supply <= 0) {
+          this.newPToken.is_invalid_supply = true;
+          !stopFlow && (stopFlow = true);
+        } else {
+          this.newPToken.is_invalid_supply = false;
+        }
+
+        if (!this.newPToken.tos) {
+          this.newPToken.is_invalid_tos = true;
+          !stopFlow && (stopFlow = true);
+        } else {
+          this.newPToken.is_invalid_tos = false;
+        }
+
+        if (stopFlow)
+          return;
+
         this.newPToken.deploying = true;
         await this.deployAndSaveToken();
         this.newPToken.deploying = false;
