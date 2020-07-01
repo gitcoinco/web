@@ -89,6 +89,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <th scope="col">Play</th>
                   {% if difficulty_level == 'Created' %} 
                   <th scope="col">Ownership</th>
+                  {% else %}
+                  <th scope="col">Quest Owner</th>
                   {% endif %}
          </tr>
       </thead>
@@ -110,14 +112,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                    ( 🥶 In Cooldown Period)
                     </td>
                  {% elif unlocked %}
+                 <div>
                     <td>
-                    <span> <a style="position: relative; bottom: 3px; left: 0px;"  class="fa fa-gamepad fa-6" role="button" href="{{quest.url}}"></a></span>
+                    <span> <a style="position: relative; bottom: 3px; margin-left: 5px;"  class="fa fa-gamepad fa-6" role="button" href="{{quest.url}}"></a></span>
                     </td>
+                  </div>
                  {% if difficulty_level == 'Created' %} 
                      <td>
-                       <span> <a style="position: relative; bottom: 3px; left: 0px;" class="mt-2" role="button" href="{{quest.edit_url}}">(Edit Quest)</a></span>
+                       <span> 
+                         <a style="position: relative; bottom: 3px; left: 0px;" class="mt-2" role="button" href="{{quest.edit_url}}">(Edit Quest)</a>
+                       </span>
                   {% endif %} 
-                       </td>
+                    </td>
                   
                   {% else %}
                     <td>
@@ -128,6 +134,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
                     </td>
                   {% endif %}
+                  {% endif %}
+                  {% if not difficulty_level == 'Created' %}
+                  <td>
+                  <span>
+                   <a href="/profile/{{profile.handle}}"> 
+                    <img data-src="/dynamic/avatar/{{profile.handle}}" title="{{profile.handle}}" style="margin-left: 20px; width: 25px; height: 25px; border-radius: 15px;">
+                   </a>
+                  </span>
+                  </td>
                   {% endif %}
                 </tr>
              </tbody>
