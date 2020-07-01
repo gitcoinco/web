@@ -33,13 +33,22 @@
   .grant-txn-id a {
     overflow-wrap: break-word;
   }
+  .grant-txn-msg li,
+  .grant-txn-msg a{
+    line-height: 16px;
+    margin-top: 3px;
+    margin-bottom: 10px;
+  }
 </style>
 
 <h1>Grants transaction failed, try again?</h1>
 
 <div class="grant-txn-msg">
   <p>
-    Your contribution to <b>{{ grant_title }}</b> failed due to a technical issue.
+    Your contribution to these grants failed due to a technical issue.
+    {% for grant in grants %}
+      <li st><a href="{{grant.url}}">{{grant.title}}</a></li>
+    {% endfor %}
   </p>
 </div>
 

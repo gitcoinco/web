@@ -36,6 +36,7 @@ from dashboard.helpers import UnsupportedSchemaException, normalize_url, process
 from dashboard.models import Activity, BlockedUser, Bounty, BountyFulfillment, Profile, UserAction
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
+from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -487,12 +488,16 @@ def sync_payout(fulfillment):
     if not token_name:
         token_name = fulfillment.bounty.token_name
 
-    if token_name == 'ETC':
-        sync_etc_payout(fulfillment)
-    elif token_name == 'cUSD' or token_name == 'cGLD':
-        sync_celo_payout(fulfillment)
-    elif token_name == 'ZIL':
-        sync_zil_payout(fulfillment)
+    if fulfillment.payout_type == 'web3_modal':
+        sync_eth_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'qr':
+        if token_name == 'ETC':
+            sync_etc_payout(fulfillment)
+        elif token_name == 'cUSD' or token_name == 'cGLD':
+            sync_celo_payout(fulfillment)
+        elif token_name == 'ZIL':
+            sync_zil_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):

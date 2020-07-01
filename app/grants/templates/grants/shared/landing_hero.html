@@ -4,7 +4,9 @@
           <div class="row">
             <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
               <p class="p-3 font-header">
-                <strong style="font-size: 24px;">${{total_clr_pot|intcomma}} matching going on now.</strong>
+                <strong>
+                  <span class="title-round"><span class="amount-round">${{total_clr_pot|intcomma}}</span> matching going on now.</span>
+                </strong>
                 <BR>
                 Matching ends on {{round_end|date:'Y-m-d'}} at noon EST.
                 <span style="">(<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so contribute today!</span>

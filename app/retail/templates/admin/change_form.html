@@ -5,6 +5,7 @@
     <div class="submit-row">
         {% if 'dashboard/profile' in request.build_absolute_uri %}
             <input type="submit" value="Impersonate" name="_impersonate" value="1">
+            <input type="submit" value="Recalculate Sybil Investigation" name="_recalc_sybil" value="1">
             <input type="submit" value="Recalculate Profile Frontend" name="_recalc_flontend" value="1">
         {% elif 'dashboard/activity' in request.build_absolute_uri %}
             <input type="submit" value="Make Into Nano Bounty" name="_make_nano_bounty" value="1">
@@ -22,6 +23,9 @@
             <input type="submit" value="Make into Bulk Transfer Coupon" name="btc_coupon" value="1">
         {% elif 'grants/contribution' in request.build_absolute_uri %}
             <input type="submit" value="Pull Contrib Status" name="_update_tx_status" value="1">
+            {% if not original.success %}
+                <input type="submit" value="Notify User of Contribution Failure" name="_notify_contribution_failure" value="1">
+            {% endif %}
         {% elif 'kudos/tokenrequest' in request.build_absolute_uri %}
             <input type="submit" value="Change Owner + Mint + Sync Kudos" name="_change_owner_mint_kudos" value="1">
             <input type="submit" value="Mint + Sync Kudos" name="_mint_kudos" value="1">

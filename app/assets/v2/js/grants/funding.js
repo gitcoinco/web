@@ -71,7 +71,7 @@ $(document).ready(function() {
     // Get fallback amount in ETH (used when token is not available for a grant)
     const url = `${window.location.origin}/sync/get_amount?amount=${preferredAmount}&denomination=${preferredTokenName}`;
     const response = await fetch(url);
-    const fallbackAmount = (await response.json()).eth;
+    const fallbackAmount = (await response.json())[0].eth;
 
     // Update cart values
     cartData.forEach((grant, index) => {

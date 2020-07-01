@@ -19,9 +19,9 @@
   <div class="row align-items-center px-4 py-5 text-center text-lg-left mx-lg-5">
     <div class="col-lg-6 offset-xl-1 col-xl-5 col-sm-12 py-5 px-5">
       <h3>{% trans "To continue," %} <br>
-        {% trans "you'll need to connect Metamask." %}</h3>
-      <p class="my-4">{% trans "Please connect MetaMask and refresh this page to continue." %}</p>
-      <button class="btn btn-metamask btn-lg-padding" onclick="approve_metamask()">{% trans 'Connect Metamask' %}</button>
+        {% trans "you'll need to connect a Wallet." %}</h3>
+      <p class="my-4">{% trans "Please connect a Wallet and refresh this page to continue." %}</p>
+      <button class="btn btn-metamask btn-lg-padding" onclick="onConnect()">{% trans 'Connect Wallet' %}</button>
       <p class="mt-4 font-smaller-2">{% trans "Can't get web3 to work?" %}   <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Get help here." %}</a></p>
     </div>
     <div class="col-lg-6 col-xl-5 col-sm-12 text-center">
