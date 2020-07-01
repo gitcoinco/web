@@ -88,7 +88,7 @@
         {% endif %}
       {% endfor %}
 
-      {% if listings %}
+      {% if is_last_page or suppress_more_link %}
       <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
         <a href="/kudos/new" target="_blank" class="cta-square kd-shadow">
           <div>
