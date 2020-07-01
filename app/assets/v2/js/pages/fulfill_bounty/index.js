@@ -10,7 +10,7 @@ const fetchFromWeb3Wallet = () => {
 }
 
 window.addEventListener('dataWalletReady', function(e) {
-  if (is_bounties_network) {
+  if (is_bounties_network || web3_type === 'web3_modal') {
     fetchFromWeb3Wallet();
   }
 }, false);
@@ -35,7 +35,7 @@ window.onload = function() {
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
-
+      loading_button($('.js-submit'));
       let data = {};
 
       $.each($(form).serializeArray(), function() {

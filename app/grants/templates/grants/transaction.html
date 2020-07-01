@@ -1,7 +1,13 @@
 {% load static humanize i18n grants_extra %}
-  <div class="py-3 mx-sm-0 row transaction-history">
-    <div class="d-none d-sm-block col-2 font-subheader text-center text-md-left my-auto">
-      {{ transaction.created_on|date:"d M Y" }}
+  <div class="py-2 mx-sm-0 row transaction-history" style="{% if forloop.counter|divisibleby:2 %}background-color: #f4f4f4; border-radius: 10px;{% else %}{% endif %}">
+    <div class="d-none d-sm-block col-1 col-sm-3 col-md-2 font-subheader text-center text-md-left my-auto">
+    {% if is_staff %}
+    <a href="{{transaction.admin_url}}">
+    {% endif %}      
+      {{ transaction.created_on|date:"y/m/d" }}
+    {% if is_staff %}
+    </a>
+    {% endif %}      
     </div>
     <div class="col-3 col-sm-2 col-md-1 justify-content-center special_tag">
       {% if not anonymous %}
@@ -12,7 +18,7 @@
         <img class="avatar rounded-circle" src="/dynamic/avatar/Anonymous">
       {% endif %}
     </div>
-    <div class="col-5 col-sm-4 my-auto">
+    <div class="col-2 my-auto">
       <div class="font-weight-bold font-body">
         {% if not anonymous %}
           <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
@@ -22,16 +28,10 @@
          Anonymous
         {% endif %}
       </div>
-      <div class="info font-caption">
-        {{ transaction.subscription.amount_per_period_minus_gas_price|floatformat:4|intcomma }} {{ transaction.subscription.token_symbol }}
-        {% if not transaction.tx_cleared %} (Pending) {% endif %}
-        {% if not transaction.success %} (Failed) {% endif %}
-
-        {% if transaction.success and transaction.subscription.amount_per_period_to_gitcoin %} 
-        <BR>
-        (+{{transaction.subscription.amount_per_period_to_gitcoin}}  {{ transaction.subscription.token_symbol }} optional tip to <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund">Gitcoin</a>) {% endif %}
-
-      </div>
+    </div>
+    <div class="col-1 my-auto tags font-caption">
+        {% if not transaction.tx_cleared %} <BR>(Pending) {% endif %}
+        {% if not transaction.success %} <BR>(Failed) {% endif %}
     </div>
     {% if not transaction.subscription.contributor_profile.hide_wallet_address %}
       <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
@@ -42,25 +42,29 @@
         </a>
       </div>
     {% endif %}
-      {% if is_staff %}
         <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
-          <a href="{{transaction.admin_url}}">[Staff]</a>
+          <div class="tag tag-lg token">
+            <p>
+              {{ transaction.subscription.amount_per_period_minus_gas_price|floatformat:2|intcomma }}
+              <span>{{ transaction.subscription.token_symbol }}</span>
+            </p>
+          </div>
+
         </div>
-     {% endif %}      
-    <div class="offset-lg-1 col-4 col-md-2 my-auto tags font-caption">
-      <div class="tag tag-lg token">
-        <p>
-          {{ transaction.subscription.amount_per_period_minus_gas_price|floatformat:4|intcomma }}
-          <span>{{ transaction.subscription.token_symbol }}</span>
-        </p>
-      </div>
-      {% if transaction.value_in_usdt_now %}
+    <div class="col-2 my-auto tags font-caption">
+      {% if transaction.normalized_data.amount_per_period_usdt %}
         <div class="tag tag-lg usd">
           <p>
-            {{ transaction.value_in_usdt_now }}
-            <span>USD</span>
+            (
+            $
+            {{ transaction.normalized_data.amount_per_period_usdt|floatformat:2 }} )
           </p>
         </div>
       {% endif %}
+    </div>
+    <div class="col-1 my-auto d-none d-xl-block tags font-caption">
+        {% if transaction.success and transaction.subscription.amount_per_period_to_gitcoin %} 
+        (+{{transaction.subscription.amount_per_period_to_gitcoin|floatformat:2}}  {{ transaction.subscription.token_symbol }} => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
+        {% endif %}
     </div>
   </div>

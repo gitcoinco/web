@@ -36,6 +36,8 @@ PREV_CLR_START_DATE = dt.datetime(2020, 3, 23, 12, 0)
 PREV_CLR_END_DATE = dt.datetime(2020, 4, 7, 12, 0)
 CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0)
 
+CLR_PERCENTAGE_DISTRIBUTED = 0
+
 # TODO: MOVE TO DB
 V_THRESHOLD_TECH = 25.0
 V_THRESHOLD_MEDIA = 25.0
@@ -211,7 +213,6 @@ def get_totals_by_pair(contrib_dict):
             boolean
 '''
 def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_threshold, uv_threshold, total_pot):
-    saturation_point = False
     bigtot = 0
     totals = []
     for proj, contribz in aggregated_contributions['current'].items():
@@ -238,17 +239,17 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
         bigtot += tot
         totals.append({'id': proj, 'clr_amount': tot})
 
-    if bigtot >= total_pot:
-        saturation_point = True
+    global CLR_PERCENTAGE_DISTRIBUTED
 
-    if saturation_point == True:
-        # find normalization factor
-        normalization_factor = bigtot / total_pot
-        # modify totals
-        for result in totals:
-            result['clr_amount'] = result['clr_amount'] / normalization_factor
+    if bigtot >= total_pot: # saturation reached
+        # print(f'saturation reached. Total Pot: ${total_pot} | Total Allocated ${bigtot}. Normalizing')
+        CLR_PERCENTAGE_DISTRIBUTED = 100
+        for t in totals:
+            t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
+    else:
+        CLR_PERCENTAGE_DISTRIBUTED =  (bigtot / total_pot) * 100
 
-    return totals, saturation_point
+    return totals
 
 
 
@@ -297,7 +298,7 @@ def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, v_threshold, uv_thre
     ptots = get_totals_by_pair(combinedagg)
 
     # clr calcluation
-    totals, _ = calculate_clr(combinedagg, ptots, vlist, v_threshold, uv_threshold, total_pot)
+    totals = calculate_clr(combinedagg, ptots, vlist, v_threshold, uv_threshold, total_pot)
 
     return totals
 
@@ -500,7 +501,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
             _grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
             base = _grant.clr_prediction_curve[0][1]
             _grant.last_clr_calc_date = timezone.now()
-            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=10)
+            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=20)
 
             can_estimate = True if base or _grant.clr_prediction_curve[1][1] or _grant.clr_prediction_curve[2][1] or _grant.clr_prediction_curve[3][1] else False
 
@@ -549,4 +550,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                 _grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
+
+    try :
+        Stat.objects.create(
+            key= clr_type + '_grants_round_6_saturation',
+            val=int(CLR_PERCENTAGE_DISTRIBUTED),
+        )
+    except:
+        pass
+
     return debug_output
