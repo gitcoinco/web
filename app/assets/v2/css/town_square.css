@@ -1220,7 +1220,6 @@ body.green.offer_view .announce {
 .activity.hackathon_new_hacker {
   position: relative;
   box-sizing: border-box;
-  z-index: 2;
 }
 
 .activity.hackathon_new_hacker:before {
