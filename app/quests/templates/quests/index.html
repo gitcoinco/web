@@ -113,8 +113,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   {% if not difficulty_level == 'Created' %}
                   <td>
                   <span>
-                   <a href="/profile/{{profile.handle}}"> 
-                    <img data-src="/dynamic/avatar/{{profile.handle}}" title="{{profile.handle}}" style="position: relative; margin-left: 15px; width: 30px; height: 30px; border-radius: 15px; bottom: -5px;">
+                   <a href="/profile/{{quest.creator}}"> 
+                    <img data-src="/dynamic/avatar/{{quest.creator}}" title="{{handle}}" style="position: relative; margin-left: 15px; width: 30px; height: 30px; border-radius: 15px; bottom: -5px;">
                    </a>
                   </span>
                   </td>
@@ -125,8 +125,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </td>
                  {% elif cooldown %}
                     <td>
-                   ( 🥶 In Cooldown Period)
+                    <span>
+                  <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary disabled" title="In Cooldown Period"><span> 🥶 </span></a>
                     </td>
+                    </span>
                  {% elif unlocked %}
                  <div>
                     <td>
@@ -138,11 +140,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   
                   {% else %}
                     <td>
-                    🔒Locked; To unlock
+                    <span>
                     {% if quest.unlocked_by_hackathon %}
-                       register for <a href="{{quest.unlocked_by_hackathon.onboard_url}}">{{quest.unlocked_by_hackathon.name}}</a>.
+                    <a href="{{quest.unlocked_by_hackathon.url}}" style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒</a>
                     {% else %}
                         beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
+                    </span>
                     </td>
                   {% endif %}
                   {% endif %}
