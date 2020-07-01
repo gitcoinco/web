@@ -112,6 +112,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     <script>
+      const load_kudos_images = function () {
       if ('loading' in HTMLImageElement.prototype) {
         const images = document.querySelectorAll("img[loading='lazy']");
         images.forEach(img => {
@@ -120,6 +121,9 @@
       } else {
         load_kudos_card_images()
       }
+      };
+      load_kudos_images();
+      $('.infinite-container').on('DOMSubtreeModified', load_kudos_images);
     </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
     <script>
