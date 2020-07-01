@@ -86,12 +86,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <th scope="col">Attempts</th>
                   <th scope="col">Description</th>
                   <th scope="col">Play Time</th>
-                  <th scope="col">Play</th>
                   {% if difficulty_level == 'Created' %} 
                   <th scope="col">Ownership</th>
                   {% else %}
                   <th scope="col">Quest Owner</th>
                   {% endif %}
+                  <th scope="col">Stage</th>
          </tr>
       </thead>
       {% for unlocked, beaten, cooldown, quest in the_quests %}
@@ -103,6 +103,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <td> {{quest.ui_data.attempts_count}}</td>
                     <td> {{quest.description}}</td>
                     <td> {{quest.est_total_time_required}} mins (reading) <br> {{quest.est_skim_time_mins}} mins (skimming)<br></td>
+                    {% if difficulty_level == 'Created' %} 
+                     <td>
+                       <span> 
+                         <a class="btn btn-outline-warning" style="position: relative; margin-left: 19.5px;" id="edit_quest" title="Edit your Quest" role="button" href="{{quest.edit_url}}"><span><i class="fa fa-wrench"></i></span></a>
+                       </span> 
+                    </td>
+                    {% endif %}
+                  {% if not difficulty_level == 'Created' %}
+                  <td>
+                  <span>
+                   <a href="/profile/{{profile.handle}}"> 
+                    <img data-src="/dynamic/avatar/{{profile.handle}}" title="{{profile.handle}}" style="position: relative; margin-left: 15px; width: 30px; height: 30px; border-radius: 15px; bottom: -5px;">
+                   </a>
+                  </span>
+                  </td>
+                  {% endif %}
                  {% if beaten %}
                     <td>
                     ( ✅ Quest Beaten)
@@ -114,16 +130,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                  {% elif unlocked %}
                  <div>
                     <td>
-                    <span> <a style="position: relative; bottom: 3px; margin-left: 5px;"  class="fa fa-gamepad fa-6" role="button" href="{{quest.url}}"></a></span>
+                    <span> 
+                      <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;"  class="btn btn-outline-success" title="Live the web3" role="button" href="{{quest.url}}"><span><i class="fa fa-gamepad fa-6"></i></span></a>
+                    </span>
                     </td>
-                  </div>
-                 {% if difficulty_level == 'Created' %} 
-                     <td>
-                       <span> 
-                         <a style="position: relative; bottom: 3px; left: 0px;" class="mt-2" role="button" href="{{quest.edit_url}}">(Edit Quest)</a>
-                       </span>
-                  {% endif %} 
-                    </td>
+                 </div>
                   
                   {% else %}
                     <td>
@@ -134,15 +145,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
                     </td>
                   {% endif %}
-                  {% endif %}
-                  {% if not difficulty_level == 'Created' %}
-                  <td>
-                  <span>
-                   <a href="/profile/{{profile.handle}}"> 
-                    <img data-src="/dynamic/avatar/{{profile.handle}}" title="{{profile.handle}}" style="margin-left: 20px; width: 25px; height: 25px; border-radius: 15px;">
-                   </a>
-                  </span>
-                  </td>
                   {% endif %}
                 </tr>
              </tbody>
