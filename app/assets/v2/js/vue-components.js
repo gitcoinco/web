@@ -337,7 +337,8 @@ Vue.component('showcase', {
       hackathon: document.hackathonObj,
       isEditing: false,
       showcase: document.hackathonObj.showcase,
-      top: document.hackathonObj.showcase.top || [],
+      top: document.hackathonObj.showcase.top || [{}, {}, {}],
+      sponsors: document.hackathonSponsors,
       spotlights: document.hackathonObj.showcase.spotlights || [],
       prizes: document.hackathonObj.showcase.prizes || 0,
       is_staff: document.contxt.is_staff
@@ -367,6 +368,26 @@ Vue.component('showcase', {
     }
   },
   methods: {
+    followTribe: function(handle, event) {
+      event.preventDefault();
+      let vm = this;
+
+      const url = `/tribe/${handle}/join/`;
+      const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        if (response && response.is_member) {
+          this.getSponsor(handle).followed = true;
+        } else {
+          this.getSponsor(handle).followed = false;
+        }
+      }).fail((error) => {
+        console.log(error);
+      });
+    },
+    getSponsor: function(handle) {
+      return this.sponsors.filter(sponsor => sponsor.org_name === handle)[0] || {};
+    },
     addSpotlight: function() {
       let vm = this;
       let spotlight = {
@@ -387,7 +408,7 @@ Vue.component('showcase', {
         content: vm.showcase.content,
         top: vm.top,
         spotlights: vm.spotlights,
-        prize: vm.prize
+        prizes: vm.showcase.prizes
       }), {'X-CSRFToken': vm.csrf});
 
       vm.isEditing = false;

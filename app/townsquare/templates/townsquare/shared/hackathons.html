@@ -31,13 +31,13 @@
           </div>
           <div class="mt-1 hackathon-actions">
             {% if hackathon.end|timesince <= "1 min" %}
-              <a href="{% url 'hackathon_onboard' hackathon.slug %}">
+              <a href="{% url 'hackathon_onboard' hackathon.url_slug %}">
                 Join Hackathon >
               </a>
             {% endif %}
           </div>
         </div>
-      </div>   
+      </div>
     </div>
   {% endfor %}
   <a href="https://gitcoin.co/hackathon-list/" class="view-all">View all ></a>
