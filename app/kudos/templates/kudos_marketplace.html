@@ -5,6 +5,20 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    <style>
+      .infinite-more-link {
+        display: block;
+        text-align: center;
+        border: 1px solid;
+        border-radius: 5px;
+        width: 20%;
+      }
+      .infinite-more-link:hover {
+        color: white;
+        text-decoration: none;
+        background-color: rgb(62, 0, 255);
+      }
+    </style>
   </head>
   <body class="{{ active }} bg-light g-font-muli">
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
