@@ -57,7 +57,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         last_activity_by_user = CartActivity.objects.filter(latest=True, created_on__gt=next_round_start).exclude(metadata=[])
-
+        count = 0
         if options.get('hours'):
             hours = options.get('hours')
         else:
@@ -87,6 +87,17 @@ class Command(BaseCommand):
 
             cart_query = ','.join(cart_query)
 
+            if not cart_query:
+                print(f'** No items left in the {activity.profile}\'s cart')
+                continue
+
             if not options['test']:
-                remember_your_cart(activity.profile, cart_query, no_checkout_grants, hours)
+                try:
+                    remember_your_cart(activity.profile, cart_query, no_checkout_grants, hours)
+                    count += 1
+                except Exception as e:
+                    print(f'!! Failed to sent cart reminder email to {activity.profile}')
+                    print(e)
+
+        print(f'\n\nSent {count} emails of {last_activity_by_user.count()} carts')
 
