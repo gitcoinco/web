@@ -148,6 +148,20 @@ def marketplace(request):
         increment_view_count.delay(pks, token_list.first().content_type, request.user.id, 'index')
 
     listings = token_list.order_by(order_by).cache()
+
+    # For infinite scroll:
+    page_size = 12
+    page = int(request.GET.get('page', 1))
+    next_page = page + 1
+    start_index = (page-1) * page_size
+    end_index = page * page_size
+    suppress_more_link = is_last_page = False
+    try:
+        next_first = listings[end_index]
+    except IndexError:
+        suppress_more_link = is_last_page = True
+    listings = listings[start_index:end_index]
+
     context = {
         'is_outside': True,
         'active': 'marketplace',
@@ -156,7 +170,11 @@ def marketplace(request):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
         'listings': listings,
-        'network': network
+        'network': network,
+        'suppress_more_link': suppress_more_link,
+        'is_last_page': is_last_page,
+        'next_page': next_page,
+        'target': f'/kudos/marketplace?page={next_page}'
     }
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
