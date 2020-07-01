@@ -195,32 +195,83 @@
     </div>
     </div>
 
-    <div class="content-block content-block--blue-grey">
-      <div class="container" id="results_hero">
-        <h2 class="content-block__title mb-1">{% trans "Codefund Ads Stats" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-        <h5 class="mt-0 pt-1">Codefund is an ethical advertising network.  Monetize your audience without selling them out with Codefund!</h5>
-        <div class="platform-stats-container">
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/no-contributions.svg" %}" />
-            <h3 class="single-stat__title">{{ ads_served }}</h3>
-            <p class="single-stat__subtitle">{% trans "Ethical Ads Served" %}</p>
-            <p class="single-stat__fineprint"></p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/no-contributors.svg" %}" />
-            <h3 class="single-stat__title">${{ ads_gmv }}</h3>
-            <p class="single-stat__subtitle">{% trans "Gross Marketplace Value" %}</p>
-            <p class="single-stat__fineprint"></p>
-          </div>
-          <div class="single-stat">
-            <img src="{% static "v2/images/results/avg-check.svg" %}" />
-            <h3 class="single-stat__title">{{ privacy_violations|floatformat:0 }}</h3>
-            <p class="single-stat__subtitle">{% trans "Privacy Violations" %}</p>
-            <p class="single-stat__fineprint"></p>
-          </div>
+
+    <div class="row mt-2 pb-2 text-center">
+      <div class="col">
+        <h2>Leaderboards</h2>
       </div>
     </div>
-    
+
+    <nav id="leaderboard_nav" class="nav nav-tabs">
+      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Earners</a>
+      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/payers?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Funders</a>
+      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/tokens?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Tokens</a>
+      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/keywords?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Keywords</a>
+      <a class="nav-link" href="#general_leaderboard" data-target='/leaderboard/countries?cadence=all&keyword=all&product=all' data-targetsearch='table.table'>Countries</a>
+      <a class="nav-link" href="#top-kudos-artists">Kudos Artists</a>
+      <a class="nav-link" href="#top-kudos-collectors">Kudos Collectors</a>
+      <a class="nav-link" href="#top-kudos-senders">Kudos Senders</a>
+    </nav>
+
+    <div id="leaderboard" class="activity_stream container">
+
+    <div class="row mt-3 pb-2 text-center align-items-center always_show hidden">
+      <div class="col">
+        <a class="button button--primary" role="button" href='{% url "_leaderboard" %}'
+           target="_blank" rel="noopener noreferrer">{% trans "View Leaderboard" %}</a>
+        <a class="button button--primary" role="button" href='/users'
+           target="_blank" rel="noopener noreferrer">{% trans "User Directory" %}</a>
+      </div>
+    </div>
+
+    <div id="general_leaderboard" class="leaderboard_target text-align-center mt-2">
+      <div style="margin: 30px auto">
+        Click a tab above to see a leaderboard
+      </div>
+    </div>
+    {% if not keyword and kudos_tokens %}
+      <div id="kudos_leaderboard" class="content-block content-block--white text-align-center">
+        <div class="" id="">
+
+          <div class="row">
+            <div class="col-md-12 p-1">
+              {% for kudos_leaderboard in kudos_leaderboards %}
+            <div id="{{kudos_leaderboard.0|slugify}}" class="col-md-12 p-1 hidden leaderboard_target">
+              <div class="justify-content-center align-items-center p-3 pt-1 mt-1 ">
+                <p style="text-align: center; font-size: 0.9rem;">Kudos is a digital collectible + a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the <a href="/kudos/marketplace">Kudos Marketplace</a>.</p>
+              </div>
+
+              <h4 class="m-1 p-1">{{kudos_leaderboard.0}}</h4>
+
+                {% for kudos in kudos_leaderboard.1 %}
+                  <p>
+                    <a href="/{{kudos.0}}/kudos">
+                    <img style="height: 40px;
+                      width: 40px; border-radius: 20px;" data-src="/dynamic/avatar/{{kudos.0}}">
+                      @{{kudos.0}}
+                    </a>
+                    has {{kudos_leaderboard.2}} {{kudos.2|length}} Kudos that have been sold for {{kudos.1}} ETH in {{kudos.3}} kudo transactions:
+                    <div>
+                      <a href="/{{kudos.0}}/kudos">
+                        {% for ele in kudos.2|slice:"0:50" %}
+                        <img style="height: 40px;
+                        width: 40px;" data-src="/dynamic/kudos/{{ele}}/slug">
+                        {% endfor %}
+                      </a>
+                    </div>
+                  </p>
+                {% endfor %}
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+
+    </div>
+
 
     <div class="content-block content-block--grey">
       <div class="container" >
@@ -228,7 +279,7 @@
 
         <div class="hackathon-breakdown">
           {% for hackathon in hackathons %}
-            <div>
+            <div class="{% if forloop.counter > 7 %}hidden{%endif%}" >
               {% if hackathon.1.logo %}
                 <img src="{{hackathon.1.logo}}"/>
               {%else %}
@@ -243,6 +294,8 @@
               <a href="{% url 'hackathon' hackathon.0.slug %}">View Prize Explorer</a>
             </div>
           {% endfor %}
+          <h4>
+          <a class="button button--primary view_more" role="button" href="#">{% trans "See more" %}</a>
         </div>
       </div>
     </div>
@@ -278,48 +331,13 @@
             {% endfor %}
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="content-block content-block--white">
-      <div class="container">
-        <h2 class="content-block__title">
-          {% trans "Top Funders" %} {% if keyword %}({{keyword}}){% endif %}
-        </h2>
-        <div class="col-md-12 align-items-center">
-          <div id="repo_repos_top">
-            {% for org in top_funders %}
-              <a class="repo-icon" href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" />
-              </a>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="content-block content-block--grey">
-      <div class="container">
-        <h2 class="content-block__title">{% trans "Top Coders" %} {% if keyword %}({{keyword}}){% endif %}</h2>
-        <div class="col-md-12 align-items-center">
-          <div>
-            {% for org in top_coders %}
-              <a href="/profile/{{org}}" title="{{org}}">
-                <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" title="{{org}}" style="border-radius: 50px; width: 100px;" />
-              </a>
-            {% endfor %}
-          </div>
-        </div>
-
-        <div class="row mt-5 pb-5 text-center align-items-center">
+        <div class="row mt-5 pb-3 text-center">
           <div class="col">
-            <a class="button button--primary" role="button" href='{% url "_leaderboard" %}'
-               target="_blank" rel="noopener noreferrer">{% trans "View Leaderboard" %}</a>
-            <a class="button button--primary" role="button" href='/users'
-               target="_blank" rel="noopener noreferrer">{% trans "User Directory" %}</a>
+            <a class="button button--primary" role="button" href="/tribes">{% trans "See more Tribes" %}</a>
           </div>
         </div>
+
+
       </div>
     </div>
 
@@ -371,42 +389,6 @@
       </div>
     {% endif %}
 
-    {% if not keyword and kudos_tokens %}
-      <div class="content-block content-block--grey">
-        <div class="container" id="bounty_universe">
-          <h2 class="content-block__title m-1 p-1">{% trans "Top Kudos" %} ♢</h2>
-
-          <div class="row">
-            <div class="col-12 offset-md-0 m-0 p-0 d-flex justify-content-center align-items-center p-3 ">
-              <p style="text-align: center; font-size: 0.9rem;">Kudos is a digital collectible + a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the <a href="/kudos/marketplace">Kudos Marketplace</a>.</p>
-            </div>
-            <div class="col-md-12 p-1">
-              {% for kudos_leaderboard in kudos_leaderboards %}
-              <h4 class="m-1 p-1">{{kudos_leaderboard.0}}</h4>
-                {% for kudos in kudos_leaderboard.1 %}
-                  <p>
-                    <a href="/{{kudos.0}}/kudos">
-                    <img style="height: 40px;
-                      width: 40px;" data-src="/dynamic/avatar/{{kudos.0}}">
-                      @{{kudos.0}}
-                    </a>
-                    has {{kudos_leaderboard.2}} {{kudos.2|length}} Kudos that have been sold for {{kudos.1}} ETH in {{kudos.3}} kudo transactions:
-                    <div>
-                      <a href="/{{kudos.0}}/kudos">
-                        {% for ele in kudos.2|slice:"0:50" %}
-                        <img style="height: 40px;
-                        width: 40px;" data-src="/dynamic/kudos/{{ele}}/slug">
-                        {% endfor %}
-                      </a>
-                    </div>
-                  </p>
-                {% endfor %}
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endif %}
 
     {% if not keyword and top_quests %}
       <div class="content-block content-block--grey">
@@ -618,20 +600,6 @@
 
 
     <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
-    <script>
-      $(document).ready(function() {
-        setInterval(function(){
-          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          if (scrollTop > 500 && !document.offset_loaded){
-            $("img").unveil(200);
-            document.offset_loaded = true;
-          }
-        }, 3000);
-        $.get('/activity', function(html){
-          $("#activities").html($(html).find('.activity_stream').html());
-        })
-      });
-    </script>
 
   </body>
   <script src="https://www.gstatic.com/charts/loader.js"></script>
