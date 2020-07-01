@@ -3263,6 +3263,32 @@ def new_bounty(request):
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
+@login_required
+def new_hackathon_bounty(request, hackathon=''):
+    """Create a new hackathon bounty."""
+    from .utils import clean_bounty_url
+
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
+    except HackathonEvent.DoesNotExist:
+        return redirect(reverse('get_hackathons'))
+
+    bounty_params = {
+        'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
+        'amount': request.GET.get('amount'),
+        'hackathon':hackathon_event
+    }
+
+    params = get_context(
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='submit_bounty',
+        title=_('Create Funded Issue'),
+        update=bounty_params
+    )
+    return TemplateResponse(request, 'dashboard/hackathon/new_bounty.html', params)
+
 @csrf_exempt
 def get_suggested_contributors(request):
     previously_worked_developers = []
@@ -4758,7 +4784,7 @@ def create_bounty_v1(request):
     bounty.bounty_categories = request.POST.get("bounty_categories", '').split(',')
     bounty.network = request.POST.get("network", 'mainnet')
     bounty.admin_override_suspend_auto_approval = not request.POST.get("auto_approve_workers", True)
-    bounty.value_in_token = request.POST.get("value_in_token", 0)
+    bounty.value_in_token = float(request.POST.get("value_in_token", 0))
     bounty.token_address = request.POST.get("token_address")
     bounty.bounty_owner_email = request.POST.get("bounty_owner_email")
     bounty.bounty_owner_name = request.POST.get("bounty_owner_name", '') # ETC-TODO: REMOVE ?
@@ -5114,8 +5140,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr'
+    if payout_type not in ['fiat', 'qr', 'web3_modal']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal'
         return JsonResponse(response)
 
     tenant = request.POST.get('tenant')
@@ -5148,18 +5174,14 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.funder_identifier = funder_identifier
         fulfillment.payout_status = payout_status
 
-    elif payout_type == 'qr':
+    else:
 
-        if not bounty.bounty_owner_address:
-            bounty_owner_address = request.POST.get('bounty_owner_address')
-            if not bounty_owner_address:
-                response['message'] = 'error: missing parameter bounty_owner_address'
-                return JsonResponse(response)
+        funder_address = request.POST.get('funder_address')
+        if not funder_address :
+            response['message'] = 'error: missing parameter funder_address for web3 modal / qr payment'
+            return JsonResponse(response)
 
-            bounty.bounty_owner_address = bounty_owner_address
-            bounty.save()
-
-        fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
+        fulfillment.funder_address = fulfillment.funder_address
         fulfillment.payout_status = 'pending'
 
     payout_tx_id = request.POST.get('payout_tx_id')
@@ -5180,7 +5202,7 @@ def payout_bounty_v1(request, fulfillment_id):
 
     fulfillment.save()
 
-    if payout_type == 'qr':
+    if payout_type == 'qr' or payout_type == 'web3_modal':
         sync_payout(fulfillment)
 
     response = {
@@ -5396,7 +5418,6 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
     profile.save()
 
     redis.set(f'verification:{user.id}:phone', hash_number)
-
 
 
 @login_required

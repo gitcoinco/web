@@ -264,10 +264,10 @@
       </div>
     </div>
 
-    <div class="content-block content-block--grey">
+    <div class="content-block content-block--blue-grey">
       <div class="container">
         <h2 class="content-block__title">
-          {% trans "Top Organizations" %} {% if keyword %}({{keyword}}){% endif %}
+          {% trans "Top Tribes" %} {% if keyword %}({{keyword}}){% endif %}
         </h2>
         <div class="col-md-12 align-items-center">
           <div id="repo_repos">
@@ -281,7 +281,7 @@
       </div>
     </div>
 
-    <div class="content-block content-block--blue-grey">
+    <div class="content-block content-block--white">
       <div class="container">
         <h2 class="content-block__title">
           {% trans "Top Funders" %} {% if keyword %}({{keyword}}){% endif %}
@@ -294,24 +294,6 @@
               </a>
             {% endfor %}
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-block content-block--white">
-      <div class="container">
-        <h2 class="content-block__title">{% trans "Top Mega-Funders" %}</h2>
-
-        <div class="col-md-12 align-items-center">
-            <a class="mega-founder" href="https://ethereum.org" title="Ethereum Foundation">
-              <img data-src="{% static 'v2/images/metafunders/ethereum-foundation.png' %}" alts="Ethereum Foundation"  title="Ethereum Foundation">
-            </a>
-            <a class="mega-founder" href="https://ecf.network" title="Ethereum Community Fund">
-              <img data-src="{% static 'v2/images/metafunders/ecf_logo.svg' %}" alts="Ethereum Community Fund" title="Ethereum Community Fund">
-            </a>
-            <a class="mega-founder" href="http://consensys.net/" title="Consensys">
-              <img data-src="{% static 'v2/images/metafunders/consensys_logo.png' %}" alts="Consensys" title="Consensys">
-            </a>
         </div>
       </div>
     </div>
@@ -392,20 +374,34 @@
     {% if not keyword and kudos_tokens %}
       <div class="content-block content-block--grey">
         <div class="container" id="bounty_universe">
-          <h2 class="content-block__title">{% trans "Top Kudos" %}</h2>
+          <h2 class="content-block__title m-1 p-1">{% trans "Top Kudos" %} ♢</h2>
 
           <div class="row">
-            <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center p-3 ">
-              <p style="text-align: center; font-size: 0.9rem;">Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the <a href="/kudos/marketplace">Kudos Marketplace</a>.</p>
+            <div class="col-12 offset-md-0 m-0 p-0 d-flex justify-content-center align-items-center p-3 ">
+              <p style="text-align: center; font-size: 0.9rem;">Kudos is a digital collectible + a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the <a href="/kudos/marketplace">Kudos Marketplace</a>.</p>
             </div>
-            <div class="col-md-12 p-3">
-              <div>
-                {% for kudos in kudos_tokens %}
-                  <a href="{{kudos.url}}" title="{{kudos.name}}">
-                    <img data-src="{{kudos.static_image}}" alts="{{kudos.name}}" title="{{kudos.name}}"  style="max-width: 100px; max-height: 100px; margin: 5px;">
-                  </a>
+            <div class="col-md-12 p-1">
+              {% for kudos_leaderboard in kudos_leaderboards %}
+              <h4 class="m-1 p-1">{{kudos_leaderboard.0}}</h4>
+                {% for kudos in kudos_leaderboard.1 %}
+                  <p>
+                    <a href="/{{kudos.0}}/kudos">
+                    <img style="height: 40px;
+                      width: 40px;" data-src="/dynamic/avatar/{{kudos.0}}">
+                      @{{kudos.0}}
+                    </a>
+                    has {{kudos_leaderboard.2}} {{kudos.2|length}} Kudos that have been sold for {{kudos.1}} ETH in {{kudos.3}} kudo transactions:
+                    <div>
+                      <a href="/{{kudos.0}}/kudos">
+                        {% for ele in kudos.2|slice:"0:50" %}
+                        <img style="height: 40px;
+                        width: 40px;" data-src="/dynamic/kudos/{{ele}}/slug">
+                        {% endfor %}
+                      </a>
+                    </div>
+                  </p>
                 {% endfor %}
-              </div>
+              {% endfor %}
             </div>
           </div>
         </div>

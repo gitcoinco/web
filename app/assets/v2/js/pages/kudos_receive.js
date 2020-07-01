@@ -56,12 +56,7 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      if (document.web3network == 'locked') {
-        _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
-        approve_metamask();
-      } else {
-        _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-      }
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
     } else if (!$('#forwarding_address').val()) {
       web3.eth.getCoinbase(function(_, coinbase) {
         $('#forwarding_address').val(coinbase);
@@ -74,6 +69,10 @@ window.onload = function() {
 $(document).ready(function() {
   $(document).on('click', '#receive', function(e) {
     e.preventDefault();
+
+    if (!provider) {
+      return onConnect();
+    }
 
     var forwarding_address = $('#forwarding_address').val();
 

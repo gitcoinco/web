@@ -1175,6 +1175,9 @@ def grant_activity(request, grant_id=None):
     metadata = request.POST.get('metadata')
     bulk = request.POST.get('bulk') == 'true'
 
+    if not metadata:
+        return redirect('/grants/activity/')
+
     if not grant_id:
         grant = None
     else:

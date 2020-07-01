@@ -12,10 +12,10 @@ const ethFulfillBounty = data => {
     bounty_address();
   } catch (exception) {
     _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+    unloading_button($('.js-submit'));
     return;
   }
 
-  loading_button($('.js-submit'));
   const githubUsername = data.githubUsername;
   const issueURL = data.issueURL;
   const githubPRLink = data.githubPRLink;

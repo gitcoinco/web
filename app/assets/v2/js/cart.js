@@ -556,7 +556,6 @@ Vue.component('grants-cart', {
           }
         });
 
-        await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
         // Get list of tokens user is donating with
@@ -836,7 +835,7 @@ Vue.component('grants-cart', {
       const response = await fetch(url);
       const newAmount = await response.json();
 
-      return newAmount.eth;
+      return newAmount[0].eth;
     },
 
     async predictCLRMatch(grant, amount) {

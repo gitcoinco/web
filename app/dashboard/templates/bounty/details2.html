@@ -271,7 +271,7 @@
                         <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                         </span>
-                        <p v-if="fulfillment.payout_type == 'qr'" class="font-smaller-4 my-0">
+                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0">
                           <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
@@ -283,6 +283,12 @@
                         <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
+                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0">
+                          <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
+                          <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
+                            <i class="far fa-clipboard-check"></i>
+                          </button>
+                        </p>
                       </template>
 
                       <template v-else>
@@ -305,7 +311,7 @@
                         <span class="my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-check mr-2 font-caption"></i> Bounty Paid
                         </span>
-                        <p class="font-smaller-4 my-0">
+                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0">
                           <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                             <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
@@ -316,7 +322,7 @@
                         <button class="btn btn-sm btn-outline-gc-blue my-auto px-3 font-smaller-2 font-weight-semibold">
                           <i class="fas fa-spinner fa-spin mr-2 font-caption"></i>Pending Verification
                         </button>
-                        <p class="font-smaller-4 my-0">
+                        <p v-if="fulfillment.payout_type !== 'fiat'" class="font-smaller-4 my-0">
                           <a :href="getTransactionURL(fulfillment.token_name, fulfillment.payout_tx_id)" target="_blank">([[ fulfillment.payout_tx_id | truncateHash ]])</a>
                           <button class="btn btn-sm my-0 px-1" @click="copyTextToClipboard(fulfillment.payout_tx_id)">
                             <i class="far fa-clipboard-check"></i>
@@ -397,6 +403,75 @@
                                 </a>
                               </p>
 
+                            </div>
+
+                          </div>
+
+                          <!-- WEB3 MODAL FLOW -->
+                          <div v-else-if="fulfillment.payout_type == 'web3_modal'" class="px-sm-4">
+
+                            <div class="text-center pb-3">
+                              <p class="mb-3 font-subheader font-weight-bold">Payout</p>
+                              <img class="avatar" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+
+                              <p class="font-subheader font-weight-bold mt-3 mb-1">
+                                [[ fulfillment.fulfiller_github_username ]]
+                              </p>
+
+                              <p class="font-body text-medium-dark-grey">
+                                [[ fulfillment.fulfiller_address | truncateHash ]]
+                              </p>
+                            </div>
+
+                            <!-- STEP : ENTER PAYOUT AMOUNT -->
+                            <div id="payout_amount" v-if="fulfillment_context.active_step == 'payout_amount'" class="text-center">
+                              <p class="font-subheader">How much are you paying out to this person?</p>
+
+                              <p class="payout-input-amount-container font-weight-semibold">
+                                <input type="number" class="mb-4 font-bigger-4 text-center" v-model="fulfillment_context.amount" min="0">
+                                <span class="font-body font-weight-bold">[[ bounty.token_name ]]</span>
+                              </p>
+
+                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                :disabled="!fulfillment_context.amount || fulfillment_context.amount == 0"
+                                v-on:click="goToStep('payout', 'payout_amount')"
+                              >
+                                Next
+                              </button>
+
+                            </div>
+
+                            <!-- STEP: PAYOUT -->
+                            <div id="payout" v-else-if="fulfillment_context.active_step == 'payout'">
+                              <p class="text-center font-subheader mb-1">Pay using your web3 wallet.</p>
+
+                              <div class="font-caption payout-summary-container p-3 mb-4">
+                                <p class="mb-1">
+                                  From: <span class="font-weight-bold">[[ bounty.bounty_owner_address ]] </span>
+                                </p>
+                                <p class="mb-1">
+                                  Amount: <span class="font-weight-bold">[[ fulfillment_context.amount ]] [[ bounty.token_name ]]</span>
+                                </p>
+                                <p class="mb-1">To:</p>
+                                <p class="mb-0">
+                                  <img class="avatar avatar-small" :src="[[ fulfillment.profile.avatar_url ]]" class="fullfiller_profile">
+                                  <span class="font-weight-bold">[[ fulfillment.fulfiller_address ]]</span>
+                                  <a @click="copyTextToClipboard(fulfillment.fulfiller_address)" href="#" class="font-weight-bold float-right">
+                                    Copy
+                                  </a>
+                                </p>
+                              </div>
+
+                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                @click="payWithWeb3Step(fulfillment.pk, fulfillment.fulfiller_address, $event)"
+                              >Payout
+                              </button>
+                              <p class="font-subheader mt-4 mb-0 text-center">
+                                <a href="#" v-on:click="goToStep('payout_amount', 'payout')">
+                                  <i class="fas fa-chevron-left mr-2 font-caption"></i>
+                                  Previous Step
+                                </a>
+                              </p>
                             </div>
 
                           </div>
@@ -830,10 +905,9 @@
       <p>{{ noscript.issue_description_text }}</p>
     </noscript>
 
-    <!-- <script src="https://www.paypal.com/sdk/js?client-id=ARv6LvORvfM1li08HYFgy9HLH919lF7KP8Piqfia1HyQ4y7hg6oRgz5C8K03LLLzKhjn91-Dpz2pWkoK"></script> -->
-
-    <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
-
+    {% if PYPL_CLIENT_ID %}
+      <script src="https://www.paypal.com/sdk/js?client-id={{PYPL_CLIENT_ID}}"></script>
+    {% endif %}
     <script>
       document.issueURL = '{{ issueURL }}';
 
@@ -871,6 +945,7 @@
       const csrftoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
     </script>
     <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
+    <script src="{% static "v2/js/pages/bounty_detail/web3_modal.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
     <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
@@ -880,14 +955,6 @@
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/user-search.js" %}"></script>
     <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
-    {% for message in messages %}
-      {% if message.tags == 'success'%}
-      <script>
-        var promptPrivateInstructions = true;
-      </script>
-      {% endif %}
-
-    {% endfor %}
   </body>
 
 </html>

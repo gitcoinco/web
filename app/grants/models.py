@@ -161,6 +161,7 @@ class Grant(SuperModel):
         upload_to=get_upload_filename,
         null=True,
         blank=True,
+        max_length=500,
         help_text=_('The Grant logo image.'),
     )
     logo_svg = models.FileField(
@@ -1137,6 +1138,8 @@ class Contribution(SuperModel):
         help_text=_('The why or why not validator passed'),
     )
 
+    def get_absolute_url(self):
+        return self.subscription.grant.url + '?tab=transactions'
 
     def __str__(self):
         """Return the string representation of this object."""
@@ -1159,46 +1162,55 @@ class Contribution(SuperModel):
 
     def update_tx_status(self):
         """Updates tx status."""
-        from economy.tx import grants_transaction_validator
-        from dashboard.utils import get_tx_status
-        from economy.tx import getReplacedTX
-        if self.tx_override:
-            return
-
-        # handle replace of tx_id
-        if self.tx_id:
-            tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
-            if tx_status in ['pending', 'dropped', 'unknown', '']:
-                new_tx = getReplacedTX(self.tx_id)
-                if new_tx:
-                    self.tx_id = new_tx
-                else:
-                    # TODO: do stuff related to long running pending txns
-                    pass
-                return
-        # handle replace of split_tx_id
-        if self.split_tx_id:
-            split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-            if split_tx_status in ['pending', 'dropped', 'unknown', '']:
-                new_tx = getReplacedTX(self.split_tx_id)
-                if new_tx:
-                    self.split_tx_id = new_tx
+        try:
+            from economy.tx import grants_transaction_validator
+            from dashboard.utils import get_tx_status
+            from economy.tx import getReplacedTX
+            if self.tx_override:
                 return
 
-        # actually validate token transfers
-        response = grants_transaction_validator(self)
-        if len(response['originator']):
-            self.originated_address = response['originator'][0]
-        self.validator_passed = response['validation']['passed']
-        self.validator_comment = response['validation']['comment']
-        self.tx_cleared = True
-        self.split_tx_confirmed = True
-        self.success = self.validator_passed
+            # handle replace of tx_id
+            if self.tx_id:
+                tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+                if tx_status in ['pending', 'dropped', 'unknown', '']:
+                    new_tx = getReplacedTX(self.tx_id)
+                    if new_tx:
+                        self.tx_id = new_tx
+                    else:
+                        print('TODO: do stuff related to long running pending txns')
+                    return
+            # handle replace of split_tx_id
+            if self.split_tx_id:
+                split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+                if split_tx_status in ['pending', 'dropped', 'unknown', '']:
+                    new_tx = getReplacedTX(self.split_tx_id)
+                    if new_tx:
+                        self.split_tx_id = new_tx
+                    else:
+                        print('TODO: do stuff related to long running pending txns')
+                    return
 
-        if self.success:
-            print("TODO: do stuff related to successful contribs, like emails")
-        else:
-            print("TODO: do stuff related to failed contribs, like emails")
+            # actually validate token transfers
+            response = grants_transaction_validator(self)
+            if len(response['originator']):
+                self.originated_address = response['originator'][0]
+            self.validator_passed = response['validation']['passed']
+            self.validator_comment = response['validation']['comment']
+            self.tx_cleared = True
+            self.split_tx_confirmed = True
+            self.success = self.validator_passed
+
+            if self.success:
+                print("TODO: do stuff related to successful contribs, like emails")
+            else:
+                print("TODO: do stuff related to failed contribs, like emails")
+        except Exception as e:
+            self.validator_passed = False
+            self.validator_comment = str(e)
+            print(f"Exception: {self.validator_comment}")
+            self.tx_cleared = False
+            self.split_tx_confirmed = False
+            self.success = False
 
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
