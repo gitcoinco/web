@@ -148,6 +148,7 @@ def marketplace(request):
         increment_view_count.delay(pks, token_list.first().content_type, request.user.id, 'index')
 
     listings = token_list.order_by(order_by).cache()
+    total_count = listings.count()
 
     # For infinite scroll:
     page_size = 12
@@ -171,6 +172,7 @@ def marketplace(request):
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-06.png')),
         'listings': listings,
         'network': network,
+        'total_count': total_count,
         'suppress_more_link': suppress_more_link,
         'is_last_page': is_last_page,
         'next_page': next_page,
