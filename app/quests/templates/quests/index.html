@@ -144,7 +144,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <td>
                     <span>
                     {% if quest.unlocked_by_hackathon %}
-                    <a href="{{quest.unlocked_by_hackathon.url}}" style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒</a>
+                    <a href="{{quest.unlocked_by_hackathon.url}}" target="_blank" style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒</a>
                     {% else %}
                         beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
                     </span>
