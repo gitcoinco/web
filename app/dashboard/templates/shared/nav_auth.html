@@ -79,13 +79,13 @@
           <i class="fas"><img src="{% static "v2/images/kudos/IconKudos.svg" %}"></i>
           {% trans "Send Kudos" %}
         </a>
-        <a class="dropdown-item" href="{% url "quests_index" %}">
-          <i class="fas fa-gamepad fa-6"></i>
-          {% trans "Play a Quest" %}
-        </a>
         <a class="dropdown-item" href="/grants/new">
         <i class="fas fa-money-check-alt"></i>
           {% trans "Create Grant" %}
+        </a>
+        <a class="dropdown-item" href="{% url "quests_index" %}">
+          <i class="fas fa-gamepad fa-6"></i>
+          {% trans "Play a Quest" %}
         </a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" data-gtm="profile" href="{{profile_url}}">
