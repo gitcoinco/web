@@ -120,9 +120,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </td>
                   {% endif %}
                  {% if beaten %}
+                   <span>
                     <td>
-                    ( ✅ Quest Beaten)
+                    <a style="position: relative; bottom: -2.5px; margin-left: 2.5px;" class="btn btn-secondary" title="Quest Beaten"><span>✅</span></a>
                     </td>
+                   </span>
                  {% elif cooldown %}
                     <td>
                     <span>
