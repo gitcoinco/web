@@ -76,6 +76,7 @@
         }
       </script>
 
+      <div class="infinite-container">
       <div class="row justify-content-center">
         {% for listing in listings %}
           <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
@@ -98,6 +99,13 @@
       </div>
       {% endif %}
     </div>
+    {% if not hide_loading %}
+      <img class="loading hidden" src="/static/v2/images/loading_v2.gif" style="max-width: 200px; margin: 0px auto; display: block;">
+    {% endif %}
+    {% if not suppress_more_link %}
+      <a class="infinite-more-link mx-auto px-2 py-2 mt-3" href="{% if target %}{{target}}{% else %}?page={{next_page}}{% endif %}">Show More</a>
+    {% endif %}
+      </div>
     </section>
 
     {% include 'shared/footer.html' %}
@@ -114,6 +122,25 @@
       }
     </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
+    <script>
+      $(document).on('click', '.infinite-more-link', function (e) {
+        if ($(this).hasClass('hidden')) {
+          e.preventDefault();
+          return;
+        }
+        $(this).addClass('hidden');
+        var url = $(this).attr('href');
+
+        $('.infinite-container').find('.loading').removeClass('hidden');
+        $.get(url, function (response) {
+          $('.infinite-container').find('.infinite-more-link').remove();
+          $('.infinite-container').find('.loading').remove();
+          $('.infinite-container').append($(response).find('.infinite-container').html());
+          $('.infinite-container').find('.loading').addClass('hidden');
+        });
+        e.preventDefault();
+      });
+    </script>
 
   </body>
 </html>
