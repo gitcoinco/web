@@ -131,11 +131,13 @@ $(document).ready(function() {
     $(id).removeClass('hidden');
     $(this).addClass('active');
     if (target) {
-      $(id).html('Loading...');
+      $(id).html('<img style="margin: 20px 100px; height: 200px; width: 200px;" src=/static/v2/images/loading_v2.gif>');
       $.get(target, function(html) {
         html = html.replace(/data-src/g, 'src');
         $(id).html($(html).find(target_search));
-        $(id).find('.img-fluid').remove();
+        if(target.indexOf('countries') != -1){
+          $(id).find('.img-fluid').remove();
+        };
       });
     }
   });
