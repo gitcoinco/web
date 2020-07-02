@@ -1,3 +1,46 @@
+/* table properties */
+.table td, .table th {
+  padding: 4px;
+  border: none;
+}
+
+td, th {
+  white-space: nowrap;
+}
+
+.table {
+  width: 100%;
+  text-align: center;
+}
+
+#explore_quests {
+  width: auto;
+}
+
+#quest_creator {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  bottom: -5px;
+}
+
+.btn {
+  width: 100px;
+  position: relative;
+  border: none;
+  padding: 5px;
+  text-align: center;
+  display: inline-block;
+  top: 5px;
+  font-size: 16px;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: grey;
+}
+
 .show_on_mobile {
   display: none;
 }
@@ -1222,49 +1265,6 @@ body.green #desc,
 body.green .br,
 body.green .tl {
   background-color: rgb(46, 139, 87);
-}
-
-/* table properties */
-.table td, .table th {
-  padding: 4px;
-  border: none;
-}
-
-td, th {
-  white-space: nowrap;
-}
-
-.table {
-  width: 100%;
-  text-align: center;
-}
-
-#explore_quests {
-  width: auto;
-}
-
-#quest_creator {
-  position: relative;
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
-  bottom: -5px;
-}
-
-.btn {
-  width: 100px;
-  position: relative;
-  border: none;
-  padding: 5px;
-  text-align: center;
-  display: inline-block;
-  top: 5px;
-  font-size: 16px;
-}
-
-.btn-secondary {
-  background-color: white;
-  color: grey;
 }
 
 
