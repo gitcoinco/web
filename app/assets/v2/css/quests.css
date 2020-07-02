@@ -1552,12 +1552,18 @@ body.green .tl {
 
 @media (max-width: 575.98px) {
 
+  .table td, .table th {
+  padding: 5.5px;
+ }
+
   .btn {
     right: auto;
+    top: 1.2rem;
   }
 
   #quest_creator {
     margin-left: 1rem;
+    top: 1.2rem;
   }
 
   body.quest_battle {
