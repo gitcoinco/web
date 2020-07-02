@@ -33,7 +33,7 @@
       </a>
       <div class="dropdown-menu shadow-lg" aria-labelledby="dropdownProducts">
         <div class="gc-megamenu-content">
-          <div class="row">
+          <div class="row justify-content-center">
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'funder_bounties' %}">
@@ -91,24 +91,6 @@
               </li>
               <li>
                 <a class="dropdown-item dropdown-item-small" href="{% url 'grants:quickstart' %}">{% trans "About Grants" %}</a>
-              </li>
-            </ul>
-            <ul class="col-md-4 col-lg-2 list-unstyled">
-              <li>
-                <a class="text-reset" href="https://codefund.app/">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/codefund_symbol_dark.svg" %}" alt="Codefund" height="48">
-                  <b class="gc-megamenu-title">{% trans "Codefund" %}</b>
-                </a>
-                <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Ethical ads to power Open Source" %}</p>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io/advertisers">{% trans "Advertise With Us" %}</a>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io/publishers">{% trans "Become a Publisher" %}</a>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io">{% trans "About Codefund" %}</a>
               </li>
             </ul>
 

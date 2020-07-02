@@ -139,6 +139,10 @@
                   </label>
                   {% endif %}
 
+                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
+                    <input type="radio" name="bounty_chain" id="717171_chain" value="717171" v-model="chainId"> Other
+                  </label>
+
                 </div>
                 <div class="text-danger" v-if="errors.chainId && !form.chainId">
                   [[errors.chainId]]
@@ -404,7 +408,7 @@
                   <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block">[[form.amount]] [[form.token.symbol]]</span>
 
                   <p class="font-caption text-black-50 mb-1">
-                    Bounty <span id="summary-bounty-amount" class="font-weight-bold">0.001</span>
+                    Bounty <span id="summary-bounty-amount" class="font-weight-bold">[[form.amount]]</span>
                     <span id="summary-bounty-token" class="font-weight-bold">[[form.token.symbol]]</span> ($[[form.amountusd]])
                   </p>
 
