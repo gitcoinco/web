@@ -148,6 +148,7 @@ Vue.mixin({
         case '102': // zilliqa
         case '42220': // celo mainnet
         case '44786': // celo alfajores tesnet
+        case '717171': // other
           type = 'qr';
           break;
         default:
@@ -304,6 +305,7 @@ Vue.mixin({
       if (!provider && val === '1') {
         await onConnect();
       }
+      this.getTokens();
       await this.checkForm();
     }
   }
