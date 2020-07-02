@@ -1,3 +1,55 @@
+/* table properties */
+
+
+.announce a {
+  width: auto;
+}
+.announce2 a {
+  width: auto;
+}
+
+.announce6 a {
+  width: auto;
+}
+
+.announce3 a {
+  width: auto;
+}
+
+.announce4 a {
+  width: auto;
+}
+
+.announce5 a {
+  width: auto;
+}
+
+#explore_quests {
+  width: auto;
+}
+
+.btn {
+  width: 100px;
+  position: relative;
+  border: none;
+  padding: 5px;
+  text-align: center;
+  display: inline-block;
+  top: 5px;
+  font-size: 16px;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: grey;
+}
+
+.table td, .table th {
+  padding: 2.5px;
+  position: relative;
+  border: auto;
+}
+
 .show_on_mobile {
   display: none;
 }
@@ -222,6 +274,56 @@
   width: 100%;
 }
 
+.card_head {
+  height: 140px;
+}
+
+.Example .card_head {
+  display: none;
+}
+
+.card_head span {
+  background-color: #e7f0fa;
+  color: var(--gc-blue);
+  font-size: 10px;
+  display: inline-block;
+  list-style: none;
+  padding: 5px;
+  transform: rotate(-15deg);
+  position: relative;
+}
+
+.card_head span.reward {
+  top: -45px;
+  left: -75px;
+  z-index: 999;
+}
+
+.card_head span.boss {
+  top: -50px;
+  left: -20px;
+  z-index: 999;
+}
+
+.card_img {
+  height: 120px;
+  width: 120px;
+  margin: 0px auto;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.card_img.reward {
+  width: 110px;
+  top: -120px;
+  right: -50px;
+}
+
+.card_img.boss {
+  top: 0px;
+  left: -50px;
+}
+
 .tags {
   text-align: center;
   margin-left: 0px;
@@ -363,6 +465,18 @@ body.quest_battle p {
   border: 5px solid #0fce7c;
 }
 
+.quest-card.locked img {
+  filter: grayscale(1);
+}
+
+.quest-card .card_head img {
+  filter: grayscale(100%);
+}
+
+.quest-card:hover .card_head img {
+  filter: grayscale(0%);
+}
+
 #announce img {
   margin: 0px auto;
   margin-top: -150px;
@@ -463,16 +577,45 @@ body.quest_battle p {
   right: 25%;
 }
 
+.quest-card.available:hover {
+  background-color: #aea0df !important;
+  cursor: pointer;
+}
+
+.quest-card.available:hover .pr-3 {
+  background-color: #4e40af !important;
+  border-top: 3px solid #2e208f !important;
+}
+
 .announce a:hover {
   color: black;
   font-weight: bold;
   background-color: #f5d3d4;
 }
 
+.quest-card.locked div,
+.quest-card.locked div a {
+  color: #aaa !important;
+}
+
+.quest-card.available:hover .pr-3,
+.quest-card.available:hover .pr-3 a,
+.quest-card.available:hover .pr-3 p {
+  color: white !important;
+}
+
+.quest-card.available:hover a.btn {
+  font-size: 18px;
+}
+
 .back_gradient {
   background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764) no-repeat;
   animation: gradient 40s ease infinite;
   background-size: 100% 400px !important;
+}
+
+.quest-card.available:hover .pr-3 p.desc {
+  border-top: 1px solid white !important;
 }
 
 #cta_button {
@@ -630,6 +773,14 @@ body.quest_battle .bottom_notification {
 
 #timer.red {
   color: red;
+}
+
+.quest-card.beaten div.pt-3 {
+  background-color: #c0eec0 !important;
+}
+
+.quest-card.cooldown div.pt-3 {
+  background-color: #aad4e5 !important;
 }
 
 #protagonist .flair div {
@@ -1646,25 +1797,4 @@ body.green .tl {
   .back_gradient {
     background-size: 100% 400px !important;
   }
-}
-
-/* some table properties */
-
-#explore_quests {
-  width: auto;
-}
-
-.btn {
-  width: 100px;
-  position: relative;
-}
-
-.table td, .table th {
-  padding: 0.35rem;
-  position: relative;
-}
-
-.btn-secondary {
-  background-color: white;
-  color: grey;
 }
