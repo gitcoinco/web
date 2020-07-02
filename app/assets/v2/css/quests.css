@@ -1,11 +1,12 @@
 /* table properties */
-.table td, .table th {
-  padding: 4px;
-  border: none;
-}
 
 td, th {
   white-space: nowrap;
+}
+
+.table td, .table th {
+  padding: 4px;
+  border: none;
 }
 
 .table {
@@ -1500,12 +1501,11 @@ body.green .tl {
     width: -webkit-fill-available;
     top: 0.6rem;
     border: none;
-
- }
+  }
 
   .table td, .table th {
-  padding: 0.25rem;
- }
+     padding: 0.25rem;
+  }
 
   #quest_creator {
     top: 10px;
@@ -1616,11 +1616,11 @@ body.green .tl {
   }
 
   .table td, .table th {
-  padding: 5.5px;
+      padding: 5.5px;
  }
 
   .td {
-   white-space: nowrap;
+       white-space: nowrap;
   }
 
   .btn {
