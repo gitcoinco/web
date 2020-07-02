@@ -4,7 +4,8 @@ td, th {
   white-space: nowrap;
 }
 
-.table td, .table th {
+.table td, 
+.table th {
   padding: 4px;
   border: none;
 }
@@ -1417,7 +1418,8 @@ body.green .tl {
 
   }
 
-  .table td, .table th {
+  .table td, 
+  .table th {
     padding: 0.55rem;
     border: none;
     position: relative; 
@@ -1503,8 +1505,9 @@ body.green .tl {
     border: none;
   }
 
-  .table td, .table th {
-     padding: 0.25rem;
+  .table td, 
+  .table th {
+    padding: 0.25rem;
   }
 
   #quest_creator {
@@ -1611,16 +1614,13 @@ body.green .tl {
 
 @media (max-width: 575.98px) {
 
-  .table {
-    border: none;
+   .table {
+     border: none;
   }
 
-  .table td, .table th {
-      padding: 5.5px;
- }
-
-  .td {
-       white-space: nowrap;
+   .table td, 
+   .table th {
+     padding: 5.5px;
   }
 
   .btn {
@@ -1628,7 +1628,7 @@ body.green .tl {
     top: 0.6rem;
   }
 
-  #quest_creator {
+   #quest_creator {
     top: 0.8rem;
   }
 
