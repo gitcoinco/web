@@ -105,7 +105,18 @@
       <br>
       <i class="fa fa-lock" aria-hidden="true"></i>
       RiskScore ™️: {{ grant.weighted_risk_score }}
+      <pre>
 
+      A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+      - Account Newness
+      - Community Suspicous Activity Reports
+      - Suspicious IP Address
+      - Suspicious Ethereum Interactions
+      - Suspicious SMS Address
+      - Suspicious Account Activity
+
+      a grant's RiskScore ™️ is equal to its SybilScore ™️ * its matching funds for this round.
+      </pre>
       <div id="section-nav-sybil">
         {% for ele in sybil_profiles%}
         <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
