@@ -5,7 +5,7 @@
 load_tokens();
 needWalletConnection();
 
-const qr_tokens = [ 'ETC', 'cGLD', 'cUSD', 'ZIL' ];
+const qr_tokens = [ 'ETC', 'cUSD', 'CELO', 'ZIL' ];
 const fiat_tokens = ['USD'];
 
 const isQRToken = tokenName => qr_tokens.includes(tokenName);
