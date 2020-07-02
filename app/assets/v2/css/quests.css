@@ -1254,6 +1254,14 @@ body.green .tl {
 
 @media (max-width: 1110px) {
 
+  .btn {
+    right: auto;
+  }
+
+   #quest_creator {
+    margin-left: 2rem;
+  }
+
   body.quest_battle {
     background-size: 250% !important;
   }
@@ -1543,6 +1551,14 @@ body.green .tl {
 }
 
 @media (max-width: 575.98px) {
+
+  .btn {
+    right: auto;
+  }
+
+  #quest_creator {
+    margin-left: 1rem;
+  }
 
   body.quest_battle {
     background-size: 250% !important;
