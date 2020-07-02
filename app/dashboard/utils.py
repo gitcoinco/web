@@ -494,7 +494,7 @@ def sync_payout(fulfillment):
     elif fulfillment.payout_type == 'qr':
         if token_name == 'ETC':
             sync_etc_payout(fulfillment)
-        elif token_name == 'cUSD' or token_name == 'cGLD':
+        elif token_name == 'CELO' or token_name == 'cUSD':
             sync_celo_payout(fulfillment)
         elif token_name == 'ZIL':
             sync_zil_payout(fulfillment)
@@ -593,7 +593,7 @@ def build_profile_pairs(bounty):
             elif bounty.tenant == 'ZIL':
                 addr = f"https://viewblock.io/zilliqa/address/{fulfillment.fulfiller_address}"
             elif bounty.tenant == 'CELO':
-                addr = f"https://alfajores-blockscout.celo-testnet.org/address/{fulfillment.fulfiller_address}"
+                addr = f"https://explorer.celo.org/address/{fulfillment.fulfiller_address}"
             elif bounty.tenant == 'ETC':
                 addr = f"https://blockscout.com/etc/mainnet/address/{fulfillment.fulfiller_address}"
             else:

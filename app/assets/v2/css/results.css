@@ -311,6 +311,14 @@ p.single-stat__fineprint {
   .mega-founder {
     height: 140px;
   }
+  #general_leaderboard .col-6{
+    max-width: 50%;
+    overflow-y: scroll;
+  }
+  #general_leaderboard .col-2:first-child{
+    max-width: 10%;
+  }
+
 }
 
 @media screen and (max-width: 475px) {
@@ -357,6 +365,11 @@ p.single-stat__fineprint {
     position: relative;
     top: 2px;
   }
+  #general_leaderboard .col-6{
+    max-width: 30%;
+    overflow-y: scroll;
+  }
+
 }
 
 @media screen and (max-width: 375px) {
