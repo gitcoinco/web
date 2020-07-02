@@ -23,17 +23,18 @@
         </div>
       </div>
 
+      {% if clr_active %}
       <div class="container-fluid pt-0 pb-2 grants-matching announce_container">
         <div class="container">
           <div class="col-md-12 font-smaller-1 text-center pt-2">
             <img style="width: 80px; height: 80px;" src="{% static 'v2/images/quests/enemies/mad_scientist.png' %}" data-toggle="tooltip">
             <div class="announce announce4">
               <h4 class="mb-0 mt-0 pt-1 font-weight-semibold">
-                <i class="fab fa-ethereum"></i> $250k Matching Round LIVE NOW
+                <i class="fab fa-ethereum"></i> Matching Round {{clr_round}} LIVE NOW
               </h4>
               <p>
               <BR>
-              $100k for Tech Grants, $100k for Public Health Grants, $50k for Media Grants. -- 
+              ${{total_clr_pot}} Quadratic Matching for Grants. -- 
                 Matching ends on {{round_end|date:'Y-m-d'}} 
                   (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so get started today!
                 <br>
@@ -46,6 +47,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
 
       <div class="container-fluid pt-0 pb-2 grants-matching announce_container">
         <div class="container">

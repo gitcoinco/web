@@ -1827,6 +1827,10 @@ class FundRequest(SuperModel):
     def url(self):
         return settings.BASE_URL + f'tip?request={self.pk}'
 
+    @property
+    def other_earnings(self):
+        return Earning.objects.filter(Q(from_profile=self.requester, to_profile=self.profile) | Q(from_profile=self.profile, to_profile=self.requester)).filter(network='mainnet').order_by('-created_on')
+
     def get_absolute_url(self):
         return self.url
 
