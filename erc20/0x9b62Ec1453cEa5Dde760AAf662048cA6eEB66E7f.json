@@ -1,0 +1,21 @@
+{
+  "symbol": "eCell",
+  "address": "0x9b62Ec1453cEa5Dde760AAf662048cA6eEB66E7f",
+  "overview":{
+        "en": "eCell Token作为网络主要的流通、治理、激励凭证，基于eCell 的去中心化质押委托机制，我们构筑了Consensus 节点(共识节点)体系，Consensus 节点将作为组织治理与应用推广的基石，为推动愿景的实现提供强有力的内生动能。",
+        "zh": "As the main circulation, governance and incentive voucher of the network, based on the decentralized pledge entrustment mechanism of ecell, we have built a consensus node system. The consensus node will be the cornerstone of organizational governance and application promotion, providing strong endogenous momentum for the realization of the vision."
+  },
+  "email": "cellnetworkchain@outlook.com",
+  "website": "https://www.cellnetwork.io/",
+  "whitepaper": "https://www.cellnetwork.io/Consensus.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-08-27",
+  "initial_price":{
+        
+  },
+  "links": {
+    "twitter": "https://twitter.com/ecellsg",
+    "telegram": "https:/t.me/ecellsg",
+    "facebook": "https://facebook.com/CellConsensus"
+  }
+}
