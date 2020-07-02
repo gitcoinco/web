@@ -49,15 +49,9 @@
       }
 
       .sponsors {
-        width: 170px;
+        width: 96px;
         color: black;
         font-weight: 300;
-      }
-
-      .sponsors strong {
-        text-align: center;
-        font-size: 14px;
-        font-weight: 500;
       }
 
       .sponsor-selected {
@@ -101,14 +95,15 @@
         <div class="container mt-md-n5 mb-3 bg-white position-relative rounded">
           <div class="row p-4 p-md-5">
             <div class="col-12">
-              <h1 class="text-center">Fund Prize</h1>
-              <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers!</p>
-              <div class="d-flex flex-wrap justify-content-center">
-                <a :href=`/profile/${sponsor.handle}` target="_blank" class="sponsors d-flex flex-column align-items-center px-3 py-2 m-3 rounded" v-for="sponsor in sponsors" :class="{'sponsor-selected': (sponsor.handle==orgSelected) }">
-                  <img :src="sponsor.avatar_url" class="mb-1" :alt="sponsor.handle" width="60">
-                  <strong>[[sponsor.name == 'None' ?  sponsor.handle : sponsor.name]]</strong>
+
+              <div class="d-flex flex-wrap justify-content-center mb-3">
+                <a :href=`/profile/${sponsor.handle}` target="_blank" class="sponsors d-flex flex-column align-items-center px-3 py-2 m-3 rounded" v-for="sponsor in sponsors" :class="{'sponsor-selected': (sponsor.handle.toLowerCase()==orgSelected.toLowerCase()) }">
+                  <img :src="sponsor.avatar_url" class="" :alt="sponsor.handle" :title="sponsor.handle" width="50">
                 </a>
               </div>
+
+              <h1 class="text-center">Fund Prize</h1>
+              <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers!</p>
               <div class="mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="bounty_chain">Bounty chain</label>
                   <p class="font-body">Pick the chain you will fund the bounty</p>
@@ -151,9 +146,8 @@
               <div class="mb-3">
                 <label class="font-caption letter-spacing text-black-60 text-uppercase" for="issueURL">Github Issue Url <span class="badge badge-greylight text-capitalize">Required</span></label>
                 <input class="form-control" name='issueURL' id="issueURL" v-model="form.issueUrl" type="url" placeholder="https://github.com/org/repo/issues/n" @input="getIssueDetails(form.issueUrl)" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
-                <!-- <div class="text-danger"> -->
-                  <!-- [[ errorIssueDetails ]] -->
-                <!-- </div> -->
+                <img v-if="filterOrgSelected" :src="filterOrgSelected[0].avatar_url" class="position-absolute" :alt="filterOrgSelected[0].handle" :title="filterOrgSelected[0].handle" height="32" style="margin-top: -35px; right: 18px;">
+
                 <div class="text-danger" v-if="errors.issueDetails">
                   [[errors.issueDetails]]
                 </div>
@@ -180,7 +174,7 @@
                   <p class="font-body">Insert keywords relevant to your issue to make it easily discoverable by contributors </p>
                   <div class="form__select2 g-multiselect flex-column">
 
-                    <select2 :options="form.issueDetails.keywords" v-model="form.keywords" data-placeholder="e.g. HTML, CSS" data-tags="true" multiple class="form-control" required>
+                    <select2 :options="form.issueDetails.keywords" v-model="form.keywords" data-placeholder="e.g. HTML, CSS" data-tags="true" data-token-separators="[',']" multiple class="form-control" required>
                       <option disabled value="0">Select one</option>
                     </select2>
 
