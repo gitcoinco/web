@@ -57,6 +57,7 @@
 .announce a {
   background-color: #f2c3c4;
   color: black;
+  width: auto;
 }
 
 .announce h4 {
@@ -77,6 +78,7 @@
 
 .announce5 a {
   background-color: #cee370 !important;
+  width: auto;
 }
 
 .announce4 h4 {
@@ -93,6 +95,7 @@
 
 .announce4 a {
   background-color: #dcc58c !important;
+  width: auto;
 }
 
 .announce3 h4 {
@@ -109,6 +112,7 @@
 
 .announce3 a {
   background-color: #b0d9d4 !important;
+  width: auto;
 }
 
 .announce2 h4 {
@@ -125,6 +129,7 @@
 
 .announce2 a {
   background-color: #849ffc !important;
+  width: auto;
 }
 
 .announce6 h4 {
@@ -141,6 +146,7 @@
 
 .announce6 a {
   background-color: #ddb9bd !important;
+  width: auto;
 }
 
 .referrals img {
@@ -1640,4 +1646,25 @@ body.green .tl {
   .back_gradient {
     background-size: 100% 400px !important;
   }
+}
+
+/* some table properties */
+
+#explore_quests {
+  width: auto;
+}
+
+.btn {
+  width: 100px;
+  position: relative;
+}
+
+.table td, .table th {
+  padding: 0.35rem;
+  position: relative;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: grey;
 }
