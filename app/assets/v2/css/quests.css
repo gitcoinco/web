@@ -1,55 +1,3 @@
-/* table properties */
-
-
-.announce a {
-  width: auto;
-}
-.announce2 a {
-  width: auto;
-}
-
-.announce6 a {
-  width: auto;
-}
-
-.announce3 a {
-  width: auto;
-}
-
-.announce4 a {
-  width: auto;
-}
-
-.announce5 a {
-  width: auto;
-}
-
-#explore_quests {
-  width: auto;
-}
-
-.btn {
-  width: 100px;
-  position: relative;
-  border: none;
-  padding: 5px;
-  text-align: center;
-  display: inline-block;
-  top: 5px;
-  font-size: 16px;
-}
-
-.btn-secondary {
-  background-color: white;
-  color: grey;
-}
-
-.table td, .table th {
-  padding: 2.5px;
-  position: relative;
-  border: auto;
-}
-
 .show_on_mobile {
   display: none;
 }
@@ -1796,5 +1744,33 @@ body.green .tl {
 
   .back_gradient {
     background-size: 100% 400px !important;
+  }
+
+/* table properties */
+
+   #explore_quests {
+    width: auto;
+  }
+
+  .btn {
+    width: 100px;
+    position: relative;
+    border: none;
+    padding: 5px;
+    text-align: center;
+    display: inline-block;
+    top: 5px;
+    font-size: 16px;
+  }
+
+  .btn-secondary {
+    background-color: white;
+    color: grey;
+  }
+
+  .table td, .table th {
+    padding: 2.5px;
+    position: relative;
+    border: auto;
   }
 }
