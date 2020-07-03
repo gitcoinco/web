@@ -36,7 +36,7 @@
       <span class="nav-badge">({{ grant.contributor_count }})</span>
     </button>
     {% if is_staff %}
-    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=sybil_profile" class="section-tab {% if tab == "contributors" %} active {% endif %}">
+    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=sybil_profile" class="section-tab {% if tab == "sybil_profile" %} active {% endif %}">
       {% trans "SYBIL PROFILE" %}
     </button>
     {% endif %}
@@ -96,6 +96,7 @@
 
     {% if tab == "sybil_profile" and is_staff %}
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js'></script>
+
 
       <h4>Grant Sybil Profile</h4>
 
@@ -159,7 +160,10 @@
               <div style="max-height: 50px; overflow: scroll;">
                  {% for this_profile in sp.4 %}
                       <a href="/{{this_profile}}">
-                      @{{this_profile}}
+                        {% if forloop.counter < 20 %}
+                          <img data-src="/dynamic/avatar/{{this_profile}}" style="height: 20px; width: 20px; border-radius: 10px;">
+                        {% endif %}
+                        @{{this_profile}}
                       </a>
                  {% endfor %}
                </div>
