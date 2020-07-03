@@ -3,11 +3,41 @@ const DAI = '0x6b67DD1542ef11153141037734D21E7Cbd7D9817';
 
 $(document).on('click', '#submit_buy_token', (event) => {
   event.preventDefault();
+  const form = $('#ptokenBuyForm')[0];
+
+  if (form.checkValidity() === false) {
+    event.stopPropagation();
+    _alert('You must agree before submitting', 'error', 2000);
+    return;
+  }
+
   buyPToken($('#ptokenAmount').val());
+});
+
+$(document).on('input', '#ptokenRedeemAmount', (event) => {
+  event.preventDefault();
+  const amount = $(event.target).val();
+
+  $('input#ptokeRedeemnCost').val(`${document.current_ptoken_value * parseFloat(amount) || 0} DAI`);
+});
+
+$(document).on('input', '#ptokenAmount', (event) => {
+  event.preventDefault();
+  const amount = $(event.target).val();
+
+  $('input#ptokenCost').val(`${document.current_ptoken_value * parseFloat(amount) || 0} DAI`);
 });
 
 $(document).on('click', '#submit_redeem_token', (event) => {
   event.preventDefault();
+  const form = $('#ptokenRedeemForm')[0];
+
+  if (form.checkValidity() === false) {
+    event.stopPropagation();
+    _alert('You must agree before submitting', 'error', 2000);
+    return;
+  }
+
   redeemPToken($('#ptokenRedeemAmount').val());
 });
 
