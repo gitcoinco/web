@@ -1615,13 +1615,13 @@ body.green .tl {
 @media (max-width: 575.98px) {
 
   .table {
-     border: none;
+    border: none;
   }
 
   .table td {
     padding: 5.5px;
   }
-   
+
   .table th {
     padding: 5.5px;
   }
@@ -1631,8 +1631,8 @@ body.green .tl {
     top: 0.6rem;
   }
 
-   #quest_creator {
-        top: 0.8rem;
+  #quest_creator {
+    top: 0.8rem;
   }
 
   body.quest_battle {
