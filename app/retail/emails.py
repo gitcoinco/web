@@ -1607,6 +1607,14 @@ def start_work_applicant_about_to_expire(request):
 
 
 @staff_member_required
+def request_amount_email(request):
+    from dashboard.models import FundRequest
+    fr = FundRequest.objects.first()
+    response_html, _ = render_request_amount_email('kevin@gitcoin.co', fr, True)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
 def start_work_applicant_expired(request):
     from dashboard.models import Interest, Bounty
     interest = Interest.objects.last()

@@ -495,6 +495,11 @@ urlpatterns = [
     path('_administration/email/', retail.views.admin_index, name='admin_index_emails'),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
     path(
+        '_administration/email/request_amount_email',
+        retail.emails.request_amount_email,
+        name='admin_request_amount_email'
+    ),
+    path(
         '_administration/email/featured_funded_bounty',
         retail.emails.featured_funded_bounty,
         name='admin_featured_funded_bounty'

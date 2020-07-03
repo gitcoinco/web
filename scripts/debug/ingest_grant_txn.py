@@ -1,5 +1,5 @@
-handle = ''
-txid = ''
+handle = 'hakiminho'
+txid = '0xbd79f723f84439e80ec4bc1da89f5b1b5068d46f3c22f1c0e2870c5e8a198fc4'
 token = ''
 to_address = ''
 from_address = ''
