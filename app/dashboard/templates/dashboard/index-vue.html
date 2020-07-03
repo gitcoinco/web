@@ -82,6 +82,10 @@
         padding-right: 80px;
       }
 
+      .winners input {
+        max-width: 80%;
+      }
+
       @media (max-width: 767.98px) {
         .sponsor-grid {
           grid-template-columns: repeat(2, 1fr);
@@ -636,7 +640,7 @@
                       </div>
                     </div>
                       <div class="d-flex justify-content-center font-body mt-5">
-                        <textarea class="mb-4" v-model="showcase.content" name="content" id="" cols="80" rows="10"  v-if="isEditing">[[showcase.content]]</textarea>
+                        <textarea class="mb-4 form-control" v-model="showcase.content" name="content" id="" cols="80" rows="10"  v-if="isEditing">[[showcase.content]]</textarea>
                         <p :inner-html.prop="showcase.content | markdownit" v-if="!isEditing"></p>
                       </div>
                       <div>
@@ -659,7 +663,7 @@
                           </div>
                           <div class="d-flex justify-content-center align-items-center flex-column">
                             <p class="mb-0 mt-3 text-center font-weight-bold font-bigger-4" v-if="!isEditing">[[ showcase.prizes ]]</p>
-                            <input type="text" v-model="showcase.prizes" v-if="isEditing">
+                            <input class="form__input" type="text" v-model="showcase.prizes" v-if="isEditing">
                             <p class="mb-3">Prizes</p>
                           </div>
                           <div class="d-flex justify-content-center align-items-center flex-column">
@@ -672,8 +676,8 @@
                           </div>
                         </div>
                       </div>
-                      <div>
-                        <h4 class="font-bigger-1 font-weight-bold">Hacking Spotlights</h4>
+                      <div class="spotlight">
+                        <h4 class="font-bigger-1 font-weight-bold mb-sm-3">Hacking Spotlights</h4>
                         <div v-for="spotlight in spotlights">
                           <div class="d-md-flex pt-2" v-if="!isEditing">
                             <div class="col-12 col-md-3 my-3 text-center" style="margin-top: auto !important; margin-bottom: auto !important;">
@@ -687,7 +691,7 @@
                                 [[ getSponsor(spotlight.sponsor).followed ? "following" : "follow" ]]
                               </b-button>
                             </div>
-                            <p class="col-12 col-md-8 mt-sm-3" :inner-html.prop="spotlight.content | markdownit" v-if="!isEditing"></p>
+                            <p class="col-12 col-md-8 mt-sm-3 mt-sm-3 " :inner-html.prop="spotlight.content | markdownit" v-if="!isEditing"></p>
                           </div>
 
                           <div class="d-flex" v-if="isEditing">
@@ -702,34 +706,35 @@
                       </div>
                       <button class="btn btn-link text-darkblue mt-4" @click="addSpotlight()" v-if="isEditing">+ Add Spotlight</button>
                     </div>
-                      <div class="mt-5">
+                      <div class="winners mt-5">
                       <h4 class="font-bigger-1 font-weight-bold mb-3">[[hackathon.name]] Wall of Fame</h4>
                       <div class="d-flex flex-wrap mt-3">
                         <div class="col-12 col-md-4 text-center mt-3">
                           <div v-if="top[0].handle || isEditing">
                             <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[0].handle}`" alt="">
                             <span class="text-muted d-block mt-2 position-left"  v-if="!isEditing">[[ top[0].name ]]</span>
-                            <input placeholder="Joseph M." type="text" v-model="top[0].name" v-else>
+                            <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[0].name" v-else>
                             <span class="font-weight-semibold d-block gc-text-blue mt-1 position-left"  v-if="!isEditing">@[[ top[0].handle ]]</span>
-                            <input placeholder="@josm" type="text" v-model="top[0].handle" v-else>
+                            <input class="form-control mt-2 " placeholder="@josm" type="text" v-model="top[0].handle" v-else>
                           </div>
                         </div>
                         <div class="col-12 col-md-4 text-center mt-3">
                           <div  v-if="top[1].handle || isEditing">
                             <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[1].handle}`" alt="">
                             <span class="text-muted d-block mt-2 position-left"  v-if="!isEditing">[[ top[1].name ]]</span>
-                            <input placeholder="Joseph M." type="text" v-model="top[1].name" v-else>
+                            <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[1].name" v-else>
                             <span class="font-weight-semibold d-block gc-text-blue mt-1 position-left" v-if="!isEditing">@[[ top[1].handle ]]</span>
-                            <input placeholder="@josm"  type="text" v-model="top[1].handle" v-else>
+                            <input class="form-control mt-2" placeholder="@josm"  type="text" v-model="top[1].handle" v-else>
                           </div>
                         </div>
                         <div class="col-12 col-md-4 text-center mt-3">
                           <div  v-if="top[2].handle || isEditing">
                             <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[2].handle}`" alt="">
                             <span class="d-block mt-2 text-muted position-left"  v-if="!isEditing">[[ top[2].name ]]</span>
-                            <input placeholder="Joseph M." type="text" v-model="top[2].name" v-else>
+                            <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[2].name" v-else>
                             <span class="font-weight-semibold d-block gc-text-blue mt-2 position-left" v-if="!isEditing">@[[ top[2].handle ]]</span>
-                            <input placeholder="@josm" type="text" v-model="top[2].handle" v-else>
+                            <input class="form-control mt-2" placeholder="@josm" type="text" v-model="top[2].handle" v-else>
+                            <input class="form-control" placeholder="@josm" type="text" v-model="top[2].handle" v-else>
                           </div>
                         </div>
                       </div>

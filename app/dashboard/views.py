@@ -3645,6 +3645,9 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 3
     elif panel == "participants":
         active_tab = 4
+    elif panel == "showcase":
+        active_tab = 5
+
     filter = ''
     if request.GET.get('filter'):
         filter = f':{request.GET.get("filter")}'
