@@ -332,6 +332,11 @@ class Grant(SuperModel):
             handles.append(handle)
         self.activeSubscriptions = handles
 
+    @property
+    def safe_next_clr_calc_date(self):
+        if self.next_clr_calc_date < timezone.now():
+            return timezone.now() + timezone.timedelta(minutes=5)
+        return self.next_clr_calc_date
 
     @property
     def recurring_funding_supported(self):
