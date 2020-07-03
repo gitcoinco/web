@@ -1614,13 +1614,16 @@ body.green .tl {
 
 @media (max-width: 575.98px) {
 
-     .table {
-         border: none;
+  .table {
+     border: none;
   }
 
-       .table td, 
-       .table th {
-         padding: 5.5px;
+  .table td {
+    padding: 5.5px;
+  }
+   
+  .table th {
+    padding: 5.5px;
   }
 
   .btn {
