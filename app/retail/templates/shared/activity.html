@@ -72,6 +72,7 @@
              <i class="far font-body fa-lightbulb gc-text-blue"></i>
              <span>Looking for a Project</span>
            </span>
+           <br>
          {% endif %}
          {% if row.hackathonevent %}
             <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag" data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
