@@ -35,6 +35,11 @@
       {% trans "CONTRIBUTORS" %}
       <span class="nav-badge">({{ grant.contributor_count }})</span>
     </button>
+    {% if is_staff %}
+    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=sybil_profile" class="section-tab {% if tab == "contributors" %} active {% endif %}">
+      {% trans "SYBIL PROFILE" %}
+    </button>
+    {% endif %}
 
   </div>
 
@@ -84,6 +89,127 @@
           {% include 'grants/activity.html' %}
           <span id="grant-network" class="hidden">{{ grant.network }}</span>
         {% endif %}
+      </div>
+    {% endif %}
+
+
+
+    {% if tab == "sybil_profile" and is_staff %}
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js'></script>
+
+      <h4>Grant Sybil Profile</h4>
+
+      <hr>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      SybilScore ™️: {{ grant.sybil_score }}
+      <br>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      RiskScore ™️: {{ grant.weighted_risk_score }}
+      <pre>
+
+      A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+      - Account Newness
+      - Community Suspicous Activity Reports
+      - Suspicious IP Address
+      - Suspicious Ethereum Interactions
+      - Suspicious SMS Address
+      - Suspicious Account Activity
+      - BrightID Trust Score (coming soon)
+      - Idena Network Trust Score (coming soon)
+      - KYC (maybe coming soon)
+
+      a grant's RiskScore ™️ is equal to its SybilScore ™️ * its matching funds for this round.
+      </pre>
+      <div id="section-nav-sybil">
+        {% for ele in sybil_profiles%}
+        <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
+        <table>
+          <tr>
+            <td>
+              SybilScore ™️
+            </td>
+            <td>
+              Contributors
+            </td>
+            <td>
+              Contributors (pct)
+            </td>
+            <td>
+              Contributions/Contributor
+            </td>
+            <td>
+              Profiles
+            </td>
+          </tr>
+        {% for sp in ele.1.0 %}
+          <tr style="border-top: 1px solid grey;">
+            <td>
+               {{sp.0}}
+            </td>
+            <td>
+               {{sp.1}}
+            </td>
+            <td>
+               {{sp.5}}%
+            </td>
+            <td>
+               {{sp.3|floatformat:2}}
+            </td>
+            <td>
+              <div style="max-height: 50px; overflow: scroll;">
+                 {% for this_profile in sp.4 %}
+                      <a href="/{{this_profile}}">
+                      @{{this_profile}}
+                      </a>
+                 {% endfor %}
+               </div>
+            </td>
+          </tr>
+        {% endfor %}
+        </table>
+          <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
+          <script>
+          var ctx = document.getElementById('myChart{{forloop.counter0}}').getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: [{% for sp in ele.1.0 %}{{sp.0}}, {%endfor%}],
+                  datasets: [{
+                      label: 'Contributors by Sybil Score',
+                      data: [{% for sp in ele.1.0 %}{{sp.1}}, {%endfor%}],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  title: 'Contributors by Sybil Category',
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }
+          });
+          </script>
+
+        {% endfor %}
       </div>
     {% endif %}
 
