@@ -29,6 +29,7 @@ $(document).ready(function() {
       cart_html += '<HR><a href=' + bulk_add_cart + ' target=_blank>Here is a handy link</a> for sharing this collection with others.';
       $("<span class='mt-2 mb-2 w-100'>" + cart_html + '</span>').insertBefore($('#tweetModal span.copy'));
       $('#tweetModal a.button').attr('href', 'https://twitter.com/intent/tweet?text=I%20just%20funded%20these%20' + donations.length + '%20grants%20on%20@gitcoin%20=%3E%20' + bulk_add_cart);
+      $('#tweetModal a.button').text('Tweet about it')
     }
     CartData.setCart([]);
   }
