@@ -119,7 +119,7 @@
       - Idena Network Trust Score (coming soon)
       - KYC (maybe coming soon)
 
-      a grant's RiskScore ™️ is equal to its SybilScore ™️ * its matching funds for this round.
+      a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
       </pre>
       <div id="section-nav-sybil">
         {% for ele in sybil_profiles%}
@@ -255,7 +255,7 @@
           {% endif %}
           <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
             <div class="mr-2 d-inline-block">
-              <img src="/dynamic/avatar/{{handle}}" />
+              <img data-src="/dynamic/avatar/{{handle}}" />
             </div>
             <div class="mt-1 d-inline-block">
               <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>
