@@ -135,9 +135,9 @@ $(document).ready(function() {
       $.get(target, function(html) {
         html = html.replace(/data-src/g, 'src');
         $(id).html($(html).find(target_search));
-        if(target.indexOf('countries') != -1){
+        if (target.indexOf('countries') != -1) {
           $(id).find('.img-fluid').remove();
-        };
+        }
       });
     }
   });

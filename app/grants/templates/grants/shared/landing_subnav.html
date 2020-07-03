@@ -18,6 +18,10 @@
               <div class="heading">{% trans "Sort by" %}</div>
               <select name="sort_option" id="sort_option">
                 <option value="weighted_shuffle">{% trans "Weighted Shuffle" %}</option>
+                {% if is_staff %}
+                <option value="-weighted_risk_score">{% trans "Weighted Risk Score" %}</option>
+                <option value="-sybil_score">{% trans "Sybil Score" %}</option>
+                {% endif %}
                 <option value="-weighted_shuffle">{% trans "Weighted Shuffle:Lowest First" %}</option>
                 <option value="-clr_prediction_curve__0__1">{% trans "Round 6 - Match Estimate: Highest" %}</option>
                 <option value="-amount_received_in_round">{% trans "Round 6 - Amount Raised : Highest" %}</option>
