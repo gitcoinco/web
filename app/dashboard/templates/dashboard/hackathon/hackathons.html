@@ -338,21 +338,6 @@
     {% include 'shared/footer.html' %}
 
     {% block 'scripts' %}
-    <!-- <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script> -->
     <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
-    <!-- <script>
-      $(document).ready(function() {
-        setInterval(function(){
-          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          if (scrollTop > 500 && !document.offset_loaded){
-            $("img").unveil(200);
-            document.offset_loaded = true;
-          }
-        }, 3000);
-        setTimeout(function(){
-          $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
-        }, 1000);
-      });
-    </script> -->
     {% endblock %}
   </body>
