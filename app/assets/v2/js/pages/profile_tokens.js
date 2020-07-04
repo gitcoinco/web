@@ -1,5 +1,7 @@
-const factoryAddress = '0x7bE324A085389c82202BEb90D979d097C5b3f2E8';
-const DAI = '0x6b67DD1542ef11153141037734D21E7Cbd7D9817';
+// Personal token constants
+// Note that this address is also duplicated in board.js
+const factoryAddress = '0x80D50970599E33d0D5D436A649C25b729666A015';
+const defaultTokenName = 'DAI';
 
 $(document).on('click', '#submit_buy_token', (event) => {
   event.preventDefault();
@@ -18,7 +20,7 @@ $(document).on('input', '#ptokenRedeemAmount', (event) => {
   event.preventDefault();
   const amount = $(event.target).val();
 
-  $('#ptokenRedeemCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} DAI`);
+  $('#ptokenRedeemCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} ${defaultTokenName}`);
   $('#redeem-amount').text(parseFloat(amount));
 });
 
@@ -26,7 +28,7 @@ $(document).on('input', '#ptokenAmount', (event) => {
   event.preventDefault();
   const amount = $(event.target).val();
 
-  $('#ptokenCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} DAI`);
+  $('#ptokenCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} ${defaultTokenName}`);
   $('#buy-amount').text(amount);
 });
 
@@ -70,6 +72,8 @@ async function buyPToken(tokenAmount) {
     pTokenAddress // TODO: this needs to be derived from the profile page
   );
 
+  // TODO add token approval step
+
   pToken.methods
     .purchase(tokenAmount)
     .send({
@@ -83,10 +87,12 @@ async function buyPToken(tokenAmount) {
         (new Date()).toISOString(),
         transactionHash
       );
+      // TODO need to confirm that transaction was confirmed. Use web3's getTransactionReceipt
     });
 }
 
 async function redeemPToken(tokenAmount) {
+  // TODO this should be a redemption request with no web3, only DB update
   [user] = await web3.eth.getAccounts();
   const pToken = await new web3.eth.Contract(
     document.contxt.ptoken_abi, // TODO: contxt.ptoken_abi needs to be implemented.
@@ -101,4 +107,5 @@ async function redeemPToken(tokenAmount) {
     .on('transactionHash', function(transactionHash) {
       request_redemption(pTokenId, tokenAmount, network); // TODO: determine token ID and network
     });
+  // TODO need to confirm that transaction was confirmed. Use web3's getTransactionReceipt
 }
