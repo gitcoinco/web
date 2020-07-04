@@ -1,0 +1,28 @@
+{
+    "symbol": "MBS",
+    "address": "0x4E2cE0c9979e5b9B87591Dc042D77Ae2fDcC1A79",
+    "overview":{
+          "en": "Mobius credit protocol is based on the Rio public chain, which is a smart contract based on topology and topological token Low circulation digital assets provide a balance closed-loop circulation network infrastructure protocol. Rio defi is one Blockchain technology companies. The mission is to accelerate digital assets by connecting traditional and decentralized finance It is widely used. We develop solutions that integrate businesses, financial institutions and banks with distributed ledgers The system is connected. The core technology is the next generation blockchain infrastructure, called Rio chain. The application built on the Rio chain can reduce transaction costs, accelerate the confirmation speed, improve efficiency and cover the world.",
+          "zh": "Mobius信用协议是基于Rio公链，通过拓扑学和“拓扑通证”的智能合约为低流通数字资产提供天秤式的均衡闭环流通网络基础协议。Mobius运用大众的智慧来创建一个社区自主自治管理，透明和去中心化的web3.0生态系统。同时，建立在Rio上的平行链和Parity Substrate上的波卡（Polkadot）生态系统。Mobius专注于质押和借贷并把金融和控制权归属于大众并共同增长财富。"
+    },
+    "email": "mobiusnode@gmail.com",
+    "website": "http://mobiusdao.com/",
+    "whitepaper": "http://mobiusdao.com/static/white_paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-6-21",
+    "initial_price":{
+          "ETH":"0.00221425 ETH",
+          "USD":"0.5 USD",
+          "BTC":"0.00005517 BTC"
+    },
+    "links": {
+      "blog": "https://www.linkedin.com/in/mobiusdao",
+      "twitter": "https://twitter.com/mobiusdao",
+      "telegram": "https://t.me/joinchat/O9Le4hoS_XYdfg9smxYONg",
+      "github": "https://github.com/mobiusdao",
+      "facebook": "fb.me/mobiusdao",
+      "reddit": "https://www.reddit.com/user/mobiusdao",
+      "slack": "https://join.slack.com/t/mobiusfoundation/shared_invite/zt-flkx1o4y-eblYjtSJlqj08jU0gAyKxA",
+      "medium": "https://link.medium.com/eN9BNkHgQ7"
+    }
+  }
