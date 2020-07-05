@@ -383,8 +383,6 @@ if (document.getElementById('gc-users-directory')) {
     mounted() {
       const params = new URLSearchParams(window.location.search)
 
-      console.log(params);
-
       if (params.has('ptokens')) {
         this.$set(this.params, 'only_with_token', true);
       }
