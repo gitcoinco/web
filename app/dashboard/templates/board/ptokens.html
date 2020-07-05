@@ -59,6 +59,9 @@
             </template>
             <template v-else>
               <div>Modify your Personal Token</div>
+              <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#editpTokenModal">
+                Edit
+              </button>
             </template>
           </div>
         </div>
@@ -103,6 +106,7 @@
                   [[ error.open || 'You don’t have any open requests' ]]
               </h4>
               <p class="text-black-70">Have any question? Chat with us on <a href="{% url 'slack' %}">Slack</a>!</p>
+              <a href="{% url 'users_directory' %}?ptokens=true" title="Browse tokens" class="btn btn-gc-blue">Browse tokens</a>
             </li>
           </ul>
           <loading-screen v-if="isLoading.open"></loading-screen>
@@ -230,4 +234,5 @@
     </div>
   </section>
   {% include 'shared/create_ptoken.html' %}
+  {% include 'shared/edit_ptoken.html' %}
 </div>

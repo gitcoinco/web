@@ -2936,6 +2936,7 @@ def profile(request, handle, tab=None):
             context['total_redemptions'] = RedemptionToken.objects.filter(ptoken=ptoken,
                                                                           redemption_state='completed').count()
             context['total_holders'] = len(ptoken.get_holders())
+            context['current_hodling'] = ptoken.get_hodling_amount(request.user.profile)
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 

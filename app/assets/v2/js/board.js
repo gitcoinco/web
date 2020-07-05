@@ -204,43 +204,44 @@ Vue.mixin({
     async createPToken() {
       try {
         // TODO: Show loading while deploying
-        let price = this.newPToken.price;
-        let supply = this.newPToken.supply;
+        let price = parseFloat(this.newPToken.price);
+        let supply = parseFloat(this.newPToken.supply);
         let stopFlow;
 
         if (this.newPToken.name === '') {
-          this.newPToken.is_invalid_name = true;
+          this.$set(this.pToken, 'is_invalid_name', true);
           !stopFlow && (stopFlow = true);
         } else {
-          this.newPToken.is_invalid_name = false;
+          this.$set(this.pToken, 'is_invalid_name', true);
         }
 
         if (this.newPToken.symbol === '') {
-          this.newPToken.is_invalid_symbol = true;
+          this.$set(this.pToken, 'is_invalid_symbol', true);
           !stopFlow && (stopFlow = true);
         } else {
-          this.newPToken.is_invalid_symbol = false;
+          this.$set(this.pToken, 'is_invalid_symbol', true);
         }
 
         if (isNaN(price) || price <= 0) {
-          this.newPToken.is_invalid_price = true;
+          this.$set(this.pToken, 'is_invalid_price', true);
           !stopFlow && (stopFlow = true);
         } else {
+          this.$set(this.pToken, 'is_invalid_price', false);
           this.newPToken.is_invalid_price = false;
         }
 
         if (isNaN(supply) || supply <= 0) {
-          this.newPToken.is_invalid_supply = true;
+          this.$set(this.pToken, 'is_invalid_supply', true);
           !stopFlow && (stopFlow = true);
         } else {
-          this.newPToken.is_invalid_supply = false;
+          this.$set(this.pToken, 'is_invalid_supply', false);
         }
 
         if (!this.newPToken.tos) {
-          this.newPToken.is_invalid_tos = true;
+          this.$set(this.pToken, 'is_invalid_tos', true);
           !stopFlow && (stopFlow = true);
         } else {
-          this.newPToken.is_invalid_tos = false;
+          this.$set(this.pToken, 'is_invalid_tos', false);
         }
 
         if (stopFlow)
@@ -253,8 +254,70 @@ Vue.mixin({
         console.log(error);
       }
     },
+    async editPToken() {
+      try {
+        // TODO: Show loading while deploying
+        let price = parseFloat(this.pToken.price);
+        let supply = parseFloat(this.pToken.supply);
+        let supply_locked = document.ptoken.supply - document.ptoken.available;
+        let stopFlow;
+
+        if (isNaN(price) || price <= 0) {
+          this.$set(this.pToken, 'is_invalid_price', true);
+          this.supplyInvalidMsg = 'Please provide a supply amount';
+          !stopFlow && (stopFlow = true);
+        } else {
+          this.$set(this.pToken, 'is_invalid_price', false);
+        }
+
+        if (isNaN(supply) || supply <= 0) {
+          this.$set(this.pToken, 'is_invalid_supply', true);
+          !stopFlow && (stopFlow = true);
+        } else if (supply < supply_locked) {
+          this.$set(this.pToken, 'is_invalid_supply', true);
+          this.supplyInvalidMsg = `The supply will be greater than ${supply_locked} DAI`;
+          !stopFlow && (stopFlow = true);
+        } else {
+          this.$set(this.pToken, 'is_invalid_supply', false);
+        }
+
+        if (!this.pToken.tos) {
+          this.$set(this.pToken, 'is_invalid_tos', true);
+          !stopFlow && (stopFlow = true);
+        } else {
+          this.$set(this.pToken, 'is_invalid_tos', false);
+        }
+
+        if (stopFlow)
+          return;
+
+        this.pToken.deploying = true;
+
+        if (price !== document.ptoken.price) {
+          change_price(this.pToken.id, price);
+          document.ptoken.price = price;
+        }
+
+        if (supply !== document.ptoken.supply) {
+          if (supply > document.ptoken.supply) {
+            console.log('Mint more pTokens');
+            mint_tokens(this.pToken.id, supply);
+            document.ptoken.supply = supply;
+          } else {
+            console.log('Reduce pTokens supply');
+            mint_tokens(this.pToken.id, supply);
+            document.ptoken.supply = supply;
+          }
+        }
+        $('#closeEdit').click();
+        this.pToken.deploying = false;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async deployAndSaveToken() {
       const vm = this;
+
       [user] = await web3.eth.getAccounts();
       // TODO: This is a deterministic localhost address. Should be an env variable for rinkeby/mainnet.
       const factoryAddress = '0x7bE324A085389c82202BEb90D979d097C5b3f2E8';
@@ -310,6 +373,8 @@ if (document.getElementById('gc-board')) {
       authProfile: authProfile,
       skills: skills,
       matchingBounties: [],
+      pToken: Object.assign({}, document.ptoken),
+      supplyInvalidMsg: 'Please provide a supply amount',
       newPToken: {
         name: '',
         symbol: '',
