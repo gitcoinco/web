@@ -14,22 +14,22 @@
         </div>
 
         <div class="card-body">
-          <h5 class="font-subheader font-weight-semibold">
+          <h5 class="font-body font-weight-semibold">
             <a href="{% url 'hackathon' hackathon.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
               {{ hackathon.title }}
             </a>
           </h5>
-          <div class="font-smaller-2">
+          <div class="font-smaller-5">
             <span class>From</span>
-            <time class="font-weight-bold" datetime="{{ hackathon.start_date|date:'c' }}">
+            <time class="font-weight-semibold" datetime="{{ hackathon.start_date|date:'c' }}">
               {{ hackathon.start|date:"m/d/Y" }}
             </time>
             <span>To</span>
-            <time class="font-weight-bold" datetime="{{ hackathon.end_date|date:'c' }}">
+            <time class="font-weight-semibold" datetime="{{ hackathon.end_date|date:'c' }}">
               {{ hackathon.end|date:"m/d/Y" }}
             </time>
           </div>
-          <div class="mt-1 hackathon-actions">
+          <div class="mt-1 font-caption">
             {% if hackathon.end|timesince <= "1 min" %}
               <a href="{% url 'hackathon_onboard' hackathon.slug %}">
                 Join Hackathon >
@@ -40,5 +40,7 @@
       </div>   
     </div>
   {% endfor %}
-  <a href="https://gitcoin.co/hackathon-list/" class="view-all">View all ></a>
+  <p class="text-center">
+    <a href="https://gitcoin.co/hackathon-list/" class="font-caption pb-2">VIEW ALL</a>
+  </p>
 </div>
