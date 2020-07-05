@@ -900,11 +900,9 @@ body.green.offer_view .announce {
   text-transform: uppercase;
   cursor: pointer;
 }
-.townsquare_block-header::after {
-  content: ""
-}
-.townsquare_block-header.closed::after {
-  content: "^"
+
+.text-mode-color {
+  color: var(--townsquare-block-header-color);
 }
 
 #status .btn-group-toggle .btn-radio {
@@ -995,7 +993,7 @@ body.green.offer_view .announce {
   font-size: 12px;
 }
 
-.townsquare_nav-list.tribe .avatar {
+.townsquare_nav-list .tribe .avatar {
   width: 20px;
   height: 20px;
   margin-right: 4px;
