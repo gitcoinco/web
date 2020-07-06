@@ -15,6 +15,11 @@ td, th {
   text-align: center;
 }
 
+.row {
+  overflow: auto;
+  font-size: small;
+}
+
 #explore_quests {
   width: auto;
 }
