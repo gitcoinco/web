@@ -3588,6 +3588,97 @@ def get_kudos(request):
     return HttpResponse(data, mimetype)
 
 
+def hackathon_prizes(request, hackathon=''):
+    hackathon_event = get_object_or_404(HackathonEvent,
+                                        slug__iexact=hackathon,
+                                        sponsor_profiles=request.user.profile)
+
+    query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=request.user.profile)
+    prizes = []
+    for prize in query_prizes:
+        prize_in_json = {
+            'title': prize.title_or_desc,
+            'url': prize.get_absolute_url(),
+            'value_eth': prize.get_value_in_eth,
+            'values_usdt': prize.get_value_in_usdt_now,
+            'paid': bool(prize.paid),
+            'submissions': [project.to_json()
+                            for project in prize.project_bounty.all()
+                            ]
+        }
+
+        prizes.append(prize_in_json)
+
+    return JsonResponse({
+        'prizes': prizes
+    })
+
+
+def dashboard_sponsors(request, hackathon='', panel='prizes'):
+    """Handle rendering of HackathonEvents. Reuses the dashboard template."""
+
+
+    hackathon_event = get_object_or_404(HackathonEvent,
+                                        slug__iexact=hackathon,
+                                        sponsor_profiles=request.user.profile)
+
+    title = hackathon_event.name.title()
+    description = f"{title} | Gitcoin Virtual Hackathon"
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(
+        static('v2/images/twitter_cards/tw_cards-02.png'))
+    network = get_default_network()
+    hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
+
+    sponsor_profile = request.user.profile
+    org = {
+        'display_name': sponsor_profile.name,
+        'avatar_url': sponsor_profile.avatar_url,
+        'org_name': sponsor_profile.handle,
+        'follower_count': sponsor_profile.tribe_members.all().count(),
+        'bounty_count': sponsor_profile.bounties.count()
+    }
+
+    view_tags = get_tags(request)
+    active_tab = 0
+    if panel == "prizes":
+        active_tab = 0
+    elif panel == "submissions":
+        active_tab = 1
+
+    filter = ''
+    if request.GET.get('filter'):
+        filter = f':{request.GET.get("filter")}'
+
+    what = f'hackathon:{hackathon_event.id}{filter}'
+
+    num_participants = HackathonRegistration.objects.filter(hackathon=hackathon_event).count()
+    num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work').count()
+    params = {
+        'active': 'dashboard',
+        'prize_count': hackathon_event.get_current_bounties.count(),
+        'type': 'hackathon',
+        'title': title,
+        'card_desc': description,
+        'what': what,
+        'org': org,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'hackathon': hackathon_event,
+        'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
+        'hackathon_not_started': hackathon_not_started,
+        'user': request.user,
+        'avatar_url': avatar_url,
+        'tags': view_tags,
+        'activities': [],
+        'use_pic_card': True,
+        'projects': [],
+        'panel': active_tab,
+        'num_participants': num_participants,
+        'num_submissions': num_submissions
+    }
+
+    return TemplateResponse(request, 'dashboard/sponsors.html', params)
+
+
 def hackathon(request, hackathon='', panel='prizes'):
     """Handle rendering of HackathonEvents. Reuses the dashboard template."""
 

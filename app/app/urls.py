@@ -217,6 +217,7 @@ urlpatterns = [
     path('hackathon/<str:hackathon>/new/', dashboard.views.new_hackathon_bounty, name='new_hackathon_bounty'),
     path('hackathon/<str:hackathon>/new', dashboard.views.new_hackathon_bounty, name='new_hackathon_bounty2'),
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
+    path('hackathon/dashboard/<str:hackathon>', dashboard.views.dashboard_sponsors, name='sponsors-dashboard'),
     path('hackathon/<str:hackathon>', dashboard.views.hackathon, name='hackathon2'),
     path('hackathon/<str:hackathon>/onboard/', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
     path('hackathon/<str:hackathon>/<str:panel>/', dashboard.views.hackathon, name='hackathon'),
@@ -251,6 +252,7 @@ urlpatterns = [
     re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons4'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
+    path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes'),
 
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),

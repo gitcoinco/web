@@ -1,0 +1,244 @@
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% if use_pic_card %}
+      {% include 'shared/cards_pic.html' %}
+    {% else %}
+      {% include 'shared/cards.html' %}
+    {% endif %}
+    <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/users.css" %}' />
+    <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
+
+    <style type="text/css">
+      .hackathon-logo {
+        height: 13rem;
+        width: 13rem;
+        background: {% firstof hackathon.background_color or '#090E60' %};
+        border-radius: 10px;
+        color: {% firstof hackathon.text_color or 'black' %};
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .hackathon-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+        height: 225px;
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
+      }
+    </style>
+    {% include 'shared/fbpixel.html' %}
+  </head>
+
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header sticky-top dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav_hackathons.html' %}
+    </div>
+    {% if is_staff %}
+    <div class="alpha-warning font-caption mb-0">
+      <span class="font-weight-bold">Staff only</span>
+      <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+    </div>
+    {% endif %}
+
+    <div id="dashboard-content" class="container-fluid no-gutter" style="min-height:600px;">
+        <div id="sponsors-app" class="row" v-cloak>
+          <div :id="hackathonObj.identifier" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 banner hackathon-banner">
+            <div class="offset-xl-2 col-lg-10 col-12 hackathon-text pl-4">
+              <div class="mt-5">
+                <p class="hackathon-title title font-weight-bold mb-0">[[ hackathonObj.name ]]</p>
+              </div>
+              <p class="mb-1">
+                <small class="hackathon-countdown text-uppercase">{{ prize_count }} Prizes, {{ amount }} </small>
+              </p>
+              <div>
+                <small class="font-body mr-3">{{ num_participants }} participants</small>
+                <small class="font-body mr-3">{{ num_submissions }} submissions</small>
+                <small class="font-body">How is the hackathon going?</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 body hackathon-explorer">
+            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
+              <template v-slot:tabs-start>
+                <div class="hack-logo-wrapper d-none d-xl-block">
+                  <div class="mb-1 hackathon-logo">
+                    <b-img-lazy v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo_svg" alt="Hackathon logo"></b-img-lazy>
+                    <b-img-lazy v-else-if="hackathonObj.logo" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo" alt="Hackathon logo"></b-img-lazy>
+                    <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
+                  </div>
+                </div>
+              </template>
+              <b-tab class="col-12" title-item-class="navigation">
+                <template class="col-3" v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Prizes" %}
+                    <span class="nav-badge d-none d-sm-inline">({{prize_count}})</span>
+                  </div>
+                </template>
+                <div id="prizes" class="row">
+                  <div class="col-12 p-2 ml-md-4">
+                      <div class="row loading justify-content-center align-items-center loading_img" v-if="!prizes">
+                        <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
+                      </div>
+                      <div role="tablist">
+                        <b-card no-body class="mb-1" v-for="prize in prizes" v-if="prizes">
+                          <b-card-header header-tag="header" class="p-1 d-flex align-items-baseline justify-content-between px-2" role="tab">
+                            <div>
+                              <h1>[[prize.title]]</h1>
+                              <a :href="prize.url">View prize</a>
+                            </div>
+                            <div>
+                              <span>[[prize.value_eth.toFixed(2)]] ETH</span>
+                              <span>[[prize.values_usdt]] USD</span>
+                            </div>
+                            <span>2/4 Submitted</span>
+                            <b-button v-b-toggle.accordion-1 variant="info">^</b-button>
+                          </b-card-header>
+                          <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+                            <b-card-body>
+                              <b-table-simple hover small caption-top responsive>
+                                <b-thead>
+                                  <b-th>Submission</b-th>
+                                  <b-th>Project Description</b-th>
+                                  <b-th>Hacker</b-th>
+                                  <b-th>Contact</b-th>
+                                  <b-th>Winner</b-th>
+                                  <b-th>Notes</b-th>
+                                </b-thead>
+                                <b-tbody>
+                                  <b-tr v-for="project in prize.submissions">
+                                    <b-td class="text-center"><a :href="project.work_url"><span class="text-black font-weight-semibold">[[project.name]]</span>  <br> <span class="fab fa-github"></span></a> </b-td>
+                                    <b-td class="text-left">[[project.summary]]</b-td>
+                                    <b-td>
+                                      <div v-for="profile in project.profiles">
+                                        <img height="80" width="80" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
+                                        <div>
+                                          <a :href="profile.url">[[profile.handle]]</a>
+                                          <span>[[profile.payout_address]]</span>
+                                        </div>
+                                      </div>
+                                    </b-td>
+                                    <b-td>
+                                      <!--a :href="profile.email"><i class="fa fa-envelope"></i></a-->
+                                      <button class="btn btn-link text-black" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
+                                    </b-td>
+                                    <b-td>
+                                      <b-form-checkbox v-model="project.winner" name="check-button" switch>
+                                        Winner
+                                      </b-form-checkbox>
+                                    </b-td>
+                                    <b-td> <button class="btn btn-link gc-text-blue">+ Add note</button> </b-td>
+                                  </b-tr>
+                                </b-tbody>
+                              </b-table-simple>
+                            </b-card-body>
+                          </b-collapse>
+                        </b-card>
+                      </div>
+                  </div>
+                </div>
+              </b-tab>
+              <b-tab class="col-12" title-item-class="navigation">
+                <template  v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Submissions" %}
+                  </div>
+                </template>
+                <div id="prizes" class="row">
+                  <div class="col-12 p-2 ml-md-4">
+                    {% if not hackathon_not_started %}
+                      <div class="row loading justify-content-center align-items-center loading_img">
+                        <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
+                      </div>
+                      <div class="row nonefound mx-auto" style="display:none;">
+                          <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                          <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                          <div>
+                            <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
+                            <b-button class="btn btn-gc-blue" @click="activePanel = 1">Townsquare</b-button>
+                          </div>
+                      </div>
+                    {% else %}
+                      <div class="text-center mx-auto">
+                        <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
+                        <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </b-tab>
+            </b-tabs>
+          </div>
+        </div>
+      </div>
+    <div class="row bottom_notification font-caption">
+      {{footer_msg|safe}}
+    </div>
+
+    <div id="onboard-footer" class="row hidden font-body">
+      <div class="col-12">
+        <p>{% trans "Want to Fund an issue ?" %}
+          <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
+        </p>
+      </div>
+    </div>
+
+
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with vue=True %}
+    {% include 'shared/footer.html' %}
+    <script src='{% static "v2/js/vue-components.js" %}'></script>
+    {{orgs|json_script:"sponsor-list"}}
+    {{hackathon_obj|json_script:"hackathon-object"}}
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.current_tab = 'hackathon:{{hackathon.id | safe}}';
+      document.keywords = {{ keywords | safe }};
+      document.hackathon = "{{ hackathon.slug | safe }}";
+      document.hackathon_id = "{{ hackathon.id | safe }}";
+      document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
+      document.activePanel = parseInt({{panel | safe}});
+      if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
+    </script>
+    <script src='{% static "v2/js/pages/dashboard-sponsors.js" %}'></script>
+    {% include 'shared/activity_scripts.html' %}
+    <script src='{% static "v2/js/status.js" %}'></script>
+    <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
+    <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
+    <script src='{% static "v2/js/users.js" %}'></script>
+    <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
+    {% include 'shared/current_profile.html' %}
+    <script src='{% static "v2/js/user-search.js" %}'></script>
+  </body>
+</html>

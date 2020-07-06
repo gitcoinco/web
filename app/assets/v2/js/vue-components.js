@@ -9,9 +9,11 @@ Vue.mixin({
   },
   methods: {
     chatWindow: function(channel, dm) {
+      let vm = this;
+      
       dm = dm || channel ? channel.indexOf('@') >= 0 : false;
       channel = channel || 'town-square';
-      let vm = this;
+
       const hackathonTeamSlug = 'hackathons';
       const gitcoinTeamSlug = 'gitcoin';
       const isHackathon = (document.hackathon_id !== null);
