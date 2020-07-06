@@ -329,12 +329,12 @@ Vue.mixin({
 
       // We currently have DAI addresses hardcoded, so right now pTokens only support
       // being priced in DAI
-      let tokenAddress;
+      let purchaseTokenAddress;
 
       if (document.web3network === 'rinkeby') {
-        tokenAddress = '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D';
+        purchaseTokenAddress = '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D';
       } else if (document.web3network === 'mainnet') {
-        tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+        purchaseTokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
       } else {
         _alert('Unsupported network', 'error');
         return;
@@ -349,7 +349,7 @@ Vue.mixin({
         newPToken.symbol,
         web3.utils.toWei(String(newPToken.price)),
         web3.utils.toWei(String(newPToken.supply)),
-        tokenAddress
+        purchaseTokenAddress
       ).send({
         from: user
       }).on('transactionHash', function(transactionHash) {

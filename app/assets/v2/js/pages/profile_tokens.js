@@ -1,7 +1,7 @@
 // Personal token constants
 // Note that this address is also duplicated in board.js
 const factoryAddress = '0x80D50970599E33d0D5D436A649C25b729666A015';
-const defaultTokenName = 'DAI';
+const purchaseTokenName = 'DAI';
 
 $(document).on('click', '#submit_buy_token', (event) => {
   event.preventDefault();
@@ -20,7 +20,7 @@ $(document).on('input', '#ptokenRedeemAmount', (event) => {
   event.preventDefault();
   const amount = $(event.target).val();
 
-  $('#ptokenRedeemCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} ${defaultTokenName}`);
+  $('#ptokenRedeemCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} ${purchaseTokenName}`);
   $('#redeem-amount').text(parseFloat(amount));
 });
 
@@ -28,7 +28,7 @@ $(document).on('input', '#ptokenAmount', (event) => {
   event.preventDefault();
   const amount = $(event.target).val();
 
-  $('#ptokenCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} ${defaultTokenName}`);
+  $('#ptokenCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} ${purchaseTokenName}`);
   $('#buy-amount').text(amount);
 });
 
