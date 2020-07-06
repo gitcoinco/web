@@ -279,7 +279,7 @@ Vue.mixin({
           !stopFlow && (stopFlow = true);
         } else if (supply < supply_locked) {
           this.$set(this.pToken, 'is_invalid_supply', true);
-          this.supplyInvalidMsg = `The supply will be greater than ${supply_locked} DAI`;
+          this.supplyInvalidMsg = `The supply will be less than than ${supply_locked} DAI`;
           !stopFlow && (stopFlow = true);
         } else {
           this.$set(this.pToken, 'is_invalid_supply', false);
@@ -297,11 +297,13 @@ Vue.mixin({
 
         this.pToken.deploying = true;
 
+        // Changing price
         if (price !== document.ptoken.price) {
           change_price(this.pToken.id, price);
           document.ptoken.price = price;
         }
 
+        // Changing supply
         if (supply !== document.ptoken.supply) {
           if (supply > document.ptoken.supply) {
             console.log('Mint more pTokens');
@@ -358,12 +360,13 @@ Vue.mixin({
         create_ptoken(
           newPToken.name,
           newPToken.symbol,
-          '0x0',
+          '0x0', // TODO get this from event logs
           newPToken.price,
           newPToken.supply,
           user,
           transactionHash,
-          (new Date()).toISOString()
+          (new Date()).toISOString(),
+          document.web3network
         );
         vm.user_has_token = true;
         console.log('Token Created!');

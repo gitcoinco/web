@@ -17,13 +17,13 @@ function get_ptoken_redemptions(tokenId, state) {
   return fetchData('/ptokens/', 'GET');
 }
 
-function create_ptoken(name, symbol, address, value, minted, owner_address, txId, web3_created) {
+function create_ptoken(name, symbol, address, value, minted, owner_address, txId, web3_created, network) {
   return fetchData('/ptokens/', 'POST', {
     'token_name': name,
     'token_symbol': symbol,
     'token_address': address,
     'token_owner_address': owner_address,
-    'network': 'localhost', // TODO: detect network
+    'network': network,
     'tx_status': TX_STATUS_PENDING,
     'txid': txId,
     'total_minted': minted,
