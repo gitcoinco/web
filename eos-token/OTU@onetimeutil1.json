@@ -2,11 +2,14 @@
     "symbol": "OTU",
     "account_name": "onetimeutil1",
     "overview": {
-        "en": "OTU (One Time Utility) allows you to receive EMAIL without an account. And all received EMAIL will be deleted after 1 hour.",
-        "zh": ""
+        "en": "OTU (One Time Utility) allows you to receive EMAIL without an account. And all received EMAIL will be deleted after 1 hour."
     },
+    "email": "onetimeutil1@gmail.com",
     "website": "https://otutil.oom/",
-    "total_supply": "10,000,000,000",
+    "published_on": "2020-03-03",
+    "initial_price": {
+        "EOS": "0.001 EOS"
+    },
     "links": {
         "telegram": "https://t.me/onetimeutility"
     }
