@@ -150,6 +150,32 @@ class PersonalToken(SuperModel):
 
         return holders
 
+
+    def available_supply(self):
+        # Query the contract for better results
+        total = self.total_minted
+        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self)
+        total_purchases = purchases_ptoken.aggregate(total_amount=Sum('amount'))
+        redemptions = RedemptionToken.objects.filter(ptoken=self)
+        total_redemptions = redemptions.aggregate(total_amount=Sum('total'))
+
+        total -= total_purchases.get('total_amount') or 0
+        total += total_redemptions.get('total_amount') or 0
+
+        return total
+
+    def get_hodling_amount(self, hodler):
+        total = 0
+        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self, token_holder_profile=hodler)
+        total_purchases = purchases_ptoken.aggregate(total_amount=Sum('amount'))
+        redemptions = RedemptionToken.objects.filter(ptoken=self, redemption_requester=hodler).exclude(redemption_state='denied')
+        total_redemptions = redemptions.aggregate(total_amount=Sum('total'))
+
+        total += total_purchases.get('total_amount') or 0
+        total -= total_redemptions.get('total_amount') or 0
+
+        return total
+
     def update_tx_status(self):
         from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)

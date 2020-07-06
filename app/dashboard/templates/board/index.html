@@ -59,6 +59,19 @@
     <script src="{% static "v2/js/vue-components.js" %}"></script>
     <script>
       document.user_has_token = {{ ptoken|yesno:"true,false" }};
+      {% if ptoken %}
+      document.ptoken = {
+        id: {{ ptoken.id }},
+        name: "{{ ptoken.token_name }}",
+        symbol: "{{ ptoken.token_symbol}} ",
+        price: parseFloat("{{ ptoken.value }}"),
+        supply: parseFloat("{{ ptoken.total_minted }}"),
+        address: "{{ ptoken.token_address }}",
+        available: parseFloat("{{ ptoken.available_supply }}"),
+      }
+      {% else  %}
+        document.ptoken = {}
+      {% endif %}
     </script>
     <script src="{% static "v2/js/board.js" %}"></script>
     <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
