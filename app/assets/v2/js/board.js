@@ -1,5 +1,5 @@
 // Personal token constants
-// Note that this address is also duplicated in profile_tokens.js
+// Note that this address is also duplicated in profile_tokens.js and app/ptokens/models.py
 const factoryAddress = '0x80D50970599E33d0D5D436A649C25b729666A015';
 
 let contributorBounties = {};

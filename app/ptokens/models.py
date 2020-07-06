@@ -47,6 +47,8 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
+from dashboard.abi import ptoken_factory_abi
+from dashboard.utils import get_web3
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
 
@@ -56,7 +58,7 @@ from bleach import clean
 from bounty_requests.models import BountyRequest
 from bs4 import BeautifulSoup
 from rest_framework import serializers
-from web3 import Web3
+from web3 import HTTPProvider, Web3, WebsocketProvider
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +71,7 @@ TX_STATUS_CHOICES = (
     ('dropped', 'dropped'),
 )
 
+FACTORY_ADDRESS = '0x80D50970599E33d0D5D436A649C25b729666A015'
 
 class PersonalTokenQuerySet(models.QuerySet):
     """Handle the manager queryset for Personal Tokens."""
@@ -177,10 +180,21 @@ class PersonalToken(SuperModel):
         return total
 
     def update_tx_status(self):
+        # Get transaction status
         from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
-        return bool(self.tx_status)
 
+        # Exit if transaction not mined, otherwise continue
+        if (self.tx_status != 'success'):
+            return bool(self.tx_status)
+
+        # Get token address from event logs
+        if (self.token_address == "0x0"):
+            web3 = get_web3(self.network)
+            receipt = web3.eth.getTransactionReceipt(self.txid)
+            contract = web3.eth.contract(Web3.toChecksumAddress(FACTORY_ADDRESS), abi=ptoken_factory_abi)
+            logs = contract.events.NewPToken().processReceipt(receipt)
+            self.token_address = logs[0].args.token
 
 class RedemptionToken(SuperModel):
     """Define the structure of a Redemption PToken"""
