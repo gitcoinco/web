@@ -1298,6 +1298,7 @@ class CLRMatch(SuperModel):
         null=False,
         help_text=_('The associated Grant.'),
     )
+    has_passed_kyc = models.BooleanField(default=False, help_text=_('Has this grant gone through KYC?'))
     ready_for_test_payout = models.BooleanField(default=False, help_text=_('Ready for test payout or not'))
     test_payout_tx = models.CharField(
         max_length=255,
