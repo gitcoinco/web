@@ -99,3 +99,47 @@ $(window).resize(function() {
   repoChart();
   communityChart();
 });
+
+console.log('here');
+
+$(document).ready(function() {
+  setInterval(function() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > 500 && !document.offset_loaded) {
+      $('img').unveil(200);
+      document.offset_loaded = true;
+    }
+  }, 3000);
+  $.get('/activity', function(html) {
+    $('#activities').html($(html).find('.activity_stream').html());
+  });
+  $('.view_more').click(function(e) {
+    e.preventDefault();
+    $('.hackathon-breakdown .hidden').removeClass('hidden');
+    $(this).remove();
+  });
+  $('#leaderboard_nav .nav-link').click(function(e) {
+    let id = $(this).attr('href');
+    let target = $(this).data('target');
+    let target_search = $(this).data('targetsearch');
+
+    e.preventDefault();
+    $('.leaderboard_target').addClass('hidden');
+    $('.nav-link').removeClass('active');
+    $('.always_show').removeClass('hidden');
+    $(id).removeClass('hidden');
+    $(this).addClass('active');
+    if (target) {
+      $(id).html('<img style="margin: 20px 100px; height: 200px; width: 200px;" src=/static/v2/images/loading_v2.gif>');
+      $.get(target, function(html) {
+        html = html.replace(/data-src/g, 'src');
+        $(id).html($(html).find(target_search));
+        if (target.indexOf('countries') != -1) {
+          $(id).find('.img-fluid').remove();
+        }
+      });
+    }
+  });
+  $('#leaderboard_nav .nav-link:first-child').click();
+});

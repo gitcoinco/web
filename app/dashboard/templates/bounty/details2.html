@@ -66,7 +66,7 @@
                       <span id="value_in_token">[[ bounty.value_true ]] [[ bounty.token_name ]]</span>
                     </p>
                   </div>
-                  <div v-if="bounty.web3_type == 'qr'" id="value_in_usdt_wrapper" class="tag usd ml-3" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">The funding in this bounty adds up to $${bounty.value_in_usdt_now} USD </div>`'>
+                  <div v-if="bounty.value_in_usdt_now" id="value_in_usdt_wrapper" class="tag usd ml-3" data-toggle="tooltip" data-html="true" :title='`<div class="tooltip-info">The funding in this bounty adds up to $${bounty.value_in_usdt_now} USD </div>`'>
                     <p class="inner-tooltip">
                       <span id="value_in_usdt">[[bounty.value_in_usdt_now]]</span>
                       <span>USD</span>

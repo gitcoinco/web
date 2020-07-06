@@ -144,7 +144,7 @@ class Grant(SuperModel):
     ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
-    grant_type = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'))
+    grant_type = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'), db_index=True)
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
@@ -316,6 +316,20 @@ class Grant(SuperModel):
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
     twitter_handle_2_follower_count = models.PositiveIntegerField(blank=True, default=0)
+    sybil_score = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The Grants Sybil Score'),
+    )
+
+    weighted_risk_score = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The Grants Weighted Risk Score'),
+    )
+
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -332,6 +346,11 @@ class Grant(SuperModel):
             handles.append(handle)
         self.activeSubscriptions = handles
 
+    @property
+    def safe_next_clr_calc_date(self):
+        if self.next_clr_calc_date < timezone.now():
+            return timezone.now() + timezone.timedelta(minutes=5)
+        return self.next_clr_calc_date
 
     @property
     def recurring_funding_supported(self):
@@ -481,7 +500,8 @@ class Grant(SuperModel):
     def url(self):
         """Return grants url."""
         from django.urls import reverse
-        return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': self.slug})
+        slug = self.slug if self.slug else "-"
+        return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': slug})
 
     def get_absolute_url(self):
         return self.url

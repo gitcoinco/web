@@ -98,7 +98,7 @@ class GrantAdmin(GeneralAdmin):
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count'
     ]
-    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
+    list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
     search_fields = ['description', 'admin_profile__handle']
 
@@ -112,6 +112,12 @@ class GrantAdmin(GeneralAdmin):
 
     def view_count(self, instance):
         return instance.get_view_count
+
+    def match_amount(self, instance):
+        try:
+            return round(instance.clr_prediction_curve[0][1])
+        except:
+            return '-'
 
     def team_member_list(self, instance):
         items = []

@@ -76,57 +76,87 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     
       <!-- Quest table -->
   <div id="{{difficulty_level}}">    
-    <table  class="table table-fixed">
+  <div>
+    <table class="table table-responsive-lg table-hover">
      <thead>
          <tr>
-            <th scope="row"></th>
                   <th scope="col">Quest Name</th>
                   <th scope="col">Quest Prize</th>
                   <th scope="col">Difficulty</th>
                   <th scope="col">Attempts</th>
                   <th scope="col">Description</th>
                   <th scope="col">Play Time</th>
-                  <th scope="col">Play</th>
-                  <th scope="col"></th>
-                  <th scope="col">{% if difficulty_level == 'Created' %} Ownership {% endif %} </th>
+                  {% if difficulty_level == 'Created' %} 
+                  <th scope="col">Ownership</th>
+                  {% else %}
+                  <th scope="col">Quest Owner</th>
+                  {% endif %}
+                  <th scope="col">Stage</th>
          </tr>
       </thead>
       {% for unlocked, beaten, cooldown, quest in the_quests %}
             <tbody>
                <tr>
-               <th scope="row"></th>
                     <td> {{quest.title}}</td>
                     <td> {{quest.kudos_reward.humanized_name}}</td>
                     <td> {{difficulty_level}}</td>
                     <td> {{quest.ui_data.attempts_count}}</td>
                     <td> {{quest.description}}</td>
-                    <td>{{quest.est_total_time_required}} mins (reading) <br> {{quest.est_skim_time_mins}} mins (skimming)<br></td>
+                    <td> {{quest.est_total_time_required}} mins (reading) <br> {{quest.est_skim_time_mins}} mins (skimming)<br></td>
+                    {% if difficulty_level == 'Created' %} 
+                     <td>
+                       <span> 
+                         <a class="btn btn-outline-secondary" title="Edit your Quest" role="button" href="{{quest.edit_url}}"><span><i class="fa fa-cog"></i></span> Edit</a>
+                       </span> 
+                    </td>
+                    {% endif %}
+                  {% if not difficulty_level == 'Created' %}
+                  <td>
+                  <span>
+                   <a href="/profile/{{quest.creator}}"> 
+                    <img id="quest_creator" data-src="/dynamic/avatar/{{quest.creator}}" title="{{quest.creator}}">
+                   </a>
+                  </span>
+                  </td>
+                  {% endif %}
                  {% if beaten %}
-                 <td>( ✅ Quest Beaten)
-                 </td>
-                {% elif cooldown %}
-                 <td>( 🥶 In Cooldown Period)
-                 </td>
+                   <span>
+                    <td>
+                    <a class="btn btn-outline-success disabled" title="Quest Beaten"><span>✅</span> Beaten</a>
+                    </td>
+                   </span>
+                 {% elif cooldown %}
+                    <td>
+                    <span>
+                  <a class="btn btn-secondary disabled" title="In Cooldown Period"><span>🥶</span> Cold</a>
+                    </td>
+                    </span>
                  {% elif unlocked %}
-                 <td><span> <a style="position: relative; bottom: 3px; left: 0px;"  class="fa fa-gamepad fa-6" role="button" href="{{quest.url}}"></a></span>
-                 </td>
-                 <td>{% if difficulty_level == 'Created' %} <BR><td> <a class="mt-2" role="button" href="{{quest.edit_url}}">(Edit Quest)</a>
-                      {% endif %} </td>
-                 </td>
+                 <div>
+                    <td>
+                    <span> 
+                      <a  class="btn btn-outline-primary" title="Dive into the web3" role="button" href="{{quest.url}}"><span><i class="fa fa-gamepad"></i></span> Play </a>
+                    </span>
+                    </td>
+                 </div>
+                  
                   {% else %}
-                    <td>🔒Locked; To unlock
+                    <td>
+                    <span>
                     {% if quest.unlocked_by_hackathon %}
-          register for <a href="{{quest.unlocked_by_hackathon.onboard_url}}">{{quest.unlocked_by_hackathon.name}}</a>.
-        {% else %}
-          beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
+                    <a href="{{quest.unlocked_by_hackathon.url}}" target="_blank" class="btn btn-secondary" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒Unlock</a>
+                    {% else %}
+                        beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
+                    </span>
                     </td>
                   {% endif %}
                   {% endif %}
                 </tr>
              </tbody>
-      {% endfor %}
-    </table>
+       {% endfor %}
+     </table>
     </div>
+   </div>
   </div>
   {% endfor %}
 </div>
@@ -578,6 +608,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% block 'scripts' %}
 <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
 <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
+<script src="{% static "v2/js/user_card.js" %}"></script>
 <script>
   $(document).ready(function() {
     setInterval(function(){

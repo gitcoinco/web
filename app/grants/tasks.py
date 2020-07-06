@@ -1,3 +1,5 @@
+import math
+
 from decimal import Decimal
 
 from django.conf import settings
@@ -30,6 +32,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     instance.amount_received_in_round = 0
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
+    instance.sybil_score = 0
     for subscription in instance.subscriptions.all():
         value_usdt = subscription.get_converted_amount(False)
         for contrib in subscription.subscription_contribution.filter(success=True):
@@ -37,6 +40,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                 instance.amount_received += Decimal(value_usdt)
                 if contrib.created_on > round_start_date:
                     instance.amount_received_in_round += Decimal(value_usdt)
+                    instance.sybil_score += subscription.contributor_profile.sybil_score
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
             if subscription.num_tx_approved != 1:
@@ -58,6 +62,12 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             }
             )
     instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
+    instance.sybil_score = instance.sybil_score / instance.positive_round_contributor_count if instance.positive_round_contributor_count else "-1"
+    try:
+        ss = float(instance.sybil_score)
+        instance.weighted_risk_score = float(ss ** 2) * float(math.sqrt(float(instance.clr_prediction_curve[0][1])))
+    except Exception as e:
+        print(e)
     instance.save()
 
 
