@@ -570,7 +570,7 @@
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content py-3">
       <div class="col-12 col-md-2 text-center">
-          <img class="logo-metacard rounded-circle" src="{% if row.grant.logo and row.grant.logo.url %}{{ row.grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=row.grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}">
+          <img class="logo-metacard" src="{% if row.grant.logo and row.grant.logo.url %}{{ row.grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=row.grant.id|modulo:3 %}{% static grant_logo|addstr:id|add:'.png' %}{% endwith %}{% endif %}">
       </div>
       <div class="col-12 col-md-9 text-left">
         <p class="mt-2 mb-1 font-weight-bold" style="font-size: 1.2em;">{{ row.grant.title }}</p>

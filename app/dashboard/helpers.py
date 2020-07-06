@@ -126,40 +126,45 @@ def amount(request):
     """
     response = {}
 
-    try:
-        amount = str(request.GET.get('amount', '1'))
+    amount = str(request.GET.get('amount', '1'))
 
-        if not amount.replace('.','').isnumeric():
-            return HttpResponseBadRequest('not number')
+    if not amount.replace('.','').isnumeric():
+        return HttpResponseBadRequest('not number')
 
-        denomination = request.GET.get('denomination', 'ETH')
-        tokens = denomination.split(',')
+    denomination = request.GET.get('denomination', 'ETH')
+    tokens = denomination.split(',')
 
-        response = []
+    response = []
 
-        for token in tokens:
-            if token in settings.STABLE_COINS:
-                token = 'USDT'
-            if token == 'ETH':
-                amount_in_eth = float(amount)
-            else:
+    for token in tokens:
+        if token in settings.STABLE_COINS:
+            token = 'USDT'
+        if token == 'ETH':
+            amount_in_eth = float(amount)
+        else:
+            try:
                 amount_in_eth = convert_amount(amount, token, 'ETH')
-            amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
+            except Exception as e:
+                logger.debug(e)
+                amount_in_eth = None
+        try:
+            if amount_in_eth:
+                amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
+            else:
+                amount_in_usdt = convert_amount(amount, token, 'USDT')
 
-            response.append({
-                'token': token,
-                'amount': float(amount),
-                'eth': amount_in_eth,
-                'usdt': amount_in_usdt
-            })
+        except Exception as e:
+            logger.debug(e)
+            amount_in_usdt = None
 
-        return JsonResponse(response, safe=False)
-    except ConversionRateNotFoundError as e:
-        logger.debug(e)
-        raise Http404
-    except Exception as e:
-        logger.error(e)
-        raise Http404
+        response.append({
+            'token': token,
+            'amount': float(amount),
+            'eth': amount_in_eth,
+            'usdt': amount_in_usdt
+        })
+
+    return JsonResponse(response, safe=False)
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)

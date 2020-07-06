@@ -52,9 +52,9 @@ Vue.mixin({
           url = `https://blockscout.com/etc/mainnet/tx/${txn}`;
           break;
 
+        case 'CELO':
         case 'cUSD':
-        case 'cGLD':
-          url = `https://alfajores-blockscout.celo-testnet.org/tx/${txn}`;
+          url = `https://explorer.celo.org/tx/${txn}`;
           break;
 
         case 'ZIL':
@@ -75,9 +75,9 @@ Vue.mixin({
           url = `https://blockscout.com/etc/mainnet/address/${address}`;
           break;
 
+        case 'CELO':
         case 'cUSD':
-        case 'cGLD':
-          url = `https://alfajores-blockscout.celo-testnet.org/address/${address}`;
+          url = `https://explorer.celo.org/address/${address}`;
           break;
 
         case 'ZIL':
@@ -101,13 +101,14 @@ Vue.mixin({
             `ethereum:${address}`;
           break;
 
-        case 'cUSD':
+        case 'CELO':
           qr_string = value ?
             `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]` :
             `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address)?args=[${address}]`;
           break;
 
-        case 'cGLD':
+        case 'cUSD':
+          // TODO: Wire in when we know the address
           qr_string = value ?
             `celo:${address}?value=${value}` :
             `celo:${address}`;
@@ -123,8 +124,6 @@ Vue.mixin({
       return qr_string;
     },
     syncBounty: function() {
-      // NOT USED FOR NOW UNTIL MIGRATION OF ETH BOUNTIES TO VUE
-      // ALSO THEN NO SENSE TO MIGRATE BECAUSE STANDARD BOUNTIES REMOVAL
       let vm = this;
 
       if (!localStorage[document.issueURL]) {
@@ -258,8 +257,8 @@ Vue.mixin({
           tenant = 'ETC';
           break;
 
+        case 'CELO':
         case 'cUSD':
-        case 'cGLD':
           tenant = 'CELO';
           break;
 

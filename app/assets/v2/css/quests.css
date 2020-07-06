@@ -1,3 +1,48 @@
+/* table properties */
+
+td, th {
+  white-space: nowrap;
+}
+
+.table td, 
+.table th {
+  padding: 4px;
+  border: none;
+}
+
+.table {
+  width: 100%;
+  text-align: center;
+}
+
+#explore_quests {
+  width: auto;
+}
+
+#quest_creator {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  bottom: -5px;
+}
+
+.btn {
+  width: 100px;
+  position: relative;
+  border: none;
+  padding: 5px;
+  text-align: center;
+  display: inline-block;
+  top: 5px;
+  font-size: 16px;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: grey;
+}
+
 .show_on_mobile {
   display: none;
 }
@@ -57,6 +102,7 @@
 .announce a {
   background-color: #f2c3c4;
   color: black;
+  width: auto;
 }
 
 .announce h4 {
@@ -77,6 +123,7 @@
 
 .announce5 a {
   background-color: #cee370 !important;
+  width: auto;
 }
 
 .announce4 h4 {
@@ -93,6 +140,7 @@
 
 .announce4 a {
   background-color: #dcc58c !important;
+  width: auto;
 }
 
 .announce3 h4 {
@@ -109,6 +157,7 @@
 
 .announce3 a {
   background-color: #b0d9d4 !important;
+  width: auto;
 }
 
 .announce2 h4 {
@@ -125,6 +174,7 @@
 
 .announce2 a {
   background-color: #849ffc !important;
+  width: auto;
 }
 
 .announce6 h4 {
@@ -141,6 +191,7 @@
 
 .announce6 a {
   background-color: #ddb9bd !important;
+  width: auto;
 }
 
 .referrals img {
@@ -1221,6 +1272,10 @@ body.green .tl {
 
 @media (max-width: 1110px) {
 
+  .btn {
+    right: auto;
+  }
+
   body.quest_battle {
     background-size: 250% !important;
   }
@@ -1348,6 +1403,28 @@ body.green .tl {
 
 @media (max-width: 991.98px) {
 
+  .table {
+    border: auto;
+  }
+
+  #quest_creator {
+    top: 0.4rem;
+  }
+
+  .btn {
+    width: -webkit-fill-available;
+    top: 0.4rem;
+    border: none;
+
+  }
+
+  .table td, 
+  .table th {
+    padding: 0.55rem;
+    border: none;
+    position: relative; 
+  }
+
   body.quest_battle {
     background-size: 250% !important;
   }
@@ -1415,6 +1492,32 @@ body.green .tl {
 }
 
 @media (max-width: 767.98px) {
+
+  .table {
+    text-align: center;
+    border-collapse: collapse;
+    border: auto;
+  }
+
+  .btn {
+    width: -webkit-fill-available;
+    top: 0.6rem;
+    border: none;
+  }
+
+  .table td, 
+  .table th {
+    padding: 0.25rem;
+  }
+
+  #quest_creator {
+    top: 10px;
+    right: 1px;
+  }
+
+  #explore_quests {
+    top: -1px;
+  }
 
   body.quest_battle {
     background-size: 350% !important;
@@ -1510,6 +1613,27 @@ body.green .tl {
 }
 
 @media (max-width: 575.98px) {
+
+  .table {
+    border: none;
+  }
+
+  .table td {
+    padding: 5.5px;
+  }
+
+  .table th {
+    padding: 5.5px;
+  }
+
+  .btn {
+    right: auto;
+    top: 0.6rem;
+  }
+
+  #quest_creator {
+    top: 0.8rem;
+  }
 
   body.quest_battle {
     background-size: 250% !important;
