@@ -35,6 +35,12 @@ from perftools.models import JSONStore
 PREV_CLR_START_DATE = dt.datetime(2020, 3, 23, 12, 0)
 PREV_CLR_END_DATE = dt.datetime(2020, 4, 7, 12, 0)
 CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0)
+CLR_END_DATE = dt.datetime(2020, 7, 3, 16, 0)
+
+try:
+    CLR_END_DATE
+except NameError:
+    CLR_END_DATE = timezone.now()
 
 CLR_PERCENTAGE_DISTRIBUTED = 0
 
@@ -349,10 +355,14 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_co
         uv_threshold                : unverified threshold for clr_type
 
 '''
-def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_date=timezone.now()):
+def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_date=None):
 
     if not clr_start_date:
-        print('error: fetch_data - missing start_date')
+        print('error: fetch_data - missing clr_start_date')
+        return None, None, None, None
+
+    if not clr_end_date:
+        print('error: fetch_data - missing clr_end_date')
         return None, None, None, None
 
     contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True)
@@ -414,10 +424,13 @@ def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_da
         }
 
 '''
-def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, clr_start_date=None, clr_end_date=timezone.now()):
+def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, clr_start_date=None, clr_end_date=None):
 
     if not clr_start_date:
         print('Error: populate_data_for_clr - missing clr_start_date')
+
+    if not clr_end_date:
+        print('Error: populate_data_for_clr - missing clr_end_date')
 
     # set up data to load contributions for each grant
     contrib_data_list = []
@@ -471,11 +484,11 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
     debug_output = []
 
     # one-time data call
-    grants, contributions, phantom_funding_profiles, total_pot, v_threshold, uv_threshold = fetch_data(clr_type, network, PREV_CLR_START_DATE)
+    grants, contributions, phantom_funding_profiles, total_pot, v_threshold, uv_threshold = fetch_data(clr_type, network, PREV_CLR_START_DATE, CLR_END_DATE)
 
     # one for previous, one for current
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=CLR_START_DATE)
-    grant_contributions_prev = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=PREV_CLR_START_DATE, clr_end_date=PREV_CLR_END_DATE)
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, CLR_START_DATE, CLR_END_DATE)
+    grant_contributions_prev = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, PREV_CLR_START_DATE, PREV_CLR_END_DATE)
 
     # calculate clr given additional donations
     for grant in grants:
