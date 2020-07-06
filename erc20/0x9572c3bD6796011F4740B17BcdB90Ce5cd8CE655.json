@@ -1,0 +1,26 @@
+{
+  "symbol": "BF",
+  "address": "0x9572c3bD6796011F4740B17BcdB90Ce5cd8CE655",
+  "overview":{
+        "en": "BF A decentralized digital economy data cloud storage platform.",
+        "zh": "BF 一个分散的数字经济数据云存储平台."
+  },
+  "email": "abelbush@bfile.io",
+  "website": "http://www.bfile.io/",
+  "whitepaper": "http://www.bfile.io/bfpaper.pdf", 
+  "published_on": "2020-06-09",
+  "initial_price":{
+        "ETH":"0.0012 ETH"       
+  },
+  "links": {   
+    "twitter": "https://twitter.com/Bitcoin_file",
+    "telegram": "https://t.me/bitefile",   
+    "facebook": "https://www.facebook.com/profile.php?id=100010898869541"   
+  }
+}
+
+
+
+
+
+
