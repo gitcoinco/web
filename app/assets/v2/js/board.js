@@ -354,6 +354,7 @@ Vue.mixin({
         from: user
       }).on('transactionHash', function(transactionHash) {
         // Save to database
+        indicateMetamaskPopup(true);
         create_ptoken(
           newPToken.name,
           newPToken.symbol,
@@ -367,6 +368,7 @@ Vue.mixin({
         vm.user_has_token = true;
         console.log('Token Created!');
       }).on('error', function(err) {
+        indicateMetamaskPopup(true);
         this.handleError(err);
       });
     },
