@@ -1,3 +1,7 @@
+// Personal token constants
+// Note that this address is also duplicated in profile_tokens.js
+const factoryAddress = '0x80D50970599E33d0D5D436A649C25b729666A015';
+
 let contributorBounties = {};
 let pTokens = {};
 let bounties = {};
@@ -318,24 +322,39 @@ Vue.mixin({
     async deployAndSaveToken() {
       const vm = this;
 
+      if (!web3) {
+        _alert('Please connect a wallet', 'error');
+      }
       [user] = await web3.eth.getAccounts();
-      // TODO: This is a deterministic localhost address. Should be an env variable for rinkeby/mainnet.
-      const factoryAddress = '0x7bE324A085389c82202BEb90D979d097C5b3f2E8';
-      const mockDaiAddress = '0x6b67DD1542ef11153141037734D21E7Cbd7D9817';
+
+      // We currently have DAI addresses hardcoded, so right now pTokens only support
+      // being priced in DAI
+      let purchaseTokenAddress;
+
+      if (document.web3network === 'rinkeby') {
+        purchaseTokenAddress = '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D';
+      } else if (document.web3network === 'mainnet') {
+        purchaseTokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+      } else {
+        _alert('Unsupported network', 'error');
+        return;
+      }
       const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
       const newPToken = this.newPToken;
 
       // Deploy on-chain
+      indicateMetamaskPopup();
       factory.methods.createPToken(
         newPToken.name,
         newPToken.symbol,
-        newPToken.price,
-        newPToken.supply,
-        mockDaiAddress
+        web3.utils.toWei(String(newPToken.price)),
+        web3.utils.toWei(String(newPToken.supply)),
+        purchaseTokenAddress
       ).send({
         from: user
       }).on('transactionHash', function(transactionHash) {
         // Save to database
+        indicateMetamaskPopup(true);
         create_ptoken(
           newPToken.name,
           newPToken.symbol,
@@ -348,7 +367,25 @@ Vue.mixin({
         );
         vm.user_has_token = true;
         console.log('Token Created!');
+      }).on('error', function(err) {
+        indicateMetamaskPopup(true);
+        this.handleError(err);
       });
+    },
+
+    handleError(err) {
+      console.error(err); // eslint-disable-line no-console
+      let message = 'There was an error';
+
+      if (err.message)
+        message = err.message;
+      else if (err.msg)
+        message = err.msg;
+      else if (typeof err === 'string')
+        message = err;
+
+      _alert(message, 'error');
+      indicateMetamaskPopup(true);
     }
   }
 });
