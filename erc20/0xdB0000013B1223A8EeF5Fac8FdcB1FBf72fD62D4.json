@@ -1,0 +1,18 @@
+{
+  "symbol": "dMMM",
+  "address": "0xdB0000013B1223A8EeF5Fac8FdcB1FBf72fD62D4",
+  "overview":{
+        "en": "dMMM Token",
+  },
+  "email": "ilovedmmm@gmail.com",
+  "website": "https://d-mmm.github.io",
+  "whitepaper": "https://d-mmm.github.io/whitepapers/dMMM-whitepaper-RU.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-02-01",
+  "initial_price":{
+        "USD":"0.1 USD",
+  },
+  "links": {
+    "github": "https://github.com/d-mmm",
+  }
+}
