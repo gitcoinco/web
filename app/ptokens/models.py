@@ -159,8 +159,8 @@ class PersonalToken(SuperModel):
         redemptions = RedemptionToken.objects.filter(ptoken=self)
         total_redemptions = redemptions.aggregate(total_amount=Sum('total'))
 
-        total -= total_purchases.get('total_amount', 0)
-        total += total_redemptions.get('total_amount', 0)
+        total -= total_purchases.get('total_amount') or 0
+        total += total_redemptions.get('total_amount') or 0
 
         return total
 
