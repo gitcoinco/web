@@ -96,7 +96,7 @@ def tokens(request, token_state=None):
             error = 'No initial price for token'
         else:
             try:
-                total_minted = float(value)
+                value = float(value)
             except ValueError:
                 error = 'bad format on price value'
         if not txid:
