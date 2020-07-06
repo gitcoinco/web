@@ -9,18 +9,16 @@
           <div class="card-header text-center" style="min-width: 8rem;">
             {% firstof hackathon.logo_svg or hackathon.logo as logo %}
             {% if logo %}
-            <img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
-
+              <img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
             {% else %}
               <div class="hackathon-card-logo text-center px-3 font-caption">
-                <a href="{% url 'hackathon_onboard' hackathon.slug %}">  {{ hackathon.title }} </a>
+                <a target="_blank" rel="noopener noreferrer" href="{% url 'hackathon' hackathon.url_slug %}">  {{ hackathon.title }} </a>
               </div>
             {% endif %}
           </div>
-
           <div class="card-body my-auto">
             <h5 class="font-body font-weight-semibold mb-2">
-              <a href="{% url 'hackathon' hackathon.slug %}" class="text-mode-color" target="_blank" rel="noopener noreferrer">
+              <a href="{% url 'hackathon' hackathon.url_slug %}" class="text-mode-color" target="_blank" rel="noopener noreferrer">
                 {{ hackathon.title }}
               </a>
             </h5>
@@ -36,7 +34,7 @@
             </div>
             <div class="mt-1 font-caption">
               {% if hackathon.end|timesince <= "1 min" %}
-                <a href="{% url 'hackathon_onboard' hackathon.slug %}">
+                <a href="{% url 'hackathon_onboard' hackathon.url_slug %}">
                   Join Hackathon >
                 </a>
               {% endif %}
