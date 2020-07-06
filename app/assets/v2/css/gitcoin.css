@@ -549,6 +549,12 @@ div.button-pink {
   transition: max-height 0.2s ease-out;
 }
 
+.panel-active {
+  max-height: 100%;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
 .accordion:after {
   /* stylelint-disable-next-line */
   font-family: 'Font Awesome 5 Pro';

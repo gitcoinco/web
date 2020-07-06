@@ -238,21 +238,21 @@ $(document).ready(function() {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
-  $('.accordion').on('click', (event) => {
-    const element = $(event.target);
 
-    element.toggleClass('active');
-    let panel = element[0].nextElementSibling;
+  $('body').on('click', '.accordion', event => {
+    const element = $(event.target);
+    const panel = element[0].nextElementSibling;
 
     if (panel) {
-      if (panel.style.maxHeight) {
-        panel.style.maxHeight = null;
+      if (element.hasClass('active')) {
+        panel.style.maxHeight = 0;
         panel.style.marginBottom = 0 + 'px';
       } else {
         panel.style.maxHeight = panel.scrollHeight + 'px';
         panel.style.marginBottom = 10 + 'px';
       }
     }
+    element.toggleClass('active');
   });
   attach_close_button();
 });
