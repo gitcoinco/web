@@ -3631,7 +3631,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                              hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).all().count()
+    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).distinct('registrant').count()
     projects_count = HackathonProject.objects.filter(hackathon=hackathon_event).all().count()
     view_tags = get_tags(request)
     active_tab = 0
