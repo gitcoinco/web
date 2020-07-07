@@ -206,6 +206,8 @@ Vue.mixin({
       document.location.href = url;
     },
     async createPToken() {
+      const handleError = this.handleError;
+
       try {
         // TODO: Show loading while deploying
         let price = parseFloat(this.newPToken.price);
@@ -254,8 +256,8 @@ Vue.mixin({
         this.newPToken.deploying = true;
         await this.deployAndSaveToken();
         this.newPToken.deploying = false;
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        handleError(err);
       }
     },
     async editPToken() {
@@ -296,9 +298,10 @@ Vue.mixin({
           return;
 
         this.pToken.deploying = true;
-        const user = await this.checkWeb3();
+        const { user } = await this.checkWeb3();
         const pTokenId = this.pToken.id;
         const ptoken = await new web3.eth.Contract(document.contxt.ptoken_abi, this.pToken.address);
+        const handleError = this.handleError;
 
         // Changing price
         if (price !== document.ptoken.price) {
@@ -312,8 +315,7 @@ Vue.mixin({
               console.log('pToken price successfully changed');
             })
             .on('error', function(err) {
-              indicateMetamaskPopup(true);
-              this.handleError(err);
+              handleError(err);
             });
         }
 
@@ -331,8 +333,7 @@ Vue.mixin({
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
                 console.log('pToken supply successfully increased');
               }).on('error', function(err) {
-                indicateMetamaskPopup(true);
-                this.handleError(err);
+                handleError(err);
               });
           } else {
             // Burning existing tokens to decrease total supply
@@ -346,8 +347,7 @@ Vue.mixin({
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
                 console.log('pToken supply successfully decreased');
               }).on('error', function(err) {
-                indicateMetamaskPopup(true);
-                this.handleError(err);
+                handleError(err);
               });
           }
         }
@@ -360,13 +360,12 @@ Vue.mixin({
     async deployAndSaveToken() {
       const vm = this;
 
-      const user = await this.checkWeb3();
-
       // We currently have DAI addresses hardcoded, so right now pTokens only support
       // being priced in DAI
-      let purchaseTokenAddress;
+      const { user, purchaseTokenAddress } = await this.checkWeb3();
       const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
       const newPToken = this.newPToken;
+      const handleError = this.handleError;
 
       // Deploy on-chain
       indicateMetamaskPopup();
@@ -401,8 +400,7 @@ Vue.mixin({
         vm.user_has_token = true;
         console.log('Token Created!');
       }).on('error', function(err) {
-        indicateMetamaskPopup(true);
-        this.handleError(err);
+        handleError(err);
       });
     },
 
@@ -437,7 +435,7 @@ Vue.mixin({
         throw new Error('Please connect a wallet');
       }
 
-      return user;
+      return { user, purchaseTokenAddress };
     }
   }
 });
