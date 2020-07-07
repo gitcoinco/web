@@ -21,14 +21,14 @@ from datetime import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.db.models import Max, F
+from django.db.models import F, Max
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
-from grants.models import Contribution, Grant, CartActivity, Subscription
-from grants.views import clr_active, round_end, next_round_start
-from marketing.mails import warn_subscription_failed, remember_your_cart
+from grants.models import CartActivity, Contribution, Grant, Subscription
+from grants.views import clr_active, next_round_start, round_end
+from marketing.mails import remember_your_cart, warn_subscription_failed
 from townsquare.models import MatchRound
 
 
@@ -100,4 +100,3 @@ class Command(BaseCommand):
                     print(e)
 
         print(f'\n\nSent {count} emails of {last_activity_by_user.count()} carts')
-
