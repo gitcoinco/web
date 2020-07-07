@@ -45,13 +45,12 @@ class Command(BaseCommand):
                 num_sends = base_email_events.filter(event='delivered').count()
                 num_opens = base_email_events.filter(event='open').count()
                 num_clicks = base_email_events.filter(event='click').count()
-                print(f"{es.email} {num_clicks} {num_opens} {num_clicks}")
 
                 do_unsubscribe = num_sends > 5 and num_opens < 1 and num_clicks < 1
                 if do_unsubscribe:
                     unsubscribed_email_type = {}
                     unsubscribed_email_type[email_type] = True
                     es.build_email_preferences(unsubscribed_email_type)
-                    print("unsubscribed ")
+                    print(f"unsubscribed {es.email} {num_clicks} {num_opens} {num_clicks}")
                     es.save()
 
