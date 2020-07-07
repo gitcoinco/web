@@ -93,7 +93,7 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from rest_framework.renderers import JSONRenderer
 
-from ptokens.models import PersonalToken, RedemptionToken
+from ptokens.models import PersonalToken, RedemptionToken, PurchasePToken
 from retail.helpers import get_ip
 from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
@@ -2091,10 +2091,14 @@ def user_card(request, handle):
     profile_dict = profile.as_dict
     followers = TribeMember.objects.filter(org=profile).count()
     following = TribeMember.objects.filter(profile=profile).count()
+    purchased_count = PurchasePToken.objects.filter(token_holder_profile=profile, tx_status='completed').count()
+    redeemed_count = RedemptionToken.objects.filter(redemption_requester=profile, tx_status='completed').count()
+    has_ptoken = PersonalToken.objects.filter(token_owner_profile=profile).exists()
+
     response = {
         'is_authenticated': request.user.is_authenticated,
         'is_following': is_following,
-        'profile' : {
+        'profile': {
             'avatar_url': profile.avatar_url,
             'handle': profile.handle,
             'orgs' : profile.organizations,
@@ -2103,8 +2107,11 @@ def user_card(request, handle):
             'data': profile.data,
             'followers':followers,
             'following':following,
+            'purchased_count': purchased_count,
+            'redeemed_count': redeemed_count,
+            'has_ptoken': has_ptoken,
         },
-        'profile_dict':profile_dict
+        'profile_dict': profile_dict
     }
 
     return JsonResponse(response, safe=False)

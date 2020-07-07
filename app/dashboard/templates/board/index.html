@@ -68,6 +68,8 @@
         supply: parseFloat("{{ ptoken.total_minted }}"),
         address: "{{ ptoken.token_address }}",
         available: parseFloat("{{ ptoken.available_supply }}"),
+        purchases: parseFloat("{{ ptoken.total_purchases }}"),
+        redemptions: parseFloat("{{ ptoken.total_redemptions }}"),
       }
       {% else  %}
         document.ptoken = {}

@@ -1673,7 +1673,7 @@ class SendCryptoAsset(SuperModel):
         from dashboard.utils import get_tx_status
         from economy.tx import getReplacedTX
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
-        
+
         #handle scenario in which a txn has been replaced
         if self.tx_status in ['pending', 'dropped', 'unknown', '']:
             new_tx = getReplacedTX(self.txid)
@@ -4120,9 +4120,6 @@ class Profile(SuperModel):
         desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
 
-        purchased_count = PurchasePToken.objects.filter(token_holder_profile=self, tx_status='completed').count()
-        redeemed_count = RedemptionToken.objects.filter(redemption_requester=self, tx_status='completed').count()
-
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
@@ -4143,8 +4140,6 @@ class Profile(SuperModel):
             'sum_all_funded_tokens': sum_all_funded_tokens,
             'sum_all_collected_tokens': sum_all_collected_tokens,
             'bounties': list(bounties.values_list('pk', flat=True)),
-            'purchased_count': purchased_count,
-            'redeemed_count': redeemed_count
         }
 
         if self.cascaded_persona == 'org':

@@ -83,8 +83,8 @@ const renderPopOverData = function(data) {
     {'type': 'Tips', 'sent': 'Sent', 'received': 'Received'}
   );
   let token_total_percent = objSetup(
-    data.profile_dict.purchased_count || 0,
-    data.profile_dict.redeemed_count || 0,
+    data.profile.purchased_count || 0,
+    data.profile.redeemed_count || 0,
     total,
     '#D8C667',
     '#FFED90',
@@ -109,10 +109,10 @@ const renderPopOverData = function(data) {
 
   let mount_graph;
 
-  if (data.profile_dict.purchased_count === undefined && data.profile_dict.redeemed_count == undefined) {
-    mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
-  } else {
+  if (data.profile.has_ptoken) {
     mount_graph = [ tips_total_percent, token_total_percent, bounties_total_percent, grants_total_percent ];
+  } else {
+    mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
   }
 
 

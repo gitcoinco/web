@@ -1,5 +1,5 @@
 // Personal token constants
-// Note that this address is also duplicated in profile_tokens.js
+// Note that this address is also duplicated in profile_tokens.js and app/ptokens/models.py
 const factoryAddress = '0x80D50970599E33d0D5D436A649C25b729666A015';
 
 let contributorBounties = {};
@@ -206,6 +206,8 @@ Vue.mixin({
       document.location.href = url;
     },
     async createPToken() {
+      const handleError = this.handleError;
+
       try {
         // TODO: Show loading while deploying
         let price = parseFloat(this.newPToken.price);
@@ -254,8 +256,8 @@ Vue.mixin({
         this.newPToken.deploying = true;
         await this.deployAndSaveToken();
         this.newPToken.deploying = false;
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        handleError(err);
       }
     },
     async editPToken() {
@@ -279,7 +281,7 @@ Vue.mixin({
           !stopFlow && (stopFlow = true);
         } else if (supply < supply_locked) {
           this.$set(this.pToken, 'is_invalid_supply', true);
-          this.supplyInvalidMsg = `The supply will be greater than ${supply_locked} DAI`;
+          this.supplyInvalidMsg = `The supply will be less than than ${supply_locked} DAI`;
           !stopFlow && (stopFlow = true);
         } else {
           this.$set(this.pToken, 'is_invalid_supply', false);
@@ -296,21 +298,57 @@ Vue.mixin({
           return;
 
         this.pToken.deploying = true;
+        const { user } = await this.checkWeb3();
+        const pTokenId = this.pToken.id;
+        const ptoken = await new web3.eth.Contract(document.contxt.ptoken_abi, this.pToken.address);
+        const handleError = this.handleError;
 
+        // Changing price
         if (price !== document.ptoken.price) {
-          change_price(this.pToken.id, price);
-          document.ptoken.price = price;
+          indicateMetamaskPopup();
+          ptoken.methods.updatePrice(web3.utils.toWei(String(price)))
+            .send({from: user})
+            .on('transactionHash', function(transactionHash) {
+              indicateMetamaskPopup(true);
+              change_price(pTokenId, price);
+              document.ptoken.price = price;
+              console.log('pToken price successfully changed');
+            })
+            .on('error', function(err) {
+              handleError(err);
+            });
         }
 
+        // Changing supply
         if (supply !== document.ptoken.supply) {
           if (supply > document.ptoken.supply) {
-            console.log('Mint more pTokens');
-            mint_tokens(this.pToken.id, supply);
-            document.ptoken.supply = supply;
+            // Minting more tokens to increase total supply
+            indicateMetamaskPopup();
+            ptoken.methods.mint(web3.utils.toWei(String(supply - document.ptoken.supply)))
+              .send({from: user})
+              .on('transactionHash', function(transactionHash) {
+                indicateMetamaskPopup(true);
+                mint_tokens(pTokenId, supply);
+                document.ptoken.supply = supply;
+                document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
+                console.log('pToken supply successfully increased');
+              }).on('error', function(err) {
+                handleError(err);
+              });
           } else {
-            console.log('Reduce pTokens supply');
-            mint_tokens(this.pToken.id, supply);
-            document.ptoken.supply = supply;
+            // Burning existing tokens to decrease total supply
+            indicateMetamaskPopup();
+            ptoken.methods.burn(web3.utils.toWei(String(document.ptoken.supply - supply)))
+              .send({from: user})
+              .on('transactionHash', function(transactionHash) {
+                indicateMetamaskPopup(true);
+                mint_tokens(pTokenId, supply);
+                document.ptoken.supply = supply;
+                document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
+                console.log('pToken supply successfully decreased');
+              }).on('error', function(err) {
+                handleError(err);
+              });
           }
         }
         $('#closeEdit').click();
@@ -322,25 +360,12 @@ Vue.mixin({
     async deployAndSaveToken() {
       const vm = this;
 
-      if (!web3) {
-        _alert('Please connect a wallet', 'error');
-      }
-      [user] = await web3.eth.getAccounts();
-
       // We currently have DAI addresses hardcoded, so right now pTokens only support
       // being priced in DAI
-      let purchaseTokenAddress;
-
-      if (document.web3network === 'rinkeby') {
-        purchaseTokenAddress = '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D';
-      } else if (document.web3network === 'mainnet') {
-        purchaseTokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
-      } else {
-        _alert('Unsupported network', 'error');
-        return;
-      }
+      const { user, purchaseTokenAddress } = await this.checkWeb3();
       const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
       const newPToken = this.newPToken;
+      const handleError = this.handleError;
 
       // Deploy on-chain
       indicateMetamaskPopup();
@@ -355,21 +380,27 @@ Vue.mixin({
       }).on('transactionHash', function(transactionHash) {
         // Save to database
         indicateMetamaskPopup(true);
-        create_ptoken(
+        const ptokenReponse = create_ptoken(
           newPToken.name,
           newPToken.symbol,
-          '0x0',
+          '0x0', // TODO get this from event logs
           newPToken.price,
           newPToken.supply,
           user,
           transactionHash,
-          (new Date()).toISOString()
+          (new Date()).toISOString(),
+          document.web3network
         );
+
+        $.when(ptokenReponse).then((response) => {
+          console.log(response);
+          document.ptoken = response;
+        });
+
         vm.user_has_token = true;
         console.log('Token Created!');
       }).on('error', function(err) {
-        indicateMetamaskPopup(true);
-        this.handleError(err);
+        handleError(err);
       });
     },
 
@@ -386,6 +417,25 @@ Vue.mixin({
 
       _alert(message, 'error');
       indicateMetamaskPopup(true);
+    },
+
+    async checkWeb3() {
+      if (!web3) {
+        _alert('Please connect a wallet', 'error');
+        throw new Error('Please connect a wallet');
+      }
+      [user] = await web3.eth.getAccounts();
+
+      if (document.web3network === 'rinkeby') {
+        purchaseTokenAddress = '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D';
+      } else if (document.web3network === 'mainnet') {
+        purchaseTokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+      } else {
+        _alert('Unsupported network', 'error');
+        throw new Error('Please connect a wallet');
+      }
+
+      return { user, purchaseTokenAddress };
     }
   }
 });
