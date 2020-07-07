@@ -296,13 +296,12 @@ Vue.mixin({
           return;
 
         this.pToken.deploying = true;
+        const user = await this.checkWeb3();
+        const pTokenId = this.pToken.id;
+        const ptoken = await new web3.eth.Contract(document.contxt.ptoken_abi, this.pToken.address);
 
         // Changing price
         if (price !== document.ptoken.price) {
-          const user = await this.checkWeb3();
-          const ptoken = await new web3.eth.Contract(document.contxt.ptoken_abi, this.pToken.address);
-          const pTokenId = this.pToken.id;
-
           indicateMetamaskPopup();
           ptoken.methods.updatePrice(web3.utils.toWei(String(price)))
             .send({from: user})
@@ -310,7 +309,7 @@ Vue.mixin({
               indicateMetamaskPopup(true);
               change_price(pTokenId, price);
               document.ptoken.price = price;
-              console.log('pToken price changed!');
+              console.log('pToken price successfully changed');
             })
             .on('error', function(err) {
               indicateMetamaskPopup(true);
@@ -321,13 +320,33 @@ Vue.mixin({
         // Changing supply
         if (supply !== document.ptoken.supply) {
           if (supply > document.ptoken.supply) {
-            console.log('Mint more pTokens');
-            mint_tokens(this.pToken.id, supply);
-            document.ptoken.supply = supply;
+            // Minting more tokens to increase total supply
+            indicateMetamaskPopup();
+            ptoken.methods.mint(web3.utils.toWei(String(supply - document.ptoken.supply)))
+              .send({from: user})
+              .on('transactionHash', function(transactionHash) {
+                indicateMetamaskPopup(true);
+                mint_tokens(pTokenId, supply);
+                document.ptoken.supply = supply;
+                console.log('pToken supply successfully increased');
+              }).on('error', function(err) {
+                indicateMetamaskPopup(true);
+                this.handleError(err);
+              });
           } else {
-            console.log('Reduce pTokens supply');
-            mint_tokens(this.pToken.id, supply);
-            document.ptoken.supply = supply;
+            // Burning existing tokens to decrease total supply
+            indicateMetamaskPopup();
+            ptoken.methods.burn(web3.utils.toWei(String(document.ptoken.supply - supply)))
+              .send({from: user})
+              .on('transactionHash', function(transactionHash) {
+                indicateMetamaskPopup(true);
+                mint_tokens(pTokenId, supply);
+                document.ptoken.supply = supply;
+                console.log('pToken supply successfully decreased');
+              }).on('error', function(err) {
+                indicateMetamaskPopup(true);
+                this.handleError(err);
+              });
           }
         }
         $('#closeEdit').click();
