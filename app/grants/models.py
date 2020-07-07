@@ -1158,6 +1158,15 @@ class Contribution(SuperModel):
         help_text=_('The why or why not validator passed'),
     )
 
+    profile_for_clr = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='clr_pledges',
+        on_delete=models.CASCADE,
+        help_text=_('The profile to attribute this contribution to..'),
+        null=True,
+        blank=True,
+    )
+
     def get_absolute_url(self):
         return self.subscription.grant.url + '?tab=transactions'
 
@@ -1261,6 +1270,10 @@ def psave_contrib(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):
+
+    if not instance.profile_for_clr:
+        if instance.subscription:
+            instance.profile_for_clr = instance.subscription.contributor_profile
 
     ele = instance
     sub = ele.subscription
