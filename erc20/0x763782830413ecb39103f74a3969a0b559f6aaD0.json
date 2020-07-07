@@ -1,0 +1,17 @@
+{
+    "symbol": "QT",
+    "address": "0x763782830413ecb39103f74a3969a0b559f6aaD0",
+    "overview":{
+          "en": "Quantify Global is a one-stop quantitative trading platform for global digital currency, dedicated to building a global leading digital asset financial ecological environment of data, strategy and transaction.",
+          "zh": "Quantify Global是全球数字货币一站式量化交易平台，致力于构建全球领先的数据、策略、交易三位一体数字资产金融生态环境。"
+    },
+    "email": "quantifyglobal@gmail.com",
+    "website": "http://quantifyglobal.xyz/",
+    "whitepaper": "http://quantifyglobal.xyz/whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-04-19",
+    "links": {
+        "telegram": "https://t.me/quantifyglobal",
+        "twitter": "https://twitter.com/quantifyglobal1"
+      }
+}
