@@ -43,6 +43,10 @@ td, th {
   color: grey;
 }
 
+#info_button {
+  cursor: default;
+}
+
 .show_on_mobile {
   display: none;
 }
