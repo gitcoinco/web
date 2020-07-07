@@ -299,8 +299,23 @@ Vue.mixin({
 
         // Changing price
         if (price !== document.ptoken.price) {
-          change_price(this.pToken.id, price);
-          document.ptoken.price = price;
+          const user = await this.checkWeb3();
+          const ptoken = await new web3.eth.Contract(document.contxt.ptoken_abi, this.pToken.address);
+          const pTokenId = this.pToken.id;
+
+          indicateMetamaskPopup();
+          ptoken.methods.updatePrice(web3.utils.toWei(String(price)))
+            .send({from: user})
+            .on('transactionHash', function(transactionHash) {
+              indicateMetamaskPopup(true);
+              change_price(pTokenId, price);
+              document.ptoken.price = price;
+              console.log('pToken price changed!');
+            })
+            .on('error', function(err) {
+              indicateMetamaskPopup(true);
+              this.handleError(err);
+            });
         }
 
         // Changing supply
@@ -324,23 +339,11 @@ Vue.mixin({
     async deployAndSaveToken() {
       const vm = this;
 
-      if (!web3) {
-        _alert('Please connect a wallet', 'error');
-      }
-      [user] = await web3.eth.getAccounts();
+      const user = await this.checkWeb3();
 
       // We currently have DAI addresses hardcoded, so right now pTokens only support
       // being priced in DAI
       let purchaseTokenAddress;
-
-      if (document.web3network === 'rinkeby') {
-        purchaseTokenAddress = '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D';
-      } else if (document.web3network === 'mainnet') {
-        purchaseTokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
-      } else {
-        _alert('Unsupported network', 'error');
-        return;
-      }
       const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
       const newPToken = this.newPToken;
 
@@ -389,6 +392,25 @@ Vue.mixin({
 
       _alert(message, 'error');
       indicateMetamaskPopup(true);
+    },
+
+    async checkWeb3() {
+      if (!web3) {
+        _alert('Please connect a wallet', 'error');
+        throw new Error('Please connect a wallet');
+      }
+      [user] = await web3.eth.getAccounts();
+
+      if (document.web3network === 'rinkeby') {
+        purchaseTokenAddress = '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D';
+      } else if (document.web3network === 'mainnet') {
+        purchaseTokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+      } else {
+        _alert('Unsupported network', 'error');
+        throw new Error('Please connect a wallet');
+      }
+
+      return user;
     }
   }
 });
