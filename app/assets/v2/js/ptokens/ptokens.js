@@ -18,7 +18,7 @@ function get_ptoken_redemptions(tokenId, state) {
 }
 
 function create_ptoken(name, symbol, address, value, minted, owner_address, txId, web3_created, network) {
-  return fetchData('/ptokens/', 'POST', {
+  return fetchData('/ptokens/?minimal=true', 'POST', {
     'token_name': name,
     'token_symbol': symbol,
     'token_address': address,

@@ -328,6 +328,7 @@ Vue.mixin({
                 indicateMetamaskPopup(true);
                 mint_tokens(pTokenId, supply);
                 document.ptoken.supply = supply;
+                document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
                 console.log('pToken supply successfully increased');
               }).on('error', function(err) {
                 indicateMetamaskPopup(true);
@@ -342,6 +343,7 @@ Vue.mixin({
                 indicateMetamaskPopup(true);
                 mint_tokens(pTokenId, supply);
                 document.ptoken.supply = supply;
+                document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
                 console.log('pToken supply successfully decreased');
               }).on('error', function(err) {
                 indicateMetamaskPopup(true);
@@ -379,7 +381,7 @@ Vue.mixin({
       }).on('transactionHash', function(transactionHash) {
         // Save to database
         indicateMetamaskPopup(true);
-        create_ptoken(
+        const ptokenReponse = create_ptoken(
           newPToken.name,
           newPToken.symbol,
           '0x0', // TODO get this from event logs
@@ -390,6 +392,12 @@ Vue.mixin({
           (new Date()).toISOString(),
           document.web3network
         );
+
+        $.when(ptokenReponse).then((response) => {
+          console.log(response);
+          document.ptoken = response;
+        });
+
         vm.user_has_token = true;
         console.log('Token Created!');
       }).on('error', function(err) {

@@ -61,6 +61,7 @@ def tokens(request, token_state=None):
     """List JSON data for the user tokens"""
     error = None
     user = request.user if request.user.is_authenticated else None
+    minimal = request.GET.get('minimal')
 
     if request.method == 'POST':
         if not user:
@@ -130,6 +131,19 @@ def tokens(request, token_state=None):
         token = PersonalToken.objects.create(**kwargs)
         record_ptoken_activity('create_ptoken', token, request.user.profile)
 
+        if minimal:
+            return JsonResponse({
+                'id': token.id,
+                'name': token.token_name,
+                'symbol': token.token_symbol,
+                'price': token.value,
+                'supply': token.total_minted,
+                'address': token.token_address,
+                'available': token.available_supply,
+                'purchases': token.total_purchases,
+                'redemptions': token.total_redemptions,
+            })
+
         return JsonResponse({
             'error': False,
             'data': token.to_standard_dict()
@@ -146,7 +160,7 @@ def tokens(request, token_state=None):
 def ptoken(request, tokenId):
     """Access and change the state for fiven ptoken"""
     ptoken = get_object_or_404(PersonalToken, pk=tokenId)
-
+    minimal = request.GET.get('minimal', False)
     user = request.user if request.user.is_authenticated else None
 
     if request.method == 'POST':
@@ -209,6 +223,20 @@ def ptoken(request, tokenId):
 
             if metadata:
                 record_ptoken_activity(event_name, ptoken, user.profile, metadata)
+
+    if minimal:
+        return JsonResponse({
+            'id': ptoken.id,
+            'name': ptoken.token_name,
+            'symbol': ptoken.token_symbol,
+            'price': ptoken.value,
+            'supply': ptoken.total_minted,
+            'address': ptoken.token_address,
+            'available': ptoken.available_supply,
+            'purchases': ptoken.total_purchases,
+            'redemptions': ptoken.total_redemptions,
+        })
+
 
     return JsonResponse({'error': False, 'data': ptoken.to_standard_dict()})
 

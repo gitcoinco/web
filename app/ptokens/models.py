@@ -153,19 +153,23 @@ class PersonalToken(SuperModel):
 
         return holders
 
-
+    @property
     def available_supply(self):
         # Query the contract for better results
-        total = self.total_minted
+        return self.total_minted - (self.total_purchases - self.total_redemptions)
+
+    @property
+    def total_purchases(self):
         purchases_ptoken = PurchasePToken.objects.filter(ptoken=self)
         total_purchases = purchases_ptoken.aggregate(total_amount=Sum('amount'))
+
+        return total_purchases.get('total_amount', 0) or 0
+
+    @property
+    def total_redemptions(self):
         redemptions = RedemptionToken.objects.filter(ptoken=self)
         total_redemptions = redemptions.aggregate(total_amount=Sum('total'))
-
-        total -= total_purchases.get('total_amount') or 0
-        total += total_redemptions.get('total_amount') or 0
-
-        return total
+        return total_redemptions.get('total_amount', 0) or 0
 
     def get_hodling_amount(self, hodler):
         total = 0
