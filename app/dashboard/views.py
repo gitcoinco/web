@@ -4850,6 +4850,10 @@ def create_bounty_v1(request):
         except Exception as e:
             logger.error(e)
 
+    if bounty.web3_type == 'manual' and not bounty.event:
+        response['message'] = 'error: web3_type manual is eligible only for hackathons'
+        return JsonResponse(response)
+
     # coupon code
     coupon_code = request.POST.get("coupon_code")
     try:
@@ -5140,8 +5144,11 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / manual'
+        return JsonResponse(response)
+    if payout_type == 'manual' and not bounty.event:
+        response['message'] = 'error: payout_type manual is eligible only for hackathons'
         return JsonResponse(response)
 
     tenant = request.POST.get('tenant')
@@ -5178,11 +5185,10 @@ def payout_bounty_v1(request, fulfillment_id):
 
         funder_address = request.POST.get('funder_address')
         if not funder_address :
-            response['message'] = 'error: missing parameter funder_address for web3 modal / qr payment'
+            response['message'] = f'error: missing parameter funder_address for payout_type ${payout_type}'
             return JsonResponse(response)
 
-        fulfillment.funder_address = fulfillment.funder_address
-        fulfillment.payout_status = 'pending'
+        fulfillment.funder_address = funder_address
 
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
@@ -5194,15 +5200,20 @@ def payout_bounty_v1(request, fulfillment_id):
     fulfillment.payout_amount = amount
     fulfillment.token_name = token_name
 
-    if payout_type == 'fiat':
+    if payout_type in ['fiat', 'manual']:
+        if not payout_tx_id:
+            response['message'] = f'error: missing parameter payout_tx_id for payout_type ${payout_type}'
+            return JsonResponse(response)
+
         fulfillment.payout_status = 'done'
         fulfillment.accepted_on = timezone.now()
         fulfillment.accepted = True
+        fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    fulfillment.save()
-
-    if payout_type == 'qr' or payout_type == 'web3_modal':
+    elif payout_type in ['qr', 'web3_modal']:
+        fulfillment.payout_status = 'pending'
+        fulfillment.save()
         sync_payout(fulfillment)
 
     response = {
