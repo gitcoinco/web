@@ -1,9 +1,5 @@
 /* table properties */
 
-td, th {
-  white-space: nowrap;
-}
-
 .table td, 
 .table th {
   padding: 4px;
@@ -953,7 +949,8 @@ body.green.quest_battle {
   width: 32%;
   margin: 0;
   display: inline-block;
-  height: 400px;
+  height: 100%;
+  padding-bottom: 3rem;
   vertical-align: top;
   text-align: center;
   position: relative;
@@ -963,6 +960,7 @@ body.green.quest_battle {
 
 .leaderboard_hero .inner_row img.avatar {
   width: 30%;
+  max-width: 7rem;
   margin: 0px auto;
   border-radius: 50%;
   left: 35%;
@@ -1013,8 +1011,6 @@ body.green.quest_battle {
   border-radius: 5px;
   padding: 5px;
   width: 80%;
-  height: 300px;
-  overflow-y: hidden;
   margin: 20px auto 0px;
 }
 
