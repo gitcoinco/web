@@ -210,7 +210,8 @@ Vue.component('grants-cart', {
       // If we have a cart where all donations are in Dai, we use a linear regression to
       // estimate gas costs based on real checkout transaction data, and add a 50% margin
       const donationCurrencies = this.donationInputs.map(donation => donation.token);
-      const isAllDai = donationCurrencies.every((addr, index, array) => addr === array[0]);
+      const daiAddress = this.getTokenByName('DAI').addr;
+      const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
 
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
