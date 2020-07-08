@@ -1,11 +1,13 @@
-handle = 'hakiminho'
-txid = '0xbd79f723f84439e80ec4bc1da89f5b1b5068d46f3c22f1c0e2870c5e8a198fc4'
+from django.utils import timezone
+
+handle = ''
+txid = ''
 token = ''
 to_address = ''
 from_address = ''
-do_write = True
-
-from django.utils import timezone
+do_write = False
+created_on = timezone.now()
+#created_on = timezone.datetime(2020, 6, 15, 8, 0)
 
 import requests
 from dashboard.models import Activity, Profile
@@ -15,15 +17,17 @@ from grants.models import Contribution, Grant, Subscription
 
 profile = Profile.objects.get(handle=handle)
 
-endpoint = 'token-transfers' if token != '0x0' else 'ether-transfers'
-url = f'https://api.aleth.io/v1/{endpoint}?'
-if from_address:
-    url += '&filter[from]=' + from_address
-if to_address:
-    url += '&filter[to]=' + to_address
-if token:
-    url += '&filter[token]=' + token
-url += '&page%5Blimit%5D=100'
+url = f"https://api.aleth.io/v1/transactions/{txid}/contractMessages"
+if token and token != '0x0':
+    endpoint = 'token-transfers'
+    url = f'https://api.aleth.io/v1/{endpoint}?'
+    if from_address:
+        url += '&filter[from]=' + from_address
+    if to_address:
+        url += '&filter[to]=' + to_address
+    if token:
+        url += '&filter[token]=' + token
+    url += '&page%5Blimit%5D=100'
 
 transfers = requests.get(
     url,
@@ -31,19 +35,24 @@ transfers = requests.get(
 ).json()
 transfers = transfers.get('data', {})
 
+print(f"got {len(transfers)} transfers before txid")
+
 if txid:
     transfers = [xfr for xfr in transfers if txid.lower() in str(xfr).lower()]
 
 print(f"got {len(transfers)} transfers")
 
 for xfr in transfers:
-    symbol = xfr['attributes']['symbol']
+    symbol = xfr['attributes']['symbol'] if token else 'ETH'
     value = xfr['attributes']['value']
-    decimals = xfr['attributes']['decimals']
+    decimals = xfr['attributes']['decimals'] if token else 18
     value_adjusted = int(value) / 10 **int(decimals)
     to = xfr['relationships']['to']['data']['id']
-    grant = Grant.objects.filter(admin_address__iexact=to).order_by('-positive_round_contributor_count').first()
-    print(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+    try:
+        grant = Grant.objects.filter(admin_address__iexact=to).order_by('-positive_round_contributor_count').first()
+        print(f"{value_adjusted}{symbol}  => {to}, {grant.url} ")
+    except:
+        print(f"{value_adjusted}{symbol}  => {to}, Unknown Grant ")
 
     if do_write:
 
@@ -78,6 +87,9 @@ for xfr in transfers:
             subscription.comments = validator_comment
             subscription.amount_per_period_usdt = usd_val
             subscription.save()
+            if created_on:
+                subscription.created_on = created_on
+                subscription.save()
 
             contrib = Contribution.objects.create(
                 success=True,
@@ -88,6 +100,9 @@ for xfr in transfers:
                 validator_passed=True,
                 validator_comment=validator_comment,
                 )
+            if created_on:
+                contrib.created_on = created_on
+                contrib.save()
             print(f"ingested {subscription.pk} / {contrib.pk}")
 
             metadata = {

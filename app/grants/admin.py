@@ -238,7 +238,7 @@ kevin (team gitcoin)
 
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
-    raw_id_fields = ['subscription']
+    raw_id_fields = ['subscription', 'profile_for_clr']
     list_display = ['pk', 'created_on_nt', 'created_on', 'id', 'user_sybil_score', 'etherscan_links', 'amount_str', 'profile', 'grant', 'tx_cleared', 'success', 'validator_comment']
     readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
     search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']

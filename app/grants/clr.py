@@ -445,7 +445,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
         grant_phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
         # verified profiles
-        verified_profile_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.sms_verification]
+        verified_profile_ids = [ele.pk for ele in contribs if ele.profile_for_clr.sms_verification]
         verified_phantom_funding_profile_ids = [ele.profile_id for ele in grant_phantom_funding_profiles if ele.profile.sms_verification]
         verified_profile = list(set(verified_profile_ids + verified_phantom_funding_profile_ids))
 
@@ -457,7 +457,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
         # contributions
         if len(contributing_profile_ids) > 0:
             for profile_id in contributing_profile_ids:
-                profile_contributions = contribs.filter(subscription__contributor_profile_id=profile_id)
+                profile_contributions = contribs.filter(profile_for_clr_id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_contributions if c.subscription.amount_per_period_usdt]))
                 phantom_funding = grant_phantom_funding_profiles.filter(profile_id=profile_id)
                 if phantom_funding.exists():

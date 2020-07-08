@@ -80,12 +80,13 @@ class Command(BaseCommand):
                 return
             for grant in grants:
                 amount = grant.clr_match_estimate_this_round
+                has_already_kyc = grant.clr_matches.filter(has_passed_kyc=True).exists()
                 if not amount:
                     continue
                 already_exists = scheduled_matches.filter(grant=grant).exists()
                 if already_exists:
                     continue
-                needs_kyc = amount > KYC_THRESHOLD
+                needs_kyc = amount > KYC_THRESHOLD and not has_already_kyc
                 comments = "" if not needs_kyc else "Needs KYC"
                 ready_for_test_payout = not needs_kyc
                 match = CLRMatch.objects.create(
