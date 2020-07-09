@@ -29,9 +29,10 @@ import pytest
 from dashboard.models import Bounty, Profile
 from dashboard.utils import (
     IPFSCantConnectException, apply_new_bounty_deadline, clean_bounty_url, create_user_action, get_bounty, get_ipfs,
-    get_ordinal_repr, get_web3, getBountyContract, humanize_event_name, ipfs_cat_ipfsapi, re_market_bounty,
-    release_bounty_to_the_public,
+    get_ordinal_repr, get_token_recipient_senders, get_web3, getBountyContract, humanize_event_name, ipfs_cat_ipfsapi,
+    re_market_bounty, release_bounty_to_the_public,
 )
+from eth_utils import is_address
 from pytz import UTC
 from test_plus.test import TestCase
 from web3.main import Web3
@@ -297,3 +298,22 @@ class DashboardUtilsTest(TestCase):
         assert bounty.bounty_reserved_for_user is None
         assert bounty.reserved_for_user_from is None
         assert bounty.reserved_for_user_expiration is None
+
+    @staticmethod
+    def test_get_token_recipient_senders():
+        addresses = get_token_recipient_senders(
+            'rinkeby',
+            token_address="0x8ad3aA5d5ff084307d28C8f514D7a193B2Bfe725",
+            recipient_address="0x03bCeC53fD1a2617a3B064eE8fE4f4c4aacc765B")
+
+        def validate(address):
+            return is_address(address) or address == "0x0"
+
+        assert all(validate(address) for address in addresses)
+
+        empty_addresses = get_token_recipient_senders(
+            'rinkeby',
+            token_address="0x8ad3aA5d5ff084307d28C8f514D7a193B2Bfe725",
+            recipient_address="0x57b4Af69127C69ec3248886bBa6deBAB7994695a")
+
+        assert len(empty_addresses) == 0
