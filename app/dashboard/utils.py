@@ -37,6 +37,7 @@ from dashboard.helpers import UnsupportedSchemaException, normalize_url, process
 from dashboard.models import Activity, BlockedUser, Bounty, BountyFulfillment, Profile, UserAction
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
+from dashboard.sync.eth import sync_eth_payout
 from dashboard.sync.zil import sync_zil_payout
 from eth_abi import decode_single, encode_single
 from eth_utils import keccak, to_checksum_address, to_hex
@@ -181,8 +182,14 @@ def _get_utm_from_cookie(request):
     """
     utmDict = {}
     utm_source = request.COOKIES.get('utm_source')
+    if not utm_source:
+        utm_source = request.GET.get('utm_source')
     utm_medium = request.COOKIES.get('utm_medium')
+    if not utm_medium:
+        utm_medium = request.GET.get('utm_medium')
     utm_campaign = request.COOKIES.get('utm_campaign')
+    if not utm_campaign:
+        utm_campaign = request.GET.get('utm_campaign')
 
     if utm_source:
         utmDict['utm_source'] = utm_source
@@ -336,12 +343,12 @@ def get_unrated_bounties_count(user):
         return 0
     unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
         .filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status='done') \
+        .filter(interested__pending=False).filter(idx_status='submitted') \
         .exclude(
             feedbacks__feedbackType='worker',
-            feedbacks__sender_profile=user
+            feedbacks__sender_profile=user,
         )
-    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    unrated_funded = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
     .filter(
         bounty_owner_github_username__iexact=user.handle,
         idx_status='done'
@@ -480,13 +487,19 @@ def has_tx_mined(txid, network):
 
 def sync_payout(fulfillment):
     token_name = fulfillment.token_name
+    if not token_name:
+        token_name = fulfillment.bounty.token_name
 
-    if token_name == 'ETC':
-        sync_etc_payout(fulfillment)
-    elif token_name == 'cUSD' or token_name == 'cGLD':
-        sync_celo_payout(fulfillment)
-    elif token_name == 'ZIL':
-        sync_zil_payout(fulfillment)
+    if fulfillment.payout_type == 'web3_modal':
+        sync_eth_payout(fulfillment)
+
+    elif fulfillment.payout_type == 'qr':
+        if token_name == 'ETC':
+            sync_etc_payout(fulfillment)
+        elif token_name == 'CELO' or token_name == 'cUSD':
+            sync_celo_payout(fulfillment)
+        elif token_name == 'ZIL':
+            sync_zil_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -577,7 +590,16 @@ def build_profile_pairs(bounty):
         if fulfillment.profile and fulfillment.profile.handle.strip() and fulfillment.profile.absolute_url:
             profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
         else:
-            addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
+            if bounty.tenant == 'ETH':
+                addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'ZIL':
+                addr = f"https://viewblock.io/zilliqa/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'CELO':
+                addr = f"https://explorer.celo.org/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'ETC':
+                addr = f"https://blockscout.com/etc/mainnet/address/{fulfillment.fulfiller_address}"
+            else:
+                addr = None
             profile_handles.append((fulfillment.fulfiller_address, addr))
     return profile_handles
 
@@ -972,9 +994,7 @@ def get_orgs_perms(profile):
         response_data.append(org_perms)
     return response_data
 
-
-def get_url_first_indexes():
-
+def get_all_urls():
     urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
     def list_urls(lis, acc=None):
@@ -990,8 +1010,16 @@ def get_url_first_indexes():
 
         yield from list_urls(lis[1:], acc)
 
+    return list_urls(urlconf.urlpatterns)
+
+def get_url_first_indexes():
+
+    return ['_administration','about','action','actions','activity','api','avatar','blog','bounties','bounty','btctalk','casestudies','casestudy','chat','community','contributor','contributor_dashboard','credit','dashboard','docs','dynamic','ens','explorer','extension','faucet','fb','feedback','funder','funder_dashboard','funding','gas','ghlogin','github','gitter','grant','grants','hackathon','hackathonlist','hackathons','health','help','home','how','impersonate','inbox','interest','issue','itunes','jobs','jsi18n','kudos','l','labs','landing','lazy_load_kudos','lbcheck','leaderboard','legacy','legal','livestream','login','logout','mailing_list','medium','mission','modal','new','not_a_token','o','onboard','podcast','postcomment','press','presskit','products','profile','quests','reddit','refer','register_hackathon','requestincrease','requestmoney','requests','results','revenue','robotstxt','schwag','send','service','settings','sg_sendgrid_event_processor','sitemapsectionxml','sitemapxml','slack','spec','strbounty_network','submittoken','sync','terms','tip','townsquare','tribe','tribes','twitter','users','verified','vision','wallpaper','wallpapers','web3','whitepaper','wiki','wikiazAZ09azdAZdazd','youtube']
+    # TODO: figure out the recursion issue with the URLs at a later date
+    # or just cache them in the backend dynamically
+    
     urls = []
-    for p in list_urls(urlconf.urlpatterns):
+    for p in get_all_urls():
         url = p[0].split('/')[0]
         url = re.sub(r'\W+', '', url)
         urls.append(url)

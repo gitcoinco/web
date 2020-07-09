@@ -122,10 +122,20 @@ def preprocess(request):
 
     header_msg, footer_msg, nav_salt = get_sitewide_announcements()
 
+    # town square wall post max length
+    max_length_offset = abs(((
+        request.user.profile.created_on
+        if hasattr(request.user, 'profile') and request.user.is_authenticated else timezone.now()
+    ) - timezone.now()).days)
+    max_length = 600 + max_length_offset
+
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
+        'max_length': max_length,
+        'max_length_offset': max_length_offset,
         'chat_url': chat_url,
+        'base_url': settings.BASE_URL,
         'chat_id': chat_id,
         'chat_access_token': chat_access_token,
         'github_handle': request.user.username.lower() if user_is_authenticated else False,
@@ -144,6 +154,8 @@ def preprocess(request):
         'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
         'giphy_key': settings.GIPHY_KEY,
         'youtube_key': settings.YOUTUBE_API_KEY,
+        'fortmatic_live_key': settings.FORTMATIC_LIVE_KEY,
+        'fortmatic_test_key': settings.FORTMATIC_TEST_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
@@ -160,6 +172,7 @@ def preprocess(request):
         'is_alpha_tester': profile.is_alpha_tester if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
+        'pref_do_not_track': profile.pref_do_not_track if profile else False,
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
     }

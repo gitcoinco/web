@@ -16,11 +16,12 @@
   border-color: transparent;
 }
 
-@media (min-width: 1200px) {
-  .grant-detail .container {
-    max-width: 85vw
-  }
+.grant-detail .container {
+  max-width: 85vw;
+  display: block;
+}
 
+@media (min-width: 1200px) {
   #editor.ql-bubble .ql-editor[contenteditable='false'] {
     padding: 0;
   }
@@ -212,6 +213,11 @@ textarea.editable {
 .grant-banner {
   overflow : hidden;
   max-height: 22rem;
+}
+
+.grant-side-cart {
+  background-color: white;
+  border-left: lightgray 2px solid;
 }
 
 .wallet-address {

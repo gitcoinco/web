@@ -37,6 +37,7 @@ Vue.filter('markdownit', function(val) {
   if (!val)
     return '';
   const _markdown = new markdownit({
+    html: true,
     linkify: true,
     highlight: function(str, lang) {
       if (lang && hljs.getLanguage(lang)) {
@@ -84,9 +85,38 @@ Vue.filter('stringReplace', function(activity_type) {
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
     bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
-    new_kudos: gettext('New Kudos')
+    new_kudos: gettext('New Kudos'),
+    worker_paid: gettext('Bounty paid to')
   };
 
   return activity_names[activity_type];
 });
 
+Vue.filter('truncate', function(value, length = 30, clamp = '...') {
+  if (!value) {
+    return '';
+  }
+
+  value = value.toString();
+  if (value.length <= length) {
+    return value;
+  }
+  return value.substr(0, length) + clamp;
+});
+
+Vue.filter('capitalize', function(value) {
+  if (!value) {
+    return '';
+  }
+
+  value = value.toString();
+  return value.charAt(0).toUpperCase() + value.slice(1);
+});
+
+Vue.filter('toUppercase', function(value) {
+  return value.toUpperCase();
+});
+
+Vue.filter('toLower', function(value) {
+  return value.toLowerCase();
+});

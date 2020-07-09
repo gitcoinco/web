@@ -1,9 +1,5 @@
 /* eslint-disable no-console */
-
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-});
-
+needWalletConnection();
 window.onload = function() {
 
   const rateUser = () => {
@@ -34,7 +30,6 @@ window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
-    var account = web3.eth.accounts[0];
 
     if (getParam('source')) {
       $('#issueURL').html(getParam('source'));
@@ -169,6 +164,11 @@ window.onload = function() {
 
       var isError = false;
 
+      if (!provider) {
+        onConnect();
+        return false;
+      }
+
       if ($('#terms:checked').length == 0) {
         _alert({ message: gettext('Please accept the terms of service.') }, 'warning');
         isError = true;
@@ -187,7 +187,7 @@ window.onload = function() {
         return;
       }
 
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+      var bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
       loading_button($(this));
 
@@ -209,17 +209,19 @@ window.onload = function() {
         var bountyAmount = parseInt(result['value_in_token'], 10);
         var fromAddress = result['bounty_owner_address'];
         var claimeeAddress = result['fulfiller_address'];
-        var open = result['is_open'];
+        var is_open = result['is_open'];
         var initialized = true;
         var bountyId = result['standard_bounties_id'];
 
         var errormsg = undefined;
 
-        if (bountyAmount == 0 || open == false || initialized == false) {
+        if (bountyAmount == 0 || is_open == false || initialized == false) {
           errormsg = gettext('No active funding found at this address.  Are you sure this is an active funded issue?');
         } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
           errormsg = gettext('No claimee found for this bounty.');
-        } else if (fromAddress != web3.eth.coinbase) {
+        }
+
+        if (fromAddress.toLowerCase() != selectedAccount.toLowerCase()) {
           errormsg = gettext('You can only process a funded issue if you submitted it initially.');
         }
 
@@ -229,14 +231,14 @@ window.onload = function() {
           return;
         }
 
-        var final_callback = function(error, result) {
+        var final_callback = function(result, error) {
           indicateMetamaskPopup();
           var next = function() {
             // setup inter page state
             localStorage[issueURL] = JSON.stringify({
               'timestamp': timestamp(),
               'dataHash': null,
-              'issuer': account,
+              'issuer': selectedAccount,
               'txid': result
             });
 
@@ -262,7 +264,14 @@ window.onload = function() {
         };
         // just sent payout
         var send_payout = function() {
-          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)), from: web3.eth.accounts[0]}, final_callback);
+          bounty.methods.acceptFulfillment(bountyId, fulfillmentId).send({
+            from: selectedAccount
+          }).then((result) => {
+            final_callback(result);
+          }).catch(err => {
+            final_callback(undefined, err);
+            console.log(err);
+          });
         };
 
         // send both tip and payout

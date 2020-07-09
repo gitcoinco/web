@@ -241,12 +241,9 @@
                 Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
             </div>
           </div>
-          <div id="gas-section" class="py-4 eth-chain">
-            <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
-            <div>
-              {% include 'shared/bounty_actions_hidden_vars.html' %}
-              {% include 'shared/wallet_estimate.html' %}
-            </div>
+
+          <div class="eth-chain">
+            {% include 'shared/bounty_actions_hidden_vars.html' %}
           </div>
         </div>
 
@@ -282,7 +279,7 @@
                 You will have to approve
                 <span class="font-weight-bold">
                   <span id="confirmation">{% if FEE_PERCENTAGE == 0 %} 1 {% else %} 2 {% endif %}</span>
-                  Metamask confirmations.
+                  web3 wallet confirmations.
                 </span>
               </p>
             </div>
@@ -291,7 +288,7 @@
 
         <div class="pb-5 text-center">
           <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 px-5 btn-lg-padding" type="submit">Fund Issue</button>
-          <p class="font-caption blue">
+          <p class="font-caption blue eth-chain">
             Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.
             <a class="text-reset underline" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Learn more here.</a>
           </p>
@@ -349,7 +346,6 @@
 <script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/lib/purify.min.js" %}"></script>
-<script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
 <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
 <script src="{% static "v2/js/amounts.js" %}"></script>

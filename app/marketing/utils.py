@@ -81,11 +81,10 @@ def get_stat(key):
     return Stat.objects.filter(key=key).order_by('-created_on').first().val
 
 
-def invite_to_slack(email):
+def invite_to_slack(email, override=False):
     # KO 2020/03 disabling slack invites
     # per https://gitcoincore.slack.com/archives/CB1N0L6F7/p1585245243010100
-    return
-    if settings.DEBUG:
+    if settings.DEBUG or not override:
         return {}
     sc = SlackClient(settings.SLACK_TOKEN)
     response = sc.api_call('users.admin.invite', email=email)
@@ -230,7 +229,7 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
         else:
             es = EmailSubscriber.objects.create(**defaults)
             created = True
-        print("EmailSubscriber:", es, "- created" if created else "- updated")
+        #print("EmailSubscriber:", es, "- created" if created else "- updated")
     except EmailSubscriber.MultipleObjectsReturned:
         email_subscriber_ids = EmailSubscriber.objects.filter(email__iexact=email) \
             .values_list('id', flat=True) \
@@ -242,7 +241,7 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
         es = EmailSubscriber.objects.create(**defaults)
         created = True
     except Exception as e:
-        print(f'Failed to update or create email subscriber: ({email}) - {e}')
+        #print(f'Failed to update or create email subscriber: ({email}) - {e}')
         return ''
 
     if created or not es.priv:

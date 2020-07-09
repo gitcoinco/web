@@ -1,21 +1,30 @@
 /* eslint-disable no-lonely-if */
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-});
-
 load_tokens();
 
 const FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
 
-const is_funder = () => {
-  if (web3 && web3.eth && web3.coinbase)
-    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;
+const promisify = (fun, params = []) => {
+  return new Promise((resolve, reject) => {
+    fun(...params, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+const is_funder = async() => {
+  if (web3 && web3.eth && web3.coinbase) {
+    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == selectedAccount;
+  }
   return document.is_funder_github_user_same;
 };
 
-$(document).ready(function() {
+$(document).ready(async function() {
 
-  if (!is_funder()) {
+  if (!await is_funder()) {
     $('#total-section').hide();
     $('#fee-section').hide();
   }
@@ -23,8 +32,8 @@ $(document).ready(function() {
   populateBountyTotal();
   waitforWeb3(actions_page_warn_if_not_on_same_network);
 
-  waitforWeb3(function() {
-    if (!is_funder()) {
+  waitforWeb3(async function() {
+    if (!await is_funder()) {
       $('input, select').removeAttr('disabled');
       $('#increase_funding_explainer').html("Your transaction is secured by the Gitcoin's crowdfunding technology on the Ethereum blockchain. Learn more here.");
     }
@@ -51,7 +60,7 @@ $(document).ready(function() {
   });
 
   // submit bounty button click
-  $('#increaseFunding').on('click', function(e) {
+  $('#increaseFunding').on('click', async function(e) {
     try {
       bounty_address();
     } catch (exception) {
@@ -106,15 +115,15 @@ $(document).ready(function() {
     var decimals = token['decimals'];
     var decimalDivisor = Math.pow(10, decimals);
     var tokenName = token['name'];
-    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-    var account = web3.eth.coinbase;
+    var token_contract = new web3.eth.Contract(token_abi, tokenAddress);
+    var account = selectedAccount;
 
     amount = amount * decimalDivisor;
     // Create the bounty object.
     // This function instantiates a contract from the existing deployed Standard Bounties Contract.
     // bounty_abi is a giant object containing the different network options
     // bounty_address() is a function that looks up the name of the network and returns the hash code
-    var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+    var bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
     // setup inter page state
     localStorage[issueURL] = JSON.stringify({
@@ -122,7 +131,7 @@ $(document).ready(function() {
       'txid': null
     });
 
-    function web3Callback(error, result) {
+    function web3Callback(result, error) {
       indicateMetamaskPopup(true);
       if (error) {
         _alert({ message: gettext('There was an error.  Please try again or contact support.') }, 'error');
@@ -147,10 +156,11 @@ $(document).ready(function() {
     var ethAmount = isETH ? amount : 0;
     var bountyId = $('input[name=standardBountiesId]').val();
     var fromAddress = $('input[name=bountyOwnerAddress]').val();
+    var isOpen = $('input[name=isOpen]').val();
 
     var errormsg = undefined;
 
-    if (bountyAmount == 0 || open == false) {
+    if (bountyAmount == 0 || isOpen !== 'True') {
       errormsg = gettext('No active funded issue found at this address on ' + document.web3network + '. Are you sure this is an active funded issue?');
     }
 
@@ -197,25 +207,26 @@ $(document).ready(function() {
     }
 
     function do_as_funder() {
-      bounty.increasePayout(
+      bounty.methods.increasePayout(
         bountyId,
-        bountyAmount + amount,
-        amount,
-        {
-          from: account,
-          value: ethAmount,
-          gas: web3.toHex(652690),
-          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-        },
-        web3Callback
-      );
+        String(bountyAmount + amount),
+        String(amount),
+      ).send({
+        from: account,
+        value: String(ethAmount),
+        gas: web3.utils.toHex(652690)
+      }).then((result) => {
+        web3Callback(result);
+      }).catch(err => {
+        web3Callback(undefined, err);
+        console.log(err);
+      });
     }
 
     var act_as_funder = is_funder();
 
     if (act_as_funder) {
       const to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-      const gas_price = web3.toHex($('#gasPrice').val() * Math.pow(10, 9));
       const fee = (Number($('#summary-bounty-amount').html()) * FEE_PERCENTAGE).toFixed(4);
 
       indicateMetamaskPopup();
@@ -225,9 +236,8 @@ $(document).ready(function() {
         if (isETH) {
           web3.eth.sendTransaction({
             to: to_address,
-            from: web3.eth.coinbase,
-            value: web3.toWei(fee, 'ether'),
-            gasPrice: gas_price
+            from: account,
+            value: web3.utils.toWei(String(fee), 'ether')
           }, function(error, txnId) {
             indicateMetamaskPopup(true);
             if (error) {
@@ -239,17 +249,19 @@ $(document).ready(function() {
           });
         } else {
           const amountInWei = fee * 1.0 * Math.pow(10, token.decimals);
-          const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+          const token_contract = new web3.eth.Contract(token_abi, tokenAddress);
 
-          token_contract.transfer(to_address, amountInWei, { gasPrice: gas_price }, function(error, txnId) {
-            indicateMetamaskPopup(true);
-            if (error) {
-              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
-            } else {
-              // TODO: Save txnId + feeamount to bounty;
-              do_as_funder();
+          token_contract.methods.transfer(to_address, web3.utils.toHex(amountInWei)).send(
+            {from: selectedAccount}, function(error, txnId) {
+              indicateMetamaskPopup(true);
+              if (error) {
+                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              } else {
+                // TODO: Save txnId + feeamount to bounty;
+                do_as_funder();
+              }
             }
-          });
+          );
         }
       }
     } else {

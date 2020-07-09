@@ -2,10 +2,6 @@
 /* eslint no-redeclare: "warn" */
 /* eslint no-loop-func: "warn" */
 
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-});
-
 const _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
@@ -399,17 +395,23 @@ var callbacks = {
     return [ label, response ];
   },
   'started_owners_username': function(key, val, result) {
-    var started = [];
+    let started = [];
+    let uniqueness = [];
 
     if (result.interested) {
-      var interested = result.interested;
+      let interested = result.interested;
 
       interested.forEach(function(_interested, position) {
-        var name = (position == interested.length - 1) ?
+        const name = (position == interested.length - 1) ?
           _interested.profile.handle : _interested.profile.handle.concat(',');
 
-        if (!_interested.pending)
+        if (
+          !_interested.pending &&
+          uniqueness.indexOf(_interested.profile.handle) == -1
+        ) {
+          uniqueness.push(_interested.profile.handle);
           started.push(profileHtml(_interested.profile.handle, name));
+        }
       });
       if (started.length == 0)
         started.push('<i class="fas fa-minus"></i>');
@@ -417,16 +419,20 @@ var callbacks = {
     return [ 'started_owners_username', started ];
   },
   'submitted_owners_username': function(key, val, result) {
-    var accepted = [];
+    let accepted = [];
+    let uniqueness = [];
 
     if (result.fulfillments) {
-      var submitted = result.fulfillments;
+      let submitted = result.fulfillments;
 
       submitted.forEach(function(_submitted, position) {
-        var name = (position == submitted.length - 1) ?
+        const name = (position == submitted.length - 1) ?
           _submitted.fulfiller_github_username : _submitted.fulfiller_github_username.concat(',');
 
-        accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
+        if (uniqueness.indexOf(_submitted.profile.handle) == -1) {
+          uniqueness.push(_submitted.profile.handle);
+          accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
+        }
       });
       if (accepted.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
@@ -435,14 +441,14 @@ var callbacks = {
     return [ 'submitted_owners_username', accepted ];
   },
   'fulfilled_owners_username': function(key, val, result) {
-    var accepted = [];
+    let accepted = [];
 
     if (result.paid) {
       if (result.paid.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
       } else {
         result.paid.forEach((github_username, position) => {
-          var name = (position == result.paid.length - 1) ?
+          const name = (position == result.paid.length - 1) ?
             github_username : github_username.concat(',');
 
           accepted.push(profileHtml(github_username, name));
@@ -525,6 +531,7 @@ var update_title = function() {
 };
 
 var showWarningMessage = function(txid) {
+  console.log(txid);
   const secondsBetweenQuoteChanges = 30;
   let interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 
@@ -549,45 +556,45 @@ var showWarningMessage = function(txid) {
 };
 
 // refresh page if metamask changes
-waitforWeb3(function() {
-  setInterval(function() {
-    if (document.web3Changed) {
-      return;
-    }
-    reloadCbAddress();
+// waitforWeb3(function() {
+//   setInterval(function() {
+//     if (document.web3Changed) {
+//       return;
+//     }
+//     reloadCbAddress();
 
-    if (typeof document.lastWeb3Network == 'undefined') {
-      document.lastWeb3Network = document.web3network;
-      return;
-    }
+//     if (typeof document.lastWeb3Network == 'undefined') {
+//       document.lastWeb3Network = document.web3network;
+//       return;
+//     }
 
-    if (typeof document.lastCoinbase == 'undefined') {
+//     if (typeof document.lastCoinbase == 'undefined') {
 
-      try {
-        // invoke infura synchronous call, if it fails metamask is locked
-        document.lastCoinbase = web3.eth.coinbase;
-      } catch (error) {
-        document.lastCoinbase = null;
-        // catch error so sentry doesn't alert on metamask call failure
-        console.log('web3.eth.coinbase could not be loaded');
-      }
-      return;
-    }
+//       web3.eth.getCoinbase(function(error, coinbase) {
+//         if (error) {
+//           console.log('web3.eth.coinbase could not be loaded');
+//           document.lastCoinbase = null;
+//           return;
+//         }
+//         document.lastCoinbase = coinbase;
+//       });
+//       return;
+//     }
 
-    if (web3 && (document.lastCoinbase != cb_address) ||
-      (document.lastWeb3Network != document.web3network)) {
-      _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
-      document.location.reload();
-      document.web3Changed = true;
-    }
+//     if (web3 && (document.lastCoinbase != cb_address) ||
+//       (document.lastWeb3Network != document.web3network)) {
+//       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
+//       document.location.reload();
+//       document.web3Changed = true;
+//     }
 
-  }, 500);
-});
+//   }, 500);
+// });
 
 var wait_for_tx_to_mine_and_then_ping_server = function() {
   console.log('checking for updates');
   if (typeof document.pendingIssueMetadata != 'undefined') {
-    var txid = document.pendingIssueMetadata['txid'];
+    var txid = document.pendingIssueMetadata.txid.transactionHash;
 
     console.log('waiting for web3 to be available');
     callFunctionWhenweb3Available(function() {
@@ -688,19 +695,65 @@ var attach_override_status = function() {
   });
 };
 
-var show_interest_modal = function() {
-  var self = this;
-  var modals = $('#modalInterest');
+const submitInterest = (bounty, msg, self, onSuccess) => {
+  add_interest(bounty, {
+    issue_message: msg
+  }).then(success => {
+    if (success) {
+      $(self).attr('href', '/uninterested');
+      $(self).find('span').text(gettext('Stop Work'));
+      $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+  }).catch((error) => {
+    if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+      return;
+    throw error;
+  });
+};
+
+const show_interest_modal = () => {
+  let self = this;
+  let modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
   modals.on('show.bs.modal', function() {
     modalBody.load(modalUrl, ()=> {
-
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
+      let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
+      let projectForm = $('#projectForm');
 
+      $('#looking-members').on('click', function() {
+        $('.looking-members').toggle();
+      });
+      userSearch('.team-users', false, '', data, true, false);
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
+
+      if (document.result.event) {
+        $(document).on('change', '#project_logo', function() {
+          previewFile($(this));
+        });
+        projectForm.on('submit', function(e) {
+          e.preventDefault();
+          let elements = $(this)[0];
+          let logo = elements['logo'].files[0];
+          let data = $(this).serializeArray();
+          let summary = elements['summary'].value;
+
+          submitInterest(document.result['pk'], summary, self, () => {
+            submitProject(logo, data);
+            modals.bootstrapModal('hide');
+          });
+        });
+
+        return;
+      }
 
       actionPlanForm.on('submit', function(event) {
         event.preventDefault();
@@ -712,25 +765,9 @@ var show_interest_modal = function() {
           return false;
         }
 
-        add_interest(document.result['pk'], {
-          issue_message: msg,
-          discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-        }).then(success => {
-          if (success) {
-            $(self).attr('href', '/uninterested');
-            $(self).find('span').text(gettext('Stop Work'));
-            $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-            modals.bootstrapModal('hide');
-            if (document.result.event) {
-              projectModal(document.result.pk);
-            }
-          }
-        }).catch((error) => {
-          if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-            return;
-          throw error;
+        submitInterest(document.result['pk'], msg, self, () => {
+          modals.bootstrapModal('hide');
         });
-
       });
 
     });
@@ -1463,6 +1500,9 @@ const process_activities = function(result, bounty_activities) {
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
+      if (!_activity.kudos) {
+        return;
+      }
       const kudos_img = _activity.kudos.image;
 
       kudos = kudos_img.startsWith('v2/images/') ? '/static/'.concat(kudos_img) : kudos_img;
@@ -1697,7 +1737,7 @@ var main = function() {
 
         if (isWithinAcceptableTimeRange) {
           // update from web3
-          const txid = document.pendingIssueMetadata['txid'];
+          const txid = document.pendingIssueMetadata.txid.transactionHash;
 
           showWarningMessage(txid);
           wait_for_tx_to_mine_and_then_ping_server();

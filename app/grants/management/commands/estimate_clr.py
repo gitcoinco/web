@@ -25,6 +25,7 @@ from django.utils import timezone
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
 from grants.models import Contribution, Grant
+from grants.views import clr_active
 from marketing.mails import warn_subscription_failed
 
 
@@ -34,12 +35,22 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
-        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health'])
+        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health', 'change', 'matic'])
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
+        parser.add_argument(
+            '-force', '--force', action='store_true', dest='force', default=False, help='Force to run the CLR calcs even if the round is closed'
+        )
 
     def handle(self, *args, **options):
+        if not clr_active and not options['force']:
+            print('CLR round is not active according to grants.views.clr_active, so cowardly refusing to spend the CPU cycles + exiting instead')
+            return
+
         clr_type = options['clr_type']
         network = options['network']
+        # identity mechanism is profiles for traditional rounds. for experimental rounds, where we saw collusion
+        # make the identity mechanism into funds originated addr
+        # this is a stopgap until a "one identity mechanism to rule them all is round", probably in round 6.
 
         predict_clr(
             save_to_db=True,

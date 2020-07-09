@@ -57,9 +57,17 @@ class Comment(SuperModel):
     activity = models.ForeignKey('dashboard.Activity',
         on_delete=models.CASCADE, related_name='comments', blank=True, db_index=True)
     comment = models.TextField(default='', blank=True)
+    tip = models.ForeignKey(
+        'dashboard.Tip',
+        related_name='awards',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
     likes = ArrayField(models.IntegerField(), default=list, blank=True) #pks of users who like this post
     likes_handles = ArrayField(models.CharField(max_length=200, blank=True), default=list, blank=True) #handles of users who like this post
     tip_count_eth = models.DecimalField(default=0, decimal_places=5, max_digits=50)
+    is_edited = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Comment of {self.activity.pk} by {self.profile.handle}: {self.comment}"
@@ -67,6 +75,16 @@ class Comment(SuperModel):
     @property
     def profile_handle(self):
         return self.profile.handle
+
+    @property
+    def redeem_link(self):
+        if self.tip:
+            return self.tip.receive_url
+        return ''
+
+    @property
+    def tip_able(self):
+        return self.activity.metadata.get("tip_able", False)
 
     @property
     def url(self):
@@ -196,6 +214,7 @@ class Announcement(SuperModel):
         ('townsquare', 'townsquare'),
         ('header', 'header'),
         ('footer', 'footer'),
+        ('founders_note_daily_email', 'founders_note_daily_email'),
     ]
     key = models.CharField(max_length=50, db_index=True, choices=_TYPES)
     title = models.TextField(default='', blank=True)
@@ -350,6 +369,10 @@ def get_eligible_input_data(mr):
     earnings = earnings.filter(source_type=ContentType.objects.get(app_label='dashboard', model='tip'))
     tips = list(Tip.objects.send_happy_path().filter(Q(comments_priv__contains='activity:') | Q(comments_priv__contains='comment:') | Q(tokenName='ETH', amount__lte=0.05)).values_list('pk', flat=True))
     earnings = earnings.filter(source_id__in=tips)
+    # filter out colluding profiles
+    excluded_profiles = SquelchProfile.objects.filter(active=True).values_list('profile__id', flat=True)
+    earnings = earnings.exclude(to_profile__in=excluded_profiles)
+    earnings = earnings.exclude(from_profile__in=excluded_profiles)
 
     # output
     earnings = earnings.values_list('to_profile__pk', 'from_profile__pk', 'value_usd')
@@ -376,3 +399,37 @@ class Favorite(SuperModel):
 
     def __str__(self):
         return f"Favorite {self.activity.activity_type}:{self.activity_id} by {self.user}"
+
+
+class PinnedPost(SuperModel):
+    """Model for each Pinned Post."""
+
+    user = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='pins')
+    activity = models.ForeignKey('dashboard.Activity', 
+        on_delete=models.CASCADE, related_name='pin')
+    what = models.CharField(max_length=100, default='', unique=True)
+    created = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return f"Pin {self.activity.activity_type} by {self.user}"
+
+    @property
+    def url(self):
+        return self.activity.url
+
+    def get_absolute_url(self):
+        return self.activity.url
+
+
+class SquelchProfile(SuperModel):
+    """Squelches a profile from earning in CLR"""
+
+    profile = models.ForeignKey('dashboard.Profile',
+        on_delete=models.CASCADE, related_name='squelches')
+    comments = models.TextField(default='', blank=True)
+    active = models.BooleanField(help_text='Is squelch applied?', default=True)
+
+    def __str__(self):
+        return f"SquelchProfile {self.profile.handle} => {self.comments}"

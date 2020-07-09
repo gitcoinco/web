@@ -24,11 +24,14 @@ import statistics
 import time
 
 from django.conf import settings
+from django.db import connection
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pytz
 from cacheops import CacheMiss, cache
+from grants.models import Contribution, Grant
 from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, ManualStat, Stat
 from requests_oauthlib import OAuth2Session
 
@@ -462,8 +465,7 @@ def build_stat_results(keyword=None):
     context['top_funders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_payers') \
         .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
     pp.profile_time('funders')
-    context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs') \
-        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
+    context['top_orgs'] = ['ethereumclassic', 'web3foundation', 'ethereum', 'arweave', 'zilliqa']
     pp.profile_time('orgs')
     context['top_coders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_earners') \
         .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
@@ -492,10 +494,43 @@ def build_stat_results(keyword=None):
     context['bounty_history'] = json.dumps(bounty_history)
     pp.profile_time('bounty_history')
 
+
+ 
+
+    def get_kudos_leaderboard(key='kudos_token.artist'):
+        query = f"""
+            select
+                replace({key}, '@', '') as theusername,
+                sum(kudos_kudostransfer.amount) as amount,
+                string_agg( DISTINCT kudos_kudostransfer.kudos_token_cloned_from_id::varchar(255), ','),
+                count(1) as num
+            from kudos_kudostransfer
+                inner join kudos_token on kudos_kudostransfer.kudos_token_cloned_from_id = kudos_token.id
+                where {key} != ''
+                group by theusername
+                order by amount desc
+            limit 10
+
+"""
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            rows = []
+            for row in cursor.fetchall():
+                _row = [ele for ele in row] # cast to array
+                _row[2] = _row[2].split(',')
+                rows.append(_row)
+
+        return rows
+
     # Bounties
     from marketing.models import ManualStat
     completion_rate = get_completion_rate(keyword)
     funder_receiver_stats = get_funder_receiver_stats(keyword)
+    context['kudos_leaderboards'] = [
+        ['Top Kudos Artists 👩‍🎨', get_kudos_leaderboard('kudos_token.artist'), 'created'],
+        ['Top Kudos Collectors 🖼', get_kudos_leaderboard('kudos_kudostransfer.username'), 'collected'],
+        ['Top Kudos Senders 💌', get_kudos_leaderboard('kudos_kudostransfer.from_username'), 'sent']
+        ]
     context['funders'] = funder_receiver_stats['funders']
     context['avg_value'] = funder_receiver_stats['avg_value']
     context['median_value'] = funder_receiver_stats['median_value']
@@ -554,7 +589,9 @@ def build_stat_results(keyword=None):
     pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
-    context['title'] = f"${round(context['universe_total_usd'] / 1000000, 1)}m in " + f"{keyword.capitalize() if keyword else ''} Results"
+    total_gmv_rounded = f"${round(context['universe_total_usd'] / 1000000, 1)}m"
+    context['total_gmv_rounded'] = total_gmv_rounded
+    context['title'] = f"{total_gmv_rounded} in " + f"{keyword.capitalize() if keyword else ''} Results"
     context['programming_languages'] = ['All'] + programming_languages
 
     try:
@@ -575,11 +612,170 @@ def build_stat_results(keyword=None):
     context['last_month_amount'] = round(sum(bh)/1000)
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
-    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.order_by('start_date').all()]
+    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.filter(visible=True, start_date__lt=timezone.now()).order_by('-start_date').all()]
     context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
     from dashboard.models import FeedbackEntry
     reviews = FeedbackEntry.objects.exclude(comment='').filter(created_on__lt=(timezone.now() - timezone.timedelta(days=7))).order_by('-created_on')[0:15]
     context['reviews'] = [(ele.rating, ele.anonymized_comment) for ele in reviews]
     context['ratings'] = [1, 2, 3, 4, 5]
+    context['num_grants'] = Grant.objects.filter(hidden=False, active=True).count()
+    grants_gmv = Stat.objects.filter(key='grants').order_by('-pk').first().val
+    context['grants_gmv'] = str(round(grants_gmv / 10**6, 2)) + "m"
+    num_contributions = Contribution.objects.count()
+    from dashboard.models import BountyFulfillment
+    context['hours'] = sum(BountyFulfillment.objects.filter(fulfiller_hours_worked__isnull=False, bounty__current_bounty=True, fulfiller_hours_worked__lt=1000).values_list('fulfiller_hours_worked', flat=True))
+    context['no_contributions'] = num_contributions
+    context['no_bounties'] = Bounty.objects.current().count()
+    context['no_tips'] = Tip.objects.filter(network='mainnet').send_happy_path().count()
+    context['ads_gmv'] = get_codefund_history_at_date(timezone.now(), '')
+    context['ads_gmv'] = str(round(context['ads_gmv'] / 10**3, 1)) + "k"
+    context['bounties_gmv'] = Stat.objects.filter(key='bounties_done_value').order_by('-pk').first().val
+    context['bounties_gmv'] = str(round((total_tips_usd + context['bounties_gmv']) / 10**6, 2)) + "m"
+    median_index = int(num_contributions/2)
+    context['median_contribution'] = round(Contribution.objects.order_by("subscription__amount_per_period_usdt")[median_index].subscription.amount_per_period_usdt, 2)
+    context['avg_contribution'] = round(grants_gmv / num_contributions, 2)
+    from grants.views import clr_round
+    context['num_matching_rounds'] = clr_round
+    context['ads_served'] = str(round(ManualStat.objects.filter(key='ads_served').order_by('-pk').first().val / 10**6, 1)) + "m"
+    context['privacy_violations'] = ManualStat.objects.filter(key='privacy_violations').order_by('-pk').first().val
 
     return context
+
+
+def testimonials():
+    return [
+        {
+            'text': '"We were really impressed with the final hackathon project submissions and the quality of the developers. Gitcoin helped us benchmark fair prices and got us started really fast".',
+            'author': 'Chase Freo',
+            'designation': 'OP Games',
+            'org_photo': static('v2/images/project_logos/alto-io.png')
+        },
+        {
+            'text': 'Gitcoin is one of the more prominent decentralized, open source platforms in the web 3.0 ecosystem, and we chose to use Gitcoin for hackathons because of the developed user base.',
+            'author': 'Mareen Gläske',
+            'designation': 'Gnosis',
+            'org_photo': static('v2/images/project_logos/gnosis.png')
+        },
+        {
+            'text': 'We organized a hackathon through Gitcoin with five categories with different prizes. We got really great results from that. The specifications were delivered in good quality and the contributor went above and beyond the level of what they were asked to do.',
+            'author': 'Bernhard Mueller',
+            'designation': 'MythX',
+            'org_photo': static('v2/images/project_logos/mythx.png')
+        },
+        {
+            'text': 'The reason why I started using Gitcoin was because we really liked what Gitcoin was doing, we were adamant about decentralization, and we for sure wanted to do bounties. We wanted to activate developers and users in a unique way, and Gitcoin was perfectly set up for that.',
+            'author': 'Chris Hutchinson',
+            'designation': 'Status',
+            'org_photo': static('v2/images/project_logos/status-im.png')
+        }
+    ]
+
+
+def reasons():
+    return [
+        {
+            'title': 'Hackathon',
+            'img': static('v2/images/tribes/landing/hackathon.svg'),
+            'info': 'See meaningful projects come to life on your dapp'
+        },
+        {
+            'title': 'Suggest Bounty',
+            'img': static('v2/images/tribes/landing/suggest.svg'),
+            'info': 'Get bottoms up ideas from passionate contributors'
+        },
+        {
+            'title': 'Quadratic Funding',
+            'img': static('v2/images/tribes/landing/grow.svg'),
+            'info': 'Incentivize your tribe with mini quadratic funding'
+        },
+        {
+            'title': 'Workshops',
+            'img': static('v2/images/tribes/landing/workshop.svg'),
+            'info': 'Host workshops and learn together'
+        },
+        {
+            'title': 'Chat',
+            'img': static('v2/images/tribes/landing/chat.svg'),
+            'info': 'Direct connection to your trusted tribe'
+        },
+        {
+            'title': 'Town Square',
+            'img': static('v2/images/tribes/landing/townsquare.svg'),
+            'info': 'Engage the members of your tribe'
+        },
+        {
+            'title': 'Payout/Fund',
+            'img': static('v2/images/tribes/landing/payout.svg'),
+            'info': 'Easily co-manage hackathons with your team'
+        },
+        {
+            'title': 'Stats Report',
+            'img': static('v2/images/tribes/landing/stats.svg'),
+            'info': 'See how your hackathons are performing'
+        },
+        {
+            'title': 'Kudos',
+            'img': static('v2/images/tribes/landing/kudos.svg'),
+            'info': 'Show appreciation to your tribe members'
+        }
+    ]
+
+
+def press():
+    return [
+        {
+            'link': 'https://twit.tv/shows/floss-weekly/episodes/474',
+            'img': 'v2/images/press/floss_weekly.jpg'
+        },
+        {
+            'link': 'https://epicenter.tv/episode/257/',
+            'img': 'v2/images/press/epicenter.jpg'
+        },
+        {
+            'link': 'http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000',
+            'img': 'v2/images/press/ibtimes.jpg'
+        },
+        {
+            'link': 'https://www.forbes.com/sites/jeffersonnunn/2019/01/21/bitcoin-autonomous-employment-workers-wanted/',
+            'img': 'v2/images/press/forbes.jpg'
+        },
+        {
+            'link': 'https://unhashed.com/cryptocurrency-news/gitcoin-introduces-collectible-kudos-rewards/',
+            'img': 'v2/images/press/unhashed.jpg'
+        },
+        {
+            'link': 'https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/',
+            'img': 'v2/images/press/coindesk.png'
+        },
+        {
+            'link': 'https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/',
+            'img': 'v2/images/press/se_daily.png'
+        },
+        {
+            'link': 'https://www.ethnews.com/gitcoin-offers-bounties-for-ens-integration-into-dapps',
+            'img': 'v2/images/press/ethnews.jpg'
+        },
+        {
+            'link': 'https://www.hostingadvice.com/blog/grow-open-source-projects-with-gitcoin/',
+            'img': 'v2/images/press/hosting-advice.png'
+        }
+    ]
+
+
+def articles():
+    return [
+        {
+            'link': 'https://medium.com/gitcoin/progressive-elaboration-of-scope-on-gitcoin-3167742312b0',
+            'img': static("v2/images/medium/1.png"),
+            'title': _('Progressive Elaboration of Scope on Gitcoin'),
+            'description': _('What is it? Why does it matter? How can you deal with it on Gitcoin?'),
+            'alt': 'gitcoin scope'
+        },
+        {
+            'link': 'https://medium.com/gitcoin/announcing-open-kudos-e437450f7802',
+            'img': static("v2/images/medium/3.png"),
+            'title': _('Announcing Open Kudos'),
+            'description': _('Our vision for integrating Kudos in any (d)App'),
+            'alt': 'open kudos'
+        }
+    ]

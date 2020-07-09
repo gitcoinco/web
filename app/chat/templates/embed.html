@@ -52,7 +52,7 @@
       }
     </style>
     <div class="chatWrapper">
-      <iframe frameborder="0" src="{{ chat_url }}" allowfullscreen></iframe>
+      {% include 'shared/embed_chat_iframe.html' %}
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}

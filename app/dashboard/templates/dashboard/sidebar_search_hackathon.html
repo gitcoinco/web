@@ -15,35 +15,30 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
-<style>
-  form .col:first-child {
-    border-top: none;
-  }
-</style>
 
-<div class="sidebar_search font-body">
-  <p id="expand" class="text-right font-caption font-weight-semibold mb-0">
+<div class="{% if not hackathon %}sidebar_search{% endif %} font-body">
+  <p id="expand" class="text-center font-caption font-weight-semibold mb-0">
     {% trans "Expand Filter" %}
     <i class="fas fa-chevron-down"></i>
   </p>
-  <p id="minimize" class="text-right font-caption font-weight-semibold">
+  <p id="minimize" class="text-center font-caption font-weight-semibold">
     {% trans "Minimize Filter" %}
     <i class="fas fa-chevron-up"></i>
   </p>
   <form>
     <div class="col">
-      {% if hackathon.logo_svg %}
-        <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo_svg.url }}" alt="Hackathon logo"/>
-      {% elif hackathon.logo %}
-        <img class="d-none d-md-block mx-auto mb-1 mw-100" src="{{ hackathon.logo.url }}" alt="Hackathon logo"/>
-      {% endif %}
 
-    </div>
-    <div class="col">
+    {% if hackathon %}
+      <a v-if="!is_registered" href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue btn-block text-uppercase mb-4">Register</a>
+      <a href='#' class="btn btn-gc-blue mb-4">#intros</a>
+      <div class="col-12 subheading left-ribbon">
+        {% trans "Hackathon Sponsors" %}
+      </div>
+    {% else %}
       <div class="col-12 subheading">
         {% trans "Sponsors" %}
       </div>
+    {% endif %}
 
       <div class="col-12 options" id="list-orgs">
 
@@ -61,7 +56,6 @@
         {% endfor %}
       </div>
     </div>
-
     <div class="col" id="network-filter" style="display: hidden;">
       <div class="col-12 subheading">{% trans "Network" %}</div>
       <div class="col-12 options">

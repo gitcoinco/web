@@ -21,15 +21,29 @@
     {% include 'shared/helmet-white-animated.html' %}
   </a>
   <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand brand-hover ml-2 py-0" href="/explorer">
-    <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" alt="Bounties" height="50">
-    <img class="mw-100 logo-animated" src="{% static "v2/images/top-bar/bounties_desktop_hearbeating.gif" %}" alt="Logo" height="50">
+  <a class="navbar-brand ml-2 py-0" href="/explorer">
+    <!-- <img class="mw-100 logo-static" src="{% static 'v2/images/top-bar/bounties-neg.svg' %}" alt="Bounties" height="35"> -->
+    {% include 'shared/svg-embed/h35px_bounties.svg' %}
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <!-- TODO: FIGURE HOW TO HANDLE FOR CROSS CHAIN -->
-    <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
+    <button id="wallet-button" class="navbar-network ml-xl-5 py-1 px-2 hidden btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <i class="fas fa-circle pr-1"></i>
       <span id="current-network"></span>
+    </button>
+    <div id="wallet-dropdown" class="dropdown-menu" aria-labelledby="wallet-button" style="top: 50px; left: 24vw;">
+      <a id="copy-address" class="dropdown-item" href="javascript:;">
+        <i class="fas fa-copy"></i>
+        Copy Wallet Address
+      </a>
+      <a id="go-to-wallet" class="dropdown-item" href="#" target="_blank">
+        <i class="fas fa-wallet"></i>
+        Go to Your Wallet
+      </a>
+      <a id="change-wallet" class="dropdown-item" href="#">
+        <i class="fas fa-exchange-alt"></i>
+        Change Wallet Provider
+      </a>
     </div>
   {% endif %}
   {% include 'shared/menu.html' %}

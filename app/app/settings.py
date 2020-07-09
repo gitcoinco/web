@@ -26,6 +26,7 @@ import environ
 import raven
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
@@ -52,7 +53,12 @@ BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
+ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='YOUR-ETHERSCAN-KEY')
 VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
+FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
+FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
+PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
+
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
 RATELIMIT_USE_CACHE = env('RATELIMIT_USE_CACHE', default='default')
@@ -60,6 +66,9 @@ RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
+
+TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
+
 
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
@@ -121,7 +130,6 @@ INSTALLED_APPS = [
     'bounty_requests',
     'perftools',
     'revenue',
-    'event_ethdenver2019',
     'inbox',
     'feeswapper',
     'search',
@@ -137,8 +145,8 @@ INSTALLED_APPS = [
     'wiki.plugins.notifications.apps.NotificationsConfig',
     'wiki.plugins.images.apps.ImagesConfig',
     'wiki.plugins.macros.apps.MacrosConfig',
+    'adminsortable2',
     'debug_toolbar',
-
 ]
 
 MIDDLEWARE = [
@@ -220,7 +228,8 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'auth.User'
 
 # adds django debug toolbar
-if DEBUG:
+SUPRESS_DEBUG_TOOLBAR = env.bool('SUPRESS_DEBUG_TOOLBAR', default=False)
+if DEBUG and not SUPRESS_DEBUG_TOOLBAR:
     INTERNAL_IPS = [
         # ...
         '127.0.0.1',
@@ -234,7 +243,7 @@ if DEBUG:
         "SHOW_TOOLBAR_CALLBACK" : callback,
     }
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
-    
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
@@ -288,7 +297,7 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
-        integrations=[DjangoIntegration()]
+        integrations=[DjangoIntegration(), CeleryIntegration()]
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,
@@ -754,7 +763,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI', 'USDC']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -795,6 +804,8 @@ LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
 
 # Gitcoin Bounty Funding Fee settings
 FEE_ADDRESS = env('FEE_ADDRESS', default='')
+
+ALETHIO_KEY = env('ALETHIO_KEY', default='')
 FEE_ADDRESS_PRIVATE_KEY = env('FEE_ADDRESS_PRIVATE_KEY', default='')
 SLIPPAGE = env.float('SLIPPAGE', default=0.05)
 UNISWAP_LIQUIDITY_FEE = env.float('UNISWAP_LIQUDITY_FEE', default=0.003)
@@ -806,8 +817,29 @@ MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=6
 MINICLR_ADDRESS = env('MINICLR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
+
 AVATAR_ADDRESS = env('AVATAR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 AVATAR_PRIVATE_KEY = env('AVATAR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
+GRANTS_PAYOUT_ADDRESS = env('GRANTS_PAYOUT_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+GRANTS_PAYOUT_PRIVATE_KEY = env('GRANTS_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+GRANTS_PAYOUT_CLR_KYC_THRESHOLD = env('GRANTS_PAYOUT_CLR_KYC_THRESHOLD', default=0)
+
+GRANTS_COUPON_25_OFF = env('GRANTS_COUPON_25_OFF', default='OWOCKIFOREVER')
+GRANTS_COUPON_50_OFF = env('GRANTS_COUPON_50_OFF', default='OWOCKIFOREVER')
+GRANTS_COUPON_100_OFF = env('GRANTS_COUPON_100_OFF', default='OWOCKIFOREVER')
+
+TIP_PAYOUT_ADDRESS = env('TIP_PAYOUT_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+
+account_sid = env('TWILIO_ACCOUNT_SID', default='')
+auth_token = env('TWILIO_AUTH_TOKEN', default='')
+verify_service = env('TWILIO_VERIFY_SERVICE', default='')
+
+SMS_MAX_VERIFICATION_ATTEMPTS = env('SMS_MAX_VERIFICATION_ATTEMPTS', default=4)
+SMS_COOLDOWN_IN_MINUTES = env('SMS_COOLDOWN_IN_MINUTES', default=1)
+EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
+PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')

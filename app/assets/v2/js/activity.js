@@ -1,19 +1,15 @@
 /* eslint no-useless-concat: 0 */ // --> OFF
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-});
-
 $(document).ready(function() {
 
   var linkify = function(new_text) {
     new_text = new_text.replace(/(?:^|\s)#([a-zA-Z\d-]+)/g, ' <a href="/?tab=search-$1">#$1</a>');
-    new_text = new_text.replace(/\B@([a-zA-Z0-9_-]*)/g, ' <a href="/profile/$1">@$1</a>');
+    new_text = new_text.replace(/(^|\s)@([a-zA-Z0-9_-]*)/g, '$1<a data-usercard="$2" href="/profile/$2">@$2</a>');
     return new_text;
   };
   // inserts links into the text where there are URLS detected
 
   function urlify(text) {
-    var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+    var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:;,%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:;,%_\+.~#?&//=]*)/g;
 
     return text.replace(urlRegex, function(url) {
       return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
@@ -58,9 +54,9 @@ $(document).ready(function() {
     const $target = $(this).parents('.activity_detail_content');
     const html = `
     <p class='float-right p-0 m-0 video_options_container'>
-    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> | 
-    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> | 
-    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> | 
+    <a href=# class='full_screen'>Full Screen <i class="fas fa-expand-arrows-alt"></i></a> |
+    <a href=# class='popout_screen'>Pop Out <i class="fas fa-sign-out-alt"></i></a> |
+    <a href=# class='new_tab'>Open in New Tab <i class="fas fa-external-link-square-alt"></i></i></a> |
     <a href=# class=' leave_video_call'>Leave Video Call <i class="far fa-times-circle"></i></a>
     </p>`;
 
@@ -185,7 +181,7 @@ $(document).ready(function() {
   // notifications of new activities
   var ping_activity_notifier = (function() {
     var plural = document.buffered_rows.length == 1 ? 'y' : 'ies';
-    var html = '<div id=new_activity_notifier>' + document.buffered_rows.length + ' New Activit' + plural + ' - Click to View</div>';
+    var html = '<div id="new_activity_notifier">' + document.buffered_rows.length + ' New Activit' + plural + ' - Click to View</div>';
 
     if ($('#new_activity_notifier').length) {
       $('#new_activity_notifier').html(html);
@@ -203,7 +199,7 @@ $(document).ready(function() {
   var refresh_interval = 7000;
   var max_pk = null;
   var run_longpoller = function(recursively) {
-    if (document.hidden) {
+    if (document.hidden || !document.long_poller_live) {
       return setTimeout(function() {
         if (recursively) {
           run_longpoller(true);
@@ -212,7 +208,8 @@ $(document).ready(function() {
     }
     if ($('.infinite-more-link').length) {
       if (!max_pk) {
-        max_pk = $('#activities .box').first().data('pk');
+        max_pk = $('#activities div.box[data-pk]').first().data('pk');
+
         if (!max_pk) {
           return;
         }
@@ -279,7 +276,13 @@ $(document).ready(function() {
     for (var i = document.buffered_rows.length; i > 0; i -= 1) {
       var html = document.buffered_rows[i - 1];
 
-      $('.infinite-container').prepend($(html));
+      let pin = $('.pinned-activity');
+
+      if (pin.length > 0) {
+        $(html).insertAfter($(pin));
+      } else {
+        $('.infinite-container').prepend($(html));
+      }
     }
     $(this).remove();
     document.buffered_rows = [];
@@ -393,9 +396,9 @@ $(document).ready(function() {
       _alert('Please login first.', 'error');
       return;
     }
-    if (!web3) {
-      _alert('Please enable and unlock your web3 wallet.', 'error');
-      return;
+
+    if (!provider) {
+      return onConnect();
     }
 
     var $amount = $parent.find('.amount');
@@ -438,7 +441,7 @@ $(document).ready(function() {
         view_comments($target, false, undefined, true);
       }, 1000);
 
-      _alert(msg, 'info', 1000);
+      _alert(msg, 'info');
       // todo: update amount
     };
 
@@ -473,8 +476,39 @@ $(document).ready(function() {
   });
 
 
+  $(document).on('click', '.award', function(e) {
+    e.preventDefault();
+    if (!document.contxt.github_handle) {
+      _alert('Please login first.', 'error');
+      return;
+    }
+
+    activityId = $(this).data('activity');
+    commentId = $(this).data('comment');
+
+    // remote post
+    var params = {
+      'method': 'award',
+      'comment': commentId,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+    var url = '/api/v0.1/activity/' + activityId;
+    var parent = $(this).parents('.row.box');
+
+    parent.find('.loading').removeClass('hidden');
+    $.post(url, params, function(response) {
+      // no message to be sent
+      $('button[data-activity=' + activityId + ']').remove();
+      parent.find('.loading').addClass('hidden');
+      _alert('Tip user successful!');
+    }).fail(function() {
+      parent.find('.error').removeClass('hidden');
+    });
+  });
+
+
   // like activity
-  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity', function(e) {
+  $(document).on('click', '.like_activity, .flag_activity, .favorite_activity, .pin_activity', function(e) {
     e.preventDefault();
     const current_tab = getURLParams('tab');
 
@@ -483,19 +517,43 @@ $(document).ready(function() {
       return;
     }
 
+    let method = $(this).data('action');
+    let state = $(this).data('state');
+    // remote post
+    var params = {
+      'method': method,
+      'direction': state,
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+    };
+
+
     var is_unliked = $(this).data('state') == $(this).data('negative');
     var num = $(this).find('span.num').html();
 
-    if (is_unliked) { // like
-      $(this).find('span.action').addClass('open');
-      $(this).data('state', $(this).data('affirmative'));
-      $(this).addClass('animate-sparkle');
+    if (method === 'pin') {
+      let message = state === 'pin' ? 'This action will pin the selected post, only one Pin may be active at a time' : 'This action will un-pin this post, are you sure?';
 
+      if (confirm(message)) {
+        params['what'] = $('.infinite-container').data('what');
+      } else {
+        return false;
+      }
+    } else if (is_unliked) { // like
+      $(this).find('span.action').addClass('open');
+      let newState = $(this).data('affirmative');
+
+      $(this).data('state', newState);
+      params.direction = newState;
+      $(this).addClass('animate-sparkle');
       num = parseInt(num) + 1;
       $(this).find('span.num').html(num);
       $(this).find('i').removeClass('far').addClass('fas');
     } else { // unlike
       $(this).find('span.action').removeClass('open');
+      let newState = $(this).data('negative');
+
+      $(this).data('state', newState);
+      params.direction = newState;
       $(this).data('state', $(this).data('negative'));
       $(this).removeClass('animate-sparkle');
       num = parseInt(num) - 1;
@@ -503,14 +561,7 @@ $(document).ready(function() {
       $(this).find('i').removeClass('fas').addClass('far');
     }
 
-    // remote post
-    var params = {
-      'method': $(this).data('action'),
-      'direction': $(this).data('state'),
-      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-    };
     var url = '/api/v0.1/activity/' + $(this).data('pk');
-
     var parent = $(this).parents('.activity.box');
     var self = $(this);
 
@@ -522,6 +573,32 @@ $(document).ready(function() {
       if (!is_unliked && current_tab === 'my_favorites') {
         self.parentsUntil('.activity_stream').remove();
       }
+
+      if (method === 'pin') {
+        if (state === 'unpin') {
+          $('.box').removeClass('pinned-activity');
+          self.data('state', 'pin');
+          self.find('.pin-title').html('Pin Post');
+          parent.remove();
+          _alert('Sucess unpin.', 'success', 1000);
+        } else {
+          let curr_pinn = $('.pinned-activity');
+
+          parent.addClass('pinned-activity');
+
+          self.data('state', 'unpin');
+          self.find('.pin-title').html('Unpin Post');
+          if (curr_pinn.length > 0) {
+            $(curr_pinn).replaceWith(parent);
+          } else {
+            $('.activity_stream').prepend($('<div id="temp-pin"></div>'));
+            $('#temp-pin').replaceWith(parent);
+            window.scrollTo(0, 0);
+          }
+          _alert('Status pinned.', 'success', 1000);
+        }
+      }
+
     }).fail(function() {
       parent.find('.error').removeClass('hidden');
     });
@@ -535,53 +612,98 @@ $(document).ready(function() {
       return;
     }
 
-    // user input
-    var comment = $parent.parents('.box').find('.comment_container textarea').val().trim();
+    if ($('.editableComment')[0]) {
+      // edited content
+      const comment = $parent.parents('.box').find('.editableComment').val();
 
-    // validation
-    if (!comment) {
-      return;
-    }
+      $('.editableComment').prop('disabled', true);
 
-    $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
-    $('.post_comment').prop('disabled', true);
+      // validation
+      if (!comment) {
+        $('.editableComment').prop('disabled', false);
+        return;
+      }
 
-    $parent.parents('.activity.box').find('.loading').removeClass('hidden');
-    var has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
-    // increment number
-    var num = $parent.find('span.num').html();
+      $parent.parents('.activity.box').find('.loading').removeClass('hidden');
 
-    num = parseInt(num) + 1;
-    $parent.find('span.num').html(num);
-
-    // remote post
-    var params = {
-      'method': 'comment',
-      'comment': comment,
-      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-    };
-    var url = '/api/v0.1/activity/' + $parent.data('pk');
-
-    $.post(url, params, function(response) {
-      var success_callback = function($parent) {
-        $parent.parents('.box').find('.comment_container textarea').val('');
-        $parent.find('textarea').focus();
-
+      const has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
+      const num = $parent.find('span.num').html();
+      const comment_id = $('.editableComment').parent().closest('.comment_row').data('id');
+      const url = '/api/v0.1/comment/' + comment_id;
+      const params = {
+        'method': 'EDIT',
+        'comment': comment,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
       };
-      var override_hide_comments = !has_hidden_comments;
 
-      view_comments($parent, allow_close_comment_container, success_callback, override_hide_comments);
-    }).done(function() {
-      // pass
-    })
-      .fail(function() {
+      $.post(url, params, function(response) {
+        const success_callback = function($parent) {
+          $.noop(); // do nothing
+        };
+
+        view_comments($parent, allow_close_comment_container, success_callback);
+      }).always(function() {
+        $parent.parents('.activity.box').find('.loading').addClass('hidden');
+        $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
+        $('.editableComment').prop('disabled', false);
+        $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', false).removeClass('hidden');
+        $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+          .find('#container-post_comment')
+          .find('*').prop('disabled', false).removeClass('hidden');
+        // TODO: automatically cancel editing when another edit_comment button is clicked
+        $('.edit_comment').prop('disabled', false);
+      });
+    } else {
+      // user input
+      const comment = $parent.parents('.box').find('.comment_container textarea').val().trim();
+
+      $parent.parents('.box').find('.comment_container textarea').prop('disabled', true);
+      $('.post_comment').prop('disabled', true);
+
+      // validation
+      if (!comment) {
+        $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
+        $('.post_comment').prop('disabled', false);
+        return;
+      }
+
+
+      $parent.parents('.activity.box').find('.loading').removeClass('hidden');
+      const has_hidden_comments = $parent.parents('.activity.box').find('.row.comment_row.hidden').length;
+
+      // increment number
+      let num = $parent.find('span.num').html();
+
+      num = parseInt(num) + 1;
+      $parent.find('span.num').html(num);
+
+      // remote post
+      const params = {
+        'method': 'comment',
+        'comment': comment,
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+      };
+      const url = '/api/v0.1/activity/' + $parent.data('pk');
+
+      $.post(url, params, function(response) {
+        const success_callback = function($parent) {
+          $parent.parents('.box').find('.comment_container textarea').val('');
+          $parent.find('textarea').focus();
+
+        };
+        const override_hide_comments = !has_hidden_comments;
+
+        view_comments($parent, allow_close_comment_container, success_callback, override_hide_comments);
+      }).done(function() {
+        // pass
+      }).fail(function() {
         $parent.parents('.activity.box').find('.error').removeClass('hidden');
-      })
-      .always(function() {
+      }).always(function() {
         $parent.parents('.activity.box').find('.loading').addClass('hidden');
         $parent.parents('.box').find('.comment_container textarea').prop('disabled', false);
         $('.post_comment').prop('disabled', false);
       });
+    }
   };
 
   // converts an object to a dict
@@ -633,14 +755,23 @@ $(document).ready(function() {
 
         the_comment = urlify(the_comment);
         the_comment = linkify(the_comment);
+
         the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
         const timeAgo = timedifferenceCvrt(new Date(comment['created_on']));
         const show_tip = true;
         const is_comment_owner = document.contxt.github_handle == comment['profile_handle'];
+
+        const can_award = (
+          response.author === document.contxt.github_handle &&
+          response.has_tip == true &&
+          response.tip_available == true);
+        const can_redeem = response.can_redeem;
+
+        const is_edited = typeof comment['is_edited'] !== 'undefined' ? comment['is_edited'] : false;
+
         var sorted_match_curve_html = '';
 
         if (comment['sorted_match_curve']) {
-
           var match_curve = Array.from(convert_to_dict(comment['sorted_match_curve']).values());
 
           for (let j = 0; j < match_curve.length; j++) {
@@ -659,7 +790,7 @@ $(document).ready(function() {
         if (is_first_hidden) {
           show_more_box = `
           <div class="row mx-auto ${ show_all_option ? 'show_all' : 'show_more'} d-block text-center">
-            <a href="#" class="text-black-60 font-smaller-5">
+            <a href="#" class="font-smaller-5">
             ${ show_all_option ? 'See all comments' : `Show More (<span class="comment-count">${num_comments - hide_after_n_comments + 1}</span>)`}
             </a>
           </div>
@@ -669,7 +800,7 @@ $(document).ready(function() {
         ${show_more_box}
         <div class="row comment_row mx-auto ${is_hidden ? 'hidden' : ''}" data-id=${comment['id']}>
           <div class="col-1 activity-avatar my-auto">
-            <a href="/profile/${comment['profile_handle']}" data-toggle="tooltip" title="@${comment['profile_handle']}">
+            <a href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
               <img src="/dynamic/avatar/${comment['profile_handle']}">
             </a>
           </div>
@@ -680,9 +811,9 @@ $(document).ready(function() {
                 <span class="indicator" data-toggle="tooltip" title="Gitcoin Chat: ${comment['last_chat_status_title']}">
                   •
                 </span>
-              </span>          
+              </span>
                 <b>${comment['name']}</b>
-                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}">
+                <span class="grey"><a class=grey href="/profile/${comment['profile_handle']}" data-usercard="${comment['profile_handle']}">
                 @${comment['profile_handle']}
                 </a></span>
                 ${comment['match_this_round'] ? `
@@ -707,11 +838,14 @@ $(document).ready(function() {
               </span>
               <span class='float-right'>
                 <span class="d-none d-sm-inline grey font-smaller-5 text-right">
-                  ${timeAgo}
+                  ${timeAgo} ${is_edited ? '(edited)' : ''}
                 </span>
-                <span class="font-smaller-5 mt-1" style="display: block; text-align: right;">
+                <span class="comment_options font-smaller-5 mt-1" style="display: block; text-align: right;">
                   ${is_comment_owner ?
-    `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative text-black-70 mr-1 cursor-pointer" style="top:-1px; "></i>| `
+    `<i data-pk=${comment['id']} class="delete_comment fas fa-trash font-smaller-7 position-relative grey mr-1 cursor-pointer" style="top:-1px; "></i>| `
+    : ''}
+    ${is_comment_owner ?
+    `<i data-pk=${comment['id']} class="edit_comment fas fa-edit font-smaller-7 position-relative grey mr-1 cursor-pointer" style="top:-1px; "></i>| `
     : ''}
                   ${show_tip ? `
                   <span class="action like px-0 ${comment['is_liked'] ? 'open' : ''}" data-toggle="tooltip" title="Liked by ${comment['likes']}">
@@ -726,6 +860,16 @@ $(document).ready(function() {
             <div class="activity_comments_main_comment pt-1 pb-1">
               ${the_comment}
             </div>
+            ${can_award && `
+             <button data-comment=${comment['id']} data-user=${comment['profile_handle']}
+                     data-activity=${comment['activity']}
+                     class="award btn mt-1 mb-1 btn-radio font-smaller-5">
+                     <i class="fas fa-gift mr-2"></i> award
+             </button>` || ''}
+            ${!!comment['redeem_link'] && can_redeem && `
+              <a class="btn mt-1 mb-1 btn-radio font-smaller-5" href="${comment['redeem_link']}">Redeem tip</a>` || ''}
+            ${!!comment['redeem_link'] && !can_redeem && `
+              <a class="btn mt-1 mb-1 btn-radio font-smaller-5" href="${comment['redeem_link']}">Tip redeemed</a>` || ''}
           </div>
 
         </div>
@@ -735,13 +879,18 @@ $(document).ready(function() {
       }
 
       const post_comment_html = `
-        <div class="row py-2 mx-auto">
+        <div id="container-post_comment" class="row py-2 mx-auto">
           <div class="col-sm-1 mt-1 activity-avatar d-none d-sm-inline">
             <img src="/dynamic/avatar/${document.contxt.github_handle}">
           </div>
-          <div class="col-12 col-sm-11 text-right">
-            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3">${existing_text}</textarea>
-            <a href=# class="btn btn-gc-blue btn-sm mt-= font-smaller-7 font-weight-bold post_comment">COMMENT</a>
+          <div class="comment-area col-12 col-sm-11 text-right">
+            <textarea class="form-control bg-lightblue font-caption enter-activity-comment" placeholder="Enter comment" cols="80" rows="3" maxlength="500">${existing_text}</textarea>
+            <div class="emoji-container position-absolute d-flex flex-wrap">
+              <button class="btn btn-sm p-1 emoji_button grey" data-toggle="tooltip" title="Add an emoji to post.">
+                <i class="far fa-fw fa-smile"></i>
+              </button>
+            </div>
+            <a href=# class="btn btn-gc-blue btn-sm mt-3 font-smaller-7 font-weight-bold post_comment">COMMENT</a>
           </div>
         </div>
       `;
@@ -753,6 +902,24 @@ $(document).ready(function() {
     });
   };
 
+  // add emoji to comment
+  let activityCommentTextArea = '';
+  var picker = new EmojiButton({
+    position: 'right-end'
+  });
+
+  picker.on('emoji', function(emoji) {
+    activityCommentTextArea.value += ` ${emoji} `;
+  });
+
+  $(document).on('click', '.emoji_button', function(e) {
+    e.preventDefault();
+    const commentArea = $(this).parents('.comment-area')[0];
+    const emojiContainer = $(this).parents('.emoji-container')[0];
+
+    picker.pickerVisible ? picker.hidePicker() : picker.showPicker(emojiContainer);
+    activityCommentTextArea = commentArea.children[0];
+  });
 
   // post comment activity
   $(document).on('click', '.comment_container .action.like', function(e) {
@@ -836,6 +1003,59 @@ $(document).ready(function() {
     post_comment($target, false);
   });
 
+
+  // cancel editing comment
+  $(document).on('click', '.cancel_edit', function(e) {
+    e.preventDefault();
+    const comment_id = $(this).data('id');
+    const editableContainer = $('#editableContainer');
+
+    const url = '/api/v0.1/comment/' + comment_id;
+    const params = {
+      'method': 'GET_COMMENT'
+    };
+
+    $.get(url, params, function(response) {
+      let the_comment = response['comment'];
+
+      the_comment = urlify(the_comment);
+      the_comment = linkify(the_comment);
+      the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
+
+      editableContainer.replaceWith(`<div class="activity_comments_main_comment">${the_comment}</div>`);
+
+    }).always(function() {
+      $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', false).removeClass('hidden');
+      $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+        .find('#container-post_comment')
+        .find('*').prop('disabled', false).removeClass('hidden');
+      // TODO: automatically cancel editing when another edit_comment button is clicked
+      $('.edit_comment').prop('disabled', false);
+    });
+  });
+
+
+  $(document).on('click', '.edit_comment', function(e) {
+    e.preventDefault();
+    let comment_id = $(this).data('pk');
+    let commentContainer = $(`.comment_row[data-id="${comment_id}"] .activity_comments_main_comment`);
+    let content = commentContainer.html().replace(/<br>/g, '\n').trim();
+    let editableContainer = $(`<div id="editableContainer" class="col-12 col-sm-12 text-right"><textarea class="form-control bg-lightblue font-caption editableComment" cols="80" rows="3" data-id="${comment_id}">${content}</textarea><a href=# class="btn btn-gc-blue btn-sm mt-2 font-smaller-7 font-weight-bold cancel_edit" data-id="${comment_id}">CANCEL</a></div>`);
+
+    $(`.comment_row[data-id="${comment_id}"] .comment_options`).prop('disabled', true).addClass('hidden');
+    $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+      .find('#container-post_comment')
+      .find('*').prop('disabled', true).addClass('hidden');
+
+    commentContainer.replaceWith(editableContainer);
+
+    $(`#editableContainer textarea[data-id="${comment_id}`).focus();
+
+    // TODO: automatically cancel editing when another edit_comment button is clicked
+    $('.edit_comment').prop('disabled', true);
+  });
+
+
   $(document).on('click', '.delete_comment', function(e) {
     e.preventDefault();
     const comment_id = $(this).data('pk');
@@ -852,7 +1072,7 @@ $(document).ready(function() {
         if (response.status <= 204) {
           _alert('comment successfully deleted.', 'success', 1000);
           $(`.comment_row[data-id='${comment_id}']`).addClass('hidden');
-          console.log(response);
+
         } else {
           _alert(`Unable to delete commment: ${response.message}`, 'error');
           console.log(`error deleting commment: ${response.message}`);
@@ -865,11 +1085,41 @@ $(document).ready(function() {
   });
 
 
-  $(document).on('keypress', '.enter-activity-comment', function(e) {
+  $(document).on('keyup keydown keypress', '.enter-activity-comment, .editableComment', function(e) {
     if (e.which == 13 && !e.shiftKey) {
       const $target = $(this).parents('.activity.box').find('.comment_activity');
 
       post_comment($target, false);
+    }
+
+    if (e.key === 'Escape' && typeof $('.editableComment')[0] != 'undefined') {
+      const comment_id = $(this).data('id');
+      const editableContainer = $('#editableContainer');
+
+      const url = '/api/v0.1/comment/' + comment_id;
+      const params = {
+        'method': 'GET_COMMENT'
+      };
+
+      $.get(url, params, function(response) {
+        let the_comment = response['comment'];
+
+        the_comment = urlify(the_comment);
+        the_comment = linkify(the_comment);
+        the_comment = the_comment.replace(/\r\n|\r|\n/g, '<br />');
+
+        editableContainer.replaceWith(`<div class="activity_comments_main_comment">${the_comment}</div>`);
+
+      }).always(function() {
+        $(`.comment_row[data-id="${comment_id}"] .comment_options`)
+          .prop('disabled', false)
+          .removeClass('hidden');
+        $(`.comment_row[data-id="${comment_id}"]`).parent().closest('.box')
+          .find('#container-post_comment')
+          .find('*').prop('disabled', false).removeClass('hidden');
+        // TODO: automatically cancel editing when another edit_comment button is clicked
+        $('.edit_comment').prop('disabled', false);
+      });
     }
   });
 
@@ -887,6 +1137,7 @@ $(document).ready(function() {
       $target.removeClass('open');
     }, 300);
   });
+
 
   $(document).on('click', '.fund_issue', function(e) {
     e.preventDefault();
@@ -950,7 +1201,7 @@ function throttle(fn, wait) {
     }
   };
 }
-  
+
 
 window.addEventListener('scroll', throttle(function() {
   var offset = 800;
@@ -959,4 +1210,3 @@ window.addEventListener('scroll', throttle(function() {
     $('.infinite-more-link').click();
   }
 }, 500));
-

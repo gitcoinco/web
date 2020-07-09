@@ -44,6 +44,7 @@
   </header>
   <div id="receove_eth" {% if not is_redeemable %} style="display:none;" {% endif %} >
     <form method="POST">
+      {% csrf_token %}
       <h1 id="oneh1">{% trans "You've got" %} {{tip.amount}} {{tip.tokenName}} </h1>
       <div>
         {% trans "Forward it to a permanent address:" %}

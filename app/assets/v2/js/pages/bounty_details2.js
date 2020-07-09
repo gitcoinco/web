@@ -9,7 +9,6 @@ const loadingState = {
 };
 
 document.result = bounty;
-// listen_for_web3_changes();
 
 Vue.mixin({
   methods: {
@@ -39,10 +38,90 @@ Vue.mixin({
           projectModal(vm.bounty.pk);
         }
         vm.staffOptions();
+        vm.fetchIfPendingFulfillments();
       }).catch(function(error) {
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
       });
+    },
+    getTransactionURL: function(token_name, txn) {
+      let url;
+
+      switch (token_name) {
+        case 'ETC':
+          url = `https://blockscout.com/etc/mainnet/tx/${txn}`;
+          break;
+
+        case 'CELO':
+        case 'cUSD':
+          url = `https://explorer.celo.org/tx/${txn}`;
+          break;
+
+        case 'ZIL':
+          url = `https://viewblock.io/zilliqa/tx/${txn}`;
+          break;
+
+        default:
+          url = `https://etherscan.io/tx/${txn}`;
+
+      }
+      return url;
+    },
+    getAddressURL: function(token_name, address) {
+      let url;
+
+      switch (token_name) {
+        case 'ETC':
+          url = `https://blockscout.com/etc/mainnet/address/${address}`;
+          break;
+
+        case 'CELO':
+        case 'cUSD':
+          url = `https://explorer.celo.org/address/${address}`;
+          break;
+
+        case 'ZIL':
+          url = `https://viewblock.io/zilliqa/address/${address}`;
+          break;
+
+        default:
+          url = `https://etherscan.io/address/${address}`;
+      }
+      return url;
+    },
+    getQRString: function(token_name, address, value) {
+      value = value || 0;
+
+      let qr_string;
+
+      switch (token_name) {
+        case 'ETC':
+          qr_string = value ?
+            `ethereum:${address}?value=${value}` :
+            `ethereum:${address}`;
+          break;
+
+        case 'CELO':
+          qr_string = value ?
+            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]` :
+            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address)?args=[${address}]`;
+          break;
+
+        case 'cUSD':
+          // TODO: Wire in when we know the address
+          qr_string = value ?
+            `celo:${address}?value=${value}` :
+            `celo:${address}`;
+          break;
+
+        case 'ZIL':
+          qr_string = value ?
+            `zilliqa://${address}?amount=${value}` :
+            `zilliqa://${address}`;
+          break;
+      }
+
+      return qr_string;
     },
     syncBounty: function() {
       let vm = this;
@@ -169,15 +248,54 @@ Vue.mixin({
         });
       }
     },
-    fulfillmentComplete: function(fulfillment_id, amount, event) {
+    getTenant: function(token_name, web3_type) {
+      let tenant;
+
+      if (web3_type == 'manual') {
+        tenant = 'OTHERS';
+        return tenant;
+      }
+
+      switch (token_name) {
+
+        case 'ETC':
+          tenant = 'ETC';
+          break;
+
+        case 'CELO':
+        case 'cUSD':
+          tenant = 'CELO';
+          break;
+
+        case 'ZIL':
+          tenant = 'ZIL';
+          break;
+
+        default:
+          tenant = 'ETH';
+      }
+
+      return tenant;
+    },
+    fulfillmentComplete: function(payout_type, fulfillment_id, event) {
       let vm = this;
+
       const token_name = vm.bounty.token_name;
       const decimals = tokenNameToDetails('mainnet', token_name).decimals;
+      const amount = vm.fulfillment_context.amount;
+      const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
+      const funder_address = vm.bounty.bounty_owner_address;
+      const tenant = vm.getTenant(token_name, vm.bounty.web3_type);
+
       const payload = {
+        payout_type: payout_type,
+        tenant: tenant,
         amount: amount * 10 ** decimals,
         token_name: token_name,
-        bounty_owner_address: vm.bounty.bounty_owner_address
+        funder_address: funder_address,
+        payout_tx_id: payout_tx_id
       };
+
       const apiUrlBounty = `/api/v1/bounty/payout/${fulfillment_id}`;
 
       event.target.disabled = true;
@@ -186,8 +304,14 @@ Vue.mixin({
         event.target.disabled = false;
         if (200 <= response.status && response.status <= 204) {
           console.log('success', response);
+
           vm.fetchBounty();
           this.$refs['payout-modal'][0].closeModal();
+
+          vm.fulfillment_context = {
+            active_step: 'payout_amount'
+          };
+
         } else {
           _alert('Unable to make payout bounty. Please try again later', 'error');
           console.error(`error: bounty payment failed with status: ${response.status} and message: ${response.message}`);
@@ -196,6 +320,24 @@ Vue.mixin({
         event.target.disabled = false;
         _alert('Unable to make payout bounty. Please try again later', 'error');
       });
+    },
+    nextStepAndLoadPYPLButton: function(fulfillment_id, fulfiller_identifier) {
+      let vm = this;
+
+      Promise.resolve(vm.goToStep('submit_transaction', 'payout_amount')).then(() => {
+        const ele = '#payout-with-pypl';
+
+        $(ele).html('');
+        const modal = this.$refs['payout-modal'][0];
+
+        payWithPYPL(fulfillment_id, fulfiller_identifier, ele, vm, modal);
+      });
+    },
+    payWithWeb3Step: function(fulfillment_id, fulfiller_address) {
+      let vm = this;
+      const modal = this.$refs['payout-modal'][0];
+
+      payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
     },
     closeBounty: function() {
 
@@ -226,7 +368,7 @@ Vue.mixin({
         return;
       }
 
-      if (vm.contxt.is_staff) {
+      if (vm.contxt.is_staff && !vm.quickLinks.length) {
         vm.quickLinks.push({
           label: 'View in Admin',
           href: `/_administrationdashboard/bounty/${vm.bounty.pk}/change/`,
@@ -272,15 +414,6 @@ Vue.mixin({
       }
       document.location.href = `${vm.bounty.url}?snooze=${text}`;
     },
-    overrideStatus: function() {
-      let vm = this;
-      let text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
-
-      if (text === null) {
-        return;
-      }
-      document.location.href = `${vm.bounty.url}?admin_override_satatus=${text}`;
-    },
     hasAcceptedFulfillments: function() {
       let vm = this;
 
@@ -288,15 +421,28 @@ Vue.mixin({
         return [];
       }
 
-      if (vm.is_bounties_network) {
-        return vm.bounty.fulfillments.filter(fulfillment => fulfillment.accepted);
-      }
-
       return vm.bounty.fulfillments.filter(fulfillment =>
         fulfillment.accepted &&
           fulfillment.payout_status == 'done'
       );
 
+    },
+    fetchIfPendingFulfillments: function() {
+      let vm = this;
+
+      const pendingFulfillments = vm.bounty.fulfillments.filter(fulfillment =>
+        fulfillment.payout_status == 'pending'
+      );
+
+      if (pendingFulfillments.length > 0) {
+        if (!vm.pollInterval) {
+          vm.pollInterval = setInterval(vm.fetchBounty, 60000);
+        }
+      } else {
+        clearInterval(vm.pollInterval);
+        vm.pollInterval = null;
+      }
+      return;
     },
     stopWork: function(isOwner) {
       let text = isOwner ?
@@ -344,15 +490,32 @@ Vue.mixin({
 
       return false;
     },
-    totalAmountPaid: function(inputAmount) {
+    goToStep: function(nextStep, currentStep, flow) {
       let vm = this;
-      let amount_paid = 0;
 
-      vm.bounty.fulfillments.forEach(fulfillment => {
-        amount_paid += (fulfillment.payout_amount / 10 ** vm.decimals);
-      });
+      if (flow) {
+        vm.fulfillment_context.flow = flow;
+      }
+      vm.fulfillment_context.referrer = currentStep;
+      vm.fulfillment_context.active_step = nextStep;
+    },
+    initFulfillmentContext: function(fulfillment) {
+      let vm = this;
 
-      vm.bounty.amount_paid = parseFloat(amount_paid) + parseFloat(inputAmount);
+      switch (fulfillment.payout_type) {
+        case 'fiat':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
+
+        case 'qr':
+        case 'manual':
+          vm.fulfillment_context.active_step = 'check_wallet_owner';
+          break;
+
+        case 'web3_modal':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
+      }
     }
   },
   computed: {
@@ -367,16 +530,11 @@ Vue.mixin({
       let activities = this.bounty.activities.sort((a, b) => new Date(b.created) - new Date(a.created));
 
       if (decimals) {
-        activities.forEach(activity => {
+        activities.forEach((activity, index) => {
           if (activity.metadata) {
-            if (activity.metadata.new_bounty) {
-              // ETH
-              activity.metadata.new_bounty['token_value'] = activity.metadata.new_bounty.value_in_token / 10 ** decimals;
-              if (activity.metadata.old_bounty) {
-                activity.metadata.old_bounty['token_value'] = activity.metadata.old_bounty.value_in_token / 10 ** decimals;
-              }
+            if (activity.metadata.token_name == 'USD' && activity.activity_type == 'worker_paid') {
+              activity.metadata['token_value'] = activity.metadata.payout_amount;
             } else {
-              // cross-chain
               activity.metadata['token_value'] = activity.metadata.value_in_token / 10 ** decimals;
             }
           }
@@ -386,7 +544,6 @@ Vue.mixin({
     }
   }
 });
-
 
 if (document.getElementById('gc-bounty-detail')) {
   appBounty = new Vue({
@@ -400,12 +557,16 @@ if (document.getElementById('gc-bounty-detail')) {
         cb_address: cb_address,
         isOwner: false,
         isOwnerAddress: false,
-        is_bounties_network: is_bounties_network,
-        inputAmount: 0,
+        fulfillment_context: {
+          active_step: 'check_wallet_owner',
+          include_amount_in_qr: true,
+          amount: 0
+        },
         decimals: 18,
         inputBountyOwnerAddress: bounty.bounty_owner_address,
         contxt: document.contxt,
-        quickLinks: []
+        quickLinks: [],
+        pollInterval: null
       };
     },
     mounted() {
@@ -465,9 +626,6 @@ var show_extend_deadline_modal = function() {
         extend_expiration(document.result['pk'], {
           deadline: extended_time
         });
-        // setTimeout(function() {
-        //   window.location.reload();
-        // }, 2000);
       });
     });
   });
@@ -501,8 +659,28 @@ var extend_expiration = function(bounty_pk, data) {
   });
 };
 
+const submitInterest = (bounty, msg, self, onSuccess) => {
+  add_interest(bounty, {
+    issue_message: msg
+  }).then(success => {
+    if (success) {
+      $(self).attr('href', '/uninterested');
+      $(self).find('span').text(gettext('Stop Work'));
+      $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+  }).catch((error) => {
+    if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+      return;
+    throw error;
+  });
+};
+
 var show_interest_modal = function() {
-  var self = this;
   var modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
@@ -511,8 +689,35 @@ var show_interest_modal = function() {
     modalBody.load(modalUrl, ()=> {
       let actionPlanForm = $('#action_plan');
       let issueMessage = $('#issue_message');
+      let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
+      let projectForm = $('#projectForm');
 
+      userSearch('.team-users', false, '', data, true, false);
+      $('#looking-members').on('click', function() {
+        $('.looking-members').toggle();
+      });
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
+      if (document.result.event) {
+        $(document).on('change', '#project_logo', function() {
+          previewFile($(this));
+        });
+        projectForm.on('submit', function(e) {
+          e.preventDefault();
+          const elements = $(this)[0];
+          const logo = elements['logo'].files[0];
+          const summary = elements['summary'].value;
+          const data = $(this).serializeArray();
+
+          submitInterest(document.result['pk'], summary, self, () => {
+            appBounty.fetchBounty();
+
+            submitProject(logo, data);
+            modals.bootstrapModal('hide');
+          });
+        });
+
+        return;
+      }
 
       actionPlanForm.on('submit', function(event) {
         event.preventDefault();
@@ -525,13 +730,9 @@ var show_interest_modal = function() {
         }
 
         add_interest(document.result['pk'], {
-          issue_message: msg,
-          discord_username: $('#discord_username').length ? $('#discord_username').val() : null
+          issue_message: msg
         }).then(success => {
           if (success) {
-            // $(self).attr('href', '/uninterested');
-            // $(self).find('span').text(gettext('Stop Work'));
-            // $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
             appBounty.fetchBounty();
             modals.bootstrapModal('hide');
 
@@ -580,16 +781,3 @@ const promisify = (inner) =>
       }
     })
   );
-
-// async function waitBlock(txid) {
-//   while (true) {
-//     let receipt = web3.eth.getTransactionReceipt(txid);
-//     if (receipt && receipt.contractAddress) {
-//       console.log("Your contract has been deployed at http://testnet.etherscan.io/address/" + receipt.contractAddress);
-//       console.log("Note that it might take 30 - 90 sceonds for the block to propagate befor it's visible in etherscan.io");
-//       break;
-//     }
-//     console.log("Waiting a mined block to include your contract... currently in block " + web3.eth.blockNumber);
-//     await sleep(4000);
-//   }
-// }

@@ -27,12 +27,14 @@ class GrantsViewResponsesTests(TestCase):
                 ['community',5],
                 ['eth2.0',6],
                 ['eth1.x',7],
-                ['twitter', 8],
-                ['reddit', 9],
-                ['blog', 10],
-                ['notes', 11],
-                ['COVID19 research',12],
-                ['COVID19 response',13]
+                ['devEx', 8],
+                ['usability', 9],
+                ['twitter', 10],
+                ['reddit', 11],
+                ['blog', 12],
+                ['notes', 13],
+                ['COVID19 research',14],
+                ['COVID19 response',15]
             ],
             'status': 200
         }
@@ -51,12 +53,14 @@ class GrantsViewResponsesTests(TestCase):
             ('community',5),
             ('eth2.0',6),
             ('eth1.x',7),
-            ('twitter', 8),
-            ('reddit',9),
-            ('blog',10),
-            ('notes',11),
-            ('COVID19 research',12),
-            ('COVID19 response',13)
+            ('devEx',8),
+            ('usability',9),
+            ('twitter', 10),
+            ('reddit',11),
+            ('blog',12),
+            ('notes',13),
+            ('COVID19 research',14),
+            ('COVID19 response',15)
         ]
 
         self.assertEqual(all_categories, expected_response)
@@ -72,7 +76,9 @@ class GrantsViewResponsesTests(TestCase):
             ('wallets',4),
             ('community',5),
             ('eth2.0',6),
-            ('eth1.x',7)
+            ('eth1.x',7),
+            ('devEx', 8),
+            ('usability', 9)
         ]
 
         self.assertEqual(tech_categories, expected_response)

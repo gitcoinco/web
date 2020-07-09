@@ -182,10 +182,6 @@
     document.getElementById('clearSelectedUser').style.display = 'none'
   }
 
-  window.addEventListener('load', function() {
-    setInterval(listen_for_web3_changes, 5000);
-  });
-
   {% if not user_json and username %}
     setTimeout(function() {
       _alert("Sorry, we can't find the user");

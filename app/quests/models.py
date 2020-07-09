@@ -10,7 +10,8 @@ from django.utils.text import slugify
 # Create your models here.
 from economy.models import SuperModel
 
-num_backgrounds = 33
+num_backgrounds = 34
+video_enabled_backgrounds = [4, 6, 8, 9, 10, 11, 13, 14, 22, 23, 34]
 
 
 class Quest(SuperModel):
@@ -55,6 +56,7 @@ class Quest(SuperModel):
     )
     ui_data = JSONField(default=dict, blank=True)
     edit_comments = models.TextField(default='', blank=True)
+    admin_comments = models.TextField(default='', blank=True)
     
     def __str__(self):
         """Return the string representation of this obj."""
@@ -64,6 +66,10 @@ class Quest(SuperModel):
     def url(self):
         from django.conf import settings
         return settings.BASE_URL + self.relative_url
+
+    @property
+    def video(self):
+        return self.game_metadata.get('video', None)
 
     @property
     def relative_url(self):

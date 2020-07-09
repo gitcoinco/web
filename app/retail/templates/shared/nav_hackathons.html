@@ -17,13 +17,13 @@
 {% endcomment %}
 {% load i18n static matches cookielaw_tags %}
 <nav class="navbar navbar-expand-md navbar-dark g-font-muli gitcoin-background">
-  <a class="d-none d-md-block mr-2" href="{% url 'index' %}">
+  <a class="d-none d-md-block mr-2 mb-1" href="{% url 'index' %}">
     {% include 'shared/helmet-white-animated.html' %}
   </a>
   <i class="white font-bigger-2 d-none d-md-block fa fa-angle-right"></i>
-  <a class="navbar-brand ml-2 py-0 brand-hover" href="/hackathon-list">
-    <img class="mw-100 logo-static" id="logo" src="{% static "v2/images/top-bar/hackathons-logo.svg" %}" height="35" alt="Logo" />
-    <img class="mw-100 logo-animated" src="{% static "v2/images/products/hackathons.gif" %}" alt="kudos" height="35" style="margin-top: -2px;">
+  <a class="navbar-brand ml-2 py-0" href="/hackathon-list">
+    <!-- <img class="mw-100 logo-static" id="logo" src="{% static 'v2/images/top-bar/hackathons-neg.svg' %}" height="35" alt="Logo" /> -->
+    {% include 'shared/svg-embed/h35px_hackathons.svg' %}
   </a>
   {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <div class="navbar-network ml-xl-5 py-1 px-2 hidden">

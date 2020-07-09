@@ -1,6 +1,10 @@
-<div id="gc-chat" class="position-relative">
-  <a href="{% url 'chat' %}" class="chat_icon nav-link" role="button">
+<div id="gc-chat" class="dropdown">
+  <a href="" class="chat_icon dropdown-toggle-no-caret nav-link" href="#" id="chatNavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-comments fa-fw"></i>
     <span id="chat-notification-dot" class="notification__dot"></span>
   </a>
+  <div class="dropdown-menu dropdown-menu-right dropdo" aria-labelledby="chatNavbarDropdown">
+    <a class="dropdown-item" href="{{chat_url}}/oauth/gitcoin/login?redirect_to={{base_url}}chat">Web Chat</a>
+    <a class="dropdown-item" href="{% url 'landing_chat' %}">Desktop & Mobile Apps</a>
+  </div>
 </div>

@@ -1,146 +1,83 @@
-function search(elem) {
-  var selectItem = elem || '#search';
-
-  $(selectItem).each(function() {
-    if (!$(this).length) {
-      return;
-    }
-    var name = $(this).attr('name');
-
-    $(this).select2({
-      ajax: {
-        url: '/api/v0.1/search/',
-        dataType: 'json',
-        delay: 250,
-        data: function(params) {
-
-          let query = {
-            term: params.term[0] === '@' ? params.term.slice(1) : params.term
-          };
-
-          return query;
-        },
-        processResults: function(data) {
-          return {
-            results: data
-          };
-        },
-        cache: true
-      },
-      theme: 'gc-search',
-      placeholder: '<i class="fas fa-search fa-fw"></i>',
-      allowClear: true,
-
-      // dropdownAutoWidth: true,
-      minimumInputLength: 3,
-      escapeMarkup: function(markup) {
-        return markup;
-      },
-      templateResult: formatRow
-    });
-
-    // fix for wrong position on select open
-    var select2Instance = $(this).data('select2');
-
-    select2Instance.on('results:message', function(params) {
-      this.dropdown._resizeDropdown();
-      this.dropdown._positionDropdown();
-    });
-
-    function formatRow(element) {
-
-      if (element.loading) {
-        return element.text;
+if (document.getElementById('gc-search')) {
+  var app = new Vue({
+    delimiters: [ '[[', ']]' ],
+    el: '#gc-search',
+    data: {
+      term: '',
+      results: [],
+      isLoading: false,
+      currentTab: 0,
+      source_types: [
+        'All',
+        'Profile',
+        'Bounty',
+        'Grant',
+        'Kudos',
+        'Quest',
+        'Page'
+      ],
+      labels: {
+        'All': 'All',
+        'Profile': 'Profiles',
+        'Bounty': 'Bounties',
+        'Grant': 'Grants',
+        'Kudos': 'Kudos',
+        'Quest': 'Quests',
+        'Page': 'Pages'
       }
-      var markup;
+    },
+    mounted() {
+      this.search();
+    },
+    created() {
+      this.search();
+    },
+    methods: {
+      init: function() {
+        setTimeout(() => {
+          $('.has-search input').focus();
+        }, 100);
+      },
+      search: async function() {
+        let vm = this;
+        let thisDate = new Date();
 
-      markup = `<div data-url="${element.url}" class="d-flex m-2 align-items-center element-search-result search-result">
-                      <div style="min-width: 0;width: 100%;">
-                        <img class=search__avatar src="${element.img_url}">
-                        <div class="d-flex justify-content-between">
-                          <div class="element-title search__title">${element.title}</div>
-                        </div>
-                        <div class="text-truncate element-description search-result__description">${element.description}</div>
-                        <div class="element-type tag float-right">View ${element.source_type}</div>
-                      <div>
-                    </div>`;
+        if (vm.term.length >= 2) {
+          vm.isLoading = true;
+          document.current_search = thisDate;
 
-      return markup;
+          const response = await fetchData(
+            `/api/v0.1/search/?term=${vm.term}`,
+            'GET'
+          );
+          // let response = [{"title": "bounty event test cooperative", "description": "https://github.com/danlipert/gitcoin-test/issues/38https://github.com/danlipert/gitcoin-test/issues/38https://github.com/danlipert/gitcoin-test/issues/38https://github.com/danlipert/gitcoin-test/issues/38https://github.com/danlipert/gitcoin-test/issues/38", "full_search": "bounty event test cooperativehttps://github.com/danlipert/gitcoin-test/issues/38https://github.com/danlipert/gitcoin-test/issues/38https://github.com/danlipert/gitcoin-test/issues/38https://github.com/danlipert/gitcoin-test/issues/38https://github.com/danlipert/gitcoin-test/issues/38Bounty", "url": "https://gitcoin.co/issue/danlipert/gitcoin-test/39/2533", "pk": 15138, "img_url": "https://gitcoin.co/dynamic/avatar/danlipert/1", "timestamp": "2020-04-11T10:26:33.327518+00:00", "source_type": "Bounty"}, {"title": "Gitcoin Ambassador", "description": "This Kudos can be awarded only by Gitcoin team, and signifies that one was a Gitcoin ambassador during Fall 2018 and beyond.", "full_search": "Gitcoin AmbassadorThis Kudos can be awarded only by Gitcoin team, and signifies that one was a Gitcoin ambassador during Fall 2018 and beyond.Kudos", "url": "https://gitcoin.co/kudos/486/gitcoin_ambassador", "pk": 94898, "img_url": "https://gitcoin.co/dynamic/kudos/486/gitcoin_ambassador", "timestamp": "2020-04-11T11:32:06.394147+00:00", "source_type": "Kudos"}, {"title": "Gitcoin Genesis", "description": "The Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners of this badge contributed to Gitcoin in a meaningful way in the way-back-when.", "full_search": "Gitcoin GenesisThe Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners of this badge contributed to Gitcoin in a meaningful way in the way-back-when.Kudos", "url": "https://gitcoin.co/kudos/3/gitcoin_genesis", "pk": 94470, "img_url": "https://gitcoin.co/dynamic/kudos/3/gitcoin_genesis", "timestamp": "2020-04-10T17:03:20.171063+00:00", "source_type": "Kudos"}, {"title": "Gitcoin Torchbearer", "description": "For the Gitcoin Grants TorchBearers", "full_search": "Gitcoin TorchbearerFor the Gitcoin Grants TorchBearersKudos", "url": "https://gitcoin.co/kudos/1904/gitcoin_torchbearer", "pk": 94775, "img_url": "https://gitcoin.co/dynamic/kudos/1904/gitcoin_torchbearer", "timestamp": "2020-04-11T11:26:46.881200+00:00", "source_type": "Kudos"}, {"title": "Gitcoin Genesis", "description": "The Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners of this badge contributed to Gitcoin in a meaningful way in the way-back-when.", "full_search": "Gitcoin GenesisThe Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners of this badge contributed to Gitcoin in a meaningful way in the way-back-when.Kudos", "url": "https://gitcoin.co/kudos/53/gitcoin_genesis", "pk": 94915, "img_url": "https://gitcoin.co/dynamic/kudos/53/gitcoin_genesis", "timestamp": "2020-04-11T10:26:48.271323+00:00", "source_type": "Kudos"}, {"title": "Gitcoin Quests 101", "description": "This Quest is an intro to Gitcoin Quests (how meta!)", "full_search": "Gitcoin Quests 101This Quest is an intro to Gitcoin Quests (how meta!)Quest", "url": "https://gitcoin.co/quests/43/gitcoin-quests-101", "pk": 17139, "img_url": "https://gitcoin.co/dynamic/kudos/4550/grants_round_3_contributor_-_futurism_bot", "timestamp": "2020-04-11T15:25:54.813955+00:00", "source_type": "Quest"}, {"title": "gitcoin mock issue", "description": "####gitcoin mock issue\r\n<!---\r\nThis\r\n -->", "full_search": "gitcoin mock issue####gitcoin mock issue\r\n<!---\r\nThis\r\n -->Bounty", "url": "https://gitcoin.co/issue/Korridzy/range/1/566", "pk": 12982, "img_url": "https://gitcoin.co/dynamic/avatar/Korridzy/1", "timestamp": "2020-04-11T02:26:36.194393+00:00", "source_type": "Bounty"}, {"title": "Gitcoin Testing", "description": "Testing Gitcoin Functionality with this issue.", "full_search": "Gitcoin TestingTesting Gitcoin Functionality with this issue.Bounty", "url": "https://gitcoin.co/issue/UniBitProject/wallet/18/1476", "pk": 14619, "img_url": "https://gitcoin.co/dynamic/avatar/UniBitProject/1", "timestamp": "2020-04-10T19:26:57.564235+00:00", "source_type": "Bounty"}, {"title": "Gitcoin and StandardBounties 101", "description": "Whats the difference between Gitcoin and StandardBounties?", "full_search": "Gitcoin and StandardBounties 101Whats the difference between Gitcoin and StandardBounties?Quest", "url": "https://gitcoin.co/quests/32/gitcoin-and-standardbounties-101", "pk": 17140, "img_url": "https://gitcoin.co/dynamic/kudos/105/bee_of_all_trades", "timestamp": "2020-04-11T15:25:54.483253+00:00", "source_type": "Quest"}, {"title": "Gitcoin Robot Friend", "description": "This kudos for those who wanna see a gitcoin robot friend", "full_search": "Gitcoin Robot FriendThis kudos for those who wanna see a gitcoin robot friendKudos", "url": "https://gitcoin.co/kudos/12477/gitcoin_robot_friend", "pk": 191834, "img_url": "https://gitcoin.co/dynamic/kudos/12477/gitcoin_robot_friend", "timestamp": "2020-04-08T18:24:39.350902+00:00", "source_type": "Kudos"}];
+
+          if (document.current_search == thisDate) {
+            vm.results = groupBySource(response);
+          }
+          vm.isLoading = false;
+        } else {
+          vm.results = {};
+          vm.isLoading = false;
+        }
+      }
     }
-
-    $(selectItem).on('select2:unselecting', function(e) {
-      $(this).val(null).trigger('change');
-      document.selected_element = null;
-      e.preventDefault();
-    });
-    $(selectItem).on('select2:select', function(e) {
-      console.log(e);
-      console.log($('#search').val());
-      var data = e.params.data;
-
-      console.log(data);
-    });
   });
 }
+document.current_search = new Date();
 
-$('document').ready(function() {
-  $('#search_container').html('<select id=search name="search" class="custom-select gc-border-blue"><option></option></select>');
-  search();
+const groupBySource = results => {
+  let grouped_result = {};
 
-  $('body').on('click', '.search_autocomplete', function(e) {
-    var search_term = $(this).text();
+  results.map(result => {
+    const source_type = result.source_type;
 
-    e.preventDefault();
+    grouped_result['All'] ? grouped_result['All'].push(result) : grouped_result['All'] = [result];
+    grouped_result[source_type] ? grouped_result[source_type].push(result) : grouped_result[source_type] = [result];
   });
+  return grouped_result;
+};
 
-  $(document).on ('click', '.select2-container--gc-search .element-search-result', function() {
-    document.location.href = $(this).data('url');
-  });
-
-  $('.select2-nosearch').select2({
-    minimumResultsForSearch: 20
-  });
-
-  // $('.select2-search').select2({});
-
-  // listen for keyups in both input widget AND dropdown
-  $('body').on('keyup', '.select2-container--gc-search', function(e) {
-    var KEYS = { UP: 38, DOWN: 40, ENTER: 13 };
-    var $sel = $('.select2-container--gc-search.select2-container--open');
-
-    if ($sel.length) {
-      var target;
-
-      if (e.keyCode === KEYS.DOWN && !e.altKey) {
-        target = $('.select2-container--gc-search .select2-results__option.selected');
-        if (!target.length) {
-          target = $('.select2-container--gc-search .select2-results__option:first-child');
-        } else if (target.next().length) {
-          target.removeClass('selected');
-          target = target.next();
-        }
-        target.addClass('selected');
-      } else if (e.keyCode === KEYS.UP) {
-        target = $('.select2-container--gc-search .select2-results__option.selected');
-        if (!target.length) {
-          target = $('.select2-container--gc-search .select2-results__option:first-child');
-        } else if (target.prev().length) {
-          target.removeClass('selected');
-          target = target.prev();
-        }
-        target.addClass('selected');
-      } else if (e.keyCode === KEYS.ENTER) {
-        target = $('.select2-container--gc-search .select2-results__option.selected');
-        var url = target.find('.search-result').data('url');
-
-        if (target && url) {
-          document.location.href = url;
-        }
-      }
-    }
-
-  });
-
-
+$(document).on('click', '.gc-search .dropdown-menu', function(event) {
+  event.stopPropagation();
 });
-

@@ -3,9 +3,8 @@ import logging
 from django.conf import settings
 from django.utils.text import slugify
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from celery import app, group
-from celery.utils.log import get_task_logger
 from dashboard.models import Bounty, HackathonEvent, HackathonRegistration, HackathonSponsor, Profile
 from marketing.utils import should_suppress_notification_email
 from mattermostdriver import Driver
@@ -21,7 +20,8 @@ driver_opts = {
     'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
     'url': settings.CHAT_SERVER_URL,
     'port': settings.CHAT_PORT,
-    'token': settings.CHAT_DRIVER_TOKEN
+    'token': settings.CHAT_DRIVER_TOKEN,
+    'verify': False
 }
 
 
@@ -49,7 +49,7 @@ def create_channel_if_not_exists(options):
 
             return True, new_channel
         except Exception as e:
-            logger.error(str(e))
+            logger.info(str(e))
 
 
 def update_chat_notifications(profile, notification_key, status):
@@ -95,13 +95,12 @@ def associate_chat_to_profile(profile):
                         profile_access_token = pat
                         break
             except Exception as e:
-                logger.error(str(e))
+                logger.info(str(e))
                 try:
                     profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
                         'description': "Grants Gitcoin access to modify your account"})
                 except Exception as e:
-                    logger.info('Failed to create access token')
-                    logger.error(str(e))
+                    logger.info(str(e))
 
             profile.gitcoin_chat_access_token = profile_access_token['token']
 
@@ -140,7 +139,7 @@ def associate_chat_to_profile(profile):
                         break
 
             except Exception as e:
-                logger.error(str(e))
+                logger.info(str(e))
                 profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
                     'description': "Grants Gitcoin access to modify your account"})
 
@@ -207,11 +206,10 @@ def create_channel(self, options, bounty_id=None, retry: bool = True) -> None:
             return new_channel
         except ConnectionError as exc:
             logger.info(str(exc))
-            logger.info("Retrying connection")
-            self.retry(countdown=30)
+            self.retry(30)
         except Exception as e:
             print("we got an exception when creating a channel")
-            logger.error(str(e))
+            logger.info(str(e))
 
 
 @app.shared_task(bind=True, max_retries=3)
@@ -220,23 +218,28 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
         chat_driver.login()
         hackathon = HackathonEvent.objects.get(id=hackathon_id)
         channels_to_connect = []
+
+        for channel_name in hackathon.default_channels:
+            created, new_channel_details = create_channel_if_not_exists({
+                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                'channel_display_name': channel_name[:60],
+                'channel_name': channel_name[:60]
+            })
+            channels_to_connect.append(new_channel_details['id'])
+
         if hackathon.chat_channel_id is '' or hackathon.chat_channel_id is None:
             created, new_channel_details = create_channel_if_not_exists({
                 'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
                 'channel_display_name': f'general-{hackathon.slug}'[:60],
                 'channel_name': f'general-{slugify(hackathon.name)}'[:60]
             })
-            print(new_channel_details)
             hackathon.chat_channel_id = new_channel_details['id']
             hackathon.save()
         channels_to_connect.append(hackathon.chat_channel_id)
 
         profiles_to_connect = []
         if profile_handle is None:
-
-            regs_to_sync = HackathonRegistration.objects.filter(hackathon__id=hackathon_id) \
-                .prefetch_related('registrant')
-
+            regs_to_sync = HackathonRegistration.objects.filter(hackathon__id=hackathon_id).select_related('registrant')
             for reg in regs_to_sync:
                 if reg.registrant is None:
                     continue
@@ -247,43 +250,32 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
                 else:
                     profiles_to_connect.append(reg.registrant.chat_id)
         else:
-            profile = Profile.objects.get(handle=profile_handle.lower())
+            profile = Profile.objects.get(handle__iexact=profile_handle)
             if profile.chat_id is '' or profile.chat_id is None:
                 created, updated_profile = associate_chat_to_profile(profile)
                 profiles_to_connect.append(updated_profile.chat_id)
             else:
                 profiles_to_connect = [profile.chat_id]
-
-        for sponsor in hackathon.sponsors.all():
-            hack_sponsor = HackathonSponsor.objects.get(sponsor=sponsor)
-            if hack_sponsor.chat_channel_id is '' or hack_sponsor.chat_channel_id is None:
-                created, new_channel_details = create_channel_if_not_exists({
-                    'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                    'channel_display_name': f'company-{slugify(hack_sponsor.sponsor.name)}'[:60],
-                    'channel_name': f'company-{hack_sponsor.sponsor.name}'[:60]
-                })
-
-                hack_sponsor.chat_channel_id = new_channel_details['id']
-                hack_sponsor.save()
-            channels_to_connect.append(hack_sponsor.chat_channel_id)
+        for hack_sponsor in hackathon.sponsor_profiles.all():
+            created, new_channel_details = create_channel_if_not_exists({
+                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
+                'channel_display_name': f'company-{slugify(hack_sponsor.name)}'[:60],
+                'channel_name': f'company-{hack_sponsor.handle}'[:60]
+            })
+            channels_to_connect.append(new_channel_details['id'])
 
         for channel_id in channels_to_connect:
             try:
                 current_channel_members = chat_driver.channels.get_channel_members(channel_id)
             except Exception as e:
                 continue
-
             current_channel_users = [member['user_id'] for member in current_channel_members]
-            profiles_to_connect = list(set(profiles_to_connect) - set(current_channel_users))
-
-            if len(profiles_to_connect) > 0:
-                add_to_channel.delay(
-                    {'id': channel_id},
-                    profiles_to_connect
-                )
+            connect = list(set(profiles_to_connect) - set(current_channel_users))
+            if len(connect) > 0:
+                add_to_channel.delay({'id': channel_id}, connect)
 
     except Exception as e:
-        logger.error(str(e))
+        logger.info(str(e))
 
 
 @app.shared_task(bind=True, max_retries=3)
@@ -294,23 +286,21 @@ def add_to_channel(self, channel_details, chat_user_ids: list, retry: bool = Tru
     :param retry:
     :return:
     """
-    chat_driver.login()
     try:
+        chat_driver.login()
         for chat_user_id in chat_user_ids:
-            if chat_user_id is '' or chat_user_id is None:
+            try:
+                if chat_user_id is '' or chat_user_id is None:
+                    continue
+                chat_driver.channels.add_user(channel_details['id'], options={
+                    'user_id': chat_user_id
+                })
+            except Exception as e:
+                logger.info(str(e))
                 continue
-            print(chat_user_id)
-            print(channel_details)
-            chat_driver.channels.add_user(channel_details['id'], options={
-                'user_id': chat_user_id
-            })
-
     except ConnectionError as exc:
         logger.info(str(exc))
-        logger.info("Retrying connection")
         self.retry(countdown=30)
-    except Exception as e:
-        logger.error(str(e))
 
 
 @app.shared_task(bind=True, max_retries=1)
@@ -341,10 +331,9 @@ def create_user(self, options, params, profile_handle='', retry: bool = True):
             return create_user_response
         except ConnectionError as exc:
             logger.info(str(exc))
-            logger.info("Retrying connection")
             self.retry(countdown=30)
         except Exception as e:
-            logger.error(str(e))
+            logger.info(str(e))
             return None
 
 
@@ -379,9 +368,7 @@ def patch_chat_user(self, query_opts, update_opts, retry: bool = True) -> None:
                 chat_id = query_opts['chat_id']
             chat_driver.users.patch_user(chat_id, options=update_opts)
         except ConnectionError as exc:
-
             logger.info(str(exc))
-            logger.info("Retrying connection")
             self.retry(countdown=30)
         except Exception as e:
-            logger.error(str(e))
+            logger.info(str(e))

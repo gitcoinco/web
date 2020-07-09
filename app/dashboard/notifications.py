@@ -225,7 +225,7 @@ def maybe_market_to_slack(bounty, event_name):
 
 
 def build_message_for_integration(bounty, event_name):
-    """Build message to be posted to integrated service (e.g. slack, discord).
+    """Build message to be posted to integrated service (e.g. slack).
 
     Args:
         bounty (dashboard.models.Bounty): The Bounty to be marketed.
@@ -298,55 +298,6 @@ def maybe_market_to_user_slack_helper(bounty, event_name):
                     icon_url=settings.GITCOIN_SLACK_ICON_URL,
                 )
                 sent = True
-            except Exception as e:
-                print(e)
-    except Exception as e:
-        print(e)
-
-    return sent
-
-
-def maybe_market_to_user_discord(bounty, event_name):
-    from dashboard.tasks import maybe_market_to_user_discord
-    maybe_market_to_user_discord.delay(bounty.pk, event_name)
-
-
-def maybe_market_to_user_discord_helper(bounty, event_name):
-    """Send a Discord message to the user's discord channel for the specified Bounty.
-
-    Args:
-        bounty (dashboard.models.Bounty): The Bounty to be marketed.
-        event_name (str): The name of the event.
-
-    Returns:
-        bool: Whether or not the Discord notification was sent successfully.
-
-    """
-    from dashboard.models import Profile
-    if bounty.get_natural_value() < 0.0001:
-        return False
-    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
-        return False
-
-    msg = build_message_for_integration(bounty, event_name)
-    if not msg:
-        return False
-
-    url = bounty.github_url
-    sent = False
-    try:
-        repo = org_name(url) + '/' + repo_name(url)
-        subscribers = Profile.objects.filter(discord_repos__contains=[repo])
-        subscribers = subscribers & Profile.objects.exclude(discord_webhook_url='')
-        for subscriber in subscribers:
-            try:
-                headers = {'Content-Type': 'application/json'}
-                body = {"content": msg, "avatar_url": static('v2/images/helmet.png')}
-                discord_response = requests.post(
-                    subscriber.discord_webhook_url, headers=headers, json=body
-                )
-                if discord_response.status_code == 204:
-                    sent = True
             except Exception as e:
                 print(e)
     except Exception as e:
@@ -532,7 +483,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     openwork_msg = f"* ${amount_open_work} more funded OSS Work available on the " \
                    f"[Gitcoin Issue Explorer](https://gitcoin.co/explorer)"
     help_msg = "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
-        f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+        f"<a href='https://chat.gitcoin.co/'>Gitcoin Chat</a>"
     claim_msg = f"* If you want to claim the bounty you can do so " \
                 f"[here]({absolute_url})"
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
@@ -763,7 +714,7 @@ def maybe_market_tip_to_github(tip):
         addon_msg = f"\n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
                     f"https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
                     f"<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
-                    f"Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+                    f"Fund a PR</a>\n * No Email? Get help on the <a href='https://chat.gitcoin.co/'>Gitcoin Chat</a>"
         msg += redeem_instructions + addon_msg
     else:
         msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has " \

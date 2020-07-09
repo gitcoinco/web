@@ -25,8 +25,18 @@ class Command(BaseCommand):
 
     help = 'uploads latest search results into elasticsearch'
 
+    def add_arguments(self, parser):
+        parser.add_argument('sync_type', type=str, choices=['create', 'update'], help='ethereum network to use')
+
     def handle(self, *args, **options):
-        then = timezone.now() - timezone.timedelta(hours=1)
-        for sr in SearchResult.objects.filter(modified_on__gt=then):
-            print(sr.pk)
+        sync_type = options['sync_type']
+
+        if sync_type == 'create':
+            for sr in SearchResult.objects.all():
+                print(sr.pk)
             sr.put_on_elasticsearch()
+        elif sync_type == 'update':
+            then = timezone.now() - timezone.timedelta(hours=1)
+            for sr in SearchResult.objects.filter(modified_on__gt=then):
+                print(sr.pk)
+                sr.put_on_elasticsearch()

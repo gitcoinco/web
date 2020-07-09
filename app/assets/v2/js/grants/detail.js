@@ -3,7 +3,6 @@ const editableFields = [
   '#form--input__reference-url',
   '#contract_owner_address',
   '#grant-members',
-  '#amount_goal',
   '#grant-categories'
 ];
 
@@ -50,6 +49,13 @@ $(document).ready(function() {
     $('#backgrants').html('<i class="fas fa-chevron-left mr-2"></i> Back to ' + lgt);
   }
 
+  var algi = localStorage.getItem('last_all_grants_index');
+  var algt = localStorage.getItem('last_all_grants_title');
+
+  if (algi) {
+    $('#cart_backgrants').attr('href', algi);
+    $('#cart_backgrants').html('<i class="fas fa-chevron-left mr-2"></i> Back to ' + algt);
+  }
 
   setInterval (() => {
     notifyOwnerAddressMismatch(
@@ -117,7 +123,6 @@ $(document).ready(function() {
     $('#edit-details').addClass('hidden');
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
-    $('#edit-amount_goal').removeClass('hidden');
     $('.grant__progress').addClass('hidden');
 
     $('#section-nav-description .ql-toolbar').css('display', 'inherit');
@@ -134,7 +139,6 @@ $(document).ready(function() {
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
-    $('#edit-amount_goal').addClass('hidden');
     $('.grant__progress').removeClass('hidden');
 
     $('#section-nav-description .ql-toolbar').css('display', 'none');
@@ -142,14 +146,12 @@ $(document).ready(function() {
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
-    let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
     let edit_categories = $('#grant-categories').val();
 
     let data = {
       'edit-title': edit_title,
       'edit-reference_url': edit_reference_url,
-      'edit-amount_goal': edit_amount_goal,
       'edit-grant_members[]': edit_grant_members,
       'edit-categories[]': edit_categories
     };
@@ -206,8 +208,7 @@ $(document).ready(function() {
         deployedSubscription.methods.endContract()
           .send({
             from: accounts[0],
-            gas: 3000000,
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gas: 3000000
           }).on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             const linkURL = get_etherscan_url(transactionHash);

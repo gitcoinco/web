@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="{% static "v2/css/lib/daterangepicker.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/lib/highlight_github.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/user_popover.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
+    {% include 'shared/fbpixel.html' %}
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -204,7 +204,7 @@
 
                       <div class="card m-3 p-1">
                         {% for profile in project.profiles.all %}
-                          {% if profile_id == profile.id %}
+                          {% if profile_id == profile.id and project.status == '' %}
                             <button onclick="projectModal({{project.bounty.id}},{{project.id}});" class="position-absolute btn btn-gc-green btn-sm m-2">edit</button>
                           {% endif %}
                         {% endfor %}
@@ -231,6 +231,13 @@
                     </div>
                   {% endfor %}
                 </div>
+              </div>
+            {% endif %}
+            {% if event_tag and user.is_authenticated %}
+              <div class="col-12">
+                <p class="my-3">
+                  <button onclick="projectModal(document.result.pk)" class="btn btn-sm btn-gc-green">Add project</button> <small>(manually add your project if you already expressed interest on this prize or want to have more than one project)</small>
+                </p>
               </div>
             {% endif %}
             <div class="col-12">
@@ -278,13 +285,13 @@
       [[if activity_type != 'unknown_event']]
         <div class="row box activity">
           <div class="col-12 col-md-1">
-            <div class="activity-avatar bounty_row user-popover" data-username="[[>name]]" data-html="true" data-toggle="popover" data-container="body">
+            <div class="activity-avatar bounty_row user-popover" data-usercard="[[>name]]" data-html="true" data-toggle="popover" data-container="body">
               <img class="avatar" src="/dynamic/avatar/[[>name]]" alt="Avatar"/>
             </div>
           </div>
           <div class="col-12 col-md-2">
             <div class="activity-name text-center text-md-left">
-              <a href="/profile/[[>name]]" target="_blank" data-username="[[>name]]" data-html="true" data-toggle="popover" data-container="body">
+              <a href="/profile/[[>name]]" target="_blank" data-usercard="[[>name]]" data-html="true" data-toggle="popover" data-container="body">
                 [[>name]]
               </a>
             </div>
@@ -528,27 +535,11 @@
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/clipboard.js" %}"></script>
-  <script>
-    $('[data-toggle="popover"]').popover()
-    $('body').on('mouseover', '[data-username]', function(e) {
-      openContributorPopOver($(this).data('username'), $(this));
-    });
-
-    $('body').on('mouseout', '[data-username]', function(e) {
-      $(this).popover('dispose');
-    });
-
-    $('body').on('show.bs.popover', '[data-username]', function () {
-      $('body [data-username]').not(this).popover('hide');
-    })
-
-  </script>
   <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
-  <script src="{% static "v2/js/user_popover.js" %}"></script>
   <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>

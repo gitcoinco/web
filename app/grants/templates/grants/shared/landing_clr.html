@@ -1,17 +1,14 @@
 {% load humanize static i18n %}
           {% if current_partners or past_partners %}
-            <div class="row grant-partners text-white my-5">
+            <div class="row grant-partners text-white my-3 pb-3">
               <div class="col-12 col-md-12">
-                <a class="btn btn-gc-blue font-body font-weight-semibold mt-4 float-right" href="mailto:founders@gitcoin.co">
-                  {% trans 'Become a Matching Partner' %}
-                </a>
                 {% if current_partners %}
                   <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
                     {{ type }} GRANTS CLR MATCHING ROUND {{clr_round}}
                   </h2>
                 {% else %}
                   <h2 class="text-uppercase font-weight-semibold font-bigger-3 pt-4 mt-2 px-4">
-                    GRANTS CLR {{ clr_round|add:"1" }} ( COMING SOON )
+                    GRANTS CLR {{ clr_round|add:"1" }}
                   </h2>
                 {% endif %}
               </div>
@@ -33,7 +30,7 @@
                   {% endif %}
                   {% if past_partners %}
                     <li class="nav-item font-caption position-relative" style="top: 1px;">
-                      <a class="nav-link nav-line mx-0 pb-1" id="pastpartners-tab" data-toggle="tab"
+                      <a class="nav-link nav-line mx-0 pb-1 pl-4" id="pastpartners-tab" data-toggle="tab"
                         href="#pastpartners" role="tab" aria-controls="pastpartners" class="text-white"
                         aria-selected="false"
                       >
@@ -43,49 +40,58 @@
                   {% endif %}
                 </ul>
 
-                <div class="tab-content px-4">
+                <div class="tab-content px-2">
                   {% if current_partners %}
                     <div class="tab-pane fade show active" id="currentpartners" role="tabpanel" aria-labelledby="currentpartners-tab">
                       {% for current_partner in current_partners %}
-                        <div class="text-center px-3" style="display: inline-block; padding: 10px;">
+                        <div class="partner-details-container text-center px-2">
                           <a href="/profile/{{current_partner.profile.handle}}">
                             <img src="/dynamic/avatar/{{current_partner.profile.handle}}">
                           </a>
-                          <p class="font-body mt-2 mb-1">
-                            <a class="text-white" href="/profile/{{current_partner.profile.handle}}">
-                              @{{current_partner.profile.handle}}
-                            </a>
-                          </p>
-                          <p class="font-caption font-weight-semibold">
-                            ${{current_partner.amount|floatformat|intcomma}}
-                          </p>
+                          <div class="partner-details ml-1 font-smaller-3">
+                            <span class="mt-2 mb-1">
+                              <a class="text-white" href="/profile/{{current_partner.profile.handle}}">
+                                @{{current_partner.profile.handle}}
+                              </a>
+                            </span>
+                            <div class="partner-amount font-caption font-weight-semibold">
+                              ${{current_partner.amount|floatformat|intcomma}}
+                            </div>
+                          </div>
                         </div>
                       {% endfor %}
                     </div>
                   {% endif %}
 
                   {% if past_partners %}
-                    <div class="tab-pane fade {% if not current_partners %}show active{% endif %}" id="pastpartners"
+                    <div class="tab-pane fade show active" id="pastpartners"
                       role="tabpanel" aria-labelledby="pastpartners-tab"
                     >
                       {% for past_partner in past_partners %}
-                        <div class="text-center px-3" style="display: inline-block; padding: 10px;">
+                        <div class="partner-details-container text-center px-2">
                           <a class="text-white" href="/profile/{{past_partner.profile.handle}}">
                             <img src="/dynamic/avatar/{{past_partner.profile.handle}}">
                           </a>
-                          <p class="font-body mt-2 mb-1">
-                            <a class="text-white" href="/profile/{{current_partner.profile.handle}}">
-                              @{{past_partner.profile.handle}}
-                            </a>
-                          </p>
-                          <p class="font-caption font-weight-semibold">
-                            ${{past_partner.amount|floatformat|intcomma}}
-                          </p>
+                          <div class="partner-details ml-1 font-smaller-3">
+                            <span class="mt-2 mb-1">
+                              <a class="text-white" href="/profile/{{past_partner.profile.handle}}">
+                                @{{past_partner.profile.handle}}
+                              </a>
+                            </span>
+                            <div class="partner-amount font-caption font-weight-semibold">
+                              ${{past_partner.amount|floatformat|intcomma}}
+                            </div>
+                          </div>
                         </div>
                       {% endfor %}
                     </div>
-                  {% endif %}
+                    {% endif %}
+                    <div class="tab-pane fade show active ml-3" role="tabpanel">
+                      <a class="btn btn-gc-blue font-body font-weight-semibold" href="mailto:founders@gitcoin.co">
+                        {% trans 'Become a Matching Partner' %}
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          {% endif %}
+            {% endif %}
