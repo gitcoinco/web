@@ -2753,6 +2753,10 @@ class Profile(SuperModel):
         help_text='Is this profile an org?',
         db_index=True,
     )
+    is_tribe = models.BooleanField(
+        default=False,
+        help_text='Is this profile a Tribe (only applies to orgs)?',
+    )
 
     average_rating = models.DecimalField(default=0, decimal_places=2, max_digits=50, help_text='avg feedback from those who theyve done work with')
     follower_count = models.IntegerField(default=0, db_index=True, help_text='how many users follow them')
@@ -4010,11 +4014,7 @@ class Profile(SuperModel):
             profiles = [org_name(url) for url in github_urls]
             profiles = [ele for ele in profiles if ele]
         else:
-            profiles = []
-            for bounty in bounties:
-                for bf in bounty.fulfillments.filter(accepted=True):
-                    if bf.fulfiller_github_username:
-                        profiles.append(bf.fulfiller_github_username)
+            profiles = self.as_dict.get('orgs_bounties_works_with', [])
 
         profiles_dict = {profile: 0 for profile in profiles}
         for profile in profiles:
@@ -4140,11 +4140,19 @@ class Profile(SuperModel):
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
+        org_works_with = []
+        if self.is_org:
+            org_bounties = self.get_orgs_bounties(network='mainnet')
+            for bounty in org_bounties:
+                for bf in bounty.fulfillments.filter(accepted=True):
+                    if bf.fulfiller_github_username:
+                        org_works_with.append(bf.fulfiller_github_username)
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
             'newsletter_headline': ('Be the first to know about new funded issues.'),
             'card_title': f'@{self.handle} | Gitcoin',
+            'org_works_with': org_works_with,
             'card_desc': desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'count_bounties_completed': total_fulfilled,
