@@ -4680,6 +4680,7 @@ class HackathonEvent(SuperModel):
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
+    showcase = JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):
         """String representation for HackathonEvent.

@@ -3646,6 +3646,9 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 3
     elif panel == "participants":
         active_tab = 4
+    elif panel == "showcase":
+        active_tab = 5
+
     filter = ''
     if request.GET.get('filter'):
         filter = f':{request.GET.get("filter")}'
@@ -5519,3 +5522,16 @@ def validate_verification(request):
         'success': False,
         'msg': 'No verification process associated'
     }, status=401)
+
+
+@staff_member_required
+def showcase(request, hackathon):
+    hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+
+    showcase = json.loads(request.body)
+    hackathon_event.showcase = showcase
+    hackathon_event.save()
+
+    return JsonResponse({
+        'success': True,
+    })
