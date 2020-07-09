@@ -2839,7 +2839,7 @@ def profile(request, handle, tab=None):
     else:
         context['is_on_tribe'] = False
 
-    if profile.is_org and profile.handle.lower() in ['gitcoinco']:
+    if profile.is_org and profile.is_tribe:
 
         active_tab = 0
         if tab == "townsquare":
@@ -2858,10 +2858,10 @@ def profile(request, handle, tab=None):
         try:
             context['tags'] = get_tags(request)
             network = get_default_network()
-            orgs_bounties = profile.get_orgs_bounties(network=network)
+            orgs_bounties = profile.get_orgs_bounties(network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
             context['sum_eth_on_repos'] = profile.get_eth_sum(bounties=orgs_bounties)
-            context['works_with_org'] = profile.get_who_works_with(work_type='org', bounties=orgs_bounties)
+            context['works_with_org'] = profile.as_dict.get('works_with_org', [])
             context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
             what = f'tribe:{profile.handle}'
             try:
@@ -2879,6 +2879,7 @@ def profile(request, handle, tab=None):
 
             return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
         except Exception as e:
+            raise e # raise so that sentry konws about it and we fix it
             logger.info(str(e))
 
 

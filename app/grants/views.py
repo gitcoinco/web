@@ -382,7 +382,7 @@ def grants_by_grant_type(request, grant_type):
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Community', 'keyword': 'media', 'count': media_grants_count},
 #        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
-#        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
+        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
         {'label': 'Crypto for Black Lives', 'keyword': 'change', 'count': change_count},
 
     ]
