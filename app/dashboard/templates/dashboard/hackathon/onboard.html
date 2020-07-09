@@ -251,11 +251,11 @@
           </div>
           <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
               <b class="counter">{% trans "Check out the Prizes" %}</b>
-              {% blocktrans %}
+
                 <p class="">
-                  Visit the <a target="_blank" href="{{ hackathon_url }}#bounties">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
+                  Visit the <a target="_blank" href="{% url 'hackathon' hackathon.slug %}">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
                 </p>
-              {% endblocktrans %}
+
           </div>
         </div>
         <div class="row px-5 my-5">

@@ -37,9 +37,12 @@ class Command(BaseCommand):
 
         parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health', 'change', 'matic'])
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
+        parser.add_argument(
+            '-force', '--force', action='store_true', dest='force', default=False, help='Force to run the CLR calcs even if the round is closed'
+        )
 
     def handle(self, *args, **options):
-        if not clr_active:
+        if not clr_active and not options['force']:
             print('CLR round is not active according to grants.views.clr_active, so cowardly refusing to spend the CPU cycles + exiting instead')
             return
 

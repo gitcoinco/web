@@ -181,7 +181,7 @@ $(document).ready(function() {
   // notifications of new activities
   var ping_activity_notifier = (function() {
     var plural = document.buffered_rows.length == 1 ? 'y' : 'ies';
-    var html = '<div id=new_activity_notifier>' + document.buffered_rows.length + ' New Activit' + plural + ' - Click to View</div>';
+    var html = '<div id="new_activity_notifier">' + document.buffered_rows.length + ' New Activit' + plural + ' - Click to View</div>';
 
     if ($('#new_activity_notifier').length) {
       $('#new_activity_notifier').html(html);

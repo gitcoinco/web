@@ -35,7 +35,8 @@ Vue.mixin({
       const getIssue = fetchData(apiUrldetails, 'GET');
 
       $.when(getIssue).then((response) => {
-        vm.orgSelected = ghIssueUrl.pathname.split('/')[1];
+        vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
+        // vm.orgSelected = vm.filterOrgSelected(ghIssueUrl.pathname.split('/')[1]);
         vm.form.issueDetails = response;
         vm.$set(vm.errors, 'issueDetails', undefined);
       }).catch((err) => {
@@ -148,8 +149,10 @@ Vue.mixin({
         case '102': // zilliqa
         case '42220': // celo mainnet
         case '44786': // celo alfajores tesnet
-        case '717171': // other
           type = 'qr';
+          break;
+        case '717171': // other
+          type = 'manual';
           break;
         default:
           type = 'web3_modal';
@@ -268,6 +271,15 @@ Vue.mixin({
     }
   },
   computed: {
+    filterOrgSelected: function() {
+      if (!this.orgSelected) {
+        return;
+      }
+
+      return this.sponsors.filter((sponsor) => {
+        return sponsor.handle.toLowerCase() === this.orgSelected.toLowerCase();
+      });
+    },
     sortByPriority: function() {
       return this.tokens.sort(function(a, b) {
         return b.priority - a.priority;
@@ -329,7 +341,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         errors: {},
         sponsors: document.sponsors,
         orgSelected: '',
-        selected: null,
+        // selected: null,
         coinValue: null,
         form: {
           eventTag: document.hackathon.name,

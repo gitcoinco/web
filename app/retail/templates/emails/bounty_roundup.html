@@ -75,26 +75,6 @@
 
   <div class='intro text-left'>
     {{ intro|safe }}
-    {% if sponsor %}
-    </div>
-  </div>
-      <div class="full-width text-center" style="padding:20px 0; background-color: #f2f6f9; text-align: center; margin: 0 auto;">
-        <div class="sponsor-text" style="margin-left: auto; margin-right: auto;">
-        <p style=" color: #000000;">Sponsored by <a href="{{ sponsor.link }}" style=" color: #3E00FF;">{{ sponsor.name }}</a></p>
-        <a href="{{ sponsor.link }}" style="text-align: center; color: #000000; font-weight: bold; font-size: 16px; display: block; text-decoration: none; line-height: 19px;">{{ sponsor.title }}</a>
-        {% for paragraph in sponsor.body %}
-          <p style="font-size: 14px; text-align: center; line-height: 18px;">{{ paragraph | safe }}</p>
-        {% endfor %}
-        <div style="margin-bottom: 1em; margin-top: 2em;">
-          <a class="button" style="color: #FFFFFF;" href="{{ sponsor.link }}">{{ sponsor.cta }}</a>
-        </div>
-        <small style="text-align: center; color: rgba(0,0,0,0.4); font-size: 10px; line-height: 12px;">Interested in sponsoring The Gitcoin Weekly?
-          <a href="https://share.hsforms.com/1--0ESFkIQ1m-y8wCW-3Q_g3bjxf" style="color: rgba(0,0,0,0.4); font-size: 10px; line-height: 12px;">Let us know</a>
-        </small>
-      </div>
-      </div>
-    {% endif %}
-
   </div>
 
   <div class="primary-content text-center" style="padding-top: 0">
