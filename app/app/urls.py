@@ -192,6 +192,8 @@ urlpatterns = [
         dashboard.views.funder_dashboard_bounty_info,
         name='funder_dashboard_bounty_info'
     ),
+    re_path(r'^sms/request/?$', dashboard.views.send_verification, name='request_verification'),
+    re_path(r'^sms/validate/?$', dashboard.views.validate_verification, name='request_verification'),
 
     # quests
     re_path(r'^quests/?$', quests.views.index, name='quests_index'),
@@ -212,6 +214,8 @@ urlpatterns = [
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
     # Hackathons / special events
+    path('hackathon/<str:hackathon>/new/', dashboard.views.new_hackathon_bounty, name='new_hackathon_bounty'),
+    path('hackathon/<str:hackathon>/new', dashboard.views.new_hackathon_bounty, name='new_hackathon_bounty2'),
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/<str:hackathon>', dashboard.views.hackathon, name='hackathon2'),
     path('hackathon/<str:hackathon>/onboard/', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
@@ -374,6 +378,7 @@ urlpatterns = [
     re_path(r'^dynamic/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^dynamic/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
     path('dynamic/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
+    url('^api/v1/tokens', retail.views.json_tokens, name='json_tokens'),
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
@@ -487,7 +492,13 @@ urlpatterns = [
         marketing.views.new_bounty_daily_preview,
         name='admin_new_bounty_daily'
     ),
+    path('_administration/email/', retail.views.admin_index, name='admin_index_emails'),
     path('_administration/email/grant_cancellation', retail.emails.grant_cancellation, name='admin_grant_cancellation'),
+    path(
+        '_administration/email/request_amount_email',
+        retail.emails.request_amount_email,
+        name='admin_request_amount_email'
+    ),
     path(
         '_administration/email/featured_funded_bounty',
         retail.emails.featured_funded_bounty,
@@ -537,6 +548,8 @@ urlpatterns = [
     path('_administration/email/mention', retail.emails.mention, name='mention_email'),
     path('_administration/email/wallpost', retail.emails.wallpost, name='wallpost_email'),
     path('_administration/email/grant_update', retail.emails.grant_update, name='grant_update_email'),
+    path('_administration/email/grant_recontribute', retail.emails.grant_recontribute, name='grant_recontribute_email'),
+    path('_administration/email/grant_txn_failed', retail.emails.grant_txn_failed, name='grant_txn_failed_email'),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,
@@ -677,13 +690,12 @@ urlpatterns = [
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
+    url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
+    url(r'^api/v0.1/hackathon_project/set_winner/', dashboard.views.set_project_winner, name='project_winner'),
 
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
-
-    #projets
-    url(r'^api/v0.1/projects_fetch/', dashboard.views.projects_fetch, name='projects_fetch'),
 
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),

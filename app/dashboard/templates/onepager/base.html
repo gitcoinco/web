@@ -90,6 +90,7 @@
     {% block 'scripts' %}{% endblock %}
 
     <script>
+      needWalletConnection();
       if ('addEventListener' in window) {
         window.addEventListener('load', function () {
           document.body.className = document.body.className.replace(/\bis-loading\b/, '');
@@ -106,12 +107,7 @@
         protocol: "{{ ipfs_config.protocol }}",
         root: "{{ ipfs_config.root }}"
       };
-
-      window.addEventListener('load', function() {
-        setInterval(listen_for_web3_changes, 5000);
-        listen_for_web3_changes();
-      });
     </script>
-    <script src="{% static "v2/js/metamask-approval.js" %}"></script>
+    <script src="{% static "cookielaw/js/cl.js" %}"></script>
   </body>
 </html>

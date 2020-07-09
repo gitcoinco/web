@@ -29,8 +29,8 @@ from .models import (
     Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
-    ObjectView, Option, Poll, PortfolioItem, Profile, ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
-    TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification, ProfileView, Question,
+    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel,
 )
 
 
@@ -42,7 +42,7 @@ class BountyEventAdmin(admin.ModelAdmin):
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
     readonly_fields = ['fulfiller_github_username']
-    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url']
+    list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url', 'payout_status']
     search_fields = [
         'fulfiller_address', 'fulfiller_metadata', 'fulfiller_github_url'
     ]
@@ -93,7 +93,12 @@ class EarningAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['from_profile', 'to_profile', 'org_profile']
     search_fields = ['from_profile__handle', 'to_profile__handle']
+    readonly_fields = [ 'source_link']
 
+    def source_link(self, instance):
+        url = instance.source.admin_url
+        html = f"<a href={url}>{instance.source}</a>"
+        return format_html(html)
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -168,12 +173,15 @@ def recalculate_profile(modeladmin, request, queryset):
 recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['handle', 'sybil_score', 'user_sybil_score', 'created_on']
     raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
     ordering = ['-id']
     search_fields = ['email', 'data']
-    list_display = ['handle', 'created_on']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
+
+    def user_sybil_score(self, obj):
+        return f"{obj.sybil_score} ({obj.sybil_score_str})"
 
     def active_bounties_list(self, instance):
         interests = instance.active_bounties
@@ -194,6 +202,24 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_unsquelch_sybil" in request.POST:
+            from townsquare.models import SquelchProfile
+            obj.squelches.delete()
+            self.message_user(request, "Unsquelch done")
+            return redirect(obj.admin_url)
+        if "_squelch_sybil" in request.POST:
+            from townsquare.models import SquelchProfile
+            SquelchProfile.objects.create(
+                profile=obj,
+                comments=f"squelched by {request.user.username}"
+                )
+            self.message_user(request, "Squelch done")
+            return redirect(obj.admin_url)
+        if "_recalc_sybil" in request.POST:
+            Investigation.investigate_sybil(obj)
+            obj.save()
+            self.message_user(request, "Recalc done")
+            return redirect(obj.admin_url)
         if "_recalc_flontend" in request.POST:
             obj.calculate_all()
             obj.save()
@@ -218,7 +244,7 @@ class TipAdmin(admin.ModelAdmin):
     list_display = ['pk', 'created_on','sender_profile', 'recipient_profile', 'amount', 'tokenName', 'txid', 'receive_txid']
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
-    readonly_fields = ['resend', 'claim']
+    readonly_fields = ['resend', 'claim', 'activity_link']
     search_fields = [
         'tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url',
         'emails', 'from_address', 'receive_address', 'ip', 'metadata', 'txid', 'receive_txid'
@@ -242,6 +268,19 @@ class TipAdmin(admin.ModelAdmin):
                 html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
         except Exception:
             html = 'n/a'
+        return html
+
+    def activity_link(self, instance):
+        htmls = []
+        for activity in instance.activities.all():
+            html = (f"<a href={activity.url}>{activity}</a>")
+            htmls.append(html)
+        if 'activity:' in instance.comments_priv:
+            _id = int(instance.comments_priv.split(':')[1])
+            activity = Activity.objects.get(pk=_id)
+            html = (f"<a href={activity.url}>TIPPED_POST: {activity}</a>")
+            htmls.append(html)
+        html = format_html("<BR>".join(htmls))
         return html
 
     def response_change(self, request, obj):
@@ -396,9 +435,19 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
 
 
 class HackathonProjectAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon', 'usernames', 'status', 'sponsor']
+    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'usernames', 'status', 'sponsor']
     raw_id_fields = ['profiles', 'bounty', 'hackathon']
     search_fields = ['name', 'summary', 'status']
+
+    def hackathon_link(self, instance):
+        """Returns a formatted HTML <a> node.
+
+        Returns:
+            str: A formatted HTML <a> node.
+        """
+
+        url = f'/hackathon/{instance.hackathon.slug}'
+        return mark_safe(f'<a href="{url}">{instance.hackathon}</a>')
 
     def img(self, instance):
         """Returns a formatted HTML img node or 'n/a' if the HackathonProject has no logo.
@@ -435,7 +484,7 @@ class FundRequestAdmin(admin.ModelAdmin):
 
 
 class QuestionInline(SortableInlineAdminMixin, admin.TabularInline):
-    fields = ['id', 'poll', 'question_type', 'text']
+    fields = ['id', 'poll', 'question_type', 'text', 'hook']
     readonly_fields = ['id']
     raw_id_fields = ['poll']
     show_change_link = True
@@ -460,10 +509,18 @@ class PollsAdmin(admin.ModelAdmin):
 
 
 class QuestionsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'poll', 'question_type', 'text']
-    raw_id_fields = ['poll']
+    list_display = ['id', 'poll', 'question_type', 'text', 'img']
+    raw_id_fields = ['poll', 'header']
     search_fields = ['question_type', 'text']
     inlines = [OptionsInline]
+
+    def img(self, instance):
+        header = instance.header
+        if not header or not header.image:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(header.image.url))
+        return img_html
+
 
 
 class OptionsAdmin(admin.ModelAdmin):
@@ -476,6 +533,23 @@ class AnswersAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'question', 'open_response', 'choice', 'checked', 'hackathon']
     raw_id_fields = ['user', 'question', 'choice', 'hackathon']
     unique_together = ('user', 'question', 'choice')
+
+
+class PollMediaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'img']
+
+    def img(self, instance):
+        image = instance.image
+        if not image:
+            return 'n/a'
+        img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(image.url))
+        return img_html
+
+      
+class ProfileVerificationAdmin(admin.ModelAdmin):
+    list_display = ['id', 'profile', 'success', 'validation_passed', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
+                    'phone_number', 'carrier_error_code']
+    raw_id_fields = ['profile']
 
 
 admin.site.register(BountyEvent, BountyEventAdmin)
@@ -515,3 +589,5 @@ admin.site.register(Question, QuestionsAdmin)
 admin.site.register(ObjectView, ObjectViewAdmin)
 admin.site.register(Option, OptionsAdmin)
 admin.site.register(Answer, AnswersAdmin)
+admin.site.register(PollMedia, PollMediaAdmin)
+admin.site.register(ProfileVerification, ProfileVerificationAdmin)

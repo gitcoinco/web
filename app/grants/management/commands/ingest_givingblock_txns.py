@@ -14,27 +14,34 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         import csv
-        with open('../scripts/input/givingblock_txns.csv', newline='', encoding="utf-8") as csvfile:
+
+        prices = {'BTC': 9700.0,
+                  'ETH': 240.0,
+                  'ZEC': 52.0,
+                  'LTC': 46.0,
+                  'BCH': 253.0}
+
+        anonprofiles = Profile.objects.filter(handle__startswith="anonusergitcoin").all()
+
+        with open('/code/scripts/input/givingblock_txns_nybw.csv', newline='', encoding="utf-8") as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='"')
             for row in reader:
 
                 #ingest data
                 date = row[0]
-                grant = row[1]
-                _ = row[2]
+                _ = row[1] # time not important
+                grant_name = row[2]
                 currency = row[3]
-                amount = row[4]
+                amount = float(row[4])
                 txid = row[5]
-                user = row[6]
-                usd_val = row[7]
+                profile = anonprofiles[reader.line_num - 1]
+                usd_val = amount * float(prices[currency])
 
                 # convert formats
                 try:
-                    date = date.split(" ")[0]
                     date = timezone.datetime.strptime(date, '%m/%d/%Y')
-                    grant = grant.replace('®', '')
-                    grant = Grant.objects.get(title__icontains=grant.strip())
-                    profile = Profile.objects.get(handle__iexact=user)
+                    grant_name = grant_name.replace('®', '')
+                    grant = Grant.objects.get(title__icontains=grant_name.strip())
 
                     # create objects
                     validator_comment = ",".join(row)

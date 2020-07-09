@@ -279,8 +279,16 @@ class Bounty(SuperModel):
     WORK_IN_PROGRESS_STATUSES = ['reserved', 'open', 'started', 'submitted']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
+    WEB3_TYPES = (
+        ('legacy_gitcoin', 'Legacy Bounty'),
+        ('bounties_network', 'Bounties Network'),
+        ('qr', 'QR Code'),
+        ('web3_modal', 'Web3 Modal'),
+        ('manual', 'Manual')
+    )
+
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
-    web3_type = models.CharField(max_length=50, default='bounties_network')
+    web3_type = models.CharField(max_length=50, choices=WEB3_TYPES, default='bounties_network')
     title = models.CharField(max_length=1000)
     web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
@@ -1337,7 +1345,9 @@ class BountyFulfillment(SuperModel):
     PAYOUT_TYPE = [
         ('bounties_network', 'bounties_network'),
         ('qr', 'qr'),
-        ('fiat', 'fiat')
+        ('fiat', 'fiat'),
+        ('web3_modal', 'web3_modal'),
+        ('manual', 'manual')
     ]
 
     TENANT = [
@@ -1345,7 +1355,8 @@ class BountyFulfillment(SuperModel):
         ('ETC', 'ETC'),
         ('ZIL', 'ZIL'),
         ('CELO', 'CELO'),
-        ('PYPL', 'PYPL')
+        ('PYPL', 'PYPL'),
+        ('OTHERS', 'OTHERS')
     ]
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE, help_text="the bounty against which the fulfillment is made")
@@ -1458,16 +1469,16 @@ class SendCryptoAssetQuerySet(models.QuerySet):
         return self.filter(tx_status='success').exclude(txid='')
 
     def not_submitted(self):
-        """Filter results down to successful sends only."""
+        """Filter results down to not submitted results only."""
         return self.filter(tx_status='not_subed')
 
     def send_pending(self):
         """Filter results down to pending sends only."""
-        return self.filter(tx_status='pending').exclude(txid='')
+        return self.filter(Q(tx_status='pending') | Q(txid='pending_celery')).exclude(txid='')
 
     def send_happy_path(self):
         """Filter results down to pending/success sends only."""
-        return self.filter(tx_status__in=['pending', 'success']).exclude(txid='')
+        return self.filter(Q(tx_status__in=['pending', 'success']) | Q(txid='pending_celery')).exclude(txid='')
 
     def send_fail(self):
         """Filter results down to failed sends only."""
@@ -1670,9 +1681,21 @@ class SendCryptoAsset(SuperModel):
         """ Updates the tx status according to what infura says about the tx
 
         """
-        from dashboard.utils import get_tx_status
-        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
-        return bool(self.tx_status)
+        try:
+            from dashboard.utils import get_tx_status
+            from economy.tx import getReplacedTX
+            self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+
+            #handle scenario in which a txn has been replaced
+            if self.tx_status in ['pending', 'dropped', 'unknown', '']:
+                new_tx = getReplacedTX(self.txid)
+                if new_tx:
+                    self.txid = new_tx
+
+            return bool(self.tx_status)
+        except:
+            self.tx_status = 'error'
+            return False
 
     def update_receive_tx_status(self):
         """ Updates the receive tx status according to what infura says about the receive tx
@@ -1806,6 +1829,10 @@ class FundRequest(SuperModel):
     @property
     def url(self):
         return settings.BASE_URL + f'tip?request={self.pk}'
+
+    @property
+    def other_earnings(self):
+        return Earning.objects.filter(Q(from_profile=self.requester, to_profile=self.profile) | Q(from_profile=self.profile, to_profile=self.requester)).filter(network='mainnet').order_by('-created_on')
 
     def get_absolute_url(self):
         return self.url
@@ -2156,6 +2183,7 @@ class Activity(SuperModel):
         ('consolidated_leaderboard_rank', 'Consolidated Leaderboard Rank'),
         ('consolidated_mini_clr_payout', 'Consolidated CLR Payout'),
         ('hackathon_registration', 'Hackathon Registration'),
+        ('hackathon_new_hacker', 'Hackathon Registration'),
         ('new_hackathon_project', 'New Hackathon Project'),
         ('flagged_grant', 'Flagged Grant'),
     ]
@@ -2251,7 +2279,7 @@ class Activity(SuperModel):
         if not self.metadata.get('video'):
             return 0
         try:
-            from app.redis_service import RedisService
+            from app.services import RedisService
             redis = RedisService().redis
             result = redis.get(self.pk)
             if not result:
@@ -2575,6 +2603,8 @@ class HackathonRegistration(SuperModel):
         blank=True
     )
     referer = models.URLField(null=True, blank=True, help_text='Url comes from')
+    looking_team_members = models.BooleanField(default=False)
+    looking_project = models.BooleanField(default=False)
     registrant = models.ForeignKey(
         'dashboard.Profile',
         related_name='hackathon_registration',
@@ -2641,6 +2671,10 @@ class Profile(SuperModel):
     hide_wallet_address = models.BooleanField(
         default=True,
         help_text='If this option is chosen, we will remove your wallet information all together',
+    )
+    pref_do_not_track = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will not put GA/FB tracking on pages that you browse',
     )
     trust_profile = models.BooleanField(
         default=False,
@@ -2722,21 +2756,57 @@ class Profile(SuperModel):
         help_text='Is this profile an org?',
         db_index=True,
     )
+    is_tribe = models.BooleanField(
+        default=False,
+        help_text='Is this profile a Tribe (only applies to orgs)?',
+    )
 
     average_rating = models.DecimalField(default=0, decimal_places=2, max_digits=50, help_text='avg feedback from those who theyve done work with')
     follower_count = models.IntegerField(default=0, db_index=True, help_text='how many users follow them')
     following_count = models.IntegerField(default=0, db_index=True, help_text='how many users are they following')
     earnings_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user earned crypto with Gitcoin')
     spent_count = models.IntegerField(default=0, db_index=True, help_text='How many times has user spent crypto with Gitcoin')
+    sms_verification = models.BooleanField(default=False, help_text=_('SMS verification process'))
+    validation_attempts = models.PositiveSmallIntegerField(default=0, help_text=_('Number of generated SMS codes to validate account'))
+    last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
+    encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
+    sybil_score = models.IntegerField(default=-1)
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
 
     @property
+    def logins(self):
+        return self.actions.filter(action='Login')
+
+    @property
+    def latest_sybil_investigation(self):
+        try:
+            return self.investigations.filter(key='sybil').first().description
+        except:
+            return ''
+
+
+    @property
     def suggested_bounties(self):
         suggested_bounties = BountyRequest.objects.filter(tribe=self, status='o').order_by('created_on')
 
-        return suggested_bounties if suggested_bounties else []
+    @property
+    def sybil_score_str(self):
+        _map = {
+            -2: 'Error',
+            -1: 'N/A',
+            0: 'Low',
+            1: 'Med-Low',
+            2: 'Med',
+            3: 'Med-High',
+            4: 'High',
+            5: 'Very High',
+        }
+        score = self.sybil_score
+        if score > 5:
+            return f'VeryX{score} High'
+        return _map.get(score, "Unknown") 
 
     @property
     def chat_num_unread_msgs(self):
@@ -2754,12 +2824,12 @@ class Profile(SuperModel):
         chat_driver = Driver(driver_opts)
         chat_driver.login()
 
-        response = chat_driver.client.make_request('get', 
-            '/users/me/teams/unread', 
-            options=None, 
-            params=None, 
-            data=None, 
-            files=None, 
+        response = chat_driver.client.make_request('get',
+            '/users/me/teams/unread',
+            options=None,
+            params=None,
+            data=None,
+            files=None,
             basepath=None)
         total_unread = sum(ele.get('msg_count', 0) for ele in response.json())
         return total_unread
@@ -2878,6 +2948,11 @@ class Profile(SuperModel):
         return Token.objects.filter(Q(name__icontains=self.name)|Q(name__icontains=self.handle)).filter(cloned_from_id=F('token_id')).visible()
 
     @property
+    def kudos_authored(self):
+        from kudos.models import Token
+        return Token.objects.filter(artist=self.handle, num_clones_allowed__gt=1, hidden=False)
+
+    @property
     def get_my_kudos(self):
         from kudos.models import KudosTransfer
         kt_owner_address = KudosTransfer.objects.filter(
@@ -2973,7 +3048,7 @@ class Profile(SuperModel):
         if not self.chat_id:
             return 'offline'
         try:
-            from app.redis_service import RedisService
+            from app.services import RedisService
             redis = RedisService().redis
             status = redis.get(f"chat:{self.chat_id}")
             if not status:
@@ -3166,7 +3241,7 @@ class Profile(SuperModel):
 
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"transaction{plural} on Gitcoin"
-               
+
 
     @property
     def desc(self):
@@ -3942,11 +4017,7 @@ class Profile(SuperModel):
             profiles = [org_name(url) for url in github_urls]
             profiles = [ele for ele in profiles if ele]
         else:
-            profiles = []
-            for bounty in bounties:
-                for bf in bounty.fulfillments.filter(accepted=True):
-                    if bf.fulfiller_github_username:
-                        profiles.append(bf.fulfiller_github_username)
+            profiles = self.as_dict.get('orgs_bounties_works_with', [])
 
         profiles_dict = {profile: 0 for profile in profiles}
         for profile in profiles:
@@ -4072,11 +4143,19 @@ class Profile(SuperModel):
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
+        org_works_with = []
+        if self.is_org:
+            org_bounties = self.get_orgs_bounties(network='mainnet')
+            for bounty in org_bounties:
+                for bf in bounty.fulfillments.filter(accepted=True):
+                    if bf.fulfiller_github_username:
+                        org_works_with.append(bf.fulfiller_github_username)
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
             'newsletter_headline': ('Be the first to know about new funded issues.'),
             'card_title': f'@{self.handle} | Gitcoin',
+            'org_works_with': org_works_with,
             'card_desc': desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'count_bounties_completed': total_fulfilled,
@@ -4191,7 +4270,7 @@ class Profile(SuperModel):
     def locations(self):
         from app.utils import get_location_from_ip
         locations = []
-        for login in self.actions.filter(action='Login'):
+        for login in self.actions.filter(action='Login').order_by('-created_on'):
             if login.location_data:
                 locations.append(login.location_data)
             else:
@@ -4258,7 +4337,7 @@ def psave_profile(sender, instance, **kwargs):
                 "visible_to":None,
                 'img_url': instance.avatar_url,
             }
-            )
+        )
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -4583,6 +4662,7 @@ class HackathonEvent(SuperModel):
 
     name = models.CharField(max_length=255)
     slug = models.SlugField(blank=True)
+    short_code = models.CharField(max_length=5, default='', help_text='used in the chat for better channel grouping')
     logo = models.ImageField(blank=True)
     logo_svg = models.FileField(blank=True)
     start_date = models.DateTimeField()
@@ -4751,6 +4831,7 @@ class HackathonProject(SuperModel):
     )
     looking_members = models.BooleanField(default=False)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
+    winner = models.BooleanField(default=False)
     extra = JSONField(default=dict, blank=True, null=True)
 
     class Meta:
@@ -4765,6 +4846,7 @@ class HackathonProject(SuperModel):
 
     def get_absolute_url(self):
         return self.url()
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
@@ -5007,17 +5089,39 @@ class Poll(SuperModel):
     hackathon = models.ManyToManyField(HackathonEvent)
 
 
+class PollMedia(SuperModel):
+    name = models.CharField(max_length=350)
+    image = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        help_text=_('Poll media asset')
+    )
+
+    def __str__(self):
+        return f'{self.id} - {self.name}'
+
 
 class Question(SuperModel):
     TYPE_QUESTIONS = (
+        ('SINGLE_OPTION', 'Single option'),
         ('SINGLE_CHOICE', 'Single Choice'),
         ('MULTIPLE_CHOICE', 'Multiple Choices'),
         ('OPEN', 'Open'),
     )
+
+    TYPE_HOOKS = (
+        ('NO_ACTION', 'No trigger any action'),
+        ('TOWNSQUARE_INTRO', 'Create intro on Townsquare'),
+        ('LOOKING_TEAM_PROJECT', 'Looking for team or project')
+    )
+
+    hook = models.CharField(default='NO_ACTION', choices=TYPE_HOOKS, max_length=50)
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True, blank=True)
     question_type = models.CharField(choices=TYPE_QUESTIONS, max_length=50, blank=False, null=False)
     text = models.CharField(max_length=350, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
+    header = models.ForeignKey(PollMedia, null=True, on_delete=models.SET_NULL)
 
     class Meta(object):
         ordering = ['order']
@@ -5043,6 +5147,49 @@ class Answer(SuperModel):
     hackathon = models.ForeignKey(HackathonEvent, null=True, on_delete=models.CASCADE)
 
 
+@receiver(post_save, sender=Answer, dispatch_uid='hooks_on_question_response')
+def psave_answer(sender, instance, created, **kwargs):
+    if created:
+        if instance.question.hook == 'TOWNSQUARE_INTRO':
+            registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
+                                                                registrant=instance.user.profile).first()
+
+            Activity.objects.create(
+                profile=instance.user.profile,
+                hackathonevent=instance.hackathon,
+                activity_type='hackathon_new_hacker',
+                metadata={
+                    'answer': instance.id,
+                    'intro_text': f'{instance.open_response or ""} #intro',
+                    'looking_members': registration.looking_team_members if registration else False,
+                    'looking_project': registration.looking_project if registration else False,
+                    'hackathon_registration': registration.id if registration else 0
+                }
+            )
+        elif instance.question.hook == 'LOOKING_TEAM_PROJECT':
+            registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
+                                                                registrant=instance.user.profile).first()
+            print(instance)
+            if registration:
+                if instance.choice.text.lower().find('team') != -1:
+                    registration.looking_team_members = True
+
+                if instance.choice.text.lower().find('project') != -1:
+                    registration.looking_project = True
+
+                registration.save()
+
+                activity = Activity.objects.filter(
+                    profile=instance.user.profile,
+                    hackathonevent=instance.hackathon,
+                    activity_type='hackathon_new_hacker').last()
+
+                if activity:
+                    activity.metadata['looking_team_members'] = registration.looking_team_members
+                    activity.metadata['looking_project'] = registration.looking_project
+                    activity.save()
+
+
 class Investigation(SuperModel):
     profile = models.ForeignKey(
         'dashboard.Profile', on_delete=models.CASCADE, related_name='investigations', blank=True
@@ -5055,32 +5202,83 @@ class Investigation(SuperModel):
 
     def investigate_sybil(instance):
         htmls = []
-        userActions = instance.actions.filter(action='Visit')
+        visits = instance.actions.filter(action='Visit')
+        userActions = visits
         from django.db.models import Count
         import time
         from django.contrib.humanize.templatetags.humanize import naturaltime
         ipAddresses = (userActions.values('ip_address').annotate(Count("id")).order_by('-id__count'))
         cities = (userActions.values('location_data__city').annotate(Count("id")).order_by('-id__count'))
+        total_sybil_score = 0
+
+        htmls.append(f'User has visited the site {visits.count()} times')
+        if visits.count() > 25:
+            total_sybil_score -= 2
+            htmls.append('(REDEMPTIONx2)')
+        elif visits.count() > 10:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTION)')
+        elif visits.count() < 1:
+            total_sybil_score += 1
+            htmls.append('(DING)')
+
+
+        if instance.squelches.filter(active=True).exists():
+            htmls.append('USER HAS ACTIVE SQUELCHES')
+            total_sybil_score += 3
+            htmls.append('(DINGx3)')
+
+        if not instance.sms_verification:
+            htmls.append('Not SMS Verified (DING)')
+            total_sybil_score += 1
+        else:
+            htmls.append('SMS Verified')
 
         htmls += [f"<a href=/_administrationdashboard/useraction/?profile={instance.pk}>View Recent User Actions</a><BR>"]
 
         htmls += [ f"Github Created: {instance.github_created_on.strftime('%Y-%m-%d')} ({naturaltime(instance.github_created_on)})<BR>"]
+
+        if instance.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+            htmls.append('New Github (DING)')
+            total_sybil_score += 1
+        if instance.github_created_on > (timezone.now() - timezone.timedelta(days=1)):
+            total_sybil_score += 1
+            htmls.append('VERY New Github (DING)')
+        if instance.created_on > (timezone.now() - timezone.timedelta(days=1)):
+            total_sybil_score += 1
+            htmls.append('New Profile (DING)')
+
         print(f" - preferred payout {time.time()}")
         if instance.preferred_payout_address:
             htmls.append('Preferred Payout Address')
             htmls.append(f' - {instance.preferred_payout_address}')
             other_Profiles = Profile.objects.filter(preferred_payout_address=instance.preferred_payout_address).exclude(pk=instance.pk).values_list('handle', flat=True)
+            if other_Profiles.count() > 0:
+                total_sybil_score += 1
+                htmls.append('Other Profiles with this addr (DING)')
+            if other_Profiles.count() > 3:
+                total_sybil_score += 1
+                htmls.append('Many other Profiles with this addr (DING)')
             url = f'/_administrationdashboard/profile/?preferred_payout_address={instance.preferred_payout_address}'
-            htmls += [f" -- <a href={url}>{len(other_Profiles)} other profiles share this ppa: {', '.join(list(other_Profiles))}</a><BR>"]
+            _other_Profiles = [f'<a href=/{handle}>{handle}</a>' for handle in other_Profiles]
+            htmls += [f" -- <a href={url}>{len(_other_Profiles)} other profiles share this ppa: {', '.join(list(_other_Profiles))}</a><BR>"]
 
         print(f" - ip ({len(ipAddresses)}) {time.time()}")
         htmls.append('IP Addresses')
         htmls.append("<div style='max-height: 300px; overflow-y: scroll'>")
+        ip_flagged = False
         for ip in ipAddresses:
             html = f"- <a href=/_administrationdashboard/useraction/?ip_address={ip['ip_address']}>{ip['ip_address']} ({ip['id__count']} Visits)</a>"
             other_Profiles = UserAction.objects.filter(ip_address=ip['ip_address'], profile__isnull=False).exclude(profile=instance).distinct('profile').values_list('profile__handle', flat=True)
             if len(other_Profiles):
-                html += f"<BR> -- {len(other_Profiles)} other profiles share this IP: {', '.join(list(other_Profiles))}"
+                _other_Profiles = [f'<a href=/{handle}>{handle}</a>' for handle in other_Profiles]
+                html += f"<BR> -- {len(_other_Profiles)} other profiles share this IP: {', '.join(list(_other_Profiles))}"
+            if other_Profiles.count() > 0:
+                if not ip_flagged:
+                    ip_flagged = True
+                    total_sybil_score += 1
+                    htmls.append('Other Profiles with this IP Addr (DING)')
+
             htmls.append(html)
         htmls.append("</div>'")
 
@@ -5099,6 +5297,7 @@ class Investigation(SuperModel):
         for earning in earnings:
             html = f"- <a href={earning.admin_url}>{earning}</a>"
             htmls.append(html)
+            #TODO: if shared with a known sybil, then total_sybil_score += 1
         htmls.append("</div>'")
 
         sent_earnings = instance.sent_earnings.filter(network='mainnet').all()
@@ -5110,6 +5309,8 @@ class Investigation(SuperModel):
             htmls.append(html)
         htmls.append("</div>'")
 
+        htmls += [f"SYBIL_SCORE: {total_sybil_score} "]
+
         print(f" - End {time.time()}")
         htmls = ("<BR>".join(htmls))
         instance.investigations.filter(key='sybil').delete()
@@ -5118,6 +5319,8 @@ class Investigation(SuperModel):
             description=htmls,
             key='sybil',
         )
+
+        instance.sybil_score = total_sybil_score
 
 
 class ObjectView(SuperModel):
@@ -5133,3 +5336,23 @@ class ObjectView(SuperModel):
 
     def __str__(self):
         return f"{self.viewer} => {self.target} on {self.created_on}"
+
+
+class ProfileVerification(SuperModel):
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='verifications')
+    caller_type = models.CharField(max_length=20, null=True, blank=True)
+    carrier_error_code = models.CharField(max_length=10, null=True, blank=True)
+    mobile_network_code = models.CharField(max_length=10, null=True, blank=True)
+    mobile_country_code = models.PositiveSmallIntegerField(default=0, null=True)
+    carrier_name = models.CharField(max_length=100, null=True, blank=True)
+    carrier_type = models.CharField(max_length=20, null=True, blank=True)
+    country_code = models.CharField(max_length=5, null=True, blank=True)
+    phone_number = models.CharField(max_length=150, null=True, blank=True)
+    delivery_method = models.CharField(max_length=255, null=True, blank=True)
+    validation_passed = models.BooleanField(help_text=_('Did the initial validation pass?'), default=False)
+    validation_comment = models.CharField(max_length=255, null=True, blank=True)
+    success = models.BooleanField(help_text=_('Was a successful transaction verification?'), default=False)
+
+
+    def __str__(self):
+        return f'{self.phone_number} ({self.caller_type}) from {self.country_code} request ${self.delivery_method} code at {self.created_on}'

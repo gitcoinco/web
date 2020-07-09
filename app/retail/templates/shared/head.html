@@ -76,8 +76,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 {% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
 {% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
-<script async src="{% static "v2/js/metamask-approval.js" %}"></script>
+<script type="text/javascript">
+  document.chatSocketTest = function(iframe) {
+    iframe = $(iframe);
+    const loading_frame = iframe.siblings('.iframe-embed-loading');
+    const spinner = loading_frame.children('.rhombus-spinner');
+    const login_button = loading_frame.children('.chat-login-button');
+    const chat_url = document.contxt.chat_url;
+    let socket = new WebSocket(`wss://${chat_url.replace(/(^\w+:|^)\/\//, '')}/api/v4/websocket`);
 
+    $(login_button).attr('href', `${chat_url}/oauth/gitcoin/login?redirect_to=${window.location}`);
+
+    socket.onmessage = function(event) {
+      this.removeEventListener('close', socket.onclose);
+      this.removeEventListener('message', socket.onmessage);
+      url = '';
+      socket.close();
+      iframe.show();
+      loading_frame.addClass('d-none');
+    };
+
+    socket.onclose = function(event) {
+      this.removeEventListener('close', socket.onclose);
+      spinner.addClass('d-none');
+      login_button.removeClass('d-none');
+    };
+  };
+</script>
 {% if env == 'prod' %}
 <!-- Hotjar Tracking Code for gitcoin.co -->
 <script>

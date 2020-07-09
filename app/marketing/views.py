@@ -166,6 +166,7 @@ def privacy_settings(request):
             profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile.pref_do_not_track = bool(request.POST.get('pref_do_not_track', False))
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
@@ -766,19 +767,22 @@ def tax_settings(request):
         # set it to the last location registered for the user
         location_components = profile.locations[-1]
         if 'city' in location_components:
-            location += location_components['city']
+            if location_components['city']:
+                location += location_components['city']
         if 'country_name' in location_components:
-            country_name = location_components['country_name']
-            if location:
-                location += ', ' + country_name
-            else:
-                location += country_name
+            if location_components['country_name']:
+                country_name = location_components['country_name']
+                if location:
+                    location += ', ' + country_name
+                else:
+                    location += country_name
         if 'country_code' in location_components:
-            country_code = location_components['country_code']
-            if location:
-                location += ', ' + country_code
-            else:
-                location += country_code
+            if location_components['country_code']:
+                country_code = location_components['country_code']
+                if location:
+                    location += ', ' + country_code
+                else:
+                    location += country_code
     
     #address is not empty
     if profile.address:
@@ -862,7 +866,7 @@ def leaderboard(request, key=''):
     which_leaderboard = f"{cadence}_{key}"
     all_ranks = LeaderboardRank.objects.filter(leaderboard=which_leaderboard, product=product)
     if keyword_search:
-        all_ranks = ranks.filter(tech_keywords__icontains=keyword_search)
+        all_ranks = all_ranks.filter(tech_keywords__icontains=keyword_search)
 
     amount = all_ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     ranks = all_ranks.filter(active=True)

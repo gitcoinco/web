@@ -9,7 +9,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 import metadata_parser
-from app.redis_service import RedisService
+from app.services import RedisService
 from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
@@ -180,6 +180,9 @@ def get_sidebar_tabs(request):
         for hackathon in hackathons:
             connect = {
                 'title': hackathon.name,
+                'logo': hackathon.logo,
+                'start': hackathon.start_date,
+                'end': hackathon.end_date,
                 'slug': f'hackathon:{hackathon.pk}',
                 'url_slug': hackathon.slug,
                 'helper_text': f'Go to {hackathon.name} Townsquare.',

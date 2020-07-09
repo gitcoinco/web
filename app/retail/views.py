@@ -17,6 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import json
 import logging
 import re
 import time
@@ -63,7 +64,7 @@ from .utils import articles, press, programming_languages, reasons, testimonials
 
 logger = logging.getLogger(__name__)
 
-connect_types = ['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout']
+connect_types = ['status_update', 'wall_post', 'new_bounty', 'created_quest', 'new_grant', 'created_kudos', 'consolidated_leaderboard_rank', 'consolidated_mini_clr_payout', 'hackathon_new_hacker']
 
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
@@ -1018,8 +1019,14 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             if page > 1:
                 activities = Activity.objects.none()
     elif 'hackathon:' in what:
-        pk = what.split(':')[1]
-        activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
+        terms = what.split(':')
+        pk = terms[1]
+
+        if len(terms) > 2:
+            activities = activities.filter(activity_type__in=connect_types, metadata__icontains=terms[2]).filter(
+                Q(hackathonevent=pk) | Q(bounty__event=pk))
+        else:
+            activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
@@ -1474,7 +1481,6 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
-@cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1483,6 +1489,32 @@ def tokens(request):
         context[key] = Token.objects.filter(network=network, approved=True)
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
+
+def json_tokens(request):
+    context = {}
+    networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
+    # for network in networks:
+        # key = f"{network}_tokens"
+        # context[key] = Token.objects.filter(network=network, approved=True)
+    tokens=Token.objects.filter(approved=True)
+    token_json = []
+    for token in tokens:
+        _token = {
+            'id':  token.id,
+            'address': token.address,
+            'symbol': token.symbol,
+            'network': token.network,
+            'networkId': token.network_id,
+            'chainId': token.chain_id,
+            'decimals': token.decimals,
+            'priority': token.priority
+        }
+
+
+        token_json.append(_token)
+    # return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
+    # return JsonResponse(json.loads(json.dumps(list(context), default=str)), safe=False)
+    return JsonResponse(json.loads(json.dumps(token_json)), safe=False)
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -1547,3 +1579,20 @@ def tribes_home(request):
     }
 
     return TemplateResponse(request, 'tribes/landing.html', context)
+
+def admin_index(request):
+    from dashboard.utils import get_all_urls # avoid circular import
+    urls = get_all_urls()
+    search_str = '_administration/email'
+    def clean_url(url):
+        url = "".join(url)
+        url = url.replace('$', '')
+        url = url.replace('^', '')
+        return url
+    urls = [clean_url(url) for url in urls]
+    urls = [url for url in urls if search_str in url]
+    context = {
+        'urls': urls,
+    }
+
+    return TemplateResponse(request, 'admin_index.html', context)

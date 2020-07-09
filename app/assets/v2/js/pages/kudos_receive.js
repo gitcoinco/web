@@ -1,8 +1,3 @@
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 /* eslint-disable no-console */
 var combine_secrets = function(secret1, secret2) {
   var shares = [ secret1, secret2 ];
@@ -18,15 +13,28 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
 
   var private_key_buffer = new EthJS.Buffer.Buffer.from(private_key, 'hex');
   // console.log(private_key_buffer)
-  
+
   tx.sign(private_key_buffer);
   var serializedTx = tx.serialize();
 
   console.log('0x' + serializedTx.toString('hex'));
 
   // send raw transaction
-  web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), success_callback);
-
+  web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex')).on('transactionHash', txHash => {
+    console.log('transactionHash:', txHash);
+    success_callback(undefined, txHash);
+  })
+    .on('receipt', receipt => {
+      console.log('receipt:', receipt);
+    })
+    .on('confirmation', (confirmationNumber, receipt) => {
+      if (confirmationNumber >= 1) {
+        console.log('confirmations:', confirmationNumber, receipt);
+      }
+    })
+    .on('error:', error => {
+      success_callback(error, undefined);
+    });
 };
 
 window.onload = function() {
@@ -48,12 +56,7 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      if (document.web3network == 'locked') {
-        _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
-        approve_metamask();
-      } else {
-        _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-      }
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
     } else if (!$('#forwarding_address').val()) {
       web3.eth.getCoinbase(function(_, coinbase) {
         $('#forwarding_address').val(coinbase);
@@ -66,6 +69,10 @@ window.onload = function() {
 $(document).ready(function() {
   $(document).on('click', '#receive', function(e) {
     e.preventDefault();
+
+    if (!provider) {
+      return onConnect();
+    }
 
     var forwarding_address = $('#forwarding_address').val();
 
@@ -107,12 +114,16 @@ $(document).ready(function() {
         _alert(err.message.split('\n')[0], 'error');
       } else {
         const url = window.location.href.split('?')[0];
-
-        const form = $('<form action="' + url + '" method="post">' +
-          '<input type="text" name="receive_txid" value="' + txid + '" />' +
-          '<input type="text" name="forwarding_address" value="' + $('#forwarding_address').val() + '" />' +
-          '<input type="text" name="save_addr" value="' + ($('#save_addr').is(':checked') ? '1' : '0') + '" />' +
-          '</form>');
+        const csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val();
+        const forwardingAddress = $('#forwarding_address').val();
+        const saveAddr = ($('#save_addr').is(':checked') ? '1' : '0');
+        const form = $(`
+          <form action="${url}" method="post" class="d-none">
+            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfmiddlewaretoken}">
+            <input type="text" name="receive_txid" value="${txid}">
+            <input type="text" name="forwarding_address" value="${forwardingAddress}">
+            <input type="text" name="save_addr" value="${saveAddr}">
+          </form>`);
 
         $('body').append(form);
         form.submit();
@@ -121,12 +132,12 @@ $(document).ready(function() {
 
     // redeem kudos
 
-    var gas_price_wei = new web3.BigNumber(parseInt(document.gas_price * 10 ** 9));
+    var gas_price_wei = new web3.utils.BN(parseInt(document.gas_price * 10 ** 9));
     // Not used
     var token_address = document.kudos_transfer['token_address'];
-    var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
+    var kudos_contract = new web3.eth.Contract(kudos_abi, kudos_address());
     var holding_address = document.kudos_transfer['holding_address'];
-    
+
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;
@@ -134,11 +145,11 @@ $(document).ready(function() {
       if (!nonce) {
         nonce = 0;
       }
-      // find existing balance
+      // find existing holderBalance
       web3.eth.getBalance(holding_address, function(error, result) {
-        var balance = new web3.BigNumber(result.toString());
+        var holderBalance = new web3.utils.BN(result.toString());
 
-        if (balance == 0) {
+        if (holderBalance == 0) {
           _alert('You must wait until the senders transaction confirm before claiming this Kudos.');
           return;
         }
@@ -148,22 +159,20 @@ $(document).ready(function() {
         var kudosId = $('#kudosid').data('kudosid');
         var tokenId = $('#tokenid').data('tokenid');
         var numClones = 1;
-        var data = kudos_contract.clone.getData(forwarding_address, tokenId, numClones);
+        var data = kudos_contract.methods.clone(forwarding_address, tokenId, numClones).encodeABI();
 
         // create the raw transaction
         rawTx = {
-          nonce: web3.toHex(nonce),
+          nonce: web3.utils.toHex(nonce),
           to: kudos_address(),
           from: holding_address,
           data: data
         };
-        // console.log(rawTx)
 
         var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
 
         console.log(kudosPriceInEth);
-        var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
-
+        var kudosPriceInWei = new web3.utils.BN(web3.utils.toWei(String(kudosPriceInEth)));
         var params = {
           forwarding_address: forwarding_address,
           tokenid: tokenId,
@@ -174,11 +183,15 @@ $(document).ready(function() {
 
         console.log('params for kudos clone:');
         console.log(params);
- 
-        kudos_contract.clone.estimateGas(forwarding_address, tokenId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
-          console.log(gasLimit);
+        kudos_contract.methods.clone(forwarding_address, tokenId, numClones).estimateGas({
+          from: holding_address,
+          value: kudosPriceInWei
+        }, function(error, gasLimit) {
+          if (error) {
+            _alert({ message: error.message}, 'error');
+          }
 
-          var buffer = new web3.BigNumber(10);
+          var buffer = new web3.utils.BN(10);
 
           var observedKudosGasLimit = 505552;
 
@@ -186,21 +199,21 @@ $(document).ready(function() {
             gasLimit = observedKudosGasLimit;
           }
 
-          gasLimit = new web3.BigNumber(gasLimit);
-          var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
+          gasLimit = new web3.utils.BN(gasLimit);
+          var send_amount = holderBalance.sub(gasLimit.mul(gas_price_wei)).sub(buffer);
 
           rawTx['value'] = send_amount.toNumber();
-          rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
-          rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
+          rawTx['gasPrice'] = web3.utils.toHex(gas_price_wei.toString());
+          rawTx['gasLimit'] = web3.utils.toHex(gasLimit.toString());
           show_console = true;
           if (show_console) {
             console.log('from_addr ', holding_address);
-            console.log('balance ', balance.toString());
+            console.log('holderBalance ', holderBalance.toString());
             console.log('sending ', send_amount.toString());
-            console.log('gas ', (gasLimit.times(gas_price_wei)).toString());
+            console.log('gas ', (gasLimit.mul(gas_price_wei)).toString());
             console.log('gas price ', (gas_price_wei.toString()));
             console.log('buffer ', (buffer.toString()));
-            console.log('balance > value ', balance > send_amount);
+            console.log('holderBalance > value ', holderBalance > send_amount);
             console.log(rawTx);
           }
           sign_and_send(rawTx, success_callback, document.priv_key);

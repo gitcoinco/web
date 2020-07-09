@@ -17,17 +17,12 @@
 {% endcomment %}
 {% load i18n static matches %}
 
-<div class="d-flex order-0 order-md-last">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  {% if user.is_authenticated %}
-    {% include 'shared/chat_nav.html' %}
-    {% include 'shared/notifications.html' %}
-  {% endif %}
-</div>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
+
   <nav class="navbar-nav mx-auto gc-megamenu">
     <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
 
@@ -38,7 +33,7 @@
       </a>
       <div class="dropdown-menu shadow-lg" aria-labelledby="dropdownProducts">
         <div class="gc-megamenu-content">
-          <div class="row">
+          <div class="row justify-content-center">
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'funder_bounties' %}">
@@ -96,24 +91,6 @@
               </li>
               <li>
                 <a class="dropdown-item dropdown-item-small" href="{% url 'grants:quickstart' %}">{% trans "About Grants" %}</a>
-              </li>
-            </ul>
-            <ul class="col-md-4 col-lg-2 list-unstyled">
-              <li>
-                <a class="text-reset" href="https://codefund.app/">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/codefund_symbol_dark.svg" %}" alt="Codefund" height="48">
-                  <b class="gc-megamenu-title">{% trans "Codefund" %}</b>
-                </a>
-                <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Ethical ads to power Open Source" %}</p>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io/advertisers">{% trans "Advertise With Us" %}</a>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io/publishers">{% trans "Become a Publisher" %}</a>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io">{% trans "About Codefund" %}</a>
               </li>
             </ul>
 
@@ -230,7 +207,6 @@
         </div>
       </div>
     </div>
-    {% if not user.is_authenticated %}
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCompany" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -307,13 +283,22 @@
         </div>
       </div>
     </div>
-    {% endif %}
+
     {% if is_townsquare %}
      <div class="nav-item interior ">
-       <a href="{% url "tribes" %}" class="gc-text-green nav-link selected">Looking for developers?</a>
+       <a href="{% url "tribes" %}" class="gc-text-yellow nav-link selected">Looking for developers?</a>
      </div>
     {% endif %}
   </nav>
+  <div class="d-flex justify-content-md-around justify-content-around justify-content-md-end">
+    {% if user.is_authenticated %}
+    {% include 'shared/chat_nav.html' %}
+    {% include 'shared/notifications.html' %}
+    {% include 'shared/search.html' %}
+    {% include 'shared/cart_nav.html' %}
+    {% endif %}
+  </div>
+
   <nav class="navbar-nav mr-3">
     {% include 'shared/nav_auth.html' with source='authed' %}
   </nav>

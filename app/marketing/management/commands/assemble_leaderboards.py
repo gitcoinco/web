@@ -30,7 +30,7 @@ from marketing.models import LeaderboardRank
 
 # Constants
 IGNORE_PAYERS = []
-IGNORE_EARNERS = ['owocki']  # sometimes owocki pays to himself. what a jerk!
+IGNORE_EARNERS = ['owocki', 'trufflesuite', 'thegivingblock', 'blockscout' ]
 
 ALL = 'all'
 
@@ -101,7 +101,8 @@ def profile_to_location_helper(handle):
     profiles = Profile.objects.filter(handle=handle.lower())
     if handle and profiles.exists():
         profile = profiles.first()
-        return profile.locations
+        if len(profile.locations):
+            return [profile.locations[0]]
     return []
 
 
@@ -276,7 +277,7 @@ def sum_bounties(b, index_terms):
 def sum_tip_helper(t, time, index_term, val_usd):
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if t.username == index_term:
+    if t.username == index_term and index_term not in IGNORE_EARNERS:
         add_element(f'{time}_{EARNERS}', index_term, val_usd)
     if t.from_username == index_term:
         add_element(f'{time}_{PAYERS}', index_term, val_usd)
@@ -359,7 +360,7 @@ def sum_grants(t, index_terms):
 def sum_grant_helper(gc, time, index_term, val_usd):
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if gc.subscription.grant.admin_profile.handle.lower() == index_term:
+    if gc.subscription.grant.admin_profile.handle.lower() == index_term and index_term not in IGNORE_EARNERS:
         add_element(f'{time}_{EARNERS}', index_term, val_usd)
     if gc.subscription.contributor_profile.handle.lower() == index_term:
         add_element(f'{time}_{PAYERS}', index_term, val_usd)

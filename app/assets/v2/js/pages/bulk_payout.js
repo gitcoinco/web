@@ -1,8 +1,3 @@
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 const rateUser = (elem) => {
   let userSelected = $(elem).select2('data')[0].text;
 
@@ -16,11 +11,17 @@ const normalizeUsername = function(username) {
   return username;
 };
 
+needWalletConnection();
+
+window.addEventListener('dataWalletReady', function(e) {
+  update_registry(selectedAccount);
+}, false);
+
 $(document).ready(function($) {
 
   $(document).on('blur', '#amount', function(event) {
     event.preventDefault();
-    update_registry();
+    update_registry(selectedAccount);
   });
 
   $(document).on('input', '.input_amount', function(event) {
@@ -38,7 +39,7 @@ $(document).ready(function($) {
 
       $(this).parents('tr').find('.amount').text(amount);
     }
-    update_registry();
+    update_registry(selectedAccount);
   });
 
 
@@ -58,7 +59,7 @@ $(document).ready(function($) {
 
       $(this).parents('tr').find('.input_amount').text(percentage);
     }
-    update_registry();
+    update_registry(selectedAccount);
   });
 
   $(document).on('click', '.remove', function(event) {
@@ -66,7 +67,7 @@ $(document).ready(function($) {
     $(this).parents('.new-user').next('tr').remove();
     $(this).parents('.new-user').remove();
     $(this).focus();
-    update_registry();
+    update_registry(selectedAccount);
   });
 
   var sendTransaction = function(i) {
@@ -85,7 +86,7 @@ $(document).ready(function($) {
 
     // cancel bounty
     if (transaction['type'] == 'cancel') {
-      var callback = function(error, txid) {
+      var callback = function(txid, error) {
         indicateMetamaskPopup(true);
         if (error) {
           _alert({ message: error }, 'error');
@@ -97,28 +98,31 @@ $(document).ready(function($) {
           _alert(msg, 'info');
           sendTransaction(i + 1);
 
-          web3.eth.getCoinbase(function(_, coinbase) {
-            // tell frontend that this issue has a pending tx
-            localStorage[$('#issueURL').text()] = JSON.stringify({
-              timestamp: timestamp(),
-              dataHash: null,
-              issuer: coinbase,
-              txid: txid
-            });
+          // tell frontend that this issue has a pending tx
+          localStorage[$('#issueURL').text()] = JSON.stringify({
+            timestamp: timestamp(),
+            dataHash: null,
+            issuer: selectedAccount,
+            txid: txid
           });
         }
       };
-      
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+
+      var bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
       indicateMetamaskPopup();
-      web3.eth.getAccounts(function(_, accounts) {
-        bounty.killBounty(
-          $('#standard_bounties_id').val(),
-          {from: accounts[0]},
-          callback
-        );
+
+      bounty.methods.killBounty(
+        $('#standard_bounties_id').val()
+      ).send({
+        from: selectedAccount
+      }).then((result) => {
+        callback(result);
+      }).catch(err => {
+        callback(undefined, err);
+        console.log(err);
       });
+
 
     } else {
       const email = '';
@@ -167,7 +171,12 @@ $(document).ready(function($) {
   $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
     getFulfillers();
-    update_registry();
+    update_registry(selectedAccount);
+
+    if (!provider) {
+      onConnect();
+      return false;
+    }
 
     if (!$('#terms').is(':checked')) {
       _alert('Please accept the TOS.', 'error');
@@ -192,7 +201,6 @@ $(document).ready(function($) {
 
   $('document').ready(function() {
     add_row();
-    update_registry();
 
     $('.add_another').on('click', function() {
       add_row();
@@ -456,5 +464,5 @@ $(document).on('click', '.user-fulfiller', function(event) {
 
 
 $('input[type=radio][name=pay_with]').on('change', event => {
-  update_registry();
+  update_registry(selectedAccount);
 });

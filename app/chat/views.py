@@ -26,7 +26,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from chat.tasks import get_chat_url, get_driver
 from marketing.models import Stat
 
@@ -76,7 +76,7 @@ def chat(request):
         users_total_count = users_total_count.val if users_total_count is not None else 'N/A'
 
     except Exception as e:
-        logger.error(str(e))
+        logger.info(str(e))
         users_online_count = 'N/A'
         users_total_count = 'N/A'
     context = {

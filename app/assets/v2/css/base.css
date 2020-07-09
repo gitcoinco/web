@@ -5,6 +5,10 @@ div.body {
   min-height: 400px;
 }
 
+body {
+  overflow-anchor: auto;
+}
+
 .hidden {
   display: none !important;
 }
@@ -68,6 +72,8 @@ a {
 
 .navbar-nav .dropdown-menu {
   min-width: 9rem;
+  overflow-y: auto;
+  max-height: 88vh;
 }
 
 .nav_avatar,
@@ -963,8 +969,8 @@ input.is-invalid {
 }
 
 .alpha-warning {
-  background-color: #fb9470;
-  color: #fbe0d6;
+  background-color: #ada7d4;
+  color: white;
   padding: 5px 10px;
   border-radius: 2px;
   margin-bottom: 15px;
@@ -1534,7 +1540,7 @@ div.busyOverlay {
 .gc-megamenu .dropdown {
   position: static;
   overflow: auto;
-  max-height: 100vh;
+  max-height: 60vh;
 }
 
 .gc-megamenu .container {

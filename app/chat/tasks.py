@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.utils.text import slugify
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from celery import app, group
 from dashboard.models import Bounty, HackathonEvent, HackathonRegistration, HackathonSponsor, Profile
 from marketing.utils import should_suppress_notification_email
@@ -20,7 +20,8 @@ driver_opts = {
     'scheme': 'https' if settings.CHAT_PORT == 443 else 'http',
     'url': settings.CHAT_SERVER_URL,
     'port': settings.CHAT_PORT,
-    'token': settings.CHAT_DRIVER_TOKEN
+    'token': settings.CHAT_DRIVER_TOKEN,
+    'verify': False
 }
 
 
@@ -48,7 +49,7 @@ def create_channel_if_not_exists(options):
 
             return True, new_channel
         except Exception as e:
-            logger.debug(str(e))
+            logger.info(str(e))
 
 
 def update_chat_notifications(profile, notification_key, status):
@@ -94,12 +95,12 @@ def associate_chat_to_profile(profile):
                         profile_access_token = pat
                         break
             except Exception as e:
-                logger.debug(str(e))
+                logger.info(str(e))
                 try:
                     profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
                         'description': "Grants Gitcoin access to modify your account"})
                 except Exception as e:
-                    logger.debug(str(e))
+                    logger.info(str(e))
 
             profile.gitcoin_chat_access_token = profile_access_token['token']
 
@@ -138,7 +139,7 @@ def associate_chat_to_profile(profile):
                         break
 
             except Exception as e:
-                logger.debug(str(e))
+                logger.info(str(e))
                 profile_access_token = chat_driver.users.create_user_access_token(user_id=profile.chat_id, options={
                     'description': "Grants Gitcoin access to modify your account"})
 
@@ -204,11 +205,11 @@ def create_channel(self, options, bounty_id=None, retry: bool = True) -> None:
                 active_bounty.save()
             return new_channel
         except ConnectionError as exc:
-            logger.debug(str(exc))
+            logger.info(str(exc))
             self.retry(30)
         except Exception as e:
             print("we got an exception when creating a channel")
-            logger.debug(str(e))
+            logger.info(str(e))
 
 
 @app.shared_task(bind=True, max_retries=3)
@@ -274,7 +275,7 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
                 add_to_channel.delay({'id': channel_id}, connect)
 
     except Exception as e:
-        logger.debug(str(e))
+        logger.info(str(e))
 
 
 @app.shared_task(bind=True, max_retries=3)
@@ -295,10 +296,10 @@ def add_to_channel(self, channel_details, chat_user_ids: list, retry: bool = Tru
                     'user_id': chat_user_id
                 })
             except Exception as e:
-                logger.debug(str(e))
+                logger.info(str(e))
                 continue
     except ConnectionError as exc:
-        logger.debug(str(exc))
+        logger.info(str(exc))
         self.retry(countdown=30)
 
 
@@ -329,10 +330,10 @@ def create_user(self, options, params, profile_handle='', retry: bool = True):
 
             return create_user_response
         except ConnectionError as exc:
-            logger.debug(str(exc))
+            logger.info(str(exc))
             self.retry(countdown=30)
         except Exception as e:
-            logger.debug(str(e))
+            logger.info(str(e))
             return None
 
 
@@ -362,12 +363,12 @@ def patch_chat_user(self, query_opts, update_opts, retry: bool = True) -> None:
                     user_profile.chat_id = chat_id
                     user_profile.save()
                 except Exception as e:
-                    logger.debug(f"Unable to find chat user for {query_opts['handle']}")
+                    logger.info(f"Unable to find chat user for {query_opts['handle']}")
             else:
                 chat_id = query_opts['chat_id']
             chat_driver.users.patch_user(chat_id, options=update_opts)
         except ConnectionError as exc:
-            logger.debug(str(exc))
+            logger.info(str(exc))
             self.retry(countdown=30)
         except Exception as e:
-            logger.debug(str(e))
+            logger.info(str(e))
