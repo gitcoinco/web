@@ -441,8 +441,8 @@
 
               <div @click="toggleCollapse(1, 'reserve')" class="d-flex justify-content-between align-items-center p-4 py-md-4 px-md-5 cursor-pointer">
                 <span class="font-body">
-                  <span class="d-block text-uppercase letter-spacing">Reserve for</span>
-                  <span>Choose contributors you want to work on this bounty</span>
+                  <span class="d-block text-uppercase letter-spacing">Other options</span>
+                  <span>Reserve bounty, set expiration, attach a post job</span>
                 </span>
                 <i class="fa fa-fw" :class="isExpanded(1, 'reserve')? 'fa-chevron-up': 'fa-chevron-down'"></i>
               </div>
@@ -495,14 +495,26 @@
                 <div class="mt-4">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="expirationTimeDelta">{% trans "Expires in" %}</label>
 
-                  <date-range-picker v-model="form.expirationTimeDelta" :disabled="neverExpires"></date-range-picker>
+                  <date-range-picker v-model="form.expirationTimeDelta" :disabled="checkboxes.neverExpires"></date-range-picker>
 
                   <!-- <input name='expirationTimeDelta' id="expirationTimeDelta" v-model="form.expirationTimeDelta" class="form__input" type="text" placeholder="" required/> -->
                   <div class="form__checkbox">
-                    <input name='neverExpires' id='neverExpires' type="checkbox" v-model="neverExpires" />
+                    <input name='neverExpires' id='neverExpires' type="checkbox" v-model="checkboxes.neverExpires" />
                     <label class="form__label" for=neverExpires>{% trans "Never expire" %}
                     </label>
                   </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="mt-4">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
+
+                  <div class="form__checkbox">
+                    <input name='hiringRightNow' id='hiringRightNow' type="checkbox" v-model="checkboxes.hiringRightNow" />
+                    <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
+                    </label>
+                  </div>
+                  <input name="jobDescription" id="jobDescription" v-model="form.jobDescription" type="url" class="form__input " placeholder="https://link.to/job/description" :disabled="!checkboxes.hiringRightNow">
                 </div>
               </div>
             </div>
@@ -553,6 +565,36 @@
           </transition>
         </div>
 
+        <div class="container mt-5 bg-white position-relative rounded" v-show="bountyFee > 0">
+          <div class="row p-4 p-md-5">
+            <div class="col-12">
+              <div id="fee-section" class="">
+                <h5 class="font-body letter-spacing text-black-60 text-uppercase">
+                  No Surprises
+                </h5>
+                <div class="row">
+                  <div class="col-12 col-sm-9 mt-3 font-body mb-sm-3">
+                    <p>
+                      Simply pay the bounty amount ( plus a  standard
+                      <span class="fee-percentage font-weight-bold">[[bountyFee]]</span><span class="font-weight-bold">%</span> Gitcoin platform fee ).
+                      This covers our costs for finding quality contributors to join our platform so that you get the best work.
+                      If your business requires additional assistance, please contact us <a href="mailto:&#102;&#111;&#117;&#110;&#100;&#101;&#114;&#115;&#064;&#103;&#105;&#116;&#099;&#111;&#105;&#110;&#046;&#099;&#111;">&#102;&#111;&#117;&#110;&#100;&#101;&#114;&#115;&#064;&#103;&#105;&#116;&#099;&#111;&#105;&#110;&#046;&#099;&#111;</a>
+                    </p>
+                  </div>
+                  <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
+                    <div class="fee-circle text-center">
+                      <p class="font-title mb-0"><span id="fee-amount">[[ totalAmount.totalFee ]]</span> <span id="fee-token">ETH</span></p>
+                      <p class="font-body font-weight-semibold">
+                        (<span class="fee-percentage">[[bountyFee]]</span>%)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="container mt-5 bg-white position-relative rounded">
           <div class="row p-4 p-md-5">
             <div class="col-12">
@@ -562,26 +604,41 @@
                 </div>
                 <div class="col-md-9 col-lg-10 my-auto">
                   <p class="mb-1 text-uppercase text-black-50 font-body">Payment Due</p>
-                  <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block">[[form.amount]] [[form.token.symbol]]</span>
+                  <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block">[[totalAmount.total]] [[form.token.symbol]]</span>
 
                   <p class="font-caption text-black-50 mb-1">
                     Bounty <span id="summary-bounty-amount" class="font-weight-bold">[[form.amount]]</span>
                     <span id="summary-bounty-token" class="font-weight-bold">[[form.token.symbol]]</span> ($[[form.amountusd]])
+                    <template>
+                      <span> +
+                        <span id="summary-bounty-token" class="font-weight-bold">[[totalAmount.totalFee]]</span>
+                        <span id="summary-bounty-token" class="font-weight-bold">[[form.token.symbol]]</span>
+                        Gitcoin Platform Fee
+                      </span>
+                    </template>
                   </p>
 
                 </div>
               </div>
-              <div class="py-4">
+              <div class="pt-4">
                 <div class="form__checkbox">
-                  <input name="terms" id="terms" type="checkbox" value="1" required="" v-model="terms">
+                  <input name="terms" id="terms" type="checkbox" value="1" required="" v-model="checkboxes.terms">
                   <label class="form__label" for="terms">I have read, understand, and agree to, the
                     <a href="/legal/terms" target="_blank" class="text-reset underline" rel="noopener noreferrer">Terms of Service</a>.
                   </label>
                 </div>
-                <div class="text-danger" v-if="errors.terms && !terms">
+                <div class="text-danger" v-if="errors.terms && !checkboxes.terms">
                   [[errors.terms]]
                 </div>
 
+                <div class="form__checkbox">
+                  <input name="termsPrivacy" id="termsPrivacy" type="checkbox" value="1" required="" v-model="checkboxes.termsPrivacy">
+                  <label class="form__label" for="termsPrivacy">Payment Upon Completion. Upon delivery of work, I agree to pay the proposed amount to the fulfiller(s) if the submitted fulfillment meets the standards I have set forth.
+                  </label>
+                </div>
+                <div class="text-danger" v-if="errors.termsPrivacy && !checkboxes.termsPrivacy">
+                  [[errors.terms]]
+                </div>
               </div>
             </div>
           </div>
@@ -616,6 +673,13 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/footer_scripts.html' with vue=True %}
     {% include 'shared/current_profile.html' %}
+    <script>
+      document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
+      document.blocked_urls = {{blocked_urls|safe}};
+      {% if expired_coupon %}
+        _alert({ message: 'This coupon has expired.' }, 'error');
+      {% endif %}
+    </script>
     <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
     <script src="{% static "v2/js/lib/highlight.js" %}"></script>
     <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>

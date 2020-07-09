@@ -232,7 +232,7 @@ Vue.mixin({
         'privacy_preferences': JSON.stringify({
           show_email_publicly: '1'
         }),
-        'attached_job_description': '',
+        'attached_job_description': vm.form.jobDescription,
         'eventTag': metadata.eventTag,
         'auto_approve_workers': 'True',
         'web3_type': vm.web3Type(),
@@ -332,6 +332,8 @@ Vue.mixin({
       let vm = this;
       let myHeaders = new Headers();
 
+      if (search.length < 3) return;
+
       myHeaders.append("X-Requested-With", "XMLHttpRequest");
 
       let url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}`;
@@ -352,12 +354,23 @@ Vue.mixin({
       // })
 
     },
-    onDateChange: function (start, end) {
-      this.start = start;
-      this.end = end;
-    }
+
   },
   computed: {
+    // totalFee: function() {
+    //   let vm = this;
+    //   let result = (vm.form.amount * (vm.bountyFee / 100.0)).toFixed(4);
+
+    //   return result;
+    // },
+    totalAmount: function() {
+      let vm = this;
+      let fee = Number(vm.bountyFee) / 100.0;
+      let totalFee = Number(vm.form.amount) * fee;
+      let total = Number(vm.form.amount) +  totalFee;
+
+      return {'totalFee': totalFee, 'total': total };
+    },
     filterOrgSelected: function() {
       if (!this.orgSelected) {
         return;
@@ -434,18 +447,16 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
     },
     data() {
       return {
-        start: null,
-        end: null,
+
         tokens: [],
         network: 'mainnet',
         chainId: '',
-        terms: false,
+        checkboxes: {'terms': false, 'termsPrivacy': false, 'neverExpires': false, 'hiringRightNow': false },
         expandedGroup: {'reserve': [], 'featuredBounty': []},
         errors: {},
         usersOptions:[],
-        neverExpires: false,
+        bountyFee: document.FEE_PERCENTAGE,
         orgSelected: '',
-        // selected: null,
         coinValue: null,
         form: {
           expirationTimeDelta: moment().add(1, 'month').format('MM/DD/YYYY'),
