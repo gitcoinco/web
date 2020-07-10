@@ -76,6 +76,11 @@
         border-color: #3E00FF;
       }
 
+      .vs__no-options {
+        text-align: left;
+        padding-left: 1em;
+      }
+
       /* .collapse-enter-active, .collapse-leave-active {
         transition: all linear .5s;
         overflow: hidden;
@@ -90,18 +95,6 @@
       } */
 
 
-      /* .collapse-enter-active {
-        transition: all .2s cubic-bezier(0.55, 0.085, 0.68, 0.53);
-      }
-
-      .collapse-leave-active {
-        transition: all .25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      }
-
-      .collapse-enter, .collapse-leave-to {
-        transform: scaleY(0) translateZ(0);
-        opacity: 0;
-      } */
     </style>
   </head>
 
@@ -452,30 +445,67 @@
           <transition name="collapse">
             <div v-show="isExpanded(1, 'reserve')" class="row px-md-5 pb-md-5 border-top pt-3">
               <div class="col-12">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="bounty_type">{% trans "Reserved for" %}</label>
-                <v-select id="reservedFor" label="text" @search="userSearch" :reduce="user => user.text" :options="usersOptions" placeholder="Reserved for" v-model="form.reservedFor">
-                  <template slot="no-options">
-                    type to search Users..
-                  </template>
-                  <template slot="option" slot-scope="option">
-                    <div class="d-flex align-items-baseline">
-                      <div class="mr-2">
-                        <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
+                <div class="mt-4">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="fundingOrganisation">Funding Organisation Github handle</label>
+                  <input name="fundingOrganisation" id="fundingOrganisation" v-model="form.fundingOrganisation" class="form__input" type="text" placeholder="MetaMask">
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="row mt-2">
+                  <div class="col-12 col-md-6">
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="notificationEmail">Notification Email</label>
+                    <input name="notificationEmail" id="notificationEmail" v-model="form.notificationEmail" class="form__input" type="email" placeholder="you@domain.co (optional, but recommended for notifications)">
+                    <div class="w-100 mt-2 terms_container">
+                      <div class="form__checkbox">
+                        <input name="show_email_publicly" id="show_email_publicly" v-model="form.showEmailPublicly" type="checkbox" false-value="0" true-value="1">
+                        <label class="form__label" for="show_email_publicly">It's okay to show this information publicly on Gitcoin</label>
                       </div>
-                      <div>[[ option.text ]]</div>
                     </div>
-
-                  </template>
-                  <template slot="selected-option" slot-scope="option">
-                    <div class="d-flex align-items-baseline">
-                      <div class="mr-2">
-                        <img class="rounded-circle" :src="option.avatar_url" width="20" height="20"/>
+                  </div>
+                  <div class="col-12 col-md-6 github-username">
+                    <label class="font-caption letter-spacing text-black-60 text-uppercase" for="githubUsername">Github Username</label>
+                    <input name="githubUsername" id="githubUsername" class="form__input" v-model="form.githubUsername" type="text" readonly="" placeholder="@you (optional)">
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="mt-4">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="expirationTimeDelta">{% trans "Expires in" %}</label>
+                  <date-range-picker :date="form.expirationTimeDelta"  @apply-daterangepicker="updateDate" :disabled="checkboxes.neverExpires"></date-range-picker>
+                  <div class="form__checkbox">
+                    <input name='neverExpires' id='neverExpires' type="checkbox" v-model="checkboxes.neverExpires" />
+                    <label class="form__label" for=neverExpires>{% trans "Never expire" %}
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="mt-4">
+                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="bounty_type">{% trans "Reserved for" %}</label>
+                  <v-select id="reservedFor" label="text" @search="userSearch" :reduce="user => user.text" :options="usersOptions" placeholder="Reserved for" v-model="form.reservedFor">
+                    <template slot="no-options">
+                      type to search Users..
+                    </template>
+                    <template slot="option" slot-scope="option">
+                      <div class="d-flex align-items-baseline">
+                        <div class="mr-2">
+                          <img class="rounded-circle" :src="option.avatar_url" width="40" height="40"/>
+                        </div>
+                        <div>[[ option.text ]]</div>
                       </div>
-                      <div>[[ option.text ]]</div>
-                    </div>
-                  </template>
 
-                </v-select>
+                    </template>
+                    <template slot="selected-option" slot-scope="option">
+                      <div class="d-flex align-items-baseline">
+                        <div class="mr-2">
+                          <img class="rounded-circle" :src="option.avatar_url" width="20" height="20"/>
+                        </div>
+                        <div>[[ option.text ]]</div>
+                      </div>
+                    </template>
+
+                  </v-select>
+                </div>
               </div>
               <div class="col-12" v-show="form.reservedFor">
                 <label class="form__label" for="bounty_type">{% trans "Release To Public After" %}</label>
@@ -490,20 +520,6 @@
                     />
                   </template>
                 </v-select>
-              </div>
-              <div class="col-12">
-                <div class="mt-4">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="expirationTimeDelta">{% trans "Expires in" %}</label>
-
-                  <date-range-picker v-model="form.expirationTimeDelta" :disabled="checkboxes.neverExpires"></date-range-picker>
-
-                  <!-- <input name='expirationTimeDelta' id="expirationTimeDelta" v-model="form.expirationTimeDelta" class="form__input" type="text" placeholder="" required/> -->
-                  <div class="form__checkbox">
-                    <input name='neverExpires' id='neverExpires' type="checkbox" v-model="checkboxes.neverExpires" />
-                    <label class="form__label" for=neverExpires>{% trans "Never expire" %}
-                    </label>
-                  </div>
-                </div>
               </div>
               <div class="col-12">
                 <div class="mt-4">
@@ -675,6 +691,7 @@
     {% include 'shared/current_profile.html' %}
     <script>
       document.FEE_PERCENTAGE = {{ FEE_PERCENTAGE }};
+      document.coupon_code = '{{ coupon_code|safe }}';
       document.blocked_urls = {{blocked_urls|safe}};
       {% if expired_coupon %}
         _alert({ message: 'This coupon has expired.' }, 'error');

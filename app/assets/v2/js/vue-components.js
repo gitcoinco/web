@@ -500,11 +500,11 @@ Vue.component('suggested-profile', {
 
 Vue.component('date-range-picker', {
   template: '#date-range-template',
-  props: ['value', 'disabled'],
+  props: ['date', 'disabled'],
 
   data: function () {
       return {
-        newDate: this.value
+        newDate: this.date
       };
   },
   computed: {
@@ -532,8 +532,8 @@ Vue.component('date-range-picker', {
               'format': 'MM/DD/YYYY'
             }
           }).on('apply.daterangepicker', function (e, picker) {
-              vm.$emit('apply', picker.startDate);
-              vm.newDate = picker.startDate.format('MM/DD/YYYY');
+            vm.$emit('apply-daterangepicker', picker.startDate);
+            vm.newDate = picker.startDate.format('MM/DD/YYYY');
 
           });
     })

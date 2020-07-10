@@ -183,7 +183,7 @@ Vue.mixin({
         projectLength: vm.form.project_length,
         bountyType: vm.form.bounty_type,
         estimatedHours: vm.form.hours,
-        fundingOrganisation: '',
+        fundingOrganisation: vm.form.fundingOrganisation,
         eventTag: vm.form.eventTag,
         is_featured: undefined,
         repo_type: 'public',
@@ -213,7 +213,7 @@ Vue.mixin({
         'bounty_owner_name': metadata.fullName, // ETC-TODO REMOVE ?
         'bounty_reserved_for': metadata.reservedFor,
         'release_to_public': metadata.releaseAfter,
-        'expires_date': vm.neverExpires ? 9999999999 : moment(vm.form.expirationTimeDelta).utc().unix(),
+        'expires_date': vm.checkboxes.neverExpires ? 9999999999 : moment(vm.form.expirationTimeDelta).utc().unix(),
         'metadata': JSON.stringify(metadata),
         'raw_data': {}, // ETC-TODO REMOVE ?
         'network': vm.network,
@@ -228,9 +228,9 @@ Vue.mixin({
         'featuring_date': metadata.featuring_date,
         'fee_amount': 0,
         'fee_tx_id': null,
-        'coupon_code': '',
+        'coupon_code': vm.form.couponCode,
         'privacy_preferences': JSON.stringify({
-          show_email_publicly: '1'
+          show_email_publicly: vm.form.showEmailPublicly
         }),
         'attached_job_description': vm.form.jobDescription,
         'eventTag': metadata.eventTag,
@@ -327,6 +327,12 @@ Vue.mixin({
       } else {
         this.expandedGroup[type].push(key);
       }
+    },
+    updateDate(date) {
+      let vm = this;
+
+      vm.form.expirationTimeDelta = date.format('MM/DD/YYYY');
+
     },
     userSearch(search, loading) {
       let vm = this;
@@ -451,7 +457,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         tokens: [],
         network: 'mainnet',
         chainId: '',
-        checkboxes: {'terms': false, 'termsPrivacy': false, 'neverExpires': false, 'hiringRightNow': false },
+        checkboxes: {'terms': false, 'termsPrivacy': false, 'neverExpires': true, 'hiringRightNow': false },
         expandedGroup: {'reserve': [], 'featuredBounty': []},
         errors: {},
         usersOptions:[],
@@ -464,6 +470,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           issueUrl: '',
           githubUsername: document.contxt.github_handle,
           notificationEmail: document.contxt.email,
+          showEmailPublicly: '1',
           fullName: document.contxt.name,
           hours: '1',
           bounty_categories: [],
@@ -472,7 +479,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           keywords: [],
           amount: 0.001,
           amountusd: null,
-          token: {}
+          token: {},
+          couponCode: document.coupon_code
         }
       };
     },
