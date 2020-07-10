@@ -283,7 +283,8 @@ class Bounty(SuperModel):
         ('legacy_gitcoin', 'Legacy Bounty'),
         ('bounties_network', 'Bounties Network'),
         ('qr', 'QR Code'),
-        ('web3_modal', 'Web3 Modal')
+        ('web3_modal', 'Web3 Modal'),
+        ('manual', 'Manual')
     )
 
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
@@ -1345,7 +1346,8 @@ class BountyFulfillment(SuperModel):
         ('bounties_network', 'bounties_network'),
         ('qr', 'qr'),
         ('fiat', 'fiat'),
-        ('web3_modal', 'web3_modal')
+        ('web3_modal', 'web3_modal'),
+        ('manual', 'manual')
     ]
 
     TENANT = [
@@ -1353,7 +1355,8 @@ class BountyFulfillment(SuperModel):
         ('ETC', 'ETC'),
         ('ZIL', 'ZIL'),
         ('CELO', 'CELO'),
-        ('PYPL', 'PYPL')
+        ('PYPL', 'PYPL'),
+        ('OTHERS', 'OTHERS')
     ]
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE, help_text="the bounty against which the fulfillment is made")
@@ -4677,6 +4680,7 @@ class HackathonEvent(SuperModel):
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
+    showcase = JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):
         """String representation for HackathonEvent.

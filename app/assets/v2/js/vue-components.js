@@ -275,7 +275,6 @@ Vue.component('project-directory', {
     }
   },
   data: function() {
-
     return {
       csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       sponsor: this.tribe || null,
@@ -325,6 +324,108 @@ Vue.component('project-directory', {
     window.removeEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     });
+  }
+});
+
+
+Vue.component('showcase', {
+  delimiters: [ '[[', ']]' ],
+  props: [],
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      hackathon: document.hackathonObj,
+      isEditing: false,
+      showcase: document.hackathonObj.showcase,
+      top: document.hackathonObj.showcase.top || [{}, {}, {}],
+      sponsors: document.hackathonSponsors,
+      spotlights: document.hackathonObj.showcase.spotlights || [],
+      prizes: document.hackathonObj.showcase.prizes || 0,
+      is_staff: document.contxt.is_staff
+    };
+  },
+  filters: {
+    'markdownit': function(val) {
+      if (!val)
+        return '';
+      const _markdown = new markdownit({
+        linkify: true,
+        highlight: function(str, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return `<pre class="hljs"><code>${hljs.highlight(lang, str, true).value}</code></pre>`;
+            } catch (__) {}
+          }
+          return `<pre class="hljs"><code>${sanitize(_markdown.utils.escapeHtml(str))}</code></pre>`;
+        }
+      });
+
+      _markdown.renderer.rules.table_open = function() {
+        return '<table class="table">';
+      };
+      ui_body = sanitize(_markdown.render(val));
+      return ui_body;
+    }
+  },
+  methods: {
+    followTribe: function(handle, event) {
+      event.preventDefault();
+      let vm = this;
+
+      const url = `/tribe/${handle}/join/`;
+      const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        if (response && response.is_member) {
+          this.getSponsor(handle).followed = true;
+        } else {
+          this.getSponsor(handle).followed = false;
+        }
+      }).fail((error) => {
+        console.log(error);
+      });
+    },
+    getSponsor: function(handle) {
+      return this.sponsors.filter(sponsor => sponsor.org_name === handle)[0] || {};
+    },
+    addSpotlight: function() {
+      let vm = this;
+      let spotlight = {
+        sponsor: {},
+        content: ''
+      };
+
+      if (vm.spotlights.length === 0) {
+        vm.spotlights = [spotlight];
+      } else {
+        vm.spotlights.push(spotlight);
+      }
+    },
+    saveShowcase: function() {
+      let vm = this;
+      const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/showcase/`;
+      const retrieveResources = fetchData(resource_url, 'POST', JSON.stringify({
+        content: vm.showcase.content,
+        top: vm.top,
+        spotlights: vm.spotlights,
+        prizes: vm.showcase.prizes
+      }), {'X-CSRFToken': vm.csrf});
+
+      vm.isEditing = false;
+
+
+      $.when(retrieveResources).then((response) => {
+        _alert('Showcase info saved', 'success', 1000);
+      }).fail((error) => {
+        console.log(error);
+      });
+
+    }
+  },
+  mounted() {
+    if (!this.showcase.top) {
+      this.showcase.top = [];
+    }
   }
 });
 
@@ -418,7 +519,6 @@ Vue.component('project-card', {
     </div>
   </div>`
 });
-
 
 Vue.component('suggested-profiles', {
   props: ['profiles'],

@@ -3632,7 +3632,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                              hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).all().count()
+    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).distinct('registrant').count()
     projects_count = HackathonProject.objects.filter(hackathon=hackathon_event).all().count()
     view_tags = get_tags(request)
     active_tab = 0
@@ -3646,6 +3646,9 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 3
     elif panel == "participants":
         active_tab = 4
+    elif panel == "showcase":
+        active_tab = 5
+
     filter = ''
     if request.GET.get('filter'):
         filter = f':{request.GET.get("filter")}'
@@ -4851,6 +4854,10 @@ def create_bounty_v1(request):
         except Exception as e:
             logger.error(e)
 
+    if bounty.web3_type == 'manual' and not bounty.event:
+        response['message'] = 'error: web3_type manual is eligible only for hackathons'
+        return JsonResponse(response)
+
     # coupon code
     coupon_code = request.POST.get("coupon_code")
     try:
@@ -5141,8 +5148,11 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / manual'
+        return JsonResponse(response)
+    if payout_type == 'manual' and not bounty.event:
+        response['message'] = 'error: payout_type manual is eligible only for hackathons'
         return JsonResponse(response)
 
     tenant = request.POST.get('tenant')
@@ -5179,11 +5189,10 @@ def payout_bounty_v1(request, fulfillment_id):
 
         funder_address = request.POST.get('funder_address')
         if not funder_address :
-            response['message'] = 'error: missing parameter funder_address for web3 modal / qr payment'
+            response['message'] = f'error: missing parameter funder_address for payout_type ${payout_type}'
             return JsonResponse(response)
 
-        fulfillment.funder_address = fulfillment.funder_address
-        fulfillment.payout_status = 'pending'
+        fulfillment.funder_address = funder_address
 
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
@@ -5195,15 +5204,20 @@ def payout_bounty_v1(request, fulfillment_id):
     fulfillment.payout_amount = amount
     fulfillment.token_name = token_name
 
-    if payout_type == 'fiat':
+    if payout_type in ['fiat', 'manual']:
+        if not payout_tx_id:
+            response['message'] = f'error: missing parameter payout_tx_id for payout_type ${payout_type}'
+            return JsonResponse(response)
+
         fulfillment.payout_status = 'done'
         fulfillment.accepted_on = timezone.now()
         fulfillment.accepted = True
+        fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    fulfillment.save()
-
-    if payout_type == 'qr' or payout_type == 'web3_modal':
+    elif payout_type in ['qr', 'web3_modal']:
+        fulfillment.payout_status = 'pending'
+        fulfillment.save()
         sync_payout(fulfillment)
 
     response = {
@@ -5508,3 +5522,16 @@ def validate_verification(request):
         'success': False,
         'msg': 'No verification process associated'
     }, status=401)
+
+
+@staff_member_required
+def showcase(request, hackathon):
+    hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+
+    showcase = json.loads(request.body)
+    hackathon_event.showcase = showcase
+    hackathon_event.save()
+
+    return JsonResponse({
+        'success': True,
+    })

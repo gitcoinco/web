@@ -25,6 +25,7 @@
     <meta name="description" content="{{ desc }}">
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
+    <script src="{% static "cookielaw/js/cl.js" %}"></script>
   </head>
   <body class="index d-flex flex-column g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -141,4 +142,3 @@
   {% include 'shared/analytics.html' %}
   {% block scripts %}{% endblock %}
 </html>
-
