@@ -2806,7 +2806,7 @@ class Profile(SuperModel):
         score = self.sybil_score
         if score > 5:
             return f'VeryX{score} High'
-        return _map.get(score, "Unknown") 
+        return _map.get(score, "Unknown")
 
     @property
     def chat_num_unread_msgs(self):
@@ -4680,6 +4680,7 @@ class HackathonEvent(SuperModel):
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
+    display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):

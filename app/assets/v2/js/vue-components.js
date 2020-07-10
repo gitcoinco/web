@@ -401,6 +401,13 @@ Vue.component('showcase', {
         vm.spotlights.push(spotlight);
       }
     },
+    removeSpotlight: function(index) {
+      let vm = this;
+
+      if (index > -1) {
+        vm.spotlights.splice(index, 1);
+      }
+    },
     saveShowcase: function() {
       let vm = this;
       const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/showcase/`;

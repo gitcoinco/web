@@ -137,7 +137,7 @@
                   </div>
                 </div>
               </template>
-              <b-tab class="col-12" title-item-class="navigation">
+              <b-tab class="col-12" title-item-class="navigation" v-if="!hackHasEnded">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Prizes" %}
@@ -191,7 +191,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab class="col-12" title-item-class="navigation">
+              <b-tab class="col-12" title-item-class="navigation" v-if="!hackHasEnded">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Townsquare" %}
@@ -331,7 +331,7 @@
                     </div>
                   </project-directory>
                 </b-tab>
-              <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
+              <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation" v-if="!hackHasEnded">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Chat" %}
@@ -345,7 +345,7 @@
                   </div>
                 </template>
               </b-tab>
-              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation" lazy>
+              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation" lazy v-if="!hackHasEnded">
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Participants" %}
@@ -607,7 +607,7 @@
                     </div>
                   </user-directory>
                 </b-tab>
-              <b-tab class="col-12" title-item-class="navigation">
+              <b-tab class="col-12" title-item-class="navigation" v-if="hackHasEnded">
                 <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Showcase" %}
@@ -678,7 +678,7 @@
                       </div>
                       <div class="spotlight">
                         <h4 class="font-bigger-1 font-weight-bold mb-sm-3">Hacking Spotlights</h4>
-                        <div v-for="spotlight in spotlights">
+                        <div v-for="(spotlight, index) in spotlights">
                           <div class="d-md-flex pt-2" v-if="!isEditing">
                             <div class="col-12 col-md-3 my-3 text-center" style="margin-top: auto !important; margin-bottom: auto !important;">
                               <div class="d-flex text-center mb-3 justify-content-center align-items-center">
@@ -695,11 +695,14 @@
                           </div>
 
                           <div class="d-flex" v-if="isEditing">
-                            <select class="d-flex col-12 col-md-3 form-control" v-model="spotlight.sponsor">
+                            <div class="d-flex col-12 col-md-3 flex-column align-items-baseline">
+                            <select class="form-control" v-model="spotlight.sponsor">
                               <option v-for="sponsor in sponsors" :value="sponsor.org_name">
                                 <span>[[sponsor.org_name]]</span>
                               </option>
                             </select>
+                            <button class="btn btn-link text-highlight-pink mt-2" @click="removeSpotlight(index)">- Remove Spotlight</button>
+                            </div>
                             <textarea class="d-flex col-12 ml-md-3 col-md-8 form-control mb-4" v-model="spotlight.content" name="content" id="" cols="90" rows="8"></textarea>
                           </div>
                         </div>
@@ -744,7 +747,7 @@
                 </div>
 
               </b-tab>
-              <template v-slot:tabs-end>
+              <template v-slot:tabs-end  v-if="!hackHasEnded">
                 <li role="presentation" class="nav-item navigation">
                   <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
                     <div class="mt-4">Guide</div>
@@ -828,6 +831,7 @@
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
       document.chatURL = "{{ chat_url | safe}}";
+      document.displayShowcase = {{hackathon.display_showcase|yesno:"true,false" }}
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
     </script>
     <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>
