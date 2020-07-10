@@ -63,11 +63,14 @@
         <span class="grey">
          <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
          {% if row.metadata.looking_team_members %}
+          <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag"
+            data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
            <span class="font-body"> is
              <i class="fas fa-users gc-text-blue"></i>
              <span>Looking for Team Members</span>
            </span>
          {% elif row.metadata.looking_project %}
+           <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag" data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
            <span class="font-body"> is
              <i class="far font-body fa-lightbulb gc-text-blue"></i>
              <span>Looking for a Project</span>

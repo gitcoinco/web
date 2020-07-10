@@ -1255,23 +1255,16 @@ body.green.offer_view .announce {
   z-index: -1;
 }
 
-.activity.hackathon_new_hacker .activity_detail::after {
-  height: 100%;
-  content: '';
-  background: url(/static/v2/images/townsqure-party.png) 0 0 no-repeat;
-  width: 100%;
-  position: absolute;
-  top: 55px;
-  right: -309px;
-  z-index: -1;
-}
-
 .new_hackathon_project {
   border-top: 6px solid rgba(15, 206, 124, 0.25);
 }
 
 .activity_main .bg_hackathon_new_hacker {
   background-color: #D3FAEB;
+}
+
+.activity_main .bg_hackathon_new_hacker .activity-avatar {
+  margin-right: -20px;
 }
 
 .bg-gc-blue {

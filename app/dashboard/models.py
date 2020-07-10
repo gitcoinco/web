@@ -5150,6 +5150,7 @@ class Answer(SuperModel):
 
 @receiver(post_save, sender=Answer, dispatch_uid='hooks_on_question_response')
 def psave_answer(sender, instance, created, **kwargs):
+    default_response = "I am a new hacker! Great meet  you all!"
     if created:
         if instance.question.hook == 'TOWNSQUARE_INTRO':
             registration = HackathonRegistration.objects.filter(hackathon=instance.hackathon,
@@ -5161,7 +5162,7 @@ def psave_answer(sender, instance, created, **kwargs):
                 activity_type='hackathon_new_hacker',
                 metadata={
                     'answer': instance.id,
-                    'intro_text': f'{instance.open_response or ""} #intro',
+                    'intro_text': f'{instance.open_response or default_response} #intro',
                     'looking_members': registration.looking_team_members if registration else False,
                     'looking_project': registration.looking_project if registration else False,
                     'hackathon_registration': registration.id if registration else 0
