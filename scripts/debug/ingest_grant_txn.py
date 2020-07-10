@@ -1,5 +1,11 @@
 from django.utils import timezone
 
+import requests
+from dashboard.models import Activity, Profile
+from economy.tx import headers
+from economy.utils import convert_token_to_usdt
+from grants.models import Contribution, Grant, Subscription
+
 handle = ''
 txid = ''
 token = ''
@@ -9,11 +15,6 @@ do_write = False
 created_on = timezone.now()
 #created_on = timezone.datetime(2020, 6, 15, 8, 0)
 
-import requests
-from dashboard.models import Activity, Profile
-from economy.tx import headers
-from economy.utils import convert_token_to_usdt
-from grants.models import Contribution, Grant, Subscription
 
 profile = Profile.objects.get(handle=handle)
 
