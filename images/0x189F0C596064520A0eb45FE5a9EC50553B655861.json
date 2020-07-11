@@ -1,0 +1,17 @@
+{
+    "symbol": "EPRO",
+    "address": "0x189F0C596064520A0eb45FE5a9EC50553B655861",
+    "overview":{
+          "en": "Ethereum pro, referred to as Epro, is committed to creating the world's leading third-generation super blockchain system, and changes the existing blockchain technology and application ecosystem through Epro Blockchain, Epro Network, Epro Services, and shardchains.",
+          "zh": "EPRO致力于创建第三代超级区块链系统，并通过Epro区块链，Epro Network，Epro Services和Shardchains改变现有的区块链技术和应用生态系统。"
+    },
+    "email": "Ethereumpro100@gmail.com",
+    "website": "http://www.ethereumpro100.com/",
+    "whitepaper": "http://www.ethereumpro100.com/Ethereum%20pro%20YW.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-28",
+    "links": {
+        "telegram": "https://t.me/Ethereum_pro",
+        "twitter": "https://twitter.com/ethereumpro2"
+      }
+}
