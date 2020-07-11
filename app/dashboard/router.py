@@ -20,18 +20,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import time
 from datetime import datetime
+from functools import reduce
 
-from django.db.models import Count, F
+from django.db.models import Count, F, Q
 
 import django_filters.rest_framework
+from bounty_requests.models import BountyRequest
 from kudos.models import KudosTransfer, Token
 from rest_framework import routers, serializers, viewsets
+from rest_framework.pagination import PageNumberPagination
 from retail.helpers import get_ip
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
-    ProfileSerializer, SearchHistory,
+    ProfileSerializer, SearchHistory, TribeMember,
 )
+from .tasks import increment_view_count
 
 logger = logging.getLogger(__name__)
 
@@ -39,19 +43,31 @@ logger = logging.getLogger(__name__)
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
     """Handle serializing the BountyFulfillment object."""
     profile = ProfileSerializer()
+    fulfiller_email = serializers.ReadOnlyField()
+    fulfiller_github_username = serializers.ReadOnlyField()
     class Meta:
         """Define the bounty fulfillment serializer metadata."""
 
         model = BountyFulfillment
-        fields = ('pk', 'fulfiller_address',
-                  'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url',
-                  'payout_tx_id', 'payout_amount', 'token_name', 'payout_status')
+        fields = ('pk', 'fulfiller_email', 'fulfiller_address',
+                  'fulfiller_github_username', 'fulfiller_metadata',
+                  'fulfillment_id', 'accepted', 'profile', 'created_on',
+                  'accepted_on', 'fulfiller_github_url', 'payout_tx_id',
+                  'payout_amount', 'token_name', 'payout_status', 'tenant',
+                  'payout_type', 'fulfiller_identifier', 'funder_identifier')
 
 
 class HackathonEventSerializer(serializers.ModelSerializer):
     """Handle serializing the hackathon object."""
     sponsor_profiles = ProfileSerializer(many=True)
+    prizes = serializers.SerializerMethodField()
+    winners = serializers.SerializerMethodField()
+
+    def get_prizes(self, obj):
+        return Bounty.objects.filter(event=obj).distinct().count()
+
+    def get_winners(self, obj):
+        return reduce(lambda total, prize: total + len(prize.paid), Bounty.objects.filter(event=obj).distinct(), 0)
 
     class Meta:
         """Define the hackathon serializer metadata."""
@@ -196,8 +212,78 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HackathonProject
-        fields = ('chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url')
         depth = 1
+
+
+class HackathonProjectsPagination(PageNumberPagination):
+    page_size = 10
+
+
+class HackathonProjectsViewSet(viewsets.ModelViewSet):
+    queryset = HackathonProject.objects.prefetch_related('bounty', 'profiles').all().order_by('id')
+    serializer_class = HackathonProjectSerializer
+    pagination_class = HackathonProjectsPagination
+
+    def get_queryset(self):
+
+        q = self.request.query_params.get('search', '')
+        order_by = self.request.query_params.get('order_by', '-created_on')
+        skills = self.request.query_params.get('skills', '')
+        filters = self.request.query_params.get('filters', '')
+        sponsor = self.request.query_params.get('sponsor', '')
+        hackathon_id = self.request.query_params.get('hackathon', '')
+        rating = self.request.query_params.get('rating', '')
+
+        if hackathon_id:
+            try:
+                hackathon_event = HackathonEvent.objects.get(id=hackathon_id)
+            except HackathonEvent.DoesNotExist:
+                hackathon_event = HackathonEvent.objects.last()
+
+            queryset = HackathonProject.objects.filter(hackathon=hackathon_event).exclude(
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+
+            if sponsor:
+                queryset = queryset.filter(
+                    Q(bounty__github_url__icontains=sponsor) | Q(bounty__bounty_owner_github_username=sponsor)
+                )
+        elif sponsor:
+            queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
+                bounty__bounty_owner_github_username=sponsor)).exclude(
+                status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', order_by, 'id')
+
+        if q:
+            queryset = queryset.filter(
+                Q(name__icontains=q) |
+                Q(summary__icontains=q) |
+                Q(profiles__handle__icontains=q)
+            )
+
+        if skills:
+            queryset = queryset.filter(
+                Q(profiles__keywords__icontains=skills)
+            )
+
+        if rating:
+            queryset = queryset.filter(
+                Q(rating__gte=rating)
+            )
+
+        if 'winners' in filters:
+            queryset = queryset.filter(
+                Q(winner=True)
+            )
+        if 'lfm' in filters:
+            queryset = queryset.filter(
+                Q(looking_members=True)
+            )
+        if 'submitted' in filters:
+            queryset = queryset.filter(
+                Q(bounty__bounty_state='work_submitted')
+            )
+
+        return queryset
 
 
 class BountySerializerSlim(BountySerializer):
@@ -210,7 +296,8 @@ class BountySerializerSlim(BountySerializer):
             'pk', 'url', 'title', 'experience_level', 'status', 'fulfillment_accepted_on', 'event',
             'fulfillment_started_on', 'fulfillment_submitted_on', 'canceled_on', 'web3_created', 'bounty_owner_address',
             'avatar_url', 'network', 'standard_bounties_id', 'github_org_name', 'interested', 'token_name', 'value_in_usdt',
-            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address'
+            'keywords', 'value_in_token', 'project_type', 'is_open', 'expires_date', 'latest_activity', 'token_address',
+            'bounty_categories'
         )
 
 
@@ -348,13 +435,13 @@ class BountiesViewSet(viewsets.ModelViewSet):
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
             queryset = queryset.filter(
-                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
+                fulfillments__profile__handle__iexact=self.request.query_params.get('fulfiller_github_username')
             )
 
         # Retrieve all DONE fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username_done' in param_keys:
             queryset = queryset.filter(
-                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username'),
+                fulfillments__profile__handle__iexact=self.request.query_params.get('fulfiller_github_username'),
                 fulfillments__accepted=True,
             )
 
@@ -446,6 +533,11 @@ class BountiesViewSet(viewsets.ModelViewSet):
                     logger.debug(e)
                     pass
 
+        # increment view counts
+        pks = [ele.pk for ele in queryset]
+        if len(pks):
+            view_type = 'individual' if len(pks) == 1 else 'list'
+            increment_view_count.delay(pks, queryset[0].content_type, self.request.user.id, view_type)
 
         return queryset
 
@@ -496,6 +588,53 @@ class BountyViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class TribesTeamSerializer(serializers.ModelSerializer):
+
+    user_is_following = serializers.SerializerMethodField(method_name='user_following')
+    followers_count = serializers.SerializerMethodField(method_name='follow_count')
+
+    def follow_count(self, instance):
+        return TribeMember.objects.filter(org=instance).exclude(status='rejected').exclude(profile__user=None).count()
+
+    def user_following(self, instance):
+        request = self.context.get('request')
+        user_profile = request.user.profile if request and request.user and hasattr(request.user, 'profile') else None
+        if user_profile:
+            return len(user_profile.tribe_members.filter(org__handle=instance.handle.lower())) > 0
+
+    class Meta:
+        model = Profile
+        fields = ('id', 'name', 'handle', 'avatar_url', 'followers_count', 'user_is_following')
+        depth = 1
+
+
+class BountyRequestSerializer(serializers.ModelSerializer):
+
+    requested_by = TribesTeamSerializer()
+
+    class Meta:
+        model = BountyRequest
+        fields = ('id', 'created_on', 'token_name', 'amount', 'comment', 'github_url', 'title', 'requested_by', 'status')
+        depth = 1
+
+class TribesSerializer(serializers.ModelSerializer):
+    """Handle serializing the Profile object."""
+    team_or_none_if_timeout = TribesTeamSerializer(many=True, read_only=True)
+    suggested_bounties = BountyRequestSerializer(many=True)
+    tribes_cover_image = serializers.ImageField(allow_empty_file=True)
+
+    def __init__(self, *args, **kwargs):
+        super(TribesSerializer, self).__init__(*args, **kwargs)
+        # We pass the "upper serializer" context to the "nested one"
+        self.fields['team_or_none_if_timeout'].context.update(self.context)
+
+    class Meta:
+        model = Profile
+        """Define the profile serializer metadata."""
+        fields = ('profile_wallpaper', 'tribes_cover_image', 'rank_org','name', 'linkedin_url', 'team_or_none_if_timeout', 'suggested_bounties', 'handle', 'tribe_description', 'avatar_url', 'follower_count', 'following_count', 'data', 'tribe_priority')
+        depth = 1
+
+
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'bounties/slim', BountiesViewSetSlim)
@@ -503,3 +642,4 @@ router.register(r'bounties', BountiesViewSet)
 router.register(r'checkin', BountiesViewSetCheckIn)
 
 router.register(r'bounty', BountyViewSet)
+router.register(r'projects_fetch', HackathonProjectsViewSet)

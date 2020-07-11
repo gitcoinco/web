@@ -2,9 +2,8 @@
 {% load i18n static %}
 {% block 'scripts' %}
   <script src="{% url 'javascript-catalog' %}"></script>
-  <script src="{% static 'v2/js/shared.js' %}"></script>
+  {% include 'shared/footer_scripts_lite.html' %}
   <script src="{% static 'ens/index.js' %}"></script>
-  <script src="{% static 'v2/js/base.js' %}"></script>
   {% block 'ens_script' %}
   {% endblock %}
 {% endblock %}

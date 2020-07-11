@@ -1,13 +1,12 @@
 User-agent: *
 
 {% for handle in hidden_profiles %}
-Disallow: {{ handle }}*
-Disallow: profile/{{ handle }}*
+Disallow: /{{ handle }}*
+Disallow: /profile/{{ handle }}*
 {% endfor %}
 
-Disallow: kudos/redeem/*
-Disallow: dynamic/avatar/*
-Disallow: login/github/*
+Disallow: /kudos/redeem/*
+Disallow: /login/github/*
 
 User-agent: Yandex
 Disallow: /

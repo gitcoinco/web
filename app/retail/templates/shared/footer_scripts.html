@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -20,8 +20,12 @@
   var static_url = "{{ STATIC_URL }}";
   var media_url = "{{ MEDIA_URL }}";
   document.contxt = {{ json_context|safe }};
+
 </script>
 <script src="{% url 'javascript-catalog' %}"></script>
+{% if not ignore_inject_web3 %}
+  {% include 'shared/shared_scripts.html' %}
+{% endif %}
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if env == 'prod' %}
   <script src="{% static 'v2/js/lib/vue.js' %}"></script>
@@ -39,9 +43,14 @@
   $.fn.bootstrapModal = bootstrapModal;
 
 </script>
-<script src="{% static "v2/js/lib/web3modal.min.js" %}"></script>
-<script src="{% static "v2/js/lib/authereum.js" %}"></script>
-<script src="{% static "v2/js/lib/fortmatic.js" %}"></script>
+<!-- <script src="{% static "v2/js/lib/web3modal.min.js" %}"></script> -->
+<script src="https://unpkg.com/web3modal"></script>
+<script src="https://cdn.jsdelivr.net/npm/authereum@latest/authereum.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fortmatic@2.0.6/dist/fortmatic.js"></script>
+<script src="{% static "v2/js/lib/walletconnect-v1.0.0-beta-47.js" %}"></script>
+<script src="{% static "v2/js/data-chains.js" %}"></script>
+<script src="{% static "v2/js/wallet.js" %}"></script>
+
 
 <script src="{% static "v2/js/lib/jquery.cookie.js" %}"></script>
 {% if not slim %}
@@ -56,6 +65,7 @@
 <script src="{% static 'v2/js/lib/emoji-button.js' %}"></script>
 <script src="{% static "v2/js/ajax-helper.js" %}"></script>
 <script src="{% static "v2/js/base.js" %}"></script>
+<script src="{% static "v2/js/cart-data.js" %}"></script>
 <script src="{% static "v2/js/lib/purify.min.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/open-chat.js" %}"></script>
@@ -65,6 +75,7 @@
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
 <script src="{% static "v2/js/search.js" %}"></script>
 <script src="{% static "v2/js/vue-filters.js" %}"></script>
+<script src="{% static "v2/js/user_card.js" %}"></script>
 {% if vue %}
 <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
 {% endif %}
@@ -72,11 +83,6 @@
   <script src="{% static "v2/js/notifications.js" %}"></script>
 {% endif %}
 <script src="{% static "cookielaw/js/cl.js" %}"></script>
-
-{% if not ignore_inject_web3 %}
-  {% include 'shared/shared_scripts.html' %}
-{% endif %}
-
 
 <script>
   var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");

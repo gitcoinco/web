@@ -3,12 +3,6 @@
  * Data is stored on IPFS + the data is stored in
  * standard bounties contract on the ethereum blockchain
  */
-
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 const ethFulfillBounty = data => {
   if (is_bounties_network) {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
@@ -18,20 +12,19 @@ const ethFulfillBounty = data => {
     bounty_address();
   } catch (exception) {
     _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+    unloading_button($('.js-submit'));
     return;
   }
 
-  loading_button($('.js-submit'));
   const githubUsername = data.githubUsername;
   const issueURL = data.issueURL;
-  const notificationEmail = data.notificationEmail;
   const githubPRLink = data.githubPRLink;
   const hoursWorked = data.hoursWorked;
   const address = data.payoutAddress;
 
   localStorage['githubUsername'] = githubUsername;
 
-  let bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+  let bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
   ipfs.ipfsApi = IpfsApi(ipfsConfig);
   ipfs.setProvider(ipfsConfig);
@@ -46,7 +39,6 @@ const ethFulfillBounty = data => {
       fulfiller: {
         githubPRLink: githubPRLink,
         hoursWorked: hoursWorked,
-        email: notificationEmail,
         githubUsername: githubUsername,
         address: address
       },
@@ -76,16 +68,14 @@ const ethFulfillBounty = data => {
 
     if (run_main) {
       if (!ignore_error) {
-        const web3Callback = function(error, result) {
+        const web3Callback = function(result, error) {
           indicateMetamaskPopup(true);
           const next = function() {
-            web3.eth.getCoinbase(function(_, account) {
-              localStorage[issueURL] = JSON.stringify({
-                timestamp: timestamp(),
-                dataHash: null,
-                issuer: account,
-                txid: result
-              });
+            localStorage[issueURL] = JSON.stringify({
+              timestamp: timestamp(),
+              dataHash: null,
+              issuer: selectedAccount,
+              txid: result
             });
 
             if (eventTag) {
@@ -130,16 +120,14 @@ const ethFulfillBounty = data => {
           const bountyId = result['standard_bounties_id'];
 
           indicateMetamaskPopup();
-          web3.eth.getAccounts(function(_, accounts) {
-            bounty.fulfillBounty(
-              bountyId,
-              document.ipfsDataHash,
-              {
-                from: accounts[0],
-                gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-              },
-              web3Callback
-            );
+          bounty.methods.fulfillBounty(
+            bountyId,
+            document.ipfsDataHash
+          ).send({
+            from: selectedAccount
+          }).then((result) => {web3Callback(result)}).catch(err => {
+            web3Callback(undefined, err);
+            console.log(err);
           });
         });
       }

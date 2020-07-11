@@ -17,11 +17,11 @@
 {% load i18n static %}
 
 <div class="{% if not hackathon %}sidebar_search{% endif %} font-body">
-  <p id="expand" class="text-right font-caption font-weight-semibold mb-0">
+  <p id="expand" class="text-center font-caption font-weight-semibold mb-0">
     {% trans "Expand Filter" %}
     <i class="fas fa-chevron-down"></i>
   </p>
-  <p id="minimize" class="text-right font-caption font-weight-semibold">
+  <p id="minimize" class="text-center font-caption font-weight-semibold">
     {% trans "Minimize Filter" %}
     <i class="fas fa-chevron-up"></i>
   </p>
@@ -30,6 +30,7 @@
 
     {% if hackathon %}
       <a v-if="!is_registered" href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue btn-block text-uppercase mb-4">Register</a>
+      <a href='#' class="btn btn-gc-blue mb-4">#intros</a>
       <div class="col-12 subheading left-ribbon">
         {% trans "Hackathon Sponsors" %}
       </div>

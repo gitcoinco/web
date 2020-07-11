@@ -49,6 +49,13 @@ $(document).ready(function() {
     $('#backgrants').html('<i class="fas fa-chevron-left mr-2"></i> Back to ' + lgt);
   }
 
+  var algi = localStorage.getItem('last_all_grants_index');
+  var algt = localStorage.getItem('last_all_grants_title');
+
+  if (algi) {
+    $('#cart_backgrants').attr('href', algi);
+    $('#cart_backgrants').html('<i class="fas fa-chevron-left mr-2"></i> Back to ' + algt);
+  }
 
   setInterval (() => {
     notifyOwnerAddressMismatch(
@@ -201,8 +208,7 @@ $(document).ready(function() {
         deployedSubscription.methods.endContract()
           .send({
             from: accounts[0],
-            gas: 3000000,
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gas: 3000000
           }).on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             const linkURL = get_etherscan_url(transactionHash);

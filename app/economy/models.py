@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 
 import json
 
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
@@ -39,6 +40,7 @@ from django.utils.html import escape
 from django.utils.timezone import localtime
 
 import pytz
+from app.services import RedisService
 
 
 class EncodeAnything(DjangoJSONEncoder):
@@ -134,15 +136,47 @@ class SuperModel(models.Model):
         from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(self.created_on)
 
+    @property
+    def content_type(self):
+        ct = ContentType.objects.get_for_model(self)
+        return str(ct)
+
+    @property
+    def view_count_redis_key(self):
+        key = f"{self.content_type}_{self.pk}"
+        return key
+
+    def set_view_count(self, amount):
+        try:
+            redis = RedisService().redis
+            result = redis.set(self.view_count_redis_key, amount)
+        except KeyError:
+            return 0
+
+    @property
+    def get_view_count(self):
+        try:
+            redis = RedisService().redis
+            result = redis.get(self.view_count_redis_key)
+            if not result:
+                return 0
+            return int(result.decode('utf-8'))
+        except KeyError:
+            return 0
 
 
 class ConversionRate(SuperModel):
     """Define the conversion rate model."""
-
+    SOURCE_TYPES = [
+        ('cryptocompare', 'cryptocompare'),
+        ('poloniex', 'poloniex'),
+        ('uniswap', 'uniswap'),
+        ('manual', 'manual'),
+    ]
     from_amount = models.FloatField()
     to_amount = models.FloatField()
     timestamp = models.DateTimeField(null=False, default=get_time, db_index=True)
-    source = models.CharField(max_length=30, db_index=True)
+    source = models.CharField(max_length=30, db_index=True, choices=SOURCE_TYPES)
     from_currency = models.CharField(max_length=30, db_index=True)
     to_currency = models.CharField(max_length=30, db_index=True)
 
@@ -181,6 +215,8 @@ class Token(SuperModel):
     network = models.CharField(max_length=25, db_index=True)
     decimals = models.IntegerField(default=18)
     priority = models.IntegerField(default=1)
+    chain_id = models.IntegerField(default=1)
+    network_id = models.IntegerField(default=1)
     metadata = JSONField(null=True, default=dict, blank=True)
     approved = models.BooleanField(default=True)
 
@@ -190,7 +226,7 @@ class Token(SuperModel):
 
     @property
     def to_dict(self):
-        return {'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
+        return {'id': self.id, 'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
 
     @property
     def to_json(self):

@@ -1,6 +1,7 @@
 pk_start = 10731
 pk_end = 10775
 name_contains = 'devcon_quest_'
+make_paid_for_first_minutes=300
 
 ################
 
@@ -31,7 +32,8 @@ for kudos in plaque_kudos:
             current_uses=0,
             secret=_key,
             comments_to_put_in_kudos_transfer="Congrats on winning #ETHDenver!",
-            sender_profile=Profile.objects.get(handle='gitcoinbot')
+            sender_profile=Profile.objects.get(handle='gitcoinbot'),
+            make_paid_for_first_minutes=make_paid_for_first_minutes,
             )
         i += 1
         print(f"{j}-{i}, {kudos.humanized_name}, https://gitcoin.co{btc.url}")

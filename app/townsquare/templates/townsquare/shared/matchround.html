@@ -1,168 +1,163 @@
 {% load humanize static i18n %}
 {% if current_match_round %}
   <div class="clr_container mt-2">
-    <div class="townsquare_block-header text-left mb-1" data-target="miniclr">
+    <div class="townsquare_block-header text-left mb-1 accordion active" data-target="miniclr">
       <strong>#{{current_match_round.number}}</strong> MINI CLR Distribution <strong>${{current_match_round.amount|floatformat:0}}</strong>
-      <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" target="blank">
-        <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3 font-caption" title="
-        <strong>Gitcoin is reinvesting in it's community</strong>
-        <br>
-        <br>
+      <a href="https://medium.com/gitcoin/experiments-with-liberal-radicalism-ad68e02efd4" target="_blank">
+        <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3 font-caption text-left"title="
+          <div class='px-2'>
+            <p class='font-weight-bold text-left'>Gitcoin is reinvesting in it's community</p>
 
-        For the next {{current_match_round.valid_to|naturaltime}}, Gitcoin will be matching your newsfeed tips with ${{current_match_round.amount|floatformat:0}} in ETH.
-        <br>
-        <br>
-        The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions (diversity in who you received from) greater than depth of contributions (total $$ received).
+            <p class='text-left'>
+              For the next {{current_match_round.valid_to|naturaltime}}, Gitcoin will be matching your
+              newsfeed tips with ${{current_match_round.amount|floatformat:0}} in ETH.
+            </p>
 
-        <br>
-        <br>
-        This rewards the most helpful community members.
+            <p class='text-left'>
+              The matching algorithm that Gitcoin uses (CLR), weights breadth of contributions
+              (diversity in who you received from) greater than depth of contributions (total $$ received).
+            </p>
 
-        <br>
-        <br>
+            <p class='text-left'>
+              This rewards the most helpful community members.
+            </p>
 
-        <strong>How do you earn this way?</strong>  Well the TLDR is
+            <p class='mb-0 text-left'>
+              <strong>How do you earn this way?</strong>  Well the TLDR is
+            </p>
 
-        <br>
-        1. the more value you add, the more people send you micro-tips
-        <br>
-        2. we match contributions most to users who receive micro-tips from the many different people
-        <br>
-        3. this incentivizes healthy behaviour on Gitcoin.
-        <br>
-        <br>
-        <strong>How do you get started?</strong>
+            <p class='mb-0 text-left'>1. the more value you add, the more people send you micro-tips</p>
+            <p class='mb-0 text-left'>2. we match contributions most to users who receive micro-tips from the many different people</p>
+            <p class='text-left'>3. this incentivizes healthy behaviour on Gitcoin.</p>
 
-        <br>
-        1. If someone posts asking for help, do your best to be helpful.
-        <br>
-        2. If someone is helpful to you, send them a micro-tip.
-        <br>
-        3. The CLR matching algorithm will match 0.001 ETH contributions with up to 0.1 ETH in matching funds.
-        <br>
-        <br>
+            <p class='mb-0 text-left'>
+              <strong>How do you get started?</strong>
+            </p>
 
-        <strong>Want to learn more about how it works?</strong> Click here. " ></i>
+            <p class='mb-0 text-left'>1. If someone posts asking for help, do your best to be helpful.</p>
+            <p class='mb-0 text-left'>2. If someone is helpful to you, send them a micro-tip.</p>
+            <p class='text-left'>3. The CLR matching algorithm will match 0.001 ETH contributions with up to 0.1 ETH in matching funds.</p>
+          </div>"
+        ></i>
       </a>
     </div>
-    <div>
-      <div id="miniclr">
-        <div id="payout_estimate" class="font-italic mb-2 grey">
-          Payout <span class="clr_match_countdown_timer m-0" data-time="{{current_match_round.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
-        </div>
-        <table class="w-100 bg-white">
-          <tr class="title font-weight-semibold font-body">
+    <div id="miniclr" class="panel-active">
+      <div id="payout_estimate" class="font-italic mb-2 grey">
+        Payout <span class="clr_match_countdown_timer m-0" data-time="{{current_match_round.valid_to|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>
+      </div>
+      <table class="w-100 bg-shade-0">
+        <tr class="title font-weight-semibold font-body">
+          <td>
+            #
+          </td>
+          <td data-toggle="tooltip" title="Who dat?!??">
+            Who
+          </td>
+          <td data-toggle="tooltip" title="How much dat user earned via the CLR algorithm.">
+            Haul
+          </td>
+        </tr>
+        {% if matching_leaderboard|length == 0 %}
+        <tr>
+          <td colspan=3 class="text-center pb-2">
+            <img style="width: 100px; height: 100px;" src="{% static 'v2/images/quests/enemies/v.png' %}" data-toggle="tooltip" title="V Bot is looking for value-creation opportunities to get tipped for.">
+            <hr>
+            <strong>None Yet</strong> - Keep sending micro-tips, and check back soon ;-)
+          </td>
+        </tr>
+        {% endif %}
+        {% for mli in matching_leaderboard %}
+          <tr class="font-caption mb-2">
             <td>
-              #
+              {{mli.i}}
             </td>
-            <td data-toggle="tooltip" title="Who dat?!??">
-              Who
+            <td>
+              <a href="/profile/{{mli.handle}}">
+                <img src='/dynamic/avatar/{{mli.handle}}' data-toggle="tooltip" title="@{{mli.handle}}">
+              </a>
+            {% if mli.you %}
+              <br>
+              <span class="tag">
+                it me
+              </span>
+            {% endif %}
             </td>
-            <td data-toggle="tooltip" title="How much dat user earned via the CLR algorithm.">
-              Haul
-            </td>
-          </tr>
-          {% if matching_leaderboard|length == 0 %}
-          <tr>
-            <td colspan=3 class="text-center pb-2">
-              <img style="width: 100px; height: 100px;" src="{% static 'v2/images/quests/enemies/v.png' %}" data-toggle="tooltip" title="V Bot is looking for value-creation opportunities to get tipped for.">
+            <td class="text-justify" data-html="true" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} from <strong>{{mli.contributors}}</strong> contributor{{mli.contributors|pluralize}} worth <strong>${{mli.amount}}</strong> since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about <strong>${{mli.match_amount}}</strong> in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})
+              <br>
               <hr>
-              <strong>None Yet</strong> - Keep sending micro-tips, and check back soon ;-)
+
+              Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round, a contribution of 0.001 ETH (about $0.30) could mean <strong>+${{mli.default_match_estimate|floatformat:2}}</strong> in matching.
+              <br>
+              Other contribution levels will mean other matching amounts:
+
+              Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round..
+              <ul>
+                {% for key, val in mli.match_curve.items %}
+                  {% if key %}
+                    <p class='mb-0 text-left'>
+                      Your contribution of ${{key}} could yield ${{val|floatformat:2}} in matching.
+                    </p>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            ">
+              <span class="amount position-relative">
+                ${{mli.amount}} from
+                {{mli.contributors}} contributor{{mli.contributors|pluralize}}  <br>
+                <span style="color:#17a2b8;">${{mli.match_amount}} matched</span>
+              </span>
+              {% if not mli.following %}
+                <a class="btn btn-gc-blue btn-sm follow_button float-right mr-2 font-smaller-6 font-weight-bold px-3 position-relative"
+                  data-jointribe='{{mli.handle}}' href="#"
+                >
+                  Follow
+                </a>
+              {% else %}
+                <div class="btn btn-outline-green mr-2 font-smaller-6 font-weight-bold float-right px-2 position-relative">
+                  Following
+                </div>
+              {% endif %}
             </td>
           </tr>
-          {% endif %}
-          {% for mli in matching_leaderboard %}
+        {% endfor %}
+      </table>
+
+      {% if suggested_actions|length %}
+      <div class="font-italic mb-2 mt-4 grey font-smaller-3">
+        How to earn in round #{{current_match_round.number}}:
+      </div>
+      <table class="w-100 bg-shade-0">
+        <tr class="title font-weight-semibold font-body">
+              <td>
+                  Action
+              </td>
+              <td>
+                  Suggested Donation
+              </td>
+              <td>
+                  Match Potential
+              </td>
+          </tr>
+          {% for suggested_action in suggested_actions %}
             <tr class="font-caption mb-2">
-              <td>
-                {{mli.i}}
-              </td>
-              <td>
-                <a href="/profile/{{mli.handle}}">
-                  <img src='/dynamic/avatar/{{mli.handle}}' data-toggle="tooltip" title="@{{mli.handle}}">
-                </a>
-              {% if mli.you %}
-                <br>
-                <span class="tag">
-                  it me
-                </span>
-              {% endif %}
-              </td>
-              <td class="text-justify" data-html="true" data-toggle="tooltip" title="@{{mli.handle}} got {{mli.contributions}} contribution{{mli.contributions|pluralize}} from <strong>{{mli.contributors}}</strong> contributor{{mli.contributors|pluralize}} worth <strong>${{mli.amount}}</strong> since {{current_match_round.valid_from|date:'Y-m-d'}} ({{current_match_round.valid_from|naturaltime}}), and will recieve about <strong>${{mli.match_amount}}</strong> in matching on {{current_match_round.valid_to|date:'Y-m-d'}} ({{current_match_round.valid_to|naturaltime}})
-                <br>
-                <hr>
-
-                Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round, a contribution of 0.001 ETH (about $0.30) could mean <strong>+${{mli.default_match_estimate|floatformat:2}}</strong> in matching.
-                <br>
-                Other contribution levels will mean other matching amounts:
-
-                Want to help @{{mli.handle}} move up the rankings?  Assuming you haven't contributed to @{{mli.handle}} yet this round..
-                <ul>
-                  {% for key, val in mli.match_curve.items %}
-                    {% if key %}
-                      <li>
-                        Your contribution of ${{key}} could yield ${{val|floatformat:2}} in matching.
-                      </li>
+                <td>
+                    {{suggested_action.title}}
+                    {% if suggested_action.desc %}
+                      <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3 font-caption" title="{{suggested_action.desc}}">
                     {% endif %}
-                  {% endfor %}
-                </ul>
-              ">
-                <span class="amount position-relative">
-                  ${{mli.amount}} from
-                  {{mli.contributors}} contributor{{mli.contributors|pluralize}}  <br>
-                  <span style="color:#17a2b8;">${{mli.match_amount}} matched</span>
-                </span>
-                {% if not mli.following %}
-                  <a class="btn btn-gc-blue btn-sm follow_button float-right mr-2 font-smaller-6 font-weight-bold px-3 position-relative"
-                    data-jointribe='{{mli.handle}}' href="#"
-                  >
-                    Follow
-                  </a>
-                {% else %}
-                  <div class="btn btn-outline-green mr-2 font-smaller-6 font-weight-bold float-right px-2 position-relative">
-                    Following
-                  </div>
-                {% endif %}
-              </td>
+                </td>
+                <td>
+                    {{suggested_action.suggested_donation}}
+                </td>
+                <td>
+                    {{suggested_action.matchpotential}}
+                </td>
             </tr>
           {% endfor %}
-        </table>
+      </table>
+      {% endif %}
 
-        {% if suggested_actions|length %}
-        <div class="font-italic mb-2 mt-4 grey font-smaller-3">
-          How to earn in round #{{current_match_round.number}}:
-        </div>
-        <table class="w-100 bg-white">
-          <tr class="title font-weight-semibold font-body">
-                <td>
-                    Action
-                </td>
-                <td>
-                    Suggested Donation
-                </td>
-                <td>
-                    Match Potential
-                </td>
-            </tr>
-            {% for suggested_action in suggested_actions %}
-              <tr class="font-caption mb-2">
-                  <td>
-                      {{suggested_action.title}}
-                      {% if suggested_action.desc %}
-                        <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3 font-caption" title="{{suggested_action.desc}}">
-                      {% endif %}
-                  </td>
-                  <td>
-                      {{suggested_action.suggested_donation}}
-                  </td>
-                  <td>
-                      {{suggested_action.matchpotential}}
-                  </td>
-              </tr>
-            {% endfor %}
-        </table>
-        {% endif %}
-
-      </div>
     </div>
   </div>
+  <hr>
 {% endif %}

@@ -1,3 +1,30 @@
+Vue.mixin({
+  data: function() {
+    const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i).test(navigator.userAgent);
+
+    return {
+      isMobile,
+      chatURL: document.chatURL || 'https://chat.gitcoin.co'
+    };
+  },
+  methods: {
+    chatWindow: function(channel, dm) {
+      dm = dm || channel ? channel.indexOf('@') >= 0 : false;
+      channel = channel || 'town-square';
+      let vm = this;
+      const hackathonTeamSlug = 'hackathons';
+      const gitcoinTeamSlug = 'gitcoin';
+      const isHackathon = (document.hackathon_id !== null);
+
+
+      const url = `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${dm ? '@' + channel : channel}`;
+
+      window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+    }
+  }
+});
+
+
 Vue.component('modal', {
   props: [ 'user', 'size', 'id', 'issueDetails' ],
   template: `<div class="vue-modal modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
@@ -43,7 +70,7 @@ Vue.component('select2', {
   mounted: function() {
     let vm = this;
 
-    $(this.$el).select2({ data: this.options })
+    $(this.$el).select2({data: this.options})
       .val(this.value)
       .trigger('change')
       .on('change', function() {
@@ -53,13 +80,13 @@ Vue.component('select2', {
   watch: {
     value: function(value) {
       if (value === undefined) {
-        $(this.$el).empty().select2({ data: this.options });
+        $(this.$el).empty().select2({data: this.options});
       } else if ([...value].sort().join(',') !== [...$(this.$el).val()].sort().join(',')) {
         $(this.$el).val(value).trigger('change');
       }
     },
     options: function(options) {
-      $(this.$el).empty().select2({ data: options });
+      $(this.$el).empty().select2({data: options});
     }
   },
   destroyed: function() {
@@ -123,4 +150,449 @@ Vue.component('qrcode', {
     //   // return this.size.trim().toLowerCase()
     // }
   }
+});
+
+
+Vue.component('tribes-settings', {
+  delimiters: [ '[[', ']]' ],
+  props: ['tribe'],
+  data: function() {
+    return {
+      editorOptions: {
+        priority: {
+          modules: {
+            toolbar: [
+              [ 'bold', 'italic', 'underline' ],
+              [{'align': []}],
+              [{'list': 'ordered'}, {'list': 'bullet'}],
+              [ 'link', 'code-block' ],
+              ['clean']
+            ]
+          },
+          theme: 'snow',
+          placeholder: 'List out your tribe priorities to let contributors to know what they can request to work on'
+        },
+        description: {
+          modules: {
+            toolbar: [
+              [ 'bold', 'italic', 'underline' ],
+              [{'align': []}],
+              [ 'link', 'code-block' ],
+              ['clean']
+            ]
+          },
+          theme: 'snow',
+          placeholder: 'Describe your tribe so that people can follow you.'
+        }
+      }
+    };
+  },
+  methods: {}
+});
+
+
+Vue.component('project-directory', {
+  delimiters: [ '[[', ']]' ],
+  props: [ 'tribe', 'userId' ],
+  methods: {
+    fetchProjects: function(newPage) {
+      let vm = this;
+
+      vm.isLoading = true;
+      vm.noResults = false;
+
+      if (newPage) {
+        vm.projectsHasNext = null;
+        vm.projectsPage = newPage;
+      }
+
+      if (vm.hackathonId) {
+        vm.params.hackathon = hackathonId;
+      }
+
+      if (vm.sponsor) {
+        vm.params.sponsor = vm.sponsor;
+      }
+
+      if (vm.searchTerm) {
+        vm.params.search = vm.searchTerm;
+      } else {
+        delete vm.params['search'];
+      }
+
+      const searchParams = new URLSearchParams(vm.params);
+
+      const apiUrlProjects = vm.projectsHasNext ? vm.projectsHasNext : `/api/v0.1/projects_fetch/?${searchParams.toString()}`;
+
+      const getProjects = fetchData(apiUrlProjects, 'GET');
+
+      $.when(getProjects).then(function(response) {
+        response.results.forEach(function(item) {
+          vm.hackathonProjects.push(item);
+        });
+
+        vm.userProjects = [];
+        if (vm.userId) {
+          vm.userProjects = vm.hackathonProjects.filter(
+            ({profiles}) => profiles.some(
+              ({id}) => id === parseInt(vm.userId, 10)
+            )
+          );
+        }
+        vm.projectsHasNext = response.next;
+
+        vm.numProjects = response.count;
+
+        if (vm.hackathonProjects.length) {
+          vm.noResults = false;
+        } else {
+          vm.noResults = true;
+        }
+        vm.isLoading = false;
+      });
+    },
+    searchProjects: function() {
+      let vm = this;
+
+      vm.hackathonProjects = [];
+
+      vm.fetchProjects(1);
+
+    },
+    bottomVisible: function() { // TODO: abstract this to the mixin, and have it take a callback which modifies the component state.
+      let vm = this;
+
+      const scrollY = window.scrollY;
+      const visible = document.documentElement.clientHeight;
+      const pageHeight = document.documentElement.scrollHeight - 500;
+      const bottomOfPage = visible + scrollY >= pageHeight;
+
+      if (!vm.isLoading && (bottomOfPage || pageHeight < visible)) {
+        if (vm.projectsHasNext) {
+          vm.fetchProjects();
+        }
+      }
+    }
+  },
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      sponsor: this.tribe || null,
+      hackathonSponsors: document.hackathonSponsors || [],
+      hackathonProjects: document.hackathonProjects || [],
+      userProjects: document.userProjects || [],
+      projectsPage: 1,
+      hackathonId: document.hackathon_id || null,
+      projectsHasNext: null,
+      numProjects: 0,
+      media_url,
+      searchTerm: null,
+      bottom: false,
+      params: {
+        filters: []
+      },
+      isFunder: false,
+      showModal: false,
+      showFilters: true,
+      skills: document.keywords || [],
+      selectedSkills: [],
+      noResults: false,
+      isLoading: true,
+      hideFilterButton: false
+    };
+  },
+  mounted() {
+    this.fetchProjects();
+    this.$watch('params', function(newVal, oldVal) {
+      this.searchProjects();
+    }, {
+      deep: true
+    });
+  },
+  created() {
+    // this.extractURLFilters();
+  },
+  beforeMount() {
+    if (this.isMobile) {
+      this.showFilters = false;
+    }
+    window.addEventListener('scroll', () => {
+      this.bottom = this.bottomVisible();
+    }, false);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', () => {
+      this.bottom = this.bottomVisible();
+    });
+  }
+});
+
+
+Vue.component('showcase', {
+  delimiters: [ '[[', ']]' ],
+  props: [],
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      hackathon: document.hackathonObj,
+      isEditing: false,
+      showcase: document.hackathonObj.showcase,
+      top: document.hackathonObj.showcase.top || [{}, {}, {}],
+      sponsors: document.hackathonSponsors,
+      spotlights: document.hackathonObj.showcase.spotlights || [],
+      prizes: document.hackathonObj.showcase.prizes || 0,
+      is_staff: document.contxt.is_staff
+    };
+  },
+  filters: {
+    'markdownit': function(val) {
+      if (!val)
+        return '';
+      const _markdown = new markdownit({
+        linkify: true,
+        highlight: function(str, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return `<pre class="hljs"><code>${hljs.highlight(lang, str, true).value}</code></pre>`;
+            } catch (__) {}
+          }
+          return `<pre class="hljs"><code>${sanitize(_markdown.utils.escapeHtml(str))}</code></pre>`;
+        }
+      });
+
+      _markdown.renderer.rules.table_open = function() {
+        return '<table class="table">';
+      };
+      ui_body = sanitize(_markdown.render(val));
+      return ui_body;
+    }
+  },
+  methods: {
+    followTribe: function(handle, event) {
+      event.preventDefault();
+      let vm = this;
+
+      const url = `/tribe/${handle}/join/`;
+      const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        if (response && response.is_member) {
+          this.getSponsor(handle).followed = true;
+        } else {
+          this.getSponsor(handle).followed = false;
+        }
+      }).fail((error) => {
+        console.log(error);
+      });
+    },
+    getSponsor: function(handle) {
+      return this.sponsors.filter(sponsor => sponsor.org_name === handle)[0] || {};
+    },
+    addSpotlight: function() {
+      let vm = this;
+      let spotlight = {
+        sponsor: {},
+        content: ''
+      };
+
+      if (vm.spotlights.length === 0) {
+        vm.spotlights = [spotlight];
+      } else {
+        vm.spotlights.push(spotlight);
+      }
+    },
+    saveShowcase: function() {
+      let vm = this;
+      const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/showcase/`;
+      const retrieveResources = fetchData(resource_url, 'POST', JSON.stringify({
+        content: vm.showcase.content,
+        top: vm.top,
+        spotlights: vm.spotlights,
+        prizes: vm.showcase.prizes
+      }), {'X-CSRFToken': vm.csrf});
+
+      vm.isEditing = false;
+
+
+      $.when(retrieveResources).then((response) => {
+        _alert('Showcase info saved', 'success', 1000);
+      }).fail((error) => {
+        console.log(error);
+      });
+
+    }
+  },
+  mounted() {
+    if (!this.showcase.top) {
+      this.showcase.top = [];
+    }
+  }
+});
+
+Vue.component('project-card', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || ''
+    };
+  },
+  props: [ 'project', 'edit', 'is_staff' ],
+  methods: {
+    markWinner: function($event, project) {
+      let vm = this;
+
+      const url = '/api/v0.1/hackathon_project/set_winner/';
+      const markWinner = fetchData(url, 'POST', {
+        project_id: project.pk,
+        winner: $event ? 1 : 0
+      }, {'X-CSRFToken': vm.csrf});
+
+      $.when(markWinner).then(response => {
+        if (response.message) {
+          alert(response.message);
+        }
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    projectModal() {
+      let project = this.$props.project;
+
+      projectModal(project.bounty.pk, project.pk);
+    }
+  },
+  template: `<div class="card card-user shadow-sm border-0">
+    <div class="card card-project">
+      <b-form-checkbox v-if="is_staff" switch v-model="project.winner" style="padding:0;float:left;" @change="markWinner($event, project)">mark winner</b-form-checkbox>
+      <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
+      <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
+      <div class="card-bg rounded-top">
+        <div v-if="project.winner" class="ribbon ribbon-top-right"><span>winner</span></div>
+        <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
+        <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
+      </div>
+      <div class="card-body">
+        <h5 class="card-title font-weight-bold text-left">[[ project.name ]]</h5>
+        <div class="my-2">
+          <p class="text-left text-muted font-smaller-1">
+            [[ project.summary | truncate(500) ]]
+          </p>
+          <div class="text-left">
+            <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+            <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
+            <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
+            <template v-slot:button-content>
+              <i class='fas fa-comment-dots'></i>
+            </template>
+            <b-dropdown-item-button v-if="project.chat_channel_id" @click.prevent="chatWindow(project.chat_channel_id);" aria-describedby="dropdown-header-label" :key="project.chat_channel_id || project.id">
+              Chat With Team
+            </b-dropdown-item-button>
+            <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
+              @ [[ profile.handle ]]
+            </b-dropdown-item-button>
+            </b-dropdown>
+          </div>
+        </div>
+
+        <div class="my-3 mb-2 text-left">
+          <b class="font-weight-bold font-smaller-3">Team Members</b>
+          <div class="mt-1">
+              <a v-for="profile in project.profiles" :href="'/profile/' + profile.handle">
+                <b-img-lazy :src="profile.avatar_url" :alt="profile.handle" :title="profile.handle" width="30" height="30" class="rounded-circle"></b-img-lazy>
+              </a>
+          </div>
+        </div>
+
+        <div v-if="project.looking_members || project.message" class="my-3 looking-team">
+          <h5 v-if="project.looking_members"  class="info-card-title uppercase">Looking for team members</h5>
+          <p v-if="project.message" class="info-card-desc">
+            [[ project.message ]]
+          </p>
+        </div>
+
+        <div class="font-smaller-2 mt-4">
+          <b class="font-weight-bold">Sponsored by</b>
+          <img width="20" :src="project.bounty.avatar_url" :alt="project.bounty.org_name" />
+          <a :href="/profile/[[project.bounty.org_name]]">[[ project.bounty.org_name ]]</a>
+        </div>
+      </div>
+    </div>
+  </div>`
+});
+
+Vue.component('suggested-profiles', {
+  props: ['profiles'],
+  template: `<div class="townsquare_nav-list my-2 tribe">
+      <div id="suggested-tribes">
+        <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
+            <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
+        </ul>
+      </div>
+    </div>`
+});
+
+
+Vue.component('suggested-profile', {
+  props: ['profile'],
+  data: function() {
+    return {
+      follow: this.profile.user_is_following || false,
+      follower_count: this.profile.followers_count || 0
+    };
+  },
+  computed: {
+    avatar_url: function() {
+      return `/dynamic/avatar/${this.profile.handle}`;
+    },
+    profile_url: function() {
+      return `/profile/${this.profile.handle}`;
+    }
+  },
+  methods: {
+    followTribe: function(handle, event) {
+      event.preventDefault();
+      let vm = this;
+
+      const url = `/tribe/${handle}/join/`;
+      const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        if (response && response.is_member) {
+          vm.follow = true;
+          vm.follower_count += 1;
+        } else {
+          vm.follow = false;
+          vm.follower_count -= 1;
+        }
+      }).fail((error) => {
+        console.log(error);
+      });
+    }
+  },
+  template: `
+<b-media tag="li" class="row mx-auto mx-md-n1">
+  <template v-slot:aside>
+    <a :href="profile_url" class="d-flex nav-link nav-line pr-0 mr-0">
+      <b-img :src="avatar_url" class="nav_avatar"></b-img>
+    </a>
+  </template>
+  <div class="row">
+    <span class="col-6 col-md-12 col-xl-7 font-caption">
+        <a :href="profile_url" class="nav-title font-weight-semibold pt-0 mb-0 text-capitalize text-black">{{profile.name}}</a>
+        <p class="mb-0">
+          <i class="fas fa-user font-smaller-4 mr-1"></i>
+          <span class="font-weight-semibold">{{follower_count}}</span> followers
+        </p>
+    </span>
+    <span class="col-6 col-md-12 col-xl-5 p-0 my-auto text-center">
+      <a class="follow_tribe btn btn-sm btn-outline-green font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-if="follow">
+        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> following
+      </a>
+      <a class="follow_tribe btn btn-sm btn-gc-blue font-weight-bold font-smaller-6 px-3" href="#" @click="followTribe(profile.handle, $event)" v-else>
+        <i v-bind:class="[follow ? 'fa-user-minus' : 'fa-user-plus', 'fas mr-1']"></i> follow
+      </a>
+    </span>
+  </div>
+</b-media>
+`
 });

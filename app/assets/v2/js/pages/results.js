@@ -21,7 +21,7 @@ function drawChart() {
     backgroundColor: 'transparent',
     height: 400,
     width: width,
-    vAxis: { title: 'USD', ticks: [ 0, 10000, 50000, 100000, 150000, 200000, 250000, 300000, 350000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
+    vAxis: { title: 'USD', ticks: [ 0, 10000, 100000, 200000, 300000, 400000, 500000, 600000, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));
@@ -98,4 +98,48 @@ $(window).resize(function() {
   drawChart();
   repoChart();
   communityChart();
+});
+
+console.log('here');
+
+$(document).ready(function() {
+  setInterval(function() {
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > 500 && !document.offset_loaded) {
+      $('img').unveil(200);
+      document.offset_loaded = true;
+    }
+  }, 3000);
+  $.get('/activity', function(html) {
+    $('#activities').html($(html).find('.activity_stream').html());
+  });
+  $('.view_more').click(function(e) {
+    e.preventDefault();
+    $('.hackathon-breakdown .hidden').removeClass('hidden');
+    $(this).remove();
+  });
+  $('#leaderboard_nav .nav-link').click(function(e) {
+    let id = $(this).attr('href');
+    let target = $(this).data('target');
+    let target_search = $(this).data('targetsearch');
+
+    e.preventDefault();
+    $('.leaderboard_target').addClass('hidden');
+    $('.nav-link').removeClass('active');
+    $('.always_show').removeClass('hidden');
+    $(id).removeClass('hidden');
+    $(this).addClass('active');
+    if (target) {
+      $(id).html('<img style="margin: 20px 100px; height: 200px; width: 200px;" src=/static/v2/images/loading_v2.gif>');
+      $.get(target, function(html) {
+        html = html.replace(/data-src/g, 'src');
+        $(id).html($(html).find(target_search));
+        if (target.indexOf('countries') != -1) {
+          $(id).find('.img-fluid').remove();
+        }
+      });
+    }
+  });
+  $('#leaderboard_nav .nav-link:first-child').click();
 });

@@ -1,4 +1,20 @@
 /* eslint-disable no-console */
+needWalletConnection();
+
+const fetchFromWeb3Wallet = () => {
+  if (!provider) {
+    onConnect();
+  }
+  $('#payoutAddress').val(selectedAccount);
+  $('#payoutAddress').attr('readonly', true);
+}
+
+window.addEventListener('dataWalletReady', function(e) {
+  if (is_bounties_network || web3_type === 'web3_modal') {
+    fetchFromWeb3Wallet();
+  }
+}, false);
+
 window.onload = function() {
 
   $('.rating input:radio').attr('checked', false);
@@ -8,17 +24,10 @@ window.onload = function() {
     $(this).parent().addClass('checked');
   });
 
-  if (is_bounties_network) {
-    fetchFromWeb3Wallet();
-  }
-
   if (typeof localStorage['githubUsername'] != 'undefined') {
     if (!$('input[name=githubUsername]').val()) {
       $('input[name=githubUsername]').val(localStorage['githubUsername']);
     }
-  }
-  if (typeof localStorage['notificationEmail'] != 'undefined') {
-    $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
   }
   if (getParam('source')) {
     $('input[name=issueURL]').val(getParam('source'));
@@ -26,7 +35,7 @@ window.onload = function() {
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
-
+      loading_button($('.js-submit'));
       let data = {};
 
       $.each($(form).serializeArray(), function() {
@@ -42,9 +51,3 @@ window.onload = function() {
   });
 };
 
-const fetchFromWeb3Wallet = () => {
-  web3.eth.getAccounts(function(_, accounts) {
-    $('#payoutAddress').val(accounts[0]);
-    $('#payoutAddress').attr('disabled', true);
-  });
-}

@@ -30,7 +30,7 @@ from marketing.models import LeaderboardRank
 
 # Constants
 IGNORE_PAYERS = []
-IGNORE_EARNERS = ['owocki']  # sometimes owocki pays to himself. what a jerk!
+IGNORE_EARNERS = ['owocki', 'trufflesuite', 'thegivingblock', 'blockscout' ]
 
 ALL = 'all'
 
@@ -95,18 +95,21 @@ def profile_to_location(handle):
 
 
 def profile_to_location_helper(handle):
-
+    if not handle:
+        return []
+    
     profiles = Profile.objects.filter(handle=handle.lower())
     if handle and profiles.exists():
         profile = profiles.first()
-        return profile.locations
+        if len(profile.locations):
+            return [profile.locations[0]]
     return []
 
 
 def bounty_to_location(bounty):
     locations = profile_to_location(bounty.bounty_owner_github_username)
     fulfiller_usernames = list(
-        bounty.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
+        bounty.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True)
     )
     for username in fulfiller_usernames:
         locations = locations + profile_to_location(username)
@@ -232,7 +235,7 @@ def add_element(key, index_term, amount):
 
 
 def sum_bounty_helper(b, time, index_term, val_usd):
-    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
+    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True))
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
     if index_term == b.bounty_owner_github_username and index_term not in IGNORE_PAYERS:
@@ -274,7 +277,7 @@ def sum_bounties(b, index_terms):
 def sum_tip_helper(t, time, index_term, val_usd):
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if t.username == index_term:
+    if t.username == index_term and index_term not in IGNORE_EARNERS:
         add_element(f'{time}_{EARNERS}', index_term, val_usd)
     if t.from_username == index_term:
         add_element(f'{time}_{PAYERS}', index_term, val_usd)
@@ -357,7 +360,7 @@ def sum_grants(t, index_terms):
 def sum_grant_helper(gc, time, index_term, val_usd):
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if gc.subscription.grant.admin_profile.handle.lower() == index_term:
+    if gc.subscription.grant.admin_profile.handle.lower() == index_term and index_term not in IGNORE_EARNERS:
         add_element(f'{time}_{EARNERS}', index_term, val_usd)
     if gc.subscription.contributor_profile.handle.lower() == index_term:
         add_element(f'{time}_{PAYERS}', index_term, val_usd)
@@ -434,8 +437,12 @@ def do_leaderboard():
             grants = Contribution.objects.filter(subscription__network='mainnet')
             # iterate
             for gc in grants:
-                index_terms = grant_index_terms(gc)
-                sum_grants(gc, index_terms)
+                try:
+                    index_terms = grant_index_terms(gc)
+                    sum_grants(gc, index_terms)
+                except Exception as e:
+                    print(gc.id)
+                    print(e)
 
         if product in ['all', 'bounties']:
             # get bounties

@@ -17,8 +17,44 @@
 {% load i18n static %}
 {% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
-{% include 'shared/search.html' %}
+
+{% if show_sales_action %}
+  <a class="btn button--primary shadow-none py-2 px-4 text-white font-weight-semibold mr-md-3 my-3 my-md-0" target="_blank" href="https://hackathons.gitcoin.co/contact/">Contact Sales</a>
+{% endif %}
 {% if user.is_authenticated %}
+  <div class="nav-item dropdown interior">
+
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWallet" role="button"
+      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <b class="wallet-network">•</b><i class="fas fa-wallet provider-icon"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right shadow-lg" aria-labelledby="navbarDropdownWallet">
+      <a class="dropdown-item" href="#" id="wallet-btn">
+        Connect Wallet
+      </a>
+      <div class="dropdown-item wallet-hidden d-none">
+        <small>connected to:</small>
+        <div class="network-name"></div>
+        <div class="selected-account" data-toggle="tooltip" title="Click to copy"></div>
+      </div>
+      <div class="dropdown-divider wallet-hidden d-none"></div>
+      <div id="wallet-accounts" class="dropdown-item wallet-hidden d-none"></div>
+      <div class="dropdown-divider wallet-hidden d-none"></div>
+      <a href="#" class="dropdown-item wallet-hidden d-none" id="btn-disconnect">
+        Disconnect
+      </a>
+    </div>
+
+  </div>
+  <div id="templates" style="display: none">
+    <template id="template-balance">
+      <div class="wallet-option" data-toggle="tooltip" title="Click to select this wallet">
+      	<div class="wallet-address"></div>
+      	<small class="wallet-balance"></small>
+      </div>
+    </template>
+  </div>
+
   <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -51,6 +87,10 @@
         <a class="dropdown-item" data-gtm="profile" href="{{profile_url}}">
           <i class="fas fa-user"></i>
           {% trans "My Profile" %}
+        </a>
+        <a class="dropdown-item" href="/wiki">
+          <i class="fas fa-question-circle"></i>
+          {% trans "Wiki" %}
         </a>
       {% else %}
         <a class="dropdown-item" data-gtm="get started" href="{% url "get_gitcoin" %}">
@@ -89,6 +129,9 @@
         </a>
       {% endif %}
       <div class="dropdown-divider"></div>
+      {% if is_townsquare %}
+        {% include 'shared/theme_switcher.html' with source='authed' %}
+      {% endif %}
       <a class="dropdown-item" data-gtm="logout" href="{% url "logout" %}?next={{ request.get_full_path }}">
         <i class="fas fa-lock"></i>
         {% trans "Log Out" %}
@@ -99,7 +142,7 @@
    data-gtm="profile" style="background-image: url('/dynamic/avatar/{{user.username}}')">
   </a>
   <a href="/chat">
-   {% include 'profiles/presence_indicator.html' with show_even_if_offline=1  suppress_click=1 last_chat_status=last_chat_status show_even_if_no_chat_id=1 %}
+    {% include 'profiles/presence_indicator.html' with show_even_if_offline=1  suppress_click=1 last_chat_status=last_chat_status show_even_if_no_chat_id=1 %}
   </a>
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">

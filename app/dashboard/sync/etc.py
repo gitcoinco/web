@@ -1,14 +1,13 @@
 from django.utils import timezone
 
 import requests
-from dashboard.sync.helpers import txn_already_used
+from dashboard.sync.helpers import record_payout_activity, txn_already_used
 
 
 def find_txn_on_etc_explorer(fulfillment, network='mainnet'):
     token_name = fulfillment.token_name
     if token_name != 'ETC':
         return None
-
     funderAddress = fulfillment.bounty.bounty_owner_address
     amount = fulfillment.payout_amount
     payeeAddress = fulfillment.fulfiller_address
@@ -61,4 +60,5 @@ def sync_etc_payout(fulfillment):
             fulfillment.payout_status = 'done'
             fulfillment.accepted_on = timezone.now()
             fulfillment.accepted = True
+            record_payout_activity(fulfillment)
         fulfillment.save()

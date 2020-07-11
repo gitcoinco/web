@@ -4,26 +4,30 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.http import Http404, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
 import metadata_parser
-from app.redis_service import RedisService
+from app.services import RedisService
+from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
     Activity, HackathonEvent, Profile, TribeMember, get_my_earnings_counter_profiles, get_my_grants,
 )
 from kudos.models import Token
-from marketing.mails import comment_email, new_action_request
+from marketing.mails import comment_email, mention_email, new_action_request, tip_comment_awarded_email
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.views import get_specific_activities
 
 from .models import (
-    Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, SuggestedAction,
+    Announcement, Comment, Favorite, Flag, Like, MatchRanking, MatchRound, Offer, OfferAction, PinnedPost,
+    SuggestedAction,
 )
 from .tasks import increment_offer_view_counts
-from .utils import is_user_townsquare_enabled
+from .utils import can_pin, is_user_townsquare_enabled
+
+redis = RedisService().redis
 
 tags = [
     ['#announce','bullhorn','search-announce'],
@@ -36,6 +40,16 @@ tags = [
     ['#other','briefcase','search-other'],
     ]
 
+
+def load_wallpapers(request):
+    """Load profile banners"""
+    images_with_icons = load_files_in_directory('status_backgrounds')
+    images = [image.split('.')[0] for image in images_with_icons if 'icon' not in image]
+    response = {
+        'status': 200,
+        'wallpapers': images
+    }
+    return JsonResponse(response, safe=False)
 
 def get_next_time_available(key):
     d = timezone.now()
@@ -93,7 +107,6 @@ def get_sidebar_tabs(request):
         'badge': get_amount_unread('everywhere', request),
     }]
     default_tab = 'everywhere'
-
     if request.user.is_authenticated:
         num_business_relationships = len(set(get_my_earnings_counter_profiles(request.user.profile.pk)))
         if num_business_relationships:
@@ -167,8 +180,12 @@ def get_sidebar_tabs(request):
         for hackathon in hackathons:
             connect = {
                 'title': hackathon.name,
+                'logo': hackathon.logo,
+                'start': hackathon.start_date,
+                'end': hackathon.end_date,
                 'slug': f'hackathon:{hackathon.pk}',
-                'helper_text': f'Activity from the {hackathon.name} Hackathon.',
+                'url_slug': hackathon.slug,
+                'helper_text': f'Go to {hackathon.name} Townsquare.',
             }
             hackathon_tabs = [connect] + hackathon_tabs
 
@@ -321,11 +338,22 @@ def get_following_tribes(request):
 
 
 def town_square(request):
+    try:
+        audience = redis.get(f"townsquare:audience")
+        audience = str(audience.decode('utf-8')) if audience else '39102'
+    except KeyError:
+        data_results = JSONStore.objects.filter(view='results', key=None).first()
+        if data_results:
+            audience = data_results.data['audience']
+            redis.set('townsquare:audience', audience)
+
     SHOW_DRESSING = request.GET.get('dressing', False)
     tab = request.GET.get('tab', request.COOKIES.get('tab', 'connect'))
+    try:
+        pinned = PinnedPost.objects.get(what=tab)
+    except PinnedPost.DoesNotExist:
+        pinned = None
     title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link = get_param_metadata(request, tab)
-    max_length_offset = abs(((request.user.profile.created_on if request.user.is_authenticated else timezone.now()) - timezone.now()).days)
-    max_length = 280 + max_length_offset
     if not SHOW_DRESSING:
         is_search = "activity:" in tab or "search-" in tab
         trending_only = int(request.GET.get('trending', 0))
@@ -338,16 +366,19 @@ def town_square(request):
             'is_direct_link': is_direct_link,
             'page_seo_text_insert': page_seo_text_insert,
             'nav': 'home',
+            'what': tab,
+            'can_pin': can_pin(request, tab),
+            'pinned': pinned,
             'target': f'/activity?what={tab}&trending_only={trending_only}',
             'tab': tab,
             'tags': tags,
-            'max_length': max_length,
-            'max_length_offset': max_length_offset,
             'admin_link': admin_link,
             'now': timezone.now(),
             'is_townsquare': True,
             'trending_only': bool(trending_only),
+            'audience': audience
         }
+
         return TemplateResponse(request, 'townsquare/index.html', context)
 
     tabs, tab, is_search, search, hackathon_tabs = get_sidebar_tabs(request)
@@ -372,9 +403,10 @@ def town_square(request):
         'nav': 'home',
         'target': f'/activity?what={tab}&trending_only={trending_only}',
         'tab': tab,
+        'what': tab,
+        'can_pin': can_pin(request, tab),
         'tabs': tabs,
-        'max_length': max_length,
-        'max_length_offset': max_length_offset,
+        'pinned': pinned,
         'SHOW_DRESSING': SHOW_DRESSING,
         'hackathon_tabs': hackathon_tabs,
         'REFER_LINK': f'https://gitcoin.co/townsquare/?cb=ref:{request.user.profile.ref_code}' if request.user.is_authenticated else None,
@@ -390,8 +422,10 @@ def town_square(request):
         'announcements': announcements,
         'is_subscribed': is_subscribed,
         'offers_by_category': offers_by_category,
+        'TOKENS': request.user.profile.token_approvals.all() if request.user.is_authenticated else [],
         'following_tribes': following_tribes,
         'suggested_tribes': suggested_tribes,
+        'audience': audience
     }
 
     if 'tribe:' in tab:
@@ -438,10 +472,18 @@ def api(request, activity_id):
 
     # setup response
     response = {}
+    status = 200
 
     # no perms needed responses go here
     if request.GET.get('method') == 'comment':
         comments = activity.comments.prefetch_related('profile').order_by('created_on')
+        # check for permissions
+        is_authenticated = request.user.is_authenticated
+        if request.POST.get('method') == 'delete':
+            has_perms = activity.profile == request.user.profile
+        if is_authenticated:
+            profile = request.user.profile
+
         response['comments'] = []
         results = {i : 0 for i in range(0, 15)}
         for comment in comments:
@@ -474,18 +516,23 @@ def api(request, activity_id):
             counter += 1; results[counter] += time.time() - start_time; start_time = time.time()
             if comment.is_edited:
                 comment_dict['is_edited'] = comment.is_edited
+
+            comment_dict['redeem_link'] = comment.redeem_link if is_authenticated and comment.tip and comment.tip.recipient_profile_id == profile.id else ''
+            comment_dict['tip'] = bool(comment.tip)
             response['comments'].append(comment_dict)
+
+        response['has_tip'] = False
+        if activity.tip:
+            user_can_redeem = request.user.profile.id == activity.tip.recipient_profile_id
+            response['has_tip'] = True
+            response['tip_available'] = not activity.tip.recipient_profile
+            response['can_redeem'] = activity.tip.status == 'PENDING' and user_can_redeem
+        response['author'] = activity.profile.handle
+
         for key, val in results.items():
             if settings.DEBUG:
                 print(key, round(val, 2))
         return JsonResponse(response)
-
-    # check for permissions
-    has_perms = request.user.is_authenticated
-    if request.POST.get('method') == 'delete':
-        has_perms = activity.profile == request.user.profile
-    if not has_perms:
-        raise Http404
 
     # deletion request
     if request.POST.get('method') == 'delete':
@@ -521,7 +568,19 @@ def api(request, activity_id):
         if request.POST['direction'] == 'unliked':
             activity.likes.filter(profile=request.user.profile).delete()
 
-    # like request
+    # award request
+    elif request.POST.get('method') == 'award':
+        comment = get_object_or_404(Comment, id=int(request.POST['comment']))
+        if request.user.profile.id == activity.profile.id and comment.activity_id == activity.id:
+            recipient_profile = comment.profile
+            activity.tip.username = recipient_profile.username
+            activity.tip.recipient_profile = recipient_profile
+            activity.tip.save()
+            comment.tip = activity.tip
+            comment.save()
+            tip_comment_awarded_email(comment, [recipient_profile.email])
+
+    # favorite request
     elif request.POST.get('method') == 'favorite':
         if request.POST['direction'] == 'favorite':
             already_likes = Favorite.objects.filter(activity=activity, user=request.user).exists()
@@ -529,6 +588,22 @@ def api(request, activity_id):
                 Favorite.objects.create(user=request.user, activity=activity)
         elif request.POST['direction'] == 'unfavorite':
             Favorite.objects.filter(user=request.user, activity=activity).delete()
+
+    # PinnedPost request
+    elif request.POST.get('method') == 'pin':
+        what = request.POST.get('what')
+        permission = can_pin(request, what)
+        # handle permissions for pinning/unpinning
+        if permission:
+            if request.POST.get('direction') == 'pin':
+                pinned_post, created = PinnedPost.objects.update_or_create(
+                    what=what, defaults={"activity": activity, "user": request.user.profile}
+                )
+            elif request.POST.get('direction') == 'unpin':
+                PinnedPost.objects.filter(what=what).delete()
+        else:
+            status = 401
+            response['message'] = "UNAUTHORIZED"
 
     # flag request
     elif request.POST.get('method') == 'flag':
@@ -552,7 +627,7 @@ def api(request, activity_id):
         if 'Just sent a tip of' not in comment:
             comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
 
-    return JsonResponse(response)
+    return JsonResponse(response, status=status)
 
 
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

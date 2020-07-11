@@ -53,9 +53,11 @@ BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
+ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='YOUR-ETHERSCAN-KEY')
 VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
 FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
+PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -64,6 +66,9 @@ RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
+
+TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
+
 
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
@@ -125,7 +130,6 @@ INSTALLED_APPS = [
     'bounty_requests',
     'perftools',
     'revenue',
-    'event_ethdenver2019',
     'inbox',
     'feeswapper',
     'search',
@@ -141,8 +145,8 @@ INSTALLED_APPS = [
     'wiki.plugins.notifications.apps.NotificationsConfig',
     'wiki.plugins.images.apps.ImagesConfig',
     'wiki.plugins.macros.apps.MacrosConfig',
+    'adminsortable2',
     'debug_toolbar',
-
 ]
 
 MIDDLEWARE = [
@@ -239,7 +243,7 @@ if DEBUG and not SUPRESS_DEBUG_TOOLBAR:
         "SHOW_TOOLBAR_CALLBACK" : callback,
     }
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
-    
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
@@ -759,7 +763,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI', 'USDC']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -813,6 +817,7 @@ MINUTES_BETWEEN_RE_MARKETING = env.int('MINUTES_BETWEEN_RE_MARKETING', default=6
 MINICLR_ADDRESS = env('MINICLR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 MINICLR_PRIVATE_KEY = env('MINICLR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
+
 AVATAR_ADDRESS = env('AVATAR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 AVATAR_PRIVATE_KEY = env('AVATAR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
 
@@ -824,5 +829,17 @@ GRANTS_COUPON_25_OFF = env('GRANTS_COUPON_25_OFF', default='OWOCKIFOREVER')
 GRANTS_COUPON_50_OFF = env('GRANTS_COUPON_50_OFF', default='OWOCKIFOREVER')
 GRANTS_COUPON_100_OFF = env('GRANTS_COUPON_100_OFF', default='OWOCKIFOREVER')
 
+TIP_PAYOUT_ADDRESS = env('TIP_PAYOUT_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+
+account_sid = env('TWILIO_ACCOUNT_SID', default='')
+auth_token = env('TWILIO_AUTH_TOKEN', default='')
+verify_service = env('TWILIO_VERIFY_SERVICE', default='')
+
+SMS_MAX_VERIFICATION_ATTEMPTS = env('SMS_MAX_VERIFICATION_ATTEMPTS', default=4)
+SMS_COOLDOWN_IN_MINUTES = env('SMS_COOLDOWN_IN_MINUTES', default=1)
+EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
+PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')

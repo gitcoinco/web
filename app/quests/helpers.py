@@ -52,7 +52,7 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
         return
 
     # record points
-    value = abs(value_multiplier * qa.quest.value/(2**(layer-1)))
+    value = abs(value_multiplier * qa.quest.value/(10**(layer-1)))
     from quests.views import current_round_number
     QuestPointAward.objects.create(
         questattempt=qa,
@@ -77,7 +77,8 @@ def record_award_helper(qa, profile, layer=1, action='Beat', value_multiplier=1)
             sender_profile=gitcoinbot,
             metadata={
                 'recipient': profile.pk,
-            }
+            },
+            make_paid_for_first_minutes=1,
             )
         cta_url = btc.url
         cta_text = 'Redeem Kudos'
@@ -204,6 +205,7 @@ def process_win(request, qa):
             metadata={
                 'recipient': request.user.profile.pk,
             },
+            make_paid_for_first_minutes=1,
             )
     prize_url = tweetify_prize_url(btc.url, quest, request.user)
     qa.success = True

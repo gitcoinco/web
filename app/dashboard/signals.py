@@ -32,11 +32,11 @@ logger = logging.getLogger(__name__)
 
 def m2m_changed_interested(sender, instance, action, reverse, model, **kwargs):
     """Handle changes to Bounty interests."""
-    profile_handles = instance.profile_pairs
 
     if action in ['post_add', 'post_remove']:
-        maybe_market_to_github(instance, 'work_started',
-                               profile_pairs=profile_handles)
+        from dashboard.tasks import m2m_changed_interested
+        m2m_changed_interested.delay(instance.pk)
+
 
 
 def changed_fulfillments(sender, instance, action, reverse, model, **kwargs):

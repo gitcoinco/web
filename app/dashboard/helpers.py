@@ -43,7 +43,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from git.utils import get_gh_issue_details, get_url_dict
+from git.utils import get_gh_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC
@@ -126,32 +126,45 @@ def amount(request):
     """
     response = {}
 
-    try:
-        amount = str(request.GET.get('amount'))
-        if not amount.replace('.','').isnumeric():
-            return HttpResponseBadRequest('not number')
-        denomination = request.GET.get('denomination', 'ETH')
-        if not denomination:
-            denomination = 'ETH'
+    amount = str(request.GET.get('amount', '1'))
 
-        if denomination in settings.STABLE_COINS:
-            denomination = 'USDT'
-        if denomination == 'ETH':
+    if not amount.replace('.','').isnumeric():
+        return HttpResponseBadRequest('not number')
+
+    denomination = request.GET.get('denomination', 'ETH')
+    tokens = denomination.split(',')
+
+    response = []
+
+    for token in tokens:
+        if token in settings.STABLE_COINS:
+            token = 'USDT'
+        if token == 'ETH':
             amount_in_eth = float(amount)
         else:
-            amount_in_eth = convert_amount(amount, denomination, 'ETH')
-        amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
-        response = {
+            try:
+                amount_in_eth = convert_amount(amount, token, 'ETH')
+            except Exception as e:
+                logger.debug(e)
+                amount_in_eth = None
+        try:
+            if amount_in_eth:
+                amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
+            else:
+                amount_in_usdt = convert_amount(amount, token, 'USDT')
+
+        except Exception as e:
+            logger.debug(e)
+            amount_in_usdt = None
+
+        response.append({
+            'token': token,
+            'amount': float(amount),
             'eth': amount_in_eth,
-            'usdt': amount_in_usdt,
-        }
-        return JsonResponse(response)
-    except ConversionRateNotFoundError as e:
-        logger.debug(e)
-        raise Http404
-    except Exception as e:
-        logger.error(e)
-        raise Http404
+            'usdt': amount_in_usdt
+        })
+
+    return JsonResponse(response, safe=False)
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
@@ -171,6 +184,16 @@ def issue_details(request):
     token = request.GET.get('token', None)
     url = request.GET.get('url')
     url_val = URLValidator()
+    hackathon_slug = request.GET.get('hackathon_slug')
+
+
+    if hackathon_slug:
+        sponsor_profiles = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).prefetch_related('sponsor_profiles').values_list('sponsor_profiles__handle', flat=True)
+        org_issue = org_name(url).lower()
+
+        if org_issue not in sponsor_profiles:
+            message = 'This issue is not under any sponsor repository'
+            return JsonResponse({'status':'false','message':message}, status=404)
 
     try:
         url_val(url)
@@ -190,7 +213,8 @@ def issue_details(request):
             response['message'] = 'could not parse Github url'
     except Exception as e:
         logger.warning(e)
-        response['message'] = 'could not pull back remote response'
+        message = 'could not pull back remote response'
+        return JsonResponse({'status':'false','message':message}, status=404)
     return JsonResponse(response)
 
 
@@ -350,10 +374,6 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             try:
                 created_on = timezone.now()
                 modified_on = timezone.now()
-                fulfiller_email = fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('email', '')
-                fulfiller_name = fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('name', '')
                 fulfiller_github_url = fulfillment.get('data', {}).get(
                     'payload', {}).get('fulfiller', {}).get('githubPRLink', '')
                 hours_worked = fulfillment.get('data', {}).get(
@@ -366,10 +386,12 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     hours_worked = None
 
                 new_bounty.fulfillments.create(
+                    funder_profile=new_bounty.bounty_owner_profile,
+                    funder_address=new_bounty.bounty_owner_address,
+                    payout_type='bounties_network',
+                    tenant = 'ETH',
+                    token_name=new_bounty.token_name,
                     fulfiller_address=fulfiller_address,
-                    fulfiller_email=fulfiller_email,
-                    fulfiller_github_username=github_username,
-                    fulfiller_name=fulfiller_name,
                     fulfiller_metadata=fulfillment,
                     fulfillment_id=fulfillment.get('id'),
                     fulfiller_github_url=fulfiller_github_url,
@@ -572,6 +594,9 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     except Exception as e:
         logger.error(e)
 
+    if latest_old_bounty:
+        new_bounty.set_view_count(latest_old_bounty.get_view_count)
+
     if latest_old_bounty and latest_old_bounty.event:
         new_bounty.event = latest_old_bounty.event
         new_bounty.save()
@@ -762,7 +787,6 @@ def get_fulfillment_data_for_activity(fulfillment):
         'fulfiller_address': fulfillment.fulfiller_address,
         'fulfiller_email': fulfillment.fulfiller_email,
         'fulfiller_github_username': fulfillment.fulfiller_github_username,
-        'fulfiller_name': fulfillment.fulfiller_name,
         'fulfiller_metadata': fulfillment.fulfiller_metadata,
         'fulfillment_id': fulfillment.fulfillment_id,
         'fulfiller_hours_worked': str(fulfillment.fulfiller_hours_worked),
@@ -781,7 +805,8 @@ bounty_activity_event_adapter = {
     'killed_bounty': 'cancel_bounty',
     'work_submitted': 'submit_work',
     'stop_work': 'stop_work',
-    'work_done': 'payout_bounty'
+    'work_done': 'payout_bounty',
+    'worker_paid': 'worker_paid'
 }
 
 
@@ -817,8 +842,8 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                     fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-            if fulfillment:
-                user_profile = Profile.objects.filter(handle=fulfillment.fulfiller_github_username.lower()).first()
+            if fulfillment and fulfillment.profile:
+                user_profile = fulfillment.profile
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
 

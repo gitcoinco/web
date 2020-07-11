@@ -12,6 +12,10 @@ $(document).ready(function() {
 
   $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
+    if (!web3Modal.cachedProvider) {
+      onConnect();
+      return false;
+    }
     $('.js-submit').attr('disabled', 'disabled');
     $('#loadingImg').show();
     var destinationAccount = $('#destinationAccount').val();
@@ -24,8 +28,8 @@ $(document).ready(function() {
       web3.eth.sendTransaction({
         from: fundingAccount,
         to: destinationAccount,
-        value: web3.toWei(parseFloat(faucetAmount), 'ether'),
-        gasPrice: web3.toHex(document.gas_price * Math.pow(10, 9))
+        value: web3.utils.toWei(String(parseFloat(faucetAmount)), 'ether'),
+        gasPrice: web3.utils.toHex(document.gas_price * Math.pow(10, 9))
       }, post_receipt);
     });
   });

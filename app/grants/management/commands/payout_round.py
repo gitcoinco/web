@@ -34,6 +34,7 @@ from grants.views import clr_active, clr_round, next_round_start, round_end
 from marketing.mails import (
     grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
 )
+from townsquare.models import Comment
 from web3 import HTTPProvider, Web3
 
 WAIT_TIME_BETWEEN_PAYOUTS = 15
@@ -79,12 +80,13 @@ class Command(BaseCommand):
                 return
             for grant in grants:
                 amount = grant.clr_match_estimate_this_round
+                has_already_kyc = grant.clr_matches.filter(has_passed_kyc=True).exists()
                 if not amount:
                     continue
                 already_exists = scheduled_matches.filter(grant=grant).exists()
                 if already_exists:
                     continue
-                needs_kyc = amount > KYC_THRESHOLD
+                needs_kyc = amount > KYC_THRESHOLD and not has_already_kyc
                 comments = "" if not needs_kyc else "Needs KYC"
                 ready_for_test_payout = not needs_kyc
                 match = CLRMatch.objects.create(
@@ -123,8 +125,11 @@ class Command(BaseCommand):
             kwargs[key] = False
             not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
             kwargs[key] = True
-            unpaid_scheduled_matches = scheduled_matches.filter(**kwargs).filter(test_payout_tx='')
-            paid_scheduled_matches = scheduled_matches.filter(**kwargs).exclude(test_payout_tx='')
+            kwargs2 = {}
+            key2 = 'test_payout_tx' if not is_real_payout else 'payout_tx'
+            kwargs2[key2] = ''
+            unpaid_scheduled_matches = scheduled_matches.filter(**kwargs).filter(**kwargs2)
+            paid_scheduled_matches = scheduled_matches.filter(**kwargs).exclude(**kwargs2)
             total_not_ready_matches = sum(sm.amount for sm in not_ready_scheduled_matches)
             total_owed_matches = sum(sm.amount for sm in unpaid_scheduled_matches)
             total_paid_matches = sum(sm.amount for sm in paid_scheduled_matches)
@@ -151,7 +156,7 @@ class Command(BaseCommand):
                 amount_owed = match.amount
 
                 w3 = get_web3(network)
-                contract = w3.eth.contract(Web3.toChecksumAddress(CLR_TOKEN_ADDRESS), abi=abi)
+                contract = w3.eth.contract(Web3.toChecksumAddress(TOKEN_ADDRESS), abi=abi)
                 address = Web3.toChecksumAddress(address)
 
                 amount = int(amount_owed * 10**DECIMALS)
@@ -202,7 +207,7 @@ class Command(BaseCommand):
                 subscription.real_period_seconds = 2592000
                 subscription.frequency = 30
                 subscription.frequency_unit = 'N/A'
-                subscription.token_address = CLR_TOKEN_ADDRESS
+                subscription.token_address = TOKEN_ADDRESS
                 subscription.token_symbol = token_name
                 subscription.gas_price = 0
                 subscription.new_approve_tx_id = '0x0'
@@ -211,7 +216,7 @@ class Command(BaseCommand):
                 subscription.contributor_profile = profile
                 subscription.grant = match.grant
                 subscription.comments = validator_comment
-                subscription.amount_per_period_usdt = match.amount
+                subscription.amount_per_period_usdt = match.amount if is_real_payout else 0
                 subscription.save()
 
                 contrib = Contribution.objects.create(
@@ -249,5 +254,12 @@ class Command(BaseCommand):
                     'metadata': metadata,
                 }
 
-                Activity.objects.create(**kwargs)
+                activity = Activity.objects.create(**kwargs)
+
+                if is_real_payout:
+                    comment = f"CLR Round {clr_round} Payout"
+                    comment = Comment.objects.create(profile=profile, activity=activity, comment=comment)
+
+                print("SLEEPING")
                 time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
+                print("DONE SLEEPING")

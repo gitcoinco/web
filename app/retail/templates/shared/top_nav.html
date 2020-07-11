@@ -33,28 +33,24 @@
 
 <div class="top-nav g-font-muli d-md-none {{class}}">
   <a class="link d-md-block d-none" href="{% url 'products' %}">Grow Open Source</a>
-  <a class="{% if request.path|matches:'^\/((hackathon.*))$' %}selected{% endif %}" href="{% url 'get_hackathons' %}">
-    <img src="{% static "v2/images/top-bar/hackathons-logo.svg" %}" height="23" width="125" alt="" class="d-md-block d-none" style="margin-top: 0px; margin-left: -10px;">
-    <img src="{% static "v2/images/top-bar/hackathons-symbol.svg" %}" height="22" alt="" class="d-md-none">
+  <a class="{% if request.path == '/explorer' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url 'explorer' %}">
+    <img src="{% static "v2/images/top-bar/bounties-symbol-neg.svg" %}" height="22" alt="">
+    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Bounties</span>
   </a>
-  <a class="{% if request.path == '/explorer' %}selected{% endif %}" href="{% url 'explorer' %}">
-    <img src="{% static "v2/images/top-bar/bounties_desktop.svg" %}" height="22" alt="" class="d-md-block d-none">
-    <img src="{% static "v2/images/top-bar/bounties_mobile.svg" %}" height="22" alt="" class="d-md-none">
+  <a class="{% if request.path|matches:'^\/((hackathon.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url 'get_hackathons' %}">
+    <img src="{% static "v2/images/top-bar/hackathons-symbol-neg.svg" %}" height="22" alt="">
+    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Hackathons</span>
   </a>
-  <a class="{% if request.path|matches:'^\/((codefund.*))$' %}selected{% endif %}" href="https://codefund.app/" style="margin-bottom: -2px;">
-    <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="20" alt="" class="d-md-block d-none">
-    <img src="{% static "v2/images/top-bar/codefund-symbol.svg" %}" height="20" alt="" class="d-md-none">
+  <a class="{% if request.path|matches:'^\/((grants.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url "grants:grants" %}">
+    <img src="{% static "v2/images/top-bar/grants-symbol-neg.svg" %}" height="22" alt="">
+    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Grants</span>
   </a>
-  <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %}" href="{% url 'kudos_marketplace' %}">
-    <img src="{% static "v2/images/top-bar/kudos-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
-    <img src="{% static "v2/images/top-bar/kudos-symbol.svg" %}" height="22" alt="" class="d-md-none">
+  <a class="{% if request.path|matches:'^\/((quests.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url "quests_index" %}">
+    <img src="{% static "v2/images/top-bar/quests-symbol-neg.svg" %}" height="22" alt="">
+    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Quests</span>
   </a>
-  <a class="{% if request.path|matches:'^\/((grants.*))$' %}selected{% endif %}" href="{% url "grants:grants" %}">
-    <img src="{% static "v2/images/top-bar/grants-logo.svg" %}" height="22" alt="" class="d-md-block d-none">
-    <img src="{% static "v2/images/top-bar/grants-symbol.svg" %}" height="22" alt="" class="d-md-none">
-  </a>
-  <a class="{% if request.path|matches:'^\/((quests.*))$' %}selected{% endif %}" href="{% url "quests_index" %}">
-    <img src="{% static "v2/images/top-bar/quests-logo.svg" %}" height="20" width="95" alt="" class="d-md-block d-none" style="margin-top: -2px; margin-left: -10px;">
-    <img src="{% static "v2/images/top-bar/quests-symbol.svg" %}" height="22" alt="" class="d-md-none" style="height: 55px; width: 55px; margin-top: -15px; margin-left: -15px;">
+  <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url 'kudos_marketplace' %}">
+    <img src="{% static "v2/images/top-bar/kudos-symbol-neg.svg" %}" height="22" alt="">
+    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Kudos</span>
   </a>
 </div>

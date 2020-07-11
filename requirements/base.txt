@@ -48,7 +48,7 @@ geoip2==2.8.0
 django-silk==2.0.0
 django-extensions==2.2.1
 ipdb==0.11
-django-autotranslate==1.1.0
+django-autotranslate==1.1.1
 svgutils==0.3.0
 watchdog==0.9.0
 Werkzeug[watchdog]==0.15.5
@@ -94,4 +94,6 @@ pandas
 wiki
 django-bulk-update
 elasticsearch
-
+pdfrw
+django-admin-sortable2==0.7.6
+twilio

@@ -64,6 +64,7 @@ class TokenQuerySet(models.QuerySet):
         return self.filter(
             Q(name__icontains=keyword) |
             Q(description__icontains=keyword) |
+            Q(artist__icontains=keyword) |
             Q(tags__icontains=keyword)
         )
 
@@ -121,10 +122,11 @@ class Token(SuperModel):
     image = models.CharField(max_length=255, null=True)
     rarity = models.CharField(max_length=255, null=True)
     tags = models.CharField(max_length=255, null=True, db_index=True)
-    artist = models.CharField(max_length=255, null=True, blank=True)
+    artist = models.CharField(max_length=255, null=True, blank=True, db_index=True)
     platform = models.CharField(max_length=255, null=True, blank=True)
     external_url = models.CharField(max_length=255, null=True)
     background_color = models.CharField(max_length=255, null=True)
+    metadata = JSONField(default=dict, blank=True)
 
     # Extra fields added to database (not on blockchain)
     owner_address = models.CharField(max_length=255)
@@ -133,7 +135,8 @@ class Token(SuperModel):
     contract = models.ForeignKey(
         'kudos.Contract', related_name='kudos_contract', on_delete=models.SET_NULL, null=True
     )
-    hidden = models.BooleanField(default=False)
+    hidden = models.BooleanField(default=False, help_text=('Hide from marketplace?'))
+    hidden_token_details_page = models.BooleanField(default=False, help_text=('Hide token details page'))
     send_enabled_for_non_gitcoin_admins = models.BooleanField(default=True)
     preview_img_mode = models.CharField(max_length=255, default='png')
     suppress_sync = models.BooleanField(default=False)
@@ -146,6 +149,16 @@ class Token(SuperModel):
             self.owner_address = to_checksum_address(self.owner_address)
 
         super().save(*args, **kwargs)
+
+    @property
+    def artist_count(self):
+        return self.artist_others.count()
+
+    @property
+    def artist_others(self):
+        if not self.artist:
+            return Token.objects.none()
+        return Token.objects.filter(artist=self.artist, num_clones_allowed__gt=1, hidden=False)
 
     @property
     def static_image(self):
@@ -531,7 +544,7 @@ def psave_kt(sender, instance, **kwargs):
             "network":instance.network,
             "txid":instance.txid,
             "token_name":'ETH',
-            "token_value":instance.value_true,
+            "token_value":token.price_in_eth,
         }
         )
 
@@ -593,6 +606,7 @@ class BulkTransferCoupon(SuperModel):
     sender_pk = models.CharField(max_length=255, blank=True)
     tag = models.CharField(max_length=255, blank=True)
     metadata = JSONField(default=dict, blank=True)
+    make_paid_for_first_minutes = models.IntegerField(default=0)
 
     def __str__(self):
         """Return the string representation of a model."""
@@ -605,6 +619,13 @@ class BulkTransferCoupon(SuperModel):
     def url(self):
         return f"/kudos/redeem/{self.secret}"
 
+    @property
+    def paid_until(self):
+        return self.created_on + timezone.timedelta(minutes=self.make_paid_for_first_minutes)
+
+    @property
+    def is_paid_right_now(self):
+        return timezone.now() < self.paid_until
 
 @receiver(pre_save, sender=BulkTransferCoupon, dispatch_uid="psave_BulkTransferCoupon")
 def psave_BulkTransferCoupon(sender, instance, **kwargs):
@@ -655,10 +676,11 @@ class TokenRequest(SuperModel):
     profile = models.ForeignKey(
         'dashboard.Profile', related_name='token_requests', on_delete=models.CASCADE,
     )
+    rejection_reason = models.TextField(max_length=500, default='', blank=True)
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"approved: {self.approved} -- {self.name} on {self.network} on {self.created_on};"
+        return f"approved: {self.approved}, rejected: {bool(self.rejection_reason)} -- {self.name} on {self.network} on {self.created_on};"
 
 
     def mint(self, gas_price_gwei=None):

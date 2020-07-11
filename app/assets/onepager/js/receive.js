@@ -1,8 +1,3 @@
-window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 5000);
-  listen_for_web3_changes();
-});
-
 /* eslint-disable no-console */
 var combine_secrets = function(secret1, secret2) {
   var shares = [ secret1, secret2 ];
@@ -18,7 +13,22 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
   var serializedTx = tx.serialize();
 
   // send raw transaction
-  web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), success_callback);
+  web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
+    .on('transactionHash', txHash => {
+      console.log('transactionHash:', txHash);
+      success_callback(undefined, txHash);
+    })
+    .on('receipt', receipt => {
+      console.log('receipt:', receipt);
+    })
+    .on('confirmation', (confirmationNumber, receipt) => {
+      if (confirmationNumber >= 1) {
+        console.log('confirmations:', confirmationNumber, receipt);
+      }
+    })
+    .on('error:', error => {
+      success_callback(error, undefined);
+    });
 };
 
 window.onload = function() {
@@ -38,13 +48,7 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      if (document.web3network == 'locked') {
-        _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
-        approve_metamask();
-      } else {
-        _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-      }
-
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
     } else if (!$('#forwarding_address').val()) {
       web3.eth.getCoinbase(function(_, coinbase) {
         $('#forwarding_address').val(coinbase);
@@ -57,6 +61,10 @@ window.onload = function() {
 $(document).ready(function() {
   $(document).on('click', '#receive', function(e) {
     e.preventDefault();
+
+    if (!provider) {
+      return onConnect();
+    }
 
     var forwarding_address = $('#forwarding_address').val();
 
@@ -98,13 +106,17 @@ $(document).ready(function() {
       if (err) {
         _alert(err.message.split('\n')[0], 'error');
       } else {
-        var url = window.location.href.split('?')[0];
-
-        var form = $('<form action="' + url + '" method="post">' +
-          '<input type="text" name="receive_txid" value="' + txid + '" />' +
-          '<input type="text" name="forwarding_address" value="' + $('#forwarding_address').val() + '" />' +
-          '<input type="text" name="save_addr" value="' + ($('#save_addr').is(':checked') ? '1' : '0') + '" />' +
-          '</form>');
+        const url = window.location.href.split('?')[0];
+        const csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val();
+        const forwardingAddress = $('#forwarding_address').val();
+        const saveAddr = ($('#save_addr').is(':checked') ? '1' : '0');
+        const form = $(`
+          <form action="${url}" method="post" class="d-none">
+            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfmiddlewaretoken}">
+            <input type="text" name="receive_txid" value="${txid}">
+            <input type="text" name="forwarding_address" value="${forwardingAddress}">
+            <input type="text" name="save_addr" value="${saveAddr}">
+          </form>`);
 
         $('body').append(form);
         form.submit();
@@ -113,12 +125,14 @@ $(document).ready(function() {
 
     // redeem tip
 
-    var gas_price_wei = new BigNumber(document.gas_price * 10 ** 9);
+
+    document.tip['token_address'] = document.tip['token_address'] == '0x0' ? '0x0000000000000000000000000000000000000000' : document.tip['token_address'];
+    var gas_price_wei = new web3.utils.BN(document.gas_price * 10 ** 9);
     var is_eth = document.tip['token_address'] == '0x0' || document.tip['token_address'] == '0x0000000000000000000000000000000000000000';
     var token_address = document.tip['token_address'];
-    var token_contract = web3.eth.contract(token_abi).at(token_address);
+    var token_contract = new web3.eth.Contract(token_abi, token_address);
     var holding_address = document.tip['holding_address'];
-    var amount_in_wei = new BigNumber(document.tip['amount_in_wei']);
+    var amount_in_wei = new web3.utils.BN(String(document.tip['amount_in_wei']));
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;
@@ -128,9 +142,9 @@ $(document).ready(function() {
       }
       // find existing balance
       web3.eth.getBalance(holding_address, function(error, result) {
-        var balance = new BigNumber(result.toString());
+        var holderBalance = new web3.utils.BN(result.toString());
 
-        if (balance == 0) {
+        if (holderBalance == 0) {
           _alert('You must wait until the senders transaction confirm before claiming this tip.');
           return;
         }
@@ -139,34 +153,34 @@ $(document).ready(function() {
         if (is_eth) {
           // send ETH
           rawTx = {
-            nonce: web3.toHex(nonce),
+            nonce: web3.utils.toHex(nonce),
             to: forwarding_address,
             from: holding_address,
             value: amount_in_wei.toString()
           };
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            var buffer = new BigNumber(0);
+            var buffer = new web3.utils.BN(0);
 
-            gasLimit = new BigNumber(gasLimit);
-            var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
+            gasLimit = new web3.utils.BN(gasLimit);
+            var send_amount = holderBalance.sub(gasLimit.mul(gas_price_wei)).sub(buffer);
 
             if (document.override_send_amount) {
               send_amount = document.override_send_amount * 10 ** 18; // TODO: decimals
             }
 
-            rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
-            rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
-            rawTx['gas'] = web3.toHex(gasLimit.toString());
-            rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
+            rawTx['value'] = web3.utils.toHex(send_amount.toString()); // deduct gas costs from amount to send
+            rawTx['gasPrice'] = web3.utils.toHex(gas_price_wei.toString());
+            rawTx['gas'] = web3.utils.toHex(gasLimit.toString());
+            rawTx['gasLimit'] = web3.utils.toHex(gasLimit.toString());
             show_console = false;
             if (show_console) {
               console.log('addr ', holding_address);
-              console.log('balance ', balance.toString());
+              console.log('holderBalance ', holderBalance.toString());
               console.log('sending ', send_amount.toString());
-              console.log('gas ', (gasLimit.times(gas_price_wei)).toString());
+              console.log('gas ', (gasLimit.mul(gas_price_wei)).toString());
               console.log('gas price ', (gas_price_wei.toString()));
               console.log('buffer ', (buffer.toString()));
-              console.log('balance > value ', balance > send_amount);
+              console.log('holderBalance > value ', holderBalance > send_amount);
               console.log(rawTx);
             }
             sign_and_send(rawTx, success_callback, document.priv_key);
@@ -174,10 +188,11 @@ $(document).ready(function() {
         } else {
 
           // send ERC20
-          var data = token_contract.transfer.getData(forwarding_address, amount_in_wei.toString());
+          var encoded_amount = new web3.utils.BN(BigInt(document.tip['amount_in_wei'])).toString();
+          var data = token_contract.methods.transfer(forwarding_address, encoded_amount).encodeABI();
 
           rawTx = {
-            nonce: web3.toHex(nonce),
+            nonce: web3.utils.toHex(nonce),
             to: token_address,
             from: holding_address,
             value: '0x00',
@@ -185,13 +200,13 @@ $(document).ready(function() {
           };
 
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['gasPrice'] = gas_price_wei.toNumber();
-            rawTx['gas'] = gasLimit;
-            rawTx['gasLimit'] = gasLimit;
-            var will_fail_at_this_gas_price = (gas_price_wei * gasLimit) > balance;
+            rawTx['gasPrice'] = web3.utils.toHex(gas_price_wei.toString());
+            rawTx['gas'] = web3.utils.toHex(gasLimit.toString());
+            rawTx['gasLimit'] = web3.utils.toHex(gasLimit.toString());
+            var will_fail_at_this_gas_price = (gas_price_wei * gasLimit) > holderBalance;
 
             if (will_fail_at_this_gas_price) { // adjust if gas prices have increased since this tx was created
-              rawTx['gasPrice'] = Math.floor(balance / gasLimit / 10 ** 9);
+              rawTx['gasPrice'] = Math.floor(holderBalance / gasLimit / 10 ** 9);
             }
             sign_and_send(rawTx, success_callback, document.priv_key);
           });
