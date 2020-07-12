@@ -1,0 +1,17 @@
+{
+    "symbol": "TIME",
+    "address": "0x5569BCB32aAde71bF6a72d12698D3c710c7587e4",
+    "overview":{
+          "en": "TIME is an innovative ecological digital currency based on the practice of blockchain production relations. The value of TIME ecology is to use technology to guide the self-revolution of production relations in traditional business models, optimize business circulation methods, and return true value to the public.",
+          "zh": "TIME是一种基于践行区块链生产关系的，创新的生态数字货币，TIME生态的价值在于用技术引导传统商业模式中生产关系的自我革命，优化商业流通方式，让真实的价值回归大众。"
+    },
+    "email": "TIME@tempusfund.io",
+    "website": "http://www.tempusfund.io/",
+    "whitepaper": "http://www.tempusfund.io/uploads/20200621/4978400b952a663ec846a521f6037e96.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-03-11",
+    "links": {
+        "telegram": "https://t.me/TimeOfficialnewsgroup",
+        "twitter": "https://twitter.com/TIMEFOUNDATION_"
+      }
+}
