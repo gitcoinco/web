@@ -442,7 +442,6 @@ Vue.mixin({
 
       if (document.web3network === 'rinkeby' || document.web3network === 'mainnet') {
         purchaseTokenAddress = this.getTokenByName('DAI').addr;
-        console.log(purchaseTokenAddress);
       } else {
         _alert('Unsupported network', 'error');
         throw new Error('Please connect a wallet');

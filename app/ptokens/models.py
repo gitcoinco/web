@@ -150,8 +150,7 @@ class PersonalToken(SuperModel):
             return total_purchases
         for redemption in total_redemptions:
             requester = redemption['redemption_requester']
-            print(f'====== {requester}')
-            print(f'====== {redemption["total_amount"]} < ${total_purchases[requester]}')
+            
             if redemption['total_amount'] < total_purchases[requester]:
                 holders.append(requester)
 
