@@ -1535,7 +1535,6 @@ def faucet_rejected(request):
     return HttpResponse(response_html)
 
 
-@staff_member_required
 def roundup(request):
     response_html, _, _, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
