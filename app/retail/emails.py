@@ -1536,7 +1536,8 @@ def faucet_rejected(request):
 
 
 def roundup(request):
-    response_html, _, _, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    email = request.user.email if request.user.is_authenticated else 'test@123.com'
+    response_html, _, _, _, _ = render_new_bounty_roundup(email)
     return HttpResponse(response_html)
 
 
