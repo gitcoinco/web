@@ -1,6 +1,6 @@
 // Personal token constants
 // Note that this address is also duplicated in profile_tokens.js and app/ptokens/models.py
-const factoryAddress = '0x80D50970599E33d0D5D436A649C25b729666A015';
+const factoryAddress = document.contxt.ptoken_factory_address;
 
 let contributorBounties = {};
 let pTokens = {};
@@ -8,8 +8,22 @@ let bounties = {};
 let authProfile = document.contxt.profile_id;
 let skills = document.skills;
 
+
 Vue.mixin({
   methods: {
+    getTokenByName: function(name) {
+      if (name === 'ETH') {
+        return {
+          addr: ETH_ADDRESS,
+          name: 'ETH',
+          decimals: 18,
+          priority: 1
+        };
+      }
+      var network = document.web3network;
+
+      return tokens(network).filter(token => token.name === name)[0];
+    },
     fetchBounties: function(type) {
       let vm = this;
       let apiUrlbounties = `/funder_dashboard/${type}/`;
@@ -426,10 +440,9 @@ Vue.mixin({
       }
       [user] = await web3.eth.getAccounts();
 
-      if (document.web3network === 'rinkeby') {
-        purchaseTokenAddress = '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D';
-      } else if (document.web3network === 'mainnet') {
-        purchaseTokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+      if (document.web3network === 'rinkeby' || document.web3network === 'mainnet') {
+        purchaseTokenAddress = this.getTokenByName('DAI').addr;
+        console.log(purchaseTokenAddress);
       } else {
         _alert('Unsupported network', 'error');
         throw new Error('Please connect a wallet');

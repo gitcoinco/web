@@ -351,6 +351,9 @@ def ptoken_purchases(request, tokenId):
         txid = request.POST.get('txid')
         tx_status = request.POST.get('tx_status')
         amount = request.POST.get('amount')
+        token_id = request.POST.get('token')
+        token_value_address = request.POST.get('token_address')
+        token_value_name = request.POST.get('token_name')
 
         if not amount:
             error = 'Missing total minted'
@@ -379,8 +382,8 @@ def ptoken_purchases(request, tokenId):
         PurchasePToken.objects.create(
             ptoken=ptoken,
             amount=amount,
-            token_name=ptoken.token_name,
-            token_address=ptoken.token_address,
+            token_name=token_value_name,
+            token_address=token_value_address,
             network=network,
             txid=txid,
             tx_status=tx_status,
