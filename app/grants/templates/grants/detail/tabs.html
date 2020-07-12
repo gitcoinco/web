@@ -36,7 +36,7 @@
       <span class="nav-badge">({{ grant.contributor_count }})</span>
     </button>
     {% if is_staff %}
-    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=sybil_profile" class="section-tab {% if tab == "contributors" %} active {% endif %}">
+    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=sybil_profile" class="section-tab {% if tab == "sybil_profile" %} active {% endif %}">
       {% trans "SYBIL PROFILE" %}
     </button>
     {% endif %}
@@ -97,6 +97,7 @@
     {% if tab == "sybil_profile" and is_staff %}
     <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js'></script>
 
+
       <h4>Grant Sybil Profile</h4>
 
       <hr>
@@ -117,8 +118,10 @@
       - BrightID Trust Score (coming soon)
       - Idena Network Trust Score (coming soon)
       - KYC (maybe coming soon)
+      - Inbound WebTraffic Profiles 
+      - Time Series Data
 
-      a grant's RiskScore ™️ is equal to its SybilScore ™️ * its matching funds for this round.
+      a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
       </pre>
       <div id="section-nav-sybil">
         {% for ele in sybil_profiles%}
@@ -159,7 +162,10 @@
               <div style="max-height: 50px; overflow: scroll;">
                  {% for this_profile in sp.4 %}
                       <a href="/{{this_profile}}">
-                      @{{this_profile}}
+                        {% if forloop.counter < 20 %}
+                          <img data-src="/dynamic/avatar/{{this_profile}}" style="height: 20px; width: 20px; border-radius: 10px;">
+                        {% endif %}
+                        @{{this_profile}}
                       </a>
                  {% endfor %}
                </div>
@@ -251,7 +257,7 @@
           {% endif %}
           <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
             <div class="mr-2 d-inline-block">
-              <img src="/dynamic/avatar/{{handle}}" />
+              <img data-src="/dynamic/avatar/{{handle}}" />
             </div>
             <div class="mt-1 d-inline-block">
               <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>

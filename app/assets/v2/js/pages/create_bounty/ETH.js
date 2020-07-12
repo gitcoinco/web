@@ -407,7 +407,7 @@ const ethCreateBounty = async (data) => {
     } else {
       token_contract.methods.balanceOf(from).call({from: from}, function(error, result) {
         if (error) return;
-        const walletBalance = web3.utils.fromWei(new web3.utils.BN(BigInt(result)),'ether')
+        const walletBalance = Number(new web3.utils.BN(BigInt(result)))
 
         return checkBalance(walletBalance, total, token_name);
       });

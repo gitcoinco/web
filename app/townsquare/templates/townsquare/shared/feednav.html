@@ -1,39 +1,56 @@
-  <div class="townsquare_nav-list my-3">
-    <div class="townsquare_block-header" data-target="feeds" >
+<div class="townsquare_nav-list">
+  <div class="feed-container my-3">
+    <div class="townsquare_block-header accordion active" data-target="feeds" >
       Feeds
     </div>
-    <ul id=feeds class="nav d-inline-block font-body mb-2">
-      {% for this_tab in tabs %}
-        {% include 'townsquare/shared/thistab.html' %}
-      {% endfor %}
-    </ul>
-    {% if hackathon_tabs|length %}
-    <div class="townsquare_block-header mt-2" data-target="hackathons">
-      Hackathons
-    </div>
-    <ul id=hackathons class="nav d-inline-block font-caption mb-2">
-      {% for this_tab in hackathon_tabs %}
-        {% include 'townsquare/shared/thistab.html' %}
-      {% endfor %}
-    </ul>
-    {% endif %}
-    <div class="townsquare_nav-list my-3">
-      <div class="townsquare_block-header" data-target="filter">
-        Filter
-      </div>
-      <ul id=filter class="nav d-inline-block font-caption mb-2">
-          {% for tag in tags %}
-            {% include 'townsquare/shared/tag.html' %}
-          {% endfor %}
+    <div class="panel-active">
+      <ul id=feeds class="nav d-inline-block font-body">
+        {% for this_tab in tabs %}
+          {% include 'townsquare/shared/thistab.html' %}
+        {% endfor %}
       </ul>
     </div>
   </div>
 
-  <div class="townsquare_nav-list my-3 tribe">
-    <div class="townsquare_block-header" data-target="tribes">
-      Shortcuts
+  <hr>
+
+  <div class="hacktathon-feed-container my-3">
+    {% if hackathon_tabs|length %}
+      <div class="townsquare_block-header mt-2 accordion active" data-target="hackathons">
+        Hackathons
+      </div>
+      <div class="panel-active">
+        <ul id=hackathons class="nav d-inline-block font-caption panel-active">
+          {% for this_tab in hackathon_tabs %}
+            {% include 'townsquare/shared/thistab.html' %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+
+  <hr>
+
+  <div class="filter-feed-container my-3">
+    <div class="townsquare_block-header accordion active" data-target="filter">
+      Filter
     </div>
-    <div id="tribes">
+    <div class="panel-active">
+      <ul id=filter class="nav d-inline-block font-caption">
+        {% for tag in tags %}
+          {% include 'townsquare/shared/tag.html' %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="my-tribes-container my-3 tribe">
+    <div class="townsquare_block-header accordion active tribe" data-target="tribes">
+      My Tribes
+    </div>
+    <div id="tribes" class="panel-active">
       <ul class="nav d-inline-block font-caption">
         {% for tribe in following_tribes %}
           <li class="nav-item">
@@ -56,11 +73,13 @@
     </div>
   </div>
 
-  <div class="townsquare_nav-list my-3 tribe">
-    <div class="townsquare_block-header" data-target="suggested-tribes">
+  <hr>
+
+  <div class="suggested-tribes-container my-3 tribe">
+    <div class="townsquare_block-header accordion active" data-target="suggested-tribes">
       Suggested Tribes
     </div>
-    <div id="suggested-tribes">
+    <div id="suggested-tribes" class="panel-active">
       <ul class="nav d-inline-block font-body col-sm-9 col-lg-8 pr-2" style="padding-right: 0">
         {% for tribe in suggested_tribes %}
           <li class="nav-item d-flex justify-content-between align-items-center my-1">
@@ -79,3 +98,5 @@
       </ul>
     </div>
   </div>
+  <hr>
+</div>

@@ -33,7 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         max-height: 5rem;
         max-width: 5rem;
         border-radius: .3rem;
-        background: rgb(25, 0, 63);
+        background: var(--bg-shade-0);
       }
 
       .hackathon-card-logo a {
@@ -47,13 +47,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         text-transform: none;
         border-radius: 5px 5px 0 0;
       }
-      
+
       .box-hackathons {
         background: #ffff;
-        border-bottom: 1px solid #ddd;
         border-radius: 0 0 5px 5px;
       }
-      
+
       .box-hackathons .card {
         border: none;
       }
@@ -165,7 +164,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                         <div class="checkbox_container">
                           <input name="trending" id="trending" type="checkbox" value="0" {% if trending_only %}checked=checked{%endif%} />
-                          <!-- <span class="checkbox"></span> -->
                           <label for=trending>{% trans "Trending Only" %}</label>
                         </div>
                       </div>
@@ -189,51 +187,57 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
             <div class="actions_container col-12 col-md-4 col-lg-3">
             <div id=right_sidebar>
-              {% if SHOW_DRESSING %}
+                {% if SHOW_DRESSING %}
 
-                {% include 'townsquare/shared/tribe.html' %}
-               
+                  {% include 'townsquare/shared/tribe.html' %}
 
-                {% if hackathon_tabs|length %}
-                  <div class="townsquare_block-header box-collapse  mt-1" data-target="hackathons">
-                    Gitcoin Hackathons
-                  </div>
-                  {% include 'townsquare/shared/hackathons.html' %}
-                {% endif %}
+                  {% if hackathon_tabs|length %}
+                    {% include 'townsquare/shared/hackathons.html' %}
+                  {% endif %}
 
-                {% include 'townsquare/shared/reflink.html' %}
+                  {% include 'townsquare/shared/reflink.html' %}
 
-                <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
-                  Actions <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
-                      <strong>Gitcoin Actions</strong> are a way to introduce entropy into your learning routine.  Gitcoin will select the best educational, networking, or (sometimes)monetary or reputational opportunities and put them in front of you on a daily, weekly, monthly, and (sometimes) secret basis!
-                      <br>
-                      <br>
-                      Come to Gitcion daily to discover today's daily action!
+                  <hr>
+
+                  <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
+                    <div class="accordion active">
+                      Actions
+                      <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
+                        <p class='text-left'>
+                          <strong>Gitcoin Actions</strong> are a way to introduce entropy into your learning routine.
+                          Gitcoin will select the best educational, networking, or (sometimes)monetary or reputational opportunities and put them in front of you on a daily, weekly, monthly, and (sometimes) secret basis!
+                        </p>
+                        <p class='text-left'>
+                          Come to Gitcion daily to discover today's daily action!
+                        </p>
                       "></i>
-                </div>
-                <div id=actions>
-                  <div class="offer_coming font-caption">
-                    <div class="checkbox_container">
-                      <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
-                      <span class="checkbox"></span>
-                      <div class="filter-label ml-1">
-                        <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
+                    </div>
+
+                    <div id="actions" class="panel-active">
+                      <div class="offer_coming font-caption">
+                        <div class="checkbox_container font-smaller-5">
+                          <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                          <span class="checkbox"></span>
+                          <div class="filter-label ml-1">
+                            <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
+                          </div>
+                        </div>
                       </div>
+
+                      {% include 'townsquare/shared/offers.html' %}
+
+                      <a href="/action/new" class="font-smaller-2 mb-2">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                        Create Action
+                      </a>
                     </div>
                   </div>
 
-                  {% include 'townsquare/shared/offers.html' %}
-
-                  <a href="/action/new" class="font-smaller-2 mb-2">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                    Create Action
-                  </a>
                   <hr>
-                </div>
 
                   {% include 'townsquare/shared/matchround.html' %}
                 {% endif %}
-                </div>
+              </div>
             </div>
           </div>
         </div>

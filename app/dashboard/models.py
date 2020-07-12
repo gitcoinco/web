@@ -283,7 +283,8 @@ class Bounty(SuperModel):
         ('legacy_gitcoin', 'Legacy Bounty'),
         ('bounties_network', 'Bounties Network'),
         ('qr', 'QR Code'),
-        ('web3_modal', 'Web3 Modal')
+        ('web3_modal', 'Web3 Modal'),
+        ('manual', 'Manual')
     )
 
     bounty_state = models.CharField(max_length=50, choices=BOUNTY_STATES, default='open', db_index=True)
@@ -1345,7 +1346,8 @@ class BountyFulfillment(SuperModel):
         ('bounties_network', 'bounties_network'),
         ('qr', 'qr'),
         ('fiat', 'fiat'),
-        ('web3_modal', 'web3_modal')
+        ('web3_modal', 'web3_modal'),
+        ('manual', 'manual')
     ]
 
     TENANT = [
@@ -1353,7 +1355,8 @@ class BountyFulfillment(SuperModel):
         ('ETC', 'ETC'),
         ('ZIL', 'ZIL'),
         ('CELO', 'CELO'),
-        ('PYPL', 'PYPL')
+        ('PYPL', 'PYPL'),
+        ('OTHERS', 'OTHERS')
     ]
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE, help_text="the bounty against which the fulfillment is made")
@@ -2753,6 +2756,10 @@ class Profile(SuperModel):
         help_text='Is this profile an org?',
         db_index=True,
     )
+    is_tribe = models.BooleanField(
+        default=False,
+        help_text='Is this profile a Tribe (only applies to orgs)?',
+    )
 
     average_rating = models.DecimalField(default=0, decimal_places=2, max_digits=50, help_text='avg feedback from those who theyve done work with')
     follower_count = models.IntegerField(default=0, db_index=True, help_text='how many users follow them')
@@ -2767,6 +2774,10 @@ class Profile(SuperModel):
 
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
+
+    @property
+    def logins(self):
+        return self.actions.filter(action='Login')
 
     @property
     def latest_sybil_investigation(self):
@@ -4006,11 +4017,7 @@ class Profile(SuperModel):
             profiles = [org_name(url) for url in github_urls]
             profiles = [ele for ele in profiles if ele]
         else:
-            profiles = []
-            for bounty in bounties:
-                for bf in bounty.fulfillments.filter(accepted=True):
-                    if bf.fulfiller_github_username:
-                        profiles.append(bf.fulfiller_github_username)
+            profiles = self.as_dict.get('orgs_bounties_works_with', [])
 
         profiles_dict = {profile: 0 for profile in profiles}
         for profile in profiles:
@@ -4136,11 +4143,19 @@ class Profile(SuperModel):
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
         desc = self.get_desc(funded_bounties, fulfilled_bounties)
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
+        org_works_with = []
+        if self.is_org:
+            org_bounties = self.get_orgs_bounties(network='mainnet')
+            for bounty in org_bounties:
+                for bf in bounty.fulfillments.filter(accepted=True):
+                    if bf.fulfiller_github_username:
+                        org_works_with.append(bf.fulfiller_github_username)
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
             'newsletter_headline': ('Be the first to know about new funded issues.'),
             'card_title': f'@{self.handle} | Gitcoin',
+            'org_works_with': org_works_with,
             'card_desc': desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'count_bounties_completed': total_fulfilled,
@@ -4665,6 +4680,7 @@ class HackathonEvent(SuperModel):
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
+    showcase = JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):
         """String representation for HackathonEvent.
@@ -5213,13 +5229,27 @@ class Investigation(SuperModel):
 
     def investigate_sybil(instance):
         htmls = []
-        userActions = instance.actions.filter(action='Visit')
+        visits = instance.actions.filter(action='Visit')
+        userActions = visits
         from django.db.models import Count
         import time
         from django.contrib.humanize.templatetags.humanize import naturaltime
         ipAddresses = (userActions.values('ip_address').annotate(Count("id")).order_by('-id__count'))
         cities = (userActions.values('location_data__city').annotate(Count("id")).order_by('-id__count'))
         total_sybil_score = 0
+
+        htmls.append(f'User has visited the site {visits.count()} times')
+        if visits.count() > 25:
+            total_sybil_score -= 2
+            htmls.append('(REDEMPTIONx2)')
+        elif visits.count() > 10:
+            total_sybil_score -= 1
+            htmls.append('(REDEMPTION)')
+        elif visits.count() < 1:
+            total_sybil_score += 1
+            htmls.append('(DING)')
+
+
         if instance.squelches.filter(active=True).exists():
             htmls.append('USER HAS ACTIVE SQUELCHES')
             total_sybil_score += 3
@@ -5257,7 +5287,8 @@ class Investigation(SuperModel):
                 total_sybil_score += 1
                 htmls.append('Many other Profiles with this addr (DING)')
             url = f'/_administrationdashboard/profile/?preferred_payout_address={instance.preferred_payout_address}'
-            htmls += [f" -- <a href={url}>{len(other_Profiles)} other profiles share this ppa: {', '.join(list(other_Profiles))}</a><BR>"]
+            _other_Profiles = [f'<a href=/{handle}>{handle}</a>' for handle in other_Profiles]
+            htmls += [f" -- <a href={url}>{len(_other_Profiles)} other profiles share this ppa: {', '.join(list(_other_Profiles))}</a><BR>"]
 
         print(f" - ip ({len(ipAddresses)}) {time.time()}")
         htmls.append('IP Addresses')
@@ -5267,7 +5298,8 @@ class Investigation(SuperModel):
             html = f"- <a href=/_administrationdashboard/useraction/?ip_address={ip['ip_address']}>{ip['ip_address']} ({ip['id__count']} Visits)</a>"
             other_Profiles = UserAction.objects.filter(ip_address=ip['ip_address'], profile__isnull=False).exclude(profile=instance).distinct('profile').values_list('profile__handle', flat=True)
             if len(other_Profiles):
-                html += f"<BR> -- {len(other_Profiles)} other profiles share this IP: {', '.join(list(other_Profiles))}"
+                _other_Profiles = [f'<a href=/{handle}>{handle}</a>' for handle in other_Profiles]
+                html += f"<BR> -- {len(_other_Profiles)} other profiles share this IP: {', '.join(list(_other_Profiles))}"
             if other_Profiles.count() > 0:
                 if not ip_flagged:
                     ip_flagged = True

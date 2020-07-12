@@ -1158,6 +1158,15 @@ class Contribution(SuperModel):
         help_text=_('The why or why not validator passed'),
     )
 
+    profile_for_clr = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='clr_pledges',
+        on_delete=models.CASCADE,
+        help_text=_('The profile to attribute this contribution to..'),
+        null=True,
+        blank=True,
+    )
+
     def get_absolute_url(self):
         return self.subscription.grant.url + '?tab=transactions'
 
@@ -1262,6 +1271,10 @@ def psave_contrib(sender, instance, **kwargs):
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):
 
+    if not instance.profile_for_clr:
+        if instance.subscription:
+            instance.profile_for_clr = instance.subscription.contributor_profile
+
     ele = instance
     sub = ele.subscription
     grant = sub.grant
@@ -1298,6 +1311,7 @@ class CLRMatch(SuperModel):
         null=False,
         help_text=_('The associated Grant.'),
     )
+    has_passed_kyc = models.BooleanField(default=False, help_text=_('Has this grant gone through KYC?'))
     ready_for_test_payout = models.BooleanField(default=False, help_text=_('Ready for test payout or not'))
     test_payout_tx = models.CharField(
         max_length=255,
