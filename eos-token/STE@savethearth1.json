@@ -1,0 +1,17 @@
+{
+    "symbol": "STE",
+    "account_name": "savethearth1",
+    "overview": {
+        "en": "STE's mission is to track the changes in the Earth's air by recording the Earth's air pollution on the EOS blockchain, and to ensure that the Earth has clean air."
+    },
+    "email": "stemanager2020@gmail.com",
+    "website": "http://savetheearth.io/",
+    "whitepaper": "https://savetheearth.io/STE_whitepaper_v1.0.pdf",
+    "published_on": "2020-05-05",
+    "initial_price": {
+        "EOS": "0.001 EOS"
+    },
+    "links": {
+        "telegram": "https://t.me/savetheearth2020"
+    }
+}
