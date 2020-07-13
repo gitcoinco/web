@@ -496,13 +496,14 @@ def add_form_categories_to_grant(form_category_ids, grant, grant_type):
         grant.categories.add(grant_category)
 
 
-def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None):
+def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None, index_on=None):
+    print(grant_id, days_back, grant_id, index_on)
     grant_id_sql = f"= {grant_id}" if grant_id else "IS NOT NULL"
     days_back_sql = f"grants_subscription.created_on > now() - interval '{days_back} hours'" if days_back else "true"
     grant_type_sql = f"grant_type = '{grant_type}'" if grant_type else "true"
     query = f"""
 SELECT
-    DISTINCT dashboard_profile.sybil_score,
+    DISTINCT {index_on},
     count(distinct grants_subscription.contributor_profile_id) as number_contriibutors,
     count(distinct grants_subscription.id) as number_contriibutions,
     (count(distinct grants_subscription.contributor_profile_id)::float / count(distinct grants_subscription.id)) as contributions_per_contributor,
@@ -511,8 +512,8 @@ from dashboard_profile
 INNER JOIN grants_subscription ON contributor_profile_id = dashboard_profile.id
 INNER JOIN grants_grant on grants_grant.id = grants_subscription.grant_id
 where grants_subscription.grant_id {grant_id_sql} AND {days_back_sql} AND {grant_type_sql}
-    GROUP BY dashboard_profile.sybil_score
-    ORDER BY dashboard_profile.sybil_score ASC
+    GROUP BY {index_on}
+    ORDER BY {index_on} ASC
 
 """
     # pull from DB
@@ -558,13 +559,15 @@ def grant_details(request, grant_id, grant_slug):
         contributions = []
         negative_contributions = []
         voucher_fundings = []
-        sybil_profiles = None
+        sybil_profiles = []
         if tab == 'sybil_profile' and request.user.is_staff:
-            sybil_profiles = [
-                ['THIS Sybil Summary Last 90 days', get_grant_sybil_profile(grant.pk, 90 * 24)],
-                [f'{grant.grant_type} Sybil Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, grant.grant_type)],
-                ['All Sybil Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, None)],
-            ]
+            for item in ['dashboard_profile.sybil_score', 'dashboard_profile.sms_verification']:
+                title = 'Sybil' if item != 'dashboard_profile.sybil_score' else "SMS"
+                sybil_profiles += [
+                    [f'THIS {title} Summary Last 90 days', get_grant_sybil_profile(grant.pk, 90 * 24, index_on=item)],
+                    [f'{grant.grant_type} {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, grant.grant_type, index_on=item)],
+                    [f'All {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, None, index_on=item)],
+                ]
         if tab in ['transactions', 'contributors']:
             _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all().cache(timeout=60)).cache(timeout=60)
             negative_contributions = _contributions.filter(subscription__is_postive_vote=False)
