@@ -11,6 +11,8 @@
     "state": "NORMAL",
     "published_on": "2020-02-18",
     "initial_price": {
-         "USD": "0.24 USD"
+        "ETH":"0.01027467 ETH",
+        "USD":"1.5 USD",
+        "BTC":"0.00020733 BTC"
     }
 }
