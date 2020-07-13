@@ -72,7 +72,7 @@
         grid-template-columns: repeat(5, 1fr);
       }
 
-      .avatar {
+      .avatar-big {
         border-radius: 50%;
         width: 180px;
         height: 180px;
@@ -686,7 +686,7 @@
                                 <p class="ml-2 my-0 font-bigger-1 font-weight-bold">[[ getSponsor(spotlight.sponsor).display_name ]]</p>
                               </div>
                               <b-button variant="outline-primary" @click="followTribe(spotlight.sponsor, $event)"
-                                  v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-lmd', 'px-4']"
+                                  v-bind:class="[getSponsor(spotlight.sponsor).followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm', 'px-4']"
                               >
                                 [[ getSponsor(spotlight.sponsor).followed ? "following" : "follow" ]]
                               </b-button>
@@ -711,28 +711,28 @@
                       <div class="d-flex flex-wrap mt-3">
                         <div class="col-12 col-md-4 text-center mt-3">
                           <div v-if="top[0].handle || isEditing">
-                            <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[0].handle}`" alt="">
-                            <span class="text-muted d-block mt-2 position-left"  v-if="!isEditing">[[ top[0].name ]]</span>
+                            <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[0].handle}`" alt="">
+                            <span class="text-muted d-block mt-2"  v-if="!isEditing">[[ top[0].name ]]</span>
                             <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[0].name" v-else>
-                            <span class="font-weight-semibold d-block gc-text-blue mt-1 position-left"  v-if="!isEditing">@[[ top[0].handle ]]</span>
+                            <span class="font-weight-semibold d-block gc-text-blue mt-1"  v-if="!isEditing">@[[ top[0].handle ]]</span>
                             <input class="form-control mt-2 " placeholder="@josm" type="text" v-model="top[0].handle" v-else>
                           </div>
                         </div>
                         <div class="col-12 col-md-4 text-center mt-3">
                           <div  v-if="top[1].handle || isEditing">
-                            <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[1].handle}`" alt="">
-                            <span class="text-muted d-block mt-2 position-left"  v-if="!isEditing">[[ top[1].name ]]</span>
+                            <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[1].handle}`" alt="">
+                            <span class="text-muted d-block mt-2"  v-if="!isEditing">[[ top[1].name ]]</span>
                             <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[1].name" v-else>
-                            <span class="font-weight-semibold d-block gc-text-blue mt-1 position-left" v-if="!isEditing">@[[ top[1].handle ]]</span>
+                            <span class="font-weight-semibold d-block gc-text-blue mt-1" v-if="!isEditing">@[[ top[1].handle ]]</span>
                             <input class="form-control mt-2" placeholder="@josm"  type="text" v-model="top[1].handle" v-else>
                           </div>
                         </div>
                         <div class="col-12 col-md-4 text-center mt-3">
                           <div  v-if="top[2].handle || isEditing">
-                            <img class="avatar mr-2" :src="`https://gitcoin.co/dynamic/avatar/${top[2].handle}`" alt="">
-                            <span class="d-block mt-2 text-muted position-left"  v-if="!isEditing">[[ top[2].name ]]</span>
+                            <img class="avatar avatar-big" :src="`https://gitcoin.co/dynamic/avatar/${top[2].handle}`" alt="">
+                            <span class="d-block mt-2 text-muted"  v-if="!isEditing">[[ top[2].name ]]</span>
                             <input class="form-control mt-2" placeholder="Joseph M." type="text" v-model="top[2].name" v-else>
-                            <span class="font-weight-semibold d-block gc-text-blue mt-2 position-left" v-if="!isEditing">@[[ top[2].handle ]]</span>
+                            <span class="font-weight-semibold d-block gc-text-blue mt-2" v-if="!isEditing">@[[ top[2].handle ]]</span>
                             <input class="form-control mt-2" placeholder="@josm" type="text" v-model="top[2].handle" v-else>
                             <input class="form-control" placeholder="@josm" type="text" v-model="top[2].handle" v-else>
                           </div>
@@ -762,7 +762,7 @@
                     {% trans "Sponsor Tribes" %}
                   </div>
                   <ul class="list-unstyled">
-                    <b-media v-for="sponsor in tribesData" tag="li"  class="rounded my-4 ml-4" vertical-align="center">
+                    <b-media v-for="(sponsor, index) in tribesData" :key="index" tag="li"  class="rounded my-4 ml-4" vertical-align="center">
                       <template v-slot:aside>
                         <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-n3 tribes-logo"></b-avatar>
                       </template>

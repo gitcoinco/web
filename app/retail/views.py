@@ -486,18 +486,6 @@ def about(request):
             True
         ),
         (
-            "Eric Berry",
-            "OSS Funding",
-            "coderberry",
-            "ericberry",
-            "Chrome/Firefox Extension",
-            "Pastel de nata",
-            "eric",
-            "Burnout Healer",
-            "coderberry",
-            True
-        ),
-        (
             "Vivek Singh",
             "Community Buidl-er",
             "vs77bb",
@@ -558,30 +546,6 @@ def about(request):
             True
         ),
         (
-            "Nate Hopkins",
-            "Engineering",
-            "hopsoft",
-            None,
-            "Bounties",
-            "Chicken tikka masala",
-            "nate",
-            "Lord of Night's Watch",
-            "hopsoft",
-            True
-        ),
-        (
-            "Alessandro Voto",
-            "DevRel",
-            "alexvotofuture",
-            None,
-            "Devvies",
-            "Tacos",
-            "alex",
-            "Starship Captain",
-            "avotofuture",
-            True
-        ),
-        (
             "Dan Lipert",
             "Engineering",
             "danlipert",
@@ -603,18 +567,6 @@ def about(request):
             "connor",
             "Druid of The Chain",
             "connoroday0",
-            True
-        ),
-        (
-            "Joseph Chen",
-            "Operations",
-            "josephchen",
-            "josephchen",
-            "Ethical Ads",
-            "DIY",
-            "joseph",
-            "Arithmagician",
-            "",
             True
         ),
         (
