@@ -1,0 +1,19 @@
+{
+    "symbol": "NBOT",
+    "address": "0x09Ccd2DA5dCDd0510268d4979e792381337138b8",
+    "overview":{
+          "en": "Bodhi is focused on building a decentralized finance ecosystem around Bodhi Token (NBOT). Currently, Bodhi launches a NBOT-based decentralized synthetic asset exchange: Deerfi (Deerfi.com).",
+          "zh": "菩提致力于打造基于菩提币（NBOT）的去中心化金融生态。目前，菩提上线发布了基于 NBOT 的去中心化金融衍生品交易所 Deerfi (Deerfi.com）。"
+    },
+    "email": "xiahong@bodhi.network",
+    "website": "https://bodhi.network/",
+    "whitepaper": "https://whitepaper.io/document/240/bodhi-whitepaper",
+    "published_on": "2017-11-20",
+    "initial_price":{
+          "USD":"0.24 USD"
+    },
+    "links": {
+      "twitter": "https://twitter.com/bodhitoken",
+      "medium": "https://medium.com/@bodhitoken"
+    }
+}
