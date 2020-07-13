@@ -1,0 +1,20 @@
+{
+  "symbol": "BOSS",
+  "address": "0xaC085a04FC1Dd6af45B3dA9325B46471B1903508",
+  "overview":{
+        "en": "BOSS is a token built into the OKBOSS NETWORK system, a carrier of transaction costs and a driver of the entire ecosystem of OKBOSS NETWORK, and will be used to support application development, payment of application service consumption costs, exchange, participation in consensus rewards, payment of transaction fees, etc. The total number of tokens issued is 10 billion.BOSS is used in multiple scenarios within OKBOSS NETWORK and in the OKBOSS NETWORK ecosystem, becoming an important hub for the support of the OKBOSS NETWORK ecosystem. The holder enjoys the rights and benefits of BOSS and is able to receive eco-pass rewards and enjoy the scarcity enhancement brought about by the continuous buyback and destruction of BOSS.",
+        "zh": "BOSS是OKBOSS NETWORK系统中内置的一种Token，是其交易成本的载体，也是OKBOSS NETWORK整个系统内生态的驱动剂，将用于支持应用发展、支付应用服务消耗费用、兑换、参与共识奖励、支付交易手续费等，发行总量为 100 亿枚。BOSS用于OKBOSS NETWORK内部以及OKBOSS NETWORK生态体系下的多场景使用，成为OKBOSS  NETWORK生态体系支撑的重要枢纽，持有者享受BOSS的相应权益，并能够获得生态通证奖励以及享受BOSS持续回购销毁带来的稀缺性提升。"
+  },
+  "email": "business@okboss.io",
+  "website": "https://okboss.io/",
+  "whitepaper": "https://okboss.io/static/whitePaperCN.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-07-13",
+  "initial_price":{
+        "USD":"0.00142857 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/okbossio",
+    "github": "https://github.com/okbossio"
+  }
+}
