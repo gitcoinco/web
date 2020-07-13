@@ -62,7 +62,7 @@ class Command(BaseCommand):
         DECIMALS = 18
         what = options['what']
         DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6a6e8b58dee0ca4b4ee147ad72d3ddd2ef1bf6f7'
-        CLR_TOKEN_ADDRESS = '0x7c19252abedce09724bfc3549925d3ea12770156' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
+        CLR_TOKEN_ADDRESS = '0xed8306f10a5aa548d09c1d9c622f3f58dd9f2144' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
 
         # get data
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
@@ -120,7 +120,7 @@ class Command(BaseCommand):
             is_real_payout = what == 'payout_dai'
             TOKEN_ADDRESS = DAI_ADDRESS if is_real_payout else CLR_TOKEN_ADDRESS
             kwargs = {}
-            token_name = 'CLR5' if not is_real_payout else 'DAI'
+            token_name = f'CLR{round_number}' if not is_real_payout else 'DAI'
             key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
             kwargs[key] = False
             not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
