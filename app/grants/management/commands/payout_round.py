@@ -120,7 +120,7 @@ class Command(BaseCommand):
             is_real_payout = what == 'payout_dai'
             TOKEN_ADDRESS = DAI_ADDRESS if is_real_payout else CLR_TOKEN_ADDRESS
             kwargs = {}
-            token_name = f'CLR{round_number}' if not is_real_payout else 'DAI'
+            token_name = f'CLR{clr_round}' if not is_real_payout else 'DAI'
             key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
             kwargs[key] = False
             not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
