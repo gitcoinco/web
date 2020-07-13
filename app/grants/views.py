@@ -497,10 +497,12 @@ def add_form_categories_to_grant(form_category_ids, grant, grant_type):
 
 
 def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None, index_on=None):
-    print(grant_id, days_back, grant_id, index_on)
     grant_id_sql = f"= {grant_id}" if grant_id else "IS NOT NULL"
     days_back_sql = f"grants_subscription.created_on > now() - interval '{days_back} hours'" if days_back else "true"
     grant_type_sql = f"grant_type = '{grant_type}'" if grant_type else "true"
+    order_sql = f"ORDER BY {index_on} ASC" if index_on != 'grants_contribution.originated_address' else "ORDER BY number_contriibutors DESC"
+    having_sql = f"" if index_on != 'grants_contribution.originated_address' else "HAVING count(distinct grants_subscription.contributor_profile_id) >= 2"
+
     query = f"""
 SELECT
     DISTINCT {index_on},
@@ -511,10 +513,11 @@ SELECT
 from dashboard_profile
 INNER JOIN grants_subscription ON contributor_profile_id = dashboard_profile.id
 INNER JOIN grants_grant on grants_grant.id = grants_subscription.grant_id
+INNER JOIN grants_contribution on grants_contribution.subscription_id = grants_subscription.id
 where grants_subscription.grant_id {grant_id_sql} AND {days_back_sql} AND {grant_type_sql}
     GROUP BY {index_on}
-    ORDER BY {index_on} ASC
-
+    {having_sql}
+    {order_sql}
 """
     # pull from DB
     with connection.cursor() as cursor:
@@ -524,13 +527,17 @@ where grants_subscription.grant_id {grant_id_sql} AND {days_back_sql} AND {grant
             rows.append(list(_row))
 
     # mutate arrow
-    total_contributors = sum([ele[1] for ele in rows])
-    svbil_total = sum([ele[0]*ele[1] for ele in rows if ele[0] >= 0])
-    sybil_avg = svbil_total / total_contributors if total_contributors else 'N/A'
-    for i in range(0, len(rows)):
-        pct = rows[i][1] / total_contributors
-        rows[i].append(round(pct * 100))
-
+    sybil_avg = 0
+    try:
+        total_contributors = sum([ele[1] for ele in rows])
+        svbil_total = sum([ele[0]*ele[1] for ele in rows if ele[0] >= 0])
+        sybil_avg = svbil_total / total_contributors if total_contributors else 'N/A'
+        for i in range(0, len(rows)):
+            pct = rows[i][1] / total_contributors
+            rows[i].append(round(pct * 100))
+    except:
+        pass
+        
     return [rows, sybil_avg]
 
 @csrf_exempt
@@ -561,8 +568,11 @@ def grant_details(request, grant_id, grant_slug):
         voucher_fundings = []
         sybil_profiles = []
         if tab == 'sybil_profile' and request.user.is_staff:
-            for item in ['dashboard_profile.sybil_score', 'dashboard_profile.sms_verification']:
-                title = 'Sybil' if item != 'dashboard_profile.sybil_score' else "SMS"
+            items = ['dashboard_profile.sybil_score', 'dashboard_profile.sms_verification', 'grants_contribution.originated_address']
+            for item in items:
+                title = 'Sybil' if item == 'dashboard_profile.sybil_score' else "SMS"
+                if item == 'grants_contribution.originated_address':
+                    title = 'Funds origination address'
                 sybil_profiles += [
                     [f'THIS {title} Summary Last 90 days', get_grant_sybil_profile(grant.pk, 90 * 24, index_on=item)],
                     [f'{grant.grant_type} {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, grant.grant_type, index_on=item)],
