@@ -181,6 +181,7 @@ def preprocess(request):
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
         'ptoken_abi': settings.PTOKEN_ABI,
+        'ptoken_factory_address': settings.PTOKEN_FACTORY_ADDRESS,
         'ptoken_factory_abi': settings.PTOKEN_FACTORY_ABI,
         'ptoken_address': ptoken.token_address if ptoken else '',
         'ptoken_id': ptoken.id if ptoken else None

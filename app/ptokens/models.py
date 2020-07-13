@@ -71,7 +71,7 @@ TX_STATUS_CHOICES = (
     ('dropped', 'dropped'),
 )
 
-FACTORY_ADDRESS = '0x80D50970599E33d0D5D436A649C25b729666A015'
+FACTORY_ADDRESS = settings.PTOKEN_FACTORY_ADDRESS
 
 class PersonalTokenQuerySet(models.QuerySet):
     """Handle the manager queryset for Personal Tokens."""
@@ -146,8 +146,11 @@ class PersonalToken(SuperModel):
         redemptions = RedemptionToken.objects.filter(ptoken=self)
         total_redemptions = redemptions.values('redemption_requester').annotate(total_amount=Sum('total'))
 
+        if total_redemptions.count() == 0:
+            return total_purchases
         for redemption in total_redemptions:
             requester = redemption['redemption_requester']
+            
             if redemption['total_amount'] < total_purchases[requester]:
                 holders.append(requester)
 

@@ -54,14 +54,17 @@ function change_price(tokenId, value) {
   });
 }
 
-function purchase_ptoken(tokenId, amount, to_address, web3_created, txid) {
+function purchase_ptoken(tokenId, amount, to_address, web3_created, txid, network, value_token) {
   return fetchData(`/ptokens/${tokenId}/purchase/`, 'POST', {
     'network': network,
     'web3_created': web3_created,
     'token_holder_address': to_address,
     'txid': txid,
     'tx_status': TX_STATUS_PENDING,
-    'amount': amount
+    'amount': amount,
+    'token': value_token.id,
+    'token_address': value_token.addr,
+    'token_name': value_token.name
   });
 }
 

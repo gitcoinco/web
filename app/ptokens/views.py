@@ -21,6 +21,7 @@ import csv
 import json
 import logging
 from datetime import date, datetime
+from decimal import Decimal
 
 import dateutil
 from django.conf import settings
@@ -351,6 +352,9 @@ def ptoken_purchases(request, tokenId):
         txid = request.POST.get('txid')
         tx_status = request.POST.get('tx_status')
         amount = request.POST.get('amount')
+        token_id = request.POST.get('token')
+        token_value_address = request.POST.get('token_address')
+        token_value_name = request.POST.get('token_name')
 
         if not amount:
             error = 'Missing total minted'
@@ -376,11 +380,11 @@ def ptoken_purchases(request, tokenId):
                 {'error': _(error)},
                 status=401)
 
-        PurchasePToken.objects.create(
+        purchase = PurchasePToken.objects.create(
             ptoken=ptoken,
             amount=amount,
-            token_name=ptoken.token_name,
-            token_address=ptoken.token_address,
+            token_name=token_value_name,
+            token_address=token_value_address,
             network=network,
             txid=txid,
             tx_status=tx_status,
@@ -388,6 +392,15 @@ def ptoken_purchases(request, tokenId):
             token_holder_address=token_holder_address,
             token_holder_profile=request.user.profile,
         )
+        metadata = {
+            'purchase': purchase.id,
+            'value_in_token': amount,
+            'token_name': ptoken.token_symbol,
+            'from_user': ptoken.token_owner_profile.handle,
+            'holder_user': user.profile.handle
+        }
+
+        record_ptoken_activity('buy_ptoken', ptoken, user.profile, metadata)
 
     return JsonResponse({
             'error': False,

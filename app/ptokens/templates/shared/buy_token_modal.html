@@ -28,7 +28,11 @@
           <div id="ptokenAmountDiv" class="d-flex align-items-baseline justify-content-between">
             <label class="font-caption font-weight-semibold letter-spacing text-black-60 text-uppercase" for="ptokenAmount">{% trans 'Amount' %}</label>
             <div class="w-75">
-              <input name='ptokenAmount' id="ptokenAmount" class="form__input" type="text" placeholder="10 {{ ptoken.token_symbol }}"/>
+              <input name='ptokenAmount' id="ptokenAmount" class="form__input" type="text" placeholder="10 {{ ptoken.token_symbol }}" required/>
+              <br>
+              <div class="invalid-feedback">
+                Please provide the ptokens amount
+              </div>
             </div>
           </div>
           <div id="ptokenCostDiv" class="d-flex align-items-baseline justify-content-between mt-3">
@@ -37,7 +41,7 @@
               <p class="text-muted" id="ptokenCost">0 DAI</p>
             </div>
           </div>
-          <div class="form__checkbox">
+          <div class="form__checkbox flex-column">
             <input name='ptokenTerms' id='ptokenTerms' type="checkbox" required/>
             <label class="form__label" for=ptokenTerms>{% trans "I have read, understand, and agree to the " %}<a href="{% url "_terms" %}">{% trans "Terms of Service" %}</a>
             </label>
@@ -47,7 +51,7 @@
           </div>
         </form>
         <div class="p-2 text-center">
-          <button type="button" class="btn btn-outline-gc-blue btn-md" data-dismiss="modal" aria-label="Close">Cancel</button>
+          <button type="button" class="btn btn-outline-gc-blue btn-md" id="close_buy_token" data-dismiss="modal" aria-label="Close">Cancel</button>
           <button class="btn btn-gc-blue btn-md ml-2" id="submit_buy_token">Submit</button>
         </div>
       </div>

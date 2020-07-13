@@ -26,7 +26,7 @@
         </div>
         <div class="modal-body">
           <p>{% trans "You just purchased " %} <span id="buy-amount">10</span> {{ ptoken.token_symbol }}.</p>
-          <p>{% trans "View the transaction on" %} <a href="#">etherscan</a>.</p>
+          <p>{% trans "View the transaction on" %} <a id="buy-tx" href="#">etherscan</a>.</p>
         </div>
         <div class="p-2 text-center">
           <button class="btn btn-gc-blue btn-md ml-2" id="redeemPTokens">Redeem</button>

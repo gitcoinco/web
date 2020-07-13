@@ -2171,7 +2171,8 @@ class Activity(SuperModel):
         ('create_ptoken', 'Create personal token'),
         ('mint_ptoken', 'Mint personal token'),
         ('edit_price_ptoken', 'Edit personal token price'),
-        ('accept_redemption_ptoken', 'Accepts a redemption requess of ptoken'),
+        ('buy_ptoken', 'Edit personal token price'),
+        ('accept_redemption_ptoken', 'Accepts a redemption request of ptoken'),
         ('denies_redemption_ptoken', 'Denies a redemption request of ptoken'),
         ('complete_redemption_ptoken', 'Completes an outgoing redemption'),
         ('incoming_redemption_ptoken', 'Has an incoming redemption finalized by the Buyer')
@@ -2273,7 +2274,7 @@ class Activity(SuperModel):
 
     @property
     def show_token_info(self):
-        return self.activity_type in 'new_bounty,increased_bounty,killed_bounty,negative_contribution,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund'.split(',')
+        return self.activity_type in 'new_bounty,increased_bounty,killed_bounty,negative_contribution,new_grant_contribution,killed_grant_contribution,new_grant_subscription,new_tip,new_crowdfund,buy_ptoken'.split(',')
 
     @property
     def video_participants_count(self):

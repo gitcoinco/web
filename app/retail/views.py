@@ -971,7 +971,7 @@ def results(request, keyword=None):
 
 def get_specific_activities(what, trending_only, user, after_pk, request=None):
     only_profile_cards = ['mint_ptoken', 'edit_price_ptoken', 'accept_redemption_ptoken',
-                          'denies_redemption_ptoken', 'incoming_redemption_ptoken']
+                          'denies_redemption_ptoken', 'incoming_redemption_ptoken', 'buy_ptoken']
     # create diff filters
     activities = Activity.objects.filter(hidden=False).order_by('-created_on').exclude(pin__what__iexact=what)
     activities = activities.exclude(activity_type__in=only_profile_cards)
