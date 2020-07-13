@@ -1,0 +1,22 @@
+﻿{
+    "symbol": "SLM",
+    "address": "0x478B95c1a32a8b8123Baf59436F403FcC994DcE2",
+    "overview": {
+        "en": "The token promoted by Solomon Group is Solomon coin, abbreviated as: SLM, which is the only official digital currency issued by Solomon. SLM is applied to various applications of Solomon Group’s global business and global ecosystem, and has become an important hub for the support of Solomon Group’s ecosystem. The circulation is constant at 200 million. SLM is a decentralized blockchain digital asset based on Ethereum Ethrernm. It is an ERC20 standard token based on the Ethereum blockchain and will be transferred to a self-developed public chain in the future.The SLM Foundation, a subsidiary of the Solomon Group, has rich resources and numerous partners in the Israeli industry, and has reached consensus with multiple investment funds to provide guarantees for SLM import traffic.",
+        "zh": "所罗门集团推行的代币为Solomon coin，简称：SLM，为所罗门官方唯一发行数字货币，SLM应用到所罗门集团全球业务与全球生态体系的各类应用中，成为所罗门集团生态体系支撑的重要枢纽。发行量恒定为2亿个。SLM是基于以太坊Ethrernm发行的去中心化的区块链数字资产，它是基于以太坊区块链的ERC20标准代币，未来会转移到自研公链。所罗门集团下属的SLM基金会在以色列行业内有丰富的资源和众多的合作伙伴，已经和多家投资基金达成共识，为SLM导入流量提供保证。"
+    },
+    "email": "admin@slmdapp.com",
+    "website": "https://www.slmdapp.com",
+    "whitepaper": "https://www.slmdapp.com/files/white_paper_chs.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-06-01",
+    "initial_price": {
+        "USD": "1 USD"
+    },
+    "links": {
+        "github": "https://github.com/solomon20200529/token-profile",
+        "facebook": "https://www.facebook.com/slmdapp/posts/104630211280039",
+        "telegram": "https://t.me/slmdig",
+        "Twitter": "https://twitter.com/slm21574847"
+    }
+}
