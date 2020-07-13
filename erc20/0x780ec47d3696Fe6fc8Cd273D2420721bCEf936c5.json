@@ -1,0 +1,23 @@
+{
+  "symbol": "DAP",
+  "address": "0x780ec47d3696Fe6fc8Cd273D2420721bCEf936c5",
+  "overview":{
+    "en": "DAP is a token based on the Erc20 standard. DAP is used on the Dworld exchange as an asset to guarantee trades' values."
+  },
+  "email": "business@dworld.trade",
+  "website": "https://dworld.trade",
+  "state": "NORMAL",
+  "published_on": "2020-07-03",
+  "initial_price":{
+    "USD":"0.7 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/dworldplatform",
+    "telegram": "https://t.me/dworldchannel",
+    "facebook": "https://www.facebook.com/dworldtradingplatform/",
+    "linkedin": "https://www.linkedin.com/in/matthew-luong-6b69131b1",
+    "youtube": "https://www.youtube.com/channel/UC4tt5aAQef1pzxC-wdCto8w"
+  }
+}
+
+
