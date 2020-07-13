@@ -60,14 +60,6 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
 class HackathonEventSerializer(serializers.ModelSerializer):
     """Handle serializing the hackathon object."""
     sponsor_profiles = ProfileSerializer(many=True)
-    prizes = serializers.SerializerMethodField()
-    winners = serializers.SerializerMethodField()
-
-    def get_prizes(self, obj):
-        return Bounty.objects.filter(event=obj).distinct().count()
-
-    def get_winners(self, obj):
-        return reduce(lambda total, prize: total + len(prize.paid), Bounty.objects.filter(event=obj).distinct(), 0)
 
     class Meta:
         """Define the hackathon serializer metadata."""
