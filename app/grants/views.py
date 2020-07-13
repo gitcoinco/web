@@ -502,7 +502,6 @@ def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None, inde
     grant_type_sql = f"grant_type = '{grant_type}'" if grant_type else "true"
     order_sql = f"ORDER BY {index_on} ASC" if index_on != 'grants_contribution.originated_address' else "ORDER BY number_contriibutors DESC"
     having_sql = f"" if index_on != 'grants_contribution.originated_address' else "HAVING count(distinct grants_subscription.contributor_profile_id) >= 2"
-
     query = f"""
 SELECT
     DISTINCT {index_on},
@@ -537,7 +536,7 @@ where grants_subscription.grant_id {grant_id_sql} AND {days_back_sql} AND {grant
             rows[i].append(round(pct * 100))
     except:
         pass
-        
+
     return [rows, sybil_avg]
 
 @csrf_exempt
