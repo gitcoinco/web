@@ -2694,6 +2694,7 @@ class Profile(SuperModel):
     max_num_issues_start_work = models.IntegerField(default=5)
     etc_address = models.CharField(max_length=255, default='', blank=True)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
+    sigin_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=2500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=20000, decimal_places=2, max_digits=50)
@@ -2771,7 +2772,9 @@ class Profile(SuperModel):
     last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
     encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
     sybil_score = models.IntegerField(default=-1)
-
+    active_ghost_account = models.BooleanField(default=False)
+    ghost_account = models.ForeignKey('Profile', null=True, on_delete=models.SET_NULL, related_name='privacy_accounts')
+    is_ghost_account = models.BooleanField(default=False)
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
 
@@ -2806,7 +2809,7 @@ class Profile(SuperModel):
         score = self.sybil_score
         if score > 5:
             return f'VeryX{score} High'
-        return _map.get(score, "Unknown") 
+        return _map.get(score, "Unknown")
 
     @property
     def chat_num_unread_msgs(self):

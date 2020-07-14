@@ -100,6 +100,13 @@
       {% endif %}
 
       <div class="dropdown-divider"></div>
+      {% if user.profile.privacy_accounts or user.profile.active_ghost_account and user.profile.ghost_account %}
+        <a class="dropdown-item" onclick="switchPrivacyMode()">
+          <i class="fa fa-user-secret"></i>
+          {% trans "Privacy mode" %}
+        </a>
+      </a>
+      {% endif %}
       <a class="dropdown-item" href="{% url "email_settings" email_key %}">
         <i class="fas fa-cog"></i>
         {% trans "Manage Settings" %}
@@ -147,5 +154,8 @@
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
     <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>
+  </a>
+  <a id="alternative-login" class="nav-link login interior" onclick="checkStatusSignIn()">
+    <i class="fab fa-ethereum"></i><span class="nav-link__text">{% trans "Sign in with Keycard" %}</span>
   </a>
 {% endif %}

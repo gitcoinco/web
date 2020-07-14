@@ -26,6 +26,7 @@
 {% if not ignore_inject_web3 %}
   {% include 'shared/shared_scripts.html' %}
 {% endif %}
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 <script src="{% static "v2/js/lib/jquery.js" %}"></script>
 {% if env == 'prod' %}
   <script src="{% static 'v2/js/lib/vue.js' %}"></script>
@@ -113,3 +114,78 @@
 {% endif %}
 
 {% include 'shared/messages.html' %}
+<script>
+  if (window.ethereum.isStatus) {
+    $('#alternative-login').show()
+  } else {
+    // $('#alternative-login').hide()
+  }
+
+  async function checkStatusSignIn() {
+    const web3 = new Web3(window.ethereum);
+
+    window.ethereum.enable()
+        .then(() => {
+          web3.eth.getAccounts().then(async (accounts) => {
+            const request_nonce = fetchData('/api/v1/signin', 'POST', {
+              'address': accounts[0],
+              'method': 'request',
+            }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()})
+
+            $.when(request_nonce).then(async (data) =>{
+              const hash = web3.utils.fromUtf8(data.nonce);
+              alert(hash)
+
+              const message = await web3.eth.personal.sign(web3.utils.fromUtf8(data.nonce), accounts[0])
+              alert(message);
+
+              const singin = fetchData('/api/v1/signin', 'POST', {
+                'address': accounts[0],
+                'hash': web3.eth.accounts.hashMessage(data.nonce),
+                'signed': message,
+                'method': 'signin',
+              }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()})
+
+              $.when(singin).then((response) => {
+                location.reload()
+              })
+            })
+
+          });
+        });
+  }
+
+  async function switchPrivacyMode() {
+    const web3 = new Web3(window.ethereum);
+
+    window.ethereum.enable()
+        .then(() => {
+          web3.eth.getAccounts().then(async (accounts) => {
+            const request_nonce = fetchData('/api/v1/signin', 'POST', {
+              'address': accounts[0],
+              'method': 'request',
+            }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()})
+
+            $.when(request_nonce).then(async (data) =>{
+              const hash = web3.utils.fromUtf8(data.nonce);
+              console.log(hash)
+
+              const message = await web3.eth.personal.sign(web3.utils.fromUtf8(data.nonce), accounts[0])
+              console.log(message);
+
+              const singin = fetchData('/api/v1/signin', 'POST', {
+                'address': accounts[0],
+                'hash': web3.eth.accounts.hashMessage(data.nonce),
+                'signed': message,
+                'method': 'switch',
+              }, {'X-CSRFToken': $("input[name='csrfmiddlewaretoken']").val()})
+
+              $.when(singin).then((response) => {
+                location.reload()
+              })
+
+            })
+          });
+        });
+  }
+</script>

@@ -73,7 +73,7 @@ urlpatterns = [
     path('api/v1/bounty/payout/<int:fulfillment_id>', dashboard.views.payout_bounty_v1, name='payout_bounty_v1'),
     re_path(r'.*api/v0.1/chat/presence$', chat.views.chat_presence, name='chat_presence'),
     re_path(r'.*api/v0.1/video/presence$', townsquare.views.video_presence, name='video_presence'),
-
+    path('api/v1/signin', dashboard.views.signin, name='signin'),
     # inbox
     re_path(r'^inbox/?', include('inbox.urls', namespace='inbox')),
 

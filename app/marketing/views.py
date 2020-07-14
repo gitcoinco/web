@@ -35,6 +35,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone, translation
+from django.utils.crypto import get_random_string
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
@@ -154,6 +155,8 @@ def settings_helper_get_auth(request, key=None):
 
 
 def privacy_settings(request):
+    from coolname import generate_slug
+
     # setup
     profile, __, __, is_logged_in = settings_helper_get_auth(request)
     if not profile:
@@ -162,19 +165,43 @@ def privacy_settings(request):
 
     msg = ''
     if request.POST and request.POST.get('submit'):
-        if profile:
+        if profile and not profile.is_ghost_account:
             profile.dont_autofollow_earnings = bool(request.POST.get('dont_autofollow_earnings', False))
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
             profile.pref_do_not_track = bool(request.POST.get('pref_do_not_track', False))
             profile.hide_wallet_address = bool(request.POST.get('hide_wallet_address', False))
             profile = record_form_submission(request, profile, 'privacy')
+            profile.active_ghost_account = bool(request.POST.get('active_ghost_account', False))
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()
                 alumni.public = bool(not request.POST.get('hide_alumni', False))
                 alumni.save()
 
             profile.save()
+
+            if profile.active_ghost_account and not profile.ghost_account:
+                slug = generate_slug()
+                domain = '.'.join(generate_slug(2).split('-'))
+                anonuser = User.objects.create_user(username=slug,
+                                                    email='{}@{}.com'.format(slug, domain),
+                                                    password=None)
+                anonuser.set_unusable_password()
+                anonuser.save()
+                anonprofile = Profile.objects.create(data={},
+                                                     user=anonuser,
+                                                     handle=anonuser.username,
+                                                     email=anonuser.email,
+                                                     dont_autofollow_earnings=True,
+                                                     suppress_leaderboard=True,
+                                                     hide_profile=True,
+                                                     pref_do_not_track=True,
+                                                     hide_wallet_address=True,
+                                                     )
+
+                profile.ghost_account = anonprofile
+
+                profile.save()
 
     context = {
         'profile': profile,
@@ -531,6 +558,14 @@ def account_settings(request):
             profile.persona_is_hunter = bool(request.POST.get('persona_is_hunter', False))
             profile.save()
 
+        if 'sigin_address' in request.POST.keys():
+            eth_address = request.POST.get('sigin_address', '')
+            if not is_valid_eth_address(eth_address):
+                eth_address = profile.sigin_address
+            profile.sigin_address = eth_address
+            profile.save()
+            msg = _('Updated your sign in Address')
+
         if 'preferred_payout_address' in request.POST.keys():
             eth_address = request.POST.get('preferred_payout_address', '')
             if not is_valid_eth_address(eth_address):
@@ -552,7 +587,7 @@ def account_settings(request):
             earnings = earnings.filter(network='mainnet').order_by('-created_on')
             for earning in earnings:
                 writer.writerow([earning.pk,
-                    earning.created_on.strftime("%Y-%m-%dT%H:00:00"), 
+                    earning.created_on.strftime("%Y-%m-%dT%H:00:00"),
                     earning.from_profile.handle if earning.from_profile else '*',
                     earning.from_profile.data.get('location', 'Unknown') if earning.from_profile else 'Unknown',
                     earning.to_profile.handle if earning.to_profile else '*',
@@ -743,7 +778,7 @@ def tax_settings(request):
     if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
-        
+
     # location  dict is not empty
     location = ''
     if profile.location:
@@ -783,15 +818,15 @@ def tax_settings(request):
                     location += ', ' + country_code
                 else:
                     location += country_code
-    
+
     #address is not empty
     if profile.address:
-        address = profile.address   
+        address = profile.address
     else:
         address = ''
-    
+
     g_maps_api_key = "AIzaSyBaJ6gEXMqjw0Y7d5Ps9VvelzOOvfV6BvQ"
-        
+
     context = {
         'is_logged_in': is_logged_in,
         'nav': 'home',
@@ -924,9 +959,9 @@ def leaderboard(request, key=''):
                   'type': 'line',
                   'stacking': False
                   },
-                'terms': 
+                'terms':
                     ['amount']
-                
+
             }],
             chart_options =
               {'legend': {

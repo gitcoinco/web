@@ -13,6 +13,13 @@
  *
 */
 
+$.ajaxSetup({
+  crossDomain: true,
+  xhrFields: {
+    withCredentials: true
+  }
+});
+
 var fetchData = function(urlRequest, methodType, data, headers) {
   // Return the $.ajax promise
   return $.ajax({

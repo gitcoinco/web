@@ -100,3 +100,27 @@
 </script>
 {% endif %}
 {% include 'shared/messages.html' %}
+<script>
+  if (window.ethereum.isStatus) {
+    $('#alternative-login').show()
+  } else {
+    $('#alternative-login').hide()
+  }
+
+  function checkStatusSignIn() {
+    const web3 = new Web3(window.ethereum);
+    window.ethereum.enable()
+        .then(() => {
+          web3.eth.net.getId().then((id) => {
+            alert(`network id: ${id}`)
+            web3.eth.getAccounts().then((accounts) => {
+              alert(`current account: ${accounts[0]}`);
+              alert(web3.keycard_signTypedData);
+              alert(window.ethereum.keycard_signTypedData)
+            });
+          }).catch((err) => {
+            alert(err)
+          });
+        });
+  }
+</script>

@@ -97,3 +97,4 @@ elasticsearch
 pdfrw
 django-admin-sortable2==0.7.6
 twilio
+coolname==1.1.0

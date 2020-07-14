@@ -27,9 +27,11 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
 
+import web3
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
@@ -5535,3 +5537,65 @@ def showcase(request, hackathon):
     return JsonResponse({
         'success': True,
     })
+
+@csrf_exempt
+def signin(request):
+    address = request.POST.get('address')
+    method = request.POST.get('method')
+    hash = request.POST.get('hash')
+    signed = request.POST.get('signed')
+    print(address)
+    profile = get_object_or_404(Profile, sigin_address=address)
+
+    if method == 'request':
+        response = JsonResponse({
+            'nonce': f'Sign in as @{profile.handle}'
+        })
+
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+
+        return response
+    elif method == 'signin':
+        signed_address = w3.eth.account.recoverHash(hash, signature=signed)
+        print(signed_address)
+        print(profile.sigin_address)
+        if signed_address == profile.sigin_address:
+            login(request, profile.user, backend='django.contrib.auth.backends.ModelBackend')
+
+            return JsonResponse({
+                'refresh': True
+            })
+        response = JsonResponse({
+            'error': True,
+            'msg': 'Failed compare message'
+        }, status=422)
+
+        response["Access-Control-Allow-Origin"] = "*"
+        response["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        response["Access-Control-Max-Age"] = "1000"
+        response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+
+        return response
+    elif method == 'switch':
+        signed_address = w3.eth.account.recoverHash(hash, signature=signed)
+
+        if signed_address == profile.sigin_address:
+            if request.user == profile.user:
+                login(request, profile.ghost_account.user, backend='django.contrib.auth.backends.ModelBackend')
+            else:
+                login(request, profile.user, backend='django.contrib.auth.backends.ModelBackend')
+
+            return JsonResponse({
+                'refresh': True
+            })
+        return JsonResponse({
+            'error': True,
+            'msg': 'Failed compare message'
+        }, status=422)
+
+    return JsonResponse({
+        'error': True
+    }, status=422)

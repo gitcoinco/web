@@ -18,6 +18,12 @@
           <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile altogether" %}</small>
       </div>
       <div>
+          <input type="checkbox" name="active_ghost_account" id=active_ghost_account value="1" {% if profile.active_ghost_account %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
+          <label class="form__label" for="active_ghost_account">{% trans "Activate ghost account" %}</label>
+          <br>
+          <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, the whost account wil be activated" %}</small>
+      </div>
+      <div>
           <input type="checkbox" name="pref_do_not_track" id=pref_do_not_track value="1" {% if profile.pref_do_not_track %} checked="checked" {% endif %} {% if not is_logged_in %} disabled {% endif %} >
           <label class="form__label" for="pref_do_not_track">{% trans "Do not Track" %}</label>
           <br>
