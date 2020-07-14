@@ -167,7 +167,20 @@ class Command(BaseCommand):
                 })
 
                 signed = w3.eth.account.signTransaction(tx, from_pk)
-                tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+                tx_id = None
+                success = False
+                counter = 0
+                while not success:
+                    try:
+                        tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+                        success = True
+                    except Exception as e:
+                        counter +=1
+                        if 'replacement transaction underpriced' in str(e):
+                            print(f'replacement transaction underpriced. retrying {counter}')
+                            time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
+                        else:
+                            raise e
 
                 if not tx_id:
                     print("cannot pay advance, did not get a txid")
