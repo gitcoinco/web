@@ -415,11 +415,6 @@ def send_tip_3(request):
         sender_profile=get_profile(from_username),
     )
 
-
-    increase_funding_form_title = _('Request a Funding Limit Increasement')
-    increase_funding_form = f'<a target="_blank" href="{settings.BASE_URL}'\
-                            f'requestincrease">{increase_funding_form_title}</a>'
-
     return JsonResponse(response)
 
 
