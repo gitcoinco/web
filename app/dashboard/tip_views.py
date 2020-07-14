@@ -415,7 +415,6 @@ def send_tip_3(request):
         sender_profile=get_profile(from_username),
     )
 
-    max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
 
     increase_funding_form_title = _('Request a Funding Limit Increasement')
     increase_funding_form = f'<a target="_blank" href="{settings.BASE_URL}'\
