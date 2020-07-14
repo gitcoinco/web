@@ -160,11 +160,12 @@ class Command(BaseCommand):
                 address = Web3.toChecksumAddress(address)
 
                 amount = int(amount_owed * 10**DECIMALS)
-                tx = contract.functions.transfer(address, amount).buildTransaction({
+                tx_args = {
                     'nonce': w3.eth.getTransactionCount(from_address),
                     'gas': 100000,
                     'gasPrice': int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 10**9 * 1.4)
-                })
+                }
+                tx = contract.functions.transfer(address, amount).buildTransaction(tx_args)
 
                 signed = w3.eth.account.signTransaction(tx, from_pk)
                 tx_id = None
@@ -179,6 +180,14 @@ class Command(BaseCommand):
                         if 'replacement transaction underpriced' in str(e):
                             print(f'replacement transaction underpriced. retrying {counter}')
                             time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
+                        elif 'nonce too low' in str(e):
+                            print(f'nonce too low. retrying {counter}')
+                            time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
+
+                            # rebuild txn
+                            tx_args['nonce'] = w3.eth.getTransactionCount(from_address)
+                            tx = contract.functions.transfer(address, amount).buildTransaction(tx_args)
+                            signed = w3.eth.account.signTransaction(tx, from_pk)
                         else:
                             raise e
 
