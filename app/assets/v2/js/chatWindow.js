@@ -498,6 +498,7 @@ let lookupExpiry;
                     if (vm.iframe) {
 
                       let openFrame = vm.getOpenFrame();
+
                       if (openFrame.frameWindow.location.pathname === '/login' || count >= 5) {
                         count = 0;
                         vm.frameLoginAttempting = true;
