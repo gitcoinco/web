@@ -1364,3 +1364,27 @@ body.green.offer_view .announce {
   margin-bottom: 2px;
   margin-top: 2px;
 }
+
+/* alerts */
+/* todo:
+  New design feature tags for cards
+*/
+.tag-hackathon{
+  background-color: rgb(247, 241, 252);
+  color: rgb(146, 66, 195);
+  padding: 4px;
+  display: inline-block;
+}
+
+.tag-workshop{
+  background-color: rgb(239, 250, 249);
+  color: rgb(59, 169, 153);
+  padding: 4px;
+
+}
+
+.tag-grants{
+  background-color: rgb(240, 240, 245);
+  color: rgb(22, 14, 93);
+  padding: 4px;
+}
