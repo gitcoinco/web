@@ -559,9 +559,6 @@ Vue.component('project-card', {
             <template v-slot:button-content>
               <i class='fas fa-comment-dots'></i>
             </template>
-            <b-dropdown-item-button v-if="project.chat_channel_id" @click.prevent="chatWindow(project.chat_channel_id);" aria-describedby="dropdown-header-label" :key="project.chat_channel_id || project.id">
-              Chat With Team
-            </b-dropdown-item-button>
             <b-dropdown-item-button @click.prevent="chatWindow('@' +profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
               @ [[ profile.handle ]]
             </b-dropdown-item-button>

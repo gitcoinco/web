@@ -1153,29 +1153,24 @@ def bounty_mentor(request):
 
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
-    print(body)
-    print(request.body)
-    # can_manage = request.user.is_authenticated and any(
-    #     [request.user.profile.handle.lower() == body.bounty_org.lower()]
-    # )
-    #
-    # if not can_manage:
-    #     return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
+    can_manage = request.user.is_authenticated and any(
+        [request.user.profile.handle.lower() == body.bounty_org.lower()]
+    )
+
+    if not can_manage:
+        return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
 
     bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{request.user.profile.handle.lower()}-mentors')[0]
     message = f'Mentors Updated Successfully'
     if body['set_default_mentors']:
         current_mentors = Profile.objects.filter(user__groups=bounty_org_default_mentors)
-        print(current_mentors)
         mentors_to_remove = list(set([current.id for current in current_mentors]) - set(body['new_default_mentors']))
 
         mentors_to_remove = Profile.objects.filter(id__in=mentors_to_remove)
         for mentor_to_r in mentors_to_remove:
-            print(mentor_to_r)
             mentor_to_r.user.groups.remove(bounty_org_default_mentors)
 
         mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
-        print(mentors_to_add)
         for mentor in mentors_to_add:
             mentor.user.groups.add(bounty_org_default_mentors)
 
@@ -1191,8 +1186,8 @@ def bounty_mentor(request):
     if body['hackathon_id']:
         try:
             hackathon_event = HackathonEvent.objects.get(id=int(body['hackathon_id']))
-            from chat.tasks import hackathon_project_chat_sync
-            hackathon_project_chat_sync.delay(hackathon_id=hackathon_event.id, bounty_owner_handle=request.user.profile.handle)
+            from chat.tasks import hackathon_chat_sync
+            hackathon_chat_sync.delay(hackathon_id=hackathon_event.id)
         except Exception as e:
             message = 'Hackathon does not exist'
             logger.info(str(e))
@@ -4066,11 +4061,7 @@ def hackathon_save_project(request):
             project.first().profiles.set(profiles)
 
             invalidate_obj(project.first())
-            try:
-                from chat.tasks import hackathon_project_chat_sync
-                hackathon_project_chat_sync.delay(project_id=project.id)
-            except Exception as e:
-                logger.debug(str(e))
+
 
         except Exception as e:
             logger.error(f"error in record_action: {e}")
@@ -4083,11 +4074,6 @@ def hackathon_save_project(request):
         profiles.append(str(profile.id))
         project.profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
         invalidate_obj(project.first())
-        try:
-            from chat.tasks import hackathon_project_chat_sync
-            hackathon_project_chat_sync.delay(project_id=project.id)
-        except Exception as e:
-            logger.debug(str(e))
 
     return JsonResponse({
             'success': True,

@@ -238,6 +238,18 @@ def hackathon_chat_sync(self, hackathon_id: str, profile_handle: str = None, ret
         channels_to_connect.append(hackathon.chat_channel_id)
 
         profiles_to_connect = []
+
+        event_bounties = Bounty.objects.filter(event=hackathon)
+
+        for bounty in event_bounties:
+            bounty_mentors = Profile.objects.filter(
+                user__groups__name=f'sponsor-org-{bounty.bounty_owner_handle}-mentors')
+
+            for mentor in bounty_mentors:
+                if mentor.chat_id is '' or mentor.chat_id is None:
+                    created, mentor = associate_chat_to_profile(mentor)
+                profiles_to_connect.append(mentor.chat_id)
+
         if profile_handle is None:
             regs_to_sync = HackathonRegistration.objects.filter(hackathon__id=hackathon_id).select_related('registrant')
             for reg in regs_to_sync:
