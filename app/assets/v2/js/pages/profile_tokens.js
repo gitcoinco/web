@@ -66,6 +66,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   const amountField = $(form.ptokenRedeemAmount);
   const tos = $(form.ptokenRedeemTerms);
   const redeem_amount = parseFloat(amountField.val());
+  const redeem_description = $('#ptokenRedeemDescription').val()
 
   if (!tos.prop('checked')) {
     event.stopPropagation();
@@ -90,7 +91,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   }
   amountField.removeClass('is-invalid');
 
-  redeemPToken(redeem_amount);
+  redeemPToken(redeem_amount, redeem_description);
 });
 
 function getTokenByName(name) {
@@ -193,14 +194,9 @@ async function buyPToken(tokenAmount) {
   }
 }
 
-async function redeemPToken(tokenAmount) {
-  console.log('tokenAmount: ', tokenAmount);
+async function redeemPToken(tokenAmount, redemptionDescription) {
   const network = checkNetwork();
-  console.log('network: ', network);
-  return;
-  // TODO test below line and remove return statement
-  // TODO below line should include the description?
-  request_redemption(document.current_ptoken_id, tokenAmount, network)
+  request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network)
 
   /**
 

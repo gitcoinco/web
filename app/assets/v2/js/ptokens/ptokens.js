@@ -68,10 +68,11 @@ function purchase_ptoken(tokenId, amount, to_address, web3_created, txid, networ
   });
 }
 
-function request_redemption(tokenId, total, network) {
+function request_redemption(tokenId, total, redemptionDescription, network) {
   return fetchData(`/ptokens/${tokenId}/redemptions/`, 'POST', {
     'network': network,
-    'total': total
+    'total': total,
+    'description': redemptionDescription,
   });
 }
 
