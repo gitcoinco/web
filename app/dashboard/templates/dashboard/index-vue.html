@@ -137,7 +137,7 @@
                   </div>
                 </div>
               </template>
-              <b-tab class="col-12" title-item-class="navigation" v-if="!hackHasEnded">
+              <b-tab class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Prizes" %}
@@ -191,7 +191,7 @@
                   </div>
                 </div>
               </b-tab>
-              <b-tab class="col-12" title-item-class="navigation" v-if="!hackHasEnded">
+              <b-tab class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Townsquare" %}
@@ -331,7 +331,7 @@
                     </div>
                   </project-directory>
                 </b-tab>
-              <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation" v-if="!hackHasEnded">
+              <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-4">
                     {% trans "Chat" %}
@@ -345,7 +345,7 @@
                   </div>
                 </template>
               </b-tab>
-              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation" lazy v-if="!hackHasEnded">
+              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Participants" %}
