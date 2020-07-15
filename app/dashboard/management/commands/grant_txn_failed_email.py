@@ -29,4 +29,4 @@ class Command(BaseCommand):
         failed_contribs = Contribution.objects.exclude(validator_passed=True)
 
         for failed_contrib in failed_contribs:
-            grant_txn_failed(failed_contrib.subscription.contributor_profile, failed_contrib.subscription.grant, failed_contrib.tx_id)
+            grant_txn_failed(failed_contrib)

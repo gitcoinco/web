@@ -35,11 +35,18 @@ class Command(BaseCommand):
             payout_status='pending'
         )
 
-        timeout_period = timezone.now() - timedelta(minutes=20)
+        web3_modal_pending_fulfillments = pending_fulfillments.filter(payout_type='web3_modal')
+        if web3_modal_pending_fulfillments:
+            for fulfillment in web3_modal_pending_fulfillments.all():
+                sync_payout(fulfillment)
 
-        pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
 
-        fulfillments = pending_fulfillments.filter(payout_status='pending')
+        qr_pending_fulfillments = pending_fulfillments.filter(payout_type='qr')
+        if qr_pending_fulfillments:
+            # Auto expire pending transactions
+            timeout_period = timezone.now() - timedelta(minutes=20)
+            qr_pending_fulfillments.filter(created_on__lt=timeout_period).update(payout_status='expired')
 
-        for fulfillment in fulfillments.all():
-            sync_payout(fulfillment)
+            fulfillments = qr_pending_fulfillments.filter(payout_status='pending')
+            for fulfillment in fulfillments.all():
+                sync_payout(fulfillment)

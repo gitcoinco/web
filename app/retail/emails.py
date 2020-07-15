@@ -890,15 +890,23 @@ def render_grant_recontribute(to_email, prev_round_start=(2020, 3, 23), prev_rou
 
     return response_html, response_txt
 
-def render_grant_txn_failed(to_email, grant, tx_id):
-    email_style = 27
 
+def render_grant_txn_failed(contribution):
+    email_style = 27
+    contributions = Contribution.objects.none()
+    tx_id = contribution.tx_id
+    if contribution.tx_id:
+        contributions = Contribution.objects.filter(tx_id=contribution.tx_id)
+    elif contribution.split_tx_id:
+        tx_id = contribution.split_tx_id
+        contributions = Contribution.objects.filter(split_tx_id=contribution.split_tx_id)
+
+    grants = [ele.subscription.grant for ele in contributions if ele.subscription]
     params = {
-        'id': grant.id,
-        'grant_title': grant.title,
+        'grants': grants,
         'tx_id': tx_id,
         'tx_url': "https://etherscan.io/tx/"+tx_id,
-        'bulk_add_url': "https://gitcoin.co/grants/cart/bulk-add/" + str(grant.id),
+        'bulk_add_url': "https://gitcoin.co/grants/cart/bulk-add/" + ",".join([str(ele.id) for ele in grants]),
         'email_style': email_style,
         'hide_bottom_logo': True,
     }
@@ -1399,7 +1407,7 @@ def grant_recontribute(request):
     
 def grant_txn_failed(request):
     failed_contrib = Contribution.objects.filter(subscription__contributor_profile__user__email=settings.CONTACT_EMAIL).exclude(validator_passed=True).first()
-    response_html, _ = render_grant_txn_failed(settings.CONTACT_EMAIL, failed_contrib.subscription.grant, failed_contrib.tx_id)
+    response_html, _ = render_grant_txn_failed(failed_contrib)
     return HttpResponse(response_html)
 
 @staff_member_required
@@ -1599,9 +1607,32 @@ def start_work_applicant_about_to_expire(request):
 
 
 @staff_member_required
+def request_amount_email(request):
+    from dashboard.models import FundRequest
+    fr = FundRequest.objects.first()
+    response_html, _ = render_request_amount_email('kevin@gitcoin.co', fr, True)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
 def start_work_applicant_expired(request):
     from dashboard.models import Interest, Bounty
     interest = Interest.objects.last()
     bounty = Bounty.objects.last()
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
+
+
+
+def render_remember_your_cart(grants_query, grants, hours):
+    params = {
+        'base_url': settings.BASE_URL,
+        'desc': f'Only left {hours} hours until the end of the match round and seems you have some grants on your cart',
+        'cart_query': grants_query,
+        'grants': grants
+    }
+
+    response_html = premailer_transform(render_to_string("emails/cart.html", params))
+    response_txt = render_to_string("emails/cart.txt", params)
+
+    return response_html, response_txt    

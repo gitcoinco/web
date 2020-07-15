@@ -93,7 +93,12 @@ class EarningAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['from_profile', 'to_profile', 'org_profile']
     search_fields = ['from_profile__handle', 'to_profile__handle']
+    readonly_fields = [ 'source_link']
 
+    def source_link(self, instance):
+        url = instance.source.admin_url
+        html = f"<a href={url}>{instance.source}</a>"
+        return format_html(html)
 
 class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -168,12 +173,15 @@ def recalculate_profile(modeladmin, request, queryset):
 recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['handle', 'sybil_score', 'user_sybil_score', 'created_on']
     raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
     ordering = ['-id']
     search_fields = ['email', 'data']
-    list_display = ['handle', 'created_on']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
     actions = [recalculate_profile]
+
+    def user_sybil_score(self, obj):
+        return f"{obj.sybil_score} ({obj.sybil_score_str})"
 
     def active_bounties_list(self, instance):
         interests = instance.active_bounties
@@ -194,6 +202,24 @@ class ProfileAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_unsquelch_sybil" in request.POST:
+            from townsquare.models import SquelchProfile
+            obj.squelches.delete()
+            self.message_user(request, "Unsquelch done")
+            return redirect(obj.admin_url)
+        if "_squelch_sybil" in request.POST:
+            from townsquare.models import SquelchProfile
+            SquelchProfile.objects.create(
+                profile=obj,
+                comments=f"squelched by {request.user.username}"
+                )
+            self.message_user(request, "Squelch done")
+            return redirect(obj.admin_url)
+        if "_recalc_sybil" in request.POST:
+            Investigation.investigate_sybil(obj)
+            obj.save()
+            self.message_user(request, "Recalc done")
+            return redirect(obj.admin_url)
         if "_recalc_flontend" in request.POST:
             obj.calculate_all()
             obj.save()
@@ -218,7 +244,7 @@ class TipAdmin(admin.ModelAdmin):
     list_display = ['pk', 'created_on','sender_profile', 'recipient_profile', 'amount', 'tokenName', 'txid', 'receive_txid']
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
-    readonly_fields = ['resend', 'claim']
+    readonly_fields = ['resend', 'claim', 'activity_link']
     search_fields = [
         'tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url',
         'emails', 'from_address', 'receive_address', 'ip', 'metadata', 'txid', 'receive_txid'
@@ -242,6 +268,19 @@ class TipAdmin(admin.ModelAdmin):
                 html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
         except Exception:
             html = 'n/a'
+        return html
+
+    def activity_link(self, instance):
+        htmls = []
+        for activity in instance.activities.all():
+            html = (f"<a href={activity.url}>{activity}</a>")
+            htmls.append(html)
+        if 'activity:' in instance.comments_priv:
+            _id = int(instance.comments_priv.split(':')[1])
+            activity = Activity.objects.get(pk=_id)
+            html = (f"<a href={activity.url}>TIPPED_POST: {activity}</a>")
+            htmls.append(html)
+        html = format_html("<BR>".join(htmls))
         return html
 
     def response_change(self, request, obj):

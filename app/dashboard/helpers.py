@@ -43,7 +43,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from git.utils import get_gh_issue_details, get_url_dict
+from git.utils import get_gh_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC
@@ -126,40 +126,45 @@ def amount(request):
     """
     response = {}
 
-    try:
-        amount = str(request.GET.get('amount', '1'))
+    amount = str(request.GET.get('amount', '1'))
 
-        if not amount.replace('.','').isnumeric():
-            return HttpResponseBadRequest('not number')
+    if not amount.replace('.','').isnumeric():
+        return HttpResponseBadRequest('not number')
 
-        denomination = request.GET.get('denomination', 'ETH')
-        tokens = denomination.split(',')
+    denomination = request.GET.get('denomination', 'ETH')
+    tokens = denomination.split(',')
 
-        response = []
+    response = []
 
-        for token in tokens:
-            if token in settings.STABLE_COINS:
-                token = 'USDT'
-            if token == 'ETH':
-                amount_in_eth = float(amount)
-            else:
+    for token in tokens:
+        if token in settings.STABLE_COINS:
+            token = 'USDT'
+        if token == 'ETH':
+            amount_in_eth = float(amount)
+        else:
+            try:
                 amount_in_eth = convert_amount(amount, token, 'ETH')
-            amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
+            except Exception as e:
+                logger.debug(e)
+                amount_in_eth = None
+        try:
+            if amount_in_eth:
+                amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
+            else:
+                amount_in_usdt = convert_amount(amount, token, 'USDT')
 
-            response.append({
-                'token': token,
-                'amount': float(amount),
-                'eth': amount_in_eth,
-                'usdt': amount_in_usdt
-            })
+        except Exception as e:
+            logger.debug(e)
+            amount_in_usdt = None
 
-        return JsonResponse(response, safe=False)
-    except ConversionRateNotFoundError as e:
-        logger.debug(e)
-        raise Http404
-    except Exception as e:
-        logger.error(e)
-        raise Http404
+        response.append({
+            'token': token,
+            'amount': float(amount),
+            'eth': amount_in_eth,
+            'usdt': amount_in_usdt
+        })
+
+    return JsonResponse(response, safe=False)
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
@@ -179,6 +184,16 @@ def issue_details(request):
     token = request.GET.get('token', None)
     url = request.GET.get('url')
     url_val = URLValidator()
+    hackathon_slug = request.GET.get('hackathon_slug')
+
+
+    if hackathon_slug:
+        sponsor_profiles = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).prefetch_related('sponsor_profiles').values_list('sponsor_profiles__handle', flat=True)
+        org_issue = org_name(url).lower()
+
+        if org_issue not in sponsor_profiles:
+            message = 'This issue is not under any sponsor repository'
+            return JsonResponse({'status':'false','message':message}, status=404)
 
     try:
         url_val(url)
@@ -198,7 +213,8 @@ def issue_details(request):
             response['message'] = 'could not parse Github url'
     except Exception as e:
         logger.warning(e)
-        response['message'] = 'could not pull back remote response'
+        message = 'could not pull back remote response'
+        return JsonResponse({'status':'false','message':message}, status=404)
     return JsonResponse(response)
 
 

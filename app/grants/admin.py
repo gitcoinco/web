@@ -98,7 +98,7 @@ class GrantAdmin(GeneralAdmin):
         'subscriptions_links', 'contributions_links', 'link',
         'migrated_to', 'view_count'
     ]
-    list_display =['pk', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
+    list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
     search_fields = ['description', 'admin_profile__handle']
 
@@ -112,6 +112,12 @@ class GrantAdmin(GeneralAdmin):
 
     def view_count(self, instance):
         return instance.get_view_count
+
+    def match_amount(self, instance):
+        try:
+            return round(instance.clr_prediction_curve[0][1])
+        except:
+            return '-'
 
     def team_member_list(self, instance):
         items = []
@@ -232,9 +238,10 @@ kevin (team gitcoin)
 
 class ContributionAdmin(GeneralAdmin):
     """Define the Contribution administration layout."""
-    raw_id_fields = ['subscription']
-    list_display = ['id', 'profile', 'created_on', 'grant', 'github_created_on', 'from_ip_address', 'etherscan_links', 'amount', 'token', 'tx_cleared', 'success']
+    raw_id_fields = ['subscription', 'profile_for_clr']
+    list_display = ['pk', 'created_on_nt', 'created_on', 'id', 'user_sybil_score', 'etherscan_links', 'amount_str', 'profile', 'grant', 'tx_cleared', 'success', 'validator_comment']
     readonly_fields = ['etherscan_links', 'amount_per_period_to_gitcoin', 'amount_per_period_minus_gas_price', 'amount_per_period']
+    search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']
 
     def txn_url(self, obj):
         tx_id = obj.tx_id
@@ -246,11 +253,21 @@ class ContributionAdmin(GeneralAdmin):
     def profile(self, obj):
         return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
 
+    def created_on_nt(self, obj):
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return naturaltime(obj.created_on)
+
+    def amount_str(self, obj):
+        return f"{round(obj.subscription.amount_per_period, 2)} {obj.subscription.token_symbol} (${round(obj.subscription.amount_per_period_usdt,2)})"
+
     def token(self, obj):
         return obj.subscription.token_symbol
 
+    def user_sybil_score(self, obj):
+        return f"{obj.subscription.contributor_profile.sybil_score} ({obj.subscription.contributor_profile.sybil_score_str})"
+
     def grant(self, obj):
-        return obj.subscription.grant.title
+        return mark_safe(f"<a href={obj.subscription.grant.url}>{obj.subscription.grant.title}</a>")
 
     def amount(self, obj):
         return obj.subscription.amount_per_period
@@ -267,8 +284,8 @@ class ContributionAdmin(GeneralAdmin):
         return " , ".join(visits)
 
     def etherscan_links(self, instance):
-        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id}</a><BR>"
-        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id}</a>"
+        html = f"<a href='https://etherscan.io/tx/{instance.tx_id}' target=new>TXID: {instance.tx_id[0:25]}...</a><BR>"
+        html += f"<a href='https://etherscan.io/tx/{instance.split_tx_id}' target=new>SPLITTXID: {instance.split_tx_id[0:25]}...</a>"
         return mark_safe(html)
 
     def amount_per_period(self, instance):
@@ -282,6 +299,12 @@ class ContributionAdmin(GeneralAdmin):
 
     def response_change(self, request, obj):
         from django.shortcuts import redirect
+        if "_notify_contribution_failure" in request.POST:
+            from marketing.mails import grant_txn_failed
+            grant_txn_failed(obj)
+            obj.validator_comment += f"User Notified {timezone.now()}"
+            obj.save()
+            self.message_user(request, "notified user of failure")
         if "_update_tx_status" in request.POST:
             obj.update_tx_status()
             obj.save()

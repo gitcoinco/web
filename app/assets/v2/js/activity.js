@@ -9,7 +9,7 @@ $(document).ready(function() {
   // inserts links into the text where there are URLS detected
 
   function urlify(text) {
-    var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+    var urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:;,%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:;,%_\+.~#?&//=]*)/g;
 
     return text.replace(urlRegex, function(url) {
       return '<a target=blank rel=nofollow href="' + url + '">' + url + '</a>';
@@ -181,7 +181,7 @@ $(document).ready(function() {
   // notifications of new activities
   var ping_activity_notifier = (function() {
     var plural = document.buffered_rows.length == 1 ? 'y' : 'ies';
-    var html = '<div id=new_activity_notifier>' + document.buffered_rows.length + ' New Activit' + plural + ' - Click to View</div>';
+    var html = '<div id="new_activity_notifier">' + document.buffered_rows.length + ' New Activit' + plural + ' - Click to View</div>';
 
     if ($('#new_activity_notifier').length) {
       $('#new_activity_notifier').html(html);

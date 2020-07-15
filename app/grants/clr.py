@@ -35,6 +35,14 @@ from perftools.models import JSONStore
 PREV_CLR_START_DATE = dt.datetime(2020, 3, 23, 12, 0)
 PREV_CLR_END_DATE = dt.datetime(2020, 4, 7, 12, 0)
 CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0)
+CLR_END_DATE = dt.datetime(2020, 7, 3, 16, 0)
+
+try:
+    CLR_END_DATE
+except NameError:
+    CLR_END_DATE = timezone.now()
+
+CLR_PERCENTAGE_DISTRIBUTED = 0
 
 # TODO: MOVE TO DB
 V_THRESHOLD_TECH = 25.0
@@ -211,7 +219,6 @@ def get_totals_by_pair(contrib_dict):
             boolean
 '''
 def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_threshold, uv_threshold, total_pot):
-    saturation_point = False
     bigtot = 0
     totals = []
     for proj, contribz in aggregated_contributions['current'].items():
@@ -238,17 +245,17 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
         bigtot += tot
         totals.append({'id': proj, 'clr_amount': tot})
 
-    if bigtot >= total_pot:
-        saturation_point = True
+    global CLR_PERCENTAGE_DISTRIBUTED
 
-    if saturation_point == True:
-        # find normalization factor
-        normalization_factor = bigtot / total_pot
-        # modify totals
-        for result in totals:
-            result['clr_amount'] = result['clr_amount'] / normalization_factor
+    if bigtot >= total_pot: # saturation reached
+        # print(f'saturation reached. Total Pot: ${total_pot} | Total Allocated ${bigtot}. Normalizing')
+        CLR_PERCENTAGE_DISTRIBUTED = 100
+        for t in totals:
+            t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
+    else:
+        CLR_PERCENTAGE_DISTRIBUTED =  (bigtot / total_pot) * 100
 
-    return totals, saturation_point
+    return totals
 
 
 
@@ -297,7 +304,7 @@ def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, v_threshold, uv_thre
     ptots = get_totals_by_pair(combinedagg)
 
     # clr calcluation
-    totals, _ = calculate_clr(combinedagg, ptots, vlist, v_threshold, uv_threshold, total_pot)
+    totals = calculate_clr(combinedagg, ptots, vlist, v_threshold, uv_threshold, total_pot)
 
     return totals
 
@@ -348,10 +355,14 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_co
         uv_threshold                : unverified threshold for clr_type
 
 '''
-def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_date=timezone.now()):
+def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_date=None):
 
     if not clr_start_date:
-        print('error: fetch_data - missing start_date')
+        print('error: fetch_data - missing clr_start_date')
+        return None, None, None, None
+
+    if not clr_end_date:
+        print('error: fetch_data - missing clr_end_date')
         return None, None, None, None
 
     contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True)
@@ -413,10 +424,13 @@ def fetch_data(clr_type=None, network='mainnet', clr_start_date=None, clr_end_da
         }
 
 '''
-def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, clr_start_date=None, clr_end_date=timezone.now()):
+def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, clr_start_date=None, clr_end_date=None):
 
     if not clr_start_date:
         print('Error: populate_data_for_clr - missing clr_start_date')
+
+    if not clr_end_date:
+        print('Error: populate_data_for_clr - missing clr_end_date')
 
     # set up data to load contributions for each grant
     contrib_data_list = []
@@ -431,7 +445,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
         grant_phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
         # verified profiles
-        verified_profile_ids = [ele.pk for ele in contribs if ele.subscription.contributor_profile.sms_verification]
+        verified_profile_ids = [ele.pk for ele in contribs if ele.profile_for_clr.sms_verification]
         verified_phantom_funding_profile_ids = [ele.profile_id for ele in grant_phantom_funding_profiles if ele.profile.sms_verification]
         verified_profile = list(set(verified_profile_ids + verified_phantom_funding_profile_ids))
 
@@ -443,7 +457,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, mecha
         # contributions
         if len(contributing_profile_ids) > 0:
             for profile_id in contributing_profile_ids:
-                profile_contributions = contribs.filter(subscription__contributor_profile_id=profile_id)
+                profile_contributions = contribs.filter(profile_for_clr_id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_contributions if c.subscription.amount_per_period_usdt]))
                 phantom_funding = grant_phantom_funding_profiles.filter(profile_id=profile_id)
                 if phantom_funding.exists():
@@ -470,11 +484,11 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
     debug_output = []
 
     # one-time data call
-    grants, contributions, phantom_funding_profiles, total_pot, v_threshold, uv_threshold = fetch_data(clr_type, network, PREV_CLR_START_DATE)
+    grants, contributions, phantom_funding_profiles, total_pot, v_threshold, uv_threshold = fetch_data(clr_type, network, PREV_CLR_START_DATE, CLR_END_DATE)
 
     # one for previous, one for current
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=CLR_START_DATE)
-    grant_contributions_prev = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism=mechanism, clr_start_date=PREV_CLR_START_DATE, clr_end_date=PREV_CLR_END_DATE)
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, CLR_START_DATE, CLR_END_DATE)
+    grant_contributions_prev = populate_data_for_clr(grants, contributions, phantom_funding_profiles, mechanism, PREV_CLR_START_DATE, PREV_CLR_END_DATE)
 
     # calculate clr given additional donations
     for grant in grants:
@@ -500,7 +514,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
             _grant.clr_prediction_curve = list(zip(potential_donations, potential_clr))
             base = _grant.clr_prediction_curve[0][1]
             _grant.last_clr_calc_date = timezone.now()
-            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=10)
+            _grant.next_clr_calc_date = timezone.now() + timezone.timedelta(minutes=20)
 
             can_estimate = True if base or _grant.clr_prediction_curve[1][1] or _grant.clr_prediction_curve[2][1] or _grant.clr_prediction_curve[3][1] else False
 
@@ -549,4 +563,13 @@ def predict_clr(save_to_db=False, from_date=None, clr_type=None, network='mainne
                 _grant.save()
 
         debug_output.append({'grant': grant.id, "clr_prediction_curve": (potential_donations, potential_clr), "grants_clr": grants_clr})
+
+    try :
+        Stat.objects.create(
+            key= clr_type + '_grants_round_6_saturation',
+            val=int(CLR_PERCENTAGE_DISTRIBUTED),
+        )
+    except:
+        pass
+
     return debug_output

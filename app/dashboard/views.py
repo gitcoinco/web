@@ -2839,7 +2839,7 @@ def profile(request, handle, tab=None):
     else:
         context['is_on_tribe'] = False
 
-    if profile.is_org and profile.handle.lower() in ['gitcoinco']:
+    if profile.is_org and profile.is_tribe:
 
         active_tab = 0
         if tab == "townsquare":
@@ -2858,10 +2858,10 @@ def profile(request, handle, tab=None):
         try:
             context['tags'] = get_tags(request)
             network = get_default_network()
-            orgs_bounties = profile.get_orgs_bounties(network=network)
+            orgs_bounties = profile.get_orgs_bounties(network)
             context['count_bounties_on_repo'] = orgs_bounties.count()
             context['sum_eth_on_repos'] = profile.get_eth_sum(bounties=orgs_bounties)
-            context['works_with_org'] = profile.get_who_works_with(work_type='org', bounties=orgs_bounties)
+            context['works_with_org'] = profile.as_dict.get('works_with_org', [])
             context['currentProfile'] = TribesSerializer(profile, context={'request': request}).data
             what = f'tribe:{profile.handle}'
             try:
@@ -2879,6 +2879,7 @@ def profile(request, handle, tab=None):
 
             return TemplateResponse(request, 'profiles/tribes-vue.html', context, status=status)
         except Exception as e:
+            raise e # raise so that sentry konws about it and we fix it
             logger.info(str(e))
 
 
@@ -3263,6 +3264,32 @@ def new_bounty(request):
     return TemplateResponse(request, 'bounty/fund.html', params)
 
 
+@login_required
+def new_hackathon_bounty(request, hackathon=''):
+    """Create a new hackathon bounty."""
+    from .utils import clean_bounty_url
+
+    try:
+        hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).prefetch_related('sponsor_profiles').latest('id')
+    except HackathonEvent.DoesNotExist:
+        return redirect(reverse('get_hackathons'))
+
+    bounty_params = {
+        'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
+        'amount': request.GET.get('amount'),
+        'hackathon':hackathon_event
+    }
+
+    params = get_context(
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='submit_bounty',
+        title=_('Create Funded Issue'),
+        update=bounty_params
+    )
+    return TemplateResponse(request, 'dashboard/hackathon/new_bounty.html', params)
+
 @csrf_exempt
 def get_suggested_contributors(request):
     previously_worked_developers = []
@@ -3605,7 +3632,7 @@ def hackathon(request, hackathon='', panel='prizes'):
         is_registered = HackathonRegistration.objects.filter(registrant=request.user.profile,
                                                              hackathon=hackathon_event) if request.user and request.user.profile else None
 
-    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).all().count()
+    hacker_count = HackathonRegistration.objects.filter(hackathon=hackathon_event).distinct('registrant').count()
     projects_count = HackathonProject.objects.filter(hackathon=hackathon_event).all().count()
     view_tags = get_tags(request)
     active_tab = 0
@@ -3619,6 +3646,9 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 3
     elif panel == "participants":
         active_tab = 4
+    elif panel == "showcase":
+        active_tab = 5
+
     filter = ''
     if request.GET.get('filter'):
         filter = f':{request.GET.get("filter")}'
@@ -4758,7 +4788,7 @@ def create_bounty_v1(request):
     bounty.bounty_categories = request.POST.get("bounty_categories", '').split(',')
     bounty.network = request.POST.get("network", 'mainnet')
     bounty.admin_override_suspend_auto_approval = not request.POST.get("auto_approve_workers", True)
-    bounty.value_in_token = request.POST.get("value_in_token", 0)
+    bounty.value_in_token = float(request.POST.get("value_in_token", 0))
     bounty.token_address = request.POST.get("token_address")
     bounty.bounty_owner_email = request.POST.get("bounty_owner_email")
     bounty.bounty_owner_name = request.POST.get("bounty_owner_name", '') # ETC-TODO: REMOVE ?
@@ -4823,6 +4853,10 @@ def create_bounty_v1(request):
             bounty.event = event
         except Exception as e:
             logger.error(e)
+
+    if bounty.web3_type == 'manual' and not bounty.event:
+        response['message'] = 'error: web3_type manual is eligible only for hackathons'
+        return JsonResponse(response)
 
     # coupon code
     coupon_code = request.POST.get("coupon_code")
@@ -5114,8 +5148,11 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / manual'
+        return JsonResponse(response)
+    if payout_type == 'manual' and not bounty.event:
+        response['message'] = 'error: payout_type manual is eligible only for hackathons'
         return JsonResponse(response)
 
     tenant = request.POST.get('tenant')
@@ -5148,19 +5185,14 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.funder_identifier = funder_identifier
         fulfillment.payout_status = payout_status
 
-    elif payout_type == 'qr':
+    else:
 
-        if not bounty.bounty_owner_address:
-            bounty_owner_address = request.POST.get('bounty_owner_address')
-            if not bounty_owner_address:
-                response['message'] = 'error: missing parameter bounty_owner_address'
-                return JsonResponse(response)
+        funder_address = request.POST.get('funder_address')
+        if not funder_address :
+            response['message'] = f'error: missing parameter funder_address for payout_type ${payout_type}'
+            return JsonResponse(response)
 
-            bounty.bounty_owner_address = bounty_owner_address
-            bounty.save()
-
-        fulfillment.funder_address = fulfillment.bounty.bounty_owner_address # TODO: Obtain from frontend for tribe mgmt
-        fulfillment.payout_status = 'pending'
+        fulfillment.funder_address = funder_address
 
     payout_tx_id = request.POST.get('payout_tx_id')
     if payout_tx_id:
@@ -5172,15 +5204,20 @@ def payout_bounty_v1(request, fulfillment_id):
     fulfillment.payout_amount = amount
     fulfillment.token_name = token_name
 
-    if payout_type == 'fiat':
+    if payout_type in ['fiat', 'manual']:
+        if not payout_tx_id:
+            response['message'] = f'error: missing parameter payout_tx_id for payout_type ${payout_type}'
+            return JsonResponse(response)
+
         fulfillment.payout_status = 'done'
         fulfillment.accepted_on = timezone.now()
         fulfillment.accepted = True
+        fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    fulfillment.save()
-
-    if payout_type == 'qr':
+    elif payout_type in ['qr', 'web3_modal']:
+        fulfillment.payout_status = 'pending'
+        fulfillment.save()
         sync_payout(fulfillment)
 
     response = {
@@ -5398,7 +5435,6 @@ def validate_number(user, twilio, phone, redis, delivery_method='sms'):
     redis.set(f'verification:{user.id}:phone', hash_number)
 
 
-
 @login_required
 def send_verification(request):
     user = request.user
@@ -5486,3 +5522,16 @@ def validate_verification(request):
         'success': False,
         'msg': 'No verification process associated'
     }, status=401)
+
+
+@staff_member_required
+def showcase(request, hackathon):
+    hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+
+    showcase = json.loads(request.body)
+    hackathon_event.showcase = showcase
+    hackathon_event.save()
+
+    return JsonResponse({
+        'success': True,
+    })

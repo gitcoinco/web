@@ -21,7 +21,7 @@ h4,
 .sticky-top {
   position: sticky!important;
   top: 0;
-  z-index: 1;
+  z-index: 3;
 }
 
 .lighter {
@@ -546,6 +546,12 @@ div.button-pink {
 
 .panel {
   max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.panel-active {
+  max-height: 100%;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
 }
