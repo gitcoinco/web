@@ -96,7 +96,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </thead>
             {% for unlocked, beaten, cooldown, quest in the_quests %}
               <tbody>
-                <tr>
+                <tr class="table-row" onclick="window.location='{{quest.url}}'">
                   <td> {{quest.title}}</td>
                   <td> {{quest.kudos_reward.humanized_name}}</td>
                   <td> {{difficulty_level}}</td>
