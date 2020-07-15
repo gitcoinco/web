@@ -119,10 +119,12 @@ async function buyPToken(tokenAmount) {
   const network = document.web3network;
   const tokenDetails = getTokenByName('DAI');
   const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-  const token_value = new BN(document.current_ptoken_value.toString(), 10);
+  // To properly handle decimal values, we first convert to Wei and then to a BN instance
+  const token_value = new BN(web3.utils.toWei(String(document.current_ptoken_value)), 10);
   const amount = new BN(web3.utils.toWei(tokenAmount, 'ether'));
-  // token value * number of requested tokens
-  const true_value = amount.mul(token_value);
+  // true value = token value * number of requested tokens
+  // We then need to convert from Wei to "undo" the above conversion of token_value to Wei
+  const true_value = new BN(web3.utils.fromWei(amount.mul(token_value)), 10);
   const allowance = new BN(await getAllowance(document.current_ptoken_address, tokenDetails.addr), 10);
 
   const waitingState = (state) => {
@@ -134,10 +136,8 @@ async function buyPToken(tokenAmount) {
   const purchasePToken = () => {
     waitingState(true);
     pToken.methods
-      .purchase(true_value.toString())
-      .send({
-        from: user
-      })
+      .purchase(amount.toString())
+      .send({ from: user })
       .on('transactionHash', function(transactionHash) {
 
         purchase_ptoken(
