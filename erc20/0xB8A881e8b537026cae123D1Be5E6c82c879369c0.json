@@ -1,0 +1,28 @@
+﻿{
+  "symbol": "DEBO",
+  "address": "0xB8A881e8b537026cae123D1Be5E6c82c879369c0",
+  "overview":{
+        "en": "DEBO是DeBorrow发行的治理代币，用于去中心化决策 DeBorrow未来的发展方向，持有DEBO可以参与项目分红。",
+        "zh": "DEBO is a governance token issued by DeBorrow, used for decentralized decision-making DeBorrow's future development direction, holding DEBO can participate in project dividends."
+  },
+  "email": "business@biggreenchain.com",
+  "website": "deborrow.com",
+  "whitepaper": "http://deborrow.com/documents/DeBorrow.Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-7-14",
+  "initial_price":{
+        "ETH":"0.002 ETH",
+        "USD":"0.5 USD",
+        "BTC":"0.00005 BTC"
+  },
+  "links": {
+    "blog": "jackWu@deborrow.com:https://weibo.com/u/6107546639",
+    "twitter": "https://twitter.com/deborrowfinance",
+    "telegram": "https://t.me/DeborrowOfficial",
+    "github": "https://github.com/deborrow-finance",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}
