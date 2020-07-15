@@ -149,8 +149,10 @@ Vue.mixin({
         case '102': // zilliqa
         case '42220': // celo mainnet
         case '44786': // celo alfajores tesnet
-        case '717171': // other
           type = 'qr';
+          break;
+        case '717171': // other
+          type = 'manual';
           break;
         default:
           type = 'web3_modal';

@@ -984,8 +984,8 @@ body.green.offer_view .announce {
 .nav-badge {
   font-size: 9px;
   color: var(--link-color);
-  top: -8px;
-  position: relative;
+  top: 20px;
+  position: absolute;
   font-weight: bold;
 }
 
@@ -1250,8 +1250,8 @@ body.green.offer_view .announce {
   background-image: url(/static/v2/images/townsquare-nh.svg);
   width: 6.1rem;
   position: absolute;
-  top: -24px;
-  left: 8px;
+  top: -1.5rem;
+  left: 0.9rem;
   z-index: -1;
 }
 
