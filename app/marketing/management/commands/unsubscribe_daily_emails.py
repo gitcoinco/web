@@ -20,11 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import time
 import warnings
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from marketing.mails import gdpr_reconsent
-from marketing.models import EmailSubscriber, EmailEvent
+from marketing.models import EmailEvent, EmailSubscriber
 from marketing.utils import should_suppress_notification_email
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -54,4 +55,3 @@ class Command(BaseCommand):
                     es.build_email_preferences(unsubscribed_email_type)
                     print(f"unsubscribed {es.email} {num_clicks} {num_opens} {num_clicks}")
                     es.save()
-
