@@ -91,7 +91,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   }
   amountField.removeClass('is-invalid');
 
-  redeemPToken(redeem_amount, redeem_description);
+  requestPtokenRedemption(redeem_amount, redeem_description);
 });
 
 function getTokenByName(name) {
@@ -194,30 +194,13 @@ async function buyPToken(tokenAmount) {
   }
 }
 
-async function redeemPToken(tokenAmount, redemptionDescription) {
-  const network = checkNetwork();
-  request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network)
-
-  /**
-
-  // TODO this should be a redemption request with no web3, only DB update
-  [user] = await web3.eth.getAccounts();
-  const pToken = await new web3.eth.Contract(
-    document.contxt.ptoken_abi,
-    document.current_ptoken_address
-  );
-
-  pToken.methods
-    .redeem(tokenAmount)
-    .send({
-      from: user
-    })
-    .on('transactionHash', function(transactionHash) {
-      request_redemption(document.current_ptoken_id, tokenAmount, network);
-    });
-  // TODO need to confirm that transaction was confirmed. Use web3's getTransactionReceipt
-
-  */
+async function requestPtokenRedemption(tokenAmount, redemptionDescription) {
+  try {
+    const network = checkNetwork();
+    request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network)
+  } catch(err) {
+    handleError(err);
+  }
 }
 
 function checkNetwork() {
@@ -227,4 +210,50 @@ function checkNetwork() {
     throw new Error('Please connect a wallet');
   }
   return document.web3network;
+}
+
+// tokenAmount input should be in human-readable form, e.g. "5"
+async function completePtokenRedemption(tokenAmount, redemptionId) {
+  try {
+    const network = checkNetwork();
+    const amount = web3.utils.toWei(String(tokenAmount));
+    const [ user ] = await web3.eth.getAccounts();
+
+    indicateMetamaskPopup();
+    const pToken = await new web3.eth.Contract(
+      document.contxt.ptoken_abi,
+      document.current_ptoken_address
+    );
+
+    pToken.methods.redeem(amount).send({ from: user })
+      .on('transactionHash', function(transactionHash) {
+        complete_redemption(
+          redemptionId,
+          transactionHash,
+          "pending",
+          network,
+          new Date().toISOString()
+        );
+      }).on('error', (error, receipt) => {
+        console.log(error);
+        handleError(error);
+      });
+  } catch(err) {
+    handleError(err);
+  }
+}
+
+function handleError(err) {
+  console.error(err);
+  let message = 'There was an error';
+
+  if (err.message)
+    message = err.message;
+  else if (err.msg)
+    message = err.msg;
+  else if (typeof err === 'string')
+    message = err;
+
+  _alert(message, 'error');
+  indicateMetamaskPopup(true);
 }
