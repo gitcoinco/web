@@ -90,7 +90,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   }
   amountField.removeClass('is-invalid');
 
-  redeemPToken($('#ptokenRedeemAmount').val());
+  redeemPToken(redeem_amount);
 });
 
 function getTokenByName(name) {
@@ -194,6 +194,16 @@ async function buyPToken(tokenAmount) {
 }
 
 async function redeemPToken(tokenAmount) {
+  console.log('tokenAmount: ', tokenAmount);
+  const network = checkNetwork();
+  console.log('network: ', network);
+  return;
+  // TODO test below line and remove return statement
+  // TODO below line should include the description?
+  request_redemption(document.current_ptoken_id, tokenAmount, network)
+
+  /**
+
   // TODO this should be a redemption request with no web3, only DB update
   [user] = await web3.eth.getAccounts();
   const pToken = await new web3.eth.Contract(
@@ -210,4 +220,15 @@ async function redeemPToken(tokenAmount) {
       request_redemption(document.current_ptoken_id, tokenAmount, network);
     });
   // TODO need to confirm that transaction was confirmed. Use web3's getTransactionReceipt
+
+  */
+}
+
+function checkNetwork() {
+  const supportedNetworks = ['rinkeby', 'mainnet'];
+  if (!supportedNetworks.includes(document.web3network)) {
+    _alert('Unsupported network', 'error');
+    throw new Error('Please connect a wallet');
+  }
+  return document.web3network;
 }
