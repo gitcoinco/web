@@ -391,6 +391,14 @@ class HackathonEventAdmin(admin.ModelAdmin):
     list_display = ['pk', 'img', 'name', 'start_date', 'end_date', 'explorer_link']
     list_filter = ('sponsor_profiles', )
     readonly_fields = ['img', 'explorer_link', 'stats', 'view_count']
+    actions = ['calculate_winners']
+
+    def calculate_winners(self, request, queryset):
+        for hackathon in queryset:
+            hackathon.get_total_prizes(force=True)
+            hackathon.get_total_winners(force=True)
+
+    calculate_winners.short_description = "Showcase - Update winners and bounties"
 
     def view_count(self, instance):
         return instance.get_view_count
@@ -545,7 +553,7 @@ class PollMediaAdmin(admin.ModelAdmin):
         img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(image.url))
         return img_html
 
-      
+
 class ProfileVerificationAdmin(admin.ModelAdmin):
     list_display = ['id', 'profile', 'success', 'validation_passed', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
                     'phone_number', 'carrier_error_code']
