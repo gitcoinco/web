@@ -24,6 +24,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 from decimal import Decimal
+from functools import reduce
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -4707,6 +4708,22 @@ class HackathonEvent(SuperModel):
 
         """
         return settings.BASE_URL + self.relative_url
+
+    def get_total_prizes(self, force=False):
+        if force or self.showcase.get('prizes_count') is None:
+            prizes_count = Bounty.objects.filter(event=self).distinct().count()
+            self.showcase['prizes_count'] = prizes_count
+            self.save()
+
+        return self.showcase.get('prizes_count', 0)
+
+    def get_total_winners(self, force=False):
+        if force or self.showcase.get('winners_count') is None:
+            bounties = Bounty.objects.filter(event=self).distinct()
+            self.showcase['winners_count'] = reduce(lambda total, prize: total + len(prize.paid), bounties, 0)
+            self.save()
+
+        return self.showcase.get('winners_count', 0)
 
     @property
     def onboard_url(self):

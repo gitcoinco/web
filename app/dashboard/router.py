@@ -64,10 +64,10 @@ class HackathonEventSerializer(serializers.ModelSerializer):
     winners = serializers.SerializerMethodField()
 
     def get_prizes(self, obj):
-        return Bounty.objects.filter(event=obj).distinct().count()
+        return obj.get_total_prizes()
 
     def get_winners(self, obj):
-        return reduce(lambda total, prize: total + len(prize.paid), Bounty.objects.filter(event=obj).distinct(), 0)
+        return obj.get_total_winners()
 
     class Meta:
         """Define the hackathon serializer metadata."""
