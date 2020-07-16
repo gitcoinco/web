@@ -270,7 +270,19 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
     if redemption_state in ['request', 'accepted', 'denied', 'completed']:
         redemptions = redemptions.filter(redemption_state=redemption_state)
 
-    return JsonResponse([redemption.to_standard_dict() for redemption in redemptions], safe=False)
+    redemptions_json = []
+    for redemption in redemptions:
+        current_redemption = redemption.to_standard_dict()
+
+        current_redemption['avatar_url'] = redemption.redemption_requester.avatar_url
+        current_redemption['requester'] = redemption.redemption_requester.handle
+        current_redemption['amount'] = redemption.total
+        current_redemption['token_symbol'] = redemption.ptoken.token_symbol
+        current_redemption['token_name'] = redemption.ptoken.token_name
+        current_redemption['creator'] = redemption.ptoken.token_owner_profile.handle
+        redemptions_json.append(current_redemption)
+
+    return JsonResponse(redemptions_json, safe=False)
 
 
 @csrf_exempt
