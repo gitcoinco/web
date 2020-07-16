@@ -66,6 +66,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   const amountField = $(form.ptokenRedeemAmount);
   const tos = $(form.ptokenRedeemTerms);
   const redeem_amount = parseFloat(amountField.val());
+  const redeem_description = $('#ptokenRedeemDescription').val()
 
   if (!tos.prop('checked')) {
     event.stopPropagation();
@@ -90,7 +91,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   }
   amountField.removeClass('is-invalid');
 
-  redeemPToken($('#ptokenRedeemAmount').val());
+  requestPtokenRedemption(redeem_amount, redeem_description);
 });
 
 function getTokenByName(name) {
@@ -119,10 +120,12 @@ async function buyPToken(tokenAmount) {
   const network = document.web3network;
   const tokenDetails = getTokenByName('DAI');
   const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-  const token_value = new BN(document.current_ptoken_value.toString(), 10);
+  // To properly handle decimal values, we first convert to Wei and then to a BN instance
+  const token_value = new BN(web3.utils.toWei(String(document.current_ptoken_value)), 10);
   const amount = new BN(web3.utils.toWei(tokenAmount, 'ether'));
-  // token value * number of requested tokens
-  const true_value = amount.mul(token_value);
+  // true value = token value * number of requested tokens
+  // We then need to convert from Wei to "undo" the above conversion of token_value to Wei
+  const true_value = new BN(web3.utils.fromWei(amount.mul(token_value)), 10);
   const allowance = new BN(await getAllowance(document.current_ptoken_address, tokenDetails.addr), 10);
 
   const waitingState = (state) => {
@@ -134,10 +137,8 @@ async function buyPToken(tokenAmount) {
   const purchasePToken = () => {
     waitingState(true);
     pToken.methods
-      .purchase(true_value.toString())
-      .send({
-        from: user
-      })
+      .purchase(amount.toString())
+      .send({ from: user })
       .on('transactionHash', function(transactionHash) {
 
         purchase_ptoken(
@@ -193,21 +194,66 @@ async function buyPToken(tokenAmount) {
   }
 }
 
-async function redeemPToken(tokenAmount) {
-  // TODO this should be a redemption request with no web3, only DB update
-  [user] = await web3.eth.getAccounts();
-  const pToken = await new web3.eth.Contract(
-    document.contxt.ptoken_abi,
-    document.current_ptoken_address
-  );
+async function requestPtokenRedemption(tokenAmount, redemptionDescription) {
+  try {
+    const network = checkNetwork();
+    request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network)
+  } catch(err) {
+    handleError(err);
+  }
+}
 
-  pToken.methods
-    .redeem(tokenAmount)
-    .send({
-      from: user
-    })
-    .on('transactionHash', function(transactionHash) {
-      request_redemption(document.current_ptoken_id, tokenAmount, network);
-    });
-  // TODO need to confirm that transaction was confirmed. Use web3's getTransactionReceipt
+function checkNetwork() {
+  const supportedNetworks = ['rinkeby', 'mainnet'];
+  if (!supportedNetworks.includes(document.web3network)) {
+    _alert('Unsupported network', 'error');
+    throw new Error('Please connect a wallet');
+  }
+  return document.web3network;
+}
+
+// tokenAmount input should be in human-readable form, e.g. "5"
+async function completePtokenRedemption(tokenAmount, redemptionId) {
+  try {
+    const network = checkNetwork();
+    const amount = web3.utils.toWei(String(tokenAmount));
+    const [ user ] = await web3.eth.getAccounts();
+
+    indicateMetamaskPopup();
+    const pToken = await new web3.eth.Contract(
+      document.contxt.ptoken_abi,
+      document.current_ptoken_address
+    );
+
+    pToken.methods.redeem(amount).send({ from: user })
+      .on('transactionHash', function(transactionHash) {
+        complete_redemption(
+          redemptionId,
+          transactionHash,
+          "pending",
+          network,
+          new Date().toISOString()
+        );
+      }).on('error', (error, receipt) => {
+        console.log(error);
+        handleError(error);
+      });
+  } catch(err) {
+    handleError(err);
+  }
+}
+
+function handleError(err) {
+  console.error(err);
+  let message = 'There was an error';
+
+  if (err.message)
+    message = err.message;
+  else if (err.msg)
+    message = err.msg;
+  else if (typeof err === 'string')
+    message = err;
+
+  _alert(message, 'error');
+  indicateMetamaskPopup(true);
 }

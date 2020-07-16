@@ -250,13 +250,20 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
         ptoken = get_object_or_404(PersonalToken, id=tokenId)
         network = request.POST.get('network')
         total = request.POST.get('total', 0)
+        description = request.POST.get('description', '')
 
         if request.method == 'POST':
             if not request.user:
                 return JsonResponse(
                     {'error': _('You must be authenticated via github to use this feature!')},
                     status=401)
-            RedemptionToken.objects.create(ptoken=ptoken, network=network, total=total, redemption_requester=request.user.profile)
+            RedemptionToken.objects.create(
+                ptoken=ptoken,
+                network=network,
+                total=total,
+                reason=description,
+                redemption_requester=request.user.profile
+            )
 
     redemptions = RedemptionToken.objects.filter(redemption_requester=request.user.profile)
 
