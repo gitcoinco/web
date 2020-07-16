@@ -51,6 +51,39 @@
           background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
         {% endif %}
       }
+      th {
+        border-top-width: 0px !important;
+        border-bottom: 2px solid #FFFFFF;
+        letter-spacing: -0.08px;
+        color: #9A99A2;
+        font-size: var(--fs-body);
+        font-weight: normal;
+        line-height: 18px;
+      }
+
+      .no-border {
+        border-top: none !important;
+      }
+
+      .mobile-separator {
+        border-bottom: 1px solid #D1D1D1;
+      }
+
+      .summary {
+        font-size: 12px;
+        line-height: 18px;
+        letter-spacing: -0.24px;
+      }
+
+      .find-hackers {
+        float: right;
+        right: 100px;
+        position: absolute;
+        bottom: 40px;
+      }
+      .hackathon-logo {
+        height: 12rem;
+      }
     </style>
     {% include 'shared/fbpixel.html' %}
   </head>
@@ -83,49 +116,57 @@
                 <small class="font-body mr-3">{{ num_submissions }} submissions</small>
                 <small class="font-body">How is the hackathon going?</small>
               </div>
+              <a href="" class="find-hackers btn btn-gc-blue" v-if="!isMobileDevice">Find more hackers</a>
             </div>
           </div>
           <div class="col-12 body hackathon-explorer">
-            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 px-4 mt-4 light-blue" class="row">
+            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 light-blue" class="row">
               <template v-slot:tabs-start>
                 <div class="hack-logo-wrapper d-none d-xl-block">
                   <div class="mb-1 hackathon-logo">
-                    <b-img-lazy v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo_svg" alt="Hackathon logo"></b-img-lazy>
-                    <b-img-lazy v-else-if="hackathonObj.logo" class="d-none d-md-block mx-auto mb-1 mw-100" :src="hackathonObj.logo" alt="Hackathon logo"></b-img-lazy>
-                    <small>{{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}</small>
+                    <b-img-lazy v-if="hackathonObj.logo_svg" class="d-none d-md-block mx-auto mb-1 mw-100" style="height: 10rem" :src="hackathonObj.logo_svg" alt="Hackathon logo"></b-img-lazy>
+                    <b-img-lazy v-else-if="hackathonObj.logo" class="d-none d-md-block mx-auto mb-1 mw-100" style="height: 10rem" :src="hackathonObj.logo" alt="Hackathon logo"></b-img-lazy>
                   </div>
                 </div>
               </template>
-              <b-tab class="col-12" title-item-class="navigation">
-                <template class="col-3" v-slot:title>
+              <b-tab title-item-class="d-none" title-item-class="navigation">
+                <template class="d-none" v-slot:title>
                   <div class="mt-4">
                     {% trans "Prizes" %}
                     <span class="nav-badge d-none d-sm-inline">({{prize_count}})</span>
                   </div>
                 </template>
-                <div id="prizes" class="row">
-                  <div class="col-12 p-2 ml-md-4">
+                <div class="white-light-bg mb-2 py-3" v-if="!isMobileDevice">
+                  <a href="{% url 'hackathon' hackathon.slug %}" class="font-body px-5">< Back to hackthon</a>
+                </div>
+                <div id="prizes" class="row mx-md-5">
+                  <div class="col-12 p-2 ">
                       <div class="row loading justify-content-center align-items-center loading_img" v-if="!prizes">
                         <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
                       </div>
                       <div role="tablist">
                         <b-card no-body class="mb-1" v-for="prize in prizes" v-if="prizes">
-                          <b-card-header header-tag="header" class="p-1 d-flex align-items-baseline justify-content-between px-2" role="tab">
-                            <div>
-                              <h1>[[prize.title]]</h1>
-                              <a :href="prize.url">View prize</a>
+                          <b-card-header header-tag="header" class="d-flex align-items-baseline justify-content-between px-4 py-1" role="tab">
+                            <div :class="isMobileDevice ? 'mx-3' : '' ">
+                              <div>
+                                <h1 class="font-title font-weight-semibold d-inline-block">[[prize.title]]</h1>
+                                <span v-if="!isMobileDevice" class="tag token ml-2">[[prize.value_eth.toFixed(2)]] ETH</span>
+                                <span v-if="!isMobileDevice" class="tag usd">[[prize.values_usdt]] USD</span>
+                              </div>
+                              <a class="font-smaller-2" :href="prize.url">View prize</a><br>
+                              <span v-if="isMobileDevice" class="font-body font-weight-semibold">2/4 Submitted</span>
                             </div>
                             <div>
-                              <span>[[prize.value_eth.toFixed(2)]] ETH</span>
-                              <span>[[prize.values_usdt]] USD</span>
+                              <span v-if="!isMobileDevice" class="font-body font-weight-semibold">2/4 Submitted</span>
                             </div>
-                            <span>2/4 Submitted</span>
-                            <b-button v-b-toggle.accordion-1 variant="info">^</b-button>
+                            <b-button v-b-toggle.accordion-1 variant="link">
+                              <i class="fas fa-caret-down"></i>
+                            </b-button>
                           </b-card-header>
                           <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
                             <b-card-body>
                               <b-table-simple hover small caption-top responsive>
-                                <b-thead>
+                                <b-thead v-if="!isMobileDevice">
                                   <b-th>Submission</b-th>
                                   <b-th>Project Description</b-th>
                                   <b-th>Hacker</b-th>
@@ -134,28 +175,31 @@
                                   <b-th>Notes</b-th>
                                 </b-thead>
                                 <b-tbody>
-                                  <b-tr v-for="project in prize.submissions">
-                                    <b-td class="text-center"><a :href="project.work_url"><span class="text-black font-weight-semibold">[[project.name]]</span>  <br> <span class="fab fa-github"></span></a> </b-td>
-                                    <b-td class="text-left">[[project.summary]]</b-td>
-                                    <b-td>
-                                      <div v-for="profile in project.profiles">
-                                        <img height="80" width="80" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
-                                        <div>
-                                          <a :href="profile.url">[[profile.handle]]</a>
-                                          <span>[[profile.payout_address]]</span>
+                                  <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="project in prize.submissions">
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'"><a :href="project.work_url"><span class="gc-text-blue font-weight-semibold">[[project.name]]</span>  <br> <span class="fab fa-github text-black"></span></a> </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary'">[[project.summary]]</b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 d-flex flex-column'">
+                                      <div  class="d-flex mb-2" v-for="profile in project.profiles">
+                                        <img height="33" width="33" class="mr-2 rounded-circle" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
+                                        <div class="d-flex flex-column">
+                                          <a class="font-smaller-4 text-black" :href="profile.url">[[profile.handle]]</a>
+                                          <span class="font-smaller-5 gc-text-blue">[[start_and_end(profile.payout_address)]]</span>
                                         </div>
                                       </div>
                                     </b-td>
-                                    <b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                       <!--a :href="profile.email"><i class="fa fa-envelope"></i></a-->
-                                      <button class="btn btn-link text-black" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
+                                      <button class="btn btn-link gc-text-blue" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
                                     </b-td>
-                                    <b-td>
-                                      <b-form-checkbox v-model="project.winner" name="check-button" switch>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <b-form-checkbox v-model="project.winner" name="check-button" switch @change="markWinner($event, project)">
                                         Winner
                                       </b-form-checkbox>
                                     </b-td>
-                                    <b-td> <button class="btn btn-link gc-text-blue">+ Add note</button> </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <button class="btn btn-link gc-text-blue" @click="addNote(project)" v-if="comments[project.pk] == undefined">+ Add note</button>
+                                      <textarea v-if="comments[project.pk] != undefined" v-model="comments[project.pk]" @change="setNote($event, project)" class="form-control">[[getComment(project.pk)]]</textarea>
+                                    </b-td>
                                   </b-tr>
                                 </b-tbody>
                               </b-table-simple>
@@ -163,35 +207,6 @@
                           </b-collapse>
                         </b-card>
                       </div>
-                  </div>
-                </div>
-              </b-tab>
-              <b-tab class="col-12" title-item-class="navigation">
-                <template  v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Submissions" %}
-                  </div>
-                </template>
-                <div id="prizes" class="row">
-                  <div class="col-12 p-2 ml-md-4">
-                    {% if not hackathon_not_started %}
-                      <div class="row loading justify-content-center align-items-center loading_img">
-                        <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
-                      </div>
-                      <div class="row nonefound mx-auto" style="display:none;">
-                          <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
-                          <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                          <div>
-                            <p class="mb-3">Tell other hackers a bit about yourself by introducing yourself on Townsquare</p>
-                            <b-button class="btn btn-gc-blue" @click="activePanel = 1">Townsquare</b-button>
-                          </div>
-                      </div>
-                    {% else %}
-                      <div class="text-center mx-auto">
-                        <h1 class="font-title font-weight-semibold">Hackathon Coming Soon!</h1>
-                        <img class="my-3" src="{% static "v2/images/obiwan-bot.svg" %}" alt="Obiwan bot">
-                      </div>
-                    {% endif %}
                   </div>
                 </div>
               </b-tab>

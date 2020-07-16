@@ -936,6 +936,27 @@ def set_project_winner(request):
 
     return JsonResponse({})
 
+@require_POST
+def set_project_notes(request):
+
+    notes = request.POST.get('notes', False)
+    project_id = request.POST.get('project_id', None)
+    if not project_id:
+        return JsonResponse({
+            'message': 'Invalid Project'
+        })
+    project = HackathonProject.objects.get(pk=project_id)
+
+    if not request.user.is_authenticated and (request.user.is_staff or request.user.profile.handle == project.bounty.bounty_owner_github_username):
+        return JsonResponse({
+            'message': 'UNAUTHORIZED'
+        })
+
+    project.extra['notes'] = notes
+    project.save()
+
+    return JsonResponse({})
+
 
 @require_GET
 def users_fetch(request):
@@ -3598,6 +3619,7 @@ def hackathon_prizes(request, hackathon=''):
     prizes = []
     for prize in query_prizes:
         prize_in_json = {
+            'pk': prize.pk,
             'title': prize.title_or_desc,
             'url': prize.get_absolute_url(),
             'value_eth': prize.get_value_in_eth,
