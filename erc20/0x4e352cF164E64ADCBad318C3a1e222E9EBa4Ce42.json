@@ -1,0 +1,19 @@
+{
+    "symbol": "MCB",
+    "address": "0x4e352cF164E64ADCBad318C3a1e222E9EBa4Ce42",
+    "overview":{
+          "en": "MCB is a governance token of MCDEX platform. Monte Carlo Decentralized Exchange is a crypto trading platform. MCDEX is powered by the Mai Protocol smart contracts deployed on the Ethereum blockchain. The Mai Protocol smart contracts are fully audited by Open Zeppelin, Consensys and Chain Security.",
+          "zh": "MCB是MCDEX平台的治理代币. 蒙特卡洛去中心化交易所（MCDEX）是一个去中心化衍生品交易平台，提供高效透明的杠杆交易. MCDEX永续合约使用了部署在以太坊上的Mai Protocol V2 智能合约。该智能合约的安全审计已全部完成，由Open Zeppelin, Consensys以及Chain Security这三家审计机构完成"
+    },
+    "email": "contact@mcdex.io",
+    "website": "https://mcdex.io",
+    "whitepaper": "https://mcdex.io/references/#/en-US/white-paper",
+    "state": "NORMAL",
+    "published_on": "2020-07-04",
+    "links": {
+        "telegram": "https://t.me/Mcdex",
+        "twitter": "https://twitter.com/MonteCarloDEX",
+		"github": "https://github.com/mcdexio",
+		"medium": "https://medium.com/@montecarlodex"		
+      }
+}
