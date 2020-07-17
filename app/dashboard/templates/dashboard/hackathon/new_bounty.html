@@ -71,6 +71,44 @@
         background-color: #f9f9f9;
         border-color: #3E00FF;
       }
+
+      .issue_description {
+        color: #000000;
+        font-size: 14px;
+      }
+
+      .issue_description h1,
+      .issue_description h2,
+      .issue_description h3,
+      .issue_description h4,
+      .issue_description h5,
+      .issue_description h6 {
+        letter-spacing: 1px;
+        font-size: 14px;
+        margin-top: 5px;
+        text-transform: none;
+        font-weight: 400;
+      }
+
+      .issue_description h1 {
+        font-size: 19px;
+      }
+
+      .issue_description h2 {
+        font-size: 18px;
+      }
+
+      .issue_description h3 {
+        font-size: 17px;
+      }
+
+      .issue_description h4 {
+        font-size: 16px;
+      }
+
+      .issue_description h5 {
+        font-size: 15px;
+      }
     </style>
   </head>
 
@@ -181,7 +219,7 @@
                   </div>
                   <div id="keyword-suggestion-container" class="font-caption font-weight-semibold mt-1">
                     <span>Add tags from your repo: </span>
-                    <ul id="keyword-suggestions" class="d-flex list-unstyled">
+                    <ul id="keyword-suggestions" class="d-flex list-unstyled flex-wrap">
                       <li class="select2-available__choice" v-for="keyword in form.issueDetails.keywords" @click="addKeyword(keyword)" :class="{'d-none': form.keywords.includes(keyword)}"><span class="text">[[keyword]]</span></li>
                     </ul>
                   </div>

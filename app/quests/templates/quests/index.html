@@ -60,7 +60,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     </div>
 
     <div class="loading w-100 {% if not show_loading %}hidden{% endif %}">
-      <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ..." style="max-width: 200px; margin: 0px 30% 100px 30%;">
+      <p class="text-center">
+        <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ..." style="max-width: 200px; margin: 0px 30% 100px 30%;">
+      </p>
     </div>
 
     {% for difficulty_level, the_quests in quests%}
@@ -99,7 +101,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <td> {{quest.kudos_reward.humanized_name}}</td>
                   <td> {{difficulty_level}}</td>
                   <td> {{quest.ui_data.attempts_count}}</td>
-                  <td> {{quest.description}}</td>
+                  <td class="font-caption">{{quest.description}}</td>
                   <td> {{quest.est_total_time_required}} mins (reading) <br> {{quest.est_skim_time_mins}} mins (skimming)<br></td>
                   {% if difficulty_level == 'Created' %}
                     <td>

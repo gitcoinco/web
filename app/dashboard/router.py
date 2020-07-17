@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import time
 from datetime import datetime
+from functools import reduce
 
 from django.db.models import Count, F, Q
 
