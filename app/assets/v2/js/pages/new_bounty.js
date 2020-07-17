@@ -118,9 +118,6 @@ Vue.mixin({
       if (!vm.form.funderAddress) {
         vm.$set(vm.errors, 'funderAddress', 'Fill the owner wallet address');
       }
-      if (!vm.form.project_type) {
-        vm.$set(vm.errors, 'project_type', 'Select the project type');
-      }
       if (!vm.form.permission_type) {
         vm.$set(vm.errors, 'permission_type', 'Select the permission type');
       }
@@ -410,7 +407,7 @@ Vue.mixin({
         'issue_description': metadata.issueDescription,
         'funding_organisation': metadata.fundingOrganisation,
         'balance': vm.form.amount * 10 ** vm.form.token.decimals, // ETC-TODO REMOVE ?
-        'project_type': vm.form.project_type,
+        'project_type': 'traditional',
         'permission_type': vm.form.permission_type,
         'bounty_categories': metadata.bounty_categories,
         'repo_type': metadata.repo_type,

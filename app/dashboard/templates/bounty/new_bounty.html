@@ -243,56 +243,6 @@
 
               <div class="mt-4">
                 <div id="" class="">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="project_type">Project Type</label>
-                  <div class="d-flex row">
-                    <div class="col-12 col-md-6 btn-group-toggle">
-                      <label class="btn btn-block btn-radio traditional my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('traditional')}">
-                        <input type="radio" name="project_type" id="traditional" value="traditional" v-model="form.project_type" required>
-                        Traditional
-                        <span class="d-block font-weight-normal">
-                          <span class="fa-stack font-smaller-6">
-                            <i class="far fa-circle fa-stack-2x"></i>
-                            <i class="fas fa-user fa-stack-1x"></i>
-                          </span>
-                          One contributor
-                        </span>
-                        <span class="d-block font-weight-normal">
-                          <span class="fa-stack font-smaller-6">
-                            <i class="far fa-circle fa-stack-2x"></i>
-                            <i class="fas fa-user fa-stack-1x"></i>
-                          </span>
-                          One paid
-                        </span>
-                      </label>
-                    </div>
-                    <div class="col-12 col-md-6 btn-group-toggle">
-                      <label class="btn btn-block btn-radio cooperative my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('cooperative')}">
-                        <input type="radio" name="project_type" id="cooperative" value="cooperative" v-model="form.project_type" required>
-                        Cooperative
-                        <span class="d-block font-weight-normal">
-                          <span class="fa-stack font-smaller-6">
-                            <i class="far fa-circle fa-stack-2x"></i>
-                            <i class="fas fa-users fa-stack-1x"></i>
-                          </span>
-                          Multiple contributors
-                        </span>
-                        <span class="d-block font-weight-normal">
-                          <span class="fa-stack font-smaller-6">
-                            <i class="far fa-circle fa-stack-2x"></i>
-                            <i class="fas fa-users fa-stack-1x"></i>
-                          </span>
-                          Multiple paid
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="text-danger" v-if="errors.project_type && !form.project_type">
-                  [[errors.project_type]]
-                </div>
-              </div>
-              <div class="mt-4">
-                <div id="" class="">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="permission_type">Permissions</label>
                   <div class="d-flex row">
                     <div class="col-12 col-md-6 btn-group-toggle">
