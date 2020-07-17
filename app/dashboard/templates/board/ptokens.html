@@ -25,7 +25,7 @@
 
           <div class="my-3 mx-4 head-number">
             <span class="head-number_title">OPEN</span>
-            <span class="head-number_value">[[ pTokens.open ? pTokens.open.length : '0' ]]</span>
+            <span class="head-number_value">[[ pTokens.request ? pTokens.request.length : '0' ]]</span>
           </div>
           <div class="my-3 mx-4 head-number">
             <span class="head-number_title">IN PROGRESS</span>
@@ -73,10 +73,10 @@
     <div class="row">
       <div class="col-12">
         <div class="bg-white rounded border my-4">
-          <div class="p-4 border-bottom font-weight-bold" v-if="pTokens.open">[[ pTokens.open.length ]] Open</div>
+          <div class="p-4 border-bottom font-weight-bold" v-if="pTokens.request">[[ pTokens.request.length ]] Open</div>
 
           <ul class="list-unstyled list-bounty">
-            <li v-for="(token, key) in pTokens.open" :key="token.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
+            <li v-for="(token, key) in pTokens.request" :key="token.id" class="position-relative font-smaller-1 mt-3 p-3 list-bounty-item">
               <span class="fa-stack mr-2">
                 <i class="fas fa-circle fa-stack-2x green"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
@@ -100,7 +100,7 @@
                 </div>
               </div>
             </li>
-            <li class="text-center my-5" :class="{'d-none': false}" v-if="!pTokens.open" v-cloak>
+            <li class="text-center my-5" :class="{'d-none': false}" v-if="!pTokens.request || pTokens.request.length == 0" v-cloak>
               <img src="{% static 'v2/images/ptoken.png' %}" alt="" width="169" height="169">
               <h4 class="h5 font-weight-semibold my-3">
                   [[ error.open || 'You don’t have any open requests' ]]
@@ -109,7 +109,7 @@
               <a href="{% url 'users_directory' %}?ptokens=true" title="Browse tokens" class="btn btn-gc-blue">Browse tokens</a>
             </li>
           </ul>
-          <loading-screen v-if="isLoading.open"></loading-screen>
+          <loading-screen v-if="isLoading.request"></loading-screen>
         </div>
       </div>
     </div>

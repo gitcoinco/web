@@ -196,7 +196,7 @@ Vue.mixin({
         vm.fetchContributorBounties('interested');
       }
       if (!Object.keys(vm.pTokens).length && persona === 'personal-tokens') {
-        vm.fetchTokens('open');
+        vm.fetchTokens('request');
         vm.fetchTokens('accepted');
         vm.fetchTokens('completed');
         vm.fetchTokens('denied');
