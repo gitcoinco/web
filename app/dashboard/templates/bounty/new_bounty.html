@@ -562,9 +562,9 @@
                         <div class="featured_container">
                           <small class="mb-3 d-block">Note: You will have to approve this transaction separately via your web3 wallet on submit.</small>
                           <div class="form__checkbox">
-                            <input name='featuredBounty' id='featuredBounty' type="checkbox" value=1 />
+                            <input name='featuredBounty' id='featuredBounty' v-model="form.featuredBounty" type="checkbox" value=1 />
                             <label class="form__label" for='featuredBounty'>{% trans "Yes, I want to feature my bounty." %}
-                              <span class="featured-price"><b class="featured-price-eth">ETH</b> (<span class="featured-price-usd">12</span> USD)</span>
+                              <span class="featured-price"><b class="featured-price-eth">[[ethFeaturedPrice]] ETH</b> (<span class="featured-price-usd">[[usdFeaturedPrice]]</span> USD)</span>
                             </label>
                           </div>
                         </div>
@@ -620,7 +620,7 @@
                 </div>
                 <div class="col-md-9 col-lg-10 my-auto">
                   <p class="mb-1 text-uppercase text-black-50 font-body">Payment Due</p>
-                  <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block">[[totalAmount.total]] [[form.token.symbol]]</span>
+                  <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block">[[totalAmount.total]] [[form.token.symbol]] <span v-if="form.featuredBounty">+ [[ethFeaturedPrice]] ETH</span></span>
 
                   <p class="font-caption text-black-50 mb-1">
                     Bounty <span id="summary-bounty-amount" class="font-weight-bold">[[form.amount]]</span>
@@ -631,6 +631,11 @@
                         <span id="summary-bounty-token" class="font-weight-bold">[[form.token.symbol]]</span>
                         Gitcoin Platform Fee
                       </span>
+                      <span v-if="form.featuredBounty"> +
+                        <span class="font-weight-bold">[[ethFeaturedPrice]] ETH</span>
+                        Featured Bounty
+                      </span>
+
                     </template>
                   </p>
 
