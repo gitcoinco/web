@@ -158,6 +158,22 @@ Vue.mixin({
       vm.form.web3_type = type;
       return type;
     },
+    getParams: async function() {
+      let vm = this;
+
+      let params = new URLSearchParams(window.location.search);
+
+      if (params.has('invite')) {
+        vm.expandedGroup.reserve = [1];
+      }
+
+      if (params.has('reserved')) {
+        vm.expandedGroup.reserve = [1];
+        await vm.getUser(null, params.get('reserved'), true);
+      }
+
+
+    },
     showQuickStart: function(force) {
       let quickstartDontshow = localStorage['quickstart_dontshow'] ? JSON.parse(localStorage['quickstart_dontshow']) : false;
 
@@ -228,25 +244,39 @@ Vue.mixin({
     },
     userSearch(search, loading) {
       let vm = this;
-      let myHeaders = new Headers();
+      // let myHeaders = new Headers();
 
       if (search.length < 3) {
         return;
       }
+      loading(true);
+      vm.getUser(loading, search);
 
-      myHeaders.append('X-Requested-With', 'XMLHttpRequest');
-
+    },
+    getUser: async function(loading, search, selected) {
+      let vm = this;
+      let myHeaders = new Headers();
       let url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}`;
 
-      loading(true);
-      fetch(url, {
-        credentials: 'include',
-        headers: myHeaders
-      }).then(res => {
-        res.json().then(json => (vm.usersOptions = json));
-        loading(false);
-      });
+      myHeaders.append('X-Requested-With', 'XMLHttpRequest');
+      return new Promise(resolve => {
 
+        fetch(url, {
+          credentials: 'include',
+          headers: myHeaders
+        }).then(res => {
+          res.json().then(json => {
+            vm.usersOptions = json;
+            if (selected) {
+              vm.$set(vm.form, 'reservedFor', vm.usersOptions[0].text);
+            }
+            resolve();
+          });
+          if (loading) {
+            loading(false);
+          }
+        });
+      });
     },
     featuredValue() {
       let vm = this;
@@ -585,6 +615,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
       };
     },
     mounted() {
+      this.getParams();
       this.showQuickStart();
       this.getTokens();
       this.featuredValue();
