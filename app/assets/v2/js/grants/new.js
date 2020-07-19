@@ -23,7 +23,7 @@ const init = () => {
   }
   */
 
-  if (localStorage['grants_quickstart_disable'] !== 'true') {
+  if (localStorage['grants_quickstart_disable'] !== 'true' && window.location.pathname.includes('matic') == false) {
     window.location = document.location.origin + '/grants/quickstart';
   }
 
