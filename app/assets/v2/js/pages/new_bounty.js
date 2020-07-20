@@ -589,6 +589,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         usersOptions: [],
         bountyFee: document.FEE_PERCENTAGE,
         orgSelected: '',
+        subscriptions: document.subscriptions,
+        subscriptionActive: document.subscriptions.length,
         coinValue: null,
         usdFeaturedPrice: 12,
         ethFeaturedPrice: null,

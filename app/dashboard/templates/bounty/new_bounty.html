@@ -245,7 +245,7 @@
                 <div id="" class="">
                   <label class="font-caption letter-spacing text-black-60 text-uppercase" for="project_type">Project Type</label>
                   <div class="d-flex row">
-                    <div class="col-12 col-md-6 btn-group-toggle">
+                    <div class="col-12 col-md-4 btn-group-toggle">
                       <label class="btn btn-block btn-radio traditional my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('traditional')}">
                         <input type="radio" name="project_type" id="traditional" value="traditional" v-model="form.project_type" required>
                         Traditional
@@ -265,9 +265,29 @@
                         </span>
                       </label>
                     </div>
-                    <div class="col-12 col-md-6 btn-group-toggle">
-                      <label class="btn btn-block btn-radio cooperative my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('cooperative')}">
-                        <input type="radio" name="project_type" id="cooperative" value="cooperative" v-model="form.project_type" required>
+                    <div class="col-12 col-md-4 btn-group-toggle">
+                      <label class="btn btn-block btn-radio contest my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('contest'), 'disabled': !subscriptionActive}">
+                        <input type="radio" name="project_type" id="contest" value="contest" v-model="form.project_type" required :disabled="!subscriptionActive">
+                        Contest
+                        <span class="d-block font-weight-normal">
+                          <span class="fa-stack font-smaller-6">
+                            <i class="far fa-circle fa-stack-2x"></i>
+                            <i class="fas fa-users fa-stack-1x"></i>
+                          </span>
+                          Multiple contributors
+                        </span>
+                        <span class="d-block font-weight-normal">
+                          <span class="fa-stack font-smaller-6">
+                            <i class="far fa-circle fa-stack-2x"></i>
+                            <i class="fas fa-users fa-stack-1x"></i>
+                          </span>
+                          One paid
+                        </span>
+                      </label>
+                    </div>
+                    <div class="col-12 col-md-4 btn-group-toggle">
+                      <label class="btn btn-block btn-radio cooperative my-2 font-weight-bold py-2 px-4 text-left" :class="{'active': form.project_type.includes('cooperative'), 'disabled': !subscriptionActive}">
+                        <input type="radio" name="project_type" id="cooperative" value="cooperative" v-model="form.project_type" required :disabled="!subscriptionActive">
                         Cooperative
                         <span class="d-block font-weight-normal">
                           <span class="fa-stack font-smaller-6">
@@ -284,6 +304,12 @@
                           Multiple paid
                         </span>
                       </label>
+                    </div>
+                    <div class="col-12" v-if="!subscriptionActive">
+                      <p class="text-highlight-gc-blue bg-lightpurple p-2 mt-2">
+                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:scott@gitcoin.co" class="font-weight-bold">scott@gitcoin.co</a>
+                      </p>
+
                     </div>
                   </div>
                 </div>
@@ -701,6 +727,17 @@
       {% if expired_coupon %}
         _alert({ message: 'This coupon has expired.' }, 'error');
       {% endif %}
+
+      document.subscriptions= [
+        {% for subscription in subscriptions.all %}
+            {% if not forloop.first %},{% endif %}
+            {
+              tribe: "{{ subscription.tribe }}",
+              plan_type: "{{ subscription.plan_type }}",
+              expires_on: new Date("{{ subscription.expires_on.isoformat }}"),
+            }
+        {% endfor %}
+        ]
     </script>
     <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
     <script src="{% static "v2/js/lib/highlight.js" %}"></script>

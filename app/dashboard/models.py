@@ -2626,6 +2626,23 @@ def post_add_HackathonRegistration(sender, instance, created, **kwargs):
             )
 
 
+class TribesSubscription(SuperModel):
+
+    plans = (
+		('LITE', 'Lite'),
+		('PRO', 'Pro'),
+		('LAUNCH', 'Launch'),
+	)
+
+    expires_on = models.DateTimeField(null=True, blank=True, default=timezone.now() + timezone.timedelta(days=365))
+    tribe = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='subscription')
+    plan_type = models.CharField(max_length=10, choices=plans)
+    hackathon_tokens = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "{} subscription - {}".format(self.tribe.name, self.plan_type)
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -2786,6 +2803,17 @@ class Profile(SuperModel):
         except:
             return ''
 
+    @property
+    def is_subscription_valid(self):
+        return self.tribes_subscription and self.tribes_subscription.expires_on > timezone.now()
+
+    @property
+    def active_subscriptions(self):
+        if not self.is_org :
+            return TribesSubscription.objects.filter(tribe__in=self.organizations_fk.all()).all()
+        return TribesSubscription.objects.filter(tribe=self).all()
+        # return subscriptions
+
 
     @property
     def suggested_bounties(self):
@@ -2806,7 +2834,7 @@ class Profile(SuperModel):
         score = self.sybil_score
         if score > 5:
             return f'VeryX{score} High'
-        return _map.get(score, "Unknown") 
+        return _map.get(score, "Unknown")
 
     @property
     def chat_num_unread_msgs(self):

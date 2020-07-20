@@ -30,7 +30,7 @@ from .models import (
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
     ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification, ProfileView, Question,
-    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
@@ -475,6 +475,11 @@ class TribeMemberAdmin(admin.ModelAdmin):
     list_display = ['pk', 'profile', 'org', 'leader', 'status']
 
 
+class TribesSubscriptionAdmin(admin.ModelAdmin):
+    raw_id_fields = ['tribe']
+    list_display = ['id', 'plan_type', 'hackathon_tokens']
+
+
 class FundRequestAdmin(admin.ModelAdmin):
     list_display = ['id', 'profile', 'requester', 'network', 'token_name', 'amount',
                     'comments', 'address', 'tip', 'created_on']
@@ -545,7 +550,7 @@ class PollMediaAdmin(admin.ModelAdmin):
         img_html = format_html('<img src={} style="max-width:30px; max-height: 30px">', mark_safe(image.url))
         return img_html
 
-      
+
 class ProfileVerificationAdmin(admin.ModelAdmin):
     list_display = ['id', 'profile', 'success', 'validation_passed', 'caller_type', 'mobile_network_code', 'country_code', 'carrier_name', 'carrier_type',
                     'phone_number', 'carrier_error_code']
@@ -583,6 +588,7 @@ admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
+admin.site.register(TribesSubscription, TribesSubscriptionAdmin)
 admin.site.register(FundRequest, FundRequestAdmin)
 admin.site.register(Poll, PollsAdmin)
 admin.site.register(Question, QuestionsAdmin)
