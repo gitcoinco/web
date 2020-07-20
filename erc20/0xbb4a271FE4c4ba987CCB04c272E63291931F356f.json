@@ -1,0 +1,17 @@
+{
+    "symbol": "ROBOT",
+    "address": "0xbb4a271FE4c4ba987CCB04c272E63291931F356f",
+    "overview":{
+          "en": "ROBOT builds the future digital economy by deploying machine learning, advanced encryption and autonomous agents to the blockchain.",
+          "zh": "ROBOT通过将机器学习，高级加密和自治代理部署到区块链来构建未来的数字经济。"
+    },
+    "email": "admin@robotchain.club",
+    "website": "http://robotchain.club/",
+    "whitepaper": "http://robotchain.club/file/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-07-18",
+    "links": {
+        "telegram": "https://t.me/robotchain",
+        "twitter": "https://twitter.com/robotchain"
+      }
+}
