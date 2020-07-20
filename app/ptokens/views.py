@@ -272,7 +272,7 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
 
     redemptions = RedemptionToken.objects.filter(Q(redemption_requester=request.user.profile) | Q(ptoken__token_owner_profile=request.user.profile))
 
-    if redemption_state in ['request', 'accepted', 'denied', 'completed']:
+    if redemption_state in ['request', 'accepted', 'denied', 'completed', 'cancelled']:
         redemptions = redemptions.filter(redemption_state=redemption_state)
 
     redemptions_json = []
@@ -283,6 +283,7 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
         current_redemption['requester'] = redemption.redemption_requester.handle
         current_redemption['amount'] = redemption.total
         current_redemption['token_symbol'] = redemption.ptoken.token_symbol
+        current_redemption['token_address'] = redemption.ptoken.token_address
         current_redemption['token_name'] = redemption.ptoken.token_name
         current_redemption['creator'] = redemption.ptoken.token_owner_profile.handle
         redemptions_json.append(current_redemption)

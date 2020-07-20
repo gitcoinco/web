@@ -200,6 +200,7 @@ Vue.mixin({
         vm.fetchTokens('accepted');
         vm.fetchTokens('completed');
         vm.fetchTokens('denied');
+        vm.fetchTokens('cancelled');
       }
     },
     tabOnLoad(init) {
@@ -319,7 +320,7 @@ Vue.mixin({
         }
 
         setTimeout(() => {
-          console.log('Tx no updated');
+          console.log('Tx not updated');
           vm.checkTokenStatus();
         }, 2000);
       });
@@ -469,8 +470,7 @@ Vue.mixin({
       });
     },
     checkNetwork() {
-      return 'rinkeby';
-      const supportedNetworks = ['rinkeby', 'mainnet'];
+      const supportedNetworks = [ 'rinkeby', 'mainnet' ];
 
       if (!supportedNetworks.includes(document.web3network)) {
         _alert('Unsupported network', 'error');
@@ -478,9 +478,9 @@ Vue.mixin({
       }
       return document.web3network;
     },
-    async complete(redemptionId, tokenAmount) {
+    async complete(redemptionId, tokenAmount, tokenAddress) {
       const vm = this;
-
+      
       try {
         const network = vm.checkNetwork();
         const amount = web3.utils.toWei(String(tokenAmount));
@@ -489,7 +489,7 @@ Vue.mixin({
         indicateMetamaskPopup();
         const pToken = await new web3.eth.Contract(
           document.contxt.ptoken_abi,
-          document.current_ptoken_address
+          tokenAddress
         );
 
         pToken.methods.redeem(amount).send({ from: user })
