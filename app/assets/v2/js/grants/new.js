@@ -64,7 +64,6 @@ const init = () => {
     e.preventDefault();
   }).validate({
     submitHandler: function(form) {
-      console.log('validating');
       let data = {};
 
       var recipient_addr = $('#input-admin_address').val();
