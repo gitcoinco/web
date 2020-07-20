@@ -107,7 +107,7 @@
       computed: {
         isMobileDevice() {
           return this.windowWidth < 576;
-        },
+        }
       },
       data: () => ({
         activePanel: document.activePanel,

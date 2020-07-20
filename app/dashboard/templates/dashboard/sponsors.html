@@ -152,9 +152,9 @@
                         <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
                       </div>
                       <div role="tablist">
-                        <b-card no-body class="mb-1" v-for="(prize, prizeIndex) in prizes" v-if="prizes">
+                        <b-card no-body class="mb-1 my-4" v-for="(prize, prizeIndex) in prizes" v-if="prizes">
                           <b-card-header header-tag="header" class="d-flex align-items-baseline justify-content-between px-4 py-1" role="tab">
-                            <div :class="isMobileDevice ? 'mx-3' : '' ">
+                            <div :class="isMobileDevice ? 'mx-3' : ' col-md-5' ">
                               <div>
                                 <h1 class="font-title font-weight-semibold d-inline-block">[[prize.title]]</h1>
                                 <span v-if="!isMobileDevice" class="tag token ml-2">[[prize.value_eth.toFixed(2)]] ETH</span>
@@ -167,11 +167,11 @@
                               <span v-if="!isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
                               <a href="" class="ml-5 font-body font-weight-semibold gc-text-green"><span class="fas fa-check"></span>  Paid</a>
                             </div>
-                            <b-button v-b-toggle.accordion-1 variant="link">
+                            <b-button v-b-toggle="`accordion-${prizeIndex}`" variant="link">
                               <i class="fas fa-caret-down"></i>
                             </b-button>
                           </b-card-header>
-                          <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+                          <b-collapse :id="`accordion-${prizeIndex}`" visible accordion="my-accordion" role="tabpanel">
                             <b-card-body>
                               <b-table-simple hover small caption-top responsive>
                                 <b-thead v-if="!isMobileDevice">
