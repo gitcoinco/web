@@ -158,9 +158,13 @@ def tokens(request, token_state=None):
 
 
 @csrf_exempt
-def ptoken(request, tokenId):
+def ptoken(request, tokenId='me'):
     """Access and change the state for fiven ptoken"""
-    ptoken = get_object_or_404(PersonalToken, pk=tokenId)
+    if tokenId == 'me' and request.user.is_authenticated:
+        ptoken = get_object_or_404(PersonalToken, token_owner_profile=request.user.profile)
+    else:
+        ptoken = get_object_or_404(PersonalToken, pk=tokenId)
+
     minimal = request.GET.get('minimal', False)
     user = request.user if request.user.is_authenticated else None
 
@@ -236,6 +240,7 @@ def ptoken(request, tokenId):
             'available': ptoken.available_supply,
             'purchases': ptoken.total_purchases,
             'redemptions': ptoken.total_redemptions,
+            'tx_status': ptoken.tx_status
         })
 
 
@@ -265,13 +270,13 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
                 redemption_requester=request.user.profile
             )
 
-    redemptions = RedemptionToken.objects.filter(redemption_requester=request.user.profile)
+    redemptions = RedemptionToken.objects.filter(Q(redemption_requester=request.user.profile) | Q(ptoken__token_owner_profile=request.user.profile))
 
     if redemption_state in ['request', 'accepted', 'denied', 'completed']:
         redemptions = redemptions.filter(redemption_state=redemption_state)
 
     redemptions_json = []
-    for redemption in redemptions:
+    for redemption in redemptions.distinct():
         current_redemption = redemption.to_standard_dict()
 
         current_redemption['avatar_url'] = redemption.redemption_requester.avatar_url
@@ -311,12 +316,17 @@ def ptoken_redemption(request, redemptionId):
             kwargs['redemption_state'] = 'accepted'
             metadata['redemption'] = redemption.id
         if event_name == 'denies_redemption_ptoken':
-            if user.profile != redemption.ptoken.token_owner_profile:
+            if user.profile != redemption.ptoken.token_owner_profile and user.profile != redemption.redemption_requester:
                 return JsonResponse(
                     {'error': _('You don\'t have permissions on the current redemption!')},
                     status=401)
 
-            kwargs['redemption_state'] = 'denied'
+            if user.profile != redemption.ptoken.token_owner_profile:
+                kwargs['redemption_state'] = 'cancelled'
+            else:
+                kwargs['redemption_state'] = 'denied'
+
+            kwargs['canceller'] = user.profile
             metadata['redemption'] = redemption.id
         if event_name == 'complete_redemption_ptoken':
             if user.profile != redemption.redemption_requester:
@@ -334,7 +344,7 @@ def ptoken_redemption(request, redemptionId):
             else:
                 kwargs['web3_created'] = datetime.now()
 
-            kwargs['redemption_state'] = 'completed'
+            kwargs['redemption_state'] = 'waiting_complete'
             kwargs['tx_status'] = request.POST.get('tx_status')
             kwargs['txid'] = request.POST.get('txid')
             metadata['redemption'] = redemption.id

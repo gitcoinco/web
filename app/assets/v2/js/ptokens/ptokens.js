@@ -9,6 +9,14 @@ function get_ptokens() {
   return fetchData('/ptokens/', 'GET');
 }
 
+function get_ptoken(tokenId) {
+  return fetchData(`/ptokens/${tokenId}/`, 'GET');
+}
+
+function get_personal_token() {
+  return fetchData('/ptokens/me/?minimal=true', 'GET');
+}
+
 function get_ptoken_redemptions(tokenId, state) {
   if (redemption_states.indexOf(state)) {
     return fetchData(`/ptokens/${tokenId}/redemptions?state=${state}`, 'GET');

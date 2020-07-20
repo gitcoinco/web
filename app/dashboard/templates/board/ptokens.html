@@ -57,12 +57,26 @@
                 Create
               </button>
             </template>
-            <template v-else>
+            <template v-else-if="pToken.tx_status === 'pending'">
+              <div>Wait while your token is confirmed</div>
+              <button class="btn btn-sm  m-2" type="button" disabled>
+                <span class="spinner-border btn-gc-green spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Mining...
+              </button>
+            </template>
+            <template v-else-if="pToken.tx_status === 'success'">
               <div>Modify your Personal Token</div>
               <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#editpTokenModal">
                 Edit
               </button>
             </template>
+            <template v-else>
+              <div>One error occurs trying to create your pToken</div>
+              <button class="btn btn-sm btn-gc-outline-red m-2" data-toggle="modal" data-target="#createTokenModal">
+                Try again
+              </button>
+            </template>
+
           </div>
         </div>
       </div>
@@ -96,6 +110,7 @@
                   </div>
                 </div>
                 <div>
+                  <button @click="accept(token.id)" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester != current_user">Accept</button>
                   <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
                 </div>
               </div>
@@ -142,7 +157,7 @@
                   </div>
                 </div>
                 <div>
-                  <button @click="complete(token.id)" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn">Complete</button>
+                  <button @click="complete(token.id, token.amount)" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester == current_user">Complete</button>
                   <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
                 </div>
               </div>

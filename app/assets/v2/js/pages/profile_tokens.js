@@ -217,7 +217,7 @@ async function completePtokenRedemption(tokenAmount, redemptionId) {
   try {
     const network = checkNetwork();
     const amount = web3.utils.toWei(String(tokenAmount));
-    const [ user ] = await web3.eth.getAccounts();
+    const [user] = await web3.eth.getAccounts();
 
     indicateMetamaskPopup();
     const pToken = await new web3.eth.Contract(
@@ -238,7 +238,7 @@ async function completePtokenRedemption(tokenAmount, redemptionId) {
         console.log(error);
         handleError(error);
       });
-  } catch(err) {
+  } catch (err) {
     handleError(err);
   }
 }
