@@ -1,0 +1,17 @@
+{
+    "symbol": "VITAE",
+    "address": "0xF832b544a9aFEf444c8B23057355e815A16eE731",
+    "overview":{
+          "en": "Vitae is a utility token for social media applications that provides a new era of social reward networks for accessing products or services offered by companies.",
+          "zh": "Vitae是社交媒体应用程序的实用令牌，提供一个新时代的社会奖励网络，用于访问公司提供的产品或服务。"
+    },
+    "email": "service@vitaetoken.xyz",
+    "website": "http://vitaetoken.xyz/",
+    "whitepaper": "http://vitaetoken.xyz/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-07-18",
+    "links": {
+        "telegram": "https://t.me/vitaetoken",
+        "facebook": "https://www.facebook.com/vitaetoken"
+      }
+}
