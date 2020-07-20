@@ -4847,7 +4847,7 @@ class HackathonProject(SuperModel):
 
     def get_absolute_url(self):
         return self.url()
-
+    
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(

@@ -4068,6 +4068,30 @@ def hackathon_save_project(request):
             'msg': _('Project saved.')
         })
 
+@csrf_exempt
+def hackathon_project_page(request, hackathon, project_id, project):
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    try:
+        projects = HackathonProject.objects.filter(profiles__id=profile.id).nocache()
+    except HackathonProject.DoesNotExist:
+        pass
+
+
+    if project_id:
+        project_selected =  projects.filter(id=project_id).first()
+    else:
+        project_selected = None
+
+    params = {
+        'name': project,
+        'hackathon': hackathon,
+        'project': project_selected,
+        # 'work_url': work_url,
+        # 'looking_members': looking_members,
+    }
+    return TemplateResponse(request, 'dashboard/hackathon/project_page.html', params)
+
 
 @csrf_exempt
 @require_POST

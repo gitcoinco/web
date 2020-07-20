@@ -1,0 +1,77 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n grants_extra %}
+<div class="mt-3 mx-0 ml-md-5 px-0 pl-md-3 pr-md-2 pr-lg-3">
+  <a id="backprojects" class="font-caption" href="{% url 'hackathon_projects'  hackathon=hackathon %}">
+    <i class="fas fa-chevron-left mr-1"></i>
+    Back to Projects
+  </a>
+  <!-- PROJECT LOGO -->
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
+      <div class="project-logo col-12 col-lg-5 pb-2" style="padding-top: 20px !important;">
+        {% if is_team_member %}
+          <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
+            <i class="far fa-image" data-toggle="tooltip" data-placement="right" title="Change Project Logo"></i>
+            <img src="{% if project.logo and project.logo.url %}{{ project.logo.url }}{% else %}{% with project_logo='v2/images/projects/logos/' id=project.id|modulo:3 %} {% static project_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{project.image_css}}">
+          </a>
+
+          <div class="modal fade" id="changeLogo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <form method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h6 class="modal-title text-center" id="changeLogoLabel">Change Project Logo</h6>
+                    <div class="form__drop" id="js-drop">
+                      <input id="img-project" type="file" name="input_image" accept="image/*">
+                      <span>{% trans "Drag & Drop or Browse" %}</span>
+                      <img id="preview"/>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="button button--warning button__small" data-dismiss="modal">Cancel</button>
+                    <button id="saveLogo" type="submit" class="button button--primary button__small">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        {% else %}
+
+          <img src="{% if project.logo and project.logo.url %}{{ project.logo.url }}{% else %}{% with project_logo='v2/images/projects/logos/' id=project.id %} {% static project_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{project.image_css}}">
+        
+        {% endif %}
+      </div>
+      <div class="col-12 col-lg-7">
+        {% if is_team_member %}
+          <h1 class="font-title-xl my-4 font-weight-bold">TITLE</h1>
+        {% else %}
+          {{ project.name }}
+        {% endif %}
+      </div>
+      <!-- SUMMARY INFO -->
+      <div class="summary-info mb-0 pb-1">
+      </div>
+
+    </div>
+  </div>
+</div>

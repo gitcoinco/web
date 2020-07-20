@@ -1,0 +1,80 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator humanize %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
+    {% include 'shared/head.html' with slim=1 %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/sidebar_search.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
+  </head>
+  <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'grants/nav.html' %}
+
+    <div class="container-fluid header dash" style="background-image: url('/static/v2/images/bg/{{bg}}');">
+
+      
+      <div class="row">
+        <div id="project-details" class="col-12 pr-0" style="background-color: #E5E5E5;">
+            <div class="row">
+              <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
+                  {% include 'project/detail/info.html' %}
+              </div>
+              <div class="col-12 col-md-6 col-lg-4 px-5 px-md-0">
+                {% comment %} {% include 'project/detail/funding.html' %} {% endcomment %}
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-12 px-5">
+              {% comment %} {% include 'project/detail/tabs.html' %} {% endcomment %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
+    {% include 'shared/footer.html' %}
+  </body>
+  <script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/infinite.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
+  <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+
+  {% if type == 'activity' %}
+  {% include 'shared/activity_scripts.html' %}
+  {% else %}
+  <script>
+    var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0]
+    });
+  </script>
+  {% endif %}
+
+</html>
