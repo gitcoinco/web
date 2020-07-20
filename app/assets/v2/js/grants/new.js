@@ -199,9 +199,7 @@ function saveGrant(grantData, isFinal) {
 
 $('#new_button').on('click', function(e) {
   if (!provider && $('#token_address').length != 0) {
-    {
-      e.preventDefault();
-      return onConnect().then(() => init());
-    }
+    e.preventDefault();
+    return onConnect().then(() => init());
   }
 });
