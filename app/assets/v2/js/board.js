@@ -312,7 +312,7 @@ Vue.mixin({
           response.tx_status === TX_STATUS_UNKNOWN ||
           response.tx_status === TX_STATUS_DROPPED
         ) {
-          _alert('Ups, something bad happens trying to creat your pToken, please try again, or contact support@gitcoin.co', 'error');
+          _alert('Oops, something went wrong trying to create your pToken. Please try again or contact support@gitcoin.co', 'error');
           vm.updatePToken(response);
           return;
         } if (!vm.pToken.id) {
