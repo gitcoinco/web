@@ -1,0 +1,20 @@
+{
+    "symbol": "NB",
+    "account_name": "newbitglobal",
+    "overview": {
+        "en": "NB is a cryptocurrency pegged in USD 1:1 based on the EOS blockchain technology, issued by NewB Technology Holding Ltd. to realize global payment via cryptocurrency.",
+        "zh": "NB 是等值于 1 USD 的稳定电子货币 , 通过 EOS 区块链技术实现全球跨境支付、汇款实时到账。"
+    },
+    "email": "service@newbit.global",
+    "website": "https://newbit.in",
+    "whitepaper": "https://newbit.in/static/media/NEWBIT_Whitepaper_v2.2.3%20rev1.dab94b48.pdf",
+    "published_on": "2018-11-15",
+    "initial_price": {
+        "EOS": "0.3949 EOS",
+        "USD": "1.0 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/newbitglobal",
+        "telegram": "https://t.me/joinchat/Gz8ZqRYznQqfUL2YhDWU8w"
+    }
+}
