@@ -100,6 +100,7 @@ def get_sidebar_tabs(request):
     # setup tabs
     hours = 24
     hackathon_tabs = []
+    upcoming_events = []
     tabs = [{
         'title': f"Everywhere",
         'slug': 'everywhere',
@@ -188,7 +189,20 @@ def get_sidebar_tabs(request):
                 'helper_text': f'Go to {hackathon.name} Townsquare.',
             }
             hackathon_tabs = [connect] + hackathon_tabs
-
+    
+    upcomings = HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date')
+    if upcomings.count():
+        for events in upcomings:
+            connect = {
+                'title': hackathon.name,
+                'logo': hackathon.logo,
+                'start': hackathon.start_date,
+                'end': hackathon.end_date,
+                'slug': f'hackathon:{hackathon.pk}',
+                'url_slug': hackathon.slug,
+                'helper_text': f'Go to {hackathon.name} Townsquare.',
+            }
+            upcoming_events = [connect] + upcoming_events
 
     # set tab
     if request.COOKIES.get('tab'):
@@ -207,7 +221,7 @@ def get_sidebar_tabs(request):
     if "search-" in tab:
         search = tab.split('-')[1]
 
-    return tabs, tab, is_search, search, hackathon_tabs
+    return tabs, tab, is_search, search, hackathon_tabs, upcoming_events
 
 def get_offers(request):
     # get offers

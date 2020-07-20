@@ -1,0 +1,47 @@
+<div>
+  <div class="townsquare_block-header my-1" data-target="upcoming_events">
+   Upcoming
+  </div>
+	<div id="upcoming-events" class="mb-4">
+		{% for hackathon in upcoming_events|slice:":5" %}
+			<div class="box-hackathons-townsquare">
+				<div class="card flex-row" id="{{hackathon.slug}}">
+					<div class="card-header">
+						{% firstof hackathon.logo_svg or hackathon.logo as logo %}
+							{% if logo %}
+								<img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
+							{% else %}
+								<div class="hackathon-card-logo text-center px-3 font-caption">
+									<a href="{% url 'hackathon_onboard' hackathon.slug %}"> {{ hackathon.title }} </a>
+								</div>
+						{% endif %}
+					</div>
+				</div>
+
+				<div class="card-body">
+					<h5 class="font-subheader font-weight-semibold">
+						<a href="{% url 'hackathon' hackathon.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
+							{{ hackathon.title }}
+						</a>
+					</h5>
+					<div class="font-smaller-2">
+						<span class="tag-hackathon">Hackathon</span>
+						<time class="font-weight-bold" datetime="{{ hackathon.start_date|date:'c' }}">{{ hackathon.start|date:"m/d/Y" }}</time>
+						<span>-</span>
+						<time class="font-weight-bold" datetime="{{ hackathon.end_date|date:'c' }}">{{ hackathon.end|date:"m/d/Y" }}</time>
+					</div>
+					<div class="mt-1 hackathon-actions">
+						{% if hackathon.end|timesince <= "1 min" %}
+							<a href="{% url 'hackathon_onboard' hackathon.slug %}">
+									Join Hackathon >
+							</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+		<p class="text-center bg-shade-0 mb-0 pb-3">
+			<a href="{% url 'get_hackathons' %}" class="font-caption py-2" style="color: var(--link-color);">{% trans "View more events" %}</a>
+		</p>
+	</div>
+</div> 
