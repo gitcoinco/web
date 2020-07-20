@@ -146,7 +146,8 @@ def nth_day_email_campaign(nth, subscriber):
         from_email = settings.CONTACT_EMAIL
         if not should_suppress_notification_email(subscriber.email, 'welcome_mail'):
             html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
-            send_mail(from_email, subscriber.email, subject, text, html)
+            to_email = subscriber.email
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
 
