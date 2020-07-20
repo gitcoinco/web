@@ -25,10 +25,8 @@
     "weibo": "http://weibo.com/itweebaa?is_all=1",
     "facebook": "https://www.facebook.com/tweebaa/",
     "instagram": "https://www.instagram.com/tweebaa/",
-    "token_listing_1": "https://coinbenevip.zendesk.com/hc/en-us/articles/360043572994-Tweebaa-TWEE-Will-be-Launched-on-CoinBene",
-    "token_listing_2": "https://bitmart.zendesk.com/hc/en-us/articles/360039665374-BitMart-Lists-Tweebaa-TWEE-",
-    "supported_exchange_1": "https://www.coinbene.com/spot/exchange/TWEE_USDT",
-    "supported_exchange_2": "https://www.bitmart.com/trade/en?symbol=TWEE_USDT",
+    "token_listing": "https://bitmart.zendesk.com/hc/en-us/articles/360039665374-BitMart-Lists-Tweebaa-TWEE-",
+    "supported_exchange": "https://www.bitmart.com/trade/en?symbol=TWEE_USDT",
     "etherscan_link": "https://etherscan.io/address/0x2b6ff53fc2493ccd5202d80a6c439741414c5ff2"
   }
 }
