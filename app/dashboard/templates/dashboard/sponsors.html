@@ -73,6 +73,7 @@
         font-size: 12px;
         line-height: 18px;
         letter-spacing: -0.24px;
+        max-width: 15.5rem;
       }
 
       .find-hackers {
@@ -81,8 +82,14 @@
         position: absolute;
         bottom: 40px;
       }
+
       .hackathon-logo {
         height: 12rem;
+      }
+
+      .note {
+        margin-top: -4px;
+        font-size: var(--fs-body);
       }
     </style>
     {% include 'shared/fbpixel.html' %}
@@ -145,7 +152,7 @@
                         <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
                       </div>
                       <div role="tablist">
-                        <b-card no-body class="mb-1" v-for="prize in prizes" v-if="prizes">
+                        <b-card no-body class="mb-1" v-for="(prize, prizeIndex) in prizes" v-if="prizes">
                           <b-card-header header-tag="header" class="d-flex align-items-baseline justify-content-between px-4 py-1" role="tab">
                             <div :class="isMobileDevice ? 'mx-3' : '' ">
                               <div>
@@ -154,10 +161,11 @@
                                 <span v-if="!isMobileDevice" class="tag usd">[[prize.values_usdt]] USD</span>
                               </div>
                               <a class="font-smaller-2" :href="prize.url">View prize</a><br>
-                              <span v-if="isMobileDevice" class="font-body font-weight-semibold">2/4 Submitted</span>
+                              <span v-if="isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
                             </div>
                             <div>
-                              <span v-if="!isMobileDevice" class="font-body font-weight-semibold">2/4 Submitted</span>
+                              <span v-if="!isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
+                              <a href="" class="ml-5 font-body font-weight-semibold gc-text-green"><span class="fas fa-check"></span>  Paid</a>
                             </div>
                             <b-button v-b-toggle.accordion-1 variant="link">
                               <i class="fas fa-caret-down"></i>
@@ -177,10 +185,10 @@
                                 <b-tbody>
                                   <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="project in prize.submissions">
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'"><a :href="project.work_url"><span class="gc-text-blue font-weight-semibold">[[project.name]]</span>  <br> <span class="fab fa-github text-black"></span></a> </b-td>
-                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary'">[[project.summary]]</b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary pr-4'">[[project.summary]]</b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 d-flex flex-column'">
                                       <div  class="d-flex mb-2" v-for="profile in project.profiles">
-                                        <img height="33" width="33" class="mr-2 rounded-circle" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
+                                        <img height="28" width="28" class="mr-2 rounded-circle" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
                                         <div class="d-flex flex-column">
                                           <a class="font-smaller-4 text-black" :href="profile.url">[[profile.handle]]</a>
                                           <span class="font-smaller-5 gc-text-blue">[[start_and_end(profile.payout_address)]]</span>
@@ -189,16 +197,16 @@
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                       <!--a :href="profile.email"><i class="fa fa-envelope"></i></a-->
-                                      <button class="btn btn-link gc-text-blue" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
+                                      <button class="btn btn-link gc-text-blue pt-0" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
-                                      <b-form-checkbox v-model="project.winner" name="check-button" switch @change="markWinner($event, project)">
+                                      <b-form-checkbox v-model="project.winner" name="check-button" switch @change="markWinner($event, project, prizeIndex)">
                                         Winner
                                       </b-form-checkbox>
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                       <button class="btn btn-link gc-text-blue" @click="addNote(project)" v-if="comments[project.pk] == undefined">+ Add note</button>
-                                      <textarea v-if="comments[project.pk] != undefined" v-model="comments[project.pk]" @change="setNote($event, project)" class="form-control">[[getComment(project.pk)]]</textarea>
+                                      <textarea v-if="comments[project.pk] != undefined" v-model="comments[project.pk]" @change="setNote($event, project)" class="form-control note">[[getComment(project.pk)]]</textarea>
                                     </b-td>
                                   </b-tr>
                                 </b-tbody>

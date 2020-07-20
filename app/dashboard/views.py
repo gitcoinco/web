@@ -3618,6 +3618,7 @@ def hackathon_prizes(request, hackathon=''):
     query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=request.user.profile)
     prizes = []
     for prize in query_prizes:
+        total_submitted = BountyEvent.objects.filter(bounty=prize, event_type='submit_work').count()
         prize_in_json = {
             'pk': prize.pk,
             'title': prize.title_or_desc,
@@ -3625,9 +3626,9 @@ def hackathon_prizes(request, hackathon=''):
             'value_eth': prize.get_value_in_eth,
             'values_usdt': prize.get_value_in_usdt_now,
             'paid': bool(prize.paid),
-            'submissions': [project.to_json()
-                            for project in prize.project_bounty.all()
-                            ]
+            'submissions': [project.to_json() for project in prize.project_bounty.all()],
+            'total_projects': prize.project_bounty.count(),
+            'total_submitted': total_submitted
         }
 
         prizes.append(prize_in_json)
