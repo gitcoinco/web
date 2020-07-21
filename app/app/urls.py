@@ -239,7 +239,7 @@ urlpatterns = [
         dashboard.views.hackathon_get_project,
         name='hackathon_edit_project'
     ),
-    path('hackathon/<str:hackathon>/projects/<int:project_id>/<str:project>',
+    path('hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>',
          dashboard.views.hackathon_project_page, name='hackathon_project_page'),
          
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),

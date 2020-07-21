@@ -27,7 +27,8 @@
         {% if is_team_member %}
           <a id="change-logo" data-toggle="modal" data-target="#changeLogo">
             <i class="far fa-image" data-toggle="tooltip" data-placement="right" title="Change Project Logo"></i>
-            <img src="{% if project.logo and project.logo.url %}{{ project.logo.url }}{% else %}{% with project_logo='v2/images/projects/logos/' id=project.id|modulo:3 %} {% static project_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{project.image_css}}">
+           
+            <img src="{% if logo  %}{{ logo }}{% else %}{% with project_logo='v2/images/projects/logos/' id=project.id %} {% static project_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{project.image_css}}">
           </a>
 
           <div class="modal fade" id="changeLogo" tabindex="-1" role="dialog" aria-labelledby="changeLogoLabel" aria-hidden="true">
@@ -55,23 +56,158 @@
             </div>
           </div>
 
-        {% else %}
-
-          <img src="{% if project.logo and project.logo.url %}{{ project.logo.url }}{% else %}{% with project_logo='v2/images/projects/logos/' id=project.id %} {% static project_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{project.image_css}}">
-        
+        {% else %}        
+          <img src="{% if logo  %}{{ logo }}{% else %}{% with project_logo='v2/images/projects/logos/' id=project.id %} {% static project_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}" style="{{project.image_css}}">
+           
         {% endif %}
       </div>
       <div class="col-12 col-lg-7">
-        {% if is_team_member %}
-          <h1 class="font-title-xl my-4 font-weight-bold">TITLE</h1>
-        {% else %}
-          {{ project.name }}
-        {% endif %}
+        <h1 class="font-title-xl my-4 font-weight-bold">
+          {% if is_team_member %}
+            <textarea id="form--input__title" class="p-0 m-0 inline-edit font-body" maxlength="150" disabled>{{ name }}</textarea>
+          {% else %}
+            {{ name }}
+          {% endif %}
+        </h1>
+
+
+         <!-- SUMMARY INFO -->
+        <div class="summary-info mb-0 pb-1">
+
+         {{summary}}
+        </div>
+
       </div>
-      <!-- SUMMARY INFO -->
-      <div class="summary-info mb-0 pb-1">
-      </div>
+     
 
     </div>
+  </div>
+
+  <div>
+    <div class="grant-item__member grant-item-multiselect my-2 font-body">
+      <p class="sub-title {% if is_team_member %} mb-0 {% else %} mb-3 {% endif %}">
+        TEAM
+      </p>
+      {% if is_team_member and not grant_is_inactive %}
+        <div>
+          <div class="form__select2">
+            <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
+              {% for team_member in grant.team_members.all %}
+                <option selected="selected"  value="{{ team_member.id }}">{{ team_member }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      {% else %}
+        {% if team_members %}
+          <div class="grant-item__members d-flex flex-wrap">
+            {% for team_member in team_members.all %}
+              <a class="grant-item__member-handle mb-3" href="{% url 'profile' team_member %}">
+                <div class="grant-item__member grant-item-multiselect mr-5">
+                  <div class="mr-2 d-inline-block">
+                    <img src="/dynamic/avatar/{{ team_member.handle }}">
+                  </div>
+                  <div class="mt-1 d-inline-block">
+                    <span class="grant-profile font-weight-semibold">{{ team_member }}</span>
+                  </div>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    {% if is_team_member%}
+      <div class="mt-4">
+        <button id="edit-details" class="button btn-gc-blue button--full shadow-none font-weight-bold py-3">
+          <i class="fas fa-edit mr-2"></i> {% trans "Edit Info" %}
+        </button>
+      </div>
+
+      <div class="row mx-0">
+        <div class="col-12 col-lg-6 px-0 pr-lg-1 mb-2">
+          <button id="save-details" class="button btn-gc-blue button--full hidden shadow-none font-weight-bold py-3">
+            <i class="fas fa-save mr-2"></i> {% trans "Save Info" %}
+          </button>
+        </div>
+        <div class="col-12 col-lg-6 px-0 pl-lg-1">
+          <button id="cancel-details" class="button button--warning button--full hidden shadow-none font-weight-bold py-3">
+            <i class="fas fa-times mr-2"></i> {% trans "Cancel Edit" %}
+          </button>
+        </div>
+      </div>
+
+    {% endif %}
+
+    {% if is_admin and not grant_is_inactive %}
+      {% csrf_token %}
+      <div id="js-cancel_grant" class="mt-3">
+        <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+        <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}">
+        <input type="hidden" id="grant_cancel_tx_id" name="grant_cancel_tx_id" value="">
+        <div id="cancel_grant_tooltip" data-toggle="tooltip" data-placement="bottom">
+          <button type="button" data-toggle="modal" data-target="#cancelModal" id="cancel_grant"
+            class="button button--primary button--full button--warning shadow-none font-weight-bold py-3">
+            {% trans "Cancel this Grant" %}
+          </button>
+        </div>
+
+        <div id="cancelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cancelGrantModal" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content px-4 px-lg-5">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body row">
+                <div class="col-12 pt-2 pb-2 text-center">
+                  <h2 class="font-title">{% trans "Are you sure you want to cancel this grant?" %}</h2>
+                </div>
+                <div class="col-12 text-center">
+                  <img src="{% static "v2/images/grants/cancel-grants-icon.png" %}" />
+                </div>
+                <div class="col-12 pt-2 pb-2 font-body">
+                  <p>{% trans "By clicking Cancel, you will be cancelling this grant from Gitcoin." %}</p>
+                  <ul><li>{% trans "Your grant will stay in Gitcoin, but " %}<b>{% trans "marked as inactive." %}</b></li>
+                  <li>{% trans "Funds received till now " %}<b>{% trans "will not be refunded " %}</b>{% trans "to the contributors." %}</li>
+                  <li>{% trans "Once cancelled, it is " %}<b>{% trans "not possible to restart the grant, " %}</b>{% trans "as the smart contract will be destroyed." %}</li></ul>
+                  <p>{% trans "To relaunch the grant, you need to create a new grant." %}</p>
+                </div>
+                <div class="col-12 mt-4 mb-2 text-center text-md-right font-caption">
+                  <a data-dismiss="modal" aria-label="Close dialog" class="button button--primary-o mr-3 shadow-none font-weight-bold py-3">
+                    {% trans "No, I don\'t want to cancel" %}
+                  </a>
+                  <button class="modal-cancel-grants button button--warning shadow-none font-weight-bold py-3">
+                    {% trans "Cancel this Grant" %}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="font-body grant-item__owner my-4">
+        <div class="mb-3">
+          <p class="sub-title" data-toggle="tooltip" data-placement="bottom">Grant Owner</p>
+          <div class="mr-2 d-inline-block">
+            <img src="{{ grant.admin_profile.avatar_url }}">
+          </div>
+          <div class="mt-1 d-inline-block">
+            <span id="grant-admin" class="font-weight-semibold ">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
+          </div>
+        </div>
+        <div>
+          <p class="sub-title mb-0" data-toggle="tooltip" data-placement="bottom" title="Address used to create this grant.">Contract Owner Address</p>
+          <p id="contract_owner_address" class="p-0 m-0 font-body">{{ grant.contract_owner_address }}</p>
+        </div>
+      </div>
+
+    {% endif %}
+
+    <span id="grant_contract_owner_address" class="hidden">{{ grant.contract_owner_address }}</span>
+
   </div>
 </div>
