@@ -31,14 +31,6 @@
     <link rel="stylesheet" href={% static "v2/css/lib/daterangepicker.css" %}>
     <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
     <style>
-      .onboard-banner {
-        position: relative;
-        background: {% firstof hackathon.background_color or 'white' %};
-        color: {% firstof hackathon.text_color or 'black' %};
-        {% if hackathon.banner %}
-          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
-        {% endif %}
-      }
 
       .issue_description {
         height: 400px;
@@ -50,16 +42,6 @@
 
       .issue_description img {
         max-width: 100%;
-      }
-
-      .sponsors {
-        width: 96px;
-        color: black;
-        font-weight: 300;
-      }
-
-      .sponsor-selected {
-        box-shadow: 0 0 4px 0 #d2d2d2;
       }
 
       .vs__dropdown-toggle {
@@ -81,20 +63,6 @@
         padding-left: 1em;
       }
 
-      /* .collapse-enter-active, .collapse-leave-active {
-        transition: all linear .5s;
-        overflow: hidden;
-
-      }
-      .collapse-enter, .collapse-leave-to {
-        height: 0;
-      }
-
-      .collapse-enter-to, .collapse-leave {
-        height: 100%;
-      } */
-
-
     </style>
   </head>
 
@@ -104,16 +72,6 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    <!-- <div class="onboard-banner text-center p-4 pb-5">
-      {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-      {% if logo %}
-        <img class="my-5 mw-100" height="250" src="{{MEDIA_URL}}{{logo}}"/>
-      {% else %}
-        <div class=" d-flex align-items-center justify-content-around font-bigger-4 text-center my-5">
-          {{ hackathon.name }}
-        </div>
-      {% endif %}
-    </div> -->
     <div class="container-fluid bg-lightblue pb-5 pt-5" id="gc-hackathon-new-bounty" v-cloak>
       <form action="" @submit="checkForm">
         <div class="container mt-3 mb-3 bg-white position-relative rounded">
@@ -171,7 +129,6 @@
                   [[errors.issueDetails]]
                 </div>
               </div>
-              <!-- [[issueDetails]] -->
               <div v-if="form.issueDetails">
                 <div class="font-caption letter-spacing text-black-60 text-uppercase mb-2">
                   Issue Title
@@ -718,8 +675,6 @@
         <input class="form__input" type="text" v-model="pickDate" :disabled="disabled" placeholder="" />
       </div>
     </script>
-
-
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}

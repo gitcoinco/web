@@ -3262,7 +3262,6 @@ def new_bounty(request):
         pass
 
     params['avatar_url'] = request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png'))
-    # return TemplateResponse(request, 'bounty/fund.html', params)
     return TemplateResponse(request, 'bounty/new_bounty.html', params)
 
 

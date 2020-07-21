@@ -65,7 +65,6 @@ Vue.mixin({
 
       }).catch((err) => {
         console.log(err);
-        // vm.errorIssueDetails = err.responseJSON.message;
       });
 
     },
@@ -252,7 +251,6 @@ Vue.mixin({
     },
     userSearch(search, loading) {
       let vm = this;
-      // let myHeaders = new Headers();
 
       if (search.length < 3) {
         return;
@@ -337,7 +335,6 @@ Vue.mixin({
     payFees: async function() {
       let vm = this;
       const toAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-      // const fee = Number((Number(data.amount) * FEE_PERCENTAGE).toFixed(4));
 
       if (!provider) {
         onConnect();
@@ -541,9 +538,6 @@ Vue.mixin({
         return;
       }
       return `/dynamic/avatar/${this.orgSelected}`;
-      // return this.sponsors.filter((sponsor) => {
-      //   return sponsor.handle.toLowerCase() === this.orgSelected.toLowerCase();
-      // });
     },
     successRate: function() {
       let rate;
@@ -598,7 +592,6 @@ Vue.mixin({
       }
 
       this.getTokens();
-      // await this.checkForm();
     }
   }
 });
