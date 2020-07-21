@@ -173,7 +173,8 @@
                             </div>
                             <div>
                               <span v-if="!isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
-                              <a href="" class="ml-5 font-body font-weight-semibold gc-text-green"><span class="fas fa-check"></span>  Paid</a>
+                              <span v-if="prize.paid" class="ml-5 font-body font-weight-semibold gc-text-green"><span class="fas fa-check"></span>  Paid</span>
+                              <a v-if="!prize.paid" :href="`/issue/payout?pk=${prize.pk}`" class="ml-5 font-body font-weight-semibold"><i class="far fa-clock"></i> Payment pending</a>
                             </div>
                             <b-button v-b-toggle="`accordion-${prizeIndex}`" variant="link">
                               <i class="fas fa-angle-up"></i>
