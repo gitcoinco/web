@@ -18,14 +18,20 @@ Vue.mixin({
       }
 
       if (url.indexOf('github.com/') < 0) {
-        vm.form.issueDetails = null;
+        vm.form.issueDetails = undefined;
         vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url');
         return;
       }
 
       let ghIssueUrl = new URL(url);
 
-      vm.orgSelected = '';
+      vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
+
+      if (vm.checkBlocked(vm.orgSelected)) {
+        vm.$set(vm.errors, 'issueDetails', 'This repo is not bountyable at the request of the maintainer.');
+        vm.form.issueDetails = undefined;
+        return;
+      }
 
       const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url.trim())}`;
 
@@ -35,8 +41,10 @@ Vue.mixin({
       const getIssue = fetchData(apiUrldetails, 'GET');
 
       $.when(getIssue).then((response) => {
-        vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
-        // vm.orgSelected = vm.filterOrgSelected(ghIssueUrl.pathname.split('/')[1]);
+        if (!Object.keys(response).length) {
+          return vm.$set(vm.errors, 'issueDetails', 'Nothing found. Please check the issue URL.');
+        }
+
         vm.form.issueDetails = response;
         vm.$set(vm.errors, 'issueDetails', undefined);
       }).catch((err) => {
@@ -278,6 +286,12 @@ Vue.mixin({
         });
       });
     },
+    checkBlocked(org) {
+      let vm = this;
+      let blocked = vm.blockedUrls.toLocaleString().toLowerCase().split(',');
+
+      return blocked.indexOf(org.toLowerCase()) > -1;
+    },
     featuredValue() {
       let vm = this;
       const apiUrlAmount = `/sync/get_amount?amount=${vm.usdFeaturedPrice}&denomination=USDT`;
@@ -386,10 +400,10 @@ Vue.mixin({
       if (Object.keys(vm.errors).length) {
         return false;
       }
-      if (vm.bountyFee > 0) {
+      if (vm.bountyFee > 0 && !vm.subscriptionActive) {
         await vm.payFees();
       }
-      if (vm.form.featuredBounty) {
+      if (vm.form.featuredBounty && !vm.subscriptionActive) {
         await vm.payFeaturedBounty();
       }
       const metadata = {
@@ -493,15 +507,34 @@ Vue.mixin({
       let vm = this;
       let fee;
 
-      if (vm.chainId !== '1') {
-        fee = 0;
-      } else {
+      if (vm.chainId === '1' && !vm.subscriptionActive) {
+        vm.bountyFee = document.FEE_PERCENTAGE;
         fee = Number(vm.bountyFee) / 100.0;
+      } else {
+        vm.bountyFee = 0;
+        fee = 0;
       }
       let totalFee = Number(vm.form.amount) * fee;
       let total = Number(vm.form.amount) + totalFee;
 
       return {'totalFee': totalFee, 'total': total };
+    },
+    totalTx: function() {
+      let vm = this;
+      let numberTx = 0;
+
+      if (vm.chainId === '1' && !vm.subscriptionActive) {
+        numberTx += vm.bountyFee > 0 ? 1 : 0;
+      } else {
+        numberTx = 0;
+      }
+
+      if (!vm.subscriptionActive) {
+        numberTx += vm.form.featuredBounty ? 1 : 0;
+      }
+
+      return numberTx;
+
     },
     filterOrgSelected: function() {
       if (!this.orgSelected) {
@@ -594,6 +627,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         coinValue: null,
         usdFeaturedPrice: 12,
         ethFeaturedPrice: null,
+        blockedUrls: document.blocked_urls,
         form: {
           expirationTimeDelta: moment().add(1, 'month').format('MM/DD/YYYY'),
           featuredBounty: false,

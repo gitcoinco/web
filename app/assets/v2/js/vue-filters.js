@@ -120,3 +120,9 @@ Vue.filter('toUppercase', function(value) {
 Vue.filter('toLower', function(value) {
   return value.toLowerCase();
 });
+
+Vue.filter('pluralize', (word, amount, singular, plural) => {
+  plural = plural || 's';
+  singular = singular || '';
+  return amount !== 1 ? `${word + plural}` : `${word + singular}`;
+});

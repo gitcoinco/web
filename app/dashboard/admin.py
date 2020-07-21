@@ -477,7 +477,7 @@ class TribeMemberAdmin(admin.ModelAdmin):
 
 class TribesSubscriptionAdmin(admin.ModelAdmin):
     raw_id_fields = ['tribe']
-    list_display = ['id', 'plan_type', 'hackathon_tokens']
+    list_display = ['id', 'plan_type', 'tribe', 'hackathon_tokens', 'expires_on']
 
 
 class FundRequestAdmin(admin.ModelAdmin):

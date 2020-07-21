@@ -307,7 +307,7 @@
                     </div>
                     <div class="col-12" v-if="!subscriptionActive">
                       <p class="text-highlight-gc-blue bg-lightpurple p-2 mt-2">
-                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:scott@gitcoin.co" class="font-weight-bold">scott@gitcoin.co</a>
+                        For <strong>Gitcoin PRO Features</strong> (contest, cooperative, many applicants, 0% fees, tribes and more) contact <a href="mailto:scott@gitcoin.co" target="_blank" class="font-weight-bold">scott@gitcoin.co</a>
                       </p>
 
                     </div>
@@ -590,7 +590,8 @@
                           <div class="form__checkbox">
                             <input name='featuredBounty' id='featuredBounty' v-model="form.featuredBounty" type="checkbox" value=1 />
                             <label class="form__label" for='featuredBounty'>{% trans "Yes, I want to feature my bounty." %}
-                              <span class="featured-price"><b class="featured-price-eth">[[ethFeaturedPrice]] ETH</b> (<span class="featured-price-usd">[[usdFeaturedPrice]]</span> USD)</span>
+                              <span class="featured-price" :class="{'text-through': subscriptionActive}"><b class="featured-price-eth">[[ethFeaturedPrice]] ETH</b> (<span class="featured-price-usd">[[usdFeaturedPrice]]</span> USD)</span>
+                              <span class="featured-price gc-text-green font-weight-bold" v-if="subscriptionActive">FREE</span>
                             </label>
                           </div>
                         </div>
@@ -607,7 +608,7 @@
           </transition>
         </div>
 
-        <div class="container mt-5 bg-white position-relative rounded" v-show="bountyFee > 0">
+        <div class="container mt-5 bg-white position-relative rounded" v-show="bountyFee > 0 && chainId === '1'">
           <div class="row p-4 p-md-5">
             <div class="col-12">
               <div id="fee-section" class="">
@@ -646,7 +647,7 @@
                 </div>
                 <div class="col-md-9 col-lg-10 my-auto">
                   <p class="mb-1 text-uppercase text-black-50 font-body">Payment Due</p>
-                  <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block">[[totalAmount.total]] [[form.token.symbol]] <span v-if="form.featuredBounty">+ [[ethFeaturedPrice]] ETH</span></span>
+                  <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block">[[totalAmount.total]] [[form.token.symbol]] <span v-if="form.featuredBounty && !subscriptionActive">+ [[ethFeaturedPrice]] ETH</span></span>
 
                   <p class="font-caption text-black-50 mb-1">
                     Bounty <span id="summary-bounty-amount" class="font-weight-bold">[[form.amount]]</span>
@@ -658,11 +659,16 @@
                         Gitcoin Platform Fee
                       </span>
                       <span v-if="form.featuredBounty"> +
-                        <span class="font-weight-bold">[[ethFeaturedPrice]] ETH</span>
+                        <span class="font-weight-bold" :class="{'text-through': subscriptionActive}">[[ethFeaturedPrice]] ETH</span>
+                        <span class="font-weight-bold gc-text-green" v-if="subscriptionActive">FREE</span>
                         Featured Bounty
                       </span>
 
                     </template>
+                  </p>
+
+                  <p v-if="totalTx" class="font-caption mb-0 gc-text-blue">
+                    You will have to approve <b>[[totalTx]]</b> web3 wallet [['confirmation' | pluralize(totalTx)]].
                   </p>
 
                 </div>
