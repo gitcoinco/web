@@ -129,9 +129,8 @@
               <div>
                 <small class="font-body mr-3">{{ num_participants }} participants</small>
                 <small class="font-body mr-3">{{ num_submissions }} submissions</small>
-                <small class="font-body">How is the hackathon going?</small>
               </div>
-              <a href="" class="find-hackers btn btn-gc-blue" v-if="!isMobileDevice">Find more hackers</a>
+              <a href="{% url 'users_directory' %}" class="find-hackers btn btn-gc-blue" v-if="!isMobileDevice">Find more hackers</a>
             </div>
           </div>
           <div class="col-12 body hackathon-explorer">
@@ -164,17 +163,16 @@
                           <b-card-header header-tag="header" class="d-flex align-items-baseline justify-content-between px-4 py-2" role="tab">
                             <div :class="isMobileDevice ? 'mx-3' : ' col-md-5' ">
                               <div>
-                                <h1 class="font-subheader font-weight-semibold d-inline-block">[[`${prize.title.slice(0, 92)}${prize.title.length > 92 ? '...' : ''}`]]</h1>
+                                <a :href="prize.url" class="font-subheader font-weight-semibold d-inline-block text-black">[[`${prize.title.slice(0, 92)}${prize.title.length > 92 ? '...' : ''}`]]</a>
                                 <span v-if="!isMobileDevice && prize.value_eth.toFixed" class="tag token ml-2">[[prize.value_eth.toFixed(2)]] ETH</span>
                                 <span v-if="!isMobileDevice && prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
                               </div>
-                              <a class="font-smaller-2" :href="prize.url" style="margin-left: 1px;">View prize</a><br>
                               <span v-if="isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
                             </div>
                             <div>
                               <span v-if="!isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
                               <span v-if="prize.paid" class="ml-5 font-body font-weight-semibold gc-text-green"><span class="fas fa-check"></span>  Paid</span>
-                              <a v-if="!prize.paid" :href="`/issue/payout?pk=${prize.pk}`" class="ml-5 font-body font-weight-semibold"><i class="far fa-clock"></i> Payment pending</a>
+                              <a v-if="!prize.paid" :href="`/issue/payout?pk=${prize.pk}`" class="ml-5 font-body font-weight-semibold">Unpaid</a>
                             </div>
                             <b-button v-b-toggle="`accordion-${prizeIndex}`" variant="link">
                               <i class="fas fa-angle-up"></i>

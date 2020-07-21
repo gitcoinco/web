@@ -112,8 +112,7 @@
         toggleSummary: function(prizeIndex, submissionIndex) {
           let vm = this;
           const showDescription = !vm.prizes[prizeIndex].submissions[submissionIndex].showDescription;
-
-          console.log(showDescription)
+          
           vm.$set(vm.prizes[prizeIndex].submissions[submissionIndex], 'showDescription', showDescription);
         }
       },
