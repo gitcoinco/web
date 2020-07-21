@@ -91,6 +91,14 @@
         margin-top: -4px;
         font-size: var(--fs-body);
       }
+
+      .custom-switch .custom-control-label::after {
+        top: calc(2px) !important;
+      }
+
+      .custom-control-label::before {
+        top: 0rem !important;
+      }
     </style>
     {% include 'shared/fbpixel.html' %}
   </head>
@@ -153,14 +161,14 @@
                       </div>
                       <div role="tablist">
                         <b-card no-body class="mb-1 my-4" v-for="(prize, prizeIndex) in prizes" v-if="prizes">
-                          <b-card-header header-tag="header" class="d-flex align-items-baseline justify-content-between px-4 py-1" role="tab">
+                          <b-card-header header-tag="header" class="d-flex align-items-baseline justify-content-between px-4 py-2" role="tab">
                             <div :class="isMobileDevice ? 'mx-3' : ' col-md-5' ">
                               <div>
-                                <h1 class="font-title font-weight-semibold d-inline-block">[[`${prize.title.slice(0, 92)}${prize.title.length > 92 ? '...' : ''}`]]</h1>
+                                <h1 class="font-subheader font-weight-semibold d-inline-block">[[`${prize.title.slice(0, 92)}${prize.title.length > 92 ? '...' : ''}`]]</h1>
                                 <span v-if="!isMobileDevice && prize.value_eth.toFixed" class="tag token ml-2">[[prize.value_eth.toFixed(2)]] ETH</span>
                                 <span v-if="!isMobileDevice && prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
                               </div>
-                              <a class="font-smaller-2" :href="prize.url">View prize</a><br>
+                              <a class="font-smaller-2" :href="prize.url" style="margin-left: 1px;">View prize</a><br>
                               <span v-if="isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
                             </div>
                             <div>
@@ -168,7 +176,7 @@
                               <a href="" class="ml-5 font-body font-weight-semibold gc-text-green"><span class="fas fa-check"></span>  Paid</a>
                             </div>
                             <b-button v-b-toggle="`accordion-${prizeIndex}`" variant="link">
-                              <i class="fas fa-caret-down"></i>
+                              <i class="fas fa-angle-up"></i>
                             </b-button>
                           </b-card-header>
                           <b-collapse :id="`accordion-${prizeIndex}`" visible accordion="my-accordion" role="tabpanel">
@@ -184,15 +192,17 @@
                                 </b-thead>
                                 <b-tbody>
                                   <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="(project, projectIndex) in prize.submissions">
-                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'"><a :href="project.work_url"><span class="gc-text-blue font-weight-semibold">[[project.name]]</span>  <br> <span class="fab fa-github text-black"></span></a> </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'"><a :href="project.work_url"><span class="font-body gc-text-blue font-weight-semibold">[[project.name]]</span>  <br> <span class="fab fa-github text-black"></span></a> </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary pr-4'">
-                                      [[getSummary(project)]]
+
+                                      <p class="mt-1">[[getSummary(project)]]
                                       <button v-if="project.summary.length > 177" @click="toggleSummary(prizeIndex, projectIndex)" class="btn btn-link gc-text-blue py-0 my-0 pl-0 font-smaller-4">
                                         [[ project.showDescription ? 'Show less'  : 'Show more' ]]
                                       </button>
+                                      </p>
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 d-flex flex-column'">
-                                      <div  class="d-flex mb-2" v-for="profile in project.profiles">
+                                      <div class="d-flex mb-2 mt-1" v-for="profile in project.profiles">
                                         <img height="28" width="28" class="mr-2 rounded-circle" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
                                         <div class="d-flex flex-column">
                                           <a class="font-smaller-4 text-black" :href="profile.url">[[profile.handle]]</a>
@@ -205,12 +215,12 @@
                                       <button class="btn btn-link gc-text-blue pt-0" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
-                                      <b-form-checkbox v-model="project.winner" name="check-button" switch @change="markWinner($event, project, prizeIndex)">
+                                      <b-form-checkbox class="font-smaller-4 mt-1" v-model="project.winner" name="check-button" switch @change="markWinner($event, project, prizeIndex)">
                                         Winner
                                       </b-form-checkbox>
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
-                                      <button class="btn btn-link gc-text-blue" @click="addNote(project)" v-if="comments[project.pk] == undefined">+ Add note</button>
+                                      <button class="btn btn-link gc-text-blue pt-0 font-smaller-4 mt-1" @click="addNote(project)" v-if="comments[project.pk] == undefined">+ Add note</button>
                                       <textarea v-if="comments[project.pk] != undefined" v-model="comments[project.pk]" @change="setNote($event, project)" class="form-control note">[[getComment(project.pk)]]</textarea>
                                     </b-td>
                                   </b-tr>
