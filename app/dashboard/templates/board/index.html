@@ -72,13 +72,15 @@
         available: parseFloat("{{ ptoken.available_supply }}"),
         purchases: parseFloat("{{ ptoken.total_purchases }}"),
         redemptions: parseFloat("{{ ptoken.total_redemptions }}"),
+        tx_status: "{{ ptoken.tx_status }}"
       }
+      document.current_ptoken_address = "{{ ptoken.token_address }}";
       {% else  %}
         document.ptoken = {}
       {% endif %}
     </script>
-    <script src="{% static "v2/js/board.js" %}"></script>
     <script src="{% static "v2/js/ptokens/ptokens.js" %}"></script>
+    <script src="{% static "v2/js/board.js" %}"></script>
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'

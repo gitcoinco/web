@@ -195,11 +195,12 @@ Vue.mixin({
         vm.fetchContributorBounties('work_submitted');
         vm.fetchContributorBounties('interested');
       }
-      if (!Object.keys(vm.pTokens).length && persona === 'personal-tokens') {
+      if (persona === 'personal-tokens') {
         vm.fetchTokens('request');
         vm.fetchTokens('accepted');
         vm.fetchTokens('completed');
         vm.fetchTokens('denied');
+        vm.fetchTokens('cancelled');
       }
     },
     tabOnLoad(init) {
@@ -279,6 +280,50 @@ Vue.mixin({
       } catch (err) {
         handleError(err);
       }
+    },
+    updatePToken(response) {
+      let vm = this;
+
+      vm.pToken = Object.assign({}, {
+        id: response.id,
+        name: response.name,
+        symbol: response.symbol,
+        price: response.price,
+        supply: response.supply,
+        address: response.address,
+        available: response.available,
+        purchases: response.purchases,
+        redemptions: response.redemptions,
+        tx_status: response.tx_status
+      });
+    },
+    checkTokenStatus() {
+      let vm = this;
+
+      const token_status = get_personal_token();
+
+      $.when(token_status).then(response => {
+        if (response.tx_status === TX_STATUS_SUCCESS) {
+          _alert('Congratulations, your pToken has been created successfully!', 'success');
+          vm.updatePToken(response);
+          return;
+        } else if (
+          response.tx_status === TX_STATUS_ERROR ||
+          response.tx_status === TX_STATUS_UNKNOWN ||
+          response.tx_status === TX_STATUS_DROPPED
+        ) {
+          _alert('Oops, something went wrong trying to create your pToken. Please try again or contact support@gitcoin.co', 'error');
+          vm.updatePToken(response);
+          return;
+        } if (!vm.pToken.id) {
+          vm.updatePToken(response);
+        }
+
+        setTimeout(() => {
+          console.log('Tx not updated');
+          vm.checkTokenStatus();
+        }, 2000);
+      });
     },
     async editPToken() {
       try {
@@ -414,6 +459,7 @@ Vue.mixin({
 
         $.when(ptokenReponse).then((response) => {
           console.log(response);
+          vm.checkTokenStatus();
           document.ptoken = response;
         });
 
@@ -423,7 +469,70 @@ Vue.mixin({
         handleError(err);
       });
     },
+    checkNetwork() {
+      const supportedNetworks = [ 'rinkeby', 'mainnet' ];
 
+      if (!supportedNetworks.includes(document.web3network)) {
+        _alert('Unsupported network', 'error');
+        throw new Error('Please connect a wallet');
+      }
+      return document.web3network;
+    },
+    async complete(redemptionId, tokenAmount, tokenAddress) {
+      const vm = this;
+      
+      try {
+        const network = vm.checkNetwork();
+        const amount = web3.utils.toWei(String(tokenAmount));
+        const [user] = await web3.eth.getAccounts();
+
+        indicateMetamaskPopup();
+        const pToken = await new web3.eth.Contract(
+          document.contxt.ptoken_abi,
+          tokenAddress
+        );
+
+        pToken.methods.redeem(amount).send({ from: user })
+          .on('transactionHash', function(transactionHash) {
+            const redemption = complete_redemption(
+              redemptionId,
+              transactionHash,
+              TX_STATUS_PENDING,
+              network,
+              new Date().toISOString()
+            );
+
+            $.when(redemption).then((response) => {
+              vm.checkData('personal-tokens');
+              indicateMetamaskPopup(true);
+            });
+          }).on('error', (error, receipt) => {
+            console.log(error);
+            vm.handleError(error);
+          });
+      } catch (error) {
+        console.log(error);
+        vm.handleError(error);
+      }
+    },
+    accept(redemptionId) {
+      const redemption = accept_redemption(redemptionId);
+      const vm = this;
+
+      $.when(redemption).then((response) => {
+        vm.checkData('personal-tokens');
+        console.log(response);
+      });
+    },
+    cancel(redemptionId) {
+      const redemption = denied_redemption(redemptionId);
+      const vm = this;
+
+      $.when(redemption).then((response) => {
+        vm.checkData('personal-tokens');
+        console.log(response);
+      });
+    },
     handleError(err) {
       console.error(err); // eslint-disable-line no-console
       let message = 'There was an error';
@@ -481,6 +590,7 @@ if (document.getElementById('gc-board')) {
       matchingBounties: [],
       pToken: Object.assign({}, document.ptoken),
       supplyInvalidMsg: 'Please provide a supply amount',
+      current_user: document.contxt.github_handle,
       newPToken: {
         name: '',
         symbol: '',
@@ -516,6 +626,10 @@ if (document.getElementById('gc-board')) {
     },
     mounted() {
       this.tabOnLoad(true);
+      if (vm.pToken && vm.pToken.tx_status === TX_STATUS_PENDING) {
+        this.checkTokenStatus();
+      }
+
     }
   });
 }

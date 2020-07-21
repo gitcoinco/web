@@ -148,13 +148,14 @@ class PersonalToken(SuperModel):
 
         if total_redemptions.count() == 0:
             return total_purchases
+
         for redemption in total_redemptions:
             requester = redemption['redemption_requester']
-            
-            if redemption['total_amount'] < total_purchases[requester]:
+
+            if redemption['total_amount'] >= total_purchases[requester]:
                 holders.append(requester)
 
-        return holders
+        return set(total_purchases.keys()) - set(holders)
 
     @property
     def available_supply(self):
@@ -163,22 +164,22 @@ class PersonalToken(SuperModel):
 
     @property
     def total_purchases(self):
-        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self)
+        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self, tx_status='success')
         total_purchases = purchases_ptoken.aggregate(total_amount=Sum('amount'))
 
         return total_purchases.get('total_amount', 0) or 0
 
     @property
     def total_redemptions(self):
-        redemptions = RedemptionToken.objects.filter(ptoken=self)
+        redemptions = RedemptionToken.objects.filter(ptoken=self, tx_status='success')
         total_redemptions = redemptions.aggregate(total_amount=Sum('total'))
         return total_redemptions.get('total_amount', 0) or 0
 
     def get_hodling_amount(self, hodler):
         total = 0
-        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self, token_holder_profile=hodler)
+        purchases_ptoken = PurchasePToken.objects.filter(ptoken=self, token_holder_profile=hodler, tx_status='success')
         total_purchases = purchases_ptoken.aggregate(total_amount=Sum('amount'))
-        redemptions = RedemptionToken.objects.filter(ptoken=self, redemption_requester=hodler).exclude(redemption_state='denied')
+        redemptions = RedemptionToken.objects.filter(ptoken=self, redemption_requester=hodler, tx_status='success').exclude(redemption_state='denied')
         total_redemptions = redemptions.aggregate(total_amount=Sum('total'))
 
         total += total_purchases.get('total_amount') or 0
@@ -210,6 +211,8 @@ class RedemptionToken(SuperModel):
         ('request', 'requested'),
         ('accepted', 'accepted'),
         ('denied', 'denied'),
+        ('cancelled', 'canceled'),
+        ('waiting_complete', 'waiting_complete'),
         ('completed', 'completed')
     ]
     ptoken = models.ForeignKey(PersonalToken, null=True, on_delete=models.SET_NULL)
@@ -222,12 +225,24 @@ class RedemptionToken(SuperModel):
     redemption_requester = models.ForeignKey(
         'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='redemptions', blank=True
     )
+    canceller = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='canceller', blank=True
+    )
+
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     web3_created = models.DateTimeField(null=True)
 
     def update_tx_status(self):
         from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+
+        if self.redemption_state == 'waiting_complete':
+            if self.tx_status == 'success':
+                self.redemption_state = 'completed'
+
+            elif self.tx_status in ['error', 'unknown', 'dropped']:
+                self.redemption_state = 'accepted'
+
         return bool(self.tx_status)
 
 

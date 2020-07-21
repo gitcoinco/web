@@ -88,6 +88,7 @@ urlpatterns = [
     path('ptokens/<int:tokenId>/purchase/', ptokens.views.ptoken_purchases, name='token_purchase'),
     path('ptokens/<int:tokenId>/redemptions/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
     path('ptokens/redemptions/<str:redemption_state>/', ptokens.views.ptoken_redemptions, name='token_redemptions'),
+    path('ptokens/me/', ptokens.views.ptoken, name='personal_token'),
     path('ptokens/<int:tokenId>/', ptokens.views.ptoken, name='token'),
     path('ptokens/<str:token_state>/', ptokens.views.tokens, name='tokens'),
     path('ptokens/', ptokens.views.tokens, name='tokens'),

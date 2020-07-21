@@ -5,17 +5,11 @@ const TX_STATUS_UNKNOWN = 'unknown';
 const TX_STATUS_DROPPED = 'dropped';
 const redemption_states = [ 'request', 'accepted', 'denied', 'completed' ];
 
-function get_ptokens() {
-  return fetchData('/ptokens/', 'GET');
+
+function get_personal_token() {
+  return fetchData('/ptokens/me/?minimal=true', 'GET');
 }
 
-function get_ptoken_redemptions(tokenId, state) {
-  if (redemption_states.indexOf(state)) {
-    return fetchData(`/ptokens/${tokenId}/redemptions?state=${state}`, 'GET');
-  }
-
-  return fetchData('/ptokens/', 'GET');
-}
 
 function create_ptoken(name, symbol, address, value, minted, owner_address, txId, web3_created, network) {
   return fetchData('/ptokens/?minimal=true', 'POST', {
