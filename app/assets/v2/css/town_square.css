@@ -984,8 +984,8 @@ body.green.offer_view .announce {
 .nav-badge {
   font-size: 9px;
   color: var(--link-color);
-  top: -8px;
-  position: relative;
+  top: 20px;
+  position: absolute;
   font-weight: bold;
 }
 
@@ -1218,7 +1218,7 @@ body.green.offer_view .announce {
 .activity.hackathon_new_hacker {
   position: relative;
   box-sizing: border-box;
-  z-index: 2;
+  z-index: 0;
 }
 
 .activity.hackathon_new_hacker:before {
