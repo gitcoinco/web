@@ -102,6 +102,19 @@
             return str.substr(0, 8) + '...' + str.substr(str.length - 5, str.length);
           }
           return str;
+        },
+        getSummary: function(project) {
+          if (project.showDescription || project.summary.length < 177) {
+            return project.summary;
+          }
+          return `${project.summary.slice(0, 177)}...`;
+        },
+        toggleSummary: function(prizeIndex, submissionIndex) {
+          let vm = this;
+          const showDescription = !vm.prizes[prizeIndex].submissions[submissionIndex].showDescription;
+
+          console.log(showDescription)
+          vm.$set(vm.prizes[prizeIndex].submissions[submissionIndex], 'showDescription', showDescription);
         }
       },
       computed: {

@@ -124,7 +124,7 @@
                   <small class="hackathon-countdown text-uppercase">Hackathon Over</small>
                 {% endif %}
               </p>
-              <a href="{% url "sponsors-dashboard" hackathon.slug %}" class="btn btn-gc-blue float-right mr-5">Sponsor dashboard</a>
+              <a href="{% url "sponsors-dashboard" hackathon.slug %}" v-if="isSponsor" class="btn btn-gc-blue float-right mr-5">Sponsor dashboard</a>
             </div>
           </div>
           <div class="col-12 col-xl-10 body hackathon-explorer">
@@ -815,6 +815,7 @@
     <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{orgs|json_script:"sponsor-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
+    {{prize_founders|json_script:"prize-founders"}}
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
@@ -827,6 +828,7 @@
       document.hackathon_id = "{{ hackathon.id | safe }}";
       document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
+      document.prizeFounders = JSON.parse(document.getElementById('prize-founders').textContent);
       document.activePanel = parseInt({{panel | safe}});
       document.chatURL = "{{ chat_url | safe}}";
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();

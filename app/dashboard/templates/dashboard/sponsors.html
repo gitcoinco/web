@@ -156,9 +156,9 @@
                           <b-card-header header-tag="header" class="d-flex align-items-baseline justify-content-between px-4 py-1" role="tab">
                             <div :class="isMobileDevice ? 'mx-3' : ' col-md-5' ">
                               <div>
-                                <h1 class="font-title font-weight-semibold d-inline-block">[[prize.title]]</h1>
-                                <span v-if="!isMobileDevice" class="tag token ml-2">[[prize.value_eth.toFixed(2)]] ETH</span>
-                                <span v-if="!isMobileDevice" class="tag usd">[[prize.values_usdt]] USD</span>
+                                <h1 class="font-title font-weight-semibold d-inline-block">[[`${prize.title.slice(0, 92)}${prize.title.length > 92 ? '...' : ''}`]]</h1>
+                                <span v-if="!isMobileDevice && prize.value_eth.toFixed" class="tag token ml-2">[[prize.value_eth.toFixed(2)]] ETH</span>
+                                <span v-if="!isMobileDevice && prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
                               </div>
                               <a class="font-smaller-2" :href="prize.url">View prize</a><br>
                               <span v-if="isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
@@ -183,9 +183,14 @@
                                   <b-th>Notes</b-th>
                                 </b-thead>
                                 <b-tbody>
-                                  <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="project in prize.submissions">
+                                  <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="(project, projectIndex) in prize.submissions">
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'"><a :href="project.work_url"><span class="gc-text-blue font-weight-semibold">[[project.name]]</span>  <br> <span class="fab fa-github text-black"></span></a> </b-td>
-                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary pr-4'">[[project.summary]]</b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary pr-4'">
+                                      [[getSummary(project)]]
+                                      <button v-if="project.summary.length > 177" @click="toggleSummary(prizeIndex, projectIndex)" class="btn btn-link gc-text-blue py-0 my-0 pl-0 font-smaller-4">
+                                        [[ project.showDescription ? 'Show less'  : 'Show more' ]]
+                                      </button>
+                                    </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 d-flex flex-column'">
                                       <div  class="d-flex mb-2" v-for="profile in project.profiles">
                                         <img height="28" width="28" class="mr-2 rounded-circle" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">

@@ -3612,8 +3612,12 @@ def get_kudos(request):
 
 def hackathon_prizes(request, hackathon=''):
     hackathon_event = get_object_or_404(HackathonEvent,
-                                        slug__iexact=hackathon,
-                                        sponsor_profiles=request.user.profile)
+                                        slug__iexact=hackathon)
+
+    is_founder = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=request.user.profile)
+
+    if not is_founder:
+        raise Http404("You need fund one prize in this hackathon to access the dashboard.")
 
     query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=request.user.profile)
     prizes = []
@@ -3641,10 +3645,14 @@ def hackathon_prizes(request, hackathon=''):
 def dashboard_sponsors(request, hackathon='', panel='prizes'):
     """Handle rendering of HackathonEvents. Reuses the dashboard template."""
 
+    hackathon_event = get_object_or_404(HackathonEvent, slug__iexact=hackathon)
 
-    hackathon_event = get_object_or_404(HackathonEvent,
-                                        slug__iexact=hackathon,
-                                        sponsor_profiles=request.user.profile)
+    is_founder = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=request.user.profile)
+
+    if not is_founder:
+        raise Http404("You need fund one prize in this hackathon to access the dashboard.")
+
+
 
     title = hackathon_event.name.title()
     description = f"{title} | Gitcoin Virtual Hackathon"
@@ -3789,6 +3797,8 @@ def hackathon(request, hackathon='', panel='prizes'):
         'hacker_count': hacker_count,
         'projects_count': projects_count,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
+        'prize_founders': list(
+            Bounty.objects.filter(event=hackathon_event).values_list('bounty_owner_profile__handle', flat=True).distinct()),
         'is_registered': json.dumps(True if is_registered else False),
         'hackathon_not_started': hackathon_not_started,
         'user': request.user,
