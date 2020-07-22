@@ -33,7 +33,7 @@ Vue.mixin({
         return;
       }
 
-      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url.trim())}`;
+      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url.trim())}&duplicates=true`;
 
       vm.$set(vm.errors, 'issueDetails', undefined);
 
@@ -49,6 +49,7 @@ Vue.mixin({
         vm.$set(vm.errors, 'issueDetails', undefined);
       }).catch((err) => {
         console.log(err);
+        vm.form.issueDetails = undefined;
         vm.$set(vm.errors, 'issueDetails', err.responseJSON.message);
       });
 
