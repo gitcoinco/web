@@ -20,7 +20,7 @@
             :class="`form-control d-inline-block ${newPToken.is_valid_name && 'is-invalid' || ''}`"
             id="createPTokenName"
             aria-describedby="tokenName"
-            placeholder="Auryn's Token"
+            placeholder="Your Token"
             required
             v-model="newPToken.name"
           />
@@ -37,7 +37,7 @@
             id="createPTokenSymbol"
             aria-describedby="tokenSymbol"
             required
-            placeholder="AUR"
+            placeholder="TOKN"
             v-model="newPToken.symbol"
           />
           <div class="invalid-feedback">
@@ -70,7 +70,7 @@
             id="createPTokenSupply"
             aria-describedby="tokenSupply"
             required
-            placeholder="10 PROOF"
+            placeholder="10 TOKN"
             v-model="newPToken.supply"
           />
           <br>

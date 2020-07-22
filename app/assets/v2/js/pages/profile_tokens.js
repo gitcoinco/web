@@ -48,7 +48,7 @@ $(document).on('input', '#ptokenRedeemAmount', (event) => {
   event.preventDefault();
   const amount = $(event.target).val();
 
-  $('#ptokenRedeemCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} ${purchaseTokenName}`);
+  $('#ptokenRedeemCost').text(`${(document.current_ptoken_value * parseFloat(amount)).toFixed(2) || 0} ${document.current_ptoken_symbol}`);
   $('#redeem-amount').text(parseFloat(amount));
 });
 
@@ -56,7 +56,7 @@ $(document).on('input', '#ptokenAmount', (event) => {
   event.preventDefault();
   const amount = $(event.target).val();
 
-  $('#ptokenCost').text(`${document.current_ptoken_value * parseFloat(amount) || 0} ${purchaseTokenName}`);
+  $('#ptokenCost').text(`${(document.current_ptoken_value * parseFloat(amount)).toFixed(2) || 0} ${purchaseTokenName}`);
   $('#buy-amount').text(amount);
 });
 
@@ -66,7 +66,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   const amountField = $(form.ptokenRedeemAmount);
   const tos = $(form.ptokenRedeemTerms);
   const redeem_amount = parseFloat(amountField.val());
-  const redeem_description = $('#ptokenRedeemDescription').val()
+  const redeem_description = $('#ptokenRedeemDescription').val();
 
   if (!tos.prop('checked')) {
     event.stopPropagation();
@@ -138,7 +138,9 @@ async function buyPToken(tokenAmount) {
     waitingState(true);
     pToken.methods
       .purchase(amount.toString())
-      .send({ from: user })
+      // We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
+      // that their transaction will fail because the approval tx has not yet been confirmed
+      .send({ from: user, gasLimit: '100000' })
       .on('transactionHash', function(transactionHash) {
 
         purchase_ptoken(
@@ -153,13 +155,15 @@ async function buyPToken(tokenAmount) {
 
         _alert('Saving tx. Please do not leave this page.', 'success', 5000);
 
-        callFunctionWhenTransactionMined(transactionHash, () => {
-          waitingState(false);
-          $('#buyTokenModal').bootstrapModal('hide');
-          $('#buy_ptoken_modal').bootstrapModal('show');
-          $('#buy-amount').text(tokenAmount);
-          $('#buy-tx').prop('href', `https://etherscan.io/tx/${transactionHash}`);
-        });
+        waitingState(false);
+        $('#buyTokenModal').bootstrapModal('hide');
+        $('#buy_ptoken_modal').bootstrapModal('show');
+        $('#buy-amount').text(tokenAmount);
+        const etherscanUrl = network === 'mainnet'
+          ? `https://etherscan.io/tx/${transactionHash}`
+          : `https://${network}.etherscan.io/tx/${transactionHash}`;
+
+        $('#buy-tx').prop('href', etherscanUrl);
       }).on('error', (error, receipt) => {
         waitingState(false);
         console.log(error);
@@ -178,17 +182,18 @@ async function buyPToken(tokenAmount) {
     return;
   }
 
+  waitingState(true);
   indicateMetamaskPopup();
   if (allowance.lt(true_value)) {
-    tokenContract.methods.approve(document.current_ptoken_address, true_value.toString()).send({from: user}).on('transactionHash', function(txnHash) {
-      callFunctionWhenTransactionMined(txnHash, () => {
+    tokenContract.methods.approve(document.current_ptoken_address, true_value.toString())
+      .send({from: user})
+      .on('transactionHash', function(txHash) {
         indicateMetamaskPopup(true);
         purchasePToken();
+      }).on('error', (error, receipt) => {
+        indicateMetamaskPopup(true);
+        console.log(error);
       });
-    }).on('error', (error, receipt) => {
-      indicateMetamaskPopup(true);
-      console.log(error);
-    });
   } else {
     purchasePToken();
   }
@@ -197,14 +202,16 @@ async function buyPToken(tokenAmount) {
 async function requestPtokenRedemption(tokenAmount, redemptionDescription) {
   try {
     const network = checkNetwork();
-    request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network)
-  } catch(err) {
+
+    request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network);
+  } catch (err) {
     handleError(err);
   }
 }
 
 function checkNetwork() {
-  const supportedNetworks = ['rinkeby', 'mainnet'];
+  const supportedNetworks = [ 'rinkeby', 'mainnet' ];
+
   if (!supportedNetworks.includes(document.web3network)) {
     _alert('Unsupported network', 'error');
     throw new Error('Please connect a wallet');
@@ -230,7 +237,7 @@ async function completePtokenRedemption(tokenAmount, redemptionId) {
         complete_redemption(
           redemptionId,
           transactionHash,
-          "pending",
+          'pending',
           network,
           new Date().toISOString()
         );
