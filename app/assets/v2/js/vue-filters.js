@@ -126,3 +126,11 @@ Vue.filter('pluralize', (word, amount, singular, plural) => {
   singular = singular || '';
   return amount !== 1 ? `${word + plural}` : `${word + singular}`;
 });
+
+Vue.filter('decimals', (number, decimals) => {
+  let result;
+
+  decimals = decimals || 2;
+  result = parseFloat(Number(number).toFixed(decimals));
+  return result;
+});
