@@ -32,10 +32,10 @@ Vue.mixin({
         vm.form.issueDetails = undefined;
         return;
       }
+      vm.$delete(vm.errors, 'issueDetails');
 
       const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url.trim())}&duplicates=true`;
 
-      vm.$set(vm.errors, 'issueDetails', undefined);
 
       vm.form.issueDetails = undefined;
       const getIssue = fetchData(apiUrldetails, 'GET');
@@ -46,7 +46,7 @@ Vue.mixin({
         }
 
         vm.form.issueDetails = response;
-        vm.$set(vm.errors, 'issueDetails', undefined);
+        // vm.$set(vm.errors, 'issueDetails', undefined);
       }).catch((err) => {
         console.log(err);
         vm.form.issueDetails = undefined;
@@ -106,6 +106,7 @@ Vue.mixin({
     checkForm: async function(e) {
       let vm = this;
 
+      vm.submitted = true;
       vm.errors = {};
 
       if (!vm.form.keywords.length) {
@@ -132,8 +133,11 @@ Vue.mixin({
       if (!vm.form.permission_type) {
         vm.$set(vm.errors, 'permission_type', 'Select the permission type');
       }
-      if (!vm.checkboxes.terms || !vm.checkboxes.termsPrivacy) {
+      if (!vm.form.terms) {
         vm.$set(vm.errors, 'terms', 'You need to accept the terms');
+      }
+      if (!vm.form.termsPrivacy) {
+        vm.$set(vm.errors, 'termsPrivacy', 'You need to accept the terms');
       }
       if (Object.keys(vm.errors).length) {
         return false;
@@ -587,6 +591,16 @@ Vue.mixin({
     }
   },
   watch: {
+    form: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (this.dirty && this.submitted) {
+          this.checkForm();
+        }
+        this.dirty = true;
+      }
+
+    },
     chainId: async function(val) {
       if (!provider && val === '1') {
         await onConnect();
@@ -622,6 +636,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
         usdFeaturedPrice: 12,
         ethFeaturedPrice: null,
         blockedUrls: document.blocked_urls,
+        dirty: false,
+        submitted: false,
         form: {
           expirationTimeDelta: moment().add(1, 'month').format('MM/DD/YYYY'),
           featuredBounty: false,
