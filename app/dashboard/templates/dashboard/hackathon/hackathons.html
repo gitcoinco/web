@@ -168,7 +168,14 @@
                       Join
                     </a>
                   {% endif %}
-                  {% if event.hackathon.start_date|timesince >= "1 min" %}
+                  {% if event.hackathon.end_date|timesince >= "1 min"%}
+                  <a href="/hackathon/{{ event.hackathon.slug }}/showcase" class="btn button--primary font-caption font-weight-semibold px-2 mb-2 white">
+                    <i class="fas fa-star d-none d-sm-inline" style="font-size:6.5px;position:relative;top:0.2rem;left:0.2rem;"></i>
+                    <i class="fas fa-star mr-1 d-none d-sm-inline"></i>
+                    Showcase
+                  </a>
+                  {% endif %}
+                  {% if event.hackathon.start_date|timesince >= "1 min" and event.hackathon.end_date|timesince <= "1 min"%}
                     <a href="{% url 'hackathon_prizes' event.hackathon.slug %}" class="btn button--secondary font-caption font-weight-semibold px-3 mb-2">
                       <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
                       Prizes
