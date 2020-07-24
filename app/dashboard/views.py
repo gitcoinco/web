@@ -3217,7 +3217,6 @@ def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
 
-    HackathonEvent.objects.filter(end_date__gt=datetime.today())
     suggested_developers = []
     if request.user.is_authenticated:
         subscriptions = request.user.profile.active_subscriptions

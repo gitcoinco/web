@@ -2812,8 +2812,6 @@ class Profile(SuperModel):
         if not self.is_org :
             return TribesSubscription.objects.filter(tribe__in=self.organizations_fk.all()).all()
         return TribesSubscription.objects.filter(tribe=self).all()
-        # return subscriptions
-
 
     @property
     def suggested_bounties(self):
