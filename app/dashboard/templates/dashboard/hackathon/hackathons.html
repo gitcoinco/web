@@ -98,18 +98,19 @@
     </div>
 
     <div class="container">
-      <div class="row justify-content-md-center rounded my-5" style="background-color:#0d023b;">
-        <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe" method="post" id="mc-embedded-subscribe-form" class="col-12 col-md-6 col-xl-7 text-center white py-5 px-5" name="mc-embedded-subscribe-form" target="_blank">
-          <div class="form-row pt-1">
-            <div class="col-9">
-              <input name="EMAIL" id="newsletter-input" class="form-control px-3 font-body" placeholder="Enter your email" required>
-            </div>
+      <div class="row rounded my-5" style="background-color:#0d023b;">
+        <div class="col-12 col-md-6">
+          <img class="pull-left mb-2" style="float:left;" width="49" src="/static/v2/images/hackathon/hackathon-subscribe.png" />
+          <p class="white" style="padding:1.5rem 0 0 4rem;">Subscribe to get the latest hackathon updates</p>
+        </div>
+        <div class="col-12 col-md-6">
+          <form class="form-inline py-3" style="float:right;" action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank">
+            <input name="EMAIL" id="newsletter-input" class="form-control px-3 font-body" style="width: 14rem;" placeholder="Email Address" required>
             <button id="newsletter-subscribe-funder" type="submit" class="button button--primary subscribe ml-lg-2 px-4 font-weight-semibold">
-              <i class="far fa-envelope mr-2"></i>Subscribe
+              Subscribe
             </button>
-          </div>
-          <label for="newsletter-input" class="mt-3 font-weight-semibold font-body text-uppercase">{% trans "Signup to get hackathon updates" %}</label>
-        </form>
+          </form>
+        </div>
       </div>
 
       <div id="tabs" class="row my-4">
