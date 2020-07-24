@@ -4404,19 +4404,6 @@ def get_hackathons(request):
     else:
         params['default_tab'] = 'finished'
 
-    # template needs a value set for the 'featured' key
-    params['featured'] = HackathonEvent.objects.filter(is_featured=True)[0] if \
-        HackathonEvent.objects.filter(is_featured=True).exists() else \
-        False
-
-    if params['featured']:
-        featured = HackathonEvent.objects.filter(is_featured=True)[0]
-        params.update({
-            'featured_conversation': f'hackathon:{featured.pk}' if featured else False,
-            'featured_logo_width': featured.featured_logo_width,
-            'featured_logo_height': featured.featured_logo_height,
-        })
-
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 
 

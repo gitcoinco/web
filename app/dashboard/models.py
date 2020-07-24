@@ -4706,10 +4706,7 @@ class HackathonEvent(SuperModel):
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
-    is_featured = models.BooleanField(help_text=_('Feature this hackathon on the hackathon list page.'), default=False)
-    featured_logo_width = models.PositiveSmallIntegerField(default=316, help_text="Custom image max-width. Default max-width of 316.")
-    featured_logo_height = models.PositiveSmallIntegerField(default=0, help_text="Custom image max-height. Value of 0 removes the attribute from image. Anything above 0 sets the max-height. Field is set to 0 by default.")
-
+    
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
     display_showcase = models.BooleanField(default=False)
