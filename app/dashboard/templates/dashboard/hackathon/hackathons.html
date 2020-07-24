@@ -174,13 +174,13 @@
                     </a>
                   {% endif %}
                   {% if event.hackathon.start_date|timesince >= "1 min" %}
-                    <a href="{% url 'hackathon_prizes' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-2 mb-2">
+                    <a href="{% url 'hackathon_prizes' event.hackathon.slug %}" class="btn button--secondary font-caption font-weight-semibold px-2 mb-2">
                       <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
                       Prizes
                     </a>
                   {% endif %}
                   {% if event.hackathon.show_results %}
-                    <a href="{% url 'hackathon_projects' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-2 mb-2">
+                    <a href="{% url 'hackathon_projects' event.hackathon.slug %}" class="btn button--secondary font-caption font-weight-semibold px-2 mb-2">
                       <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
                       Projects
                     </a>
