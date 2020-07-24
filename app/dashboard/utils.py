@@ -1102,34 +1102,3 @@ def get_hackathon_event(title, event, network):
         ),
         'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
     }
-
-
-def get_tribe(display_name, logo_path, handle):
-    profile = Profile.objects.filter(handle=handle, is_org=True)
-
-    return {
-        'display_name': display_name,
-        'logo_path': logo_path,
-        'members': profile.values_list('follower_count', flat=True).first() or 0,
-        'path': profile.first().absolute_url if profile.exists() else ''
-    }
-
-
-def tribe_fields(network):
-    return {
-        (bounty.org_display_name, bounty.avatar_url, bounty.org_name)
-        for bounty in list(Bounty.objects.current()\
-            .filter(event__isnull=False, network=network)
-        )
-    }
-
-# count distinct hackathon events in which a tribe has participated
-def hackathons_funded(funding_organisation, network, hackathons):
-    return Bounty.objects.current()\
-        .filter(
-            funding_organisation=funding_organisation,
-            network=network,
-            event__in=list(hackathons)
-        )\
-        .distinct('event')\
-        .count()

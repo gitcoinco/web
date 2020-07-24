@@ -120,8 +120,7 @@ from .router import HackathonEventSerializer, HackathonProjectSerializer, Tribes
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
-    release_bounty_to_the_public, sync_payout, web3_process_bounty, get_hackathon_event, get_tribe,
-    tribe_fields, hackathons_funded
+    release_bounty_to_the_public, sync_payout, web3_process_bounty, get_hackathon_event,
 )
 
 logger = logging.getLogger(__name__)
@@ -4319,7 +4318,6 @@ def get_hackathons(request):
     ]
 
     hackathon_events = []
-    tribes = []
 
     if current_hackathon_events.exists():
         for event in current_hackathon_events:
@@ -4337,53 +4335,6 @@ def get_hackathons(request):
             hackathon_events.append(event_dict)
 
 
-    """Popluate tribes for tribes section.
-
-    if there exists current hackathons, then show tribes that have
-    event bounties listed.
-
-    if there are no current hackathons but there exists upcoming hackathons,
-    then show tribes from the most recently active hackthon.
-
-    if there are no current or upcoming hackathons at all, then
-    show the top four tribes defined by order of which tribe has
-    participated in the most number of hackathons.
-    """
-    if current_hackathon_events.exists():
-        for field in tribe_fields(network):
-            tribe_dict = get_tribe(field[0], field[1], field[2])
-            tribes.append(tribe_dict)
-
-    elif upcoming_hackathon_events.exists():
-        most_recent_finished = finished_hackathon_events[0]
-        prize_sponsors = list(Bounty.objects.current()\
-            .filter(event=most_recent_finished, network=network)
-        )
-
-        if prize_sponsors:
-            tribe_dict = get_tribe(
-                prize_sponsors[0].org_display_name,
-                prize_sponsors[0].avatar_url,
-                prize_sponsors[0].org_name
-            )
-            tribes.append(tribe_dict)
-    else:
-        tribes_hackathon_count = [
-            (
-                get_tribe(field[0], field[1], field[2]),
-                hackathons_funded(field[0], network, all_hackathon_events)
-            )
-            for field in tribe_fields(network)
-        ]
-        sorted_tribes_hackathon_count = sorted(
-            tribes_hackathon_count,
-            key=lambda item: item[1],
-            reverse=True
-        )
-
-        for tribe in sorted_tribes_hackathon_count[:4]:
-            tribes.append(tribe[0])
-
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
@@ -4391,7 +4342,6 @@ def get_hackathons(request):
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'tabs': tabs,
         'events': hackathon_events,
-        'tribes': tribes,
     }
 
     if current_hackathon_events.exists():
