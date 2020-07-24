@@ -4814,10 +4814,6 @@ def psave_hackathonevent(sender, instance, **kwargs):
             }
         )
 
-    # only one hackathon event can have the is_featured boolean set to true
-    if instance.is_featured:
-        HackathonEvent.objects.filter(is_featured=True).exclude(pk=instance.pk).update(is_featured=False)
-
 
 
 class HackathonSponsor(SuperModel):
