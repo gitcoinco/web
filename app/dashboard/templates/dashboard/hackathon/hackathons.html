@@ -116,9 +116,9 @@
       <div id="tabs" class="row my-4">
         <div class="container">
           <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-            {% for title, count in tabs %}
+            {% for id, title, count in tabs %}
               <li class="nav-item">
-                <a class="nav-link nav-line {% if title == default_tab %}active{% endif %}" href="#" data-href="{{ title }}" style="{% if title == default_tab %}font-weight: 700;{% endif %}">{{ title|title }} ({{ count }})</a>
+                <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }} ({{ count }})</a>
               </li>
             {% endfor %}
           </ul>

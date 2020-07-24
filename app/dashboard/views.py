@@ -4312,9 +4312,9 @@ def get_hackathons(request):
     network = get_default_network()
 
     tabs = [
-        ('current', current_hackathon_events.count()),
-        ('upcoming', upcoming_hackathon_events.count()),
-        ('finished', finished_hackathon_events.count()),
+        ('current', 'happening now', current_hackathon_events.count()),
+        ('upcoming', 'upcoming', upcoming_hackathon_events.count()),
+        ('finished', 'completed', finished_hackathon_events.count()),
     ]
 
     hackathon_events = []
