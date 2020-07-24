@@ -264,6 +264,33 @@ def render_tip_email(to_email, tip, is_new):
 
     return response_html, response_txt
 
+def render_tribe_hackathon_prizes(hackathon, sponsor, prizes):
+    email_style = 'hackathon'
+    
+    hackathon = {
+        'hackathon': hackathon,
+        'name': hackathon.name,
+        'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+        'url': hackathon.url,
+    }
+    sponsor = {
+        'sponsor': sponsor,
+        'name': sponsor.name,
+        'image_url': sponsor.logo.url if sponsor.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
+    }
+
+    params = {
+        'hackathon': hackathon,
+        'sponsor': sponsor,
+        'prizes': prizes,
+        'email_style': email_style,
+        'hide_bottom_logo': True,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/tribe_hackathon_prizes.html", params))
+    response_txt = render_to_string("emails/tribe_hackathon_prizes.txt", params)
+
+    return response_html, response_txt
 
 def render_request_amount_email(to_email, request, is_new):
 
