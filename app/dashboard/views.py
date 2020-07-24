@@ -4318,8 +4318,6 @@ def get_hackathons(request):
         ('finished', finished_hackathon_events.count()),
     ]
 
-    hackathon_workshops = HackathonWorkshop.objects.all().filter(visible=True)
-
     hackathon_events = []
     tribes = []
 
@@ -4394,7 +4392,6 @@ def get_hackathons(request):
         'tabs': tabs,
         'events': hackathon_events,
         'tribes': tribes,
-        'workshops': hackathon_workshops,
     }
 
     if current_hackathon_events.exists():

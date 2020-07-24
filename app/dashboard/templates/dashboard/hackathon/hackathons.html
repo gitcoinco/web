@@ -217,47 +217,6 @@
         </div>
       </div>
 
-      <div class="row my-4">
-        <div class="container">
-            {% if workshops|length %}
-              <div class="row">
-                <h3 class="text-uppercase font-weight-bolder font-title ml-4">Learn through workshops</h3>
-              </div>
-              <div class="row mx-auto">
-                {% for workshop in workshops %}
-                    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-5 col-xl-4">
-                      <div class="mb-5 mt-5">
-                        <div class="position-relative">
-                          <div class="row">
-                            <div>
-                              <a href="{{ workshop.url }}" target="_blank" style="text-decoration:none;">
-                                <img class="mw-100" src="{{ MEDIA_URL }}{{ workshop.cover }}" alt="Workshop cover" />
-                              </a>
-                            </div>
-                            <div class="speaker-avatar-container">
-                              <a href="/{{ workshop.speaker.handle }}">
-                                <img class="speaker-avatar-img float-right w-100" src="{{ workshop.speaker.avatar_url }}" alt="{{ workshop.speaker.handle }}'s Avatar or Logo" />
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="workshop-title">
-                            <a href="{{ workshop.url }}" target="_blank" style="text-decoration:none;">
-                              <span class="font-weight-bold d-flex font-title mt-1 mb-1" style="color:black;">{{ workshop.name }}</span>
-                            </a>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="small">in {{ workshop.start_date|timeuntil }}</div>
-                        </div>
-                      </div>
-                    </div>
-                {% endfor %}
-              </div>
-            {% endif %}
-        </div>
-      </div>
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
