@@ -122,7 +122,6 @@
           <style>
             #{{event.hackathon.slug}} .card-header {
               background: {{ event.hackathon.background_color }};
-              height: 16rem;
             }
           </style>
 
@@ -133,7 +132,7 @@
               <div class="card-header text-center col-12 col-sm-4 px-0">
                 {% firstof event.hackathon.logo_svg or event.hackathon.logo as logo %}
                 {% if logo %}
-                  <img class="hackathon-card-logo my-3" src="{{ MEDIA_URL }}{{ logo }}" alt="Hackathon logo" />
+                  <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ logo }}" alt="Hackathon logo" />
                 {% else %}
                   <div class="hackathon-card-logo text-center px-3 font-caption">
                     {{ event.hackathon.name }}
