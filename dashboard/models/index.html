@@ -5133,6 +5133,70 @@ one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h2 id="dashboard.models.TribesSubscription">TribesSubscription</h2>
+
+<pre><code class="python">TribesSubscription(self, *args, **kwargs)
+</code></pre>
+
+<p>TribesSubscription(id, created_on, modified_on, expires_on, tribe, plan_type, hackathon_tokens)
+<h3 id="dashboard.models.TribesSubscription.expires_on">expires_on</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.TribesSubscription.get_next_by_created_on">_method</h3>
+
+<pre><code class="python">TribesSubscription._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.TribesSubscription.get_next_by_modified_on">_method</h3>
+
+<pre><code class="python">TribesSubscription._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.TribesSubscription.get_plan_type_display">_method</h3>
+
+<pre><code class="python">TribesSubscription._method(self, *, field=&lt;django.db.models.fields.CharField: plan_type&gt;)
+</code></pre>
+
+<h3 id="dashboard.models.TribesSubscription.get_previous_by_created_on">_method</h3>
+
+<pre><code class="python">TribesSubscription._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.TribesSubscription.get_previous_by_modified_on">_method</h3>
+
+<pre><code class="python">TribesSubscription._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="dashboard.models.TribesSubscription.hackathon_tokens">hackathon_tokens</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.TribesSubscription.id">id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.TribesSubscription.plan_type">plan_type</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.TribesSubscription.plans">plans</h3>
+
+<p>Built-in immutable sequence.</p>
+<p>If no argument is given, the constructor returns an empty tuple.
+If iterable is specified the tuple is initialized from iterable's items.</p>
+<p>If the argument is a tuple, the return value is the same object.
+<h3 id="dashboard.models.TribesSubscription.tribe">tribe</h3></p>
+<p>Accessor to the related object on the forward side of a many-to-one or
+one-to-one (via ForwardOneToOneDescriptor subclass) relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Child.parent</code> is a <code>ForwardManyToOneDescriptor</code> instance.</p>
+<h3 id="dashboard.models.TribesSubscription.tribe_id">tribe_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h2 id="dashboard.models.Profile">Profile</h2>
 
 <pre><code class="python">Profile(self, *args, **kwargs)
@@ -6307,6 +6371,17 @@ many-to-one relation.</p>
 <p>Most of the implementation is delegated to a dynamically defined manager
 class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
 <h3 id="dashboard.models.Profile.stats">stats</h3>
+
+<p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example::</p>
+<pre><code>class Child(Model):
+    parent = ForeignKey(Parent, related_name='children')
+</code></pre>
+<p><code>Parent.children</code> is a <code>ReverseManyToOneDescriptor</code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code>create_forward_many_to_many_manager()</code> defined below.</p>
+<h3 id="dashboard.models.Profile.subscription">subscription</h3>
 
 <p>Accessor to the related objects manager on the reverse side of a
 many-to-one relation.</p>
