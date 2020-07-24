@@ -23,7 +23,6 @@
     {% include 'shared/cards.html' %}
 
     <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
-
     <style>
       .hackathon-logo-svg {
         height: 4.5rem;
@@ -33,6 +32,17 @@
       img.hackathon-card-logo {
         max-height: 8rem;
         max-width: 9rem;
+      }
+
+      @media (max-width: 420px) {
+        .tablist-small {
+          font-size: 0.890rem;
+        }
+      }
+      @media (max-width: 370px) {
+        .tablist-extra-small {
+          font-size: 0.694rem;
+        }
       }
 
       @media (min-width: 1200px) {
@@ -115,7 +125,7 @@
 
       <div id="tabs" class="row my-4">
         <div class="container">
-          <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+          <ul class="nav nav-tabs mt-3 tablist-small tablist-extra-small" id="myTab" role="tablist">
             {% for id, title in tabs %}
               <li class="nav-item">
                 <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }}</a>
