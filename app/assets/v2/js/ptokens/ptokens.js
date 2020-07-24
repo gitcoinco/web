@@ -70,13 +70,14 @@ function request_redemption(tokenId, total, redemptionDescription, network) {
   });
 }
 
-function complete_redemption(redemptionId, txid, tx_status, network, web3_created) {
+function complete_redemption(redemptionId, txid, tx_status, address, network, web3_created) {
   return fetchData(`/ptokens/redemptions/${redemptionId}/`, 'POST', {
     'event_name': 'complete_redemption_ptoken',
     'web3_created': web3_created,
     'tx_status': tx_status,
     'txid': txid,
-    'network': network
+    'network': network,
+    'address': address
   });
 }
 

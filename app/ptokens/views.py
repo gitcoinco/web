@@ -348,6 +348,7 @@ def ptoken_redemption(request, redemptionId):
             kwargs['redemption_state'] = 'waiting_complete'
             kwargs['tx_status'] = request.POST.get('tx_status')
             kwargs['txid'] = request.POST.get('txid')
+            kwargs['redemption_requester_address'] = request.POST.get('address')
             metadata['redemption'] = redemption.id
         elif event_name == 'tx_update':
             kwargs['tx_status'] = request.POST.get('tx_status')

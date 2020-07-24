@@ -480,7 +480,7 @@ Vue.mixin({
     },
     async complete(redemptionId, tokenAmount, tokenAddress) {
       const vm = this;
-      
+
       try {
         const network = vm.checkNetwork();
         const amount = web3.utils.toWei(String(tokenAmount));
@@ -498,6 +498,7 @@ Vue.mixin({
               redemptionId,
               transactionHash,
               TX_STATUS_PENDING,
+              user,
               network,
               new Date().toISOString()
             );
