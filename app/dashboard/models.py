@@ -4702,11 +4702,12 @@ class HackathonEvent(SuperModel):
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
     sponsor_profiles = models.ManyToManyField('dashboard.Profile', blank=True, limit_choices_to={'data__type': 'Organization'})
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
+    hackathon_summary = models.CharField(max_length=280, blank=True, help_text=_('280 char summary that shows up on hackathon cards on the hackathon list page'))
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
-    
+
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
     display_showcase = models.BooleanField(default=False)
