@@ -4739,6 +4739,7 @@ def create_bounty_v1(request):
     }
 
     user = request.user if request.user.is_authenticated else None
+    network = request.POST.get("network", 'mainnet')
 
     if not user:
         response['message'] = 'error: user needs to be authenticated to create bounty'
@@ -4755,7 +4756,7 @@ def create_bounty_v1(request):
         return JsonResponse(response)
 
     github_url = request.POST.get("github_url", None)
-    if Bounty.objects.filter(github_url=github_url).exists():
+    if Bounty.objects.filter(github_url=github_url, network=network).exists():
         response = {
             'status': 303,
             'message': 'bounty already exists for this github issue'

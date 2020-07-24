@@ -585,7 +585,7 @@
                   </div>
                   <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
                     <div class="fee-circle text-center">
-                      <p class="font-title mb-0"><span id="fee-amount">[[ totalAmount.totalFee ]]</span> <span id="fee-token">ETH</span></p>
+                      <p class="font-title mb-0"><span id="fee-amount">[[ totalAmount.totalFee ]]</span> <span v-if="form.token" id="fee-token">[[form.token.symbol]]</span></p>
                       <p class="font-body font-weight-semibold">
                         (<span class="fee-percentage">[[bountyFee]]</span>%)
                       </p>

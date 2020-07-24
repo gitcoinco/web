@@ -34,8 +34,7 @@ Vue.mixin({
       }
       vm.$delete(vm.errors, 'issueDetails');
 
-      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url.trim())}&duplicates=true`;
-
+      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url.trim())}&duplicates=true&network=${vm.network}`;
 
       vm.form.issueDetails = undefined;
       const getIssue = fetchData(apiUrldetails, 'GET');

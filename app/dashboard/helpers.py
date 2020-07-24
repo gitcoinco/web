@@ -186,6 +186,7 @@ def issue_details(request):
     url_val = URLValidator()
     hackathon_slug = request.GET.get('hackathon_slug')
     duplicates = request.GET.get('duplicates', False)
+    network = request.GET.get('network', 'mainnet')
 
 
     if hackathon_slug:
@@ -197,7 +198,7 @@ def issue_details(request):
             return JsonResponse({'status':'false','message':message}, status=404)
 
     if duplicates:
-        if Bounty.objects.filter(github_url=url).exists():
+        if Bounty.objects.filter(github_url=url, network=network).exists():
             message = 'Bounty already exists for this github issue'
             response = {
                 'status': 422,
