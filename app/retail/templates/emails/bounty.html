@@ -57,11 +57,14 @@
     <li style="list-style:none; margin-left: 0;">
       {% if bounty.avatar_url %}
         <img style="border-radius: 20px; display: block; margin-left: auto; margin-right: auto; margin-bottom: 0.5em" src="{{ bounty.avatar_url }}" width=50px height=50px>
-        <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ bounty.org_name }}</a>
+        {% if not prize %}
+          <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ bounty.org_name }}</a>
+        {% endif %}
       {% else %}
         * <strong>{{ bounty.org_name }}</strong>
       {% endif %}
         <p style="margin-bottom: 10px; margin-top:0">
+          {% if prize %}<b>{% endif %}
           {% if primer %}
             {{ primer }}
           {% elif bounty.title %}
@@ -70,6 +73,7 @@
             {% endif %}
             {{ bounty.title }}
           {% endif %}
+          {% if prize %}</b>{% endif %}
         </p>
       </li>
     </ul>
@@ -137,5 +141,5 @@
           </p>
         {%  endif %}
       {% endif %}
-    {% include 'emails/shared_bounty_actions.html' %}
+    {% include 'emails/shared_bounty_actions.html' with prize=prize %}
 </div>
