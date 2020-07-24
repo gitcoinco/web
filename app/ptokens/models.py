@@ -227,7 +227,7 @@ class PersonalToken(SuperModel):
             logs = contract.events.NewPToken().processReceipt(receipt)
             self.token_address = logs[0].args.token
 
-        self.ptoken.update_token_status()
+        self.update_token_status()
 
 
 class RedemptionToken(SuperModel):
