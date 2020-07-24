@@ -185,6 +185,7 @@ def issue_details(request):
     url = request.GET.get('url')
     url_val = URLValidator()
     hackathon_slug = request.GET.get('hackathon_slug')
+    duplicates = request.GET.get('duplicates', False)
 
 
     if hackathon_slug:
@@ -194,6 +195,15 @@ def issue_details(request):
         if org_issue not in sponsor_profiles:
             message = 'This issue is not under any sponsor repository'
             return JsonResponse({'status':'false','message':message}, status=404)
+
+    if duplicates:
+        if Bounty.objects.filter(github_url=url).exists():
+            message = 'Bounty already exists for this github issue'
+            response = {
+                'status': 422,
+                'message': message
+            }
+            return JsonResponse(response, status=422)
 
     try:
         url_val(url)

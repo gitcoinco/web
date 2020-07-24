@@ -124,7 +124,7 @@ const renderPopOverData = function(data) {
 
   const renderPie = function(dataGraph) {
     return `
-    <div class="d-flex flex-column mb-3 font-smaller-2">
+    <div class="flex-column mb-3 font-smaller-2">
       <b class="mb-2">${dataGraph.strings.type}</b>
       <div class="d-flex align-items-center">
         <svg width="100%" height="100%" viewBox="0 0 42 42" class="user-card_pie-chart" style="border-radius: 50px;">

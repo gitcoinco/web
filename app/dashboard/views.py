@@ -3217,9 +3217,9 @@ def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
 
-    events = HackathonEvent.objects.filter(end_date__gt=datetime.today())
     suggested_developers = []
     if request.user.is_authenticated:
+        subscriptions = request.user.profile.active_subscriptions
         suggested_developers = BountyFulfillment.objects.prefetch_related('bounty')\
             .filter(
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
@@ -3230,7 +3230,7 @@ def new_bounty(request):
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
-        'events': events,
+        'subscriptions': subscriptions,
         'suggested_developers': suggested_developers
     }
 
@@ -3261,7 +3261,7 @@ def new_bounty(request):
         pass
 
     params['avatar_url'] = request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png'))
-    return TemplateResponse(request, 'bounty/fund.html', params)
+    return TemplateResponse(request, 'bounty/new_bounty.html', params)
 
 
 @login_required
