@@ -164,7 +164,7 @@
                   <time class="font-weight-bold" datetime="{{ event.hackathon.end_date|date:'c' }}">{{ event.hackathon.end_date|date:"m/d/Y" }}</time>
                 </div>
                 <div class="mt-3 hackathon-summary">
-                  <p>{{ event.hackathon_summary }}</p>
+                  <p>{{ event.hackathon.hackathon_summary }}</p>
                 </div>
                 <div class="mt-3 hackathon-actions">
                   {% if event.hackathon.end_date|timesince <= "1 min" %}
