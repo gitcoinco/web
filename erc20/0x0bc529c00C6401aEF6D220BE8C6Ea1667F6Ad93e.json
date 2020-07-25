@@ -2,10 +2,10 @@
   "symbol": "YFI",
   "address": "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e",
   "overview":{
-        "en": "YFI Token",
-        "zh": "YFI Token"
+        "en": "YFI is the governance token for Yearn.Finance",
+        "zh": "YFI 是 DeFi 聚合收益协议 yearn.finance 发行的治理代币"
   },
-  "email": "github@yearn.finance",
+  "email": "andre.cronje@yearn.finance",
   "website": "https://docs.yearn.finance",
   "state": "NORMAL",
   "links": {
