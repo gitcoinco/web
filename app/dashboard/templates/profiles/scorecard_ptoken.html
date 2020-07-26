@@ -18,9 +18,12 @@
             <b>{{ ptoken.value }} DAI</b> per token
             <div><small>Worth one hour of {{profile.handle}}'s time</small></div>
         </li>
-        <li><b>{{ ptoken.total_minted }}</b> Total Supply</li>
-        <li><b>{{ total_purchases }}</b> Purchases</li>
-        <li><b>{{ total_redemptions }}</b> Redemptions</li>
+        <li>
+          <b>{{ ptoken.total_minted }}</b> Total Supply
+          <div><small>{{ ptoken.total_available }} Available</small></div>
+        </li>
+        <li><b>{{ ptoken.purchases }}</b> Purchases</li>
+        <li><b>{{ ptoken.redemptions }}</b> Redemptions</li>
         <li><b>{{ total_holders }}</b> Holders</li>
         <li>
           <!-- todo: add holders with holders -->

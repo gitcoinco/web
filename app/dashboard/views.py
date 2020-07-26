@@ -35,7 +35,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Avg, Count, Prefetch, Q
+from django.db.models import Avg, Count, Prefetch, Q, Sum
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
@@ -2565,6 +2565,8 @@ def get_profile_tab(request, profile, tab, prev_context):
     context['portfolio_count'] = len(context['portfolio']) + profile.portfolio_items.cache().count()
     context['projects_count'] = HackathonProject.objects.filter( profiles__id=profile.id).cache().count()
     context['my_kudos'] = profile.get_my_kudos.cache().distinct('kudos_token_cloned_from__name')[0:7]
+    context['projects_count'] = HackathonProject.objects.filter(profiles__id=profile.id).cache().count()
+    context['personal_tokens_count'] = PurchasePToken.objects.filter(token_holder_profile_id=profile.id).distinct('ptoken').cache().count()
     # specific tabs
     if tab == 'activity':
         all_activities = ['all', 'new_bounty', 'start_work', 'work_submitted', 'work_done', 'new_tip', 'receive_tip', 'new_grant', 'update_grant', 'killed_grant', 'new_grant_contribution', 'new_grant_subscription', 'killed_grant_contribution', 'receive_kudos', 'new_kudos', 'joined', 'updated_avatar']
@@ -2716,7 +2718,9 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['sent_kudos'] = sent_kudos[0:kudos_limit]
         context['kudos_count'] = owned_kudos.count()
         context['sent_kudos_count'] = sent_kudos.count()
-
+    elif tab == 'ptokens':
+        tokens_list = PurchasePToken.objects.filter(token_holder_profile_id=profile.id).distinct('ptoken').values_list('ptoken', flat=True)
+        context['buyed_ptokens'] = PersonalToken.objects.filter(pk__in=tokens_list)
     elif tab == 'ratings':
         context['feedbacks_sent'] = [fb for fb in profile.feedbacks_sent.all() if fb.visible_to(request.user)]
         context['feedbacks_got'] = [fb for fb in profile.feedbacks_got.all() if fb.visible_to(request.user)]
@@ -2783,7 +2787,7 @@ def profile(request, handle, tab=None):
     disable_cache = False
 
     # make sure tab param is correct
-    all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
+    all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'ptokens']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2864,6 +2868,8 @@ def profile(request, handle, tab=None):
             active_tab = 2
         elif tab == "bounties":
             active_tab = 3
+        elif tab == "ptokens":
+            active_tab = 4
         context['active_panel'] = active_tab
 
         # record profile view
@@ -2944,6 +2950,10 @@ def profile(request, handle, tab=None):
                                                                           redemption_state='completed').count()
             context['total_holders'] = len(ptoken.get_holders())
             context['current_hodling'] = ptoken.get_hodling_amount(request.user.profile)
+            context['locked_amount'] = RedemptionToken.objects.filter(ptoken=ptoken,
+                                                                      redemption_requester=request.user.profile,
+                                                                      redemption_state__in=['request', 'accepted', 'waiting_complete']).aggregate(locked=Sum('total'))['locked'] or 0
+            context['available_to_redeem'] = context['current_hodling'] - context['locked_amount']
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
