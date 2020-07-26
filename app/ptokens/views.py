@@ -439,3 +439,26 @@ def ptoken_purchases(request, tokenId):
                 token_holder_profile=request.user.profile
             )]
         })
+
+@csrf_exempt
+def process_ptokens(self):
+    non_terminal_states = ['pending', 'na', 'unknown']
+    for ptoken in PersonalToken.objects.filter(tx_status__in=non_terminal_states):
+        ptoken.update_tx_status()
+        print(f"syncing ptoken / {ptoken.pk} / {ptoken.network}")
+        ptoken.save()
+
+    for purchase in PurchasePToken.objects.filter(tx_status__in=non_terminal_states):
+        purchase.update_tx_status()
+        print(f"syncing purchase / {purchase.pk} / {purchase.network}")
+        purchase.save()
+
+    for redemption in RedemptionToken.objects.filter(tx_status__in=non_terminal_states):
+        redemption.update_tx_status()
+        print(f"syncing ptoken / {redemption.pk} / {redemption.network}")
+        redemption.save()
+
+    return JsonResponse({
+        'status': 200
+    })
+    

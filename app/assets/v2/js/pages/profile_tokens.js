@@ -143,6 +143,7 @@ async function buyPToken(tokenAmount) {
       .send({ from: user, gasLimit: '100000' })
       .on('transactionHash', function(transactionHash) {
 
+        _alert('Saving transaction. Please do not leave this page.', 'success', 5000);
         purchase_ptoken(
           document.current_ptoken_id,
           tokenAmount,
@@ -152,8 +153,11 @@ async function buyPToken(tokenAmount) {
           network,
           tokenDetails
         );
+        console.log('Purchase saved as pending transaction in database');
 
-        _alert('Saving tx. Please do not leave this page.', 'success', 5000);
+        const successMsg = 'Congratulations, your token purchsae was successful!';
+        const errorMsg = 'Oops, something went wrong purchasing the token. Please try again or contact support@gitcoin.co';
+        updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
 
         waitingState(false);
         $('#buyTokenModal').bootstrapModal('hide');
@@ -219,37 +223,6 @@ function checkNetwork() {
   return document.web3network;
 }
 
-// tokenAmount input should be in human-readable form, e.g. "5"
-async function completePtokenRedemption(tokenAmount, redemptionId) {
-  try {
-    const network = checkNetwork();
-    const amount = web3.utils.toWei(String(tokenAmount));
-    const [user] = await web3.eth.getAccounts();
-
-    indicateMetamaskPopup();
-    const pToken = await new web3.eth.Contract(
-      document.contxt.ptoken_abi,
-      document.current_ptoken_address
-    );
-
-    pToken.methods.redeem(amount).send({ from: user })
-      .on('transactionHash', function(transactionHash) {
-        complete_redemption(
-          redemptionId,
-          transactionHash,
-          'pending',
-          network,
-          new Date().toISOString()
-        );
-      }).on('error', (error, receipt) => {
-        console.log(error);
-        handleError(error);
-      });
-  } catch (err) {
-    handleError(err);
-  }
-}
-
 function handleError(err) {
   console.error(err);
   let message = 'There was an error';
@@ -263,4 +236,23 @@ function handleError(err) {
 
   _alert(message, 'error');
   indicateMetamaskPopup(true);
+}
+
+/**
+ * Waits for the provided transaction to be mined, and after mining triggers a database update.
+ * Displays the provided success and error messages on success/failure
+ */
+async function updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg) {
+  console.log('Waiting for transaction to be mined...');
+  callFunctionWhenTransactionMined(transactionHash, async () => {
+    console.log("Transaction mined, updating database...");
+    const res = await update_ptokens(); // update all ptokens in DB
+    if (res.status === 200) {
+      _alert(successMsg, 'success');
+      console.log(successMsg);
+    } else {
+      _alert(errorMsg, 'error');
+      console.error(errorMsg);
+    }
+  });
 }
