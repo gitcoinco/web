@@ -1,14 +1,19 @@
 import re
 import time
+from random import random, shuffle
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
 import metadata_parser
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
 from app.services import RedisService
 from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
@@ -299,11 +304,33 @@ def get_param_metadata(request, tab):
     return title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link
 
 
+@login_required
+@require_http_methods(['PUT'])
+@csrf_exempt
+def ignored_suggested_tribe(request, tribeId):
+    profile = request.user.profile
+    tribe_profile = get_object_or_404(Profile, handle__iexact=tribeId)
+
+    profile.ignore_tribes.append(tribe_profile.id)
+    profile.save()
+
+    return JsonResponse({
+       'tribes': get_suggested_tribes(request)
+    })
+
+
 def get_suggested_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
-        handles = TribeMember.objects.filter(profile=request.user.profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-follower_count')[:5]
+        profile = request.user.profile
+        handles = TribeMember.objects.filter(profile=profile).distinct('org').values_list('org__handle', flat=True)
+        tribes = Profile.objects.exclude(pk__in=profile.ignore_tribes).order_by('-follower_count')
+        count = tribes.count()
+
+        if count > 5:
+            index_shuffle = list(range(count if count < 60 else 60))
+            shuffle(index_shuffle)
+            tribes = [tribes[index] for index in index_shuffle[:5]]
 
         for profile in tribes:
             handle = profile.handle

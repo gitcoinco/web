@@ -147,6 +147,11 @@ urlpatterns = [
         name='get_suggested_contributors'
     ),
     url(
+        r'^api/v0.1/ignore_suggested_tribes/(?P<tribeId>.*)',
+        townsquare.views.ignored_suggested_tribe,
+        name='ignore_suggested_tribes'
+    ),
+    url(
         r'^api/v0.1/social_contribution_email',
         dashboard.views.social_contribution_email,
         name='social_contribution_email'
