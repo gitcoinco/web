@@ -1,0 +1,17 @@
+{
+    "symbol": "OETH",
+    "address": "0xeE6bc13dDCcB21C0A8A328c208B549690e8b3BcB",
+    "overview":{
+          "en": "OETH is committed to promoting the development and improvement of the distributed financial DeFi ecosystem. Based on the three major businesses of banking, securities and insurance in the traditional financial sector, it introduces the modern financial troika into the blockchain field to create on-chain finance and build efficient Operating distributed financial DeFi ecological infrastructure.",
+          "zh": "OETH致力于推动分布式金融DeFi生态的发展和完善，基于传统金融领域银行、证券和保险三大业务的基础上，将现代金融三驾马车引入区块链领域，打造链上金融，进而搭建高效运行的分布式金融DeFi生态基础设施。"
+    },
+    "email": "oethcoin0725@gmail.com",
+    "website": "http://www.imoeth.io/",
+    "whitepaper": "http://www.imoeth.io/OETH_White_Paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-07-21",
+    "links": {
+        "telegram": "https://t.me/Oeth8",
+        "twitter": "https://twitter.com/OETH10"
+      }
+}
