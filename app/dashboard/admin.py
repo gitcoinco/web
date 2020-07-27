@@ -30,7 +30,7 @@ from .models import (
     BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
     HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Interest, Investigation, LabsResearch,
     ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification, ProfileView, Question,
-    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, UserAction, UserVerificationModel,
+    SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription, UserAction, UserVerificationModel,
 )
 
 
@@ -483,6 +483,11 @@ class TribeMemberAdmin(admin.ModelAdmin):
     list_display = ['pk', 'profile', 'org', 'leader', 'status']
 
 
+class TribesSubscriptionAdmin(admin.ModelAdmin):
+    raw_id_fields = ['tribe']
+    list_display = ['id', 'plan_type', 'tribe', 'hackathon_tokens', 'expires_on']
+
+
 class FundRequestAdmin(admin.ModelAdmin):
     list_display = ['id', 'profile', 'requester', 'network', 'token_name', 'amount',
                     'comments', 'address', 'tip', 'created_on']
@@ -591,6 +596,7 @@ admin.site.register(Investigation, InvestigationAdmin)
 admin.site.register(UserVerificationModel, VerificationAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(TribeMember, TribeMemberAdmin)
+admin.site.register(TribesSubscription, TribesSubscriptionAdmin)
 admin.site.register(FundRequest, FundRequestAdmin)
 admin.site.register(Poll, PollsAdmin)
 admin.site.register(Question, QuestionsAdmin)
