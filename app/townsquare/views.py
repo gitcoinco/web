@@ -324,7 +324,7 @@ def get_suggested_tribes(request):
     if request.user.is_authenticated:
         profile = request.user.profile
         handles = TribeMember.objects.filter(profile=profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.exclude(pk__in=profile.ignore_tribes).order_by('-follower_count')
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).exclude(pk__in=profile.ignore_tribes).order_by('-follower_count')
         count = tribes.count()
 
         if count > 5:
