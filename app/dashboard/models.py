@@ -68,6 +68,7 @@ from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
 
+from townsquare.models import PinnedPost, Offer
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
 
@@ -382,6 +383,10 @@ class Bounty(SuperModel):
     attached_job_description = models.URLField(blank=True, null=True, db_index=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
+    hypercharge_mode = models.BooleanField(
+        default=True, help_text=_('This bounty will be part of the hypercharged bounties')
+    )
+    hyper_next_publication = models.DateTimeField(null=True, blank=True)
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
 
@@ -1296,6 +1301,27 @@ class Bounty(SuperModel):
                     return f'{hours} hours'
         else:
             return ''
+
+
+@receiver(post_save, sender=Bounty, dispatch_uid="post_bounty")
+def post_save_bounty(sender, instance, created, **kwargs):
+    if instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) is False:
+        instance.metadata['hyper_tweet_counter'] = 0
+        title = ''
+
+        # Feature bounty on hackathon/prize explorer
+        instance.is_featured = True
+        instance.featuring_date = timezone.now()
+        instance.hyper_next_publication = timezone.now()
+
+        # Publish and pin on townsaquare
+        profile = Profile.objects.filter(handle='gitcoinbot').first()
+        # activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
+        activity = Activity.objects.get(bounty=instance)
+        pinned_post = PinnedPost.objects.create(
+            what=title, defaults={"activity": activity, "user": profile}
+        )
+
 
 
 class BountyEvent(SuperModel):

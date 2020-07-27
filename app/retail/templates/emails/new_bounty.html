@@ -33,7 +33,7 @@
     margin-bottom: 5px;
     margin-top: 1.2em;
   }
-  
+
   .upcoming-events-container p,
   .upcoming-events-container a {
     margin: 0;
@@ -63,11 +63,11 @@
     margin-top: 3px;
   }
   .arrow-up{
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
-  border-bottom: 15px solid #ddd; 
+  border-bottom: 15px solid #ddd;
   margin-left: auto;
   margin-right: auto;
 }
@@ -97,11 +97,21 @@
 <p style="margin: 5px; border-radius: 5px;">
   {{email_announcements.desc|safe}}
 </p>
-</div>  
+</div>
 
 <HR>
 {% endif %}
+{% if featured_bounties %}
+  <div style="margin-bottom: 5em;">
+    <h3 class="no-subtitle">{% trans "🏆 Featured bounties for you!" %}</h3>
 
+    {% for bounty in featured_bounties %}
+      {% include 'emails/bounty.html' with bounty=bounty count=forloop.counter small=1%}
+    {% endfor %}
+
+  </div>
+  <hr>
+{% endif %}
 {% if chats_count %}
 
 <h3 class="no-subtitle" style="margin-top: 15px;">💬 {{chats_count}} New Chat Messages</h3>
@@ -134,7 +144,7 @@
   <h3 class="no-subtitle" style="margin-top: 15px;">{% trans "💬Town Square Posts You've Missed" %}</h3>
   <div class="container" style="text-align: left; padding: 20px 10px">
     <div class="col-12 col-md-10 col-lg-8 mx-auto">
-      {% include 'shared/activity_container.html' with hide_loading=1 for_email=1 %} 
+      {% include 'shared/activity_container.html' with hide_loading=1 for_email=1 %}
     </div>
   <div style="text-align: center;">
     {% include 'emails/shared_activities_actions.html' with action='custom' action_copy='View More' action_url='/townsquare' %}
@@ -196,7 +206,7 @@
 
 <a href={{base_url}}>
 <img style="width: 306px; height: 80px; margin-top: 5px; margin-bottom: 5px;" src={{base_url}}static/v2/images/offer.gif>
-</a> 
+</a>
 <BR>
 <a href={{base_url}}>
 This action expires at end of day, so act soon!
