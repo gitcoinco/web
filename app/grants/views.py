@@ -27,6 +27,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.humanize.templatetags.humanize import intword
 from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Avg, Count, Max, Q
@@ -75,12 +76,6 @@ from web3 import HTTPProvider, Web3
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
-clr_matching_banners_style = 'pledging'
-matching_live = '(💰$175K Match LIVE!) '
-live_now = '❇️ LIVE NOW! Up to $175k Matching Funding on Gitcoin Grants'
-matching_live_tiny = '💰'
-
-total_clr_pot = 175000
 # clr_active = False
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
@@ -97,12 +92,6 @@ round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
 round_types = ['media', 'tech', 'change']
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
-
-# if not clr_active:
-#     clr_matching_banners_style = 'results'
-#     matching_live = ''
-#     matching_live_tiny = ''
-#     live_now = 'Gitcoin Grants helps you find funding for your projects'
 
 
 def get_stats(round_type):
@@ -295,12 +284,14 @@ def grants_by_grant_type(request, grant_type):
     _grants = Grant.objects.filter(
         network=network, hidden=False
     ).keyword(keyword)
+
     try:
         _grants = _grants.order_by(sort, 'pk')
         ____ = _grants.first()
     except Exception as e:
         print(e)
         return redirect('/grants')
+
     if state == 'active':
         _grants = _grants.active()
     if keyword:
@@ -339,9 +330,7 @@ def grants_by_grant_type(request, grant_type):
         current_partners_fund += partner.amount
 
     grant_amount = 0
-    grant_stats = Stat.objects.filter(
-        key='grants',
-        ).order_by('-pk')
+    grant_stats = Stat.objects.filter(key='grants').order_by('-pk')
     if grant_stats.exists():
         grant_amount = lazy_round_number(grant_stats.first().val)
 
@@ -369,7 +358,6 @@ def grants_by_grant_type(request, grant_type):
         sub_category[_keyword] = [tuple[0] for tuple in basic_grant_categories(_keyword)]
         sub_categories.append(sub_category)
 
-    title = matching_live + str(_('Grants'))
     cht = []
     chart_list = ''
 
@@ -396,6 +384,23 @@ def grants_by_grant_type(request, grant_type):
 
         grant.clr_round_num = clr_round.round_num if clr_round else None
 
+
+    # populate active round info
+    active_rounds = all_clr_rounds.filter(is_active=True)
+    total_clr_pot = None
+    if active_rounds:
+        for active_round in active_rounds:
+            clr_round_amount = active_round.total_pot
+            total_clr_pot = total_clr_pot + clr_round_amount if total_clr_pot else clr_round_amount
+
+    if total_clr_pot:
+        int_total_clr_pot = intword(total_clr_pot)
+        live_now = f'❇️ LIVE NOW! Up to ${int_total_clr_pot} Matching Funding on Gitcoin Grants' if total_clr_pot > 0 else ""
+        title = f'(💰${int_total_clr_pot} Match LIVE!) Grants'
+    else:
+        live_now = 'Gitcoin Grants helps you find funding for your projects'
+        title = 'Grants'
+
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -412,7 +417,6 @@ def grants_by_grant_type(request, grant_type):
         'cht': cht,
         'chart_list': chart_list,
         'bottom_back': bottom_back,
-        'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,
         'sub_categories': sub_categories,
         'prev_grants': prev_grants,
@@ -632,16 +636,19 @@ def grant_details(request, grant_id, grant_slug):
 
     clr_round = GrantCLR.objects.filter(grant_type=grant.grant_type, is_active=True).last()
     is_clr_active = True if clr_round else False
-    if not is_clr_active:
+    title = grant.title + " | Grants"
+
+    if is_clr_active:
+        title = '💰 ' + title
+    else:
         clr_round = GrantCLR.objects.filter(grant_type=grant.grant_type).last()
 
     params = {
         'active': 'grant_details',
-        'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
         'sybil_profiles': sybil_profiles,
         'tab': tab,
-        'title': matching_live_tiny + grant.title + " | Grants",
+        'title': title,
         'card_desc': grant.description,
         'avatar_url': grant.logo.url if grant.logo else None,
         'subscriptions': subscriptions,

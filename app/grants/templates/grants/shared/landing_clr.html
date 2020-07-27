@@ -18,7 +18,7 @@
                 {% endif %}
               </div>
               <div class="col-12">
-                <ul class="nav nav-tabs my-0 font-smaller-1 px-4" role="tablist">
+                <ul class="nav nav-tabs my-0 font-caption px-4 d-inline-flex" role="tablist">
                   {% if current_partners %}
                     <li class="nav-item">
                       <a class="nav-link nav-line active px-0 pb-1" id="currentpartners-tab"
@@ -86,12 +86,12 @@
                       {% endfor %}
                     </div>
                     {% endif %}
-                    <p class="tab-pane fade show active my-3" role="tabpanel">
-                      <a class="btn btn-gc-blue font-caption font-weight-semibold" href="mailto:founders@gitcoin.co">
-                        {% trans 'Become a Matching Partner' %}
-                      </a>
-                    </p>
                   </div>
+                  <p class="tab-pane fade show active my-3" role="tabpanel">
+                    <a class="btn btn-gc-blue font-smaller-4 font-weight-semibold" href="mailto:founders@gitcoin.co">
+                      {% trans 'Become a Matching Partner' %}
+                    </a>
+                  </p>
                 </div>
               </div>
             {% endif %}
