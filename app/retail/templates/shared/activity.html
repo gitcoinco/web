@@ -21,8 +21,8 @@
   <div class="activity_main row bg_{{ row.activity_type }}">
     <div class="col-2 p-0">
       <div class="activity-avatar">
-        <a href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
-          <img class="avatar rounded-circle" src="/dynamic/avatar/{{row.profile.handle}}"/>
+        <a id="profile-avatar-link" style="display:flex; width: 6.1rem; height: 6.1rem; margin-left: auto; margin-right: auto;" href="{{ row.profile.url }}" data-toggle="tooltip" title="@{{row.profile.handle}}">
+          <img class="avatar rounded-circle" src="https://gitcoin.co/dynamic/avatar/{{row.profile.handle}}"/>
         </a>
         <div class="position-relative">
           {% if row.secondary_avatar_url %}
@@ -72,7 +72,9 @@
              <i class="far font-body fa-lightbulb gc-text-blue"></i>
              <span>Looking for a Project</span>
            </span>
-         {% elif row.hackathonevent %}
+           <br>
+         {% endif %}
+         {% if row.hackathonevent %}
             <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag" data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
             <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" data-toggle="tooltip" title="Filter {{ row.hackathonevent.name }} Posts">
               <i class="fas fa-filter"></i>
