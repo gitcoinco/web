@@ -281,50 +281,36 @@ Vue.mixin({
         handleError(err);
       }
     },
-    updatePToken(response) {
-      let vm = this;
+    async checkTokenStatus(successMsg, errorMsg) {
+      const res = await update_ptokens(); // update all ptokens in DB
 
-      vm.pToken = Object.assign({}, {
-        id: response.id,
-        name: response.name,
-        symbol: response.symbol,
-        price: response.price,
-        supply: response.supply,
-        address: response.address,
-        available: response.available,
-        purchases: response.purchases,
-        redemptions: response.redemptions,
-        tx_status: response.tx_status
-      });
+      if (res.status === 200) {
+        _alert(successMsg, 'success');
+        try {
+          // If this user has a ptoken, get the latest info for the frontend
+          const myToken = await get_personal_token();
+          document.ptoken = Object.assign({}, {
+            id: myToken.id,
+            name: myToken.name,
+            symbol: myToken.symbol,
+            price: myToken.price,
+            supply: myToken.supply,
+            address: myToken.address,
+            available: myToken.available,
+            purchases: myToken.purchases,
+            redemptions: myToken.redemptions,
+            tx_status: myToken.tx_status
+          });    
+          this.pToken = document.ptoken
+          console.log(successMsg, myToken); // they have a token, so log those details
+        } catch (err) {
+          console.log(successMsg); // they don't have a token, so just log success message
+        } 
+      } else {
+        _alert(errorMsg, 'error');
+      }
     },
-    checkTokenStatus() {
-      let vm = this;
 
-      const token_status = get_personal_token();
-
-      $.when(token_status).then(response => {
-        if (response.tx_status === TX_STATUS_SUCCESS) {
-          _alert('Congratulations, your pToken has been created successfully!', 'success');
-          vm.updatePToken(response);
-          return;
-        } else if (
-          response.tx_status === TX_STATUS_ERROR ||
-          response.tx_status === TX_STATUS_UNKNOWN ||
-          response.tx_status === TX_STATUS_DROPPED
-        ) {
-          _alert('Oops, something went wrong trying to create your pToken. Please try again or contact support@gitcoin.co', 'error');
-          vm.updatePToken(response);
-          return;
-        } if (!vm.pToken.id) {
-          vm.updatePToken(response);
-        }
-
-        setTimeout(() => {
-          console.log('Tx not updated');
-          vm.checkTokenStatus();
-        }, 2000);
-      });
-    },
     async editPToken() {
       try {
         // TODO: Show loading while deploying
@@ -367,17 +353,21 @@ Vue.mixin({
         const pTokenId = this.pToken.id;
         const ptoken = await new web3.eth.Contract(document.contxt.ptoken_abi, this.pToken.address);
         const handleError = this.handleError;
+        const updatePtokenStatusinDatabase = this.updatePtokenStatusinDatabase;
 
         // Changing price
         if (price !== document.ptoken.price) {
           indicateMetamaskPopup();
           ptoken.methods.updatePrice(web3.utils.toWei(String(price)))
             .send({from: user})
-            .on('transactionHash', function(transactionHash) {
+            .on('transactionHash', async function(transactionHash) {
               indicateMetamaskPopup(true);
               change_price(pTokenId, price);
               document.ptoken.price = price;
-              console.log('pToken price successfully changed');
+               
+              const successMsg = 'The price of your personal token token has successfully been updated!';
+              const errorMsg = 'Oops, something went wrong changing your token price. Please try again or contact support@gitcoin.co';
+              await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
             })
             .on('error', function(err) {
               handleError(err);
@@ -391,12 +381,16 @@ Vue.mixin({
             indicateMetamaskPopup();
             ptoken.methods.mint(web3.utils.toWei(String(supply - document.ptoken.supply)))
               .send({from: user})
-              .on('transactionHash', function(transactionHash) {
+              .on('transactionHash', async function(transactionHash) {
                 indicateMetamaskPopup(true);
                 mint_tokens(pTokenId, supply);
                 document.ptoken.supply = supply;
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
-                console.log('pToken supply successfully increased');
+
+                const successMsg = 'The supply of your personal token token has successfully been increased!';
+                const errorMsg = 'Oops, something went wrong increasing your token supply. Please try again or contact support@gitcoin.co';
+                await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
+                
               }).on('error', function(err) {
                 handleError(err);
               });
@@ -405,12 +399,15 @@ Vue.mixin({
             indicateMetamaskPopup();
             ptoken.methods.burn(web3.utils.toWei(String(document.ptoken.supply - supply)))
               .send({from: user})
-              .on('transactionHash', function(transactionHash) {
+              .on('transactionHash', async function(transactionHash) {
                 indicateMetamaskPopup(true);
                 mint_tokens(pTokenId, supply);
                 document.ptoken.supply = supply;
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
-                console.log('pToken supply successfully decreased');
+
+                const successMsg = 'The supply of your personal token token has successfully been decreased!';
+                const errorMsg = 'Oops, something went wrong decreased your token supply. Please try again or contact support@gitcoin.co';
+                await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
               }).on('error', function(err) {
                 handleError(err);
               });
@@ -431,6 +428,7 @@ Vue.mixin({
       const factory = await new web3.eth.Contract(document.contxt.ptoken_factory_abi, factoryAddress);
       const newPToken = this.newPToken;
       const handleError = this.handleError;
+      const updatePtokenStatusinDatabase = this.updatePtokenStatusinDatabase;
 
       // Deploy on-chain
       indicateMetamaskPopup();
@@ -442,10 +440,10 @@ Vue.mixin({
         purchaseTokenAddress
       ).send({
         from: user
-      }).on('transactionHash', function(transactionHash) {
+      }).on('transactionHash', async function(transactionHash) {
         // Save to database
         indicateMetamaskPopup(true);
-        const ptokenReponse = create_ptoken(
+        const ptokenReponse = await create_ptoken(
           newPToken.name,
           newPToken.symbol,
           '0x0', // TODO get this from event logs
@@ -457,18 +455,28 @@ Vue.mixin({
           document.web3network
         );
 
-        $.when(ptokenReponse).then((response) => {
-          console.log(response);
-          vm.checkTokenStatus();
-          document.ptoken = response;
-        });
-
         vm.user_has_token = true;
-        console.log('Token Created!');
+        console.log('Token saved in database', ptokenReponse);
+        const successMsg = 'Congratulations, your personal token has been created successfully!';
+        const errorMsg = 'Oops, something went wrong trying to create your personal token. Please try again or contact support@gitcoin.co';
+        await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
       }).on('error', function(err) {
         handleError(err);
       });
     },
+
+    /**
+     * Waits for the provided transaction to be mined, and after mining triggers a database update.
+     * Displays the provided success and error messages on success/failure
+     */
+    async updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg) {
+      console.log('Waiting for transaction to be mined...');
+      callFunctionWhenTransactionMined(transactionHash, async () => {
+        console.log("Transaction mined, updating database...");
+        await this.checkTokenStatus(successMsg, errorMsg);
+      });
+    },
+
     checkNetwork() {
       const supportedNetworks = [ 'rinkeby', 'mainnet' ];
 
@@ -480,6 +488,7 @@ Vue.mixin({
     },
     async complete(redemptionId, tokenAmount, tokenAddress) {
       const vm = this;
+      const updatePtokenStatusinDatabase = this.updatePtokenStatusinDatabase;
 
       try {
         const network = vm.checkNetwork();
@@ -502,11 +511,17 @@ Vue.mixin({
               network,
               new Date().toISOString()
             );
+            console.log('Redemption saved as pending transaction in database');
 
             $.when(redemption).then((response) => {
               vm.checkData('personal-tokens');
               indicateMetamaskPopup(true);
             });
+
+            const successMsg = 'Congratulations, your redemption was successfully completed!';
+            const errorMsg = 'Oops, something went wrong completing the redemption. Please try again or contact support@gitcoin.co';
+            updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
+
           }).on('error', (error, receipt) => {
             console.log(error);
             vm.handleError(error);
@@ -625,10 +640,10 @@ if (document.getElementById('gc-board')) {
         'work_submitted': ''
       }
     },
-    mounted() {
+    async mounted() {
       this.tabOnLoad(true);
-      if (vm.pToken && vm.pToken.tx_status === TX_STATUS_PENDING) {
-        this.checkTokenStatus();
+      if (this.pToken && this.pToken.tx_status === TX_STATUS_PENDING) {
+        await this.checkTokenStatus();
       }
 
     }
