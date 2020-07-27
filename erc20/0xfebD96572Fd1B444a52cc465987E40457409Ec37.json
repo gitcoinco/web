@@ -1,0 +1,17 @@
+{
+    "symbol": "DOCK",
+    "address": "0xfebD96572Fd1B444a52cc465987E40457409Ec37",
+    "overview":{
+          "en": "DOCK is based on decentralized blockchain technology to turn charity into a digital asset, which not only makes charity and charity activities more transparent and credible, but also allows more people to participate in charity activities. DOCK records the record of the donation amount of charity organizations, the flow of funds, open and transparent, and also records the record of everyone's life helping behavior.",
+          "zh": "DOCK是基于去中心化区块链技术将慈善公益变成一种数字资产，不仅能够让公益和慈善活动变得更透明和可信，而且能够让更多人愿意参与公益活动。DOCK上记录着公益组织的捐赠金额的记录，资金流向，公开透明，还记录每个人一生的助人行为记录。"
+    },
+    "email": "dockchain@gmail.com",
+    "website": "http://dockchain.club/",
+    "whitepaper": "http://dockchain.club/user/enwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-07-18",
+    "links": {
+        "telegram": "https://t.me/dockgroup",
+        "twitter": "https://twitter.com/dockchain1"
+      }
+}
