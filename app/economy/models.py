@@ -215,6 +215,8 @@ class Token(SuperModel):
     network = models.CharField(max_length=25, db_index=True)
     decimals = models.IntegerField(default=18)
     priority = models.IntegerField(default=1)
+    chain_id = models.IntegerField(default=1)
+    network_id = models.IntegerField(default=1)
     metadata = JSONField(null=True, default=dict, blank=True)
     approved = models.BooleanField(default=True)
 

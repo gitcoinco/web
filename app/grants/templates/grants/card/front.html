@@ -31,11 +31,21 @@
     <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
       <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
       Last Update: {% if grant.last_update %}{{ grant.last_update|naturaltime }} {% else %} Before Round 6{% endif %}
+
+      {% if is_staff %}
+      <hr>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      SybilScore ™️: {{ grant.sybil_score }}
+      <br>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      RiskScore ™️: {{ grant.weighted_risk_score }}
+      {% endif %}
+
     </p>
 
     <div class="grant-item__owner">
         <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
-        <a href="{% url 'profile' grant.admin_profile.handle %}" target="_blank" rel="noopener noreferrer">
+        <a href="{% url 'profile' grant.admin_profile.handle %}" data-usercard="{{ grant.admin_profile.handle }}" target="_blank" rel="noopener noreferrer">
           <div class="grant-item__owner mt-3 mb-4">
             <div class="grant-item__owner-image ml-2">
               <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
@@ -74,7 +84,7 @@
               {% if grant.id in round_5_5_grants %}
                 Current Round 5.5 Match
               {% else %}
-                Estimated CLR Match
+                Final CLR Match
               {% endif %}
               </p>
             {% else %}

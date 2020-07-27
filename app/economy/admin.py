@@ -54,6 +54,7 @@ class ConvRateAdmin(admin.ModelAdmin):
 
     ordering = ['-id']
     search_fields = ['from_currency', 'to_currency']
+    list_display =['id', 'from_currency', 'from_amount','to_currency', 'to_amount', 'source']
 
 
 admin.site.register(ConversionRate, ConvRateAdmin)

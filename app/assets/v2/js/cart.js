@@ -210,7 +210,8 @@ Vue.component('grants-cart', {
       // If we have a cart where all donations are in Dai, we use a linear regression to
       // estimate gas costs based on real checkout transaction data, and add a 50% margin
       const donationCurrencies = this.donationInputs.map(donation => donation.token);
-      const isAllDai = donationCurrencies.every((addr, index, array) => addr === array[0]);
+      const daiAddress = this.getTokenByName('DAI').addr;
+      const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
 
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
@@ -556,7 +557,6 @@ Vue.component('grants-cart', {
           }
         });
 
-        await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
         // Get list of tokens user is donating with
@@ -653,10 +653,10 @@ Vue.component('grants-cart', {
               });
           } else {
             approvalTx.send({ from: userAddress })
-              .on('transactionHash', (txHash) => { // eslint-disable-line no-loop-func
+              .on('transactionHash', async(txHash) => { // eslint-disable-line no-loop-func
                 indicateMetamaskPopup(true);
                 this.setApprovalTxHash(tokenName, txHash);
-                this.sendDonationTx(userAddress);
+                await this.sendDonationTx(userAddress);
               })
               .on('error', (error, receipt) => {
                 // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
@@ -677,7 +677,7 @@ Vue.component('grants-cart', {
       });
     },
 
-    sendDonationTx(userAddress) {
+    async sendDonationTx(userAddress) {
       // Configure our donation inputs
       // We use parse and stringify to avoid mutating this.donationInputs since we use it later
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
@@ -698,10 +698,10 @@ Vue.component('grants-cart', {
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimit, value: this.donationInputsEthAmount })
-        .on('transactionHash', (txHash) => {
+        .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
-          this.postToDatabase(txHash, userAddress);
+          this.postToDatabase(txHash, userAddress); // add `await` here if you want to wait for a response
           // Clear cart, redirect back to grants page, and show success alert
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
@@ -727,19 +727,50 @@ Vue.component('grants-cart', {
         });
     },
 
-    postToDatabase(txHash, userAddress) {
+    async postToDatabase(txHash, userAddress) {
       // this.donationInputs is the array used for bulk donations
       // We loop through each donation and POST the required data
       const donations = this.donationInputs;
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
+      // Configure template payload
+      const saveSubscriptionPayload = {
+        // Values that are constant for all donations
+        contributor_address: userAddress,
+        csrfmiddlewaretoken,
+        frequency_count: 1,
+        frequency_unit: 'rounds',
+        gas_price: 0,
+        gitcoin_donation_address: gitcoinAddress,
+        hide_wallet_address: this.hideWalletAddress,
+        match_direction: '+',
+        network: document.web3network,
+        num_periods: 1,
+        real_period_seconds: 0,
+        recurring_or_not: 'once',
+        signature: 'onetime',
+        split_tx_id: txHash, // this txhash is our bulk donation hash
+        splitter_contract_address: bulkCheckoutAddress,
+        subscription_hash: 'onetime',
+        // Values that vary by donation
+        'gitcoin-grant-input-amount': [],
+        admin_address: [],
+        amount_per_period: [],
+        comment: [],
+        confirmed: [],
+        contract_address: [],
+        contract_version: [],
+        denomination: [],
+        grant_id: [],
+        sub_new_approve_tx_id: [],
+        token_address: [],
+        token_symbol: []
+      };
+
       for (let i = 0; i < donations.length; i += 1) {
         // Get URL to POST to
         const donation = donations[i];
         const grantId = donation.grant.grant_id;
-        const grantSlug = donation.grant.grant_slug;
-        const url = `/grants/${grantId}/${grantSlug}/fund`;
-
 
         // Get token information
         const tokenName = donation.grant.grant_donation_currency;
@@ -759,57 +790,42 @@ Vue.component('grants-cart', {
         // 100 makes it easier to search the DB to find which Gitcoin donations were automatic
         const isAutomatic = donation.grant.isAutomatic;
         const gitcoinGrantInputAmt = isAutomatic ? 100 : Number(this.gitcoinFactorRaw);
-        var network = document.web3network;
-        // Configure saveSubscription payload
-        const saveSubscriptionPayload = new URLSearchParams({
-          admin_address: donation.grant.grant_admin_address,
-          amount_per_period: Number(donation.grant.grant_donation_amount),
-          comment,
-          confirmed: false,
-          contract_address: donation.grant.grant_contract_address,
-          contract_version: donation.grant.grant_contract_version,
-          contributor_address: userAddress,
-          csrfmiddlewaretoken,
-          denomination: tokenAddress,
-          frequency_count: 1,
-          frequency_unit: 'rounds',
-          gas_price: 0,
-          'gitcoin-grant-input-amount': gitcoinGrantInputAmt,
-          gitcoin_donation_address: gitcoinAddress,
-          grant_id: grantId,
-          hide_wallet_address: this.hideWalletAddress,
-          match_direction: '+',
-          network,
-          num_periods: 1,
-          real_period_seconds: 0,
-          recurring_or_not: 'once',
-          signature: 'onetime',
-          split_tx_id: txHash, // this txhash is our bulk donation hash
-          splitter_contract_address: bulkCheckoutAddress,
-          sub_new_approve_tx_id: donation.tokenApprovalTxHash,
-          subscription_hash: 'onetime',
-          token_address: tokenAddress,
-          token_symbol: tokenName
-        });
 
-        // Configure headers
-        const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-        };
+        // Add the donation parameters
+        saveSubscriptionPayload.admin_address.push(donation.grant.grant_admin_address);
+        saveSubscriptionPayload.amount_per_period.push(Number(donation.grant.grant_donation_amount));
+        saveSubscriptionPayload.comment.push(comment);
+        saveSubscriptionPayload.confirmed.push(false);
+        saveSubscriptionPayload.contract_address.push(donation.grant.grant_contract_address);
+        saveSubscriptionPayload.contract_version.push(donation.grant.grant_contract_version);
+        saveSubscriptionPayload.denomination.push(tokenAddress);
+        saveSubscriptionPayload['gitcoin-grant-input-amount'].push(gitcoinGrantInputAmt);
+        saveSubscriptionPayload.grant_id.push(grantId);
+        saveSubscriptionPayload.sub_new_approve_tx_id.push(donation.tokenApprovalTxHash);
+        saveSubscriptionPayload.token_address.push(tokenAddress);
+        saveSubscriptionPayload.token_symbol.push(tokenName);
+      } // end for each donation
 
-        // Define parameter objects for POST request
-        const saveSubscriptionParams = {
-          method: 'POST',
-          headers,
-          body: saveSubscriptionPayload
-        };
 
-        // Send saveSubscription request
-        fetch(url, saveSubscriptionParams)
-          .catch(err => {
-            this.handleError(err);
-          });
-      }
+      // Configure request parameters
+      const url = '/grants/bulk-fund';
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      };
+      const saveSubscriptionParams = {
+        method: 'POST',
+        headers,
+        body: new URLSearchParams(saveSubscriptionPayload)
+      };
+
+      // Send saveSubscription request
+      // check `Preserve log` in console settings to inspect these logs more easily
+      const res = await fetch(url, saveSubscriptionParams);
+
+      console.log('Bulk fund POST response', res);
+      const json = await res.json();
+
+      console.log('Bulk fund POST response, JSON', json);
     },
 
     sleep(ms) {

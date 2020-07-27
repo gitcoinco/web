@@ -275,7 +275,6 @@ Vue.component('project-directory', {
     }
   },
   data: function() {
-
     return {
       csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       sponsor: this.tribe || null,
@@ -325,6 +324,108 @@ Vue.component('project-directory', {
     window.removeEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     });
+  }
+});
+
+
+Vue.component('showcase', {
+  delimiters: [ '[[', ']]' ],
+  props: [],
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      hackathon: document.hackathonObj,
+      isEditing: false,
+      showcase: document.hackathonObj.showcase,
+      top: document.hackathonObj.showcase.top || [{}, {}, {}],
+      sponsors: document.hackathonSponsors,
+      spotlights: document.hackathonObj.showcase.spotlights || [],
+      prizes: document.hackathonObj.showcase.prizes || 0,
+      is_staff: document.contxt.is_staff
+    };
+  },
+  filters: {
+    'markdownit': function(val) {
+      if (!val)
+        return '';
+      const _markdown = new markdownit({
+        linkify: true,
+        highlight: function(str, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return `<pre class="hljs"><code>${hljs.highlight(lang, str, true).value}</code></pre>`;
+            } catch (__) {}
+          }
+          return `<pre class="hljs"><code>${sanitize(_markdown.utils.escapeHtml(str))}</code></pre>`;
+        }
+      });
+
+      _markdown.renderer.rules.table_open = function() {
+        return '<table class="table">';
+      };
+      ui_body = sanitize(_markdown.render(val));
+      return ui_body;
+    }
+  },
+  methods: {
+    followTribe: function(handle, event) {
+      event.preventDefault();
+      let vm = this;
+
+      const url = `/tribe/${handle}/join/`;
+      const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        if (response && response.is_member) {
+          this.getSponsor(handle).followed = true;
+        } else {
+          this.getSponsor(handle).followed = false;
+        }
+      }).fail((error) => {
+        console.log(error);
+      });
+    },
+    getSponsor: function(handle) {
+      return this.sponsors.filter(sponsor => sponsor.org_name === handle)[0] || {};
+    },
+    addSpotlight: function() {
+      let vm = this;
+      let spotlight = {
+        sponsor: {},
+        content: ''
+      };
+
+      if (vm.spotlights.length === 0) {
+        vm.spotlights = [spotlight];
+      } else {
+        vm.spotlights.push(spotlight);
+      }
+    },
+    saveShowcase: function() {
+      let vm = this;
+      const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/showcase/`;
+      const retrieveResources = fetchData(resource_url, 'POST', JSON.stringify({
+        content: vm.showcase.content,
+        top: vm.top,
+        spotlights: vm.spotlights,
+        prizes: vm.showcase.prizes
+      }), {'X-CSRFToken': vm.csrf});
+
+      vm.isEditing = false;
+
+
+      $.when(retrieveResources).then((response) => {
+        _alert('Showcase info saved', 'success', 1000);
+      }).fail((error) => {
+        console.log(error);
+      });
+
+    }
+  },
+  mounted() {
+    if (!this.showcase.top) {
+      this.showcase.top = [];
+    }
   }
 });
 
@@ -419,7 +520,6 @@ Vue.component('project-card', {
   </div>`
 });
 
-
 Vue.component('suggested-profiles', {
   props: ['profiles'],
   template: `<div class="townsquare_nav-list my-2 tribe">
@@ -495,4 +595,47 @@ Vue.component('suggested-profile', {
   </div>
 </b-media>
 `
+});
+
+
+Vue.component('date-range-picker', {
+  template: '#date-range-template',
+  props: [ 'date', 'disabled' ],
+
+  data: function() {
+    return {
+      newDate: this.date
+    };
+  },
+  computed: {
+    pickDate() {
+      return this.newDate;
+    }
+  },
+  mounted: function() {
+    let vm = this;
+
+    this.$nextTick(function() {
+      window.$(this.$el).daterangepicker({
+        singleDatePicker: true,
+        startDate: moment().add(1, 'month'),
+        alwaysShowCalendars: false,
+        ranges: {
+          '1 week': [ moment().add(7, 'days'), moment().add(7, 'days') ],
+          '2 weeks': [ moment().add(14, 'days'), moment().add(14, 'days') ],
+          '1 month': [ moment().add(1, 'month'), moment().add(1, 'month') ],
+          '3 months': [ moment().add(3, 'month'), moment().add(3, 'month') ],
+          '1 year': [ moment().add(1, 'year'), moment().add(1, 'year') ]
+        },
+        'locale': {
+          'customRangeLabel': 'Custom',
+          'format': 'MM/DD/YYYY'
+        }
+      }).on('apply.daterangepicker', function(e, picker) {
+        vm.$emit('apply-daterangepicker', picker.startDate);
+        vm.newDate = picker.startDate.format('MM/DD/YYYY');
+      });
+    });
+  }
+
 });

@@ -13,7 +13,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_listener mainnet  >> /var/log/gitcoin/sync_listener.log  2>&1
 12 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth rinkeby -200 0  >> /var/log/gitcoin/sync_geth_rinkeby.log  2>&1
 */5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash subminer mainnet --live  >> /var/log/gitcoin/subminer_mainnet.log  2>&1
-*/5 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_pending_fulfillments >> /var/log/gitcoin/sync_pending_fulfillments.log  2>&1
+*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_pending_fulfillments >> /var/log/gitcoin/sync_pending_fulfillments.log  2>&1
 
 ## HACKATHON
 1,30 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash setup_hackathon_event_chat >> /var/log/gitcoin/setup_hackathon_event_chat.log 2>&1
@@ -66,14 +66,13 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## GITCOIN MARKETING
 30 */12 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_mail  >> /var/log/gitcoin/sync_mail.log  2>&1
-30 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pull_codefund_numbers  >> /var/log/gitcoin/pull_codefund_numbers.log  2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash share_activity  >> /var/log/gitcoin/share_activity.log  2>&1
 35 14 * * 1,6 cd gitcoin/coin; bash scripts/run_management_command.bash remarket_bounties  >> /var/log/gitcoin/remarket_bounties.log  2>&1
 35 11 * * 0,4 cd gitcoin/coin; bash scripts/run_management_command.bash remarket_bounties  >> /var/log/gitcoin/remarket_bounties.log  2>&1
 45 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration  >> /var/log/gitcoin/expiration_bounty.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_start_work  >> /var/log/gitcoin/expiration_start_work.log  2>&1
 15 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_keywords  >> /var/log/gitcoin/sync_keywords.log  2>&1
-40 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_slack  >> /var/log/gitcoin/sync_slack.log  2>&1
+# 40 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_slack  >> /var/log/gitcoin/sync_slack.log  2>&1
 30 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_github  >> /var/log/gitcoin/sync_github.log  2>&1
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_notifications  >> /var/log/gitcoin/get_notifications.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash bounty_feedback_email  >> /var/log/gitcoin/bounty_feedback_email.log  2>&1

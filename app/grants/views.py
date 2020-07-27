@@ -28,6 +28,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db import connection
 from django.db.models import Avg, Count, Max, Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -63,6 +64,7 @@ from marketing.mails import (
     support_cancellation, thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
+from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from townsquare.models import Comment, PinnedPost
@@ -78,7 +80,7 @@ live_now = '❇️ LIVE NOW! Up to $175k Matching Funding on Gitcoin Grants'
 matching_live_tiny = '💰'
 total_clr_pot = 175000
 clr_round = 6
-clr_active = True
+clr_active = False
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
@@ -90,7 +92,7 @@ last_round_end = timezone.datetime(2020, 4, 7, 12, 0)
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
 next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
 after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
-round_end = timezone.datetime(2020, 7, 3, 12, 0)
+round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
 round_types = ['media', 'tech', 'change']
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
@@ -380,7 +382,7 @@ def grants_by_grant_type(request, grant_type):
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Community', 'keyword': 'media', 'count': media_grants_count},
 #        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
-#        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
+        {'label': 'Matic: Build-n-Earn', 'keyword': 'matic', 'count': matic_grants_count},
         {'label': 'Crypto for Black Lives', 'keyword': 'change', 'count': change_count},
 
     ]
@@ -493,6 +495,50 @@ def add_form_categories_to_grant(form_category_ids, grant, grant_type):
         grant_category = GrantCategory.objects.get_or_create(category=category)[0]
         grant.categories.add(grant_category)
 
+
+def get_grant_sybil_profile(grant_id=None, days_back=None, grant_type=None, index_on=None):
+    grant_id_sql = f"= {grant_id}" if grant_id else "IS NOT NULL"
+    days_back_sql = f"grants_subscription.created_on > now() - interval '{days_back} hours'" if days_back else "true"
+    grant_type_sql = f"grant_type = '{grant_type}'" if grant_type else "true"
+    order_sql = f"ORDER BY {index_on} ASC" if index_on != 'grants_contribution.originated_address' else "ORDER BY number_contriibutors DESC"
+    having_sql = f"" if index_on != 'grants_contribution.originated_address' else "HAVING count(distinct grants_subscription.contributor_profile_id) >= 2"
+    query = f"""
+SELECT
+    DISTINCT {index_on},
+    count(distinct grants_subscription.contributor_profile_id) as number_contriibutors,
+    count(distinct grants_subscription.id) as number_contriibutions,
+    (count(distinct grants_subscription.contributor_profile_id)::float / count(distinct grants_subscription.id)) as contributions_per_contributor,
+    array_agg(distinct dashboard_profile.handle) as contributors
+from dashboard_profile
+INNER JOIN grants_subscription ON contributor_profile_id = dashboard_profile.id
+INNER JOIN grants_grant on grants_grant.id = grants_subscription.grant_id
+INNER JOIN grants_contribution on grants_contribution.subscription_id = grants_subscription.id
+where grants_subscription.grant_id {grant_id_sql} AND {days_back_sql} AND {grant_type_sql}
+    GROUP BY {index_on}
+    {having_sql}
+    {order_sql}
+"""
+    # pull from DB
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = []
+        for _row in cursor.fetchall():
+            rows.append(list(_row))
+
+    # mutate arrow
+    sybil_avg = 0
+    try:
+        total_contributors = sum([ele[1] for ele in rows])
+        svbil_total = sum([ele[0]*ele[1] for ele in rows if ele[0] >= 0])
+        sybil_avg = svbil_total / total_contributors if total_contributors else 'N/A'
+        for i in range(0, len(rows)):
+            pct = rows[i][1] / total_contributors
+            rows[i].append(round(pct * 100))
+    except:
+        pass
+
+    return [rows, sybil_avg]
+
 @csrf_exempt
 def grant_details(request, grant_id, grant_slug):
     """Display the Grant details page."""
@@ -519,6 +565,18 @@ def grant_details(request, grant_id, grant_slug):
         contributions = []
         negative_contributions = []
         voucher_fundings = []
+        sybil_profiles = []
+        if tab == 'sybil_profile' and request.user.is_staff:
+            items = ['dashboard_profile.sybil_score', 'dashboard_profile.sms_verification', 'grants_contribution.originated_address']
+            for item in items:
+                title = 'Sybil' if item == 'dashboard_profile.sybil_score' else "SMS"
+                if item == 'grants_contribution.originated_address':
+                    title = 'Funds origination address'
+                sybil_profiles += [
+                    [f'THIS {title} Summary Last 90 days', get_grant_sybil_profile(grant.pk, 90 * 24, index_on=item)],
+                    [f'{grant.grant_type} {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, grant.grant_type, index_on=item)],
+                    [f'All {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, None, index_on=item)],
+                ]
         if tab in ['transactions', 'contributors']:
             _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all().cache(timeout=60)).cache(timeout=60)
             negative_contributions = _contributions.filter(subscription__is_postive_vote=False)
@@ -600,6 +658,7 @@ def grant_details(request, grant_id, grant_slug):
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
         'grant': grant,
+        'sybil_profiles': sybil_profiles,
         'tab': tab,
         'title': matching_live_tiny + grant.title + " | Grants",
         'card_desc': grant.description,
@@ -850,7 +909,157 @@ def grant_fund(request, grant_id, grant_slug):
 
     raise Http404
 
+@login_required
+def bulk_fund(request):
+    if request.method != 'POST':
+        raise Http404
 
+    # Save off payload data
+    JSONStore.objects.create(
+        key=request.POST.get('split_tx_id'), # use bulk data tx hash as key
+        view='bulk_fund_post_payload',
+        data=request.POST
+    )
+
+    # Get list of grant IDs
+    grant_ids_list = [int(pk) for pk in request.POST.get('grant_id').split(',')]
+
+    # For each grant, we validate the data. If it fails, save it off and throw error at the end
+    successes = []
+    failures = []
+    for (index, grant_id) in enumerate(grant_ids_list):
+        try:
+            grant = Grant.objects.get(pk=grant_id)
+        except Grant.DoesNotExist:
+            failures.append({
+                'active': 'grant_error',
+                'title': _('Fund - Grant Does Not Exist'),
+                'grant':grant_id,
+                'text': _('This grant does not exist'),
+                'subtext': _('No grant with this ID was found'),
+                'success': False
+            })
+            continue
+
+        profile = get_profile(request)
+
+        if not grant.active:
+            failures.append({
+                'active': 'grant_error',
+                'title': _('Fund - Grant Ended'),
+                'grant':grant_id,
+                'text': _('This Grant has ended.'),
+                'subtext': _('Contributions can no longer be made this grant'),
+                'success': False
+            })
+            continue
+
+        if is_grant_team_member(grant, profile):
+            failures.append({
+                'active': 'grant_error',
+                'title': _('Fund - Grant funding blocked'),
+                'grant':grant_id,
+                'text': _('This Grant cannot be funded'),
+                'subtext': _('Grant team members cannot contribute to their own grant.'),
+                'success': False
+            })
+            continue
+
+        if grant.link_to_new_grant:
+            failures.append({
+                'active': 'grant_error',
+                'title': _('Fund - Grant Migrated'),
+                'grant':grant_id,
+                'text': _('This Grant has ended'),
+                'subtext': _('Contributions can no longer be made to this grant. <br> Visit the new grant to contribute.'),
+                'success': False
+            })
+            continue
+
+        active_subscription = Subscription.objects.select_related('grant').filter(
+            grant=grant_id, active=True, error=False, contributor_profile=request.user.profile, is_postive_vote=True
+        )
+
+        if active_subscription:
+            failures.append({
+                'active': 'grant_error',
+                'title': _('Subscription Exists'),
+                'grant':grant_id,
+                'text': _('You already have an active subscription for this grant.'),
+                'success': False
+            })
+            continue
+
+        if not grant.configured_to_receieve_funding:
+            failures.append({
+                'active': 'grant_error',
+                'title': _('Fund - Grant Not Configured'),
+                'grant':grant_id,
+                'text': _('This Grant is not configured to accept funding at this time.'),
+                'subtext': _('Grant is not properly configured for funding.  Please set grant.contract_address on this grant, or contact founders@gitcoin.co if you believe this message is in error!'),
+                'success': False
+            })
+            continue
+
+        try:
+            from grants.tasks import process_grant_contribution
+            payload = {
+                # Values that are constant for all donations
+                'contributor_address': request.POST.get('contributor_address'),
+                'csrfmiddlewaretoken': request.POST.get('csrfmiddlewaretoken'),
+                'frequency_count': request.POST.get('frequency_count'),
+                'frequency_unit': request.POST.get('frequency_unit'),
+                'gas_price': request.POST.get('gas_price'),
+                'gitcoin_donation_address': request.POST.get('gitcoin_donation_address'),
+                'hide_wallet_address': request.POST.get('hide_wallet_address'),
+                'match_direction': request.POST.get('match_direction'),
+                'network': request.POST.get('network'),
+                'num_periods': request.POST.get('num_periods'),
+                'real_period_seconds': request.POST.get('real_period_seconds'),
+                'recurring_or_not': request.POST.get('recurring_or_not'),
+                'signature': request.POST.get('signature'),
+                'split_tx_id': request.POST.get('split_tx_id'),
+                'splitter_contract_address': request.POST.get('splitter_contract_address'),
+                'subscription_hash': request.POST.get('subscription_hash'),
+                # Values that vary by donation
+                'admin_address': request.POST.get('admin_address').split(',')[index],
+                'amount_per_period': request.POST.get('amount_per_period').split(',')[index],
+                'comment': request.POST.get('comment').split(',')[index],
+                'confirmed': request.POST.get('confirmed').split(',')[index],
+                'contract_address': request.POST.get('contract_address').split(',')[index],
+                'contract_version': request.POST.get('contract_version').split(',')[index],
+                'denomination': request.POST.get('denomination').split(',')[index],
+                'gitcoin-grant-input-amount': request.POST.get('gitcoin-grant-input-amount').split(',')[index],
+                'grant_id': request.POST.get('grant_id').split(',')[index],
+                'sub_new_approve_tx_id': request.POST.get('sub_new_approve_tx_id').split(',')[index],
+                'token_address': request.POST.get('token_address').split(',')[index],
+                'token_symbol': request.POST.get('token_symbol').split(',')[index],
+            }
+            process_grant_contribution.delay(grant_id, grant.slug, profile.pk, payload)
+        except Exception as e:
+            failures.append({
+                'active': 'grant_error',
+                'title': _('Fund - Grant Processing Failed'),
+                'grant':grant_id,
+                'text': _('This Grant was not processed successfully.'),
+                'subtext': _(f'{str(e)}'),
+                'success': False
+            })
+            continue
+
+        successes.append({
+            'title': _('Fund - Grant Funding Processed Successfully'),
+            'grant':grant_id,
+            'text': _('Funding for this grant was successfully processed and saved.'),
+            'success': True
+        })
+
+    return JsonResponse({
+        'success': True,
+        'grant_ids': grant_ids_list,
+        'successes': successes,
+        'failures': failures
+    })
 
 @login_required
 def subscription_cancel(request, grant_id, grant_slug, subscription_id):

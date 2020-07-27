@@ -37,4 +37,4 @@ def record_payout_activity(fulfillment):
         Activity.objects.create(**kwargs)
 
     except Exception as e:
-        logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
+        logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty}")

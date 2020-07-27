@@ -1535,9 +1535,9 @@ def faucet_rejected(request):
     return HttpResponse(response_html)
 
 
-@staff_member_required
 def roundup(request):
-    response_html, _, _, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    email = request.user.email if request.user.is_authenticated else 'test@123.com'
+    response_html, _, _, _, _ = render_new_bounty_roundup(email)
     return HttpResponse(response_html)
 
 
@@ -1607,9 +1607,32 @@ def start_work_applicant_about_to_expire(request):
 
 
 @staff_member_required
+def request_amount_email(request):
+    from dashboard.models import FundRequest
+    fr = FundRequest.objects.first()
+    response_html, _ = render_request_amount_email('kevin@gitcoin.co', fr, True)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
 def start_work_applicant_expired(request):
     from dashboard.models import Interest, Bounty
     interest = Interest.objects.last()
     bounty = Bounty.objects.last()
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)
+
+
+
+def render_remember_your_cart(grants_query, grants, hours):
+    params = {
+        'base_url': settings.BASE_URL,
+        'desc': f'Only left {hours} hours until the end of the match round and seems you have some grants on your cart',
+        'cart_query': grants_query,
+        'grants': grants
+    }
+
+    response_html = premailer_transform(render_to_string("emails/cart.html", params))
+    response_txt = render_to_string("emails/cart.txt", params)
+
+    return response_html, response_txt    
