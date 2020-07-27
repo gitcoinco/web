@@ -1244,26 +1244,15 @@ body.green.offer_view .announce {
   z-index: -2;
 }
 
-.activity.hackathon_new_hacker .activity-avatar::after {
+.activity.hackathon_new_hacker #profile-avatar-link::after {
   height: 6.1rem;
   content: '';
   background-image: url(/static/v2/images/townsquare-nh.svg);
   width: 6.1rem;
   position: absolute;
   top: -1.5rem;
-  left: 0.9rem;
   z-index: -1;
-}
-
-.activity.hackathon_new_hacker .activity_detail::after {
-  height: 100%;
-  content: '';
-  background: url(/static/v2/images/townsqure-party.png) 0 0 no-repeat;
-  width: 100%;
-  position: absolute;
-  top: 55px;
-  right: -309px;
-  z-index: -1;
+  margin-left: -3px;
 }
 
 .new_hackathon_project {
