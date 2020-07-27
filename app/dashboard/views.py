@@ -3238,9 +3238,9 @@ def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
 
-    events = HackathonEvent.objects.filter(end_date__gt=datetime.today())
     suggested_developers = []
     if request.user.is_authenticated:
+        subscriptions = request.user.profile.active_subscriptions
         suggested_developers = BountyFulfillment.objects.prefetch_related('bounty')\
             .filter(
                 bounty__bounty_owner_github_username__iexact=request.user.profile.handle,
@@ -3251,7 +3251,7 @@ def new_bounty(request):
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
-        'events': events,
+        'subscriptions': subscriptions,
         'suggested_developers': suggested_developers
     }
 
@@ -3282,7 +3282,7 @@ def new_bounty(request):
         pass
 
     params['avatar_url'] = request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-01.png'))
-    return TemplateResponse(request, 'bounty/fund.html', params)
+    return TemplateResponse(request, 'bounty/new_bounty.html', params)
 
 
 @login_required
@@ -3870,12 +3870,13 @@ def hackathon_onboard(request, hackathon=''):
     except HackathonEvent.DoesNotExist:
         hackathon_event = HackathonEvent.objects.last()
 
+    avatar_url = hackathon_event.logo.url if hackathon_event.logo else request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png'))
     params = {
         'active': 'hackathon_onboard',
         'title': f'{hackathon_event.name.title()} Onboard',
         'hackathon': hackathon_event,
         'referer': referer,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
+        'avatar_url': avatar_url,
         'is_registered': is_registered,
         'sponsors': sponsors,
         'onboard': True
@@ -4862,6 +4863,7 @@ def create_bounty_v1(request):
     }
 
     user = request.user if request.user.is_authenticated else None
+    network = request.POST.get("network", 'mainnet')
 
     if not user:
         response['message'] = 'error: user needs to be authenticated to create bounty'
@@ -4878,7 +4880,7 @@ def create_bounty_v1(request):
         return JsonResponse(response)
 
     github_url = request.POST.get("github_url", None)
-    if Bounty.objects.filter(github_url=github_url).exists():
+    if Bounty.objects.filter(github_url=github_url, network=network).exists():
         response = {
             'status': 303,
             'message': 'bounty already exists for this github issue'
