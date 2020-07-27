@@ -137,6 +137,10 @@ a {
   font-weight: 600;
 }
 
+.text-through {
+  text-decoration-line: line-through;
+}
+
 #tutorials li{
   list-style: none;
 }
