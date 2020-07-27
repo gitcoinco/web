@@ -76,13 +76,14 @@ from web3 import HTTPProvider, Web3
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
-# clr_active = False
 # Round Schedule
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
 # Round 6 - June 15th — June 29th 2020
 # Round 7 - September 14th — September 28th 2020
 
+# TODO-SELF-SERVICE: REMOVE BELOW VARIABLES NEEDED FOR MGMT
+clr_round=6
 last_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 last_round_end = timezone.datetime(2020, 4, 7, 12, 0)
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
@@ -90,6 +91,7 @@ next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
 after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
 round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
 round_types = ['media', 'tech', 'change']
+# TODO-SELF-SERVICE: END
 
 kudos_reward_pks = [12580, 12584, 12572, 125868, 12552, 12556, 12557, 125677, 12550, 12392, 12307, 12343, 12156, 12164]
 

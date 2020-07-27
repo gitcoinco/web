@@ -1,8 +1,11 @@
+import datetime as dt
 import math
 from decimal import Decimal
 
 from django.conf import settings
+from django.utils.text import slugify
 
+import pytz
 from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
@@ -16,14 +19,13 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
+CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0) # TODO:SELF-SERVICE
+
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     instance = Grant.objects.get(pk=grant_id)
     instance.contribution_count = instance.get_contribution_count
     instance.contributor_count = instance.get_contributor_count()
-    from grants.clr import CLR_START_DATE
-    import pytz
-    from django.utils.text import slugify
     instance.slug = slugify(instance.title)[:49]
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
