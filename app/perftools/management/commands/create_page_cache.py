@@ -29,7 +29,7 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
-from dashboard.models import Profile, HackathonEvent
+from dashboard.models import HackathonEvent, Profile
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
