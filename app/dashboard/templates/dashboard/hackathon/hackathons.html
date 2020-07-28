@@ -168,8 +168,8 @@
                       Join
                     </a>
                   {% endif %}
-                  {% if event.hackathon.end_date|timesince >= "1 min"%}
-                  <a href="/hackathon/{{ event.hackathon.slug }}/showcase" class="btn button--primary font-caption font-weight-semibold px-2 mb-2 white">
+                  {% if event.hackathon.display_showcase %}
+                  <a href="{% url 'hackathon_showcase_proxy' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
                     <i class="fas fa-star d-none d-sm-inline" style="font-size:6.5px;position:relative;top:0.2rem;left:0.2rem;"></i>
                     <i class="fas fa-star mr-1 d-none d-sm-inline"></i>
                     Showcase
