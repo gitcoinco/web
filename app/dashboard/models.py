@@ -4908,7 +4908,7 @@ class HackathonProject(SuperModel):
         return {
             'pk': self.pk,
             'name': self.name,
-            'logo': self.logo.url,
+            'logo': self.logo.url if self.logo else '',
             'badge': self.badge,
             'profiles': profiles,
             'work_url': self.work_url,

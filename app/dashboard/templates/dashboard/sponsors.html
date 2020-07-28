@@ -164,7 +164,7 @@
                             <div :class="isMobileDevice ? 'mx-3' : ' col-md-5' ">
                               <div>
                                 <a :href="prize.url" class="font-subheader font-weight-semibold d-inline-block text-black">[[`${prize.title.slice(0, 92)}${prize.title.length > 92 ? '...' : ''}`]]</a>
-                                <span v-if="!isMobileDevice && prize.value_eth.toFixed" class="tag token ml-2">[[prize.value_eth.toFixed(2)]] ETH</span>
+                                <span v-if="!isMobileDevice && prize.value_eth" class="tag token ml-2">[[prize.value_eth | decimals]] ETH</span>
                                 <span v-if="!isMobileDevice && prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
                               </div>
                               <span v-if="isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
@@ -191,7 +191,7 @@
                                 </b-thead>
                                 <b-tbody>
                                   <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="(project, projectIndex) in prize.submissions">
-                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'"><a :href="project.work_url"><span class="font-body gc-text-blue font-weight-semibold">[[project.name]]</span>  <br> <span class="fab fa-github text-black"></span></a> </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'"><img :src="project.logo" alt="" width="30"> <a :href="project.work_url"><span class="fab fa-github text-black"></span> <span class="font-body gc-text-blue font-weight-semibold">[[project.name]]</span></a> </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary pr-4'">
 
                                       <p class="mt-1">[[getSummary(project)]]
