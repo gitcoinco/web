@@ -5,10 +5,10 @@ from django.db import migrations
 def create_grant_type(apps, schema_editor):
     GrantType = apps.get_model('grants', 'GrantType')
     types = ['tech', 'media', 'matic', 'health', 'change']
-    
+
     for _type in types:
         grant_type = GrantType()
-        grant_type.name = _type 
+        grant_type.name = _type
         if _type == 'change':
             grant_type.label = 'Crypto for Black Lives'
         elif _type == 'media':
@@ -20,32 +20,35 @@ def create_grant_type(apps, schema_editor):
 
 
 def map_grant_type_to_catergories(apps, schema_editor):
-    GrantType = apps.get_model('grants', 'GrantType')
-    GrantCategory = apps.get_model('grants', 'GrantCategory')
+    try:
+        GrantType = apps.get_model('grants', 'GrantType')
+        GrantCategory = apps.get_model('grants', 'GrantCategory')
 
-    for grant_type in GrantType.objects.all():
-        if grant_type.name in ['tech', 'matic']:
-            categories =  [
-                'security', 'scalability', 'defi', 'education', 'wallets',
-                'community', 'eth2.0', 'eth1.x', 'devEx', 'usability'
-            ]
+        for grant_type in GrantType.objects.all():
+            if grant_type.name in ['tech', 'matic']:
+                categories =  [
+                    'security', 'scalability', 'defi', 'education', 'wallets',
+                    'community', 'eth2.0', 'eth1.x', 'devEx', 'usability'
+                ]
 
-        elif grant_type.name == 'media':
-            categories = ['education', 'twitter', 'reddit', 'blog', 'notes']
+            elif grant_type.name == 'media':
+                categories = ['education', 'twitter', 'reddit', 'blog', 'notes']
 
-        elif grant_type.name == 'health':
-            categories = ['COVID19 research', 'COVID19 response']
+            elif grant_type.name == 'health':
+                categories = ['COVID19 research', 'COVID19 response']
 
-        elif grant_type.name == 'change':
-            categories = []
+            elif grant_type.name == 'change':
+                categories = []
 
-        for category in categories:
-            grant_category = GrantCategory.objects.get(category=category)
-            grant_type.categories.add(grant_category)
-        
-        grant_type.save()
-        print(f'Succesfully Associated Grant Type {grant_type} to Grant Categories ')
+            for category in categories:
+                grant_category = GrantCategory.objects.get(category=category)
+                grant_type.categories.add(grant_category)
 
+            grant_type.save()
+            print(f'Succesfully Associated Grant Type {grant_type} to Grant Categories ')
+    except :
+        print("issues mapping GrantType to GrantCategory. manually map type to category")
+        pass
 
 def migrate_grant_type(apps, schema_editor):
     Grant = apps.get_model('grants', 'Grant')
@@ -57,7 +60,6 @@ def migrate_grant_type(apps, schema_editor):
         grant_type = GrantType.objects.filter(name=grant_type_name).first()
         grant.grant_type = grant_type
         grant.save()
-    
     print(f'Grant grant_type_purge -> grant_type migrated')
 
 
