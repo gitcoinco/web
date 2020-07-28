@@ -957,7 +957,8 @@
         hackathonSponsors: document.hackathonSponsors,
         prizeFounders: document.prizeFounders,
         hackathonProjects: [],
-        chatURL: document.chatURL
+        chatURL: document.chatURL,
+        hackHasEnded: document.displayShowcase
       })
     });
   });
