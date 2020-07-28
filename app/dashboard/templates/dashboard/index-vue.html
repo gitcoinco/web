@@ -213,6 +213,9 @@
                             <label class="filter-label townsquare-org-filter">
                               <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}
                             </label>
+                            <button  data-sponser-openchat="{{org.display_name}}" type="button" class="btn btn-outline-primary btn-gc-blue btn-sm font-smaller-5 font-weight-semibold">
+                              Chat 
+                            </button>
                           </div>
                         {% endfor %}
                       </div>
@@ -782,6 +785,9 @@
                           v-bind:class="[sponsor.followed ? 'btn-outline-gc-green' : 'btn-gc-blue', 'btn-sm', 'font-smaller-5', 'font-weight-semibold']"
                         >
                           [[ sponsor.followed ? "following" : "follow" ]]
+                        </b-button>
+                        <b-button variant="outline-primary btn-gc-blue btn-sm font-smaller-5 font-weight-semibold" data-sponser-openchat="{{sponsor.org_name}}">
+                            Chat
                         </b-button>
                       </div>
                     </b-media>

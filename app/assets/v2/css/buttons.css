@@ -1,13 +1,13 @@
 /*
-	https://developer.mozilla.org/en/docs/Web/CSS/box-shadow
-	box-shadow: [inset?] [top] [left] [blur] [size] [color];
+    https://developer.mozilla.org/en/docs/Web/CSS/box-shadow
+    box-shadow: [inset?] [top] [left] [blur] [size] [color];
 
-	Tips:
-	- We're setting all the blurs to 0 since we want a solid fill.
-	- Add the inset keyword so the box-shadow is on the inside of the element
-	- Animating the inset shadow on hover looks like the element is filling in from whatever side you specify ([top] and [left] accept negative values to become [bottom] and [right])
-	- Multiple shadows can be stacked
-	- If you're animating multiple shadows, be sure to keep the same number of shadows so the animation is smooth. Otherwise, you'll get something choppy.
+    Tips:
+    - We're setting all the blurs to 0 since we want a solid fill.
+    - Add the inset keyword so the box-shadow is on the inside of the element
+    - Animating the inset shadow on hover looks like the element is filling in from whatever side you specify ([top] and [left] accept negative values to become [bottom] and [right])
+    - Multiple shadows can be stacked
+    - If you're animating multiple shadows, be sure to keep the same number of shadows so the animation is smooth. Otherwise, you'll get something choppy.
 */
 
 .fill {
@@ -171,6 +171,7 @@ button:focus {
 .btn-outline-gc-green:hover {
   background-color: var(--gc-green);
   color: white;
+  border-color: var(--gc-green);
 }
 
 .btn-outline-gc-green.btn-outline-gc-grey {
