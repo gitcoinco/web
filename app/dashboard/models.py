@@ -4812,7 +4812,7 @@ def psave_hackathonevent(sender, instance, **kwargs):
                 "visible_to":None,
                 'img_url': instance.logo.url if instance.logo else None,
             }
-        )
+            )
 
 
 
