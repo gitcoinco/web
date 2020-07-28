@@ -984,8 +984,8 @@ body.green.offer_view .announce {
 .nav-badge {
   font-size: 9px;
   color: var(--link-color);
-  top: 20px;
-  position: absolute;
+  top: -8px;
+  position: relative;
   font-weight: bold;
 }
 
