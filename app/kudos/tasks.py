@@ -19,7 +19,7 @@ redis = RedisService().redis
 # Lock timeout of 2 minutes (just in the case that the application hangs to avoid a redis deadlock)
 LOCK_TIMEOUT = 60 * 2
 delay_if_gas_prices_gt_redeem = 25
-delay_if_gas_prices_gt_mint = 60
+delay_if_gas_prices_gt_mint = 150
 
 @app.shared_task(bind=True, max_retries=10)
 def mint_token_request(self, token_req_id, retry=False):

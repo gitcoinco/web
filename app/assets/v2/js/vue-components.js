@@ -401,6 +401,13 @@ Vue.component('showcase', {
         vm.spotlights.push(spotlight);
       }
     },
+    removeSpotlight: function(index) {
+      let vm = this;
+
+      if (index > -1) {
+        vm.spotlights.splice(index, 1);
+      }
+    },
     saveShowcase: function() {
       let vm = this;
       const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/showcase/`;
@@ -595,4 +602,47 @@ Vue.component('suggested-profile', {
   </div>
 </b-media>
 `
+});
+
+
+Vue.component('date-range-picker', {
+  template: '#date-range-template',
+  props: [ 'date', 'disabled' ],
+
+  data: function() {
+    return {
+      newDate: this.date
+    };
+  },
+  computed: {
+    pickDate() {
+      return this.newDate;
+    }
+  },
+  mounted: function() {
+    let vm = this;
+
+    this.$nextTick(function() {
+      window.$(this.$el).daterangepicker({
+        singleDatePicker: true,
+        startDate: moment().add(1, 'month'),
+        alwaysShowCalendars: false,
+        ranges: {
+          '1 week': [ moment().add(7, 'days'), moment().add(7, 'days') ],
+          '2 weeks': [ moment().add(14, 'days'), moment().add(14, 'days') ],
+          '1 month': [ moment().add(1, 'month'), moment().add(1, 'month') ],
+          '3 months': [ moment().add(3, 'month'), moment().add(3, 'month') ],
+          '1 year': [ moment().add(1, 'year'), moment().add(1, 'year') ]
+        },
+        'locale': {
+          'customRangeLabel': 'Custom',
+          'format': 'MM/DD/YYYY'
+        }
+      }).on('apply.daterangepicker', function(e, picker) {
+        vm.$emit('apply-daterangepicker', picker.startDate);
+        vm.newDate = picker.startDate.format('MM/DD/YYYY');
+      });
+    });
+  }
+
 });

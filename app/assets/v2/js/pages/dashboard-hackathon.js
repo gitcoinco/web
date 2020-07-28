@@ -934,7 +934,8 @@
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
         hackathonProjects: [],
-        chatURL: document.chatURL
+        chatURL: document.chatURL,
+        hackHasEnded: document.displayShowcase
       })
     });
   });
