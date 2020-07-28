@@ -37,7 +37,6 @@ import dashboard.tip_views
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
-import enssubdomain.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
@@ -628,7 +627,6 @@ urlpatterns = [
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
-    re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),
     re_path(r'^settings/job/?', marketing.views.job_settings, name='job_settings'),
@@ -685,9 +683,6 @@ urlpatterns = [
     # webhook routes
     # sendgrid webhook processing
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
-
-    # ENS urls
-    url(r'^ens/?$', enssubdomain.views.ens_subdomain, name='ens'),
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
