@@ -1,3 +1,4 @@
+import math
 from decimal import Decimal
 
 from django.conf import settings
@@ -61,8 +62,12 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             )
     instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
     instance.sybil_score = instance.sybil_score / instance.positive_round_contributor_count if instance.positive_round_contributor_count else "-1"
+    max_sybil_score = 5
+    if instance.sybil_score > max_sybil_score:
+        instance.sybil_score = max_sybil_score
     try:
-        instance.weighted_risk_score = float(instance.sybil_score) * float(instance.clr_prediction_curve[0][1])
+        ss = float(instance.sybil_score)
+        instance.weighted_risk_score = float(ss ** 2) * float(math.sqrt(float(instance.clr_prediction_curve[0][1])))
     except Exception as e:
         print(e)
     instance.save()

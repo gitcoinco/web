@@ -917,6 +917,10 @@
             case 4:
               newPathName = 'participants';
               break;
+            case 5:
+              newPathName = 'showcase';
+              break;
+
           }
           let newUrl = `/hackathon/${vm.hackathonObj['slug']}/${newPathName}/${window.location.search}`;
 
@@ -930,7 +934,8 @@
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
         hackathonProjects: [],
-        chatURL: document.chatURL
+        chatURL: document.chatURL,
+        hackHasEnded: document.displayShowcase
       })
     });
   });

@@ -62,7 +62,7 @@ class Command(BaseCommand):
         DECIMALS = 18
         what = options['what']
         DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6a6e8b58dee0ca4b4ee147ad72d3ddd2ef1bf6f7'
-        CLR_TOKEN_ADDRESS = '0x7c19252abedce09724bfc3549925d3ea12770156' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
+        CLR_TOKEN_ADDRESS = '0xed8306f10a5aa548d09c1d9c622f3f58dd9f2144' if network=='mainnet' else '0xc19b694ebd4309d7a2adcd9970f8d7f424a1528b'
 
         # get data
         scheduled_matches = CLRMatch.objects.filter(round_number=clr_round)
@@ -80,12 +80,13 @@ class Command(BaseCommand):
                 return
             for grant in grants:
                 amount = grant.clr_match_estimate_this_round
+                has_already_kyc = grant.clr_matches.filter(has_passed_kyc=True).exists()
                 if not amount:
                     continue
                 already_exists = scheduled_matches.filter(grant=grant).exists()
                 if already_exists:
                     continue
-                needs_kyc = amount > KYC_THRESHOLD
+                needs_kyc = amount > KYC_THRESHOLD and not has_already_kyc
                 comments = "" if not needs_kyc else "Needs KYC"
                 ready_for_test_payout = not needs_kyc
                 match = CLRMatch.objects.create(
@@ -119,7 +120,7 @@ class Command(BaseCommand):
             is_real_payout = what == 'payout_dai'
             TOKEN_ADDRESS = DAI_ADDRESS if is_real_payout else CLR_TOKEN_ADDRESS
             kwargs = {}
-            token_name = 'CLR5' if not is_real_payout else 'DAI'
+            token_name = f'CLR{clr_round}' if not is_real_payout else 'DAI'
             key = 'ready_for_test_payout' if not is_real_payout else 'ready_for_payout'
             kwargs[key] = False
             not_ready_scheduled_matches = scheduled_matches.filter(**kwargs)
@@ -159,14 +160,36 @@ class Command(BaseCommand):
                 address = Web3.toChecksumAddress(address)
 
                 amount = int(amount_owed * 10**DECIMALS)
-                tx = contract.functions.transfer(address, amount).buildTransaction({
+                tx_args = {
                     'nonce': w3.eth.getTransactionCount(from_address),
                     'gas': 100000,
                     'gasPrice': int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 10**9 * 1.4)
-                })
+                }
+                tx = contract.functions.transfer(address, amount).buildTransaction(tx_args)
 
                 signed = w3.eth.account.signTransaction(tx, from_pk)
-                tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+                tx_id = None
+                success = False
+                counter = 0
+                while not success:
+                    try:
+                        tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+                        success = True
+                    except Exception as e:
+                        counter +=1
+                        if 'replacement transaction underpriced' in str(e):
+                            print(f'replacement transaction underpriced. retrying {counter}')
+                            time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
+                        elif 'nonce too low' in str(e):
+                            print(f'nonce too low. retrying {counter}')
+                            time.sleep(WAIT_TIME_BETWEEN_PAYOUTS)
+
+                            # rebuild txn
+                            tx_args['nonce'] = w3.eth.getTransactionCount(from_address)
+                            tx = contract.functions.transfer(address, amount).buildTransaction(tx_args)
+                            signed = w3.eth.account.signTransaction(tx, from_pk)
+                        else:
+                            raise e
 
                 if not tx_id:
                     print("cannot pay advance, did not get a txid")

@@ -248,8 +248,13 @@ Vue.mixin({
         });
       }
     },
-    getTenant: function(token_name) {
+    getTenant: function(token_name, web3_type) {
       let tenant;
+
+      if (web3_type == 'manual') {
+        tenant = 'OTHERS';
+        return tenant;
+      }
 
       switch (token_name) {
 
@@ -272,7 +277,7 @@ Vue.mixin({
 
       return tenant;
     },
-    fulfillmentComplete: function(fulfillment_id, event) {
+    fulfillmentComplete: function(payout_type, fulfillment_id, event) {
       let vm = this;
 
       const token_name = vm.bounty.token_name;
@@ -280,10 +285,10 @@ Vue.mixin({
       const amount = vm.fulfillment_context.amount;
       const payout_tx_id = vm.fulfillment_context.payout_tx_id ? vm.fulfillment_context.payout_tx_id : null;
       const funder_address = vm.bounty.bounty_owner_address;
-      const tenant = vm.getTenant(token_name);
+      const tenant = vm.getTenant(token_name, vm.bounty.web3_type);
 
       const payload = {
-        payout_type: 'qr',
+        payout_type: payout_type,
         tenant: tenant,
         amount: amount * 10 ** decimals,
         token_name: token_name,
@@ -497,12 +502,19 @@ Vue.mixin({
     initFulfillmentContext: function(fulfillment) {
       let vm = this;
 
-      if (fulfillment.payout_type == 'fiat') {
-        vm.fulfillment_context.active_step = 'payout_amount';
-      } else if (fulfillment.payout_type == 'qr') {
-        vm.fulfillment_context.active_step = 'check_wallet_owner';
-      } else if (fulfillment.payout_type == 'web3_modal') {
-        vm.fulfillment_context.active_step = 'payout_amount';
+      switch (fulfillment.payout_type) {
+        case 'fiat':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
+
+        case 'qr':
+        case 'manual':
+          vm.fulfillment_context.active_step = 'check_wallet_owner';
+          break;
+
+        case 'web3_modal':
+          vm.fulfillment_context.active_step = 'payout_amount';
+          break;
       }
     }
   },
