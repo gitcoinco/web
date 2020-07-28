@@ -4893,6 +4893,33 @@ class HackathonProject(SuperModel):
     def get_absolute_url(self):
         return self.url()
 
+    def to_json(self):
+        profiles = [
+            {
+                'handle': profile.handle,
+                'name': profile.name,
+                'email': profile.email,
+                'payout_address': profile.preferred_payout_address,
+                'url': profile.url,
+                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else ''
+            } for profile in self.profiles.all()
+        ]
+
+        return {
+            'pk': self.pk,
+            'name': self.name,
+            'logo': self.logo.url,
+            'badge': self.badge,
+            'profiles': profiles,
+            'work_url': self.work_url,
+            'summary': self.summary,
+            'status': self.status,
+            'message': self.message,
+            'chat_channel_id': self.chat_channel_id,
+            'winner': self.winner,
+            'extra': self.extra
+        }
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(
