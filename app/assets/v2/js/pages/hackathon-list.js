@@ -1,7 +1,7 @@
 $(document).ready(function() {
   $(document).on('click', '#tabs a', function(e) {
     e.preventDefault();
-    var target = $(this).data('href');
+    let target = $(this).data('href');
 
     $('.hackathons-list').addClass('hidden');
     $('.nav-link').removeClass('active');
