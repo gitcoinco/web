@@ -214,6 +214,7 @@ def get_offers(request):
     offer_pks = []
     offers_by_category = {}
     available_offers = Offer.objects.current()
+    
     if request.user.is_authenticated:
         available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
     for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:
