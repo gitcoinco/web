@@ -1,0 +1,15 @@
+{
+  "symbol": "mUSD",
+  "address": "0xe2f2a5C287993345a840Db3B0845fbC70f5935a5",
+  "overview":{
+        "en": "The mStable Standard is a protocol with the goal of making stablecoins and other tokenized assets easy, robust, and profitable."
+  },
+  "email": "info@mstable.org",
+  "website": "https://mstable.org",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "https://twitter.com/mstable_",
+    "telegram": "https://t.me/mstableofficial",
+    "github": "https://github.com/mstable"
+  }
+}
