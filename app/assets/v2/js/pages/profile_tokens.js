@@ -12,15 +12,20 @@ $(document).on('click', '#redeemPTokens', (event) => {
 
 $(document).on('click', '#submit_buy_token', (event) => {
   event.preventDefault();
-  const form = $('#ptokenBuyForm')[0];
 
-  if (form.checkValidity() === false) {
-    event.stopPropagation();
+  // Hide existing validation errors
+  $('#ptokenAmount').removeClass('is-invalid');
+  $('#ptokenAmount ~ .invalid-feedback').hide();
+  $('#ptokenTerms').removeClass('is-invalid');
+  $('#ptokenTerms ~ .invalid-feedback').hide();
+
+  // Validate form
     const amount = parseFloat($('#ptokenAmount').val());
 
-    if (isNaN(amount) || amount < 0) {
+  if (isNaN(amount) || amount < 0 || amount > document.current_ptoken_total_available) {
       $('#ptokenAmount').addClass('is-invalid');
       $('#ptokenAmount ~ .invalid-feedback').show();
+    return;
     } else {
       $('#ptokenAmount').removeClass('is-invalid');
       $('#ptokenAmount ~ .invalid-feedback').hide();
@@ -29,18 +34,13 @@ $(document).on('click', '#submit_buy_token', (event) => {
     if (!$('#ptokenTerms').is(':checked')) {
       $('#ptokenTerms').addClass('is-invalid');
       $('#ptokenTerms ~ .invalid-feedback').show();
+    return;
     } else {
       $('#ptokenTerms').removeClass('is-invalid');
       $('#ptokenTerms ~ .invalid-feedback').hide();
     }
-    return;
-  }
 
-  $('#ptokenAmount').removeClass('is-invalid');
-  $('#ptokenAmount ~ .invalid-feedback').hide();
-  $('#ptokenTerms').removeClass('is-invalid');
-  $('#ptokenTerms ~ .invalid-feedback').hide();
-
+  // Form is good, so continue with transaction
   buyPToken($('#ptokenAmount').val());
 });
 
