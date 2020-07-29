@@ -65,6 +65,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   const form = $('#ptokenRedeemForm')[0];
   const amountField = $(form.ptokenRedeemAmount);
   const tos = $(form.ptokenRedeemTerms);
+  const descriptionField = $(form.ptokenRedeemDescription);
   const redeem_amount = parseFloat(amountField.val());
   const redeem_description = $('#ptokenRedeemDescription').val();
 
@@ -90,6 +91,12 @@ $(document).on('click', '#submit_redeem_token', (event) => {
     return;
   }
   amountField.removeClass('is-invalid');
+
+  if (redeem_description.length < 1) {
+    _alert('Please describe what you would like to redeem the token for', 'error', 2000);
+    descriptionField.addClass('is-invalid');
+    return;
+  }
 
   requestPtokenRedemption(redeem_amount, redeem_description);
 });
@@ -209,8 +216,9 @@ async function buyPToken(tokenAmount) {
 async function requestPtokenRedemption(tokenAmount, redemptionDescription) {
   try {
     const network = checkNetwork(); // no web3 transactions are needed to request redemption 
-
     request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network);
+    $('#redeemTokenModal').bootstrapModal('hide');
+    _alert('Your redemption request was successful! You should hear from the token owner shortly.', 'success');
   } catch (err) {
     handleError(err);
   }
