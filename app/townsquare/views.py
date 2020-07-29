@@ -311,8 +311,7 @@ def ignored_suggested_tribe(request, tribeId):
     profile = request.user.profile
     tribe_profile = get_object_or_404(Profile, handle__iexact=tribeId)
 
-    profile.ignore_tribes.append(tribe_profile.id)
-    profile.save()
+    profile.ignore_tribes.add(tribe_profile)
 
     return JsonResponse({
        'tribes': get_suggested_tribes(request)
@@ -323,8 +322,9 @@ def get_suggested_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
         profile = request.user.profile
+        ignore = list(profile.ignore_tribes.all().values_list('pk', flat=True))
         handles = TribeMember.objects.filter(profile=profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).exclude(pk__in=profile.ignore_tribes).order_by('-follower_count')
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).exclude(pk__in=ignore).order_by('-follower_count')
         count = tribes.count()
 
         if count > 5:
