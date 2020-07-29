@@ -4,11 +4,10 @@
   "overview":{
         "en": "Chai is an ERC20 token that lets you earn interest on Dai without requiring it to be locked in the Dai Savings Rate. It can be transfered freely and is always redeemable for an ever growing amount of Dai."
   },
-  "website": "https://chain.link/",
+  "website": "https://chai.money/",
   "state": "NORMAL",
   "links": {
-    "twitter": "https://twitter.com/chainlink",
-    "telegram": "https://t.me/chainlinkofficial",
-    "reddit": "https://www.reddit.com/r/Chainlink/"
+    "twitter": "https://twitter.com/MartinLundfall",
+    "gihub": "https://github.com/dapphub/chai"
   }
 }
