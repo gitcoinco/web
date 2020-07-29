@@ -1188,7 +1188,7 @@
                   </div>
                 </bounty-explorer>
               </b-tab>
-              <b-tab v-if="is_my_org" class="col-12" title-item-class="navigation">
+              <b-tab v-if="is_my_org || is_staff" class="col-12" title-item-class="navigation">
                 <template v-slot:title>
                   <div class="mt-3">
                     {% trans "Manage" %}
