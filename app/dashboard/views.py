@@ -3621,7 +3621,12 @@ def hackathon_prizes(request, hackathon=''):
         query_prizes = Bounty.objects.filter(event=hackathon_event)
     elif is_sponsor_member.exists():
         sponsor = is_sponsor_member.first()
-        query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=sponsor)
+        profiles = list(sponsor.team.values_list('id', flat=True)) + [sponsor.id]
+        query_prizes = Bounty.objects.filter(event=hackathon_event).filter(Q(bounty_owner_profile__in=profiles) |
+                                                                           Q(admin_override_org_name__in=[
+                                                                               sponsor.name,
+                                                                               sponsor.handle
+                                                                           ]))
     elif funded_bounties.exists():
         query_prizes = funded_bounties
     else:
@@ -3664,7 +3669,13 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         query_prizes = Bounty.objects.filter(event=hackathon_event)
     elif is_sponsor_member.exists():
         sponsor_profile = is_sponsor_member.first()
-        query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=sponsor_profile)
+        sponsor = is_sponsor_member.first()
+        profiles = list(sponsor.team.values_list('id', flat=True)) + [sponsor.id]
+        query_prizes = Bounty.objects.filter(event=hackathon_event).filter(Q(bounty_owner_profile__in=profiles) |
+                                                                           Q(admin_override_org_name__in=[
+                                                                               sponsor.name,
+                                                                               sponsor.handle
+                                                                           ]))
     elif founded_bounties.exists():
         sponsor_profile = profile
         query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=profile)
