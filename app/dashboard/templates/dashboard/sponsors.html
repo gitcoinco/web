@@ -266,7 +266,6 @@
       document.hackathon_id = "{{ hackathon.id | safe }}";
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
-      document.is_sponsor = {{ is_sponsor|yesno:'true,false' }}
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
     </script>
     <script src='{% static "v2/js/pages/dashboard-sponsors.js" %}'></script>
