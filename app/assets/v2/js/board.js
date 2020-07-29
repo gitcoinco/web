@@ -441,8 +441,18 @@ Vue.mixin({
       ).send({
         from: user
       }).on('transactionHash', async function(transactionHash) {
-        // Save to database
         indicateMetamaskPopup(true);
+        // Get url of transaction hash
+        const etherscanUrl = document.web3network === 'mainnet'
+        ? `https://etherscan.io/tx/${transactionHash}`
+        : `https://${document.web3network}.etherscan.io/tx/${transactionHash}`;
+
+        // Hide creation modal and show congratulations modal
+        $('#closeCreatePtokenModal').click()
+        $('#showCreationSuccessModal').click()
+        $('#success-tx').prop('href', etherscanUrl);
+
+        // Save to database
         const ptokenReponse = await create_ptoken(
           newPToken.name,
           newPToken.symbol,

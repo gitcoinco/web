@@ -53,6 +53,7 @@
               <div>
                 Create a personal token to get paid today for work tomorrow <a href="{% url 'ptoken_quickstart' %}" class="underline">Learn more</a>
               </div>
+              <div id="showCreationSuccessModal" hidden data-toggle="modal" data-target="#createTokenSuccessModal"></div>
               <button class="btn btn-sm btn-outline-gc-blue m-2" data-toggle="modal" data-target="#createTokenModal">
                 Create
               </button>
@@ -293,5 +294,6 @@
   </section>
 
   {% include 'shared/create_ptoken.html' %}
+  {% include 'shared/create_ptoken_success.html' %}
   {% include 'shared/edit_ptoken.html' %}
 </div>
