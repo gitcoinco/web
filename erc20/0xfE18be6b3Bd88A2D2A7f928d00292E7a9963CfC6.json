@@ -1,0 +1,16 @@
+{
+  "symbol": "sBTC",
+  "address": "0xfE18be6b3Bd88A2D2A7f928d00292E7a9963CfC6",
+  "overview":{
+        "en": "A synthetic asset issued by the Synthetix protocol which tracks the price of Bitcoin (BTC). BTC is the native digital currency of the Bitcoin blockchain, a peer-to-peer network that allows anyone to trustlessly send and receive BTC."
+  },
+  "email": "info@synthetix.io",
+  "website": "https://www.synthetix.io/",
+  "state": "NORMAL",
+  "links": {
+    "blog": "https://blog.synthetix.io/",
+    "twitter": "https://twitter.com/synthetix_io",
+    "github": "https://github.com/Synthetixio",
+    "reddit": "https://reddit.com/r/synthetix_io"
+  }
+}
