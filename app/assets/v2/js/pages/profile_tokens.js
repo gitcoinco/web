@@ -20,25 +20,25 @@ $(document).on('click', '#submit_buy_token', (event) => {
   $('#ptokenTerms ~ .invalid-feedback').hide();
 
   // Validate form
-    const amount = parseFloat($('#ptokenAmount').val());
+  const amount = parseFloat($('#ptokenAmount').val());
 
   if (isNaN(amount) || amount < 0 || amount > document.current_ptoken_total_available) {
-      $('#ptokenAmount').addClass('is-invalid');
-      $('#ptokenAmount ~ .invalid-feedback').show();
+    $('#ptokenAmount').addClass('is-invalid');
+    $('#ptokenAmount ~ .invalid-feedback').show();
     return;
-    } else {
-      $('#ptokenAmount').removeClass('is-invalid');
-      $('#ptokenAmount ~ .invalid-feedback').hide();
-    }
+  }
+  $('#ptokenAmount').removeClass('is-invalid');
+  $('#ptokenAmount ~ .invalid-feedback').hide();
+    
 
-    if (!$('#ptokenTerms').is(':checked')) {
-      $('#ptokenTerms').addClass('is-invalid');
-      $('#ptokenTerms ~ .invalid-feedback').show();
+  if (!$('#ptokenTerms').is(':checked')) {
+    $('#ptokenTerms').addClass('is-invalid');
+    $('#ptokenTerms ~ .invalid-feedback').show();
     return;
-    } else {
-      $('#ptokenTerms').removeClass('is-invalid');
-      $('#ptokenTerms ~ .invalid-feedback').hide();
-    }
+  }
+  $('#ptokenTerms').removeClass('is-invalid');
+  $('#ptokenTerms ~ .invalid-feedback').hide();
+    
 
   // Form is good, so continue with transaction
   buyPToken($('#ptokenAmount').val());
@@ -118,6 +118,7 @@ function getTokenByName(name) {
 async function buyPToken(tokenAmount) {
   try {
     const network = checkWeb3();
+
     BN = web3.utils.BN;
 
     [user] = await web3.eth.getAccounts();
@@ -147,7 +148,7 @@ async function buyPToken(tokenAmount) {
         .purchase(amount.toString())
         // We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
         // that their transaction will fail because the approval tx has not yet been confirmed
-        .send({ from: user, gasLimit: '100000' })
+        .send({ from: user, gasLimit: '300000' })
         .on('transactionHash', function(transactionHash) {
 
           _alert('Saving transaction. Please do not leave this page.', 'success', 5000);
@@ -162,8 +163,9 @@ async function buyPToken(tokenAmount) {
           );
           console.log('Purchase saved as pending transaction in database');
 
-          const successMsg = 'Congratulations, your token purchsae was successful!';
+          const successMsg = 'Congratulations, your token purchase was successful!';
           const errorMsg = 'Oops, something went wrong purchasing the token. Please try again or contact support@gitcoin.co';
+
           updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
 
           waitingState(false);
@@ -215,7 +217,8 @@ async function buyPToken(tokenAmount) {
 
 async function requestPtokenRedemption(tokenAmount, redemptionDescription) {
   try {
-    const network = checkNetwork(); // no web3 transactions are needed to request redemption 
+    const network = checkNetwork(); // no web3 transactions are needed to request redemption
+
     request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network);
     $('#redeemTokenModal').bootstrapModal('hide');
     _alert('Your redemption request was successful! You should hear from the token owner shortly.', 'success');
@@ -263,9 +266,10 @@ function handleError(err) {
  */
 async function updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg) {
   console.log('Waiting for transaction to be mined...');
-  callFunctionWhenTransactionMined(transactionHash, async () => {
-    console.log("Transaction mined, updating database...");
+  callFunctionWhenTransactionMined(transactionHash, async() => {
+    console.log('Transaction mined, updating database...');
     const res = await update_ptokens(); // update all ptokens in DB
+
     if (res.status === 200) {
       _alert(successMsg, 'success');
       console.log(successMsg);
