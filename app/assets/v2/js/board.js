@@ -318,6 +318,7 @@ Vue.mixin({
         let supply = parseFloat(this.pToken.supply);
         let supply_locked = document.ptoken.supply - document.ptoken.available;
         let stopFlow;
+        const handleError = this.handleError;
 
         if (isNaN(price) || price <= 0) {
           this.$set(this.pToken, 'is_invalid_price', true);
@@ -352,7 +353,6 @@ Vue.mixin({
         const { user } = await this.checkWeb3();
         const pTokenId = this.pToken.id;
         const ptoken = await new web3.eth.Contract(document.contxt.ptoken_abi, this.pToken.address);
-        const handleError = this.handleError;
         const updatePtokenStatusinDatabase = this.updatePtokenStatusinDatabase;
 
         // Changing price
@@ -416,7 +416,7 @@ Vue.mixin({
         $('#closeEdit').click();
         this.pToken.deploying = false;
       } catch (error) {
-        console.log(error);
+        handleError(error);
       }
     },
     async deployAndSaveToken() {
@@ -441,8 +441,18 @@ Vue.mixin({
       ).send({
         from: user
       }).on('transactionHash', async function(transactionHash) {
-        // Save to database
         indicateMetamaskPopup(true);
+        // Get url of transaction hash
+        const etherscanUrl = document.web3network === 'mainnet'
+        ? `https://etherscan.io/tx/${transactionHash}`
+        : `https://${document.web3network}.etherscan.io/tx/${transactionHash}`;
+
+        // Hide creation modal and show congratulations modal
+        $('#closeCreatePtokenModal').click()
+        $('#showCreationSuccessModal').click()
+        $('#success-tx').prop('href', etherscanUrl);
+
+        // Save to database
         const ptokenReponse = await create_ptoken(
           newPToken.name,
           newPToken.symbol,
@@ -566,7 +576,6 @@ Vue.mixin({
 
     async checkWeb3() {
       if (!web3) {
-        _alert('Please connect a wallet', 'error');
         throw new Error('Please connect a wallet');
       }
       [user] = await web3.eth.getAccounts();
@@ -574,8 +583,7 @@ Vue.mixin({
       if (document.web3network === 'rinkeby' || document.web3network === 'mainnet') {
         purchaseTokenAddress = this.getTokenByName('DAI').addr;
       } else {
-        _alert('Unsupported network', 'error');
-        throw new Error('Please connect a wallet');
+        throw new Error('Unsupported network');
       }
 
       return { user, purchaseTokenAddress };

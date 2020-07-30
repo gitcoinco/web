@@ -12,35 +12,35 @@ $(document).on('click', '#redeemPTokens', (event) => {
 
 $(document).on('click', '#submit_buy_token', (event) => {
   event.preventDefault();
-  const form = $('#ptokenBuyForm')[0];
 
-  if (form.checkValidity() === false) {
-    event.stopPropagation();
-    const amount = parseFloat($('#ptokenAmount').val());
-
-    if (isNaN(amount) || amount < 0) {
-      $('#ptokenAmount').addClass('is-invalid');
-      $('#ptokenAmount ~ .invalid-feedback').show();
-    } else {
-      $('#ptokenAmount').removeClass('is-invalid');
-      $('#ptokenAmount ~ .invalid-feedback').hide();
-    }
-
-    if (!$('#ptokenTerms').is(':checked')) {
-      $('#ptokenTerms').addClass('is-invalid');
-      $('#ptokenTerms ~ .invalid-feedback').show();
-    } else {
-      $('#ptokenTerms').removeClass('is-invalid');
-      $('#ptokenTerms ~ .invalid-feedback').hide();
-    }
-    return;
-  }
-
+  // Hide existing validation errors
   $('#ptokenAmount').removeClass('is-invalid');
   $('#ptokenAmount ~ .invalid-feedback').hide();
   $('#ptokenTerms').removeClass('is-invalid');
   $('#ptokenTerms ~ .invalid-feedback').hide();
 
+  // Validate form
+  const amount = parseFloat($('#ptokenAmount').val());
+
+  if (isNaN(amount) || amount < 0 || amount > document.current_ptoken_total_available) {
+    $('#ptokenAmount').addClass('is-invalid');
+    $('#ptokenAmount ~ .invalid-feedback').show();
+    return;
+  }
+  $('#ptokenAmount').removeClass('is-invalid');
+  $('#ptokenAmount ~ .invalid-feedback').hide();
+    
+
+  if (!$('#ptokenTerms').is(':checked')) {
+    $('#ptokenTerms').addClass('is-invalid');
+    $('#ptokenTerms ~ .invalid-feedback').show();
+    return;
+  }
+  $('#ptokenTerms').removeClass('is-invalid');
+  $('#ptokenTerms ~ .invalid-feedback').hide();
+    
+
+  // Form is good, so continue with transaction
   buyPToken($('#ptokenAmount').val());
 });
 
@@ -65,6 +65,7 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   const form = $('#ptokenRedeemForm')[0];
   const amountField = $(form.ptokenRedeemAmount);
   const tos = $(form.ptokenRedeemTerms);
+  const descriptionField = $(form.ptokenRedeemDescription);
   const redeem_amount = parseFloat(amountField.val());
   const redeem_description = $('#ptokenRedeemDescription').val();
 
@@ -91,6 +92,12 @@ $(document).on('click', '#submit_redeem_token', (event) => {
   }
   amountField.removeClass('is-invalid');
 
+  if (redeem_description.length < 1) {
+    _alert('Please describe what you would like to redeem the token for', 'error', 2000);
+    descriptionField.addClass('is-invalid');
+    return;
+  }
+
   requestPtokenRedemption(redeem_amount, redeem_description);
 });
 
@@ -109,105 +116,112 @@ function getTokenByName(name) {
 }
 
 async function buyPToken(tokenAmount) {
-  await needWalletConnection();
-  BN = web3.utils.BN;
+  try {
+    const network = checkWeb3();
 
-  [user] = await web3.eth.getAccounts();
-  const pToken = await new web3.eth.Contract(
-    document.contxt.ptoken_abi,
-    document.current_ptoken_address
-  );
-  const network = document.web3network;
-  const tokenDetails = getTokenByName('DAI');
-  const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-  // To properly handle decimal values, we first convert to Wei and then to a BN instance
-  const token_value = new BN(web3.utils.toWei(String(document.current_ptoken_value)), 10);
-  const amount = new BN(web3.utils.toWei(tokenAmount, 'ether'));
-  // true value = token value * number of requested tokens
-  // We then need to convert from Wei to "undo" the above conversion of token_value to Wei
-  const true_value = new BN(web3.utils.fromWei(amount.mul(token_value)), 10);
-  const allowance = new BN(await getAllowance(document.current_ptoken_address, tokenDetails.addr), 10);
+    BN = web3.utils.BN;
 
-  const waitingState = (state) => {
-    indicateMetamaskPopup(!state);
-    $('#submit_buy_token').prop('disabled', state);
-    $('#close_buy_token').prop('disabled', state);
-  };
+    [user] = await web3.eth.getAccounts();
+    const pToken = await new web3.eth.Contract(
+      document.contxt.ptoken_abi,
+      document.current_ptoken_address
+    );
+    const tokenDetails = getTokenByName('DAI');
+    const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+    // To properly handle decimal values, we first convert to Wei and then to a BN instance
+    const token_value = new BN(web3.utils.toWei(String(document.current_ptoken_value)), 10);
+    const amount = new BN(web3.utils.toWei(tokenAmount, 'ether'));
+    // true value = token value * number of requested tokens
+    // We then need to convert from Wei to "undo" the above conversion of token_value to Wei
+    const true_value = new BN(web3.utils.fromWei(amount.mul(token_value)), 10);
+    const allowance = new BN(await getAllowance(document.current_ptoken_address, tokenDetails.addr), 10);
 
-  const purchasePToken = () => {
+    const waitingState = (state) => {
+      indicateMetamaskPopup(!state);
+      $('#submit_buy_token').prop('disabled', state);
+      $('#close_buy_token').prop('disabled', state);
+    };
+
+    const purchasePToken = () => {
+      waitingState(true);
+      pToken.methods
+        .purchase(amount.toString())
+        // We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
+        // that their transaction will fail because the approval tx has not yet been confirmed
+        .send({ from: user, gasLimit: '300000' })
+        .on('transactionHash', function(transactionHash) {
+
+          _alert('Saving transaction. Please do not leave this page.', 'success', 5000);
+          purchase_ptoken(
+            document.current_ptoken_id,
+            tokenAmount,
+            user,
+            (new Date()).toISOString(),
+            transactionHash,
+            network,
+            tokenDetails
+          );
+          console.log('Purchase saved as pending transaction in database');
+
+          const successMsg = 'Congratulations, your token purchase was successful!';
+          const errorMsg = 'Oops, something went wrong purchasing the token. Please try again or contact support@gitcoin.co';
+
+          updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
+
+          waitingState(false);
+          $('#buyTokenModal').bootstrapModal('hide');
+          $('#buy_ptoken_modal').bootstrapModal('show');
+          $('#buy-amount').text(tokenAmount);
+          const etherscanUrl = network === 'mainnet'
+            ? `https://etherscan.io/tx/${transactionHash}`
+            : `https://${network}.etherscan.io/tx/${transactionHash}`;
+
+          $('#buy-tx').prop('href', etherscanUrl);
+        }).on('error', (error, receipt) => {
+          waitingState(false);
+          handleError(error);
+        });
+      
+    };
+
+
+    // Check user token balance against token value
+    console.log(`== user allowance balance: ${allowance}`);
+    const userTokenBalance = await tokenContract.methods.balanceOf(user).call({ from: user });
+
+    // Balance is too small, exit checkout flow
+    console.log(`== user token balance: ${userTokenBalance}`);
+    if (new BN(userTokenBalance, 10).lt(true_value)) {
+      _alert(`Insufficient ${tokenDetails.name} balance to complete checkout`, 'error');
+      return;
+    }
+
     waitingState(true);
-    pToken.methods
-      .purchase(amount.toString())
-      // We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
-      // that their transaction will fail because the approval tx has not yet been confirmed
-      .send({ from: user, gasLimit: '100000' })
-      .on('transactionHash', function(transactionHash) {
-
-        _alert('Saving transaction. Please do not leave this page.', 'success', 5000);
-        purchase_ptoken(
-          document.current_ptoken_id,
-          tokenAmount,
-          user,
-          (new Date()).toISOString(),
-          transactionHash,
-          network,
-          tokenDetails
-        );
-        console.log('Purchase saved as pending transaction in database');
-
-        const successMsg = 'Congratulations, your token purchsae was successful!';
-        const errorMsg = 'Oops, something went wrong purchasing the token. Please try again or contact support@gitcoin.co';
-        updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
-
-        waitingState(false);
-        $('#buyTokenModal').bootstrapModal('hide');
-        $('#buy_ptoken_modal').bootstrapModal('show');
-        $('#buy-amount').text(tokenAmount);
-        const etherscanUrl = network === 'mainnet'
-          ? `https://etherscan.io/tx/${transactionHash}`
-          : `https://${network}.etherscan.io/tx/${transactionHash}`;
-
-        $('#buy-tx').prop('href', etherscanUrl);
-      }).on('error', (error, receipt) => {
-        waitingState(false);
-        console.log(error);
-      });
-  };
-
-
-  // Check user token balance against token value
-  console.log(`== user allowance balance: ${allowance}`);
-  const userTokenBalance = await tokenContract.methods.balanceOf(user).call({ from: user });
-
-  // Balance is too small, exit checkout flow
-  console.log(`== user token balance: ${userTokenBalance}`);
-  if (new BN(userTokenBalance, 10).lt(true_value)) {
-    _alert(`Insufficient ${tokenDetails.name} balance to complete checkout`, 'error');
-    return;
-  }
-
-  waitingState(true);
-  indicateMetamaskPopup();
-  if (allowance.lt(true_value)) {
-    tokenContract.methods.approve(document.current_ptoken_address, true_value.toString())
-      .send({from: user})
-      .on('transactionHash', function(txHash) {
-        indicateMetamaskPopup(true);
-        purchasePToken();
-      }).on('error', (error, receipt) => {
-        indicateMetamaskPopup(true);
-        console.log(error);
-      });
-  } else {
-    purchasePToken();
+    indicateMetamaskPopup();
+    if (allowance.lt(true_value)) {
+      tokenContract.methods.approve(document.current_ptoken_address, true_value.toString())
+        .send({from: user})
+        .on('transactionHash', function(txHash) {
+          indicateMetamaskPopup(true);
+          purchasePToken();
+        }).on('error', (error, receipt) => {
+          handleError(error);
+        });
+    } else {
+      purchasePToken();
+    }
+  } catch (error) {
+    handleError(error);
   }
 }
 
 async function requestPtokenRedemption(tokenAmount, redemptionDescription) {
   try {
-    const network = checkNetwork();
+    const network = checkNetwork(); // no web3 transactions are needed to request redemption
 
     request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network);
+    $('#redeemTokenModal').bootstrapModal('hide');
+    _alert('Your redemption request was successful! You should hear from the token owner shortly.', 'success');
   } catch (err) {
     handleError(err);
   }
@@ -221,6 +235,14 @@ function checkNetwork() {
     throw new Error('Please connect a wallet');
   }
   return document.web3network;
+}
+
+function checkWeb3() {
+  if (!web3) {
+    _alert('Please connect a wallet', 'error');
+    throw new Error('Please connect a wallet');
+  }
+  return checkNetwork();
 }
 
 function handleError(err) {
@@ -244,9 +266,10 @@ function handleError(err) {
  */
 async function updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg) {
   console.log('Waiting for transaction to be mined...');
-  callFunctionWhenTransactionMined(transactionHash, async () => {
-    console.log("Transaction mined, updating database...");
+  callFunctionWhenTransactionMined(transactionHash, async() => {
+    console.log('Transaction mined, updating database...');
     const res = await update_ptokens(); // update all ptokens in DB
+
     if (res.status === 200) {
       _alert(successMsg, 'success');
       console.log(successMsg);
