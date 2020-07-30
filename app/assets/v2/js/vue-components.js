@@ -9,9 +9,11 @@ Vue.mixin({
   },
   methods: {
     chatWindow: function(channel, dm) {
+      let vm = this;
+      
       dm = dm || channel ? channel.indexOf('@') >= 0 : false;
       channel = channel || 'town-square';
-      let vm = this;
+
       const hackathonTeamSlug = 'hackathons';
       const gitcoinTeamSlug = 'gitcoin';
       const isHackathon = (document.hackathon_id !== null);
@@ -399,6 +401,13 @@ Vue.component('showcase', {
         vm.spotlights = [spotlight];
       } else {
         vm.spotlights.push(spotlight);
+      }
+    },
+    removeSpotlight: function(index) {
+      let vm = this;
+
+      if (index > -1) {
+        vm.spotlights.splice(index, 1);
       }
     },
     saveShowcase: function() {

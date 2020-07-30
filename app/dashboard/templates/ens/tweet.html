@@ -1,5 +1,0 @@
-{% load i18n static %}
-
-    <h3>{% trans "Tell the world about your new ENS name!" %}</h3>
-    <a class="twitter-share-button"
-    href="https://twitter.com/intent/tweet?text={{"I just registered " |iriencode}}{{ github_handle|force_escape|lower }}.{{ens_domain}}{{" for free on Ethereum Name Service" |iriencode}}" data-size="large">Tweet</a>
