@@ -32,6 +32,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
@@ -4068,34 +4069,92 @@ def hackathon_save_project(request):
             'msg': _('Project saved.')
         })
 
-@csrf_exempt
-def hackathon_project_page(request, hackathon, project_id, project_name):
+
+@login_required
+def get_project(request, project_id):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-    try:
-        projects = HackathonProject.objects.all()
-    except HackathonProject.DoesNotExist:
-        pass
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        raise Http404("The project doesnt exists.")
 
-
-    if project_id:
-        project = projects.filter(name=project_name).first()
-    else:
-        project = None
-        
-
+    hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     params = {
-        'name': project_name,
+        'project': {
+            'name': project.name,
+            'id': project.id,
+            'summary': project.summary,
+            'status': project.status,
+            'winner': project.winner,
+            'looking_members': project.looking_members,
+            'work_url': project.work_url,
+            'logo_url': project.logo.url if project.logo else staticfiles_storage.url(
+                f'v2/images/projects/logos/${project.id}.png'),
+            'prize': {
+                'id': project.bounty.id,
+                'title': project.bounty.title,
+                'avatar': project.bounty.avatar_url,
+                'org': project.bounty.org_display_name,
+                'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '#',
+                'url': project.bounty.url
+            },
+            'team_members': [{
+                'url': member_profile.url,
+                'handle': member_profile.handle,
+                'avatar': member_profile.avatar_url
+            } for member_profile in project.profiles.all()]
+        },
+        'hackathon': hackathon_obj[0],
+    }
+
+    return JsonResponse(params)
+
+
+def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        raise Http404("No MyModel matches the given query.")
+
+    active = 0
+    if tab == 'activity':
+        active = 1
+
+    hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    what = f'project:{project_id}'
+    params = {
+        'target': f'/activity?what={what}',
+        'what': what,
+        'tab': active,
+        'currentProfile': TribesSerializer(profile, context={'request': request}).data,
+        'is_member': project.profiles.filter(pk=profile.id).exists() if profile else False,
+        'project_obj': {
+            'name': project.name,
+            'id': project.id,
+            'summary': project.summary,
+            'status': project.status,
+            'winner': project.winner,
+            'looking_members': project.looking_members,
+            'work_url': project.work_url,
+            'logo_url': project.logo.url if project.logo else staticfiles_storage.url(f'v2/images/projects/logos/${project.id}.png'),
+            'prize': {
+                'id': project.bounty.id,
+                'title': project.bounty.title,
+                'avatar': project.bounty.avatar_url,
+                'org': project.bounty.org_display_name,
+                'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '#',
+                'url': project.bounty.url
+            },
+            'team_members': [{
+                'url': member_profile.url,
+                'handle': member_profile.handle,
+                'avatar': member_profile.avatar_url
+            } for member_profile in project.profiles.all()]
+        },
+        'hackathon_obj': hackathon_obj[0],
         'hackathon': hackathon,
-        'project': project,
-        'project_id': project_id,
-        'summary': project.summary,
-        'status': project.status,
-        'winner': project.winner,
-        'looking_members': project.looking_members,
-        'work_url': project.work_url,
-        'logo': project.logo,
-        'prize': project.bounty,
+        'profile': profile,
     }
     return TemplateResponse(request, 'dashboard/hackathon/project_page.html', params)
 

@@ -241,7 +241,9 @@ urlpatterns = [
     ),
     path('hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>',
          dashboard.views.hackathon_project_page, name='hackathon_project_page'),
-         
+    path('hackathon/<str:hackathon>/projects/<int:project_id>/<str:project_name>/<str:tab>/',
+         dashboard.views.hackathon_project_page, name='hackathon_project_page'),
+
     path('modal/save_project/', dashboard.views.hackathon_save_project, name='hackathon_save_project'),
     # TODO: revisit if we need to keep these urls for legacy links
     # re_path(r'^hackathon/?$/?', dashboard.views.hackathon, name='hackathon_idx'),
@@ -255,7 +257,7 @@ urlpatterns = [
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v0.1/hackathon/<str:hackathon>/showcase/', dashboard.views.showcase, name='hackathon_showcase'),
-
+    path('api/v0.1/projects/<int:project_id>', dashboard.views.get_project, name='project_context'),
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),
     re_path(
