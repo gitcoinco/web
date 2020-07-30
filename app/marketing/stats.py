@@ -502,15 +502,6 @@ def bounties_fulfilled():
         )
 
 
-def ens():
-    from enssubdomain.models import ENSSubdomainRegistration
-
-    Stat.objects.create(
-        key='ens_subdomains',
-        val=(ENSSubdomainRegistration.objects.count()),
-        )
-
-
 def sendcryptoassets():
     from revenue.models import DigitalGoodPurchase
     from dashboard.models import Tip

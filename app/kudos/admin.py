@@ -79,6 +79,7 @@ class BulkTransferCouponAdmin(admin.ModelAdmin):
     list_display = ['created_on', '__str__']
     raw_id_fields = ['sender_profile', 'token']
     readonly_fields = ['claim']
+    search_fields = ['comments_to_put_in_kudos_transfer', 'secret', 'token__name']
 
     def claim(self, instance):
         url = instance.url

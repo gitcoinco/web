@@ -44,7 +44,6 @@ from chartit import PivotChart, PivotDataPool
 from chat.tasks import update_chat_notifications
 from dashboard.models import Activity, HackathonEvent, Profile, TokenApproval
 from dashboard.utils import create_user_action, get_orgs_perms, is_valid_eth_address
-from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from grants.models import Grant
 from marketing.country_codes import COUNTRY_CODES, COUNTRY_NAMES, FLAG_API_LINK, FLAG_ERR_MSG, FLAG_SIZE, FLAG_STYLE
@@ -76,10 +75,7 @@ def get_settings_navs(request):
     }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
-    }, {
-        'body': 'ENS',
-        'href': reverse('ens_settings')
-    }, {
+    },{
         'body': _('Account'),
         'href': reverse('account_settings'),
     }, {
@@ -478,37 +474,6 @@ def token_settings(request):
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
     }
     return TemplateResponse(request, 'settings/tokens.html', context)
-
-
-def ens_settings(request):
-    """Display and save user's ENS settings.
-
-    Returns:
-        TemplateResponse: The user's ENS settings template response.
-
-    """
-    response = {'output': ''}
-    profile, es, user, is_logged_in = settings_helper_get_auth(request)
-
-    if not user or not is_logged_in:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
-
-    ens_subdomains = ENSSubdomainRegistration.objects.filter(profile=profile).order_by('-pk')
-    ens_subdomain = ens_subdomains.first() if ens_subdomains.exists() else None
-
-    context = {
-        'is_logged_in': is_logged_in,
-        'nav': 'home',
-        'ens_subdomain': ens_subdomain,
-        'active': '/settings/ens',
-        'title': _('ENS Settings'),
-        'navs': get_settings_navs(request),
-        'es': es,
-        'profile': profile,
-        'msg': response['output'],
-    }
-    return TemplateResponse(request, 'settings/ens.html', context)
 
 
 def account_settings(request):

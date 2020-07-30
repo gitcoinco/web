@@ -24,6 +24,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 from decimal import Decimal
+from functools import reduce
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -4707,6 +4708,7 @@ class HackathonEvent(SuperModel):
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
+    display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):
@@ -4733,6 +4735,22 @@ class HackathonEvent(SuperModel):
 
         """
         return settings.BASE_URL + self.relative_url
+
+    def get_total_prizes(self, force=False):
+        if force or self.showcase.get('prizes_count') is None:
+            prizes_count = Bounty.objects.filter(event=self).distinct().count()
+            self.showcase['prizes_count'] = prizes_count
+            self.save()
+
+        return self.showcase.get('prizes_count', 0)
+
+    def get_total_winners(self, force=False):
+        if force or self.showcase.get('winners_count') is None:
+            bounties = Bounty.objects.filter(event=self).distinct()
+            self.showcase['winners_count'] = reduce(lambda total, prize: total + len(prize.paid), bounties, 0)
+            self.save()
+
+        return self.showcase.get('winners_count', 0)
 
     @property
     def onboard_url(self):
@@ -4874,6 +4892,33 @@ class HackathonProject(SuperModel):
 
     def get_absolute_url(self):
         return self.url()
+
+    def to_json(self):
+        profiles = [
+            {
+                'handle': profile.handle,
+                'name': profile.name,
+                'email': profile.email,
+                'payout_address': profile.preferred_payout_address,
+                'url': profile.url,
+                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else ''
+            } for profile in self.profiles.all()
+        ]
+
+        return {
+            'pk': self.pk,
+            'name': self.name,
+            'logo': self.logo.url,
+            'badge': self.badge,
+            'profiles': profiles,
+            'work_url': self.work_url,
+            'summary': self.summary,
+            'status': self.status,
+            'message': self.message,
+            'chat_channel_id': self.chat_channel_id,
+            'winner': self.winner,
+            'extra': self.extra
+        }
 
 
 class FeedbackEntry(SuperModel):
