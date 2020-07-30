@@ -60,7 +60,7 @@
           let project = this.project;
           let vm = this;
 
-          projectModal(project.prize.id, project.id, async () => {
+          projectModal(project.prize.id, project.id, async() => {
             const context = await fetchData(`/api/v0.1/projects/${project.id}`);
 
             console.log(context);
