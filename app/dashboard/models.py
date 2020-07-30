@@ -4890,6 +4890,10 @@ class HackathonProject(SuperModel):
         slug = slugify(self.name)
         return f'/hackathon/projects/{self.hackathon.slug}/{slug}/'
 
+    def url_page(self):
+        slug = slugify(self.name)
+        return f'/hackathon/{self.bounty.org_name}/projects/{self.pk}/${self.name}'
+
     def get_absolute_url(self):
         return self.url()
 
