@@ -123,19 +123,6 @@
                 <h5 class="mt-4">Funding Information</h5>
                 <hr>
                 <div class="form__group-horizontal pb-3">
-                  <div class="row">
-                    <div class="col-12 col-md-12">
-                      <label class="font-body">{% trans "Accepted Tokens" %}</label>
-                      <div class="form__select2">
-                        <select class='js-select2' name='denomination' id='js-token'>
-                          <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form__group-horizontal pb-3">
                   <label class="font-body" for="input-admin_address">{% trans "Funding Recipient Wallet Address" %}</label>
                   <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required placeholder="0x00... or domain.eth"/>
                   <label class="font-body" for="input-admin_address">{% trans "This is where funds from contributors to this grant will be sent." %}</label>
@@ -156,8 +143,6 @@
                   <input type="hidden" id="contract_address" name="contract_address" />
                   <input type="hidden" id="contract_owner_address" name="contract_owner_address">
                   <input type="hidden" id="contract_version" name="contract_version" value="2">
-                  <input type="hidden" id="token_address" name="token_address" value="">
-                  <input type="hidden" id="token_symbol" name="token_symbol" value="">
                   <input type="hidden" id="category" name="category" value="">
                   <input type="hidden" id="network" name="network">
                   <input type="hidden" id="trusted_relayer" name="trusted_relayer" value="{{ trusted_relayer }}">

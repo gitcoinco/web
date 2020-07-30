@@ -24,6 +24,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 from decimal import Decimal
+from functools import reduce
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -2626,6 +2627,23 @@ def post_add_HackathonRegistration(sender, instance, created, **kwargs):
             )
 
 
+class TribesSubscription(SuperModel):
+
+    plans = (
+		('LITE', 'Lite'),
+		('PRO', 'Pro'),
+		('LAUNCH', 'Launch'),
+	)
+
+    expires_on = models.DateTimeField(null=True, blank=True, default=timezone.now() + timezone.timedelta(days=365))
+    tribe = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='subscription')
+    plan_type = models.CharField(max_length=10, choices=plans)
+    hackathon_tokens = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "{} subscription - {}".format(self.tribe.name, self.plan_type)
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -2786,6 +2804,15 @@ class Profile(SuperModel):
         except:
             return ''
 
+    @property
+    def is_subscription_valid(self):
+        return self.tribes_subscription and self.tribes_subscription.expires_on > timezone.now()
+
+    @property
+    def active_subscriptions(self):
+        if not self.is_org :
+            return TribesSubscription.objects.filter(tribe__in=self.organizations_fk.all()).all()
+        return TribesSubscription.objects.filter(tribe=self).all()
 
     @property
     def suggested_bounties(self):
@@ -2806,7 +2833,7 @@ class Profile(SuperModel):
         score = self.sybil_score
         if score > 5:
             return f'VeryX{score} High'
-        return _map.get(score, "Unknown") 
+        return _map.get(score, "Unknown")
 
     @property
     def chat_num_unread_msgs(self):
@@ -4670,6 +4697,7 @@ class HackathonEvent(SuperModel):
     banner = models.ImageField(null=True, blank=True)
     background_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the banner, default to white')
     text_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the text, default to black')
+    border_color = models.CharField(max_length=255, null=True, blank=True, help_text='hexcode for the border, default to none')
     identifier = models.CharField(max_length=255, default='', help_text='used for custom styling for the banner')
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
     sponsor_profiles = models.ManyToManyField('dashboard.Profile', blank=True, limit_choices_to={'data__type': 'Organization'})
@@ -4680,6 +4708,7 @@ class HackathonEvent(SuperModel):
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
+    display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
 
     def __str__(self):
@@ -4706,6 +4735,22 @@ class HackathonEvent(SuperModel):
 
         """
         return settings.BASE_URL + self.relative_url
+
+    def get_total_prizes(self, force=False):
+        if force or self.showcase.get('prizes_count') is None:
+            prizes_count = Bounty.objects.filter(event=self).distinct().count()
+            self.showcase['prizes_count'] = prizes_count
+            self.save()
+
+        return self.showcase.get('prizes_count', 0)
+
+    def get_total_winners(self, force=False):
+        if force or self.showcase.get('winners_count') is None:
+            bounties = Bounty.objects.filter(event=self).distinct()
+            self.showcase['winners_count'] = reduce(lambda total, prize: total + len(prize.paid), bounties, 0)
+            self.save()
+
+        return self.showcase.get('winners_count', 0)
 
     @property
     def onboard_url(self):
@@ -4847,7 +4892,34 @@ class HackathonProject(SuperModel):
 
     def get_absolute_url(self):
         return self.url()
-    
+
+    def to_json(self):
+        profiles = [
+            {
+                'handle': profile.handle,
+                'name': profile.name,
+                'email': profile.email,
+                'payout_address': profile.preferred_payout_address,
+                'url': profile.url,
+                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else ''
+            } for profile in self.profiles.all()
+        ]
+
+        return {
+            'pk': self.pk,
+            'name': self.name,
+            'logo': self.logo.url,
+            'badge': self.badge,
+            'profiles': profiles,
+            'work_url': self.work_url,
+            'summary': self.summary,
+            'status': self.status,
+            'message': self.message,
+            'chat_channel_id': self.chat_channel_id,
+            'winner': self.winner,
+            'extra': self.extra
+        }
+
 
 class FeedbackEntry(SuperModel):
     bounty = models.ForeignKey(

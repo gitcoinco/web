@@ -29,7 +29,7 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
-from dashboard.models import Profile
+from dashboard.models import HackathonEvent, Profile
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
@@ -211,6 +211,12 @@ def create_quests_cache():
         quest.save()
 
 
+def create_hackathon_cache():
+    for hackathon in HackathonEvent.objects.filter(display_showcase=True):
+        hackathon.get_total_prizes(force=True)
+        hackathon.get_total_winners(force=True)
+
+
 def create_results_cache():
     print('results')
     keywords = ['']
@@ -271,3 +277,4 @@ class Command(BaseCommand):
             create_quests_cache()
             create_grants_cache()
             create_contributor_landing_page_context()
+            create_hackathon_cache()
