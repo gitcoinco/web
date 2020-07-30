@@ -48,11 +48,11 @@
         <a style="color:white;" href="{{project.admin_url}}">{% trans "View Admin" %}</a>
       </div>
     {% endif %}
-    <div id="hackathon-project-app" class="px-5" style="background-color: #FBFBFB">
+    <div id="hackathon-project-app" class="px-md-5" style="background-color: #FBFBFB">
       <div class="row">
         <div id="project-details" class="col-12 pr-0 ">
           {% if is_member %}
-            <button @click="projectModal" class="btn btn-outline-gc-blue btn-lg float-right mt-5 mr-5 px-5 py-3 font-subheader"><i class="fa fa-pencil mr-2"></i> Edit project</button>
+            <button @click="projectModal" class="d-none d-md-block btn btn-outline-gc-blue btn-lg float-right mt-5 mr-5 px-5 py-3 font-subheader"><i class="fa fa-pencil mr-2"></i> Edit project</button>
           {% endif %}
           <div class="row">
             <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">

@@ -10,7 +10,7 @@ Vue.mixin({
   methods: {
     chatWindow: function(channel, dm) {
       let vm = this;
-      
+
       dm = dm || channel ? channel.indexOf('@') >= 0 : false;
       channel = channel || 'town-square';
 
@@ -446,6 +446,13 @@ Vue.component('project-card', {
     };
   },
   props: [ 'project', 'edit', 'is_staff' ],
+  computed: {
+    project_url: function() {
+      let project = this.$props.project;
+
+      return `/hackathon/${project.bounty.org_name}/projects/${project.pk}/${project.name}`;
+    }
+  },
   methods: {
     markWinner: function($event, project) {
       let vm = this;
@@ -487,7 +494,7 @@ Vue.component('project-card', {
             [[ project.summary | truncate(500) ]]
           </p>
           <div class="text-left">
-            <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+            <a :href="project_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
             <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
             <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
             <template v-slot:button-content>
