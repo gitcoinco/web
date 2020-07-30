@@ -109,17 +109,12 @@
       <pre>
 
       A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
-      - Account Newness
-      - Community Suspicous Activity Reports
-      - Suspicious IP Address
-      - Suspicious Ethereum Interactions
-      - Suspicious SMS Address
-      - Suspicious Account Activity
+      - Account Metadata
+      - Suspicious Interactions
+      - Grant Flags Reports
       - BrightID Trust Score (coming soon)
-      - Idena Network Trust Score (coming soon)
       - KYC (maybe coming soon)
-      - Inbound WebTraffic Profiles 
-      - Time Series Data
+      - MACI (maybe coming soon)
 
       a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
       </pre>
@@ -129,7 +124,7 @@
         <table>
           <tr>
             <td>
-              SybilScore ™️
+              Index
             </td>
             <td>
               Contributors
@@ -147,7 +142,11 @@
         {% for sp in ele.1.0 %}
           <tr style="border-top: 1px solid grey;">
             <td>
+              {% if '0x' in sp.0 %}
+               <a href="https://etherscan.io/address/{{sp.0}}">{{sp.0}}</a>
+              {% else %}
                {{sp.0}}
+              {% endif %}
             </td>
             <td>
                {{sp.1}}
