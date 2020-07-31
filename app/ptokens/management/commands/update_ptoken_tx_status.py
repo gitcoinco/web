@@ -21,7 +21,7 @@ import warnings
 
 from django.core.management.base import BaseCommand
 
-from ptokens.models import PurchasePToken, RedemptionToken
+from ptokens.models import PurchasePToken, RedemptionToken, PTokenEvent
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("web3").setLevel(logging.WARNING)
@@ -48,6 +48,11 @@ class Command(BaseCommand):
             redemption.update_tx_status()
             print(f"syncing ptoken / {redemption.pk} / {redemption.network}")
             redemption.save()
+
+        for event in PTokenEvent.objects.filter(tx_status__in=non_terminal_states):
+            event.update_tx_status()
+            print(f"syncing event ptoken / {event.pk} / {event.network}")
+            event.save()
 
     def handle(self, *args, **options):
         self.process_ptokens()

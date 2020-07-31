@@ -30,7 +30,7 @@
             <div class="w-75">
               <input name='ptokenRedeemAmount' id="ptokenRedeemAmount" class="form__input" type="text" placeholder="10 {{ ptoken.token_symbol }}"/>
               <br>
-              <span class="text-muted font-smaller-6">You have {{ available_to_redeem|default:0 }} {{ ptoken.token_symbol }}</span>
+              <span class="text-muted font-smaller-6">You have <span id="available-ptokens">{{ available_to_redeem|default:0 }}</span> {{ ptoken.token_symbol }}</span>
             </div>
           </div>
           <div id="ptokenRedeemCostDiv" class="d-flex align-items-baseline justify-content-between mt-3">

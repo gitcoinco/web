@@ -30,7 +30,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
-from django.db.models import Avg, Count, Max, Q
+from django.db.models import Avg, Count, Max, Q, Sum
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.template.response import TemplateResponse
@@ -46,7 +46,8 @@ from app.settings import PTOKEN_ABI
 from dashboard.models import Profile
 from dashboard.utils import get_web3
 from ptokens.helpers import record_ptoken_activity
-from ptokens.models import PersonalToken, RedemptionToken, PurchasePToken
+from ptokens.models import PersonalToken, RedemptionToken, PurchasePToken, PTokenEvent
+
 
 def quickstart(request):
     context = {}
@@ -130,7 +131,6 @@ def tokens(request, token_state=None):
         }
 
         token = PersonalToken.objects.create(**kwargs)
-        record_ptoken_activity('create_ptoken', token, request.user.profile)
 
         if minimal:
             return JsonResponse({
@@ -150,7 +150,10 @@ def tokens(request, token_state=None):
             'data': token.to_standard_dict()
         })
 
-    if token_state in ['open', 'in_progress', 'completed', 'denied']:
+    if token_state in ['open', 'in_progress', 'waiting_complete', 'completed', 'denied']:
+        if token_state == 'waiting_complete':
+            token_state = 'completed'
+
         query = PersonalToken.objects.filter(token_state=token_state)
         return JsonResponse(
             [token.to_standard_dict() for token in query], safe=False
@@ -181,28 +184,39 @@ def ptoken(request, tokenId='me'):
                 {'error': _('You don\'t own the requested ptoken !')},
                 status=401)
 
-        if event_name == 'mint_ptoken':
+        if event_name == 'mint_ptoken' or event_name == 'burn_ptoken':
+            txid = request.POST.get('txid')
+            network = request.POST.get('network')
+
             try:
                 new_amount_minted = float(request.POST.get('amount'))
             except ValueError:
                 return JsonResponse(
                     {'error': _('Invalid amount!')},
                     status=401)
+
             kwargs['total_minted'] = new_amount_minted
             metadata['amount_minted'] = new_amount_minted
+            metadata = {
+                'amount': new_amount_minted
+            }
+
+            PTokenEvent.objects.create(txid=txid, network=network, ptoken=ptoken, event=event_name,
+                                       metadata=metadata, profile=user.profile)
         elif event_name == 'edit_price_ptoken':
             value = request.POST.get('value')
+            txid = request.POST.get('txid')
+            network = request.POST.get('network')
+            metadata['previous_price'] = float(ptoken.value)
 
             try:
-                new_price = float(value)
+                metadata['new_price'] = float(value)
             except ValueError:
                 return JsonResponse(
                     {'error': _('Invalid amount!')},
                     status=401)
-            kwargs['value'] = new_price
-            metadata['previous_price'] = float(ptoken.value)
-        elif event_name == 'tx_update':
-            kwargs['tx_status'] = request.POST.get('tx_status')
+            PTokenEvent.objects.create(txid=txid, network=network, ptoken=ptoken, event=event_name,
+                                       metadata=metadata, profile=user.profile)
         elif event_name == 'update_address':
             kwargs['token_address'] = request.POST.get('token_address')
 
@@ -226,10 +240,13 @@ def ptoken(request, tokenId='me'):
             PersonalToken.objects.filter(pk=ptoken.id).update(**kwargs)
             ptoken.refresh_from_db()
 
-            if metadata:
-                record_ptoken_activity(event_name, ptoken, user.profile, metadata)
-
     if minimal:
+        current_hodling = ptoken.get_hodling_amount(request.user.profile)
+        locked_amount = RedemptionToken.objects.filter(ptoken=ptoken,
+                                                       redemption_requester=request.user.profile,
+                                                       redemption_state__in=['request', 'accepted',
+                                                                             'waiting_complete']).aggregate(locked=Sum('total'))['locked'] or 0
+        available_to_redeem = current_hodling - locked_amount
         return JsonResponse({
             'id': ptoken.id,
             'name': ptoken.token_name,
@@ -240,6 +257,7 @@ def ptoken(request, tokenId='me'):
             'available': ptoken.available_supply,
             'purchases': ptoken.total_purchases,
             'redemptions': ptoken.total_redemptions,
+            'available_to_redeem': available_to_redeem,
             'tx_status': ptoken.tx_status
         })
 
@@ -258,10 +276,15 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
         description = request.POST.get('description', '')
 
         if request.method == 'POST':
-            if not request.user:
+            if not request.user.is_authenticated:
                 return JsonResponse(
                     {'error': _('You must be authenticated via github to use this feature!')},
                     status=401)
+            if total.isdigit() and ptoken.get_hodling_amount(request.user.profile) < float(total):
+                return JsonResponse(
+                    {'error': _(f'You don\'t have enough ${ptoken.token_symbol} tokens!')},
+                    status=401)
+
             RedemptionToken.objects.create(
                 ptoken=ptoken,
                 network=network,
@@ -272,8 +295,10 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
 
     redemptions = RedemptionToken.objects.filter(Q(redemption_requester=request.user.profile) | Q(ptoken__token_owner_profile=request.user.profile))
 
-    if redemption_state in ['request', 'accepted', 'denied', 'completed', 'cancelled']:
-        redemptions = redemptions.filter(redemption_state=redemption_state)
+    if redemption_state in ['request', 'accepted', 'denied', 'cancelled']:
+        redemptions = redemptions.filter(redemption_state=redemption_state).nocache()
+    elif redemption_state == 'completed':
+        redemptions = redemptions.filter(redemption_state__in=['waiting_complete', 'completed']).nocache()
 
     redemptions_json = []
     for redemption in redemptions.distinct():
@@ -322,10 +347,11 @@ def ptoken_redemption(request, redemptionId):
                     {'error': _('You don\'t have permissions on the current redemption!')},
                     status=401)
 
-            if user.profile != redemption.ptoken.token_owner_profile:
-                kwargs['redemption_state'] = 'cancelled'
-            else:
+            if user.profile == redemption.ptoken.token_owner_profile and redemption.redemption_state != 'accepted':
                 kwargs['redemption_state'] = 'denied'
+            else:
+                kwargs['redemption_state'] = 'cancelled'
+
 
             kwargs['canceller'] = user.profile
             metadata['redemption'] = redemption.id
@@ -349,9 +375,6 @@ def ptoken_redemption(request, redemptionId):
             kwargs['tx_status'] = request.POST.get('tx_status')
             kwargs['txid'] = request.POST.get('txid')
             kwargs['redemption_requester_address'] = request.POST.get('address')
-            metadata['redemption'] = redemption.id
-        elif event_name == 'tx_update':
-            kwargs['tx_status'] = request.POST.get('tx_status')
 
         if kwargs:
             RedemptionToken.objects.filter(pk=redemption.id).update(**kwargs)
@@ -411,7 +434,7 @@ def ptoken_purchases(request, tokenId):
                 {'error': _(error)},
                 status=401)
 
-        purchase = PurchasePToken.objects.create(
+        PurchasePToken.objects.create(
             ptoken=ptoken,
             amount=amount,
             token_name=token_value_name,
@@ -423,15 +446,6 @@ def ptoken_purchases(request, tokenId):
             token_holder_address=token_holder_address,
             token_holder_profile=request.user.profile,
         )
-        metadata = {
-            'purchase': purchase.id,
-            'value_in_token': amount,
-            'token_name': ptoken.token_symbol,
-            'from_user': ptoken.token_owner_profile.handle,
-            'holder_user': user.profile.handle
-        }
-
-        record_ptoken_activity('buy_ptoken', ptoken, user.profile, metadata)
 
     return JsonResponse({
             'error': False,
@@ -439,6 +453,7 @@ def ptoken_purchases(request, tokenId):
                 token_holder_profile=request.user.profile
             )]
         })
+
 
 @csrf_exempt
 def process_ptokens(self):
@@ -458,7 +473,11 @@ def process_ptokens(self):
         print(f"syncing ptoken / {redemption.pk} / {redemption.network}")
         redemption.save()
 
+    for event in PTokenEvent.objects.filter(tx_status__in=non_terminal_states):
+        event.update_tx_status()
+        print(f"syncing event ptoken / {event.pk} / {event.network}")
+        event.save()
+
     return JsonResponse({
         'status': 200
     })
-    

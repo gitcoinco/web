@@ -29,7 +29,7 @@ $(document).on('click', '#submit_buy_token', (event) => {
   }
   $('#ptokenAmount').removeClass('is-invalid');
   $('#ptokenAmount ~ .invalid-feedback').hide();
-    
+
 
   if (!$('#ptokenTerms').is(':checked')) {
     $('#ptokenTerms').addClass('is-invalid');
@@ -38,7 +38,7 @@ $(document).on('click', '#submit_buy_token', (event) => {
   }
   $('#ptokenTerms').removeClass('is-invalid');
   $('#ptokenTerms ~ .invalid-feedback').hide();
-    
+
 
   // Form is good, so continue with transaction
   buyPToken($('#ptokenAmount').val());
@@ -149,10 +149,10 @@ async function buyPToken(tokenAmount) {
         // We hardcode gas limit otherwise web3's `estimateGas` is used and this will show the user
         // that their transaction will fail because the approval tx has not yet been confirmed
         .send({ from: user, gasLimit: '300000' })
-        .on('transactionHash', function(transactionHash) {
+        .on('transactionHash', async function(transactionHash) {
 
           _alert('Saving transaction. Please do not leave this page.', 'success', 5000);
-          purchase_ptoken(
+          await purchase_ptoken(
             document.current_ptoken_id,
             tokenAmount,
             user,
@@ -181,7 +181,6 @@ async function buyPToken(tokenAmount) {
           waitingState(false);
           handleError(error);
         });
-      
     };
 
 
@@ -277,5 +276,9 @@ async function updatePtokenStatusinDatabase(transactionHash, successMsg, errorMs
       _alert(errorMsg, 'error');
       console.error(errorMsg);
     }
+
+    const userTokenBalance = await getPToken(document.current_ptoken_id);
+    
+    $('#available-ptokens').text(userTokenBalance.available_to_redeem);
   });
 }

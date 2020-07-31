@@ -105,6 +105,8 @@
           @{{ row.ptoken.token_owner_profile.handle }} {% trans "marked his "%} {{ row.ptoken.token_symbol }}  {% trans "token request from" %}  {{ row.redemption.buyer_profile.name }} {% trans "as complete" %}
         {% elif row.activity_type == 'mint_ptoken' %}
           @{{ row.ptoken.token_owner_profile.handle }} {% trans "minted "%} {{ row.ptoken.token_symbol }} tokens.
+        {% elif row.activity_type == 'burn_ptoken' %}
+          @{{ row.ptoken.token_owner_profile.handle }} {% trans "burned "%} {{ row.ptoken.token_symbol }} tokens.
         {% elif row.activity_type == 'buy_ptoken' %}
            {% trans "Purchased" %} {{ row.ptoken.token_symbol }} {% trans "personal token from" %}  <a href="/{{ row.ptoken.token_owner_profile.handle }}">@{{ row.ptoken.token_owner_profile.handle }}</a>.
         {% elif row.activity_type == 'edit_price_ptoken' %}
