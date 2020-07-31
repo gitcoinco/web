@@ -125,6 +125,7 @@ def tokens(request, token_state=None):
             'token_address': token_address,
             'token_symbol': token_symbol,
             'token_name': token_name,
+            'tx_status': tx_status,
             'web3_created': web3_created,
             'network': network,
             'value': value

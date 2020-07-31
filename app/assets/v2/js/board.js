@@ -317,7 +317,7 @@ Vue.mixin({
           console.log(successMsg, token); // they have a token, so log those details
         }, (error) => {
           // eslint-disable-next-line no-console
-          console.log(error); // they don't have a token, so just log success message
+          console.log(successMsg); // they don't have a token, so just log success message
         });
 
         _alert(successMsg, 'success');
@@ -474,6 +474,9 @@ Vue.mixin({
         $('#closeCreatePtokenModal').click()
         $('#showCreationSuccessModal').click()
         $('#success-tx').prop('href', etherscanUrl);
+
+        // Update vue state to show that transaction is pending on dashboard
+        vm.pToken.tx_status = 'pending';
 
         // Save to database
         const ptokenReponse = await create_ptoken(
