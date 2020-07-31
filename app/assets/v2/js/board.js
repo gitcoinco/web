@@ -239,6 +239,18 @@ Vue.mixin({
     async createPToken() {
       const handleError = this.handleError;
 
+      // Hide existing validation errors
+      $('#createPTokenName').removeClass('is-invalid');
+      $('#createPTokenName ~ .invalid-feedback').hide();
+      $('#createPTokenSymbol').removeClass('is-invalid');
+      $('#createPTokenSymbol ~ .invalid-feedback').hide();
+      $('#createPTokenPrice').removeClass('is-invalid');
+      $('#createPTokenPrice ~ .invalid-feedback').hide();
+      $('#createPTokenSupply').removeClass('is-invalid');
+      $('#createPTokenSupply ~ .invalid-feedback').hide();
+      $('#TOSText').removeClass('is-invalid');
+      $('#TOSText ~ .invalid-feedback').hide();
+
       try {
         // TODO: Show loading while deploying
         let price = parseFloat(this.newPToken.price);
@@ -248,20 +260,26 @@ Vue.mixin({
         if (this.newPToken.name === '') {
           this.$set(this.pToken, 'is_invalid_name', true);
           !stopFlow && (stopFlow = true);
+          $('#createPTokenName').addClass('is-invalid');
+          $('#createPTokenName ~ .invalid-feedback').show();
         } else {
-          this.$set(this.pToken, 'is_invalid_name', true);
+          this.$set(this.pToken, 'is_invalid_name', false);
         }
 
         if (this.newPToken.symbol === '') {
           this.$set(this.pToken, 'is_invalid_symbol', true);
           !stopFlow && (stopFlow = true);
+          $('#createPTokenSymbol').addClass('is-invalid');
+          $('#createPTokenSymbol ~ .invalid-feedback').show();
         } else {
-          this.$set(this.pToken, 'is_invalid_symbol', true);
+          this.$set(this.pToken, 'is_invalid_symbol', false);
         }
 
         if (isNaN(price) || price <= 0) {
           this.$set(this.pToken, 'is_invalid_price', true);
           !stopFlow && (stopFlow = true);
+          $('#createPTokenPrice').addClass('is-invalid');
+          $('#createPTokenPrice ~ .invalid-feedback').show();
         } else {
           this.$set(this.pToken, 'is_invalid_price', false);
           this.newPToken.is_invalid_price = false;
@@ -270,6 +288,8 @@ Vue.mixin({
         if (isNaN(supply) || supply <= 0) {
           this.$set(this.pToken, 'is_invalid_supply', true);
           !stopFlow && (stopFlow = true);
+          $('#createPTokenSupply').addClass('is-invalid');
+          $('#createPTokenSupply ~ .invalid-feedback').show();
         } else {
           this.$set(this.pToken, 'is_invalid_supply', false);
         }
@@ -277,6 +297,8 @@ Vue.mixin({
         if (!this.newPToken.tos) {
           this.$set(this.pToken, 'is_invalid_tos', true);
           !stopFlow && (stopFlow = true);
+          $('#TOSText').addClass('is-invalid');
+          $('#TOSText ~ .invalid-feedback').show();
         } else {
           this.$set(this.pToken, 'is_invalid_tos', false);
         }
