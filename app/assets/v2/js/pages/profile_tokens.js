@@ -278,7 +278,9 @@ async function updatePtokenStatusinDatabase(transactionHash, successMsg, errorMs
     }
 
     const userTokenBalance = await getPToken(document.current_ptoken_id);
-    
+
     $('#available-ptokens').text(userTokenBalance.available_to_redeem);
+    $('#amount-available').text(userTokenBalance.available);
+    $('#purchase-counter').text(userTokenBalance.purchases);
   });
 }
