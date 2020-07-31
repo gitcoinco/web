@@ -1,0 +1,21 @@
+{
+    "symbol": "WJL",
+    "address": "0x8b12739dF8760a67e79afbE0Cd8cF113c009F411",
+    "overview": {
+        "zh": "WJL致力于解决数字资产不互通的矛盾关系，通过底层的虫洞协议和合约层的星际汇款合约、星际借贷合约，通过WJL多币种钱包应用，完美解决数字资产不互通和数字资产应用流动性低的历史难题，实现数字货币的真实支付和流通。"
+    },
+    "email": "infinity@wjl.vc",
+    "website": "https://wjl.vc/",
+    "whitepaper": "https://wjl.vc/paper/wjl.pdf",
+    "published_on": "2020-07-25",
+    "initial_price": {
+        "ETH": "0.001 ETH",
+        "USD": "0.024 USD",
+        "BTC": "0.00000262 BTC"
+    },
+    "links": {
+    "github": "https://github.com/infinitywjl",
+	"telegram": "https://t.me/infinitywjl" ,
+	"facebook": "https://www.facebook.com/infinitywjl"   
+    }
+}
