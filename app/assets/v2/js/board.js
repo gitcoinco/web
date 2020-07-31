@@ -10,6 +10,16 @@ let skills = document.skills;
 
 
 Vue.mixin({
+  data() {
+    return { 
+      selectedRequest: {
+        requester: undefined,
+        amount: undefined,
+        symbol: undefined,
+        id: undefined,
+      },
+    }
+  },
   methods: {
     messageUser: function(handle) {
       let vm = this;
@@ -619,6 +629,22 @@ Vue.mixin({
       }
 
       return { user, purchaseTokenAddress };
+    },
+
+    // These two methods are used to provide access to the specified token details 
+    // in the redemption accept and deny modals
+    setSelectedRequest(token) {
+        this.selectedRequest.requester = token.requester;
+        this.selectedRequest.amount = token.amount;
+        this.selectedRequest.token_symbol = token.token_symbol;
+        this.selectedRequest.id = token.id;
+    },
+
+    resetSelectedRequest() {
+        this.selectedRequest.requester = undefined;
+        this.selectedRequest.amount = undefined;
+        this.selectedRequest.token_symbol = undefined;
+        this.selectedRequest.id = undefined;
     }
   }
 });

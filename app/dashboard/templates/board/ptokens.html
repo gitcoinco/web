@@ -97,7 +97,7 @@
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
               <span v-if="token.requester == current_user">You are redeeming <span class="font-weight-bold"> [[ token.amount ]] [[ token.token_symbol ]] </span> for work from @[[ token.creator ]].</span>
-              <span v-else>@[[ token.creator ]] is requesting to redeem <span class="font-weight-bold"> [[ token.amount ]] [[ token.token_symbol ]] </span> from you.</span>
+              <span v-else>@[[ token.requester ]] is requesting to redeem <span class="font-weight-bold"> [[ token.amount ]] [[ token.token_symbol ]] </span> from you.</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
@@ -112,8 +112,8 @@
                   </div>
                 </div>
                 <div>
-                  <button @click="accept(token.id)" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester != current_user">Accept</button>
-                  <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
+                  <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionAcceptModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester != current_user">Accept</button>
+                  <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionDenyModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Deny</button>
                 </div>
               </div>
             </li>
@@ -295,5 +295,7 @@
 
   {% include 'shared/create_ptoken.html' %}
   {% include 'shared/create_ptoken_success.html' %}
+  {% include 'shared/redemption_accept_modal.html' %}
+  {% include 'shared/redemption_deny_modal.html' %}
   {% include 'shared/edit_ptoken.html' %}
 </div>
