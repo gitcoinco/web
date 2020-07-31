@@ -46,7 +46,7 @@ $(document).on('click', '#submit_buy_token', (event) => {
 
 $(document).on('input', '#ptokenRedeemAmount', (event) => {
   event.preventDefault();
-  const amount = $(event.target).val();
+  const amount = $(event.target).val() === '' ? 0 : $(event.target).val(); // set to zero if field is empty
 
   $('#ptokenRedeemCost').text(`${(document.current_ptoken_value * parseFloat(amount)).toFixed(2) || 0} ${document.current_ptoken_symbol}`);
   $('#redeem-amount').text(parseFloat(amount));
@@ -54,8 +54,8 @@ $(document).on('input', '#ptokenRedeemAmount', (event) => {
 
 $(document).on('input', '#ptokenAmount', (event) => {
   event.preventDefault();
-  const amount = $(event.target).val();
-
+  const amount = $(event.target).val() === '' ? 0 : $(event.target).val(); // set to zero if field is empty
+  
   $('#ptokenCost').text(`${(document.current_ptoken_value * parseFloat(amount)).toFixed(2) || 0} ${purchaseTokenName}`);
   $('#buy-amount').text(amount);
 });
