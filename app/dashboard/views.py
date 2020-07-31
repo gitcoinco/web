@@ -3618,23 +3618,23 @@ def hackathon_prizes(request, hackathon=''):
     funded_bounties = profile.bounties_funded.filter(event=hackathon_event)
 
     if profile.is_staff:
-        query_prizes = Bounty.objects.filter(event=hackathon_event)
+        query_prizes = Bounty.objects.filter(event=hackathon_event, current_bounty=True)
     elif is_sponsor_member.exists():
         sponsor = is_sponsor_member.first()
         profiles = list(sponsor.team.values_list('id', flat=True)) + [sponsor.id]
-        query_prizes = Bounty.objects.filter(event=hackathon_event).filter(Q(bounty_owner_profile__in=profiles) |
+        query_prizes = Bounty.objects.filter(event=hackathon_event, current_bounty=True).filter(Q(bounty_owner_profile__in=profiles) |
                                                                            Q(admin_override_org_name__in=[
                                                                                sponsor.name,
                                                                                sponsor.handle
                                                                            ]))
     elif funded_bounties.exists():
-        query_prizes = funded_bounties
+        query_prizes = funded_bounties.filter(current_bounty=True)
     else:
         raise Http404("You need fund one prize in this hackathon to access the dashboard.")
 
-
     prizes = []
     for prize in query_prizes:
+        paid = BountyFulfillment.objects.filter(bounty=prize, payout_status='done')
         total_submitted = BountyEvent.objects.filter(bounty=prize, event_type='submit_work').count()
         prize_in_json = {
             'pk': prize.pk,
@@ -3642,7 +3642,7 @@ def hackathon_prizes(request, hackathon=''):
             'url': prize.get_absolute_url(),
             'value_eth': prize.get_value_in_eth,
             'values_usdt': prize.get_value_in_usdt_now,
-            'paid': bool(prize.paid),
+            'paid': paid.exists(),
             'submissions': [project.to_json() for project in prize.project_bounty.all()],
             'total_projects': prize.project_bounty.count(),
             'total_submitted': total_submitted
@@ -3666,19 +3666,19 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
 
     if profile.is_staff:
         sponsor_profile = profile
-        query_prizes = Bounty.objects.filter(event=hackathon_event)
+        query_prizes = Bounty.objects.filter(event=hackathon_event, current_bounty=True)
     elif is_sponsor_member.exists():
         sponsor_profile = is_sponsor_member.first()
         sponsor = is_sponsor_member.first()
         profiles = list(sponsor.team.values_list('id', flat=True)) + [sponsor.id]
-        query_prizes = Bounty.objects.filter(event=hackathon_event).filter(Q(bounty_owner_profile__in=profiles) |
+        query_prizes = Bounty.objects.filter(event=hackathon_event, current_bounty=True).filter(Q(bounty_owner_profile__in=profiles) |
                                                                            Q(admin_override_org_name__in=[
                                                                                sponsor.name,
                                                                                sponsor.handle
                                                                            ]))
     elif founded_bounties.exists():
         sponsor_profile = profile
-        query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=profile)
+        query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=profile, current_bounty=True)
     else:
         raise Http404("You need fund one prize in this hackathon to access the dashboard.")
 

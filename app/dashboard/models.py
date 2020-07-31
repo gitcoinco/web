@@ -40,6 +40,7 @@ from django.db.models import Count, F, Q, Subquery, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
+from django.template.defaultfilters import date
 from django.template.loader import render_to_string
 from django.templatetags.static import static
 from django.urls import reverse
@@ -4901,9 +4902,12 @@ class HackathonProject(SuperModel):
                 'email': profile.email,
                 'payout_address': profile.preferred_payout_address,
                 'url': profile.url,
-                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else ''
+                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else '',
+                'id': profile.pk
             } for profile in self.profiles.all()
         ]
+        profile_ids = [profile['id'] for profile in profiles]
+        paid = BountyFulfillment.objects.filter(profile_id__in=profile_ids, bounty=self.bounty, payout_status='done')
 
         return {
             'pk': self.pk,
@@ -4914,8 +4918,10 @@ class HackathonProject(SuperModel):
             'work_url': self.work_url,
             'summary': self.summary,
             'status': self.status,
+            'paid': paid.exists(),
             'message': self.message,
             'chat_channel_id': self.chat_channel_id,
+            'payment_date': date(paid.first().accepted_on, 'Y-m-d H:i') if paid.exists() else '',
             'winner': self.winner,
             'extra': self.extra
         }

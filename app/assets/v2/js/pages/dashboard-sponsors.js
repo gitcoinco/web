@@ -7,6 +7,12 @@
         this.retrieveSponsorPrizes();
       },
       methods: {
+        chatWindow: function(channel) {
+          let vm = this;
+          const url = `${vm.chatURL}/hackathons/channels/${channel}`;
+
+          window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+        },
         markWinner: function($event, project, prizeIndex) {
           let vm = this;
           const url = '/api/v0.1/hackathon_project/set_winner/';
@@ -112,7 +118,7 @@
         toggleSummary: function(prizeIndex, submissionIndex) {
           let vm = this;
           const showDescription = !vm.prizes[prizeIndex].submissions[submissionIndex].showDescription;
-          
+
           vm.$set(vm.prizes[prizeIndex].submissions[submissionIndex], 'showDescription', showDescription);
         }
       },
@@ -126,7 +132,7 @@
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
         hackathonProjects: [],
-        chatURL: document.chatURL,
+        chatURL: document.chatURL || 'https://chat.gitcoin.co/',
         prizes: [],
         comments: [],
         csrf: $("input[name='csrfmiddlewaretoken']").val() || ''

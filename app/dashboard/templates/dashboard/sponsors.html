@@ -163,16 +163,16 @@
                           <b-card-header header-tag="header" class="d-flex align-items-baseline justify-content-between px-4 py-2" role="tab">
                             <div :class="isMobileDevice ? 'mx-3' : ' col-md-5' ">
                               <div>
-                                <a :href="prize.url" class="font-subheader font-weight-semibold d-inline-block text-black">[[`${prize.title.slice(0, 92)}${prize.title.length > 92 ? '...' : ''}`]]</a>
-                                <span v-if="!isMobileDevice && prize.value_eth" class="tag token ml-2">[[prize.value_eth | decimals]] ETH</span>
-                                <span v-if="!isMobileDevice && prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
+                                <a :href="prize.url" class="font-subheader font-weight-semibold d-inline-block text-black" target="_blank">[[`${prize.title.slice(0, 92)}${prize.title.length > 92 ? '...' : ''}`]]</a>
+                                <span v-if="!isMobileDevice && prize.value_eth" class="tag token ml-2 inner-tooltip" >[[prize.value_eth | decimals]] ETH</span>
+                                <span v-if="!isMobileDevice && prize.values_usdt" class="tag usd inner-tooltip">[[prize.values_usdt]] USD</span>
                               </div>
                               <span v-if="isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
                             </div>
                             <div>
                               <span v-if="!isMobileDevice" class="font-body font-weight-semibold">[[ prize.total_submitted ]]/[[prize.total_projects]] Submitted</span>
                               <span v-if="prize.paid" class="ml-5 font-body font-weight-semibold gc-text-green"><span class="fas fa-check"></span>  Paid</span>
-                              <a v-if="!prize.paid" :href="`/issue/payout?pk=${prize.pk}`" class="ml-5 font-body font-weight-semibold">Unpaid</a>
+                              <a v-if="!prize.paid" target="_blank" :href="`/issue/payout?pk=${prize.pk}`" class="ml-5 font-body font-weight-semibold">Unpaid</a>
                             </div>
                             <b-button v-b-toggle="`accordion-${prizeIndex}`" variant="link">
                               <i class="fas fa-angle-up"></i>
@@ -187,11 +187,18 @@
                                   <b-th>Hacker</b-th>
                                   <b-th>Contact</b-th>
                                   <b-th>Winner</b-th>
+                                  <b-th>Payment</b-th>
                                   <b-th>Notes</b-th>
                                 </b-thead>
                                 <b-tbody>
                                   <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="(project, projectIndex) in prize.submissions">
-                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'"><img :src="project.logo" alt="" width="30"> <a :href="project.work_url"><span class="fab fa-github text-black"></span> <span class="font-body gc-text-blue font-weight-semibold">[[project.name]]</span></a> </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <img :src="project.logo" alt="" width="30">
+                                      <a :href="project.work_url" target="_blank">
+                                        <span class="fab fa-github text-black"></span>
+                                        <span class="font-body gc-text-blue font-weight-semibold">[[project.name]]</span>
+                                      </a>
+                                    </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary pr-4'">
 
                                       <p class="mt-1">[[getSummary(project)]]
@@ -218,6 +225,13 @@
                                         Winner
                                       </b-form-checkbox>
                                     </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <template v-if="project.winner">
+                                        <a class="btn btn-gc-blue font-body" target="_blank" :href="`/issue/payout?pk=${prize.pk}`" v-if="!project.paid">Pay</a>
+                                        <p class="font-body" v-else>Paid [[ project.payment_date ]]</p>
+                                      </template>
+                                    </b-td>
+
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                       <button class="btn btn-link gc-text-blue pt-0 font-smaller-4 mt-1" @click="addNote(project)" v-if="comments[project.pk] == undefined">+ Add note</button>
                                       <textarea v-if="comments[project.pk] != undefined" v-model="comments[project.pk]" @change="setNote($event, project)" class="form-control note">[[getComment(project.pk)]]</textarea>
