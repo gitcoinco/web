@@ -39,6 +39,11 @@
         position: relative;
         background: {% firstof hackathon.background_color or 'white' %};
         color: {% firstof hackathon.text_color or 'black' %};
+        {% if hackathon.border_color %}
+          border-left: {% firstof hackathon.border_color or 'black' %} 2px solid;
+          border-bottom: {% firstof hackathon.border_color or 'black' %} 2px solid;
+          border-right: {% firstof hackathon.border_color or 'black' %} 2px solid;
+        {% endif %}
         {% if hackathon.banner %}
           background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
         {% endif %}
@@ -82,6 +87,7 @@
         top: -55px;
         max-height: 160px;
       }
+
       .overflow-show {
         overflow: visible !important;
       }
@@ -174,13 +180,13 @@
 
 
 
-    <div id="sponsors" class="container bg-white my-4 pt-3 pb-4 rounded">
-      <div class="row mb-5">
+    <div id="sponsors" class="container bg-white my-4 {% if sponsors.sponsors_gold|length == 1 %}pb-1{% else %}pt-3 pb-4{% endif %} rounded">
+      <div class="row {% if sponsors.sponsors_gold|length == 1 %}mb-2{% else %}mb-5{% endif %}">
         {% if sponsors %}
           <div class="col-12 sponsors mb-3">
             <p class="font-weight-bold px-5 mx-3 h4 text-left mb-3 uppercase">Key Sponsors</p>
             {% if sponsors.sponsors_gold %}
-              <div class="d-flex flex-wrap mb-4">
+              <div class="d-flex flex-wrap {% if sponsors.sponsors_gold|length == 1 %}justify-content-center{% else %}mb-4{% endif %}">
                 {% for sponsor in sponsors.sponsors_gold %}
                   <a href="{% url 'profile' sponsor.handle %}" class="col-6 col-md-3 col-sm-3 sponsors-gold mt-3 mb-3 text-center">
                     <img src="{{sponsor.logo}}" height="114" alt="{{sponsor.name}}" class="{{sponsor.name}}">
@@ -239,75 +245,80 @@
       </div>
     </div>
 
-      <div class="container bg-white mt-4 rounded">
+      <div class="container bg-white mt-4 rounded pb-4">
         <div class="row px-5">
           <div class="col-12">
-            <h4 class="text-uppercase font-weight-bolder text-left">How does the Hackathon work?</h4>
-          </div>
-        </div>
-        <div class="row px-5 my-5">
-          <div class="col-12 col-md-5">
-              <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
-          </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-              <b class="counter">{% trans "Check out the Prizes" %}</b>
 
-                <p class="">
-                  Visit the <a target="_blank" href="{% url 'hackathon' hackathon.slug %}">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
-                </p>
+            <button class="btn btn-link text-black w-100 text-decoration-none" type="button" data-toggle="collapse" data-target="#collapse-info" aria-expanded="false" aria-controls="collapse-info">
+              <h4 class="text-uppercase font-weight-bolder text-left">How does the Hackathon work? <i id="collapse-icon" class="fas fa-angle-up float-right"></i></h4>
+            </button>
+          </div>
+        </div>
+        <div class="collapse" id="collapse-info">
+          <div class="row px-5 my-5" >
+            <div class="col-12 col-md-5">
+                <img src="{% static "v2/images/how-it-works/hackathon/pic1.jpg" %}" class="mw-100" alt="bounty explorer" />
+            </div>
+            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                <b class="counter">{% trans "Check out the Prizes" %}</b>
 
+                  <p class="">
+                    Visit the <a target="_blank" href="{% url 'hackathon' hackathon.slug %}">Prize Explorer</a> to check out the prizes posted by our hackathon sponsors. Click each prize to show important details, including the submission requirements, submission deadline, etc.
+                  </p>
+
+            </div>
           </div>
-        </div>
-        <div class="row px-5 my-5">
-          <div class="col-12 col-md-5">
-              <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
+          <div class="row px-5 my-5">
+            <div class="col-12 col-md-5">
+                <img src="{% static "v2/images/how-it-works/hackathon/pic2.jpg" %}" class="mw-100" alt="express interest" />
+            </div>
+            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
+                {% blocktrans %}
+                  <p class="">
+                    Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://chat.gitcoin.co/hackathons">Click here to join the party!</a>.
+                  </p>
+                {% endblocktrans %}
+            </div>
           </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-              <b class="counter">{% trans " Join the Hackathons Chat Workspace" %}</b>
-              {% blocktrans %}
-                <p class="">
-                  Chat with other hackers, ask sponsors and the Gitcoin team questions, find or create a team, and communicate real-time. <a target="_blank" href="https://chat.gitcoin.co/hackathons">Click here to join the party!</a>.
-                </p>
-              {% endblocktrans %}
+          <div class="row px-5 my-5">
+            <div class="col-12 col-md-5">
+                <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
+            </div>
+            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
+                {% blocktrans %}
+                  <p class="">
+                    When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
+                  </p>
+                {% endblocktrans %}
+            </div>
           </div>
-        </div>
-        <div class="row px-5 my-5">
-          <div class="col-12 col-md-5">
-              <img src="{% static "v2/images/how-it-works/hackathon/pic3.jpg" %}" class="mw-100" alt="bounty explorer" />
+          <div class="row px-5 my-5">
+            <div class="col-12 col-md-5">
+                <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
+            </div>
+            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                <b class="counter">{% trans "BUIDL!" %}</b>
+                {% blocktrans %}
+                  <p class="">
+                    Build your cool ideas and make your vision come true with your team!
+                  </p>
+                {% endblocktrans %}
+            </div>
           </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-              <b class="counter">{% trans "Start Work via Gitcoin" %}</b>
-              {% blocktrans %}
-                <p class="">
-                  When your team is formed please have one of your teammates navigate to each prize page you plan to compete for and click the “Start Work” button.
-                </p>
-              {% endblocktrans %}
-          </div>
-        </div>
-        <div class="row px-5 my-5">
-          <div class="col-12 col-md-5">
-              <img src="{% static "v2/images/how-it-works/hackathon/pic4.jpg" %}" class="mw-100" alt="express interest" />
-          </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-              <b class="counter">{% trans "BUIDL!" %}</b>
-              {% blocktrans %}
-                <p class="">
-                  Build your cool ideas and make your vision come true with your team!
-                </p>
-              {% endblocktrans %}
-          </div>
-        </div>
-        <div class="row my-4 px-5 pb-5">
-          <div class="col-12 col-md-5">
-            <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
-          </div>
-          <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
-              <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
-              {% blocktrans %}
-                <p class="">
-                  When your project is completed, submit your work by clicking the “Submit Work” button on the prize page/
-                </p>
-              {% endblocktrans %}
+          <div class="row my-4 px-5 pb-5">
+            <div class="col-12 col-md-5">
+              <img src="{% static "v2/images/how-it-works/hackathon/pic5.jpg" %}" class="mw-100" alt="bounty explorer" />
+            </div>
+            <div class="col-12 col-md-6 d-flex flex-column justify-content-center pt-4 pt-md-0">
+                <b class="counter">{% trans "Submit Work via Gitcoin" %}</b>
+                {% blocktrans %}
+                  <p class="">
+                    When your project is completed, submit your work by clicking the “Submit Work” button on the prize page/
+                  </p>
+                {% endblocktrans %}
+            </div>
           </div>
         </div>
       </div>
@@ -509,6 +520,23 @@
         $('.negative-offset').addClass('d-none')
         $(`#header-${fieldset.prev().data('question')}`).removeClass('d-none')
         poll_manager.carousel('prev');
+      })
+
+      const collapseInfo = $('#collapse-info')
+
+      collapseInfo.on('show.bs.collapse', function () {
+        const collapseIcon = $('#collapse-icon')
+
+        collapseIcon.removeClass('fa-angle-up')
+        collapseIcon.addClass('fa-angle-down')
+      })
+
+      collapseInfo.on('hidden.bs.collapse', function () {
+        const collapseIcon = $('#collapse-icon')
+
+        collapseIcon.addClass('fa-angle-up')
+        collapseIcon.removeClass('fa-angle-down')
+
       })
     </script>
     <script src="{% static 'v2/js/pages/hackathon-onboard.js' %}"></script>

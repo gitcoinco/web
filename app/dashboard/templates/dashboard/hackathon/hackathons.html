@@ -139,6 +139,12 @@
                             Projects
                           </a>
                         {% endif %}
+                        {% if hackathon.display_showcase %}
+                          <a href="{% url 'hackathon_showcase_proxy' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
+                            <i class="fas fa-rocket mr-2 d-none d-sm-inline"></i>
+                            Showcase
+                          </a>
+                        {% endif %}
                       </div>
                     </div>
                   </div>

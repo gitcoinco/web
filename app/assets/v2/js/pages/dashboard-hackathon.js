@@ -923,15 +923,38 @@
 
         }
       },
+      computed: {
+        isSponsor: () => {
+          let vm = this;
+
+          if (document.contxt.is_staff) {
+            return true;
+          }
+
+          for (let i = 0; i < vm.hackathonSponsors.length; i++) {
+            if (vm.hackathonSponsors[i].org_name === document.contxt.github_handle) {
+              return true;
+            }
+          }
+
+          for (let i = 0; i < vm.prizeFounders.length; i++) {
+            if (vm.prizeFounders[i] === document.contxt.github_handle) {
+              return true;
+            }
+          }
+          return false;
+        }
+      },
       data: function() {
         return {
-          chatMode: false,
           is_registered: document.is_registered,
           activePanel: document.activePanel,
           hackathonObj: document.hackathonObj,
           hackathonSponsors: document.hackathonSponsors,
+          prizeFounders: document.prizeFounders,
           hackathonProjects: [],
-          chatURL: document.chatURL
+          chatURL: document.chatURL,
+          hackHasEnded: document.displayShowcase
         };
       }
     });

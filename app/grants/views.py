@@ -91,6 +91,7 @@ last_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 last_round_end = timezone.datetime(2020, 4, 7, 12, 0)
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
 next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
+next_round_start = timezone.datetime(2020, 9, 14)
 after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
 round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
 round_types = ['media', 'tech', 'change']
@@ -382,7 +383,7 @@ def grants_by_grant_type(request, grant_type):
         {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
         {'label': 'Community', 'keyword': 'media', 'count': media_grants_count},
 #        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
-        {'label': 'Matic', 'keyword': 'matic', 'count': matic_grants_count},
+        {'label': 'Matic: Build-n-Earn', 'keyword': 'matic', 'count': matic_grants_count},
         {'label': 'Crypto for Black Lives', 'keyword': 'change', 'count': change_count},
 
     ]
