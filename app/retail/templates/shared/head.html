@@ -76,9 +76,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 {% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
 {% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
-<script async src='{% static "v2/js/metamask-approval.js" %}'></script>
-<script>document.domain = 'gitcoin.co';</script>
 {% if env == 'prod' %}
+<script>document.domain = 'gitcoin.co';</script>
 <!-- Hotjar Tracking Code for gitcoin.co -->
 <script>
   (function(h,o,t,j,a,r){
