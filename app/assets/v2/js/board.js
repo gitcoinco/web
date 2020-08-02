@@ -11,14 +11,14 @@ let skills = document.skills;
 
 Vue.mixin({
   data() {
-    return { 
+    return {
       selectedRequest: {
         requester: undefined,
         amount: undefined,
         symbol: undefined,
-        id: undefined,
-      },
-    }
+        id: undefined
+      }
+    };
   },
   methods: {
     messageUser: function(handle) {
@@ -414,7 +414,7 @@ Vue.mixin({
               change_price(pTokenId, price, transactionHash, network);
               document.ptoken.price = price;
 
-              const successMsg = 'The price of your personal token token has successfully been updated!';
+              const successMsg = 'The price of your personal token has successfully been updated!';
               const errorMsg = 'Oops, something went wrong changing your token price. Please try again or contact support@gitcoin.co';
 
               await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
@@ -439,7 +439,7 @@ Vue.mixin({
                 document.ptoken.supply = supply;
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
 
-                const successMsg = 'The supply of your personal token token has successfully been increased!';
+                const successMsg = 'The supply of your personal token has successfully been increased!';
                 const errorMsg = 'Oops, something went wrong increasing your token supply. Please try again or contact support@gitcoin.co';
 
                 await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
@@ -459,7 +459,7 @@ Vue.mixin({
                 document.ptoken.supply = supply;
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
 
-                const successMsg = 'The supply of your personal token token has successfully been decreased!';
+                const successMsg = 'The supply of your personal token has successfully been decreased!';
                 const errorMsg = 'Oops, something went wrong decreased your token supply. Please try again or contact support@gitcoin.co';
 
                 await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
@@ -499,12 +499,12 @@ Vue.mixin({
         indicateMetamaskPopup(true);
         // Get url of transaction hash
         const etherscanUrl = document.web3network === 'mainnet'
-        ? `https://etherscan.io/tx/${transactionHash}`
-        : `https://${document.web3network}.etherscan.io/tx/${transactionHash}`;
+          ? `https://etherscan.io/tx/${transactionHash}`
+          : `https://${document.web3network}.etherscan.io/tx/${transactionHash}`;
 
         // Hide creation modal and show congratulations modal
-        $('#closeCreatePtokenModal').click()
-        $('#showCreationSuccessModal').click()
+        $('#closeCreatePtokenModal').click();
+        $('#showCreationSuccessModal').click();
         $('#success-tx').prop('href', etherscanUrl);
 
         // Update vue state to show that transaction is pending on dashboard
@@ -653,20 +653,20 @@ Vue.mixin({
       return { user, purchaseTokenAddress };
     },
 
-    // These two methods are used to provide access to the specified token details 
+    // These two methods are used to provide access to the specified token details
     // in the redemption accept and deny modals
     setSelectedRequest(token) {
-        this.selectedRequest.requester = token.requester;
-        this.selectedRequest.amount = token.amount;
-        this.selectedRequest.token_symbol = token.token_symbol;
-        this.selectedRequest.id = token.id;
+      this.selectedRequest.requester = token.requester;
+      this.selectedRequest.amount = token.amount;
+      this.selectedRequest.token_symbol = token.token_symbol;
+      this.selectedRequest.id = token.id;
     },
 
     resetSelectedRequest() {
-        this.selectedRequest.requester = undefined;
-        this.selectedRequest.amount = undefined;
-        this.selectedRequest.token_symbol = undefined;
-        this.selectedRequest.id = undefined;
+      this.selectedRequest.requester = undefined;
+      this.selectedRequest.amount = undefined;
+      this.selectedRequest.token_symbol = undefined;
+      this.selectedRequest.id = undefined;
     }
   }
 });
