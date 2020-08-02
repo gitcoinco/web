@@ -62,6 +62,8 @@ from bs4 import BeautifulSoup
 from rest_framework import serializers
 from web3 import HTTPProvider, Web3, WebsocketProvider
 
+from ptokens.helpers import record_ptoken_activity
+
 logger = logging.getLogger(__name__)
 
 TX_STATUS_CHOICES = (
@@ -169,6 +171,7 @@ class PersonalToken(SuperModel):
             contract = web3.eth.contract(Web3.toChecksumAddress(self.token_address), abi=PTOKEN_ABI)
             decimals = 10 ** contract.functions.decimals().call()
             self.total_minted = contract.functions.totalSupply().call() // decimals
+            self.value = contract.functions.price().call() // decimals
 
             if self.tx_status == 'success' and self.txid:
                 latest = web3.eth.blockNumber
@@ -227,7 +230,39 @@ class PersonalToken(SuperModel):
             logs = contract.events.NewPToken().processReceipt(receipt)
             self.token_address = logs[0].args.token
 
+            record_ptoken_activity('create_ptoken', self, self.token_owner_profile)
+
         self.update_token_status()
+
+
+class PTokenEvent(SuperModel):
+    ptoken_events = (
+        ('mint_ptoken', 'Mint tokens'),
+        ('burn_ptoken', 'Burn tokens'),
+        ('edit_price_ptoken', 'Update price token')
+    )
+
+    event = models.CharField(max_length=20, choices=ptoken_events)
+    ptoken = models.ForeignKey(PersonalToken, on_delete=models.CASCADE)
+    txid = models.CharField(max_length=255, unique=True)
+    tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    network = models.CharField(max_length=255, default='', db_index=True)  # `db_index` for `/users` search
+    metadata = JSONField(default=dict, null=True, blank=True)
+    profile = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='token_events', blank=True
+    )
+
+    def update_tx_status(self):
+        # Get transaction status
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+
+        # Exit if transaction not mined, otherwise continue
+        if self.tx_status != 'success':
+            return bool(self.tx_status)
+
+        record_ptoken_activity(self.event, self.ptoken, self.profile, self.metadata)
+        self.ptoken.update_token_status()
 
 
 class RedemptionToken(SuperModel):
@@ -265,6 +300,8 @@ class RedemptionToken(SuperModel):
 
         if self.redemption_state == 'waiting_complete':
             if self.tx_status == 'success':
+                metadata = {'redemption': self.id}
+                record_ptoken_activity('complete_redemption_ptoken', self.ptoken, self.redemption_requester, metadata)
                 self.redemption_state = 'completed'
 
             elif self.tx_status in ['error', 'unknown', 'dropped']:
@@ -297,6 +334,19 @@ class PurchasePToken(SuperModel):
     def update_tx_status(self):
         from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+
+        if self.tx_status == 'success':
+            metadata = {
+                'purchase': self.id,
+                'value_in_token': float(self.amount),
+                'token_name': self.ptoken.token_symbol,
+                'from_user': self.ptoken.token_owner_profile.handle,
+                'holder_user': self.ptoken.token_owner_profile.handle
+            }
+
+            record_ptoken_activity('buy_ptoken', self.ptoken, self.token_holder_profile, metadata)
+
+
         self.ptoken.update_token_status()
         self.ptoken.update_user_balance(self.token_holder_profile, self.token_holder_address)
         return bool(self.tx_status)

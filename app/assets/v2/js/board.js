@@ -10,6 +10,16 @@ let skills = document.skills;
 
 
 Vue.mixin({
+  data() {
+    return {
+      selectedRequest: {
+        requester: undefined,
+        amount: undefined,
+        symbol: undefined,
+        id: undefined
+      }
+    };
+  },
   methods: {
     messageUser: function(handle) {
       let vm = this;
@@ -26,7 +36,7 @@ Vue.mixin({
           priority: 1
         };
       }
-      var network = document.web3network;
+      const network = document.web3network;
 
       return tokens(network).filter(token => token.name === name)[0];
     },
@@ -229,6 +239,18 @@ Vue.mixin({
     async createPToken() {
       const handleError = this.handleError;
 
+      // Hide existing validation errors
+      $('#createPTokenName').removeClass('is-invalid');
+      $('#createPTokenName ~ .invalid-feedback').hide();
+      $('#createPTokenSymbol').removeClass('is-invalid');
+      $('#createPTokenSymbol ~ .invalid-feedback').hide();
+      $('#createPTokenPrice').removeClass('is-invalid');
+      $('#createPTokenPrice ~ .invalid-feedback').hide();
+      $('#createPTokenSupply').removeClass('is-invalid');
+      $('#createPTokenSupply ~ .invalid-feedback').hide();
+      $('#TOSText').removeClass('is-invalid');
+      $('#TOSText ~ .invalid-feedback').hide();
+
       try {
         // TODO: Show loading while deploying
         let price = parseFloat(this.newPToken.price);
@@ -238,20 +260,26 @@ Vue.mixin({
         if (this.newPToken.name === '') {
           this.$set(this.pToken, 'is_invalid_name', true);
           !stopFlow && (stopFlow = true);
+          $('#createPTokenName').addClass('is-invalid');
+          $('#createPTokenName ~ .invalid-feedback').show();
         } else {
-          this.$set(this.pToken, 'is_invalid_name', true);
+          this.$set(this.pToken, 'is_invalid_name', false);
         }
 
         if (this.newPToken.symbol === '') {
           this.$set(this.pToken, 'is_invalid_symbol', true);
           !stopFlow && (stopFlow = true);
+          $('#createPTokenSymbol').addClass('is-invalid');
+          $('#createPTokenSymbol ~ .invalid-feedback').show();
         } else {
-          this.$set(this.pToken, 'is_invalid_symbol', true);
+          this.$set(this.pToken, 'is_invalid_symbol', false);
         }
 
         if (isNaN(price) || price <= 0) {
           this.$set(this.pToken, 'is_invalid_price', true);
           !stopFlow && (stopFlow = true);
+          $('#createPTokenPrice').addClass('is-invalid');
+          $('#createPTokenPrice ~ .invalid-feedback').show();
         } else {
           this.$set(this.pToken, 'is_invalid_price', false);
           this.newPToken.is_invalid_price = false;
@@ -260,6 +288,8 @@ Vue.mixin({
         if (isNaN(supply) || supply <= 0) {
           this.$set(this.pToken, 'is_invalid_supply', true);
           !stopFlow && (stopFlow = true);
+          $('#createPTokenSupply').addClass('is-invalid');
+          $('#createPTokenSupply ~ .invalid-feedback').show();
         } else {
           this.$set(this.pToken, 'is_invalid_supply', false);
         }
@@ -267,6 +297,8 @@ Vue.mixin({
         if (!this.newPToken.tos) {
           this.$set(this.pToken, 'is_invalid_tos', true);
           !stopFlow && (stopFlow = true);
+          $('#TOSText').addClass('is-invalid');
+          $('#TOSText ~ .invalid-feedback').show();
         } else {
           this.$set(this.pToken, 'is_invalid_tos', false);
         }
@@ -281,31 +313,46 @@ Vue.mixin({
         handleError(err);
       }
     },
+    async syncLocalTokenInfo(onSuccess, onError) {
+      try {
+        // If this user has a ptoken, get the latest info for the frontend
+        const myToken = await get_personal_token();
+
+        document.ptoken = Object.assign({}, {
+          id: myToken.id,
+          name: myToken.name,
+          symbol: myToken.symbol,
+          price: myToken.price,
+          supply: myToken.supply,
+          address: myToken.address,
+          available: myToken.available,
+          purchases: myToken.purchases,
+          redemptions: myToken.redemptions,
+          tx_status: myToken.tx_status
+        });
+        this.pToken = document.ptoken;
+        if (onSuccess) {
+          onSuccess(myToken);
+        }
+      } catch (err) {
+        if (onError) {
+          onError(err);
+        }
+      }
+    },
     async checkTokenStatus(successMsg, errorMsg) {
       const res = await update_ptokens(); // update all ptokens in DB
 
       if (res.status === 200) {
-        _alert(successMsg, 'success');
-        try {
-          // If this user has a ptoken, get the latest info for the frontend
-          const myToken = await get_personal_token();
-          document.ptoken = Object.assign({}, {
-            id: myToken.id,
-            name: myToken.name,
-            symbol: myToken.symbol,
-            price: myToken.price,
-            supply: myToken.supply,
-            address: myToken.address,
-            available: myToken.available,
-            purchases: myToken.purchases,
-            redemptions: myToken.redemptions,
-            tx_status: myToken.tx_status
-          });    
-          this.pToken = document.ptoken
-          console.log(successMsg, myToken); // they have a token, so log those details
-        } catch (err) {
+        await this.syncLocalTokenInfo((token) => {
+          // eslint-disable-next-line no-console
+          console.log(successMsg, token); // they have a token, so log those details
+        }, (error) => {
+          // eslint-disable-next-line no-console
           console.log(successMsg); // they don't have a token, so just log success message
-        } 
+        });
+
+        _alert(successMsg, 'success');
       } else {
         _alert(errorMsg, 'error');
       }
@@ -361,12 +408,15 @@ Vue.mixin({
           ptoken.methods.updatePrice(web3.utils.toWei(String(price)))
             .send({from: user})
             .on('transactionHash', async function(transactionHash) {
+              const network = document.web3network;
+
               indicateMetamaskPopup(true);
-              change_price(pTokenId, price);
+              change_price(pTokenId, price, transactionHash, network);
               document.ptoken.price = price;
-               
-              const successMsg = 'The price of your personal token token has successfully been updated!';
+
+              const successMsg = 'The price of your personal token has successfully been updated!';
               const errorMsg = 'Oops, something went wrong changing your token price. Please try again or contact support@gitcoin.co';
+
               await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
             })
             .on('error', function(err) {
@@ -382,15 +432,17 @@ Vue.mixin({
             ptoken.methods.mint(web3.utils.toWei(String(supply - document.ptoken.supply)))
               .send({from: user})
               .on('transactionHash', async function(transactionHash) {
+                const network = document.web3network;
+
                 indicateMetamaskPopup(true);
-                mint_tokens(pTokenId, supply);
+                mint_tokens(pTokenId, supply, transactionHash, network);
                 document.ptoken.supply = supply;
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
 
-                const successMsg = 'The supply of your personal token token has successfully been increased!';
+                const successMsg = 'The supply of your personal token has successfully been increased!';
                 const errorMsg = 'Oops, something went wrong increasing your token supply. Please try again or contact support@gitcoin.co';
+
                 await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
-                
               }).on('error', function(err) {
                 handleError(err);
               });
@@ -400,13 +452,16 @@ Vue.mixin({
             ptoken.methods.burn(web3.utils.toWei(String(document.ptoken.supply - supply)))
               .send({from: user})
               .on('transactionHash', async function(transactionHash) {
+                const network = document.web3network;
+
                 indicateMetamaskPopup(true);
-                mint_tokens(pTokenId, supply);
+                burn_tokens(pTokenId, supply, transactionHash, network);
                 document.ptoken.supply = supply;
                 document.ptoken.available = supply - (document.ptoken.purchases - document.ptoken.redemptions);
 
-                const successMsg = 'The supply of your personal token token has successfully been decreased!';
+                const successMsg = 'The supply of your personal token has successfully been decreased!';
                 const errorMsg = 'Oops, something went wrong decreased your token supply. Please try again or contact support@gitcoin.co';
+
                 await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
               }).on('error', function(err) {
                 handleError(err);
@@ -444,13 +499,16 @@ Vue.mixin({
         indicateMetamaskPopup(true);
         // Get url of transaction hash
         const etherscanUrl = document.web3network === 'mainnet'
-        ? `https://etherscan.io/tx/${transactionHash}`
-        : `https://${document.web3network}.etherscan.io/tx/${transactionHash}`;
+          ? `https://etherscan.io/tx/${transactionHash}`
+          : `https://${document.web3network}.etherscan.io/tx/${transactionHash}`;
 
         // Hide creation modal and show congratulations modal
-        $('#closeCreatePtokenModal').click()
-        $('#showCreationSuccessModal').click()
+        $('#closeCreatePtokenModal').click();
+        $('#showCreationSuccessModal').click();
         $('#success-tx').prop('href', etherscanUrl);
+
+        // Update vue state to show that transaction is pending on dashboard
+        vm.pToken.tx_status = 'pending';
 
         // Save to database
         const ptokenReponse = await create_ptoken(
@@ -469,6 +527,7 @@ Vue.mixin({
         console.log('Token saved in database', ptokenReponse);
         const successMsg = 'Congratulations, your personal token has been created successfully!';
         const errorMsg = 'Oops, something went wrong trying to create your personal token. Please try again or contact support@gitcoin.co';
+
         await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
       }).on('error', function(err) {
         handleError(err);
@@ -481,8 +540,8 @@ Vue.mixin({
      */
     async updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg) {
       console.log('Waiting for transaction to be mined...');
-      callFunctionWhenTransactionMined(transactionHash, async () => {
-        console.log("Transaction mined, updating database...");
+      callFunctionWhenTransactionMined(transactionHash, async() => {
+        console.log('Transaction mined, updating database...');
         await this.checkTokenStatus(successMsg, errorMsg);
       });
     },
@@ -512,7 +571,7 @@ Vue.mixin({
         );
 
         pToken.methods.redeem(amount).send({ from: user })
-          .on('transactionHash', function(transactionHash) {
+          .on('transactionHash', async function(transactionHash) {
             const redemption = complete_redemption(
               redemptionId,
               transactionHash,
@@ -521,6 +580,7 @@ Vue.mixin({
               network,
               new Date().toISOString()
             );
+
             console.log('Redemption saved as pending transaction in database');
 
             $.when(redemption).then((response) => {
@@ -530,11 +590,15 @@ Vue.mixin({
 
             const successMsg = 'Congratulations, your redemption was successfully completed!';
             const errorMsg = 'Oops, something went wrong completing the redemption. Please try again or contact support@gitcoin.co';
-            updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
 
-          }).on('error', (error, receipt) => {
+            await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
+            vm.checkData('personal-tokens');
+          }).on('error', async(error, receipt) => {
+            await this.checkTokenStatus(successMsg, errorMsg);
+            vm.checkData('personal-tokens');
             console.log(error);
             vm.handleError(error);
+
           });
       } catch (error) {
         console.log(error);
@@ -587,6 +651,22 @@ Vue.mixin({
       }
 
       return { user, purchaseTokenAddress };
+    },
+
+    // These two methods are used to provide access to the specified token details
+    // in the redemption accept and deny modals
+    setSelectedRequest(token) {
+      this.selectedRequest.requester = token.requester;
+      this.selectedRequest.amount = token.amount;
+      this.selectedRequest.token_symbol = token.token_symbol;
+      this.selectedRequest.id = token.id;
+    },
+
+    resetSelectedRequest() {
+      this.selectedRequest.requester = undefined;
+      this.selectedRequest.amount = undefined;
+      this.selectedRequest.token_symbol = undefined;
+      this.selectedRequest.id = undefined;
     }
   }
 });

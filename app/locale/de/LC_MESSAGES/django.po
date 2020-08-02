@@ -3821,7 +3821,7 @@ msgstr "Anfrage erhalten"
 #: faucet/templates/faucet_form.html:88
 #, fuzzy
 #| msgid ""
-#| "You request for a faucet distribution has been received. An administrator "
+#| "Your request for a faucet distribution has been received. An administrator "
 #| "will review your request shortly and arrange a deposit if approved."
 msgid ""
 "Your request for a faucet distribution has been received. An administrator "

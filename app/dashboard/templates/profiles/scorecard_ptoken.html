@@ -20,9 +20,9 @@
         </li>
         <li>
           <b>{{ ptoken.total_minted }}</b> Total Supply
-          <div><small>{{ ptoken.total_available }} Available</small></div>
+          <div><small><span id="amount-available">{{ ptoken.total_available }}</span> Available</small></div>
         </li>
-        <li><b>{{ ptoken.purchases }}</b> Purchases</li>
+        <li><b id="purchase-counter">{{ ptoken.purchases }}</b> Purchases</li>
         <li><b>{{ ptoken.redemptions }}</b> Redemptions</li>
         <li><b>{{ total_holders }}</b> Holders</li>
         <li>

@@ -2091,8 +2091,8 @@ def user_card(request, handle):
     profile_dict = profile.as_dict
     followers = TribeMember.objects.filter(org=profile).count()
     following = TribeMember.objects.filter(profile=profile).count()
-    purchased_count = PurchasePToken.objects.filter(token_holder_profile=profile, tx_status='completed').count()
-    redeemed_count = RedemptionToken.objects.filter(redemption_requester=profile, tx_status='completed').count()
+    purchased_count = PurchasePToken.objects.filter(token_holder_profile=profile, tx_status='success').count()
+    redeemed_count = RedemptionToken.objects.filter(redemption_requester=profile, tx_status='success').count()
     has_ptoken = PersonalToken.objects.filter(token_owner_profile=profile).exists()
 
     response = {

@@ -5,6 +5,9 @@ const TX_STATUS_UNKNOWN = 'unknown';
 const TX_STATUS_DROPPED = 'dropped';
 const redemption_states = [ 'request', 'accepted', 'denied', 'completed' ];
 
+function getPToken(tokenId) {
+  return fetchData(`/ptokens/${tokenId}/?minimal=true`, 'GET');
+}
 
 function get_personal_token() {
   return fetchData('/ptokens/me/?minimal=true', 'GET');
@@ -38,17 +41,30 @@ function update_ptoken_address(tokenId, token_address) {
   });
 }
 
-function mint_tokens(tokenId, amount) {
+function mint_tokens(tokenId, amount, txid, network) {
   return fetchData(`/ptokens/${tokenId}/`, 'POST', {
     'event_name': 'mint_ptoken',
-    'amount': amount
+    'amount': amount,
+    'txid': txid,
+    'network': network
   });
 }
 
-function change_price(tokenId, value) {
+function burn_tokens(tokenId, amount, txid, network) {
+  return fetchData(`/ptokens/${tokenId}/`, 'POST', {
+    'event_name': 'burn_ptoken',
+    'amount': amount,
+    'txid': txid,
+    'network': network
+  });
+}
+
+function change_price(tokenId, value, txid, network) {
   return fetchData(`/ptokens/${tokenId}/`, 'POST', {
     'event_name': 'edit_price_ptoken',
-    'value': value
+    'value': value,
+    'txid': txid,
+    'network': network
   });
 }
 
