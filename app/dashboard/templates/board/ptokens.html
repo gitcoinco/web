@@ -113,7 +113,8 @@
                 </div>
                 <div>
                   <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionAcceptModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester != current_user">Accept</button>
-                  <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionDenyModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Deny</button>
+                  <button v-if="token.requester == current_user" @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCancelModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
+                  <button v-else @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionDenyModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Deny</button>
                 </div>
               </div>
             </li>
@@ -160,7 +161,7 @@
                   </div>
                 </div>
                 <div>
-                  <button @click="complete(token.id, token.amount, token.token_address)" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester == current_user">Complete</button>
+                  <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester == current_user">Complete</button>
                   <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
                 </div>
               </div>
@@ -296,6 +297,8 @@
   {% include 'shared/create_ptoken.html' %}
   {% include 'shared/create_ptoken_success.html' %}
   {% include 'shared/redemption_accept_modal.html' %}
+  {% include 'shared/redemption_cancel_modal.html' %}
+  {% include 'shared/redemption_complete_modal.html' %}
   {% include 'shared/redemption_deny_modal.html' %}
   {% include 'shared/edit_ptoken.html' %}
 </div>

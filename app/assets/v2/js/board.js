@@ -14,8 +14,10 @@ Vue.mixin({
     return {
       selectedRequest: {
         requester: undefined,
+        creator: undefined,
         amount: undefined,
         symbol: undefined,
+        token_address: undefined,
         id: undefined
       }
     };
@@ -558,6 +560,7 @@ Vue.mixin({
     async complete(redemptionId, tokenAmount, tokenAddress) {
       const vm = this;
       const updatePtokenStatusinDatabase = this.updatePtokenStatusinDatabase;
+      const handleError = this.handleError;
 
       try {
         const network = vm.checkNetwork();
@@ -594,15 +597,13 @@ Vue.mixin({
             await updatePtokenStatusinDatabase(transactionHash, successMsg, errorMsg);
             vm.checkData('personal-tokens');
           }).on('error', async(error, receipt) => {
+            handleError(error);
             await this.checkTokenStatus(successMsg, errorMsg);
             vm.checkData('personal-tokens');
-            console.log(error);
-            vm.handleError(error);
 
           });
       } catch (error) {
-        console.log(error);
-        vm.handleError(error);
+        handleError(error);
       }
     },
     accept(redemptionId) {
@@ -657,14 +658,18 @@ Vue.mixin({
     // in the redemption accept and deny modals
     setSelectedRequest(token) {
       this.selectedRequest.requester = token.requester;
+      this.selectedRequest.creator = token.creator;
       this.selectedRequest.amount = token.amount;
+      this.selectedRequest.token_address = token.token_address;
       this.selectedRequest.token_symbol = token.token_symbol;
       this.selectedRequest.id = token.id;
     },
 
     resetSelectedRequest() {
       this.selectedRequest.requester = undefined;
+      this.selectedRequest.creator = undefined;
       this.selectedRequest.amount = undefined;
+      this.selectedRequest.token_address = undefined;
       this.selectedRequest.token_symbol = undefined;
       this.selectedRequest.id = undefined;
     }
