@@ -2789,7 +2789,7 @@ class Profile(SuperModel):
     last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
     encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
     sybil_score = models.IntegerField(default=-1)
-
+    ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore')
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
 
