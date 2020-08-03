@@ -1,0 +1,20 @@
+{
+  "symbol": "MTB",
+  "address": "0x30FA30E673e7Df388694bD0a97EcED563518f81d",
+  "overview":{
+        "zh": "MTB 是香港牧牛(国际)医疗区块链，区块链在医疗领域的应用在国内外关注度⽇渐提高，区块链的触⻆已遍布各⾏各业，助推传统⾏业转型升级。目前，区块链技术已逐步在医疗领域得到应用，作为⼀门新兴技术，正在颠覆这⼀行业的经营模式甚⾄价值链，目前仅由官方渠道发放。",
+        "en": "MTB is a Hong Kong cattle (International) medical blockchain. The application of blockchain in the medical field has gradually increased at home and abroad. The touch of the blockchain has spread all over various industries, boosting the transformation and upgrading of traditional industries. At present, blockchain technology has been gradually applied in the medical field. As an emerging technology, it is subverting the business model and even the value chain of this industry. At present, it is only issued by official channels."
+  },
+  "email": "906365713@qq.com",
+  "website": "http://gw.sdlqtl.com/",
+  "whitepaper": "http://gw.sdlqtl.com/2.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-07-11",
+  "initial_price":{
+        "USD":"0.02858 USD"
+  },
+  "links": {
+        "twitter": "https://twitter.com/MtbChain",
+        "github": "https://github.com/mtbmtbmtb"
+  }
+}
