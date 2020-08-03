@@ -1,0 +1,12 @@
+{
+  "symbol": "KBFcoin",
+  "address": "0x974e9d23313deC030F7604332f0dcfFfa33F4DF5",
+  "overview":{
+        "en": "The participating nodes in KBF chain can be hotel operators, hotel suppliers, residents, various organizations in the alliance chain to form an interest related alliance to jointly maintain the healthy operation of KBF. At the same time, although the personal information of the guests and the financial situation of the hotel are on the chain, part of the information is limited to some people, which ensures the top secret of the hotel operation process. In the KBF chain, some nodes share the hotel operation status, etc. users can query the hotel dynamic, the latest service content, price, personal check-in and other details on the chain, and the data can not be tampered with; users can also use the KBF card in mrco's hotels, catering, entertainment, education and other fields.",
+        "zh": "KBF链中的参与节点可以是酒店经营方、酒店供应商、住客、联盟链中的各机构、各组织组成利益相关的联盟，共同维护KBF的健康运转。同时，对于住客的个人信息、酒店财务情况等信息，虽然上链，但部分信息仅限于部分人可查，这就保障了酒店运作过程的绝密性。在KBF链，节点之间部分共享酒店经营状况等，用户可以在链上查询酒店的动态，最新服务内容、价格、个人入住等详细情况，且数据无法篡改；用户还可以将手中持有的KBF通证在MRCo旗下酒店、餐饮、娱乐、教育等领域进行消费。"
+  },
+  "email": "a1336206280@163.com",
+  "website": "http://meng.zhang123.vip/#/",
+  "whitepaper": "http://meng.zhang123.vip/KBF.pdf",
+  "state": "NORMAL"
+}
