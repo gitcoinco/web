@@ -5,11 +5,6 @@ const purchaseTokenName = 'DAI';
 
 let BN;
 
-$(document).on('click', '#redeemPTokens', (event) => {
-  $('#buy_ptoken_modal').bootstrapModal('hide');
-  $('#redeemTokenModal').bootstrapModal('show');
-});
-
 $(document).on('click', '#submit_buy_token', (event) => {
   event.preventDefault();
 

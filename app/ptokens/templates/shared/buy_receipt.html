@@ -26,10 +26,13 @@
         </div>
         <div class="modal-body text-center">
           <p>{% trans "You just purchased " %} <span id="buy-amount">10</span> {{ ptoken.token_symbol }}.</p>
-          <p>{% trans "View the transaction on" %} <a id="buy-tx" href="#" target="_blank">Etherscan</a>.</p>
+          <p>{% trans "Please wait for your transaction to be confirmed. Afterwards, you may redeem your tokens!" %}</p>
+          <small><p>{% trans "View the transaction on" %} <a id="buy-tx" href="#" target="_blank">Etherscan</a>.</p></small>
         </div>
         <div class="p-2 text-center">
-          <button class="btn btn-gc-blue btn-md ml-2" id="redeemPTokens">Redeem</button>
+          <button type="button" class="btn btn-gc-blue btn-md ml-2" data-dismiss="modal">
+            Close
+          </button>
         </div>
       </div>
     </div>
