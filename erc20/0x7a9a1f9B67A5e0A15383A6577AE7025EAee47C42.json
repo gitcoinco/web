@@ -1,0 +1,21 @@
+{
+  "symbol": "YHC",
+  "address": "0x7a9a1f9B67A5e0A15383A6577AE7025EAee47C42",
+  "overview":{
+        "en": "YHC CONSENSUS PROTOCOL The world's first decentralized open financial agreement. It is the world's first decentralized financial agreement system that integrates payment, lending, trading platforms, wallets, identity authentication, and prediction. Comprehensive system to improve the process of economic globalization.",
+        "zh": "YHC共识协议首创去中心化开放金融协议，由去中心化组织与多国金融机构组织联合发起成立。是全球首个集支付、借贷、交易平台、钱包、身份认证、预测于一体的去中心金融协议系统，也是首个利用区块链技术推动全球金融市场发展，提高经济全球化进程的综合系统。"
+  },
+  "email": "18217482179@163.com",
+  "website": "http://www.yhchain.cc",
+  "whitepaper": "http://www.yhchain.cc/YHC-WhitePaper-Cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-01-01",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+  "github": "https://github.com/uatkt991922"
+  }
+}
