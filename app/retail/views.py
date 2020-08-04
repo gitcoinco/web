@@ -961,11 +961,8 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         pk = terms[1]
 
         if len(terms) > 2:
-            print(terms)
             if terms[2] == 'tribe':
                 key = terms[3]
-                print(key)
-                print(terms)
                 profile_filter = Q(profile__handle=key.lower())
                 other_profile_filter = Q(other_profile__handle=key.lower())
                 keyword_filter = Q(metadata__icontains=key)

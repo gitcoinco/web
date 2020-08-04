@@ -873,14 +873,8 @@
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.prizeFounders = JSON.parse(document.getElementById('prize-founders').textContent);
       document.activePanel = parseInt({{panel | safe}});
-<<<<<<< HEAD
-      {% if is_registered %}
-      document.chat_url_override = "{{ chat_override_url | safe}}";
-      {% endif %}
-=======
       document.chatURL = "{{ chat_url | safe}}";
-      document.displayShowcase = {{hackathon.display_showcase|yesno:"true,false" }}
->>>>>>> 7afbf87531166693a937c651c0bf3d09da70c4a0
+      document.displayShowcase = {{hackathon.display_showcase|yesno:"true,false" }};
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
     </script>
     <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>
