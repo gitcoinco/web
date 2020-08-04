@@ -53,7 +53,7 @@
 
       @media (min-width: 1200px) {
         .container.custom-container {
-          max-width: 1400px;
+          max-width: 1400px !important;
         }
       }
 
@@ -86,7 +86,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container custom-container">
       <div class="row rounded my-5" style="background-color:#0d023b;">
         <div class="col-12 col-md-6">
           <img class="pull-left mb-2" style="float:left;" width="49" src="/static/v2/images/hackathon/hackathon-subscribe.png" />
@@ -116,7 +116,7 @@
 
       <div class="row my-4">
       {% if events|length %}
-      <div class="container custom-container">
+      <div class="container">
       <div class="row">
       {% for event in events %}
           <style>
