@@ -107,13 +107,7 @@ var trigger_faucet_form_web3_hooks = function(data) {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       return;
-    } else if (is_metamask_unlocked && !is_metamask_approved) {
-      $('#no_metamask_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'block');
-      $('#over_balance_error').css('display', 'none');
-      $('#faucet_form').addClass('hidden');
-    } else if (!cb_address) {
+    }else if (!cb_address) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'block');
       $('#connect_metamask_error').css('display', 'none');
@@ -140,11 +134,6 @@ var trigger_faucet_form_web3_hooks = function(data) {
       $('#faucet_form').addClass('hidden');
       return;
     }
-    if (is_metamask_unlocked && !is_metamask_approved) {
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-    }
     if (!cb_address) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
@@ -163,15 +152,20 @@ var trigger_faucet_form_web3_hooks = function(data) {
     });
   }
 };
+needWalletConnection();
+window.addEventListener('dataWalletReady', function(e) {
+  // BN = web3.utils.BN;
+  trigger_faucet_form_web3_hooks(provider);
+}, false);
 
-window.addEventListener('load', async() => {
-  if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
-    onConnect().then(() => {
-      trigger_faucet_form_web3_hooks(provider);
-    });
-  } else {
-    web3Modal.on('connect', async(data) => {
-      trigger_faucet_form_web3_hooks(data);
-    });
-  }
-});
+// window.addEventListener('load', async() => {
+//   if (!provider && !web3Modal.cachedProvider || provider === 'undefined') {
+//     onConnect().then(() => {
+//       trigger_faucet_form_web3_hooks(provider);
+//     });
+//   } else {
+//     web3Modal.on('connect', async(data) => {
+//       trigger_faucet_form_web3_hooks(data);
+//     });
+//   }
+// });
