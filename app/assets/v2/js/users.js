@@ -8,8 +8,8 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 
 Vue.mixin({
   computed: {
-    orderedUsers: function () {
-      return _.orderBy(this.users, 'position_contributor', 'asc' )
+    orderedUsers: function() {
+      return _.orderBy(this.users, 'position_contributor', 'asc');
     }
   },
   methods: {
@@ -407,3 +407,15 @@ if (document.getElementById('gc-users-directory')) {
     }
   });
 }
+
+Vue.component('tribe-directory', {
+  computed: {
+    orderedUsers: function() {
+      return _.orderBy(this.users, 'position_contributor', 'asc');
+    }
+  },
+  
+  mounted() {
+    this.fetchUsers();
+  }
+});
