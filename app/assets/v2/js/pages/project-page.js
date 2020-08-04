@@ -1,6 +1,5 @@
 /* eslint-disable no-loop-func */
 (function($) {
-/* eslint-disable no-loop-func */
 
   $(function() {
     Vue = Vue.extend({
@@ -63,10 +62,9 @@
           projectModal(project.prize.id, project.id, async() => {
             const context = await fetchData(`/api/v0.1/projects/${project.id}`);
 
-            console.log(context);
-            vm.project = context.project;
-            vm.hackathon = context.hackathon;
-            location.reload();
+            vm.project = Object.assign({}, context.project);
+            vm.hackathon = Object.assign({}, context.hackathon);
+
           });
         }
       },

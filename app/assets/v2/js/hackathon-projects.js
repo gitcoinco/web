@@ -26,6 +26,9 @@ const submitProject = (logo, data, callback) => {
     }
     delete localStorage['pendingProject'];
     $('#modalProject').bootstrapModal('hide');
+    if (callback) {
+      callback(response);
+    }
     return _alert({message: response.msg}, 'info');
 
   }).fail(function(data) {
