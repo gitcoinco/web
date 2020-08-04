@@ -4702,10 +4702,12 @@ class HackathonEvent(SuperModel):
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
     sponsor_profiles = models.ManyToManyField('dashboard.Profile', blank=True, limit_choices_to={'data__type': 'Organization'})
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
+    hackathon_summary = models.CharField(max_length=280, blank=True, help_text=_('280 char summary that shows up on hackathon cards on the hackathon list page'))
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
+
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
     display_showcase = models.BooleanField(default=False)
@@ -4791,6 +4793,7 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+
 # method for updating
 @receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
 def psave_hackathonevent(sender, instance, **kwargs):
@@ -4810,6 +4813,7 @@ def psave_hackathonevent(sender, instance, **kwargs):
                 'img_url': instance.logo.url if instance.logo else None,
             }
             )
+
 
 
 class HackathonSponsor(SuperModel):
@@ -5429,3 +5433,23 @@ class ProfileVerification(SuperModel):
 
     def __str__(self):
         return f'{self.phone_number} ({self.caller_type}) from {self.country_code} request ${self.delivery_method} code at {self.created_on}'
+
+
+class HackathonWorkshop(SuperModel):
+    name = models.CharField(max_length=255)
+    start_date = models.DateTimeField()
+    cover = models.ImageField()
+    hackathon = models.ForeignKey(
+        'dashboard.HackathonEvent',
+        related_name='workshop_event',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    speaker = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='workshop_speaker',
+        on_delete=models.CASCADE,
+        help_text='Main speaker profile.'
+    )
+    url = models.URLField(help_text='Blog link, calendar link, or other.')
+    visible = models.BooleanField(help_text=_('Can this HackathonWorkshop be seen on /hackathons ?'), default=True)
