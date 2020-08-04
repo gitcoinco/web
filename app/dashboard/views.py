@@ -109,7 +109,7 @@ from .helpers import (
 from .models import (
     Activity, Answer, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, CoinRedemption,
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
-    HackathonSponsor, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
+    HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
     ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember,
     UserAction, UserVerificationModel,
 )
@@ -121,7 +121,7 @@ from .router import HackathonEventSerializer, HackathonProjectSerializer, Tribes
 from .utils import (
     apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_unrated_bounties_count,
     get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty, record_user_action_on_interest,
-    release_bounty_to_the_public, sync_payout, web3_process_bounty,
+    release_bounty_to_the_public, sync_payout, web3_process_bounty, get_hackathon_event,
 )
 
 logger = logging.getLogger(__name__)
@@ -4394,23 +4394,53 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
-    events = {
-        'current': HackathonEvent.objects.current().filter(visible=True).order_by('start_date'),
-        'upcoming': HackathonEvent.objects.upcoming().filter(visible=True).order_by('start_date'),
-        'finished': HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date'),
-    }
+    current_hackathon_events = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
+    upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
+    finished_hackathon_events = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
+    all_hackathon_events = HackathonEvent.objects.all().filter(visible=True)
 
-    pks = HackathonEvent.objects.filter(visible=True).values_list('pk', flat=True)
-    if len(pks):
-        increment_view_count.delay(list(pks), 'hackathon event', request.user.id, 'index')
+    network = get_default_network()
+
+    tabs = [
+        ('current', 'happening now'),
+        ('upcoming', 'upcoming'),
+        ('finished', 'completed'),
+    ]
+
+    hackathon_events = []
+
+    if current_hackathon_events.exists():
+        for event in current_hackathon_events:
+            event_dict = get_hackathon_event('current', event, network)
+            hackathon_events.append(event_dict)
+
+    if upcoming_hackathon_events.exists():
+        for event in upcoming_hackathon_events:
+            event_dict = get_hackathon_event('upcoming', event, network)
+            hackathon_events.append(event_dict)
+
+    if finished_hackathon_events.exists():
+        for event in finished_hackathon_events:
+            event_dict = get_hackathon_event('finished', event, network)
+            hackathon_events.append(event_dict)
+
 
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
-        'events': events,
+        'tabs': tabs,
+        'events': hackathon_events,
     }
+
+    if current_hackathon_events.exists():
+        params['default_tab'] = 'current'
+    elif upcoming_hackathon_events.exists():
+        params['default_tab'] = 'upcoming'
+    else:
+        params['default_tab'] = 'finished'
+
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 
 
