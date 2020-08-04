@@ -3609,17 +3609,30 @@ def get_kudos(request):
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 
-
+@login_required
 def hackathon_prizes(request, hackathon=''):
-    hackathon_event = get_object_or_404(HackathonEvent,
-                                        slug__iexact=hackathon)
+    profile = request.user.profile
+    hackathon_event = get_object_or_404(HackathonEvent, slug__iexact=hackathon)
+    sponsors = hackathon_event.sponsor_profiles.all().values_list('id', flat=True)
+    is_sponsor_member = profile.organizations_fk.filter(pk__in=sponsors)
+    funded_bounties = profile.bounties_funded.filter(event=hackathon_event)
 
-    is_founder = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=request.user.profile)
-
-    if not is_founder:
+    if profile.is_staff:
+        query_prizes = Bounty.objects.filter(event=hackathon_event)
+    elif is_sponsor_member.exists():
+        sponsor = is_sponsor_member.first()
+        profiles = list(sponsor.team.values_list('id', flat=True)) + [sponsor.id]
+        query_prizes = Bounty.objects.filter(event=hackathon_event).filter(Q(bounty_owner_profile__in=profiles) |
+                                                                           Q(admin_override_org_name__in=[
+                                                                               sponsor.name,
+                                                                               sponsor.handle
+                                                                           ]))
+    elif funded_bounties.exists():
+        query_prizes = funded_bounties
+    else:
         raise Http404("You need fund one prize in this hackathon to access the dashboard.")
 
-    query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=request.user.profile)
+
     prizes = []
     for prize in query_prizes:
         total_submitted = BountyEvent.objects.filter(bounty=prize, event_type='submit_work').count()
@@ -3642,17 +3655,32 @@ def hackathon_prizes(request, hackathon=''):
     })
 
 
+@login_required
 def dashboard_sponsors(request, hackathon='', panel='prizes'):
     """Handle rendering of HackathonEvents. Reuses the dashboard template."""
-
+    profile = request.user.profile
     hackathon_event = get_object_or_404(HackathonEvent, slug__iexact=hackathon)
+    sponsors = hackathon_event.sponsor_profiles.all().values_list('id', flat=True)
+    is_sponsor_member = profile.organizations_fk.filter(pk__in=sponsors)
+    founded_bounties = profile.bounties_funded.filter(event=hackathon_event)
 
-    is_founder = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=request.user.profile)
-
-    if not is_founder:
+    if profile.is_staff:
+        sponsor_profile = profile
+        query_prizes = Bounty.objects.filter(event=hackathon_event)
+    elif is_sponsor_member.exists():
+        sponsor_profile = is_sponsor_member.first()
+        sponsor = is_sponsor_member.first()
+        profiles = list(sponsor.team.values_list('id', flat=True)) + [sponsor.id]
+        query_prizes = Bounty.objects.filter(event=hackathon_event).filter(Q(bounty_owner_profile__in=profiles) |
+                                                                           Q(admin_override_org_name__in=[
+                                                                               sponsor.name,
+                                                                               sponsor.handle
+                                                                           ]))
+    elif founded_bounties.exists():
+        sponsor_profile = profile
+        query_prizes = Bounty.objects.filter(event=hackathon_event, bounty_owner_profile=profile)
+    else:
         raise Http404("You need fund one prize in this hackathon to access the dashboard.")
-
-
 
     title = hackathon_event.name.title()
     description = f"{title} | Gitcoin Virtual Hackathon"
@@ -3661,7 +3689,6 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
 
-    sponsor_profile = request.user.profile
     org = {
         'display_name': sponsor_profile.name,
         'avatar_url': sponsor_profile.avatar_url,
@@ -3683,11 +3710,11 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
 
     what = f'hackathon:{hackathon_event.id}{filter}'
 
-    num_participants = HackathonRegistration.objects.filter(hackathon=hackathon_event).count()
-    num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work').count()
+    num_participants = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='express_interest', bounty__in=query_prizes).count()
+    num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work', bounty__in=query_prizes).count()
     params = {
         'active': 'dashboard',
-        'prize_count': hackathon_event.get_current_bounties.count(),
+        'prize_count': query_prizes.count(),
         'type': 'hackathon',
         'title': title,
         'card_desc': description,
@@ -3727,17 +3754,24 @@ def hackathon(request, hackathon='', panel='prizes'):
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
     # if hackathon_not_started:
         # return redirect(reverse('hackathon_onboard', args=(hackathon_event.slug,)))
+    is_sponsor = False
 
     orgs = []
 
     following_tribes = []
+    sponsors = hackathon_event.sponsor_profiles.all()
 
     if request.user and hasattr(request.user, 'profile'):
-        following_tribes = request.user.profile.tribe_members.filter(
-            org__in=hackathon_event.sponsor_profiles.all()
+        profile = request.user.profile
+        following_tribes = profile.tribe_members.filter(
+            org__in=sponsors
         ).values_list('org__handle', flat=True)
 
-    for sponsor_profile in hackathon_event.sponsor_profiles.all():
+        is_member = profile.organizations_fk.filter(pk__in=sponsors.values_list('id', flat=True)).exists()
+        is_founder = profile.bounties_funded.filter(event=hackathon_event).exists()
+        is_sponsor = is_member or is_founder or request.user.is_staff
+
+    for sponsor_profile in sponsors:
         org = {
             'display_name': sponsor_profile.name,
             'avatar_url': sponsor_profile.avatar_url,
@@ -3808,7 +3842,8 @@ def hackathon(request, hackathon='', panel='prizes'):
         'SHOW_DRESSING': False,
         'use_pic_card': True,
         'projects': [],
-        'panel': active_tab
+        'panel': active_tab,
+        'is_sponsor': is_sponsor
     }
 
     if hackathon_event.identifier == 'grow-ethereum-2019':
