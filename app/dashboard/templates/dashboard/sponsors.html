@@ -211,7 +211,7 @@
                                       <div class="d-flex mb-2 mt-1" v-for="profile in project.profiles">
                                         <img height="28" width="28" class="mr-2 rounded-circle" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
                                         <div class="d-flex flex-column">
-                                          <a class="font-smaller-4 text-black" :href="profile.url">[[profile.handle]]</a>
+                                          <a class="font-smaller-4 text-black" target="_blank" :href="profile.url">[[profile.handle]]</a>
                                           <span class="font-smaller-5 gc-text-blue">[[start_and_end(profile.payout_address)]]</span>
                                         </div>
                                       </div>
