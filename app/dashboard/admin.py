@@ -178,7 +178,7 @@ recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ['handle', 'sybil_score', 'user_sybil_score', 'created_on']
-    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
+    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk', 'ignore_tribes']
     ordering = ['-id']
     search_fields = ['email', 'data']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
