@@ -107,7 +107,7 @@ var trigger_faucet_form_web3_hooks = function(data) {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       return;
-    }else if (!cb_address) {
+    } else if (!cb_address) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'block');
       $('#connect_metamask_error').css('display', 'none');
@@ -152,6 +152,7 @@ var trigger_faucet_form_web3_hooks = function(data) {
     });
   }
 };
+
 needWalletConnection();
 window.addEventListener('dataWalletReady', function(e) {
   // BN = web3.utils.BN;
