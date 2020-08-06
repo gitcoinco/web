@@ -242,12 +242,6 @@ def ptoken(request, tokenId='me'):
             ptoken.refresh_from_db()
 
     if minimal:
-        current_hodling = ptoken.get_hodling_amount(request.user.profile)
-        locked_amount = RedemptionToken.objects.filter(ptoken=ptoken,
-                                                       redemption_requester=request.user.profile,
-                                                       redemption_state__in=['request', 'accepted',
-                                                                             'waiting_complete']).aggregate(locked=Sum('total'))['locked'] or 0
-        available_to_redeem = current_hodling - locked_amount
         return JsonResponse({
             'id': ptoken.id,
             'name': ptoken.token_name,
@@ -258,7 +252,7 @@ def ptoken(request, tokenId='me'):
             'available': ptoken.available_supply,
             'purchases': ptoken.total_purchases,
             'redemptions': ptoken.total_redemptions,
-            'available_to_redeem': available_to_redeem,
+            'available_to_redeem': ptoken.get_available_amount(request.user.profile),
             'tx_status': ptoken.tx_status
         })
 
@@ -279,11 +273,13 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
         if request.method == 'POST':
             if not request.user.is_authenticated:
                 return JsonResponse(
-                    {'error': _('You must be authenticated via github to use this feature!')},
+                    {'message': _('You must be authenticated via github to use this feature!')},
                     status=401)
-            if total.isdigit() and ptoken.get_hodling_amount(request.user.profile) < float(total):
+
+            tokens_available = ptoken.get_available_amount(request.user.profile)
+            if float(total) < 0 or float(total) > tokens_available:
                 return JsonResponse(
-                    {'error': _(f'You don\'t have enough ${ptoken.token_symbol} tokens!')},
+                    {'message': _(f'You don\'t have enough ${ptoken.token_symbol} tokens!')},
                     status=401)
 
             RedemptionToken.objects.create(
@@ -310,8 +306,10 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
         current_redemption['amount'] = redemption.total
         current_redemption['token_symbol'] = redemption.ptoken.token_symbol
         current_redemption['token_address'] = redemption.ptoken.token_address
+        current_redemption['token_owner'] = redemption.ptoken.token_owner_profile.handle
         current_redemption['token_name'] = redemption.ptoken.token_name
         current_redemption['creator'] = redemption.ptoken.token_owner_profile.handle
+        current_redemption['canceller'] = redemption.canceller.handle if redemption.canceller else None
         redemptions_json.append(current_redemption)
 
     return JsonResponse(redemptions_json, safe=False)
@@ -342,6 +340,7 @@ def ptoken_redemption(request, redemptionId):
             kwargs['redemption_accepted'] = datetime.now()
             kwargs['redemption_state'] = 'accepted'
             metadata['redemption'] = redemption.id
+            metadata['redemption_requester_name'] = redemption.redemption_requester.handle
         if event_name == 'denies_redemption_ptoken':
             if user.profile != redemption.ptoken.token_owner_profile and user.profile != redemption.redemption_requester:
                 return JsonResponse(
@@ -350,12 +349,15 @@ def ptoken_redemption(request, redemptionId):
 
             if user.profile == redemption.ptoken.token_owner_profile and redemption.redemption_state != 'accepted':
                 kwargs['redemption_state'] = 'denied'
+
             else:
                 kwargs['redemption_state'] = 'cancelled'
 
 
             kwargs['canceller'] = user.profile
             metadata['redemption'] = redemption.id
+            metadata['redemption_requester_name'] = redemption.redemption_requester.handle
+            metadata['redemption_state'] = kwargs['redemption_state']
         if event_name == 'complete_redemption_ptoken':
             if user.profile != redemption.redemption_requester:
                 return JsonResponse(
@@ -471,7 +473,7 @@ def process_ptokens(self):
 
     for redemption in RedemptionToken.objects.filter(tx_status__in=non_terminal_states):
         redemption.update_tx_status()
-        print(f"syncing ptoken / {redemption.pk} / {redemption.network}")
+        print(f"syncing redemptions / {redemption.pk} / {redemption.network}")
         redemption.save()
 
     for event in PTokenEvent.objects.filter(tx_status__in=non_terminal_states):

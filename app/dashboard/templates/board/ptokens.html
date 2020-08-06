@@ -267,8 +267,10 @@
                 <i class="fas fa-circle fa-stack-2x light-blue"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
-              <span v-if="token.requester == current_user">You cancelled a request to redeem <span class="font-weight-bold"> [[ token.token_symbol ]] </span> for work from @[[ token.creator ]].</span>
-              <span v-else>The request to redeem <span class="font-weight-bold"> [[ token.token_symbol ]] </span> was cancelled by @[[ token.requester ]].</span>
+              <span v-if="token.requester == current_user && token.canceller == current_user">You cancelled a <span class="font-weight-bold"> [[ token.token_symbol ]] </span> request to @[[current_user]].</span>
+              <span v-else-if="token.requester == current_user && token.canceller != current_user">[[token.requester]] cancelled their request for <span class="font-weight-bold"> [[ token.token_symbol ]] </span>.</span>
+              <span v-else-if="token.requester != current_user && token.canceller == current_user">You cancelled a <span class="font-weight-bold"> [[ token.token_symbol ]] </span> request from @[[current_user]].</span>
+              <span v-else-if="token.requester != current_user && token.canceller != current_user">[[token.token_owner]] cancelled your request for <span class="font-weight-bold"> [[ token.token_symbol ]] </span>.</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
