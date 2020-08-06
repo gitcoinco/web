@@ -89,7 +89,7 @@
               newPathName = 'prizes';
               break;
             case 1:
-              newPathName = 'submissions';
+              newPathName = 'stats';
               break;
           }
           let newUrl = `/hackathon/dashboard/${vm.hackathonObj['slug']}/${newPathName}`;
@@ -112,7 +112,7 @@
         toggleSummary: function(prizeIndex, submissionIndex) {
           let vm = this;
           const showDescription = !vm.prizes[prizeIndex].submissions[submissionIndex].showDescription;
-          
+
           vm.$set(vm.prizes[prizeIndex].submissions[submissionIndex], 'showDescription', showDescription);
         }
       },
@@ -125,6 +125,7 @@
         activePanel: document.activePanel,
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
+        userOrg: document.userOrg,
         hackathonProjects: [],
         chatURL: document.chatURL,
         prizes: [],

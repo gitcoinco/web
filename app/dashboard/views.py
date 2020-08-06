@@ -3701,7 +3701,7 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
     active_tab = 0
     if panel == "prizes":
         active_tab = 0
-    elif panel == "submissions":
+    elif panel == "stats":
         active_tab = 1
 
     filter = ''
@@ -3719,7 +3719,7 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         'title': title,
         'card_desc': description,
         'what': what,
-        'org': org,
+        'user_orgs': org,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'hackathon': hackathon_event,
         'hackathon_obj': HackathonEventSerializer(hackathon_event).data,
