@@ -9,11 +9,10 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
-
-import metadata_parser
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
+import metadata_parser
 from app.services import RedisService
 from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
