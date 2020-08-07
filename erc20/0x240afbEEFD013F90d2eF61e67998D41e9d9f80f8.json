@@ -1,0 +1,17 @@
+{
+    "symbol": "UGT",
+    "address": "0x240afbEEFD013F90d2eF61e67998D41e9d9f80f8",
+    "overview":{
+          "en": "UGT is an ecological chain anchoring the value of gold. It was initiated by the Dubai LIBRA Foundation. Each UGT issued by the LIBRA Foundation will rely on the gold reserves and physical asset packages of the gold mine to ensure the stability of value. UGT’s goal is to become The value is comparable to the ecological chain of gold.",
+          "zh": "UGT是锚定黄金价值的生态链，由迪拜LIBRA基金会发起，LIBRA基金会每发行一枚UGT都会以金矿的黄金储量和实体资产包作为依托，确保价值的稳定性，UGT的目标是成为价值堪比黄金的生态链。"
+    },
+    "email": "service@ugtgold.com",
+    "website": "http://ugt.ugtgold.com/",
+    "whitepaper": "http://ugt.ugtgold.com/UGT-White%20Paper.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-10-10",
+    "links": {
+        "telegram": "https://t.me/ugtgroup",
+        "twitter": "https://twitter.com/communityugt"
+      }
+}
