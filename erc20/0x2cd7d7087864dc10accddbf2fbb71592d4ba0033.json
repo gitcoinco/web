@@ -1,6 +1,6 @@
 {
     "symbol": "QT",
-    "address": "0x2cd7d7087864dc10accddbf2fbb71592d4ba0033",
+    "address": "0x2cD7D7087864dC10ACcDDBf2fbB71592D4BA0033",
     "overview": {
         "zh": "QT是一家全新概念的区块链资产交易、增值服务平台，由华尔街及新加坡顶尖技术团队发起，联合区块链资深从业者通过去中心化自组织形式创立的一个专注于区块链资产交易与增值的平台."
     },
@@ -15,7 +15,7 @@
     },
     "links": {
         "blog": "http://www.qex.life",
-        "github": "https: //github.com/qextoken/token-profile"
+        "github": "https://github.com/qextoken/token-profile"
         
     }
 }
