@@ -32,6 +32,13 @@ services:
         reservations:
           memory: 128M
 
+
+  elasticsearch:
+    image: launcher.gcr.io/google/elasticsearch2
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
   ipfs:
     image: ipfs/go-ipfs:release
     restart: unless-stopped

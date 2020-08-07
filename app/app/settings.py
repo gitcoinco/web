@@ -146,7 +146,19 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
+    'haystack',
 ]
+
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+        'URL': 'elasticsearch:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+# Update Search index in realtime (using models.db.signals)
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

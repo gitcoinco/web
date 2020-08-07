@@ -4118,6 +4118,9 @@ class Profile(SuperModel):
         }
 
 
+    def to_es(self):
+        return json.dumps(self.to_dict())
+
     def to_dict(self):
         """Get the dictionary representation with additional data.
 
@@ -4276,6 +4279,7 @@ class Profile(SuperModel):
         if context['spent_total'] > 1000:
             context['spent_total'] = f"{round(context['spent_total']/1000)}k"
         return context
+
 
 
     @property

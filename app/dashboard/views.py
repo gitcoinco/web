@@ -959,6 +959,21 @@ def set_project_notes(request):
 
 
 @require_GET
+def users_autocomplete(request):
+    max_items = 5
+    q = request.GET.get('q')
+    if q:
+        from haystack.query import SQ, SearchQuerySet
+        sqs = SearchQuerySet().autocomplete((SQ(first_name_auto=q) | SQ(last_name_auto=q) | SQ(handle_auto=q)))
+        results = [str(result.object) for result in sqs[:max_items]]
+    else:
+        results = []
+
+    return JsonResponse({
+        'results': results
+    })
+
+@require_GET
 def users_fetch(request):
     """Handle displaying users."""
     q = request.GET.get('search', '')
