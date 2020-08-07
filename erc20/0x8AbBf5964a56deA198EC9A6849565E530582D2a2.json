@@ -1,0 +1,17 @@
+{
+    "symbol": "NNT",
+    "address": "0x8AbBf5964a56deA198EC9A6849565E530582D2a2",
+    "overview":{
+          "zh": "HiNounou项目致力于让全世界的老人在家里过得更长寿、更健康、更幸福，并给不在身边的子女带来安心。我们使用基因检测和物联网医疗设备监测老人的健康状况，并实时与子女及医务人员连接第一时间了解老人的健康状态、大病风险和紧急情况预警，用人工智能算法预防和预测老人的慢性疾病，最后用保险科技给老人提供保障。所有的健康数据都储存在一条唯一的区块链上。Nounou Token是一个聚焦于解决养老问题的双币制项目。我们的Nounou积分用来鼓励每天坚持使用我们的设备监测身体状况并保持健康生活习惯的老人，这些积分可以直接兑换成现金进行消费；我们的投资代币NNT的价格会随着诺童生态圈的扩大而上涨，从而激励投资者持有代币。"
+    },
+    "email": "hello@hinounou.com",
+    "website": "http://www.hinounou.io/",
+    "whitepaper": "https://www.hinounou.io/public/doc/NounouToken_WhitePaper.pdf",
+    "published_on": "2020-07-13",
+    "state": "NORMAL",
+    "links": {
+      "twitter": "http://twitter.com/NounouToken",
+      "telegram": "https://t.me/joinchat/IRfxblFuhUv0E-8LOm_MNQ",
+      "facebook": "https://www.facebook.com/hinounou/"
+    }
+  }
