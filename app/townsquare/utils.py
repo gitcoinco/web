@@ -10,8 +10,9 @@ def is_user_townsquare_enabled(user):
     # roll out emails to 20% of userbase to start. see if we get blowback
     # KO 6/2/2020 - we got no complaints about the daily email yesterday, so upping to 40%
     # KO 6/3/2020, upping to 55%
+    # KO 7/30/2020, upping to 100%
 
-    if user.pk % 100 < 80:
+    if user.pk % 100 < 101:
         return True
 
     if user.is_staff:

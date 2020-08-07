@@ -71,6 +71,26 @@
 
           return vm.comments[project];
         },
+        focusOut: function(project) {
+          if (this.comments[project.pk] === '') {
+            vm.$set(this.comments, project.pk, undefined);
+          }
+        },
+        togglePrize: function(prizeIndex) {
+          for (let i = 0; i < this.prizes.length; i++) {
+            if (i === prizeIndex) {
+              vm.$set(this.prizes[i], 'open', !this.prizes[prizeIndex].open);
+            } else {
+              vm.$set(this.prizes[i], 'open', false);
+            }
+          }
+        },
+        sortedProjects: function(prize) {
+          const copy_submissions = [...prize.submissions];
+
+          copy_submissions.sort((a, b) => b.timestamp - a.timestamp);
+          return copy_submissions;
+        },
         retrieveSponsorPrizes: function() {
           const vm = this;
           const hackathon = fetchData(`/api/v1/hackathon/${vm.hackathonObj['slug']}/prizes`);
@@ -79,7 +99,9 @@
             for (let i = 0; i < response.prizes.length; i++) {
               if (response.prizes[i].submissions.length) {
                 response.prizes[i].submissions.forEach((submission) => {
-                  vm.$set(vm.comments, submission.pk, submission.extra.notes);
+                  if (submission.extra.notes !== '') {
+                    vm.$set(vm.comments, submission.pk, submission.extra.notes);
+                  }
                 });
               }
             }

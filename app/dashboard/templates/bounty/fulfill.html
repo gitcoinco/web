@@ -83,6 +83,15 @@
                     />
                   </div>
 
+                  <div class="mt-2">
+                    <label class="form__label" for="projectId">{% trans "Select the submitting project" %}</label>
+                    <select name='projectId' id='projectId' class="form__input w-100 js-select2 font-body" required>
+                      {% for project in prize_projects %}
+                      <option value="{{ project.id }}">{{ project.id }} - {{ project.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
                   {% if bounty.web3_type == 'fiat' %}
                     <div class="mt-2">
                       <label class="form__label" for="fulfiller_identifier">{% trans "Paypal Account" %}</label>
@@ -185,6 +194,14 @@
       standardBountyId = {{bounty.standard_bounties_id}};
       eventTag = '{{ bounty.event.slug }}';
     {% endif %}
+
+    $(document).ready(function() {
+      $('.js-select2').each(function() {
+        $(this).select2({
+          minimumResultsForSearch: Infinity
+        });
+      });
+    })
   </script>
 
   {% if is_bounties_network %}

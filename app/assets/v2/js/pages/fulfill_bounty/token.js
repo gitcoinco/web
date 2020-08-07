@@ -43,7 +43,8 @@ fulfillBounty = data => {
     'metadata': JSON.stringify(metadata),
     'fulfiller_address': data.payoutAddress,
     'fulfiller_identifier': data.fulfiller_identifier,
-    'payout_type': web3_type
+    'payout_type': web3_type,
+    'projectId': data.projectId
   };
 
   $.post(url, params, function(response) {
