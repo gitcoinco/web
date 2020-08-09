@@ -1,9 +1,9 @@
 {
   "symbol": "RAT",
   "address": "0x91C2fb4DDf6C650BFa659dd9E5c0E40f4b5e582b",
-   "overview": {
-    "en": "RedApple Token (RAT) is a proof of equity jointly issued by Alpha Custodian and RedApple Games and has an innovative( Mining with Entertainment) mechanism.",
-    "zh": "RedApple令牌（RAT）是 Alpha Custodian 和 RedApple Games 联合发行的权益证明，并具有创新的(娱乐即挖矿)的机制"
+  "overview": {
+    "en": "RedApple Token (RAT) is a proof of equity jointly issued by Alpha Custodian and RedApple Games and has an innovative "Mining with Entertainment” mechanism.",
+    "zh": "RedApple令牌（RAT）是 Alpha Custodian 和 RedApple Games 联合发行的权益证明，并具有创新的“娱乐即挖矿”的机制。"
   },
   "email": "support@redapple.games",
   "website": "http://redappletoken.com/",
@@ -18,7 +18,6 @@
   "links": {
     "twitter": "https://twitter.com/RedappleToken",
     "github": "https://github.com/redappletoken/",
-    "facebook": "https://www.facebook.com/redappletoken"
+    "facebook": "https://www.facebook.com/redappletoken",
   }
- 
 }
