@@ -1180,7 +1180,6 @@ def users_fetch(request):
 
     return JsonResponse(params, status=200, safe=False)
 
-
 def get_user_bounties(request):
     """Get user open bounties.
 

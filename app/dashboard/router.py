@@ -33,7 +33,7 @@ from retail.helpers import get_ip
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountyInvites, HackathonEvent, HackathonProject, Interest, Profile,
-    ProfileSerializer, SearchHistory, TribeMember,
+    ProfileSerializer, SearchHistory, TribeMember, UserDirectory
 )
 from .tasks import increment_view_count
 
@@ -219,6 +219,16 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 class HackathonProjectsPagination(PageNumberPagination):
     page_size = 10
 
+class UserDirectorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserDirectory
+        fields = '__all__'
+        depth = 1
+
+class UserDirectoryPagination(PageNumberPagination):
+    page_size = 20
+
 
 class HackathonProjectsViewSet(viewsets.ModelViewSet):
     queryset = HackathonProject.objects.prefetch_related('bounty', 'profiles').all().order_by('id')
@@ -281,6 +291,112 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         if 'submitted' in filters:
             queryset = queryset.filter(
                 Q(bounty__bounty_state='work_submitted')
+            )
+
+        return queryset
+
+class UserDirectoryViewSet(viewsets.ModelViewSet):
+    queryset = UserDirectory.objects.all().order_by('profile_id')
+    serializer_class = UserDirectorySerializer
+    pagination_class = UserDirectoryPagination
+
+    def get_queryset(self):
+
+        q = self.request.query_params.get('search', '')
+        skills = self.request.query_params.get('skills', '')
+        persona = self.request.query_params.get('persona', '')
+        limit = int(self.request.query_params.get('limit', 20))
+        page = int(self.request.query_params.get('page', 1))
+        order_by = self.request.query_params.get('order_by', '-follower_count')
+        bounties_completed = self.request.query_params.get('bounties_completed', '').strip().split(',')
+        leaderboard_rank = self.request.query_params.get('leaderboard_rank', '').strip().split(',')
+        rating = int(self.request.query_params.get('rating', '0'))
+        organisation = self.request.query_params.get('organisation', '')
+        tribe = self.request.query_params.get('tribe', '')
+        hackathon_id = self.request.query_params.get('hackathon', '')
+        user_filter = self.request.query_params.get('user_filter', '')
+
+        # user_id = self.request.query_params.get('user', None)
+        # if user_id:
+        #     current_user = User.objects.get(id=int(user_id))
+        # else:
+        current_user = self.request.user if hasattr(self.request, 'user') and self.request.user.is_authenticated else None
+
+        # if not current_user:
+        #     return redirect('/login/github?next=' + request.get_full_path())
+        current_profile = Profile.objects.get(user=current_user)
+
+        # if not settings.DEBUG:
+        #     network = 'mainnet'
+        # else:
+        network = 'rinkeby'
+
+        queryset = UserDirectory.objects.all()
+
+        if q:
+            queryset = queryset.filter(Q(handle__icontains=q) | Q(keywords__icontains=q)).distinct()
+
+        if tribe:
+
+            queryset = queryset.filter(
+                Q(follower__org__handle__in=[tribe]) | Q(organizations_fk__handle__in=[tribe])).distinct()
+
+            if user_filter and user_filter != 'all':
+                if user_filter == 'owners':
+                    queryset = queryset.filter(Q(organizations_fk__handle__in=[tribe]))
+                elif user_filter == 'members':
+                    queryset = queryset.exclude(Q(organizations_fk__handle__in=[tribe]))
+                elif user_filter == 'hackers':
+                    queryset = queryset.filter(Q(fulfilled__bounty__github_url__icontains=tribe) | Q(
+                        project_profiles__hackathon__sponsor_profiles__handle__in=[tribe]) | Q(
+                        hackathon_registration__hackathon__sponsor_profiles__handle__in=[tribe]))
+
+        show_banner = None
+        if persona:
+            if persona == 'funder':
+                queryset = queryset.filter(dominant_persona='funder')
+            if persona == 'coder':
+                queryset = queryset.filter(dominant_persona='hunter')
+            if persona == 'tribe':
+                queryset = queryset.filter(data__type='Organization')
+                # show_banner = static('v2/images/tribes/logo-with-text.svg')
+
+        if skills:
+            queryset = queryset.filter(keywords__icontains=skills)
+
+        if len(bounties_completed) == 2:
+            queryset = queryset.annotate(
+                count=Count('fulfilled')
+            ).filter(
+                count__gte=bounties_completed[0],
+                count__lte=bounties_completed[1],
+            )
+
+        if len(leaderboard_rank) == 2:
+            queryset = queryset.filter(
+                leaderboard_ranks__isnull=False,
+                leaderboard_ranks__leaderboard='quarterly_earners',
+                leaderboard_ranks__rank__gte=leaderboard_rank[0],
+                leaderboard_ranks__rank__lte=leaderboard_rank[1],
+                leaderboard_ranks__active=True,
+            )
+
+        if rating != 0:
+            queryset = queryset.filter(average_rating__gte=rating)
+
+        if organisation:
+            profile_list1 = queryset.filter(
+                fulfilled__bounty__network=network,
+                fulfilled__accepted=True,
+                fulfilled__bounty__github_url__icontains=organisation
+            )
+            profile_list2 = queryset.filter(
+                organizations__contains=[organisation.lower()]
+            )
+            queryset = (profile_list1 | profile_list2).distinct()
+        if hackathon_id:
+            queryset = queryset.filter(
+                hackathon_registration__hackathon=hackathon_id
             )
 
         return queryset
@@ -643,3 +759,4 @@ router.register(r'checkin', BountiesViewSetCheckIn)
 
 router.register(r'bounty', BountyViewSet)
 router.register(r'projects_fetch', HackathonProjectsViewSet)
+# router.register(r'users_fetch', UserDirectoryViewSet)

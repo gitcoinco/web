@@ -2563,6 +2563,7 @@ class ProfileManager(models.Manager):
         return ProfileQuerySet(self.model, using=self._db).slim()
 
 
+
 class Repo(SuperModel):
     name = models.CharField(max_length=255)
 
@@ -4386,6 +4387,85 @@ def post_logout(sender, request, user, **kwargs):
     from dashboard.utils import create_user_action
     create_user_action(user, 'Logout', request)
 
+class UserDirectoryQuerySet(models.QuerySet):
+    """Define the Profile QuerySet to be used as the objects manager."""
+
+class UserDirectoryManager(models.Manager):
+    def get_queryset(self):
+        return UserDirectoryQuerySet(self.model, using=self._db)
+
+class UserDirectory(models.Model):
+    profile_id = models.CharField(max_length=255, primary_key=True)
+    join_date = models.CharField(max_length=255)
+    github_created_at = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    handle = models.CharField(max_length=255)
+    sms_verification = models.BooleanField()
+    persona = models.CharField(max_length=255)
+    rank_coder = models.CharField(max_length=255)
+    num_hacks_joined = models.CharField(max_length=255)
+    which_hacks_joined = ArrayField(base_field=models.CharField(max_length=255))
+    hack_work_starts = models.CharField(max_length=255)
+    hack_work_submits = models.CharField(max_length=255)
+    hack_work_start_orgs = models.CharField(max_length=255)
+    hack_work_submit_orgs = models.CharField(max_length=255)
+    bounty_work_starts = models.CharField(max_length=255)
+    bounty_work_submits = models.CharField(max_length=255)
+    hack_started_feature = models.CharField(max_length=255)
+    hack_started_code_review = models.CharField(max_length=255)
+    hack_started_security = models.CharField(max_length=255)
+    hack_started_design = models.CharField(max_length=255)
+    hack_started_documentation = models.CharField(max_length=255)
+    hack_started_bug = models.CharField(max_length=255)
+    hack_started_other = models.CharField(max_length=255)
+    hack_started_improvement = models.CharField(max_length=255)
+    started_feature = models.CharField(max_length=255)
+    started_code_review = models.CharField(max_length=255)
+    started_security = models.CharField(max_length=255)
+    started_design = models.CharField(max_length=255)
+    started_documentation = models.CharField(max_length=255)
+    started_bug = models.CharField(max_length=255)
+    started_other = models.CharField(max_length=255)
+    started_improvement = models.CharField(max_length=255)
+    submitted_feature = models.CharField(max_length=255)
+    submitted_code_review = models.CharField(max_length=255)
+    submitted_security = models.CharField(max_length=255)
+    submitted_design = models.CharField(max_length=255)
+    submitted_documentation = models.CharField(max_length=255)
+    submitted_bug = models.CharField(max_length=255)
+    submitted_other = models.CharField(max_length=255)
+    submitted_improvement = models.CharField(max_length=255)
+    bounty_earnings  = models.CharField(max_length=255)
+    bounty_work_start_orgs = models.CharField(max_length=255)
+    bounty_work_submit_orgs = models.CharField(max_length=255)
+    kudos_sends = models.CharField(max_length=255)
+    kudos_receives = models.CharField(max_length=255)
+    hack_winner_kudos_received = models.CharField(max_length=255)
+    grants_opened = models.CharField(max_length=255)
+    grants_contributed = models.CharField(max_length=255)
+    grant_contributions = models.CharField(max_length=255)
+    grant_contribution_amount = models.CharField(max_length=255)
+    num_actions = models.CharField(max_length=255)
+    action_points = models.FloatField()
+    avg_points_per_action = models.FloatField()
+    last_action_on = models.CharField(max_length=255)
+    keywords = ArrayField(base_field=models.CharField(max_length=255))
+    activity_level = models.CharField(max_length=255)
+    reliability = models.CharField(max_length=255)
+    average_rating = models.CharField(max_length=255)
+    longest_streak = models.CharField(max_length=255)
+    earnings_count = models.CharField(max_length=255)
+    follower_count = models.CharField(max_length=255)
+    following_count = models.CharField(max_length=255)
+    num_repeated_relationships  = models.CharField(max_length=255)
+    verification_status = models.CharField(max_length=255)
+
+    objects = UserDirectoryManager()
+
+    class Meta:
+        managed = False
 
 class ProfileSerializer(serializers.BaseSerializer):
     """Handle serializing the Profile object."""
