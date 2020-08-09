@@ -1,29 +1,6 @@
 from haystack import indexes
 
-from .models import Bounty, HackathonProject, UserDirectory
-
-class BountyIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True)
-    title = indexes.CharField(model_attr='title')
-
-    def get_model(self):
-        return Bounty
-
-    def index_queryset(self, using=None):
-        """Used when the entire index for model is updated."""
-        return self.get_model().objects.all()
-
-class HackathonProjectIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True)
-    name = indexes.CharField(model_attr='name')
-    summary = indexes.CharField(model_attr='summary')
-
-    def get_model(self):
-        return HackathonProject
-
-    def index_queryset(self, using=None):
-        """Used when the entire index for model is updated."""
-        return self.get_model().objects.all()
+from .models import UserDirectory
 
 class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
@@ -99,12 +76,6 @@ class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     first_name_auto = indexes.EdgeNgramField(model_attr='first_name')
     last_name_auto = indexes.EdgeNgramField(model_attr='last_name')
     persona_auto = indexes.EdgeNgramField(model_attr='persona')
-
-
-    # def prepare(self, obj):
-    #     data = super(ProfileIndex, self).prepare(obj)
-    #     merged = { **data, **obj.to_dict() }
-    #     return merged
 
     def get_model(self):
         return UserDirectory
