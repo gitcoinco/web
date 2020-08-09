@@ -95,9 +95,10 @@ class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     verification_status = indexes.BooleanField(null=True,model_attr='verification_status')
 
     # We add this for autocomplete.
-    # handle_auto = indexes.EdgeNgramField(model_attr='handle')
-    # first_name_auto = indexes.EdgeNgramField(model_attr='user__first_name')
-    # last_name_auto = indexes.EdgeNgramField(model_attr='user__last_name')
+    handle_auto = indexes.EdgeNgramField(model_attr='handle')
+    first_name_auto = indexes.EdgeNgramField(model_attr='first_name')
+    last_name_auto = indexes.EdgeNgramField(model_attr='last_name')
+    persona_auto = indexes.EdgeNgramField(model_attr='persona')
 
 
     # def prepare(self, obj):
