@@ -32,7 +32,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Prefetch, Q
@@ -4249,7 +4249,10 @@ def hackathon_registration(request):
                     values.append(int(entry['value']))
                     set_questions[entry['name']] = values
                 else:
-                    answer, status = Answer.objects.get_or_create(user=request.user, open_response=entry['value'],
+                    text = entry.get('value', '').strip()
+                    if question.minimum_character_count and not len(text) > question.minimum_character_count:
+                        raise ValidationError(f'{question.minimum_character_count} characters required')
+                    answer, status = Answer.objects.get_or_create(user=request.user, open_response=text,
                                                                   hackathon=hackathon_event, question=question)
                     answer.save()
 
