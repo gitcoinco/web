@@ -2795,7 +2795,7 @@ class Profile(SuperModel):
     last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
     encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
     sybil_score = models.IntegerField(default=-1)
-    ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore')
+    ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore', blank=True)
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
 
@@ -4174,7 +4174,7 @@ class Profile(SuperModel):
 
         total_funded = funded_bounties.count()
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
-        desc = self.get_desc(funded_bounties, fulfilled_bounties)
+        desc = self.desc
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         org_works_with = []
         if self.is_org:
