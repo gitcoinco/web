@@ -83,14 +83,16 @@
                     />
                   </div>
 
-                  <div class="mt-2">
-                    <label class="form__label" for="projectId">{% trans "Select the submitting project" %}</label>
-                    <select name='projectId' id='projectId' class="form__input w-100 js-select2 font-body" required>
-                      {% for project in prize_projects %}
-                      <option value="{{ project.id }}">{{ project.id }} - {{ project.name }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
+                  {% if prize_projects %}
+                    <div class="mt-2">
+                      <label class="form__label" for="projectId">{% trans "Select the submitting project" %}</label>
+                      <select name='projectId' id='projectId' class="form__input w-100 js-select2 font-body" required>
+                        {% for project in prize_projects %}
+                          <option value="{{ project.id }}">{{ project.id }} - {{ project.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endif %}
 
                   {% if bounty.web3_type == 'fiat' %}
                     <div class="mt-2">

@@ -146,7 +146,7 @@
       },
       computed: {
         isMobileDevice() {
-          return this.windowWidth < 576;
+          return window.innerWidth < 576;
         }
       },
       data: () => ({
