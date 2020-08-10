@@ -53,7 +53,7 @@
 
       @media (min-width: 1200px) {
         .container.custom-container {
-          max-width: 1400px;
+          max-width: 1200px !important;
         }
       }
 
@@ -86,8 +86,8 @@
       </div>
     </div>
 
-    <div class="container">
-      <div class="row rounded my-5" style="background-color:#0d023b;">
+    <div class="container custom-container">
+      <div class="row rounded my-5 py-2" style="background-color:#0d023b;">
         <div class="col-12 col-md-6">
           <img class="pull-left mb-2" style="float:left;" width="49" src="/static/v2/images/hackathon/hackathon-subscribe.png" />
           <p class="white" style="padding:1.5rem 0 0 4rem;">Subscribe to get the latest hackathon updates</p>
@@ -157,8 +157,8 @@
                 </div>
                 <div class="mt-3 font-smaller-2">
                   <span class="pr-1">Sponsored by</span>
-                  {% for sponsor in event.hackathon.sponsors.all %}
-                    <a href="{{ sponsor.tribe.absolute_url }}" target="_blank"><img class="rounded-circle" style="width:21px;" src="{{ sponsor.tribe.avatar_url }}" /></a>
+                  {% for sponsor in event.hackathon.sponsor_profiles.all %}
+                    <a href="{{ sponsor.absolute_url }}" target="_blank"><img class="rounded-circle" style="width:21px;" src="{{ sponsor.avatar_url }}" /></a>
                   {% endfor %}
                 </div>
                 <div class="mt-3 hackathon-actions">

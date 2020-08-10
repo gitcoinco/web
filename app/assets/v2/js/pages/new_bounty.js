@@ -585,7 +585,7 @@ Vue.mixin({
           return String(item.chainId) === vm.chainId;
         });
       }
-      vm.form.token = result[0];
+      vm.$set(vm.form, 'token', result[0]);
       return result;
     }
   },
@@ -655,6 +655,8 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           amount: 0.001,
           amountusd: null,
           token: {},
+          terms: false,
+          termsPrivacy: false,
           couponCode: document.coupon_code
         }
       };
