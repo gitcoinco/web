@@ -1,0 +1,6 @@
+{% load i18n %}
+Redemption Complete
+
+📥 @{{ redeem.redemption_requester.handle }} completed their redemption
+
+{{ redeem.reason }}

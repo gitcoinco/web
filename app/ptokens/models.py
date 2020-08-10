@@ -226,6 +226,7 @@ class PersonalToken(SuperModel):
     def update_tx_status(self):
         # Get transaction status
         from dashboard.utils import get_tx_status
+        from ptokens.mails import send_personal_token_created
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
 
         # Exit if transaction not mined, otherwise continue
@@ -241,6 +242,7 @@ class PersonalToken(SuperModel):
             self.token_address = logs[0].args.token
 
             record_ptoken_activity('create_ptoken', self, self.token_owner_profile)
+            send_personal_token_created(self.token_owner_profile, self)
 
         self.update_token_status()
 
@@ -304,6 +306,10 @@ class RedemptionToken(SuperModel):
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     web3_created = models.DateTimeField(null=True)
 
+    @property
+    def url(self):
+        return f'{reverse("dashboard")}?tab=ptoken&redemption={self.id}'
+
     def update_tx_status(self):
         from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
@@ -312,11 +318,11 @@ class RedemptionToken(SuperModel):
             self.ptoken.update_token_status()
             self.ptoken.update_user_balance(self.redemption_requester, self.redemption_requester_address)
             if self.tx_status == 'success':
-                metadata = {
-                    'redemption': self.id,
-                    'redemption_requester_name': self.redemption_requester.handle
-                }
-                record_ptoken_activity('complete_redemption_ptoken', self.ptoken, self.redemption_requester, metadata)
+                metadata = {'redemption': self.id}
+                record_ptoken_activity('complete_redemption_ptoken', self.ptoken, self.redemption_requester, metadata, self)
+                from ptokens.mails import send_ptoken_redemption_complete_for_owner, send_ptoken_redemption_complete_for_requester
+                send_ptoken_redemption_complete_for_requester(self.redemption_requester, self.ptoken, self)
+                send_ptoken_redemption_complete_for_owner(self.redemption_requester, self.ptoken, self)
                 self.redemption_state = 'completed'
 
             elif self.tx_status in ['error', 'unknown', 'dropped']:

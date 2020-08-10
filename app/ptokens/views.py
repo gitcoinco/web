@@ -45,7 +45,11 @@ from web3 import Web3
 from app.settings import PTOKEN_ABI
 from dashboard.models import Profile
 from dashboard.utils import get_web3
+from inbox.utils import send_notification_to_user
+from ptokens.emails import render_ptoken_redemption_request
 from ptokens.helpers import record_ptoken_activity
+from ptokens.mails import send_ptoken_redemption_cancelled, send_ptoken_redemption_rejected, \
+    send_ptoken_redemption_accepted, send_ptoken_redemption_request
 from ptokens.models import PersonalToken, RedemptionToken, PurchasePToken, PTokenEvent
 
 
@@ -282,12 +286,21 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
                     {'message': _(f'You don\'t have enough ${ptoken.token_symbol} tokens!')},
                     status=401)
 
-            RedemptionToken.objects.create(
+            redemption = RedemptionToken.objects.create(
                 ptoken=ptoken,
                 network=network,
                 total=total,
                 reason=description,
                 redemption_requester=request.user.profile
+            )
+
+            send_ptoken_redemption_request(ptoken.token_owner_profile, ptoken, redemption)
+            send_notification_to_user(
+                request.user.profile.user,
+                ptoken.token_owner_profile.user,
+                f'{reverse("dashboard")}?tab=ptoken',
+                'accept_redemption_ptoken',
+                f'@{request.user.profile} <b>asked</b> to redeem <b>{ redemption.total } { ptoken.token_symbol }: {redemption.reason}</b>'
             )
 
     redemptions = RedemptionToken.objects.filter(Q(redemption_requester=request.user.profile) | Q(ptoken__token_owner_profile=request.user.profile))
@@ -320,6 +333,7 @@ def ptoken_redemption(request, redemptionId):
     """Change the state for given redemption"""
     redemption = get_object_or_404(RedemptionToken, id=redemptionId)
     user = request.user if request.user.is_authenticated else None
+    send_notifications = None
 
     if request.method == 'POST':
         kwargs = {}
@@ -340,7 +354,8 @@ def ptoken_redemption(request, redemptionId):
             kwargs['redemption_accepted'] = datetime.now()
             kwargs['redemption_state'] = 'accepted'
             metadata['redemption'] = redemption.id
-            metadata['redemption_requester_name'] = redemption.redemption_requester.handle
+
+            send_notifications = lambda: send_ptoken_redemption_accepted(redemption.redemption_requester, redemption.ptoken, redemption)
         if event_name == 'denies_redemption_ptoken':
             if user.profile != redemption.ptoken.token_owner_profile and user.profile != redemption.redemption_requester:
                 return JsonResponse(
@@ -349,10 +364,11 @@ def ptoken_redemption(request, redemptionId):
 
             if user.profile == redemption.ptoken.token_owner_profile and redemption.redemption_state != 'accepted':
                 kwargs['redemption_state'] = 'denied'
-
+                send_notifications = lambda: send_ptoken_redemption_rejected(redemption.redemption_requester, redemption.ptoken, redemption)
             else:
                 kwargs['redemption_state'] = 'cancelled'
-
+                profile = redemption.redemption_requester if redemption.redemption_requester != user.profile else redemption.ptoken.token_owner_profile
+                send_notifications = lambda: send_ptoken_redemption_cancelled(profile, redemption.ptoken, redemption)
 
             kwargs['canceller'] = user.profile
             metadata['redemption'] = redemption.id
@@ -383,7 +399,11 @@ def ptoken_redemption(request, redemptionId):
             RedemptionToken.objects.filter(pk=redemption.id).update(**kwargs)
 
             if metadata:
-                record_ptoken_activity(event_name, redemption.ptoken, user.profile, metadata)
+                record_ptoken_activity(event_name, redemption.ptoken, user.profile, metadata, redemption)
+
+            if send_notifications:
+                redemption.refresh_from_db()
+                send_notifications()
 
     return JsonResponse({
         'error': False,

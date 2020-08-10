@@ -3,7 +3,7 @@ from datetime import timezone, datetime
 from dashboard.models import Activity
 
 
-def record_ptoken_activity(event_name, ptoken, user_profile, metadata=None):
+def record_ptoken_activity(event_name, ptoken, user_profile, metadata=None, redemption=None):
     """Records activity based on ptoken changes
 
     Args:
@@ -25,5 +25,6 @@ def record_ptoken_activity(event_name, ptoken, user_profile, metadata=None):
             created_on=datetime.now(),
             profile=user_profile,
             activity_type=event_name,
+            redemption=redemption,
             ptoken=ptoken,
             metadata=metadata or {})
