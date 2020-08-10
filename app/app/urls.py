@@ -146,6 +146,11 @@ urlpatterns = [
         name='get_suggested_contributors'
     ),
     url(
+        r'^api/v0.1/ignore_suggested_tribes/(?P<tribeId>.*)',
+        townsquare.views.ignored_suggested_tribe,
+        name='ignore_suggested_tribes'
+    ),
+    url(
         r'^api/v0.1/social_contribution_email',
         dashboard.views.social_contribution_email,
         name='social_contribution_email'
@@ -252,7 +257,7 @@ urlpatterns = [
     re_path(r'^hackathons/?$', dashboard.views.get_hackathons, name='get_hackathons4'),
     url(r'^register_hackathon/', dashboard.views.hackathon_registration, name='hackathon_registration'),
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
-    path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes'),
+    path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
     path('api/v0.1/hackathon/<str:hackathon>/showcase/', dashboard.views.showcase, name='hackathon_showcase'),
 
     # action URLs
