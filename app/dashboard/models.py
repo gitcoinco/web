@@ -4919,7 +4919,7 @@ class HackathonProject(SuperModel):
 
         submission = BountyFulfillment.objects.filter(project=self).first()
         # Backward compatibility, for bounty fulfillment without a project assigned
-        # if not submission:
+        if not submission:
         #    submission = BountyFulfillment.objects.filter(profile_id__in=profile_ids, bounty=self.bounty).first()
 
         paid = False
