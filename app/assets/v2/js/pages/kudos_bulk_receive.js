@@ -60,13 +60,15 @@ $(document).ready(function() {
     });
   });
 
-  if($("#free_countdown > span").length > 0) {
+  if ($('#free_countdown > span').length > 0) {
     var timeDifference = new Date($("#free_countdown > span").attr("data-time")) - Date.now();
+
     setTimeout(function() {
-      $("#free_countdown").remove();
-      $(".btn-gc-purple").removeAttr('disabled');
+      $('#free_countdown').remove();
+      $('.btn-gc-purple').removeAttr('disabled');
       var gasLabel = $('label[for=pay_gas]')[0].innerText;
-      $('label[for=pay_gas]')[0].innerText = $('label[for=pay_gas]')[0].innerText.substring(0,gasLabel.length - 28) + "(Optional, but recommended)";
+
+      $('label[for=pay_gas]')[0].innerText = $('label[for=pay_gas]')[0].innerText.substring(0,gasLabel.length - 28) + '(Optional, but recommended)';
     }, timeDifference);
   }
 });
