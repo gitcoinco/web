@@ -68,7 +68,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         now = timezone.now()
         profile = Profile.objects.filter(handle='gitcoinbot').first()
-        bounties = Bounty.objects.current().filter(hypercharge_mode=True, hyper_next_publication__lt=now).order_by('metadata__hyper_tweet_counter')
+
+        bounties = Bounty.objects.current().filter(hypercharge_mode=True, hyper_next_publication__lt=now)
+        bounties = bounties.exclude(bounty_state__in=['done', 'cancelled'])
+        bounties = bounties.order_by('metadata__hyper_tweet_counter')
+
         bounty = bounties.first()
 
         offer_title = f'Work on "{bounty.title}" and receive {floatformat(bounty.value_true)} {bounty.token_name}'

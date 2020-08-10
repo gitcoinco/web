@@ -1306,7 +1306,8 @@ class Bounty(SuperModel):
 
 @receiver(post_save, sender=Bounty, dispatch_uid="post_bounty")
 def post_save_bounty(sender, instance, created, **kwargs):
-    if instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) is False:
+    final_state = instance.bounty_state in ['done', 'cancelled']
+    if not final_state and instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) is False:
         instance.metadata['hyper_tweet_counter'] = 0
 
         title = f'Work on "{instance.title}" and receive {floatformat(instance.value_true)} {instance.token_name}'
