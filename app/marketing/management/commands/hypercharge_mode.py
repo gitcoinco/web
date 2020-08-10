@@ -17,24 +17,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import operator
 import random
-import time
-import warnings
-from datetime import datetime
+from datetime import timedelta
 
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import floatformat
 from django.utils import timezone
 
-from dashboard.models import Activity, Earning, Profile, Bounty, Interest, BountyEvent
+from dashboard.models import Profile, Bounty, BountyEvent
 from dashboard.notifications import maybe_market_to_twitter
-from economy.utils import convert_token_to_usdt
-from grants.models import *
-from grants.models import CartActivity, Contribution, PhantomFunding
-from grants.views import clr_round, next_round_start, round_end
 from marketing.mails import bounty_hypercharged
-from townsquare.models import Comment, Offer
+from townsquare.models import Offer
 
 
 def make_secret_offer(profile, title, desc, bounty):
@@ -50,6 +43,7 @@ def make_secret_offer(profile, title, desc, bounty):
         style=f'back{random.randint(0, 32)}',
         from_name=bounty.org_display_name
     )
+
 
 def notify_previous_workers(bounty):
     emails = set()
@@ -76,7 +70,7 @@ class Command(BaseCommand):
         bounty = bounties.first()
 
         offer_title = f'Work on "{bounty.title}" and receive {floatformat(bounty.value_true)} {bounty.token_name}'
-        offer_desc = bounty.issue_description_text
+        offer_desc = ''
 
         if bounty:
             event_name = ''

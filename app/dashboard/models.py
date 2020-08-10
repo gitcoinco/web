@@ -1318,22 +1318,22 @@ def post_save_bounty(sender, instance, created, **kwargs):
         instance.featuring_date = timezone.now()
         instance.hyper_next_publication = timezone.now()
 
-        # Publish and pin on townsaquare
-        profile = Profile.objects.filter(handle='owocki').first()
-        metadata = {
-                'title': title,
-                'description': truncatechars(instance.issue_description_text, 500),
-                'url': instance.get_absolute_url(),
-                'ask': '#announce'
-        }
-        activity = Activity.objects.create(profile=profile, activity_type='hypercharge_bounty',
-                                           metadata=metadata, bounty=instance)
+        # Publish and pin on townsquare
+        profile = Profile.objects.filter(handle='connoroday').first()
+        if profile:
+            metadata = {
+                    'title': title,
+                    'description': truncatechars(instance.issue_description_text, 500),
+                    'url': instance.get_absolute_url(),
+                    'ask': '#announce'
+            }
+            activity = Activity.objects.create(profile=profile, activity_type='hypercharge_bounty',
+                                               metadata=metadata, bounty=instance)
 
-        PinnedPost.objects.filter(what='everywhere').delete()
-        # activity = Activity.objects.get(bounty=instance)
-        pinned_post = PinnedPost.objects.create(
-            what='everywhere', activity=activity, user=profile
-        )
+            PinnedPost.objects.filter(what='everywhere').delete()
+            pinned_post = PinnedPost.objects.create(
+                what='everywhere', activity=activity, user=profile
+            )
 
         instance.save()
 
