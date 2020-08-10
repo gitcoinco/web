@@ -1,0 +1,19 @@
+{
+  "symbol": "MSV",
+  "address": "0x3D3aB800D105fBd2F97102675A412Da3dC934357",
+  "overview":{
+        "en": "MSV (Marvrodi Salute Vison) is issued using the POM (Proof of Mutual) mutual proof mechanism, a total of 21 million, MSV not only inherits the concept of mutual assistance from Marvrodi, but also uses blockchain technology to shape a new decentralized financial inclusion ecology. The application scope of MSV includes DeFi credit mining under POM consensus, knotted credit proof and payment pass of MSV mutual ecological community.",
+        "zh": "MSV（Marvrodi Salute Vison）是采用POM（Proof of Mutual）互助证明机制发行，总量2100万枚。MSV不仅继承了来自Marvrodi的互助理念，还采用区块链技术塑造全新的去中心化普惠金融生态。通过结绳契约，MSV创造出了全新的去中心化匿名环境下的信任审核机制，通过更少的抵押物扩大DeFi的授信能力，构建了以MID为体系节点的全新的社区治理形式。MSV的应用范围包括POM共识下的DeFi信用挖矿，结绳信用证明以及MSV互助生态社区的支付通证"
+  },
+  "email": "msv_erc20@protonmail.com",
+  "website": "http://3msv.io/",
+  "whitepaper": "http://3msv.io/WhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-07-29",
+  "initial_price":{
+        "USD":"1 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/MarvrodiSaluteVison"
+  }
+}
