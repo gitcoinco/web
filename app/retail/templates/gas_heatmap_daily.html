@@ -1,4 +1,5 @@
 {% extends 'onepager/base.html' %}
+{% load humanize %}
 {% load i18n static %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/lib/jquery.js"%}"> </script>
@@ -245,42 +246,40 @@
     | 
     <a href="{% url 'gas_heatmap' %}">Hourly</a>
     <BR>
+    <BR>
     {% for min in min_options %}
-    <a href="{% url 'gas_heatmap' %}?mins={{min}}">({{min}} mins)</a>
+    <a href="{% url 'gas_heatmap_daily' %}?mins={{min}}">({{min}} mins)</a>
     {% endfor %}
     <br>
     <br>
     <br>
   </div>
-  {% if gas_histories == '[]' %}
-  <p>
-    {% blocktrans %} We are unable to sync gas data at this time. We recommend you check out <a href="https://ethgasstation.info/predictionTable.php"
-      target="_blank" rel="noopener noreferrer">ETH Gas Station</a> instead.{% endblocktrans %}
-  </p>
-  {% else %}
-  <div style="position: absolute; left: 30px; top: 500px; transform: rotate(-90deg);">
-    Hour of Day (UTC)
-  </div>
-  <div class="days-hours-heatmap">
-    <!-- calibration and render type controller -->
-    <div class="calibration" role="calibration">
-      <div class="group" role="example">
-        <svg width="120" height="17">
-        </svg>
-        <div role="description" class="description">
-          <label>Less Gas</label> <==>
-          <label>More Gas</label>
-        </div>
-      </div>
-    </div>
-    <div>
-      <br>
-      <br>
-      Date
-    </div>
-    <!-- heatmap -->
-    <svg role="heatmap" class="heatmap"></svg>
-  </div>
-  {% endif %}
 
+<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+
+<div id="heatmap_parent" style="min-height: 120px; max-width: 100%; overflow-y: scroll;">
+  <div id="cal-heatmap"></div>
+  <script type="text/javascript">
+    const oneYearAgo = new Date (
+        new Date().getFullYear(),
+        new Date().getMonth() - 12, 
+        new Date().getDate()
+    );    
+    var cal = new CalHeatMap();
+    cal.init({
+      domain: "month",
+      range: 13,
+      tooltip: true,
+      cellSize: 14,
+      tooltip: false,
+      itemName: ["gwei", "gwei"],
+      start: oneYearAgo,
+      end: new Date(),
+      data: "/gas/heatmap/daily/?mins={{mins}}&format=JSON".replace()
+    });
+  </script>
+
+</div>
 {% endblock %}

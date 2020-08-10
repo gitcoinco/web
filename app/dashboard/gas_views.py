@@ -97,6 +97,43 @@ def gas_heatmap(request):
     return TemplateResponse(request, 'gas_heatmap.html', context)
 
 
+
+def gas_heatmap_daily(request):
+    gas_histories = {}
+    mins = int(request.GET.get('mins', 60))
+    min_options = [key for key, val in lines.items()]
+
+    if request.GET.get('format'):
+        response = {}
+        date_deduper = {}
+        prev_date = timezone.now()
+        ct = timezone.now() - timezone.timedelta(days=365)
+        from gas.models import GasProfile
+        queryset = GasProfile.objects.filter(created_on__gt=ct).order_by('created_on')
+        for item in queryset:
+            date = item.created_on
+            dupe_str = date.strftime('%m/%d/%Y')
+            if dupe_str not in date_deduper.keys():
+                date_deduper[dupe_str] = int(date.timestamp())
+            key = date_deduper[dupe_str]
+            count = item.mean_time_to_confirm_minutes
+            insert_row = key not in response.keys() or (response[key] < count and count < mins)
+            if insert_row:
+                response[key] = count
+        from django.http import Http404, HttpResponse, JsonResponse
+        return JsonResponse(response)
+
+
+    context = {
+        'title': _('Live Ethereum (ETH) Gas Heatmap'),
+        'card_desc': _(''),
+        'hide_send_tip': True,
+        'mins': mins,
+        'min_options': min_options,
+    }
+    return TemplateResponse(request, 'gas_heatmap_daily.html', context)
+
+
 def gas_faq(request):
     context = {
         'title': _('Live Ethereum (ETH) Gas FAQ'),
