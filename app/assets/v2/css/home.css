@@ -510,6 +510,14 @@ figure:hover::before {
   .video-row {
     grid-template-columns: 1fr;
   }
+
+  .box-cta {
+    margin: 0 !important;
+  }
+  
+  .work-internet {
+    width: 17rem;
+  }
 }
 
 @media (max-width: 768px) {

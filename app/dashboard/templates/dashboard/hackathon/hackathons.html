@@ -22,23 +22,38 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
 
+    <link rel="stylesheet" href="{% static "v2/css/home.css" %}" />
     <style>
+      .hackathon-logo-svg {
+        height: 4.5rem;
+        max-width: 100%;
+      }
 
       img.hackathon-card-logo {
-        max-height: 8rem;
-        max-width: 11rem;
+        max-height: 12rem;
+        max-width: 9rem;
+      }
+
+      @media (max-width: 420px) {
+        .tablist-small {
+          font-size: 0.890rem;
+        }
+      }
+      @media (max-width: 370px) {
+        .tablist-extra-small {
+          font-size: 0.694rem;
+        }
+      }
+
+      @media (max-width: 920px) {
+        img.hackathon-card-logo {
+          max-width: 100%;
+        }
       }
 
       @media (min-width: 1200px) {
         .container.custom-container {
           max-width: 1400px;
-        }
-      }
-
-
-      @media (max-width: 920px) {
-        img.hackathon-card-logo {
-          max-width: 100%;
         }
       }
 
@@ -57,99 +72,137 @@
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav_hackathons.html' %}
-    <div class="container-fluid header dash mb-5">
+    <div class="container-fluid header dash text-white" style="background-image: url('/static/v2/images/bg/4.jpg');">
 
-      <div class="pt-5 pb-5 text-center">
-        <img class="mw-100 logo-static" id="logo" src="{% static 'v2/images/top-bar/hackathons-neg.svg' %}" height="80" alt="Logo" />
-      </div>
-
-      <div class="row justify-content-md-center">
-        <form action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe"
-          method="post" id="mc-embedded-subscribe-form" class="col-12 col-md-6 col-xl-4 text-center white pb-5 px-5" name="mc-embedded-subscribe-form" target="_blank">
-          <div class="form-row pt-1">
-            <div class="col">
-              <input name="EMAIL" id="newsletter-input" class="form-control px-3 font-body" placeholder="Enter your email" required>
-            </div>
-            <button id="newsletter-subscribe-funder" type="submit" class="button button--primary subscribe ml-lg-2 px-4 font-weight-semibold">
-              <i class="far fa-envelope mr-2"></i>Subscribe
-            </button>
+      <div class="row justify-content-center" style="padding:5rem 0 5rem 0">
+        <div class="col-12 col-lg-12 col-xl-6 mt-3">
+          <div class="text-center">
+            {% include 'shared/svg-embed/h35px_hackathons.svg' with extra_class='hackathon-logo-svg' %}
+            <h2 class="mt-4">Build with the coolest Web3 projects </h2>
+            <p class="mt-3 mb-3" style="font-size:1.39rem;">Connect with a community of talented hackers, learn new tech, buidl cool projects, and earn exciting prizes!</p>
+            <a href="https://hackathons.gitcoin.co/contact/" class="btn button--primary mt-3 mb-4 mx-2 shadow-none py-2 px-4 text-white font-weight-semibold">Become a Sponsor</a>
           </div>
-          <label for="newsletter-input" class="mt-3 font-weight-semibold font-body text-uppercase">{% trans "Signup to get hackathon updates" %}</label>
-        </form>
+        </div>
       </div>
     </div>
 
-    {% for title, hackathons in events.items %}
-      {% if hackathons|length %}
-        <div class="container custom-container">
-          <h1 class="text-center font-title-xl pt-0 pt-md-3 mt-0 mt-md-5 font-weight-semibold">
-            {{title|title}} Hackathons
-          </h1>
-
-          <div class="row my-5">
-              {% for hackathon in hackathons %}
-                <style>
-                  #{{hackathon.slug}} .card-header {
-                    background: {% firstof hackathon.background_color or 'rgb(25, 0, 63)' %};
-                  }
-                </style>
-                <div class="col-xs-12 col-md-9 col-lg-8 col-xl-5 mx-auto">
-
-                  <div class="card flex-row flex-wrap mb-5" id="{{hackathon.slug}}">
-
-                    <div class="card-header text-center col-3 col-sm-4 px-0 border-0 my-auto">
-                      {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-                      {% if logo %}
-                        <img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
-                      {% else %}
-                        <div class="hackathon-card-logo text-center px-3 font-caption">
-                          {{ hackathon.name }}
-                        </div>
-                      {% endif %}
-                    </div>
-
-                    <div class="card-body col-9 col-sm-8">
-                      <h5 class="font-subheader font-weight-semibold">
-                        <a href="{% url 'hackathon' hackathon.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
-                          {{ hackathon.name }}
-                        </a>
-                      </h5>
-                      <div class="font-smaller-2">
-                        <span class>From</span>
-                        <time class="font-weight-bold" datetime="{{ hackathon.start_date|date:'c' }}">{{ hackathon.start_date|date:"m/d/Y" }}</time>
-                        <span>To</span>
-                        <time class="font-weight-bold" datetime="{{ hackathon.end_date|date:'c' }}">{{ hackathon.end_date|date:"m/d/Y" }}</time>
-                      </div>
-                      <div class="mt-3 hackathon-actions">
-                        {% if hackathon.end_date|timesince <= "1 min" %}
-                          <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                            <i class="fas fa-user-plus mr-2 d-none d-sm-inline"></i>
-                            Join
-                          </a>
-                        {% endif %}
-                        {% if hackathon.start_date|timesince >= "1 min" %}
-                          <a href="{% url 'hackathon_prizes' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                            <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
-                            Prizes
-                          </a>
-                        {% endif %}
-                        {% if hackathon.show_results %}
-                          <a href="{% url 'hackathon_projects' hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
-                            <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
-                            Projects
-                          </a>
-                        {% endif %}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              {% endfor %}
-          </div>
+    <div class="container">
+      <div class="row rounded my-5" style="background-color:#0d023b;">
+        <div class="col-12 col-md-6">
+          <img class="pull-left mb-2" style="float:left;" width="49" src="/static/v2/images/hackathon/hackathon-subscribe.png" />
+          <p class="white" style="padding:1.5rem 0 0 4rem;">Subscribe to get the latest hackathon updates</p>
         </div>
+        <div class="col-12 col-md-6">
+          <form class="form-inline py-3" style="float:right;" action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=b1d45ffdfe" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank">
+            <input name="EMAIL" id="newsletter-input" class="form-control px-3 font-body" style="width: 14rem;" placeholder="Email Address" required>
+            <button id="newsletter-subscribe-funder" type="submit" class="button button--primary subscribe ml-lg-2 px-3 font-weight-semibold">
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div id="tabs" class="row my-4">
+        <div class="container">
+          <ul class="nav nav-tabs mt-3 tablist-small tablist-extra-small" id="myTab" role="tablist">
+            {% for id, title in tabs %}
+              <li class="nav-item">
+                <a class="nav-link nav-line {% if id == default_tab %}active{% endif %}" href="#" data-href="{{ id }}" style="{% if id == default_tab %}font-weight: 700;{% endif %}">{{ title|title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="row my-4">
+      {% if events|length %}
+      <div class="container custom-container">
+      <div class="row">
+      {% for event in events %}
+          <style>
+            #{{event.hackathon.slug}} .card-header {
+              background: {{ event.hackathon.background_color }};
+            }
+          </style>
+
+          <div class="col-xs-12 col-md-9 col-lg-8 col-xl-6 mx-auto hackathon-list {{ event.title }} {% if event.title != default_tab %}hidden{% endif %}">
+
+            <div class="card flex-row flex-wrap mb-5" id="{{ event.hackathon.slug }}">
+
+              <div class="card-header text-center col-12 col-sm-4 px-0">
+                {% firstof event.hackathon.logo_svg or event.hackathon.logo as logo %}
+                {% if logo %}
+                  <img class="hackathon-card-logo" src="{{ MEDIA_URL }}{{ logo }}" alt="Hackathon logo" />
+                {% else %}
+                  <div class="hackathon-card-logo text-center px-3 font-caption">
+                    {{ event.hackathon.name }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="card-body col-12 col-sm-8">
+                <h5 class="font-subheader font-weight-semibold">
+                  <a href="{% url 'hackathon' event.hackathon.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
+                    {{ event.hackathon.name }}
+                  </a>
+                </h5>
+                <div class="font-smaller-2">
+                  <span class>From</span>
+                  <time class="font-weight-bold" datetime="{{ event.hackathon.start_date|date:'c' }}">{{ event.hackathon.start_date|date:"m/d/Y" }}</time>
+                  <span>To</span>
+                  <time class="font-weight-bold" datetime="{{ event.hackathon.end_date|date:'c' }}">{{ event.hackathon.end_date|date:"m/d/Y" }}</time>
+                </div>
+                <div class="mt-3 font-smaller-2 hackathon-summary">
+                  <p>{{ event.hackathon.hackathon_summary }}</p>
+                </div>
+                <div class="mt-3 font-smaller-2">
+                  <span class="pr-1">Sponsored by</span>
+                  {% for sponsor in event.hackathon.sponsors.all %}
+                    <a href="{{ sponsor.tribe.absolute_url }}" target="_blank"><img class="rounded-circle" style="width:21px;" src="{{ sponsor.tribe.avatar_url }}" /></a>
+                  {% endfor %}
+                </div>
+                <div class="mt-3 hackathon-actions">
+                  {% if event.hackathon.end_date|timesince <= "1 min" %}
+                    <a href="{% url 'hackathon_onboard' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-user-plus mr-2 d-none d-sm-inline"></i>
+                      Join
+                    </a>
+                  {% endif %}
+                  {% if event.hackathon.display_showcase %}
+                  <a href="{% url 'hackathon_showcase_proxy' event.hackathon.slug %}" class="btn btn-gc-blue font-caption font-weight-semibold px-3 mb-2">
+                    <i class="fas fa-star d-none d-sm-inline" style="font-size:6.5px;position:relative;top:0.2rem;left:0.2rem;"></i>
+                    <i class="fas fa-star mr-1 d-none d-sm-inline"></i>
+                    Showcase
+                  </a>
+                  {% endif %}
+                  {% if event.hackathon.start_date|timesince >= "1 min" and event.hackathon.end_date|timesince <= "1 min"%}
+                    <a href="{% url 'hackathon_prizes' event.hackathon.slug %}" class="btn button--secondary font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-trophy mr-2 d-none d-sm-inline"></i>
+                      Prizes
+                    </a>
+                  {% endif %}
+                  {% if event.hackathon.show_results %}
+                    <a href="{% url 'hackathon_projects' event.hackathon.slug %}" class="btn button--secondary font-caption font-weight-semibold px-3 mb-2">
+                      <i class="fas fa-dharmachakra mr-2 d-none d-sm-inline"></i>
+                      Projects
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+      {% endfor %}
+      </div>
+      </div>
       {% endif %}
-    {% endfor %}
+      </div>
+
+    </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
 
+    {% block 'scripts' %}
+    <script src="{% static "v2/js/pages/hackathon-list.js" %}"></script>
+    {% endblock %}
   </body>
