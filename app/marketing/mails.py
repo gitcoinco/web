@@ -1499,10 +1499,7 @@ def bounty_changed(bounty, to_emails=None):
 
 
 def bounty_hypercharged(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt_now:
-        return
-
-    subject = gettext("We selected a bounty for you: {}").format(bounty.title_or_desc)
+    subject = gettext("We selected a bounty for you")
 
     if to_emails is None:
         to_emails = []

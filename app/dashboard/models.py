@@ -39,6 +39,7 @@ from django.db.models import Count, F, Q, Subquery, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
+from django.template.defaultfilters import floatformat, truncatechars
 from django.template.loader import render_to_string
 from django.templatetags.static import static
 from django.urls import reverse
@@ -384,7 +385,7 @@ class Bounty(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
     hypercharge_mode = models.BooleanField(
-        default=True, help_text=_('This bounty will be part of the hypercharged bounties')
+        default=False, help_text=_('This bounty will be part of the hypercharged bounties')
     )
     hyper_next_publication = models.DateTimeField(null=True, blank=True)
     # Bounty QuerySet Manager
@@ -1307,7 +1308,8 @@ class Bounty(SuperModel):
 def post_save_bounty(sender, instance, created, **kwargs):
     if instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) is False:
         instance.metadata['hyper_tweet_counter'] = 0
-        title = ''
+
+        title = f'Work on "{instance.title}" and receive {floatformat(instance.value_true)} {instance.token_name}'
 
         # Feature bounty on hackathon/prize explorer
         instance.is_featured = True
@@ -1315,13 +1317,27 @@ def post_save_bounty(sender, instance, created, **kwargs):
         instance.hyper_next_publication = timezone.now()
 
         # Publish and pin on townsaquare
-        profile = Profile.objects.filter(handle='gitcoinbot').first()
-        # activity = Activity.objects.create(profile=profile, activity_type='status_update', metadata=metadata)
-        activity = Activity.objects.get(bounty=instance)
+        profile = Profile.objects.filter(handle='owocki').first()
+        metadata = {
+                'title': title,
+                'description': truncatechars(instance.issue_description_text, 500),
+                'url': instance.get_absolute_url(),
+                'ask': '#announce'
+        }
+        activity = Activity.objects.create(profile=profile, activity_type='hypercharge_bounty',
+                                           metadata=metadata, bounty=instance)
+
+        PinnedPost.objects.filter(what='everywhere').delete()
+        # activity = Activity.objects.get(bounty=instance)
         pinned_post = PinnedPost.objects.create(
-            what=title, defaults={"activity": activity, "user": profile}
+            what='everywhere', activity=activity, user=profile
         )
 
+        instance.save()
+
+    if not instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) != False:
+        del instance.metadata['hyper_tweet_counter']
+        instance.save()
 
 
 class BountyEvent(SuperModel):
@@ -2170,6 +2186,7 @@ class Activity(SuperModel):
     ACTIVITY_TYPES = [
         ('wall_post', 'Wall Post'),
         ('status_update', 'Update status'),
+        ('hypercharge_bounty', 'Hypercharged bounty'),
         ('new_bounty', 'New Bounty'),
         ('start_work', 'Work Started'),
         ('stop_work', 'Work Stopped'),

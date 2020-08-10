@@ -24,6 +24,7 @@ import warnings
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
+from django.template.defaultfilters import floatformat
 from django.utils import timezone
 
 from dashboard.models import Activity, Earning, Profile, Bounty, Interest, BountyEvent
@@ -44,8 +45,10 @@ def make_secret_offer(profile, title, desc, bounty):
         key='secret',
         url=bounty.absolute_url,
         valid_from=timezone.now(),
-        valid_to=timezone.now() + timezone.timedelta(days=1),
+        valid_to=timezone.now() + timezone.timedelta(hours=3),
         public=True,
+        style=f'back{random.randint(0, 32)}',
+        from_name=bounty.org_display_name
     )
 
 def notify_previous_workers(bounty):
@@ -63,29 +66,27 @@ class Command(BaseCommand):
     help = 'post hyper bounties to twitter'
 
     def handle(self, *args, **options):
-        offer_title = ''
-        offer_desc = ''
         now = timezone.now()
         profile = Profile.objects.filter(handle='gitcoinbot').first()
-
-        bounties = Bounty.objects.current().filter(
-            network='mainnet', idx_status='open',
-            expires_date__gt=now, hyper_next_publication__lt=now).order_by('metadata__hyper_tweet_counter')
+        bounties = Bounty.objects.current().filter(hypercharge_mode=True, hyper_next_publication__lt=now).order_by('metadata__hyper_tweet_counter')
         bounty = bounties.first()
+
+        offer_title = f'Work on "{bounty.title}" and receive {floatformat(bounty.value_true)} {bounty.token_name}'
+        offer_desc = bounty.issue_description_text
 
         if bounty:
             event_name = ''
             counter = bounty.metadata['hyper_tweet_counter']
             if counter == 0:
                 event_name = 'new_bounty'
-                notify_previous_workers(bounty.bounty_owner_profile)
+                notify_previous_workers(bounty)
                 make_secret_offer(profile, offer_title, offer_desc, bounty)
             elif counter == 1:
                 event_name = 'remarket_bounty'
             elif counter % 2 == 0:
                 make_secret_offer(profile, offer_title, offer_desc, bounty)
 
-            bounty.bounty.metadata['hyper_tweet_counter'] += 1
+            bounty.metadata['hyper_tweet_counter'] += 1
             bounty.hyper_next_publication = now + timedelta(hours=12)
             bounty.save()
 
