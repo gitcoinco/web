@@ -5191,10 +5191,6 @@ class Question(SuperModel):
         ('OPEN', 'Open'),
     )
 
-    TYPE_RESTRICTIONS = (
-        ('MINIMUM_CHARACTER_COUNT', 'minimum character count'),
-    )
-
     TYPE_HOOKS = (
         ('NO_ACTION', 'No trigger any action'),
         ('TOWNSQUARE_INTRO', 'Create intro on Townsquare'),
