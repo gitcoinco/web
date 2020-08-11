@@ -1,0 +1,25 @@
+{
+  "symbol": "UNIF",
+  "address": "0xEC02cEc4eDD54196D2767b61F43b29A49b056fe6",
+  "overview":{
+        "en": "Unifier System token, Unifier or known as UNIF it’s an Decentralized global open-source token, (US) Unifier System, are the digital-payment system that Works with the real Value, also with the Ethereum Blockchain Technology (Ethash Algorithm), UNIF can be Stored safely in ERC20 Wallet (Mobile Apps) or (Web Apps), the ERC-20 Technology Crypto-token. UNIFIER brings lots of Technology behind it with the very trusted Coding system Network.",
+        "zh": "Unifier System令牌，Unifier或稱為UNIF，它是一個去中心化的全球開源令牌，（美國）Unifier系統，是一種具有實際價值的數字支付系統，也可以與以太坊區塊鏈技術（Ethash算法）一起使用，UNIF可以可以安全地存儲在ERC-20電子錢包（移動應用程序）或（Web應用程序）中。 UNIFIER通過非常受信任的編碼系統Network帶來了許多技術"
+  },
+  "email": "support@unifiersystem.org",
+  "website": "https://unifiersystem.org/",
+  "whitepaper": "https://unifiersystem.org/white-paper/",
+  "state": "NORMAL",
+  "published_on": "2020-05-29",
+  "initial_price":{
+        "ETH":"0.00045666 ETH",
+        "USD":"0.17 USD",
+        "BTC":"0.00001537 BTC"
+  },
+  "links": {
+    "blog": "https://t.me/unifiernews/",
+    "twitter": "https://twitter.com/unifiersystem/",
+    "telegram": "https://t.me/unifiercommunity/",
+    "github": "https://github.com/unifiersystem/",
+    "medium": "https://medium.com/@unifiersystem/"
+  }
+}
