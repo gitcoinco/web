@@ -34,7 +34,9 @@ from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
 from cytoolz import compose
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, BlockedUser, Bounty, BountyFulfillment, Profile, UserAction, HackathonRegistration
+from dashboard.models import (
+    Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
+)
 from dashboard.sync.celo import sync_celo_payout
 from dashboard.sync.etc import sync_etc_payout
 from dashboard.sync.eth import sync_eth_payout

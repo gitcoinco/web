@@ -9,11 +9,10 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
-
-import metadata_parser
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
+import metadata_parser
 from app.services import RedisService
 from dashboard.helpers import load_files_in_directory
 from dashboard.models import (
@@ -75,6 +74,12 @@ def get_next_time_available(key):
         d = timezone.datetime(year=year, month=month, day=1)
     return d
 
+
+def landing_toggle(request):
+    if not request.user.is_authenticated:
+        from retail.views import index as index_page
+        return index_page(request)
+    return town_square(request)
 
 def index(request):
 
@@ -178,7 +183,7 @@ def get_sidebar_tabs(request):
     }
     tabs = tabs + [connect]
 
-    start_date = timezone.now() + timezone.timedelta(days=10)
+    start_date = timezone.now() + timezone.timedelta(days=28)
     end_date = timezone.now() - timezone.timedelta(days=7)
     hackathons = HackathonEvent.objects.filter(start_date__lt=start_date, end_date__gt=end_date, visible=True)
     if hackathons.count():
