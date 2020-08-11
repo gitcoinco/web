@@ -104,6 +104,10 @@
       .custom-control-label::before {
         top: 0rem !important;
       }
+      .tag {
+        height: 21px;
+        margin-top: 0;
+      }
     </style>
     {% include 'shared/fbpixel.html' %}
   </head>
@@ -179,30 +183,31 @@
 
                             <div class="col-12 col-md-5 text-center text-md-left pl-md-0">
                               <div class="my-2">
-                                <p class="m-0">
+                                <p class="m-0 d-md-flex">
                                   <a target="_blank" :href="prize.url" class="font-body font-weight-semibold d-inline-block text-black">
                                     [[`${prize.title.slice(0, 100)}${prize.title.length > 100 ? '...' : ''}`]]
                                   </a>
+                                  <span v-if="prize.value_eth" class="ml-3 tag token">[[prize.value_eth | decimals]] ETH</span>
+                                  <span v-if="prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
                                 </p>
                               </div>
                             </div>
 
                             <div class="col-md-3 my-auto">
                               <p class="mb-3 m-md-0 text-left">
-                                <span v-if="prize.value_eth" class="tag token">[[prize.value_eth | decimals]] ETH</span>
-                                <span v-if="prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
+
                               </p>
                             </div>
 
                             <div class="col-md-5 col-lg-4 my-auto font-body font-weight-semibold text-center">
                               <p v-if="!prize.total_projects" class="font-body font-weight-semibold m-0 text-left">No Submissions</p>
 
-                              <p v-else class="m-0 position-relative">
-                                <span style="left: 0;" class="position-absolute">
+                              <p v-else class="m-0 position-relative text-left">
+                                <span>
                                   [[ prize.total_submitted ]] / [[prize.total_projects]] Submitted
                                 </span>
-                                <span v-if="prize.paid" class="ml-5 gc-text-green"><span class="fas fa-check mr-2"></span>PAID</span>
-                                <a v-else :href="`/issue/payout?pk=${prize.pk}`" class="ml-5 gc-text-blue">UNPAID</a>
+                                <span v-if="prize.paid" class="ml-5 gc-text-green"><span class="fas fa-check mr-2"></span>Paid</span>
+                                <span v-else v-b-toggle="`accordion-${prizeIndex}`" @click="togglePrize(prizeIndex)" class="ml-5 gc-text-blue">Review Submission</span>
 
                                 <b-button style="right: 0;top: -5px" class="position-absolute" v-if="prize.total_projects" v-b-toggle="`accordion-${prizeIndex}`" @click="togglePrize(prizeIndex)" variant="link">
                                   <i class="fas fa-angle-up" v-if="!prize.open"></i>
@@ -228,9 +233,10 @@
                                 <b-tbody>
                                   <b-tr :class="`${!project.submitted ? 'no-submitted' : ''} ${isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'}`" v-for="(project, projectIndex) in sortedProjects(prize)">
                                     <b-td :class="`position-relative ${isMobileDevice ? 'no-border mt-2': 'py-4'}`">
-                                      <img :src="project.logo" alt="" width="30">
-                                      <a :href="project.work_url" target="_blank"><span class="fab fa-github text-black"></span>
-                                        <span class="font-body gc-text-blue font-weight-semibold">[[project.name]]</span>
+                                      <img :src="project.logo" class="align-baseline" alt="" width="30">
+                                      <a :href="project.work_url" class="ml-2" target="_blank">
+                                        <p class="d-inline-block mb-0 font-body gc-text-blue font-weight-semibold">[[`${project.name.slice(0, 100)}${project.name.length > 100 ? '...' : ''}`]]<br>
+                                        <span class="fab fa-github text-black"></span></p>
                                       </a>
                                       <br>
                                       <i style="bottom: 5px" :class="`font-weight-semibold ${!isMobileDevice ? 'position-absolute' : '' } mt-sm-2 font-smaller-2 mt-2`" v-if="!project.submitted">Not Submitted</i>
