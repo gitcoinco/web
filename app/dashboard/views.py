@@ -4220,7 +4220,7 @@ def get_project(request, project_id):
                 'title': project.bounty.title,
                 'avatar': project.bounty.avatar_url,
                 'org': project.bounty.org_display_name,
-                'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '#',
+                'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
                 'url': project.bounty.url
             },
             'team_members': [{
@@ -4240,7 +4240,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
 
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
     if not project:
-        raise Http404("No MyModel matches the given query.")
+        raise Http404("No Hackathon Project matches the given query.")
 
     active = 0
     if tab == 'activity':
@@ -4268,7 +4268,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
                 'title': project.bounty.title,
                 'avatar': project.bounty.avatar_url,
                 'org': project.bounty.org_display_name,
-                'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '#',
+                'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
                 'url': project.bounty.url
             },
             'team_members': [{

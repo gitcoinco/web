@@ -67,7 +67,7 @@
               <div class="d-flex mt-4">
                 <img width="50" height="50" :src="project.prize.avatar" alt="" class="mr-3">
                 <div>
-                  <a :href="project.prize.url"><strong>[[ project.prize.title ]]</strong></a> by <a :href="project.prize.org_url">[[project.prize.org]]</a><br>
+                  <a :href="project.prize.url"><strong>[[ project.prize.title ]]</strong></a> by <a :href="project.prize.org_url || '#'">[[project.prize.org]]</a><br>
                   <a :href="`/hackathon/${hackathon.slug}`">[[hackathon.name]]</a>
                 </div>
               </div>
