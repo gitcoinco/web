@@ -36,7 +36,7 @@ def mint_token_request(self, token_req_id, retry=False):
             obj = TokenRequest.objects.get(pk=token_req_id)
             multiplier = 1
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
-            if gas_price > delay_if_gas_prices_gt_mint:
+            if gas_price > delay_if_gas_prices_gt_mint and self.request.retries < self.max_retries:
                 self.retry(countdown=120)
                 return
             tx_id = obj.mint(gas_price)
@@ -66,7 +66,8 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
             try:
                 multiplier = 1
                 gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
-                if gas_price > delay_if_gas_prices_gt_redeem:
+                if gas_price > delay_if_gas_prices_gt_redeem and self.request.retries < self.max_retries:
+
                     self.retry(countdown=120)
                     return
 
@@ -96,4 +97,7 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
                 pass
             except Exception as e:
                 print(e)
-                self.retry(countdown=(30 * (self.request.retries + 1)))
+                if self.request.retries < self.max_retries:
+                    self.retry(countdown=(30 * (self.request.retries + 1)))
+                else:
+                    print("max retries for bulk kudos redeem exceeded ... giving up!")
