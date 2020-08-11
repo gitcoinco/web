@@ -46,6 +46,15 @@ $(document).ready(function() {
     }
   });
 
+  // collapse menu items
+  $('body').on('click', '.townsquare_block-header', function(e) {
+    let target_id = $(this).data('target');
+
+    $('#' + target_id).toggleClass('hidden');
+    $(this).toggleClass('closed');
+    localStorage.setItem(target_id, $(this).hasClass('closed'));
+  });
+
   $('body').on('click', '#trending', function(e) {
     setTimeout(function() {
       document.location.href = get_redir_location($('.nav-link.active').data('slug'));
@@ -143,6 +152,15 @@ $(document).ready(function() {
       if (!hide_promo) {
         $('.promo').removeClass('hidden');
       }
+
+      $('.townsquare_block-header').each(function() {
+        let target_id = $(this).data('target');
+        var item = localStorage.getItem(target_id);
+
+        if (item == 'true') {
+          $(this).click();
+        }
+      });
     });
   };
 

@@ -2627,6 +2627,10 @@ def post_add_HackathonRegistration(sender, instance, created, **kwargs):
             )
 
 
+def default_tribes_expiration():
+    return timezone.now() + timezone.timedelta(days=365)
+
+
 class TribesSubscription(SuperModel):
 
     plans = (
@@ -2635,7 +2639,7 @@ class TribesSubscription(SuperModel):
 		('LAUNCH', 'Launch'),
 	)
 
-    expires_on = models.DateTimeField(null=True, blank=True, default=timezone.now() + timezone.timedelta(days=365))
+    expires_on = models.DateTimeField(null=True, blank=True, default=default_tribes_expiration)
     tribe = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='subscription')
     plan_type = models.CharField(max_length=10, choices=plans)
     hackathon_tokens = models.IntegerField(default=0)
@@ -4916,7 +4920,7 @@ class HackathonProject(SuperModel):
         return {
             'pk': self.pk,
             'name': self.name,
-            'logo': self.logo.url,
+            'logo': self.logo.url if self.logo else '',
             'badge': self.badge,
             'profiles': profiles,
             'work_url': self.work_url,
