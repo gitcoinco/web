@@ -1,0 +1,28 @@
+{
+  "symbol": "MKCY",
+  "address": "0xF3281c539716a08c754EC4C8F2B4cEe0faB64BB9",
+  "overview":{
+        "en": "Markaccy is a decentralized project on the Ethereum Blockchain that aims to connect two parties together, whereby a party needs a service & the other is ready to render this service in which the MKCY token will be used to incentivize this effect",
+        "zh": ""
+  },
+  "email": "info@markaccy.io",
+  "website": "https://www.markaccy.io/",
+  "whitepaper": "https://www.markaccy.io/whitepaper.pdf",
+  "state": "LOCKED | NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.000052  ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.0000017 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/@markaccy",
+    "twitter": "https://twitter.com/markaccy",
+    "telegram": "https://t.me/MarKacCy",
+    "github": "https://github.com/Markaccy/Markaccy",
+    "facebook": "https://web.facebook.com/MarKacCy/",
+    "reddit": "",
+    "slack": "",
+    "medium": "https://github.com/Markaccy/Markaccy"
+  }
+}
