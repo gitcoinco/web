@@ -5,7 +5,8 @@ from django.conf import settings
 from app.services import RedisService
 from celery import app
 from celery.utils.log import get_task_logger
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, has_tx_mined
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from kudos.models import KudosTransfer, TokenRequest
 from kudos.utils import kudos_abi
@@ -61,13 +62,12 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
     """
     with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
         with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
-            from dashboard.utils import has_tx_mined
-            from gas.utils import recommend_min_gas_price_to_confirm_in_time
             try:
                 multiplier = 1
                 gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
                 if gas_price > delay_if_gas_prices_gt_redeem:
-                    self.retry(countdown=120)
+                    if self.request.retries < self.max_retries:
+                        self.retry(countdown=120)
                     return
 
                 obj = KudosTransfer.objects.get(pk=kt_id)
@@ -95,5 +95,6 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
                     time.sleep(1)
                 pass
             except Exception as e:
-                print(e)
-                self.retry(countdown=(30 * (self.request.retries + 1)))
+                if self.request.retries < self.max_retries:
+                    print(e)
+                    self.retry(countdown=(30 * (self.request.retries + 1)))
