@@ -237,7 +237,7 @@ Vue.mixin({
         }),
         'attached_job_description': '',
         'eventTag': metadata.eventTag,
-        'auto_approve_workers': 'True',
+        'auto_approve_workers': false,
         'web3_type': vm.web3Type(),
         'activity': metadata.activity,
         'bounty_owner_address': vm.form.funderAddress

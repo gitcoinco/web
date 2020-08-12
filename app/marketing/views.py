@@ -956,7 +956,7 @@ def trending_quests():
     cutoff_date = timezone.now() - timezone.timedelta(days=7)
     quests = Quest.objects.annotate(recent_attempts=Count('attempts', filter=Q(
         created_on__gte=cutoff_date))
-        ).order_by('-recent_attempts').all()[0:10]
+        ).order_by('?').all()[0:10]
     return quests
 
 def trending_avatar():

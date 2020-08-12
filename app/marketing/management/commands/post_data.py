@@ -180,6 +180,11 @@ def results():
     do_post(text)
 
 
+def pluralize(num):
+    if num == 1:
+        return ''
+    return "s"
+
 
 def earners():
     hours = 24 if not settings.DEBUG else 1000
@@ -189,15 +194,25 @@ def earners():
     earnings = earnings.filter(network='mainnet')
 
     amounts = {}
+    descs = {}
 
     for earning in earnings:
         if not earning.to_profile:
             continue
         handle = earning.to_profile.handle
+        #####################################
         if handle not in amounts.keys():
             amounts[handle] = 0
         if earning.value_usd:
             amounts[handle] += earning.value_usd
+        #####################################
+        if handle not in descs.keys():
+            descs[handle] = {}
+        source_type = earning.source_type_human
+        if source_type not in descs[handle].keys():
+            descs[handle][source_type] = 0
+        descs[handle][source_type] += 1
+            
     amounts = sorted(amounts.items(), key=operator.itemgetter(1), reverse=True)
 
     pprint("================================")
@@ -209,7 +224,10 @@ def earners():
         return
     for amount in amounts[:limit]:
         counter += 1
-        pprint(f"{counter}) @{amount[0]} - ${round(amount[1], 0)}")
+        handle = amount[0]
+        desc = descs[handle]
+        desc = ", ".join([f"{ele[1]} {ele[0]}{pluralize(ele[1])}" for ele in desc.items()])
+        pprint(f"{counter}) @{handle} - ${round(amount[1], 0)} ({desc})")
 
     pprint("")
     pprint("=======================")

@@ -469,7 +469,7 @@ Vue.mixin({
         }),
         'attached_job_description': vm.form.jobDescription,
         'eventTag': metadata.eventTag,
-        'auto_approve_workers': 'True',
+        'auto_approve_workers': vm.form.auto_approve_workers,
         'web3_type': vm.web3Type(),
         'activity': metadata.activity,
         'bounty_owner_address': vm.form.funderAddress
@@ -646,6 +646,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           githubUsername: document.contxt.github_handle,
           notificationEmail: document.contxt.email,
           showEmailPublicly: '1',
+          auto_approve_workers: false,
           fullName: document.contxt.name,
           hours: '1',
           bounty_categories: [],

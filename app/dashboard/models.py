@@ -5070,6 +5070,14 @@ class Earning(SuperModel):
     token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
 
+    @property
+    def source_type_human(self):
+        source_type = str(self.source_type)
+        if source_type == 'contribution':
+            source_type = 'grant'
+        return source_type
+
+
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
 
