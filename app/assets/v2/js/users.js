@@ -346,11 +346,73 @@ Vue.component('user-directory', {
   }
 });
 if (document.getElementById('gc-users-directory')) {
-
-  var app = new Vue({
+  esColumns = [
+    'sms_verification',
+    'persona ',
+    'rank_coder ',
+    'num_hacks_joined ',
+    'which_hacks_joined',
+    'hack_work_starts ',
+    'hack_work_submits ',
+    'hack_work_start_orgs ',
+    'hack_work_submit_orgs',
+    'bounty_work_starts ',
+    'bounty_work_submits ',
+    'hack_started_feature',
+    'hack_started_code_review',
+    'hack_started_security',
+    'hack_started_design ',
+    'hack_started_documentation',
+    'hack_started_bug ',
+    'hack_started_other ',
+    'hack_started_improvement',
+    'started_feature ',
+    'started_code_review',
+    'started_security',
+    'started_design',
+    'started_documentation',
+    'started_bug ',
+    'started_other ',
+    'started_improvement ',
+    'submitted_feature ',
+    'submitted_code_review',
+    'submitted_security ',
+    'submitted_design ',
+    'submitted_documentation',
+    'submitted_bug ',
+    'submitted_other ',
+    'submitted_improvement',
+    'bounty_earnings  ',
+    'bounty_work_start_orgs ',
+    'bounty_work_submit_orgs',
+    'kudos_sends ',
+    'kudos_receives ',
+    'hack_winner_kudos_received',
+    'grants_opened ',
+    'grants_contributed ',
+    'grant_contributions ',
+    'grant_contribution_amount',
+    'num_actions ',
+    'action_points',
+    'avg_points_per_action',
+    'last_action_on',
+    'keywords',
+    'activity_level',
+    'reliability',
+    'average_rating',
+    'longest_streak',
+    'earnings_count',
+    'follower_count',
+    'following_count',
+    'num_repeated_relationships  ',
+    'verification_status'
+  ];
+  Vue.use(innerSearch.default);
+  window.UserDirectory = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-users-directory',
     data: {
+      esColumns,
       users,
       usersPage,
       usersNumPages,
@@ -389,6 +451,9 @@ if (document.getElementById('gc-users-directory')) {
       });
     },
     created() {
+      this.setHost('localhost:9200'); // TODO: set to proper env variable
+      this.setIndex('haystack');
+      this.setType('modelresult');
       this.fetchBounties();
       this.inviteOnMount();
       this.extractURLFilters();

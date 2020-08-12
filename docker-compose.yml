@@ -38,6 +38,8 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+    volumes:
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
 
   ipfs:
     image: ipfs/go-ipfs:release
