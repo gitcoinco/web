@@ -945,18 +945,17 @@
           return false;
         }
       },
-      data: function() {
-        return {
-          is_registered: document.is_registered,
-          activePanel: document.activePanel,
-          hackathonObj: document.hackathonObj,
-          hackathonSponsors: document.hackathonSponsors,
-          prizeFounders: document.prizeFounders,
-          hackathonProjects: [],
-          chatURL: document.chatURL,
-          hackHasEnded: document.displayShowcase
-        };
-      }
+      data: () => ({
+        is_registered: document.is_registered,
+        activePanel: document.activePanel,
+        hackathonObj: document.hackathonObj,
+        hackathonSponsors: document.hackathonSponsors,
+        prizeFounders: document.prizeFounders,
+        hackathonProjects: [],
+        chatURL: document.chatURL,
+        hackHasEnded: document.displayShowcase,
+        isSponsor: document.is_sponsor
+      })
     });
   });
 

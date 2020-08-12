@@ -373,6 +373,15 @@ def get_avatar_attrs(theme, key):
             'tone_maps': [],
             'path': 'assets/v2/images/avatar3d/orc_gitcoin.svg',
         },
+        'terran': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': ['FFFFFF', 'EEEEEE', 'DDDDDD', 'CCCCCC', 'E1C699', 'CFB997', 'F5F5DC', 'B3983', 'AAA9AD'],
+            'tone_maps': ['terran_skin'],
+            'path': 'assets/v2/images/avatar3d/terran.svg',
+        },
         'egypt': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
@@ -763,6 +772,9 @@ def get_avatar_tone_map(tone='skin', skinTone='', theme='unisex'):
     if tone == 'orc_skin':
         tones = {'FFFF99': 0, }
         base_3d_tone = 'FFFF99'
+    if tone == 'terran_skin':
+        tones = {'FFD9B3': 0, }
+        base_3d_tone = 'FFD9B3'
     if tone == 'starbot_skin':
         tones = {'FFFFFF': 0, }
         base_3d_tone = 'FFFFFF'

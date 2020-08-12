@@ -40,6 +40,7 @@ from django.db.models import Count, F, Q, Subquery, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
+from django.template.defaultfilters import date
 from django.template.loader import render_to_string
 from django.templatetags.static import static
 from django.urls import reverse
@@ -1381,6 +1382,7 @@ class BountyFulfillment(SuperModel):
     # TODO: rename to submission_url
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
     funder_last_notified_on = models.DateTimeField(null=True, blank=True)
+    project = models.ForeignKey('dashboard.HackathonProject', null=True, on_delete=models.SET_NULL, related_name='submissions')
 
     accepted = models.BooleanField(default=False, help_text="has the fulfillment been accepted by the funder")
     accepted_on = models.DateTimeField(null=True, blank=True, help_text="date when the fulfillment was accepted by the funder")
@@ -2627,6 +2629,10 @@ def post_add_HackathonRegistration(sender, instance, created, **kwargs):
             )
 
 
+def default_tribes_expiration():
+    return timezone.now() + timezone.timedelta(days=365)
+
+
 class TribesSubscription(SuperModel):
 
     plans = (
@@ -2635,7 +2641,7 @@ class TribesSubscription(SuperModel):
 		('LAUNCH', 'Launch'),
 	)
 
-    expires_on = models.DateTimeField(null=True, blank=True, default=timezone.now() + timezone.timedelta(days=365))
+    expires_on = models.DateTimeField(null=True, blank=True, default=default_tribes_expiration)
     tribe = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='subscription')
     plan_type = models.CharField(max_length=10, choices=plans)
     hackathon_tokens = models.IntegerField(default=0)
@@ -2789,7 +2795,7 @@ class Profile(SuperModel):
     last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
     encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
     sybil_score = models.IntegerField(default=-1)
-
+    ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore', blank=True)
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
 
@@ -4168,7 +4174,7 @@ class Profile(SuperModel):
 
         total_funded = funded_bounties.count()
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
-        desc = self.get_desc(funded_bounties, fulfilled_bounties)
+        desc = self.desc
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         org_works_with = []
         if self.is_org:
@@ -4702,10 +4708,12 @@ class HackathonEvent(SuperModel):
     sponsors = models.ManyToManyField(Sponsor, through='HackathonSponsor')
     sponsor_profiles = models.ManyToManyField('dashboard.Profile', blank=True, limit_choices_to={'data__type': 'Organization'})
     show_results = models.BooleanField(help_text=_('Hide/Show the links to access hackathon results'), default=True)
+    hackathon_summary = models.CharField(max_length=280, blank=True, help_text=_('280 char summary that shows up on hackathon cards on the hackathon list page'))
     description = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     quest_link = models.CharField(max_length=255, blank=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     visible = models.BooleanField(help_text=_('Can this HackathonEvent be seeing on /hackathons ?'), default=True)
+
     default_channels = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     objects = HackathonEventQuerySet.as_manager()
     display_showcase = models.BooleanField(default=False)
@@ -4791,6 +4799,7 @@ class HackathonEvent(SuperModel):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+
 # method for updating
 @receiver(pre_save, sender=HackathonEvent, dispatch_uid="psave_hackathonevent")
 def psave_hackathonevent(sender, instance, **kwargs):
@@ -4810,6 +4819,7 @@ def psave_hackathonevent(sender, instance, **kwargs):
                 'img_url': instance.logo.url if instance.logo else None,
             }
             )
+
 
 
 class HackathonSponsor(SuperModel):
@@ -4901,23 +4911,39 @@ class HackathonProject(SuperModel):
                 'email': profile.email,
                 'payout_address': profile.preferred_payout_address,
                 'url': profile.url,
-                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else ''
+                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else '',
+                'id': profile.pk
             } for profile in self.profiles.all()
         ]
+        profile_ids = [profile['id'] for profile in profiles]
+
+        submission = BountyFulfillment.objects.filter(project=self).first()
+        # Backward compatibility, for bounty fulfillment without a project assigned
+        if not submission:
+            submission = BountyFulfillment.objects.filter(profile_id__in=profile_ids, bounty=self.bounty).first()
+
+        paid = False
+        if submission:
+            paid = submission.payout_status == 'done'
 
         return {
             'pk': self.pk,
             'name': self.name,
-            'logo': self.logo.url,
+            'logo': self.logo.url if self.logo else '',
             'badge': self.badge,
             'profiles': profiles,
             'work_url': self.work_url,
             'summary': self.summary,
             'status': self.status,
+            'submitted': bool(submission),
+            'submition_date': date(submission.created_on, 'Y-m-d H:i') if submission else '',
             'message': self.message,
             'chat_channel_id': self.chat_channel_id,
+            'paid': paid,
+            'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
-            'extra': self.extra
+            'extra': self.extra,
+            'timestamp': submission.created_on.timestamp() if submission else 0
         }
 
 
@@ -5195,6 +5221,8 @@ class Question(SuperModel):
     text = models.CharField(max_length=350, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
     header = models.ForeignKey(PollMedia, null=True, on_delete=models.SET_NULL)
+    mandatory = models.BooleanField(default=False)
+    minimum_character_count = models.PositiveIntegerField(default=0)
 
     class Meta(object):
         ordering = ['order']
@@ -5429,3 +5457,23 @@ class ProfileVerification(SuperModel):
 
     def __str__(self):
         return f'{self.phone_number} ({self.caller_type}) from {self.country_code} request ${self.delivery_method} code at {self.created_on}'
+
+
+class HackathonWorkshop(SuperModel):
+    name = models.CharField(max_length=255)
+    start_date = models.DateTimeField()
+    cover = models.ImageField()
+    hackathon = models.ForeignKey(
+        'dashboard.HackathonEvent',
+        related_name='workshop_event',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    speaker = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='workshop_speaker',
+        on_delete=models.CASCADE,
+        help_text='Main speaker profile.'
+    )
+    url = models.URLField(help_text='Blog link, calendar link, or other.')
+    visible = models.BooleanField(help_text=_('Can this HackathonWorkshop be seen on /hackathons ?'), default=True)

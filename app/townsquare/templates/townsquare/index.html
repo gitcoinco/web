@@ -200,8 +200,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <hr>
 
-                  <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
-                    <div class="accordion active">
+                  <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2 accordion active" data-target="actions">
+
                       Actions
                       <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
                         <p class='text-left'>
@@ -212,26 +212,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           Come to Gitcion daily to discover today's daily action!
                         </p>
                       "></i>
-                    </div>
 
-                    <div id="actions" class="panel-active">
-                      <div class="offer_coming font-caption">
-                        <div class="checkbox_container font-smaller-5">
-                          <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
-                          <span class="checkbox"></span>
-                          <div class="filter-label ml-1">
-                            <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
-                          </div>
+
+                  </div>
+                  <div id="actions" class="panel-active">
+                    <div class="offer_coming font-caption">
+                      <div class="checkbox_container font-smaller-5">
+                        <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                        <span class="checkbox"></span>
+                        <div class="filter-label ml-1">
+                          <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
                         </div>
                       </div>
-
-                      {% include 'townsquare/shared/offers.html' %}
-
-                      <a href="/action/new" class="font-smaller-2 mb-2">
-                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                        Create Action
-                      </a>
                     </div>
+
+                    {% include 'townsquare/shared/offers.html' %}
+
+                    <a href="/action/new" class="font-smaller-2 mb-2">
+                      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                      Create Action
+                    </a>
                   </div>
 
                   <hr>
