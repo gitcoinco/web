@@ -39,7 +39,7 @@
         "EnableMultifactorAuthentication": false,
         "EnforceMultifactorAuthentication": false,
         "EnableUserAccessTokens": true,
-        "AllowCorsFrom": "http://localhost:8000 http://localhost:8065",
+        "AllowCorsFrom": "http://localhost:8065",
         "CorsExposedHeaders": "",
         "CorsAllowCredentials": true,
         "CorsDebug": true,

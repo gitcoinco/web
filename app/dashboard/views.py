@@ -31,7 +31,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
@@ -926,6 +926,7 @@ def set_project_winner(request):
         })
     project = HackathonProject.objects.get(pk=project_id)
 
+
     if not request.user.is_authenticated and (request.user.is_staff or request.user.profile.handle == project.bounty.bounty_owner_github_username):
         return JsonResponse({
             'message': 'UNAUTHORIZED'
@@ -1164,6 +1165,53 @@ def users_fetch(request):
         pass
 
     return JsonResponse(params, status=200, safe=False)
+
+@require_POST
+def bounty_mentor(request):
+
+    if not request.user.is_authenticated:
+        return JsonResponse({'message': 'Request Data invalid'}, status=400)
+
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    can_manage = request.user.profile.handle.lower() == body.bounty_org.lower()
+
+    if not can_manage:
+        return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
+
+    bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{request.user.profile.handle.lower()}-mentors')[0]
+    message = f'Mentors Updated Successfully'
+    if body['set_default_mentors']:
+        current_mentors = Profile.objects.filter(user__groups=bounty_org_default_mentors)
+        mentors_to_remove = list(set([current.id for current in current_mentors]) - set(body['new_default_mentors']))
+
+        mentors_to_remove = Profile.objects.filter(id__in=mentors_to_remove)
+        for mentor_to_r in mentors_to_remove:
+            mentor_to_r.user.groups.remove(bounty_org_default_mentors)
+
+        mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
+        for mentor in mentors_to_add:
+            mentor.user.groups.add(bounty_org_default_mentors)
+
+    if body['has_overrides']:
+        for key, val in body['overrides']:
+            bounty = Bounty.objects.get(id=key)
+            bounty_group = Group.objects.get_or_create(name=f'bounty-override-{key}-mentors')[0]
+            mentor_pks = [int(mentorpk) for mentorpk in val.mentors]
+            mentors = User.objects.filter(id__in=mentor_pks)
+            for mentor in mentors:
+                mentor.groups.add(bounty_group)
+
+    if body['hackathon_id']:
+        try:
+            hackathon_event = HackathonEvent.objects.get(id=int(body['hackathon_id']))
+            from chat.tasks import hackathon_chat_sync
+            hackathon_chat_sync.delay(hackathon_id=hackathon_event.id)
+        except Exception as e:
+            message = 'Hackathon does not exist'
+            logger.info(str(e))
+
+    return JsonResponse({'message': message}, status=200, safe=False)
 
 
 def get_user_bounties(request):
@@ -3864,7 +3912,17 @@ def hackathon(request, hackathon='', panel='prizes'):
     params['keywords'] = programming_languages + programming_languages_full
     params['active'] = 'users'
     from chat.tasks import get_chat_url
-    params['chat_url_embed'] = f"/hackathons/channels/{hackathon_event.chat_channel_id}"
+    params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
+
+    can_manage = request.user.is_authenticated and any(
+        [request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() for bounty in Bounty.objects.filter(event=hackathon_event)]
+    )
+
+    if can_manage:
+        params['can_manage'] = can_manage
+        params['default_mentors'] = Profile.objects.filter(
+            user__groups__name=f'sponsor-org-{request.user.profile.handle}-mentors'
+        )
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
@@ -4161,28 +4219,11 @@ def hackathon_save_project(request):
             })
 
             project.update(**kwargs)
-
-            try:
-                bounty_profile = Profile.objects.get(handle=project.bounty.bounty_owner_github_username.lower())
-                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
-                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
-
-                profiles_to_connect.append(bounty_profile.chat_id)
-            except Exception as e:
-                logger.info("Bounty Profile owner not apart of gitcoin")
-
-            for profile_id in profiles:
-                curr_profile = Profile.objects.get(id=profile_id)
-                if not curr_profile.chat_id:
-                    created, curr_profile = associate_chat_to_profile(curr_profile)
-                profiles_to_connect.append(curr_profile.chat_id)
-
-            add_to_channel.delay(project.first().chat_channel_id, profiles_to_connect)
-
             profiles.append(str(profile.id))
             project.first().profiles.set(profiles)
 
             invalidate_obj(project.first())
+
 
         except Exception as e:
             logger.error(f"error in record_action: {e}")
@@ -4190,42 +4231,11 @@ def hackathon_save_project(request):
             status=401)
     else:
 
-        try:
-            project_channel_name = slugify(f'{kwargs["name"]}')
-
-            created, channel_details = create_channel_if_not_exists({
-                'team_id': settings.GITCOIN_HACK_CHAT_TEAM_ID,
-                'channel_purpose': kwargs["summary"][:200],
-                'channel_display_name': f'PRJ{"-"+ bounty_obj.event.short_code if bounty_obj.event and bounty_obj.event.short_code else ""}-{project_channel_name}'[:60],
-                'channel_name': project_channel_name[:60]
-            })
-            try:
-                bounty_profile = Profile.objects.get(handle=bounty_obj.bounty_owner_github_username.lower())
-                if bounty_profile.chat_id is '' or bounty_profile.chat_id is None:
-                    created, bounty_profile = associate_chat_to_profile(bounty_profile)
-
-                profiles_to_connect.append(bounty_profile.chat_id)
-            except Exception as e:
-                logger.info("Bounty Profile owner not apart of gitcoin")
-
-            for profile_id in profiles:
-                curr_profile = Profile.objects.get(id=profile_id)
-                if not curr_profile.chat_id:
-                    created, curr_profile = associate_chat_to_profile(curr_profile)
-                profiles_to_connect.append(curr_profile.chat_id)
-
-            add_to_channel.delay(channel_details, profiles_to_connect)
-
-            kwargs.update({
-                'chat_channel_id': channel_details['id']
-            })
-        except Exception as e:
-            logger.error('Error creating project channel', e)
-
         project = HackathonProject.objects.create(**kwargs)
         project.save()
         profiles.append(str(profile.id))
         project.profiles.add(*list(filter(lambda profile_id: profile_id > 0, map(int, profiles))))
+        invalidate_obj(project.first())
 
     return JsonResponse({
             'success': True,
