@@ -407,15 +407,3 @@ if (document.getElementById('gc-users-directory')) {
     }
   });
 }
-
-Vue.component('tribe-directory', {
-  computed: {
-    orderedUsers: function() {
-      return _.orderBy(this.users, 'position_contributor', 'asc');
-    }
-  },
-  
-  mounted() {
-    this.fetchUsers();
-  }
-});

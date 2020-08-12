@@ -599,7 +599,6 @@ Vue.component('project-card', {
 });
 
 Vue.component('suggested-profiles', {
-<<<<<<< HEAD
   props: ['id'],
   computed: {
     orderedUsers: function() {
@@ -646,13 +645,10 @@ Vue.component('suggested-profiles', {
       });
     }
   },
-=======
-  props: ['profiles'],
->>>>>>> parent of b47d4df75... Fixes tribe townsquare sidebar shows follow suggestion for top member based on contributor rank.
   template: `<div class="townsquare_nav-list my-2 tribe">
       <div id="suggested-tribes">
         <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
-            <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
+            <suggested-profile v-for="profile in orderedUsers" :key="profile.id" :profile="profile" />
         </ul>
       </div>
     </div>`

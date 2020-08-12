@@ -470,8 +470,8 @@
                 <div class="ml-md-4 mt-4 townsquare_header">
                   <div class="row">
                     <div class="col-12 col-md-4 col-lg-3">
-                      <div @click="showCoreTeam = !showCoreTeam" class="ml-4 mb-4 font-body left-ribbon text-justify btn-block justify-content-between align-items-center p-1">[[ tribe.name ]] {% trans "Team" %} <i class="fa fa-fw" :class="showCoreTeam ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
-                      <suggested-profiles v-show="showCoreTeam" :profiles="tribe.team_or_none_if_timeout" class="ml-4"></suggested-profiles>
+                      <div @click="showCoreTeam = !showCoreTeam" class="ml-4 mb-4 font-body left-ribbon text-justify btn-block justify-content-between align-items-center p-1"> {% trans "Top Tribe Members" %} <i class="fa fa-fw" :class="showCoreTeam ? 'fa-chevron-up': 'fa-chevron-down'"></i></div>
+                      <suggested-profiles v-show="showCoreTeam" :id="tribe.handle" class="ml-4"></suggested-profiles>
                     </div>
                     <div class="feed_container col-12 col-md-7 col-lg-8">
                       <div class="feed_container_child container-fluid">
