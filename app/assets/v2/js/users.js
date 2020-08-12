@@ -57,7 +57,7 @@ Vue.mixin({
         apiUrlUsers += '&type=explore_tribes';
       }
 
-      var getUsers = fetchData (apiUrlUsers, 'GET');
+      var getUsers = fetchData(apiUrlUsers, 'GET');
 
       $.when(getUsers).then(function(response) {
 
@@ -136,7 +136,7 @@ Vue.mixin({
       let postInvite = fetchData(
         apiUrlInvite,
         'POST',
-        { 'usersId': [user], 'bountyId': bounty.id},
+        {'usersId': [user], 'bountyId': bounty.id},
         {'X-CSRFToken': csrftoken}
       );
 
@@ -157,7 +157,7 @@ Vue.mixin({
       const postInvite = fetchData(
         apiUrlInvite,
         'POST',
-        { 'params': vm.params, 'bountyId': bountyUrl},
+        {'params': vm.params, 'bountyId': bountyUrl},
         {'X-CSRFToken': csrftoken}
       );
 
@@ -209,7 +209,7 @@ Vue.mixin({
 
       if (vm.contributorInvite) {
         let api = `/api/v0.1/users_fetch/?search=${vm.contributorInvite}`;
-        let getUsers = fetchData (api, 'GET');
+        let getUsers = fetchData(api, 'GET');
 
         $.when(getUsers).then(function(response) {
           if (response && response.data.length) {
@@ -240,7 +240,7 @@ Vue.mixin({
     joinTribe: function(user, event) {
       event.target.disabled = true;
       const url = `/tribe/${user.handle}/join/`;
-      const sendJoin = fetchData (url, 'POST', {}, {'X-CSRFToken': csrftoken});
+      const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': csrftoken});
 
       $.when(sendJoin).then(function(response) {
         event.target.disabled = false;
@@ -273,10 +273,10 @@ Vue.component('user-directory', {
       orgOwner: this.is_my_org || false,
       userFilter: {
         options: [
-          { text: 'All', value: 'all' },
-          { text: 'Tribe Owners', value: 'owners' },
-          { text: 'Tribe Members', value: 'members' },
-          { text: 'Tribe Hackers', value: 'hackers' }
+          {text: 'All', value: 'all'},
+          {text: 'Tribe Owners', value: 'owners'},
+          {text: 'Tribe Members', value: 'members'},
+          {text: 'Tribe Hackers', value: 'hackers'}
         ]
       },
       tribeFilter: this.tribe || '',
@@ -407,6 +407,11 @@ if (document.getElementById('gc-users-directory')) {
     'num_repeated_relationships  ',
     'verification_status'
   ];
+  Vue.component('directory-card', {
+    name: 'DirectoryCard',
+    delimiters: [ '[[', ']]' ],
+    props: [ 'user', 'funderBounties' ]
+  });
   Vue.use(innerSearch.default);
   window.UserDirectory = new Vue({
     delimiters: [ '[[', ']]' ],
