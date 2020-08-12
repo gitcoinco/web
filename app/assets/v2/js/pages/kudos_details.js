@@ -24,13 +24,6 @@ $(document).ready(function() {
     }
 
   });
-
-  if (kudosNumClonesAvailable == 0) {
-    $('#getKudos').attr('class', 'btn btn-gc-blue disabled').attr('aria-disabled', 'true');
-    return;
-  }
-
-
 });
 
 var rotate_kudos_msg = function() {
