@@ -599,11 +599,56 @@ Vue.component('project-card', {
 });
 
 Vue.component('suggested-profiles', {
-  props: ['profiles'],
+  props: ['id'],
+  computed: {
+    orderedUsers: function() {
+      return _.orderBy(this.users, 'position_contributor', 'asc');
+    }
+  },
+  data: function() {
+    return {
+      users: []
+    };
+  },
+  mounted() {
+    this.fetchUsers();
+  },
+  methods: {
+    fetchUsers: function() {
+      let vm = this;
+
+      vm.isLoading = true;
+      vm.noResults = false;
+
+      let apiUrlUsers = `/api/v0.1/users_fetch/?user_filter=all&page=1&tribe=${vm.id}`;
+
+      var getUsers = fetchData(apiUrlUsers, 'GET');
+
+      $.when(getUsers).then(function(response) {
+        for (let item = 0; response.data.length > item; item++) {
+          if (!response.data[item].is_following) {
+            if (response.data[item].handle != document.contxt.github_handle) {
+              vm.users.push(response.data[item]);
+            }
+          }
+          if (vm.users.length === 10) {
+            break;
+          }
+        }
+
+        if (vm.users.length) {
+          vm.noResults = false;
+        } else {
+          vm.noResults = true;
+        }
+        vm.isLoading = false;
+      });
+    }
+  },
   template: `<div class="townsquare_nav-list my-2 tribe">
       <div id="suggested-tribes">
         <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
-            <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
+            <suggested-profile v-for="profile in orderedUsers" :key="profile.id" :profile="profile" />
         </ul>
       </div>
     </div>`
