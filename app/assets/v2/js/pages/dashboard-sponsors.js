@@ -117,7 +117,7 @@
               newPathName = 'prizes';
               break;
             case 1:
-              newPathName = 'submissions';
+              newPathName = 'stats';
               break;
           }
           let newUrl = `/hackathon/dashboard/${vm.hackathonObj['slug']}/${newPathName}`;
@@ -153,6 +153,7 @@
         activePanel: document.activePanel,
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
+        userOrg: document.userOrg,
         hackathonProjects: [],
         chatURL: document.chatURL || 'https://chat.gitcoin.co/',
         prizes: [],
