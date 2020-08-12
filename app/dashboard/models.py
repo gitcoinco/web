@@ -5247,6 +5247,8 @@ class Question(SuperModel):
     text = models.CharField(max_length=350, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
     header = models.ForeignKey(PollMedia, null=True, on_delete=models.SET_NULL)
+    mandatory = models.BooleanField(default=False)
+    minimum_character_count = models.PositiveIntegerField(default=0)
 
     class Meta(object):
         ordering = ['order']
