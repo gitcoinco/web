@@ -33,10 +33,7 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
   <a href="">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/gitcoinco/web">
   <a/>
-  <a href="https://circleci.com/gh/facebook/flow/tree/master">
-    <img src="https://circleci.com/gh/facebook/flow/tree/master.svg?style=shield" alt="CircleCI" />
-  </a>
-    <a href="https://www.reddit.com/r/gitcoincommunity/">
+  <a href="https://www.reddit.com/r/gitcoincommunity/">
     <img alt="Subreddit subscribers" src="https://img.shields.io/reddit/subreddit-subscribers/gitcoincommunity?style=social">
   </a>
     
