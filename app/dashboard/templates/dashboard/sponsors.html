@@ -1,0 +1,321 @@
+{% comment %}
+    Copyright (C) 2020 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% if use_pic_card %}
+      {% include 'shared/cards_pic.html' %}
+    {% else %}
+      {% include 'shared/cards.html' %}
+    {% endif %}
+    <link rel="stylesheet" href='{% static "v2/css/dashboard-hackathon.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'/>
+    <link rel="stylesheet" href='{% static "v2/css/users.css" %}' />
+    <link rel="stylesheet" href='{% static "v2/css/dashboard-vue-hackathon.css" %}'/>
+
+    <style type="text/css">
+      .hackathon-logo {
+        height: 13rem;
+        width: 13rem;
+        background: {% firstof hackathon.background_color or '#090E60' %};
+        border-radius: 10px;
+        color: {% firstof hackathon.text_color or 'black' %};
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .hackathon-banner {
+        background: {% firstof hackathon.background_color or 'white' %};
+        color: {% firstof hackathon.text_color or 'black' %};
+        height: 225px;
+        {% if hackathon.banner %}
+          background: url('{{MEDIA_URL}}{{hackathon.banner}}') 0 / cover;
+        {% endif %}
+      }
+      th {
+        border-top-width: 0px !important;
+        border-bottom: 2px solid #FFFFFF;
+        letter-spacing: -0.08px;
+        color: #9A99A2;
+        font-size: var(--fs-body);
+        font-weight: normal;
+        line-height: 18px;
+      }
+
+      .no-border {
+        border-top: none !important;
+      }
+
+      .mobile-separator {
+        border-bottom: 1px solid #D1D1D1;
+      }
+
+      .summary {
+        font-size: 12px;
+        line-height: 18px;
+        letter-spacing: -0.24px;
+        max-width: 15.5rem;
+      }
+
+      .find-hackers-btn {
+        bottom: 40px;
+      }
+
+      .hackathon-logo {
+        height: 12rem;
+      }
+
+      .note {
+        margin-top: -4px;
+        font-size: var(--fs-body);
+      }
+
+      .custom-switch .custom-control-label::after {
+        top: calc(2px) !important;
+      }
+
+      #prizes th {
+        color: black;
+      }
+
+      .custom-control-label::before {
+        top: 0rem !important;
+      }
+    </style>
+    {% include 'shared/fbpixel.html' %}
+  </head>
+
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header sticky-top dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav_hackathons.html' %}
+    </div>
+
+    {% if is_staff %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{hackathon.admin_url}}">{% trans "Hackathon Admin" %}</a>
+      </div>
+    {% endif %}
+
+    <div id="dashboard-content" class="container-fluid" style="min-height:600px;">
+        <div id="sponsors-app" class="row" v-cloak>
+          <div :id="hackathonObj.identifier" class="row col-12 align-items-center p-3 banner hackathon-banner">
+            <div class="col-12 col-lg-6 offset-md-4 offset-lg-3 offset-xl-2 hackathon-text pl-4 text-center text-md-left">
+              <div class="my-auto">
+                <p class="hackathon-title title font-weight-bold mb-2 mb-md-0 mt-4">[[ hackathonObj.name ]]</p>
+                <p class="mb-1 text-uppercase font-body font-weight-semibold">
+                  {{ prize_count }} Prizes
+                </p>
+                <p class="mb-0 font-body">
+                  <span class="mr-md-3">{{ num_participants }} participants</span>
+                  <span>{{ num_submissions }} submissions</span>
+                </p>
+              </div>
+
+            </div>
+            <div class="offset-md-4 offset-lg-0 col-12 col-lg-3">
+              <p class="my-auto text-center text-lg-right mr-lg-5">
+                <a href="{% url 'users_directory' %}" class="font-weight-semibold font-body btn btn-gc-blue">Find more hackers</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="col-12 body hackathon-explorer px-0">
+            <b-tabs :value="activePanel" @input="tabChange" justified nav-class="col-12 col-md-8 offset-md-3 px-4" nav-wrapper-class="col-12 nav-tabs" align="left" content-class="col-12 light-blue" class="row">
+              <template v-slot:tabs-start>
+                <div class="hack-logo-wrapper d-none d-md-block">
+                  <div class="mb-1 hackathon-logo">
+                    <b-img-lazy v-if="hackathonObj.logo_svg" class="mx-auto mb-1 mw-100" style="height: 10rem" :src="hackathonObj.logo_svg" alt="Hackathon logo"></b-img-lazy>
+                    <b-img-lazy v-else-if="hackathonObj.logo" class="mx-auto mb-1 mw-100" style="height: 10rem" :src="hackathonObj.logo" alt="Hackathon logo"></b-img-lazy>
+                  </div>
+                </div>
+              </template>
+              <b-tab title-item-class="d-none" title-item-class="navigation">
+                <template class="d-none" v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Prizes" %}
+                    <span class="nav-badge d-none d-sm-inline">({{prize_count}})</span>
+                  </div>
+                </template>
+                <div class="white-light-bg mb-2 py-3 text-center text-md-left">
+                  <a href="{% url 'hackathon' hackathon.slug %}" class="font-body px-5">
+                    <i class="fas fa-chevron-left mr-2"></i>
+                    Back to hackathon
+                  </a>
+                </div>
+                <div id="prizes" class="row mx-0 mx-md-3 mx-lg-5">
+                  <div class="col-12 p-2">
+                      <div class="loading justify-content-center align-items-center loading_img" v-if="!prizes">
+                        <img src="{% static "v2/images/loading_v2.gif" %}" alt="Loading ...">
+                      </div>
+                      <div role="tablist">
+                        <b-card no-body class="my-3" v-for="(prize, prizeIndex) in prizes" v-if="prizes">
+                          <b-card-header header-tag="header" class="row mx-0 px-4 py-2 bg-white" role="tab">
+
+                            <div class="col-12 col-md-5 text-center text-md-left pl-md-0">
+                              <div class="my-2">
+                                <p class="m-0">
+                                  <a target="_blank" :href="prize.url" class="font-body font-weight-semibold d-inline-block text-black">
+                                    [[`${prize.title.slice(0, 100)}${prize.title.length > 100 ? '...' : ''}`]]
+                                  </a>
+                                </p>
+
+                              </div>
+                            </div>
+
+                            <div class="col-md-3 my-auto">
+                              <p class="mb-3 m-md-0 text-center">
+                                <span v-if="prize.value_eth" class="tag token">[[prize.value_eth | decimals]] ETH</span>
+                                <span v-if="prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
+                              </p>
+                            </div>
+
+                            <div class="col-md-5 col-lg-4 my-auto font-body font-weight-semibold text-center">
+                              <p v-if="!prize.total_projects" class="font-body font-weight-semibold m-0">No Submissions</p>
+
+                              <p v-else class="m-0 position-relative">
+                                <span>
+                                  [[ prize.total_submitted ]] / [[prize.total_projects]] Submitted
+                                </span>
+                                <span v-if="prize.paid" class="ml-5 gc-text-green"><span class="fas fa-check mr-2"></span>PAID</span>
+                                <a v-else :href="`/issue/payout?pk=${prize.pk}`" class="ml-2 ml-xl-5 btn btn-outline-primary font-smaller-5">PAY</a>
+
+                                <b-button style="right: 0;top: -5px" class="position-absolute" v-if="prize.total_projects" v-b-toggle="`accordion-${prizeIndex}`" variant="link">
+                                  <i class="fas fa-angle-up"></i>
+                                </b-button>
+                              </p>
+                            </div>
+
+                          </b-card-header>
+
+                          <b-collapse :id="`accordion-${prizeIndex}`" :visible="prize.submissions.length > 0" accordion="my-accordion" role="tabpanel">
+                            <b-card-body>
+                              <b-table-simple hover small caption-top responsive>
+                                <b-thead v-if="!isMobileDevice">
+                                  <b-th>Submission</b-th>
+                                  <b-th>Project Description</b-th>
+                                  <b-th>Hacker</b-th>
+                                  <b-th>Contact</b-th>
+                                  <b-th>Winner</b-th>
+                                  <b-th>Notes</b-th>
+                                </b-thead>
+                                <b-tbody>
+                                  <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="(project, projectIndex) in prize.submissions">
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <img :src="project.logo" alt="" width="30">
+                                      <a :href="project.work_url" target="_blank"><span class="fab fa-github text-black"></span>
+                                        <span class="font-body gc-text-blue font-weight-semibold">[[project.name]]</span>
+                                      </a>
+                                    </b-td>
+
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary pr-4'">
+
+                                      <p class="mt-1">[[getSummary(project)]]
+                                      <button v-if="project.summary.length > 177" @click="toggleSummary(prizeIndex, projectIndex)" class="btn btn-link gc-text-blue py-0 my-0 pl-0 font-smaller-4">
+                                        [[ project.showDescription ? 'Show less'  : 'Show more' ]]
+                                      </button>
+                                      </p>
+                                    </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 d-flex flex-column'">
+                                      <div class="d-flex mb-2 mt-1" v-for="profile in project.profiles">
+                                        <img height="28" width="28" class="mr-2 rounded-circle" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
+                                        <div class="d-flex flex-column">
+                                          <a class="font-smaller-4 text-black" :href="profile.url">[[profile.handle]]</a>
+                                          <span class="font-smaller-5 gc-text-blue">[[start_and_end(profile.payout_address)]]</span>
+                                        </div>
+                                      </div>
+                                    </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <!--a :href="profile.email"><i class="fa fa-envelope"></i></a-->
+                                      <button class="btn btn-link gc-text-blue pt-0" @click="chatWindow(project.chat_channel_id, $event);"><i class="fa fa-comment"></i></button>
+                                    </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <b-form-checkbox class="font-smaller-4 mt-1" v-model="project.winner" name="check-button" switch @change="markWinner($event, project, prizeIndex)">
+                                        Winner
+                                      </b-form-checkbox>
+                                    </b-td>
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <button class="btn btn-link gc-text-blue pt-0 font-smaller-4 mt-1" @click="addNote(project)" v-if="comments[project.pk] == undefined">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        Add Note
+                                      </button>
+                                      <textarea v-if="comments[project.pk] != undefined" v-model="comments[project.pk]" @change="setNote($event, project)" class="form-control note">[[getComment(project.pk)]]</textarea>
+                                    </b-td>
+                                  </b-tr>
+                                </b-tbody>
+                              </b-table-simple>
+                            </b-card-body>
+                          </b-collapse>
+                        </b-card>
+                      </div>
+                  </div>
+                </div>
+              </b-tab>
+            </b-tabs>
+          </div>
+        </div>
+      </div>
+    <div class="row bottom_notification font-caption">
+      {{footer_msg|safe}}
+    </div>
+
+    <div id="onboard-footer" class="row hidden font-body">
+      <div class="col-12">
+        <p>{% trans "Want to Fund an issue ?" %}
+          <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
+        </p>
+      </div>
+    </div>
+
+
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with vue=True %}
+    {% include 'shared/footer.html' %}
+    <script src='{% static "v2/js/vue-components.js" %}'></script>
+    {{orgs|json_script:"sponsor-list"}}
+    {{hackathon_obj|json_script:"hackathon-object"}}
+    <script>
+      $('body').bootstrapTooltip({
+        selector: '[data-toggle="tooltip"]'
+      });
+      const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+      document.current_tab = 'hackathon:{{hackathon.id | safe}}';
+      document.keywords = {{ keywords | safe }};
+      document.hackathon = "{{ hackathon.slug | safe }}";
+      document.hackathon_id = "{{ hackathon.id | safe }}";
+      document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
+      document.activePanel = parseInt({{panel | safe}});
+      if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
+    </script>
+    <script src='{% static "v2/js/pages/dashboard-sponsors.js" %}'></script>
+    {% include 'shared/activity_scripts.html' %}
+    <script src='{% static "v2/js/status.js" %}'></script>
+    <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
+    <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
+    <script src='{% static "v2/js/users.js" %}'></script>
+    <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
+    {% include 'shared/current_profile.html' %}
+    <script src='{% static "v2/js/user-search.js" %}'></script>
+  </body>
+</html>
