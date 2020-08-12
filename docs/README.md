@@ -4,14 +4,43 @@
 
 Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co)
 
+
 <a href="https://gitcoin.co/explorer?q=gitcoinco">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60" alt="Open bounties widget">
 </a>
 
 # web repo
-
-[![Build Status](https://travis-ci.org/gitcoinco/web.svg?branch=master)](https://travis-ci.org/gitcoinco/web)
-[![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
+<p align="center">
+  
+  <a href="https://twitter.com/gitcoin">
+   <img src="https://img.shields.io/twitter/follow/gitcoin?style=social" alt="Follow @gitcoin" />
+  </a>
+  <a href="https://codecov.io/gh/gitcoinco/web">
+   <img src="https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg" />
+  </a>
+  <a href="https://travis-ci.org/gitcoinco/web">
+   <img src="https://travis-ci.org/gitcoinco/web.svg?branch=master" />
+  </a>
+  <a href="https://github.com/3scava1i3r/web/blob/master/LICENSE">
+   <img alt="GitHub" src="https://img.shields.io/github/license/gitcoinco/web">
+  </a>
+  <a href="https://github.com/gitcoinco/web/graphs/contributors">
+   <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/gitcoinco/web">
+  </a>
+  <a href="">
+    <img alt="GitHub" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+  </a>
+  <a href="">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/gitcoinco/web">
+  <a/>
+  <a href="https://circleci.com/gh/facebook/flow/tree/master">
+    <img src="https://circleci.com/gh/facebook/flow/tree/master.svg?style=shield" alt="CircleCI" />
+  </a>
+    <a href="https://www.reddit.com/r/gitcoincommunity/">
+    <img alt="Subreddit subscribers" src="https://img.shields.io/reddit/subreddit-subscribers/gitcoincommunity?style=social">
+  </a>
+    
+</p>
 
 This is the website that is live at [gitcoin.co](https://gitcoin.co)
 ```master``` branch - staging
@@ -211,6 +240,3 @@ Note:
 
 - [Code - GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
 - [Creative assets -- Attribution-NonCommercial-NoDerivatives 4.0 International](../app/assets/LICENSE.txt)
-
-<!-- Google Analytics -->
-<img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >
