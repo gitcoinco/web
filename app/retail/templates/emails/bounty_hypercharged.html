@@ -25,8 +25,6 @@
 
 <p>Work on "{{ bounty.title }}" and receive {{ bounty.value_true|floatformat }} {{ bounty.token_name }}</p>
 
-<p>{{ bounty.issue_description_text|truncatechars:500 }}</p>
-
 <div style="margin-bottom: 1em; margin-top: 1em;">
   <a class="button" href="{{ bounty.absolute_url }}">{% trans "View on Gitcoin.co" %}</a>
 </div>
