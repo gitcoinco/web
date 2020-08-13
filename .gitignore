@@ -26,6 +26,7 @@ webpack-stats.json
 .sass-cache
 *.sql
 celerybeat.pid
+chatconfig/config.json
 
 # Sensitive environment files
 .env
