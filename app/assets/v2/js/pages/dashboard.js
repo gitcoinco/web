@@ -533,9 +533,9 @@ var refreshBounties = function(event, offset, append) {
     // Filter results by open bounties created more than 3 days ago
     if ($('input[name="bounty_filter"]:checked').val().toString() === 'stale') {
       results = results.filter(bounty => {
-        let now = new Date();
-        let created = new Date(bounty.web3_created);
-        let daysAgo = new Date(now.setDate(now.getDate() - 3));
+        const now = new Date();
+        const created = new Date(bounty.web3_created);
+        const daysAgo = new Date(now.setDate(now.getDate() - 3));
 
         return daysAgo > created && bounty.status === 'open';
       });
