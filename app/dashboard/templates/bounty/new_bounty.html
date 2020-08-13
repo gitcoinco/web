@@ -303,7 +303,7 @@
                   </div>
                   <div class="mt-2" id="auto_approve_workers_container">
                     <div class="form__checkbox">
-                      <input name="admin_override_suspend_auto_approval" id="admin_override_suspend_auto_approval" v-model="form.auto_approve_workers" type="checkbox" true-value="True" false-value="False" :disabled="form.permission_type.includes('permissionless')">
+                      <input name="admin_override_suspend_auto_approval" id="admin_override_suspend_auto_approval" v-model="form.auto_approve_workers" type="checkbox" :disabled="form.permission_type.includes('permissionless')">
                       <label class="form__label" for="admin_override_suspend_auto_approval" style="display: flex;">
                         Worker will be auto-approved after 72 hours.
                       </label>

@@ -31,7 +31,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
@@ -4995,7 +4995,7 @@ def create_bounty_v1(request):
     bounty.permission_type = request.POST.get("permission_type", 'permissionless')
     bounty.bounty_categories = request.POST.get("bounty_categories", '').split(',')
     bounty.network = request.POST.get("network", 'mainnet')
-    bounty.admin_override_suspend_auto_approval = not request.POST.get("auto_approve_workers", True)
+    bounty.admin_override_suspend_auto_approval = False if request.POST.get("auto_approve_workers") == 'true' else True
     bounty.value_in_token = float(request.POST.get("value_in_token", 0))
     bounty.token_address = request.POST.get("token_address")
     bounty.bounty_owner_email = request.POST.get("bounty_owner_email")

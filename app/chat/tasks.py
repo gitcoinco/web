@@ -5,7 +5,7 @@ from django.utils.text import slugify
 
 from app.services import RedisService
 from celery import app, group
-from dashboard.models import Bounty, HackathonEvent, HackathonRegistration, HackathonSponsor, HackathonProject, Profile
+from dashboard.models import Bounty, HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, Profile
 from marketing.utils import should_suppress_notification_email
 from mattermostdriver import Driver
 from mattermostdriver.exceptions import ResourceNotFound
