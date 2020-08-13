@@ -220,7 +220,7 @@
                                 <span v-if="prize.paid" class="ml-5 gc-text-green"><span class="fas fa-check mr-2"></span>Paid</span>
                                 <span v-else v-b-toggle="`accordion-${prizeIndex}`" @click="togglePrize(prizeIndex)" class="ml-5 gc-text-blue">Review Submission</span>
 
-                                <b-button style="right: 0;top: -5px" class="position-absolute" v-if="prize.total_projects" v-b-toggle="`accordion-${prizeIndex}`" @click="togglePrize(prizeIndex)" variant="link">
+                                <b-button style="right: 0;top: -5px" class="position-absolute" v-if="prize.total_projects" v-b-toggle="`accordion-${prizeIndex}`" variant="link">
                                   <i class="fas fa-angle-up" v-if="!prize.open"></i>
                                   <i class="fas fa-angle-down" v-else></i>
                                 </b-button>
