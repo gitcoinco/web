@@ -4,8 +4,10 @@ from django.conf import settings
 
 from app.services import RedisService
 from celery import app
+from celery.exceptions import SoftTimeLimitExceeded
 from celery.utils.log import get_task_logger
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, has_tx_mined
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from kudos.models import KudosTransfer, TokenRequest
 from kudos.utils import kudos_abi
@@ -52,7 +54,7 @@ def mint_token_request(self, token_req_id, retry=False):
                 self.retry(countdown=(30 * (self.request.retries + 1)))
 
 
-@app.shared_task(bind=True, max_retries=10)
+@app.shared_task(bind=True, max_retries=10, soft_time_limit=300, time_limit=400)
 def redeem_bulk_kudos(self, kt_id, retry=False):
     """
     :param self:
@@ -61,8 +63,6 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
     """
     with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
         with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
-            from dashboard.utils import has_tx_mined
-            from gas.utils import recommend_min_gas_price_to_confirm_in_time
             try:
                 multiplier = 1
                 gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
@@ -95,6 +95,8 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
                 while not has_tx_mined(obj.txid, obj.network):
                     time.sleep(1)
                 pass
+            except SoftTimeLimitExceeded:
+                print('max timeout for bulk kudos redeem exceeded ... giving up!')
             except Exception as e:
                 print(e)
                 if self.request.retries < self.max_retries:
