@@ -54,16 +54,16 @@ def mint_token_request(self, token_req_id, retry=False):
                 self.retry(countdown=(30 * (self.request.retries + 1)))
 
 
-@app.shared_task(bind=True, max_retries=10, soft_time_limit=300, time_limit=400)
+@app.shared_task(bind=True, max_retries=10, soft_time_limit=30, time_limit=60)
 def redeem_bulk_kudos(self, kt_id, retry=False):
     """
     :param self:
     :param kt_id:
     :return:
     """
-    with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
-        with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
-            try:
+    try:
+        with redis.lock("tasks:all_kudos_requests", timeout=LOCK_TIMEOUT):
+            with redis.lock("tasks:redeem_bulk_kudos:%s" % kt_id, timeout=LOCK_TIMEOUT):
                 multiplier = 1
                 gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(1)) * multiplier)
                 if gas_price > delay_if_gas_prices_gt_redeem and self.request.retries < self.max_retries:
@@ -95,11 +95,11 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
                 while not has_tx_mined(obj.txid, obj.network):
                     time.sleep(1)
                 pass
-            except SoftTimeLimitExceeded:
-                print('max timeout for bulk kudos redeem exceeded ... giving up!')
-            except Exception as e:
-                print(e)
-                if self.request.retries < self.max_retries:
-                    self.retry(countdown=(30 * (self.request.retries + 1)))
-                else:
-                    print("max retries for bulk kudos redeem exceeded ... giving up!")
+    except SoftTimeLimitExceeded:
+        print('max timeout for bulk kudos redeem exceeded ... giving up!')
+    except Exception as e:
+        print(e)
+        if self.request.retries < self.max_retries:
+            self.retry(countdown=(30 * (self.request.retries + 1)))
+        else:
+            print("max retries for bulk kudos redeem exceeded ... giving up!")
