@@ -382,6 +382,15 @@ def get_avatar_attrs(theme, key):
             'tone_maps': ['terran_skin'],
             'path': 'assets/v2/images/avatar3d/terran.svg',
         },
+        'zerg': {
+            'preview_viewbox': {
+                'background': '0 0 350 350',
+            },
+            'hair_tones': [],
+            'skin_tones': [],
+            'tone_maps': [],
+            'path': 'assets/v2/images/avatar3d/zerg.svg',
+        },
         'egypt': {
             'preview_viewbox': {
                 'background': '0 0 350 350',
