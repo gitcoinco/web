@@ -14,6 +14,7 @@ Vue.mixin({
 
       chatWindow = window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
     },
+
     fetchUsers: function(newPage) {
       let vm = this;
 
@@ -265,6 +266,7 @@ Vue = Vue.extend({
   delimiters: [ '[[', ']]' ]
 });
 
+
 Vue.component('user-directory', {
   delimiters: [ '[[', ']]' ],
   props: [ 'tribe', 'is_my_org' ],
@@ -346,78 +348,79 @@ Vue.component('user-directory', {
   }
 });
 if (document.getElementById('gc-users-directory')) {
-  esColumns = [
-    'sms_verification',
-    'persona ',
-    'rank_coder ',
-    'num_hacks_joined ',
-    'which_hacks_joined',
-    'hack_work_starts ',
-    'hack_work_submits ',
-    'hack_work_start_orgs ',
-    'hack_work_submit_orgs',
-    'bounty_work_starts ',
-    'bounty_work_submits ',
-    'hack_started_feature',
-    'hack_started_code_review',
-    'hack_started_security',
-    'hack_started_design ',
-    'hack_started_documentation',
-    'hack_started_bug ',
-    'hack_started_other ',
-    'hack_started_improvement',
-    'started_feature ',
-    'started_code_review',
-    'started_security',
-    'started_design',
-    'started_documentation',
-    'started_bug ',
-    'started_other ',
-    'started_improvement ',
-    'submitted_feature ',
-    'submitted_code_review',
-    'submitted_security ',
-    'submitted_design ',
-    'submitted_documentation',
-    'submitted_bug ',
-    'submitted_other ',
-    'submitted_improvement',
-    'bounty_earnings  ',
-    'bounty_work_start_orgs ',
-    'bounty_work_submit_orgs',
-    'kudos_sends ',
-    'kudos_receives ',
-    'hack_winner_kudos_received',
-    'grants_opened ',
-    'grants_contributed ',
-    'grant_contributions ',
-    'grant_contribution_amount',
-    'num_actions ',
-    'action_points',
-    'avg_points_per_action',
-    'last_action_on',
-    'keywords',
-    'activity_level',
-    'reliability',
-    'average_rating',
-    'longest_streak',
-    'earnings_count',
-    'follower_count',
-    'following_count',
-    'num_repeated_relationships  ',
-    'verification_status'
-  ];
+
   Vue.component('directory-card', {
     name: 'DirectoryCard',
     delimiters: [ '[[', ']]' ],
     props: [ 'user', 'funderBounties' ]
   });
   Vue.use(innerSearch.default);
+  Vue.component('autocomplete', {
+    props: [ 'options', 'value' ],
+    template: '#select2-template',
+    methods: {
+      formatMapping: function(item) {
+        console.log(item);
+        return item.name;
+      },
+      formatMappingSelection: function(filter) {
+        return '';
+      }
+    },
+    mounted() {
+      let count = 0;
+      let vm = this;
+
+      let data = $.map(this.options, function(obj, key) {
+        obj.id = count++;
+        obj.text = key;
+        return obj;
+      });
+
+
+      $(vm.$el).select2({
+        data: data,
+        multiple: true,
+        allowClear: true,
+        placeholder: 'Search by filter type',
+        minimumInputLength: 3,
+        escapeMarkup: function(markup) {
+          return markup;
+        },
+
+        templateSelection: this.formatMappingSelection
+      })
+        .on('change', function() {
+          console.log('changed');
+          let val = $(vm.$el).val();
+
+          let changeData = $.map(val, function(filter) {
+            return data[filter];
+          });
+
+          vm.$emit('input', changeData);
+        });
+
+      // fix for wrong position on select open
+      var select2Instance = $(vm.$el).data('select2');
+
+      select2Instance.on('results:message', function(params) {
+        this.dropdown._resizeDropdown();
+        this.dropdown._positionDropdown();
+      });
+    },
+    destroyed: function() {
+      $(this.$el).off().select2('destroy');
+      this.$emit('destroyed');
+    }
+  });
   window.UserDirectory = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-users-directory',
     data: {
-      esColumns,
+      filters: [],
+      esColumns: [],
+      filterLoaded: false,
       users,
       usersPage,
       usersNumPages,
@@ -447,7 +450,25 @@ if (document.getElementById('gc-users-directory')) {
       persona: undefined,
       hideFilterButton: !!document.getElementById('explore_tribes')
     },
+    methods: {
+      autoCompleteDestroyed: function() {
+        this.filters = [];
+      },
+      autoCompleteChange: function(filters) {
+        this.filters = filters;
+      },
+      fetchMappings: function() {
+        let vm = this;
+
+        $.when(vm.header.client.indices.getMapping())
+          .then(response => {
+            vm.esColumns = response[vm.header.index]['mappings'][vm.header.type]['properties'];
+            vm.filterLoaded = true;
+          });
+      }
+    },
     mounted() {
+      this.fetchMappings();
       this.fetchUsers();
       this.$watch('params', function(newVal, oldVal) {
         this.searchUsers();
@@ -456,7 +477,7 @@ if (document.getElementById('gc-users-directory')) {
       });
     },
     created() {
-      this.setHost('localhost:9200'); // TODO: set to proper env variable
+      this.setHost('https://elastic.androolloyd.com'); // TODO: set to proper env variable
       this.setIndex('haystack');
       this.setType('modelresult');
       this.fetchBounties();

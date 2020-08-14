@@ -21,7 +21,8 @@ services:
     ports:
       - "8065:8065"
     volumes:
-      - ./chatconfig:/mattermost/config/
+      - ./chatdata/config:/mattermost/config/
+      - ./chatdata/root.html:/mattermost/client/root.html
     depends_on:
       - db
     deploy:
@@ -31,7 +32,6 @@ services:
           memory: 1024M
         reservations:
           memory: 128M
-
 
   elasticsearch:
     image: launcher.gcr.io/google/elasticsearch2
@@ -90,18 +90,18 @@ services:
         reservations:
           memory: 512M
 
-  testrpc:
-    image: trufflesuite/ganache-cli
-    ports:
-      - "8545:8545"
-    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
-    deploy:
-      replicas: 1
-      resources:
-        limits:
-          memory: 1024M
-        reservations:
-          memory: 128M
+#  testrpc:
+#    image: trufflesuite/ganache-cli
+#    ports:
+#      - "8545:8545"
+#    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+#    deploy:
+#      replicas: 1
+#      resources:
+#        limits:
+#          memory: 1024M
+#        reservations:
+#          memory: 128M
 
   redis:
     restart: unless-stopped

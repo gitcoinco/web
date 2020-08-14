@@ -37,8 +37,27 @@
     <div id="gc-users-directory" v-cloak>
       <div class="">
         <nav class="search-section p-5 text-center">
+          <div>
           <img v-if="showBanner" class="mb-5" :src="[[showBanner]]" />
-          <searchbox :id="'searchbox'" :autofocus="true" :realtime="true" :timeout="200" :field="['keywords', 'handle', 'persona']" :placeholder="'Search by keyword'"></searchbox>
+            <template v-for="filter in filters">
+              <refinement-list-filter v-if="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.text" :search="true" :size="50" :title="filter.text" operator="OR" >
+                <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
+                    <select name="" id="filter.type" v-model="checkedItems"  @change="clickOnItem(checkedItems)">
+                        <option selected="selected"></option>
+                        <option v-for="(item, index) in items" :value="item.key">
+                                <label v-if="displayCount" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
+                        </option>
+                    </select>
+                </template>
+              </refinement-list-filter>
+              <numeric-list-filter v-else-if="filter.type == 'float' || filter.type == 'integer'" :id="filter.text" :field="filter.text" operator="OR">
+                <template slot="header">
+                    <h3 class="is-nlf-title">[[ filter.text ]] : </h3>
+                </template>
+              </numeric-list-filter>
+            </template>
+            <autocomplete v-if="filterLoaded" :options="esColumns" @input="autoCompleteChange" @destroyed="autoCompleteDestroyed"></autocomplete>
+          </div>
 
         </nav>
       </div>
@@ -46,24 +65,12 @@
         <transition name="fade">
           <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
             <tag-filter :for="'searchbox'"></tag-filter>
-            <tag-filter :for="'searchdatalist'">
-              <template slot-scope="{ data }">
-                [[ data._source.keywords ]]
-              </template>
+            <tag-filter v-for="(meta, filter) in esColumns" :for="filter">
+             <template slot-scope="{ data }">
+               [[ filter ]] : [[ data ]]
+             </template>
             </tag-filter>
-            <tag-filter v-for="filter in esColumns" :for="'filter'"></tag-filter>
-            <refinement-list-filter v-for="filter in esColumns" :id="filter" :field="filter" :search="false" :size="100" :title="filter" :displayCount="true" operator="OR" ></refinement-list-filter>
-            <refinement-list-filter :id="'rlf-list'" :field="'keywords'" :search="false" :title="'Keywords : '" :size="100"  orderKey="_count" orderDirection="desc" operator="AND">
-                        <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
-                            <select name="" id="test" v-model="checkedItems"  @change="clickOnItem(checkedItems)">
-                                <option selected="selected"></option>
-                                <option v-for="(item, index) in items" :value="item.key">
-                                        <label v-if="displayCount" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
-                                </option>
-                            </select>
-                        </template>
-                        <template slot="viewmore"></template>
-                    </refinement-list-filter>
+
             <reset-button class="btn blue font-caption px-0 btn-block font-weight-semibold" :emptyHits="false"></reset-button>
             {% if is_staff %}
               <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
