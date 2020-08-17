@@ -1,23 +1,24 @@
-{
+﻿{
   "symbol": "LIBFX",
   "address": "0xc0ea83113038987d974FE667831a36E442e661E7",
-  "overview":{
-        "en": "Enjoy the dual values from ownership of token Liber: Transparency, publicity, strong growth",
-		"zh": "享受代币Liber拥有权的双重价值：透明度，宣传性，强劲增长"
+  "overview": {
+    "en": "Enjoy the dual values from ownership of token Liber: Transparency, publicity, strong growth.",
+    "zh": "享受代币Liber拥有权的双重价值：透明度，宣传性，强劲增长"
   },
-  "published_on": "2020-06-16",
-  "initial_price":{
-        "USD":"0.5 USD"
-  },
-  "email": "info@libermx.com/",
+  "email": "info@libermx.com",
   "website": "https://libermx.com/",
   "whitepaper": "https://libermx.com/white-paper",
   "state": "NORMAL",
+  "published_on": "2020-06-16",
+  "initial_price": {
+    "ETH": "0.00119 ETH",
+    "USD": "0.5 USD",
+    "BTC": "0.000091 BTC"
+  },
   "links": {
-	"facebook":"https://www.facebook.com/liberltdofficial",
-	"youtube":"https://www.youtube.com/channel/UCc40uU4VIQz4ELW2K6v0Kjg"
     "twitter": "https://twitter.com/liberltd",
-    "telegram": "https://t.me/LiberLTD",
+    "telegram": "https://t.me/libermx",
+    "facebook": "https://www.facebook.com/liberltdofficial",
     "medium": "https://medium.com/@liberltdforex"
   }
 }
