@@ -60,7 +60,7 @@ class Command(BaseCommand):
             accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
             if accepted_fulfillments.exists() and bounty.status == 'done':
                 accepted_fulfillment = accepted_fulfillments.first()
-                fulfiller_email = accepted_fulfillment.fulfiller_email
+                fulfiller_email = accepted_fulfillment.profile.email
                 is_fulfiller_and_funder_same_person = (fulfiller_email == submitter_email)
                 fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values_list('pk', flat=True)
                 previous_bounties = Bounty.objects.current().filter(idx_status__in=statues, fulfillments__pk__in=fulfillment_pks).exclude(pk=bounty.pk).distinct()

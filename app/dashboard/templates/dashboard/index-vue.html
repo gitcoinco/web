@@ -124,6 +124,7 @@
                   <small class="hackathon-countdown text-uppercase">Hackathon Over</small>
                 {% endif %}
               </p>
+              <a href="{% url "sponsors-dashboard" hackathon.slug %}" v-if="isSponsor" class="btn btn-gc-blue float-right mr-5">Sponsor dashboard</a>
             </div>
           </div>
           <div class="col-12 col-xl-10 body hackathon-explorer">
@@ -200,7 +201,10 @@
                 <div class="ml-md-4 townsquare_header">
                   <div class="row">
                     <div class="ml-4 col-12 col-md-2 col-xl-3 d-lg-block">
-                      <a href="?filter=intro" class="btn gc-text-blue">
+                      <a href="{% url 'hackathon_ts' hackathon.slug %}" class="btn gc-text-blue">
+                        {% trans "all" %}
+                      </a>
+                      <a href="{{ url  }}?filter=intro" class="btn gc-text-blue">
                         {% trans "#intros" %}
                       </a>
                       <div class="col-12 subheading left-ribbon font-body">
@@ -210,7 +214,7 @@
                         {% for org in orgs %}
                           <div class="">
                             <label class="filter-label townsquare-org-filter">
-                              <img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}
+                              <a href="?filter=tribe:{{org.org_name}}"><img src="{{org.avatar_url}}" class="rounded-circle" width="24" height="24" alt="{{org.display_name}}"> {{org.display_name}}</a>
                             </label>
                           </div>
                         {% endfor %}
@@ -238,7 +242,7 @@
                   </div>
                 </div>
               </b-tab>
-                <b-tab class="col-12" title-item-class="navigation" lazy>
+              <b-tab class="col-12" title-item-class="navigation" lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Projects" %}
@@ -331,21 +335,7 @@
                     </div>
                   </project-directory>
                 </b-tab>
-              <b-tab :disabled="!is_registered"  class="col-12" title-item-class="navigation">
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Chat" %}
-                  </div>
-                </template>
-                <template>
-                  <div class="ml-4">
-                    <div class="chatWrapper col-12">
-                      {% include 'shared/embed_chat_iframe.html' with chat_url_embed=chat_url_embed %}
-                    </div>
-                  </div>
-                </template>
-              </b-tab>
-              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation" lazy>
+              <b-tab class="col-12" :disabled="!is_registered" title-item-class="navigation"lazy>
                   <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Participants" %}
@@ -497,7 +487,31 @@
                                         <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
                                       </template>
                                     </div>
-                                    <div class="text-center mt-1">
+
+                                    <div class="text-center my-1 font-smaller-1">
+                                      <a :href="`https://github.com/${ user.handle }`" target="_blank" rel="noopener noreferrer" >
+                                        <i class="fab fa-github"></i>
+                                      </a>
+                                      <a :href="`${ user.blog }`" target="_blank" rel="noopener noreferrer" v-if="user.blog">
+                                        <i class="fas fa-home"></i>
+                                      </a>
+                                      <a :href="`https://www.linkedin.com/in/${ user.linkedin_url }`" v-if="user.linkedin_url">
+                                        <i class="fab fa-linkedin-in"></i>
+                                      </a>
+                                      <a @click="chatWindow('@' + user.handle);" href="javascript:" v-if="user.chat_id">
+                                        <i class="fas fa-comment-dots"></i>
+                                      </a>
+                                    </div>
+                                    <div class="text-center" id="job_status" v-if="user.show_job_status">
+                                      <a v-if="user.resume && user.job_search_status !== 'N'" :href="`${media_url}${user.resume}`" download data-toggle="tooltip" title="Download resume">
+                                        <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
+                                      </a>
+                                    </div>
+                                    <div class="text-left">
+                                      <p class="mb-0">
+                                        <i class="fas fa-user font-smaller-4 mr-1"></i>
+                                        <b>[[ user.follower_count ]]</b> followers
+                                      </p>
                                       <p v-if="!isFunder" class="mb-0">
                                         <b>[[ user.work_done ]]</b> bounties completed
                                       </p>
@@ -607,7 +621,7 @@
                     </div>
                   </user-directory>
                 </b-tab>
-              <b-tab class="col-12" title-item-class="navigation">
+              <b-tab class="col-12" title-item-class="navigation" v-if="hackHasEnded">
                 <template v-slot:title>
                     <div class="mt-4">
                       {% trans "Showcase" %}
@@ -678,7 +692,7 @@
                       </div>
                       <div class="spotlight">
                         <h4 class="font-bigger-1 font-weight-bold mb-sm-3">Hacking Spotlights</h4>
-                        <div v-for="spotlight in spotlights">
+                        <div v-for="(spotlight, index) in spotlights">
                           <div class="d-md-flex pt-2" v-if="!isEditing">
                             <div class="col-12 col-md-3 my-3 text-center" style="margin-top: auto !important; margin-bottom: auto !important;">
                               <div class="d-flex text-center mb-3 justify-content-center align-items-center">
@@ -695,11 +709,14 @@
                           </div>
 
                           <div class="d-flex" v-if="isEditing">
-                            <select class="d-flex col-12 col-md-3 form-control" v-model="spotlight.sponsor">
+                            <div class="d-flex col-12 col-md-3 flex-column align-items-baseline">
+                            <select class="form-control" v-model="spotlight.sponsor">
                               <option v-for="sponsor in sponsors" :value="sponsor.org_name">
                                 <span>[[sponsor.org_name]]</span>
                               </option>
                             </select>
+                            <button class="btn btn-link text-highlight-pink mt-2" @click="removeSpotlight(index)">- Remove Spotlight</button>
+                            </div>
                             <textarea class="d-flex col-12 ml-md-3 col-md-8 form-control mb-4" v-model="spotlight.content" name="content" id="" cols="90" rows="8"></textarea>
                           </div>
                         </div>
@@ -744,7 +761,33 @@
                 </div>
 
               </b-tab>
-              <template v-slot:tabs-end>
+              {% if can_manage %}
+              <b-tab class="col-12" title-item-class="navigation" lazy>
+                <template v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Dashboard" %}
+                  </div>
+                </template>
+                <manage-sponsor v-bind:hackathon_id="hackathonObj.id" inline-template>
+                  <div class="offset-3 col-6">
+                      <div class="from-group mb-3 mt-4">
+                        <label class="font-weight-semibold" for="org-mentors">Bounty Mentors (Optional) <small>Add Gitcoin/Github Usernames</small></label>
+                        <div class="form__select2 g-multiselect">
+                          <select id="org-mentors" class="mentor-users" multiple="multiple" aria-describedby="profilesHelp">
+                            {% for profile in default_mentors %}
+                            <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group mb-3 mt-4">
+                        <b-button @click="updateBountyMentors();">Update Mentors</b-button>
+                      </div>
+                  </div>
+                </manage-sponsor>
+              </b-tab>
+              {% endif %}
+              <template v-slot:tabs-end  v-if="!hackHasEnded">
                 <li role="presentation" class="nav-item navigation">
                   <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
                     <div class="mt-4">Guide</div>
@@ -764,7 +807,7 @@
                   <ul class="list-unstyled">
                     <b-media v-for="(sponsor, index) in tribesData" :key="index" tag="li"  class="rounded my-4 ml-4" vertical-align="center">
                       <template v-slot:aside>
-                        <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-n3 tribes-logo"></b-avatar>
+                        <b-avatar :src="sponsor.avatar_url" size="46" :alt="sponsor.org_name" class="ml-3 tribes-logo"></b-avatar>
                       </template>
                       <div>
                         <a class="mb-1 font-body font-weight-semibold w-50" :href="`/profile/${sponsor.org_name}`">
@@ -803,17 +846,18 @@
     {% include 'shared/result.html' %}
     {% include 'shared/featured_bounty_cards.html' %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' with vue=True %}
+    {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>
       </select>
     </script>
-    <script src="{% static "v2/js/lib/markdown-it.js" %}"></script>
+    <script src='{% static "v2/js/lib/markdown-it.js" %}'></script>
     <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{orgs|json_script:"sponsor-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
+    {{prize_founders|json_script:"prize-founders"}}
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
@@ -826,8 +870,12 @@
       document.hackathon_id = "{{ hackathon.id | safe }}";
       document.hackathonSponsors = JSON.parse(document.getElementById('sponsor-list').textContent);
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
+      document.prizeFounders = JSON.parse(document.getElementById('prize-founders').textContent);
       document.activePanel = parseInt({{panel | safe}});
       document.chatURL = "{{ chat_url | safe}}";
+      document.displayShowcase = {{hackathon.display_showcase|yesno:"true,false" }};
+      document.is_sponsor = {{ is_sponsor|yesno:"true,false" }}
+
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();
     </script>
     <script src='{% static "v2/js/pages/dashboard-hackathon.js" %}'></script>
@@ -839,5 +887,8 @@
     <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
     {% include 'shared/current_profile.html' %}
     <script src='{% static "v2/js/user-search.js" %}'></script>
+    {% if can_manage or is_staff %}
+    <script src='{% static "v2/js/user-search.js" %}'></script>
+    {% endif %}
   </body>
 </html>

@@ -24,10 +24,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% else %}
       {% include 'shared/cards.html' %}
     {% endif %}
-    <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/theme_switcher.css" %}">
+    <link rel="stylesheet" href='{% static "v2/css/town_square.css" %}'>
+    <link rel="stylesheet" href='{% static "v2/css/activity_stream.css" %}'>
+    <link rel="stylesheet" href='{% static "v2/css/tag.css" %}'>
+    <link rel="stylesheet" href='{% static "v2/css/theme_switcher.css" %}'>
     <style>
       img.hackathon-card-logo{
         max-height: 5rem;
@@ -79,7 +79,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         margin: 0;
       }
     </style>
-    <script src="{% static "v2/js/theme_switcher.js" %}"></script> <!-- needs to be in the head section -->
+    <script src='{% static "v2/js/theme_switcher.js" %}'></script>
   </head>
 
   <body class="{{ active }} bg-lightblue g-font-muli" >
@@ -199,8 +199,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                   <hr>
 
-                  <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2" data-target="actions">
-                    <div class="accordion active">
+                  <div class="townsquare_block-header text-left my-4 mt-sm-0 mb-sm-2 accordion active" data-target="actions">
+
                       Actions
                       <i data-toggle="tooltip" data-html="true" class="fas fa-info-circle mr-3" title="
                         <p class='text-left'>
@@ -211,26 +211,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                           Come to Gitcion daily to discover today's daily action!
                         </p>
                       "></i>
-                    </div>
 
-                    <div id="actions" class="panel-active">
-                      <div class="offer_coming font-caption">
-                        <div class="checkbox_container font-smaller-5">
-                          <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
-                          <span class="checkbox"></span>
-                          <div class="filter-label ml-1">
-                            <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
-                          </div>
+
+                  </div>
+                  <div id="actions" class="panel-active">
+                    <div class="offer_coming font-caption">
+                      <div class="checkbox_container font-smaller-5">
+                        <input name="receive_daily_offers_in_inbox" id="receive_daily_offers_in_inbox" type="checkbox" value="1" {% if is_subscribed %} checked="checked" {% endif %} />
+                        <span class="checkbox"></span>
+                        <div class="filter-label ml-1">
+                          <label for=receive_daily_offers_in_inbox>{% trans "Email when available" %}</label>
                         </div>
                       </div>
-
-                      {% include 'townsquare/shared/offers.html' %}
-
-                      <a href="/action/new" class="font-smaller-2 mb-2">
-                        <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                        Create Action
-                      </a>
                     </div>
+
+                    {% include 'townsquare/shared/offers.html' %}
+
+                    <a href="/action/new" class="font-smaller-2 mb-2">
+                      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                      Create Action
+                    </a>
                   </div>
 
                   <hr>
@@ -280,15 +280,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/activity_scripts.html' %}
-
     <!-- Send direct tip on comments -->
-    <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-    <script src="{% static "v2/js/ipfs.js" %}"></script>
-    <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
-    <script src="{% static "v2/js/abi.js" %}"></script>
-
-    <script src="{% static "v2/js/status.js" %}"></script>
-    <script src="{% static "v2/js/pages/townsquare.js" %}"></script>
-    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
+    <script src='{% static "v2/js/lib/ipfs-api.js" %}'></script>
+    <script src='{% static "v2/js/ipfs.js" %}'></script>
+    <script src='{% static "v2/js/ethereumjs-accounts.js" %}'></script>
+    <script src='{% static "v2/js/abi.js" %}'></script>
+    <script src='{% static "v2/js/status.js" %}'></script>
+    <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
+    <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
   </body>
 </html>

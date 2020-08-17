@@ -12,6 +12,12 @@ $(document).ready(() => {
     localStorage.setItem('last_all_grants_title', $('title').text().split('|')[0]);
   }
 
+  $("#wall_of_love .show_more_wall_of_love").click(function(e){
+    $("#wall_of_love .hidden").removeClass('hidden');
+    $(this).remove();
+    e.preventDefault();
+  });
+
   $('#network').select2({
     minimumResultsForSearch: Infinity
   });
