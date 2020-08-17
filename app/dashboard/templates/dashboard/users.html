@@ -39,13 +39,32 @@
         <nav class="search-section p-5 text-center">
           <div>
           <img v-if="showBanner" class="mb-5" :src="[[showBanner]]" />
+            <searchbox :id="'searchbox'" :autofocus="true" :realtime="true" :timeout="200" :field="'keywords'" :placeholder="'Search by keyword'"></searchbox>
+
+<!--            <search-datalist :id="'searchdatalist'" :realtime="true" :field="'keywords'" :suggestion="['keywords']" :showForcedSuggestions="true" operator="OR">-->
+<!--            <template slot="items" slot-scope="{ item }">-->
+<!--                [[ item.highlight.keywords[0] ]]-->
+<!--            </template>-->
+<!--            <template slot="suggestions" slot-scope="{ suggestion }">-->
+<!--                <span v-html="suggestion.highlight.keywords ? suggestion.highlight.keywords[0] : suggestion._source.keywords"></span>-->
+<!--            </template>-->
+<!--            </search-datalist>-->
+          </div>
+
+        </nav>
+      </div>
+      <div class="sidebar-container flex-column flex-lg-row">
+        <transition name="fade">
+          <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
+            <autocomplete v-if="filterLoaded" :options="esColumns" @input="autoCompleteChange" @destroyed="autoCompleteDestroyed"></autocomplete>
+
             <template v-for="filter in filters">
               <refinement-list-filter v-if="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.text" :search="true" :size="50" :title="filter.text" operator="OR" >
                 <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
-                    <select name="" id="filter.type" v-model="checkedItems"  @change="clickOnItem(checkedItems)">
+                    <select multiple="true" name="" id="filter.type" v-model="checkedItems"  @change="clickOnItem(checkedItems)">
                         <option selected="selected"></option>
                         <option v-for="(item, index) in items" :value="item.key">
-                                <label v-if="displayCount" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
+                          <label v-if="displayCount" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
                         </option>
                     </select>
                 </template>
@@ -56,20 +75,6 @@
                 </template>
               </numeric-list-filter>
             </template>
-            <autocomplete v-if="filterLoaded" :options="esColumns" @input="autoCompleteChange" @destroyed="autoCompleteDestroyed"></autocomplete>
-          </div>
-
-        </nav>
-      </div>
-      <div class="sidebar-container flex-column flex-lg-row">
-        <transition name="fade">
-          <nav v-show="showFilters" class="sidebar flex-fill p-4" role="navigation">
-            <tag-filter :for="'searchbox'"></tag-filter>
-            <tag-filter v-for="(meta, filter) in esColumns" :for="filter">
-             <template slot-scope="{ data }">
-               [[ filter ]] : [[ data ]]
-             </template>
-            </tag-filter>
 
             <reset-button class="btn blue font-caption px-0 btn-block font-weight-semibold" :emptyHits="false"></reset-button>
             {% if is_staff %}
@@ -92,7 +97,8 @@
                         <strong v-else-if="hits.score === 1">1 result found</strong>
                         <strong v-else-if="hits.score > 1">[[ hits.score ]] results found</strong>
                     </div>
-                    <directory-card v-for="user in hits.items" :key="user._source.profile_id" :user="user._source" inline-template >
+                    <div class="grid-4 pt-5">
+                      <directory-card v-for="user in hits.items" :key="user._source.profile_id" :user="user._source" inline-template >
                       <div class="card card-user shadow-sm border-0">
                         <div class="d-flex flex-column py-1 bg-lightblue">
                           <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
@@ -108,7 +114,7 @@
                             </a>
                           </div>
                           <a :href=`"/profile/${user.handle}"` class="mx-auto">
-                            <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src=`"/dynamic/avatar/${user.handle}"` />
+                            <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${user.handle}`" />
                           </a>
                           <h5 class="text-center card-user_name">
                             [[ user.handle ]]
@@ -153,6 +159,7 @@
                         </div>
                       </div>
                     </directory-card>
+                    </div>
                 </template>
             </hits>
             <paginate :previousText="'&#x2B9C; Previous page'" :nextText="'Next page &#x2B9E;'" :size="10"></paginate>

@@ -267,6 +267,69 @@ Vue = Vue.extend({
 });
 
 
+Vue.component('directory-card', {
+  name: 'DirectoryCard',
+  delimiters: [ '[[', ']]' ],
+  props: [ 'user', 'funderBounties' ]
+});
+Vue.use(innerSearch.default);
+Vue.component('autocomplete', {
+  props: [ 'options', 'value' ],
+  template: '#select2-template',
+  methods: {
+    formatMapping: function(item) {
+      console.log(item);
+      return item.name;
+    },
+    formatMappingSelection: function(filter) {
+      return '';
+    }
+  },
+  mounted() {
+    let count = 0;
+    let vm = this;
+
+    let data = $.map(this.options, function(obj, key) {
+      obj.id = count++;
+      obj.text = key;
+      return obj;
+    });
+
+
+    $(vm.$el).select2({
+      data: data,
+      multiple: true,
+      allowClear: true,
+      placeholder: 'Search for another filter to add',
+      minimumInputLength: 1,
+      escapeMarkup: function(markup) {
+        return markup;
+      }
+    })
+      .on('change', function() {
+        console.log('changed');
+        let val = $(vm.$el).val();
+
+        let changeData = $.map(val, function(filter) {
+          return data[filter];
+        });
+
+        vm.$emit('input', changeData);
+      });
+
+    // fix for wrong position on select open
+    var select2Instance = $(vm.$el).data('select2');
+
+    select2Instance.on('results:message', function(params) {
+      this.dropdown._resizeDropdown();
+      this.dropdown._positionDropdown();
+    });
+  },
+  destroyed: function() {
+    $(this.$el).off().select2('destroy');
+    this.$emit('destroyed');
+  }
+});
 Vue.component('user-directory', {
   delimiters: [ '[[', ']]' ],
   props: [ 'tribe', 'is_my_org' ],
@@ -347,73 +410,90 @@ Vue.component('user-directory', {
     });
   }
 });
-if (document.getElementById('gc-users-directory')) {
-
-  Vue.component('directory-card', {
-    name: 'DirectoryCard',
-    delimiters: [ '[[', ']]' ],
-    props: [ 'user', 'funderBounties' ]
-  });
-  Vue.use(innerSearch.default);
-  Vue.component('autocomplete', {
-    props: [ 'options', 'value' ],
-    template: '#select2-template',
-    methods: {
-      formatMapping: function(item) {
-        console.log(item);
-        return item.name;
-      },
-      formatMappingSelection: function(filter) {
-        return '';
-      }
+Vue.component('user-directory-elastic', {
+  delimiters: [ '[[', ']]' ],
+  data: function() {
+    return {
+      filters: [],
+      esColumns: [],
+      filterLoaded: false,
+      users,
+      usersPage,
+      usersNumPages,
+      usersHasNext,
+      numUsers,
+      media_url,
+      chatURL: document.chatURL || 'https://chat.gitcoin.co/',
+      searchTerm: null,
+      bottom: false,
+      params: {},
+      funderBounties: [],
+      currentBounty: undefined,
+      contributorInvite: undefined,
+      isFunder: false,
+      bountySelected: null,
+      userSelected: [],
+      showModal: false,
+      showFilters: !document.getElementById('explore_tribes'),
+      skills: document.keywords,
+      selectedSkills: [],
+      noResults: false,
+      isLoading: true,
+      gitcoinIssueUrl: '',
+      issueDetails: undefined,
+      errorIssueDetails: undefined,
+      showBanner: undefined,
+      persona: undefined,
+      hideFilterButton: !!document.getElementById('explore_tribes')
+    };
+  },
+  methods: {
+    autoCompleteDestroyed: function() {
+      this.filters = [];
     },
-    mounted() {
-      let count = 0;
+    autoCompleteChange: function(filters) {
+      this.filters = filters;
+    },
+    fetchMappings: function() {
       let vm = this;
 
-      let data = $.map(this.options, function(obj, key) {
-        obj.id = count++;
-        obj.text = key;
-        return obj;
-      });
-
-
-      $(vm.$el).select2({
-        data: data,
-        multiple: true,
-        allowClear: true,
-        placeholder: 'Search by filter type',
-        minimumInputLength: 3,
-        escapeMarkup: function(markup) {
-          return markup;
-        },
-
-        templateSelection: this.formatMappingSelection
-      })
-        .on('change', function() {
-          console.log('changed');
-          let val = $(vm.$el).val();
-
-          let changeData = $.map(val, function(filter) {
-            return data[filter];
-          });
-
-          vm.$emit('input', changeData);
+      $.when(vm.header.client.indices.getMapping())
+        .then(response => {
+          vm.esColumns = response[vm.header.index]['mappings'][vm.header.type]['properties'];
+          vm.filterLoaded = true;
         });
-
-      // fix for wrong position on select open
-      var select2Instance = $(vm.$el).data('select2');
-
-      select2Instance.on('results:message', function(params) {
-        this.dropdown._resizeDropdown();
-        this.dropdown._positionDropdown();
-      });
-    },
-    destroyed: function() {
-      $(this.$el).off().select2('destroy');
-      this.$emit('destroyed');
     }
-  });
+  },
+  mounted() {
+    this.fetchMappings();
+    this.fetchUsers();
+    this.$watch('params', function(newVal, oldVal) {
+      this.searchUsers();
+    }, {
+      deep: true
+    });
+  },
+  created() {
+    this.setHost('https://elastic.androolloyd.com'); // TODO: set to proper env variable
+    this.setIndex('haystack');
+    this.setType('modelresult');
+    this.fetchBounties();
+    this.inviteOnMount();
+    this.extractURLFilters();
+  },
+  beforeMount() {
+    window.addEventListener('scroll', () => {
+      this.bottom = this.bottomVisible();
+    }, false);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', () => {
+      this.bottom = this.bottomVisible();
+    });
+  }
+});
+if (document.getElementById('gc-users-directory')) {
+
   window.UserDirectory = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#gc-users-directory',
