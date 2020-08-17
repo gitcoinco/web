@@ -30,7 +30,7 @@ from dashboard.models import Activity, Earning, Profile
 from economy.utils import convert_token_to_usdt
 from grants.models import *
 from grants.models import CartActivity, Contribution, PhantomFunding
-from grants.views import clr_round, next_round_start, round_end
+from grants.views import clr_round, next_round_start, round_end  # TODO-SELF-SERVICE: REMOVE THIS
 from townsquare.models import Comment
 
 text = ''
@@ -362,16 +362,32 @@ def grants():
     pprint("=======================")
     pprint("")
 
-    active_rounds = ['tech', 'media', 'change']
-    from grants.clr import TOTAL_POT_TECH, TOTAL_POT_MEDIA, TOTAL_POT_CHANGE
-    active_round_threshold = {
-        'tech': TOTAL_POT_TECH,
-        'media': TOTAL_POT_MEDIA,
-        'change': TOTAL_POT_CHANGE,
-    }
+    # active_rounds = ['tech', 'media', 'change']
+    # from grants.clr import TOTAL_POT_TECH, TOTAL_POT_MEDIA, TOTAL_POT_CHANGE
+    # active_round_threshold = {
+    #     'tech': TOTAL_POT_TECH,
+    #     'media': TOTAL_POT_MEDIA,
+    #     'change': TOTAL_POT_CHANGE,
+    # }
+    # active_round_threshold = {
+    #     'tech': 0,
+    #     'media': 0,
+    #     'change': 0,
+    # }
+
+    active_rounds = []
+    active_round_threshold = {}
+    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
+
+    for active_clr_round in active_clr_rounds:
+        grant_type_name = active_clr_round.grant_type.name
+
+        active_round_threshold[grant_type_name] = active_clr_round.total_pot
+        active_rounds.append(grant_type_name)
+
     active_rounds_allocation = {key: 0 for key in active_rounds}
     for ar in active_rounds:
-        grants = Grant.objects.filter(active=True, grant_type=ar, is_clr_eligible=True, hidden=False)
+        grants = Grant.objects.filter(active=True, grant_type__name=ar, is_clr_eligible=True, hidden=False)
         for grant in grants:
             try:
                 active_rounds_allocation[ar] += grant.clr_prediction_curve[0][1]
@@ -392,7 +408,7 @@ def grants():
 
 
     ############################################################################3
-    # new feature stats for round {clr_round} 
+    # new feature stats for round {clr_round}
     ############################################################################3
 
     subs_stats = False
@@ -415,10 +431,10 @@ def grants():
         contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
         pprint("tx_id1, tx_id2, from address, amount, amount_minus_gitcoin, token_address")
         for contribution in contributions:
-            pprint(contribution.tx_id, 
+            print(contribution.tx_id,
                 contribution.split_tx_id,
                 contribution.subscription.contributor_address,
-                contribution.subscription.amount_per_period, 
+                contribution.subscription.amount_per_period,
                 contribution.subscription.amount_per_period_minus_gas_price,
                 contribution.subscription.token_address)
 
@@ -436,7 +452,7 @@ class Command(BaseCommand):
     help = 'puts grants stats on town suqare'
 
     def add_arguments(self, parser):
-        parser.add_argument('what', 
+        parser.add_argument('what',
             default='',
             type=str,
             help="what to post"
