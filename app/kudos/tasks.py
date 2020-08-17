@@ -4,7 +4,7 @@ from django.conf import settings
 
 from app.services import RedisService
 from celery import app
-from celery.exceptions import SoftTimeLimitExceeded
+from celery.exceptions import SoftTimeLimitExceeded, TimeLimitExceeded
 from celery.utils.log import get_task_logger
 from dashboard.utils import get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -94,7 +94,7 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
             while not has_tx_mined(obj.txid, obj.network):
                 time.sleep(1)
             pass
-    except SoftTimeLimitExceeded:
+    except (SoftTimeLimitExceeded, TimeLimitExceeded):
         print('max timeout for bulk kudos redeem exceeded ... giving up!')
     except Exception as e:
         print(e)
