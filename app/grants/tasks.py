@@ -70,6 +70,18 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
         instance.weighted_risk_score = float(ss ** 2) * float(math.sqrt(float(instance.clr_prediction_curve[0][1])))
     except Exception as e:
         print(e)
+
+    # save all subscription comments
+    wall_of_love = {}
+    for subscription in instance.subscriptions.all():
+        if subscription.comments:
+            key = subscription.comments
+            if key not in wall_of_love.keys():
+                wall_of_love[key] = 0
+            wall_of_love[key] += 1
+    wall_of_love = sorted(wall_of_love.items(), key=lambda x: x[1], reverse=True)
+    instance.metadata['wall_of_love'] = wall_of_love
+
     instance.save()
 
 
