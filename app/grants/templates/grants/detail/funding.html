@@ -22,7 +22,7 @@
     <div class="card-body">
       <div class="row progress-container  {% if clr_active %} mb-2 {% endif %} {% if not is_team_member %} mt-4 {% endif %}">
         <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-xl-0 ">
-          {% if grant.is_clr_eligible %}
+          {% if grant.is_clr_eligible and round_num %}
             {% include 'grants/card/clr_match.html' %}
           {% else %}
             <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">MONTHLY RECURRING</p>
@@ -46,11 +46,11 @@
         </div>
       </div>
 
-      {% if grant.is_clr_eligible and clr_active and not grant_is_inactive %}
+      {% if grant.is_clr_eligible and clr_active and grant.active %}
         {% include 'grants/card/clr_estimate.html' %}
       {% endif %}
 
-      {% if grant_is_inactive %}
+      {% if not grant.active %}
         <button type="button" class="mt-3 button button--primary shadow-none font-weight-bold button--full py-3" disabled>
           {% trans "Grant Has Ended" %}
         </button>

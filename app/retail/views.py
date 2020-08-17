@@ -1014,10 +1014,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         activities = activities.filter(grant__in=relevant_grants)
     if what == 'connect':
         activities = activities.filter(activity_type__in=connect_types)
-        # adds a very basic quality filter to the townsquare connect view
-        then = timezone.now() - timezone.timedelta(hours=1)
-        activities = activities.filter(Q(likes__isnull=False) | Q(created_on__gt=then))
-
     if what == 'kudos':
         activities = activities.filter(activity_type__in=['new_kudos', 'receive_kudos'])
 
