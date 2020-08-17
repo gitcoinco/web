@@ -22,6 +22,7 @@ import base64
 import collections
 import json
 import logging
+import uuid
 from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
@@ -2854,6 +2855,7 @@ class Profile(SuperModel):
     ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore', blank=True)
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
+    brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
 
     @property
     def is_blocked(self):
