@@ -1,0 +1,19 @@
+{
+    "symbol": "SFC",
+    "address": "0x77fA7Db4dF74f11DdACbB13d029653de018Aa0A7",
+    "overview": {
+        "en": "Project introduction: throughout the digital currency market, shared file is the only digital currency that is truly applied. Based on the consensus mechanism of POC, it tries to establish an ecological value system of storage and hard disk mining, so as to promote the industry development of blockchain. The shared file token, referred to as SFC, issued 100000000 pieces, released 100000000 pieces in the early stage, and 900000000 tokens in the later stage were all produced through mining.",
+        "zh": "纵观整个数字货币的市场，Shared File是唯一一个真正应用落地的数字货币，基于POC的共识机制，力图建立一个存储、硬盘挖矿的生态价值体系，推动区块链的行业发展。Shared File代币简称SFC，发行1000000000枚，前期释放100000000枚，后期900000000枚代币都通过挖矿产出。"
+    },
+    "email": "727948764@qq.com",
+    "website": "http://www.sharefile.top",
+    "whitepaper": "http://www.sharefile.top/static/pdf/Shared%20File.pdf",
+    "state": "NORMAL",
+    "published_on": "2019-07-23",
+    "initial_price": {
+        "USD": "$0.02 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/SharedFile"
+    }
+}
