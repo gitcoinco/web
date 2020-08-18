@@ -73,49 +73,8 @@ class GrantQuerySet(models.QuerySet):
             Q(reference_url__icontains=keyword)
         )
 
+
 class GrantCategory(SuperModel):
-    @staticmethod
-    def all_categories():
-        all_tech_categories = GrantCategory.tech_categories()
-        filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
-        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories() + GrantCategory.change_categories()
-
-    @staticmethod
-    def tech_categories():
-        return [
-            'security',
-            'scalability',
-            'defi',
-            'education',
-            'wallets',
-            'community',
-            'eth2.0',
-            'eth1.x',
-            'devEx',
-            'usability',
-        ]
-
-    @staticmethod
-    def media_categories():
-        return [
-            'education',
-            'twitter',
-            'reddit',
-            'blog',
-            'notes',
-        ]
-
-    @staticmethod
-    def health_categories():
-        return [
-            'COVID19 research',
-            'COVID19 response',
-        ]
-
-    @staticmethod
-    def change_categories():
-        return [
-        ]
 
     category = models.CharField(
         max_length=50,
@@ -129,6 +88,46 @@ class GrantCategory(SuperModel):
         return f"{self.category}"
 
 
+class GrantType(SuperModel):
+
+    name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
+    label = models.CharField(max_length=25, null=True, help_text="Display Name")
+    categories  = models.ManyToManyField(
+        GrantCategory,
+        help_text="Grant Categories associated with Grant Type"
+    )
+
+    def __str__(self):
+        """Return the string representation."""
+        return f"{self.name}"
+
+
+class GrantCLR(SuperModel):
+    round_num = models.CharField(max_length=15, help_text="CLR Round Number")
+    is_active = models.BooleanField(default=False, help_text="Is CLR Round currently active")
+    start_date = models.DateTimeField(help_text="CLR Round Start Date")
+    end_date = models.DateTimeField(help_text="CLR Round Start Date")
+    previous_round = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,help_text="link to previous clr round")
+    grant_type  = models.ForeignKey(GrantType, on_delete=models.CASCADE, help_text="Grant Type allowed for this round")
+    threshold = models.DecimalField(help_text="CLR Threshold",
+        default=25.0,
+        decimal_places=2,
+        max_digits=5
+    )
+    total_pot = models.DecimalField(help_text="CLR Pot",
+        default=0,
+        decimal_places=2,
+        max_digits=10
+    )
+    logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        max_length=500,
+        help_text=_('The Grant CLR round image'),
+    )
+
+
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
@@ -137,16 +136,17 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
 
-    GRANT_TYPES = [
-        ('tech', 'tech'),
-        ('health', 'health'),
-        ('media', 'Community'),
-        ('change', 'change'),
-        ('matic', 'matic')
-    ]
+    # GRANT_TYPES = [
+    #     ('tech', 'tech'),
+    #     ('health', 'health'),
+    #     ('media', 'Community'),
+    #     ('change', 'change'),
+    #     ('matic', 'matic')
+    # ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
-    grant_type = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'), db_index=True)
+    # grant_type_purge = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'), db_index=True)
+    grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))

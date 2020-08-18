@@ -428,6 +428,10 @@ $(document).ready(function() {
       return;
     }
 
+    if (typeof ga !== 'undefined') {
+      ga('send', 'event', 'Submit Status Update', 'click', 'Person')
+    }
+
     const data = new FormData();
     const message = $('#textarea');
     const the_message = message.val().trim();
