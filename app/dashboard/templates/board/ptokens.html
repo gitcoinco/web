@@ -113,7 +113,8 @@
                 </div>
                 <div>
                   <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionAcceptModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester != current_user">Accept</button>
-                  <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionDenyModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Deny</button>
+                  <button v-if="token.requester == current_user" @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCancelModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
+                  <button v-else @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionDenyModal" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Deny</button>
                 </div>
               </div>
             </li>
@@ -160,7 +161,7 @@
                   </div>
                 </div>
                 <div>
-                  <button @click="complete(token.id, token.amount, token.token_address)" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester == current_user">Complete</button>
+                  <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester == current_user">Complete</button>
                   <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
                 </div>
               </div>
@@ -266,8 +267,10 @@
                 <i class="fas fa-circle fa-stack-2x light-blue"></i>
                 <i class="fas fa-user fa-stack-1x fa-inverse"></i>
               </span>
-              <span v-if="token.requester == current_user">You cancelled a request to redeem <span class="font-weight-bold"> [[ token.token_symbol ]] </span> for work from @[[ token.creator ]].</span>
-              <span v-else>The request to redeem <span class="font-weight-bold"> [[ token.token_symbol ]] </span> was cancelled by @[[ token.requester ]].</span>
+              <span v-if="token.requester == current_user && token.canceller == current_user">You cancelled a <span class="font-weight-bold"> [[ token.token_symbol ]] </span> request to @[[current_user]].</span>
+              <span v-else-if="token.requester == current_user && token.canceller != current_user">[[token.requester]] cancelled their request for <span class="font-weight-bold"> [[ token.token_symbol ]] </span>.</span>
+              <span v-else-if="token.requester != current_user && token.canceller == current_user">You cancelled a <span class="font-weight-bold"> [[ token.token_symbol ]] </span> request from @[[current_user]].</span>
+              <span v-else-if="token.requester != current_user && token.canceller != current_user">[[token.token_owner]] cancelled your request for <span class="font-weight-bold"> [[ token.token_symbol ]] </span>.</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">
                   <div class="d-flex flex-column flex-md-row">
@@ -296,6 +299,8 @@
   {% include 'shared/create_ptoken.html' %}
   {% include 'shared/create_ptoken_success.html' %}
   {% include 'shared/redemption_accept_modal.html' %}
+  {% include 'shared/redemption_cancel_modal.html' %}
+  {% include 'shared/redemption_complete_modal.html' %}
   {% include 'shared/redemption_deny_modal.html' %}
   {% include 'shared/edit_ptoken.html' %}
 </div>

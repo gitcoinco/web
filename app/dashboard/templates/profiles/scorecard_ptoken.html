@@ -35,7 +35,13 @@
               <a class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" href="{% url 'ptoken_quickstart' %}">CREATE A PERSONAL TOKEN</a>
             {% endif %}
           {% else %}
-            <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" data-toggle="modal" data-target="#buyTokenModal">BUY</button>
+            {% comment %} Redeem button: Disable it if user holds no tokens {% endcomment %}
+            {% if ptoken.total_available == 0  %}
+              <button disabled style="cursor: default; pointer-events: none;" class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5">BUY</button>
+            {% else %}
+              <button class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" data-toggle="modal" data-target="#buyTokenModal">BUY</button>
+            {% endif %}
+            {% comment %} Redeem button: Disable it if user holds no tokens {% endcomment %}
             {% if available_to_redeem == 0  %}
               <button disabled style="cursor: default; pointer-events: none;" class="btn btn-outline-gc-blue btn-sm flex-grow-1 font-smaller-5" >REDEEM</button>
             {% else %}

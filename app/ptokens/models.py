@@ -165,6 +165,17 @@ class PersonalToken(SuperModel):
     def get_hodling_amount(self, hodler):
         return self.cached_balances.get(str(hodler.id), 0)
 
+    def get_available_amount(self, hodler):
+        current_hodling = self.get_hodling_amount(hodler)
+        locked_amount = RedemptionToken.objects.filter(ptoken=self,
+                                                       redemption_requester=hodler,
+                                                       redemption_state__in=[
+                                                           'request', 'accepted', 'waiting_complete'
+                                                       ]).aggregate(locked=Sum('total'))['locked'] or 0
+        available_to_redeem = current_hodling - locked_amount
+
+        return available_to_redeem
+
     def update_token_status(self):
         if PTOKEN_ABI and self.token_address:
             web3 = get_web3(self.network, sockets=True)
@@ -175,8 +186,8 @@ class PersonalToken(SuperModel):
 
             if self.tx_status == 'success' and self.txid:
                 latest = web3.eth.blockNumber
+                tx = web3.eth.getTransaction(self.txid)
                 if self.last_block == 0:
-                    tx = web3.eth.getTransaction(self.txid)
                     self.last_block = tx['blockNumber']
 
                 redeem_filter = contract.events.Redeemed.createFilter(fromBlock=self.last_block, toBlock=latest)
@@ -192,12 +203,11 @@ class PersonalToken(SuperModel):
                 redeemed = redeemed // decimals
                 purchased = purchased // decimals
 
-                self.last_block = latest
-                self.total_purchased += purchased
-                self.total_redeemed += redeemed
+                self.total_purchased = purchased
+                self.total_redeemed = redeemed
                 self.total_available = self.total_minted - (self.total_purchased - self.total_redeemed)
-                self.redemptions += len(redeem_filter.get_all_entries())
-                self.purchases += len(purchase_filter.get_all_entries())
+                self.redemptions = len(redeem_filter.get_all_entries())
+                self.purchases = len(purchase_filter.get_all_entries())
 
                 print(f'REDEEMED: {self.total_redeemed}')
                 print(f'PURCHASED: {self.total_purchased}')
@@ -216,6 +226,7 @@ class PersonalToken(SuperModel):
     def update_tx_status(self):
         # Get transaction status
         from dashboard.utils import get_tx_status
+        from ptokens.mails import send_personal_token_created
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
 
         # Exit if transaction not mined, otherwise continue
@@ -231,6 +242,7 @@ class PersonalToken(SuperModel):
             self.token_address = logs[0].args.token
 
             record_ptoken_activity('create_ptoken', self, self.token_owner_profile)
+            send_personal_token_created(self.token_owner_profile, self)
 
         self.update_token_status()
 
@@ -294,27 +306,29 @@ class RedemptionToken(SuperModel):
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     web3_created = models.DateTimeField(null=True)
 
+    @property
+    def url(self):
+        return f'{reverse("dashboard")}?tab=ptoken&redemption={self.id}'
+
     def update_tx_status(self):
         from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
 
         if self.redemption_state == 'waiting_complete':
+            self.ptoken.update_token_status()
+            self.ptoken.update_user_balance(self.redemption_requester, self.redemption_requester_address)
             if self.tx_status == 'success':
                 metadata = {'redemption': self.id}
-                record_ptoken_activity('complete_redemption_ptoken', self.ptoken, self.redemption_requester, metadata)
+                record_ptoken_activity('complete_redemption_ptoken', self.ptoken, self.redemption_requester, metadata, self)
+                from ptokens.mails import send_ptoken_redemption_complete_for_owner, send_ptoken_redemption_complete_for_requester
+                send_ptoken_redemption_complete_for_requester(self.redemption_requester, self.ptoken, self)
+                send_ptoken_redemption_complete_for_owner(self.redemption_requester, self.ptoken, self)
                 self.redemption_state = 'completed'
 
             elif self.tx_status in ['error', 'unknown', 'dropped']:
                 self.redemption_state = 'accepted'
 
-            self.ptoken.update_token_status()
-            self.ptoken.update_user_balance(self.redemption_requester, self.redemption_requester_address)
         return bool(self.tx_status)
-
-
-@receiver(post_save, sender=PersonalToken, dispatch_uid="PTokenActivity")
-def psave_ptoken(sender, instance, **kwargs):
-    pass
 
 
 class PurchasePToken(SuperModel):
