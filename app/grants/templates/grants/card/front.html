@@ -43,7 +43,8 @@
 
     </p>
 
-    <div class="grant-item__owner">
+    <div class="grant-item__owner justify-content-between">
+      <div>
         <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
         <a href="{% url 'profile' grant.admin_profile.handle %}" data-usercard="{{ grant.admin_profile.handle }}" target="_blank" rel="noopener noreferrer">
           <div class="grant-item__owner mt-3 mb-4">
@@ -57,6 +58,17 @@
             </div>
           </div>
         </a>
+        </div>
+        {% if profile.user.is_autheticated %}
+        {% is_favorite grant profile.user as is_grant_favorite %}
+        <button class="text-decoration-none btn btn-link star-action m-0 p-0 mr-4 mt-3 gc-text-blue {% if not is_grant_favorite %}text-muted{% endif %}" data-grant="{{ grant.id }}">
+          {% if not is_grant_favorite %}
+            <i class="far fa-star" ></i><span class="ml-1 font-body">Follow</span>
+          {% else %}
+            <i class="fa fa-star" ></i><span class="ml-1 font-body">Following</span>
+          {% endif %}
+        </button>
+        {% endif %}
       </div>
   </div>
   <div class="grant-item__footer">

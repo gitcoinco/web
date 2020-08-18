@@ -96,7 +96,7 @@ $('.grants_nav a').on('click', function(event) {
     document.location.href = $(this).attr('href');
     return;
   }
-  
+
   const typeValue = $(this).data('type');
   const categoryValue = $(this).data('category');
   const params = { 'type': typeValue, 'category': categoryValue};
@@ -138,3 +138,25 @@ $('#minimize').on('click', () => {
   });
 });
 
+$(document).on('click', '.star-action', async(e) => {
+  e.preventDefault();
+  const element = (e.target.tagName === 'BUTTON') ? $(e.target) : $(e.target.parentElement);
+  const grantId = element.data('grant');
+  const favorite_url = `/grants/${grantId}/favorite`;
+
+  let response = await fetchData(favorite_url, 'POST');
+
+  if (response.action === 'follow') {
+    element.find('i').addClass('fa');
+    element.find('i').removeClass('far');
+    element.find('span').text('Following');
+    element.removeClass('text-muted');
+  } else {
+    element.find('i').removeClass('fa');
+    element.find('i').addClass('far');
+    element.find('span').text('Follow');
+    element.addClass('text-muted');
+  }
+
+  console.log(response);
+});

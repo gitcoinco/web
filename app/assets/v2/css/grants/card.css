@@ -211,3 +211,7 @@
 .clr-prediction .amount {
   margin-top: 7px;
 }
+
+.star-action:hover {
+  color: var(--gc-blue-hover) !important;
+}

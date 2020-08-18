@@ -35,7 +35,11 @@
   </p>
 
   <form id="filters">
-
+    {% if profile %}
+      <a href="/grants/following" class="btn btn-link font-smaller-1 font-weight-semibold text-decoration-none gc-text-blue {% if type != 'following' %}text-black{% endif %} ">
+        <i class="far fa-star" ></i> Following <sup>({{ grants_following|default:0 }})</sup>
+      </a>
+    {% endif %}
     <div class="col border-top-0">
       <div class="subheading">
         {% trans "Categories" as cats %}{{ cats|upper }}
@@ -110,7 +114,7 @@
     <div class="col p-0">
       <div class="info-box p-2 mt-4">
         <p class="mb-1"><b>💡Did you know?</b></p>
-        <span class="font-smaller-3">You can now add grants to your cart & come back to checkout later.  Just make sure to checkout by {{round_end|date:'Y-m-d'}} in order to get your contributions matched. </span> 
+        <span class="font-smaller-3">You can now add grants to your cart & come back to checkout later.  Just make sure to checkout by {{round_end|date:'Y-m-d'}} in order to get your contributions matched. </span>
       </div>
     </div>
 </div>

@@ -2382,7 +2382,7 @@ class Activity(SuperModel):
         if self.likes.exists():
             vp.metadata['liked'] = self.likes.filter(profile=user.profile).exists()
             vp.metadata['likes_title'] = "Liked by " + ",".join(self.likes.values_list('profile__handle', flat=True)) + '. '
-        vp.metadata['favorite'] = self.favorite_set.filter(user=user).exists()
+        vp.metadata['favorite'] = self.favorite_set.filter(user=user, grant=None).exists()
         vp.metadata['poll_answered'] = self.has_voted(user)
 
         return vp

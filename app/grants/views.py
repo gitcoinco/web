@@ -29,7 +29,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import connection
-from django.db.models import Avg, Count, Max, Q
+from django.db.models import Avg, Count, Max, Q, Subquery, F
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -67,7 +67,7 @@ from marketing.models import Keyword, Stat
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Comment, PinnedPost
+from townsquare.models import Comment, PinnedPost, Favorite
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
@@ -273,6 +273,7 @@ def grants_by_grant_type(request, grant_type):
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
+    grants_following = 0
     if keyword:
         category = ''
     profile = get_profile(request)
@@ -317,7 +318,10 @@ def grants_by_grant_type(request, grant_type):
         grant_type = ''
     else:
         # dotn do search by cateogry
-        if grant_type != 'all':
+        if grant_type == 'following' and request.user.is_authenticated:
+            favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
+            _grants = _grants.filter(id__in=Subquery(favorite_grants))
+        elif grant_type != 'all':
             _grants = _grants.filter(grant_type=grant_type)
 
 
@@ -376,6 +380,8 @@ def grants_by_grant_type(request, grant_type):
         network=network, hidden=False
     ).count()
 
+    if request.user.is_authenticated:
+        grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
@@ -465,7 +471,8 @@ def grants_by_grant_type(request, grant_type):
         'show_past_clr': show_past_clr,
         'is_staff': request.user.is_staff,
         'selected_category': category,
-        'profile': profile
+        'profile': profile,
+        'grants_following': grants_following
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -658,6 +665,8 @@ def grant_details(request, grant_id, grant_slug):
     params = {
         'active': 'grant_details',
         'clr_matching_banners_style': clr_matching_banners_style,
+        'profile': profile,
+        ''
         'grant': grant,
         'sybil_profiles': sybil_profiles,
         'tab': tab,
@@ -1439,3 +1448,22 @@ def grants_clr(request):
         'grants': grants
     }
     return JsonResponse(response)
+
+
+@login_required
+@csrf_exempt
+def toggle_grant_favorite(request, grant_id):
+    grant = get_object_or_404(Grant, pk=grant_id)
+    favorite = Favorite.objects.filter(user=request.user, grant_id=grant_id)
+    if favorite.exists():
+        favorite.delete()
+
+        return JsonResponse({
+            'action': 'unfollow'
+        })
+
+    Favorite.objects.create(user=request.user, grant=grant)
+
+    return JsonResponse({
+        'action': 'follow'
+    })

@@ -39,6 +39,8 @@ from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_t
 from grants.utils import get_upload_filename
 from web3 import Web3
 
+from townsquare.models import Favorite
+
 logger = logging.getLogger(__name__)
 
 
@@ -513,6 +515,9 @@ class Grant(SuperModel):
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
+
+    def favorite(self, user):
+        return Favorite.objects.filter(user=user, grant=self).exists()
 
 
 class SubscriptionQuerySet(models.QuerySet):
