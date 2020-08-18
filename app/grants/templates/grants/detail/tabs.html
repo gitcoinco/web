@@ -70,6 +70,20 @@
         {% endif %}
       </div>
     </div>
+      {% if grant.metadata.wall_of_love %}
+      <div id=wall_of_love class="mb-2">
+      <h4 class="m-0 p-0">Wall of Love</h4>
+        {% for ele in grant.metadata.wall_of_love %}
+          <li class="ml-3 {% if forloop.counter > 5 %} hidden {% endif %} ">
+            {{ele.1}} x <strong>{{ele.0}}</strong>
+          </li>
+        {% endfor %}
+        {% if grant.metadata.wall_of_love|length >= 5 %}
+          <a href="#" class="ml-4 show_more_wall_of_love">Show More</a>
+        {% endif %}
+      {% endif %}
+      </div>
+
       <h4 class="m-0 p-0">Activity Feed</h4>
       {% if is_team_member %}
         {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
@@ -287,7 +301,7 @@
             readOnly: true,
           });
 
-        {% if is_team_member and not grant_is_inactive %}
+        {% if is_team_member and grant.active  %}
           grant_description = new Quill('#editor', {
             theme: 'snow',
           });

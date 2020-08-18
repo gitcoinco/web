@@ -545,6 +545,11 @@ Vue.component('grants-cart', {
           return await onConnect();
         }
 
+        if (typeof ga !== 'undefined') {
+          ga('send', 'event', 'Grant Checkout', 'click', 'Person')
+        }
+
+
         // Throw if invalid Gitcoin contribution percentage
         if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
           throw new Error('Gitcoin contribution amount must be between 0% and 99%');

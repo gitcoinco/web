@@ -27,7 +27,7 @@ from django.utils import timezone
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
 from grants.models import CartActivity, Contribution, Grant, Subscription
-from grants.views import clr_active, next_round_start, round_end
+from grants.views import next_round_start, round_end  # TODO-SELF-SERVICE: REMOVE THIS
 from marketing.mails import remember_your_cart, warn_subscription_failed
 from townsquare.models import MatchRound
 
