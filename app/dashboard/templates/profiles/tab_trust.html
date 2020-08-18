@@ -1,6 +1,6 @@
 {% load i18n static humanize %}
 
-{% if not hidden and not profile.is_org and show_resume_tab %}
+{% if not profile.is_org %}
     <h3 class="py-3 font-weight-bold">Trust Score</h3>
     Lorem Ipsum Copy...
     <div class="container mt-3">
@@ -12,6 +12,7 @@
                 <div>
                     Connect to BrightID and verify yourself by connecting with other humans.
                     <br />{{profile.brightid_uuid}}
+                    <br /> {{ brightid_status }}
                 </div>
             </div>
             <div class="col-md-3">

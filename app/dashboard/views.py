@@ -23,6 +23,7 @@ import json
 import logging
 import os
 import time
+import requests
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -2864,7 +2865,19 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
-        pass
+        brightIDUrl = 'http://test.brightid.org/brightid/v4/verifications/Gitcoin/' + str(profile.brightid_uuid)
+        try:
+            response = requests.get(brightIDUrl)
+            responseData = response.json()
+
+            if responseData['errorNum'] == 2:
+                context['brightid_status'] = 'not_connected'
+            elif responseData['errorNum'] == 4:
+                context['brightid_status'] = 'not_verified'
+            else:
+                context['brightid_status'] = 'unknown'
+        except:
+            context['brightid_status'] = 'unknown'
     else:
         raise Http404
     return context
