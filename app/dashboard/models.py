@@ -51,6 +51,8 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+
+from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
@@ -1319,7 +1321,7 @@ def post_save_bounty(sender, instance, created, **kwargs):
         instance.hyper_next_publication = timezone.now()
 
         # Publish and pin on townsquare
-        profile = Profile.objects.filter(handle='connoroday').first()
+        profile = Profile.objects.filter(handle=HYPERCHARGE_BOUNTIES_PROFILE_HANDLE).first()
         if profile:
             metadata = {
                     'title': title,
