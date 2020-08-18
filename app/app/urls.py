@@ -171,7 +171,7 @@ urlpatterns = [
     # chat
     url(r'^chat/landing', chat.views.chat, name='landing_chat'),
     url(r'^chat/landing/', chat.views.chat, name='landing_chat2'),
-    re_path(r'^chat/?', chat.views.embed, name='chat'),
+    url(r'^chat/login/', chat.views.chat_login, name='chat_login'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
@@ -222,6 +222,7 @@ urlpatterns = [
     path('hackathon/<str:hackathon>/new', dashboard.views.new_hackathon_bounty, name='new_hackathon_bounty2'),
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/dashboard/<str:hackathon>', dashboard.views.dashboard_sponsors, name='sponsors-dashboard'),
+    path('hackathon/dashboard/<str:hackathon>/<str:panel>', dashboard.views.dashboard_sponsors, name='sponsors-dashboard'),
     path('hackathon/<str:hackathon>', dashboard.views.hackathon, name='hackathon2'),
     path('hackathon/<str:hackathon>/onboard/', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
     path('hackathon/<str:hackathon>/<str:panel>/', dashboard.views.hackathon, name='hackathon'),
@@ -231,6 +232,7 @@ urlpatterns = [
     path('hackathon/<str:hackathon>/projects/', dashboard.views.hackathon_projects, name='hackathon_projects'),
     path('hackathon/<str:hackathon>/showcase/', dashboard.views.hackathon, name='hackathon_showcase_proxy'),
     path('hackathon/<str:hackathon>/prizes/', dashboard.views.hackathon, name='hackathon_prizes'),
+    path('hackathon/<str:hackathon>/townsquare/', dashboard.views.hackathon, name='hackathon_ts'),
     path(
         'hackathon/projects/<str:hackathon>/<str:project>', dashboard.views.hackathon_project, name='hackathon_project'
     ),
@@ -699,6 +701,7 @@ urlpatterns = [
 
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
+    url(r'^api/v0.1/bounty_mentor/', dashboard.views.bounty_mentor, name='bounty_mentor'),
     url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 
     # wiki

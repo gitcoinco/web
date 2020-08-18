@@ -65,6 +65,10 @@
         border-top: none !important;
       }
 
+      .no-submitted {
+        background-color: #F3F3F3;
+      }
+
       .mobile-separator {
         border-bottom: 1px solid #D1D1D1;
       }
@@ -100,6 +104,17 @@
       .custom-control-label::before {
         top: 0rem !important;
       }
+
+      .stats-iframe {
+        width: 100%;
+        height: 100vh;
+        height: -webkit-fill-available;
+      }
+
+      .tag {
+        height: 21px;
+        margin-top: 0;
+      }
     </style>
     {% include 'shared/fbpixel.html' %}
   </head>
@@ -121,7 +136,7 @@
     <div id="dashboard-content" class="container-fluid" style="min-height:600px;">
         <div id="sponsors-app" class="row" v-cloak>
           <div :id="hackathonObj.identifier" class="row col-12 align-items-center p-3 banner hackathon-banner">
-            <div class="col-12 col-lg-6 offset-md-4 offset-lg-3 offset-xl-2 hackathon-text pl-4 text-center text-md-left">
+            <div class="col-12 col-lg-6 offset-md-4 offset-lg-3 offset-xl-2 hackathon-text pl-5 text-center text-md-left">
               <div class="my-auto">
                 <p class="hackathon-title title font-weight-bold mb-2 mb-md-0 mt-4">[[ hackathonObj.name ]]</p>
                 <p class="mb-1 text-uppercase font-body font-weight-semibold">
@@ -135,6 +150,9 @@
 
             </div>
             <div class="offset-md-4 offset-lg-0 col-12 col-lg-3">
+              <p class="text-center text-lg-right mr-lg-5 mb-3">
+                <a href="{% url 'new_hackathon_bounty' hackathon.slug %}" class="font-weight-semibold font-body btn btn-gc-blue">Create new prize</a>
+              </p>
               <p class="my-auto text-center text-lg-right mr-lg-5">
                 <a href="{% url 'users_directory' %}" class="font-weight-semibold font-body btn btn-gc-blue">Find more hackers</a>
               </p>
@@ -151,19 +169,20 @@
                   </div>
                 </div>
               </template>
-              <b-tab title-item-class="d-none" title-item-class="navigation">
+              <div class="white-light-bg mb-2 py-3 text-center text-md-left">
+                <a href="{% url 'hackathon' hackathon.slug %}" class="font-body px-5">
+                  <i class="fas fa-chevron-left mr-2"></i>
+                  Back to hackathon
+                </a>
+              </div>
+
+              <b-tab title-item-class="navigation">
                 <template class="d-none" v-slot:title>
                   <div class="mt-4">
                     {% trans "Prizes" %}
                     <span class="nav-badge d-none d-sm-inline">({{prize_count}})</span>
                   </div>
                 </template>
-                <div class="white-light-bg mb-2 py-3 text-center text-md-left">
-                  <a href="{% url 'hackathon' hackathon.slug %}" class="font-body px-5">
-                    <i class="fas fa-chevron-left mr-2"></i>
-                    Back to hackathon
-                  </a>
-                </div>
                 <div id="prizes" class="row mx-0 mx-md-3 mx-lg-5">
                   <div class="col-12 p-2">
                       <div class="loading justify-content-center align-items-center loading_img" v-if="!prizes">
@@ -171,38 +190,39 @@
                       </div>
                       <div role="tablist">
                         <b-card no-body class="my-3" v-for="(prize, prizeIndex) in prizes" v-if="prizes">
-                          <b-card-header header-tag="header" class="row mx-0 px-4 py-2 bg-white" role="tab">
+                          <b-card-header header-tag="header" class="justify-content-between row mx-0 px-4 py-2 bg-white" role="tab">
 
                             <div class="col-12 col-md-5 text-center text-md-left pl-md-0">
                               <div class="my-2">
-                                <p class="m-0">
+                                <p class="m-0 d-md-flex">
                                   <a target="_blank" :href="prize.url" class="font-body font-weight-semibold d-inline-block text-black">
                                     [[`${prize.title.slice(0, 100)}${prize.title.length > 100 ? '...' : ''}`]]
                                   </a>
+                                  <span v-if="prize.value_eth" class="ml-3 tag token">[[prize.value_eth | decimals]] ETH</span>
+                                  <span v-if="prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
                                 </p>
-
                               </div>
                             </div>
 
                             <div class="col-md-3 my-auto">
-                              <p class="mb-3 m-md-0 text-center">
-                                <span v-if="prize.value_eth" class="tag token">[[prize.value_eth | decimals]] ETH</span>
-                                <span v-if="prize.values_usdt" class="tag usd">[[prize.values_usdt]] USD</span>
+                              <p class="mb-3 m-md-0 text-left">
+
                               </p>
                             </div>
 
                             <div class="col-md-5 col-lg-4 my-auto font-body font-weight-semibold text-center">
-                              <p v-if="!prize.total_projects" class="font-body font-weight-semibold m-0">No Submissions</p>
+                              <p v-if="!prize.total_projects" class="font-body font-weight-semibold m-0 text-left">No Submissions</p>
 
-                              <p v-else class="m-0 position-relative">
+                              <p v-else class="m-0 position-relative text-left">
                                 <span>
                                   [[ prize.total_submitted ]] / [[prize.total_projects]] Submitted
                                 </span>
-                                <span v-if="prize.paid" class="ml-5 gc-text-green"><span class="fas fa-check mr-2"></span>PAID</span>
-                                <a v-else :href="`/issue/payout?pk=${prize.pk}`" class="ml-2 ml-xl-5 btn btn-outline-primary font-smaller-5">PAY</a>
+                                <span v-if="prize.paid" class="ml-5 gc-text-green"><span class="fas fa-check mr-2"></span>Paid</span>
+                                <span v-else v-b-toggle="`accordion-${prizeIndex}`" @click="togglePrize(prizeIndex)" class="ml-5 gc-text-blue">Review Submission</span>
 
                                 <b-button style="right: 0;top: -5px" class="position-absolute" v-if="prize.total_projects" v-b-toggle="`accordion-${prizeIndex}`" variant="link">
-                                  <i class="fas fa-angle-up"></i>
+                                  <i class="fas fa-angle-up" v-if="!prize.open"></i>
+                                  <i class="fas fa-angle-down" v-else></i>
                                 </b-button>
                               </p>
                             </div>
@@ -213,22 +233,25 @@
                             <b-card-body>
                               <b-table-simple hover small caption-top responsive>
                                 <b-thead v-if="!isMobileDevice">
-                                  <b-th>Submission</b-th>
+                                  <b-th>Projects</b-th>
                                   <b-th>Project Description</b-th>
                                   <b-th>Hacker</b-th>
                                   <b-th>Contact</b-th>
                                   <b-th>Winner</b-th>
+                                  <b-th>Payment</b-th>
                                   <b-th>Notes</b-th>
                                 </b-thead>
                                 <b-tbody>
-                                  <b-tr :class="isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'" v-for="(project, projectIndex) in prize.submissions">
-                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
-                                      <img :src="project.logo" alt="" width="30">
-                                      <a :href="project.work_url" target="_blank"><span class="fab fa-github text-black"></span>
-                                        <span class="font-body gc-text-blue font-weight-semibold">[[project.name]]</span>
+                                  <b-tr :class="`${!project.submitted ? 'no-submitted' : ''} ${isMobileDevice ? 'd-flex flex-column mobile-separator py-3 px-3': 'py-4'}`" v-for="(project, projectIndex) in sortedProjects(prize)">
+                                    <b-td :class="`position-relative ${isMobileDevice ? 'no-border mt-2': 'py-4'}`">
+                                      <img :src="project.logo" class="align-baseline" alt="" width="30">
+                                      <a :href="project.work_url" class="ml-2" target="_blank">
+                                        <p class="d-inline-block mb-0 font-body gc-text-blue font-weight-semibold">[[`${project.name.slice(0, 100)}${project.name.length > 100 ? '...' : ''}`]]<br>
+                                        <span class="fab fa-github text-black"></span></p>
                                       </a>
+                                      <br>
+                                      <i style="bottom: 5px" :class="`font-weight-semibold ${!isMobileDevice ? 'position-absolute' : '' } mt-sm-2 font-smaller-2 mt-2`" v-if="!project.submitted">Not Submitted</i>
                                     </b-td>
-
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4 summary pr-4'">
 
                                       <p class="mt-1">[[getSummary(project)]]
@@ -241,7 +264,7 @@
                                       <div class="d-flex mb-2 mt-1" v-for="profile in project.profiles">
                                         <img height="28" width="28" class="mr-2 rounded-circle" :src="`https://gitcoin.co/dynamic/avatar/${profile.handle}`" alt="">
                                         <div class="d-flex flex-column">
-                                          <a class="font-smaller-4 text-black" :href="profile.url">[[profile.handle]]</a>
+                                          <a class="font-smaller-4 text-black" target="_blank" :href="profile.url">[[profile.handle]]</a>
                                           <span class="font-smaller-5 gc-text-blue">[[start_and_end(profile.payout_address)]]</span>
                                         </div>
                                       </div>
@@ -256,11 +279,18 @@
                                       </b-form-checkbox>
                                     </b-td>
                                     <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
+                                      <template v-if="project.winner">
+                                        <a class="btn btn-gc-blue font-body" target="_blank" :href="`/issue/payout?pk=${prize.pk}`" v-if="!project.paid">Pay</a>
+                                        <p class="font-body" v-else>Paid [[ project.payment_date ]]</p>
+                                      </template>
+                                    </b-td>
+
+                                    <b-td :class="isMobileDevice ? 'no-border mt-2': 'py-4'">
                                       <button class="btn btn-link gc-text-blue pt-0 font-smaller-4 mt-1" @click="addNote(project)" v-if="comments[project.pk] == undefined">
                                         <i class="fas fa-plus mr-1"></i>
                                         Add Note
                                       </button>
-                                      <textarea v-if="comments[project.pk] != undefined" v-model="comments[project.pk]" @change="setNote($event, project)" class="form-control note">[[getComment(project.pk)]]</textarea>
+                                      <textarea v-if="comments[project.pk] != undefined" v-model="comments[project.pk]" @change="setNote($event, project)" @blur="focusOut(project)" class="form-control note" placeholder="This note can only be viewed by you">[[getComment(project.pk)]]</textarea>
                                     </b-td>
                                   </b-tr>
                                 </b-tbody>
@@ -271,6 +301,19 @@
                       </div>
                   </div>
                 </div>
+              </b-tab>
+              <b-tab title-item-class="navigation">
+                <template class="d-none" v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Stats" %}
+                  </div>
+                </template>
+                <div id="stats" class="row mx-0 mx-md-3 mx-lg-5">
+                  <div class="col-12 p-2">
+                    <iframe class="stats-iframe" :src="`https://metabase.gitcoin.co/public/dashboard/8ca80a3e-fa52-46a7-8e4b-f2fb7b84acc7?hackathon_id=${hackathonObj.id}&organization=${userOrg.org_name}#hide_parameters=hackathon_id,organization`" frameborder="0"></iframe>
+                  </div>
+                </div>
+
               </b-tab>
             </b-tabs>
           </div>
@@ -293,7 +336,7 @@
     {% include 'shared/footer_scripts.html' with vue=True %}
     {% include 'shared/footer.html' %}
     <script src='{% static "v2/js/vue-components.js" %}'></script>
-    {{orgs|json_script:"sponsor-list"}}
+    {{user_orgs|json_script:"orgs-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
     <script>
       $('body').bootstrapTooltip({
@@ -304,6 +347,7 @@
       document.keywords = {{ keywords | safe }};
       document.hackathon = "{{ hackathon.slug | safe }}";
       document.hackathon_id = "{{ hackathon.id | safe }}";
+      document.userOrg = JSON.parse(document.getElementById('orgs-list').textContent);
       document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
       document.activePanel = parseInt({{panel | safe}});
       if(location.hostname === 'gitcoin.co') $('#network-filter').hide();

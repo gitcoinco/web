@@ -30,7 +30,7 @@ from dashboard.models import Activity, Earning, Profile
 from dashboard.utils import get_tx_status, get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from grants.models import CLRMatch, Contribution, Grant, Subscription
-from grants.views import clr_active, clr_round, next_round_start, round_end
+from grants.views import clr_round  # TODO-SELF-SERVICE: REMOVE THIS
 from marketing.mails import (
     grant_match_distribution_final_txn, grant_match_distribution_kyc, grant_match_distribution_test_txn,
 )
@@ -44,7 +44,7 @@ class Command(BaseCommand):
     help = 'finalizes + sends grants round payouts'
 
     def add_arguments(self, parser):
-        parser.add_argument('what', 
+        parser.add_argument('what',
             default='finalize',
             type=str,
             help="what do we do? (finalize, payout_test, payout_dai, prepare_final_payout)"
