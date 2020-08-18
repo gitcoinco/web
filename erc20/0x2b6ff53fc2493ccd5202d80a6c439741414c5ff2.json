@@ -15,7 +15,7 @@
   "state": "NORMAL",
   "published_on": "2019-12-19",
   "initial_price":{
-        "USDT":"0.05 USDT"
+        "USDT":""
   },
   "links": {
     "media_publications": "https://icitynews.com.cn/?p=259803&from=singlemessage&isappinstalled=0",
