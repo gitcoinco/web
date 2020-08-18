@@ -69,7 +69,7 @@
                     </select>
                 </template>
               </refinement-list-filter>
-              <numeric-list-filter v-else-if="filter.type == 'float' || filter.type == 'integer'" :id="filter.text" :field="filter.text" operator="OR">
+              <numeric-list-filter v-else-if="filter.type == 'float' || filter.type == 'long'" :id="filter.text" :field="filter.text" operator="OR">
                 <template slot="header">
                     <h3 class="is-nlf-title">[[ filter.text ]] : </h3>
                 </template>
