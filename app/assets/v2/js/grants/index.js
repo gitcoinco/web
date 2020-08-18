@@ -156,6 +156,10 @@ $(document).on('click', '.star-action', async(e) => {
     element.find('i').addClass('far');
     element.find('span').text('Follow');
     element.addClass('text-muted');
+    
+    if (window.location.pathname === '/grants/following') {
+      element.closest('.grant-card').hide();
+    }
   }
 
   console.log(response);
