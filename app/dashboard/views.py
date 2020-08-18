@@ -2865,7 +2865,7 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
-        brightIDUrl = 'http://test.brightid.org/brightid/v4/verifications/Gitcoin/' + str(profile.brightid_uuid)
+        brightIDUrl = 'http://node.brightid.org/brightid/v4/verifications/Gitcoin/' + str(profile.brightid_uuid)
         try:
             response = requests.get(brightIDUrl)
             responseData = response.json()

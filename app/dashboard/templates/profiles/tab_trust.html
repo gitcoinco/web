@@ -5,19 +5,43 @@
     Lorem Ipsum Copy...
     <div class="container mt-3">
         <div class="row">
-            <div class="col-md-9">
-                <div class="font-weight-bold">
-                    Connect with BrightID
+            {% if brightid_status == 'unknown' %}
+                <div class="col-md-12">
+                    Failed to load BrightID Status
                 </div>
-                <div>
-                    Connect to BrightID and verify yourself by connecting with other humans.
-                    <br />{{profile.brightid_uuid}}
-                    <br /> {{ brightid_status }}
+            {% else %}
+                <div class="col-md-9">
+                    {% if brightid_status == 'not_connected' %}
+                        <div class="font-weight-bold">
+                            Connect with BrightID
+                        </div>
+                        <div>
+                            Connect to BrightID and verify yourself by connecting with other humans.
+                            <!-- <br />{{profile.brightid_uuid}}
+                            <br /> {{ brightid_status }} -->
+                        </div>
+                    {% elif brightid_status == 'not_verified' %}
+                        <div class="font-weight-bold">
+                            Get Verified with BrightID
+                        </div>
+                        <div>
+                            Verify yourself on BrightID by proving you're human to other humans. Connect
+                            with other users and join groups to meet the threshold.
+                        </div>
+                    {% endif %} <!-- TODO: what to show if verified-->
                 </div>
-            </div>
-            <div class="col-md-3">
-                <button class="button button--primary">Connect</button>
-            </div>
+                {% if is_my_profile %}
+                    {% if brightid_status == 'not_connected' %}
+                        <div class="col-md-3">
+                            <button class="button button--primary">Connect</button>
+                        </div>
+                    {% elif brightid_status == 'not_verified' %}
+                        <div class="col-md-3">
+                            <button class="button button--primary">Verify</button>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 {% endif %}
