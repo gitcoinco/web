@@ -23,17 +23,18 @@
         </div>
       </div>
 
+      {% if clr_active %}
       <div class="container-fluid pt-0 pb-2 grants-matching announce_container">
         <div class="container">
           <div class="col-md-12 font-smaller-1 text-center pt-2">
             <img style="width: 80px; height: 80px;" src="{% static 'v2/images/quests/enemies/mad_scientist.png' %}" data-toggle="tooltip">
             <div class="announce announce4">
               <h4 class="mb-0 mt-0 pt-1 font-weight-semibold">
-                <i class="fab fa-ethereum"></i> $250k Matching Round LIVE NOW
+                <i class="fab fa-ethereum"></i> Matching Round {{clr_round}} LIVE NOW
               </h4>
               <p>
               <BR>
-              $100k for Tech Grants, $100k for Public Health Grants, $50k for Media Grants. -- 
+              ${{total_clr_pot}} Quadratic Matching for Grants. -- 
                 Matching ends on {{round_end|date:'Y-m-d'}} 
                   (<span class="m-0" data-time="{{round_end|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>) so get started today!
                 <br>
@@ -46,6 +47,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
 
       <div class="container-fluid pt-0 pb-2 grants-matching announce_container">
         <div class="container">
@@ -57,18 +59,20 @@
               </h4>
               <p>
               <BR>
-              <strong>Q1 $200k Match</strong> (<a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">Done</a>)
+              <strong>Round 4</strong> (<a href="https://gitcoin.co/blog/gitcoin-grants-round-4/">Done</a>)
               <BR>
-              <strong>Q2 $250k Match</strong>: March 23th — April 7th 2020
+              <strong>Round 5</strong>: March 23th — April 7th 2020
               <BR>
-              <strong>Q3 $250k Match</strong>: June 15th — June 29th 2020
+              <strong>Round 6</strong>: June 15th — June 29th 2020
               <BR>
-              <strong>Q4 $300k Match</strong>: September 14th — September 28th 2020
+              <strong>Round 7</strong>: September 14th — September 28th 2020
+              <BR>
+              <strong>Round 8</strong>: December 2nd — December 18th 2020
               <BR>
               <BR>
               Want to run a matching round? 
               <i class="far fa-envelope-open"></i> |
-              <a style="font-weight:bold;" href="mailto:founders@gitcoin">Get in Touch</a>
+              <a style="font-weight:bold;" href="mailto:founders@gitcoin.co">Get in Touch</a>
               </p>
               <p class="m-0 p-0">
               </p>
@@ -131,7 +135,7 @@
                 <BR>
                 Want to learn more?
                 <i class="far fa-envelope-open"></i>  |
-               <a style="font-weight:bold;" href="mailto:founders@gitcoin">Get in Touch</a>
+               <a style="font-weight:bold;" href="mailto:founders@gitcoin.co">Get in Touch</a>
               </p>
               <p class="m-0 p-0">
               </p>

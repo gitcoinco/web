@@ -4,8 +4,8 @@
   "description": "Gitcoin is the easiest way to monetize or incentivize work in Open Source Software",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/onepager/js/*.js ./app/assets/ens/*.js ./cypress/**/*.js",
-    "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/onepager/js/*.js ./app/assets/ens/*.js",
+    "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/onepager/js/*.js ./cypress/**/*.js",
+    "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/onepager/js/*.js",
     "stylelint": "stylelint ./app/assets/**/**/*.css",
     "stylelint:fix": "stylelint --fix ./app/assets/**/**/*.css",
     "build": "webpack --config webpack.config.js --progress --colors"

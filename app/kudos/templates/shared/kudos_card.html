@@ -23,7 +23,7 @@
   <span class="kd-price">{{ listing.price_in_eth }} ETH</span>
   <div class="kd-name text-truncate" title="{{ listing.ui_name }}">{{ listing.ui_name }}
   {% if listing.artist %}
-  by <img loading="lazy" style="width: 30px; height: 30px; border-radius: 20px;" data-src="/dynamic/avatar/{{listing.artist}}" > <a style="color: #777;" href="/profile/{{listing.artist}}/kudos" class="kudos-details__address" title="@{{ listing.artist }} has this kudos on {{listing.created_on}}">@{{listing.artist}}</a>  
+    by <img loading="lazy" style="width: 30px; height: 30px; border-radius: 20px;" data-src="/dynamic/avatar/{{listing.artist}}" > <a style="color: #777;" href="/profile/{{listing.artist}}/kudos" class="kudos-details__address" title="@{{ listing.artist }} has this kudos on {{listing.created_on}}">@{{listing.artist}}</a>  
   {% endif %}
   </div>
 

@@ -205,6 +205,10 @@ var add_interest = function(bounty_pk, data) {
   if (typeof fbq !== 'undefined') {
     fbq('trackCustom', 'Start Work');
   }
+  
+  if (typeof ga !== 'undefined') {
+    ga('send', 'event', 'Start Work', 'click', 'Bounty Hunter')
+  }
 
   return mutate_interest(bounty_pk, 'new', data);
 };
@@ -512,7 +516,8 @@ var retrieveAmount = function() {
   }
 
   // if not, use remote one
-  $.get(request_url, function(result) {
+  $.get(request_url, function(results) {
+    const result = results[0];
 
     // update UI
     var usd_amount = result['usdt'];

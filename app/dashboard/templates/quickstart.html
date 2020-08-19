@@ -48,7 +48,7 @@
           <img src="{% static 'v2/images/quickstart-box.svg' %}" />
         </div>
         <div class="col-md-7 col-sm-12 p-5 steps-list">
-          <ol class="font-subheader">
+          <ol class="font-subheader list-unstyled">
             <li>{% trans "1) Create a Github Issue, you'll need the issue URL" %}</li>
             <li>{% trans "2) Select the type of issue to fund" %}</li>
             <li>{% trans '3) Complete the form and press "Fund Issue"' %}</li>
@@ -63,14 +63,14 @@
           </a>
         </div>
         <div class="col-12 text-center">
-          <a href="{% url 'new_funding' %}">
-            <button class="btn btn-gc-blue font-subheader shadow-none font-weight-semibold py-3 px-5">{% trans "Ok, I'm ready" %}</button>
+          <a href="{% url 'new_funding' %}" class="btn btn-gc-blue font-subheader font-weight-semibold px-5 py-3 shadow-none text-white btn-closeguide">
+            {% trans "Ok, I'm ready" %}
           </a>
         </div>
       </div>
 
       <div class="bounty-tips pt-3 pb-5">
-        <h4 class="subheading font-weight-semibold my-4 pb-3">
+        <h4 class="subheading font-weight-semibold my-4 pb-3 text-center">
           {% trans "Creating Great Bounties" %}
         </h4>
 

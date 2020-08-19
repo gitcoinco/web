@@ -23,7 +23,7 @@ const init = () => {
   }
   */
 
-  if (localStorage['grants_quickstart_disable'] !== 'true') {
+  if (localStorage['grants_quickstart_disable'] !== 'true' && window.location.pathname.includes('matic') == false) {
     window.location = document.location.origin + '/grants/quickstart';
   }
 
@@ -79,8 +79,10 @@ const init = () => {
         data[this.name] = this.value;
       });
 
-      $('#token_symbol').val($('#js-token option:selected').text());
-      $('#token_address').val($('#js-token option:selected').val());
+      if ($('#token_address').length) {
+        $('#token_symbol').val($('#js-token option:selected').text());
+        $('#token_address').val($('#js-token option:selected').val());
+      }
 
       if (document.web3network) {
         $('#network').val(document.web3network);
@@ -120,11 +122,20 @@ const init = () => {
       formData.append('reference_url', $('#input-url').val());
       formData.append('admin_address', $('#input-admin_address').val());
       formData.append('contract_owner_address', $('#contract_owner_address').val());
-      formData.append('token_address', $('#token_address').val());
-      formData.append('token_symbol', $('#token_symbol').val());
+      if ($('#token_address').length) {
+        formData.append('token_address', $('#token_address').val());
+        formData.append('token_symbol', $('#token_symbol').val());
+      } else {
+        formData.append('token_address', '0x0000000000000000000000000000000000000000');
+        formData.append('token_symbol', 'Any Token');
+      }
       formData.append('contract_version', $('#contract_version').val());
       formData.append('transaction_hash', $('#transaction_hash').val());
-      formData.append('network', $('#network').val());
+      if ($('#network').val()) {
+        formData.append('network', $('#network').val());
+      } else {
+        formData.append('network', 'mainnet');
+      }
       formData.append('team_members[]', $('#input-team_members').val());
       formData.append('categories[]', $('#input-categories').val());
       formData.append('grant_type', $('#input-grant_type').val().toLowerCase());
@@ -151,18 +162,17 @@ const init = () => {
   });
 };
 
-window.addEventListener('dataWalletReady', function(e) {
-  init();
-}, false);
-
 $(document).ready(function() {
 
   $('.select2-selection__choice').removeAttr('title');
-
+  init();
+  changeTokens();
 });
 
 function saveGrant(grantData, isFinal) {
   let csrftoken = $("#create-grant input[name='csrfmiddlewaretoken']").val();
+
+  $('#new_button').attr('disabled', 'disabled');
 
   $.ajax({
     type: 'post',
@@ -178,19 +188,21 @@ function saveGrant(grantData, isFinal) {
           window.location = json.url;
         } else {
           console.error('Grant failed to save');
+          $('#new_button').attr('disabled', false);
         }
       }
     },
     error: () => {
       console.error('Grant failed to save');
       _alert({ message: gettext('Your grant failed to save. Please try again.') }, 'error');
+      $('#new_button').attr('disabled', false);
     }
   });
 }
 
 
 $('#new_button').on('click', function(e) {
-  if (!provider) {
+  if (!provider && $('#token_address').length != 0) {
     e.preventDefault();
     return onConnect().then(() => init());
   }

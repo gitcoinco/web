@@ -17,6 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import json
 import logging
 import re
 import time
@@ -485,18 +486,6 @@ def about(request):
             True
         ),
         (
-            "Eric Berry",
-            "OSS Funding",
-            "coderberry",
-            "ericberry",
-            "Chrome/Firefox Extension",
-            "Pastel de nata",
-            "eric",
-            "Burnout Healer",
-            "coderberry",
-            True
-        ),
-        (
             "Vivek Singh",
             "Community Buidl-er",
             "vs77bb",
@@ -557,30 +546,6 @@ def about(request):
             True
         ),
         (
-            "Nate Hopkins",
-            "Engineering",
-            "hopsoft",
-            None,
-            "Bounties",
-            "Chicken tikka masala",
-            "nate",
-            "Lord of Night's Watch",
-            "hopsoft",
-            True
-        ),
-        (
-            "Alessandro Voto",
-            "DevRel",
-            "alexvotofuture",
-            None,
-            "Devvies",
-            "Tacos",
-            "alex",
-            "Starship Captain",
-            "avotofuture",
-            True
-        ),
-        (
             "Dan Lipert",
             "Engineering",
             "danlipert",
@@ -602,18 +567,6 @@ def about(request):
             "connor",
             "Druid of The Chain",
             "connoroday0",
-            True
-        ),
-        (
-            "Joseph Chen",
-            "Operations",
-            "josephchen",
-            "josephchen",
-            "Ethical Ads",
-            "DIY",
-            "joseph",
-            "Arithmagician",
-            "",
             True
         ),
         (
@@ -1003,6 +956,25 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
         if keyword == 'meme':
             keyword_filter = Q(metadata__icontains='spotify') | Q(metadata__type='soundcloud') | Q(metadata__type='pandora')
         activities = activities.filter(keyword_filter | base_filter)
+    elif 'hackathon:' in what:
+        terms = what.split(':')
+        pk = terms[1]
+
+        if len(terms) > 2:
+            if terms[2] == 'tribe':
+                key = terms[3]
+                profile_filter = Q(profile__handle=key.lower())
+                other_profile_filter = Q(other_profile__handle=key.lower())
+                keyword_filter = Q(metadata__icontains=key)
+                activities = activities.filter(keyword_filter | profile_filter | other_profile_filter)
+                activities = activities.filter(activity_type__in=connect_types).filter(
+                    Q(hackathonevent=pk) | Q(bounty__event=pk))
+            else:
+                activities = activities.filter(activity_type__in=connect_types, metadata__icontains=terms[2]).filter(
+                    Q(hackathonevent=pk) | Q(bounty__event=pk))
+        else:
+            activities = activities.filter(activity_type__in=connect_types).filter(
+                Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif 'tribe:' in what:
         key = what.split(':')[1]
         profile_filter = Q(profile__handle=key.lower())
@@ -1017,15 +989,6 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             page = int(request.GET.get('page', 1))
             if page > 1:
                 activities = Activity.objects.none()
-    elif 'hackathon:' in what:
-        terms = what.split(':')
-        pk = terms[1]
-
-        if len(terms) > 2:
-            activities = activities.filter(activity_type__in=connect_types, metadata__icontains=terms[2]).filter(
-                Q(hackathonevent=pk) | Q(bounty__event=pk))
-        else:
-            activities = activities.filter(activity_type__in=connect_types).filter(Q(hackathonevent=pk) | Q(bounty__event=pk))
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
@@ -1065,7 +1028,6 @@ def activity(request):
     page = int(request.GET.get('page', 1))
     what = request.GET.get('what', 'everywhere')
     trending_only = int(request.GET.get('trending_only', 0))
-
     activities = get_specific_activities(what, trending_only, request.user, request.GET.get('after-pk'), request)
     activities = activities.prefetch_related('profile', 'likes', 'comments', 'kudos', 'grant', 'subscription', 'hackathonevent', 'pin')
     # store last seen
@@ -1488,6 +1450,32 @@ def tokens(request):
         context[key] = Token.objects.filter(network=network, approved=True)
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
 
+
+def json_tokens(request):
+    context = {}
+    networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
+    # for network in networks:
+        # key = f"{network}_tokens"
+        # context[key] = Token.objects.filter(network=network, approved=True)
+    tokens=Token.objects.filter(approved=True)
+    token_json = []
+    for token in tokens:
+        _token = {
+            'id':  token.id,
+            'address': token.address,
+            'symbol': token.symbol,
+            'network': token.network,
+            'networkId': token.network_id,
+            'chainId': token.chain_id,
+            'decimals': token.decimals,
+            'priority': token.priority
+        }
+
+
+        token_json.append(_token)
+    # return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
+    # return JsonResponse(json.loads(json.dumps(list(context), default=str)), safe=False)
+    return JsonResponse(json.loads(json.dumps(token_json)), safe=False)
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)

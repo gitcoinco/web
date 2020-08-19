@@ -182,8 +182,9 @@ class ConversionRate(SuperModel):
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"{self.from_amount} {self.from_currency} => {self.to_amount} " \
-               f"{self.to_currency} ({self.timestamp}, {self.source}) {naturaltime(self.created_on)}"
+        decimals = 3
+        return f"{round(self.from_amount, decimals)} {self.from_currency} => {round(self.to_amount, decimals)} " \
+               f"{self.to_currency} ({self.timestamp.strftime('%m/%d/%Y')} {naturaltime(self.timestamp)}, from {self.source})"
 
 
 # method for updating
@@ -215,6 +216,8 @@ class Token(SuperModel):
     network = models.CharField(max_length=25, db_index=True)
     decimals = models.IntegerField(default=18)
     priority = models.IntegerField(default=1)
+    chain_id = models.IntegerField(default=1)
+    network_id = models.IntegerField(default=1)
     metadata = JSONField(null=True, default=dict, blank=True)
     approved = models.BooleanField(default=True)
 

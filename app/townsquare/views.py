@@ -1,12 +1,16 @@
 import re
 import time
+from random import random, shuffle
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 import metadata_parser
 from app.services import RedisService
@@ -70,6 +74,12 @@ def get_next_time_available(key):
         d = timezone.datetime(year=year, month=month, day=1)
     return d
 
+
+def landing_toggle(request):
+    if not request.user.is_authenticated:
+        from retail.views import index as index_page
+        return index_page(request)
+    return town_square(request)
 
 def index(request):
 
@@ -173,13 +183,16 @@ def get_sidebar_tabs(request):
     }
     tabs = tabs + [connect]
 
-    start_date = timezone.now() + timezone.timedelta(days=10)
+    start_date = timezone.now() + timezone.timedelta(days=28)
     end_date = timezone.now() - timezone.timedelta(days=7)
     hackathons = HackathonEvent.objects.filter(start_date__lt=start_date, end_date__gt=end_date, visible=True)
     if hackathons.count():
         for hackathon in hackathons:
             connect = {
                 'title': hackathon.name,
+                'logo': hackathon.logo,
+                'start': hackathon.start_date,
+                'end': hackathon.end_date,
                 'slug': f'hackathon:{hackathon.pk}',
                 'url_slug': hackathon.slug,
                 'helper_text': f'Go to {hackathon.name} Townsquare.',
@@ -211,6 +224,7 @@ def get_offers(request):
     offer_pks = []
     offers_by_category = {}
     available_offers = Offer.objects.current()
+    
     if request.user.is_authenticated:
         available_offers = available_offers.exclude(actions__profile=request.user.profile, actions__what__in=['click', 'decline', 'go'])
     for key in ['top', 'secret', 'random', 'daily', 'weekly', 'monthly']:
@@ -296,11 +310,33 @@ def get_param_metadata(request, tab):
     return title, desc, page_seo_text_insert, avatar_url, is_direct_link, admin_link
 
 
+@login_required
+@require_http_methods(['PUT'])
+@csrf_exempt
+def ignored_suggested_tribe(request, tribeId):
+    profile = request.user.profile
+    tribe_profile = get_object_or_404(Profile, handle__iexact=tribeId)
+
+    profile.ignore_tribes.add(tribe_profile)
+
+    return JsonResponse({
+       'tribes': get_suggested_tribes(request)
+    })
+
+
 def get_suggested_tribes(request):
     following_tribes = []
     if request.user.is_authenticated:
-        handles = TribeMember.objects.filter(profile=request.user.profile).distinct('org').values_list('org__handle', flat=True)
-        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).order_by('-follower_count')[:5]
+        profile = request.user.profile
+        ignore = list(profile.ignore_tribes.all().values_list('pk', flat=True))
+        handles = TribeMember.objects.filter(profile=profile).distinct('org').values_list('org__handle', flat=True)
+        tribes = Profile.objects.filter(is_org=True).exclude(handle__in=list(handles)).exclude(pk__in=ignore).order_by('-follower_count')
+        count = tribes.count()
+
+        if count > 5:
+            index_shuffle = list(range(count if count < 60 else 60))
+            shuffle(index_shuffle)
+            tribes = [tribes[index] for index in index_shuffle[:5]]
 
         for profile in tribes:
             handle = profile.handle

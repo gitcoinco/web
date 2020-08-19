@@ -328,8 +328,19 @@ window.addEventListener('load', async() => {
   }
 
   initWallet();
+  document.querySelector('#wallet-btn').addEventListener('click', onConnect);
+  document.querySelector('#btn-disconnect').addEventListener('click', onDisconnect);
+
   if (web3Modal.cachedProvider) {
     try {
+      if (web3Modal.cachedProvider === 'injected' && window.Web3Modal.getInjectedProviderName() === 'MetaMask') {
+        // hack for metamask
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+        if (!accounts.length) {
+          throw new Error('Metamask is not enabled');
+        }
+      }
       provider = await web3Modal.connect();
     } catch (e) {
       console.log('Could not get a wallet connection', e);
@@ -353,8 +364,6 @@ window.addEventListener('load', async() => {
       });
     }
   }
-  document.querySelector('#wallet-btn').addEventListener('click', onConnect);
-  document.querySelector('#btn-disconnect').addEventListener('click', onDisconnect);
 });
 
 

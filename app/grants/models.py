@@ -71,47 +71,8 @@ class GrantQuerySet(models.QuerySet):
             Q(reference_url__icontains=keyword)
         )
 
+
 class GrantCategory(SuperModel):
-    @staticmethod
-    def all_categories():
-        all_tech_categories = GrantCategory.tech_categories()
-        filtered_media_categories = [category for category in GrantCategory.media_categories() if category not in all_tech_categories]
-        return all_tech_categories + filtered_media_categories + GrantCategory.health_categories() + GrantCategory.change_categories()
-
-    @staticmethod
-    def tech_categories():
-        return [
-            'security',
-            'scalability',
-            'defi',
-            'education',
-            'wallets',
-            'community',
-            'eth2.0',
-            'eth1.x',
-        ]
-
-    @staticmethod
-    def media_categories():
-        return [
-            'education',
-            'twitter',
-            'reddit',
-            'blog',
-            'notes',
-        ]
-
-    @staticmethod
-    def health_categories():
-        return [
-            'COVID19 research',
-            'COVID19 response',
-        ]
-
-    @staticmethod
-    def change_categories():
-        return [
-        ]
 
     category = models.CharField(
         max_length=50,
@@ -125,6 +86,62 @@ class GrantCategory(SuperModel):
         return f"{self.category}"
 
 
+class GrantType(SuperModel):
+
+    name = models.CharField(unique=True, max_length=15, help_text="Grant Type")
+    label = models.CharField(max_length=25, null=True, help_text="Display Name")
+    categories  = models.ManyToManyField(
+        GrantCategory,
+        help_text="Grant Categories associated with Grant Type"
+    )
+
+    def __str__(self):
+        """Return the string representation."""
+        return f"{self.name}"
+
+
+class GrantCLR(SuperModel):
+    round_num = models.CharField(max_length=15, help_text="CLR Round Number")
+    is_active = models.BooleanField(default=False, help_text="Is CLR Round currently active")
+    start_date = models.DateTimeField(help_text="CLR Round Start Date")
+    end_date = models.DateTimeField(help_text="CLR Round Start Date")
+    grant_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grants allowed in this CLR round"
+    )
+    subscription_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grant Subscription to be allowed in this CLR round"
+    )
+    verified_threshold = models.DecimalField(help_text="Verfied CLR Threshold",
+        default=25.0,
+        decimal_places=2,
+        max_digits=5
+    )
+    unverified_threshold = models.DecimalField(help_text="Unverified CLR Threshold",
+        default=5.0,
+        decimal_places=2,
+        max_digits=5
+    )
+    total_pot = models.DecimalField(help_text="CLR Pot",
+        default=0,
+        decimal_places=2,
+        max_digits=10
+    )
+    logo = models.ImageField(
+        upload_to=get_upload_filename,
+        null=True,
+        blank=True,
+        max_length=500,
+        help_text=_('The Grant CLR round image'),
+    )
+
+    def __str__(self):
+        return f"{self.round_num}"
+
+
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
@@ -133,16 +150,17 @@ class Grant(SuperModel):
 
         ordering = ['-created_on']
 
-    GRANT_TYPES = [
-        ('tech', 'tech'),
-        ('health', 'health'),
-        ('media', 'Community'),
-        ('change', 'change'),
-        ('matic', 'matic')
-    ]
+    # GRANT_TYPES = [
+    #     ('tech', 'tech'),
+    #     ('health', 'health'),
+    #     ('media', 'Community'),
+    #     ('change', 'change'),
+    #     ('matic', 'matic')
+    # ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
-    grant_type = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'))
+    # grant_type_purge = models.CharField(max_length=15, choices=GRANT_TYPES, default='tech', help_text=_('Grant CLR category'), db_index=True)
+    grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE, null=True, help_text="Grant Type")
     title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
     slug = AutoSlugField(populate_from='title')
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
@@ -159,6 +177,7 @@ class Grant(SuperModel):
         upload_to=get_upload_filename,
         null=True,
         blank=True,
+        max_length=500,
         help_text=_('The Grant logo image.'),
     )
     logo_svg = models.FileField(
@@ -167,11 +186,20 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The Grant logo SVG.'),
     )
+    # TODO-GRANTS: rename to eth_payout_address
     admin_address = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The wallet address where subscription funds will be sent.'),
     )
+    zcash_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The zcash wallet address where subscription funds will be sent.'),
+    )
+    # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
         default='0x0',
@@ -268,11 +296,13 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The fundingamount across all rounds with phantom funding'),
     )
+    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
     clr_prediction_curve = ArrayField(
         ArrayField(
             models.FloatField(),
             size=2,
         ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+    # TODO: REMOVE
     backup_clr_prediction_curve = ArrayField(
         ArrayField(
             models.FloatField(),
@@ -293,16 +323,19 @@ class Grant(SuperModel):
         help_text=_('The Grant that this grant defers it CLR contributions to (if any).'),
         null=True,
     )
+    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
     last_clr_calc_date = models.DateTimeField(
         help_text=_('The last clr calculation date'),
         null=True,
         blank=True,
     )
+    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
     next_clr_calc_date = models.DateTimeField(
         help_text=_('The last clr calculation date'),
         null=True,
         blank=True,
     )
+    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
     last_update = models.DateTimeField(
         help_text=_('The last grant admin update date'),
         null=True,
@@ -313,6 +346,24 @@ class Grant(SuperModel):
     twitter_handle_2 = models.CharField(default='', max_length=255, help_text=_('Grants twitter handle'), blank=True)
     twitter_handle_1_follower_count = models.PositiveIntegerField(blank=True, default=0)
     twitter_handle_2_follower_count = models.PositiveIntegerField(blank=True, default=0)
+    sybil_score = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The Grants Sybil Score'),
+    )
+
+    weighted_risk_score = models.DecimalField(
+        default=0,
+        decimal_places=4,
+        max_digits=50,
+        help_text=_('The Grants Weighted Risk Score'),
+    )
+
+    in_active_clrs = models.ManyToManyField(
+        GrantCLR,
+        help_text="Active Grants CLR Round"
+    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -329,6 +380,11 @@ class Grant(SuperModel):
             handles.append(handle)
         self.activeSubscriptions = handles
 
+    @property
+    def safe_next_clr_calc_date(self):
+        if self.next_clr_calc_date < timezone.now():
+            return timezone.now() + timezone.timedelta(minutes=5)
+        return self.next_clr_calc_date
 
     @property
     def recurring_funding_supported(self):
@@ -478,7 +534,8 @@ class Grant(SuperModel):
     def url(self):
         """Return grants url."""
         from django.urls import reverse
-        return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': self.slug})
+        slug = self.slug if self.slug else "-"
+        return reverse('grants:details', kwargs={'grant_id': self.pk, 'grant_slug': slug})
 
     def get_absolute_url(self):
         return self.url
@@ -500,6 +557,11 @@ class SubscriptionQuerySet(models.QuerySet):
 
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
+
+    TENANT = [
+        ('ETH', 'ETH'),
+        ('ZCASH', 'ZCASH')
+    ]
 
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
     error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
@@ -631,6 +693,7 @@ class Subscription(SuperModel):
         max_digits=64,
         help_text=_('The amount per contribution period in USDT'),
     )
+    tenant = models.CharField(max_length=10, null=True, blank=True, default="ETH", choices=TENANT, help_text="specific tenant in which contribution is made")
 
     @property
     def negative(self):
@@ -1135,6 +1198,17 @@ class Contribution(SuperModel):
         help_text=_('The why or why not validator passed'),
     )
 
+    profile_for_clr = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='clr_pledges',
+        on_delete=models.CASCADE,
+        help_text=_('The profile to attribute this contribution to..'),
+        null=True,
+        blank=True,
+    )
+
+    def get_absolute_url(self):
+        return self.subscription.grant.url + '?tab=transactions'
 
     def __str__(self):
         """Return the string representation of this object."""
@@ -1157,46 +1231,55 @@ class Contribution(SuperModel):
 
     def update_tx_status(self):
         """Updates tx status."""
-        from economy.tx import grants_transaction_validator
-        from dashboard.utils import get_tx_status
-        from economy.tx import getReplacedTX
-        if self.tx_override:
-            return
-
-        # handle replace of tx_id
-        if self.tx_id:
-            tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
-            if tx_status in ['pending', 'dropped', 'unknown', '']:
-                new_tx = getReplacedTX(self.tx_id)
-                if new_tx:
-                    self.tx_id = new_tx
-                else:
-                    # TODO: do stuff related to long running pending txns
-                    pass
-                return
-        # handle replace of split_tx_id
-        if self.split_tx_id:
-            split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
-            if split_tx_status in ['pending', 'dropped', 'unknown', '']:
-                new_tx = getReplacedTX(self.split_tx_id)
-                if new_tx:
-                    self.split_tx_id = new_tx
+        try:
+            from economy.tx import grants_transaction_validator
+            from dashboard.utils import get_tx_status
+            from economy.tx import getReplacedTX
+            if self.tx_override:
                 return
 
-        # actually validate token transfers
-        response = grants_transaction_validator(self)
-        if len(response['originator']):
-            self.originated_address = response['originator'][0]
-        self.validator_passed = response['validation']['passed']
-        self.validator_comment = response['validation']['comment']
-        self.tx_cleared = True
-        self.split_tx_confirmed = True
-        self.success = self.validator_passed
+            # handle replace of tx_id
+            if self.tx_id:
+                tx_status, _ = get_tx_status(self.tx_id, self.subscription.network, self.created_on)
+                if tx_status in ['pending', 'dropped', 'unknown', '']:
+                    new_tx = getReplacedTX(self.tx_id)
+                    if new_tx:
+                        self.tx_id = new_tx
+                    else:
+                        print('TODO: do stuff related to long running pending txns')
+                    return
+            # handle replace of split_tx_id
+            if self.split_tx_id:
+                split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
+                if split_tx_status in ['pending', 'dropped', 'unknown', '']:
+                    new_tx = getReplacedTX(self.split_tx_id)
+                    if new_tx:
+                        self.split_tx_id = new_tx
+                    else:
+                        print('TODO: do stuff related to long running pending txns')
+                    return
 
-        if self.success:
-            print("TODO: do stuff related to successful contribs, like emails")
-        else:
-            print("TODO: do stuff related to failed contribs, like emails")
+            # actually validate token transfers
+            response = grants_transaction_validator(self)
+            if len(response['originator']):
+                self.originated_address = response['originator'][0]
+            self.validator_passed = response['validation']['passed']
+            self.validator_comment = response['validation']['comment']
+            self.tx_cleared = True
+            self.split_tx_confirmed = True
+            self.success = self.validator_passed
+
+            if self.success:
+                print("TODO: do stuff related to successful contribs, like emails")
+            else:
+                print("TODO: do stuff related to failed contribs, like emails")
+        except Exception as e:
+            self.validator_passed = False
+            self.validator_comment = str(e)
+            print(f"Exception: {self.validator_comment}")
+            self.tx_cleared = False
+            self.split_tx_confirmed = False
+            self.success = False
 
 
 @receiver(post_save, sender=Contribution, dispatch_uid="psave_contrib")
@@ -1227,6 +1310,10 @@ def psave_contrib(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Contribution, dispatch_uid="presave_contrib")
 def presave_contrib(sender, instance, **kwargs):
+
+    if not instance.profile_for_clr:
+        if instance.subscription:
+            instance.profile_for_clr = instance.subscription.contributor_profile
 
     ele = instance
     sub = ele.subscription
@@ -1264,6 +1351,7 @@ class CLRMatch(SuperModel):
         null=False,
         help_text=_('The associated Grant.'),
     )
+    has_passed_kyc = models.BooleanField(default=False, help_text=_('Has this grant gone through KYC?'))
     ready_for_test_payout = models.BooleanField(default=False, help_text=_('Ready for test payout or not'))
     test_payout_tx = models.CharField(
         max_length=255,

@@ -8,22 +8,35 @@ Vue.mixin({
     };
   },
   methods: {
-    chatWindow: function(channel, dm) {
-      dm = dm || channel ? channel.indexOf('@') >= 0 : false;
-      channel = channel || 'town-square';
-      let vm = this;
-      const hackathonTeamSlug = 'hackathons';
-      const gitcoinTeamSlug = 'gitcoin';
-      const isHackathon = (document.hackathon_id !== null);
-
-
-      const url = `${vm.chatURL}/${isHackathon ? hackathonTeamSlug : gitcoinTeamSlug}/${dm ? 'messages' : 'channels'}/${dm ? '@' + channel : channel}`;
-
-      window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+    chatWindow: function(channel) {
+      window.chatSidebar.chatWindow(channel);
     }
   }
 });
 
+Vue.component('hackathon-sponsor-dashboard', {
+  props: [],
+  data: function() {
+    return {
+      isFunder: false,
+      funderBounties: []
+    };
+  },
+  methods: {
+    fetchBounties: function() {
+      let vm = this;
+      // fetch bounties
+      let apiUrlBounties = '/api/v0.1/user_bounties/';
+
+      let getBounties = fetchData(apiUrlBounties, 'GET');
+
+      $.when(getBounties).then((response) => {
+        vm.isFunder = response.is_funder;
+        vm.funderBounties = response.data;
+      });
+    }
+  }
+});
 
 Vue.component('modal', {
   props: [ 'user', 'size', 'id', 'issueDetails' ],
@@ -190,6 +203,52 @@ Vue.component('tribes-settings', {
   methods: {}
 });
 
+Vue.component('manage-sponsor', {
+  props: ['hackathon_id'],
+  methods: {
+    onMentorChange: function(event) {
+
+      this.bountyMentors = $('.mentor-users').select2('data').map(element => {
+        return element.id;
+      });
+      console.log(event);
+      console.log(this.bountyMentors);
+    },
+    updateBountyMentors: function() {
+      let vm = this;
+      const url = '/api/v0.1/bounty_mentor/';
+
+      const updateBountyMentor = fetchData(url, 'POST', JSON.stringify({
+        has_overrides: false,
+        hackathon_id: vm.hackathon_id,
+        set_default_mentors: true,
+        new_default_mentors: vm.bountyMentors
+      }), {'X-CSRFToken': vm.csrf, 'Content-Type': 'application/json; charset=utf-8'});
+
+      $.when(updateBountyMentor).then((response) => {
+        _alert({message: gettext(response.message)}, 'success');
+      }).catch((error) => {
+        _alert({message: gettext(error.message)}, 'error');
+      });
+    }
+  },
+  mounted() {
+    userSearch('.mentor-users', false, undefined, false, false, true, {'select': this.onMentorChange, 'unselect': this.onMentorChange});
+    this.bountyMentors = $('.mentor-users').select2('data').map(element => {
+      return element.id;
+    });
+
+    console.log(this.bountyMentors);
+  },
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      isFunder: false,
+      funderBounties: [],
+      bountyMentors: []
+    };
+  }
+});
 
 Vue.component('project-directory', {
   delimiters: [ '[[', ']]' ],
@@ -275,7 +334,6 @@ Vue.component('project-directory', {
     }
   },
   data: function() {
-
     return {
       csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
       sponsor: this.tribe || null,
@@ -325,6 +383,130 @@ Vue.component('project-directory', {
     window.removeEventListener('scroll', () => {
       this.bottom = this.bottomVisible();
     });
+  },
+  bottomVisible: function() { // TODO: abstract this to the mixin, and have it take a callback which modifies the component state.
+    let vm = this;
+
+    const scrollY = window.scrollY;
+    const visible = document.documentElement.clientHeight;
+    const pageHeight = document.documentElement.scrollHeight - 500;
+    const bottomOfPage = visible + scrollY >= pageHeight;
+
+    if (bottomOfPage || pageHeight < visible) {
+      if (vm.projectsHasNext) {
+        vm.projectsHasNext = false;
+        vm.fetchProjects();
+      }
+    }
+  }
+});
+
+
+Vue.component('showcase', {
+  delimiters: [ '[[', ']]' ],
+  props: [],
+  data: function() {
+    return {
+      csrf: $("input[name='csrfmiddlewaretoken']").val() || '',
+      hackathon: document.hackathonObj,
+      isEditing: false,
+      showcase: document.hackathonObj.showcase,
+      top: document.hackathonObj.showcase.top || [{}, {}, {}],
+      sponsors: document.hackathonSponsors,
+      spotlights: document.hackathonObj.showcase.spotlights || [],
+      prizes: document.hackathonObj.showcase.prizes || 0,
+      is_staff: document.contxt.is_staff
+    };
+  },
+  filters: {
+    'markdownit': function(val) {
+      if (!val)
+        return '';
+      const _markdown = new markdownit({
+        linkify: true,
+        highlight: function(str, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return `<pre class="hljs"><code>${hljs.highlight(lang, str, true).value}</code></pre>`;
+            } catch (__) {}
+          }
+          return `<pre class="hljs"><code>${sanitize(_markdown.utils.escapeHtml(str))}</code></pre>`;
+        }
+      });
+
+      _markdown.renderer.rules.table_open = function() {
+        return '<table class="table">';
+      };
+      ui_body = sanitize(_markdown.render(val));
+      return ui_body;
+    }
+  },
+  methods: {
+    followTribe: function(handle, event) {
+      event.preventDefault();
+      let vm = this;
+
+      const url = `/tribe/${handle}/join/`;
+      const sendJoin = fetchData(url, 'POST', {}, {'X-CSRFToken': vm.csrf});
+
+      $.when(sendJoin).then((response) => {
+        if (response && response.is_member) {
+          this.getSponsor(handle).followed = true;
+        } else {
+          this.getSponsor(handle).followed = false;
+        }
+      }).fail((error) => {
+        console.log(error);
+      });
+    },
+    getSponsor: function(handle) {
+      return this.sponsors.filter(sponsor => sponsor.org_name === handle)[0] || {};
+    },
+    addSpotlight: function() {
+      let vm = this;
+      let spotlight = {
+        sponsor: {},
+        content: ''
+      };
+
+      if (vm.spotlights.length === 0) {
+        vm.spotlights = [spotlight];
+      } else {
+        vm.spotlights.push(spotlight);
+      }
+    },
+    removeSpotlight: function(index) {
+      let vm = this;
+
+      if (index > -1) {
+        vm.spotlights.splice(index, 1);
+      }
+    },
+    saveShowcase: function() {
+      let vm = this;
+      const resource_url = `/api/v0.1/hackathon/${document.hackathonObj.id}/showcase/`;
+      const retrieveResources = fetchData(resource_url, 'POST', JSON.stringify({
+        content: vm.showcase.content,
+        top: vm.top,
+        spotlights: vm.spotlights,
+        prizes: vm.showcase.prizes
+      }), {'X-CSRFToken': vm.csrf});
+
+      vm.isEditing = false;
+
+
+      $.when(retrieveResources).then((response) => {
+        _alert('Showcase info saved', 'success', 1000);
+      }).fail((error) => {
+        console.log(error);
+      });
+
+    }
+  },
+  mounted() {
+    if (!this.showcase.top) {
+      this.showcase.top = [];
+    }
   }
 });
 
@@ -383,10 +565,7 @@ Vue.component('project-card', {
             <template v-slot:button-content>
               <i class='fas fa-comment-dots'></i>
             </template>
-            <b-dropdown-item-button v-if="project.chat_channel_id" @click.prevent="chatWindow(project.chat_channel_id);" aria-describedby="dropdown-header-label" :key="project.chat_channel_id || project.id">
-              Chat With Team
-            </b-dropdown-item-button>
-            <b-dropdown-item-button @click.prevent="chatWindow(profile.handle, true);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
+            <b-dropdown-item-button @click.prevent="chatWindow('@' +profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
               @ [[ profile.handle ]]
             </b-dropdown-item-button>
             </b-dropdown>
@@ -419,13 +598,57 @@ Vue.component('project-card', {
   </div>`
 });
 
-
 Vue.component('suggested-profiles', {
-  props: ['profiles'],
+  props: ['id'],
+  computed: {
+    orderedUsers: function() {
+      return _.orderBy(this.users, 'position_contributor', 'asc');
+    }
+  },
+  data: function() {
+    return {
+      users: []
+    };
+  },
+  mounted() {
+    this.fetchUsers();
+  },
+  methods: {
+    fetchUsers: function() {
+      let vm = this;
+
+      vm.isLoading = true;
+      vm.noResults = false;
+
+      let apiUrlUsers = `/api/v0.1/users_fetch/?user_filter=all&page=1&tribe=${vm.id}`;
+
+      var getUsers = fetchData(apiUrlUsers, 'GET');
+
+      $.when(getUsers).then(function(response) {
+        for (let item = 0; response.data.length > item; item++) {
+          if (!response.data[item].is_following) {
+            if (response.data[item].handle != document.contxt.github_handle) {
+              vm.users.push(response.data[item]);
+            }
+          }
+          if (vm.users.length === 10) {
+            break;
+          }
+        }
+
+        if (vm.users.length) {
+          vm.noResults = false;
+        } else {
+          vm.noResults = true;
+        }
+        vm.isLoading = false;
+      });
+    }
+  },
   template: `<div class="townsquare_nav-list my-2 tribe">
       <div id="suggested-tribes">
         <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
-            <suggested-profile v-for="profile in profiles" :key="profile.id" :profile="profile" />
+            <suggested-profile v-for="profile in orderedUsers" :key="profile.id" :profile="profile" />
         </ul>
       </div>
     </div>`
@@ -495,4 +718,47 @@ Vue.component('suggested-profile', {
   </div>
 </b-media>
 `
+});
+
+
+Vue.component('date-range-picker', {
+  template: '#date-range-template',
+  props: [ 'date', 'disabled' ],
+
+  data: function() {
+    return {
+      newDate: this.date
+    };
+  },
+  computed: {
+    pickDate() {
+      return this.newDate;
+    }
+  },
+  mounted: function() {
+    let vm = this;
+
+    this.$nextTick(function() {
+      window.$(this.$el).daterangepicker({
+        singleDatePicker: true,
+        startDate: moment().add(1, 'month'),
+        alwaysShowCalendars: false,
+        ranges: {
+          '1 week': [ moment().add(7, 'days'), moment().add(7, 'days') ],
+          '2 weeks': [ moment().add(14, 'days'), moment().add(14, 'days') ],
+          '1 month': [ moment().add(1, 'month'), moment().add(1, 'month') ],
+          '3 months': [ moment().add(3, 'month'), moment().add(3, 'month') ],
+          '1 year': [ moment().add(1, 'year'), moment().add(1, 'year') ]
+        },
+        'locale': {
+          'customRangeLabel': 'Custom',
+          'format': 'MM/DD/YYYY'
+        }
+      }).on('apply.daterangepicker', function(e, picker) {
+        vm.$emit('apply-daterangepicker', picker.startDate);
+        vm.newDate = picker.startDate.format('MM/DD/YYYY');
+      });
+    });
+  }
+
 });

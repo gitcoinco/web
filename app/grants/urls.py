@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    flag, grant_activity, grant_categories, grant_details, grant_fund, grant_new, grant_new_whitelabel, grants,
-    grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_stats_view, invoice,
-    leaderboard, new_matching_partner, profile, quickstart, subscription_cancel,
+    bulk_fund, flag, grant_activity, grant_categories, grant_details, grant_fund, grant_new, grant_new_whitelabel,
+    grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_clr, grants_stats_view,
+    invoice, leaderboard, new_matching_partner, profile, quickstart, subscription_cancel,
 )
 
 app_name = 'grants'
@@ -39,6 +39,7 @@ urlpatterns = [
     re_path(r'^new', grant_new, name='new'),
     re_path(r'^categories', grant_categories, name='grant_categories'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
+    path('bulk-fund', bulk_fund, name='bulk_fund'),
     path(
         '<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel',
         subscription_cancel,
@@ -57,4 +58,6 @@ urlpatterns = [
     path('cart', grants_cart_view, name='cart'),
     path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
+    path('v1/api/clr', grants_clr, name='grants_clr'),
+
 ]

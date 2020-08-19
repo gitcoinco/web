@@ -104,12 +104,10 @@
     }
     let _filters = filters.slice();
 
-    _filters.push('keywords', 'order_by', 'org', 'tab');
-    if (document.hackathon) {
-      resetFilters(true);
-      filters.push('org', 'tab');
+    resetFilters(true);
+    filters.push('org', 'tab', 'filter');
 
-    }
+
     _filters.forEach(filter => {
       if (getParam(filter)) {
         localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
@@ -899,7 +897,6 @@
 
           addPopover();
 
-
           switch (input) {
             default:
             case 0:
@@ -912,16 +909,40 @@
               newPathName = 'projects';
               break;
             case 3:
-              newPathName = 'chat';
-              break;
-            case 4:
               newPathName = 'participants';
               break;
+            case 5:
+              newPathName = 'showcase';
+              break;
+
           }
+
           let newUrl = `/hackathon/${vm.hackathonObj['slug']}/${newPathName}/${window.location.search}`;
 
           history.pushState({}, `${vm.hackathonObj['slug']} - ${newPathName}`, newUrl);
 
+        }
+      },
+      computed: {
+        isSponsor: () => {
+          let vm = this;
+
+          if (document.contxt.is_staff) {
+            return true;
+          }
+
+          for (let i = 0; i < vm.hackathonSponsors.length; i++) {
+            if (vm.hackathonSponsors[i].org_name === document.contxt.github_handle) {
+              return true;
+            }
+          }
+
+          for (let i = 0; i < vm.prizeFounders.length; i++) {
+            if (vm.prizeFounders[i] === document.contxt.github_handle) {
+              return true;
+            }
+          }
+          return false;
         }
       },
       data: () => ({
@@ -929,8 +950,11 @@
         activePanel: document.activePanel,
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
+        prizeFounders: document.prizeFounders,
         hackathonProjects: [],
-        chatURL: document.chatURL
+        chatURL: document.chatURL,
+        hackHasEnded: document.displayShowcase,
+        isSponsor: document.is_sponsor
       })
     });
   });

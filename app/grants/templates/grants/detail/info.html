@@ -97,7 +97,7 @@
         <div class="font-body mb-2">
           <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center"></i>
           <p class="d-inline-block mb-0">
-            <a href="https://twitter.com/{{grant.twitter_handle_1}}" target="new" rel="nofollow"  data-toggle="tooltip" data-html="true" data-placement="top" title="Project Twitter Account">@{{grant.twitter_handle_1}}</a>
+            <a href="https://twitter.com/{{grant.twitter_handle_1}}" target="new" rel="nofollow"  data-toggle="tooltip" data-html="true" data-placement="top" title="Project Twitter Account">{{grant.twitter_handle_1}}</a>
           </p>
         </div>
       {% endif %}
@@ -158,7 +158,7 @@
   </div>
 
   <div>
-    {% if not is_team_member or grant_is_inactive %}
+    {% if not is_team_member or grant.active %}
       {% if grant.categories and grant.categories.all %}
         <div class="mb-2 mt-3 font-body">
           <p class="sub-title mb-1">{% trans "CATEGORIES" %}</p>
@@ -186,7 +186,7 @@
       <p class="sub-title {% if is_team_member %} mb-0 {% else %} mb-3 {% endif %}">
         TEAM
       </p>
-      {% if is_team_member and not grant_is_inactive %}
+      {% if is_team_member and not grant.active %}
         <div>
           <div class="form__select2">
             <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
@@ -216,7 +216,7 @@
       {% endif %}
     </div>
 
-    {% if is_team_member and not grant_is_inactive %}
+    {% if is_team_member and grant.active %}
       <div class="mt-4">
         <button id="edit-details" class="button btn-gc-blue button--full shadow-none font-weight-bold py-3">
           <i class="fas fa-edit mr-2"></i> {% trans "Edit Info" %}
@@ -238,7 +238,7 @@
 
     {% endif %}
 
-    {% if is_admin and not grant_is_inactive %}
+    {% if is_admin and grant.active %}
       {% csrf_token %}
       <div id="js-cancel_grant" class="mt-3">
         <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">

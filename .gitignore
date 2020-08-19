@@ -1,6 +1,8 @@
 *.DS_Store*
 *.pyc
+chatdata/config/*
 chatconfig/config.json
+chatdata/root.html
 static/*
 sftp-config.json
 app/app/local_settings.py
@@ -25,6 +27,7 @@ webpack-stats.json
 .sass-cache
 *.sql
 celerybeat.pid
+chatconfig/config.json
 
 # Sensitive environment files
 .env

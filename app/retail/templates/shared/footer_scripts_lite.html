@@ -43,10 +43,10 @@
 </script>
 <!-- <script src="{% static "v2/js/lib/web3modal.min.js" %}"></script> -->
 <script src="https://unpkg.com/web3modal"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/authereum@latest/authereum.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@portis/web3@2.0.0-beta.55/umd/index.min.js"></script>
 <script src="{% static "v2/js/lib/fortmatic.js" %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/fortmatic@2.0.6/dist/fortmatic.js"></script>
 <script src="{% static "v2/js/lib/walletconnect-v1.0.0-beta-47.js" %}"></script>
 <script src="{% static "v2/js/data-chains.js" %}"></script>
 <script src="{% static "v2/js/wallet.js" %}"></script>
@@ -64,10 +64,9 @@
 <script src="{% static "v2/js/user_card.js" %}"></script>
 <script src="{% static "v2/js/truncate-hash.js" %}"></script>
 
-{% if vue %}
 <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
-{% endif %}
 {% if user.is_authenticated %}
+  <script src='{% static "v2/js/chatWindow.js" %}'></script>
   <script src="{% static "v2/js/notifications.js" %}"></script>
 {% endif %}
 

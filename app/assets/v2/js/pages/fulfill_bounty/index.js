@@ -10,7 +10,7 @@ const fetchFromWeb3Wallet = () => {
 }
 
 window.addEventListener('dataWalletReady', function(e) {
-  if (is_bounties_network) {
+  if (is_bounties_network || web3_type === 'web3_modal') {
     fetchFromWeb3Wallet();
   }
 }, false);
@@ -35,8 +35,12 @@ window.onload = function() {
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
-
+      loading_button($('.js-submit'));
       let data = {};
+
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event', 'Submit Work', 'click', 'Bounty Hunter')
+      }
 
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;

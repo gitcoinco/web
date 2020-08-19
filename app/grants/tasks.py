@@ -1,7 +1,11 @@
+import datetime as dt
+import math
 from decimal import Decimal
 
 from django.conf import settings
+from django.utils.text import slugify
 
+import pytz
 from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
@@ -15,14 +19,13 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
+CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0) # TODO:SELF-SERVICE
+
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     instance = Grant.objects.get(pk=grant_id)
     instance.contribution_count = instance.get_contribution_count
     instance.contributor_count = instance.get_contributor_count()
-    from grants.clr import CLR_START_DATE
-    import pytz
-    from django.utils.text import slugify
     instance.slug = slugify(instance.title)[:49]
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
@@ -30,6 +33,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     instance.amount_received_in_round = 0
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
+    instance.sybil_score = 0
     for subscription in instance.subscriptions.all():
         value_usdt = subscription.get_converted_amount(False)
         for contrib in subscription.subscription_contribution.filter(success=True):
@@ -37,6 +41,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
                 instance.amount_received += Decimal(value_usdt)
                 if contrib.created_on > round_start_date:
                     instance.amount_received_in_round += Decimal(value_usdt)
+                    instance.sybil_score += subscription.contributor_profile.sybil_score
 
         if subscription.num_tx_processed <= subscription.num_tx_approved and value_usdt:
             if subscription.num_tx_approved != 1:
@@ -58,6 +63,27 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             }
             )
     instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
+    instance.sybil_score = instance.sybil_score / instance.positive_round_contributor_count if instance.positive_round_contributor_count else "-1"
+    max_sybil_score = 5
+    if instance.sybil_score > max_sybil_score:
+        instance.sybil_score = max_sybil_score
+    try:
+        ss = float(instance.sybil_score)
+        instance.weighted_risk_score = float(ss ** 2) * float(math.sqrt(float(instance.clr_prediction_curve[0][1])))
+    except Exception as e:
+        print(e)
+
+    # save all subscription comments
+    wall_of_love = {}
+    for subscription in instance.subscriptions.all():
+        if subscription.comments:
+            key = subscription.comments
+            if key not in wall_of_love.keys():
+                wall_of_love[key] = 0
+            wall_of_love[key] += 1
+    wall_of_love = sorted(wall_of_love.items(), key=lambda x: x[1], reverse=True)
+    instance.metadata['wall_of_love'] = wall_of_love
+
     instance.save()
 
 

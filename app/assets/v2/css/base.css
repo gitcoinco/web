@@ -1,6 +1,22 @@
 /* stylelint-disable no-descending-specificity */
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
+
+
+
+.iframe-embed-loading {
+  margin-top:50% !important;
+}
+
+#sidebar-chat .b-sidebar-body {
+  overflow-y: hidden !important;
+}
+
+.chatWrapper iframe {
+  width: 100%;
+  min-height: 100vh;
+}
+
 div.body {
   min-height: 400px;
 }
@@ -135,6 +151,10 @@ a {
 
 .font-weight-semibold {
   font-weight: 600;
+}
+
+.text-through {
+  text-decoration-line: line-through;
 }
 
 #tutorials li{

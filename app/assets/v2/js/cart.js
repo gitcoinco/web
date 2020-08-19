@@ -210,7 +210,8 @@ Vue.component('grants-cart', {
       // If we have a cart where all donations are in Dai, we use a linear regression to
       // estimate gas costs based on real checkout transaction data, and add a 50% margin
       const donationCurrencies = this.donationInputs.map(donation => donation.token);
-      const isAllDai = donationCurrencies.every((addr, index, array) => addr === array[0]);
+      const daiAddress = this.getTokenByName('DAI').addr;
+      const isAllDai = donationCurrencies.every((addr) => addr === daiAddress);
 
       if (isAllDai) {
         if (donationCurrencies.length === 1) {
@@ -513,6 +514,26 @@ Vue.component('grants-cart', {
       return amount.div(factor).toString(10);
     },
 
+    async applyAmountToAllGrants(grant) {
+      const preferredAmount = grant.grant_donation_amount;
+      const preferredTokenName = grant.grant_donation_currency;
+      const fallbackAmount = await this.valueToEth(preferredAmount, preferredTokenName);
+
+      this.grantData.forEach((grant, index) => {
+        const acceptedCurrencies = this.currencies[index]; // tokens accepted by this grant
+
+        if (!acceptedCurrencies.includes(preferredTokenName)) {
+          // If the selected token is not available, fallback to ETH
+          this.grantData[index].grant_donation_amount = fallbackAmount;
+          this.grantData[index].grant_donation_currency = 'ETH';
+        } else {
+          // Otherwise use the user selected option
+          this.grantData[index].grant_donation_amount = preferredAmount;
+          this.grantData[index].grant_donation_currency = preferredTokenName;
+        }
+      });
+    },
+
     /**
      * @notice Checkout flow
      */
@@ -523,6 +544,11 @@ Vue.component('grants-cart', {
         if (!provider) {
           return await onConnect();
         }
+
+        if (typeof ga !== 'undefined') {
+          ga('send', 'event', 'Grant Checkout', 'click', 'Person')
+        }
+
 
         // Throw if invalid Gitcoin contribution percentage
         if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
@@ -536,7 +562,6 @@ Vue.component('grants-cart', {
           }
         });
 
-        await window.ethereum.enable();
         const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
 
         // Get list of tokens user is donating with
@@ -633,10 +658,10 @@ Vue.component('grants-cart', {
               });
           } else {
             approvalTx.send({ from: userAddress })
-              .on('transactionHash', (txHash) => { // eslint-disable-line no-loop-func
+              .on('transactionHash', async(txHash) => { // eslint-disable-line no-loop-func
                 indicateMetamaskPopup(true);
                 this.setApprovalTxHash(tokenName, txHash);
-                this.sendDonationTx(userAddress);
+                await this.sendDonationTx(userAddress);
               })
               .on('error', (error, receipt) => {
                 // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
@@ -657,7 +682,7 @@ Vue.component('grants-cart', {
       });
     },
 
-    sendDonationTx(userAddress) {
+    async sendDonationTx(userAddress) {
       // Configure our donation inputs
       // We use parse and stringify to avoid mutating this.donationInputs since we use it later
       const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
@@ -678,10 +703,10 @@ Vue.component('grants-cart', {
       bulkTransaction.methods
         .donate(donationInputsFiltered)
         .send({ from: userAddress, gas: this.donationInputsGasLimit, value: this.donationInputsEthAmount })
-        .on('transactionHash', (txHash) => {
+        .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
-          this.postToDatabase(txHash, userAddress);
+          this.postToDatabase(txHash, userAddress); // add `await` here if you want to wait for a response
           // Clear cart, redirect back to grants page, and show success alert
           localStorage.setItem('contributions_were_successful', 'true');
           localStorage.setItem('contributions_count', String(this.grantData.length));
@@ -707,19 +732,50 @@ Vue.component('grants-cart', {
         });
     },
 
-    postToDatabase(txHash, userAddress) {
+    async postToDatabase(txHash, userAddress) {
       // this.donationInputs is the array used for bulk donations
       // We loop through each donation and POST the required data
       const donations = this.donationInputs;
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
+      // Configure template payload
+      const saveSubscriptionPayload = {
+        // Values that are constant for all donations
+        contributor_address: userAddress,
+        csrfmiddlewaretoken,
+        frequency_count: 1,
+        frequency_unit: 'rounds',
+        gas_price: 0,
+        gitcoin_donation_address: gitcoinAddress,
+        hide_wallet_address: this.hideWalletAddress,
+        match_direction: '+',
+        network: document.web3network,
+        num_periods: 1,
+        real_period_seconds: 0,
+        recurring_or_not: 'once',
+        signature: 'onetime',
+        split_tx_id: txHash, // this txhash is our bulk donation hash
+        splitter_contract_address: bulkCheckoutAddress,
+        subscription_hash: 'onetime',
+        // Values that vary by donation
+        'gitcoin-grant-input-amount': [],
+        admin_address: [],
+        amount_per_period: [],
+        comment: [],
+        confirmed: [],
+        contract_address: [],
+        contract_version: [],
+        denomination: [],
+        grant_id: [],
+        sub_new_approve_tx_id: [],
+        token_address: [],
+        token_symbol: []
+      };
+
       for (let i = 0; i < donations.length; i += 1) {
         // Get URL to POST to
         const donation = donations[i];
         const grantId = donation.grant.grant_id;
-        const grantSlug = donation.grant.grant_slug;
-        const url = `/grants/${grantId}/${grantSlug}/fund`;
-
 
         // Get token information
         const tokenName = donation.grant.grant_donation_currency;
@@ -739,57 +795,42 @@ Vue.component('grants-cart', {
         // 100 makes it easier to search the DB to find which Gitcoin donations were automatic
         const isAutomatic = donation.grant.isAutomatic;
         const gitcoinGrantInputAmt = isAutomatic ? 100 : Number(this.gitcoinFactorRaw);
-        var network = document.web3network;
-        // Configure saveSubscription payload
-        const saveSubscriptionPayload = new URLSearchParams({
-          admin_address: donation.grant.grant_admin_address,
-          amount_per_period: Number(donation.grant.grant_donation_amount),
-          comment,
-          confirmed: false,
-          contract_address: donation.grant.grant_contract_address,
-          contract_version: donation.grant.grant_contract_version,
-          contributor_address: userAddress,
-          csrfmiddlewaretoken,
-          denomination: tokenAddress,
-          frequency_count: 1,
-          frequency_unit: 'rounds',
-          gas_price: 0,
-          'gitcoin-grant-input-amount': gitcoinGrantInputAmt,
-          gitcoin_donation_address: gitcoinAddress,
-          grant_id: grantId,
-          hide_wallet_address: this.hideWalletAddress,
-          match_direction: '+',
-          network,
-          num_periods: 1,
-          real_period_seconds: 0,
-          recurring_or_not: 'once',
-          signature: 'onetime',
-          split_tx_id: txHash, // this txhash is our bulk donation hash
-          splitter_contract_address: bulkCheckoutAddress,
-          sub_new_approve_tx_id: donation.tokenApprovalTxHash,
-          subscription_hash: 'onetime',
-          token_address: tokenAddress,
-          token_symbol: tokenName
-        });
 
-        // Configure headers
-        const headers = {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-        };
+        // Add the donation parameters
+        saveSubscriptionPayload.admin_address.push(donation.grant.grant_admin_address);
+        saveSubscriptionPayload.amount_per_period.push(Number(donation.grant.grant_donation_amount));
+        saveSubscriptionPayload.comment.push(comment);
+        saveSubscriptionPayload.confirmed.push(false);
+        saveSubscriptionPayload.contract_address.push(donation.grant.grant_contract_address);
+        saveSubscriptionPayload.contract_version.push(donation.grant.grant_contract_version);
+        saveSubscriptionPayload.denomination.push(tokenAddress);
+        saveSubscriptionPayload['gitcoin-grant-input-amount'].push(gitcoinGrantInputAmt);
+        saveSubscriptionPayload.grant_id.push(grantId);
+        saveSubscriptionPayload.sub_new_approve_tx_id.push(donation.tokenApprovalTxHash);
+        saveSubscriptionPayload.token_address.push(tokenAddress);
+        saveSubscriptionPayload.token_symbol.push(tokenName);
+      } // end for each donation
 
-        // Define parameter objects for POST request
-        const saveSubscriptionParams = {
-          method: 'POST',
-          headers,
-          body: saveSubscriptionPayload
-        };
 
-        // Send saveSubscription request
-        fetch(url, saveSubscriptionParams)
-          .catch(err => {
-            this.handleError(err);
-          });
-      }
+      // Configure request parameters
+      const url = '/grants/bulk-fund';
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      };
+      const saveSubscriptionParams = {
+        method: 'POST',
+        headers,
+        body: new URLSearchParams(saveSubscriptionPayload)
+      };
+
+      // Send saveSubscription request
+      // check `Preserve log` in console settings to inspect these logs more easily
+      const res = await fetch(url, saveSubscriptionParams);
+
+      console.log('Bulk fund POST response', res);
+      const json = await res.json();
+
+      console.log('Bulk fund POST response, JSON', json);
     },
 
     sleep(ms) {
@@ -804,19 +845,23 @@ Vue.component('grants-cart', {
       return y_lower + (((y_upper - y_lower) * (x - x_lower)) / (x_upper - x_lower));
     },
 
-    async valueToDai(amount, tokenSymbol) {
+    valueToDai(amount, tokenSymbol, tokenPrices) {
+      const tokenIndex = tokenPrices.findIndex(item => item.token === tokenSymbol);
+      const amountOfOne = tokenPrices[tokenIndex].usdt; // value of 1 tokenSymbol
+
+      return Number(amount) * Number(amountOfOne); // convert based on quantity and return
+    },
+
+    async valueToEth(amount, tokenSymbol) {
       const url = `${window.location.origin}/sync/get_amount?amount=${amount}&denomination=${tokenSymbol}`;
       const response = await fetch(url);
       const newAmount = await response.json();
 
-      return newAmount.usdt;
+      return newAmount[0].eth;
     },
 
-    async predictCLRMatch(grant) {
-      const rawAmount = Number(grant.grant_donation_amount);
-      let amount = await this.valueToDai(rawAmount, grant.grant_donation_currency);
-
-      const clr_prediction_curve_2d = JSON.parse(grant.grant_clr_prediction_curve);
+    async predictCLRMatch(grant, amount) {
+      const clr_prediction_curve_2d = grant.grant_clr_prediction_curve;
       const clr_prediction_curve = clr_prediction_curve_2d.map(row => row[2]);
 
       if (amount > 10000) {
@@ -877,6 +922,12 @@ Vue.component('grants-cart', {
     grantData: {
       async handler() {
         CartData.setCart(this.grantData);
+        const tokenNames = Array.from(new Set(this.grantData.map(grant => grant.grant_donation_currency)));
+
+        const priceUrl = `${window.location.origin}/sync/get_amount?denomination=${tokenNames}`;
+        const priceResponse = await fetch(priceUrl);
+        const tokenPrices = (await priceResponse.json());
+
         for (let i = 0; i < this.grantData.length; i += 1) {
           const verification_required_to_get_match = false;
 
@@ -887,7 +938,16 @@ Vue.component('grants-cart', {
             this.grantData[i].grant_donation_clr_match = 0;
           } else {
             const grant = this.grantData[i];
-            const matchAmount = await this.predictCLRMatch(grant);
+            // Convert amount to DAI
+            const rawAmount = Number(grant.grant_donation_amount);
+            const STABLE_COINS = [ 'DAI', 'SAI', 'USDT', 'TUSD', 'aDAI', 'USDC' ];
+            // All stable coins are handled with USDT (see app/app/settings.py for list)
+            const tokenName = STABLE_COINS.includes(grant.grant_donation_currency)
+              ? 'USDT'
+              : grant.grant_donation_currency;
+
+            const amount = this.valueToDai(rawAmount, tokenName, tokenPrices);
+            const matchAmount = await this.predictCLRMatch(grant, amount);
 
             this.grantData[i].grant_donation_clr_match = matchAmount ? matchAmount.toFixed(2) : 0;
           }
@@ -922,6 +982,26 @@ Vue.component('grants-cart', {
     this.grantData = CartData.loadCart();
     // Initialize array of empty comments
     this.comments = this.grantData.map(grant => undefined);
+
+    // Get list of all grant IDs and unique tokens in the cart
+    const grantIds = this.grantData.map(grant => grant.grant_id);
+
+    // Fetch updated CLR curves for all grants
+    const url = `${window.location.origin}/grants/v1/api/clr?pks=${grantIds.join(',')}`;
+    const response = await fetch(url);
+    const clrCurves = (await response.json()).grants;
+
+    // Update CLR curves
+    this.grantData.forEach((grant, index) => {
+      // Find the clrCurves entry with the same grant ID as this grant
+      const clrIndex = clrCurves.findIndex(item => {
+        return Number(item.pk) === Number(grant.grant_id);
+      });
+
+      // Replace the CLR prediction curve
+      this.grantData[index].grant_clr_prediction_curve = clrCurves[clrIndex].clr_prediction_curve;
+    });
+
     // Wait until we can load token list
     let elapsedTime = 0;
     let delay = 50; // 50 ms debounce
