@@ -482,7 +482,7 @@ Vue.mixin({
       let vm = this;
 
       if (typeof ga !== 'undefined') {
-        ga('send', 'event', 'Create Bounty', 'click', 'Bounty Funder')
+        ga('send', 'event', 'Create Bounty', 'click', 'Bounty Funder');
       }
 
       const apiUrlBounty = '/api/v1/bounty/create';
