@@ -58,7 +58,7 @@ fix-stylelint: ## Run stylelint --fix against the project directory. Requires no
 	@npm run stylelint:fix
 
 fix-yapf: ## Run yapf against any included or newly introduced Python code.
-	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -e "app/app/settings.py" -p app/app/ app/avatar/ app/credits/ app/dataviz/ app/enssubdomain/ app/ethos/ app/github/
+	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -e "app/app/settings.py" -p app/app/ app/avatar/ app/credits/ app/dataviz/ app/github/
 
 fix: fix-eslint fix-stylelint fix-isort fix-yapf ## Attempt to run all fixes against the project directory.
 

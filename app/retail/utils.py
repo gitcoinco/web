@@ -24,6 +24,7 @@ import statistics
 import time
 
 from django.conf import settings
+from django.db import connection
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -464,8 +465,7 @@ def build_stat_results(keyword=None):
     context['top_funders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_payers') \
         .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
     pp.profile_time('funders')
-    context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs') \
-        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
+    context['top_orgs'] = ['ethereumclassic', 'web3foundation', 'ethereum', 'arweave', 'zilliqa']
     pp.profile_time('orgs')
     context['top_coders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_earners') \
         .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
@@ -494,10 +494,43 @@ def build_stat_results(keyword=None):
     context['bounty_history'] = json.dumps(bounty_history)
     pp.profile_time('bounty_history')
 
+
+ 
+
+    def get_kudos_leaderboard(key='kudos_token.artist'):
+        query = f"""
+            select
+                replace({key}, '@', '') as theusername,
+                sum(kudos_kudostransfer.amount) as amount,
+                string_agg( DISTINCT kudos_kudostransfer.kudos_token_cloned_from_id::varchar(255), ','),
+                count(1) as num
+            from kudos_kudostransfer
+                inner join kudos_token on kudos_kudostransfer.kudos_token_cloned_from_id = kudos_token.id
+                where {key} != ''
+                group by theusername
+                order by amount desc
+            limit 10
+
+"""
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            rows = []
+            for row in cursor.fetchall():
+                _row = [ele for ele in row] # cast to array
+                _row[2] = _row[2].split(',')
+                rows.append(_row)
+
+        return rows
+
     # Bounties
     from marketing.models import ManualStat
     completion_rate = get_completion_rate(keyword)
     funder_receiver_stats = get_funder_receiver_stats(keyword)
+    context['kudos_leaderboards'] = [
+        ['Top Kudos Artists 👩‍🎨', get_kudos_leaderboard('kudos_token.artist'), 'created'],
+        ['Top Kudos Collectors 🖼', get_kudos_leaderboard('kudos_kudostransfer.username'), 'collected'],
+        ['Top Kudos Senders 💌', get_kudos_leaderboard('kudos_kudostransfer.from_username'), 'sent']
+        ]
     context['funders'] = funder_receiver_stats['funders']
     context['avg_value'] = funder_receiver_stats['avg_value']
     context['median_value'] = funder_receiver_stats['median_value']
@@ -579,7 +612,7 @@ def build_stat_results(keyword=None):
     context['last_month_amount'] = round(sum(bh)/1000)
     context['last_month_amount_hourly'] = sum(bh) / 30 / 24
     context['last_month_amount_hourly_business_hours'] = context['last_month_amount_hourly'] / 0.222
-    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.filter(visible=True, start_date__lt=timezone.now()).order_by('start_date').all()]
+    context['hackathons'] = [(ele, ele.stats) for ele in HackathonEvent.objects.filter(visible=True, start_date__lt=timezone.now()).order_by('-start_date').all()]
     context['hackathon_total'] = sum([ele[1]['total_volume'] for ele in context['hackathons']])
     from dashboard.models import FeedbackEntry
     reviews = FeedbackEntry.objects.exclude(comment='').filter(created_on__lt=(timezone.now() - timezone.timedelta(days=7))).order_by('-created_on')[0:15]

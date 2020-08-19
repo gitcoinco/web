@@ -54,10 +54,11 @@ BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
 YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
+ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='YOUR-ETHERSCAN-KEY')
 VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
 FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
 FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
-PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='YOUR-SupEr-SecRet-TeSt-PYPL-KeY')
+PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -111,7 +112,6 @@ INSTALLED_APPS = [
     'dashboard',
     'chat',
     'quests',
-    'enssubdomain',
     'faucet',
     'tdi',
     'gas',
@@ -556,14 +556,6 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 
-# ENS Subdomain Settings
-# The value of ENS_LIMIT_RESET_DAYS should be higher since only one transaction is allowed per user.
-# The only reason for a user to make more than one request is when he looses access to the wallet.
-ENS_TLD = env('ENS_TLD', default='gitcoin.eth')
-ENS_LIMIT_RESET_DAYS = env.int('ENS_LIMIT_RESET_DAYS', default=30)
-ENS_OWNER_ACCOUNT = env('ENS_OWNER_ACCOUNT', default='0x00000')
-ENS_PRIVATE_KEY = env('ENS_PRIVATE_KEY', default=None)
-
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
@@ -586,9 +578,6 @@ GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='')  # TODO
 GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
-
-# Etherscan API
-ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='')
 
 # Kudos revenue account
 KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')

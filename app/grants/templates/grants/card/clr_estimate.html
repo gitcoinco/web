@@ -1,5 +1,5 @@
 {% load i18n static humanize grants_extra %}
-{% if clr_active %}
+
 <div class="clr clr-prediction arrow_box">
   <p class="title">
     Your contribution goes a long way!
@@ -43,11 +43,10 @@
   {% if grant.last_clr_calc_date %}
     <div class="row mx-0" style="font-size: 9px;">
       <div class="w-100 text-center text-black-70 pb-1">
-        Next update : {{grant.next_clr_calc_date | naturaltime}}
+        Next update : {{grant.safe_next_clr_calc_date | naturaltime}}
         <span class="mx-1">|</span>
         Last updated : {{grant.last_clr_calc_date | naturaltime}}
       </div>
     </div>
   {% endif %}
 </div>
-{% endif %}

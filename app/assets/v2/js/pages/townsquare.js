@@ -1,30 +1,4 @@
 $(document).ready(function() {
-  // gets multi part (ex: 10 hours 2 minutes 5 seconds) time
-  var time_difference_broken_down = function(difference) {
-    let remaining = ' now. Refresh to view offer!';
-    let prefix = ' in ';
-
-    if (difference > 0) {
-      console.log(moment(difference).inspect());
-      const parts = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60)
-      };
-
-      remaining = Object.keys(parts)
-        .map(part => {
-          if (!parts[part])
-            return;
-          return `${parts[part]} ${part}`;
-        })
-        .join(' ');
-    } else {
-      return remaining;
-    }
-    return prefix + remaining;
-  };
 
   $('body').on('click', '#mobile_nav_toggle li a', function(e) {
     $('#mobile_nav_toggle li a').removeClass('active');
@@ -46,15 +20,6 @@ $(document).ready(function() {
 
   $('body').on('click', '.top_offer', function(e) {
     document.location = $(this).find('a.btn').attr('href');
-  });
-
-  // collapse menu items
-  $('body').on('click', '.townsquare_block-header', function(e) {
-    let target_id = $(this).data('target');
-
-    $('#' + target_id).toggleClass('hidden');
-    $(this).toggleClass('closed');
-    localStorage.setItem(target_id, $(this).hasClass('closed'));
   });
 
   // effects when an offer is clicked upon
@@ -79,6 +44,15 @@ $(document).ready(function() {
       e.preventDefault();
       document.location.href = get_redir_location('search-' + $('#keyword').val());
     }
+  });
+
+  // collapse menu items
+  $('body').on('click', '.townsquare_block-header', function(e) {
+    let target_id = $(this).data('target');
+
+    $('#' + target_id).toggleClass('hidden');
+    $(this).toggleClass('closed');
+    localStorage.setItem(target_id, $(this).hasClass('closed'));
   });
 
   $('body').on('click', '#trending', function(e) {
@@ -173,7 +147,12 @@ $(document).ready(function() {
       $('#top_bar').html($(response).find('#top_bar').html());
       // bind more actions
       joinTribe();
-      // collapse menu items
+      const hide_promo = localStorage.getItem('hide_promo');
+
+      if (!hide_promo) {
+        $('.promo').removeClass('hidden');
+      }
+
       $('.townsquare_block-header').each(function() {
         let target_id = $(this).data('target');
         var item = localStorage.getItem(target_id);
@@ -182,11 +161,6 @@ $(document).ready(function() {
           $(this).click();
         }
       });
-      const hide_promo = localStorage.getItem('hide_promo');
-
-      if (!hide_promo) {
-        $('.promo').removeClass('hidden');
-      }
     });
   };
 

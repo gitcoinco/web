@@ -743,12 +743,6 @@ if (document.getElementById('gc-board')) {
   });
 }
 
-Vue.filter('pluralize', (word, amount, singular, plural) => {
-  plural = plural || 's';
-  singular = singular || '';
-  return amount !== 1 ? `${word + plural}` : `${word + singular}`;
-});
-
 Vue.filter('truncate', (account, num) => {
   num = !num ? num = 4 : num;
   return account.substr(0, num + 2) + '\u2026' + account.substr(-num);

@@ -396,7 +396,7 @@ class RoundupEmail(SuperModel):
     from_email = models.EmailField(max_length=255)
     from_name = models.CharField(max_length=255)
     subject = models.CharField(max_length=255)
-    body = models.TextField(max_length=5000, blank=True)
+    body = models.TextField(max_length=15000, blank=True)
     kudos_ids = models.CharField(max_length=255, help_text="kudosid1,kudosid2,kudosid3")
     highlights = JSONField(default=dict, blank=True)
     sponsor = JSONField(default=dict, blank=True)

@@ -45,10 +45,6 @@
     <img src="{% static "v2/images/top-bar/grants-symbol-neg.svg" %}" height="22" alt="">
     <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Grants</span>
   </a>
-  <a class="{% if request.path|matches:'^\/((codefund.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="https://codefund.app/">
-    <img src="{% static "v2/images/home/codefund.svg" %}" height="20" alt="">
-    <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Codefund</span>
-  </a>
   <a class="{% if request.path|matches:'^\/((quests.*))$' %}selected{% endif %} text-center p-1 p-sm-2 p-md-3" href="{% url "quests_index" %}">
     <img src="{% static "v2/images/top-bar/quests-symbol-neg.svg" %}" height="22" alt="">
     <span class="d-block d-md-inline ml-md-2 font-smaller-4 font-weight-bold text-white mt-1">Quests</span>

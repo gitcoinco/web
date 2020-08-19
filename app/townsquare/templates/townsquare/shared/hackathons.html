@@ -1,44 +1,51 @@
-<div id="hackathons" class="mb-4 box-hackathons">
-  {% for hackathon in hackathon_tabs|slice:":5" %}
-    <div class="box-hackathons-townsquare">
-      <div class="card flex-row" id="{{hackathon.slug}}">
-        <div class="card-header">
-          {% firstof hackathon.logo_svg or hackathon.logo as logo %}
-          {% if logo %}
-            <img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
-          {% else %}
-            <div class="hackathon-card-logo text-center px-3 font-caption">
-              <a href="{% url 'hackathon_onboard' hackathon.slug %}">  {{ hackathon.title }} </a>
-            </div>
-          {% endif %}
-        </div>
-
-        <div class="card-body">
-          <h5 class="font-subheader font-weight-semibold">
-            <a href="{% url 'hackathon' hackathon.slug %}" class="text-black" target="_blank" rel="noopener noreferrer">
-              {{ hackathon.title }}
-            </a>
-          </h5>
-          <div class="font-smaller-2">
-            <span class>From</span>
-            <time class="font-weight-bold" datetime="{{ hackathon.start_date|date:'c' }}">
-              {{ hackathon.start|date:"m/d/Y" }}
-            </time>
-            <span>To</span>
-            <time class="font-weight-bold" datetime="{{ hackathon.end_date|date:'c' }}">
-              {{ hackathon.end|date:"m/d/Y" }}
-            </time>
-          </div>
-          <div class="mt-1 hackathon-actions">
-            {% if hackathon.end|timesince <= "1 min" %}
-              <a href="{% url 'hackathon_onboard' hackathon.slug %}">
-                Join Hackathon >
-              </a>
+<div>
+  <div class="townsquare_block-header accordion active my-1" data-target="hackathons-cta">
+    Gitcoin Hackathons
+  </div>
+  <div id="hackathons-cta" class="mb-4 box-hackathons panel-active bg-shade-0">
+    {% for hackathon in hackathon_tabs|slice:":5" %}
+      <div class="box-hackathons-townsquare bg-shade-0">
+        <div class="card bg-shade-0 flex-row" id="{{hackathon.slug}}">
+          <div class="card-header text-center" style="min-width: 8rem;">
+            {% firstof hackathon.logo_svg or hackathon.logo as logo %}
+            {% if logo %}
+              <img class="hackathon-card-logo" src="{{MEDIA_URL}}{{logo}}" alt="Hackathon logo" />
+            {% else %}
+              <div class="hackathon-card-logo text-center px-3 font-caption">
+                <a target="_blank" rel="noopener noreferrer" href="{% url 'hackathon' hackathon.url_slug %}">  {{ hackathon.title }} </a>
+              </div>
             {% endif %}
           </div>
+          <div class="card-body my-auto">
+            <h5 class="font-body font-weight-semibold mb-2">
+              <a href="{% url 'hackathon' hackathon.url_slug %}" class="text-mode-color" target="_blank" rel="noopener noreferrer">
+                {{ hackathon.title }}
+              </a>
+            </h5>
+            <div class="font-smaller-5">
+              <span class>From</span>
+              <time class="font-weight-semibold" datetime="{{ hackathon.start_date|date:'c' }}">
+                {{ hackathon.start|date:"m/d/Y" }}
+              </time>
+              <span>To</span>
+              <time class="font-weight-semibold" datetime="{{ hackathon.end_date|date:'c' }}">
+                {{ hackathon.end|date:"m/d/Y" }}
+              </time>
+            </div>
+            <div class="mt-1 font-caption">
+              {% if hackathon.end|timesince <= "1 min" %}
+                <a href="{% url 'hackathon_onboard' hackathon.url_slug %}">
+                  Join Hackathon >
+                </a>
+              {% endif %}
+            </div>
+          </div>
         </div>
-      </div>   
-    </div>
-  {% endfor %}
-  <a href="https://gitcoin.co/hackathon-list/" class="view-all">View all ></a>
+      </div>
+    {% endfor %}
+    <p class="text-center bg-shade-0 mb-0 pb-3">
+      <a href="https://gitcoin.co/hackathon-list/" class="font-caption py-2" style="color: var(--link-color);">VIEW ALL</a>
+    </p>
+  </div>
 </div>
+<hr>

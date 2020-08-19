@@ -37,6 +37,7 @@ Vue.filter('markdownit', function(val) {
   if (!val)
     return '';
   const _markdown = new markdownit({
+    html: true,
     linkify: true,
     highlight: function(str, lang) {
       if (lang && hljs.getLanguage(lang)) {
@@ -118,4 +119,18 @@ Vue.filter('toUppercase', function(value) {
 
 Vue.filter('toLower', function(value) {
   return value.toLowerCase();
+});
+
+Vue.filter('pluralize', (word, amount, singular, plural) => {
+  plural = plural || 's';
+  singular = singular || '';
+  return amount !== 1 ? `${word + plural}` : `${word + singular}`;
+});
+
+Vue.filter('decimals', (number, decimals) => {
+  let result;
+
+  decimals = decimals || 2;
+  result = parseFloat(Number(number).toFixed(decimals));
+  return result;
 });

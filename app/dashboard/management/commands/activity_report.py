@@ -31,7 +31,6 @@ from boto.s3.key import Key
 from dashboard.models import Bounty, Profile
 from dashboard.utils import all_sendcryptoasset_models
 from economy.utils import convert_amount
-from enssubdomain.models import ENSSubdomainRegistration
 from faucet.models import FaucetRequest
 from marketing.mails import send_mail
 
@@ -151,27 +150,6 @@ class Command(BaseCommand):
             'payee_location': location,
         }
 
-    def format_ens_reg(self, ensreg):
-        location, bio = get_bio(ensreg.profile.handle) if ensreg.profile else "", ""
-        amount = ensreg.gas_cost_eth
-        return {
-            'type': 'ens_subdomain_registration',
-            'created_on': ensreg.created_on,
-            'last_activity': ensreg.modified_on,
-            'amount': amount,
-            'denomination': 'ETH',
-            'amount_eth': amount,
-            'amount_usdt': convert_amount(amount, 'ETH', 'USDT'),
-            'from_address': '0x4331B095bC38Dc3bCE0A269682b5eBAefa252929',
-            'claimee_address': ensreg.subdomain_wallet_address,
-            'repo': 'n/a',
-            'from_username': 'admin',
-            'fulfiller_github_username': ensreg.profile.handle if ensreg.profile else "",
-            'status': 'sent',
-            'comments': f"ENS Subdomain Registration {ensreg.pk}",
-            'payee_bio': bio,
-            'payee_location': location,
-        }
 
     def upload_to_s3(self, filename, contents):
         s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
@@ -207,17 +185,10 @@ class Command(BaseCommand):
             objs = [x for x in objs]
             all_scram += objs
 
-        enssubregistrations = ENSSubdomainRegistration.objects.filter(
-            created_on__gte=options['start_date'],
-            created_on__lte=options['end_date']
-        ).order_by('created_on', 'id')
-        formted_enssubreg = imap(self.format_ens_reg, enssubregistrations)
-
         # python3 list hack
         formatted_frs = [x for x in formatted_frs]
         formatted_bounties = [x for x in formatted_bounties]
-        formateted_enssubregistrations = [x for x in formted_enssubreg]
-        all_items = formatted_bounties + all_scram + formatted_frs + formateted_enssubregistrations
+        all_items = formatted_bounties + all_scram + formatted_frs
 
         csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
