@@ -30,96 +30,6 @@
     font-family: 'Roboto', Arial, sans-serif;
   }
 
-  .rounded {
-    border-radius: 50%;
-  }
-
-  .mb-0 {
-    margin-bottom: 0;
-  }
-
-  .mt-1 {
-    margin-top: .5rem;
-  }
-
-  .mt-2 {
-    margin-top: 1rem;
-  }
-
-  .mt-3 {
-    margin-top: 1.5rem;
-  }
-
-  .mt-4 {
-    margin-top: 2rem;
-  }
-
-  .my-3 {
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .my-4 {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  h1, h2, h3, h4, h5, h6,
-  .h1, .h2, .h3, .h4, .h5, .h6 {
-    text-transform: capitalize;
-    font-weight: 500;
-  }
-
-  h3 {
-    line-height: 30px;
-  }
-
-  h3{
-    color: #000000;
-    font-weight: bold;
-    margin-bottom: 10px;
-    margin-top: 40px;
-  }
-
-  h3.no-subtitle {
-    margin-bottom: 0;
-  }
-
-  h5{
-    color: #000000;
-    font-size: 0.8em;
-    margin-top:5px; 
-    margin-bottom: 0;
-    font-weight: 400;
-  }
-
-  hr {
-    width: 90%;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-    color: black;
-    font-weight: bold;
-  }
-
-  h2 {
-    font-size: 1.6rem;
-  }
-
-  h3 {
-    font-size: 1.4rem;
-  }
-
-  h4 {
-    font-size: 1.1rem;
-  }
-
-  h4, .h4 {
-    text-align: center;
-    padding-top: 40px;
-  }
-
   body {
     {% if override_back_color %}
       background-color: {{ override_back_color }};
@@ -177,7 +87,7 @@
     align-content: center;
     text-align: center;
   }
-  
+
   body, #header {
       {% if email_style == 1 %}
         background-color: #3E00FF;
@@ -212,7 +122,7 @@
       {% else %}
         background-color: #15003e;
       {% endif %}
-  } 
+  }
   #footer {
     padding: 30px 50px;
     background-color: #0D0764;
@@ -236,10 +146,6 @@
 
   #footer a {
     color: #70b2ff;
-  }
-
-  #copyright, #legal-contact {
-
   }
 
   a {
@@ -275,15 +181,15 @@
     padding-bottom: 0.5em;
     line-height: 20px;
   }
-  
+
   .grant-recontrib-msg {
     margin: 0 auto;
   }
 
   .grant-tile {
-    margin: 0 auto; 
+    margin: 0 auto;
     border-bottom: 1px solid #EFEFEF;
-    text-align: left; 
+    text-align: left;
     padding: 10px;
   }
 
@@ -322,7 +228,7 @@
       width: 35%;
     }
   }
-  
+
   @media (min-width: 768px) {
     .grant-txn-msg {
       width: 70%;
@@ -334,9 +240,9 @@
       width: 60%;
     }
   }
-  
+
   /* Bootstrap styles used for activities -- START */
-  
+
     *,
     ::after,
     ::before {
@@ -487,7 +393,7 @@
     vertical-align: middle;
     border-style: none;
   }
-  
+
   .pl-2,
   .px-2 {
     padding-left: .5rem !important;
@@ -610,13 +516,13 @@
   }
 
   .font-weight-bold {
-      font-weight: 700!important;
+    font-weight: 700!important;
   }
   .font-caption {
     font-size: 0.75rem;
   }
   .text-right {
-      text-align: right!important;
+    text-align: right!important;
   }
 
   .mb-auto, .my-auto {
@@ -636,7 +542,7 @@
   /* Bootstrap styles used for activities -- END */
 
   /* Styles for .activity_stream -- START */
-  
+
   .activity_stream .box {
     padding-left: 0;
     padding-right: 0;
@@ -649,7 +555,7 @@
     list-style: none;
     padding: 5px;
   }
-  
+
   .tag {
     text-align: center;
     border-radius: 2px;
@@ -670,12 +576,12 @@
   .tag span {
     color: #3E00FF; /* var(--gc-blue) */
   }
-  
+
   .tag p {
     margin-top: 0;
     line-height: normal;
   }
-  
+
   .font-smaller-6 {
     font-size: 0.6rem;
   }
@@ -728,7 +634,7 @@
     background-color: #3E00FF; /* var(--gc-blue) */
   }
   /* Styles for .activity_stream -- END */
-  
+
   @media screen and (min-width: 35.5em) {
     .social-img {
       max-height: 50px;
@@ -771,11 +677,11 @@
     .kudos_highlights_items {
       margin: 2em 0;
     }
-    
-    .quest-img-bottom { 
+
+    .quest-img-bottom {
       margin-right: 30vw;
     }
-    
+
     .quest-img-top {
       margin-left: 30vw;
     }
@@ -829,20 +735,20 @@
   }
 
   @media screen and (min-width: 120em) {
-    .quest-img-bottom { 
+    .quest-img-bottom {
       margin-right: 7vw;
     }
-    
+
     .quest-img-top {
       margin-left: 7vw;
     }
   }
 
   @media screen and (min-width: 160em) {
-    .quest-img-bottom { 
+    .quest-img-bottom {
       margin-right: 5vw;
     }
-    
+
     .quest-img-top {
       margin-left: 5vw;
     }
@@ -909,7 +815,7 @@
       <a href="https://gitcoin.co/settings/account">New Wallet? Click here to update Payout Address.</a>
     {% else %}
       You do not have a preferred payout address on file.
-      <a href="https://gitcoin.co/settings/account">Click here to set a Payout Address.</a>    
+      <a href="https://gitcoin.co/settings/account">Click here to set a Payout Address.</a>
     {% endif %}
 
   </div>
