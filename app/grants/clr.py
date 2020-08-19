@@ -33,7 +33,6 @@ from marketing.models import Stat
 from perftools.models import JSONStore
 
 CLR_PERCENTAGE_DISTRIBUTED = 0
-UV_THRESHOLD = 5.0
 
 '''
     translates django grant data structure to a list of lists
@@ -96,7 +95,7 @@ def get_verified_list(grant_contributions):
         list of lists of grant data
             [[grant_id (str), user_id (str), verification_status (boolean), contribution_amount (float)]]
         round
-            str ('current' or 'previous') only
+            str ('current') only
 
     returns:
         aggregated contributions by pair in nested list
@@ -112,8 +111,6 @@ def aggregate_contributions(grant_contributions, _round='current'):
     round_dict = {}
     contrib_dict = {}
     for proj, user, _, amount in grant_contributions:
-        if _round == 'previous':
-            amount = amount / 3
         if proj not in contrib_dict:
             contrib_dict[proj] = {}
         contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
@@ -124,7 +121,7 @@ def aggregate_contributions(grant_contributions, _round='current'):
 
 
 '''
-    gets pair totals between current round, current and previous round
+    gets pair totals between current round, current round
 
     args:
         aggregated contributions by pair in nested dict
@@ -137,7 +134,7 @@ def aggregate_contributions(grant_contributions, _round='current'):
             }
 
     returns:
-        pair totals between current round, current and previous round
+        pair totals between current round, current round
             {user_id (str): {user_id (str): pair_total (float)}}
 
 '''
@@ -145,7 +142,7 @@ def get_totals_by_pair(contrib_dict):
     tot_overlap = {}
 
     # start pairwise match
-    for proj, contribz in contrib_dict['current'].items():
+    for _, contribz in contrib_dict['current'].items():
         for k1, v1 in contribz.items():
             if k1 not in tot_overlap:
                 tot_overlap[k1] = {}
@@ -155,13 +152,6 @@ def get_totals_by_pair(contrib_dict):
                 if k2 not in tot_overlap[k1]:
                     tot_overlap[k1][k2] = 0
                 tot_overlap[k1][k2] += (v1 * v2) ** 0.5
-
-            # pairwise matches to last round
-            if contrib_dict['previous'].get(proj):
-                for x1, y1 in contrib_dict['previous'][proj].items():
-                    if x1 not in tot_overlap[k1]:
-                        tot_overlap[k1][x1] = 0
-                    tot_overlap[k1][x1] += (v1 * y1) ** 0.5
 
     return tot_overlap
 
@@ -205,14 +195,6 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
                 else:
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
 
-            # pairwise matches to last round
-            if aggregated_contributions['previous'].get(proj):
-                for x1, y1 in aggregated_contributions['previous'][proj].items():
-                    if x1 != k1 and all(i in verified_list for i in [x1, k1]):
-                        tot += ((v1 * y1) ** 0.5) / (pair_totals[k1][x1] / v_threshold + 1)
-                    else:
-                        tot += ((v1 * y1) ** 0.5) / (pair_totals[k1][x1] / uv_threshold + 1)
-
         bigtot += tot
         totals.append({'id': proj, 'clr_amount': tot})
 
@@ -243,33 +225,22 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
                     }
                 ]
             }
-        grant_contribs_prev
-            {
-                'id': (string) ,
-                'contibutions' : [
-                    {
-                        contributor_profile (str) : contribution_amount (int)
-                    }
-                ]
-            }
         threshold   :   float
         total_pot   :   float
 
     returns:
         grants clr award amounts
 '''
-def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, v_threshold, uv_threshold, total_pot):
+def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
 
     # get data
     curr_round = translate_data(grant_contribs_curr)
-    prev_round = translate_data(grant_contribs_prev)
 
-    vlist = get_verified_list(curr_round + prev_round)
+    vlist = get_verified_list(curr_round)
 
     # aggregate data
     curr_agg = aggregate_contributions(curr_round, 'current')
-    prev_agg = aggregate_contributions(prev_round, 'previous')
-    combinedagg = {**prev_agg, **curr_agg}
+    combinedagg = {**curr_agg}
 
     # get pair totals
     ptots = get_totals_by_pair(combinedagg)
@@ -281,10 +252,9 @@ def run_clr_calcs(grant_contribs_curr, grant_contribs_prev, v_threshold, uv_thre
 
 
 
-def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_contributions_prev, total_pot, v_threshold, uv_threshold):
+def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_pot, v_threshold, uv_threshold):
 
     _grant_contributions_curr = copy.deepcopy(grant_contributions_curr)
-    _grant_contributions_prev = copy.deepcopy(grant_contributions_prev)
 
     # find grant in contributions list and add donation
     if amount != 0:
@@ -297,7 +267,7 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_co
                     'is_verified': True
                 })
 
-    grants_clr = run_clr_calcs(_grant_contributions_curr, _grant_contributions_prev, v_threshold, uv_threshold, total_pot)
+    grants_clr = run_clr_calcs(_grant_contributions_curr, v_threshold, uv_threshold, total_pot)
 
     # find grant we added the contribution to and get the new clr amount
     for grant_clr in grants_clr:
@@ -323,14 +293,17 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, grant_co
 '''
 def fetch_data(clr_round, network='mainnet'):
 
-    grant_type = clr_round.grant_type
-
-    clr_start_date = clr_round.previous_round.start_date if clr_round.previous_round else clr_round.start_date
+    clr_start_date = clr_round.start_date
     clr_end_date = clr_round.end_date
+    grant_filters = clr_round.grant_filters
+    subscription_filters = clr_round.subscription_filters
 
     contributions = Contribution.objects.prefetch_related('subscription').filter(match=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date, success=True)
+    if subscription_filters:
+        contributions = contributions.filter(**subscription_filters)
 
-    grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type=grant_type, is_clr_eligible=True, link_to_new_grant=None)
+    grants = Grant.objects.filter(network=network, hidden=False, active=True, is_clr_eligible=True, link_to_new_grant=None)
+    grants = grants.filter(**grant_filters)
 
     phantom_funding_profiles = PhantomFunding.objects.filter(created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
@@ -418,14 +391,12 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
     # one-time data call
     total_pot = float(clr_round.total_pot)
-    v_threshold = float(clr_round.threshold)
-    uv_threshold = UV_THRESHOLD
+    v_threshold = float(clr_round.verified_threshold)
+    uv_threshold = float(clr_round.unverified_threshold)
 
     grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
 
-    # one for previous, one for current
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
-    grant_contributions_prev = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
 
     # calculate clr given additional donations
     for grant in grants:
@@ -439,7 +410,6 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 grant,
                 amount,
                 grant_contributions_curr,
-                grant_contributions_prev,
                 total_pot,
                 v_threshold,
                 uv_threshold

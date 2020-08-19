@@ -376,20 +376,23 @@ def grants_by_grant_type(request, grant_type):
         prev_grants = Grant.objects.filter(pk__in=prev_grants)
 
 
-    all_clr_rounds = GrantCLR.objects.all()
+    active_rounds = GrantCLR.objects.filter(is_active=True)
 
     for grant in grants:
-        clr_round = all_clr_rounds.filter(grant_type=grant.grant_type, is_active=True).last()
-        grant.is_clr_active = True if clr_round else False
+        clr_round = None
 
-        if not grant.is_clr_active:
-            clr_round = GrantCLR.objects.filter(grant_type=grant.grant_type).last()
+        if grant.in_active_clrs.count() > 0:
+            clr_round = grant.in_active_clrs.first()
 
-        grant.clr_round_num = clr_round.round_num if clr_round else None
+        if clr_round:
+            grant.is_clr_active = True
+            grant.clr_round_num = clr_round.round_num
+        else:
+            grant.is_clr_active = False
+            grant.clr_round_num = 'LAST' if grant.clr_matching > 0 else None
 
 
     # populate active round info
-    active_rounds = all_clr_rounds.filter(is_active=True)
     total_clr_pot = None
     if active_rounds:
         for active_round in active_rounds:
@@ -637,14 +640,22 @@ def grant_details(request, grant_id, grant_slug):
     except PinnedPost.DoesNotExist:
         pinned = None
 
-    clr_round = GrantCLR.objects.filter(grant_type=grant.grant_type, is_active=True).last()
+    clr_round = None
+    if grant.in_active_clrs.count() > 0:
+        clr_round = grant.in_active_clrs.first()
+
+    if clr_round:
+        is_clr_active = True
+        clr_round_num = clr_round.round_num
+    else:
+        is_clr_active = False
+        clr_round_num = 'LAST' if grant.clr_matching > 0 else None
+
     is_clr_active = True if clr_round else False
     title = grant.title + " | Grants"
 
     if is_clr_active:
         title = '💰 ' + title
-    else:
-        clr_round = GrantCLR.objects.filter(grant_type=grant.grant_type).last()
 
     params = {
         'active': 'grant_details',
@@ -668,7 +679,7 @@ def grant_details(request, grant_id, grant_slug):
         'activity_count': activity_count,
         'contributors': contributors,
         'clr_active': is_clr_active,
-        'round_num': clr_round.round_num if clr_round else None,
+        'round_num': clr_round_num,
         'is_team_member': is_team_member,
         'voucher_fundings': voucher_fundings,
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
