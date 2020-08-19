@@ -102,16 +102,10 @@ Vue.mixin({
           break;
 
         case 'CELO':
-          qr_string = value ?
-            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]` :
-            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address)?args=[${address}]`;
-          break;
-
         case 'cUSD':
-          // TODO: Wire in when we know the address
           qr_string = value ?
-            `celo:${address}?value=${value}` :
-            `celo:${address}`;
+            `celo://${address}/${token_name}?v=${value}` :
+            `celo://${address}/${token_name}`;
           break;
 
         case 'ZIL':
