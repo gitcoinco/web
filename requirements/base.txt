@@ -100,3 +100,4 @@ django-admin-sortable2==0.7.6
 twilio
 django-queryset-csv
 django-proxy==1.2.1
+ed25519

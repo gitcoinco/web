@@ -99,6 +99,7 @@ from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
 from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
+from dashboard.brightid_utils import get_brightid_status
 
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
@@ -2865,19 +2866,7 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
-        brightIDUrl = 'http://node.brightid.org/brightid/v4/verifications/Gitcoin/' + str(profile.brightid_uuid)
-        try:
-            response = requests.get(brightIDUrl)
-            responseData = response.json()
-
-            if responseData['errorNum'] == 2:
-                context['brightid_status'] = 'not_connected'
-            elif responseData['errorNum'] == 4:
-                context['brightid_status'] = 'not_verified'
-            else:
-                context['brightid_status'] = 'unknown'
-        except:
-            context['brightid_status'] = 'unknown'
+        context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
     else:
         raise Http404
     return context
