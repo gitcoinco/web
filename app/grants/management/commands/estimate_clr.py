@@ -43,28 +43,46 @@ class Command(BaseCommand):
         clr_pk = options['clr_pk']
 
         if clr_pk == "all":
-            active_clrs_rounds = GrantCLR.objects.filter(is_active=True)
+            active_clr_rounds = GrantCLR.objects.filter(is_active=True)
         else:
-            active_clrs_rounds = GrantCLR.objects.filter(pk=clr_pk)
+            active_clr_rounds = GrantCLR.objects.filter(pk=clr_pk)
 
-        if active_clrs_rounds:
-            for clr_round in active_clrs_rounds:
-                print(f"CALCULATING CLR estimates for TYPE: {clr_round.grant_type} | ROUND: {clr_round.round_num}")
+        if active_clr_rounds:
+            for clr_round in active_clr_rounds:
+                print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num}")
                 predict_clr(
                     save_to_db=True,
                     from_date=timezone.now(),
                     clr_round=clr_round,
                     network=network
                 )
-                print(f"finished CLR estimates for {clr_round.grant_type}")
+                print(f"finished CLR estimates for {clr_round.round_num}")
 
                 # TOTAL GRANT
-                # grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type=clr_type, link_to_new_grant=None)
+                # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None)
+                # grants = grants.filter(**clr_round.grant_filters)
+
                 # total_clr_distributed = 0
                 # for grant in grants:
                 #     total_clr_distributed += grant.clr_prediction_curve[0][1]
 
-                # print(f'Total CLR allocated for {clr_type} - {total_clr_distributed}')
+                # print(f'Total CLR allocated for {clr_round.round_num} - {total_clr_distributed}')
 
         else:
             print("No active CLRs found")
+
+        # Upate grants mppping to active CLR rounds
+        grants = Grant.objects.all()
+        clr_rounds = GrantCLR.objects.all()
+        for clr_round in clr_rounds:
+            grants_in_clr_round = grants.filter(**clr_round.grant_filters)
+
+            for grant in grants_in_clr_round:
+                grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
+
+                if clr_round.is_active and not grant_has_mapping_to_round:
+                    grant.in_active_clrs.add(clr_round)
+                    grant.save()
+                elif not clr_round.is_active and grant_has_mapping_to_round:
+                    grant.in_active_clrs.remove(clr_round)
+                    grant.save()

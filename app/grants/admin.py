@@ -94,13 +94,13 @@ class GrantAdmin(GeneralAdmin):
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible'
+        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
-        'migrated_to', 'view_count'
+        'migrated_to', 'view_count', 'in_active_clrs'
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
@@ -338,15 +338,18 @@ class CartActivityAdmin(admin.ModelAdmin):
 
 
 class GrantTypeAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['pk', 'name']
+    readonly_fields = ['pk']
 
 
 class GrantCategoryAdmin(admin.ModelAdmin):
-    list_display = ['category']
+    list_display = ['pk', 'category']
+    readonly_fields = ['pk']
+
 
 
 class GrantCLRAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'round_num', 'start_date', 'end_date', 'grant_type','is_active']
+    list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active']
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
