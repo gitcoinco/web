@@ -1,6 +1,6 @@
 {% load i18n static humanize %}
 
-{% if not profile.is_org %}
+{% if not profile.is_org and is_my_profile %}
     <h3 class="py-3 font-weight-bold">Trust Score</h3>
     Lorem Ipsum Copy...
     <div class="container mt-3">
@@ -30,7 +30,6 @@
                         </div>
                     {% endif %} <!-- TODO: what to show if verified-->
                 </div>
-                {% if is_my_profile %}
                     {% if brightid_status == 'not_connected' %}
                         <div class="col-md-3">
                             <button class="button button--primary">Connect</button>
@@ -40,7 +39,6 @@
                             <button class="button button--primary">Verify</button>
                         </div>
                     {% endif %}
-                {% endif %}
             {% endif %}
         </div>
     </div>

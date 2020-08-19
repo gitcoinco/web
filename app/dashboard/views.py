@@ -2937,7 +2937,7 @@ def profile(request, handle, tab=None):
     if not handle and request.user.is_authenticated:
         handle = request.user.username
     is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    user_only_tabs = ['viewers', 'earnings', 'spent']
+    user_only_tabs = ['viewers', 'earnings', 'spent', 'trust']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
     context = {}
