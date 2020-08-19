@@ -1091,16 +1091,9 @@ def get_token_recipient_senders(network, recipient_address, token_address):
     return [process_log(log) for log in logs]
 
 
-def get_hackathon_event(title, event, network):
-    event_bounties = Bounty.objects.filter(event=event, network=network)
+def get_hackathon_event(title, event):
 
     return {
         'title': title,
         'hackathon': event,
-        'value_in_usdt': sum(
-            prize_usdt.value_in_usdt_now
-            for prize_usdt
-            in event_bounties
-        ),
-        'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
     }

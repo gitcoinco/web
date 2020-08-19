@@ -4359,9 +4359,6 @@ def get_hackathons(request):
     current_hackathon_events = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
     upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
     finished_hackathon_events = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
-    all_hackathon_events = HackathonEvent.objects.all().filter(visible=True)
-
-    network = get_default_network()
 
     tabs = [
         ('current', 'happening now'),
@@ -4373,17 +4370,17 @@ def get_hackathons(request):
 
     if current_hackathon_events.exists():
         for event in current_hackathon_events:
-            event_dict = get_hackathon_event('current', event, network)
+            event_dict = get_hackathon_event('current', event)
             hackathon_events.append(event_dict)
 
     if upcoming_hackathon_events.exists():
         for event in upcoming_hackathon_events:
-            event_dict = get_hackathon_event('upcoming', event, network)
+            event_dict = get_hackathon_event('upcoming', event)
             hackathon_events.append(event_dict)
 
     if finished_hackathon_events.exists():
         for event in finished_hackathon_events:
-            event_dict = get_hackathon_event('finished', event, network)
+            event_dict = get_hackathon_event('finished', event)
             hackathon_events.append(event_dict)
 
 
