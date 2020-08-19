@@ -87,7 +87,7 @@ class GrantAdmin(GeneralAdmin):
     ordering = ['-id']
     fields = [
         'migrated_to',
-        'title', 'description', 'reference_url', 'admin_address', 'active',
+        'title', 'description', 'description_rich', 'reference_url', 'admin_address', 'active',
         'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
