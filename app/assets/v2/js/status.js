@@ -429,7 +429,7 @@ $(document).ready(function() {
     }
 
     if (typeof ga !== 'undefined') {
-      ga('send', 'event', 'Submit Status Update', 'click', 'Person')
+      ga('send', 'event', 'Submit Status Update', 'click', 'Person');
     }
 
     const data = new FormData();
