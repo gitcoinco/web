@@ -546,7 +546,7 @@ Vue.component('grants-cart', {
         }
 
         if (typeof ga !== 'undefined') {
-          ga('send', 'event', 'Grant Checkout', 'click', 'Person')
+          ga('send', 'event', 'Grant Checkout', 'click', 'Person');
         }
 
 
