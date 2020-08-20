@@ -1,0 +1,23 @@
+{
+  "symbol": "GRAP",
+  "address": "0xC8D2AB2a6FdEbC25432E54941cb85b55b9f152dB",
+  "overview": {
+    "en": "Grap is a fork of the YAM project. But it came with correct ‘rebase’ and it fixed some obvious bugs. So it will be less trouble and more fun.",
+    "zh": "Grap 是YAM 项目的Fork 版本，旨在修复它的rebase 问题，让YAM 1.0 本可发生的愿景得以再现。"
+  },
+  "email": "grap.finance@gmail.com",
+  "website": "https://grap.finance/",
+  "whitepaper": "https://grap.finance/",
+  "state": "NORMAL",
+  "published_on": "2020-08-20",
+  "initial_price":{
+    "USD":"1 USD",
+  },
+  "links": {
+    "blog": "https://medium.com/@grap.finance",
+    "twitter": "https://twitter.com/GrapFinance",
+    "telegram": "https://t.me/GrapFinance",
+    "github": "https://github.com/grapfinance/grap-protocol",
+    "medium": "https://medium.com/@grap.finance"
+  }
+}
