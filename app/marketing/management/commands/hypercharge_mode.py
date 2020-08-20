@@ -24,7 +24,7 @@ from django.core.management.base import BaseCommand
 from django.template.defaultfilters import floatformat
 from django.utils import timezone
 
-from dashboard.models import Profile, Bounty, BountyEvent
+from dashboard.models import Bounty, BountyEvent, Profile
 from dashboard.notifications import maybe_market_to_twitter
 from marketing.mails import bounty_hypercharged
 from townsquare.models import Offer
