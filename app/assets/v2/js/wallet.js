@@ -39,9 +39,9 @@ function initWallet() {
       }
     },
     portis: {
-      package: Portis, // required
+      'package': Portis,
       options: {
-        id: "b2345081-a47e-413a-941f-33fd645d39b3" // required
+        id: 'b2345081-a47e-413a-941f-33fd645d39b3'
       }
     }
   };
