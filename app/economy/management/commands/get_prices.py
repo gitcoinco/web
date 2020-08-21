@@ -18,21 +18,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
+import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 import ccxt
 import cryptocompare as cc
 import requests
 from dashboard.models import Bounty, Tip
-from django.utils import timezone
 from economy.models import ConversionRate
 from grants.models import Contribution
 from kudos.models import KudosTransfer
 from perftools.models import JSONStore
 from websocket import create_connection
-import logging
+
 logger = logging.getLogger(__name__)
 
 
