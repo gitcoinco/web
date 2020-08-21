@@ -51,7 +51,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-import dateutil
+import dateutil.parser
 import magic
 import pytz
 from app.services import RedisService, TwilioService
@@ -118,9 +118,11 @@ from .notifications import (
 )
 from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_event,
-    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty,
-    record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context,
+    get_custom_avatars, get_hackathon_events, get_hackathons_page_default_tabs,
+    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
+    re_market_bounty, record_user_action_on_interest,
+    release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -4356,33 +4358,11 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
-    current_hackathon_events = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
-    upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
-    finished_hackathon_events = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
-
     tabs = [
         ('current', 'happening now'),
         ('upcoming', 'upcoming'),
         ('finished', 'completed'),
     ]
-
-    hackathon_events = []
-
-    if current_hackathon_events.exists():
-        for event in current_hackathon_events:
-            event_dict = get_hackathon_event('current', event)
-            hackathon_events.append(event_dict)
-
-    if upcoming_hackathon_events.exists():
-        for event in upcoming_hackathon_events:
-            event_dict = get_hackathon_event('upcoming', event)
-            hackathon_events.append(event_dict)
-
-    if finished_hackathon_events.exists():
-        for event in finished_hackathon_events:
-            event_dict = get_hackathon_event('finished', event)
-            hackathon_events.append(event_dict)
-
 
     params = {
         'active': 'hackathons',
@@ -4390,15 +4370,9 @@ def get_hackathons(request):
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'tabs': tabs,
-        'events': hackathon_events,
+        'events': get_hackathon_events(),
+        'default_tab': get_hackathons_page_default_tabs(),
     }
-
-    if current_hackathon_events.exists():
-        params['default_tab'] = 'current'
-    elif upcoming_hackathon_events.exists():
-        params['default_tab'] = 'upcoming'
-    else:
-        params['default_tab'] = 'finished'
 
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 

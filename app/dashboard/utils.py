@@ -1091,9 +1091,35 @@ def get_token_recipient_senders(network, recipient_address, token_address):
     return [process_log(log) for log in logs]
 
 
-def get_hackathon_event(title, event):
+def get_hackathons_page_default_tabs():
+    from perftools.models import JSONStore
 
+    return JSONStore.objects.get(key='hackathons', view='hackathons').data[0]
+
+
+def get_hackathon_events():
+    from perftools.models import JSONStore
+
+    return JSONStore.objects.get(key='hackathons', view='hackathons').data[1]
+
+
+def set_hackathon_event(type, event):
     return {
-        'title': title,
-        'hackathon': event,
+        'type': type,
+        'name': event.name,
+        'slug': event.slug,
+        'background_color': event.background_color,
+        'logo': event.logo.name or event.logo_svg.name,
+        'start_date': event.start_date.isoformat(),
+        'end_date': event.end_date.isoformat(),
+        'summary': event.hackathon_summary,
+        'sponsor_profiles': [
+            {
+                'absolute_url': sponsor.absolute_url,
+                'avatar_url': sponsor.avatar_url,
+            }
+            for sponsor in event.sponsor_profiles.all()
+        ],
+        'display_showcase': event.display_showcase,
+        'show_results': event.show_results,
     }

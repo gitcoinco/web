@@ -33,6 +33,7 @@ from dashboard.models import HackathonEvent, Profile
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
+from dashboard.utils import set_hackathon_event
 
 
 def create_top_grant_spenders_cache():
@@ -217,6 +218,48 @@ def create_hackathon_cache():
         hackathon.get_total_winners(force=True)
 
 
+def create_hackathon_list_page_cache():
+    print('create_hackathon_list_page_cache')
+
+    view = 'hackathons'
+    keyword = 'hackathons'
+    current_hackathon_events = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
+    upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
+    finished_hackathon_events = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
+
+    events = []
+
+    if current_hackathon_events.exists():
+        for event in current_hackathon_events:
+            events.append(set_hackathon_event('current', event))
+
+    if upcoming_hackathon_events.exists():
+        for event in upcoming_hackathon_events:
+            events.append(set_hackathon_event('upcoming', event))
+
+    if finished_hackathon_events.exists():
+        for event in finished_hackathon_events:
+            events.append(set_hackathon_event('finished', event))
+
+    default_tab = None
+
+    if current_hackathon_events.exists():
+        default_tab = 'current'
+    elif upcoming_hackathon_events.exists():
+        default_tab = 'upcoming'
+    else:
+        default_tab = 'finished'
+
+    with transaction.atomic():
+        JSONStore.objects.filter(view=view).all().delete()
+        data = [default_tab, events]
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=data,
+            )
+
+
 def create_results_cache():
     print('results')
     keywords = ['']
@@ -278,3 +321,4 @@ class Command(BaseCommand):
             create_grants_cache()
             create_contributor_landing_page_context()
             create_hackathon_cache()
+            create_hackathon_list_page_cache()
