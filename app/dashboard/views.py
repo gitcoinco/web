@@ -110,7 +110,7 @@ from .models import (
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile, ProfileSerializer,
     ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote, TribeMember,
-    UserAction, UserVerificationModel,
+    UserAction, UserDirectory, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -972,6 +972,19 @@ def users_autocomplete(request):
     return JsonResponse({
         'results': results
     })
+
+
+@require_GET
+def output_users_to_csv(request):
+
+    if request.user.is_authenticated and not request.user.is_staff:
+        return Http404()
+
+    profile_ids = request.GET.getlist('profile_ids[]')
+
+    user_query = UserDirectory.objects.filter(profile_id__in=profile_ids)
+    from djqscsv import render_to_csv_response
+    return render_to_csv_response(user_query)
 
 @require_GET
 def users_fetch(request):

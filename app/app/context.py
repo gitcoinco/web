@@ -74,7 +74,7 @@ def preprocess(request):
     chat_url = get_chat_url(front_end=True)
     chat_access_token = ''
     chat_id = ''
-
+    search_url = '';
     user_is_authenticated = request.user.is_authenticated
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
     if user_is_authenticated and profile and profile.pk:
@@ -134,6 +134,7 @@ def preprocess(request):
         'MEDIA_URL': settings.MEDIA_URL,
         'max_length': max_length,
         'max_length_offset': max_length_offset,
+        'search_url': settings.ELASTIC_SEARCH_LB_URL,
         'chat_url': chat_url,
         'base_url': settings.BASE_URL,
         'chat_id': chat_id,

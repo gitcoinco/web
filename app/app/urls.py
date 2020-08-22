@@ -700,7 +700,7 @@ urlpatterns = [
 
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
-    # url(r'^api/v0.1/users_fetch/', dashboard.views.users_autocomplete, name='users_fetch'),
+    url(r'^api/v0.1/users_csv/', dashboard.views.output_users_to_csv, name='users_csv'),
 
 
     # wiki

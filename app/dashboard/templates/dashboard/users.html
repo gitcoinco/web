@@ -59,14 +59,13 @@
             <autocomplete v-if="filterLoaded" :options="esColumns" @input="autoCompleteChange" @destroyed="autoCompleteDestroyed"></autocomplete>
 
             <template v-for="filter in filters">
-              <refinement-list-filter v-if="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.text" :search="true" :size="50" :title="filter.text" operator="OR" >
+              <refinement-list-filter v-if="filter.type == 'string'" :id="filter.text" :key="filter.text" :field="filter.text" :size="50" :title="filter.text" operator="OR" >
                 <template slot="label" slot-scope="{ displayCount,clickOnLabel,clickOnItem,items,checkedItems }">
-                    <select multiple="true" name="" id="filter.type" v-model="checkedItems"  @change="clickOnItem(checkedItems)">
-                        <option selected="selected"></option>
+                    <select2 class="select2-filter" multiple minInputLength="0" name="" placeholder="select multiple" id="filter.type" v-model="checkedItems"  @input="clickOnItem(checkedItems)">
                         <option v-for="(item, index) in items" :value="item.key">
                           <label v-if="displayCount" :for="item.key" v-on:click='clickOnLabel(item.key)'>[[ item.key ]] ( [[ item.doc_count ]] )</label>
                         </option>
-                    </select>
+                    </select2>
                 </template>
               </refinement-list-filter>
               <numeric-list-filter v-else-if="filter.type == 'float' || filter.type == 'long'" :id="filter.text" :field="filter.text" operator="OR">
@@ -75,15 +74,9 @@
                 </template>
               </numeric-list-filter>
             </template>
-
             <reset-button class="btn blue font-caption px-0 btn-block font-weight-semibold" :emptyHits="false"></reset-button>
             {% if is_staff %}
-              <p class="font-body mx-2 mb-2 mt-4 mx-lg-0 mt-lg-2">
-                <span class="font-weight-bold">[[ numUsers ]]</span> users found
-              </p>
-              <button v-if="persona != 'tribe'" v-show="numUsers > 0"  data-toggle="modal" data-target="#inviteAll" :disabled="!(params && (Object.keys(params).length > 1))" class="font-body btn btn-gc-blue ml-2" id="bulk-invite-modal">
-                Invite all to bounty
-              </button>
+              <b-button class="btn btn-sm btn-gc-blue font-caption font-weight-semibold button--full" @click="outputToCSV($event)">Export</b-button>
             {% endif %}
           </nav>
         </transition>
@@ -99,66 +92,66 @@
                     </div>
                     <div class="grid-4 pt-5">
                       <directory-card v-for="user in hits.items" :key="user._source.profile_id" :user="user._source" inline-template >
-                      <div class="card card-user shadow-sm border-0">
-                        <div class="d-flex flex-column py-1 bg-lightblue">
-                          <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
-                          <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
-                                      <a href='/funding/new?invite=${user.profile_id}' target="_blank" class="dropdown-item p-2">
-                              <i class="fab fa-ethereum mr-2"></i>
-                              Fund Bounty
+                        <div class="card card-user shadow-sm border-0">
+                          <div class="d-flex flex-column py-1 bg-lightblue">
+                            <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                            <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
+                                        <a href='/funding/new?invite=${user.profile_id}' target="_blank" class="dropdown-item p-2">
+                                <i class="fab fa-ethereum mr-2"></i>
+                                Fund Bounty
+                              </a>
+                              <div class="dropdown-divider"></div>
+                              <a :href="/profile/[[ user.handle ]]" class="dropdown-item p-2" target="_blank">
+                                <i class="fas fa-user mr-2"></i>
+                                View profile
+                              </a>
+                            </div>
+                            <a :href=`"/profile/${user.handle}"` class="mx-auto">
+                              <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${user.handle}`" />
                             </a>
-                            <div class="dropdown-divider"></div>
-                            <a :href="/profile/[[ user.handle ]]" class="dropdown-item p-2" target="_blank">
-                              <i class="fas fa-user mr-2"></i>
-                              View profile
+                            <h5 class="text-center card-user_name">
+                              [[ user.handle ]]
+                              <span v-if="user.verification">
+                                <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
+                              </span>
+                            </h5>
+                            <a :href=`"/profile/${user.handle}"` v-bind:data-usercard="user.handle" class="text-center d-block">
+                              @[[ user.handle ]]
                             </a>
+                            <small class="text-center pb-1" v-if="user.previously_worked">
+                              <i class="far fa-handshake mr-1"></i>Worked with you
+                            </small>
                           </div>
-                          <a :href=`"/profile/${user.handle}"` class="mx-auto">
-                            <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${user.handle}`" />
-                          </a>
-                          <h5 class="text-center card-user_name">
-                            [[ user.handle ]]
-                            <span v-if="user.verification">
-                              <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
-                            </span>
-                          </h5>
-                          <a :href=`"/profile/${user.handle}"` v-bind:data-usercard="user.handle" class="text-center d-block">
-                            @[[ user.handle ]]
-                          </a>
-                          <small class="text-center pb-1" v-if="user.previously_worked">
-                            <i class="far fa-handshake mr-1"></i>Worked with you
-                          </small>
-                        </div>
-                        <div class="card-body d-flex flex-column justify-content-between">
-                          <!-- User : Funder / Contributor-->
-                          <template>
-                            <div v-if="user.keywords" class="text-center">
-                              <template v-for="keyword in user.keywords">
-                                <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
-                              </template>
-                            </div>
-                            <div class="text-center my-1 font-smaller-1">
-                              <a :href=`"https://github.com/${user.handle}"` target="_blank" rel="noopener noreferrer" >
-                                <i class="fab fa-github"></i>
-                              </a>
-                              <a :href="user.blog" target="_blank" rel="noopener noreferrer" v-if="user.blog">
-                                <i class="fas fa-home"></i>
-                              </a>
-                              <a :href=`"https://www.linkedin.com/in/${user.linkedin_url}"` v-if="user.linkedin_url">
-                                <i class="fab fa-linkedin-in"></i>
-                              </a>
-                            </div>
-                            <div class="text-center" id="job_status" v-if="user.show_job_status">
-                              <a v-if="user.resume && user.job_search_status !== 'N'" :href=`"${media_url}${user.resume}"` download data-toggle="tooltip" title="Download resume">
-                                <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
-                              </a>
-                            </div>
+                          <div class="card-body d-flex flex-column justify-content-between">
+                            <!-- User : Funder / Contributor-->
+                            <template>
+                              <div v-if="user.keywords" class="text-center">
+                                <template v-for="keyword in user.keywords">
+                                  <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
+                                </template>
+                              </div>
+                              <div class="text-center my-1 font-smaller-1">
+                                <a :href=`"https://github.com/${user.handle}"` target="_blank" rel="noopener noreferrer" >
+                                  <i class="fab fa-github"></i>
+                                </a>
+                                <a :href="user.blog" target="_blank" rel="noopener noreferrer" v-if="user.blog">
+                                  <i class="fas fa-home"></i>
+                                </a>
+                                <a :href=`"https://www.linkedin.com/in/${user.linkedin_url}"` v-if="user.linkedin_url">
+                                  <i class="fab fa-linkedin-in"></i>
+                                </a>
+                              </div>
+                              <div class="text-center" id="job_status" v-if="user.show_job_status">
+                                <a v-if="user.resume && user.job_search_status !== 'N'" :href=`"${media_url}${user.resume}"` download data-toggle="tooltip" title="Download resume">
+                                  <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
+                                </a>
+                              </div>
 
 
-                          </template>
+                            </template>
+                          </div>
                         </div>
-                      </div>
-                    </directory-card>
+                      </directory-card>
                     </div>
                 </template>
             </hits>

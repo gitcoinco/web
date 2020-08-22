@@ -454,6 +454,32 @@ Vue.component('user-directory-elastic', {
     autoCompleteChange: function(filters) {
       this.filters = filters;
     },
+    outputToCSV: function() {
+
+      let output = [];
+
+      $.map(this.items, function(obj, key) {
+        output.push(obj.profile_id);
+      });
+
+      let url = '/api/v0.1/users_csv/';
+
+      $.get(url, {profile_ids: output})
+        .then(resp => resp.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+
+          a.style.display = 'none';
+          a.href = url;
+          a.download = `users_csv-${Date.now()}.json`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          _alert('File download complete');
+        })
+        .catch(() => _alert('There was an issue downloading your file'));
+    },
     fetchMappings: function() {
       let vm = this;
 
@@ -466,7 +492,7 @@ Vue.component('user-directory-elastic', {
   },
   mounted() {
     this.fetchMappings();
-    this.fetchUsers();
+    // this.fetchUsers();
     this.$watch('params', function(newVal, oldVal) {
       this.searchUsers();
     }, {
@@ -537,6 +563,36 @@ if (document.getElementById('gc-users-directory')) {
       autoCompleteChange: function(filters) {
         this.filters = filters;
       },
+      outputToCSV: function() {
+
+        let output = [];
+
+        $.map(this.items, function(obj, key) {
+          output.push(obj._source.profile_id);
+        });
+
+        let url = `/api/v0.1/users_csv/?${$.param({profile_ids: output})}`;
+
+        fetch(url)
+          .then(resp => resp.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `users_csv-${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            _alert('File download complete');
+          })
+          .catch((err) => {
+            console.log(err);
+            _alert('There was an issue downloading your file');
+          });
+      },
+
       fetchMappings: function() {
         let vm = this;
 
@@ -549,7 +605,7 @@ if (document.getElementById('gc-users-directory')) {
     },
     mounted() {
       this.fetchMappings();
-      this.fetchUsers();
+      this.fetch(this);
       this.$watch('params', function(newVal, oldVal) {
         this.searchUsers();
       }, {
@@ -557,12 +613,10 @@ if (document.getElementById('gc-users-directory')) {
       });
     },
     created() {
-      this.setHost('https://elastic.androolloyd.com'); // TODO: set to proper env variable
+      this.setHost(document.contxt.search_url ? document.contxt.search_url : 'https://elastic.gitcoin.co'); // TODO: set to proper env variable
       this.setIndex('haystack');
       this.setType('modelresult');
-      this.fetchBounties();
-      this.inviteOnMount();
-      this.extractURLFilters();
+      // this.extractURLFilters();
     },
     beforeMount() {
       window.addEventListener('scroll', () => {
