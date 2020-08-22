@@ -9,7 +9,7 @@ async function metamaskApproval() {
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
 
     try {
-      if (is_metamask_unlocked && is_metamask_approved) {
+      if (!is_metamask_unlocked || !is_metamask_approved) {
         var start_time = ((new Date()).getTime() / 1000);
 
         await ethereum.enable();
@@ -50,7 +50,7 @@ async function approve_metamask() {
 function ask_metamask_connection() {
   var page_url = $(location).attr('pathname');
 
-  shown_on = [ '/tip/send/2', '/kudos/send', '/ens' ];
+  shown_on = [ '/tip/send/2', '/kudos/send' ];
   var len = page_url.length - 1;
 
   if (page_url.lastIndexOf('/') === len) {

@@ -27,10 +27,12 @@ from django.utils import timezone
 import requests
 from app.utils import get_location_from_ip
 from cacheops import cached_as
+from chat.tasks import get_chat_url
 from dashboard.models import Activity, Tip, UserAction
 from dashboard.utils import _get_utm_from_cookie
 from kudos.models import KudosTransfer
 from marketing.utils import handle_marketing_callback
+from perftools.models import JSONStore
 from retail.helpers import get_ip
 from townsquare.models import Announcement
 
@@ -39,16 +41,18 @@ RECORD_VISIT_EVERY_N_SECONDS = 60 * 60
 logger = logging.getLogger(__name__)
 
 
+@cached_as(JSONStore.objects.filter(view='posts', key='posts'), timeout=1200)
 def fetchPost(qt='2'):
-    """Fetch last post from wordpress blog."""
-    url = f"https://gitcoin.co/blog/wp-json/wp/v2/posts?_fields=excerpt,title,link,jetpack_featured_media_url&per_page={qt}"
-    last_posts = requests.get(url=url).json()
-    return last_posts
+    jsonstores = JSONStore.objects.filter(view='posts', key='posts')
+    if jsonstores.exists():
+        return jsonstores.first().data
 
 
-@cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=120)
+@cached_as(Announcement.objects.filter(key__in=['footer', 'header']), timeout=1200)
 def get_sitewide_announcements():
-    announcements = Announcement.objects.filter(key__in=['footer', 'header'])
+    announcements = Announcement.objects.filter(
+        key__in=['footer', 'header'], valid_to__gt=timezone.now(), valid_from__lt=timezone.now()
+    )
     announcement = announcements.filter(key='footer').first()
     header_msg, footer_msg, nav_salt = '', '', 0
     if announcement:
@@ -67,18 +71,12 @@ def preprocess(request):
     if request.path == '/lbcheck':
         return {}
 
-    from marketing.utils import get_stat
-    try:
-        num_slack = int(get_stat('slack_users'))
-    except Exception:
-        num_slack = 0
-    if num_slack > 1000:
-        num_slack = f'{str(round((num_slack) / 1000, 1))}k'
+    chat_url = get_chat_url(front_end=True)
+    chat_access_token = ''
+    chat_id = ''
 
     user_is_authenticated = request.user.is_authenticated
     profile = request.user.profile if user_is_authenticated and hasattr(request.user, 'profile') else None
-    email_subs = profile.email_subscriptions if profile else None
-    email_key = email_subs.first().priv if user_is_authenticated and email_subs and email_subs.exists() else ''
     if user_is_authenticated and profile and profile.pk:
         # what actions to take?
         record_join = not profile.last_visit
@@ -86,11 +84,14 @@ def preprocess(request):
             timezone.now() - timezone.timedelta(seconds=RECORD_VISIT_EVERY_N_SECONDS)
         )
         if record_visit:
-            ip_address = get_ip(request)
-            profile.last_visit = timezone.now()
             try:
-                profile.as_dict = json.loads(json.dumps(profile.to_dict()))
+                profile.last_visit = timezone.now()
                 profile.save()
+            except Exception as e:
+                logger.exception(e)
+            try:
+                from dashboard.tasks import profile_dict
+                profile_dict.delay(profile.pk)
             except Exception as e:
                 logger.exception(e)
             metadata = {
@@ -98,6 +99,7 @@ def preprocess(request):
                 'referrer': request.META.get('HTTP_REFERER', None),
                 'path': request.META.get('PATH_INFO', None),
             }
+            ip_address = get_ip(request)
             UserAction.objects.create(
                 user=request.user,
                 profile=profile,
@@ -111,39 +113,37 @@ def preprocess(request):
         if record_join:
             Activity.objects.create(profile=profile, activity_type='joined')
 
+        chat_access_token = profile.gitcoin_chat_access_token
+        chat_id = profile.chat_id
     # handles marketing callbacks
     if request.GET.get('cb'):
         callback = request.GET.get('cb')
         handle_marketing_callback(callback, request)
 
-    chat_unread_messages = False
-
-    if profile and hasattr(profile, 'chat_id'):
-        try:
-            make_external_api_call = False
-            if make_external_api_call:
-                from chat.tasks import get_driver
-                chat_driver = get_driver()
-
-                chat_unreads_request = chat_driver.teams.get_team_unreads_for_user(profile.chat_id)
-
-                for teams in chat_unreads_request:
-                    if teams['msg_count'] > 0 or teams['mention_count'] > 0:
-                        chat_unread_messages = True
-                        break
-        except Exception as e:
-            logger.error(str(e))
-
     header_msg, footer_msg, nav_salt = get_sitewide_announcements()
+
+    # town square wall post max length
+    max_length_offset = abs(((
+        request.user.profile.created_on
+        if hasattr(request.user, 'profile') and request.user.is_authenticated else timezone.now()
+    ) - timezone.now()).days)
+    max_length = 600 + max_length_offset
 
     context = {
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
-        'num_slack': num_slack,
-        'chat_unread_messages': chat_unread_messages,
-        'github_handle': request.user.username if user_is_authenticated else False,
+        'max_length': max_length,
+        'max_length_offset': max_length_offset,
+        'chat_url': chat_url,
+        'base_url': settings.BASE_URL,
+        'chat_id': chat_id,
+        'chat_access_token': chat_access_token,
+        'github_handle': request.user.username.lower() if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
+        'last_chat_status':
+            request.user.profile.last_chat_status if
+            (hasattr(request.user, 'profile') and user_is_authenticated) else False,
         'raven_js_version': settings.RAVEN_JS_VERSION,
         'raven_js_dsn': settings.SENTRY_JS_DSN,
         'release': settings.RELEASE,
@@ -152,8 +152,10 @@ def preprocess(request):
         'nav_salt': nav_salt,
         'footer_msg': footer_msg,
         'INFURA_V3_PROJECT_ID': settings.INFURA_V3_PROJECT_ID,
-        'email_key': email_key,
         'giphy_key': settings.GIPHY_KEY,
+        'youtube_key': settings.YOUTUBE_API_KEY,
+        'fortmatic_live_key': settings.FORTMATIC_LIVE_KEY,
+        'fortmatic_test_key': settings.FORTMATIC_TEST_KEY,
         'orgs': profile.organizations if profile else [],
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
@@ -163,12 +165,14 @@ def preprocess(request):
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
         },
+        'chat_persistence_frequency': 90 * 1000,
         'access_token': profile.access_token if profile else '',
         'is_staff': request.user.is_staff if user_is_authenticated else False,
         'is_moderator': profile.is_moderator if profile else False,
         'is_alpha_tester': profile.is_alpha_tester if profile else False,
         'persona_is_funder': profile.persona_is_funder if profile else False,
         'persona_is_hunter': profile.persona_is_hunter if profile else False,
+        'pref_do_not_track': profile.pref_do_not_track if profile else False,
         'profile_url': profile.url if profile else False,
         'quests_live': settings.QUESTS_LIVE,
     }
@@ -177,17 +181,14 @@ def preprocess(request):
 
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
-            expires_date__gte=timezone.now(),
-            receive_txid='',
-            username__iexact=context['github_handle'],
-            web3_type='v3',
-        ).send_happy_path()
+            receive_txid='', username__iexact=context['github_handle'], web3_type='v3',
+        ).send_happy_path().cache(timeout=60)
         context['unclaimed_kudos'] = KudosTransfer.objects.filter(
             receive_txid='', username__iexact="@" + context['github_handle'], web3_type='v3',
-        ).send_happy_path()
+        ).send_happy_path().cache(timeout=60)
 
         if not settings.DEBUG:
-            context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
-            context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet')
+            context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet').cache(timeout=60)
+            context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet').cache(timeout=60)
 
     return context

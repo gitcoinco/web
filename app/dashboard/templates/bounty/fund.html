@@ -29,308 +29,273 @@
 
 <body class="interior {{active}} g-font-muli" style="background-color: #FFFFFF;">
   {% include 'shared/tag_manager_2.html' %}
-  <div class="container-fluid header dash">
+  <div class="container-fluid header dash px-0">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav.html' %}
   </div>
-  <div class="container-fluid submit_bounty_content">
-    <div class="row no-gutters metamask-banner">
-      <div class="col-12">
-        {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
-        {% include 'shared/no_metamask_error.html' %}
-        {% include 'shared/zero_balance_error.html' %}
-        {% include 'shared/unlock_metamask.html' %}
-        {% include 'shared/connect_metamask.html' %}
-      </div>
-    </div>
-    <div class="row justify-content-center">
+  <div class="row justify-content-center submit_bounty_content">
 
-      <div id="robot_error" class="hidden">
-        <img src="{% static "v2/images/prime.png" %}">
-      </div>
-      <div class="col-lg-8 col-sm-12 my-5" id="primary_form">
-        <form id="submitBounty" class="pt-5">
+    <div class="col-lg-8 col-sm-12 my-5" id="create_bounty_form">
+      <form id="submitBounty" class="pt-5">
 
-          <div id="about-section" class="pt-2 bg-white rounded p-5">
-            <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
-            <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers! </p>
-            <div class="my-4">
-              <p class="font-caption letter-spacing text-black-60 text-uppercase">Github Repo Type</p>
-              <div class="btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-radio public mr-2 font-weight-bold py-2 px-4 active">
-                  <input type="radio" name="repo_type" id="public_repo" value="public" autocomplete="off" checked><i class="fas fa-book mr-2"></i> {% trans "Public" %}
+        <div id="about-section" class="pt-2 bg-white rounded p-5">
+          <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
+          <p class="text-center font-bigger-1 text-black-60">Fund your GitHub issue and work with talented developers! </p>
+
+          <label class="font-caption letter-spacing text-black-60 text-uppercase" for=issueURL>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+          <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
+          <div class="text-right mt-2">
+            <p class="font-caption" id="last-synced">{% trans "Last Synced " %}<span></span></p>
+            <button id="sync-issue" class="button button--primary disabled">
+              <i class="fas fa-sync mr-1"></i> {% trans "Sync with Github" %}
+            </button>
+          </div>
+          <div id="no-issue-banner" class="my-4">
+            <img class="w-100" src="{% static "v2/images/bounty/no_issue.svg" %}">
+          </div>
+          <div id="issue-details" class="mt-4 issue-details-public">
+            <div class="mt-4">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">{% trans "Issue Title" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+              <input name='title' id="title"  class="form__input" type="text" value="{{ issue_title }}" placeholder="{% trans 'Your issue title' %}" readonly required/>
+            </div>
+            <div class="mt-4">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="description">{% trans "Issue Description" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
+              <textarea name="description" class="form__input" id="description" rows="10" placeholder="{% trans 'Your issue details' %}" readonly></textarea>
+            </div>
+          </div>
+          <div id="issue-details-edit" class="mt-2">
+            <div class="text-right">
+              <a id="edit-issue" class="button button--primary" href="#" target="_blank" rel="noopener noreferrer">
+                {% trans "Edit on Github" %} <i class="fab fa-github ml-1"></i>
+              </a>
+            </div>
+          </div>
+
+          {% include 'shared/pricing.html' %}
+
+          <div class="web3-alert font-smaller-2 py-2 px-3 mt-2">
+          </div>
+
+          <div class="funder-address-container" style="display: none;">
+            <label class="font-caption letter-spacing text-black-60" for=funderAddress>{% trans "Funder Address" %}</label>
+            <input name='funderAddress' id="funderAddress"  class="form__input" type="text" placeholder="{% trans 'Address with which the bounty will be paid out' %}"/>
+          </div>
+          
+          <input type="hidden" id="activity" name="activity" value="{% if activity %}{{ activity.id }}{% endif %}">
+          
+          <div class="mt-4">
+            {% include 'shared/bounty_details.html' %}
+          </div>
+
+          <div class="mt-4">
+            {% include 'shared/bounty_categories.html' %}
+          </div>
+
+          <div class="mt-4">
+            {% include 'shared/bounty_keywords.html' %}
+          </div>
+
+        </div>
+
+        <div class="bg-white my-3 px-5 rounded">
+          <a class="collapse-header collapsed" data-toggle="collapse" href="#details-section" role="button" aria-expanded="false" aria-controls="details-section">
+            <span class="font-body">
+              <span class="d-block text-uppercase letter-spacing">Bounty settings</span>
+              <span>change project type, permissions, and expiry date</span>
+            </span>
+            <i class="fa"></i>
+          </a>
+          <div id="details-section" class=" collapse py-4">
+            {% include 'shared/issue_details.html' %}
+            {% include 'shared/issue_deadline.html' %}
+            <div class="w-100 mt-4">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="fundingOrganisation">{% trans "Funding Organisation Github handle" %}</label>
+              <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="MetaMask"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white my-3 px-5 rounded">
+          <a class="collapse-header collapsed" data-toggle="collapse" href="#reserve-section" role="button" aria-expanded="false" aria-controls="reserve-section">
+            <span class="font-body">
+              <span class="d-block text-uppercase letter-spacing">Reserve for / Invite contributors</span>
+              <span>Choose contributors you want to work on this bounty</span>
+            </span>
+            <i class="fa"></i>
+          </a>
+
+          <div id="reserve-section" class="collapse py-4">
+              {% include 'shared/reserved.html' %}
+          </div>
+        </div>
+
+        <div class="bg-white my-3 px-5 rounded">
+          <a class="collapse-header collapsed" data-toggle="collapse" href="#hiring-section" role="button" aria-expanded="false" aria-controls="hiring-section">
+            <span class="font-body">
+              <span class="d-block text-uppercase letter-spacing">Hiring / Hackathon </span>
+              <span>Is this bounty part of a hackathon or job opening?</span>
+            </span>
+            <i class="fa"></i>
+          </a>
+          <div id="hiring-section" class="collapse py-4">
+            <div class="hiring_container">
+              <label class="font-caption letter-spacing text-black-60 text-uppercase" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
+              <div class="form__checkbox">
+                <input name='hiringRightNow' id='hiringRightNow' type="checkbox"  />
+                <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
                 </label>
-                <label class="btn btn-radio private font-weight-bold py-2 px-4 ">
-                  <input type="radio" name="repo_type" id="private_repo" value="private" autocomplete="off"><i class="fas fa-lock mr-2"></i> {% trans "Private" %}
-                </label>
               </div>
-              <div id="private-repo-instructions" class="d-md-flex justify-content-between mt-3 font-smaller-3 d-md-none privaterepo-instructions">
-                <div>
-                  <h5 class="font-smaller-3 font-weight-bold mb-2">Important Notes on Private Repo Bounties</h5>
-                  <ul class="pl-3">
-                    <li>Please make sure you are the <b>repo admin</b> to fund the issue</li>
-                    <li>Gitcoin will <b>NOT</b> have any access to your private repo</li>
-                    <li>You have to approve and give repository access to each contributor before they can start work</li>
-                    <li>You can upload an NDA that each contributor has to sign before they can start work</li>
-                  </ul>
-                </div>
-              </div>
+              <input name='jobDescription' id='jobDescription' type="url" class="form__input " type="text" placeholder="https://link.to/job/description" value="" disabled/>
             </div>
-            <label class="font-caption letter-spacing text-black-60 text-uppercase" for=issueURL>{% trans "Github Issue URL" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-            <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{ issueURL }}{% endif %}" required/>
-            <div class="text-right mt-2">
-              <p class="font-caption" id="last-synced">{% trans "Last Synced " %}<span></span></p>
-              <button id="sync-issue" class="button button--primary disabled">
-                <i class="fas fa-sync mr-1"></i> {% trans "Sync with Github" %}
-              </button>
-            </div>
-            <div id="no-issue-banner" class="my-4">
-              <img class="w-100" src="{% static "v2/images/bounty/no_issue.svg" %}">
-            </div>
-            <div id="issue-details" class="mt-4">
+            {% if events %}
               <div class="mt-4">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="title">{% trans "Issue Title" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-                <input name='title' id="title"  class="form__input" type="text" value="{{ issue_title }}" placeholder="{% trans 'Your issue title' %}" readonly required/>
-              </div>
-              <div class="mt-4">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="description">{% trans "Issue Description" %} <span class="badge badge-greylight text-capitalize">Required</span></label>
-                <textarea name="description" class="form__input" id="description" rows="10" placeholder="{% trans 'Your issue details' %}" readonly></textarea>
-              </div>
-            </div>
-            <div id="issue-details-edit" class="mt-2">
-              <div class="text-right">
-                <a id="edit-issue" class="button button--primary" href="#" target="_blank" rel="noopener noreferrer">
-                  {% trans "Edit on Github" %} <i class="fab fa-github ml-1"></i>
-                </a>
-              </div>
-            </div>
-            <div id="nda-upload" class="mt-4" style="display: none;">
-              <div>
-                <label class="font-caption letter-spacing text-black-60 text-uppercase" for=issueNDA>{% trans "Non-Disclosure Agreement" %}</label>
-                <p class="font-body">{% trans "Each contributor has to sign your NDA before they can start work. Supported format: pdf, doc, docx." %}</p>
-                <input name='issueNDA' id="issueNDA" class="form__input" type="file" accept="application/pdf,application/msword, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation" required/>
-              </div>
-            </div>
-
-            {% include 'shared/pricing.html' %}
-
-            <div class="mt-4">
-              {% include 'shared/bounty_details.html' %}
-            </div>
-
-            <div class="mt-4">
-              {% include 'shared/bounty_categories.html' %}
-            </div>
-
-            <div class="mt-4">
-              {% include 'shared/bounty_keywords.html' %}
-            </div>
-
-          </div>
-
-          <div class="bg-white my-3 px-5 rounded">
-            <a class="collapse-header collapsed" data-toggle="collapse" href="#details-section" role="button" aria-expanded="false" aria-controls="details-section">
-              <span class="font-body">
-                <span class="d-block text-uppercase letter-spacing">Bounty settings</span>
-                <span>change project type, permissions, and expiry date</span>
-              </span>
-              <i class="fa"></i>
-            </a>
-            <div id="details-section" class=" collapse py-4">
-              {% include 'shared/issue_details.html' %}
-              {% include 'shared/issue_deadline.html' %}
-              <div class="w-100 mt-4">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="fundingOrganisation">{% trans "Funding Organisation Github handle" %}</label>
-                <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="MetaMask"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white my-3 px-5 rounded">
-            <a class="collapse-header collapsed" data-toggle="collapse" href="#reserve-section" role="button" aria-expanded="false" aria-controls="reserve-section">
-              <span class="font-body">
-                <span class="d-block text-uppercase letter-spacing">Reserve for / Invite contributors</span>
-                <span>Choose contributors you want to work on this bounty</span>
-              </span>
-              <i class="fa"></i>
-            </a>
-
-            <div id="reserve-section" class="collapse py-4">
-                {% include 'shared/reserved.html' %}
-            </div>
-          </div>
-
-          <div class="bg-white my-3 px-5 rounded">
-            <a class="collapse-header collapsed" data-toggle="collapse" href="#hiring-section" role="button" aria-expanded="false" aria-controls="hiring-section">
-              <span class="font-body">
-                <span class="d-block text-uppercase letter-spacing">Hiring / Hackathon </span>
-                <span>Is this bounty part of a hackathon or job opening?</span>
-              </span>
-              <i class="fa"></i>
-            </a>
-            <div id="hiring-section" class="collapse py-4">
-              <div class="hiring_container">
-                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
+                <label class="font-caption letter-spacing text-black-60 text-uppercase" for="specialEvent">{% trans "Hackathon?" %}</label>
                 <div class="form__checkbox">
-                  <input name='hiringRightNow' id='hiringRightNow' type="checkbox"  />
-                  <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
+                  <input name="specialEvent" id="specialEvent" type="checkbox"  />
+                  <label class="form__label" for="specialEvent">
+                    {% trans 'Is this Bounty part of a Hackathon or Special Event?' %}
                   </label>
                 </div>
-                <input name='jobDescription' id='jobDescription' type="url" class="form__input " type="text" placeholder="https://link.to/job/description" value="" disabled/>
-              </div>
-              {% if events %}
-                <div class="mt-4">
-                  <label class="font-caption letter-spacing text-black-60 text-uppercase" for="specialEvent">{% trans "Hackathon?" %}</label>
-                  <div class="form__checkbox">
-                    <input name="specialEvent" id="specialEvent" type="checkbox"  />
-                    <label class="form__label" for="specialEvent">
-                      {% trans 'Is this Bounty part of a Hackathon or Special Event?' %}
-                    </label>
-                  </div>
-                  <div class="">
-                    <label class="form__label" for="eventTag">{% trans "Choose Event" %}</label>
-                    <div class="form__select2">
-                      <select class="js-select2" name="eventTag" id="eventTag" disabled>
-                        {% for evt in events %}
-                          <option value="{{ evt.name }}">{{ evt.name }}</option>
-                        {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <div class="bg-white my-3 px-5 rounded">
-            <a class="collapse-header collapsed" data-toggle="collapse" href="#contact-section" role="button" aria-expanded="false" aria-controls="contact-section">
-              <span class="font-body">
-                <span class="d-block text-uppercase letter-spacing">Contact info</span>
-                <span>Communicate with contributors and get notified of updates </span>
-              </span>
-              <i class="fa"></i>
-            </a>
-            <div id="contact-section" class="collapse py-4">
-              <div class="row mt-2">
-                {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
-                {% include 'shared/github_username.html' %}
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white my-3 px-5 rounded eth-chain">
-            <a class="collapse-header collapsed" data-toggle="collapse" href="#featured-section" role="button" aria-expanded="false" aria-controls="featured-section">
-              <span class="font-body">
-                <span class="d-block text-uppercase letter-spacing">Feature your bounty</span>
-                <span>Get more visibility and feature your bounty at the top of Issue Explorer </span>
-              </span>
-              <i class="fa"></i>
-            </a>
-            <div id="featured-section" class="collapse py-4">
-              {% include 'shared/featured.html' %}
-            </div>
-          </div>
-
-          <div class="bg-white my-3 px-5 rounded">
-            <input type="hidden" id="coupon_code" name="coupon_code" value="{{ coupon_code }}">
-            {% if FEE_PERCENTAGE != 0 %}
-              <div id="fee-section" class="py-4 eth-chain">
-                <h5 class="font-body letter-spacing text-black-60 text-uppercase">
-                  {% trans "No Surprises" %}
-                </h5>
-                <div class="row">
-                  <div class="col-12 col-sm-9 mt-3 font-body mb-sm-3">
-                    <p>
-                      Simply pay the bounty amount ( plus a {% if FEE_PERCENTAGE == 10 %} standard {% else %} discounted {% endif %}
-                      <span class="fee-percentage font-weight-bold">10</span><span class="font-weight-bold">%</span> Gitcoin platform fee ).
-                      This covers our costs for finding quality contributors to join our platform so that you get the best work.
-                      If your business requires additional assistance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
-                    </p>
-                  </div>
-                  <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
-                    <div class="fee-circle text-center">
-                      <p class="font-title mb-0"><span id="fee-amount"></span> <span id="fee-token"></span></p>
-                      <p class="font-body font-weight-semibold">
-                        (<span class="fee-percentage">10</span>%)
-                      </p>
-                    </div>
+                <div class="">
+                  <label class="form__label" for="eventTag">{% trans "Choose Event" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2" name="eventTag" id="eventTag" disabled>
+                      {% for evt in events %}
+                        <option value="{{ evt.name }}">{{ evt.name }}</option>
+                      {% endfor %}
+                    </select>
                   </div>
                 </div>
               </div>
             {% endif %}
+          </div>
+        </div>
 
-            <div class="py-4">
-              <div class="form__checkbox">
-                <input name='terms' id='terms' type="checkbox" value=1 required />
-                <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
-                  <a href="{% url "terms" %}" target="_blank" class="text-reset underline" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
-                </label>
-              </div>
-              <div class="form__checkbox">
-                <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                <label class="form__label mt-0" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
-                  Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
+        <div class="bg-white my-3 px-5 rounded">
+          <a class="collapse-header collapsed" data-toggle="collapse" href="#contact-section" role="button" aria-expanded="false" aria-controls="contact-section">
+            <span class="font-body">
+              <span class="d-block text-uppercase letter-spacing">Contact info</span>
+              <span>Communicate with contributors and get notified of updates </span>
+            </span>
+            <i class="fa"></i>
+          </a>
+          <div id="contact-section" class="collapse py-4">
+            <div class="row mt-2">
+              {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
+              {% include 'shared/github_username.html' %}
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white my-3 px-5 rounded eth-chain">
+          <a class="collapse-header collapsed" data-toggle="collapse" href="#featured-section" role="button" aria-expanded="false" aria-controls="featured-section">
+            <span class="font-body">
+              <span class="d-block text-uppercase letter-spacing">Feature your bounty</span>
+              <span>Get more visibility and feature your bounty at the top of Issue Explorer </span>
+            </span>
+            <i class="fa"></i>
+          </a>
+          <div id="featured-section" class="collapse py-4">
+            {% include 'shared/featured.html' %}
+          </div>
+        </div>
+
+        <div class="bg-white my-3 px-5 rounded">
+          <input type="hidden" id="coupon_code" name="coupon_code" value="{{ coupon_code }}">
+          {% if FEE_PERCENTAGE != 0 %}
+            <div id="fee-section" class="py-4 eth-chain">
+              <h5 class="font-body letter-spacing text-black-60 text-uppercase">
+                {% trans "No Surprises" %}
+              </h5>
+              <div class="row">
+                <div class="col-12 col-sm-9 mt-3 font-body mb-sm-3">
+                  <p>
+                    Simply pay the bounty amount ( plus a {% if FEE_PERCENTAGE == 10 %} standard {% else %} discounted {% endif %}
+                    <span class="fee-percentage font-weight-bold">10</span><span class="font-weight-bold">%</span> Gitcoin platform fee ).
+                    This covers our costs for finding quality contributors to join our platform so that you get the best work.
+                    If your business requires additional assistance, please contact us <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a>
+                  </p>
+                </div>
+                <div class="col-12 col-sm-3 order-first order-sm-last mt-4 mt-sm-2 mt-md-0 mb-4 mb-sm-3">
+                  <div class="fee-circle text-center">
+                    <p class="font-title mb-0"><span id="fee-amount"></span> <span id="fee-token"></span></p>
+                    <p class="font-body font-weight-semibold">
+                      (<span class="fee-percentage">10</span>%)
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-            <div id="gas-section" class="py-4 eth-chain">
-              <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h5>
-              <div>
-                {% include 'shared/bounty_actions_hidden_vars.html' %}
-                {% include 'shared/wallet_estimate.html' %}
-              </div>
+          {% endif %}
+
+          <div class="py-4">
+            <div class="form__checkbox">
+              <input name='terms' id='terms' type="checkbox" value=1 required />
+              <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
+                <a href="{% url "terms" %}" target="_blank" class="text-reset underline" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
+              </label>
+            </div>
+            <div class="form__checkbox">
+              <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+              <label class="form__label mt-0" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
             </div>
           </div>
 
-          <div class="bg-white my-3 px-5 rounded">
-            <div id="total-section" class="row mt-5 py-3">
-              <div class="col-md-3 col-lg-2 my-auto">
-                <h5 class="text-uppercase h3 font-weight-bold mb-0">{% trans "Total"%}</h5>
-              </div>
-              <div class="col-md-9 col-lg-10 my-auto">
-                <p class="mb-1 text-uppercase text-black-50 font-body">{% trans "Payment Due" %}</p>
-                <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block"></span>
+          <div class="eth-chain">
+            {% include 'shared/bounty_actions_hidden_vars.html' %}
+          </div>
+        </div>
 
-                <p class="font-caption text-black-50 mb-1">
-                  Bounty <span id="summary-bounty-amount" class="font-weight-bold">0</span>
-                  <span id="summary-bounty-token" class="font-weight-bold">ETH</span>
+        <div class="bg-white my-3 px-5 rounded">
+          <div id="total-section" class="row mt-5 py-3">
+            <div class="col-md-3 col-lg-2 my-auto">
+              <h5 class="text-uppercase h3 font-weight-bold mb-0">{% trans "Total"%}</h5>
+            </div>
+            <div class="col-md-9 col-lg-10 my-auto">
+              <p class="mb-1 text-uppercase text-black-50 font-body">{% trans "Payment Due" %}</p>
+              <span id="summary-total-amount" class="h2 text-darkblue font-weight-bold my-3 d-block"></span>
 
-                  <span class="feature-amount" style="display: none;">
-                    + Featured Bounty
-                    <span id="summary-feature-amount" class="font-weight-bold"></span>
-                    <span class="font-weight-bold">ETH</span>
-                  </span>
-                  <span class="eth-chain">
-                    {% if FEE_PERCENTAGE != 0 %}
-                      +
-                      <span id="summary-fee-amount" class="font-weight-bold">0</span>
-                      <span id="summary-fee-token" class="font-weight-bold">ETH</span> Gitcoin Platform Fee
-                    {% else %}
-                      + <span class="font-weight-bold">No Fees</span>
-                    {% endif %}
-                  </span>
-                </p>
-                <p class="font-caption text-black-50 mb-0 eth-chain">
-                  You will have to approve
-                  <span class="font-weight-bold">
-                    <span id="confirmation">{% if FEE_PERCENTAGE == 0 %} 1 {% else %} 2 {% endif %}</span>
-                    Metamask confirmations.
-                  </span>
-                </p>
-              </div>
+              <p class="font-caption text-black-50 mb-1">
+                Bounty <span id="summary-bounty-amount" class="font-weight-bold">0</span>
+                <span id="summary-bounty-token" class="font-weight-bold">ETH</span>
+
+                <span class="feature-amount" style="display: none;">
+                  + Featured Bounty
+                  <span id="summary-feature-amount" class="font-weight-bold"></span>
+                  <span class="font-weight-bold">ETH</span>
+                </span>
+                <span class="eth-chain">
+                  {% if FEE_PERCENTAGE != 0 %}
+                    +
+                    <span id="summary-fee-amount" class="font-weight-bold">0</span>
+                    <span id="summary-fee-token" class="font-weight-bold">ETH</span> Gitcoin Platform Fee
+                  {% else %}
+                    + <span class="font-weight-bold">No Fees</span>
+                  {% endif %}
+                </span>
+              </p>
+              <p class="font-caption text-black-50 mb-0 eth-chain">
+                You will have to approve
+                <span class="font-weight-bold">
+                  <span id="confirmation">{% if FEE_PERCENTAGE == 0 %} 1 {% else %} 2 {% endif %}</span>
+                  web3 wallet confirmations.
+                </span>
+              </p>
             </div>
           </div>
+        </div>
 
-          <div class="pb-5 text-center">
-            <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 px-5 btn-lg-padding" type="submit">Fund Issue</button>
-            <p class="font-caption blue">
-              Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.
-              <a class="text-reset underline" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Learn more here.</a>
-            </p>
-          </div>
-        </form>
-      </div>
-
+        <div class="pb-5 text-center">
+          <button class="btn btn-gc-blue btn-lg disabled js-submit mb-3 px-5 btn-lg-padding" type="submit">Fund Issue</button>
+          <p class="font-caption blue eth-chain">
+            Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.
+            <a class="text-reset underline" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Learn more here.</a>
+          </p>
+        </div>
+      </form>
     </div>
+
   </div>
 
 
@@ -381,7 +346,6 @@
 <script src="{% static "v2/js/lib/jquery.validate.min.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/lib/purify.min.js" %}"></script>
-<script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
 <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
 <script src="{% static "v2/js/amounts.js" %}"></script>

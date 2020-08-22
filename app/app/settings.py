@@ -26,6 +26,7 @@ import environ
 import raven
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
@@ -51,6 +52,12 @@ ADMINS = (env.tuple('ADMINS', default=('TODO', 'todo@todo.net')))
 BASE_DIR = root()
 #social integrations
 GIPHY_KEY = env('GIPHY_KEY', default='LtaY19ToaBSckiLU4QjW0kV9nIP75NFy')
+YOUTUBE_API_KEY = env('YOUTUBE_API_KEY', default='YOUR-SupEr-SecRet-YOUTUBE-KeY')
+ETHERSCAN_API_KEY = env('ETHERSCAN_API_KEY', default='YOUR-ETHERSCAN-KEY')
+VIEW_BLOCK_API_KEY = env('VIEW_BLOCK_API_KEY', default='YOUR-VIEW-BLOCK-KEY')
+FORTMATIC_LIVE_KEY = env('FORTMATIC_LIVE_KEY', default='YOUR-SupEr-SecRet-LiVe-FoRtMaTiC-KeY')
+FORTMATIC_TEST_KEY = env('FORTMATIC_TEST_KEY', default='YOUR-SupEr-SecRet-TeSt-FoRtMaTiC-KeY')
+PYPL_CLIENT_ID = env('PYPL_CLIENT_ID', default='')
 
 # Ratelimit
 RATELIMIT_ENABLE = env.bool('RATELIMIT_ENABLE', default=True)
@@ -59,6 +66,9 @@ RATELIMIT_VIEW = env('RATELIMIT_VIEW', default='tdi.views.ratelimited')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
+
+TWILIO_FRIENDLY_NAMES = env.list('TWILIO_FRIENDLY_NAMES', default=['VERIFY'])
+
 
 # Notifications - Global on / off switch
 ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
@@ -93,14 +103,13 @@ INSTALLED_APPS = [
     'health_check.contrib.s3boto3_storage',
     'app',
     'avatar',
-    'chat',
     'retail',
     'rest_framework',
     'marketing',
     'economy',
     'dashboard',
+    'chat',
     'quests',
-    'enssubdomain',
     'faucet',
     'tdi',
     'gas',
@@ -120,7 +129,6 @@ INSTALLED_APPS = [
     'bounty_requests',
     'perftools',
     'revenue',
-    'event_ethdenver2019',
     'inbox',
     'feeswapper',
     'search',
@@ -129,6 +137,17 @@ INSTALLED_APPS = [
     'compliance',
     'channels',
     'instant',
+    'django_nyt.apps.DjangoNytConfig',
+    'mptt',
+    'sekizai',
+    'sorl.thumbnail',
+    'wiki.apps.WikiConfig',
+    'wiki.plugins.attachments.apps.AttachmentsConfig',
+    'wiki.plugins.notifications.apps.NotificationsConfig',
+    'wiki.plugins.images.apps.ImagesConfig',
+    'wiki.plugins.macros.apps.MacrosConfig',
+    'adminsortable2',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -169,6 +188,7 @@ TEMPLATES = [{
             'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
             'app.context.preprocess', 'social_django.context_processors.backends',
             'social_django.context_processors.login_redirect',
+            "sekizai.context_processors.sekizai",
         ],
     },
 }]
@@ -207,6 +227,23 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'auth.User'
+
+# adds django debug toolbar
+SUPRESS_DEBUG_TOOLBAR = env.bool('SUPRESS_DEBUG_TOOLBAR', default=False)
+if DEBUG and not SUPRESS_DEBUG_TOOLBAR:
+    INTERNAL_IPS = [
+        # ...
+        '127.0.0.1',
+        'localhost',
+        # ...
+    ]
+    def callback(request):
+        return True
+    SHOW_TOOLBAR_CALLBACK = callback
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK" : callback,
+    }
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -261,7 +298,7 @@ RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_DSN:
     sentry_sdk.init(
         SENTRY_DSN,
-        integrations=[DjangoIntegration()]
+        integrations=[DjangoIntegration(), CeleryIntegration()]
     )
     RAVEN_CONFIG = {
         'dsn': SENTRY_DSN,
@@ -519,14 +556,6 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 
-# ENS Subdomain Settings
-# The value of ENS_LIMIT_RESET_DAYS should be higher since only one transaction is allowed per user.
-# The only reason for a user to make more than one request is when he looses access to the wallet.
-ENS_TLD = env('ENS_TLD', default='gitcoin.eth')
-ENS_LIMIT_RESET_DAYS = env.int('ENS_LIMIT_RESET_DAYS', default=30)
-ENS_OWNER_ACCOUNT = env('ENS_OWNER_ACCOUNT', default='0x00000')
-ENS_PRIVATE_KEY = env('ENS_PRIVATE_KEY', default=None)
-
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
@@ -550,12 +579,17 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Kudos revenue account
+KUDOS_REVENUE_ACCOUNT_ADDRESS = env('KUDOS_REVENUE_ACCOUNT_ADDRESS', default='0xdb282cee382244e05dd226c8809d2405b76fbdc9')
+
 # Chat
 CHAT_PORT = env('CHAT_PORT', default=8065)  # port of where mattermost is hosted
 CHAT_URL = env('CHAT_URL', default='localhost')  # location of where mattermost is hosted
+CHAT_SERVER_URL = env('CHAT_SERVER_URL', default='chat')  # location of where mattermost is hosted
 CHAT_DRIVER_TOKEN = env('CHAT_DRIVER_TOKEN', default='')  # driver token
 GITCOIN_HACK_CHAT_TEAM_ID = env('GITCOIN_HACK_CHAT_TEAM_ID', default='')
 GITCOIN_CHAT_TEAM_ID = env('GITCOIN_CHAT_TEAM_ID', default='')
+GITCOIN_LEADERBOARD_CHANNEL_ID = env('GITCOIN_LEADERBOARD_CHANNEL_ID', default='')
 # Social Auth
 LOGIN_URL = 'gh_login'
 LOGOUT_URL = 'logout'
@@ -601,6 +635,12 @@ TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='')  # TODO
 TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')  # TODO
 TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')  # TODO
 TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
+
+DISPUTES_TWITTER_CONSUMER_KEY = env('DISPUTES_TWITTER_CONSUMER_KEY', default='')  # TODO
+DISPUTES_TWITTER_CONSUMER_SECRET = env('DISPUTES_TWITTER_CONSUMER_SECRET', default='')  # TODO
+DISPUTES_TWITTER_ACCESS_TOKEN = env('DISPUTES_TWITTER_ACCESS_TOKEN', default='')  # TODO
+DISPUTES_TWITTER_ACCESS_SECRET = env('DISPUTES_TWITTER_ACCESS_SECRET', default='')  # TODO
+
 
 # Slack Integration
 # optional: only needed if you slack things
@@ -713,7 +753,7 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
-STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD']
+STABLE_COINS = ['DAI', 'SAI', 'USDT', 'TUSD', 'aDAI', 'USDC']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
@@ -745,11 +785,17 @@ ENABLE_DDTRACE = env.bool('ENABLE_DDTRACE', default=False)
 if ENABLE_DDTRACE:
     INSTALLED_APPS += ['ddtrace.contrib.django']
 
+WIKI_ACCOUNT_HANDLING = True
+WIKI_ACCOUNT_SIGNUP_ALLOWED = True
+WIKI_CACHE_TIMEOUT = True
+
 # Sending an email when a bounty is funded below a threshold
 LOWBALL_BOUNTY_THRESHOLD = env.float('LOWBALL_BOUNTY_THRESHOLD', default=10.00)
 
 # Gitcoin Bounty Funding Fee settings
 FEE_ADDRESS = env('FEE_ADDRESS', default='')
+
+ALETHIO_KEY = env('ALETHIO_KEY', default='')
 FEE_ADDRESS_PRIVATE_KEY = env('FEE_ADDRESS_PRIVATE_KEY', default='')
 SLIPPAGE = env.float('SLIPPAGE', default=0.05)
 UNISWAP_LIQUIDITY_FEE = env.float('UNISWAP_LIQUDITY_FEE', default=0.003)
@@ -776,3 +822,30 @@ try:
     }
 except:
     pass
+
+AVATAR_ADDRESS = env('AVATAR_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+AVATAR_PRIVATE_KEY = env('AVATAR_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+
+GRANTS_PAYOUT_ADDRESS = env('GRANTS_PAYOUT_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+GRANTS_PAYOUT_PRIVATE_KEY = env('GRANTS_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+GRANTS_PAYOUT_CLR_KYC_THRESHOLD = env('GRANTS_PAYOUT_CLR_KYC_THRESHOLD', default=0)
+
+GRANTS_COUPON_25_OFF = env('GRANTS_COUPON_25_OFF', default='OWOCKIFOREVER')
+GRANTS_COUPON_50_OFF = env('GRANTS_COUPON_50_OFF', default='OWOCKIFOREVER')
+GRANTS_COUPON_100_OFF = env('GRANTS_COUPON_100_OFF', default='OWOCKIFOREVER')
+
+TIP_PAYOUT_ADDRESS = env('TIP_PAYOUT_ADDRESS', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673BCAE2616b67bf822500d325Fc3')
+
+
+ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+
+account_sid = env('TWILIO_ACCOUNT_SID', default='')
+auth_token = env('TWILIO_AUTH_TOKEN', default='')
+verify_service = env('TWILIO_VERIFY_SERVICE', default='')
+
+SMS_MAX_VERIFICATION_ATTEMPTS = env('SMS_MAX_VERIFICATION_ATTEMPTS', default=4)
+SMS_COOLDOWN_IN_MINUTES = env('SMS_COOLDOWN_IN_MINUTES', default=1)
+EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
+PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')
+

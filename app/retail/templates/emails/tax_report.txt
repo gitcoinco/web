@@ -1,0 +1,4 @@
+{% load i18n %}
+{% trans "There should be an zip attachment with all infos for all bounties, tips and grant funded" %}
+{% trans "Also there is a 1099 form compiled for evary us gitcoiners that you paid in this year" %}
+{% trans "Each 1099 consist in 4 pdf file (copy 1, copy 2, copy B, copy C)" %}

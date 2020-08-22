@@ -76,79 +76,6 @@ var loading_button = function(button) {
 };
 
 var cb_address;
-var reloadCbAddress = function() {
-
-  try {
-    // invoke infura synchronous call, if it fails metamask is locked
-    cb_address = web3.eth.coinbase;
-  } catch (error) {
-    // catch error so sentry doesn't alert on metamask call failure
-    console.log('web3.eth.coinbase could not be loaded');
-  }
-};
-
-reloadCbAddress();
-
-var update_metamask_conf_time_and_cost_estimate = function() {
-  var confTime = 'unknown';
-  var ethAmount = 'unknown';
-  var usdAmount = 'unknown';
-
-  var gasLimit = parseInt($('#gasLimit').val());
-  var gasPrice = parseFloat($('#gasPrice').val());
-
-  if (gasPrice) {
-    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
-
-    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
-    usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
-  }
-
-  if (typeof document.conf_time_spread == 'undefined') return;
-
-  for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
-    var this_ele = (document.conf_time_spread[i]);
-    var next_ele = (document.conf_time_spread[i + 1]);
-
-    if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(10 * next_ele[1]) / 10;
-    }
-  }
-
-  $('#ethAmount').html(ethAmount);
-  $('#usdAmount').html(usdAmount);
-  $('#confTime').html(confTime);
-};
-
-var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
-
-  var confTime = 'unknown';
-  var ethAmount = 'unknown';
-  var usdAmount = 'unknown';
-
-  var gasLimit = parseInt($('#gasLimit').val());
-
-  if (gasPrice) {
-    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
-
-    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
-    usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
-  }
-
-  if (typeof document.conf_time_spread == 'undefined') return;
-
-  for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
-    var this_ele = (document.conf_time_spread[i]);
-    var next_ele = (document.conf_time_spread[i + 1]);
-
-    if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(10 * next_ele[1]) / 10;
-    }
-  }
-
-  return {'eth': ethAmount, 'usd': usdAmount, 'time': confTime};
-};
-
 var unloading_button = function(button) {
   button.prop('disabled', false);
   button.removeClass('disabled');
@@ -218,7 +145,7 @@ var getTimeFromDate = function(date) {
 };
 
 var waitforWeb3 = function(callback) {
-  if (document.web3network) {
+  if (document.web3network && document.web3network != 'locked') {
     callback();
   } else {
     var wait_callback = function() {
@@ -274,6 +201,11 @@ var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
+
+  if (typeof fbq !== 'undefined') {
+    fbq('trackCustom', 'Start Work');
+  }
+
   return mutate_interest(bounty_pk, 'new', data);
 };
 
@@ -433,6 +365,7 @@ var update_fulfiller_list = function(bounty_pk) {
   });
   return fulfillers;
 };
+// ETC TODO END
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -579,7 +512,8 @@ var retrieveAmount = function() {
   }
 
   // if not, use remote one
-  $.get(request_url, function(result) {
+  $.get(request_url, function(results) {
+    const result = results[0];
 
     // update UI
     var usd_amount = result['usdt'];
@@ -691,231 +625,6 @@ const randomElement = array => {
   return array[randomIndex];
 };
 
-/* eslint-disable no-lonely-if */
-var currentNetwork = function(network) {
-
-  $('.navbar-network').removeClass('hidden');
-
-  document.web3network = network;
-  if (document.location.href.startsWith('https://gitcoin.co')) { // Live
-    if (network == 'mainnet') {
-      $('#current-network').text('Main Ethereum Network');
-      $('.navbar-network').attr('title', '');
-      $('.navbar-network i').addClass('green');
-      $('.navbar-network i').removeClass('red');
-      $('#navbar-network-banner').removeClass('network-banner--warning');
-      $('#navbar-network-banner').addClass('hidden');
-    } else {
-      if (!network) {
-        info = gettext('Web3 disabled. Please install ') +
-          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text(gettext('Metamask Not Enabled'));
-        $('#navbar-network-banner').html(info);
-      } else if (network == 'locked') {
-        if (is_metamask_approved || !is_metamask_unlocked) {
-          info = gettext('Web3 locked. Please unlock ') +
-            '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-          $('#current-network').text(gettext('Metamask Locked'));
-          $('#navbar-network-banner').html(info);
-        } else if (window.ethereum._metamask) {
-          info = gettext('Metamask not connected. ') +
-              '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
-          $('#current-network').text(gettext('Metamask Not Connected'));
-          $('#navbar-network-banner').html(info);
-        }
-      } else {
-        info = gettext('Connect to Mainnet via Metamask');
-        $('#current-network').text(gettext('Unsupported Network'));
-        $('#navbar-network-banner').html(info);
-      }
-
-      $('.navbar-network i').addClass('red');
-      $('.navbar-network i').removeClass('green');
-      $('#navbar-network-banner').addClass('network-banner--warning');
-      $('#navbar-network-banner').removeClass('hidden');
-
-      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
-        $('.navbar-network').attr('title', '<div class="tooltip-info tooltip-xs">' + info + '</div>');
-      }
-    }
-  } else { // Staging
-    if (network == 'rinkeby') {
-      $('#current-network').text('Rinkeby Network');
-      $('.navbar-network').attr('title', '');
-      $('.navbar-network i').addClass('green');
-      $('.navbar-network i').removeClass('red');
-      $('#navbar-network-banner').removeClass('network-banner--warning');
-      $('#navbar-network-banner').addClass('hidden');
-    } else {
-      if (!network) {
-        info = gettext('Web3 disabled. Please install ') +
-          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text(gettext('Metamask Not Enabled'));
-        $('#navbar-network-banner').html(info);
-      } else if (network == 'locked') {
-        if (is_metamask_approved || !is_metamask_unlocked) {
-          info = gettext('Web3 locked. Please unlock ') +
-            '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-          $('#current-network').text(gettext('Metamask Locked'));
-          $('#navbar-network-banner').html(info);
-        } else if (window.ethereum._metamask) {
-          info = gettext('Metamask not connected. ') +
-              '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
-          $('#current-network').text(gettext('Metamask Not Connected'));
-          $('#navbar-network-banner').html(info);
-        }
-      } else {
-        info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
-        $('#current-network').text(gettext('Unsupported Network'));
-        $('#navbar-network-banner').html(info);
-      }
-
-      $('.navbar-network i').addClass('red');
-      $('.navbar-network i').removeClass('green');
-      $('#navbar-network-banner').addClass('network-banner--warning');
-      $('#navbar-network-banner').removeClass('hidden');
-
-      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
-        $('.navbar-network').attr('title', '<div class="tooltip-info tooltip-xs">' + info + '</div>');
-      }
-    }
-  }
-};
-/* eslint-enable no-lonely-if */
-
-/**
- * Throws custom alert based on user
- * - has not installed metamask
- * - metamask is locked
- * - metmask connection needs to be authorized
- * - logged in address has no ETH
- */
-var trigger_primary_form_web3_hooks = function() {
-  if ($('#primary_form').length) {
-    var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1 && !document.suppress_faucet_solicitation;
-
-    if (typeof web3 == 'undefined') {
-      $('#no_metamask_error').css('display', 'block');
-      $('#zero_balance_error').css('display', 'none');
-      $('#primary_form, .primary_form-meta').addClass('hidden');
-      $('.submit_bounty .newsletter').addClass('hidden');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'none');
-      $('#no_issue_error').css('display', 'none');
-    } else if (is_metamask_unlocked && !is_metamask_approved) {
-      $('#connect_metamask_error').css('display', 'block');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#zero_balance_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#primary_form, .primary_form-meta').addClass('hidden');
-      $('.submit_bounty .newsletter').addClass('hidden');
-      $('#no_issue_error').css('display', 'none');
-    } else if (!cb_address) {
-      $('#unlock_metamask_error').css('display', 'block');
-      $('#zero_balance_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#primary_form, .primary_form-meta').addClass('hidden');
-      $('#connect_metamask_error').css('display', 'none');
-      $('.submit_bounty .newsletter').addClass('hidden');
-      $('#no_issue_error').css('display', 'none');
-    } else if (is_zero_balance_not_okay && document.balance == 0) {
-      $('#zero_balance_error').css('display', 'block');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form, .primary_form-meta').addClass('hidden');
-      $('.submit_bounty .newsletter').addClass('hidden');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#no_issue_error').css('display', 'none');
-    } else {
-      $('#zero_balance_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'none');
-      $('#no_issue_error').css('display', 'block');
-      $('#robot_error').addClass('hidden');
-      $('#primary_form, .primary_form-meta').removeClass('hidden');
-      $('.submit_bounty .newsletter').removeClass('hidden');
-    }
-  }
-};
-
-
-var trigger_faucet_form_web3_hooks = function() {
-  var params = {};
-
-  if ($('#faucet_form').length) {
-    var balance = document.balance;
-
-    $('#ethAddress').val(web3.eth.accounts[0]);
-    var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
-
-    if (typeof web3 == 'undefined') {
-      $('#no_metamask_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-      return;
-    } else if (is_metamask_unlocked && !is_metamask_approved) {
-      $('#no_metamask_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'block');
-      $('#over_balance_error').css('display', 'none');
-      $('#faucet_form').addClass('hidden');
-    } else if (!web3.eth.coinbase) {
-      $('#no_metamask_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'block');
-      $('#connect_metamask_error').css('display', 'none');
-      $('#over_balance_error').css('display', 'none');
-      $('#faucet_form').addClass('hidden');
-      return;
-    } else if (balance >= faucet_amount) {
-      $('#no_metamask_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'none');
-      $('#over_balance_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-    } else {
-      $('#over_balance_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'none');
-      $('#faucet_form').removeClass('hidden');
-    }
-  }
-  if ($('#admin_faucet_form').length || $('#admin_refund_form').length) {
-    if (typeof web3 == 'undefined') {
-      $('#no_metamask_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-      return;
-    }
-    if (is_metamask_unlocked && !is_metamask_approved) {
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#connect_metamask_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-    }
-    if (!web3.eth.coinbase) {
-      $('#unlock_metamask_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-      return;
-    }
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (errors) {
-        return;
-      }
-      var balance = result.toNumber();
-
-      if (balance == 0) {
-        $('#zero_balance_error').css('display', 'block');
-        $('#admin_faucet_form').remove();
-      }
-    });
-  }
-};
-
-var trigger_form_hooks = function() {
-  trigger_primary_form_web3_hooks();
-  trigger_faucet_form_web3_hooks();
-};
-
 function getNetwork(id) {
   var networks = {
     '1': 'mainnet',
@@ -927,73 +636,6 @@ function getNetwork(id) {
 
   return networks[id] || 'custom network';
 }
-
-// figure out what version of web3 this is, whether we're logged in, etc..
-var listen_for_web3_changes = async function() {
-  reloadCbAddress();
-  if (document.location.pathname.indexOf('grants') === -1) {
-    if (!document.listen_for_web3_iterations) {
-      document.listen_for_web3_iterations = 1;
-    } else {
-      document.listen_for_web3_iterations += 1;
-    }
-
-    if (typeof web3 == 'undefined') {
-      currentNetwork();
-      trigger_form_hooks();
-    } else if (typeof web3.eth == 'undefined') {
-      currentNetwork('locked');
-      trigger_form_hooks();
-    } else if (typeof cb_address == 'undefined' || !cb_address) {
-      currentNetwork('locked');
-      trigger_form_hooks();
-    } else {
-      is_metamask_unlocked = true;
-
-      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-        if (errors) {
-          return;
-        }
-        if (typeof result != 'undefined' && result !== null) {
-          document.balance = result.toNumber();
-        }
-      });
-
-      web3.version.getNetwork(function(error, netId) {
-        if (error) {
-          currentNetwork();
-        } else {
-          var network = getNetwork(netId);
-
-          currentNetwork(network);
-          trigger_form_hooks();
-        }
-      });
-    }
-  }
-
-  if (window.ethereum && !document.has_checked_for_ethereum_enable) {
-    if (window.ethereum._metamask) {
-      document.has_checked_for_ethereum_enable = true;
-      is_metamask_approved = await window.ethereum._metamask.isApproved();
-      is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
-      if (is_metamask_approved && is_metamask_unlocked) {
-        var start_time = ((new Date()).getTime() / 1000);
-
-        await ethereum.enable();
-        var now_time = ((new Date()).getTime() / 1000);
-        var did_request_and_user_respond = (now_time - start_time) > 1.0;
-
-        if (did_request_and_user_respond) {
-          document.location.reload();
-        }
-      }
-    } else {
-      is_metamask_approved = true;
-      is_metamask_unlocked = true;
-    }
-  }
-};
 
 var actions_page_warn_if_not_on_same_network = function() {
   var user_network = document.web3network;
@@ -1023,27 +665,21 @@ var actions_page_warn_if_not_on_same_network = function() {
 
 attach_change_element_type();
 
-if (typeof is_bounties_network == 'undefined' || is_bounties_network) {
-  window.addEventListener('load', function() {
-    setInterval(listen_for_web3_changes, 1000);
-  });
-}
-
 var setUsdAmount = function() {
   const amount = $('input[name=amount]').val();
   const denomination = $('#token option:selected').text();
 
   getUSDEstimate(amount, denomination, function(estimate) {
     if (estimate['value']) {
-      $('#usd-amount-wrapper').css('visibility', 'visible');
-      $('#usd_amount_text').css('visibility', 'visible');
+      $('#usd-amount-wrapper').show();
+      $('#usd_amount_text').show();
 
       $('#usd_amount').val(estimate['value_unrounded']);
       $('#usd_amount_text').html(estimate['rate_text']);
       $('#usd_amount').removeAttr('disabled');
     } else {
-      $('#usd-amount-wrapper').css('visibility', 'hidden');
-      $('#usd_amount_text').css('visibility', 'hidden');
+      $('#usd-amount-wrapper').hide();
+      $('#usd_amount_text').hide();
 
       $('#usd_amount_text').html('');
       $('#usd_amount').prop('disabled', true);
@@ -1192,7 +828,7 @@ const saveAttestationData = (result, cost_eth, to_address, type) => {
     'txid': txid,
     'amount': cost_eth,
     'network': document.web3network,
-    'from_address': web3.eth.coinbase,
+    'from_address': cb_address,
     'to_address': to_address,
     'type': type
   };
@@ -1379,8 +1015,38 @@ const updateParams = (key, value) => {
   params = new URLSearchParams(window.location.search);
   if (params.get(key) === value) return;
   params.set(key, value);
-  window.location.search = params.toString();
+
+  let path = '/';
+
+  if (params.get('type', '')) {
+    path = '/' + params.get('type', '');
+  }
+  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
 };
+
+const updateMultipleParams = (_newParams) => {
+  params = new URLSearchParams(window.location.search);
+  newParams = Object.entries(_newParams);
+  for (const [ key, value ] of newParams) {
+    params.set(key, value);
+  }
+  let path = '/';
+
+  if (params.get('type', '')) {
+    path = '/' + params.get('type', '');
+  }
+
+  if (params.get('type')) {
+    params.delete('type');
+  }
+  if (!params.get('category')) {
+    params.delete('category');
+  }
+  params.delete('keyword');
+
+  window.location.href = '/grants' + path + '?' + decodeURIComponent(params.toString());
+};
+
 
 /**
  * shrinks text if it exceeds a given length which introduces a button
@@ -1458,6 +1124,11 @@ const caseInsensitiveCompare = (val1, val2) => {
  * @param {*} closePopup [boolean]
  */
 const indicateMetamaskPopup = (closePopup) => {
+  // Don't show popup if user is not using Metamask
+  if (web3Modal.cachedProvider !== 'injected') {
+    return;
+  }
+
   if (closePopup) {
     $('#indicate-popup').hide();
   } else if ($('#indicate-popup').length) {
@@ -1532,15 +1203,15 @@ function check_balance_and_alert_user_if_not_enough(
     return;
   }
 
-  let token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-  let from = web3.eth.coinbase;
+  let token_contract = new web3.eth.Contract(token_abi, tokenAddress);
+  let from = cb_address;
   let token_details = tokenAddressToDetails(tokenAddress);
   let token_decimals = token_details['decimals'];
   let token_name = token_details['name'];
 
-  token_contract.balanceOf.call(from, function(error, result) {
+  token_contract.methods.balanceOf(from).call({from: from}, function(error, result) {
     if (error) return;
-    let balance = result.toNumber() / Math.pow(10, token_decimals);
+    let balance = Number(result) / Math.pow(10, token_decimals);
     let balance_rounded = Math.round(balance * 10) / 10;
 
     if (parseFloat(amount) > balance) {
@@ -1548,6 +1219,7 @@ function check_balance_and_alert_user_if_not_enough(
       let msg2 = gettext(' You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
 
       _alert(msg1 + msg2, 'warning');
+      return;
     }
   });
 
@@ -1579,4 +1251,16 @@ const fetchIssueDetailsFromGithub = issue_url => {
       reject(error);
     });
   });
+};
+
+const get_UUID = () => {
+  var dt = new Date().getTime();
+  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = (dt + Math.random() * 16) % 16 | 0;
+
+    dt = Math.floor(dt / 16);
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+
+  return uuid;
 };

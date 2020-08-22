@@ -22,14 +22,14 @@ from marketing.models import EmailSubscriber
 from quests.helpers import (
     get_leaderboard, max_ref_depth, process_start, process_win, record_award_helper, record_quest_activity,
 )
-from quests.models import Quest, QuestAttempt, QuestPointAward
+from quests.models import Quest, QuestAttempt, QuestPointAward, video_enabled_backgrounds
 from quests.quest_types.example import details as example
 from quests.quest_types.quiz_style import details as quiz_style
 from ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
-current_round_number = 4
+current_round_number = 5
 
 
 def next_quest(request):
@@ -135,6 +135,7 @@ def editquest(request, pk=None):
               ]
             }
             game_metadata = {
+              "video": package.get('background').replace('back', 'bg') + ".mp4" if package.get('video_enabled', 0) else None,
               "enemy": {
                 "id": enemy.pk,
                 "art": enemy.img_url,
@@ -193,6 +194,7 @@ def editquest(request, pk=None):
         package['est_read_time_mins'] = quest.game_schema.get('est_read_time_mins')
         package['reading_material_url'] = quest.game_schema.get('prep_materials', [{}])[0].get('url')
         package['reading_material_name'] = quest.game_schema.get('prep_materials', [{}])[0].get('title')
+        package['video_enabled'] = quest.video
         package['reward'] = quest.kudos_reward.pk
         package['enemy'] = quest.game_metadata.get('enemy', {}).get('id')
         package['points'] = quest.value
@@ -203,7 +205,9 @@ def editquest(request, pk=None):
         'pk': pk if not quest else quest.pk,
         'package': package,
         'the_quest': quest,
+        'video_enabled_backgrounds': [f"back{i}" for i in video_enabled_backgrounds],
         'questions': questions,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-05.png')),
         'backgrounds': [ele[0] for ele in Quest.BACKGROUNDS],
         'answer_correct': request.POST.getlist('answer_correct[]',[]),
         'seconds_to_respond': request.POST.getlist('seconds_to_respond[]',[]),
@@ -345,7 +349,7 @@ def index(request):
         'point_value': point_value,
         'show_loading': show_loading,
         'current_round_number': current_round_number,
-        'avatar_url': static('v2/images/quests/orb_small.png'),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-05.png')),
         'card_desc': 'Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!',
     }
 

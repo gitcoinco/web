@@ -46,7 +46,7 @@ class Alumni(SuperModel):
 
 class EmailSubscriber(SuperModel):
 
-    email = models.EmailField(max_length=255)
+    email = models.EmailField(max_length=255, unique=True)
     source = models.CharField(max_length=50)
     active = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=True)
@@ -149,6 +149,7 @@ class ManualStat(SuperModel):
     key = models.CharField(max_length=50, db_index=True)
     date = models.DateTimeField(db_index=True)
     val = models.FloatField()
+    comment = models.TextField(max_length=255, default='', blank=True)
 
     def __str__(self):
         return f"{self.key}: {self.date}: {self.val}"
@@ -385,6 +386,42 @@ class Job(SuperModel):
     description = models.TextField(max_length=5000, blank=True)
     link = models.CharField(max_length=255)
     active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.title}"
+
+
+class RoundupEmail(SuperModel):
+
+    from_email = models.EmailField(max_length=255)
+    from_name = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255)
+    body = models.TextField(max_length=15000, blank=True)
+    kudos_ids = models.CharField(max_length=255, help_text="kudosid1,kudosid2,kudosid3")
+    highlights = JSONField(default=dict, blank=True)
+    sponsor = JSONField(default=dict, blank=True)
+    bounties_spec = JSONField(default=dict, blank=True)
+
+    def get_absolute_url(self):
+        return '/_administration/email/roundup'
+
+    def __str__(self):
+        return self.subject
+
+class UpcomingDate(SuperModel):
+    """Define the upcoming date model"""
+
+    title = models.CharField(max_length=255)
+    date = models.DateTimeField(db_index=True)
+    img_url = models.URLField(db_index=True, blank=True)
+    url = models.URLField(db_index=True)
+    comment = models.TextField(max_length=255, default='', blank=True)
+
+    @property
+    def naturaltime(self):
+         from django.contrib.humanize.templatetags.humanize import naturaltime
+         return naturaltime(self.date)
+
 
     def __str__(self):
         return f"{self.title}"

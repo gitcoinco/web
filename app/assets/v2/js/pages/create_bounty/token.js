@@ -20,23 +20,16 @@ createBounty = data => {
     bountyNeverExpires :
     new Date(data.expirationTimeDelta).getTime() / 1000;
 
-  let is_featured = data.is_featured ? 'True' : 'False';
-  let coupon_code = $('#coupon_code').val();
-  let fee_amount;
-  let fee_tx_id;
-  let network;
+  const is_featured = isQRToken(metadata.tokenName) ? 'True' : 'False';
+  const coupon_code = $('#coupon_code').val();
+  const fee_amount = 0;
+  const fee_tx_id = null;
+  const network = 'mainnet';
 
   const tokenAddress = data.denomination;
   const token = tokenAddressToDetails(tokenAddress);
 
-  if (metadata.tokenName == 'ETC') {
-    is_featured = 'True';
-    coupon_code = null;
-    fee_amount = 0;
-    fee_tx_id = null;
-    network = 'mainnet';
-  }
-
+  const web3_type = isQRToken(metadata.tokenName) ? 'qr' : 'fiat';
 
   const params = {
     'title': metadata.issueTitle,
@@ -70,12 +63,13 @@ createBounty = data => {
     'fee_amount': fee_amount,
     'fee_tx_id': fee_tx_id,
     'coupon_code': coupon_code,
-    'unsigned_nda': '', // ETC-TODO
     'privacy_preferences': JSON.stringify(privacy_preferences),
     'attached_job_description': hiring.jobDescription,
     'eventTag': metadata.eventTag,
     'auto_approve_workers': data.auto_approve_workers ? 'True' : 'False',
-    'web3_type': 'qr'
+    'web3_type': web3_type,
+    'activity': data.activity,
+    'bounty_owner_address': data.funderAddress
   };
 
   const url  = '/api/v1/bounty/create';

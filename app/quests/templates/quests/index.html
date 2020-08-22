@@ -17,592 +17,573 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% block 'content' %}
-<div class="row">
-  <div class="container py-5 ">
-    <div class="quests-hero white my-3">
-      <div class="row">
-        <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
-          <img class="mr-1 demo" src="{% static "v2/images/quests/hero.png" %}">
+  <div class="row">
+    <div class="container py-5 ">
+      <div class="quests-hero white my-3">
+        <div class="row">
+          <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
+            <img class="mr-1 demo" src="{% static "v2/images/quests/hero.png" %}">
+          </div>
+          <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
+            <h1 class="font-title-xl font-weight-semibold hero-p-mobile">Explore. Learn. Battle Baddies. Win Rewards.</h1>
+            <p class="hero-p-mobile my-4 pt-1 font-header">
+              Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
+            </p>
+            <a id=explore_quests class="hero-p-mobile btn btn-gc-blue px-4" href="#available_quests">
+              <img class="mr-1 white-icon" height="22" src="{% static "v2/images/top-bar/quests-symbol-neg.svg" %}">
+              Explore Quests
+            </a>
+          </div>
         </div>
-        <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
-          <h1 class="font-title-xl font-weight-semibold hero-p-mobile">Explore. Learn. Battle Baddies. Win Rewards.</h1>
-          <p class="hero-p-mobile my-4 pt-1 font-header">
-            Gitcoin Quests is a fun, gamified way to learn about the web3 ecosystem, compete with your friends, earn rewards, and level up your decentralization-fu!
-          </p>
-          <a id=explore_quests class="hero-p-mobile btn btn-gc-blue" href="#available_quests">
-            <img class="mr-1 white-icon" src="{% static "v2/images/products/quests-symbol.svg" %}">
-            Explore Quests
-          </a>
-        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="row indent_on_mobile available_quests" id="available_quests">
-  <div class="w-100">
-    <form method="GET" id=search_form>
-      <input class="float-right mt-3 mr-4 w-25" type="text" name="q" value="{{query}}" placeholder="Search">
-    </form>
-    <h1 class="mt-3" style="width: 100%;">{{query|title}} Quests <span id="alpha">Alpha</span></h1>
-  </div>
-  <div id="tabs">
-    <div class="container">
-      <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-      {% for difficulty_level, the_quests in quests%}
-        <li class="nav-item">
-          <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active{% endif %}" href="#" data-href="{{difficulty_level}}">
-            {{difficulty_level}} <span>({{the_quests|length}})</span>
-          </a>
-        </li>
-      {% endfor %}
-      </ul>
+  <div class="row indent_on_mobile available_quests" id="available_quests">
+    <div class="w-100">
+      <form method="GET" id=search_form>
+        <input class="float-right mt-3 mr-4 w-25" type="text" name="q" value="{{query}}" placeholder="Search">
+      </form>
+      <h1 class="mt-3" style="width: 100%;">{{query|title}} Quests <span id="alpha">Alpha</span></h1>
     </div>
-  </div>
-    <div class="loading w-100 {% if not show_loading %}hidden{% endif %}">
-      <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ..." style="max-width: 200px; margin: 0px 30% 100px 30%;">
-    </div>
-  {% for difficulty_level, the_quests in quests%}
-  <div class="difficulty_tab {{difficulty_level}} {% if difficulty_level != selected_tab %}hidden{% endif %}">
-    {% if the_quests|length == 0 %}
-      <div style='min-height: 400px; text-align: center; vertical-align: middle; padding: 100px; border-left: 2px solid #fafafa; '>
-      <h3>No Quests Found</h3>
-      <BR>
-      <a href="/quests/new/"><img id="logo" data-src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" /></a>
-      <BR>
-      Try again or <a href="/quests/new/">create your own</a>.
-    </div>
-    {% endif %}
-    {% for unlocked, beaten, cooldown, quest in the_quests %}
-    <div id="{{difficulty_level}}" style="{% cycle 'background-color: #fafafa;' '' %}; width: 250px; display: block; float: left; border-radius: 10px; height: 530px; text-align: center;" class="{{quest.style}} m-3 p-2 quest-card {% if not unlocked %} locked {% elif beaten %} beaten {% else %} available {% endif %} {% if cooldown %} cooldown {% endif %}">
-      <div class="card_head">
-        <span class="boss">#boss</span>
-        <img class="card_img boss" data-src="{{quest.art_url}}" title="{{quest.game_metadata.enemy.title}}">
-        <span class="reward">#prize</span>
-        <img class="card_img reward" data-src="{{quest.kudos_reward.img_url}}" title="{{quest.kudos_reward.humanized_name}} Kudos">
-      </div>
-      <div style="background-color: #eee; border-top: 3px solid #bbb; border-radius: 5px;" class="pr-3 pt-3 pl-3 pb-1 mb-1 mt-3">
-        <span style="position: relative; top: -50px; font-size: 30px;">
-          {% if cooldown %}
-            🥶
-          {% elif beaten %}
-            ✅
-          {% else %}
-            🔒
-          {% endif %}
-        </span>
-        <a href="{{quest.url}}">
-          <h2 style="margin-top: -50px; font-size: 20px;">
-            {{quest.title}}
-          </h2>
-        </a>
-        <ul class='tags mb-1'>
-          {% for tag in quest.ui_data.tags %} 
-            <li>#{{tag|lower}}</li>
-          {% endfor %}
-        </ul>
-        <p style="color: #222; font-size: 11px; margin-bottom: 3px;"><strong>{{quest.ui_data.attempts_count}}</strong> Attempts | <strong>{{quest.ui_data.success_pct}}%</strong> Winners | Created by <a href="{{quest.ui_data.creator.url}}">@{{quest.ui_data.creator.handle}}</a> | Prize: <a href="{{quest.kudos_reward.url}}">{{quest.kudos_reward.humanized_name}} Kudos</a> </p>
-        <p class="desc" style=" max-height: 90px; overflow-y: scroll; font-size: 10px; border-top: 1px solid #333;">{{quest.description}}</p>
-      </div>
-      {% if beaten %}
-        ( ✅ Quest Beaten)
-      {% elif cooldown %}
-        ( 🥶 In Cooldown Period)
-      {% elif unlocked %}
-        <p style="font-size: 10px;">
-          <span style="font-weight: bold;">Play Time:</span> <br>
-          {{quest.est_total_time_required}} mins (reading) <br>
-          {{quest.est_skim_time_mins}} mins (skimming)
-        </p>
 
-        <a style="position: relative; bottom: 20px; left: 0px;" class="btn btn-xs btn-gc-blue mt-2" role="button" href="{{quest.url}}">Play Quest</a>
-      {% else %}
-        🔒Locked; To unlock 
-        {% if quest.unlocked_by_hackathon %}
-          register for <a href="{{quest.unlocked_by_hackathon.onboard_url}}">{{quest.unlocked_by_hackathon.name}}</a>.
-        {% else %}
-          beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
-        {% endif %}
-      {% endif %}
-      {% if difficulty_level == 'Created' %}
-        <BR>
-        <a class="mt-2" role="button" href="{{quest.edit_url}}">(Edit Quest)</a>
-      {% endif %}
-    </div>
-    {% endfor %}
-  </div>
-  {% endfor %}
-</div>
-
-<div class="row indent_on_mobile" id=leaderboard_top>
-  <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
-  <div id="announce">
-    <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
-    <h4><strong>Round 3 Challenge ended on 1/30!</strong></h4>
-    <p class="mb-0">Congratulations to</p> 
-      <ol style='display: inline-block; margin: 0px auto;'>
-        {% for rw in latest_round_winners %}
-          <li>
-            <a href="/profile/@{{rw}}">
-              @{{rw}}
+    <div id="tabs" class="col-12">
+      <ul class="nav nav-tabs my-3 font-body" id="myTab" role="tablist">
+        {% for difficulty_level, the_quests in quests%}
+          <li class="nav-item">
+            <a class="nav-link nav-line {% if difficulty_level == selected_tab %}active font-weight-semibold{% endif %}" href="#" data-href="{{difficulty_level}}">
+              {{difficulty_level}} <span>({{the_quests|length}})</span>
             </a>
           </li>
         {% endfor %}
-      </ol>
-      <p>
-      They have <strong>a $60 prize</strong> and a <i>very special Kudos</i>.
-      </p>
-      <h5 class="mt-1 pt-0"><strong>Round 4 Challenge is now Live!</strong></h5>
-      <p class="mb-3">Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on 4/30/2020 will <strong>win a special 60 DAI prize</strong> and a <i>very special Kudos</i>.
-  </div>
-
-</div>
-
-
-<div class="row indent_on_mobile" id="leaderboard_nav">
-  <div id="leaderboard_tabs">
-    <div class="container">
-      <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link nav-line" href="#" data-href="how_to_earn">
-          How to Earn Points
-          </a>
-        </li>
-        {% if github_handle %}
-        <li class="nav-item">
-          <a class="nav-link nav-line" href="#" data-href="my_points">
-          @{{github_handle}}'s' Points ({{point_value}})
-          </a>
-        </li>
-        {% endif %}
-      {% for round_number, this_leaderboard in leaderboard.items %}
-        <li class="nav-item">
-          <a class="nav-link nav-line {% if current_round_number == round_number %}active{% endif %}" href="#" data-href="leaderboard_{{round_number}}">
-          Round {{round_number}}
-          </a>
-        </li>
-      {% endfor %}
       </ul>
     </div>
-  </div>
-</div>
-<div class="row indent_on_mobile leaderboard_tab my_points hidden">
 
-  <div class="row indent_on_mobile point_history w-100" style="background-color: #fafafa; min-height: 400px;">
-    <h3 class="mt-2">
-      <i class="ml-1 far fa-chart-bar"></i>
-      @{{github_handle}} has {{point_value}} Points
-    </h3>
-    {% if not point_history|length %}
-      <div class="container-fluid py-4">
-        You have no point history.. Complete some Quests to earn points.
+    <div class="loading w-100 {% if not show_loading %}hidden{% endif %}">
+      <p class="text-center">
+        <img src="{% static 'v2/images/loading_v2.gif' %}" alt="Loading ..." style="max-width: 200px; margin: 0px 30% 100px 30%;">
+      </p>
+    </div>
+
+    {% for difficulty_level, the_quests in quests%}
+      <div class="difficulty_tab {{difficulty_level}} {% if difficulty_level != selected_tab %}hidden{% endif %}">
+        {% if the_quests|length == 0 %}
+          <div style='min-height: 400px; text-align: center; vertical-align: middle; padding: 100px; border-left: 2px solid #fafafa; '>
+            <h3>No Quests Found</h3>
+            <a href="/quests/new/"><img id="logo" data-src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" /></a>
+            <p>Try again or <a href="/quests/new/">create your own</a>.</p>
+          </div>
+        {% endif %}
+
+        <!-- Quest table -->
+        <div id="{{difficulty_level}}">
+          <table class="table table-responsive-lg table-hover" style="table-layout: fixed;">
+            <thead>
+              <tr>
+                <th scope="col">Quest Name</th>
+                <th scope="col">Quest Prize</th>
+                <th scope="col">Difficulty</th>
+                <th scope="col">Attempts</th>
+                <th scope="col">Description</th>
+                <th scope="col">Play Time</th>
+                {% if difficulty_level == 'Created' %}
+                  <th scope="col">Ownership</th>
+                {% else %}
+                  <th scope="col">Quest Owner</th>
+                {% endif %}
+                <th scope="col">Stage</th>
+              </tr>
+            </thead>
+            {% for unlocked, beaten, cooldown, quest in the_quests %}
+              <tbody>
+                <tr>
+                  <td> {{quest.title}}</td>
+                  <td> {{quest.kudos_reward.humanized_name}}</td>
+                  <td> {{difficulty_level}}</td>
+                  <td> {{quest.ui_data.attempts_count}}</td>
+                  <td class="font-caption">{{quest.description}}</td>
+                  <td> {{quest.est_total_time_required}} mins (reading) <br> {{quest.est_skim_time_mins}} mins (skimming)<br></td>
+                  {% if difficulty_level == 'Created' %}
+                    <td>
+                      <a class="btn btn-outline-secondary" title="Edit your Quest" role="button" href="{{quest.edit_url}}"><span><i class="fa fa-cog"></i></span> Edit</a>
+                    </td>
+                  {% endif %}
+                  {% if not difficulty_level == 'Created' %}
+                    <td>
+                      <a href="/profile/{{quest.creator}}">
+                        <img id="quest_creator" data-src="/dynamic/avatar/{{quest.creator}}" title="{{quest.creator}}">
+                      </a>
+                    </td>
+                  {% endif %}
+                  {% if beaten %}
+                    <td>
+                      <a class="btn btn-outline-success disabled" title="Quest Beaten"><span>✅</span> Beaten</a>
+                    </td>
+                  {% elif cooldown %}
+                    <td>
+                      <a class="btn btn-secondary disabled" title="In Cooldown Period"><span>🥶</span> Cold</a>
+                    </td>
+                  {% elif unlocked %}
+                    <td>
+                      <a class="btn btn-outline-primary" title="Dive into the web3" role="button" href="{{quest.url}}">
+                        <span><i class="fa fa-gamepad"></i></span> Play
+                      </a>
+                    </td>
+                  {% else %}
+                    <td>
+                      {% if quest.unlocked_by_hackathon %}
+                        <a href="{{quest.unlocked_by_hackathon.url}}" target="_blank" class="btn btn-secondary" title="Locked, to unlock. Register for {{quest.unlocked_by_hackathon.name}}">🔒Unlock</a>
+                      {% else %}
+                        beat <a href="{{quest.unlocked_by_quest.url}}">{{quest.unlocked_by_quest.title}}</a>.
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                </tr>
+              </tbody>
+            {% endfor %}
+          </table>
+        </div>
       </div>
-    {% else %}
+    {% endfor %}
+  </div>
+
+  <div class="row indent_on_mobile" id=leaderboard_top>
+    <h1 id=leaderboard style="margin-top: 100px;">Leaderboard</h1>
+    <div id="announce">
+      <img class="mr-1" data-src="{% static "v2/images/quests/enemies/samurai.svg" %}">
+      <h4><strong>Round 4 Challenge ended on 4/30!</strong></h4>
+      <p class="mb-0">
+        Congrats to the winners, <a href="https://github.com/gitcoinco/web/issues/6574" target="new">announced here</a>
+        </p>
+        <h5 class="mt-1 pt-0"><strong>Round 5 Challenge is now Live!</strong></h5>
+        <p class="mb-3">Starting with round 5, we will have more advanced anti-cheating congrats + will no longer be rewarding referrals as much.  Whomever is in the top 3 of the <a href="#leaderboard">leaderboard</a> at end of day on 7/30/2020 will <strong>win a special 60 DAI prize</strong> and a <i>very special Kudos</i>.
+    </div>
+
+  </div>
+
+
+  <div class="row indent_on_mobile" id="leaderboard_nav">
+    <div id="leaderboard_tabs">
+      <div class="container">
+        <ul class="nav nav-tabs mt-3 font-body" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link nav-line" href="#" data-href="how_to_earn">
+            How to Earn Points
+            </a>
+          </li>
+          {% if github_handle %}
+          <li class="nav-item">
+            <a class="nav-link nav-line" href="#" data-href="my_points">
+            @{{github_handle}}'s' Points ({{point_value}})
+            </a>
+          </li>
+          {% endif %}
+        {% for round_number, this_leaderboard in leaderboard.items %}
+          <li class="nav-item">
+            <a class="nav-link nav-line {% if current_round_number == round_number %}active{% endif %}" href="#" data-href="leaderboard_{{round_number}}">
+            Round {{round_number}}
+            </a>
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row indent_on_mobile leaderboard_tab my_points hidden">
+
+    <div class="row indent_on_mobile point_history w-100" style="background-color: #fafafa; min-height: 400px;">
+      <h3 class="mt-2">
+        <i class="ml-1 far fa-chart-bar"></i>
+        @{{github_handle}} has {{point_value}} Points
+      </h3>
+      {% if not point_history|length %}
+        <div class="container-fluid py-4">
+          You have no point history.. Complete some Quests to earn points.
+        </div>
+      {% else %}
+      <div class="container-fluid py-4">
+        <div class="container w-100 point_history_child">
+          <table class="w-100">
+            <tr style="font-weight: bold;">
+              <td>
+                #
+              </td>
+              <td>
+                Round
+              </td>
+              <td>
+                Points
+              </td>
+              <td>
+                When
+              </td>
+              <td>
+                Who
+              </td>
+              <td>
+                What
+              </td>
+            </tr>
+            {% for row in point_history %}
+            <tr style="{% cycle 'background-color: #fafafa;' 'background-color: #eaeaea;' %}">
+              <td>
+                {{ forloop.counter|ordinal }}
+              </td>
+              <td>
+                {{ row.round_number }}
+              </td>
+              <td>
+                {{ row.value }}
+              </td>
+              <td>
+                {{ row.created_on|naturaltime }}
+              </td>
+              <td>
+                <img data-src="/dynamic/avatar/{{ row.metadata.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
+                <a href="/{{ row.metadata.handle }}">@{{ row.metadata.handle }}</a>
+              </td>
+              <td>
+                <img data-src="{{ row.metadata.enemy_img }}" style="width: 15px; height: 15px; border-radius: 10px">
+                {{row.action}} <a href="{{row.metadata.quest_url}}">{{row.metadata.title}}</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row indent_on_mobile leaderboard_tab how_to_earn hidden">
+  <div class="row indent_on_mobile" style="background-color: #fafafa;">
+    <h3 class="mt-3">
+      <i class="ml-1 fab fa-ethereum"></i>
+      By completing quests.
+      </h3>
+    <div class="container-fluid py-4 pt-1">
+      After each quest you complete you will earn 1 point.      <a href="#available_quests">View Available Quests</a>
+
+    </div>
+    <h3 class="mt-0">
+    <i class="ml-1 fas"><img data-src="{% static "v2/images/grants/icons/black.svg" %}"></i>
+    By sharing quests with your friends.</h3>
     <div class="container-fluid py-4">
-      <div class="container w-100 point_history_child">
+      <div class="container w-50 float-left">
+        <strong>Gitcoin Quests are a team sport!</strong>.
+        You can onboard friends into the ecosystem,  earn points, climb the leaderboard faster, by referring friends to share tips & play together.
+        <br>
+        <br>
+        After each quest you complete you will be invited to show off your quest completion + share a referral link.  You will earn points for every user who join completes a quest after joining with your referral link.
+        <br>
+        {% if REFER_LINK %}
+          <BR>
+          Your personal referral link:
+          <br>
+          <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100 copy_me" readonly="readonly">
+          <br>
+        {% else %}
+        <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to get your personal reflink.
+        {% endif %}
+      </div>
+      <div class="container w-50 float-right reward_schedule">
         <table class="w-100">
           <tr style="font-weight: bold;">
             <td>
-              #
+              Degree of Seperation From You
             </td>
             <td>
-              Round
-            </td>
-            <td>
-              Points
-            </td>
-            <td>
-              When
-            </td>
-            <td>
-              Who
-            </td>
-            <td>
-              What
+              Your Bonus Quest Point Reward When They Complete Quest
             </td>
           </tr>
-          {% for row in point_history %}
+          {% for row in rewards_schedule %}
           <tr style="{% cycle 'background-color: #fafafa;' 'background-color: #eaeaea;' %}">
             <td>
-              {{ forloop.counter|ordinal }}
+              {{row.layer}}
             </td>
             <td>
-              {{ row.round_number }}
-            </td>
-            <td>
-              {{ row.value }}
-            </td>
-            <td>
-              {{ row.created_on|naturaltime }}
-            </td>
-            <td>
-              <img data-src="/dynamic/avatar/{{ row.profile.handle }}" style="width: 15px; height: 15px; border-radius: 10px;">
-              <a href="{{ row.profile.url }}">@{{ row.profile.handle }}</a>
-            </td>
-            <td>
-              <img data-src="{{ row.questattempt.quest.enemy_img_url }}" style="width: 15px; height: 15px; border-radius: 10px">
-              {{row.action}} <a href="{{row.questattempt.quest.url}}">{{row.questattempt.quest.title}}</a>
+              {% if row.reward_denominator == 1 %}
+                {{row.reward_denominator}}
+              {% else %}
+                1/{{row.reward_denominator}}
+              {% endif %}
+              point{{row.reward_denominator|pluralize}} + <img style="width:17px; height: 17px;" data-src="{% static "v2/images/quests/rando_kudos.gif" %}"> quest kudos
             </td>
           </tr>
           {% endfor %}
-        </table>      
-      </div>
-    </div>
-    {% endif %}
-  </div>  
-</div>
-<div class="row indent_on_mobile leaderboard_tab how_to_earn hidden">
-<div class="row indent_on_mobile" style="background-color: #fafafa;">
-  <h3 class="mt-3">
-    <i class="ml-1 fab fa-ethereum"></i>
-    By completing quests.
-    </h3>
-  <div class="container-fluid py-4 pt-1">
-    After each quest you complete you will earn 1 point.      <a href="#available_quests">View Available Quests</a>
-
-  </div>
-  <h3 class="mt-0">
-  <i class="ml-1 fas"><img data-src="{% static "v2/images/grants/icons/black.svg" %}"></i>
-  By sharing quests with your friends.</h3>
-  <div class="container-fluid py-4">
-    <div class="container w-50 float-left">
-      <strong>Gitcoin Quests are a team sport!</strong>.
-      You can onboard friends into the ecosystem,  earn points, climb the leaderboard faster, by referring friends to share tips & play together.  
-      <br>
-      <br>
-      After each quest you complete you will be invited to show off your quest completion + share a referral link.  You will earn points for every user who join completes a quest after joining with your referral link.
-      <br>
-      {% if REFER_LINK %}
-        <BR>
-        Your personal referral link:
-        <br>
-        <input id=reflink type="text" value="{{REFER_LINK}}" class="w-100 copy_me" readonly="readonly">
-        <br>
-      {% else %}
-      <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to get your personal reflink.
-      {% endif %}
-    </div>
-    <div class="container w-50 float-right reward_schedule">
-      <table class="w-100">
-        <tr style="font-weight: bold;">
-          <td>
-            Degree of Seperation From You
-          </td>
-          <td>
-            Your Bonus Quest Point Reward When They Complete Quest
-          </td>
-        </tr>
-        {% for row in rewards_schedule %}
-        <tr style="{% cycle 'background-color: #fafafa;' 'background-color: #eaeaea;' %}">
-          <td>
-            {{row.layer}}
-          </td>
-          <td>
-            {% if row.reward_denominator == 1 %}
-              {{row.reward_denominator}}
-            {% else %}
-              1/{{row.reward_denominator}}
-            {% endif %}
-            point{{row.reward_denominator|pluralize}} + <img style="width:17px; height: 17px;" data-src="{% static "v2/images/quests/rando_kudos.gif" %}"> quest kudos 
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-      <div class="referrals">
-        {% if profile %}
-        You were referred by:
-          {% if profile.referrer %}
-            <a href="/profile/{{ref.handle}}">
-              <img data-src="/dynamic/avatar/{{profile.referrer.handle}}">
-              @{{profile.referrer.handle}}
-            </a>
-          {% else %}
-            (not referred)
-          {% endif %}
-        <br>
-        You have referred {{profile.referred.count}} user{{profile.referred.count|pluralize}}
-          {% if profile.referred.count %}
-          :
-            {% for ref in profile.referred.all %}
+        </table>
+        <div class="referrals">
+          {% if profile %}
+          You were referred by:
+            {% if profile.referrer %}
               <a href="/profile/{{ref.handle}}">
-                <img data-src="/dynamic/avatar/{{ref.handle}}">
-                @{{ref.handle}}
+                <img data-src="/dynamic/avatar/{{profile.referrer.handle}}">
+                @{{profile.referrer.handle}}
               </a>
-            {% endfor %}
-          {% else %}
-          .
-          {% endif %}
-        {% else %}
-          <BR>
-          <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to see your referrals.
-        {% endif %}
-      </div>
-    </div>
-  </div>
-  <h3 class="mt-0">
-    <i class="ml-1 fab fa-ethereum"></i>
-    By creating a quest.
-    </h3>
-  <div class="container-fluid py-4 pt-1">
-    Want to teach the world something?  Want to earn 3 points for doing it? 
-    <a href="#create_quest">Create a quest on Gitcoin</a>
-  </div>
-  <h3 class="mt-0">
-    <i class="ml-1 fab fa-ethereum"></i>
-    By creating a quest game dynamic.
-    </h3>
-  <div class="container-fluid py-4 pt-1">
-    Want to BUIDL an 8-bit style game and earn 10 points (and some ETH) for doing it?
-    <a href=#create_quest_game_dynamic>Create a quest game dynamic</a>
-  </div>
-</div>
-</div>
-{% for round_number, this_leaderboard in leaderboard.items %}
-  <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{% endif %}">
-    <div class="leaderboard_hero hide_on_mobile">
-      {% for item in this_leaderboard.1 %}
-      <div class="inner_row {{ item.4|apnumber }}"> 
-        <h3 class="mr-2 ml-2" style="font-weight:bold;">
-          {{ item.4|ordinal }} - {{item.1}} point{{item.1|pluralize}}
-        </h3>
-        <div class="package">
-          <div class="handle_container">
-            <div class="tag handle"><a href="/profile/{{item.0}}">@{{item.0}}</a></div>
-            {% if item.0 == github_handle %}
-              <div id=you class="tag" class="mr-2 mt-2">You</div>
+            {% else %}
+              (not referred)
             {% endif %}
-            <img title="@{{item.0}}" data-src="/dynamic/avatar/{{item.0}}" class="avatar">
-          </div>
-          <div class="trophy_case">
-            <div class="kudos_container">
-              <img data-src="{{item.3.0}}" title="{{item.3.1}}" class="kudii">
-            </div>
-            {% for btr in item.2%}
-              <img data-src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
-            {% endfor %}
-          </div>
+          <br>
+          You have referred {{profile.referred.count}} user{{profile.referred.count|pluralize}}
+            {% if profile.referred.count %}
+            :
+              {% for ref in profile.referred.all %}
+                <a href="/profile/{{ref.handle}}">
+                  <img data-src="/dynamic/avatar/{{ref.handle}}">
+                  @{{ref.handle}}
+                </a>
+              {% endfor %}
+            {% else %}
+            .
+            {% endif %}
+          {% else %}
+            <BR>
+            <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">Login</a> to see your referrals.
+          {% endif %}
         </div>
       </div>
-      {% endfor %}
     </div>
-    <div id=leaderboard>
-      {% for item in this_leaderboard.0 %}
-      <div class="inner_row {% if item.4 < 4 %}show_on_mobile{% endif %} " style="{% if item.0 == github_handle %}background-color: #edf5fc;{% else %}{% cycle 'background-color: #fafafa;' '' %}{% endif %}";>
-        <div class="float-left mr-2 ml-2">{{ forloop.counter|ordinal }}</div>
-        <div class="float-left mr-2 ml-2"><img data-src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 120px;" href="/profile/{{item.0}}">@{{item.0}}</a></div>
-        {% if item.0 == github_handle %}
-          <div id=you style="margin-top: 10px;" class="float-left mr-4 ml-2">You</div>
-        {% endif %}
-        <div style="float: right; width: 500px; text-align: right;">
-          {% for btr in item.2%}
-            <img data-src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
-          {% endfor %}
-          {{item.1}} point{{item.1|pluralize}}</div>
+    <h3 class="mt-0">
+      <i class="ml-1 fab fa-ethereum"></i>
+      By creating a quest.
+      </h3>
+    <div class="container-fluid py-4 pt-1">
+      Want to teach the world something?  Want to earn 3 points for doing it?
+      <a href="#create_quest">Create a quest on Gitcoin</a>
+    </div>
+    <h3 class="mt-0">
+      <i class="ml-1 fab fa-ethereum"></i>
+      By creating a quest game dynamic.
+      </h3>
+    <div class="container-fluid py-4 pt-1">
+      Want to BUIDL an 8-bit style game and earn 10 points (and some ETH) for doing it?
+      <a href=#create_quest_game_dynamic>Create a quest game dynamic</a>
+    </div>
+  </div>
+  </div>
+  {% for round_number, this_leaderboard in leaderboard.items %}
+    <div class="row indent_on_mobile leaderboard_tab leaderboard_{{round_number}}  {% if current_round_number != round_number %}hidden{% endif %}">
+      <div class="leaderboard_hero hide_on_mobile">
+        {% for item in this_leaderboard.1 %}
+        <div class="inner_row {{ item.4|apnumber }}">
+          <h3 class="mr-2 ml-2" style="font-weight:bold;">
+            {{ item.4|ordinal }} - {{item.1}} point{{item.1|pluralize}}
+          </h3>
+          <div class="package">
+            <div class="handle_container">
+              <div class="tag handle"><a href="/profile/{{item.0}}">@{{item.0}}</a></div>
+              {% if item.0 == github_handle %}
+                <div id=you class="tag" class="mr-2 mt-2">You</div>
+              {% endif %}
+              <img title="@{{item.0}}" data-src="/dynamic/avatar/{{item.0}}" class="avatar">
+            </div>
+            <div class="trophy_case">
+              <div class="kudos_container">
+                <img data-src="{{item.3.0}}" title="{{item.3.1}}" class="kudii">
+              </div>
+              {% for btr in item.2%}
+                <img data-src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
+              {% endfor %}
+            </div>
+          </div>
         </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
+      <div id=leaderboard>
+        {% for item in this_leaderboard.0 %}
+          <div class="inner_row font-body {% if item.4 < 4 %}show_on_mobile{% endif %} " style="{% if item.0 == github_handle %}background-color: #edf5fc;{% else %}{% cycle 'background-color: #fafafa;' '' %}{% endif %}";>
+            <span class="">{{ forloop.counter|ordinal }}</span>
+            <span class="mx-2"><img data-src="/dynamic/avatar/{{item.0}}"><a style="margin-left: 10px; width: 120px;" href="/profile/{{item.0}}">@{{item.0}}</a></span>
+            {% if item.0 == github_handle %}
+              <span id=you style="margin-top: 10px;" class="mr-4 ml-2">You</span>
+            {% endif %}
+            <span class="text-right float-right" style="width: 500px;">
+              {% for btr in item.2%}
+                <img data-src="{{btr.0}}" title="{{btr.1}}" style="height: 50px; width: 50px; border-radius: 0px;">
+              {% endfor %}
+              <span class="ml-2">
+                {{item.1}} point{{item.1|pluralize}}
+              </span>
+            </span>
+          </div>
+        {% endfor %}
+      </div>
+      <p class="float-right">The quests leaderboard is updated every 4 hours.</p>
     </div>
-    <p class="float-right">The quests leaderboard is updated every 4 hours.</p>
-  </div>
-{% endfor %}
+  {% endfor %}
 
-<div class="container-fluid py-1 announce-bot indent_on_mobile">
-  <div class="container">
-    <img data-src="{% static 'v2/images/quests/lovebot.svg' %}" />
-  </div>
-</div>
-
-<div class="container-fluid py-1 pt-3 announce indent_on_mobile">
-  <div class="container">
-    
-    <h4 class="pt-0">We &lt;3 Feedback.</h4>
-    <strong>Gitcoin Quests</strong> has been played <strong>{{attempt_count}} times</strong> by <strong>{{user_count}} community members</strong>.  About <strong>{{success_ratio}}% </strong> of quest attempts are sucessful.  
-
-    <br>
-    Quests is still in ALPHA and is evolving.  Got feedback?
-    <BR>
-    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5298">
-      Let us know
-    </a>
-  </div>
-</div>
-
-<div class="container-fluid py-1 announce-bot announce-bot2 indent_on_mobile">
-  <div class="container">
-    <img data-src="{% static 'v2/images/quests/enemies/droid.svg' %}" />
-  </div>
-</div>
-
-<div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile">
-  <div class="container">
-    
-    <h4 class="pt-0">Quest Content Squad Here; Looking for new Quest Topic Ideas..</h4>
-    <strong>Gitcoin Quests is by & for the community.</strong>  As of right now <strong>{{total_visible_quest_count}} quests have been created</strong>; of which <strong>Gitcoin Core created {{gitcoin_created}} of them</strong> and the <strong>community created {{community_created}} of them</strong>.  This means our Quests Economy is designed to be driven by the community. That means you ( yes you ) can help drive the roadmap!  
-    <br>
-    <br>
-    Gitcoin Quests is designed to usher users through their *web3 a-ha moments* in a fun informative way.
-    <br>
-    <BR>
-    Think about it..
-    <BR>
-    <br>
-    <strong>{{total_visible_quest_count}} quests = {{total_visible_quest_count}} a-ha moments</strong>
-    <br>
-    <strong>{{quests_attempts_total}} quest attempts = {{quests_attempts_total}} learning experiences</strong>
-    <br>
-    <strong>{{community_created}} quests created by the community = {{community_created}} web3 experiences gitcoin core didn't dream up</strong>
-    <br>
-    <br>
-    <span style="font-size: 18px;">What were your web3 a-ha moments?  What Quests Topics should we add to the experience?</span>
-    <BR>
-    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5334">
-      Contribute a Topic Idea (1 minute commitment)
-    </a>
-  </div>
-</div>
-
-
-<div class="container-fluid py-1 announce-bot announce-bot6 indent_on_mobile">
-  <div class="container">
-    <img data-src="{% static 'v2/images/quests/enemies/super_bot.svg' %}" />
-  </div>
-</div>
-
-<div class="container-fluid py-1 pt-3 announce announce6 indent_on_mobile">
-  <div class="container">
-    
-    <h4 class="pt-0">Our Roadmap is Decentralized. Vote on what we should BUIDL next.</h4>
-    We are proud to say that our quest product roadmap is open to all.. You can even vote on what we BUIDL next!
-    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5436">
-      Vote on Product Roadmap (1 minute commitment)
-    </a>
-  </div>
-</div>
-
-
-<div id=create_quest class="container-fluid py-1 announce-bot announce-bot3 indent_on_mobile">
-  <div class="container">
-    <img data-src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
-  </div>
-</div>
-
-<div class="container-fluid py-1 pt-3 announce announce3 indent_on_mobile">
-  <div class="container">
-    
-    <h4 class="pt-0">Want to Write a Gitcoin Quest?</h4>
-    <strong>The Gitcoin Quests Economy is driven by writers just like you... </strong>  
-    <br>
-    <br>
-    Got a web3 a-ha moment you want to tell the world about?
-    <br>
-    <br>
-    Create a Gitcoin Quest.  It takes 10-15 minutes to do, you'll get Quest Points and Kudos for every new person who plays your game, and best of all - you get to help teach people about web3!
-    <BR>
-    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5338">
-      Write a Quest (15 minute commitment)
-    </a>
-  </div>
-</div>
-
-<div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
-  <div class="container">
-    <img data-src="{% static 'v2/images/quests/enemies/composability.svg' %}" />
-  </div>
-</div>
-
-<div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce4 indent_on_mobile">
-  <div class="container">
-    
-    <h4 class="pt-0">Want to BUIDL a Gitcoin Quest Game Dynamic?</h4>
-    <strong>The Gitcoin Quests Economy is driven by aspiring game programmers just like you... </strong>  
-    <br>
-    <br>
-    Got a retro game dynamic or game experience that you love?  Want to build it into web-based educational experience?  Want to earn some rewards (Quest Points, ETH) while doing so?
-    <br>
-    <BR>
-    Whats the ROI?
-    <BR>
-    <BR>
-    Well..
-    <BR>
-    <BR>
-    About <strong>{{quests_attempts_per_day}} Quests are played per day</strong> for a <strong>play count of {{quests_attempts_total}} total</strong>; There are <strong>{{quests_total}} Gitcoin Quests</strong>, which are played by a <strong>community of {{user_count}} active users of {{email_count}} total; residing in {{country_count}} countries</strong>.  The <strong>average quest has {{avg_play_count}} plays</strong>.
-    <BR>
-    <BR>
-    Not to put too fine a point on it... but ...
-    <BR>
-    <strong>{{email_count}} users = {{email_count}} potential users of your game</strong>
-    <br>
-    <strong>{{user_count}} active users = {{user_count}} probable users of your game</strong>
-    <br>
-    <strong>average quest has {{avg_play_count}} plays = your quest could get {{avg_play_count}} plays</strong>
-    <BR>
-    <br>
-  <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5339">
-      BUIDL a Gitcoin Quest Game Dynamic ( 7-14 hour commitment)
-    </a>
-  </div>
-</div>
-
-<div class="container-fluid py-1 announce-bot announce-bot5 indent_on_mobile">
-  <div class="container">
-    <img data-src="{% static 'v2/images/quests/enemies/green_monster.svg' %}" />
-  </div>
-</div>
-
-<div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce5 indent_on_mobile">
-  <div class="container">
-    
-    <h4 class="pt-0">Play Gitcoin Quests Now.</h4>
-    <br>
-    We'll automagically choose your next quest for you.
-    <br>
-  <a class="hero-p-mobile btn btn-gc-blue my-4" href="/quests/next">
-      Play Next Quest ( 2 min - 20 min commitment)
-    </a>
+  <div class="container-fluid py-1 announce-bot indent_on_mobile">
+    <div class="container">
+      <img data-src="{% static 'v2/images/quests/lovebot.svg' %}" />
+    </div>
   </div>
 
-  <div class="float-right right-announce2" style="margin-top: 50px; width: 45%;">
-    <img data-src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
-    <p>Quests Stats are real-time (ish); updated every hour or so. </p> 
+  <div class="container-fluid py-1 pt-3 announce indent_on_mobile">
+    <div class="container">
+
+      <h4 class="pt-0">We &lt;3 Feedback.</h4>
+      <strong>Gitcoin Quests</strong> has been played <strong>{{attempt_count}} times</strong> by <strong>{{user_count}} community members</strong>.  About <strong>{{success_ratio}}% </strong> of quest attempts are sucessful.
+
+      <br>
+      Quests is still in ALPHA and is evolving.  Got feedback?
+      <BR>
+      <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5298">
+        Let us know
+      </a>
+    </div>
+  </div>
+
+  <div class="container-fluid py-1 announce-bot announce-bot2 indent_on_mobile">
+    <div class="container">
+      <img data-src="{% static 'v2/images/quests/enemies/droid.svg' %}" />
+    </div>
+  </div>
+
+  <div class="container-fluid py-1 pt-3 announce announce2 indent_on_mobile">
+    <div class="container">
+
+      <h4 class="pt-0">Quest Content Squad Here; Looking for new Quest Topic Ideas..</h4>
+      <strong>Gitcoin Quests is by & for the community.</strong>  As of right now <strong>{{total_visible_quest_count}} quests have been created</strong>; of which <strong>Gitcoin Core created {{gitcoin_created}} of them</strong> and the <strong>community created {{community_created}} of them</strong>.  This means our Quests Economy is designed to be driven by the community. That means you ( yes you ) can help drive the roadmap!
+      <br>
+      <br>
+      Gitcoin Quests is designed to usher users through their *web3 a-ha moments* in a fun informative way.
+      <br>
+      <BR>
+      Think about it..
+      <BR>
+      <br>
+      <strong>{{total_visible_quest_count}} quests = {{total_visible_quest_count}} a-ha moments</strong>
+      <br>
+      <strong>{{quests_attempts_total}} quest attempts = {{quests_attempts_total}} learning experiences</strong>
+      <br>
+      <strong>{{community_created}} quests created by the community = {{community_created}} web3 experiences gitcoin core didn't dream up</strong>
+      <br>
+      <br>
+      <span style="font-size: 18px;">What were your web3 a-ha moments?  What Quests Topics should we add to the experience?</span>
+      <BR>
+      <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5334">
+        Contribute a Topic Idea (1 minute commitment)
+      </a>
+    </div>
   </div>
 
 
-  <div class="float-left right-announce3" style="margin-top: 50px;  width: 45%;">
-    <img data-src="{% static 'v2/images/quests/enemies/goldbot.svg' %}" />
-    <p>No kilobits were harmed in the making of this landing page..</p> 
+  <div class="container-fluid py-1 announce-bot announce-bot6 indent_on_mobile">
+    <div class="container">
+      <img data-src="{% static 'v2/images/quests/enemies/super_bot.svg' %}" />
+    </div>
   </div>
 
-  </div>
-</div>
+  <div class="container-fluid py-1 pt-3 announce announce6 indent_on_mobile">
+    <div class="container">
 
-<div class="container-fluid py-1 pt-1 indent_on_mobile">
-  <div class="container">
-
-  <div class="float-right right-announce4" style="margin-top: 50px; width: 45%;">
-    <img data-src="{% static 'v2/images/quests/enemies/spider_bot.svg' %}" />
-    <p>Psst.. Hey you, kid. Check out the <a style="font-weight: bold; color: black;" href="/products">rest of our products</a>. </p> 
+      <h4 class="pt-0">Our Roadmap is Decentralized. Vote on what we should BUIDL next.</h4>
+      We are proud to say that our quest product roadmap is open to all.. You can even vote on what we BUIDL next!
+      <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5436">
+        Vote on Product Roadmap (1 minute commitment)
+      </a>
+    </div>
   </div>
 
+
+  <div id=create_quest class="container-fluid py-1 announce-bot announce-bot3 indent_on_mobile">
+    <div class="container">
+      <img data-src="{% static 'v2/images/quests/enemies/genie.svg' %}" />
+    </div>
   </div>
-</div>
+
+  <div class="container-fluid py-1 pt-3 announce announce3 indent_on_mobile">
+    <div class="container">
+
+      <h4 class="pt-0">Want to Write a Gitcoin Quest?</h4>
+      <strong>The Gitcoin Quests Economy is driven by writers just like you... </strong>
+      <br>
+      <br>
+      Got a web3 a-ha moment you want to tell the world about?
+      <br>
+      <br>
+      Create a Gitcoin Quest.  It takes 10-15 minutes to do, you'll get Quest Points and Kudos for every new person who plays your game, and best of all - you get to help teach people about web3!
+      <BR>
+      <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5338">
+        Write a Quest (15 minute commitment)
+      </a>
+    </div>
+  </div>
+
+  <div class="container-fluid py-1 announce-bot announce-bot4 indent_on_mobile">
+    <div class="container">
+      <img data-src="{% static 'v2/images/quests/enemies/composability.svg' %}" />
+    </div>
+  </div>
+
+  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce4 indent_on_mobile">
+    <div class="container">
+
+      <h4 class="pt-0">Want to BUIDL a Gitcoin Quest Game Dynamic?</h4>
+      <strong>The Gitcoin Quests Economy is driven by aspiring game programmers just like you... </strong>
+      <br>
+      <br>
+      Got a retro game dynamic or game experience that you love?  Want to build it into web-based educational experience?  Want to earn some rewards (Quest Points, ETH) while doing so?
+      <br>
+      <BR>
+      Whats the ROI?
+      <BR>
+      <BR>
+      Well..
+      <BR>
+      <BR>
+      About <strong>{{quests_attempts_per_day}} Quests are played per day</strong> for a <strong>play count of {{quests_attempts_total}} total</strong>; There are <strong>{{quests_total}} Gitcoin Quests</strong>, which are played by a <strong>community of {{user_count}} active users of {{email_count}} total; residing in {{country_count}} countries</strong>.  The <strong>average quest has {{avg_play_count}} plays</strong>.
+      <BR>
+      <BR>
+      Not to put too fine a point on it... but ...
+      <BR>
+      <strong>{{email_count}} users = {{email_count}} potential users of your game</strong>
+      <br>
+      <strong>{{user_count}} active users = {{user_count}} probable users of your game</strong>
+      <br>
+      <strong>average quest has {{avg_play_count}} plays = your quest could get {{avg_play_count}} plays</strong>
+      <BR>
+      <br>
+    <a class="hero-p-mobile btn btn-gc-blue my-4" href="https://github.com/gitcoinco/web/issues/5339">
+        BUIDL a Gitcoin Quest Game Dynamic ( 7-14 hour commitment)
+      </a>
+    </div>
+  </div>
+
+  <div class="container-fluid py-1 announce-bot announce-bot5 indent_on_mobile">
+    <div class="container">
+      <img data-src="{% static 'v2/images/quests/enemies/green_monster.svg' %}" />
+    </div>
+  </div>
+
+  <div id=create_quest_game_dynamic class="container-fluid py-1 pt-3 announce announce5 indent_on_mobile">
+    <div class="container">
+      <h4 class="pt-0">Play Gitcoin Quests Now.</h4>
+      <p>We'll automagically choose your next quest for you.</p>
+      <a class="hero-p-mobile btn btn-gc-blue my-4" href="/quests/next">
+        Play Next Quest ( 2 min - 20 min commitment)
+      </a>
+    </div>
+  </div>
+
 
 {% endblock %}
 
 {% block 'scripts' %}
-<script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
-<script src="{% static "v2/js/pages/quests.index.js" %}"></script>
-<script>
-  $(document).ready(function() {
-    setInterval(function(){
-      var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      if (scrollTop > 500 && !document.offset_loaded){
-        $("img").unveil(200);
-        document.offset_loaded = true; 
-      }
-    }, 3000);
-    setTimeout(function(){
-      $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
-    }, 1000);
-  });
-</script>
+  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+  <script src="{% static "v2/js/pages/quests.index.js" %}"></script>
+  <script src="{% static "v2/js/user_card.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      setInterval(function(){
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > 500 && !document.offset_loaded){
+          $("img").unveil(200);
+          document.offset_loaded = true;
+        }
+      }, 3000);
+      setTimeout(function(){
+        $('.leaderboard_hero').css('background-image', 'url("{% static 'v2/images/kudos/kudos-bg.png' %}")');
+      }, 1000);
+    });
+  </script>
 {% endblock %}

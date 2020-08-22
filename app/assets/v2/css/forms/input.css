@@ -1,5 +1,5 @@
 .form__input {
-  background-color: #FFF;
+  background-color: var(--form-input-bg);
   border-radius: 2px;
   border: 1px solid #D8D8D8;
   padding: 5px 7px;
@@ -47,20 +47,9 @@ textarea.form__input {
   background-position: top 0.5rem right 0.5rem;
 }
 
+.dark-mode .form__input,
 .form__input::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.38);
-}
-
-.form__input::-moz-placeholder {
-  color: rgba(0, 0, 0, 0.38);
-}
-
-.form__input:-moz-placeholder {
-  color: rgba(0, 0, 0, 0.38);
-}
-
-.form__input:-ms-input-placeholder {
-  color: rgba(0, 0, 0, 0.38);
+  color: var(--form-input-color);
 }
 
 .form__input:disabled {
@@ -81,4 +70,16 @@ textarea.form__input {
 
 .amount_container{
   height: 100px;
+}
+
+.dark-mode .form-control,
+.dark-mode .form__input,
+.dark-mode .border,
+.dark-mode .activity_stream .box {
+  border-color:transparent!important;
+}
+
+.dark-mode .form-control.bg-lightblue:focus {
+  background: var(--main-bg) !important;
+  color: white;
 }

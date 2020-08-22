@@ -20,125 +20,194 @@ import json
 import time
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core import management
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from dashboard.abi import erc20_abi as abi
+from dashboard.models import Activity, Earning, Profile
 from dashboard.utils import get_tx_status, get_web3, has_tx_mined
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from townsquare.models import MatchRound
 from web3 import HTTPProvider, Web3
 
-abi = json.loads('[{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":false,"stateMutability":"nonpayable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]')
 
 class Command(BaseCommand):
 
-    help = 'creates round rankings'
+    help = 'creates payouts'
+
+    def add_arguments(self, parser):
+        parser.add_argument('what',
+            default='finalize',
+            type=str,
+            help="what do we do? (finalize, payout, announce)"
+            )
+        parser.add_argument(
+            'minutes_ago',
+            type=int,
+            help="how many minutes ago to look for a round  (0 to ignore)"
+        )
+        parser.add_argument(
+            'round_number',
+            type=int,
+            help="what round_number to look at (0 to ignore)"
+        )
+
 
     def handle(self, *args, **options):
+
         # setup
-        minutes_ago = 10 if not settings.DEBUG else 40
         payment_threshold_usd = 1
         network = 'mainnet' if not settings.DEBUG else 'rinkeby'
         from_address = settings.MINICLR_ADDRESS
         from_pk = settings.MINICLR_PRIVATE_KEY
-        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x8f2e097e79b1c51be9cba42658862f0192c3e487'
-        provider = settings.WEB3_HTTP_PROVIDER if network == 'mainnet' else "https://rinkeby.infura.io/"
+        DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f' if network=='mainnet' else '0x6A9865aDE2B6207dAAC49f8bCba9705dEB0B0e6D'
 
         # find a round that has recently expired
+        minutes_ago = options['minutes_ago']
         cursor_time = timezone.now() - timezone.timedelta(minutes=minutes_ago)
         mr = MatchRound.objects.filter(valid_from__lt=cursor_time, valid_to__gt=cursor_time, valid_to__lt=timezone.now()).first()
+        if options['round_number']:
+            mr = MatchRound.objects.get(number=options['round_number'])
         if not mr:
             print(f'No Match Round Found that ended between {cursor_time} <> {timezone.now()}')
             return
         print(mr)
 
         # finalize rankings
-        rankings = mr.ranking.filter(final=False, paid=False).order_by('number')
-        print(rankings.count())
-        for ranking in rankings:
-            ranking.final = True
-            ranking.save()
-
-        # payout rankings
-        rankings = mr.ranking.filter(final=True, paid=False).order_by('number')
-        print(rankings.count())
-        w3 = Web3(HTTPProvider(provider))
-        for ranking in rankings:
-            print(ranking)
-
-            # figure out amount_owed
-            profile = ranking.profile
-            owed_rankings = profile.match_rankings.filter(final=True, paid=False)
-            amount_owed = sum(owed_rankings.values_list('match_total', flat=True))
-
-            # validate
-            error = None
-            if amount_owed < payment_threshold_usd:
-                error = ("- less than amount owed; continue")
-            address = profile.preferred_payout_address
-            if not address:
-                error = ("- address not on file")
-
-            if error:
-                ranking.payout_tx_status = error
+        if options['what'] == 'finalize':
+            rankings = mr.ranking.filter(final=False, paid=False).order_by('-match_total')
+            print(rankings.count(), "to finalize")
+            for ranking in rankings:
+                ranking.final = True
                 ranking.save()
-                continue
+            print(rankings.count(), " finalied")
 
-            # issue payment
-            contract = w3.eth.contract(Web3.toChecksumAddress(DAI_ADDRESS), abi=abi)
-            address = Web3.toChecksumAddress(address)
-            amount = int(amount_owed * 10**18)
-            tx = contract.functions.transfer(address, amount).buildTransaction({
-                'nonce': w3.eth.getTransactionCount(from_address),
-                'gas': 100000,
-                'gasPrice': recommend_min_gas_price_to_confirm_in_time(1) * 10**9
-            })
+        # payout rankings (round must be finalized first)
+        if options['what'] == 'payout':
+            rankings = mr.ranking.filter(final=True, paid=False).order_by('-match_total')
+            print(rankings.count(), " to pay")
+            w3 = get_web3(network)
 
-            signed = w3.eth.account.signTransaction(tx, from_pk)
-            tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+            print(f"pls make sure there is enough DAI in {from_address}")
+            print('------------------------------')
+            user_input = input("continue? (y/n) ")
+            if user_input != 'y':
+                return
 
-            # wait for tx to clear
-            while not has_tx_mined(tx_id, network):
-                time.sleep(1)
+            num_rankings = rankings.count()
+            num_handles = len(set(list(rankings.values_list('profile__handle', flat=True))))
+            if num_handles != num_rankings:
+                print(f"cannot payout; there are duplicate profile handles. {num_handles} handles + {num_rankings} rankings")
+                return
 
-            ranking.payout_tx_status, ranking.payout_tx_issued = get_tx_status(tx_id, network, timezone.now())
+            for ranking in rankings:
 
-            ranking.paid = True
-            ranking.payout_txid = tx_id
-            ranking.save()
-            for other_ranking in owed_rankings:
-                other_ranking.paid = True
-                other_ranking.payout_txid = ranking.payout_txid
-                other_ranking.payout_tx_issued = ranking.payout_tx_issued
-                other_ranking.payout_tx_status = ranking.payout_tx_status
-                other_ranking.save()
+                # figure out amount_owed
+                profile = ranking.profile
+                owed_rankings = profile.match_rankings.filter(final=True, paid=False)
+                amount_owed = sum(owed_rankings.values_list('match_total', flat=True))
+                print(f"paying {ranking.profile.handle} who is owed {amount_owed} ({ranking.match_total} from this round)")
 
-            # create earning object
-            from dashboard.models import Earning, Profile, Activity
-            from django.contrib.contenttypes.models import ContentType
-            from_profile = Profile.objects.get(handle='gitcoinbot')
-            Earning.objects.update_or_create(
-                source_type=ContentType.objects.get(app_label='townsquare', model='matchranking'),
-                source_id=ranking.pk,
-                defaults={
-                    "created_on":ranking.created_on,
-                    "org_profile":None,
-                    "from_profile":from_profile,
-                    "to_profile":ranking.profile,
-                    "value_usd":amount_owed,
-                    "url":'https://gitcoin.co/#clr',
-                    "network":network,
-                }
-                )
+                # validate
+                error = None
+                if amount_owed < payment_threshold_usd:
+                    error = ("- less than amount owed; continue")
+                address = profile.preferred_payout_address
+                if not address:
+                    error = ("- address not on file")
+
+                if error:
+                    print(error)
+                    ranking.payout_tx_status = error
+                    ranking.save()
+                    continue
+
+                # issue payment
+                contract = w3.eth.contract(Web3.toChecksumAddress(DAI_ADDRESS), abi=abi)
+                address = Web3.toChecksumAddress(address)
+                amount = int(amount_owed * 10**18)
+                tx = contract.functions.transfer(address, amount).buildTransaction({
+                    'nonce': w3.eth.getTransactionCount(from_address),
+                    'gas': 100000,
+                    'gasPrice': int(float(recommend_min_gas_price_to_confirm_in_time(1)) * 10**9 * 1.4)
+                })
+
+                signed = w3.eth.account.signTransaction(tx, from_pk)
+                tx_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+                if not tx_id:
+                    print("cannot pay advance, did not get a txid")
+                    continue
+
+                print("paid via", tx_id)
+
+                # wait for tx to clear
+                while not has_tx_mined(tx_id, network):
+                    time.sleep(1)
+
+                ranking.payout_tx_status, ranking.payout_tx_issued = get_tx_status(tx_id, network, timezone.now())
+
+                ranking.paid = True
+                ranking.payout_txid = tx_id
+                ranking.save()
+                for other_ranking in owed_rankings:
+                    other_ranking.paid = True
+                    other_ranking.payout_txid = ranking.payout_txid
+                    other_ranking.payout_tx_issued = ranking.payout_tx_issued
+                    other_ranking.payout_tx_status = ranking.payout_tx_status
+                    other_ranking.save()
+
+                # create earning object
+                from_profile = Profile.objects.get(handle='gitcoinbot')
+                Earning.objects.update_or_create(
+                    source_type=ContentType.objects.get(app_label='townsquare', model='matchranking'),
+                    source_id=ranking.pk,
+                    defaults={
+                        "created_on":ranking.created_on,
+                        "org_profile":None,
+                        "from_profile":from_profile,
+                        "to_profile":ranking.profile,
+                        "value_usd":amount_owed,
+                        "url":'https://gitcoin.co/#clr',
+                        "network":network,
+                    }
+                    )
+
+                Activity.objects.create(
+                    created_on=timezone.now(),
+                    profile=ranking.profile,
+                    activity_type='mini_clr_payout',
+                    metadata={
+                        "amount":float(amount_owed),
+                        "number":int(mr.number),
+                        "mr_pk":int(mr.pk),
+                        "round_description": f"Mini CLR Round {mr.number}"
+                    })
+
+
+                from marketing.mails import match_distribution
+                match_distribution(ranking)
+
+                print("paid ", ranking)
+                time.sleep(30)
+
+        # announce finalists (round must be finalized first)
+        from_profile = Profile.objects.get(handle='gitcoinbot')
+        if options['what'] == 'announce':
+            copy = f"Mini CLR Round {mr.number} Winners:<BR>"
+            rankings = mr.ranking.filter(final=True).order_by('-match_total')[0:10]
+            print(rankings.count(), " to announce")
+            for ranking in rankings:
+                profile_link = f"<a href=/{ranking.profile}>@{ranking.profile}</a>"
+                copy += f" - {profile_link} was ranked <strong>#{ranking.number}</strong> & was paid <strong>{ranking.match_total} DAI</strong>. <BR>"
+            metadata = {
+                'copy': copy,
+            }
 
             Activity.objects.create(
                 created_on=timezone.now(),
-                profile=ranking.profile,
-                activity_type='mini_clr_payout',
-                metadata={
-                    "amount":amount_owed,
-                })
-
-            from marketing.mails import match_distribution
-            match_distribution(ranking)
+                profile=from_profile,
+                activity_type='consolidated_mini_clr_payout',
+                metadata=metadata)

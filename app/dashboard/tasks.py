@@ -1,11 +1,13 @@
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from celery import app, group
 from celery.utils.log import get_task_logger
 from chat.tasks import create_channel
-from dashboard.models import Profile
-from marketing.mails import func_name, send_mail
+from dashboard.models import Activity, Bounty, ObjectView, Profile
+from marketing.mails import func_name, grant_update_email, send_mail
 from retail.emails import render_share_bounty
 
 logger = get_task_logger(__name__)
@@ -57,7 +59,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
     """
     with redis.lock("tasks:bounty_email:%s" % invite_url, timeout=LOCK_TIMEOUT):
         # need to look at how to send bulk emails with SG
-        profile = Profile.objects.get(handle=profile_handle)
+        profile = Profile.objects.get(handle=profile_handle.lower())
         try:
             for email in emails:
                 to_email = email
@@ -77,7 +79,7 @@ def bounty_emails(self, emails, msg, profile_handle, invite_url=None, kudos_invi
         except ConnectionError as exc:
             logger.info(str(exc))
             logger.info("Retrying connection")
-            self.retry(30)
+            self.retry(countdown=30)
         except Exception as e:
             logger.error(str(e))
 
@@ -96,3 +98,79 @@ def profile_dict(self, pk, retry: bool = True) -> None:
         if profile.frontend_calc_stale:
             profile.calculate_all()
             profile.save()
+
+
+@app.shared_task(bind=True)
+def maybe_market_to_user_slack(self, bounty_pk, event_name, retry: bool = True) -> None:
+    """
+    :param self:
+    :param bounty_pk:
+    :param event_name:
+    :return:
+    """
+    with redis.lock("maybe_market_to_user_slack:bounty", timeout=LOCK_TIMEOUT):
+        bounty = Bounty.objects.get(pk=bounty_pk)
+        from dashboard.notifications import maybe_market_to_user_slack_helper
+        maybe_market_to_user_slack_helper(bounty, event_name)
+
+
+@app.shared_task(bind=True, max_retries=3)
+def grant_update_email_task(self, pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :return:
+    """
+    activity = Activity.objects.get(pk=pk)
+    grant_update_email(activity)
+
+    from django.utils import timezone
+    grant = activity.grant
+    grant.last_update = timezone.now()
+    grant.save()
+
+
+@app.shared_task(bind=True)
+def m2m_changed_interested(self, bounty_pk, retry: bool = True) -> None:
+    """
+    :param self:
+    :param bounty_pk:
+    :return:
+    """
+    with redis.lock("m2m_changed_interested:bounty", timeout=LOCK_TIMEOUT):
+        bounty = Bounty.objects.get(pk=bounty_pk)
+        from dashboard.notifications import maybe_market_to_github
+        maybe_market_to_github(bounty, 'work_started',
+                               profile_pairs=bounty.profile_pairs)
+
+
+
+@app.shared_task(bind=True, max_retries=1)
+def increment_view_count(self, pks, content_type, user_id, view_type, retry: bool = True) -> None:
+    """
+    :param self:
+    :param pk:
+    :param content_type:
+    :param user_id:
+    :param view_type:
+    :return:
+    """
+    individual_storage = False # TODO: Change back to true IFF we figure out how to manage storage of this table
+    user = None
+    if user_id:
+        user = User.objects.get(pk=user_id)
+    redis = RedisService().redis
+    for pk in pks:
+        key = f"{content_type}_{pk}"
+        print(key)
+        result = redis.incr(key)
+        if pk and view_type == 'individual' and individual_storage:
+            try:
+                ObjectView.objects.create(
+                    viewer=user,
+                    target_id=pk,
+                    target_type=ContentType.objects.filter(model=content_type).first(),
+                    view_type=view_type,
+                    )
+            except:
+                pass # fix for https://sentry.io/organizations/gitcoin/issues/1715509732/

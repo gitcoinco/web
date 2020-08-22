@@ -158,7 +158,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0xb4f57a01ade1323da37afe35fbd13ca34ef4004e5968f7ddbc38883bb2c1e48f",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.077Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -337,7 +336,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x4a20e9f1b4fe23c724a27636a43b77468ccb80f1e879c1a74457c3eb4c0f60a1",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.134Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -517,7 +515,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x2e2e1dac3d8e7715e49eff0edc38e15f86248bec6bf5b699e104d38a84f7c833",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.170Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -697,7 +694,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0xc543a34e99c13147725bb97c6e988cd5ff28a1ba58986dc003f4a938c890ad9b",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.205Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -873,7 +869,6 @@
             "fee_amount": "0.000500000000000000",
             "fee_tx_id": "0xd188ceb9674b6f7d96a2c42e9ebfd80b2adc5044fccae0d821645427a159bdff",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-06-01T11:26:54Z",
             "token_value_in_usdt": null,
             "value_in_usdt_now": "0.00",
@@ -1047,7 +1042,6 @@
             "fee_amount": "0.000500000000000000",
             "fee_tx_id": "0x847f735ed9829f2d392ea6e85701a4fcad7233a3a62cb6fea9360fb2afb69a87",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.273Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -1221,7 +1215,6 @@
             "fee_amount": "0.000500000000000000",
             "fee_tx_id": "0x23f49d4fe2a983b9f12209dd2a09ad1cb1cca5b29af2db2be36a0f711c834ab2",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-06-01T12:20:16Z",
             "token_value_in_usdt": null,
             "value_in_usdt_now": "0.00",
@@ -1395,7 +1388,6 @@
             "fee_amount": "0.000500000000000000",
             "fee_tx_id": "0x08a4c288a3d76492f07ddf239258a337ac1e2319643927169a7f66f444f58e06",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.343Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -1574,7 +1566,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x1bd8562d6f029963b4b934b32da4807141011d60fdc2161d12761c9743172a1b",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:18.850Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -1756,7 +1747,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x7c675aa9ca19ad4fff7cc25c8c6ad088aae4e707527cc59964fa7fb4c562833e",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:18.899Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -2021,7 +2011,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x6d4b845201776add7d41e754c928a49c276ef7091b63d763aa3b270ff00886b2",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.487Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -2200,7 +2189,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0xc122c4e71c810010a8c801f6c9145dac6521347559e706bd129fc208180f8ffc",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:18.802Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -2381,7 +2369,6 @@
             "fee_amount": "0.001000000000000000",
             "fee_tx_id": "0x73a34c5674a41ddb7fc2110894baf75f688f9efadd832299b7c8cba123c2b087",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-06-01T18:41:48Z",
             "token_value_in_usdt": null,
             "value_in_usdt_now": "6.92",
@@ -2558,7 +2545,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x118f1e085d99fe8539de2d0710ad4fa8645484230a184409f550f01e2126adfd",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.612Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -2735,7 +2721,6 @@
             "fee_amount": "0.000500000000000000",
             "fee_tx_id": "0x5912391151093e090ca4ad569d09eb1eef681b07a0e6ea982b1e75dc8bae5736",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:18.647Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "6.92",
@@ -2918,7 +2903,6 @@
             "fee_amount": "0.001000000000000000",
             "fee_tx_id": "0x557421a2d23c3781c77a5e82101367e4ff05c67d0eaa84ef086370e66bd02c15",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:19.134Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "6.92",
@@ -3128,7 +3112,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0xc0c6e41fdcf93bb203954f2a1b402ffbb3028c987930ade2c76201d2c2d3cb66",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-06-01T19:00:47Z",
             "token_value_in_usdt": null,
             "value_in_usdt_now": "0.00",
@@ -3329,7 +3312,6 @@
             "fee_amount": "0.001000000000000000",
             "fee_tx_id": "0xaab39ee3c8aab882692adb6e45c8c94a863675c3c47d25f95b63b2f722d9b613",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.789Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "6.92",
@@ -3613,7 +3595,6 @@
             "fee_amount": "0.000500000000000000",
             "fee_tx_id": "0x5912391151093e090ca4ad569d09eb1eef681b07a0e6ea982b1e75dc8bae5736",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:18.691Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "6.92",
@@ -3793,7 +3774,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x7d31dbe666713bde57eb7396559637e11437bcff215269000a297d333ba68a50",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.871Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -3995,7 +3975,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x118f1e085d99fe8539de2d0710ad4fa8645484230a184409f550f01e2126adfd",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:17.904Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -4303,7 +4282,6 @@
             "fee_amount": "0.000500000000000000",
             "fee_tx_id": "0x5912391151093e090ca4ad569d09eb1eef681b07a0e6ea982b1e75dc8bae5736",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-09-12T20:12:18.727Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "6.92",
@@ -4507,7 +4485,6 @@
             "fee_amount": "0.001000000000000000",
             "fee_tx_id": "0xaab39ee3c8aab882692adb6e45c8c94a863675c3c47d25f95b63b2f722d9b613",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-06-03T23:34:15Z",
             "token_value_in_usdt": null,
             "value_in_usdt_now": "6.92",
@@ -4817,7 +4794,6 @@
             "fee_amount": "0.000500000000000000",
             "fee_tx_id": "0x5912391151093e090ca4ad569d09eb1eef681b07a0e6ea982b1e75dc8bae5736",
             "coupon_code": null,
-            "unsigned_nda": null,
             "token_value_time_peg": "2019-06-01T18:58:31Z",
             "token_value_in_usdt": null,
             "value_in_usdt_now": "6.92",
@@ -4847,7 +4823,7 @@
             "created_on": "2019-06-27T00:48:37.396Z",
             "modified_on": "2019-09-12T20:12:19.166Z",
             "web3_type": "bounties_network",
-            "title": "Fake Private Issue 1",
+            "title": "Fake Public Issue 1",
             "web3_created": "2019-06-27T00:48:22Z",
             "value_in_token": "1000000000000000.00",
             "token_name": "ETH",
@@ -4856,7 +4832,7 @@
             "project_length": "Days",
             "estimated_hours": 1,
             "experience_level": "Intermediate",
-            "github_url": "https://github.com/funder2/privaterepo/issues/1",
+            "github_url": "https://github.com/funder2/publicrepo/issues/1",
             "github_issue_details": {},
             "github_comments": 0,
             "bounty_owner_address": "0xcc4b3de30576e161c8632786560fa7dd3fb33f77",
@@ -4876,7 +4852,7 @@
                         "schemaVersion": "0.1"
                     },
                     "payload": {
-                        "title": "Fake Private Issue 1",
+                        "title": "Fake Public Issue 1",
                         "hiring": {
                             "hiringRightNow": false,
                             "jobDescription": ""
@@ -4896,10 +4872,10 @@
                         "metadata": {
                             "invite": [],
                             "eventTag": "",
-                            "repo_type": "private",
+                            "repo_type": "public",
                             "tokenName": "ETH",
                             "bountyType": "Bug",
-                            "issueTitle": "Fake Private Issue 1",
+                            "issueTitle": "Fake Public Issue 1",
                             "reservedFor": "",
                             "issueKeywords": "Go",
                             "projectLength": "Days",
@@ -4912,7 +4888,7 @@
                             "fundingOrganisation": ""
                         },
                         "fee_tx_id": "0x50e0cef1ce7f9662c8446ee1ffaff11f50df23fec956838bfd6f09153c0a6710",
-                        "repo_type": "private",
+                        "repo_type": "public",
                         "tokenName": "ETH",
                         "categories": [
                             "Go"
@@ -4921,11 +4897,10 @@
                         "description": "asdfasdfsadfsadfasdfasdfasdf",
                         "expire_date": 11561596501,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "unsigned_nda": 5,
                         "featuring_date": 0,
                         "sourceFileHash": "",
                         "sourceFileName": "",
-                        "webReferenceURL": "https://github.com/funder2/privaterepo/issues/1",
+                        "webReferenceURL": "https://github.com/funder2/publicrepo/issues/1",
                         "privacy_preferences": {
                             "show_email_publicly": "1"
                         },
@@ -4950,10 +4925,10 @@
             "metadata": {
                 "invite": [],
                 "eventTag": "",
-                "repo_type": "private",
+                "repo_type": "public",
                 "tokenName": "ETH",
                 "bountyType": "Bug",
-                "issueTitle": "Fake Private Issue 1",
+                "issueTitle": "Fake Public Issue 1",
                 "reservedFor": "",
                 "issueKeywords": "Go",
                 "projectLength": "Days",
@@ -4991,7 +4966,7 @@
             "project_type": "traditional",
             "permission_type": "approval",
             "bounty_categories": "[]",
-            "repo_type": "private",
+            "repo_type": "public",
             "snooze_warnings_for_days": 0,
             "is_featured": false,
             "featuring_date": "1970-01-01T00:00:00Z",
@@ -5000,7 +4975,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x50e0cef1ce7f9662c8446ee1ffaff11f50df23fec956838bfd6f09153c0a6710",
             "coupon_code": null,
-            "unsigned_nda": 5,
             "token_value_time_peg": "2019-09-12T20:12:19.183Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -5029,7 +5003,7 @@
             "created_on": "2019-06-27T00:50:22.650Z",
             "modified_on": "2019-09-12T20:12:18.931Z",
             "web3_type": "bounties_network",
-            "title": "Fake private issue 2",
+            "title": "Fake public issue 2",
             "web3_created": "2019-06-27T00:50:01Z",
             "value_in_token": "1000000000000000.00",
             "token_name": "ETH",
@@ -5038,7 +5012,7 @@
             "project_length": "Weeks",
             "estimated_hours": 1,
             "experience_level": "Intermediate",
-            "github_url": "https://github.com/funder2/privaterepo/issues/2",
+            "github_url": "https://github.com/funder2/publicrepo/issues/2",
             "github_issue_details": {},
             "github_comments": 0,
             "bounty_owner_address": "0xcc4b3de30576e161c8632786560fa7dd3fb33f77",
@@ -5058,7 +5032,7 @@
                         "schemaVersion": "0.1"
                     },
                     "payload": {
-                        "title": "Fake private issue 2",
+                        "title": "Fake public issue 2",
                         "hiring": {
                             "hiringRightNow": false,
                             "jobDescription": ""
@@ -5078,10 +5052,10 @@
                         "metadata": {
                             "invite": [],
                             "eventTag": "",
-                            "repo_type": "private",
+                            "repo_type": "public",
                             "tokenName": "ETH",
                             "bountyType": "Documentation",
-                            "issueTitle": "Fake private issue 2",
+                            "issueTitle": "Fake public issue 2",
                             "reservedFor": "",
                             "issueKeywords": "Python",
                             "projectLength": "Weeks",
@@ -5094,7 +5068,7 @@
                             "fundingOrganisation": ""
                         },
                         "fee_tx_id": "0xebcc920cee3f3af49f067c384cc7097330eb92975214cc5dceb62a5a00f7044e",
-                        "repo_type": "private",
+                        "repo_type": "public",
                         "tokenName": "ETH",
                         "categories": [
                             "Python"
@@ -5103,11 +5077,10 @@
                         "description": "asdfasddfasdfasdfasdfasdfasdfasfasd",
                         "expire_date": 11561596600,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "unsigned_nda": 6,
                         "featuring_date": 0,
                         "sourceFileHash": "",
                         "sourceFileName": "",
-                        "webReferenceURL": "https://github.com/funder2/privaterepo/issues/2",
+                        "webReferenceURL": "https://github.com/funder2/publicrepo/issues/2",
                         "privacy_preferences": {
                             "show_email_publicly": "1"
                         },
@@ -5132,10 +5105,10 @@
             "metadata": {
                 "invite": [],
                 "eventTag": "",
-                "repo_type": "private",
+                "repo_type": "public",
                 "tokenName": "ETH",
                 "bountyType": "Documentation",
-                "issueTitle": "Fake private issue 2",
+                "issueTitle": "Fake public issue 2",
                 "reservedFor": "",
                 "issueKeywords": "Python",
                 "projectLength": "Weeks",
@@ -5173,7 +5146,7 @@
             "project_type": "traditional",
             "permission_type": "approval",
             "bounty_categories": "[]",
-            "repo_type": "private",
+            "repo_type": "public",
             "snooze_warnings_for_days": 0,
             "is_featured": false,
             "featuring_date": "1970-01-01T00:00:00Z",
@@ -5182,7 +5155,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0xebcc920cee3f3af49f067c384cc7097330eb92975214cc5dceb62a5a00f7044e",
             "coupon_code": null,
-            "unsigned_nda": 6,
             "token_value_time_peg": "2019-09-12T20:12:18.947Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -5211,7 +5183,7 @@
             "created_on": "2019-06-27T00:54:52.179Z",
             "modified_on": "2019-09-12T20:12:19.010Z",
             "web3_type": "bounties_network",
-            "title": "Another super secret fake private issue",
+            "title": "Another super secret fake public issue",
             "web3_created": "2019-06-27T00:54:31Z",
             "value_in_token": "1000000000000000.00",
             "token_name": "ETH",
@@ -5240,7 +5212,7 @@
                         "schemaVersion": "0.1"
                     },
                     "payload": {
-                        "title": "Another super secret fake private issue",
+                        "title": "Another super secret fake public issue",
                         "hiring": {
                             "hiringRightNow": false,
                             "jobDescription": ""
@@ -5260,10 +5232,10 @@
                         "metadata": {
                             "invite": [],
                             "eventTag": "",
-                            "repo_type": "private",
+                            "repo_type": "public",
                             "tokenName": "ETH",
                             "bountyType": "Improvement",
-                            "issueTitle": "Another super secret fake private issue",
+                            "issueTitle": "Another super secret fake public issue",
                             "reservedFor": "",
                             "issueKeywords": "Python",
                             "projectLength": "Days",
@@ -5276,7 +5248,7 @@
                             "fundingOrganisation": ""
                         },
                         "fee_tx_id": "0x678fa270807b20034ce4abd154cb984c821024094e81fe8b234287f6ab138037",
-                        "repo_type": "private",
+                        "repo_type": "public",
                         "tokenName": "ETH",
                         "categories": [
                             "Python"
@@ -5285,7 +5257,6 @@
                         "description": "asfsadfASDAsdASDAsdASDAsdADSA",
                         "expire_date": 11561596870,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "unsigned_nda": 8,
                         "featuring_date": 0,
                         "sourceFileHash": "",
                         "sourceFileName": "",
@@ -5314,10 +5285,10 @@
             "metadata": {
                 "invite": [],
                 "eventTag": "",
-                "repo_type": "private",
+                "repo_type": "public",
                 "tokenName": "ETH",
                 "bountyType": "Improvement",
-                "issueTitle": "Another super secret fake private issue",
+                "issueTitle": "Another super secret fake public issue",
                 "reservedFor": "",
                 "issueKeywords": "Python",
                 "projectLength": "Days",
@@ -5355,7 +5326,7 @@
             "project_type": "traditional",
             "permission_type": "approval",
             "bounty_categories": "[]",
-            "repo_type": "private",
+            "repo_type": "public",
             "snooze_warnings_for_days": 0,
             "is_featured": false,
             "featuring_date": "1970-01-01T00:00:00Z",
@@ -5364,7 +5335,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x678fa270807b20034ce4abd154cb984c821024094e81fe8b234287f6ab138037",
             "coupon_code": null,
-            "unsigned_nda": 8,
             "token_value_time_peg": "2019-09-12T20:12:19.027Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -5393,7 +5363,7 @@
             "created_on": "2019-06-27T01:08:07.867Z",
             "modified_on": "2019-09-12T20:12:18.969Z",
             "web3_type": "bounties_network",
-            "title": "Fake private issue 2",
+            "title": "Fake public issue 2",
             "web3_created": "2019-06-27T00:50:01Z",
             "value_in_token": "1000000000000000.00",
             "token_name": "ETH",
@@ -5402,7 +5372,7 @@
             "project_length": "Weeks",
             "estimated_hours": null,
             "experience_level": "Intermediate",
-            "github_url": "https://github.com/funder2/privaterepo/issues/2",
+            "github_url": "https://github.com/funder2/publicrepo/issues/2",
             "github_issue_details": {},
             "github_comments": 0,
             "bounty_owner_address": "0xcc4b3de30576e161c8632786560fa7dd3fb33f77",
@@ -5422,7 +5392,7 @@
                         "schemaVersion": "0.1"
                     },
                     "payload": {
-                        "title": "Fake private issue 2",
+                        "title": "Fake public issue 2",
                         "hiring": {
                             "hiringRightNow": false,
                             "jobDescription": ""
@@ -5442,10 +5412,10 @@
                         "metadata": {
                             "invite": [],
                             "eventTag": "",
-                            "repo_type": "private",
+                            "repo_type": "public",
                             "tokenName": "ETH",
                             "bountyType": "Documentation",
-                            "issueTitle": "Fake private issue 2",
+                            "issueTitle": "Fake public issue 2",
                             "reservedFor": "",
                             "issueKeywords": "Python",
                             "projectLength": "Weeks",
@@ -5458,7 +5428,7 @@
                             "fundingOrganisation": ""
                         },
                         "fee_tx_id": "0xebcc920cee3f3af49f067c384cc7097330eb92975214cc5dceb62a5a00f7044e",
-                        "repo_type": "private",
+                        "repo_type": "public",
                         "tokenName": "ETH",
                         "categories": [
                             "Python"
@@ -5467,11 +5437,10 @@
                         "description": "asdfasddfasdfasdfasdfasdfasdfasfasd",
                         "expire_date": 11561596600,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "unsigned_nda": 6,
                         "featuring_date": 0,
                         "sourceFileHash": "",
                         "sourceFileName": "",
-                        "webReferenceURL": "https://github.com/funder2/privaterepo/issues/2",
+                        "webReferenceURL": "https://github.com/funder2/publicrepo/issues/2",
                         "privacy_preferences": {
                             "show_email_publicly": "1"
                         },
@@ -5506,7 +5475,7 @@
                                     "githubPRLink": "",
                                     "githubUsername": "test4"
                                 },
-                                "description": "https://github.com/funder2/privaterepo/issues/2",
+                                "description": "https://github.com/funder2/publicrepo/issues/2",
                                 "sourceFileHash": "",
                                 "sourceFileName": "",
                                 "sourceDirectoryHash": ""
@@ -5532,7 +5501,7 @@
                                     "githubPRLink": "",
                                     "githubUsername": "test4"
                                 },
-                                "description": "https://github.com/funder2/privaterepo/issues/2",
+                                "description": "https://github.com/funder2/publicrepo/issues/2",
                                 "sourceFileHash": "",
                                 "sourceFileName": "",
                                 "sourceDirectoryHash": ""
@@ -5549,10 +5518,10 @@
             "metadata": {
                 "invite": [],
                 "eventTag": "",
-                "repo_type": "private",
+                "repo_type": "public",
                 "tokenName": "ETH",
                 "bountyType": "Documentation",
-                "issueTitle": "Fake private issue 2",
+                "issueTitle": "Fake public issue 2",
                 "reservedFor": "",
                 "issueKeywords": "Python",
                 "projectLength": "Weeks",
@@ -5590,7 +5559,7 @@
             "project_type": "traditional",
             "permission_type": "approval",
             "bounty_categories": "[]",
-            "repo_type": "private",
+            "repo_type": "public",
             "snooze_warnings_for_days": 0,
             "is_featured": false,
             "featuring_date": "1970-01-01T00:00:00Z",
@@ -5599,7 +5568,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0xebcc920cee3f3af49f067c384cc7097330eb92975214cc5dceb62a5a00f7044e",
             "coupon_code": null,
-            "unsigned_nda": 6,
             "token_value_time_peg": "2019-09-12T20:12:18.982Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -5628,7 +5596,7 @@
             "created_on": "2019-06-30T19:27:17.468Z",
             "modified_on": "2019-09-12T20:12:19.205Z",
             "web3_type": "bounties_network",
-            "title": "Fake Private Issue 1",
+            "title": "Fake Public Issue 1",
             "web3_created": "2019-06-27T00:48:22Z",
             "value_in_token": "1000000000000000.00",
             "token_name": "ETH",
@@ -5637,7 +5605,7 @@
             "project_length": "Days",
             "estimated_hours": null,
             "experience_level": "Intermediate",
-            "github_url": "https://github.com/funder2/privaterepo/issues/1",
+            "github_url": "https://github.com/funder2/publicrepo/issues/1",
             "github_issue_details": {},
             "github_comments": 0,
             "bounty_owner_address": "0xcc4b3de30576e161c8632786560fa7dd3fb33f77",
@@ -5657,7 +5625,7 @@
                         "schemaVersion": "0.1"
                     },
                     "payload": {
-                        "title": "Fake Private Issue 1",
+                        "title": "Fake Public Issue 1",
                         "hiring": {
                             "hiringRightNow": false,
                             "jobDescription": ""
@@ -5677,10 +5645,10 @@
                         "metadata": {
                             "invite": [],
                             "eventTag": "",
-                            "repo_type": "private",
+                            "repo_type": "public",
                             "tokenName": "ETH",
                             "bountyType": "Bug",
-                            "issueTitle": "Fake Private Issue 1",
+                            "issueTitle": "Fake Public Issue 1",
                             "reservedFor": "",
                             "issueKeywords": "Go",
                             "projectLength": "Days",
@@ -5693,7 +5661,7 @@
                             "fundingOrganisation": ""
                         },
                         "fee_tx_id": "0x50e0cef1ce7f9662c8446ee1ffaff11f50df23fec956838bfd6f09153c0a6710",
-                        "repo_type": "private",
+                        "repo_type": "public",
                         "tokenName": "ETH",
                         "categories": [
                             "Go"
@@ -5702,11 +5670,10 @@
                         "description": "asdfasdfsadfsadfasdfasdfasdf",
                         "expire_date": 11561596501,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "unsigned_nda": 5,
                         "featuring_date": 0,
                         "sourceFileHash": "",
                         "sourceFileName": "",
-                        "webReferenceURL": "https://github.com/funder2/privaterepo/issues/1",
+                        "webReferenceURL": "https://github.com/funder2/publicrepo/issues/1",
                         "privacy_preferences": {
                             "show_email_publicly": "1"
                         },
@@ -5741,7 +5708,7 @@
                                     "githubPRLink": "",
                                     "githubUsername": "test8"
                                 },
-                                "description": "https://github.com/funder2/privaterepo/issues/1",
+                                "description": "https://github.com/funder2/publicrepo/issues/1",
                                 "sourceFileHash": "",
                                 "sourceFileName": "",
                                 "sourceDirectoryHash": ""
@@ -5758,10 +5725,10 @@
             "metadata": {
                 "invite": [],
                 "eventTag": "",
-                "repo_type": "private",
+                "repo_type": "public",
                 "tokenName": "ETH",
                 "bountyType": "Bug",
-                "issueTitle": "Fake Private Issue 1",
+                "issueTitle": "Fake Public Issue 1",
                 "reservedFor": "",
                 "issueKeywords": "Go",
                 "projectLength": "Days",
@@ -5799,7 +5766,7 @@
             "project_type": "traditional",
             "permission_type": "approval",
             "bounty_categories": "[]",
-            "repo_type": "private",
+            "repo_type": "public",
             "snooze_warnings_for_days": 0,
             "is_featured": false,
             "featuring_date": "1970-01-01T00:00:00Z",
@@ -5808,7 +5775,6 @@
             "fee_amount": "0.000100000000000000",
             "fee_tx_id": "0x50e0cef1ce7f9662c8446ee1ffaff11f50df23fec956838bfd6f09153c0a6710",
             "coupon_code": null,
-            "unsigned_nda": 5,
             "token_value_time_peg": "2019-09-12T20:12:19.218Z",
             "token_value_in_usdt": "692.10",
             "value_in_usdt_now": "0.00",
@@ -5837,9 +5803,6 @@
             "created_on": "2019-06-09T18:31:03.534Z",
             "modified_on": "2019-06-09T18:31:03.536Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test3",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -5883,9 +5846,6 @@
             "created_on": "2019-06-09T18:31:12.409Z",
             "modified_on": "2019-06-09T18:31:12.411Z",
             "fulfiller_address": "0xeDa95eD3e3436C689376889F9eD0a8f4bA23E866",
-            "fulfiller_email": "octavioamuchastegui@gmail.com",
-            "fulfiller_github_username": "octavioamu",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -5929,9 +5889,6 @@
             "created_on": "2019-06-09T18:31:07.439Z",
             "modified_on": "2019-06-09T19:00:10.461Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test4",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -5975,9 +5932,6 @@
             "created_on": "2019-06-09T18:31:07.446Z",
             "modified_on": "2019-06-09T19:00:10.479Z",
             "fulfiller_address": "0xCC4b3DE30576E161C8632786560Fa7DD3Fb33f77",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test5",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 1,
                 "data": {
@@ -6021,9 +5975,6 @@
             "created_on": "2019-06-09T18:31:07.452Z",
             "modified_on": "2019-06-09T19:00:10.496Z",
             "fulfiller_address": "0x0B8C767a91DdbE99ABA14685d03B14D4265c1E5B",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "owocki",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 2,
                 "data": {
@@ -6067,9 +6018,6 @@
             "created_on": "2019-06-09T18:31:07Z",
             "modified_on": "2019-06-10T09:49:45.646Z",
             "fulfiller_address": "0xBcAfdD642118e5536024675e776d32413728dd08",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test3",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 3,
                 "data": {
@@ -6113,9 +6061,6 @@
             "created_on": "2019-06-09T18:31:07Z",
             "modified_on": "2019-06-10T09:49:38.760Z",
             "fulfiller_address": "0xCC4b3DE30576E161C8632786560Fa7DD3Fb33f77",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test10",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 4,
                 "data": {
@@ -6159,9 +6104,6 @@
             "created_on": "2019-06-10T09:41:33Z",
             "modified_on": "2019-06-10T09:42:42.114Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6180,9 +6122,6 @@
             "created_on": "2019-06-10T09:42:47Z",
             "modified_on": "2019-06-10T09:43:16.481Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6201,9 +6140,6 @@
             "created_on": "2019-06-10T09:43:34Z",
             "modified_on": "2019-06-10T09:44:16.848Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6222,9 +6158,6 @@
             "created_on": "2019-06-10T09:44:29Z",
             "modified_on": "2019-06-10T09:45:03.943Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6243,9 +6176,6 @@
             "created_on": "2019-06-10T09:52:43Z",
             "modified_on": "2019-06-10T09:53:12.807Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "",
-            "fulfiller_name": "",
             "fulfiller_metadata": {},
             "fulfillment_id": null,
             "fulfiller_hours_worked": null,
@@ -6264,9 +6194,6 @@
             "created_on": "2019-06-27T01:08:08.620Z",
             "modified_on": "2019-06-27T01:08:08.625Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test4",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -6284,7 +6211,7 @@
                             "githubPRLink": "",
                             "githubUsername": "test4"
                         },
-                        "description": "https://github.com/funder2/privaterepo/issues/2",
+                        "description": "https://github.com/funder2/publicrepo/issues/2",
                         "sourceFileHash": "",
                         "sourceFileName": "",
                         "sourceDirectoryHash": ""
@@ -6310,9 +6237,6 @@
             "created_on": "2019-06-27T01:08:08.635Z",
             "modified_on": "2019-06-27T01:08:08.640Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test4",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 1,
                 "data": {
@@ -6330,7 +6254,7 @@
                             "githubPRLink": "",
                             "githubUsername": "test4"
                         },
-                        "description": "https://github.com/funder2/privaterepo/issues/2",
+                        "description": "https://github.com/funder2/publicrepo/issues/2",
                         "sourceFileHash": "",
                         "sourceFileName": "",
                         "sourceDirectoryHash": ""
@@ -6356,9 +6280,6 @@
             "created_on": "2019-06-30T19:27:18.223Z",
             "modified_on": "2019-06-30T19:27:18.234Z",
             "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
-            "fulfiller_email": "",
-            "fulfiller_github_username": "test8",
-            "fulfiller_name": "",
             "fulfiller_metadata": {
                 "id": 0,
                 "data": {
@@ -6376,7 +6297,7 @@
                             "githubPRLink": "",
                             "githubUsername": "test8"
                         },
-                        "description": "https://github.com/funder2/privaterepo/issues/1",
+                        "description": "https://github.com/funder2/publicrepo/issues/1",
                         "sourceFileHash": "",
                         "sourceFileName": "",
                         "sourceDirectoryHash": ""
@@ -6393,146 +6314,6 @@
             "accepted_on": null,
             "bounty": 33,
             "profile": 19
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 1,
-        "fields": {
-            "created_on": "2019-06-26T09:41:39.934Z",
-            "modified_on": "2019-06-26T09:41:39.934Z",
-            "doc": "docs/7d6a061d560f674d805aa22525b2bff2/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 2,
-        "fields": {
-            "created_on": "2019-06-26T09:43:00.253Z",
-            "modified_on": "2019-06-26T09:43:00.253Z",
-            "doc": "docs/ff00acd05fcbb0c1556f9a909e119847/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 3,
-        "fields": {
-            "created_on": "2019-06-26T09:44:17.489Z",
-            "modified_on": "2019-06-26T09:44:17.490Z",
-            "doc": "docs/9e5b25f6efb6040569877121e6ff57b0/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 4,
-        "fields": {
-            "created_on": "2019-06-26T09:45:49.598Z",
-            "modified_on": "2019-06-26T09:45:49.598Z",
-            "doc": "docs/00a5b8e5809faee542d81dc184520adb/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 5,
-        "fields": {
-            "created_on": "2019-06-27T00:48:22.358Z",
-            "modified_on": "2019-06-27T00:48:22.358Z",
-            "doc": "docs/f681af5b3c27719520671cbd26841be6/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 6,
-        "fields": {
-            "created_on": "2019-06-27T00:50:01.535Z",
-            "modified_on": "2019-06-27T00:50:01.535Z",
-            "doc": "docs/d9c16ec635eab2ce6a1c00193a8e7d75/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 7,
-        "fields": {
-            "created_on": "2019-06-27T00:52:19.428Z",
-            "modified_on": "2019-06-27T00:52:19.428Z",
-            "doc": "docs/21bff4be6257e276aeee48aabb0f2ad9/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 8,
-        "fields": {
-            "created_on": "2019-06-27T00:54:31.869Z",
-            "modified_on": "2019-06-27T00:54:31.869Z",
-            "doc": "docs/b17c99a29afef935fa4cc6c1ed9c7379/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 9,
-        "fields": {
-            "created_on": "2019-06-27T00:56:54.268Z",
-            "modified_on": "2019-06-27T00:56:54.268Z",
-            "doc": "docs/800bce0ba4b1d75f2c88510ab0088ae5/NDA.pdf",
-            "doc_type": "unsigned_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 10,
-        "fields": {
-            "created_on": "2019-06-27T01:00:42.723Z",
-            "modified_on": "2019-06-27T01:00:42.723Z",
-            "doc": "docs/167ab38c302a5c473e787310855d8934/NDA.pdf",
-            "doc_type": "signed_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 11,
-        "fields": {
-            "created_on": "2019-06-27T01:01:52.746Z",
-            "modified_on": "2019-06-27T01:01:52.746Z",
-            "doc": "docs/8acaba772e7d0b184708b688fba48aeb/NDA.pdf",
-            "doc_type": "signed_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 12,
-        "fields": {
-            "created_on": "2019-06-27T01:02:31.204Z",
-            "modified_on": "2019-06-27T01:02:31.204Z",
-            "doc": "docs/262398314c060fd348bb28af8237584b/NDA.pdf",
-            "doc_type": "signed_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 13,
-        "fields": {
-            "created_on": "2019-06-29T10:53:04.492Z",
-            "modified_on": "2019-06-29T10:53:04.492Z",
-            "doc": "docs/29e426cc16eeb4ca7853da94aafcb54d/NDA.pdf",
-            "doc_type": "signed_nda"
-        }
-    },
-    {
-        "model": "dashboard.bountydocuments",
-        "pk": 14,
-        "fields": {
-            "created_on": "2019-06-29T11:16:52.674Z",
-            "modified_on": "2019-06-29T11:16:52.674Z",
-            "doc": "docs/aee70a96c8def5b084b20e0092f425b6/NDA.pdf",
-            "doc_type": "signed_nda"
         }
     },
     {
@@ -6644,8 +6425,7 @@
             "issue_message": "sdfasdfasdfasdfasdfasdfsadfasdfasdfsadfsdafds",
             "pending": false,
             "acceptance_date": "2019-06-05T19:03:40.392Z",
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6659,8 +6439,7 @@
             "issue_message": "asdfsdfasdfasdfasdfsadfasdfasdfasdf",
             "pending": true,
             "acceptance_date": null,
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6674,8 +6453,7 @@
             "issue_message": "asdasdfasdfasdfasdfasdfasdfasdfasfdas",
             "pending": true,
             "acceptance_date": null,
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6689,8 +6467,7 @@
             "issue_message": "sdfasdfasdfasdfasdfasdfasdfasdfasdf",
             "pending": false,
             "acceptance_date": "2019-06-08T17:38:25.056Z",
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6704,8 +6481,7 @@
             "issue_message": "sdfasdfasdfasdsfsadfsadfsadfsadfsadf",
             "pending": false,
             "acceptance_date": "2019-06-08T17:40:16.012Z",
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6719,8 +6495,7 @@
             "issue_message": "sdfsadfsadfsadfsadfsadfsadfsadfasdfasdf",
             "pending": true,
             "acceptance_date": null,
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6734,8 +6509,7 @@
             "issue_message": "sadfsadfasdfasdfasdfasdfasdfasddfasddfasdfsda",
             "pending": false,
             "acceptance_date": "2019-06-11T19:18:21.396Z",
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6749,8 +6523,7 @@
             "issue_message": "asdfsadfsadfasdfasdfasdfsadfasdfasdf",
             "pending": true,
             "acceptance_date": null,
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6764,8 +6537,7 @@
             "issue_message": "sdfasdfsadfsadfasdfsadfsadfsadfasdfs",
             "pending": false,
             "acceptance_date": "2019-06-27T01:03:56.770Z",
-            "status": "okay",
-            "signed_nda": 10
+            "status": "okay"
         }
     },
     {
@@ -6779,8 +6551,7 @@
             "issue_message": "asdfsadfsadfsadfsadfsadfasdfsadfasdf",
             "pending": false,
             "acceptance_date": "2019-06-30T19:10:14.792Z",
-            "status": "okay",
-            "signed_nda": 12
+            "status": "okay"
         }
     },
     {
@@ -6794,8 +6565,7 @@
             "issue_message": "asdfasdfsadfsadfsadfsadfsadfsadfsadfsdafdsa",
             "pending": true,
             "acceptance_date": null,
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6809,8 +6579,7 @@
             "issue_message": "sdfasdfasdfasdfasdfsadfsadfsadfsda",
             "pending": true,
             "acceptance_date": null,
-            "status": "okay",
-            "signed_nda": null
+            "status": "okay"
         }
     },
     {
@@ -6824,8 +6593,7 @@
             "issue_message": "asdfasdfasdfsadfasdfasdfasdfsdafsadfasdfsdaf",
             "pending": false,
             "acceptance_date": "2019-06-30T19:12:46.503Z",
-            "status": "okay",
-            "signed_nda": 14
+            "status": "okay"
         }
     },
     {
@@ -7250,7 +7018,7 @@
             "metadata": {
                 "new_bounty": {
                     "id": 29,
-                    "title": "Fake Private Issue 1",
+                    "title": "Fake Public Issue 1",
                     "token_name": "ETH",
                     "value_in_eth": "1000000000000000",
                     "value_in_token": "1000000000000000",
@@ -7281,7 +7049,7 @@
             "metadata": {
                 "new_bounty": {
                     "id": 30,
-                    "title": "Fake private issue 2",
+                    "title": "Fake public issue 2",
                     "token_name": "ETH",
                     "value_in_eth": "1000000000000000",
                     "value_in_token": "1000000000000000",
@@ -7312,7 +7080,7 @@
             "metadata": {
                 "new_bounty": {
                     "id": 31,
-                    "title": "Another super secret fake private issue",
+                    "title": "Another super secret fake public issue",
                     "token_name": "ETH",
                     "value_in_eth": "1000000000000000",
                     "value_in_token": "1000000000000000",
@@ -7342,13 +7110,13 @@
             "activity_type": "worker_applied",
             "metadata": {
                 "id": 30,
-                "title": "Fake private issue 2",
+                "title": "Fake public issue 2",
                 "token_name": "ETH",
                 "value_in_eth": "1000000000000000.00",
                 "value_in_token": "1000000000000000.00",
-                "reject_worker_url": "http://localhost:8000/issue/funder2/privaterepo/2/2227?mutate_worker_action=reject&worker=test4",
+                "reject_worker_url": "http://localhost:8000/issue/funder2/publicrepo/2/2227?mutate_worker_action=reject&worker=test4",
                 "value_in_usdt_now": "0.00",
-                "approve_worker_url": "http://localhost:8000/issue/funder2/privaterepo/2/2227?mutate_worker_action=approve&worker=test4",
+                "approve_worker_url": "http://localhost:8000/issue/funder2/publicrepo/2/2227?mutate_worker_action=approve&worker=test4",
                 "token_value_in_usdt": "692.10",
                 "token_value_time_peg": "2019-06-27 00:50:22.661565+00:00"
             },
@@ -7371,13 +7139,13 @@
             "activity_type": "worker_applied",
             "metadata": {
                 "id": 30,
-                "title": "Fake private issue 2",
+                "title": "Fake public issue 2",
                 "token_name": "ETH",
                 "value_in_eth": "1000000000000000.00",
                 "value_in_token": "1000000000000000.00",
-                "reject_worker_url": "http://localhost:8000/issue/funder2/privaterepo/2/2227?mutate_worker_action=reject&worker=test5",
+                "reject_worker_url": "http://localhost:8000/issue/funder2/publicrepo/2/2227?mutate_worker_action=reject&worker=test5",
                 "value_in_usdt_now": "0.00",
-                "approve_worker_url": "http://localhost:8000/issue/funder2/privaterepo/2/2227?mutate_worker_action=approve&worker=test5",
+                "approve_worker_url": "http://localhost:8000/issue/funder2/publicrepo/2/2227?mutate_worker_action=approve&worker=test5",
                 "token_value_in_usdt": "692.10",
                 "token_value_time_peg": "2019-06-27 00:50:22.661565+00:00"
             },
@@ -7400,7 +7168,7 @@
             "activity_type": "worker_applied",
             "metadata": {
                 "id": 31,
-                "title": "Another super secret fake private issue",
+                "title": "Another super secret fake public issue",
                 "token_name": "ETH",
                 "value_in_eth": "1000000000000000.00",
                 "value_in_token": "1000000000000000.00",
@@ -7429,7 +7197,7 @@
             "activity_type": "worker_approved",
             "metadata": {
                 "id": 30,
-                "title": "Fake private issue 2",
+                "title": "Fake public issue 2",
                 "token_name": "ETH",
                 "value_in_eth": "1000000000000000.00",
                 "worker_handle": "test4",
@@ -7457,7 +7225,7 @@
             "activity_type": "worker_rejected",
             "metadata": {
                 "id": 30,
-                "title": "Fake private issue 2",
+                "title": "Fake public issue 2",
                 "token_name": "ETH",
                 "value_in_eth": "1000000000000000.00",
                 "worker_handle": "test5",
@@ -7486,7 +7254,7 @@
             "metadata": {
                 "new_bounty": {
                     "id": 32,
-                    "title": "Fake private issue 2",
+                    "title": "Fake public issue 2",
                     "token_name": "ETH",
                     "value_in_eth": "1000000000000000",
                     "value_in_token": "1000000000000000",
@@ -7496,7 +7264,7 @@
                 },
                 "old_bounty": {
                     "id": 30,
-                    "title": "Fake private issue 2",
+                    "title": "Fake public issue 2",
                     "token_name": "ETH",
                     "value_in_eth": "1000000000000000.00",
                     "value_in_token": "1000000000000000.00",
@@ -7508,9 +7276,7 @@
                     "id": 19,
                     "accepted": false,
                     "accepted_on": "None",
-                    "fulfiller_name": "",
                     "fulfillment_id": 1,
-                    "fulfiller_email": "",
                     "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
                     "fulfiller_metadata": {
                         "id": 1,
@@ -7529,7 +7295,7 @@
                                     "githubPRLink": "",
                                     "githubUsername": "test4"
                                 },
-                                "description": "https://github.com/funder2/privaterepo/issues/2",
+                                "description": "https://github.com/funder2/publicrepo/issues/2",
                                 "sourceFileHash": "",
                                 "sourceFileName": "",
                                 "sourceDirectoryHash": ""
@@ -7539,8 +7305,7 @@
                         "fulfiller": "0x27FC067c91f1bA562C7978920722B07B70122897"
                     },
                     "fulfiller_github_url": "",
-                    "fulfiller_hours_worked": "20.00",
-                    "fulfiller_github_username": "test4"
+                    "fulfiller_hours_worked": "20.00"
                 }
             },
             "needs_review": false
@@ -7674,13 +7439,13 @@
             "activity_type": "worker_applied",
             "metadata": {
                 "id": 29,
-                "title": "Fake Private Issue 1",
+                "title": "Fake Public Issue 1",
                 "token_name": "ETH",
                 "value_in_eth": "1000000000000000.00",
                 "value_in_token": "1000000000000000.00",
-                "reject_worker_url": "http://localhost:8000/issue/funder2/privaterepo/1/2226?mutate_worker_action=reject&worker=test8",
+                "reject_worker_url": "http://localhost:8000/issue/funder2/publicrepo/1/2226?mutate_worker_action=reject&worker=test8",
                 "value_in_usdt_now": "0.00",
-                "approve_worker_url": "http://localhost:8000/issue/funder2/privaterepo/1/2226?mutate_worker_action=approve&worker=test8",
+                "approve_worker_url": "http://localhost:8000/issue/funder2/publicrepo/1/2226?mutate_worker_action=approve&worker=test8",
                 "token_value_in_usdt": "692.10",
                 "token_value_time_peg": "2019-06-27 01:31:04.337373+00:00"
             },
@@ -7703,7 +7468,7 @@
             "activity_type": "worker_approved",
             "metadata": {
                 "id": 31,
-                "title": "Another super secret fake private issue",
+                "title": "Another super secret fake public issue",
                 "token_name": "ETH",
                 "value_in_eth": "1000000000000000.00",
                 "worker_handle": "test5",
@@ -7731,7 +7496,7 @@
             "activity_type": "worker_approved",
             "metadata": {
                 "id": 29,
-                "title": "Fake Private Issue 1",
+                "title": "Fake Public Issue 1",
                 "token_name": "ETH",
                 "value_in_eth": "1000000000000000.00",
                 "worker_handle": "test8",
@@ -7760,7 +7525,7 @@
             "metadata": {
                 "new_bounty": {
                     "id": 33,
-                    "title": "Fake Private Issue 1",
+                    "title": "Fake Public Issue 1",
                     "token_name": "ETH",
                     "value_in_eth": "1000000000000000",
                     "value_in_token": "1000000000000000",
@@ -7770,7 +7535,7 @@
                 },
                 "old_bounty": {
                     "id": 29,
-                    "title": "Fake Private Issue 1",
+                    "title": "Fake Public Issue 1",
                     "token_name": "ETH",
                     "value_in_eth": "1000000000000000.00",
                     "value_in_token": "1000000000000000.00",
@@ -7782,9 +7547,7 @@
                     "id": 20,
                     "accepted": false,
                     "accepted_on": "None",
-                    "fulfiller_name": "",
                     "fulfillment_id": 0,
-                    "fulfiller_email": "",
                     "fulfiller_address": "0x27FC067c91f1bA562C7978920722B07B70122897",
                     "fulfiller_metadata": {
                         "id": 0,
@@ -7803,7 +7566,7 @@
                                     "githubPRLink": "",
                                     "githubUsername": "test8"
                                 },
-                                "description": "https://github.com/funder2/privaterepo/issues/1",
+                                "description": "https://github.com/funder2/publicrepo/issues/1",
                                 "sourceFileHash": "",
                                 "sourceFileName": "",
                                 "sourceDirectoryHash": ""
@@ -7813,8 +7576,7 @@
                         "fulfiller": "0x27FC067c91f1bA562C7978920722B07B70122897"
                     },
                     "fulfiller_github_url": "",
-                    "fulfiller_hours_worked": "100.00",
-                    "fulfiller_github_username": "test8"
+                    "fulfiller_hours_worked": "100.00"
                 }
             },
             "needs_review": false
@@ -7955,7 +7717,6 @@
                 "grant_url": "/grants/3/my-test-grant-x3",
                 "grant_logo": null,
                 "token_name": "Any Token",
-                "amount_goal": "100000.00",
                 "value_in_token": "0.00"
             },
             "needs_review": false
@@ -8146,8 +7907,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8214,8 +7973,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8282,8 +8039,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8350,8 +8105,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8418,8 +8171,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8486,8 +8237,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8554,8 +8303,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8622,8 +8369,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8690,8 +8435,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8758,8 +8501,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8826,8 +8567,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8894,8 +8633,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -8962,8 +8699,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9014,8 +8749,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9082,8 +8815,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9150,8 +8881,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9218,8 +8947,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9286,8 +9013,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9354,8 +9079,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9422,8 +9145,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9490,8 +9211,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9558,8 +9277,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9626,8 +9343,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9694,8 +9409,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9762,8 +9475,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9830,8 +9541,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9898,8 +9607,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -9966,8 +9673,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -10034,8 +9739,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -10102,8 +9805,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -10170,8 +9871,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -10238,8 +9937,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -10306,8 +10003,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": true,
@@ -10374,8 +10069,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": false,
             "trust_profile": false,
@@ -10454,8 +10147,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": true,
             "trust_profile": false,
@@ -10504,8 +10195,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": true,
             "trust_profile": false,
@@ -10584,8 +10273,6 @@
             "slack_token": "",
             "custom_tagline": "",
             "slack_channel": "",
-            "discord_repos": "[]",
-            "discord_webhook_url": "",
             "suppress_leaderboard": false,
             "hide_profile": true,
             "trust_profile": false,
@@ -19450,7 +19137,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -19472,7 +19159,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -19600,7 +19287,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -19622,7 +19309,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -19850,7 +19537,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -19872,7 +19559,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -21158,7 +20845,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -21180,7 +20867,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -21296,7 +20983,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -21318,7 +21005,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22036,7 +21723,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22058,7 +21745,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22080,7 +21767,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22102,7 +21789,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22124,7 +21811,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22146,7 +21833,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22468,7 +22155,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22490,7 +22177,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22691,7 +22378,7 @@
                     "all"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22716,7 +22403,7 @@
                     "all"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22844,7 +22531,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22866,7 +22553,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22891,7 +22578,7 @@
                     "all"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22916,7 +22603,7 @@
                     "all"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22938,7 +22625,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -22960,7 +22647,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -24400,7 +24087,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -24422,7 +24109,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26046,7 +25733,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26068,7 +25755,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26090,7 +25777,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26112,7 +25799,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26134,7 +25821,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26156,7 +25843,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26284,7 +25971,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26306,7 +25993,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26916,7 +26603,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26938,7 +26625,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26960,7 +26647,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -26982,7 +26669,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27048,7 +26735,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27070,7 +26757,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27092,7 +26779,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27114,7 +26801,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27198,7 +26885,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27220,7 +26907,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27298,7 +26985,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27320,7 +27007,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -27842,7 +27529,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -27864,7 +27551,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/2"
+                    "https://github.com/funder2/publicrepo/issues/2"
                 ],
                 "standard_bounties_id": [
                     "2227"
@@ -27992,7 +27679,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28014,7 +27701,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28036,7 +27723,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28058,7 +27745,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28080,7 +27767,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28102,7 +27789,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28124,7 +27811,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28146,7 +27833,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28274,7 +27961,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28296,7 +27983,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28362,7 +28049,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28384,7 +28071,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28512,7 +28199,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28534,7 +28221,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28556,7 +28243,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28578,7 +28265,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28600,7 +28287,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28622,7 +28309,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28644,7 +28331,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28666,7 +28353,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28691,7 +28378,7 @@
                     "all"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28716,7 +28403,7 @@
                     "all"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28741,7 +28428,7 @@
                     "all"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28766,7 +28453,7 @@
                     "all"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28788,7 +28475,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"
@@ -28810,7 +28497,7 @@
                     "rinkeby"
                 ],
                 "github_url": [
-                    "https://github.com/funder2/privaterepo/issues/1"
+                    "https://github.com/funder2/publicrepo/issues/1"
                 ],
                 "standard_bounties_id": [
                     "2226"

@@ -1,757 +1,672 @@
-/* eslint-disable no-console */
-/* eslint-disable nonblock-statement-body-position */
-/* eslint-disable no-lonely-if */
-load_tokens();
+let appFormBounty;
 
-var localStorage = window.localStorage ? window.localStorage : {};
-const quickstartURL = document.location.origin + '/bounty/quickstart';
+window.addEventListener('dataWalletReady', function(e) {
+  appFormBounty.network = networkName;
+  appFormBounty.form.funderAddress = selectedAccount;
+}, false);
 
-let params = (new URL(document.location)).searchParams;
+Vue.component('v-select', VueSelect.VueSelect);
+Vue.mixin({
+  methods: {
+    getIssueDetails: function(url) {
+      let vm = this;
 
-let FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
+      if (!url) {
+        vm.$set(vm.errors, 'issueDetails', undefined);
+        vm.form.issueDetails = null;
+        return vm.form.issueDetails;
+      }
 
-var new_bounty = {
-  last_sync: new Date()
-};
-
-if (localStorage['quickstart_dontshow'] !== 'true' &&
-    doShowQuickstart(document.referrer) &&
-    doShowQuickstart(document.URL)) {
-  window.location = quickstartURL;
-}
-
-function doShowQuickstart(url) {
-  let blacklist = [];
-
-  blacklist.push(document.location.origin + '/bounty/quickstart');
-  blacklist.push(document.location.origin + '/bounty/new\\?');
-  blacklist.push(document.location.origin + '/funding/new\\?');
-  blacklist.push(document.location.origin + '/new\\?');
-
-  for (let i = 0; i < blacklist.length; i++) {
-    if (url.match(blacklist[i]))
-      return false;
-  }
-
-  return true;
-}
-
-var processedData;
-var usersBySkills;
-
-$('.select2-tag__choice').on('click', function() {
-  $('#invite-contributors.js-select2').data('select2').dataAdapter.select(processedData[0].children[$(this).data('id')]);
-});
-
-$('.select2-add_byskill').on('click', function(e) {
-  e.preventDefault();
-  $('#invite-contributors.js-select2').val(usersBySkills.map((item) => {
-    return item.id;
-  })).trigger('change');
-});
-
-$('.select2-clear_invites').on('click', function(e) {
-  e.preventDefault();
-  $('#invite-contributors.js-select2').val(null).trigger('change');
-});
-
-
-const getSuggestions = () => {
-  let queryParams = {};
-
-  queryParams.keywords = $('#keywords').val();
-  queryParams.invite = params.get('invite') || '';
-
-  let searchParams = new URLSearchParams(queryParams);
-
-  const settings = {
-    url: `/api/v0.1/get_suggested_contributors?${searchParams}`,
-    method: 'GET',
-    processData: false,
-    dataType: 'json',
-    contentType: false
-  };
-
-  $.ajax(settings).done(function(response) {
-    let groups = {
-      'contributors': 'Recently worked with you',
-      'recommended_developers': 'Recommended based on skills',
-      'verified_developers': 'Verified contributors',
-      'invites': 'Invites'
-    };
-
-    let options = Object.entries(response).map(([ text, children ]) => (
-      { text: groups[text], children }
-    ));
-
-    usersBySkills = [].map.call(response['recommended_developers'], function(obj) {
-      return obj;
-    });
-
-    if (queryParams.keywords.length && usersBySkills.length) {
-      $('#invite-all-container').show();
-      $('.select2-add_byskill span').text(queryParams.keywords.join(', '));
-    } else {
-      $('#invite-all-container').hide();
-    }
-
-    var generalIndex = 0;
-
-    processedData = $.map(options, function(obj, index) {
-      if (obj.children.length < 1) {
+      if (url.indexOf('github.com/') < 0) {
+        vm.form.issueDetails = undefined;
+        vm.$set(vm.errors, 'issueDetails', 'Please paste a github issue url');
         return;
       }
 
-      obj.children.forEach((children, childIndex) => {
-        children.text = children.fulfiller_github_username || children.user__profile__handle || children.handle;
-        children.id = generalIndex;
-        if (obj.text == 'Invites') {
-          children.selected = true;
-          $('#reserve-section').collapse('show');
-        }
-        generalIndex++;
-      });
-      return obj;
-    });
+      let ghIssueUrl = new URL(url);
 
-    $('#invite-contributors').select2().empty();
-    $('#invite-contributors.js-select2').select2({
-      data: processedData,
-      placeholder: 'Select contributors',
-      escapeMarkup: function(markup) {
-        return markup;
-      },
-      templateResult: formatUser,
-      templateSelection: formatUserSelection
-    });
+      vm.orgSelected = ghIssueUrl.pathname.split('/')[1].toLowerCase();
 
-  }).fail(function(error) {
-    console.log('Could not fetch contributors', error);
-  });
-};
-
-getSuggestions();
-$('#keywords').on('change', getSuggestions);
-
-function formatUser(user) {
-  if (user.children) {
-    return user.text;
-  }
-
-  let markup = `<div class="d-flex align-items-baseline">
-                  <div class="mr-2">
-                    <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
-                  </div>
-                  <div>${user.text}</div>
-                </div>`;
-
-  return markup;
-}
-
-function formatUserSelection(user) {
-  let selected;
-
-  if (user.id) {
-    selected = `
-      <img class="rounded-circle" src="${'/dynamic/avatar/' + user.text }" width="20" height="20"/>
-      <span class="ml-2">${user.text}</span>`;
-  } else {
-    selected = user.text;
-  }
-  return selected;
-}
-
-function lastSynced(current, last_sync) {
-  return timeDifference(current, last_sync);
-}
-
-const setPrivateForm = () => {
-  $('#description, #title').prop('readonly', false);
-  $('#description, #title').prop('required', true);
-  $('#no-issue-banner').hide();
-  $('#issue-details').removeClass('issue-details-public');
-  $('#issue-details, #issue-details-edit').show();
-  $('#sync-issue').removeClass('disabled');
-  $('#last-synced, #edit-issue, #sync-issue').hide();
-  $('#show_email_publicly').attr('disabled', true);
-  $('#cta-subscription, #private-repo-instructions').removeClass('d-md-none');
-  $('#nda-upload').show();
-  $('#issueNDA').prop('required', true);
-  $('.permissionless').addClass('disabled');
-  $('#permissionless').attr('disabled', true);
-  $('#admin_override_suspend_auto_approval').prop('checked', false);
-  $('#admin_override_suspend_auto_approval').attr('disabled', true);
-  $('#keywords').select2({
-    placeholder: 'Select tags',
-    tags: 'true',
-    allowClear: true,
-    tokenSeparators: [ ',', ' ' ]
-  }).trigger('change');
-};
-
-const setPublicForm = () => {
-  $('#description, #title').prop('readonly', true);
-  $('#no-issue-banner').show();
-  $('#issue-details').addClass('issue-details-public');
-  $('#issue-details, #issue-details-edit').hide();
-  $('#sync-issue').addClass('disabled');
-  $('.js-submit').addClass('disabled');
-  $('#last-synced, #edit-issue , #sync-issue').show();
-  $('#show_email_publicly').attr('disabled', false);
-  $('#cta-subscription, #private-repo-instructions').addClass('d-md-none');
-  $('#nda-upload').hide();
-  $('#issueNDA').prop('required', false);
-  $('.permissionless').removeClass('disabled');
-  $('#permissionless').attr('disabled', false);
-  $('#admin_override_suspend_auto_approval').prop('checked', true);
-  $('#admin_override_suspend_auto_approval').attr('disabled', false);
-  retrieveIssueDetails();
-};
-
-/**
- * Checks if token used to fund bounty is authed.
- */
-const handleTokenAuth = () => {
-  return new Promise((resolve) => {
-    const tokenName = $('#token option:selected').text();
-    const tokenAddress = $('#token option:selected').val();
-    let isTokenAuthed = true;
-
-    const authedTokens = [ 'ETH', 'ETC' ];
-
-    if (!token) {
-      isTokenAuthed = false;
-      tokenAuthAlert(isTokenAuthed);
-      resolve(isTokenAuthed);
-    } else if (authedTokens.includes(tokenName)) {
-      tokenAuthAlert(isTokenAuthed);
-      resolve(isTokenAuthed);
-    } else {
-      const token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-      const from = web3.eth.coinbase;
-      const to = bounty_address();
-
-      token_contract.allowance.call(from, to, (error, result) => {
-
-        if (error || result.toNumber() == 0) {
-          isTokenAuthed = false;
-        }
-        tokenAuthAlert(isTokenAuthed, tokenName);
-        resolve(isTokenAuthed);
-      });
-    }
-  });
-};
-
-/**
- * Toggles alert to notify user while bounty creation using an
- * un-authed token.
- * @param {boolean} isTokenAuthed - Token auth status for user
- * @param {string=}  tokenName - token name
- */
-const tokenAuthAlert = (isTokenAuthed, tokenName) => {
-  $('.alert').remove();
-
-  if (isTokenAuthed) {
-    $('.alert').remove();
-    $('#add-token-dialog').bootstrapModal('hide');
-    $('#token-denomination').html('');
-  } else {
-    tokenName = tokenName ? tokenName : '';
-    _alert(
-      gettext(`
-        This token ${tokenName} needs to be enabled to fund this bounty, click on
-        <a class="font-weight-semibold" href="/settings/tokens">
-          the Token Settings page and enable it.
-        </a> This is only needed once per token.`
-      ),
-      'warning'
-    );
-
-    $('#token-denomination').html(tokenName);
-    $('#add-token-dialog').bootstrapModal('show');
-  }
-};
-
-
-const updateViewForToken = (token_name) => {
-
-  if (token_name == 'ETC') {
-    $('.eth-chain').hide();
-    FEE_PERCENTAGE = 0;
-  } else {
-    $('.eth-chain').show();
-    FEE_PERCENTAGE = document.FEE_PERCENTAGE / 100.0;
-  }
-
-};
-
-
-$(function() {
-
-  $('#last-synced').hide();
-  $('.js-select2').each(function() {
-    $(this).select2({
-      minimumResultsForSearch: Infinity
-    });
-  });
-
-  let checked = params.get('type');
-
-  if (params.has('type')) {
-
-    $(`.${checked}`).button('toggle');
-
-  } else {
-    params.append('type', 'public');
-    window.history.replaceState({}, '', location.pathname + '?' + params);
-  }
-  toggleCtaPlan(checked);
-
-  $('input[name=repo_type]').change(function() {
-    toggleCtaPlan($(this).val());
-  });
-
-  populateBountyTotal();
-
-  // Load sidebar radio buttons from localStorage
-  if (getParam('source')) {
-    $('input[name=issueURL]').val(getParam('source'));
-  } else if (getParam('url')) {
-    $('input[name=issueURL]').val(getParam('url'));
-  } else if (localStorage['issueURL']) {
-    $('input[name=issueURL]').val(localStorage['issueURL']);
-  }
-
-
-  setTimeout(setUsdAmount, 1000);
-
-  // fetch issue URL related info
-  $('input[name=hours]').keyup(setUsdAmount);
-  $('input[name=hours]').blur(setUsdAmount);
-  $('input[name=amount]').keyup(setUsdAmount);
-
-  $('input[name=usd_amount]').on('focusin', function() {
-    $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
-    $('input[name=amount]').trigger('change');
-
-  });
-
-  $('input[name=usd_amount]').on('focusout', function() {
-    $('input[name=usd_amount]').attr('prev_usd_amount', $(this).val());
-    $('input[name=amount]').trigger('change');
-  });
-
-  $('input[name=usd_amount]').keyup(() => {
-    const prev_usd_amount = $('input[name=usd_amount]').attr('prev_usd_amount');
-    const usd_amount = $('input[name=usd_amount').val();
-
-    $('input[name=amount]').trigger('change');
-
-    if (prev_usd_amount != usd_amount) {
-      usdToAmount(usd_amount);
-    }
-  });
-
-  $('input[name=amount]').on('change', function() {
-    const amount = $('input[name=amount]').val();
-
-    $('#summary-bounty-amount').html(amount);
-    $('#summary-fee-amount').html((amount * FEE_PERCENTAGE).toFixed(4));
-    populateBountyTotal();
-  });
-
-  var triggerDenominationUpdate = function(e) {
-    setUsdAmount();
-    handleTokenAuth();
-    const token_val = $('select[name=denomination]').val();
-    const tokendetails = tokenAddressToDetails(token_val);
-    var token = tokendetails['name'];
-
-    updateViewForToken(token);
-
-    $('#summary-bounty-token').html(token);
-    $('#summary-fee-token').html(token);
-    populateBountyTotal();
-  };
-
-  $('select[name=denomination]').change(triggerDenominationUpdate);
-  waitforWeb3(function() {
-    setTimeout(function() {
-      triggerDenominationUpdate();
-    }, 1000);
-  });
-
-  $('#featuredBounty').on('change', function() {
-    if ($(this).prop('checked')) {
-      if (document.FEE_PERCENTAGE == 0)
-        $('#confirmation').html('2');
-      else
-        $('#confirmation').html('3');
-
-      $('.feature-amount').show();
-    } else {
-      if (document.FEE_PERCENTAGE == 0)
-        $('#confirmation').html('1');
-      else
-        $('#confirmation').html('2');
-
-      $('.feature-amount').hide();
-    }
-    populateBountyTotal();
-  });
-
-
-  $('[name=project_type]').on('change', function() {
-    let val = $('input[name=project_type]:checked').val();
-
-    if (val !== 'traditional') {
-      $('#reservedFor').attr('disabled', true);
-      $('#reservedFor').select2().trigger('change');
-    } else {
-      $('#reservedFor').attr('disabled', false);
-      userSearch('#reservedFor', false);
-    }
-  });
-
-  if ($('input[name=issueURL]').val() != '' && !isPrivateRepo) {
-    retrieveIssueDetails();
-  }
-
-  $('select[name=denomination]').select2();
-  if ($('input[name=amount]').val().trim().length > 0) {
-    setUsdAmount();
-  }
-
-  if (params.get('reserved')) {
-    $('#reserve-section').collapse('show');
-  }
-
-  userSearch(
-    '#reservedFor',
-    // show address
-    false,
-    // theme
-    '',
-    // initial data
-    params.get('reserved') ? [params.get('reserved')] : [],
-    // allowClear
-    true
-  );
-
-  $('input[name="expirationTimeDelta"]').daterangepicker({
-    singleDatePicker: true,
-    startDate: moment().add(1, 'month'),
-    alwaysShowCalendars: false,
-    ranges: {
-      '1 week': [ moment().add(7, 'days'), moment().add(7, 'days') ],
-      '2 weeks': [ moment().add(14, 'days'), moment().add(14, 'days') ],
-      '1 month': [ moment().add(1, 'month'), moment().add(1, 'month') ],
-      '3 months': [ moment().add(3, 'month'), moment().add(3, 'month') ],
-      '1 year': [ moment().add(1, 'year'), moment().add(1, 'year') ]
-    },
-    'locale': {
-      'customRangeLabel': 'Custom',
-      'format': 'MM/DD/YYYY'
-    }
-  });
-
-});
-
-$('#reservedFor').on('select2:select', (e) => {
-  $('#permissionless').click();
-  $('#releaseAfterFormGroup').show();
-  $('#releaseAfter').attr('required', true);
-});
-
-$('#reservedFor').on('select2:unselect', (e) => {
-  $('#releaseAfterFormGroup').hide();
-  $('#releaseAfter').attr('required', false);
-  $('#releaseAfterFormGroup').addClass('releaseAfterFormGroupRequired');
-});
-
-$('#releaseAfter').on('change', () => {
-  $('#releaseAfterFormGroup').removeClass('releaseAfterFormGroupRequired');
-});
-
-$('#sync-issue').on('click', function(event) {
-  event.preventDefault();
-  if (!$('#sync-issue').hasClass('disabled')) {
-    new_bounty.last_sync = new Date();
-    retrieveIssueDetails();
-    $('#last-synced span').html(lastSynced(new Date(), new_bounty.last_sync));
-  }
-});
-
-$('#issueURL').focusout(function() {
-
-  for (let i = 0; i < document.blocked_urls.length; i++) {
-    let this_url_filter = document.blocked_urls[i];
-
-    if ($('input[name=issueURL]').val().toLowerCase().indexOf(this_url_filter.toLowerCase()) != -1) {
-      _alert('This repo is not bountyable at the request of the maintainer.');
-      $('input[name=issueURL]').val('');
-      return false;
-    }
-  }
-
-  if (isPrivateRepo) {
-    setPrivateForm();
-    var validated = $('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val());
-
-    if (validated) {
-      $('.js-submit').addClass('disabled');
-    } else {
-      $('.js-submit').removeClass('disabled');
-    }
-    return;
-  }
-
-  setInterval(function() {
-    $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
-  }, 6000);
-
-  if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
-    $('#issue-details, #issue-details-edit').hide();
-    $('#no-issue-banner').show();
-
-    $('#title').val('');
-    $('#description').val('');
-
-    $('#last-synced').hide();
-    $('.js-submit').addClass('disabled');
-  } else {
-    $('#edit-issue').attr('href', $('input[name=issueURL]').val());
-
-    $('#sync-issue').removeClass('disabled');
-    $('.js-submit').removeClass('disabled');
-
-    new_bounty.last_sync = new Date();
-    retrieveIssueDetails();
-    $('#last-synced').show();
-    $('#last-synced span').html(lastSynced(new Date(), new_bounty.last_sync));
-  }
-});
-
-const togggleEnabled = function(checkboxSelector, targetSelector, do_focus, revert) {
-  let check = revert ? ':unchecked' : ':checked';
-  let isChecked = $(checkboxSelector).is(check);
-
-  if (isChecked) {
-    $(targetSelector).attr('disabled', false);
-
-    if (do_focus) {
-      $(targetSelector).focus();
-    }
-  } else {
-    $(targetSelector).attr('disabled', true);
-    if ($(targetSelector).hasClass('select2-hidden-accessible')) {
-      $(targetSelector).select2().trigger('change');
-    }
-  }
-};
-
-$('#hiringRightNow').on('click', () => {
-  togggleEnabled('#hiringRightNow', '#jobDescription', true);
-});
-
-$('#specialEvent').on('click', () => {
-  togggleEnabled('#specialEvent', '#eventTag', true);
-});
-
-$('#neverExpires').on('click', () => {
-  togggleEnabled('#neverExpires', '#expirationTimeDelta', false, true);
-});
-
-$('#submitBounty').validate({
-  errorPlacement: function(error, element) {
-    if (element.attr('name') == 'bounty_categories') {
-      error.appendTo($(element).parents('.btn-group-toggle').next('.cat-error'));
-    } else {
-      error.insertAfter(element);
-    }
-  },
-  ignore: '',
-  messages: {
-    select2Start: {
-      required: 'Please select the right keywords.'
-    }
-  },
-  submitHandler: function(form) {
-    if (typeof ga != 'undefined') {
-      dataLayer.push({
-        'event': 'new_bounty',
-        'category': 'new_bounty',
-        'action': 'new_bounty_form_submit'
-      });
-    }
-
-    const token = $('#summary-bounty-token').html();
-    const data = transformBountyData(form);
-
-    if (token == 'ETC') {
-      /*
-        TODO:
-        1. TRIGGER DB UPDATE
-        2. REDESIGN METAMASK LOCK NOTIFICATION
-      */
-      createBounty(data);
-    } else {
-      ethCreateBounty(data);
-    }
-  }
-});
-
-$('[name=permission_type]').on('change', function() {
-  var val = $('input[name=permission_type]:checked').val();
-
-  if (val === 'approval') {
-    $('#admin_override_suspend_auto_approval').attr('disabled', false);
-  } else {
-    $('#admin_override_suspend_auto_approval').prop('checked', false);
-    $('#admin_override_suspend_auto_approval').attr('disabled', true);
-  }
-});
-
-var getBalance = (address) => {
-  return new Promise (function(resolve, reject) {
-    web3.eth.getBalance(address, function(error, result) {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(result);
+      if (vm.checkBlocked(vm.orgSelected)) {
+        vm.$set(vm.errors, 'issueDetails', 'This repo is not bountyable at the request of the maintainer.');
+        vm.form.issueDetails = undefined;
+        return;
       }
-    });
-  });
-};
+      vm.$delete(vm.errors, 'issueDetails');
 
-let usdFeaturedPrice = $('.featured-price-usd').text();
-let ethFeaturedPrice;
-let bountyFee;
+      const apiUrldetails = `/sync/get_issue_details?url=${encodeURIComponent(url.trim())}&duplicates=true&network=${vm.network}`;
 
-getAmountEstimate(usdFeaturedPrice, 'ETH', (amountEstimate) => {
-  ethFeaturedPrice = amountEstimate['value'];
-  $('.featured-price-eth').text(`+${amountEstimate['value']} ETH`);
-  $('#summary-feature-amount').text(`${amountEstimate['value']}`);
+      vm.form.issueDetails = undefined;
+      const getIssue = fetchData(apiUrldetails, 'GET');
+
+      $.when(getIssue).then((response) => {
+        if (!Object.keys(response).length) {
+          return vm.$set(vm.errors, 'issueDetails', 'Nothing found. Please check the issue URL.');
+        }
+
+        vm.form.issueDetails = response;
+        // vm.$set(vm.errors, 'issueDetails', undefined);
+      }).catch((err) => {
+        console.log(err);
+        vm.form.issueDetails = undefined;
+        vm.$set(vm.errors, 'issueDetails', err.responseJSON.message);
+      });
+
+    },
+    getTokens: function() {
+      let vm = this;
+      const apiUrlTokens = '/api/v1/tokens/';
+      const getTokensData = fetchData(apiUrlTokens, 'GET');
+
+      $.when(getTokensData).then((response) => {
+        vm.tokens = response;
+        vm.form.token = vm.filterByChainId[0];
+        vm.getAmount(vm.form.token.symbol);
+
+      }).catch((err) => {
+        console.log(err);
+      });
+
+    },
+    getAmount: function(token) {
+      let vm = this;
+
+      if (!token) {
+        return;
+      }
+      const apiUrlAmount = `/sync/get_amount?amount=1&denomination=${token}`;
+      const getAmountData = fetchData(apiUrlAmount, 'GET');
+
+      $.when(getAmountData).then(tokens => {
+        vm.coinValue = tokens[0].usdt;
+        vm.calcValues('usd');
+
+      }).catch((err) => {
+        console.log(err);
+      });
+    },
+    calcValues: function(direction) {
+      let vm = this;
+
+      if (direction == 'usd') {
+        let usdValue = vm.form.amount * vm.coinValue;
+
+        vm.form.amountusd = Number(usdValue.toFixed(2));
+      } else {
+        vm.form.amount = Number(vm.form.amountusd * 1 / vm.coinValue).toFixed(4);
+      }
+
+    },
+    addKeyword: function(item) {
+      let vm = this;
+
+      vm.form.keywords.push(item);
+    },
+    checkForm: async function(e) {
+      let vm = this;
+
+      vm.submitted = true;
+      vm.errors = {};
+
+      if (!vm.form.keywords.length) {
+        vm.$set(vm.errors, 'keywords', 'Please select the prize keywords');
+      }
+      if (!vm.form.experience_level || !vm.form.project_length || !vm.form.bounty_type) {
+        vm.$set(vm.errors, 'experience_level', 'Please select the details options');
+      }
+      if (!vm.chainId) {
+        vm.$set(vm.errors, 'chainId', 'Please select an option');
+      }
+      if (!vm.form.issueDetails || vm.form.issueDetails < 1) {
+        vm.$set(vm.errors, 'issueDetails', 'Please input a GitHub issue');
+      }
+      if (vm.form.bounty_categories.length < 1) {
+        vm.$set(vm.errors, 'bounty_categories', 'Select at least one category');
+      }
+      if (!vm.form.funderAddress) {
+        vm.$set(vm.errors, 'funderAddress', 'Fill the owner wallet address');
+      }
+      if (!vm.form.project_type) {
+        vm.$set(vm.errors, 'project_type', 'Select the project type');
+      }
+      if (!vm.form.permission_type) {
+        vm.$set(vm.errors, 'permission_type', 'Select the permission type');
+      }
+      if (!vm.form.terms) {
+        vm.$set(vm.errors, 'terms', 'You need to accept the terms');
+      }
+      if (!vm.form.termsPrivacy) {
+        vm.$set(vm.errors, 'termsPrivacy', 'You need to accept the terms');
+      }
+      if (Object.keys(vm.errors).length) {
+        return false;
+      }
+    },
+    web3Type() {
+      let vm = this;
+      let type;
+
+      switch (vm.chainId) {
+        case '1':
+          // ethereum
+          type = 'web3_modal';
+          break;
+        case '666':
+          // paypal
+          type = 'fiat';
+          break;
+        case '61': // ethereum classic
+        case '102': // zilliqa
+        case '42220': // celo mainnet
+        case '44786': // celo alfajores tesnet
+        case '717171': // other
+          type = 'qr';
+          break;
+        default:
+          type = 'web3_modal';
+      }
+
+      vm.form.web3_type = type;
+      return type;
+    },
+    getParams: async function() {
+      let vm = this;
+
+      let params = new URLSearchParams(window.location.search);
+
+      if (params.has('invite')) {
+        vm.expandedGroup.reserve = [1];
+      }
+
+      if (params.has('reserved')) {
+        vm.expandedGroup.reserve = [1];
+        await vm.getUser(null, params.get('reserved'), true);
+      }
+
+
+    },
+    showQuickStart: function(force) {
+      let quickstartDontshow = localStorage['quickstart_dontshow'] ? JSON.parse(localStorage['quickstart_dontshow']) : false;
+
+      if (quickstartDontshow !== true || force) {
+        fetch('/bounty/quickstart')
+          .then(function(response) {
+            return response.text();
+          }).then(function(html) {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(html, 'text/html');
+
+            doc.querySelector('.show_video').href = 'https://www.youtube.com/watch?v=m1X0bDpVcf4';
+            doc.querySelector('.show_video').target = '_blank';
+            doc.querySelector('.btn-closeguide').dataset.dismiss = 'modal';
+
+            let docArticle = doc.querySelector('.content').innerHTML;
+            const content = $.parseHTML(
+              `<div id="gitcoin_updates" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-xl" style="max-width:95%">
+                  <div class="modal-content px-4 py-3">
+                    <div class="col-12">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    ${docArticle}
+                    <div class="col-12 my-4 d-flex justify-content-around">
+                      <button type="button" class="btn btn-gc-blue" data-dismiss="modal" aria-label="Close">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>`);
+
+            $(content).appendTo('body');
+            document.getElementById('dontshow').checked = quickstartDontshow;
+            $('#gitcoin_updates').bootstrapModal('show');
+
+            $(document).on('change', '#dontshow', function(e) {
+              if ($(this)[0].checked) {
+                localStorage['quickstart_dontshow'] = true;
+              } else {
+                localStorage['quickstart_dontshow'] = false;
+              }
+            });
+          });
+
+        $(document, '#gitcoin_updates').on('hidden.bs.modal', function(e) {
+          $('#gitcoin_updates').remove();
+          $('#gitcoin_updates').bootstrapModal('dispose');
+        });
+      }
+    },
+    isExpanded(key, type) {
+      return this.expandedGroup[type].indexOf(key) !== -1;
+    },
+    toggleCollapse(key, type) {
+      if (this.isExpanded(key, type)) {
+        this.expandedGroup[type].splice(this.expandedGroup[type].indexOf(key), 1);
+      } else {
+        this.expandedGroup[type].push(key);
+      }
+    },
+    updateDate(date) {
+      let vm = this;
+
+      vm.form.expirationTimeDelta = date.format('MM/DD/YYYY');
+
+    },
+    userSearch(search, loading) {
+      let vm = this;
+
+      if (search.length < 3) {
+        return;
+      }
+      loading(true);
+      vm.getUser(loading, search);
+
+    },
+    getUser: async function(loading, search, selected) {
+      let vm = this;
+      let myHeaders = new Headers();
+      let url = `/api/v0.1/users_search/?token=${currentProfile.githubToken}&term=${escape(search)}`;
+
+      myHeaders.append('X-Requested-With', 'XMLHttpRequest');
+      return new Promise(resolve => {
+
+        fetch(url, {
+          credentials: 'include',
+          headers: myHeaders
+        }).then(res => {
+          res.json().then(json => {
+            vm.usersOptions = json;
+            if (selected) {
+              vm.$set(vm.form, 'reservedFor', vm.usersOptions[0].text);
+            }
+            resolve();
+          });
+          if (loading) {
+            loading(false);
+          }
+        });
+      });
+    },
+    checkBlocked(org) {
+      let vm = this;
+      let blocked = vm.blockedUrls.toLocaleString().toLowerCase().split(',');
+
+      return blocked.indexOf(org.toLowerCase()) > -1;
+    },
+    featuredValue() {
+      let vm = this;
+      const apiUrlAmount = `/sync/get_amount?amount=${vm.usdFeaturedPrice}&denomination=USDT`;
+      const getAmountData = fetchData(apiUrlAmount, 'GET');
+
+      $.when(getAmountData).then(value => {
+        vm.ethFeaturedPrice = value[0].eth.toFixed(4);
+
+      }).catch((err) => {
+        console.log(err);
+      });
+    },
+    payFeaturedBounty: async function() {
+      let vm = this;
+
+      if (!provider) {
+        onConnect();
+        return false;
+      }
+      return new Promise(resolve =>
+        web3.eth.sendTransaction({
+          to: '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+          from: selectedAccount,
+          value: web3.utils.toWei(String(vm.ethFeaturedPrice), 'ether'),
+          gas: web3.utils.toHex(318730),
+          gasLimit: web3.utils.toHex(318730)
+        }, function(error, result) {
+          if (error) {
+            _alert({ message: gettext('Unable to upgrade to featured bounty. Please try again.') }, 'error');
+            console.log(error);
+          } else {
+            saveAttestationData(
+              result,
+              vm.ethFeaturedPrice,
+              '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+              'featuredbounty'
+            );
+            resolve();
+          }
+        })
+      );
+    },
+    payFees: async function() {
+      let vm = this;
+      const toAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+
+      if (!provider) {
+        onConnect();
+        return false;
+      }
+      return new Promise(resolve => {
+
+        if (vm.form.token.symbol === 'ETH') {
+          web3.eth.sendTransaction({
+            to: toAddress,
+            from: selectedAccount,
+            value: web3.utils.toWei(String(vm.totalAmount.totalFee), 'ether')
+          }).once('transactionHash', (txnHash, errors) => {
+
+            console.log(txnHash, errors);
+
+            if (errors) {
+              _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+            } else {
+
+              saveAttestationData(
+                txnHash,
+                vm.totalAmount.totalFee,
+                '0x00De4B13153673BCAE2616b67bf822500d325Fc3',
+                'bountyfee'
+              );
+              resolve();
+            }
+          });
+        } else if (vm.form.token.chainId === 1) {
+          const amountInWei = vm.totalAmount.totalFee * 1.0 * Math.pow(10, vm.form.token.decimals);
+          const amountAsString = new web3.utils.BN(BigInt(amountInWei)).toString();
+          const token_contract = new web3.eth.Contract(token_abi, vm.form.token.address);
+
+          token_contract.methods.transfer(toAddress, web3.utils.toHex(amountAsString)).send({from: selectedAccount},
+            function(error, txnId) {
+              if (error) {
+                _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
+              } else {
+                resolve();
+              }
+            }
+          );
+
+        }
+      });
+
+    },
+    submitForm: async function(event) {
+      event.preventDefault();
+      let vm = this;
+
+      vm.checkForm(event);
+
+      if (!provider && vm.chainId === '1') {
+        onConnect();
+        return false;
+      }
+
+      if (Object.keys(vm.errors).length) {
+        return false;
+      }
+      if (vm.bountyFee > 0 && !vm.subscriptionActive) {
+        await vm.payFees();
+      }
+      if (vm.form.featuredBounty && !vm.subscriptionActive) {
+        await vm.payFeaturedBounty();
+      }
+      const metadata = {
+        issueTitle: vm.form.issueDetails.title,
+        issueDescription: vm.form.issueDetails.description,
+        issueKeywords: vm.form.keywords.join(),
+        githubUsername: vm.form.githubUsername,
+        notificationEmail: vm.form.notificationEmail,
+        fullName: vm.form.fullName,
+        experienceLevel: vm.form.experience_level,
+        projectLength: vm.form.project_length,
+        bountyType: vm.form.bounty_type,
+        estimatedHours: vm.form.hours,
+        fundingOrganisation: vm.form.fundingOrganisation,
+        eventTag: vm.form.eventTag,
+        is_featured: vm.form.featuredBounty ? '1' : undefined,
+        repo_type: 'public',
+        featuring_date: vm.form.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
+        reservedFor: '',
+        releaseAfter: '',
+        tokenName: vm.form.token.symbol,
+        invite: [],
+        bounty_categories: vm.form.bounty_categories.join(),
+        activity: '',
+        chain_id: vm.chainId
+      };
+
+      const params = {
+        'title': metadata.issueTitle,
+        'amount': vm.form.amount,
+        'value_in_token': vm.form.amount * 10 ** vm.form.token.decimals,
+        'token_name': metadata.tokenName,
+        'token_address': vm.form.token.address,
+        'bounty_type': metadata.bountyType,
+        'project_length': metadata.projectLength,
+        'estimated_hours': metadata.estimatedHours,
+        'experience_level': metadata.experienceLevel,
+        'github_url': vm.form.issueUrl,
+        'bounty_owner_email': metadata.notificationEmail,
+        'bounty_owner_github_username': metadata.githubUsername,
+        'bounty_owner_name': metadata.fullName, // ETC-TODO REMOVE ?
+        'bounty_reserved_for': metadata.reservedFor,
+        'release_to_public': metadata.releaseAfter,
+        'expires_date': vm.checkboxes.neverExpires ? 9999999999 : moment(vm.form.expirationTimeDelta).utc().unix(),
+        'metadata': JSON.stringify(metadata),
+        'raw_data': {}, // ETC-TODO REMOVE ?
+        'network': vm.network,
+        'issue_description': metadata.issueDescription,
+        'funding_organisation': metadata.fundingOrganisation,
+        'balance': vm.form.amount * 10 ** vm.form.token.decimals, // ETC-TODO REMOVE ?
+        'project_type': vm.form.project_type,
+        'permission_type': vm.form.permission_type,
+        'bounty_categories': metadata.bounty_categories,
+        'repo_type': metadata.repo_type,
+        'is_featured': metadata.is_featured,
+        'featuring_date': metadata.featuring_date,
+        'fee_amount': 0,
+        'fee_tx_id': null,
+        'coupon_code': vm.form.couponCode,
+        'privacy_preferences': JSON.stringify({
+          show_email_publicly: vm.form.showEmailPublicly
+        }),
+        'attached_job_description': vm.form.jobDescription,
+        'eventTag': metadata.eventTag,
+        'auto_approve_workers': vm.form.auto_approve_workers,
+        'web3_type': vm.web3Type(),
+        'activity': metadata.activity,
+        'bounty_owner_address': vm.form.funderAddress
+      };
+
+      vm.sendBounty(params);
+
+    },
+    sendBounty(data) {
+      let vm = this;
+
+      const apiUrlBounty = '/api/v1/bounty/create';
+      const postBountyData = fetchData(apiUrlBounty, 'POST', data);
+
+      $.when(postBountyData).then((response) => {
+        if (200 <= response.status && response.status <= 204) {
+          console.log('success', response);
+          window.location.href = response.bounty_url;
+        } else if (response.status == 304) {
+          _alert('Bounty already exists for this github issue.', 'error');
+          console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
+        } else {
+          _alert(`Unable to create a bounty. ${response.message}`, 'error');
+          console.error(`error: bounty creation failed with status: ${response.status} and message: ${response.message}`);
+        }
+
+      }).catch((err) => {
+        console.log(err);
+        _alert('Unable to create a bounty. Please try again later', 'error');
+      });
+
+    }
+  },
+  computed: {
+    totalAmount: function() {
+      let vm = this;
+      let fee;
+
+      if (vm.chainId === '1' && !vm.subscriptionActive) {
+        vm.bountyFee = document.FEE_PERCENTAGE;
+        fee = Number(vm.bountyFee) / 100.0;
+      } else {
+        vm.bountyFee = 0;
+        fee = 0;
+      }
+      let totalFee = Number(vm.form.amount) * fee;
+      let total = Number(vm.form.amount) + totalFee;
+
+      return {'totalFee': totalFee, 'total': total };
+    },
+    totalTx: function() {
+      let vm = this;
+      let numberTx = 0;
+
+      if (vm.chainId === '1' && !vm.subscriptionActive) {
+        numberTx += vm.bountyFee > 0 ? 1 : 0;
+      } else {
+        numberTx = 0;
+      }
+
+      if (!vm.subscriptionActive) {
+        numberTx += vm.form.featuredBounty ? 1 : 0;
+      }
+
+      return numberTx;
+
+    },
+    filterOrgSelected: function() {
+      if (!this.orgSelected) {
+        return;
+      }
+      return `/dynamic/avatar/${this.orgSelected}`;
+    },
+    successRate: function() {
+      let rate;
+
+      if (!this.form.amountusd) {
+        return;
+      }
+
+      rate = ((this.form.amountusd / this.form.hours) * 100 / 120).toFixed(0);
+      if (rate > 100) {
+        rate = 100;
+      }
+      return rate;
+
+    },
+    sortByPriority: function() {
+      return this.tokens.sort(function(a, b) {
+        return b.priority - a.priority;
+      });
+    },
+    filterByNetwork: function() {
+      const vm = this;
+
+      if (vm.network == '') {
+        return vm.sortByPriority;
+      }
+      return vm.sortByPriority.filter((item)=>{
+
+        return item.network.toLowerCase().indexOf(vm.network.toLowerCase()) >= 0;
+      });
+    },
+    filterByChainId: function() {
+      const vm = this;
+      let result;
+
+      vm.form.token = {};
+      if (vm.chainId == '') {
+        result = vm.filterByNetwork;
+      } else {
+        result = vm.filterByNetwork.filter((item) => {
+          return String(item.chainId) === vm.chainId;
+        });
+      }
+      vm.$set(vm.form, 'token', result[0]);
+      return result;
+    }
+  },
+  watch: {
+    form: {
+      deep: true,
+      handler(newVal, oldVal) {
+        if (this.dirty && this.submitted) {
+          this.checkForm();
+        }
+        this.dirty = true;
+      }
+
+    },
+    chainId: async function(val) {
+      if (!provider && val === '1') {
+        await onConnect();
+      }
+
+      this.getTokens();
+    }
+  }
 });
 
-/**
- * Calculates total amount needed to fund the bounty
- * Bounty Amount + Fee + Featured Bounty
- */
-const populateBountyTotal = () => {
+if (document.getElementById('gc-hackathon-new-bounty')) {
+  appFormBounty = new Vue({
+    delimiters: [ '[[', ']]' ],
+    el: '#gc-hackathon-new-bounty',
+    components: {
+      'vue-select': 'vue-select'
+    },
+    data() {
+      return {
 
-  const amount = $('input[name=amount]').val();
-  const fee = (amount * FEE_PERCENTAGE).toFixed(4);
-
-  $('#summary-bounty-amount').html(amount);
-  $('#summary-fee-amount').html(fee);
-
-  const bountyToken = $('#summary-bounty-token').html();
-  const bountyAmount = Number($('#summary-bounty-amount').html());
-  const bountyFee = Number((bountyAmount * FEE_PERCENTAGE).toFixed(4));
-  const isFeaturedBounty = $('input[name=featuredBounty]:checked').val();
-  let totalBounty = Number((bountyAmount + bountyFee).toFixed(4));
-  let total = '';
-
-  if (isFeaturedBounty) {
-    const featuredBountyAmount = Number($('#summary-feature-amount').html());
-
-    if (bountyToken == 'ETH') {
-      totalBounty = (totalBounty + featuredBountyAmount).toFixed(4);
-      total = `${totalBounty} ETH`;
-    } else {
-      total = `${totalBounty} ${bountyToken} + ${featuredBountyAmount} ETH`;
-    }
-  } else {
-    total = `${totalBounty} ${bountyToken}`;
-  }
-
-  $('.fee-percentage').html(FEE_PERCENTAGE * 100);
-  $('#fee-amount').html(bountyFee);
-  $('#fee-token').html(bountyToken);
-  $('#summary-total-amount').html(total);
-};
-
-let isPrivateRepo = false;
-
-const toggleCtaPlan = (value) => {
-  if (value === 'private') {
-
-    params.set('type', 'private');
-    isPrivateRepo = true;
-    setPrivateForm();
-  } else {
-
-    params.set('type', 'public');
-    isPrivateRepo = false;
-    setPublicForm();
-  }
-  window.history.replaceState({}, '', location.pathname + '?' + params);
-};
-
-/**
- * generates object with all the data submitted during
- * bounty creation
- * @param {object} form
- */
-const transformBountyData = form => {
-  let data = {};
-  let disabled = $(form).find(':input:disabled').removeAttr('disabled');
-
-  $.each($(form).serializeArray(), function() {
-    if (data[this.name]) {
-      data[this.name] += ',' + this.value;
-    } else {
-      data[this.name] = this.value;
+        tokens: [],
+        network: 'mainnet',
+        chainId: '',
+        checkboxes: {'terms': false, 'termsPrivacy': false, 'neverExpires': true, 'hiringRightNow': false },
+        expandedGroup: {'reserve': [], 'featuredBounty': []},
+        errors: {},
+        usersOptions: [],
+        bountyFee: document.FEE_PERCENTAGE,
+        orgSelected: '',
+        subscriptions: document.subscriptions,
+        subscriptionActive: document.subscriptions.length,
+        coinValue: null,
+        usdFeaturedPrice: 12,
+        ethFeaturedPrice: null,
+        blockedUrls: document.blocked_urls,
+        dirty: false,
+        submitted: false,
+        form: {
+          expirationTimeDelta: moment().add(1, 'month').format('MM/DD/YYYY'),
+          featuredBounty: false,
+          fundingOrganisation: '',
+          issueDetails: undefined,
+          issueUrl: '',
+          githubUsername: document.contxt.github_handle,
+          notificationEmail: document.contxt.email,
+          showEmailPublicly: '1',
+          auto_approve_workers: false,
+          fullName: document.contxt.name,
+          hours: '1',
+          bounty_categories: [],
+          project_type: '',
+          permission_type: '',
+          keywords: [],
+          amount: 0.001,
+          amountusd: null,
+          token: {},
+          terms: false,
+          termsPrivacy: false,
+          couponCode: document.coupon_code
+        }
+      };
+    },
+    mounted() {
+      this.getParams();
+      this.showQuickStart();
+      this.getTokens();
+      this.featuredValue();
     }
   });
-
-  if (
-    data.repo_type == 'private' &&
-    data.project_type != 'traditional' &&
-    data.permission_type != 'approval'
-  ) {
-    _alert(gettext('The project type and/or permission type of bounty does not validate for a private repo'));
-    unloading_button($('.js-submit'));
-    return;
-  }
-
-  disabled.attr('disabled', 'disabled');
-  loading_button($('.js-submit'));
-
-  const tokenAddress = data.denomination;
-  const token = tokenAddressToDetails(tokenAddress);
-  const reservedFor = $('.username-search').select2('data')[0];
-  const releaseAfter = $('#releaseAfter').children('option:selected').val();
-  const inviteContributors = $('#invite-contributors.js-select2').select2('data').map((user) => {
-    return user.profile__id;
-  });
-
-  const metadata = {
-    issueTitle: data.title,
-    issueDescription: data.description,
-    issueKeywords: data.keywords ? data.keywords : '',
-    githubUsername: data.githubUsername,
-    notificationEmail: data.notificationEmail,
-    fullName: data.fullName,
-    experienceLevel: data.experience_level,
-    projectLength: data.project_length,
-    bountyType: data.bounty_type,
-    estimatedHours: data.hours,
-    fundingOrganisation: data.fundingOrganisation,
-    eventTag: data.specialEvent ? (data.eventTag || '') : '',
-    is_featured: data.featuredBounty,
-    repo_type: data.repo_type,
-    featuring_date: data.featuredBounty && ((new Date().getTime() / 1000) | 0) || 0,
-    reservedFor: reservedFor ? reservedFor.text : '',
-    releaseAfter: releaseAfter !== 'Release To Public After' ? releaseAfter : '',
-    tokenName: token['name'],
-    invite: inviteContributors,
-    bounty_categories: data.bounty_categories
-  };
-
-  data.metadata = metadata;
-
-  return data;
-};
+}

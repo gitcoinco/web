@@ -196,41 +196,43 @@ function purchaseOption(option, value, target) {
       cost = ele.find('div').data('cost');
     }
     var cost_eth = parseFloat(cost.replace('ETH', ''));
-    var cost_wei = web3.toWei(cost_eth);
+    var cost_wei = web3.utils.toWei(String(cost_eth));
 
     to_address = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // TODO: make dynamic
     indicateMetamaskPopup();
-    web3.eth.sendTransaction({
-      'from': web3.eth.coinbase,
-      'to': to_address,
-      'value': cost_wei
-    }, function(error, result) {
-      indicateMetamaskPopup(true);
-      if (error) {
-        _alert('There was an error.', 'error');
-        return;
-      }
-      showBusyOverlay();
-      _alert('Waiting for tx to mine...', 'info');
-      callFunctionWhenTransactionMined(result, function() {
-        var request_url = '/revenue/attestations/new';
-        var txid = result;
-        var data = {
-          'txid': txid,
-          'amount': cost_eth,
-          'network': document.web3network,
-          'from_address': web3.eth.coinbase,
-          'to_address': to_address,
-          'type': 'avatar',
-          'option': option,
-          'value': value
-        };
+    web3.eth.getCoinbase(function(_, coinbase) {
+      web3.eth.sendTransaction({
+        'from': coinbase,
+        'to': to_address,
+        'value': cost_wei
+      }, function(error, result) {
+        indicateMetamaskPopup(true);
+        if (error) {
+          _alert('There was an error.', 'error');
+          return;
+        }
+        showBusyOverlay();
+        _alert('Waiting for tx to mine...', 'info');
+        callFunctionWhenTransactionMined(result, function() {
+          var request_url = '/revenue/attestations/new';
+          var txid = result;
+          var data = {
+            'txid': txid,
+            'amount': cost_eth,
+            'network': document.web3network,
+            'from_address': coinbase,
+            'to_address': to_address,
+            'type': 'avatar',
+            'option': option,
+            'value': value
+          };
 
-        $.post(request_url, data).then(function(result) {
-          hideBusyOverlay();
-          _alert('Success ✅ Loading your purchase now.', 'success');
-          setTimeout(function() {
-            location.reload();
+          $.post(request_url, data).then(function(result) {
+            hideBusyOverlay();
+            _alert('Success ✅ Loading your purchase now.', 'success');
+            setTimeout(function() {
+              location.reload();
+            });
           });
         });
       });
@@ -341,6 +343,7 @@ function setOptionHelper(option, value, target) {
   if (complete) {
     $('#complete-notification').removeClass('d-none');
     $('#save-button').removeAttr('disabled');
+    $('#upload-button').removeAttr('disabled');
   }
 }
 
@@ -392,7 +395,7 @@ function randomAvatar(sections, optionalSections) {
             htmlComponent = $(`#avatar-option-${componentName}-${part}`)[0];
             setOptionHelper(componentName, JSON.stringify(option), htmlComponent);
           });
-          
+
           break;
         default:
           htmlComponent = $(`#avatar-option-${componentName}-${option}`)[0];
@@ -401,10 +404,10 @@ function randomAvatar(sections, optionalSections) {
       }
     }
   });
-  
+
 }
 
-function saveAvatar() {
+function saveAvatar(onSuccess) {
   $(document).ajaxStart(function() {
     loading_button($('#save-avatar'));
     $('#do-later').attr('disabled', 'disabled');
@@ -423,8 +426,12 @@ function saveAvatar() {
     dataType: 'json',
     contentType: 'application/json; charset=utf-8',
     success: function(response) {
-      _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
-      changeStep(1);
+      if (onSuccess) {
+        onSuccess;
+      } else {
+        _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
+        changeStep(1);
+      }
     },
     error: function(response) {
       let text = gettext('Error occurred while saving. Please try again.');
@@ -436,6 +443,28 @@ function saveAvatar() {
       _alert({ message: text}, 'error');
     }
   });
+}
+
+function uploadAvatars() {
+
+  saveAvatar(() => {
+    _alert({ message: gettext('The avatar has been saved to GitCoin profile. Now upload to 3Box...') }, 'success');
+    if (window.syncTo3Box) {
+      syncTo3Box({
+        onLoading,
+        models: ['custom avatar']
+      });
+    }
+  });
+
+  const onLoading = (loading) => {
+    if (loading) {
+      loading_button($('#save-avatar'));
+      $('#do-later').attr('disabled', 'disabled');
+    } else {
+      unloading_button($('#save-avatar'));
+    }
+  };
 }
 
 changeSection('Head');

@@ -17,20 +17,15 @@
 {% endcomment %}
 {% load i18n static matches %}
 
-<div class="d-flex order-0 order-md-last">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  {% if user.is_authenticated %}
-    {% include 'shared/chat_nav.html' %}
-    {% include 'shared/notifications.html' %}
-  {% endif %}
-</div>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
 <div class="collapse navbar-collapse order-1" id="navbarSupportedContent">
+
   <nav class="navbar-nav mx-auto gc-megamenu">
-    <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Home" %}</a>
-    <a class="nav-link {% if '/chat' in request.path %}selected{% endif %} interior" href="/chat">{% trans "Chat" %}</a>
+    <a class="nav-link {% if is_townsquare %} selected {% endif %} interior" href="/townsquare">{% trans "Town Square" %}</a>
+
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownProducts" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -38,11 +33,11 @@
       </a>
       <div class="dropdown-menu shadow-lg" aria-labelledby="dropdownProducts">
         <div class="gc-megamenu-content">
-          <div class="row">
+          <div class="row justify-content-center">
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/bount' in request.path or '/explorer' in request.path %}gc-megamenu-active{% endif %}">
               <li>
-                <a class="text-reset" href="{% url "funder_bounties" %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/bounties_symbol_dark.svg" %}" alt="Bounties" height="48">
+                <a class="text-reset" href="{% url 'funder_bounties' %}">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/bounties-symbol-pos.svg' %}" alt="Bounties" height="48">
                   <b class="gc-megamenu-title">{% trans "Bounties" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Development resources at your finger tips" %}</p>
@@ -64,7 +59,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/hackathon' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'get_hackathons' %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/hackathons_symbol_dark.svg" %}" alt="Hackathons" height="48">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/hackathons-symbol-pos.svg' %}" alt="Hackathons" height="48">
                   <b class="gc-megamenu-title">{% trans "Hackathons" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Build with the coolest Web3 projects" %}</p>
@@ -80,7 +75,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/grants' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'grants:grants' %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/grants_symbol_dark.svg" %}" alt="Grants" height="48">
+                  <img class="mw-100 logo-static p-2" src="{% static "v2/images/top-bar/grants-symbol-pos.svg" %}" alt="Grants" height="48">
                   <b class="gc-megamenu-title">{% trans "Grants" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Recurring funding for Open Source" %}</p>
@@ -98,29 +93,11 @@
                 <a class="dropdown-item dropdown-item-small" href="{% url 'grants:quickstart' %}">{% trans "About Grants" %}</a>
               </li>
             </ul>
-            <ul class="col-md-4 col-lg-2 list-unstyled">
-              <li>
-                <a class="text-reset" href="https://codefund.app/">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/codefund_symbol_dark.svg" %}" alt="Codefund" height="48">
-                  <b class="gc-megamenu-title">{% trans "Codefund" %}</b>
-                </a>
-                <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Ethical ads to power Open Source" %}</p>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io/advertisers">{% trans "Advertise With Us" %}</a>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io/publishers">{% trans "Become a Publisher" %}</a>
-              </li>
-              <li>
-                <a class="dropdown-item dropdown-item-small" href="https://codefund.io">{% trans "About Codefund" %}</a>
-              </li>
-            </ul>
 
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/quests' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'quests_index' %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/quests_symbol_dark.svg" %}" alt="Quests" height="48">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/quests-symbol-pos.svg' %}" alt="Quests" height="48">
                   <b class="gc-megamenu-title">{% trans "Quests" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Learn about Web3 & earn rewards" %}</p>
@@ -136,7 +113,7 @@
             <ul class="col-md-4 col-lg-2 list-unstyled {% if '/kudos' in request.path %}gc-megamenu-active{% endif %}">
               <li>
                 <a class="text-reset" href="{% url 'kudos_main' %}">
-                  <img class="mw-100 logo-static" src="{% static "v2/images/top-bar/kudos_symbol_dark.svg" %}" alt="Kudos" height="48">
+                  <img class="mw-100 logo-static p-2" src="{% static 'v2/images/top-bar/kudos-symbol-pos.svg' %}" alt="Kudos" height="48">
                   <b class="gc-megamenu-title">{% trans "Kudos" %}</b>
                 </a>
                 <p class="px-2 m-0 mb-2 text-wrap font-smaller-2">{% trans "Show appreciation for each other" %}</p>
@@ -159,15 +136,15 @@
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCommunity" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% trans "Community" %}
+        {% trans "Tribes" %}
       </a>
       <div class="dropdown-menu shadow-lg" id="" aria-labelledby="dropdownCommunity">
         <div class="gc-megamenu-content">
           <div class="row">
             <ul class="col-md-3 col-lg-2 list-unstyled offset-lg-2">
               <li>
-                <a class="dropdown-item" href="{% url "landing_chat" %}">
-                  {% trans "Chat" %}
+                <a class="dropdown-item" href="{% url "tribes_directory" %}">
+                  {% trans "Browse Tribes" %}
                 </a>
               </li>
               <li>
@@ -176,10 +153,11 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url "verified" %}">
-                  {% trans "Verify Profile" %}
+                <a class="dropdown-item" href="{% url "users_directory" %}">
+                  {% trans "Users Directory" %}
                 </a>
               </li>
+              <li><a href="{% url 'tribes' %}" class="font-smaller-2 pl-4">Interested in Your Own Tribe?</a></li>
             </ul>
             <ul class="col-md-3 col-lg-2 list-unstyled">
               <li>
@@ -188,13 +166,13 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url "users_directory" %}">
-                  {% trans "Users Explorer" %}
+                <a class="dropdown-item" href="{% url "verified" %}">
+                  {% trans "Verify Profile" %}
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url "users_directory" %}?persona=tribe">
-                  {% trans "Org Tribes" %}
+                <a class="dropdown-item" href="https://gitcoin.co/wiki/wiki-code-conduct/">
+                  {% trans "Code of Conduct" %}
                 </a>
               </li>
             </ul>
@@ -209,8 +187,8 @@
                     </a>
                   </div>
                   <div class="carousel-item">
-                    <h5>Find your Tribe</h5>
-                    <p>Follow the orgs you like more with <a href="{% url 'tribes' %}">tribes</a> and build relationships and meaningful projects.</p>
+                    <h5>Find a Tribe</h5>
+                    <p>Discover great web3 organizations, work on meaningful projects and build relationships with like minded people. <a href="{% url 'users_directory' %}?persona=tribe">Browse Tribes</a></p>
                     <a class="btn btn-gc-blue" href="{% url 'users_directory' %}?persona=tribe">
                       {% trans "Find a Tribe" %}
                     </a>
@@ -229,7 +207,6 @@
         </div>
       </div>
     </div>
-
     <div class="nav-item dropdown interior gc-megamenu-fw">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownCompany" role="button"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -258,6 +235,11 @@
               <li>
                 <a class="dropdown-item" href="{% url "mission" %}">
                   {% trans "Mission" %}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/wiki">
+                  {% trans "Wiki" %}
                 </a>
               </li>
             </ul>
@@ -291,7 +273,7 @@
                   <img src="{{post.jetpack_featured_media_url}}" width="100" alt="" class="mw-100">
                 </div>
                 <a class="media-body text-reset" href="{{post.link}}">
-                  <b>{{post.title.rendered}}</b>
+                  <b>{{post.title.rendered | safe}}</b>
                   {{post.excerpt.rendered |truncatechars_html:150|safe}}
                 </a>
               </li>
@@ -301,7 +283,22 @@
         </div>
       </div>
     </div>
+
+    {% if is_townsquare %}
+     <div class="nav-item interior ">
+       <a href="{% url "tribes" %}" class="gc-text-yellow nav-link selected">Looking for developers?</a>
+     </div>
+    {% endif %}
   </nav>
+  <div class="d-flex justify-content-md-around justify-content-around justify-content-md-end">
+    {% if user.is_authenticated %}
+    {% include 'shared/chat_nav.html' %}
+    {% include 'shared/notifications.html' %}
+    {% include 'shared/search.html' %}
+    {% include 'shared/cart_nav.html' %}
+    {% endif %}
+  </div>
+
   <nav class="navbar-nav mr-3">
     {% include 'shared/nav_auth.html' with source='authed' %}
   </nav>

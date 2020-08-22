@@ -11,11 +11,17 @@ const normalizeUsername = function(username) {
   return username;
 };
 
+needWalletConnection();
+
+window.addEventListener('dataWalletReady', function(e) {
+  update_registry(selectedAccount);
+}, false);
+
 $(document).ready(function($) {
 
   $(document).on('blur', '#amount', function(event) {
     event.preventDefault();
-    update_registry();
+    update_registry(selectedAccount);
   });
 
   $(document).on('input', '.input_amount', function(event) {
@@ -33,7 +39,7 @@ $(document).ready(function($) {
 
       $(this).parents('tr').find('.amount').text(amount);
     }
-    update_registry();
+    update_registry(selectedAccount);
   });
 
 
@@ -53,7 +59,7 @@ $(document).ready(function($) {
 
       $(this).parents('tr').find('.input_amount').text(percentage);
     }
-    update_registry();
+    update_registry(selectedAccount);
   });
 
   $(document).on('click', '.remove', function(event) {
@@ -61,7 +67,7 @@ $(document).ready(function($) {
     $(this).parents('.new-user').next('tr').remove();
     $(this).parents('.new-user').remove();
     $(this).focus();
-    update_registry();
+    update_registry(selectedAccount);
   });
 
   var sendTransaction = function(i) {
@@ -80,7 +86,7 @@ $(document).ready(function($) {
 
     // cancel bounty
     if (transaction['type'] == 'cancel') {
-      var callback = function(error, txid) {
+      var callback = function(txid, error) {
         indicateMetamaskPopup(true);
         if (error) {
           _alert({ message: error }, 'error');
@@ -96,21 +102,27 @@ $(document).ready(function($) {
           localStorage[$('#issueURL').text()] = JSON.stringify({
             timestamp: timestamp(),
             dataHash: null,
-            issuer: web3.eth.coinbase,
+            issuer: selectedAccount,
             txid: txid
           });
         }
       };
-      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-      var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
+
+      var bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
       indicateMetamaskPopup();
-      bounty.killBounty(
-        $('#standard_bounties_id').val(),
-        gas_dict,
-        {from: web3.eth.accounts[0]},
-        callback
-      );
+
+      bounty.methods.killBounty(
+        $('#standard_bounties_id').val()
+      ).send({
+        from: selectedAccount
+      }).then((result) => {
+        callback(result);
+      }).catch(err => {
+        callback(undefined, err);
+        console.log(err);
+      });
+
 
     } else {
       const email = '';
@@ -159,7 +171,12 @@ $(document).ready(function($) {
   $('#acceptBounty').on('click', function(e) {
     e.preventDefault();
     getFulfillers();
-    update_registry();
+    update_registry(selectedAccount);
+
+    if (!provider) {
+      onConnect();
+      return false;
+    }
 
     if (!$('#terms').is(':checked')) {
       _alert('Please accept the TOS.', 'error');
@@ -184,7 +201,6 @@ $(document).ready(function($) {
 
   $('document').ready(function() {
     add_row();
-    update_registry();
 
     $('.add_another').on('click', function() {
       add_row();
@@ -448,5 +464,5 @@ $(document).on('click', '.user-fulfiller', function(event) {
 
 
 $('input[type=radio][name=pay_with]').on('change', event => {
-  update_registry();
+  update_registry(selectedAccount);
 });

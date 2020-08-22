@@ -22,12 +22,13 @@
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/grants/detail.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/grants/milestones.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
     <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/grants/cart.css" %}">
     <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
@@ -48,17 +49,25 @@
     </div>
     {% endif %}
 
-    <div id="grants-details">
-
-      <div class="row">
-        <div class="col-12 col-md-5 col-xl-4 px-lg-5 pt-lg-5 summary-container bg-white">
-          {% include 'grants/detail/info.html' %}
+    <div class="row">
+      <div id="grants-details" class="col-12">
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
+              {% include 'grants/detail/info.html' %}
+          </div>
+          <div class="col-12 col-md-6 col-lg-4 px-5 px-md-0">
+            {% include 'grants/detail/funding.html' %}
+          </div>
         </div>
-        <div class="detail col-12 col-md-7 col-xl-8 pt-2 pt-lg-5 pb-4 px-5">
-          {% include 'grants/detail/tabs.html' %}
+        <div class="row">
+          <div class="col-12 px-5">
+            {% include 'grants/detail/tabs.html' %}
+          </div>
         </div>
       </div>
-
+      <div id="side-cart" class="grant-side-cart px-5 px-md-4 pb-5 pb-md-0 pt-md-0" style="display: none;">
+        {% include 'grants/detail/side-cart.html' %}
+      </div>
     </div>
     <input type="hidden" id="contract_version" name="contract_version" value="{{ grant.contract_version }}"/>
     {% include 'shared/current_profile.html' %}
@@ -72,8 +81,10 @@
   {% include 'shared/activity_scripts.html' %}
   <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   <script src="{% static "v2/js/status.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/pages/tabs.js" %}"></script>
   <script src="{% static "v2/js/grants/index.js" %}"></script>
+  <script src="{% static "v2/js/grants/funding.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSplitter.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract0.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract1.js" %}"></script>
@@ -98,4 +109,12 @@
       )
     );
   </script>
+  <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $("img").unveil();
+  });
+
+  </script>
+
 </html>

@@ -395,17 +395,23 @@ var callbacks = {
     return [ label, response ];
   },
   'started_owners_username': function(key, val, result) {
-    var started = [];
+    let started = [];
+    let uniqueness = [];
 
     if (result.interested) {
-      var interested = result.interested;
+      let interested = result.interested;
 
       interested.forEach(function(_interested, position) {
-        var name = (position == interested.length - 1) ?
+        const name = (position == interested.length - 1) ?
           _interested.profile.handle : _interested.profile.handle.concat(',');
 
-        if (!_interested.pending)
+        if (
+          !_interested.pending &&
+          uniqueness.indexOf(_interested.profile.handle) == -1
+        ) {
+          uniqueness.push(_interested.profile.handle);
           started.push(profileHtml(_interested.profile.handle, name));
+        }
       });
       if (started.length == 0)
         started.push('<i class="fas fa-minus"></i>');
@@ -413,16 +419,20 @@ var callbacks = {
     return [ 'started_owners_username', started ];
   },
   'submitted_owners_username': function(key, val, result) {
-    var accepted = [];
+    let accepted = [];
+    let uniqueness = [];
 
     if (result.fulfillments) {
-      var submitted = result.fulfillments;
+      let submitted = result.fulfillments;
 
       submitted.forEach(function(_submitted, position) {
-        var name = (position == submitted.length - 1) ?
+        const name = (position == submitted.length - 1) ?
           _submitted.fulfiller_github_username : _submitted.fulfiller_github_username.concat(',');
 
-        accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
+        if (uniqueness.indexOf(_submitted.profile.handle) == -1) {
+          uniqueness.push(_submitted.profile.handle);
+          accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
+        }
       });
       if (accepted.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
@@ -431,14 +441,14 @@ var callbacks = {
     return [ 'submitted_owners_username', accepted ];
   },
   'fulfilled_owners_username': function(key, val, result) {
-    var accepted = [];
+    let accepted = [];
 
     if (result.paid) {
       if (result.paid.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
       } else {
         result.paid.forEach((github_username, position) => {
-          var name = (position == result.paid.length - 1) ?
+          const name = (position == result.paid.length - 1) ?
             github_username : github_username.concat(',');
 
           accepted.push(profileHtml(github_username, name));
@@ -521,6 +531,7 @@ var update_title = function() {
 };
 
 var showWarningMessage = function(txid) {
+  console.log(txid);
   const secondsBetweenQuoteChanges = 30;
   let interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 
@@ -545,45 +556,45 @@ var showWarningMessage = function(txid) {
 };
 
 // refresh page if metamask changes
-waitforWeb3(function() {
-  setInterval(function() {
-    if (document.web3Changed) {
-      return;
-    }
-    reloadCbAddress();
+// waitforWeb3(function() {
+//   setInterval(function() {
+//     if (document.web3Changed) {
+//       return;
+//     }
+//     reloadCbAddress();
 
-    if (typeof document.lastWeb3Network == 'undefined') {
-      document.lastWeb3Network = document.web3network;
-      return;
-    }
+//     if (typeof document.lastWeb3Network == 'undefined') {
+//       document.lastWeb3Network = document.web3network;
+//       return;
+//     }
 
-    if (typeof document.lastCoinbase == 'undefined') {
+//     if (typeof document.lastCoinbase == 'undefined') {
 
-      try {
-        // invoke infura synchronous call, if it fails metamask is locked
-        document.lastCoinbase = web3.eth.coinbase;
-      } catch (error) {
-        document.lastCoinbase = null;
-        // catch error so sentry doesn't alert on metamask call failure
-        console.log('web3.eth.coinbase could not be loaded');
-      }
-      return;
-    }
+//       web3.eth.getCoinbase(function(error, coinbase) {
+//         if (error) {
+//           console.log('web3.eth.coinbase could not be loaded');
+//           document.lastCoinbase = null;
+//           return;
+//         }
+//         document.lastCoinbase = coinbase;
+//       });
+//       return;
+//     }
 
-    if (web3 && (document.lastCoinbase != cb_address) ||
-      (document.lastWeb3Network != document.web3network)) {
-      _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
-      document.location.reload();
-      document.web3Changed = true;
-    }
+//     if (web3 && (document.lastCoinbase != cb_address) ||
+//       (document.lastWeb3Network != document.web3network)) {
+//       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
+//       document.location.reload();
+//       document.web3Changed = true;
+//     }
 
-  }, 500);
-});
+//   }, 500);
+// });
 
 var wait_for_tx_to_mine_and_then_ping_server = function() {
   console.log('checking for updates');
   if (typeof document.pendingIssueMetadata != 'undefined') {
-    var txid = document.pendingIssueMetadata['txid'];
+    var txid = document.pendingIssueMetadata.txid.transactionHash;
 
     console.log('waiting for web3 to be available');
     callFunctionWhenweb3Available(function() {
@@ -684,23 +695,65 @@ var attach_override_status = function() {
   });
 };
 
-var show_interest_modal = function() {
-  var self = this;
-  var modals = $('#modalInterest');
+const submitInterest = (bounty, msg, self, onSuccess) => {
+  add_interest(bounty, {
+    issue_message: msg
+  }).then(success => {
+    if (success) {
+      $(self).attr('href', '/uninterested');
+      $(self).find('span').text(gettext('Stop Work'));
+      $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
+
+
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+  }).catch((error) => {
+    if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
+      return;
+    throw error;
+  });
+};
+
+const show_interest_modal = () => {
+  let self = this;
+  let modals = $('#modalInterest');
   let modalBody = $('#modalInterest .modal-content');
   let modalUrl = `/interest/modal?redirect=${window.location.pathname}&pk=${document.result['pk']}`;
 
   modals.on('show.bs.modal', function() {
     modalBody.load(modalUrl, ()=> {
-      if (document.result['repo_type'] === 'private') {
-        document.result.unsigned_nda ? $('.nda-download-link').attr('href', document.result.unsigned_nda.doc) : $('#nda-upload').hide();
-      }
-
       let actionPlanForm = $('#action_plan');
-      let discord_username = $('#discord_username');
       let issueMessage = $('#issue_message');
+      let data = $('.team-users').data('initial') ? $('.team-users').data('initial').split(', ') : [];
+      let projectForm = $('#projectForm');
 
+      $('#looking-members').on('click', function() {
+        $('.looking-members').toggle();
+      });
+      userSearch('.team-users', false, '', data, true, false);
       issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
+
+      if (document.result.event) {
+        $(document).on('change', '#project_logo', function() {
+          previewFile($(this));
+        });
+        projectForm.on('submit', function(e) {
+          e.preventDefault();
+          let elements = $(this)[0];
+          let logo = elements['logo'].files[0];
+          let data = $(this).serializeArray();
+          let summary = elements['summary'].value;
+
+          submitInterest(document.result['pk'], summary, self, () => {
+            submitProject(logo, data);
+            modals.bootstrapModal('hide');
+          });
+        });
+
+        return;
+      }
 
       actionPlanForm.on('submit', function(event) {
         event.preventDefault();
@@ -712,70 +765,9 @@ var show_interest_modal = function() {
           return false;
         }
 
-        const issueNDA = document.result['repo_type'] === 'private' ? $('#issueNDA')[0].files : undefined;
-
-        if (issueNDA && typeof issueNDA[0] !== 'undefined') {
-
-          const formData = new FormData();
-
-          formData.append('docs', issueNDA[0]);
-          formData.append('doc_type', 'signed_nda');
-
-          const ndaSend = {
-            url: '/api/v0.1/bountydocument',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            dataType: 'json',
-            contentType: false
-          };
-
-          $.ajax(ndaSend).done(function(response) {
-            if (response.status == 200) {
-              _alert(response.message, 'info');
-              add_interest(document.result['pk'], {
-                issue_message: msg,
-                signed_nda: response.bounty_doc_id,
-                discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-              }).then(success => {
-                if (success) {
-                  $(self).attr('href', '/uninterested');
-                  $(self).find('span').text(gettext('Stop Work'));
-                  $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-                  modals.bootstrapModal('hide');
-                }
-              }).catch((error) => {
-                if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-                  return;
-                throw error;
-              });
-            } else {
-              _alert(response.message, 'error');
-            }
-          }).fail(function(error) {
-            _alert(error, 'error');
-          });
-        } else {
-          add_interest(document.result['pk'], {
-            issue_message: msg,
-            discord_username: $('#discord_username').length ? $('#discord_username').val() : null
-          }).then(success => {
-            if (success) {
-              $(self).attr('href', '/uninterested');
-              $(self).find('span').text(gettext('Stop Work'));
-              $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-              modals.bootstrapModal('hide');
-              if (document.result.event) {
-                projectModal(document.result.pk);
-              }
-            }
-          }).catch((error) => {
-            if (error.responseJSON.error === 'You may only work on max of 3 issues at once.')
-              return;
-            throw error;
-          });
-        }
-
+        submitInterest(document.result['pk'], msg, self, () => {
+          modals.bootstrapModal('hide');
+        });
       });
 
     });
@@ -783,45 +775,6 @@ var show_interest_modal = function() {
   modals.bootstrapModal('show');
 };
 
-const repoInstructions = () => {
-  let linkToSettings = `https://github.com/${document.result.github_org_name}/${document.result.github_repo_name}/settings/collaboration`;
-
-
-  let modalTmp = `
-  <div class="modal fade g-modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body text-center center-block w-75">
-          <h5>
-            You have successfully approved the contributor to work on your bounty!
-          </h5>
-          <div>
-            <img src="${document.contxt.STATIC_URL}v2/images/repo-instructions.png" class="mw-100 my-4" alt="">
-          </div>
-          <p class="mb-4">Now you need to invite the contributor to your private repo on GitHub You can find it under <b>GitHub repository > Settings > Collaborators</b></p>
-          <div>
-            <img src="${document.contxt.STATIC_URL}v2/images/repo-settings.png" class="mw-100" alt="">
-          </div>
-        </div>
-        <div class="modal-footer justify-content-center">
-          <a href="${linkToSettings}" target="_blank" class="button button--primary"><i class="fab fa-github"></i> Go to Repo Settings</a>
-        </div>
-      </div>
-    </div>
-  </div>`;
-
-  $(modalTmp).bootstrapModal('show');
-
-  $(document, modalTmp).on('hidden.bs.modal', function(e) {
-    $('#exampleModalCenter').remove();
-    $(modalTmp).bootstrapModal('dispose');
-  });
-};
 
 var set_extended_time_html = function(extendedDuration) {
   extendedDuration = extendedDuration.set({hour: 0, minute: 0, second: 0, millisecond: 0});
@@ -1267,8 +1220,7 @@ var do_actions = function(result) {
     const _entry = {
       enabled: true,
       href: github_url,
-      text: (result['repo_type'] === 'private' ? '<i class="fas fa-lock mr-2"></i> ' +
-        gettext('Private Repo') : '<i class="fab fa-github mr-2"></i>' + gettext('View On Github')),
+      text: '<i class="fab fa-github mr-2"></i>' + gettext('View On Github'),
       parent: 'github_actions',
       title: gettext('View issue details and comments on Github')
     };
@@ -1457,9 +1409,6 @@ var pull_bounty_from_api = function() {
           projectModal(document.result.pk);
         }
 
-        if (typeof promptPrivateInstructions !== 'undefined' && result.repo_type === 'private') {
-          repoInstructions();
-        }
         return;
       }
     }
@@ -1527,13 +1476,6 @@ const process_activities = function(result, bounty_activities) {
         }
         return false;
       }) : false;
-    const has_signed_nda = result.interested.length ?
-      result.interested.find(interest => {
-        if (interest.profile.handle === _activity.profile.handle && interest.signed_nda) {
-          return interest.signed_nda.doc;
-        }
-        return false;
-      }) : false;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
@@ -1558,6 +1500,9 @@ const process_activities = function(result, bounty_activities) {
 
     if (type === 'new_kudos') {
       to_username = meta.to_username.slice(1);
+      if (!_activity.kudos) {
+        return;
+      }
       const kudos_img = _activity.kudos.image;
 
       kudos = kudos_img.startsWith('v2/images/') ? '/static/'.concat(kudos_img) : kudos_img;
@@ -1584,7 +1529,6 @@ const process_activities = function(result, bounty_activities) {
       age: timeDifference(now, new Date(_activity.created)),
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
-      signed_nda: has_signed_nda,
       issue_message: issue_message,
       uninterest_possible: uninterest_possible,
       slash_possible: slash_possible,
@@ -1793,7 +1737,7 @@ var main = function() {
 
         if (isWithinAcceptableTimeRange) {
           // update from web3
-          const txid = document.pendingIssueMetadata['txid'];
+          const txid = document.pendingIssueMetadata.txid.transactionHash;
 
           showWarningMessage(txid);
           wait_for_tx_to_mine_and_then_ping_server();

@@ -53,9 +53,9 @@
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    {% include 'grants/nav.html' %}
     <div class="container-fluid header dash">
-      {% include 'shared/top_nav.html' with class='d-md-flex' %}
-      {% include 'grants/nav.html' %}
       {% include 'shared/minihero.html' with h1='Getting Started with Grants' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
     </div>
 

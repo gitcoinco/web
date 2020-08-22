@@ -12,7 +12,7 @@ djangorestframework==3.9.1
 gitterpy
 gunicorn
 matplotlib
-markdown==2.6.11
+Markdown==3.2.1
 reportlab==3.5.6
 requests
 requests_oauthlib
@@ -32,7 +32,7 @@ eth-abi==1.1.1
 mailchimp3==3.0.7
 django_chartit==0.2.9
 MechanicalSoup==0.9.0.post4
-pyshorteners
+pyshorteners==0.6.1
 statistics
 django-email-obfuscator
 cytoolz==0.9.0
@@ -48,7 +48,7 @@ geoip2==2.8.0
 django-silk==2.0.0
 django-extensions==2.2.1
 ipdb==0.11
-django-autotranslate==1.1.0
+django-autotranslate==1.1.1
 svgutils==0.3.0
 watchdog==0.9.0
 Werkzeug[watchdog]==0.15.5
@@ -93,4 +93,9 @@ redis==3.3.11
 pandas
 channels=2.4.0
 channels_redis
-
+wiki
+django-bulk-update
+elasticsearch
+pdfrw
+django-admin-sortable2==0.7.6
+twilio

@@ -132,7 +132,6 @@ Advanced
 * [Set your OSS repos monetary policy](https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34)
 * [Payout Several Contribs at Once](https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd)
 * [Crowdfund Bounties](https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d)
-* [Make a Gitcoin ENS Name](https://medium.com/gitcoin/personalize-your-own-gitcoin-ens-name-f8e5d7438e3e)
 
 Background
 
@@ -186,7 +185,7 @@ Chain of Custody
 
 Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason.
 
-We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
+We may introduce arbitration at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
 
 #### Showing Support to Individuals
 

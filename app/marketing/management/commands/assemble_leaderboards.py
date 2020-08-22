@@ -30,7 +30,7 @@ from marketing.models import LeaderboardRank
 
 # Constants
 IGNORE_PAYERS = []
-IGNORE_EARNERS = ['owocki']  # sometimes owocki pays to himself. what a jerk!
+IGNORE_EARNERS = ['owocki', 'trufflesuite', 'thegivingblock', 'blockscout' ]
 
 ALL = 'all'
 
@@ -95,18 +95,21 @@ def profile_to_location(handle):
 
 
 def profile_to_location_helper(handle):
-
-    profiles = Profile.objects.filter(handle__iexact=handle)
+    if not handle:
+        return []
+    
+    profiles = Profile.objects.filter(handle=handle.lower())
     if handle and profiles.exists():
         profile = profiles.first()
-        return profile.locations
+        if len(profile.locations):
+            return [profile.locations[0]]
     return []
 
 
 def bounty_to_location(bounty):
     locations = profile_to_location(bounty.bounty_owner_github_username)
     fulfiller_usernames = list(
-        bounty.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
+        bounty.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True)
     )
     for username in fulfiller_usernames:
         locations = locations + profile_to_location(username)
@@ -232,7 +235,7 @@ def add_element(key, index_term, amount):
 
 
 def sum_bounty_helper(b, time, index_term, val_usd):
-    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
+    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('profile__handle', flat=True))
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
     if index_term == b.bounty_owner_github_username and index_term not in IGNORE_PAYERS:
@@ -274,7 +277,7 @@ def sum_bounties(b, index_terms):
 def sum_tip_helper(t, time, index_term, val_usd):
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if t.username == index_term:
+    if t.username == index_term and index_term not in IGNORE_EARNERS:
         add_element(f'{time}_{EARNERS}', index_term, val_usd)
     if t.from_username == index_term:
         add_element(f'{time}_{PAYERS}', index_term, val_usd)
@@ -357,7 +360,7 @@ def sum_grants(t, index_terms):
 def sum_grant_helper(gc, time, index_term, val_usd):
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    if gc.subscription.grant.admin_profile.handle.lower() == index_term:
+    if gc.subscription.grant.admin_profile.handle.lower() == index_term and index_term not in IGNORE_EARNERS:
         add_element(f'{time}_{EARNERS}', index_term, val_usd)
     if gc.subscription.contributor_profile.handle.lower() == index_term:
         add_element(f'{time}_{PAYERS}', index_term, val_usd)
@@ -376,7 +379,7 @@ def sum_grant_helper(gc, time, index_term, val_usd):
 def should_suppress_leaderboard(handle):
     if not handle:
         return True
-    profiles = Profile.objects.filter(handle__iexact=handle)
+    profiles = Profile.objects.filter(handle=handle.lower())
     if profiles.exists():
         profile = profiles.first()
         if profile.suppress_leaderboard or profile.hide_profile:
@@ -399,6 +402,24 @@ def do_leaderboard_feed():
             if lr.profile:
                 Activity.objects.create(profile=lr.profile, activity_type='leaderboard_rank', metadata=metadata)
 
+    profile = Profile.objects.filter(handle='gitcoinbot').first()
+    for _type in [PAYERS, EARNERS, ORGS, CITIES, TOKENS]:
+        url = f'/leaderboard/{_type}'
+        what = _type.title() if _type != PAYERS else "Funders"
+        key = f'{WEEKLY}_{_type}'
+        lrs = LeaderboardRank.objects.active().filter(leaderboard=key, rank__lte=max_rank, product='all').order_by('rank')[0:10]
+        copy = f"<a href={url}>Weekly {what} Leaderboard</a>:<BR>"
+        counter = 0
+        for lr in lrs:
+            profile_link = f"<a href=/{lr.profile}>@{lr.profile}</a>" if _type not in [CITIES, TOKENS] else f"<strong>{lr.github_username}</strong>"
+            copy += f" - {profile_link} was ranked <strong>#{lr.rank}</strong>. <BR>"
+        metadata = {
+            'copy': copy,
+        }
+        key = f'{WEEKLY}_{_type}'
+        Activity.objects.create(profile=profile, activity_type='consolidated_leaderboard_rank', metadata=metadata)
+
+
 
 def do_leaderboard():
     global ranks
@@ -416,8 +437,12 @@ def do_leaderboard():
             grants = Contribution.objects.filter(subscription__network='mainnet')
             # iterate
             for gc in grants:
-                index_terms = grant_index_terms(gc)
-                sum_grants(gc, index_terms)
+                try:
+                    index_terms = grant_index_terms(gc)
+                    sum_grants(gc, index_terms)
+                except Exception as e:
+                    print(gc.id)
+                    print(e)
 
         if product in ['all', 'bounties']:
             # get bounties
@@ -448,6 +473,7 @@ def do_leaderboard():
                 sum_kudos(kt)
 
         # set old LR as inactive
+        created_on = timezone.now()
         with transaction.atomic():
             lrs = LeaderboardRank.objects.active().filter(product=product)
             lrs.update(active=False)
@@ -465,14 +491,15 @@ def do_leaderboard():
                         'leaderboard': key,
                         'github_username': index_term,
                         'product': product,
+                        'created_on': created_on,
                     }
 
                     try:
-                        profile = Profile.objects.get(handle__iexact=index_term)
+                        profile = Profile.objects.get(handle=index_term.lower())
                         lbr_kwargs['profile'] = profile
                         lbr_kwargs['tech_keywords'] = profile.keywords
                     except Profile.MultipleObjectsReturned:
-                        profile = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                        profile = Profile.objects.filter(handle=index_term.lower()).latest('id')
                         lbr_kwargs['profile'] = profile
                         lbr_kwargs['tech_keywords'] = profile.keywords
                         print(f'Multiple profiles found for username: {index_term}')

@@ -17,7 +17,12 @@ $(document).ready(function() {
     });
   }
 
-  $('.copy_me').click(function() {
+  // TODO: MOVE TO GRANTS shared
+  if (typeof CartData != 'undefined') {
+    applyCartMenuStyles();
+  }
+
+  $('body').on('click', '.copy_me', function() {
     $(this).focus();
     $(this).select();
     document.execCommand('copy');
@@ -187,6 +192,8 @@ $(document).ready(function() {
   const setDataFormat = function(data) {
     let str = 'in ';
 
+    if (data.months() > 0)
+      str += data.months() + 'mon ';
     if (data.days() > 0)
       str += data.days() + 'd ';
     if (data.hours() > 0)
@@ -231,21 +238,21 @@ $(document).ready(function() {
     $(event.target).parents('.faq_parent').find('.answer').toggleClass('show');
   });
 
-  $('.accordion').on('click', (event) => {
-    const element = $(event.target);
 
-    element.toggleClass('active');
-    let panel = element[0].nextElementSibling;
+  $('body').on('click', '.accordion', event => {
+    const element = $(event.target);
+    const panel = element[0].nextElementSibling;
 
     if (panel) {
-      if (panel.style.maxHeight) {
-        panel.style.maxHeight = null;
+      if (element.hasClass('active')) {
+        panel.style.maxHeight = 0;
         panel.style.marginBottom = 0 + 'px';
       } else {
         panel.style.maxHeight = panel.scrollHeight + 'px';
         panel.style.marginBottom = 10 + 'px';
       }
     }
+    element.toggleClass('active');
   });
   attach_close_button();
 });
@@ -300,6 +307,12 @@ const _alert = function(msg, _class, remove_after_ms) {
   };
 
   $('body').append(html);
+
+  $(document).keydown(function(e) {
+    if (e.keyCode == 27) {
+      $(`#${id}`).remove();
+    }
+  });
 
   if (typeof remove_after_ms != 'undefined') {
     setTimeout(function() {
@@ -438,12 +451,21 @@ const gitcoinUpdates = () => {
   });
 
 };
-
 // carousel/collabs/... inside menu
+
 $(document).on('click', '.gc-megamenu .dropdown-menu', function(e) {
   e.stopPropagation();
 });
 
-if (document.contxt.chat_unread_messages) {
-  $('#chat-notification-dot').addClass('notification__dot__active');
+function applyCartMenuStyles() {
+  let dot = $('#cart-notification-dot');
+
+  if (CartData.hasItems()) {
+    dot.addClass('notification__dot_active');
+  } else {
+    dot.removeClass('notification__dot_active');
+    if (document.location.href.indexOf('/grants') == -1) {
+      $('#cart-nav').addClass('hidden');
+    }
+  }
 }

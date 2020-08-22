@@ -1,6 +1,6 @@
 from django.db import connection, transaction
 
-from app.redis_service import RedisService
+from app.services import RedisService
 from cacheops import invalidate_obj
 from celery import app
 from celery.utils.log import get_task_logger
@@ -56,23 +56,6 @@ def increment_offer_view_counts(self, pks, retry=False):
 
 
 @app.shared_task(bind=True, max_retries=3)
-def refresh_activities(self, pks, retry=False):
-    """
-    :param self:
-    :param pks:
-    :return:
-    """
-    with redis.lock("tasks:refresh_activities", timeout=LOCK_TIMEOUT):
-        if len(pks) == 0:
-            return
-        print(pks)
-        for pk in pks:
-            activity = Activity.objects.get(pk=pk)
-            activity.cached_view_props = activity.generate_view_props_cache()
-            activity.save()
-
-
-@app.shared_task(bind=True, max_retries=3)
 def send_comment_email(self, pk, retry=False):
     """
     :param self:
@@ -86,3 +69,18 @@ def send_comment_email(self, pk, retry=False):
         instance = Comment.objects.get(pk=pk)
         comment_email(instance)
         print("SENT EMAIL")
+
+
+
+@app.shared_task(bind=True, max_retries=3)
+def calculate_clr_match(self, retry=False):
+    """
+    :param self:
+    :return:
+    """
+    with redis.lock("tasks:calculate_clr_match", timeout=LOCK_TIMEOUT):
+
+        from townsquare.models import MatchRound
+        mr = MatchRound.objects.current().first()
+        if mr:
+            mr.process()

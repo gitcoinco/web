@@ -127,6 +127,19 @@ Check out the [Docker Compose CLI Reference](https://docs.docker.com/compose/ref
 
 You will need to edit the `app/.env` file with your local environment variables. Look for config items that are marked `# required`.
 
+## A note on performance
+
+The Gitcoin docker containers contain serval containers for many purposes (web development, task pipeline dev, ganache for blockchain development). Because of this, the whole package can take several GB of RAM.   If all you want to do is work on the site, and you experience slowness while running Gitcoin, we recommend running these commands
+
+> docker stop web_worker_1; docker stop web_testrpc_1; docker stop web_ipfs_1; docker stop web_chat_1
+
+and adding this line to your .env file:
+
+> SUPRESS_DEBUG_TOOLBAR=1
+
+If you run `docker-compose restart web` after doing these things, you should find the performance footprint to be less.
+
+
 ## Integration Setup (recommended)
 
 If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
@@ -216,6 +229,17 @@ make fresh # docker-compose down -v; docker-compose up -d --build;
 ```shell
 make superuser # docker-compose exec web python3 app/manage.py createsuperuser
 open http://localhost:8000/_administration
+```
+
+#### Docker for-mac troubleshooting
+
+
+`Q: When building with docker on my mac, CPU usage is high and device is overheating what should I do?`
+
+Problems regarding docker and high CPU usage seem to be common on mac. One community user found that going to the resources section on Docker desktop and lowering CPU cores and disk image size to minimum improves this issue.
+
+```
+For more troubleshooting tips on this problem consult the docker for-mac repo issues [https://github.com/docker/for-mac/issues?q=cpu](https://github.com/docker/for-mac/issues?q=cpu)
 ```
 
 #### Fix local test issues

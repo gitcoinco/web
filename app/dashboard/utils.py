@@ -30,10 +30,19 @@ from django.utils import timezone
 import ipfshttpclient
 import requests
 from app.utils import sync_profile
+from avatar.models import CustomAvatar
 from compliance.models import Country, Entity
+from cytoolz import compose
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Activity, BlockedUser, Bounty, Profile, UserAction
-from eth_utils import to_checksum_address
+from dashboard.models import (
+    Activity, BlockedUser, Bounty, BountyFulfillment, HackathonRegistration, Profile, UserAction,
+)
+from dashboard.sync.celo import sync_celo_payout
+from dashboard.sync.etc import sync_etc_payout
+from dashboard.sync.eth import sync_eth_payout
+from dashboard.sync.zil import sync_zil_payout
+from eth_abi import decode_single, encode_single
+from eth_utils import keccak, to_checksum_address, to_hex
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfshttpclient.exceptions import CommunicationError
@@ -42,6 +51,7 @@ from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
+from .abi import erc20_abi
 from .notifications import maybe_market_to_slack
 
 logger = logging.getLogger(__name__)
@@ -174,8 +184,14 @@ def _get_utm_from_cookie(request):
     """
     utmDict = {}
     utm_source = request.COOKIES.get('utm_source')
+    if not utm_source:
+        utm_source = request.GET.get('utm_source')
     utm_medium = request.COOKIES.get('utm_medium')
+    if not utm_medium:
+        utm_medium = request.GET.get('utm_medium')
     utm_campaign = request.COOKIES.get('utm_campaign')
+    if not utm_campaign:
+        utm_campaign = request.GET.get('utm_campaign')
 
     if utm_source:
         utmDict['utm_source'] = utm_source
@@ -302,7 +318,6 @@ def get_profile_from_referral_code(code):
 
 def get_bounty_invite_url(inviter, bounty_id):
     """Returns a unique url for each bounty and one who is inviting
-
     Returns:
         A unique string for each bounty
     """
@@ -330,12 +345,12 @@ def get_unrated_bounties_count(user):
         return 0
     unrated_contributed = Bounty.objects.current().prefetch_related('feedbacks').filter(interested__profile=user) \
         .filter(interested__status='okay') \
-        .filter(interested__pending=False).filter(idx_status='done') \
+        .filter(interested__pending=False).filter(idx_status='submitted') \
         .exclude(
             feedbacks__feedbackType='worker',
-            feedbacks__sender_profile=user
+            feedbacks__sender_profile=user,
         )
-    unrated_funded = Bounty.objects.prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
+    unrated_funded = Bounty.objects.current().prefetch_related('fulfillments', 'interested', 'interested__profile', 'feedbacks') \
     .filter(
         bounty_owner_github_username__iexact=user.handle,
         idx_status='done'
@@ -472,25 +487,21 @@ def has_tx_mined(txid, network):
         return False
 
 
-def get_etc_txn_status(txnid, network='mainnet'):
-    if not txnid:
-        return False
+def sync_payout(fulfillment):
+    token_name = fulfillment.token_name
+    if not token_name:
+        token_name = fulfillment.bounty.token_name
 
-    blockscout_url = f'https://blockscout.com/etc/mainnet/api?module=transaction&action=gettxinfo&txhash={txnid}'
-    blockscout_response = requests.get(blockscout_url).json()
+    if fulfillment.payout_type == 'web3_modal':
+        sync_eth_payout(fulfillment)
 
-    if blockscout_response['status'] and blockscout_response['result']:
-        response = {
-            'blockNumber': int(blockscout_response['result']['blockNumber']),
-            'confirmations': int(blockscout_response['result']['confirmations'])
-        }
-        if response['confirmations'] > 0:
-            response['has_mined'] = True
-        else:
-            response['has_mined'] = False
-        return response
-
-    return False
+    elif fulfillment.payout_type == 'qr':
+        if token_name == 'ETC':
+            sync_etc_payout(fulfillment)
+        elif token_name == 'CELO' or token_name == 'cUSD':
+            sync_celo_payout(fulfillment)
+        elif token_name == 'ZIL':
+            sync_zil_payout(fulfillment)
 
 
 def get_bounty_id(issue_url, network):
@@ -581,7 +592,16 @@ def build_profile_pairs(bounty):
         if fulfillment.profile and fulfillment.profile.handle.strip() and fulfillment.profile.absolute_url:
             profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
         else:
-            addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
+            if bounty.tenant == 'ETH':
+                addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'ZIL':
+                addr = f"https://viewblock.io/zilliqa/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'CELO':
+                addr = f"https://explorer.celo.org/address/{fulfillment.fulfiller_address}"
+            elif bounty.tenant == 'ETC':
+                addr = f"https://blockscout.com/etc/mainnet/address/{fulfillment.fulfiller_address}"
+            else:
+                addr = None
             profile_handles.append((fulfillment.fulfiller_address, addr))
     return profile_handles
 
@@ -735,7 +755,7 @@ def release_bounty_lock(standard_bounty_id):
     release_semaphore(ns)
 
 
-def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None, disable_cache=False, full_profile=False):
     """Define the profile helper.
 
     Args:
@@ -756,8 +776,11 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
     if current_profile and current_profile.handle == handle:
         return current_profile
 
+    base = Profile.objects if not full_profile else Profile.objects_full
     try:
-        profile = Profile.objects.get(handle__iexact=handle)
+        if disable_cache:
+            base = base.nocache()
+        profile = base.get(handle=handle.lower())
     except Profile.DoesNotExist:
         profile = sync_profile(handle)
         if not profile:
@@ -766,7 +789,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
         # Handle edge case where multiple Profile objects exist for the same handle.
         # We should consider setting Profile.handle to unique.
         # TODO: Should we handle merging or removing duplicate profiles?
-        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        profile = base.filter(handle=handle.lower()).latest('id')
         logging.error(e)
 
     if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
@@ -831,7 +854,7 @@ def is_blocked(handle):
         return True
 
     # check banned country list
-    profiles = Profile.objects.filter(handle__iexact=handle)
+    profiles = Profile.objects.filter(handle=handle.lower())
     if profiles.exists():
         profile = profiles.first()
         last_login = profile.actions.filter(action='Login').order_by('pk').last()
@@ -854,7 +877,7 @@ def is_blocked(handle):
     return False
 
 
-def get_nonce(network, address):
+def get_nonce(network, address, ignore_db=False):
     # this function solves the problem of 2 pending tx's writing over each other
     # by checking both web3 RPC *and* the local DB for the nonce
     # and then using the higher of the two as the tx nonce
@@ -864,6 +887,8 @@ def get_nonce(network, address):
 
     # web3 RPC node: nonce
     nonce_from_web3 = w3.eth.getTransactionCount(address)
+    if ignore_db:
+        return nonce_from_web3
 
     # db storage
     key = f"nonce_{network}_{address}"
@@ -971,9 +996,7 @@ def get_orgs_perms(profile):
         response_data.append(org_perms)
     return response_data
 
-
-def get_url_first_indexes():
-
+def get_all_urls():
     urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
 
     def list_urls(lis, acc=None):
@@ -989,10 +1012,95 @@ def get_url_first_indexes():
 
         yield from list_urls(lis[1:], acc)
 
+    return list_urls(urlconf.urlpatterns)
+
+def get_url_first_indexes():
+
+    return ['_administration','about','action','actions','activity','api','avatar','blog','bounties','bounty','btctalk','casestudies','casestudy','chat','community','contributor','contributor_dashboard','credit','dashboard','docs','dynamic','explorer','extension','faucet','fb','feedback','funder','funder_dashboard','funding','gas','ghlogin','github','gitter','grant','grants','hackathon','hackathonlist','hackathons','health','help','home','how','impersonate','inbox','interest','issue','itunes','jobs','jsi18n','kudos','l','labs','landing','lazy_load_kudos','lbcheck','leaderboard','legacy','legal','livestream','login','logout','mailing_list','medium','mission','modal','new','not_a_token','o','onboard','podcast','postcomment','press','presskit','products','profile','quests','reddit','refer','register_hackathon','requestincrease','requestmoney','requests','results','revenue','robotstxt','schwag','send','service','settings','sg_sendgrid_event_processor','sitemapsectionxml','sitemapxml','slack','spec','strbounty_network','submittoken','sync','terms','tip','townsquare','tribe','tribes','twitter','users','verified','vision','wallpaper','wallpapers','web3','whitepaper','wiki','wikiazAZ09azdAZdazd','youtube']
+    # TODO: figure out the recursion issue with the URLs at a later date
+    # or just cache them in the backend dynamically
+
     urls = []
-    for p in list_urls(urlconf.urlpatterns):
+    for p in get_all_urls():
         url = p[0].split('/')[0]
         url = re.sub(r'\W+', '', url)
         urls.append(url)
 
     return set(urls)
+
+def get_custom_avatars(profile):
+    return CustomAvatar.objects.filter(profile=profile).order_by('-id')
+
+
+def _trim_null_address(address):
+    if address == '0x0000000000000000000000000000000000000000':
+        return '0x0'
+    else:
+        return address
+
+
+def _construct_transfer_filter_params(
+        recipient_address,
+        token_address,):
+
+    event_topic = keccak(text="Transfer(address,address,uint256)")
+
+    # [event, from, to]
+    topics = [
+        to_hex(event_topic),
+        None,
+        to_hex(encode_single('address', recipient_address))
+    ]
+
+    return {
+        "topics": topics,
+        "fromBlock": 0,
+        "toBlock": "latest",
+        "address": token_address,
+    }
+
+
+def _extract_sender_address_from_log(log):
+    return decode_single("address", log['topics'][1])
+
+
+def get_token_recipient_senders(network, recipient_address, token_address):
+    w3 = get_web3(network)
+
+    contract = w3.eth.contract(
+        address=token_address,
+        abi=erc20_abi,
+    )
+
+    # TODO: This can be made less brittle/opaque
+    # see usage of contract.events.Transfer.getLogs in
+    # commit 99a44cd3036ace8fcd886ed1e96747528f105d10
+    # after migrating to web3 >= 5.
+    filter_params = _construct_transfer_filter_params(
+        recipient_address,
+        token_address,
+    )
+
+    logs = w3.eth.getLogs(filter_params)
+
+    process_log = compose(
+        _trim_null_address,
+        _extract_sender_address_from_log
+    )
+
+    return [process_log(log) for log in logs]
+
+
+def get_hackathon_event(title, event, network):
+    event_bounties = Bounty.objects.filter(event=event, network=network)
+
+    return {
+        'title': title,
+        'hackathon': event,
+        'value_in_usdt': sum(
+            prize_usdt.value_in_usdt_now
+            for prize_usdt
+            in event_bounties
+        ),
+        'registrants': HackathonRegistration.objects.filter(hackathon=event).count()
+    }

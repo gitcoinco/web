@@ -62,6 +62,7 @@ input:read-only {
 #contributor-suggestions {
   display: flex;
   margin-left: 15px;
+  flex-wrap: wrap;
 }
 
 .revisions input {
@@ -235,7 +236,7 @@ input:read-only {
 }
 
 .release-after-form-group-required {
-  border: 1px solid red;
+  border: none;
   padding: 5px;
 }
 
@@ -249,4 +250,18 @@ input:read-only {
   display: inline-block;
   top: 3px;
   position: relative;
+}
+
+.wallet-alert {
+  border-radius: 4px;
+}
+
+.wallet-not-connected {
+  color: #E49003;
+  background: rgb(228, 144, 3, 0.2);
+}
+
+.wallet-success {
+  color: #0FCE7C;
+  background: rgb(15, 206, 124, 0.2);
 }

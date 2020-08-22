@@ -1,3 +1,6 @@
+.grant-detail #status{
+  color: black;
+}
 .grant_details span.box {
   width: 20px;
   height: 20px;
@@ -13,11 +16,12 @@
   border-color: transparent;
 }
 
-@media (min-width: 1200px) {
-  .grant-detail .container {
-    max-width: 85vw
-  }
+.grant-detail .container {
+  max-width: 85vw;
+  display: block;
+}
 
+@media (min-width: 1200px) {
   #editor.ql-bubble .ql-editor[contenteditable='false'] {
     padding: 0;
   }
@@ -51,7 +55,7 @@
 }
 
 .grant-item__owner .select2-selection,
-.grant-item__member .select2-selection {
+.grant-item-multiselect .select2-selection {
   font-size: 0.75rem;
   outline: none;
   border-color: #e2eaf2 !important;
@@ -59,14 +63,18 @@
   color: #000 !important;
 }
 
-.grant-item__member .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+.grant-item-multiselect .select2-container--default .select2-selection--multiple .select2-selection__rendered {
   padding: 2px 5px;
 }
 
-.grant-item__member .select2-container--default .select2-selection--multiple .select2-selection__choice {
+.grant-item-multiselect .select2-container--default .select2-selection--multiple .select2-selection__choice {
   border-radius: 2px;
   background-color: #fff;
   border-color: #e2eaf2 !important;
+}
+
+.grant-item-multiselect .select2-selection__clear {
+  display: none;
 }
 
 .grant-item__members {
@@ -207,6 +215,11 @@ textarea.editable {
   max-height: 22rem;
 }
 
+.grant-side-cart {
+  background-color: white;
+  border-left: lightgray 2px solid;
+}
+
 .wallet-address {
   font-size: 0.85rem;
 }
@@ -234,10 +247,6 @@ textarea.editable {
 
 .update:first-child {
   padding-top: 0 !important;
-}
-
-.milestones-list li:last-child {
-  padding-bottom: 0 !important;
 }
 
 .disable-tooltip {

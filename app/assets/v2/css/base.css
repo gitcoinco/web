@@ -1,8 +1,28 @@
 /* stylelint-disable no-descending-specificity */
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
+
+
+
+.iframe-embed-loading {
+  margin-top:50% !important;
+}
+
+#sidebar-chat .b-sidebar-body {
+  overflow-y: hidden !important;
+}
+
+.chatWrapper iframe {
+  width: 100%;
+  min-height: 100vh;
+}
+
 div.body {
   min-height: 400px;
+}
+
+body {
+  overflow-anchor: auto;
 }
 
 .hidden {
@@ -17,7 +37,7 @@ span {
 }
 
 a {
-  color: #3E00FF;
+  color: var(--link-color);
 }
 
 .cursor-pointer {
@@ -68,6 +88,8 @@ a {
 
 .navbar-nav .dropdown-menu {
   min-width: 9rem;
+  overflow-y: auto;
+  max-height: 88vh;
 }
 
 .nav_avatar,
@@ -131,6 +153,10 @@ a {
   font-weight: 600;
 }
 
+.text-through {
+  text-decoration-line: line-through;
+}
+
 #tutorials li{
   list-style: none;
 }
@@ -181,10 +207,10 @@ a {
   margin-left: 0;
 }
 
-.interior .container-fluid {
+/* .interior .container-fluid {
   padding-left: 0;
   padding-right: 0;
-}
+} */
 
 .with-grey-background .body {
   background-color: #eee !important;
@@ -192,10 +218,6 @@ a {
 
 .index .container-fluid {
   overflow-x: hidden;
-}
-
-.interior #logo {
-  margin-top: -5px;
 }
 
 .interior .header {
@@ -248,48 +270,6 @@ p a {
 
 .modal-close {
   float:right;
-}
-
-#gas-section .gas-image {
-  height: 4.5rem;
-}
-
-#gas-section .font-body {
-  margin: 0;
-}
-
-#gas-section .recommended-prices {
-  cursor: pointer;
-  text-align: center;
-}
-
-#gas-section .gas-dark-bg {
-  background-color: #FAFAFA;
-}
-
-#gas-section .gas-rates .active {
-  font-weight: 600;
-  background-color: #0ECF7C;
-}
-
-#gas-section #metamask_context {
-  display: none;
-}
-
-#gas-section #accordion-set-own-limit {
-  cursor: pointer;
-  border-bottom: 1px solid rgba(0,0,0,.1);
-  border-top: 1px solid rgba(0,0,0,.1);
-}
-
-#gas-section #accordion-set-own-limit i {
-  float: right;
-}
-
-#gas-section #default-recommended-gas,
-#gas-section .message {
-  display: none;
-  text-align: center;
 }
 
 .btn-warning,
@@ -689,52 +669,6 @@ input[type=text].loading {
   color: #000;
 }
 
-.metamask_recc {
-  width: 45%;
-  display: inline-block;
-}
-
-#metamask_label img {
-  position: relative;
-  top: -2px;
-}
-
-#metamask_context .red_warning {
-  background-color: #fbe0d6;
-  color: #fb9470;
-  padding: 5px 10px;
-  border-radius: 2px;
-  margin-bottom: 15px;
-  display: block;
-}
-
-#metamask_context .red_warning a {
-  color: #fb9470 !important;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-#metamask_context ul {
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
-  padding-left: 1rem;
-}
-
-#metamask_context li a {
-  color: #0D0764;
-}
-
-#metamask_context .warning {
-  text-align: center;
-  background-color: #ff9800;
-  border-radius: 5px;
-}
-
-#metamask_context .warning a {
-  color: black;
-  font-weight: bold;
-}
-
 .bottom_notification a {
   color: currentColor;
   text-decoration: underline;
@@ -1055,8 +989,8 @@ input.is-invalid {
 }
 
 .alpha-warning {
-  background-color: #fb9470;
-  color: #fbe0d6;
+  background-color: #ada7d4;
+  color: white;
   padding: 5px 10px;
   border-radius: 2px;
   margin-bottom: 15px;
@@ -1516,6 +1450,21 @@ div.busyOverlay {
   padding: 1.4em 1.3em 1.3em;
 }
 
+.popover-user-card {
+  background-color: #FFF;
+  padding: 0;
+  width: 100%;
+  max-width: 30em;
+  font-size: 12px;
+}
+
+.user-card_donut-chart {
+  width: 56px;
+}
+.user-card_pie-chart {
+  width: 30px;
+}
+
 .big-popover {
   max-width: 482px;
 }
@@ -1543,25 +1492,6 @@ div.busyOverlay {
 .g-icon__dot-circle:before {
   border: 0.25em solid currentColor;
   border-radius: 100px;
-}
-
-.cta-blue {
-  background: #0D0764;
-  color: white;
-  padding: 1.8rem;
-  border-radius: 0.2rem;
-}
-
-.privaterepo-instructions {
-  color: grey;
-  padding-top: 1rem;
-}
-
-@media (min-width: 768px) {
-  .privaterepo-instructions {
-    width: 75%;
-  }
-
 }
 
 .g-modal .modal-header,
@@ -1630,7 +1560,7 @@ div.busyOverlay {
 .gc-megamenu .dropdown {
   position: static;
   overflow: auto;
-  max-height: 100vh;
+  max-height: 60vh;
 }
 
 .gc-megamenu .container {
@@ -1665,4 +1595,80 @@ div.busyOverlay {
 
 .emoji-picker__emoji {
   font-size: 1.6rem!important;
+}
+.online_now:hover {
+  font-weight: bold;
+}
+.chat_presence_indicator {
+  font-size: 12px;
+  padding: 0px;
+  list-style: none;
+  display: inline-block;
+  cursor: pointer;
+  margin-bottom: 0px;
+  margin-left: 5px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+.chat_presence_indicator .indicator {
+  vertical-align: middle;
+  content: "\2022";
+  font-size: 42px;
+  color: #aaa;
+  font-weight: bold;
+  display: inline-block;
+  margin-top: -12px;
+  margin-bottom: 0px;
+  line-height: 10px;
+}
+.chat_presence_indicator.online .indicator {
+  color: #0fce7c;
+}
+.chat_presence_indicator.away .indicator {
+  color: orange;
+}
+.chat_presence_indicator.dnd .indicator {
+  color: red;
+}
+.chat_presence_indicator.mini {
+  padding: 0px 1px;
+  font-size: 10px;
+  margin-left: 0px;
+}
+.chat_presence_indicator.mini .indicator {
+  font-size: 24px;
+  line-height: 0px
+}
+.indie_chat_indicator{
+  color: #0fce7c;
+  display: inline;
+}
+.indie_chat_indicator.offline{
+  color: #aaa;
+}
+.navbar .chat_presence_indicator:hover{
+  background-color: rgba(0,0,0,.5);
+  border-radius: 5px;
+}
+.navbar .chat_presence_indicator{
+  position: relative;
+  left: -16px;
+  top: -4px;
+}
+.navbar .chat_presence_indicator .indicator{
+  font-size: 22px;
+}
+
+.bg-shade-0 {
+  background: var(--bg-shade-0);
+}
+.bg-shade-1{
+  background: var(--bg-shade-1);
+}
+.bg-shade-2{
+  background: var(--bg-shade-2);
+}
+.dark-mode #CookielawBanner{
+  background: var(--main-bg);
+  color: white;
 }

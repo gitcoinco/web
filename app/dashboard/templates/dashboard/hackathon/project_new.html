@@ -25,23 +25,32 @@
           </button>
         </div>
         <div class="modal-body p-5">
-          <h2 class="h5 text-center font-weight-bold mb-4">Tell us about your project</h2>
+          <h2 class="h5 text-center font-weight-bold mb-4">Let's Get Started!</h2>
           {% if projects and "/issue/" in request.META.HTTP_REFERER  %}
             <div class="mb-4 font-smaller-1">
-              <p class="mb-2">Use yor existing project{{ projects.count|pluralize }}:</p>
+              <p class="mb-2">Edit your existing project{{ projects.count|pluralize }}:</p>
               {% for project in projects %}
-                <a href="#" class="btn btn-sm btn-outline-gc-blue mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
+                {% if project.status == '' %}
+                  <a href="#" class="btn btn-sm btn-outline-gc-blue mr-2" onclick="projectModal({{bounty_id}},{{project.id}});">{{project.name}}</a>
+                {% endif %}
               {% endfor %}
                 or <a href="#" class="" onclick="projectModal({{bounty_id}});">create a new one</a>
             </div>
           {% endif %}
 
           <form action="" class="mt-3 border-top pt-3" id="projectForm">
+            <p class="alert-danger p-2">
+              This bounty is part of <b>{{bounty.event.name}}</b>, please read the <a href="{% url 'hackathon_onboard' bounty.event.slug %}" target="_blank">rules to participate</a> before you continue.
+            </p>
             {% if project_selected %}
               <input type="hidden" name="bounty_id" value="{{project_selected.bounty.id}}">
               <input type="hidden" name="project_id" value="{{project_selected.id}}">
               <div class="form-group">
-                <label for="project_logo" class="d-block">Project logo</label>
+                <label class="font-weight-semibold" for="project_name">Project Name</label>
+                <input type="text" value="{{project_selected.name}}" class="form-control" name="name" id="project_name" placeholder="My project" required>
+              </div>
+              <div class="form-group mt-4">
+                <label for="project_logo" class="d-block font-weight-semibold">Project logo</label>
                 {% if project_selected.logo %}
                   <img src="{{MEDIA_URL}}{{ project_selected.logo }}" width="90" height="90" id="img-preview" class="border rounded">
                 {% else %}
@@ -54,12 +63,16 @@
                   </small>
                 </div>
               </div>
-              <div class="form-group">
-                <label for="project_name">Project Name</label>
-                <input type="text" value="{{project_selected.name}}" class="form-control" name="name" id="project_name" placeholder="My project" required>
+              <div class="form-group mt-4">
+                <label  class="font-weight-semibold" for="project_summary">Project Summary</label>
+                <textarea class="form-control" name="summary" id="project_summary" maxlength="100" style="height: 120px"  cols="20" rows="2" placeholder="Tell us about your project!" required>{{project_selected.summary}}</textarea>
               </div>
-              <div class="from-group mb-3">
-                <label for="project_profiles">Team members</label>
+              <div class="form-group mt-4">
+                <label  class="font-weight-semibold" for="work_url">Project Github Repository or Link to Pull Request</label>
+                <input type="url" class="form-control" name="work_url" id="work_url" value="{{project_selected.work_url}}" placeholder="https://github.com/gitcoinco/web" required>
+              </div>
+              <div class="from-group mb-3 mt-4">
+                <label  class="font-weight-semibold" for="project_profiles">Team Members (Optional) <small>Add Gitcoin Usernames</small></label>
                 <div class="form__select2 g-multiselect">
                   <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
                       {% for profile in project_selected.profiles.all %}
@@ -67,28 +80,47 @@
                     {% endfor %}
                   </select>
                 </div>
-                <small id="profilesHelp" class="form-text text-muted">
-                  Search Gitcoin usernames.
-                </small>
               </div>
               <div class="form-group">
-                <label for="work_url">Project Repo or PR</label>
-                <input type="url" class="form-control" name="work_url" id="work_url" value="{{project_selected.work_url}}" placeholder="https://github.com/gitcoinco/web" required>
-              </div>
-              <div class="form-group">
-                <label for="project_summary">Project Summary</label>
-                <textarea class="form-control" name="summary" id="project_summary" maxlength="100" cols="10" rows="2" placeholder="Tell us a few lines about your project" required>{{project_selected.summary}}</textarea>
-              </div>
-              <div class="d-flex align-items-center flex-fill">
-                <p class="text-muted mb-0 font-smaller-3">You can modify your project details anytime on the projects page or when you submit work.</p>
-                <div class="ml-auto">
-                  <button type="button" class="btn btn-outline-gc-purple" data-dismiss="modal" aria-label="Close">Cancel</button>
-                  <button class="btn btn-gc-purple ml-2" id="sendInvites">Submit</button>
+                <div class="form__checkbox d-inline-block">
+                  <input name='looking-members' id='looking-members' type="checkbox" {% if project_selected.looking_members %}checked{% endif %}>
+                  <label class="form__label" for="looking-members">Looking for team members</label>
                 </div>
+              </div>
+              <div class="looking-members" style="{% if not project_selected.looking_members %}display: none{% endif %}">
+                <div class="mt-4">
+                  <label class="font-weight-semibold" for="looking-members-message">What skills are you looking for in your team</label>
+                  <input type="text" class="form-control" placeholder="Skills, experiences you need in your team. Enter short message. 150 characters." maxlength="150" value="{{ project_selected.message }}" name="looking-members-message" id="looking-members-message" >
+                </div>
+                <div class="mt-4">
+                  <label class="font-weight-semibold" for="looking-members-message">How to get in touch:</label>
+                  <div class="form__checkbox">
+                    <input name='has_gitcoin_chat' id='has_gitcoin_chat' type="checkbox" {% if project_selected.extra.has_gitcoin_chat %}checked{% endif %}>
+                    <label class="form__label" for="has_gitcoin_chat">Gitcoin Chat</label>
+                  </div>
+                  <div class="d-flex">
+                    <div class="form__checkbox d-flex">
+                      <input type="checkbox" name='has_other_contact_method' id='has_other_contact_method' {% if project_selected.extra.has_other_contact_method %}checked{% endif %}>
+                      <label class="form__label" for="has_other_contact_method">Other: </label>
+                    </div>
+                    <input type="text" class="ml-2 form-control" style="width: 80%; font-size: var(--fs-body);" placeholder="Website, Email, or other ways for people to reach out your team" maxlength="150" value="{{ project_selected.extra.other_contact_method }}" name="other_contact_method" id="other-contact-method-message" >
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center flex-fill mt-5">
+                  <p class="text-muted mb-0 font-smaller-1">You can modify your project details anytime on the projects page or when you submit work.</p>
+                </div>
+              <div class="row mt-4">
+                  <button class="mx-auto px-5 btn btn-lg btn-gc-blue" id="sendInvites">Submit</button>
               </div>
             {% else %}
               <input type="hidden" name="bounty_id" value="{{bounty.id}}">
               <div class="form-group">
+                <label class="font-weight-semibold"  for="project_name">Project Name</label>
+                <input type="text" class="form-control" id="project_name" name="name" placeholder="My project" required>
+              </div>
+              <div class="form-group mt-4">
                 <label for="project_logo" class="d-block">Project logo</label>
                 <img src="{% firstof bounty.admin_override_org_logo or bounty.avatar_url %}" width="90" height="90" id="img-preview" class="border rounded">
                 <div class="d-inline-block align-middle ml-4">
@@ -98,12 +130,17 @@
                   </small>
                 </div>
               </div>
-              <div class="form-group">
-                <label for="project_name">Project Name</label>
-                <input type="text" class="form-control" id="project_name" name="name" placeholder="My project" required>
+              <div class="form-group mt-4">
+                <label class="font-weight-semibold"  for="project_summary">Project Summary</label>
+                <textarea class="form-control" name="summary" id="project_summary" style="height: 120px" cols="10" rows="2" placeholder="Tell us about your project!" required></textarea>
               </div>
-              <div class="from-group mb-3">
-                <label for="project_profiles">Team members</label>
+              <div class="form-group mt-4">
+                <label class="font-weight-semibold" for="work_url">Project Github Repository or Link to Pull Request</label>
+                <input type="url" class="form-control" name="work_url" id="work_url" placeholder="https://github.com/gitcoinco/web" required>
+              </div>
+
+              <div class="from-group mb-3 mt-4">
+                <label class="font-weight-semibold" for="project_profiles">Team members</label>
                 <div class="form__select2 g-multiselect">
                   <select id="project_profiles" class="team-users" name="profiles[]" multiple="multiple" aria-describedby="profilesHelp" required>
                   </select>
@@ -113,21 +150,37 @@
                 </small>
               </div>
               <div class="form-group">
-                <label for="work_url">Project Repo or PR</label>
-                <input type="url" class="form-control" name="work_url" id="work_url" placeholder="https://github.com/gitcoinco/web" required>
-              </div>
-              <div class="form-group">
-                <label for="project_summary">Project Summary</label>
-                <textarea class="form-control" name="summary" id="project_summary" cols="10" rows="2" placeholder="Tell us a few lines about your project" required></textarea>
-              </div>
-              <div class="d-flex align-items-center flex-fill">
-                <p class="text-muted mb-0 font-smaller-3">You can modify your project details anytime on the projects page or when you submit work.</p>
-                <div class="ml-auto">
-                  <button type="button" class="btn btn-outline-gc-purple" data-dismiss="modal" aria-label="Close">Cancel</button>
-                  <button class="btn btn-gc-purple ml-2" id="sendInvites">Submit</button>
+                <div class="form__checkbox d-inline-block">
+                  <input name='looking-members' id='looking-members' type="checkbox">
+                  <label class="form__label" for="looking-members">Looking for team members</label>
                 </div>
               </div>
-
+              <div class="looking-members" style="display: none">
+                <div class="mt-4">
+                  <label class="font-weight-semibold" for="looking-members-message">What skills are you looking for in your team</label>
+                  <input type="text" class="form-control" placeholder="Skills, experiences you need in your team. Enter short message. 150 characters." maxlength="150" name="looking-members-message" id="looking-members-message" >
+                </div>
+                <div class="mt-4">
+                  <label class="font-weight-semibold" for="looking-members-message">How to get in touch:</label>
+                  <div class="form__checkbox">
+                    <input name='has_gitcoin_chat' id='has_gitcoin_chat' type="checkbox">
+                    <label class="form__label" for="has_gitcoin_chat">Gitcoin Chat</label>
+                  </div>
+                  <div class="d-flex">
+                    <div class="form__checkbox d-flex">
+                      <input type="checkbox" name='has_other_contact_method' id='has_other_contact_method'>
+                      <label class="form__label" for="has_other_contact_method">Other: </label>
+                    </div>
+                    <input type="text" class="ml-2 form-control" style="width: 80%; font-size: var(--fs-body);" placeholder="Website, Email, or other ways for people to reach out your team" maxlength="150" name="other_contact_method" id="other-contact-method-message" >
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center flex-fill mt-5">
+                <p class="text-muted mb-0 font-smaller-1">You can modify your project details anytime on the projects page or when you submit work.</p>
+              </div>
+              <div class="row mt-4">
+                <button class="mx-auto px-5 btn btn-lg btn-gc-blue" id="sendInvites">Submit</button>
+              </div>
             {% endif %}
           </form>
         </div>

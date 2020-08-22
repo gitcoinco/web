@@ -45,7 +45,7 @@
             <div class="col-10 col-md-6 col-lg-3 mx-auto">
               <div class="card">
                 {%  if handle %}
-                <a href="/profile/{{handle}}">
+                <a href="/profile/{{handle}}" data-usercard="{{handle}}">
                 {% endif %}
                   <img class="avatar {{fname}} mx-auto" src="/static/v2/images/team/{{fname}}.png">
                 {%  if handle %}
@@ -308,14 +308,6 @@
               <div class="font-smaller-3">{% trans "The best thing about Gitcoin is that it works where you do your work; on Github." %}</div>
             </div>
           </div>
-      </div>
-      <div class="row mt-5 pb-3">
-        <div class="col">
-          <a class="button button--primary" role="button" href="{% url "tools" %}">
-            <i class="fas fa-wrench mr-2"></i>
-            {% trans "Checkout our Toolbox" %}
-          </a>
-        </div>
       </div>
     </div>
     <div class="container-fluid text-center white-light-bg" id="gitcoin_buttons">

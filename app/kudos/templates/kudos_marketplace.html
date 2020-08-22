@@ -10,7 +10,6 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
     <header class="header">
       {% include 'shared/kudos_nav.html' %}
-      <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container pb-5">
         {% include 'shared/kudos_searchbar.html' %}
       </div>
@@ -90,7 +89,7 @@
 
       {% if listings %}
       <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-        <a href="https://github.com/gitcoinco/kudosbadges/issues/new" target="_blank" class="cta-square kd-shadow">
+        <a href="/kudos/new" target="_blank" class="cta-square kd-shadow">
           <div>
             <span>{% trans "Don’t See One You Like?" %}</span>
             <small>{% trans "Mint Your Own!" %}</small>

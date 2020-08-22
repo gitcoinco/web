@@ -64,8 +64,7 @@ class Command(BaseCommand):
             stats.user_actions,
             stats.faucet,
             stats.email_events,
-            stats.bounties_hourly_rate,
-            stats.ens,
+            stats.bounties_hourly_rate
         ]
 
         for f in fs:

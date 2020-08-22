@@ -636,13 +636,12 @@ def viz_draggable(request, key='email_open'):
     bfs = BountyFulfillment.objects.filter(accepted=True)
     limit = 50
     usernames = list(
-        bfs.exclude(fulfiller_github_username=''
-                    ).distinct('fulfiller_github_username').values_list('fulfiller_github_username', flat=True)
+        bfs.exclude(profile__handle='').distinct('profile__handle').values_list('profile__handle', flat=True)
     )[0:limit]
     if request.GET.get('data'):
         output = []
         for username in usernames:
-            these_bounties = bfs.filter(fulfiller_github_username=username)
+            these_bounties = bfs.filter(profile__handle=username)
             start_date = timezone.now() - timezone.timedelta(days=180)
             income = []
             lifeExpectancy = []
@@ -744,7 +743,7 @@ def mesh_network_viz(request, ):
     edges = []
     year = int(request.GET.get('year', timezone.now().strftime("%Y")))
     month = int(request.GET.get('month', timezone.now().strftime("%m")))
-    day = int(request.GET.get('day', 1))
+    day = int(request.GET.get('day', timezone.now().strftime("%d")))
     to_year = int(request.GET.get('to_year', timezone.now().strftime("%Y")))
     to_month = int(request.GET.get('to_month', timezone.now().strftime("%m")))
     to_day = int(request.GET.get('to_day', timezone.now().strftime("%d")))

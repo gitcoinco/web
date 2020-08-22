@@ -18,7 +18,6 @@ const ethCancelBounty = data => {
 
   const params = data.payload;
 
-  let account = web3.eth.accounts[0];
   const sendForm = fetchData('cancel_reason', 'POST', params);
 
   $.when(sendForm).then(function(payback) {
@@ -28,7 +27,7 @@ const ethCancelBounty = data => {
   loading_button($('.js-submit'));
   const issueURL = data.issueURL;
 
-  let bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+  let bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
   const apiCallback = function(results, status) {
     if (status != 'success') {
@@ -62,7 +61,9 @@ const ethCancelBounty = data => {
       errormsg = gettext(
         'No active funded issue found at this address.  Are you sure this is an active funded issue?'
       );
-    } else if (fromAddress != web3.eth.coinbase) {
+    }
+
+    if (fromAddress.toLowerCase() != selectedAccount.toLowerCase()) {
       errormsg = gettext(
         'Only the address that submitted this funded issue may kill the bounty.'
       );
@@ -74,14 +75,14 @@ const ethCancelBounty = data => {
       return;
     }
 
-    const final_callback = function(error, result) {
+    const final_callback = function(result, error) {
       indicateMetamaskPopup(true);
       const next = function() {
         // setup inter page state
         localStorage[issueURL] = JSON.stringify({
           timestamp: timestamp(),
           dataHash: null,
-          issuer: account,
+          issuer: selectedAccount,
           txid: result
         });
 
@@ -101,19 +102,19 @@ const ethCancelBounty = data => {
     };
 
     indicateMetamaskPopup();
-    bounty.killBounty(
-      bountyId,
-      {
-        from: web3.eth.accounts[0],
-        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-      },
-      final_callback
-    );
 
+    bounty.methods.killBounty(bountyId).send({
+      from: selectedAccount
+    }).then((result) => {
+      final_callback(result)
+    }).catch(err => {
+      final_callback(undefined, err);
+      console.log(err);
+    });
   };
 
-  const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' + 
-    issueURL + '&network=' + $('input[name=network]').val() + 
+  const uri = '/api/v0.1/bounties/?event_tag=all&github_url=' +
+    issueURL + '&network=' + $('input[name=network]').val() +
     '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
   $.get(uri, apiCallback);

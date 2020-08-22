@@ -148,7 +148,6 @@
 .odd{
   background-color: #f9f9f9;
 }
-
 .profile_details .nav-tabs .nav-link {
   padding: 0.5rem;
   padding-bottom: 0.2rem;
@@ -187,6 +186,15 @@
 }
 
 @media (max-width: 767.98px) {
+  .profile_details #section-all-activity .container .row,
+  .profile_details .profile-bounties,
+  .profile_details #all-activity,
+  .profile_details .activity{
+    padding: 0px!important;
+  }
+  .profile_details #section-all-activity{
+    margin-top: 10px;
+  }
 
   .profile-header__main-infos {
     text-align: center;
@@ -199,10 +207,13 @@
   .profile-header__avatar {
     float: none;
     margin-right: 0!important;
+    width: 81px;
+    height: 81px;
   }
 
   .profile-header__handle {
     display: block;
+    padding-top: 0;
   }
 
   .profile-header__links li {
@@ -284,23 +295,6 @@
 
 .profile-header__stats--contributor .card-header {
   background-color: transparent;
-}
-
-.profile-header__sync {
-  margin-top: -140px;
-  position: relative;
-}
-
-.profile-header__sync.inactive {
-  display: none;
-}
-
-.profile-header__sync img {
-  width: 32px;
-}
-
-.profile-header__sync img.loading {
-  display: none;
 }
 
 .card-header::after {

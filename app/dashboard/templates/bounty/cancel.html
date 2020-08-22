@@ -139,12 +139,6 @@
 
                 {% include 'shared/bounty_actions_hidden_vars.html' %}
 
-                {% if is_bounties_network %}
-                  <div id="gas-section">
-                    {% include 'shared/wallet_estimate.html' %}
-                  </div>
-                {% endif %}
-
                 <div class="w-100 my-2 terms_container">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 required />
@@ -169,7 +163,7 @@
       </div>
     </div>
     <script>
-      const is_bounties_network = {{ is_bounties_network|lower }};
+      const is_bounties_network = {% if is_bounties_network|lower == 'false' %} false {% else %} true {% endif %};
     </script>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -178,7 +172,6 @@
 
   </body>
   {% if is_bounties_network %}
-    <script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>

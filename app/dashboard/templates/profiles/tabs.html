@@ -11,6 +11,9 @@
             {% trans "TRIBE" %}{%if not profile.is_org %}S <span class="nav-badge">({{profile.tribe_members.count}})</span>{% endif %}
           </button>
         {% endif %}
+        <button type="button" id="nav-description" href="{{profile.url}}/follow" class="text-center section-tab {% if tab == "follow" %} active {% endif %}">
+          {% trans "FOLLOWERS" %}
+        </button>
         {% if show_resume_tab %}
           <button type="button" id="nav-description" href="{{profile.url}}/resume" class="text-center section-tab {% if tab == "resume" %} active {% endif %}">
             {% if not profile.show_job_status and is_my_profile %}
@@ -46,7 +49,7 @@
         {% if profile.is_org %}
           <button type="button" id="nav-description" href="{{profile.url}}/people" class="text-center section-tab {% if tab == "people" %} active {% endif %}">
             {% trans "PEOPLE" %}
-            <span  class="nav-badge">({{profile.team|length}})</span>
+            <span  class="nav-badge">({{team|length}})</span>
           </button>
         {% endif %}
         {% if total_grant_actions %}
@@ -106,6 +109,8 @@
         <div class="col-12 px-lg-0">
           {% if tab == 'kudos' %}
             {% include 'profiles/tab_kudos.html' %}
+          {% elif tab == 'follow' %}
+            {% include 'profiles/tab_follow.html' %}
           {% elif tab == 'resume' %}
             {% include 'profiles/tab_resume.html' %}
           {% elif tab == 'active' %}

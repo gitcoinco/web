@@ -34,6 +34,7 @@
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 <link rel="stylesheet" href="{% static "v2/css/search.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+<link rel="stylesheet" href='{% static "v2/css/bootstrap-vue.min.css" %}'/>
 <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
@@ -44,7 +45,6 @@
   <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
 {% endif %}
 <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/timeline.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/carousel.css" %}" />
@@ -77,10 +77,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 {% if meta_title %}<meta name="title" content="{{meta_title}}" />{% endif %}
 {% if meta_description %}<meta name="description" content="{{meta_description}}" />{% endif %}
-<script async src="{% static "v2/js/metamask-approval.js" %}"></script>
-
-
 {% if env == 'prod' %}
+<script>document.domain = 'gitcoin.co';</script>
 <!-- Hotjar Tracking Code for gitcoin.co -->
 <script>
   (function(h,o,t,j,a,r){

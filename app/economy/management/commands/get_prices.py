@@ -24,11 +24,24 @@ from django.core.management.base import BaseCommand
 
 import ccxt
 import cryptocompare as cc
+import requests
 from dashboard.models import Bounty, Tip
+from django.utils import timezone
 from economy.models import ConversionRate
 from grants.models import Contribution
 from kudos.models import KudosTransfer
+from perftools.models import JSONStore
 from websocket import create_connection
+import logging
+logger = logging.getLogger(__name__)
+
+
+def get_config(view, key):
+    try:
+        pt = JSONStore.objects.get(view=view, key=key)
+        return pt.data
+    except:
+        return []
 
 
 def stablecoins():
@@ -90,15 +103,23 @@ def etherdelta():
                 to_currency=to_currency)
             print(f'Etherdelta: {from_currency}=>{to_currency}:{to_amount}')
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
 
 def polo():
+
+    polo_blacklist = get_config('polo', 'blacklist')
+
     """Handle pulling market data from Poloneix."""
     tickers = ccxt.poloniex().load_markets()
     for pair, result in tickers.items():
         from_currency = pair.split('/')[0]
         to_currency = pair.split('/')[1]
+
+        if from_currency in polo_blacklist:
+            return
+        if to_currency in polo_blacklist:
+            return
 
         from_amount = 1
         try:
@@ -151,7 +172,7 @@ def refresh_conv_rate(when, token_name):
             )
             print(f'Cryptocompare: {token_name}=>{to_currency}:{to_amount}')
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
 
 def cryptocompare():
@@ -160,27 +181,111 @@ def cryptocompare():
     Updates ConversionRates only if data not available.
 
     """
+
+    cryptocompare_pulllist = get_config('cryptocompare', 'always_pull_list')
+    cryptocompare_blacklist = get_config('cryptocompare', 'blacklist')
+
+    pull_cryptocompare_tokens_only = cryptocompare_pulllist
+    for token_name in pull_cryptocompare_tokens_only:
+        refresh_conv_rate(timezone.now(), token_name)
+
     for bounty in Bounty.objects.current():
         print(f'CryptoCompare Bounty {bounty.pk}')
-        refresh_conv_rate(bounty.web3_created, bounty.token_name)
+        if bounty.token_name not in cryptocompare_blacklist:
+            refresh_conv_rate(bounty.web3_created, bounty.token_name)
 
     for tip in Tip.objects.all():
         print(f'CryptoCompare Tip {tip.pk}')
-        refresh_conv_rate(tip.created_on, tip.tokenName)
+        if tip.tokenName not in cryptocompare_blacklist:
+            refresh_conv_rate(tip.created_on, tip.tokenName)
 
     for obj in KudosTransfer.objects.all():
         print(f'CryptoCompare KT {obj.pk}')
-        refresh_conv_rate(obj.created_on, obj.tokenName)
+        if obj.tokenName not in cryptocompare_blacklist:
+            refresh_conv_rate(obj.created_on, obj.tokenName)
 
     for obj in Contribution.objects.all():
         print(f'CryptoCompare GrantContrib {obj.pk}')
-        refresh_conv_rate(obj.created_on, obj.subscription.token_symbol)
+        if obj.subscription.token_symbol not in cryptocompare_blacklist:
+            refresh_conv_rate(obj.created_on, obj.subscription.token_symbol)
+
+
+def uniswap():
+    """Hangle pulling market data from Uniswap using its subgraph node on mainnet."""
+    uniswap_whitelist = get_config('uniswap', 'whitelist')
+    uniswap_blacklist = get_config('uniswap', 'blacklist')
+    endpoint = 'https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap'
+    query_limit = 100
+    skip = 0
+    # GraphQL query based on the Uniswap API
+    # Ref: https://github.com/Uniswap/uniswap-api/blob/master/src/_apollo/queries.ts#L3
+    while True:
+        query = f"""
+          query {{
+           exchanges(first: {query_limit}, skip: {skip}, orderBy: ethBalance, orderDirection: desc) {{
+            id
+            tokenAddress
+            tokenSymbol
+            tokenName
+            price
+            lastPrice
+            priceUSD
+            lastPriceUSD
+           }}
+         }}
+        """
+        try:
+            rs = requests.post(url=endpoint, json={'query': query})
+            if rs.ok:
+                json_data = rs.json()
+                total_records = len(json_data['data']['exchanges'])
+                print(f"Cursor ==> {skip} - Total records ==> {total_records}")
+                if total_records == 0:
+                    break
+                for exchange in json_data['data']['exchanges']:
+                    try:
+                        token_name = exchange['tokenSymbol']
+                        if token_name not in uniswap_whitelist:
+                            continue
+                        if token_name in uniswap_blacklist:
+                            continue
+                        if float(exchange['price']) == 0.: # Skip exchange pairs with zero value
+                            continue
+                        if token_name == 'ETH':
+                            continue # dont pull ETH/ETH and ETH/USD pricing
+                        to_amount = (float(exchange['price']) + float(exchange['lastPrice'])) / 2.
+                        ConversionRate.objects.create(
+                            from_amount=1,
+                            to_amount=to_amount,
+                            source='uniswap',
+                            from_currency='ETH',
+                            to_currency=token_name)
+                        print(f'Uniswap: ETH=>{token_name}:{to_amount}')
+
+                        to_amount_usd = (float(exchange['priceUSD']) + float(exchange['lastPriceUSD'])) / 2.
+                        ConversionRate.objects.create(
+                            from_amount=1,
+                            to_amount=to_amount_usd,
+                            source='uniswap',
+                            from_currency=token_name,
+                            to_currency='USDT')
+                        print(f'Uniswap: {token_name}=>USDT:{to_amount_usd}')
+                    except Exception as e:
+                        print(f'Error when storing Uniswap exchange data for token ${token_name}: ${str(e)}')
+                skip += query_limit
+            else:
+                raise Exception(f'Error when requesting Exchange data from Uniswap Graph node: {rs.reason}')
+        except Exception as e:
+            print(e)
 
 
 class Command(BaseCommand):
     """Define the management command to update currency conversion rates."""
 
     help = 'gets prices for all (or... as many as possible) tokens'
+
+    def add_arguments(self, parser):
+        parser.add_argument('perform_obj_updates', default='localhost', type=int)
 
     def handle(self, *args, **options):
         """Get the latest currency rates."""
@@ -193,14 +298,24 @@ class Command(BaseCommand):
             print(e)
 
         try:
-            print('cryptocompare')
-            cryptocompare()
+            print('polo')
+            polo()
         except Exception as e:
             print(e)
 
+
         try:
-            print('polo')
-            polo()
+            print('uniswap')
+            uniswap()
+        except Exception as e:
+            print(e)
+
+        if not options['perform_obj_updates']:
+            return
+
+        try:
+            print('cryptocompare')
+            cryptocompare()
         except Exception as e:
             print(e)
 

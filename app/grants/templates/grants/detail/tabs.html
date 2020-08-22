@@ -15,15 +15,11 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load static humanize i18n grants_extra %}
-<div class="px-lg-5">
-  <div id="grant-profile-tabs" class="tab-container font-body mt-5 mb-4">
-
-    <button type="button" id="nav-activity" href="{{grant.url}}?tab=activity" class="section-tab {% if tab == "activity" %} active {% endif %}">
-      {% trans "ACTIVITY" %}
-    </button>
+<div class="mx-0 ml-md-5 px-0 pl-md-3 pr-md-4">
+  <div id="grant-profile-tabs" class="tab-container font-body mt-2 mb-2">
 
     <button type="button" id="nav-description" href="{{grant.url}}?tab=description" class="section-tab {% if tab == "description" %} active {% endif %}">
-      {% trans "DESCRIPTION" %}
+      {% trans "SUMMARY" %}
     </button>
 
     <button type="button" id="nav-transactions" href="{{grant.url}}?tab=transactions" class="section-tab {% if tab == "transactions" %} active {% endif %}">
@@ -39,6 +35,11 @@
       {% trans "CONTRIBUTORS" %}
       <span class="nav-badge">({{ grant.contributor_count }})</span>
     </button>
+    {% if is_staff %}
+    <button type="button" id="nav-contributors" href="{{grant.url}}?tab=sybil_profile" class="section-tab {% if tab == "sybil_profile" %} active {% endif %}">
+      {% trans "SYBIL PROFILE" %}
+    </button>
+    {% endif %}
 
   </div>
 
@@ -47,12 +48,12 @@
     {% if tab == "activity" %}
     <div id="section-nav-activity" class="tab-section active">
       {% if is_team_member %}
-        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000  %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
       {% else %}
-        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
       {% endif %}
       <div id="activities" class="activity_stream container px-0">
-        {% include 'shared/activity_container.html' %}
+        {% include 'shared/activity_container.html' with pinned=False %}
       </div>
      
     </div>
@@ -60,6 +61,7 @@
 
     {% if tab == "description" %}
     <div id="section-nav-description" class="tab-section active">
+      <h4 class="m-0 p-0">Description</h4>
       <div id="editor">
         {% if grant.description_rich %}
           {{ grant.description_rich }}
@@ -68,6 +70,15 @@
         {% endif %}
       </div>
     </div>
+      <h4 class="m-0 p-0">Activity Feed</h4>
+      {% if is_team_member %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Update Grant's Funders" what="grant" whatid=grant.pk max_length=1000 suppress_data_toggle=1  %}
+      {% else %}
+        {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on grants wall" what="grant" whatid=grant.pk  suppress_data_toggle=1 %}
+      {% endif %}
+      <div id="activities" class="activity_stream container px-0">
+        {% include 'shared/activity_container.html' with pinned=False %}
+      </div>
     {% endif %}
 
     {% if tab == "transactions" %}
@@ -81,9 +92,129 @@
       </div>
     {% endif %}
 
-    {% if tab == "updates" %}
-      <div id="section-nav-summary">
-        {% include 'grants/detail/summary.html' %}
+
+
+    {% if tab == "sybil_profile" and is_staff %}
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js'></script>
+
+
+      <h4>Grant Sybil Profile</h4>
+
+      <hr>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      SybilScore ™️: {{ grant.sybil_score }}
+      <br>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      RiskScore ™️: {{ grant.weighted_risk_score }}
+      <pre>
+
+      A grant's SybilScore ™️ is calculated off of the total of suspicious activity on each of the following vectors:
+      - Account Metadata
+      - Suspicious Interactions
+      - Grant Flags Reports
+      - BrightID Trust Score (coming soon)
+      - KYC (maybe coming soon)
+      - MACI (maybe coming soon)
+
+      a grant's RiskScore ™️ is equal to its (SybilScore ™️)^2 * sqrt(its matching funds for this round).
+      </pre>
+      <div id="section-nav-sybil">
+        {% for ele in sybil_profiles%}
+        <h4>{{ele.0}}: (avg {{ele.1.1|floatformat:2}})</h4>
+        <table>
+          <tr>
+            <td>
+              Index
+            </td>
+            <td>
+              Contributors
+            </td>
+            <td>
+              Contributors (pct)
+            </td>
+            <td>
+              Contributions/Contributor
+            </td>
+            <td>
+              Profiles
+            </td>
+          </tr>
+        {% for sp in ele.1.0 %}
+          <tr style="border-top: 1px solid grey;">
+            <td>
+              {% if '0x' in sp.0 %}
+               <a href="https://etherscan.io/address/{{sp.0}}">{{sp.0}}</a>
+              {% else %}
+               {{sp.0}}
+              {% endif %}
+            </td>
+            <td>
+               {{sp.1}}
+            </td>
+            <td>
+               {{sp.5}}%
+            </td>
+            <td>
+               {{sp.3|floatformat:2}}
+            </td>
+            <td>
+              <div style="max-height: 50px; overflow: scroll;">
+                 {% for this_profile in sp.4 %}
+                      <a href="/{{this_profile}}">
+                        {% if forloop.counter < 20 %}
+                          <img data-src="/dynamic/avatar/{{this_profile}}" style="height: 20px; width: 20px; border-radius: 10px;">
+                        {% endif %}
+                        @{{this_profile}}
+                      </a>
+                 {% endfor %}
+               </div>
+            </td>
+          </tr>
+        {% endfor %}
+        </table>
+          <canvas id="myChart{{forloop.counter0}}" width="400" height="40"></canvas>
+          <script>
+          var ctx = document.getElementById('myChart{{forloop.counter0}}').getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: [{% for sp in ele.1.0 %}{{sp.0}}, {%endfor%}],
+                  datasets: [{
+                      label: 'Contributors by Sybil Score',
+                      data: [{% for sp in ele.1.0 %}{{sp.1}}, {%endfor%}],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  title: 'Contributors by Sybil Category',
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }
+          });
+          </script>
+
+        {% endfor %}
       </div>
     {% endif %}
 
@@ -125,7 +256,7 @@
           {% endif %}
           <a class="grant__stakeholders-item mr-3 mb-3" href="{% url 'profile' handle %}">
             <div class="mr-2 d-inline-block">
-              <img src="/dynamic/avatar/{{handle}}" />
+              <img data-src="/dynamic/avatar/{{handle}}" />
             </div>
             <div class="mt-1 d-inline-block">
               <span class="grant-profile font-weight-semibold">{{ handle }}</span><br>

@@ -34,16 +34,16 @@ from django.utils import timezone
 from app.utils import get_semaphore, sync_profile
 from bounty_requests.models import BountyRequest
 from dashboard.models import (
-    Activity, BlockedURLFilter, Bounty, BountyDocuments, BountyEvent, BountyFulfillment, BountyInvites,
-    BountySyncRequest, Coupon, HackathonEvent, UserAction,
+    Activity, BlockedURLFilter, Bounty, BountyEvent, BountyFulfillment, BountyInvites, BountySyncRequest, Coupon,
+    HackathonEvent, UserAction,
 )
 from dashboard.notifications import (
-    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_discord,
-    maybe_market_to_user_slack, notify_of_lowball_bounty,
+    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
+    notify_of_lowball_bounty,
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import ConversionRateNotFoundError, convert_amount
-from git.utils import get_gh_issue_details, get_url_dict
+from git.utils import get_gh_issue_details, get_url_dict, org_name
 from jsondiff import diff
 from marketing.mails import new_reserved_issue
 from pytz import UTC
@@ -126,32 +126,45 @@ def amount(request):
     """
     response = {}
 
-    try:
-        amount = str(request.GET.get('amount'))
-        if not amount.replace('.','').isnumeric():
-            return HttpResponseBadRequest('not number')
-        denomination = request.GET.get('denomination', 'ETH')
-        if not denomination:
-            denomination = 'ETH'
+    amount = str(request.GET.get('amount', '1'))
 
-        if denomination in settings.STABLE_COINS:
-            denomination = 'USDT'
-        if denomination == 'ETH':
+    if not amount.replace('.','').isnumeric():
+        return HttpResponseBadRequest('not number')
+
+    denomination = request.GET.get('denomination', 'ETH')
+    tokens = denomination.split(',')
+
+    response = []
+
+    for token in tokens:
+        if token in settings.STABLE_COINS:
+            token = 'USDT'
+        if token == 'ETH':
             amount_in_eth = float(amount)
         else:
-            amount_in_eth = convert_amount(amount, denomination, 'ETH')
-        amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
-        response = {
+            try:
+                amount_in_eth = convert_amount(amount, token, 'ETH')
+            except Exception as e:
+                logger.debug(e)
+                amount_in_eth = None
+        try:
+            if amount_in_eth:
+                amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
+            else:
+                amount_in_usdt = convert_amount(amount, token, 'USDT')
+
+        except Exception as e:
+            logger.debug(e)
+            amount_in_usdt = None
+
+        response.append({
+            'token': token,
+            'amount': float(amount),
             'eth': amount_in_eth,
-            'usdt': amount_in_usdt,
-        }
-        return JsonResponse(response)
-    except ConversionRateNotFoundError as e:
-        logger.debug(e)
-        raise Http404
-    except Exception as e:
-        logger.error(e)
-        raise Http404
+            'usdt': amount_in_usdt
+        })
+
+    return JsonResponse(response, safe=False)
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
@@ -171,6 +184,27 @@ def issue_details(request):
     token = request.GET.get('token', None)
     url = request.GET.get('url')
     url_val = URLValidator()
+    hackathon_slug = request.GET.get('hackathon_slug')
+    duplicates = request.GET.get('duplicates', False)
+    network = request.GET.get('network', 'mainnet')
+
+
+    if hackathon_slug:
+        sponsor_profiles = HackathonEvent.objects.filter(slug__iexact=hackathon_slug).prefetch_related('sponsor_profiles').values_list('sponsor_profiles__handle', flat=True)
+        org_issue = org_name(url).lower()
+
+        if org_issue not in sponsor_profiles:
+            message = 'This issue is not under any sponsor repository'
+            return JsonResponse({'status':'false','message':message}, status=404)
+
+    if duplicates:
+        if Bounty.objects.filter(github_url=url, network=network).exists():
+            message = 'Bounty already exists for this github issue'
+            response = {
+                'status': 422,
+                'message': message
+            }
+            return JsonResponse(response, status=422)
 
     try:
         url_val(url)
@@ -190,7 +224,8 @@ def issue_details(request):
             response['message'] = 'could not parse Github url'
     except Exception as e:
         logger.warning(e)
-        response['message'] = 'could not pull back remote response'
+        message = 'could not pull back remote response'
+        return JsonResponse({'status':'false','message':message}, status=404)
     return JsonResponse(response)
 
 
@@ -339,9 +374,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 if is_blocked(github_username):
                     continue
                 try:
-                    kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk
+                    kwargs['profile_id'] = Profile.objects.get(handle=github_username.lower()).pk
                 except Profile.MultipleObjectsReturned:
-                    kwargs['profile_id'] = Profile.objects.filter(handle__iexact=github_username).first().pk
+                    kwargs['profile_id'] = Profile.objects.filter(handle=github_username.lower()).first().pk
                 except Profile.DoesNotExist:
                     pass
             if fulfillment.get('accepted'):
@@ -350,10 +385,6 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             try:
                 created_on = timezone.now()
                 modified_on = timezone.now()
-                fulfiller_email = fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('email', '')
-                fulfiller_name = fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('name', '')
                 fulfiller_github_url = fulfillment.get('data', {}).get(
                     'payload', {}).get('fulfiller', {}).get('githubPRLink', '')
                 hours_worked = fulfillment.get('data', {}).get(
@@ -366,10 +397,12 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     hours_worked = None
 
                 new_bounty.fulfillments.create(
+                    funder_profile=new_bounty.bounty_owner_profile,
+                    funder_address=new_bounty.bounty_owner_address,
+                    payout_type='bounties_network',
+                    tenant = 'ETH',
+                    token_name=new_bounty.token_name,
                     fulfiller_address=fulfiller_address,
-                    fulfiller_email=fulfiller_email,
-                    fulfiller_github_username=github_username,
-                    fulfiller_name=fulfiller_name,
                     fulfiller_metadata=fulfillment,
                     fulfillment_id=fulfillment.get('id'),
                     fulfiller_github_url=fulfiller_github_url,
@@ -428,13 +461,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     except BountyRequest.DoesNotExist:
         pass
 
-    # check conditions for private repos
-    if metadata.get('repo_type', None) == 'private' and \
-        bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') != 'approval' and \
-            bounty_payload.get('schemes', {}).get('project_type', 'traditional') != 'traditional':
-            raise UnsupportedSchemaException('The project type or permission does not match for private repo')
-
-
     # Check if we have any fulfillments.  If so, check if they are accepted.
     # If there are no fulfillments, accepted is automatically False.
     # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
@@ -486,11 +512,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         if not latest_old_bounty:
             print("no latest old bounty")
             schemes = bounty_payload.get('schemes', {})
-            unsigned_nda = None
-            if bounty_payload.get('unsigned_nda', None):
-                unsigned_nda = BountyDocuments.objects.filter(
-                    pk=bounty_payload.get('unsigned_nda')
-                ).first()
             bounty_kwargs.update({
                 # info to xfr over from latest_old_bounty as override fields (this is because sometimes
                 # ppl dont login when they first submit issue and it needs to be overridden)
@@ -527,11 +548,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     timezone.datetime.fromtimestamp(metadata.get('featuring_date', 0)),
                     timezone=UTC),
                 'repo_type': metadata.get('repo_type', 'public'),
-                'unsigned_nda': unsigned_nda,
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
                 'bounty_owner_name': bounty_issuer.get('name', ''),
+                'payout_tx_id': '',
                 'admin_override_suspend_auto_approval': not schemes.get('auto_approve_workers', True),
                 'fee_tx_id': bounty_payload.get('fee_tx_id', '0x0'),
                 'fee_amount': bounty_payload.get('fee_amount', 0)
@@ -547,7 +568,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'bounty_owner_email', 'bounty_owner_name', 'github_comments', 'override_status', 'last_comment_date',
                     'snooze_warnings_for_days', 'admin_override_and_hide', 'admin_override_suspend_auto_approval',
                     'admin_mark_as_remarket_ready', 'funding_organisation', 'bounty_reserved_for_user', 'is_featured',
-                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'unsigned_nda', 'coupon_code',
+                    'featuring_date', 'fee_tx_id', 'fee_amount', 'repo_type', 'coupon_code',
                     'admin_override_org_name', 'admin_override_org_logo', 'bounty_state'
                 ],
             )
@@ -555,16 +576,13 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 latest_old_bounty_dict['bounty_reserved_for_user'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_reserved_for_user'])
             if latest_old_bounty_dict.get('bounty_owner_profile'):
                 latest_old_bounty_dict['bounty_owner_profile'] = Profile.objects.get(pk=latest_old_bounty_dict['bounty_owner_profile'])
-            if latest_old_bounty_dict['unsigned_nda']:
-                latest_old_bounty_dict['unsigned_nda'] = BountyDocuments.objects.filter(
-                    pk=latest_old_bounty_dict['unsigned_nda']
-                ).first()
             if latest_old_bounty_dict.get('coupon_code'):
                 latest_old_bounty_dict['coupon_code'] = Coupon.objects.get(pk=latest_old_bounty_dict['coupon_code'])
 
             bounty_kwargs.update(latest_old_bounty_dict)
         try:
             print('new bounty with kwargs:{}'.format(bounty_kwargs))
+            _ = bounty_kwargs.pop('payout_tx_id', None)
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details)
         except Exception as e:
@@ -587,6 +605,9 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
     except Exception as e:
         logger.error(e)
 
+    if latest_old_bounty:
+        new_bounty.set_view_count(latest_old_bounty.get_view_count)
+
     if latest_old_bounty and latest_old_bounty.event:
         new_bounty.event = latest_old_bounty.event
         new_bounty.save()
@@ -605,7 +626,7 @@ def merge_bounty(latest_old_bounty, new_bounty, metadata, bounty_details, verbos
         from marketing.mails import share_bounty
         from dashboard.utils import get_bounty_invite_url
         emails = []
-        inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
+        inviter = Profile.objects.get(handle=new_bounty.bounty_owner_github_username.lower())
         invite_url = get_bounty_invite_url(inviter, new_bounty.id)
         msg = "Check out this bounty that pays out " + \
             str(new_bounty.get_value_true) + new_bounty.token_name + invite_url
@@ -777,7 +798,6 @@ def get_fulfillment_data_for_activity(fulfillment):
         'fulfiller_address': fulfillment.fulfiller_address,
         'fulfiller_email': fulfillment.fulfiller_email,
         'fulfiller_github_username': fulfillment.fulfiller_github_username,
-        'fulfiller_name': fulfillment.fulfiller_name,
         'fulfiller_metadata': fulfillment.fulfiller_metadata,
         'fulfillment_id': fulfillment.fulfillment_id,
         'fulfiller_hours_worked': str(fulfillment.fulfiller_hours_worked),
@@ -796,7 +816,8 @@ bounty_activity_event_adapter = {
     'killed_bounty': 'cancel_bounty',
     'work_submitted': 'submit_work',
     'stop_work': 'stop_work',
-    'work_done': 'payout_bounty'
+    'work_done': 'payout_bounty',
+    'worker_paid': 'worker_paid'
 }
 
 
@@ -815,10 +836,11 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
         dashboard.Activity: The Activity object if user_profile is present or None.
 
     """
+
     user_profile = None
     fulfillment = _fulfillment
     try:
-        user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
+        user_profile = Profile.objects.filter(handle=new_bounty.bounty_owner_github_username.lower()).first()
         funder_actions = ['new_bounty',
                           'worker_approved',
                           'killed_bounty',
@@ -827,11 +849,12 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                           'bounty_changed']
         if event_name not in funder_actions:
             if not fulfillment:
-                fulfillment = new_bounty.fulfillments.order_by('-pk').first()
+                if new_bounty.fulfillments.exists():
+                    fulfillment = new_bounty.fulfillments.order_by('-pk').first()
                 if event_name == 'work_done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-            if fulfillment:
-                user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
+            if fulfillment and fulfillment.profile:
+                user_profile = fulfillment.profile
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
 
@@ -872,7 +895,7 @@ def record_user_action(event_name, old_bounty, new_bounty):
     user_profile = None
     fulfillment = None
     try:
-        user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
+        user_profile = Profile.objects.filter(handle=new_bounty.bounty_owner_github_username.lower()).first()
         fulfillment = new_bounty.fulfillments.order_by('pk').first()
 
     except Exception as e:
@@ -974,7 +997,6 @@ def process_bounty_changes(old_bounty, new_bounty):
         print("============ posting ==============")
         did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
         did_post_to_user_slack = maybe_market_to_user_slack(new_bounty, event_name)
-        did_post_to_user_discord = maybe_market_to_user_discord(new_bounty, event_name)
         did_post_to_github = maybe_market_to_github(new_bounty, event_name, profile_pairs)
         did_post_to_email = maybe_market_to_email(new_bounty, event_name)
         print("============ done posting ==============")
@@ -986,7 +1008,6 @@ def process_bounty_changes(old_bounty, new_bounty):
             'did_post_to_github': did_post_to_github,
             'did_post_to_slack': did_post_to_slack,
             'did_post_to_user_slack': did_post_to_user_slack,
-            'did_post_to_user_discord': did_post_to_user_discord,
             'did_post_to_twitter': False,
         }
 

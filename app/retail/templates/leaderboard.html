@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+  {% load chartit %}
     <meta name="title" content="Leaderboards - Best in Bounties | Gitcoin">
     <meta name="description" content="See the Top Earners, Payers, Orgs, Tokens and Keywords on Gitcoin.">
     {% include 'shared/head.html' %}
@@ -16,6 +17,7 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
     </div>
+
     <div class="row no-gutter">
       <div class="col body leaderboard-container">
         <div class="container-fluid leaderboard">
@@ -26,7 +28,7 @@
                   {% for podium_item in podium_items %}
                     <div class="winner mt-5">
                       {% if not is_linked_to_profile %}
-                        <a href="{{ podium_item.url }}" target="_blank">
+                        <a href="{{ podium_item.url }}" data-usercard="{{ podium_item.url }}" target="_blank">
                           <img class="img-fluid"  src="{{ podium_item.avatar_url }}" >
                         </a>
                       {% endif %}
@@ -58,6 +60,11 @@
 
                   <div class="col-12 my-auto col-lg-6 text-center text-md-left">
                     <h1 class="font-header font-weight-semibold mb-lg-0">{{title}}</h1>
+                    {% if last_update %}
+                    <p class="mt-2">Last update: {{last_update | naturaltime}}
+                      <BR>
+                      Next update: {{next_update | naturaltime}}
+                    {% endif %}
                   </div>
                   <div class="col-12 col-sm-6 col-lg-3 mx-auto my-2 my-md-0 text-center text-sm-right text-lg-left">
                   </div>
@@ -126,6 +133,14 @@
                     </p>
                   </div>
                 {% else %}
+
+              {% if cht %}
+                <div class="row no-gutter">
+                  <div id="container" style="width:100%;"> Chart will be rendered here 
+                  </div>
+                </div>
+              {% endif %}
+
                 <div class="row">
                   <table class="table table-hover leaderboard_entry font-weight-semibold mb-0">
                     <thead>
@@ -144,10 +159,12 @@
                           <td class="col-6 d-flex align-items-center" >
                             {% if not is_linked_to_profile %}
                               <img class="img-fluid"  data-src="{{item.avatar_url}}">
+                            {% elif key == "countries" %}
+                              <img class="img-fluid"  data-src="{{flag}}">
                             {% endif %}
                             <div class="ml-3 item-count-bounties" style="white-space: nowrap">
                               {% if not is_linked_to_profile %}
-                                <a href="/profile/{{item.github_username}}" target="_blank" >
+                                <a href="/profile/{{item.github_username}}" data-usercard="{{item.github_username}}" target="_blank" >
                                   {{item.at_ify_username}}
                                 </a>
                               {% else %}
@@ -195,13 +212,15 @@
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
-
+  <script src="{% static "v2/js/user_card.js" %}"></script>
   <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
   <script>
     $(document).ready(function() {
       $("img").unveil(200);
     });
   </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  {{ cht|load_charts:"container" }}
 
 
 </html>

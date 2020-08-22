@@ -19,88 +19,108 @@
   <div class="grant-item__img">
     <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
   </div>
-  <div class="grant-item__content py-4 px-3">
+  {% comment %}
+  <div class="grant-item__logo ml-3">
+    <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} {% endif %}">
+  </div>
+  {% endcomment %}
+
+  <div class="grant-item__content px-3">
     <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id grant.slug %}">{{ grant.title|truncatechars:60 }}</a></h2>
-    <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:145 }}</p>
-    <div class="grant-item__footer">
-      <div class="grant-item__owner">
+    <p class="grant-item__pitch font-caption mb-2">{{ grant.description|truncatechars:145 }}</p>
+    <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
+      <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
+      Last Update: {% if grant.last_update %}{{ grant.last_update|naturaltime }} {% else %} Before Round 6{% endif %}
+
+      {% if is_staff %}
+      <hr>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      SybilScore ™️: {{ grant.sybil_score }}
+      <br>
+      <i class="fa fa-lock" aria-hidden="true"></i>
+      RiskScore ™️: {{ grant.weighted_risk_score }}
+      {% endif %}
+
+    </p>
+
+    <div class="grant-item__owner">
         <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
-        <a href="{% url 'profile' grant.admin_profile.handle %}" target="_blank" rel="noopener noreferrer">
+        <a href="{% url 'profile' grant.admin_profile.handle %}" data-usercard="{{ grant.admin_profile.handle }}" target="_blank" rel="noopener noreferrer">
           <div class="grant-item__owner mt-3 mb-4">
             <div class="grant-item__owner-image ml-2">
               <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
             </div>
             <div class="grant-item__owner-handle font-body">
               <span class="ml-2">
-                  {{ grant.admin_profile.handle|default:'anonymous' }}
+                {{ grant.admin_profile.handle|default:'anonymous' }}
               </span>
             </div>
           </div>
         </a>
       </div>
+  </div>
+  <div class="grant-item__footer">
+      {% if 1 %}
+        <div class="clr mb-3">
+          <div class="match__round pb-1 pt-2 mb-2">
+            <h2 class="title col-8 font-caption g-bold">
+                CLR MATCH ROUND 6
+            </h2>
+          </div>
+          <div class="col-6 float-right px-0">
+            <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+              {{grant.amount_received_in_round|floatformat:2}} DAI
+            </h2>
+            <p class="amount mb-2 font-caption font-weight-semibold">
+            raised from {{grant.positive_round_contributor_count}} contributors
+            </p>
+          </div>
+          <div class="col-6">
+            {% if grant.is_clr_eligible %}
+              <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
+              </h2>
+              <p class="amount mb-2 font-caption font-weight-semibold">
+              {% if grant.id in round_5_5_grants %}
+                Current Round 5.5 Match
+              {% else %}
+                Final CLR Match
+              {% endif %}
+              </p>
+            {% else %}
+              <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+              </h2>
+              <p class="amount mb-2 font-caption font-weight-semibold">MONTHLY RECURRING</p>
+            {% endif %}
+          </div>
+        </div>
 
-      <div class="row progress-container mb-2">
-        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6 mb-4 mb-xl-0 ">
-          {% if show_clr_card %}
-            {% include 'grants/card/clr_match.html' %}
+        {% if grant.is_clr_eligible %}
+          <div class="col-12 pb-3">
+            {% include 'grants/card/clr_estimate.html' with short=True %}
+          </div>
+        {% else %}
+          <h2 class="font-subheader text-center amount pt-4 mb-3" style="color:#069953">
+            NOT ELIGIBLE FOR CLR
+          </h2>
+        {% endif%}
+
+        <div class="col-12 pb-4">
+          {% is_team_member grant profile as is_on_team %}
+          {% if not is_on_team %}
+          <form class="js-addDetailToCart-form">
+            {% include 'grants/shared/hidden_inputs.html' %}
+            <button class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
+              + Add to Cart
+            </button>
+          </form>
           {% else %}
-            <p class="sub-title font-weight-semibold font-caption mb-1 py-1">MONTHLY RECURRING</p>
-            <p class="font-title mb-0 font-weight-bold">
-              {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
-            </p>
-            <p class="font-caption {% if grant.clr_matching %} mb-2 {% endif %}">
-              of {{ grant.amount_goal|floatformat:0|intcomma }} DAI goal
-            </p>
+            <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1">
+              <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
+            </button>
           {% endif %}
         </div>
-
-        <div class="col-6 text-center text-xl-left offset-xl-0 col-xl-6">
-          <p class="sub-title mb-1 font-weight-semibold font-caption mb-1 py-1">TOTAL FUNDED</p>
-          <p class="font-title mb-0 font-weight-bold">
-            {{ grant.amount_received_with_phantom_funds|floatformat:0|intcomma }} DAI
-          </p>
-
-          {% include 'grants/card/clr_estimate_prev.html' %}
-
-        </div>
-      </div>
-
-      {% if clr_active %}
-        {% include 'grants/card/clr_estimate.html' %}
       {% endif %}
-
-      <div class="grant-item__state mt-2 row">
-        <div class="col-3">
-          {% if grant.active %}
-            <div class="grant-item__state-active">
-              <div class="inner"></div>
-            </div>
-            <span class="grant-item__state-label font-caption">Active</span>
-          {% else %}
-            <div class="grant-item__state-completed">
-              <div class="inner"></div>
-            </div>
-            <span class="grant-item__state-label font-caption">Completed</span>
-          {% endif %}
-        </div>
-        {% if grant.active and grant.activeSubscriptions %}
-          <div class="col-9 text-right mt-1 font-caption font-weight-semibold">
-            {{ grant.contribution_count}}
-            contribution{% if grant.contribution_count > 1 %}s{% endif %} by {{ grant.contributor_count}}
-            contributor{% if grant.contributor_count > 1 %}s{% endif %}
-          </div>
-        {% endif %}
-      </div>
-
-      <div class="mt-2 row">
-        <div class="col">
-          <div>
-            {% for category in grant.categories.all %}
-              <span class="badge badge-primary">{{category.category}}</span>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </a>

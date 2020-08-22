@@ -1,0 +1,138 @@
+{% extends 'onepager/base.html' %}
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block 'scripts' %}
+  {% include 'shared/current_profile.html' %}
+  <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/lib/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "onepager/js/send.js" %}"></script>
+  <script src="{% static "onepager/js/request.js" %}"></script>
+  <script src="{% static "onepager/js/confetti.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
+{% endblock %}
+<!-- Main -->
+{% block 'main' %}
+<link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
+<style>
+  #ethinfo-tooltip {
+    top: 19.5rem;
+    left: 25rem;
+    max-width: 80%;
+    z-index: 10000;
+  }
+
+  @media only screen and (max-width: 1050px) {
+    #ethinfo-tooltip {
+      top: 21rem;
+      left: 3.5rem;
+    }
+  }
+
+  .send2 .navbar-network {
+    padding: 3px;
+  }
+
+  .pb-1 {
+    padding-bottom: 1rem;
+  }
+
+  #fromName,
+  #advanced_toggle,
+  .to_name .select2-container,
+  .terms {
+    margin-top: 0.75rem;
+  }
+
+  .amount > span {
+    margin: 0;
+      width: 100% !important;
+  }
+</style>
+<div>
+  <canvas id="world" style="position:fixed; top:0px; left: 0px;"></canvas>
+</div>
+<section id="main" style="padding-top: 1.5rem; margin-top: 1.5rem;">
+  <header>
+    <span class="avatar">
+      <a href="{% url "request_money" %}">
+        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" alt="Helmet" />
+      </a>
+    </span>
+  </header>
+  <div id="send_eth">
+    <h1>{% trans "Request money." %}</h1>
+    {% csrf_token %}
+    <div>
+      <div class="pb-1 my-3 to_name">
+        <label class="mb-3 ">{% trans "To Github Username" %}</label>
+        <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;">
+          {% if user_json %}
+          <option value="{{ user_json.id }}" avatar_id="{{ user_json.avatar_id }}" avatar_url="{{ user_json.avatar_url }}"  preferred_payout_address="{{ user_json.preferred_payout_address }}">{{ user_json.text }}</option>
+          {% endif %}
+        </select>
+      </div>
+      <div class="my-3 pb-1 network d-flex align-items-center">
+        <label class="my-0 pl-0 col-3 text-left" style="height: 100%">{% trans "Network" %}</label>
+        <select id="network" class="mt-1 custom-select">
+          <option value="ETH">Ethereum</option>
+          <option value="ETC">ETC</option>
+          <option value="BCH">Bitcoin Cash</option>
+          <option value="BTC">Bitcoin</option>
+          <option value="SIA">Sia</option>
+        </select>
+      </div>
+      <div class="my-3 pb-1 amount d-flex align-items-center justify-content-between">
+        <label class="my-0 pl-0 col-3 text-left" style="height: 100%">{% trans "Amount of" %}</label>
+        <select class="col-4" id="token" class="mt-1 custom-select" name="denomination">
+          <option value="0x0">ETH</option>
+          <option value="" disabled="disabled" class="loading_tokens">(Loading Tokens from Web3 Wallet)</option>
+        </select>
+        <input class="ml-3 col-4" name="amount" type="text" placeholder="1.1" id="amount" value="">
+      </div>
+      <div class="pb-1 my-3 address">
+        <label>{% trans "Address" %}:</label> <br>
+        <input name="address" type="text" id="address" value="{{preferred_payout_address}}" readonly required placeholder="Connect your wallet">
+      </div>
+      <div class="my-2 comments">
+        {% trans "Comments" %}:
+        <textarea id="comments" placeholder="I did X work for you."></textarea>
+      </div>
+      <div class="terms pb-1">
+        <input type="checkbox" id="tos" value="1" >
+        <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
+      </div>
+      <a href="#" id="request" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
+    </div>
+  </div>
+</section>
+
+  {% if not user_json and username %}
+    <script>
+    setTimeout(function() {
+      _alert("Sorry, we can't find the user");
+    }, 1000);
+    </script>
+  {% endif %}
+{% endblock %}

@@ -145,7 +145,7 @@ $(document).ready(function() {
   });
   $('.select_avatar_type:first').click(); // set default tab
 
-  function save3DAvatar() {
+  function save3DAvatar(onSuccess) {
     $(document).ajaxStart(function() {
       loading_button($('#save-3d--avatar'));
     });
@@ -162,8 +162,12 @@ $(document).ready(function() {
       dataType: 'json',
       contentType: 'application/json; charset=utf-8',
       success: function(response) {
-        _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
-        changeStep(1);
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
+          changeStep(1);
+        }
       },
       error: function(response) {
         let text = gettext('Error occurred while saving. Please try again.');
@@ -180,6 +184,29 @@ $(document).ready(function() {
     save3DAvatar();
   });
 
+  function upload3DAvatars() {
+
+    save3DAvatar(() => {
+      _alert({ message: gettext('The avatar has been saved to GitCoin profile. Now upload to 3Box...') }, 'success');
+      if (window.syncTo3Box) {
+        syncTo3Box({
+          onLoading,
+          models: ['custom avatar']
+        });
+      }
+    });
+
+    const onLoading = (loading) => {
+      if (loading) {
+        loading_button($('#save-3d--avatar'));
+      } else {
+        unloading_button($('#save-3d-avatar'));
+      }
+    };
+  }
+  $('#upload-3d-avatar').click(function() {
+    upload3DAvatars();
+  });
 
   jQuery.fn.random = function() {
     var randomIndex = Math.floor(Math.random() * this.length);

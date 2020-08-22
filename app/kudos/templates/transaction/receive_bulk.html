@@ -24,16 +24,23 @@
 <!-- Main -->
 <section id="main" class="box-transaction">
   <header class="text-center">
-  <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid %} style="display:none;" {% endif %}>
+  <div id="receove_eth_done" class="text-center" {% if not kudos_transfer.receive_txid and kudos_transfer.tx_status != 'not_subed' %} style="display:none;" {% endif %}>
     <h1>{% trans "Congrats!" %} 🎉</h1>
     <p>You've received a "{{ coupon.token.humanized_name }}" Kudos 
-      {% if kudos_transfer.receive_txid != 'pending_celery' %}
+      {% if kudos_transfer.tx_status == 'not_subed' %}
+      to your Gitcoin profile.  The web3 transaction will be submitted when gas fees are below 10 gWei.
+      {% elif kudos_transfer.receive_txid != 'pending_celery' %}
         via transaction <a href="https://etherscan.io/tx/{{kudos_transfer.receive_txid}}"><span id="trans_id">{{kudos_transfer.receive_txid}}</span></a>
       {% else %}
       {% endif %}
 
     .</p>
-    <p>{% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
+    <p>
+      {% if kudos_transfer.tx_status == 'not_subed' %}
+      Once the web3 transaction has been submitted, 
+      {% endif %}
+
+      {% trans "You can see your kudos in any web3 wallet that supports ERC-721-compliant NFTs, or in your" %} <a href="{% url 'profile' %}">Gitcoin {% trans "profile" %}</a>.</p>
       {% include 'shared/twitter.html' %}
       <p>
         <a class="twitter-share-button"
@@ -64,9 +71,22 @@
 
       <br>
       <span id="kudosComment" class="d-block">
-        <h3><a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }} </span>{% trans "Kudos" %}</a></h3>
+        <h3 class="mb-0 pb-0">
+          <a style='color:black; text-decoration: underline;' href="{{coupon.token.url}}"><span id="kudosName" data-kudosname="{{ coupon.token.name }}" >{{ coupon.token.humanized_name }}</span></a>
+          {% trans "Kudos" %}{% if coupon.token.artist %},{% endif %} 
+          </h3>
+          {% if coupon.token.artist %}
+          <h4 class="mt-0 pt-0">
+          created w 💓 by <img style="width: 30px; height: 30px; border-radius: 20px;" src="/dynamic/avatar/{{coupon.token.artist}}" > <a href="/profile/{{coupon.token.artist}}/kudos" title="@{{ coupon.token.artist }} has this kudos on {{coupon.token.created_on}}" style="color:black; text-decoration: underline;"> digital artist, {{coupon.token.artist}}</a>. 
+            <hr>
+          </h4>
+          {% endif %}
+
+
+
         {% if coupon.comments_to_put_in_kudos_transfer %}
-        with an attached message, just for you:
+        <img style="max-height: 25px; max-width: 25px;" src="/dynamic/avatar/{{coupon.sender_profile.handle}}">
+      <a style='color:black; text-decoration: underline;' href="{{coupon.sender_profile.url}}">@{{coupon.sender_profile.handle}}</a> sent this kudos w. an attached message, just for you:
         <p style="
     width: 80%;
     height: 100px;
@@ -100,7 +120,7 @@
         {% trans "Logged in as" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">{% trans "Login" %}</a>) {% endif %}
         <input type="text" placeholder="@username" id="user" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" disabled="disabled" class='form-control'  required >
         {% if not request.user.is_authenticated %}
-        <p style="color:red;">{% trans "You must be logged in to receive this kudos." %}</p>
+        <p style="color:red;">{% trans "You must be logged in to receive this coupon.token." %}</p>
         {% endif %}
       </div>
 
@@ -112,18 +132,44 @@
 
       <div class="form-check">
         <input type="checkbox" name="save_addr" id="save_addr" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{% endif %} >
-        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
+        <label for=save_addr>{% trans "Save this address as my direct payment address" %}
+          <BR> - (Optional, but recommended)</label>
       </div>
 
-      <div class="form-check mb-3">
+      <div class="form-check">
         <input type="checkbox" id="tos" value="1" class="form-check-input" required>
-        <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %}</a>.</label>
+        <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %} </a>. 
+        <BR>
+        - (Required)</label>
       </div>
 
+      <div class="form-check mt-2">
+        <input type="checkbox" name="pay_gas" id="pay_gas" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{% endif %}>
+        <label for=pay_gas>Chip in {{gas_amount}} ETH in gas money
+          <BR>
+        {% if coupon.is_paid_right_now %}
+            {% if coupon.make_paid_for_first_minutes > 99999 %}
+              - (Required)
+            {% else %}
+              - (Required now, optional <span class="m-0" data-time="{{coupon.paid_until|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
+            {% endif %}
 
-      <div class="text-center">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs %}disabled=disabled{% endif %} >
+        {% else %}
+          - (Optional, but recommended)
+        {% endif %}
+
+      </label>
+      </div>
+
+      <div class="text-center mt-3">
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="🌈 {% trans "Redeem" %} Kudos 🏳️‍🌈" {% if disable_inputs or coupon.is_paid_right_now %}disabled=disabled{% endif %} >
         <br>
+        {% if coupon.is_paid_right_now and coupon.make_paid_for_first_minutes <= 99999 %}
+          <span id="free_countdown">
+            (free <span class="m-0" data-time="{{coupon.paid_until|date:'c'}}" data-base_time="{{now|date:'Y-m-d H:i'}}"></span>)
+          </span>
+          <br>
+        {% endif %}
         <br>
         <a href="{% url 'kudos_about' %}">{% trans 'What is Kudos? ' %}🤔</a>
       </div>
@@ -162,6 +208,7 @@
 <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
 <script>
   document.network = '{{coupon.token.contract.network}}';
+  document.gas_amount = {{gas_amount}};
   $(document).ready(function(){
     {% if error %}
       _alert('{{error}}', 'error');

@@ -17,11 +17,12 @@
 {% load i18n humanize %}
 
 <style>
+  ul {
+    padding-left: 0;
+  }
+
   .bounty-box {
-    margin-bottom: 1em;
-    padding-top: 1.5em;
-    padding-bottom: 1em;
-    border: 1px solid #e0e0e0;
+    padding-top: 0.25em;
   }
 
   .bounty-avatar {
@@ -52,22 +53,27 @@
 </style>
 
 <div class="text-center bounty-box">
-  {% if primer %}
-    <div class="bounty-primer">
-      <p>{{ primer }}<p>
-    </div>
-  {% endif %}
-  <div class="bounty">
-    <div class="bounty-avatar">
-      <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{ bounty.avatar_url }}">
-    </div>
-    <div class="bounty-contents">
-      {% if bounty.title %}
-        <p class="bounty_title">
-          <b>{{ bounty.org_name }}</b>: {{ bounty.title }}
-        </p>
+  <ul>
+    <li style="list-style:none; margin-left: 0;">
+      {% if bounty.avatar_url %}
+        <img style="border-radius: 20px; display: block; margin-left: auto; margin-right: auto; margin-bottom: 0.5em" src="{{ bounty.avatar_url }}" width=50px height=50px>
+        <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ bounty.org_name }}</a>
+      {% else %}
+        * <strong>{{ bounty.org_name }}</strong>
       {% endif %}
-
+        <p style="margin-bottom: 10px; margin-top:0">
+          {% if primer %}
+            {{ primer }}
+          {% elif bounty.title %}
+            {% if bounty.value_true and bounty.token_name %}
+              ({{ bounty.value_true|floatformat }} {{ bounty.token_name }}) - 
+            {% endif %}
+            {{ bounty.title }}
+          {% endif %}
+        </p>
+      </li>
+    </ul>
+      
       {% if not small %}
         {% if bounty.keywords %}
           <p>
@@ -78,16 +84,14 @@
         <p>
           <b>Github:</b> <a href="{{ bounty.github_url }}">{{ bounty.github_url }}</a>
         </p>
-      {% endif %}
 
-      <p>
-        <b>Amount:</b> {{ bounty.value_true }} {{ bounty.token_name }}
-        {% if bounty.value_in_usdt_now %}
-          (about {{ bounty.value_in_usdt_now }} USD @ ${{ bounty.token_value_in_usdt_now }}/{{ bounty.token_name }})
-        {% endif %}
-      </p>
+        <p>
+          <b>Amount:</b> {{ bounty.value_true }} {{ bounty.token_name }}
+          {% if bounty.value_in_usdt_now %}
+            (about {{ bounty.value_in_usdt_now }} USD @ ${{ bounty.token_value_in_usdt_now }}/{{ bounty.token_name }})
+          {% endif %}
+        </p>
 
-      {% if not small %}
         <p>
           <b>{% trans "Status" %}:</b> {{ bounty.status }}
           {% if bounty.status == 'submitted' %}
@@ -133,8 +137,5 @@
           </p>
         {%  endif %}
       {% endif %}
-    </div>
-  </div>
-    <hr>
     {% include 'emails/shared_bounty_actions.html' %}
 </div>

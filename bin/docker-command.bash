@@ -57,6 +57,7 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
 
     if [ "$DISABLE_INITIAL_LOADDATA" != "on" ]; then
 
+        python3 manage.py loaddata app/fixtures/oauth_application.json
         python3 manage.py loaddata app/fixtures/users.json
         python3 manage.py loaddata app/fixtures/economy.json
         python3 manage.py loaddata app/fixtures/profiles.json

@@ -174,6 +174,10 @@ def select_preset_avatar(request):
     return JsonResponse(response, status=response['status'])
 
 
+class AvatarNotFoundException(Exception):
+    pass
+
+
 def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
     icon_size = (215, 215)
@@ -187,9 +191,11 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     if _org_name:
         try:
             profile = Profile.objects.prefetch_related('avatar_baseavatar_related')\
-                .filter(handle__iexact=_org_name).first()
-            if profile and profile.active_avatar:
-                avatar_file, content_type = profile.active_avatar.determine_response(request.GET.get('email', False))
+                .filter(handle=_org_name.lower()).first()
+            if profile and profile.active_avatar_nocache:
+                avatar_file, content_type = profile.active_avatar_nocache.determine_response(
+                    request.GET.get('email', False)
+                )
                 if avatar_file:
                     return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:
@@ -208,7 +214,8 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
             _org_name = org_name(repo_url)
 
         filepath = get_avatar(_org_name)
-
+        if isinstance(filepath, JsonResponse):
+            raise AvatarNotFoundException('no avatar found')
         # new image
         img = Image.new('RGBA', icon_size, (255, 255, 255))
 
@@ -225,6 +232,8 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
         response = HttpResponse(content_type='image/png')
         img.save(response, 'PNG')
         return response
+    except AvatarNotFoundException:
+        return get_err_response(request, blank_img=(_org_name == 'Self'))
     except (AttributeError, IOError, SyntaxError) as e:
         logger.error('Handle Avatar - Response error: (%s) - Handle: (%s)', str(e), _org_name)
         logger.exception(e)

@@ -95,10 +95,31 @@ def chat_users():
     from chat.tasks import get_driver
     try:
         chat_driver = get_driver()
-        stats_request = chat_driver.users.get_stats()
+        stats_request = chat_driver.system.get_analytics({'name': 'standard', 'team_id': ''})
+        stats_request = { ele['name']: ele["value"] for ele in stats_request }
         Stat.objects.create(
             key='chat_total_users',
-            val=stats_request['total_users_count'],
+            val=stats_request['unique_user_count'],
+        )
+        Stat.objects.create(
+            key='chat_daily_active_users',
+            val=stats_request['daily_active_users'],
+        )
+        Stat.objects.create(
+            key='chat_monthly_active_users',
+            val=stats_request['monthly_active_users'],
+        )
+        Stat.objects.create(
+            key='chat_total_post_counts',
+            val=stats_request['post_count'],
+        )
+        Stat.objects.create(
+            key='chat_total_public_channels',
+            val=stats_request['channel_open_count'],
+        )
+        Stat.objects.create(
+            key='chat_total_private_channels',
+            val=stats_request['channel_private_count'],
         )
         hack_team_stats = chat_driver.teams.get_team_stats(
             settings.GITCOIN_HACK_CHAT_TEAM_ID
@@ -478,15 +499,6 @@ def bounties_fulfilled():
     Stat.objects.create(
         key='bounties_fulfilled',
         val=(Bounty.objects.current().filter(network='mainnet', idx_status='done').count()),
-        )
-
-
-def ens():
-    from enssubdomain.models import ENSSubdomainRegistration
-
-    Stat.objects.create(
-        key='ens_subdomains',
-        val=(ENSSubdomainRegistration.objects.count()),
         )
 
 

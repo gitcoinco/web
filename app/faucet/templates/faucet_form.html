@@ -91,10 +91,6 @@
               <div class="fail_message mt-4">
                 <p class="mb-0">{% trans "Your request for a faucet distribution has been received." %}</p>
                 <p class="mb-3">{% trans "The Gitcoin team will review your request shortly." %}</p>
-                <p class="mb-0">{% trans "While you wait, why not create an *free* Gitcoin ENS name?" %}</p>
-                <a class="link" href="{% url 'ens' %}">
-                  {{ user.username }}.gitcoin.eth is available.  Click here to register it!
-                </a>
               </div>
             </div>
             <div id="fail_container" class="mt-2 faucet_response">
@@ -114,10 +110,10 @@
       </div>
     </div>
     {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    
+
 
   {% csrf_token %}
   <script>
@@ -129,6 +125,5 @@
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/faucet_form.js" %}"></script>
 </html>

@@ -3,7 +3,6 @@ const editableFields = [
   '#form--input__reference-url',
   '#contract_owner_address',
   '#grant-members',
-  '#amount_goal',
   '#grant-categories'
 ];
 
@@ -25,25 +24,15 @@ function getCategoryIndex(categoryName, categories) {
   return '-1';
 }
 
-function updateValuesOfExistingCategories() {
-  $.get('/grants/categories', data => {
-    if (!data || !data.categories) {
-      return;
-    }
-
-    $('#grant-categories option:selected').each(function() {
-      const categoryName = $(this).text();
-
-      const categoryIndex = getCategoryIndex(categoryName.toLowerCase(), data.categories);
-
-      $(this).val(categoryIndex);
-    });
-  });
-}
-
 function initGrantCategoriesInput() {
-  grantCategoriesSelection('#grant-categories', '/grants/categories');
-  updateValuesOfExistingCategories();
+  const grant_type = $('#grant-type').html();
+
+  if (grant_type && grant_type.length > 0) {
+    grantCategoriesSelection(
+      '#grant-categories',
+      `/grants/categories?type=${grant_type.toLowerCase()}`
+    );
+  }
 }
 
 $(document).ready(function() {
@@ -51,13 +40,30 @@ $(document).ready(function() {
   addGrantLogo();
   initGrantCategoriesInput();
 
+
+  var lgi = localStorage.getItem('last_grants_index');
+  var lgt = localStorage.getItem('last_grants_title');
+
+  if (lgi) {
+    $('#backgrants').attr('href', lgi);
+    $('#backgrants').html('<i class="fas fa-chevron-left mr-2"></i> Back to ' + lgt);
+  }
+
+  var algi = localStorage.getItem('last_all_grants_index');
+  var algt = localStorage.getItem('last_all_grants_title');
+
+  if (algi) {
+    $('#cart_backgrants').attr('href', algi);
+    $('#cart_backgrants').html('<i class="fas fa-chevron-left mr-2"></i> Back to ' + algt);
+  }
+
   setInterval (() => {
     notifyOwnerAddressMismatch(
       $('#grant-admin').text(),
-      $('#contract_owner_address').text(),
+      $('#grant_contract_owner_address').text(),
       '#cancel_grant',
       'Looks like your grant has been created with ' +
-      $('#contract_owner_address').text() + '. Switch to take action on your grant.'
+      $('#grant_contract_owner_address').text() + '. Switch to take action on your grant.'
     );
 
     if ($('#cancel_grant').attr('disabled')) {
@@ -70,6 +76,36 @@ $(document).ready(function() {
       $('#cancel_grant_tooltip').attr('data-original-title', '');
     }
   }, 1000);
+
+  $('#flag').click(function(e) {
+    e.preventDefault();
+    const comment = prompt('What is your reason for flagging this Grant?');
+
+    if (!comment) {
+      return;
+    }
+    const data = {
+      'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+      'comment': comment
+    };
+
+    if (!document.contxt.github_handle) {
+      _alert({ message: gettext('Please login.') }, 'error', 1000);
+      return;
+    }
+    $.ajax({
+      type: 'post',
+      url: $(this).data('href'),
+      data,
+      success: function(json) {
+        _alert({ message: gettext('Your flag has been sent to Gitcoin.') }, 'success', 1000);
+      },
+      error: function() {
+        _alert({ message: gettext('Your report failed to save Please try again.') }, 'error', 1000);
+      }
+    });
+
+  });
 
   userSearch('#grant-members', false, undefined, false, false, true);
   $('.select2-selection__rendered').removeAttr('title');
@@ -87,7 +123,6 @@ $(document).ready(function() {
     $('#edit-details').addClass('hidden');
     $('#save-details').removeClass('hidden');
     $('#cancel-details').removeClass('hidden');
-    $('#edit-amount_goal').removeClass('hidden');
     $('.grant__progress').addClass('hidden');
 
     $('#section-nav-description .ql-toolbar').css('display', 'inherit');
@@ -104,7 +139,6 @@ $(document).ready(function() {
     $('#edit-details').removeClass('hidden');
     $('#save-details').addClass('hidden');
     $('#cancel-details').addClass('hidden');
-    $('#edit-amount_goal').addClass('hidden');
     $('.grant__progress').removeClass('hidden');
 
     $('#section-nav-description .ql-toolbar').css('display', 'none');
@@ -112,14 +146,12 @@ $(document).ready(function() {
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
-    let edit_amount_goal = $('#amount_goal').val();
     let edit_grant_members = $('#grant-members').val();
     let edit_categories = $('#grant-categories').val();
 
     let data = {
       'edit-title': edit_title,
       'edit-reference_url': edit_reference_url,
-      'edit-amount_goal': edit_amount_goal,
       'edit-grant_members[]': edit_grant_members,
       'edit-categories[]': edit_categories
     };
@@ -176,8 +208,7 @@ $(document).ready(function() {
         deployedSubscription.methods.endContract()
           .send({
             from: accounts[0],
-            gas: 3000000,
-            gasPrice: web3.utils.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gas: 3000000
           }).on('transactionHash', function(transactionHash) {
             grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
             const linkURL = get_etherscan_url(transactionHash);
@@ -229,7 +260,7 @@ const copyDuplicateDetails = () => {
 
   $('#cancel-details').on('click', () => {
     editableFields.forEach(field => {
-      if (field == '#grant-members')
+      if ([ '#grant-members', '#grant-categories' ].includes(field))
         $(field).val(obj[field]).trigger('change');
       else
         $(field).val(obj[field]);
@@ -241,4 +272,5 @@ $(document).ready(() => {
   $('#grant-profile-tabs button').click(function() {
     document.location = $(this).attr('href');
   });
+  $('.select2-selection__choice').removeAttr('title');
 });

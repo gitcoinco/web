@@ -18,6 +18,7 @@ Vue.mixin({
 
       $.when(getNotifications).then(function(response) {
         newNotifications = newData(response.data, vm.notifications);
+
         newNotifications.forEach(function(item) {
           vm.notifications.push(item);
         });
@@ -247,30 +248,3 @@ const newData = (newObj, oldObj) => {
   });
 };
 
-Vue.filter('moment-fromnow', function(date) {
-  moment.defineLocale('en-custom', {
-    parentLocale: 'en',
-    relativeTime: {
-      future: 'in %s',
-      past: '%s ',
-      s: 'now',
-      ss: '%ds',
-      m: '1m',
-      mm: '%d m',
-      h: '1h',
-      hh: '%dh',
-      d: '1 day',
-      dd: '%d days',
-      M: '1 month',
-      MM: '%d months',
-      y: '1 year',
-      yy: '%d years'
-    }
-  });
-  return moment.utc(date).fromNow();
-});
-
-Vue.filter('moment', function(date) {
-  moment.locale('en');
-  return moment.utc(date).fromNow();
-});

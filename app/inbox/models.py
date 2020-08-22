@@ -52,9 +52,10 @@ class Notification(SuperModel):
         ('killed_grant', 'Cancelled Grant'),
         ('new_grant_contribution', 'Contributed to Grant'),
         ('killed_grant_contribution', 'Cancelled Grant Contribution'),
-        ('new_milestone', 'New Milestone'),
-        ('update_milestone', 'Updated Milestone'),
         ('new_kudos', 'New Kudos'),
+        ('new_mention', 'New Mention'),
+        ('new_post_comment', 'New comment'),
+        ('new_like', 'New Like'),
     )
     cta_url = models.URLField(max_length=500, blank=True)
     cta_text = models.CharField(

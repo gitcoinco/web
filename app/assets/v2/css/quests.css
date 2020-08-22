@@ -1,3 +1,44 @@
+/* table properties */
+
+.table td, 
+.table th {
+  padding: 4px;
+  border: none;
+}
+
+.table {
+  width: 100%;
+  text-align: center;
+}
+
+#explore_quests {
+  width: auto;
+}
+
+#quest_creator {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  bottom: -5px;
+}
+
+.btn {
+  width: 100px;
+  position: relative;
+  border: none;
+  padding: 5px;
+  text-align: center;
+  display: inline-block;
+  top: 5px;
+  font-size: 16px;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: grey;
+}
+
 .show_on_mobile {
   display: none;
 }
@@ -57,6 +98,7 @@
 .announce a {
   background-color: #f2c3c4;
   color: black;
+  width: auto;
 }
 
 .announce h4 {
@@ -77,6 +119,7 @@
 
 .announce5 a {
   background-color: #cee370 !important;
+  width: auto;
 }
 
 .announce4 h4 {
@@ -93,6 +136,7 @@
 
 .announce4 a {
   background-color: #dcc58c !important;
+  width: auto;
 }
 
 .announce3 h4 {
@@ -109,6 +153,7 @@
 
 .announce3 a {
   background-color: #b0d9d4 !important;
+  width: auto;
 }
 
 .announce2 h4 {
@@ -125,6 +170,7 @@
 
 .announce2 a {
   background-color: #849ffc !important;
+  width: auto;
 }
 
 .announce6 h4 {
@@ -141,6 +187,7 @@
 
 .announce6 a {
   background-color: #ddb9bd !important;
+  width: auto;
 }
 
 .referrals img {
@@ -214,56 +261,6 @@
 .difficulty_tab {
   display: block;
   width: 100%;
-}
-
-.card_head {
-  height: 140px;
-}
-
-.Example .card_head {
-  display: none;
-}
-
-.card_head span {
-  background-color: #e7f0fa;
-  color: var(--gc-blue);
-  font-size: 10px;
-  display: inline-block;
-  list-style: none;
-  padding: 5px;
-  transform: rotate(-15deg);
-  position: relative;
-}
-
-.card_head span.reward {
-  top: -45px;
-  left: -75px;
-  z-index: 999;
-}
-
-.card_head span.boss {
-  top: -50px;
-  left: -20px;
-  z-index: 999;
-}
-
-.card_img {
-  height: 120px;
-  width: 120px;
-  margin: 0px auto;
-  margin-bottom: 20px;
-  position: relative;
-}
-
-.card_img.reward {
-  width: 110px;
-  top: -120px;
-  right: -50px;
-}
-
-.card_img.boss {
-  top: 0px;
-  left: -50px;
 }
 
 .tags {
@@ -407,18 +404,6 @@ body.quest_battle p {
   border: 5px solid #0fce7c;
 }
 
-.quest-card.locked img {
-  filter: grayscale(1);
-}
-
-.quest-card .card_head img {
-  filter: grayscale(100%);
-}
-
-.quest-card:hover .card_head img {
-  filter: grayscale(0%);
-}
-
 #announce img {
   margin: 0px auto;
   margin-top: -150px;
@@ -436,13 +421,6 @@ body.quest_battle p {
 #enemy img,
 #helpful_guide img {
   border: none !important;
-}
-
-#explore_quests img {
-  max-width: 30px;
-  max-height: 30px;
-  margin-top: -10px;
-  margin-left: -10px;
 }
 
 #enemy.character img {
@@ -526,45 +504,16 @@ body.quest_battle p {
   right: 25%;
 }
 
-.quest-card.available:hover {
-  background-color: #aea0df !important;
-  cursor: pointer;
-}
-
-.quest-card.available:hover .pr-3 {
-  background-color: #4e40af !important;
-  border-top: 3px solid #2e208f !important;
-}
-
 .announce a:hover {
   color: black;
   font-weight: bold;
   background-color: #f5d3d4;
 }
 
-.quest-card.locked div,
-.quest-card.locked div a {
-  color: #aaa !important;
-}
-
-.quest-card.available:hover .pr-3,
-.quest-card.available:hover .pr-3 a,
-.quest-card.available:hover .pr-3 p {
-  color: white !important;
-}
-
-.quest-card.available:hover a.btn {
-  font-size: 18px;
-}
-
 .back_gradient {
   background: linear-gradient(to right top, #0fce7c, #00a5a1, #0077b5, #0046a1, #0d0764) no-repeat;
   animation: gradient 40s ease infinite;
   background-size: 100% 400px !important;
-}
-
-.quest-card.available:hover .pr-3 p.desc {
-  border-top: 1px solid white !important;
 }
 
 #cta_button {
@@ -722,14 +671,6 @@ body.quest_battle .bottom_notification {
 
 #timer.red {
   color: red;
-}
-
-.quest-card.beaten div.pt-3 {
-  background-color: #c0eec0 !important;
-}
-
-.quest-card.cooldown div.pt-3 {
-  background-color: #aad4e5 !important;
 }
 
 #protagonist .flair div {
@@ -900,6 +841,15 @@ body.back22.quest_battle {
   background-size: 120%;
 }
 
+.video-background{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  object-fit: fill;
+  top: 30px;
+  left: 0px;
+}
+
 div.back23,
 body.back23.quest_battle {
   background: url('/static/v2/images/quests/backs/back23.jpeg') repeat;
@@ -955,6 +905,11 @@ body.back33.quest_battle {
   background: url('/static/v2/images/quests/backs/back33.jpeg') repeat;
   background-size: 120%;
 }
+div.back34,
+body.back34.quest_battle {
+  background: url('/static/v2/images/quests/backs/back34.jpeg') repeat;
+  background-size: 100%;
+}
 
 div.red,
 body.red.quest_battle {
@@ -994,7 +949,8 @@ body.green.quest_battle {
   width: 32%;
   margin: 0;
   display: inline-block;
-  height: 400px;
+  height: 100%;
+  padding-bottom: 3rem;
   vertical-align: top;
   text-align: center;
   position: relative;
@@ -1004,6 +960,7 @@ body.green.quest_battle {
 
 .leaderboard_hero .inner_row img.avatar {
   width: 30%;
+  max-width: 7rem;
   margin: 0px auto;
   border-radius: 50%;
   left: 35%;
@@ -1054,8 +1011,6 @@ body.green.quest_battle {
   border-radius: 5px;
   padding: 5px;
   width: 80%;
-  height: 300px;
-  overflow-y: hidden;
   margin: 20px auto 0px;
 }
 
@@ -1133,22 +1088,22 @@ body.green.quest_battle {
 
 body.back1 #desc li:hover,
 body.back1 #desc li.selected {
-  background-color: #102945;
+  background-color: rgba(0, 119, 255, 0.8);
 }
 
 body.back2 #desc li:hover,
 body.back2 #desc li.selected {
-  background-color: #102945;
+  background-color: rgba(60, 0, 180, 0.8);
 }
 
 body.back3 #desc li:hover,
 body.back3 #desc li.selected {
-  background-color: #f6126e;
+  background-color: rgb(204, 0, 94);
 }
 
 body.back14 #desc li:hover,
 body.back14 #desc li.selected {
-  background-color: #f6126e;
+  background-color: rgb(204, 0, 94);
 }
 
 body.back4 #desc li:hover,
@@ -1158,52 +1113,52 @@ body.back4 #desc li.selected {
 
 body.back5 #desc li:hover,
 body.back5 #desc li.selected {
-  background-color: #101061;
+  background-color: #0808a0;
 }
 
 body.back6 #desc li:hover,
 body.back6 #desc li.selected {
-  background-color: #8ab2b2;
+  background-color: rgba(0, 85, 114, 0.6);
 }
 
 body.back7 #desc li:hover,
 body.back7 #desc li.selected {
-  background-color: #0e151e;
+  background-color: rgb(0, 110, 255);
 }
 
 body.back8 #desc li:hover,
 body.back8 #desc li.selected {
-  background-color: #0a061e;
+  background-color: rgba(43, 0, 255, 0.6);
 }
 
 body.back9 #desc li:hover,
 body.back9 #desc li.selected {
-  background-color: #1c1135;
+  background-color: rgb(86, 35, 208);
 }
 
 body.red #desc li:hover,
 body.red #desc li.selected {
-  background-color: #fc4240;
+  background-color: rgb(206, 3, 0);
 }
 
 body.back19 #desc li:hover,
 body.back19 #desc li.selected {
-  background-color: #fc4240;
+  background-color: rgb(197, 0, 0);
 }
 
 body.back20 #desc li:hover,
 body.back20 #desc li.selected {
-  background-color: #ace4f9;
+  background-color: rgba(0, 162, 255, 0.97);
 }
 
 body.blue #desc li:hover,
 body.blue #desc li.selected {
-  background-color: #4040ff;
+  background-color: rgba(0, 0, 121, 0.6);
 }
 
 body.green #desc li:hover,
 body.green #desc li.selected {
-  background-color: #9EaB97;
+  background-color: rgb(0, 203, 86, 1);
 }
 
 #breadcrumbs,
@@ -1312,6 +1267,10 @@ body.green .tl {
 
 
 @media (max-width: 1110px) {
+
+  .btn {
+    right: auto;
+  }
 
   body.quest_battle {
     background-size: 250% !important;
@@ -1440,6 +1399,28 @@ body.green .tl {
 
 @media (max-width: 991.98px) {
 
+  .table {
+    border: auto;
+  }
+
+  #quest_creator {
+    top: 0.4rem;
+  }
+
+  .btn {
+    width: -webkit-fill-available;
+    top: 0.4rem;
+    border: none;
+
+  }
+
+  .table td, 
+  .table th {
+    padding: 0.55rem;
+    border: none;
+    position: relative; 
+  }
+
   body.quest_battle {
     background-size: 250% !important;
   }
@@ -1507,6 +1488,32 @@ body.green .tl {
 }
 
 @media (max-width: 767.98px) {
+
+  .table {
+    text-align: center;
+    border-collapse: collapse;
+    border: auto;
+  }
+
+  .btn {
+    width: -webkit-fill-available;
+    top: 0.6rem;
+    border: none;
+  }
+
+  .table td, 
+  .table th {
+    padding: 0.25rem;
+  }
+
+  #quest_creator {
+    top: 10px;
+    right: 1px;
+  }
+
+  #explore_quests {
+    top: -1px;
+  }
 
   body.quest_battle {
     background-size: 350% !important;
@@ -1602,6 +1609,27 @@ body.green .tl {
 }
 
 @media (max-width: 575.98px) {
+
+  .table {
+    border: none;
+  }
+
+  .table td {
+    padding: 5.5px;
+  }
+
+  .table th {
+    padding: 5.5px;
+  }
+
+  .btn {
+    right: auto;
+    top: 0.6rem;
+  }
+
+  #quest_creator {
+    top: 0.8rem;
+  }
 
   body.quest_battle {
     background-size: 250% !important;

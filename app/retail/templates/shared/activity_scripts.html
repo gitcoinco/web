@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2019 Gitcoin Core
+    Copyright (C) 2020 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,15 +16,10 @@
 
 {% endcomment %}
 {% load static %}
-<script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
-<script src="{% static "v2/js/lib/infinite.min.js" %}"></script>
+<script src="{% static "v2/js/lib/jitsi.js" %}"></script>
 <script src="{% static "v2/js/activity.js" %}"></script>
 <script>
   document.long_poller_live = true;
-  $(document).ready(function(){
-    var infinite = new Waypoint.Infinite({
-      element: $('.infinite-container')[0]
-    });
-  });
+
 </script>
 {% include 'shared/tip_dependancies.html' %}

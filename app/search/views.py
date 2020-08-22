@@ -1,5 +1,7 @@
 import json
+import logging
 
+from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -8,13 +10,16 @@ from dashboard.models import SearchHistory
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
-from .models import SearchResult
+from .models import SearchResult, search
+
+logger = logging.getLogger(__name__)
 
 
 @ratelimit(key='ip', rate='30/m', method=ratelimit.UNSAFE, block=True)
-def search(request):
+def get_search(request):
     keyword = request.GET.get('term', '')
-    all_result_sets = [SearchResult.objects.filter(title__icontains=keyword), SearchResult.objects.filter(description__icontains=keyword)]
+
+    all_result_sets = [SearchResult.objects.filter(title__icontains=keyword), SearchResult.objects.filter(title=keyword)]
     return_results = []
     exclude_pks = []
     for results in all_result_sets:

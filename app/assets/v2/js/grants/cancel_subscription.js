@@ -33,11 +33,9 @@ $(document).ready(() => {
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
         let amountSTR = realTokenAmount.toLocaleString('fullwide', { useGrouping: false });
 
-        let realGasPrice = $('#gasPrice').val() * Math.pow(10, 9);
-
         web3.eth.getAccounts(function(err, accounts) {
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: realGasPrice})
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0]})
             .on('transactionHash', function(transactionHash) {
               $('#sub_end_approve_tx_id').val(transactionHash);
               const linkURL = get_etherscan_url(transactionHash);
@@ -56,16 +54,15 @@ $(document).ready(() => {
                   data.token_address, // testing token
                   web3.utils.toTwosComplement(amountSTR), // data.amount_per_period
                   web3.utils.toTwosComplement(data.real_period_seconds), // data.period_seconds
-                  web3.utils.toTwosComplement(realGasPrice), // data.gas_price
                   web3.utils.toTwosComplement(nonce), // nonce
                   data.signature // contributor_signature
                 ];
 
+                indicateMetamaskPopup();
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
                 ).send({
                   from: accounts[0],
-                  gasPrice: realGasPrice,
                   gas: web3.utils.toHex(gas_amount(document.location.href)),
                   gasLimit: web3.utils.toHex(gas_amount(document.location.href))
                 })

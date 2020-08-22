@@ -75,9 +75,6 @@ class DashboardModelsTest(TestCase):
         )
         bounty_fulfillment = BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
-            fulfiller_email='',
-            fulfiller_github_username='fred',
-            fulfiller_name='Fred',
             bounty=bounty,
             profile=fulfiller_profile,
         )
@@ -177,6 +174,7 @@ class DashboardModelsTest(TestCase):
     def test_can_submit_legacy_bounty_after_expiration_date():
         bounty = Bounty.objects.create(
             title='ExpiredBounty',
+            standard_bounties_id=999999,
             web3_type='legacy_gitcoin',
             idx_status=0,
             is_open=False,
@@ -475,7 +473,6 @@ class DashboardModelsTest(TestCase):
         assert profile.is_org is True
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
-        assert profile.desc == '@gitcoinco is a organization who has participated in 1 funded issue on Gitcoin'
         assert profile.github_url == 'https://github.com/gitcoinco'
         assert profile.get_relative_url() == '/gitcoinco'
 

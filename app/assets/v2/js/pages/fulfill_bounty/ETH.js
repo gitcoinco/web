@@ -12,21 +12,19 @@ const ethFulfillBounty = data => {
     bounty_address();
   } catch (exception) {
     _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+    unloading_button($('.js-submit'));
     return;
   }
 
-  loading_button($('.js-submit'));
   const githubUsername = data.githubUsername;
   const issueURL = data.issueURL;
-  const notificationEmail = data.notificationEmail;
   const githubPRLink = data.githubPRLink;
   const hoursWorked = data.hoursWorked;
   const address = data.payoutAddress;
 
   localStorage['githubUsername'] = githubUsername;
 
-  const account = web3.eth.coinbase;
-  let bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+  let bounty = new web3.eth.Contract(bounty_abi, bounty_address());
 
   ipfs.ipfsApi = IpfsApi(ipfsConfig);
   ipfs.setProvider(ipfsConfig);
@@ -41,7 +39,6 @@ const ethFulfillBounty = data => {
       fulfiller: {
         githubPRLink: githubPRLink,
         hoursWorked: hoursWorked,
-        email: notificationEmail,
         githubUsername: githubUsername,
         address: address
       },
@@ -71,13 +68,13 @@ const ethFulfillBounty = data => {
 
     if (run_main) {
       if (!ignore_error) {
-        const web3Callback = function(error, result) {
+        const web3Callback = function(result, error) {
           indicateMetamaskPopup(true);
           const next = function() {
             localStorage[issueURL] = JSON.stringify({
               timestamp: timestamp(),
               dataHash: null,
-              issuer: account,
+              issuer: selectedAccount,
               txid: result
             });
 
@@ -123,15 +120,15 @@ const ethFulfillBounty = data => {
           const bountyId = result['standard_bounties_id'];
 
           indicateMetamaskPopup();
-          bounty.fulfillBounty(
+          bounty.methods.fulfillBounty(
             bountyId,
-            document.ipfsDataHash,
-            {
-              from: web3.eth.accounts[0],
-              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-            },
-            web3Callback
-          );
+            document.ipfsDataHash
+          ).send({
+            from: selectedAccount
+          }).then((result) => {web3Callback(result)}).catch(err => {
+            web3Callback(undefined, err);
+            console.log(err);
+          });
         });
       }
     }
