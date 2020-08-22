@@ -179,6 +179,8 @@ urlpatterns = [
     re_path(r'^spec/?', healthcheck.views.spec, name='spec'),
 
     # grant views
+    path('governance/', include('governance.urls', namespace='governance')),
+    re_path(r'^governance/?', include('governance.urls', namespace='governance_catchall')),
     path('grants/', include('grants.urls', namespace='grants')),
     re_path(r'^grants/?', include('grants.urls', namespace='grants_catchall_')),
     re_path(r'^grant/?', include('grants.urls', namespace='grants_catchall')),

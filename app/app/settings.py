@@ -180,7 +180,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'instant/templates'],
+    'DIRS': ['chat/templates/', 'retail/templates/', 'dataviz/templates', 'kudos/templates', 'inbox/templates', 'quests/templates', 'townsquare/templates', 'instant/templates', 'governance/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
