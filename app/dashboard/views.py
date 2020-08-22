@@ -868,6 +868,28 @@ def users_directory(request):
 
     return TemplateResponse(request, 'dashboard/users.html', params)
 
+@staff_member_required
+def users_directory_elastic(request):
+    """Handle displaying users directory page."""
+    from retail.utils import programming_languages, programming_languages_full
+
+    keywords = programming_languages + programming_languages_full
+
+    params = {
+        'is_staff': request.user.is_staff,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')) ,
+        'active': 'users',
+        'title': 'Users',
+        'meta_title': "",
+        'meta_description': "",
+        'keywords': keywords
+    }
+
+    if request.path == '/tribes/explore':
+        params['explore'] = 'explore_tribes'
+
+    return TemplateResponse(request, 'dashboard/users-elastic.html', params)
+
 
 def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = ""):
     if not settings.DEBUG:

@@ -361,6 +361,7 @@ urlpatterns = [
 
     # User Directory
     re_path(r'^users/?', dashboard.views.users_directory, name='users_directory'),
+    re_path(r'^user_directory/?', dashboard.views.users_directory_elastic, name='users_directory_elastic'),
     re_path(r'^tribes/explore', dashboard.views.users_directory, name='tribes_directory'),
 
     # Alpha functionality
@@ -492,8 +493,6 @@ urlpatterns = [
         bounty_requests.views.update_bounty_request_v1,
         name='update_bounty_request_v1'
     ),
-
-    path('search/', include('haystack.urls')),
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
     path(
@@ -701,7 +700,7 @@ urlpatterns = [
     # users
     url(r'^api/v0.1/user_bounties/', dashboard.views.get_user_bounties, name='get_user_bounties'),
     url(r'^api/v0.1/users_csv/', dashboard.views.output_users_to_csv, name='users_csv'),
-
+    url(r'^api/v0.1/users_fetch/', dashboard.views.users_fetch, name='users_fetch'),
 
     # wiki
     path('wiki/notifications/', include('django_nyt.urls')),
