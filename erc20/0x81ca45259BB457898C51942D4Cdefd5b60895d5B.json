@@ -1,0 +1,21 @@
+{
+    "symbol": "SWC",
+    "address": "0x81ca45259BB457898C51942D4Cdefd5b60895d5B",
+    "overview":{
+          "en": "SWC is a ERC 20 token that follows a list of standards that they can be shared and exchanged for other tokens. Through digitalization, it gives token holders potential portability and access of a digital wallet.  It has complete anonymity and measures of proof of interest (POS). SWC will be able to support other “tokens” that can represent a currency, shares, or any tangible physical assets. SWC will go through a periodic Proof of Burn that is available for both miners and developers.",
+          "zh": "SWC是ERC 20的数字资产，遵循一系列可以共享和交换的其他数字资产的标准。 通过数字化，它使该持有者具有潜在的便携性和数字钱包的访问权限。 它具有完全的匿名性和权益证明措施（POS）。 SWC将能够支持其他代表数字资产，股票或任何有形资产。 SWC将定期进行销毁证明（POB），矿工和开发商均可使用。"
+    },
+    "email": "swinvest2020@gmail.com",
+    "website": "https://sw-invest.ch/",
+    "whitepaper": "https://sw-invest.ch/white_paper_download/SW_Coin_Whitepaper(EN).pdf",
+    "state": "NORMAL",
+    "published_on": "2020-07-02",
+    "initial_price":{
+          "ETH":"0.01286 ETH",
+          "USD":"5.00 USD",
+          "BTC":"0.00044697368832135584 BTC"
+    },
+    "links": {
+      "github": "https://github.com/SWInvest2020",
+    }
+  }
