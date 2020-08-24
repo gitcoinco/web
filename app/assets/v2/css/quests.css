@@ -11,6 +11,10 @@
   text-align: center;
 }
 
+#info_button {
+  cursor: default;
+}
+
 #explore_quests {
   width: auto;
 }

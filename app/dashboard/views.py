@@ -3719,7 +3719,7 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
     founded_bounties = profile.bounties_funded.filter(event=hackathon_event)
 
     if profile.is_staff:
-        sponsor_profile = profile
+        sponsor_profile = is_sponsor_member.first() or profile
         query_prizes = Bounty.objects.filter(event=hackathon_event, current_bounty=True)
     elif is_sponsor_member.exists():
         sponsor_profile = is_sponsor_member.first()
@@ -3742,7 +3742,7 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
-
+    print(sponsor_profile)
     org = {
         'display_name': sponsor_profile.name,
         'avatar_url': sponsor_profile.avatar_url,

@@ -76,9 +76,13 @@ function communityChart() {
 
 // TODO: DRY
 function jdiChart() {
-  var data = google.visualization.arrayToDataTable(document.jdi_history);
 
-  var options = {
+  if (!google || !google.visualization)
+    return;
+
+  const data = google.visualization.arrayToDataTable(document.jdi_history);
+
+  const options = {
     curveType: 'function',
     legend: { position: 'none' },
     backgroundColor: 'transparent',
@@ -88,7 +92,7 @@ function jdiChart() {
     series: { 0: { color: '#15003E' } }
   };
 
-  var chart = new google.visualization.LineChart(document.getElementById('jdi_chart'));
+  const chart = new google.visualization.LineChart(document.getElementById('jdi_chart'));
 
   chart.draw(data, options);
 }

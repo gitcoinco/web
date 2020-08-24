@@ -169,8 +169,6 @@ urlpatterns = [
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
     # chat
-    url(r'^chat/landing', chat.views.chat, name='landing_chat'),
-    url(r'^chat/landing/', chat.views.chat, name='landing_chat2'),
     url(r'^chat/login/', chat.views.chat_login, name='chat_login'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
@@ -222,7 +220,11 @@ urlpatterns = [
     path('hackathon/<str:hackathon>/new', dashboard.views.new_hackathon_bounty, name='new_hackathon_bounty2'),
     path('hackathon/<str:hackathon>/', dashboard.views.hackathon, name='hackathon'),
     path('hackathon/dashboard/<str:hackathon>', dashboard.views.dashboard_sponsors, name='sponsors-dashboard'),
-    path('hackathon/dashboard/<str:hackathon>/<str:panel>', dashboard.views.dashboard_sponsors, name='sponsors-dashboard'),
+    path(
+        'hackathon/dashboard/<str:hackathon>/<str:panel>',
+        dashboard.views.dashboard_sponsors,
+        name='sponsors-dashboard'
+    ),
     path('hackathon/<str:hackathon>', dashboard.views.hackathon, name='hackathon2'),
     path('hackathon/<str:hackathon>/onboard/', dashboard.views.hackathon_onboard, name='hackathon_onboard2'),
     path('hackathon/<str:hackathon>/<str:panel>/', dashboard.views.hackathon, name='hackathon'),

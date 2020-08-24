@@ -37,6 +37,12 @@ function initWallet() {
       options: {
         infuraId: '1e0a90928efe4bb78bb1eeceb8aacc27'
       }
+    },
+    portis: {
+      'package': Portis,
+      options: {
+        id: 'b2345081-a47e-413a-941f-33fd645d39b3'
+      }
     }
   };
   const network = isProd ? 'mainnet' : 'rinkeby';

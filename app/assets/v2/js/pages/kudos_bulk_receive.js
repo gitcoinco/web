@@ -22,6 +22,12 @@ $(document).ready(function() {
     if (!checked) {
       return;
     }
+
+    if (!web3) {
+      _alert({ message: gettext('Please connect to a web3 wallet.')}, 'error');
+      return;
+    }
+
     amount = document.gas_amount * 10 ** 18;
     var to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F';
 
