@@ -188,7 +188,7 @@ Vue.component('grants-cart', {
       return donations;
     },
 
-    // Amount of ETH that needs to be sent along with the transaction
+    // Total amount of ETH that needs to be sent along with the transaction
     donationInputsEthAmount() {
       // Get the total ETH we need to send
       const initialValue = new BN('0');
@@ -535,100 +535,122 @@ Vue.component('grants-cart', {
     },
 
     /**
+     * @notice Must be called at the beginning of each checkout flow (L1, zkSync, etc.)
+     */
+    async initializeCheckout() {
+      // Prompt web3 login if not connected
+      if (!provider) {
+        return await onConnect();
+      }
+
+      if (typeof ga !== 'undefined') {
+        ga('send', 'event', 'Grant Checkout', 'click', 'Person');
+      }
+
+      // Throw if invalid Gitcoin contribution percentage
+      if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
+        throw new Error('Gitcoin contribution amount must be between 0% and 99%');
+      }
+
+      // Throw if there's negative values in the cart
+      this.donationInputs.forEach(donation => {
+        if (Number(donation.amount) < 0) {
+          throw new Error('Cannot have negative donation amounts');
+        }
+      });
+
+      // Initialization complete, return address of current user
+      const userAddress = (await web3.eth.getAccounts())[0]; 
+      return userAddress;
+    },
+
+    /**
+     * @notice For each token, checks if an approval is needed against the specified contract, and
+     * returns the data
+     * @param userAddress User's web3 address
+     * @param targetContract Address of the contract to check allowance against (e.g. the 
+     * regular BulkCheckout contract, the zkSync contract, etc.)
+     */
+    async getAllowanceData(userAddress, targetContract) {
+      // Get list of tokens user is donating with
+      const selectedTokens = Object.keys(this.donationsToGrants);
+
+      // Initialize return variable
+      let allowanceData = [];
+
+      // Define function that calculates the total required allowance for the specified token
+      const calcTotalAllowance = (tokenDetails) => {
+        const initialValue = new BN('0');
+
+        return this.donationInputs.reduce((accumulator, currentValue) => {
+          return currentValue.token === tokenDetails.addr
+            ? accumulator.add(new BN(currentValue.amount)) // token donation
+            : accumulator.add(new BN('0')); // ETH donation
+        }, initialValue);
+      };
+
+      // Loop over each token in the cart and check allowance
+      for (let i = 0; i < selectedTokens.length; i += 1) {
+        const tokenName = selectedTokens[i];
+        const tokenDetails = this.getTokenByName(tokenName);
+
+        // If ETH donation no approval is necessary, just check balance
+        if (tokenDetails.name === 'ETH') {
+          const userEthBalance = await web3.eth.getBalance(userAddress);
+
+          if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsEthAmount, 10))) {
+            // User ETH balance is too small compared to selected donation amounts
+            throw new Error('Insufficient ETH balance to complete checkout');
+          }
+          // ETH balance is sufficient, continue to next iteration since no approval check
+          continue;
+        }
+
+        // Get current allowance
+        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+        const allowance = new BN(await getAllowance(targetContract, tokenDetails.addr), 10);
+
+        // Get required allowance based on donation amounts
+        // We use reduce instead of this.donationsTotal because this.donationsTotal will
+        // not have floating point errors, but the actual amounts used will
+        const requiredAllowance = calcTotalAllowance(tokenDetails);
+
+        // Check user token balance against requiredAllowance
+        const userTokenBalance = await tokenContract.methods
+          .balanceOf(userAddress)
+          .call({ from: userAddress });
+
+        if (new BN(userTokenBalance, 10).lt(requiredAllowance)) {
+          // Balance is too small, exit checkout flow
+          throw new Error(`Insufficient ${tokenName} balance to complete checkout`, 'error');
+        }
+
+        // If no allowance is needed, continue to next token
+        if (allowance.gte(new BN(requiredAllowance))) {
+          continue;
+        }
+
+        // If we do need to set the allowance, save off the required info to request it later
+        allowanceData.push({
+          allowance: requiredAllowance.toString(),
+          contract: tokenContract,
+          tokenName
+        });
+      } // end checking approval requirements for each token being used for donations
+
+      return allowanceData;
+    },
+
+    /**
      * @notice Checkout flow
      */
     async checkout() {
       try {
         // Setup -----------------------------------------------------------------------------------
-        // Prompt web3 login if not connected
-        if (!provider) {
-          return await onConnect();
-        }
+        const userAddress = await this.initializeCheckout();
 
-        if (typeof ga !== 'undefined') {
-          ga('send', 'event', 'Grant Checkout', 'click', 'Person');
-        }
-
-
-        // Throw if invalid Gitcoin contribution percentage
-        if (Number(this.gitcoinFactorRaw) < 0 || Number(this.gitcoinFactorRaw) > 99) {
-          throw new Error('Gitcoin contribution amount must be between 0% and 99%');
-        }
-
-        // Throw if there's negative values in the cart
-        this.donationInputs.forEach(donation => {
-          if (Number(donation.amount) < 0) {
-            throw new Error('Cannot have negative donation amounts');
-          }
-        });
-
-        const userAddress = (await web3.eth.getAccounts())[0]; // Address of current user
-
-        // Get list of tokens user is donating with
-        const selectedTokens = Object.keys(this.donationsToGrants);
-
-        // Token approval and balance checks -------------------------------------------------------
-        // For each token, check if an approval is needed, and if so save off the data
-        let allowanceData = [];
-
-        const calcTotalAllowance = (tokenDetails) => {
-          const initialValue = new BN('0');
-
-          return this.donationInputs.reduce((accumulator, currentValue) => {
-            return currentValue.token === tokenDetails.addr
-              ? accumulator.add(new BN(currentValue.amount)) // correct token donation
-              : accumulator.add(new BN('0')); // ETH donation
-          }, initialValue);
-        };
-
-        for (let i = 0; i < selectedTokens.length; i += 1) {
-          const tokenName = selectedTokens[i];
-          const tokenDetails = this.getTokenByName(tokenName);
-
-          // If ETH donation no approval is necessary, just check balance
-          if (tokenDetails.name === 'ETH') {
-            const userEthBalance = await web3.eth.getBalance(userAddress);
-
-            if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsEthAmount, 10))) {
-              // Balance is too small, exit checkout flow
-              _alert('Insufficient ETH balance to complete checkout', 'error');
-              return;
-            }
-            // Balance is sufficient, continue to next iteration since no approval check
-            continue;
-          }
-
-          // Get current allowance
-          const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
-          const allowance = new BN(await getAllowance(bulkCheckoutAddress, tokenDetails.addr), 10);
-
-          // Get required allowance based on donation amounts
-          // We use reduce instead of this.donationsTotal because this.donationsTotal will
-          // not have floating point errors, but the actual amounts used will
-
-          const requiredAllowance = calcTotalAllowance(tokenDetails);
-
-          // Check user token balance against requiredAllowance
-          const userTokenBalance = await tokenContract.methods.balanceOf(userAddress).call({ from: userAddress });
-
-          if (new BN(userTokenBalance, 10).lt(requiredAllowance)) {
-            // Balance is too small, exit checkout flow
-            _alert(`Insufficient ${tokenName} balance to complete checkout`, 'error');
-            return;
-          }
-
-          // If no allowance is needed, continue to next token
-          if (allowance.gte(new BN(requiredAllowance))) {
-            continue;
-          }
-
-          // If we do need to set the allowance, save off the required info
-          allowanceData.push({
-            allowance: requiredAllowance.toString(),
-            contract: tokenContract,
-            tokenName
-          });
-        } // end checking approval requirements for each token being used for donations
+        // Token approvals and balance checks (just checks data, does not execute approavals)
+        const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
 
         // Send donation if no approvals -----------------------------------------------------------
         if (allowanceData.length === 0) {
@@ -913,7 +935,155 @@ Vue.component('grants-cart', {
         predicted_clr = this.lerp(x_lower, x_upper, y_lower, y_upper, amount);
       }
       return predicted_clr;
-    }
+    },
+
+    // =============================================================================================
+    // =================================== START ZKSYNC METHODS ====================================
+    // =============================================================================================
+    
+    /**
+     * @notice Login to zkSync
+     * @param signer ethers.js signer generated from user's web3 wallet
+     * @param syncProvider zkSync provider instantiated with same network as signer
+     * @returns User's syncWallet instance
+     */
+    async loginToZkSync(signer, syncProvider) {
+      // Login
+      // OPTION 1
+      console.log('Waiting for user to sign the prompt to log in...');
+      const syncWallet = await zksync.Wallet.fromEthSigner(signer, syncProvider);
+      console.log(
+        '✅ Login complete. Sync wallet generated from web3 account. View wallet:',
+        syncWallet
+      );
+
+      // // OPTION 2 
+      // const ephemeralSigner = await this.zksync.Wallet.fromEthSigner(
+      //   this.getEphemeralWallet(),
+      //   this.syncProvider
+      // );
+      //
+      // this.syncWallet = await this.zksync.Wallet.fromEthSigner(
+      //   this.signer,
+      //   this.syncProvider,
+      //   ephemeralSigner,
+      //   undefined,
+      //   'EthereumSignature'
+      // );
+
+      return syncWallet;
+    },
+
+    /**
+     * @notice Generates an ephemeral wallet and saves it in localstorage
+     * @returns ethers.js Wallet instance of the ephemeral wallet
+     */
+    createEphemeralWallet() {
+      // TODO replace determinstic one with random one. Using determinstic so we can easily
+      // recycle ETH and tokens more easily during evelopment
+      
+      // const ephemeralWallet = new ethers.Wallet.createRandom();
+      const ephemeralWallet = new ethers.Wallet.fromMnemonic(
+        'measure cycle combine rare annual online accident grab police moment cloud vanish'
+      );
+      window.localStorage.setItem('ephemeral-mnemonic', ephemeralWallet.mnemonic.phrase);
+      console.log('✅ Ephemeral wallet generated and mnemonic saved in local storage');
+      return ephemeralWallet;
+    },
+    
+    /**
+     * @notice Main zkSync checkout function to execute when user clicks checkout button
+     */
+    async zkSyncCheckout() {
+      // Setup -------------------------------------------------------------------------------------
+      console.log('Checking out with zkSync', zksync);
+      const userAddress = await this.initializeCheckout();
+      
+      // Configure ethers and zkSync
+      const ethersProvider = new ethers.providers.Web3Provider(provider);
+      const signer = ethersProvider.getSigner();
+      const syncProvider = await zksync.getDefaultProvider(document.web3network);
+      
+      // Token approvals and balance checks (just checks data, does not execute approavals)
+      const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
+
+      // Prompt for user's signature to login to zkSync
+      const syncWallet = await this.loginToZkSync(signer, syncProvider);
+      
+      // Ephemeral wallet setup
+      const ephemeralWallet = this.createEphemeralWallet();
+
+      // Deposit -----------------------------------------------------------------------------------
+      console.log(`✅ Total deposit amount is valid: ${this.donationInputsEthAmount} ETH`);
+      console.log('donationInputs: ', this.donationInputs);
+
+      console.log('Waiting for user to approve transaction to deposit funds to ephemeral wallet...');
+      const deposit = await syncWallet.depositToSyncFromEthereum({
+        depositTo: ephemeralWallet.address,
+        token: 'ETH',
+        amount: this.donationInputsEthAmount,
+      });
+      console.log('✅ Deposit transaction successfully sent. View deposit info and tx hash:', deposit);
+
+      // Unlock zkSync account ---------------------------------------------------------------------
+      console.log('Waiting for zkSync operator to issue promise that transaction will be processed...');
+
+      // If we do not wait for this receipt, the unlock step below will fail with
+      // "Error: Failed to Set Signing Key: Account does not exist in the zkSync network"
+      const depositReceipt = await deposit.awaitReceipt();
+      console.log('✅ Deposit receipt received. View deposit receipt:', depositReceipt);
+
+      // To control assets in zkSync network, an account must register a separate public key
+      // once, so we now do that for the ephemeral keypair
+      console.log('Registering ephemeral wallet on zkSync...');
+      const ephemeralSyncWallet = await zksync.Wallet.fromEthSigner(ephemeralWallet, syncProvider);
+
+      if (!(await ephemeralSyncWallet.isSigningKeySet())) {
+        if ((await ephemeralSyncWallet.getAccountId()) == undefined) {
+          throw new Error('Unknown account');
+        }
+        const changePubkey = await ephemeralSyncWallet.setSigningKey();
+        // Wait until the tx is committed
+        await changePubkey.awaitReceipt();
+        console.log('✅ Ephemeral wallet is ready to use on zkSync');
+      } else {
+        console.log('✅ Ephemeral wallet was already initialized');
+      }
+
+      // Get account state (deposit will be committed, not verified) -------------------------------
+      const ephemeralWalletState = await ephemeralSyncWallet.getAccountState();
+      const nonce = ephemeralWalletState.committed.nonce;
+      console.log('✅ State of ephemeral wallet retrieved. View state:', ephemeralWalletState);
+
+      // Generate signatures -----------------------------------------------------------------------
+      console.log('Generating signatures for transfers...');
+      const amount = zksync.utils.closestPackableTransactionAmount(this.donationInputsEthAmount);
+      const fee = await syncProvider.getTransactionFee(
+        'Transfer',
+        ephemeralWallet.address, // send to self for now
+        'ETH'
+      );
+      const signedTransfer = await ephemeralSyncWallet.signSyncTransfer({
+        to: ephemeralWallet.address, // send to self for now
+        token: "ETH",
+        amount: amount.sub(fee.totalFee),
+        fee: fee.totalFee,
+        nonce,
+      });
+      console.log('✅ Signature for transfer generated. View it:', signedTransfer);
+
+      // Send transfers ----------------------------------------------------------------------------
+      console.log('Sending transfer to the network...');
+      const transfer = await zksync.wallet.submitSignedTransaction(signedTransfer, syncProvider);
+      console.log('✅ Transfer sent:', transfer);
+      const receipt = await transfer.awaitReceipt();
+      console.log('✅ Receipt received:', receipt);
+      console.log('✅✅✅ Done!');
+    },
+
+    // =============================================================================================
+    // ==================================== END ZKSYNC METHODS =====================================
+    // =============================================================================================
 
   },
 

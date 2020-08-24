@@ -402,10 +402,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <i class="fab fa-github"></i>
                       Login with GitHub to Continue
                     </button>
-                    <button v-else class="btn btn-gc-blue button--full shadow-none py-3" id='js-fundGrants-button'
-                      @click="checkout">
-                      Fund [[this.grantData.length]] Items
-                    </button>
+                    <div v-else class="row align-items-center justify-content-between">
+                      <div class="col-auto">
+                        <button class="btn btn-gc-blue button--full shadow-none py-3" id='js-zkSyncfundGrants-button' @click="zkSyncCheckout">
+                        Checkout with zkSync
+                        </button>
+                      </div>
+                      <div class="col-auto">
+                        <button class="btn btn-outline-gc-blue shadow-none py-3" id='js-fundGrants-button' @click="checkout">
+                          Normal Checkout
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -507,6 +515,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
+
+    {% comment %} ================================================================= {% endcomment %}
+    {% comment %} ===================== START ZKSYNC SCRIPTS ====================== {% endcomment %}
+    {% comment %} ================================================================= {% endcomment %}
+
+    <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/zksync@0.6.4/dist/main.js"></script>
+    <script type="text/javascript">
+    (async () => {
+        // Loads and compiles wasm library
+        await zksync.crypto.loadZkSyncCrypto();
+        console.log('zkSync library is ready');
+        // Now we are ready to use zkSync with ethers, both are attached to the window
+    })();
+    </script>
+
+    {% comment %} ================================================================= {% endcomment %}
+    {% comment %} ====================== END ZKSYNC SCRIPTS ======================= {% endcomment %}
+    {% comment %} ================================================================= {% endcomment %}
 
     <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
     <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
