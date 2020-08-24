@@ -45,7 +45,7 @@ from retail.emails import (
     render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
     render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
     render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
-    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap, render_bounty_hypercharged,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -1211,7 +1211,7 @@ def reject_faucet_request(fr):
         translation.activate(cur_language)
 
 
-def new_bounty_daily(bounties, old_bounties, to_emails=None):
+def new_bounty_daily(bounties, old_bounties, to_emails=None, featured_bounties=[]):
     max_bounties = 5
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
@@ -1289,7 +1289,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
             user = User.objects.filter(email__iexact=to_email).first()
             activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities, chats_count=chats_count)
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities, chats_count=chats_count, featured_bounties=featured_bounties)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
@@ -1497,6 +1497,24 @@ def bounty_changed(bounty, to_emails=None):
         finally:
             translation.activate(cur_language)
 
+
+def bounty_hypercharged(bounty, to_emails=None):
+    subject = gettext("We selected a bounty for you")
+
+    if to_emails is None:
+        to_emails = []
+
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_bounty_hypercharged(to_email, bounty)
+
+            if not should_suppress_notification_email(to_email, 'bounty'):
+                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        finally:
+            translation.activate(cur_language)
 
 def new_match(to_emails, bounty, github_username):
     subject = gettext("⚡️ {} Meet {}: {}! ").format(github_username.title(), bounty.org_name.title(), bounty.title)

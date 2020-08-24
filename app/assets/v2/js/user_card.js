@@ -27,7 +27,7 @@ let popoverData = [];
 let controller = null;
 
 const renderPopOverData = function(data) {
-  const unique_orgs = data.profile.orgs ? Array.from(new Set(data.profile.orgs)) : [];
+  const unique_orgs = data && data.profile && data.profile.orgs ? Array.from(new Set(data.profile.orgs)) : [];
   let orgs = unique_orgs && unique_orgs.map((_organization, index) => {
     if (index < 5) {
       return `<a href="/${_organization}" class="link-current" data-toggle="tooltip" data-container=".popover-user-card" data-original-title="${_organization}">

@@ -32,12 +32,12 @@ warnings.filterwarnings("ignore")
 
 override_in_dev = True
 
-def validate_email(email):  
-  
-    import re 
+def validate_email(email):
+
+    import re
     regex = r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-    if(re.search(regex,email)):  
-        return True 
+    if(re.search(regex,email)):
+        return True
     return False
 
 def get_bounties_for_keywords(keywords, hours_back):
@@ -84,6 +84,7 @@ class Command(BaseCommand):
         for es in eses:
             try:
                 # prep
+                now = timezone.now()
                 counter_grant_total += 1
                 to_email = es.email
                 keywords = es.keywords
@@ -95,6 +96,9 @@ class Command(BaseCommand):
                     continue
                 counter_total += 1
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
+                featured_bounties = Bounty.objects.current().filter(
+                    network='mainnet', idx_status='open',
+                    expires_date__gt=now).order_by('metadata__hyper_tweet_counter')[:2]
 
                 # stats
                 speed = round((time.time() - start_time) / counter_grant_total, 2)
@@ -106,7 +110,7 @@ class Command(BaseCommand):
                 #should_send = new_bounties.count()
                 if should_send:
                     #print(f"sending to {to_email}")
-                    new_bounty_daily(new_bounties, all_bounties, [to_email])
+                    new_bounty_daily(new_bounties, all_bounties, [to_email], featured_bounties)
                     #print(f"/sent to {to_email}")
                     counter_sent += 1
             except Exception as e:

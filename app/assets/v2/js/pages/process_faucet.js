@@ -12,7 +12,7 @@ $(document).ready(function() {
 
   $('#submitFaucet').on('click', function(e) {
     e.preventDefault();
-    if (!web3Modal.cachedProvider) {
+    if (web3Modal && !web3Modal.cachedProvider) {
       onConnect();
       return false;
     }
