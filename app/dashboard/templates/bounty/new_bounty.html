@@ -390,7 +390,7 @@
 
                   <div class="col-12 col-md-3" id="usd-amount-wrapper">
                     <label class="form__label" for="hours">Est. Hours of Work</label>
-                    <input name="hours" id="hours" class="form__input" type="number" step="1" min="1" v-model="form.hours" @input="calcValues('token')">
+                    <input name="hours" id="hours"  pattern="[0-9]" class="form__input" type="number" step="1" min="1" v-model="form.hours" @input="estHoursValidator">
                   </div>
                 </div>
                 <div>
