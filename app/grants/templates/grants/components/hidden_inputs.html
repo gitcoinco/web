@@ -1,0 +1,23 @@
+{% load i18n static humanize grants_extra %}
+
+
+<input type="hidden" id="grant_id" name="grant_id" :value="grant.id">
+<input type="hidden" id="grant_slug" name="grant_slug" :value="grant.slug">
+<input type="hidden" id="grant_url" name="grant_url" :value="grant.url">
+<input type="hidden" id="grant_title" name="grant_title" :value="grant.title">
+<input type="hidden" id="grant_contract_version" name="grant_contract_version" :value="grant.contract_version">
+<input type="hidden" id="grant_contract_address" name="grant_contract_address" :value="grant.contract_address">
+<input type="hidden" id="grant_token_symbol" name="grant_token_symbol" :value="grant.token_symbol">
+<input type="hidden" id="grant_admin_address" name="grant_admin_address" :value="grant.admin_address">
+<input type="hidden" id="grant_token_address" name="grant_token_address" :value="grant.token_address">
+{# %}{{ grant.logo.url }}{% else %}{% with grant_logo='v2/images/grants/logos/' id=grant.id|modulo:3 %} {% static grant_logo|addstr:id|add:'.png' %} {% endwith %} #}
+<input type="hidden" id="grant_logo" name="grant_logo" :value="grant.logo_url">
+<input type="hidden" id="grant_clr_prediction_curve" name="grant_clr_prediction_curve" :value="grant.clr_prediction_curve">
+<input type="hidden" id="grant_image_css" name="grant_image_css" :value="grant.image_css">
+<input type="hidden" id="is_clr_eligible" name="is_clr_eligible" :value="grant.is_clr_eligible ? grant.is_clr_eligible : ''">
+<input type="hidden" id="grant_donation_amount" name="grant_donation_amount" :value="amount" v-if="grant.amount">
+
+<template v-if="token">
+  <input type="hidden" id="grant_donation_currency" name="grant_donation_currency" :value="token.symbol">
+  <input type="hidden" id="token_local_id" name="token_local_id" :value="token.id">
+</template>

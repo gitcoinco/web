@@ -1,3 +1,16 @@
+Vue.component('grant-card', {
+  delimiters: [ '[[', ']]' ],
+  props: [ 'grant', 'cred', 'token' ],
+  methods: {
+    get_clr_prediction: function(indexA, indexB) {
+      if (this.grant.clr_prediction_curve) {
+        return this.grant.clr_prediction_curve[indexA][indexB];
+      }
+    }
+  }
+});
+
+
 $(document).ready(() => {
   $('#sort_option').select2({
     minimumResultsForSearch: Infinity
@@ -52,6 +65,45 @@ $(document).ready(() => {
     }
 
   });
+
+  if (document.getElementById('grants-showcase')) {
+    var app = new Vue({
+      delimiters: [ '[[', ']]' ],
+      el: '#grants-showcase',
+      data: {
+        grants: [],
+        page: 1,
+        limit: 6,
+        sort: 'weighted_shuffle',
+        network: 'mainnet',
+        keyword: '',
+        state: 'active',
+        category: '',
+        credentials: false
+      },
+      methods: {
+        fetchGrants: async function(page) {
+          const params = new URLSearchParams({
+            page: page || this.page,
+            limit: this.limit,
+            sort_option: this.sort,
+            network: this.network,
+            keyword: this.keyword,
+            state: this.state,
+            category: this.category
+          }).toString();
+          const response = await fetchData(`/grants/cards_info?${params}`);
+
+          console.log(response);
+          this.grants = response.grants;
+          this.credentials = response.credentials;
+        }
+      },
+      mounted() {
+        this.fetchGrants(this.page);
+      }
+    });
+  }
 
 });
 
@@ -156,7 +208,7 @@ $(document).on('click', '.star-action', async(e) => {
     element.find('i').addClass('far');
     element.find('span').text('Follow');
     element.addClass('text-muted');
-    
+
     if (window.location.pathname === '/grants/following') {
       element.closest('.grant-card').hide();
     }

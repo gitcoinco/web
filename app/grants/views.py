@@ -27,6 +27,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Avg, Count, Max, Q, Subquery, F
@@ -256,6 +257,103 @@ def grants(request):
     _type = request.GET.get('type', 'all')
     return grants_by_grant_type(request, _type)
 
+
+def get_grants(request):
+    grant_type = request.GET.get('type', 'all')
+
+    if grant_type == 'crypto-for-black-lives':
+        grant_type = 'change'
+
+    limit = request.GET.get('limit', 6)
+    page = request.GET.get('page', 1)
+    sort = request.GET.get('sort_option', 'weighted_shuffle')
+    network = request.GET.get('network', 'mainnet')
+    keyword = request.GET.get('keyword', '')
+    state = request.GET.get('state', 'active')
+    category = request.GET.get('category', '')
+
+    _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category)
+
+    paginator = Paginator(_grants, limit)
+    grants = paginator.get_page(page)
+
+    grant_amount = 0
+    grant_stats = Stat.objects.filter(
+        key='grants',
+    ).order_by('-pk')
+    if grant_stats.exists():
+        grant_amount = lazy_round_number(grant_stats.first().val)
+
+    return JsonResponse({
+        'grants': [{
+            'id': grant.id,
+            'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
+            'details_url': reverse('grants:details', args=(grant.id, grant.slug)),
+            'title': grant.title,
+            'description': grant.description,
+            'last_update': grant.last_update,
+            'last_update_natural': naturaltime(grant.last_update),
+            'sybil_score': grant.sybil_score,
+            'weighted_risk_score': grant.weighted_risk_score,
+            'admin_profile': {
+                'url': grant.admin_profile.url,
+                'handle': grant.admin_profile.handle,
+                'avatar_url': grant.admin_profile.avatar_url
+            },
+            'favorite': grant.favorite(request.user) if request.user.is_authenticated else False,
+            'is_on_team': is_grant_team_member(grant, request.user.profile) if request.user.is_authenticated else False,
+            'amount': grant_amount,
+            'clr_prediction_curve': grant.clr_prediction_curve,
+            'last_clr_calc_date': grant.last_clr_calc_date,
+            'safe_next_clr_calc_date': naturaltime(grant.safe_next_clr_calc_date) if grant.last_clr_calc_date else None,
+            'amount_received_in_round': grant.amount_received_in_round,
+            'positive_round_contributor_count': grant.positive_round_contributor_count,
+            'monthly_amount_subscribed': grant.monthly_amount_subscribed,
+            'is_clr_eligible': grant.is_clr_eligible
+        } for grant in grants],
+        'credentials': {
+            'is_staff': request.user.is_staff,
+            'is_authenticated': request.user.is_authenticated
+        }
+    })
+
+
+def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active', category=''):
+    sort_by_clr_pledge_matching_amount = None
+    if 'match_pledge_amount_' in sort:
+        sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
+
+    _grants = Grant.objects.filter(
+        network=network, hidden=False
+    ).keyword(keyword)
+
+    _grants = _grants.order_by(sort, 'pk')
+    ____ = _grants.first()
+
+    if state == 'active':
+        _grants = _grants.active()
+    if not keyword:
+        # dotn do search by cateogry
+        if grant_type == 'following' and request.user.is_authenticated:
+            favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
+            _grants = _grants.filter(id__in=Subquery(favorite_grants))
+        elif grant_type != 'all':
+            _grants = _grants.filter(grant_type=grant_type)
+
+    clr_prediction_curve_schema_map = {10 ** x: x + 1 for x in range(0, 5)}
+    if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
+        sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
+        field_name = f'clr_prediction_curve__{sort_by_index}__2'
+        _grants = _grants.order_by(f"-{field_name}")
+
+    if category:
+        _grants = _grants.filter(Q(categories__category__icontains=category))
+
+    _grants = _grants.prefetch_related('categories')
+
+    return _grants
+
+
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
 
@@ -299,42 +397,16 @@ def grants_by_grant_type(request, grant_type):
     show_past_clr = False
 
     sort_by_index = None
-    sort_by_clr_pledge_matching_amount = None
-    if 'match_pledge_amount_' in sort:
-        sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
 
-    _grants = Grant.objects.filter(
-        network=network, hidden=False
-    ).keyword(keyword)
     try:
-        _grants = _grants.order_by(sort, 'pk')
-        ____ = _grants.first()
+        _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category)
     except Exception as e:
         print(e)
         return redirect('/grants')
-    if state == 'active':
-        _grants = _grants.active()
+
     if keyword:
         grant_type = ''
-    else:
-        # dotn do search by cateogry
-        if grant_type == 'following' and request.user.is_authenticated:
-            favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
-            _grants = _grants.filter(id__in=Subquery(favorite_grants))
-        elif grant_type != 'all':
-            _grants = _grants.filter(grant_type=grant_type)
 
-
-    clr_prediction_curve_schema_map = {10**x:x+1 for x in range(0, 5)}
-    if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
-        sort_by_index = clr_prediction_curve_schema_map.get(sort_by_clr_pledge_matching_amount, 0)
-        field_name = f'clr_prediction_curve__{sort_by_index}__2'
-        _grants = _grants.order_by(f"-{field_name}")
-
-    if category:
-        _grants = _grants.filter(Q(categories__category__icontains = category))
-
-    _grants = _grants.prefetch_related('categories')
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
     partners = MatchPledge.objects.filter(active=True, pledge_type=grant_type) if grant_type else MatchPledge.objects.filter(active=True)

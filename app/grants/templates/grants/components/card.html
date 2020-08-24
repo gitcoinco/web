@@ -1,0 +1,133 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize grants_extra %}
+<grant-card inline-template :grant="grant" :cred="credentials">
+  <div class="grant-item">
+    <a :href="grant.details_url">
+    <div class="grant-item__img">
+      <img :src="grant.logo_url">
+    </div>
+    <div class="grant-item__content px-3">
+      <h2 class="grant-item__title font-subheader">
+        <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+      </h2>
+      <p class="grant-item__pitch font-caption mb-2">[[ grant.description.slice(0, 145) ]][[ grant.description.length > 145 ? '...' : '']]</p>
+      <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
+        <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
+        Last Update: [[ grant.last_update ?  grant.last_update_natural : 'Before Round 6' ]]
+
+        <template v-if="cred.is_staff">
+          <hr>
+          <i class="fa fa-lock" aria-hidden="true"></i>
+          SybilScore ™️: [[ grant.sybil_score ]]
+          <br>
+          <i class="fa fa-lock" aria-hidden="true"></i>
+          RiskScore ™️: [[ grant.weighted_risk_score ]]
+        </template>
+
+      </p>
+
+      <div class="grant-item__owner justify-content-between">
+        <div>
+          <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
+          <a :href="grant.admin_profile.url" :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">
+            <div class="grant-item__owner mt-3 mb-4">
+              <div class="grant-item__owner-image ml-2">
+                <img :src="grant.admin_profile.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
+              </div>
+              <div class="grant-item__owner-handle font-body">
+                <span class="ml-2">
+                  [[ grant.admin_profile.handle || 'anonymous' ]]
+                </span>
+              </div>
+            </div>
+          </a>
+          </div>
+          <template v-if="cred.is_authenticated">
+            <button :class="`text-decoration-none btn btn-link star-action m-0 p-0 mr-4 mt-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+              <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+              <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
+            </button>
+          </template>
+        </div>
+    </div>
+    <div class="grant-item__footer">
+      <template v-if="1">
+          <div class="clr mb-3">
+            <div class="match__round pb-1 pt-2 mb-2">
+              <h2 class="title col-8 font-caption g-bold">
+                  CLR MATCH ROUND 6
+              </h2>
+            </div>
+            <div class="col-6 float-right px-0">
+              <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                [[ grant.amount_received_in_round ]] DAI
+              </h2>
+              <p class="amount mb-2 font-caption font-weight-semibold">
+              raised from [[ grant.positive_round_contributor_count ]] contributors
+              </p>
+            </div>
+            <div class="col-6">
+                <template v-if="grant.is_clr_eligible">
+                  <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                    {# format curve.0.1|floatformat:0|intcomma|default:0 #}
+                    [[ get_clr_prediction(0, 1) || 0 ]] DAI
+                  </h2>
+                  <p class="amount mb-2 font-caption font-weight-semibold">
+                    {#% if grant.id in round_5_5_grants %#}
+                    {# [[ grant_in_round_5_5 ? 'Current Round 5.5 Match' : 'Final CLR Match']]  #}
+                    Final CLR Match
+                  </p>
+                </template>
+                <template v-else>
+                  <h2 class="font-title font-weight-bold amount pt-1 mb-2">
+                    {# format |floatformat:0|intcomma #}
+                    [[ grant.monthly_amount_subscribed ]] DAI
+                  </h2>
+                  <p class="amount mb-2 font-caption font-weight-semibold">MONTHLY RECURRING</p>
+                </template>
+            </div>
+          </div>
+
+
+          <div class="col-12 pb-3" v-if="grant.is_clr_eligible">
+            {# with short=True #}
+            {% include 'grants/card/clr_estimate.html'  %}
+          </div>
+
+          <h2 class="font-subheader text-center amount pt-4 mb-3" style="color:#069953" v-else>
+            NOT ELIGIBLE FOR CLR
+          </h2>
+
+          <div class="col-12 pb-4">
+            {#% is_team_member grant profile as is_on_team %#}
+            <form class="js-addDetailToCart-form" v-if="!grant.is_on_team">
+              {% include 'grants/components/hidden_inputs.html' %}
+              <button class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
+                + Add to Cart
+              </button>
+            </form>
+
+            <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-else>
+              <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
+            </button>
+          </div>
+        </template>
+    </div>
+  </a>
+    </div>
+</grant-card>

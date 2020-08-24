@@ -23,6 +23,7 @@ from grants.views import (
     bulk_fund, flag, grant_activity, grant_categories, grant_details, grant_fund, grant_new, grant_new_whitelabel,
     grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_clr, grants_stats_view,
     invoice, leaderboard, new_matching_partner, profile, quickstart, subscription_cancel, toggle_grant_favorite,
+    get_grants,
 )
 
 app_name = 'grants'
@@ -30,6 +31,7 @@ urlpatterns = [
     path('', grants, name='grants'),
     path('getstats/', grants_stats_view, name='grants_stats'),
     path('grants.json', grants_addr_as_json, name='grants_json'),
+    path('cards_info', get_grants, name='grant_cards_info'),
     path('flag/<int:grant_id>', flag, name='grantflag'),
     path('<int:grant_id>/favorite', toggle_grant_favorite, name='favorite_grant'),
     path('<int:grant_id>/activity', grant_activity, name='log_activity'),
