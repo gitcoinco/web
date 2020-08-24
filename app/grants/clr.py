@@ -182,11 +182,16 @@ def get_totals_by_pair(contrib_dict):
 def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_threshold, uv_threshold, total_pot):
     bigtot = 0
     totals = []
+    
     for proj, contribz in aggregated_contributions['current'].items():
         tot = 0
+        _num = 0
+        _sum = 0
 
         # start pairwise matches
         for k1, v1 in contribz.items():
+            _num += 1
+            _sum += v1
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
@@ -196,7 +201,7 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
 
         bigtot += tot
-        totals.append({'id': proj, 'clr_amount': tot})
+        totals.append({'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot})
 
     global CLR_PERCENTAGE_DISTRIBUTED
 
@@ -384,6 +389,59 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
 
 
 
+def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
+    # setup
+    clr_calc_start_time = timezone.now()
+    debug_output = []
+
+    # one-time data call
+    total_pot = float(clr_round.total_pot)
+    v_threshold = float(clr_round.verified_threshold)
+    uv_threshold = float(clr_round.unverified_threshold)
+
+    grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
+
+    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
+
+    # pre-calculate clr amount to figure out a closer total pot
+    pre_pot = 0
+    for grant in grants:
+        p_clr, g_clr = calculate_clr_for_donation(
+                grant,
+                amount,
+                grant_contributions_curr,
+                total_pot,
+                v_threshold,
+                uv_threshold
+            )
+        pre_pot += p_clr
+
+    # using clr amount, round total pot up to the closest 10k
+    total_pot_close = round(pre_pot + 5000, -4) 
+    if total_pot_close >= total_pot:
+        total_pot_close = total_pot
+
+    # calculate clr analytics output
+    clr_matches = []
+    for grant in grants:
+        _, grants_clr = calculate_clr_for_donation(
+            grant,
+            amount,
+            grant_contributions_curr,
+            total_pot_close,
+            v_threshold,
+            uv_threshold
+        )
+        debug_output.append({
+            'grant': grant.id, 
+            'number_contributions': grants_clr['number_contributions'], 
+            'contribution_amount': grants_clr['contribution_amount'], 
+            'clr_amount': grants_clr['clr_amount']
+        })
+    return debug_output
+
+
+
 def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet'):
     # setup
     clr_calc_start_time = timezone.now()
@@ -398,6 +456,24 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
 
+    # pre-calculate clr amount to figure out a closer total pot
+    pre_pot = 0
+    for grant in grants:
+        p_clr, g_clr = calculate_clr_for_donation(
+                grant,
+                amount,
+                grant_contributions_curr,
+                total_pot,
+                v_threshold,
+                uv_threshold
+            )
+        pre_pot += p_clr
+
+    # using clr amount, round total pot up to the closest 10k
+    total_pot_close = round(pre_pot + 5000, -4) 
+    if total_pot_close >= total_pot:
+        total_pot_close = total_pot
+
     # calculate clr given additional donations
     for grant in grants:
         # five potential additional donations plus the base case of 0
@@ -410,7 +486,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 grant,
                 amount,
                 grant_contributions_curr,
-                total_pot,
+                total_pot_close,
                 v_threshold,
                 uv_threshold
             )
