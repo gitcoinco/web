@@ -19,7 +19,7 @@
             <li>
               <b>{{ earnings_count }}</b>
               Transaction{{earnings_count|pluralize}}
-             <a href="#" style="color: black; text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">( Details )
+             <a href="#" style="color: var(--theme-highlight-color); text-decoration: underline; font-size: 12px;" data-toggle="collapse" data-target="#tx_details">( Details )
              </a>
             </li>
             <div id="tx_details" class="collapse">
@@ -53,7 +53,7 @@
               <li>
                 - <b>{{ total_grant_created }}</b>
                 Grant{{total_grant_created|pluralize}} created
-              </li> 
+              </li>
             </div>
             <li>
               <b>${{ earnings_total }}</b>

@@ -6,7 +6,7 @@
 
 {% if not profile.is_org %}
   <li>
-    Last Seen: 
+    Last Seen:
     <b>
     {% if profile.last_chat_status == 'online' or profile.last_chat_status == 'away' %}
      {% include 'profiles/presence_indicator.html' with show_even_if_offline=1 last_chat_status=profile.last_chat_status chat_id=profile.chat_id handle=profile.handle %}
@@ -34,7 +34,7 @@
       ">
       </i>
     </div>
-    <a href="#" style="color: black; text-decoration: underline;  font-size: 12px;" data-toggle="collapse" data-target="#reliability_details">Details
+    <a href="#" style="color: var(--theme-highlight-color); text-decoration: underline;  font-size: 12px;" data-toggle="collapse" data-target="#reliability_details">Details
     </a>
   </li>
   <div id="reliability_details" class="collapse">
@@ -46,7 +46,7 @@
         <label id="tooltip">
           <i class='fa fa-info-circle' title="The percentage of bounties that this user has been involved with that was successful."></i>
         </label>
-        Success Rate: <b>{{profile.success_rate}}</b>% 
+        Success Rate: <b>{{profile.success_rate}}</b>%
       </li>
     {% endif %}
     <li>

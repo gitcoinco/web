@@ -11,7 +11,6 @@
       <link rel="canonical" href="{{profile.url}}/{{tab}}" />
     {% endif %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
-    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/kudos/styles.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
@@ -19,6 +18,175 @@
     <link rel="stylesheet" href={% static "v2/css/scroll-carousel.css" %} />
     <link rel="stylesheet" href="{% static "v2/css/town_square.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
+  <!--
+   :root {
+        --theme-bg-color: #323232;
+        --theme-body-color: #323232;
+        --theme-card-color: #323232;
+        --theme-card-inactive-color: #232323;
+        --theme-txt-color: #F5F5F5;
+        --theme-link-color: #E60A00;
+        --theme-mute-color: #505050;
+        --theme-badge-color: #E60A00;
+        --theme-badge-txt-color: #FFFFFF;
+        --theme-action-color: #E60A00;
+        --theme-action-txt-color: #FFFFFF;
+        --theme-highlight-color: #E60A00;
+      }
+
+      :root {
+        --theme-bg-color: #F2F0EC; // color-1
+        --theme-body-color: #F2F0EC;
+
+        --theme-card-color: #E8E6DF; // color 2
+        --theme-card-inactive-color: #D7F5DC; // color 2 dark 20%
+        --theme-txt-color: #515151; // color 6
+        --theme-link-color: #E60A00; // color 3
+        --theme-mute-color: #505050; // color 6 dark  20%
+        --theme-badge-color: #99CC99; // color 7
+        --theme-badge-txt-color: #FFF; // color 6
+        --theme-action-color: #66CCCC; // color 3
+        --theme-action-txt-color: #FFFFFF; // color 4
+        --theme-highlight-color: #66CCCC; // color 8
+      }
+
+
+  -->
+    <style>
+
+      :root {
+        --theme-bg-color: #F2F0EC;
+        --theme-body-color: #F2F0EC;
+
+        --theme-card-color: #E8E6DF;
+        --theme-card-inactive-color: #D7F5DC;
+        --theme-txt-color: #515151;
+        --theme-link-color: #F2777A;
+        --theme-mute-color: #505050;
+        --theme-badge-color: #99CC99;
+        --theme-badge-txt-color: #515151;
+        --theme-action-color: #F2777A;
+        --theme-action-txt-color: #FFFFFF;
+        --theme-highlight-color: #66CCCC;
+      }
+
+
+      .btn-radio:hover, #btn_post:hover, .btn.btn-sm:hover, #kudos-section .btn:hover {
+        background-color: var(--theme-highlight-color) !important;
+        color: var(--theme-badge-txt-color) !important;
+      }
+
+      .btn-radio i {
+        color: var(--theme-badge-txt-color) !important;
+      }
+
+
+      .theme__background {
+        background-color: var(--theme-bg-color) !important;
+        color: var(--theme-txt-color) !important;
+      }
+
+      .theme__body, .theme__card, .card {
+        background-color: var(--theme-body-color) !important;
+        color: var(--theme-txt-color) !important;
+      }
+
+      .card-project {
+        background-color: var(--theme-card-inactive-color) !important;
+      }
+
+
+      .theme__text {
+        color: #FFFFFF !important;
+      }
+
+      .theme__background a{
+        color: var(--theme-link-color);
+      }
+
+      .bounty-detail a div {
+        color: var(--theme-link-color) !important;
+      }
+      .theme--action {
+        border-color: var(--theme-action-color);
+        color: var(--theme-action-color);
+      }
+
+      .theme--action:hover, .post_comment {
+        background-color: var(--theme-action-color);
+        color: var(--theme-txt-color);
+      }
+
+      .section-tab {
+        color: var(--theme-txt-color);
+      }
+
+      .section-tab.active {
+        color: var(--theme-txt-color) !important;
+        border-bottom-color: var(--theme-action-color);
+      }
+
+      .section-tab:hover {
+        color: var(--theme-action-color) !important;
+      }
+
+      .nav-badge {
+        color: var(--theme-action-color) !important;
+      }
+
+      .text-muted {
+        color: var(--theme-mute-color);
+      }
+
+      .bounty-detail {
+        color: var(--theme-txt-color);
+      }
+
+      .activity_stream .box {
+        background-color: var(--theme-card-color);
+      }
+
+      .activity_detail .tag, .btn-radio, #btn_post, .btn.btn-sm, #kudos-section .btn {
+        background-color: var(--theme-badge-color) !important;
+        color: var(--theme-badge-txt-color) !important;
+      }
+
+      #btn_post, .btn.btn-sm, #kudos-section .btn {
+        background-color: var(--theme-action-color) !important;
+        color: var(--theme-action-txt-color) !important;
+      }
+
+      .content, .comment_container {
+        background-color: var(--theme-card-inactive-color) !important;
+      }
+
+      .card-rating, .card-rating__header {
+        background-color: var(--theme-card-color);
+        color: var(--theme-txt-color);
+      }
+
+      .card-rating__header .text-dark {
+        color: var(--theme-link-color) !important;
+      }
+
+      .card-rating__title {
+        color: var(--theme-txt-color) !important;
+      }
+
+      .static-stars .fas {
+        color: var(--theme-highlight-color);
+      }
+
+      .status-menu .btn.btn-sm {
+        background-color: transparent !important;
+        color: var(--theme-link-color) !important;
+      }
+
+      .nav-tabs .nav-link.active {
+        background-color: transparent;
+      }
+    </style>
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -48,8 +216,8 @@
       {% endif %}
     </div>
 
-    <div class="container-fluid bg-light">
-      <div class="container profile-card mh-150">
+    <div class="container-fluid theme__background">
+      <div class="container profile-cardprofile-header__stats theme__body mh-150">
         <div class="row">
             <div id="follow_header" class="d-md-block d-none {% if not my_kudos|length %}lower{% endif %}">
             {% include 'profiles/follow.html' %}
