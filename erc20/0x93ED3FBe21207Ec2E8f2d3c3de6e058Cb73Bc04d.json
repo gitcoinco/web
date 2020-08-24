@@ -1,0 +1,28 @@
+{
+  "symbol": "PNK",
+  "address": "0x93ED3FBe21207Ec2E8f2d3c3de6e058Cb73Bc04d",
+  "overview":{
+        "en": "Kleros provides fast, secure and affordable arbitration for virtually everything.",
+        "zh": "Kleros仲裁协议通证Pinakion(PNK)"
+  },
+  "email": "contact@kleros.io",
+  "website": "https://kleros.io/",
+  "whitepaper": "https://kleros.io/static/whitepaper_en-8bd3a0480b45c39899787e17049ded26.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-15",
+  "initial_price":{
+        "ETH":"0.00032135 ETH",
+        "USD":"0.125947 USD",
+        "BTC":"0.00001079 BTC"
+  },
+  "links": {
+    "blog": "https://https://blog.kleros.io/",
+    "twitter": "https://twitter.com/kleros_io?",
+    "telegram": "https://t.me/kleros",
+    "github": "https://github.com/kleros",
+    "facebook": "https://www.facebook.com/kleros.io/",
+    "reddit": "https://reddit.com/r/Kleros/",
+    "slack": "https://slack.kleros.io/",
+    "medium": "https://medium.com/kleros"
+  }
+}
