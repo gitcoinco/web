@@ -1,0 +1,17 @@
+{
+    "symbol": "MBH",
+    "address": "0x71C3C442cC91cd16327663A3a069F33dC6fE5d6e",
+    "overview":{
+          "en": "MBH is a distributed financial system based on blockchain. It is committed to promoting the development and improvement of the distributed financial DeFi ecosystem, creating on-chain finance, and then building an efficient distributed financial DeFi ecological infrastructure.",
+          "zh": "MBH是基于区块链的分布式金融系统，致力于推动分布式金融DeFi生态的发展和完善，打造链上金融，进而搭建高效运行的分布式金融DeFi生态基础设施。"
+    },
+    "email": "mbhcoinservice@gmail.com",
+    "website": "http://mbhcoin.xyz/",
+    "whitepaper": "http://mbhcoin.xyz/enwhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-08-20",
+    "links": {
+        "telegram": "https://t.me/mbhofficialgroup",
+        "twitter": "https://twitter.com/mbhcoin"
+      }
+}
