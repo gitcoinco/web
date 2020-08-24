@@ -105,10 +105,23 @@ class GrantCLR(SuperModel):
     is_active = models.BooleanField(default=False, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
     end_date = models.DateTimeField(help_text="CLR Round Start Date")
-    previous_round = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,help_text="link to previous clr round")
-    grant_type  = models.ForeignKey(GrantType, on_delete=models.CASCADE, help_text="Grant Type allowed for this round")
-    threshold = models.DecimalField(help_text="CLR Threshold",
+    grant_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grants allowed in this CLR round"
+    )
+    subscription_filters = JSONField(
+        default=dict,
+        null=True, blank=True,
+        help_text="Grant Subscription to be allowed in this CLR round"
+    )
+    verified_threshold = models.DecimalField(help_text="Verfied CLR Threshold",
         default=25.0,
+        decimal_places=2,
+        max_digits=5
+    )
+    unverified_threshold = models.DecimalField(help_text="Unverified CLR Threshold",
+        default=5.0,
         decimal_places=2,
         max_digits=5
     )
@@ -124,6 +137,9 @@ class GrantCLR(SuperModel):
         max_length=500,
         help_text=_('The Grant CLR round image'),
     )
+
+    def __str__(self):
+        return f"{self.round_num}"
 
 
 class Grant(SuperModel):
@@ -170,11 +186,20 @@ class Grant(SuperModel):
         blank=True,
         help_text=_('The Grant logo SVG.'),
     )
+    # TODO-GRANTS: rename to eth_payout_address
     admin_address = models.CharField(
         max_length=255,
         default='0x0',
         help_text=_('The wallet address where subscription funds will be sent.'),
     )
+    zcash_payout_address = models.CharField(
+        max_length=255,
+        default='0x0',
+        null=True,
+        blank=True,
+        help_text=_('The zcash wallet address where subscription funds will be sent.'),
+    )
+    # TODO-GRANTS: remove
     contract_owner_address = models.CharField(
         max_length=255,
         default='0x0',
@@ -271,11 +296,13 @@ class Grant(SuperModel):
         max_digits=20,
         help_text=_('The fundingamount across all rounds with phantom funding'),
     )
+    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
     clr_prediction_curve = ArrayField(
         ArrayField(
             models.FloatField(),
             size=2,
         ), blank=True, default=list, help_text=_('5 point curve to predict CLR donations.'))
+    # TODO: REMOVE
     backup_clr_prediction_curve = ArrayField(
         ArrayField(
             models.FloatField(),
@@ -296,16 +323,19 @@ class Grant(SuperModel):
         help_text=_('The Grant that this grant defers it CLR contributions to (if any).'),
         null=True,
     )
+    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
     last_clr_calc_date = models.DateTimeField(
         help_text=_('The last clr calculation date'),
         null=True,
         blank=True,
     )
+    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
     next_clr_calc_date = models.DateTimeField(
         help_text=_('The last clr calculation date'),
         null=True,
         blank=True,
     )
+    # TODO-CROSS-GRANT: [{round: fk1, value: time}]
     last_update = models.DateTimeField(
         help_text=_('The last grant admin update date'),
         null=True,
@@ -330,6 +360,10 @@ class Grant(SuperModel):
         help_text=_('The Grants Weighted Risk Score'),
     )
 
+    in_active_clrs = models.ManyToManyField(
+        GrantCLR,
+        help_text="Active Grants CLR Round"
+    )
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
@@ -524,6 +558,11 @@ class SubscriptionQuerySet(models.QuerySet):
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 
+    TENANT = [
+        ('ETH', 'ETH'),
+        ('ZCASH', 'ZCASH')
+    ]
+
     active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
     error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
     subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
@@ -654,6 +693,7 @@ class Subscription(SuperModel):
         max_digits=64,
         help_text=_('The amount per contribution period in USDT'),
     )
+    tenant = models.CharField(max_length=10, null=True, blank=True, default="ETH", choices=TENANT, help_text="specific tenant in which contribution is made")
 
     @property
     def negative(self):

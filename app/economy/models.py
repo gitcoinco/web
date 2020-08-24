@@ -182,8 +182,9 @@ class ConversionRate(SuperModel):
 
     def __str__(self):
         """Define the string representation of a conversion rate."""
-        return f"{self.from_amount} {self.from_currency} => {self.to_amount} " \
-               f"{self.to_currency} ({self.timestamp}, {self.source}) {naturaltime(self.created_on)}"
+        decimals = 3
+        return f"{round(self.from_amount, decimals)} {self.from_currency} => {round(self.to_amount, decimals)} " \
+               f"{self.to_currency} ({self.timestamp.strftime('%m/%d/%Y')} {naturaltime(self.timestamp)}, from {self.source})"
 
 
 # method for updating
