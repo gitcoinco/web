@@ -642,6 +642,59 @@ Vue.component('grants-cart', {
     },
 
     /**
+     * @notice Requests all allowances and executes checkout once all allowance transactions
+     * have been sent
+     * @param allowanceData Output from getAllowanceData() function
+     * @param targetContract Address of the contract to check allowance against (e.g. the
+     * regular BulkCheckout contract, the zkSync contract, etc.)
+     * @param callback Function to after allowance approval transactions are sent
+     * @param callbackParams Array of input arguments to pass to the callback function
+     */
+    async requestAllowanceApprovalsThenExecuteCallback(
+      allowanceData,
+      userAddress,
+      targetContract,
+      callback,
+      callbackParams = []
+    ) {
+      indicateMetamaskPopup();
+      for (let i = 0; i < allowanceData.length; i += 1) {
+        const allowance = allowanceData[i].allowance;
+        const contract = allowanceData[i].contract;
+        const tokenName = allowanceData[i].tokenName;
+        const approvalTx = contract.methods.approve(targetContract, allowance);
+
+        // We split this into two very similar branches, because on the last approval
+        // we execute the callback (the main donation flow) after we get the transaction hash
+        if (i !== allowanceData.length - 1) {
+          approvalTx
+            .send({ from: userAddress })
+            .on("transactionHash", (txHash) => {
+              // eslint-disable-line no-loop-func
+              this.setApprovalTxHash(tokenName, txHash);
+            })
+            .on("error", (error, receipt) => {
+              // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+              this.handleError(error);
+            });
+        } else {
+          approvalTx
+            .send({ from: userAddress })
+            .on("transactionHash", async (txHash) => {
+              // eslint-disable-line no-loop-func
+              indicateMetamaskPopup(true);
+              this.setApprovalTxHash(tokenName, txHash);
+              await callback(...callbackParams);
+            })
+            .on("error", (error, receipt) => {
+              // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
+              this.handleError(error);
+            });
+        }
+      }
+    },
+
+    /**
      * @notice Checkout flow
      */
     async checkout() {
@@ -650,7 +703,10 @@ Vue.component('grants-cart', {
         const userAddress = await this.initializeCheckout();
 
         // Token approvals and balance checks (just checks data, does not execute approavals)
-        const allowanceData = await this.getAllowanceData(userAddress, bulkCheckoutAddress);
+        const allowanceData = await this.getAllowanceData(
+          userAddress,
+          bulkCheckoutAddress
+        );
 
         // Send donation if no approvals -----------------------------------------------------------
         if (allowanceData.length === 0) {
@@ -659,43 +715,23 @@ Vue.component('grants-cart', {
           return;
         }
 
-        // Get approvals then send donation --------------------------------------------------------
-        indicateMetamaskPopup();
-        for (let i = 0; i < allowanceData.length; i += 1) {
-          const allowance = allowanceData[i].allowance;
-          const contract = allowanceData[i].contract;
-          const tokenName = allowanceData[i].tokenName;
-          const approvalTx = contract.methods.approve(bulkCheckoutAddress, allowance);
-
-          // We split this into two very similar branches, because on the last approval
-          // we send the main donation transaction after we get the transaction hash
-          if (i !== allowanceData.length - 1) {
-            approvalTx.send({ from: userAddress })
-              .on('transactionHash', (txHash) => { // eslint-disable-line no-loop-func
-                this.setApprovalTxHash(tokenName, txHash);
-              })
-              .on('error', (error, receipt) => {
-                // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
-                this.handleError(error);
-              });
-          } else {
-            approvalTx.send({ from: userAddress })
-              .on('transactionHash', async(txHash) => { // eslint-disable-line no-loop-func
-                indicateMetamaskPopup(true);
-                this.setApprovalTxHash(tokenName, txHash);
-                await this.sendDonationTx(userAddress);
-              })
-              .on('error', (error, receipt) => {
-                // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
-                this.handleError(error);
-              });
-          }
-        }
+        // Request approvals then send donations ---------------------------------------------------
+        await this.requestAllowanceApprovalsThenExecuteCallback(
+          allowanceData,
+          userAddress,
+          bulkCheckoutAddress,
+          this.sendDonationTx,
+          [userAddress]
+        );
       } catch (err) {
         this.handleError(err);
       }
     },
 
+    /**
+     * @notice Saves off the transaction hash of the approval transaction to include with the POST
+     * payload to be stored in Gitcoin's DB
+     */
     setApprovalTxHash(tokenName, txHash) {
       this.donationInputs.forEach((donation, index) => {
         if (donation.name === tokenName) {
