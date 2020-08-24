@@ -521,8 +521,9 @@ Vue.component('project-card', {
   computed: {
     project_url: function() {
       let project = this.$props.project;
+      let project_name = (project.name || '').replace(/ /g, '-');
 
-      return `/hackathon/${project.bounty.org_name}/projects/${project.pk}/${project.name}`;
+      return `/hackathon/${project.hackathon.slug}/projects/${project.pk}/${project_name}`;
     }
   },
   methods: {

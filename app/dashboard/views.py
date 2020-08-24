@@ -4263,6 +4263,7 @@ def get_project(request, project_id):
             'winner': project.winner,
             'looking_members': project.looking_members,
             'work_url': project.work_url,
+            'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
             'logo_url': project.logo.url if project.logo else staticfiles_storage.url(
                 f'v2/images/projects/logos/${project.id}.png'),
             'prize': {
@@ -4308,6 +4309,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
             'name': project.name,
             'id': project.id,
             'summary': project.summary,
+            'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
             'status': project.status,
             'winner': project.winner,
             'looking_members': project.looking_members,
