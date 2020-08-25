@@ -761,32 +761,6 @@
                 </div>
 
               </b-tab>
-              {% if can_manage %}
-              <b-tab class="col-12" title-item-class="navigation" lazy>
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Dashboard" %}
-                  </div>
-                </template>
-                <manage-sponsor v-bind:hackathon_id="hackathonObj.id" inline-template>
-                  <div class="offset-3 col-6">
-                      <div class="from-group mb-3 mt-4">
-                        <label class="font-weight-semibold" for="org-mentors">Bounty Mentors (Optional) <small>Add Gitcoin/Github Usernames</small></label>
-                        <div class="form__select2 g-multiselect">
-                          <select id="org-mentors" class="mentor-users" multiple="multiple" aria-describedby="profilesHelp">
-                            {% for profile in default_mentors %}
-                            <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
-                            {% endfor %}
-                          </select>
-                        </div>
-                      </div>
-                      <div class="form-group mb-3 mt-4">
-                        <b-button @click="updateBountyMentors();">Update Mentors</b-button>
-                      </div>
-                  </div>
-                </manage-sponsor>
-              </b-tab>
-              {% endif %}
               <template v-slot:tabs-end  v-if="!hackHasEnded">
                 <li role="presentation" class="nav-item navigation">
                   <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">

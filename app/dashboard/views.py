@@ -1178,42 +1178,46 @@ def bounty_mentor(request):
 
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
-    can_manage = request.user.profile.handle.lower() == body.bounty_org.lower()
-
-    if not can_manage:
-        return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
-
-    bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{request.user.profile.handle.lower()}-mentors')[0]
-    message = f'Mentors Updated Successfully'
-    if body['set_default_mentors']:
-        current_mentors = Profile.objects.filter(user__groups=bounty_org_default_mentors)
-        mentors_to_remove = list(set([current.id for current in current_mentors]) - set(body['new_default_mentors']))
-
-        mentors_to_remove = Profile.objects.filter(id__in=mentors_to_remove)
-        for mentor_to_r in mentors_to_remove:
-            mentor_to_r.user.groups.remove(bounty_org_default_mentors)
-
-        mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
-        for mentor in mentors_to_add:
-            mentor.user.groups.add(bounty_org_default_mentors)
-
-    if body['has_overrides']:
-        for key, val in body['overrides']:
-            bounty = Bounty.objects.get(id=key)
-            bounty_group = Group.objects.get_or_create(name=f'bounty-override-{key}-mentors')[0]
-            mentor_pks = [int(mentorpk) for mentorpk in val.mentors]
-            mentors = User.objects.filter(id__in=mentor_pks)
-            for mentor in mentors:
-                mentor.groups.add(bounty_group)
-
     if body['hackathon_id']:
-        try:
-            hackathon_event = HackathonEvent.objects.get(id=int(body['hackathon_id']))
-            from chat.tasks import hackathon_chat_sync
-            hackathon_chat_sync.delay(hackathon_id=hackathon_event.id)
-        except Exception as e:
-            message = 'Hackathon does not exist'
-            logger.info(str(e))
+
+        hackathon_event = HackathonEvent.objects.get(id=int(body['hackathon_id']))
+
+        if body['bounty_org']:
+            sponsor = hackathon_event.sponsor_profiles.get(handle__iexact=body['bounty_org'])
+        else:
+            sponsor = None
+
+        if not hackathon_event:
+            return JsonResponse({'message': 'Event not Found'}, status=404)
+
+        profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+        print(sponsor)
+        is_sponsor_member = profile.organizations_fk.filter(pk=sponsor.pk)
+
+        if not is_sponsor_member:
+            return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
+
+        bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{sponsor.handle.lower()}-mentors')[0]
+        message = f'Mentors Updated Successfully'
+        if body['set_default_mentors']:
+            current_mentors = Profile.objects.filter(user__groups=bounty_org_default_mentors)
+            mentors_to_remove = list(set([current.id for current in current_mentors]) - set(body['new_default_mentors']))
+
+            mentors_to_remove = Profile.objects.filter(id__in=mentors_to_remove)
+            for mentor_to_r in mentors_to_remove:
+                mentor_to_r.user.groups.remove(bounty_org_default_mentors)
+
+            mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
+            for mentor in mentors_to_add:
+                mentor.user.groups.add(bounty_org_default_mentors)
+
+            try:
+                from chat.tasks import hackathon_chat_sync
+                hackathon_chat_sync.delay(hackathon_id=hackathon_event.id)
+            except Exception as e:
+                message = 'Hackathon does not exist'
+                logger.info(str(e))
 
     return JsonResponse({'message': message}, status=200, safe=False)
 
@@ -3744,7 +3748,6 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
-    print(sponsor_profile)
     org = {
         'display_name': sponsor_profile.name,
         'avatar_url': sponsor_profile.avatar_url,
@@ -3759,6 +3762,8 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         active_tab = 0
     elif panel == "stats":
         active_tab = 1
+    elif panel == "mentors":
+        active_tab = 2
 
     filter = ''
     if request.GET.get('filter'):
@@ -3768,7 +3773,17 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
 
     num_participants = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='express_interest', bounty__in=query_prizes).count()
     num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work', bounty__in=query_prizes).count()
+
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    default_mentors = []
+    if profile:
+        default_mentors = Profile.objects.filter(
+            user__groups__name=f'sponsor-org-{profile.handle}-mentors'
+        )
+
     params = {
+        'default_mentors': default_mentors,
         'active': 'dashboard',
         'prize_count': query_prizes.count(),
         'type': 'hackathon',
@@ -3917,16 +3932,6 @@ def hackathon(request, hackathon='', panel='prizes'):
     params['active'] = 'users'
     from chat.tasks import get_chat_url
     params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
-
-    can_manage = request.user.is_authenticated and any(
-        [request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() for bounty in Bounty.objects.filter(event=hackathon_event)]
-    )
-
-    if can_manage:
-        params['can_manage'] = can_manage
-        params['default_mentors'] = Profile.objects.filter(
-            user__groups__name=f'sponsor-org-{request.user.profile.handle}-mentors'
-        )
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 

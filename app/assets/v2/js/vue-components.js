@@ -203,23 +203,21 @@ Vue.component('tribes-settings', {
   methods: {}
 });
 
-Vue.component('manage-sponsor', {
-  props: ['hackathon_id'],
+Vue.component('manage-mentors', {
+  props: [ 'hackathon_id', 'org_name' ],
   methods: {
     onMentorChange: function(event) {
 
       this.bountyMentors = $('.mentor-users').select2('data').map(element => {
         return element.id;
       });
-      console.log(event);
-      console.log(this.bountyMentors);
     },
     updateBountyMentors: function() {
       let vm = this;
       const url = '/api/v0.1/bounty_mentor/';
 
       const updateBountyMentor = fetchData(url, 'POST', JSON.stringify({
-        has_overrides: false,
+        bounty_org: vm.org_name,
         hackathon_id: vm.hackathon_id,
         set_default_mentors: true,
         new_default_mentors: vm.bountyMentors
@@ -238,7 +236,6 @@ Vue.component('manage-sponsor', {
       return element.id;
     });
 
-    console.log(this.bountyMentors);
   },
   data: function() {
     return {
