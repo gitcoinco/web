@@ -30,10 +30,10 @@ from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
 from dashboard.models import HackathonEvent, Profile
+from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything, SuperModel
 from perftools.models import JSONStore
 from retail.utils import build_stat_results, programming_languages
-from dashboard.utils import set_hackathon_event
 
 
 def create_top_grant_spenders_cache():
