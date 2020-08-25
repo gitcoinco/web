@@ -203,7 +203,7 @@ Vue.component('tribes-settings', {
   methods: {}
 });
 
-Vue.component('manage-sponsor', {
+Vue.component('manage-mentors', {
   props: ['hackathon_id'],
   methods: {
     onMentorChange: function(event) {

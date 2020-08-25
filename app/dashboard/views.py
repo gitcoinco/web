@@ -3743,7 +3743,6 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
-    print(sponsor_profile)
     org = {
         'display_name': sponsor_profile.name,
         'avatar_url': sponsor_profile.avatar_url,
@@ -3758,6 +3757,8 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         active_tab = 0
     elif panel == "stats":
         active_tab = 1
+    elif panel == "mentors":
+        active_tab = 2
 
     filter = ''
     if request.GET.get('filter'):
@@ -3767,7 +3768,17 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
 
     num_participants = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='express_interest', bounty__in=query_prizes).count()
     num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work', bounty__in=query_prizes).count()
+
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    default_mentors = []
+    if profile:
+        default_mentors = Profile.objects.filter(
+            user__groups__name=f'sponsor-org-{profile.handle}-mentors'
+        )
+
     params = {
+        'default_mentors': default_mentors,
         'active': 'dashboard',
         'prize_count': query_prizes.count(),
         'type': 'hackathon',

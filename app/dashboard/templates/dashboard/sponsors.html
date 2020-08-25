@@ -302,6 +302,7 @@
                   </div>
                 </div>
               </b-tab>
+
               <b-tab title-item-class="navigation">
                 <template class="d-none" v-slot:title>
                   <div class="mt-4">
@@ -314,6 +315,30 @@
                   </div>
                 </div>
 
+              </b-tab>
+              <b-tab title-item-class="navigation">
+                <template class="d-none" v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Mentors" %}
+                  </div>
+                </template>
+                <manage-mentors v-bind:hackathon_id="hackathonObj.id" inline-template>
+                  <div class="offset-3 col-6">
+                      <div class="from-group mb-3 mt-4">
+                        <label class="font-weight-semibold" for="org-mentors">Bounty Mentors (Optional) <small>Add Gitcoin/Github Usernames</small></label>
+                        <div class="form__select2 g-multiselect">
+                          <select id="org-mentors" class="mentor-users" multiple="multiple" aria-describedby="profilesHelp">
+                            {% for profile in default_mentors %}
+                            <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group mb-3 mt-4">
+                        <b-button @click="updateBountyMentors();">Update Mentors</b-button>
+                      </div>
+                  </div>
+                </manage-mentors>
               </b-tab>
             </b-tabs>
           </div>
