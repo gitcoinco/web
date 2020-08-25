@@ -3917,16 +3917,6 @@ def hackathon(request, hackathon='', panel='prizes'):
     from chat.tasks import get_chat_url
     params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
 
-    can_manage = request.user.is_authenticated and any(
-        [request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() for bounty in Bounty.objects.filter(event=hackathon_event)]
-    )
-
-    if can_manage:
-        params['can_manage'] = can_manage
-        params['default_mentors'] = Profile.objects.filter(
-            user__groups__name=f'sponsor-org-{request.user.profile.handle}-mentors'
-        )
-
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
 
