@@ -1117,8 +1117,8 @@ def create_status_update(request):
             meta['image'] = request.POST.get('image', '')
 
         kwargs['profile'] = profile
-        if ':' in request.POST.get('what'):
-            what = request.POST.get('what')
+        what = request.POST.get('what')
+        if what and ':' in what:
             key = what.split(':')[0]
             result = what.split(':')[1]
             if key and result:

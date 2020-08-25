@@ -35,12 +35,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
+
+
 from django.db import connection, models
 from django.db.models import Count, F, Q, Subquery, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
-from django.template.defaultfilters import date
+from django.template.defaultfilters import date, floatformat, truncatechars
 from django.template.loader import render_to_string
 from django.templatetags.static import static
 from django.urls import reverse
@@ -51,6 +53,8 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+
+from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
@@ -70,6 +74,7 @@ from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
 
+from townsquare.models import PinnedPost, Offer
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
 
@@ -384,6 +389,10 @@ class Bounty(SuperModel):
     attached_job_description = models.URLField(blank=True, null=True, db_index=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
+    hypercharge_mode = models.BooleanField(
+        default=False, help_text=_('This bounty will be part of the hypercharged bounties')
+    )
+    hyper_next_publication = models.DateTimeField(null=True, blank=True)
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
 
@@ -1300,6 +1309,43 @@ class Bounty(SuperModel):
             return ''
 
 
+@receiver(post_save, sender=Bounty, dispatch_uid="post_bounty")
+def post_save_bounty(sender, instance, created, **kwargs):
+    final_state = instance.bounty_state in ['done', 'cancelled']
+    if not final_state and instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) is False:
+        instance.metadata['hyper_tweet_counter'] = 0
+
+        title = f'Work on "{instance.title}" and receive {floatformat(instance.value_true)} {instance.token_name}'
+
+        # Feature bounty on hackathon/prize explorer
+        instance.is_featured = True
+        instance.featuring_date = timezone.now()
+        instance.hyper_next_publication = timezone.now()
+
+        # Publish and pin on townsquare
+        profile = Profile.objects.filter(handle=HYPERCHARGE_BOUNTIES_PROFILE_HANDLE).first()
+        if profile:
+            metadata = {
+                    'title': title,
+                    'description': truncatechars(instance.issue_description_text, 500),
+                    'url': instance.get_absolute_url(),
+                    'ask': '#announce'
+            }
+            activity = Activity.objects.create(profile=profile, activity_type='hypercharge_bounty',
+                                               metadata=metadata, bounty=instance)
+
+            PinnedPost.objects.filter(what='everywhere').delete()
+            pinned_post = PinnedPost.objects.create(
+                what='everywhere', activity=activity, user=profile
+            )
+
+        instance.save()
+
+    if not instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) != False:
+        del instance.metadata['hyper_tweet_counter']
+        instance.save()
+
+
 class BountyEvent(SuperModel):
     """An Event taken by a user, which may change the state of a Bounty"""
 
@@ -2147,6 +2193,7 @@ class Activity(SuperModel):
     ACTIVITY_TYPES = [
         ('wall_post', 'Wall Post'),
         ('status_update', 'Update status'),
+        ('hypercharge_bounty', 'Hypercharged bounty'),
         ('new_bounty', 'New Bounty'),
         ('start_work', 'Work Started'),
         ('stop_work', 'Work Stopped'),

@@ -273,6 +273,8 @@
 
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
+      {% elif row.activity_type == 'hypercharge_bounty' %}
+        <a href="{{row.bounty.url}}">{{ row.metadata.title | safe }}</a>
       {% elif row.activity_type == 'new_bounty' %}
         <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'start_work' %}
@@ -510,7 +512,36 @@
       </div>
     {% endif %}
   </div>
-  {% if row.activity_type == 'new_bounty' and not for_email %}
+  {% if row.activity_type == 'hypercharge_bounty'%}
+  <div class="mt-1 mb-2">
+    <div class="row align-items-center bg-light content py-3">
+      <div class="col-12 col-md-2 text-center">
+        {% if row.bounty.funding_organisation %}
+          <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.funding_organisation %}">
+        {% else %}
+          <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.bounty_owner_github_username %}">
+        {% endif %}
+      </div>
+      <div class="col-12 col-md-7 d-flex flex-column">
+        <div class="bounty-detail">
+          <div class="title font-subheader font-weight-bold">
+            {{ row.metadata.description }}
+          </div>
+
+          <div class="bounty-summary p-0 col-12">
+            <div class="info font-caption">
+              {% if row.bounty.funding_organisation %}
+                {{ row.bounty.funding_organisation }}
+              {% else %}
+                {{ row.bounty.bounty_owner_github_username }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% elif row.activity_type == 'new_bounty' and not for_email %}
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content py-3">
       <div class="col-12 col-md-2 text-center">
