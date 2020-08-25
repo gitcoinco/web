@@ -4451,6 +4451,11 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
+    if settings.DEBUG:
+        from perftools.management.commands import create_page_cache
+        
+        create_page_cache.create_hackathon_list_page_cache()
+
     tabs = [
         ('current', 'happening now'),
         ('upcoming', 'upcoming'),
