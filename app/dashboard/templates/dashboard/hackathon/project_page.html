@@ -1,0 +1,108 @@
+{% comment %}
+  Copyright (C) 2020 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static avatar_tags add_url_schema email_obfuscator humanize %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/dashboard-hackathon.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <style>
+      div.nav-tabs {
+        background: none !important;
+      }
+
+      .project-title:hover {
+        color: var(--gc-black);
+      }
+
+      @media (max-width: 420px) {
+        .activity_detail {
+          margin-top: 0 !important;
+          margin-left: 25px !important;
+        }
+        .avatar {
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+        }
+      }
+
+    </style>
+  </head>
+  <body class="interior {{active}} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header sticky-top dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
+      {% include 'shared/nav_hackathons.html' %}
+    </div>
+
+    {% if is_staff %}
+      <div class="alpha-warning font-caption mb-0">
+        <span class="font-weight-bold">Staff only</span>
+        <a style="color:white;" href="{{project.admin_url}}">{% trans "View Admin" %}</a>
+      </div>
+    {% endif %}
+    <div id="hackathon-project-app" class="px-md-5" style="background-color: #FBFBFB" v-cloak>
+      <div class="row">
+        <div id="project-details" class="col-12 pr-0 ">
+          {% if is_member %}
+            <button @click="projectModal" class="d-none d-md-block btn btn-outline-gc-blue btn-lg float-right mt-5 mr-5 px-5 py-3 font-subheader"><i class="fa fa-pencil mr-2"></i> Edit project</button>
+          {% endif %}
+          <div class="row">
+            <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
+              {% include 'project/detail/info.html' %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 vue=True %}
+    {% include 'shared/footer.html' %}
+
+    {% include 'shared/current_profile.html' %}
+    {{hackathon_obj|json_script:"hackathon-object"}}
+    {{project_obj|json_script:"project-object"}}
+    {{currentProfile|json_script:"current-profile"}}
+
+    <script src="{% static "v2/js/pages/project-page.js" %}"></script>
+    <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>
+    {% include 'shared/activity_scripts.html' %}
+    <script src="{% static "v2/js/status.js" %}"></script>
+    <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
+
+    <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+    <script>
+        $('[data-toggle="tooltip"]').bootstrapTooltip();
+        document.hackathonObj = JSON.parse(document.getElementById('hackathon-object').textContent);
+        document.projectObj = JSON.parse(document.getElementById('project-object').textContent);
+        document.currentProfile = JSON.parse(document.getElementById('current-profile').textContent);
+        document.tab = {{ tab }};
+    </script>
+    <script src="{% static "v2/js/user-search.js" %}"></script>
+
+  </body>
+</html>

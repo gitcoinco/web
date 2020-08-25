@@ -989,6 +989,14 @@ def get_specific_activities(what, trending_only, user, after_pk, request=None):
             page = int(request.GET.get('page', 1))
             if page > 1:
                 activities = Activity.objects.none()
+    elif 'project:' in what:
+        terms = what.split(':')
+        pk = terms[1]
+
+        if len(terms) > 2:
+            activities = activities.filter(activity_type__in=connect_types, metadata__icontains=terms[2]).filter(project_id=pk)
+        else:
+            activities = activities.filter(activity_type__in=connect_types).filter(project_id=pk)
     elif ':' in what:
         pk = what.split(':')[1]
         key = what.split(':')[0] + "_id"
