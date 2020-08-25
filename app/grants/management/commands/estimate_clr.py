@@ -50,12 +50,13 @@ class Command(BaseCommand):
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
                 print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num}")
-                predict_clr(
+                a = predict_clr(
                     save_to_db=True,
                     from_date=timezone.now(),
                     clr_round=clr_round,
                     network=network
                 )
+                print(a)
                 print(f"finished CLR estimates for {clr_round.round_num}")
 
                 # TOTAL GRANT
