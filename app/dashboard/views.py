@@ -1179,9 +1179,6 @@ def bounty_mentor(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
 
-    if not can_manage:
-        return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
-
     bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{request.user.profile.handle.lower()}-mentors')[0]
     message = f'Mentors Updated Successfully'
     if body['set_default_mentors']:
@@ -1195,15 +1192,6 @@ def bounty_mentor(request):
         mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
         for mentor in mentors_to_add:
             mentor.user.groups.add(bounty_org_default_mentors)
-
-    if body['has_overrides']:
-        for key, val in body['overrides']:
-            bounty = Bounty.objects.get(id=key)
-            bounty_group = Group.objects.get_or_create(name=f'bounty-override-{key}-mentors')[0]
-            mentor_pks = [int(mentorpk) for mentorpk in val.mentors]
-            mentors = User.objects.filter(id__in=mentor_pks)
-            for mentor in mentors:
-                mentor.groups.add(bounty_group)
 
     if body['hackathon_id']:
         try:
