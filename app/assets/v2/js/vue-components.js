@@ -204,7 +204,7 @@ Vue.component('tribes-settings', {
 });
 
 Vue.component('manage-mentors', {
-  props: ['hackathon_id'],
+  props: [ 'hackathon_id', 'org_name' ],
   methods: {
     onMentorChange: function(event) {
 
@@ -217,6 +217,7 @@ Vue.component('manage-mentors', {
       const url = '/api/v0.1/bounty_mentor/';
 
       const updateBountyMentor = fetchData(url, 'POST', JSON.stringify({
+        bounty_org: vm.org_name,
         hackathon_id: vm.hackathon_id,
         set_default_mentors: true,
         new_default_mentors: vm.bountyMentors

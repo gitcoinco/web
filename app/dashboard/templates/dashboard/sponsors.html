@@ -322,7 +322,7 @@
                     {% trans "Mentors" %}
                   </div>
                 </template>
-                <manage-mentors v-bind:hackathon_id="hackathonObj.id" inline-template>
+                <manage-mentors :org_name="userOrg.org_name" :hackathon_id="hackathonObj.id" inline-template>
                   <div class="offset-3 col-6">
                       <div class="from-group mb-3 mt-4">
                         <label class="font-weight-semibold" for="org-mentors">Bounty Mentors (Optional) <small>Add Gitcoin/Github Usernames</small></label>

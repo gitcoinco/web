@@ -1182,18 +1182,23 @@ def bounty_mentor(request):
 
         hackathon_event = HackathonEvent.objects.get(id=int(body['hackathon_id']))
 
+        if body['bounty_org']:
+            sponsor = hackathon_event.sponsor_profiles.get(handle__iexact=body['bounty_org'])
+        else:
+            sponsor = None
+
         if not hackathon_event:
             return JsonResponse({'message': 'Event not Found'}, status=404)
 
-        sponsors = hackathon_event.sponsor_profiles.all().values_list('id', flat=True)
         profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-        is_sponsor_member = profile.organizations_fk.filter(pk__in=sponsors)
+        print(sponsor)
+        is_sponsor_member = profile.organizations_fk.filter(pk=sponsor.pk)
 
         if not is_sponsor_member:
             return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
 
-        bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{request.user.profile.handle.lower()}-mentors')[0]
+        bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{sponsor.handle.lower()}-mentors')[0]
         message = f'Mentors Updated Successfully'
         if body['set_default_mentors']:
             current_mentors = Profile.objects.filter(user__groups=bounty_org_default_mentors)
