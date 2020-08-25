@@ -211,14 +211,13 @@ Vue.component('manage-sponsor', {
       this.bountyMentors = $('.mentor-users').select2('data').map(element => {
         return element.id;
       });
-      console.log(event);
-      console.log(this.bountyMentors);
     },
     updateBountyMentors: function() {
       let vm = this;
       const url = '/api/v0.1/bounty_mentor/';
 
       const updateBountyMentor = fetchData(url, 'POST', JSON.stringify({
+        bounty_org: document.contxt.user.github_handle,
         has_overrides: false,
         hackathon_id: vm.hackathon_id,
         set_default_mentors: true,
@@ -238,7 +237,6 @@ Vue.component('manage-sponsor', {
       return element.id;
     });
 
-    console.log(this.bountyMentors);
   },
   data: function() {
     return {
