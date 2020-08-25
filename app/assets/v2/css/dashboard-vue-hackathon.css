@@ -1,13 +1,3 @@
-@media only screen and (max-width: 320px) {
-  .chatWrapper {
-    height: 76vh !important;
-  }
-
-  .chatWrapper iframe {
-    height: 92vh !important;
-  }
-}
-
 .ribbon {
   width: 150px;
   height: 150px;
@@ -155,10 +145,6 @@
   background-color: var(--gc-blue-hover) !important;
 }
 
-.chatWrapper iframe {
-  width: 100%;
-  height: 50vh;
-}
 
 .card-bg {
   background-color: #0C1A27;

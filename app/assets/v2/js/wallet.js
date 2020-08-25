@@ -37,6 +37,12 @@ function initWallet() {
       options: {
         infuraId: '1e0a90928efe4bb78bb1eeceb8aacc27'
       }
+    },
+    portis: {
+      'package': Portis,
+      options: {
+        id: 'b2345081-a47e-413a-941f-33fd645d39b3'
+      }
     }
   };
   const network = isProd ? 'mainnet' : 'rinkeby';
@@ -322,8 +328,19 @@ window.addEventListener('load', async() => {
   }
 
   initWallet();
+  document.querySelector('#wallet-btn').addEventListener('click', onConnect);
+  document.querySelector('#btn-disconnect').addEventListener('click', onDisconnect);
+
   if (web3Modal.cachedProvider) {
     try {
+      if (web3Modal.cachedProvider === 'injected' && window.Web3Modal.getInjectedProviderName() === 'MetaMask') {
+        // hack for metamask
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+        if (!accounts.length) {
+          throw new Error('Metamask is not enabled');
+        }
+      }
       provider = await web3Modal.connect();
     } catch (e) {
       console.log('Could not get a wallet connection', e);
@@ -347,8 +364,6 @@ window.addEventListener('load', async() => {
       });
     }
   }
-  document.querySelector('#wallet-btn').addEventListener('click', onConnect);
-  document.querySelector('#btn-disconnect').addEventListener('click', onDisconnect);
 });
 
 

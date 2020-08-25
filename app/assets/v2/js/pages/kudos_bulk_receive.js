@@ -22,6 +22,12 @@ $(document).ready(function() {
     if (!checked) {
       return;
     }
+
+    if (!web3) {
+      _alert({ message: gettext('Please connect to a web3 wallet.')}, 'error');
+      return;
+    }
+
     amount = document.gas_amount * 10 ** 18;
     var to_address = '0x6239FF1040E412491557a7a02b2CBcC5aE85dc8F';
 
@@ -60,4 +66,15 @@ $(document).ready(function() {
     });
   });
 
+  if ($('#free_countdown > span').length > 0) {
+    var timeDifference = new Date($('#free_countdown > span').attr('data-time')) - Date.now();
+
+    setTimeout(function() {
+      $('#free_countdown').remove();
+      $('.btn-gc-purple').removeAttr('disabled');
+      var gasLabel = $('label[for=pay_gas]')[0].innerText;
+
+      $('label[for=pay_gas]')[0].innerText = $('label[for=pay_gas]')[0].innerText.substring(0, gasLabel.length - 28) + '(Optional, but recommended)';
+    }, timeDifference);
+  }
 });

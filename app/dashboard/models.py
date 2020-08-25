@@ -35,11 +35,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
+
+
 from django.db import connection, models
 from django.db.models import Count, F, Q, Subquery, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.forms.models import model_to_dict
+from django.template.defaultfilters import date, floatformat, truncatechars
 from django.template.loader import render_to_string
 from django.templatetags.static import static
 from django.urls import reverse
@@ -50,6 +53,8 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+
+from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
 from avatar.utils import get_user_github_avatar_image
@@ -69,6 +74,7 @@ from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
 
+from townsquare.models import PinnedPost, Offer
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
 
@@ -383,6 +389,10 @@ class Bounty(SuperModel):
     attached_job_description = models.URLField(blank=True, null=True, db_index=True)
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     event = models.ForeignKey('dashboard.HackathonEvent', related_name='bounties', null=True, on_delete=models.SET_NULL, blank=True)
+    hypercharge_mode = models.BooleanField(
+        default=False, help_text=_('This bounty will be part of the hypercharged bounties')
+    )
+    hyper_next_publication = models.DateTimeField(null=True, blank=True)
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
 
@@ -1299,6 +1309,43 @@ class Bounty(SuperModel):
             return ''
 
 
+@receiver(post_save, sender=Bounty, dispatch_uid="post_bounty")
+def post_save_bounty(sender, instance, created, **kwargs):
+    final_state = instance.bounty_state in ['done', 'cancelled']
+    if not final_state and instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) is False:
+        instance.metadata['hyper_tweet_counter'] = 0
+
+        title = f'Work on "{instance.title}" and receive {floatformat(instance.value_true)} {instance.token_name}'
+
+        # Feature bounty on hackathon/prize explorer
+        instance.is_featured = True
+        instance.featuring_date = timezone.now()
+        instance.hyper_next_publication = timezone.now()
+
+        # Publish and pin on townsquare
+        profile = Profile.objects.filter(handle=HYPERCHARGE_BOUNTIES_PROFILE_HANDLE).first()
+        if profile:
+            metadata = {
+                    'title': title,
+                    'description': truncatechars(instance.issue_description_text, 500),
+                    'url': instance.get_absolute_url(),
+                    'ask': '#announce'
+            }
+            activity = Activity.objects.create(profile=profile, activity_type='hypercharge_bounty',
+                                               metadata=metadata, bounty=instance)
+
+            PinnedPost.objects.filter(what='everywhere').delete()
+            pinned_post = PinnedPost.objects.create(
+                what='everywhere', activity=activity, user=profile
+            )
+
+        instance.save()
+
+    if not instance.hypercharge_mode and instance.metadata.get('hyper_tweet_counter', False) != False:
+        del instance.metadata['hyper_tweet_counter']
+        instance.save()
+
+
 class BountyEvent(SuperModel):
     """An Event taken by a user, which may change the state of a Bounty"""
 
@@ -1381,6 +1428,7 @@ class BountyFulfillment(SuperModel):
     # TODO: rename to submission_url
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
     funder_last_notified_on = models.DateTimeField(null=True, blank=True)
+    project = models.ForeignKey('dashboard.HackathonProject', blank=True, null=True, on_delete=models.SET_NULL, related_name='submissions')
 
     accepted = models.BooleanField(default=False, help_text="has the fulfillment been accepted by the funder")
     accepted_on = models.DateTimeField(null=True, blank=True, help_text="date when the fulfillment was accepted by the funder")
@@ -2145,6 +2193,7 @@ class Activity(SuperModel):
     ACTIVITY_TYPES = [
         ('wall_post', 'Wall Post'),
         ('status_update', 'Update status'),
+        ('hypercharge_bounty', 'Hypercharged bounty'),
         ('new_bounty', 'New Bounty'),
         ('start_work', 'Work Started'),
         ('stop_work', 'Work Stopped'),
@@ -2628,6 +2677,10 @@ def post_add_HackathonRegistration(sender, instance, created, **kwargs):
             )
 
 
+def default_tribes_expiration():
+    return timezone.now() + timezone.timedelta(days=365)
+
+
 class TribesSubscription(SuperModel):
 
     plans = (
@@ -2636,7 +2689,7 @@ class TribesSubscription(SuperModel):
 		('LAUNCH', 'Launch'),
 	)
 
-    expires_on = models.DateTimeField(null=True, blank=True, default=timezone.now() + timezone.timedelta(days=365))
+    expires_on = models.DateTimeField(null=True, blank=True, default=default_tribes_expiration)
     tribe = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='subscription')
     plan_type = models.CharField(max_length=10, choices=plans)
     hackathon_tokens = models.IntegerField(default=0)
@@ -2790,9 +2843,15 @@ class Profile(SuperModel):
     last_validation_request = models.DateTimeField(blank=True, null=True, help_text=_("When the user requested a code for last time "))
     encoded_number = models.CharField(max_length=255, blank=True, help_text=_('Number with the user validate the account'))
     sybil_score = models.IntegerField(default=-1)
-    ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore')
+    ignore_tribes = models.ManyToManyField('dashboard.Profile', related_name='ignore', blank=True)
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
+
+    @property
+    def is_blocked(self):
+        if not self.user:
+            return False
+        return BlockedUser.objects.filter(user=self.user).exists()
 
     @property
     def logins(self):
@@ -4172,7 +4231,7 @@ class Profile(SuperModel):
 
         total_funded = funded_bounties.count()
         total_fulfilled = fulfilled_bounties.count() + self.tips.count()
-        desc = self.get_desc(funded_bounties, fulfilled_bounties)
+        desc = self.desc
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         org_works_with = []
         if self.is_org:
@@ -4978,6 +5037,10 @@ class HackathonProject(SuperModel):
         slug = slugify(self.name)
         return f'/hackathon/projects/{self.hackathon.slug}/{slug}/'
 
+    def url_page(self):
+        slug = slugify(self.name)
+        return f'/hackathon/{self.bounty.org_name}/projects/{self.pk}/${self.name}'
+
     def get_absolute_url(self):
         return self.url()
 
@@ -4989,9 +5052,20 @@ class HackathonProject(SuperModel):
                 'email': profile.email,
                 'payout_address': profile.preferred_payout_address,
                 'url': profile.url,
-                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else ''
+                'avatar': profile.active_avatar.avatar_url if profile.active_avatar else '',
+                'id': profile.pk
             } for profile in self.profiles.all()
         ]
+        profile_ids = [profile['id'] for profile in profiles]
+
+        submission = BountyFulfillment.objects.filter(project=self).first()
+        # Backward compatibility, for bounty fulfillment without a project assigned
+        if not submission:
+            submission = BountyFulfillment.objects.filter(profile_id__in=profile_ids, bounty=self.bounty).first()
+
+        paid = False
+        if submission:
+            paid = submission.payout_status == 'done'
 
         return {
             'pk': self.pk,
@@ -5002,10 +5076,15 @@ class HackathonProject(SuperModel):
             'work_url': self.work_url,
             'summary': self.summary,
             'status': self.status,
+            'submitted': bool(submission),
+            'submition_date': date(submission.created_on, 'Y-m-d H:i') if submission else '',
             'message': self.message,
             'chat_channel_id': self.chat_channel_id,
+            'paid': paid,
+            'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
-            'extra': self.extra
+            'extra': self.extra,
+            'timestamp': submission.created_on.timestamp() if submission else 0
         }
 
 
@@ -5131,6 +5210,14 @@ class Earning(SuperModel):
     token_name = models.CharField(max_length=255, default='')
     token_value = models.DecimalField(decimal_places=2, max_digits=50, default=0)
     network = models.CharField(max_length=50, default='')
+
+    @property
+    def source_type_human(self):
+        source_type = str(self.source_type)
+        if source_type == 'contribution':
+            source_type = 'grant'
+        return source_type
+
 
     def __str__(self):
         return f"{self.from_profile} => {self.to_profile} of ${self.value_usd} on {self.created_on} for {self.source}"
@@ -5283,6 +5370,8 @@ class Question(SuperModel):
     text = models.CharField(max_length=350, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
     header = models.ForeignKey(PollMedia, null=True, on_delete=models.SET_NULL)
+    mandatory = models.BooleanField(default=False)
+    minimum_character_count = models.PositiveIntegerField(default=0)
 
     class Meta(object):
         ordering = ['order']

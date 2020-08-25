@@ -7,6 +7,12 @@
         this.retrieveSponsorPrizes();
       },
       methods: {
+        chatWindow: function(channel) {
+          let vm = this;
+          const url = `${vm.chatURL}/hackathons/channels/${channel}`;
+
+          window.open(url, 'Loading', 'top=0,left=0,width=400,height=600,status=no,toolbar=no,location=no,menubar=no,titlebar=no');
+        },
         markWinner: function($event, project, prizeIndex) {
           let vm = this;
           const url = '/api/v0.1/hackathon_project/set_winner/';
@@ -65,6 +71,26 @@
 
           return vm.comments[project];
         },
+        focusOut: function(project) {
+          if (this.comments[project.pk] === '') {
+            vm.$set(this.comments, project.pk, undefined);
+          }
+        },
+        togglePrize: function(prizeIndex) {
+          for (let i = 0; i < this.prizes.length; i++) {
+            if (i === prizeIndex) {
+              vm.$set(this.prizes[i], 'open', !this.prizes[prizeIndex].open);
+            } else {
+              vm.$set(this.prizes[i], 'open', false);
+            }
+          }
+        },
+        sortedProjects: function(prize) {
+          const copy_submissions = [...prize.submissions];
+
+          copy_submissions.sort((a, b) => b.timestamp - a.timestamp);
+          return copy_submissions;
+        },
         retrieveSponsorPrizes: function() {
           const vm = this;
           const hackathon = fetchData(`/api/v1/hackathon/${vm.hackathonObj['slug']}/prizes`);
@@ -73,7 +99,9 @@
             for (let i = 0; i < response.prizes.length; i++) {
               if (response.prizes[i].submissions.length) {
                 response.prizes[i].submissions.forEach((submission) => {
-                  vm.$set(vm.comments, submission.pk, submission.extra.notes);
+                  if (submission.extra.notes !== '') {
+                    vm.$set(vm.comments, submission.pk, submission.extra.notes);
+                  }
                 });
               }
             }
@@ -89,7 +117,7 @@
               newPathName = 'prizes';
               break;
             case 1:
-              newPathName = 'submissions';
+              newPathName = 'stats';
               break;
           }
           let newUrl = `/hackathon/dashboard/${vm.hackathonObj['slug']}/${newPathName}`;
@@ -112,21 +140,22 @@
         toggleSummary: function(prizeIndex, submissionIndex) {
           let vm = this;
           const showDescription = !vm.prizes[prizeIndex].submissions[submissionIndex].showDescription;
-          
+
           vm.$set(vm.prizes[prizeIndex].submissions[submissionIndex], 'showDescription', showDescription);
         }
       },
       computed: {
         isMobileDevice() {
-          return this.windowWidth < 576;
+          return window.innerWidth < 576;
         }
       },
       data: () => ({
         activePanel: document.activePanel,
         hackathonObj: document.hackathonObj,
         hackathonSponsors: document.hackathonSponsors,
+        userOrg: document.userOrg,
         hackathonProjects: [],
-        chatURL: document.chatURL,
+        chatURL: document.chatURL || 'https://chat.gitcoin.co/',
         prizes: [],
         comments: [],
         csrf: $("input[name='csrfmiddlewaretoken']").val() || ''

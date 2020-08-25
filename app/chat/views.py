@@ -65,42 +65,6 @@ def chat_presence(request):
     return JsonResponse({'status': 'OK'})
 
 
-def chat(request):
-    """Render chat landing page response."""
+def chat_login(request):
 
-    try:
-        users_online_count = Stat.objects.filter(key='chat_active_users').order_by('pk').first()
-        users_total_count = Stat.objects.filter(key='chat_total_users').order_by('pk').first()
-
-        users_online_count = users_online_count.val if users_online_count is not None else 'N/A'
-        users_total_count = users_total_count.val if users_total_count is not None else 'N/A'
-
-    except Exception as e:
-        logger.info(str(e))
-        users_online_count = 'N/A'
-        users_total_count = 'N/A'
-    context = {
-        'users_online': users_online_count,
-        'users_count': users_total_count,
-        'title': "Chat",
-        'cards_desc': f"Gitcoin chat has {users_online_count} users online now!"
-    }
-
-    return TemplateResponse(request, 'chat.html', context)
-
-
-def embed(request):
-    """Handle the chat embed view."""
-
-    chat_url = get_chat_url(front_end=True)
-
-    context = {
-        'is_outside': True,
-        'active': 'chat',
-        'title': 'Chat',
-        'card_title': _('Community Chat'),
-        'card_desc': _('Come chat with the community'),
-        'chat_url': chat_url
-    }
-
-    return TemplateResponse(request, 'embed.html', context)
+    return TemplateResponse(request, 'chat_login.html')

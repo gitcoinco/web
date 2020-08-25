@@ -26,15 +26,12 @@ from django.utils.safestring import mark_safe
 from adminsortable2.admin import SortableInlineAdminMixin
 
 from .models import (
-    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent,
-    BountyFulfillment, BountyInvites, BountySyncRequest, CoinRedemption,
-    CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
-    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor,
-    HackathonWorkshop, Interest, Investigation, LabsResearch, ObjectView,
-    Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
-    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout,
-    TokenApproval, TribeMember, TribesSubscription, UserAction,
-    UserVerificationModel,
+    Activity, Answer, BlockedURLFilter, BlockedUser, Bounty, BountyEvent, BountyFulfillment, BountyInvites,
+    BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, FundRequest,
+    HackathonEvent, HackathonProject, HackathonRegistration, HackathonSponsor, HackathonWorkshop, Interest,
+    Investigation, LabsResearch, ObjectView, Option, Poll, PollMedia, PortfolioItem, Profile, ProfileVerification,
+    ProfileView, Question, SearchHistory, Sponsor, Tip, TipPayout, TokenApproval, TribeMember, TribesSubscription,
+    UserAction, UserVerificationModel,
 )
 
 
@@ -178,7 +175,7 @@ recalculate_profile.short_description = "Recalculate Profile Frontend Info"
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ['handle', 'sybil_score', 'user_sybil_score', 'created_on']
-    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk']
+    raw_id_fields = ['user', 'preferred_kudos_wallet', 'referrer', 'organizations_fk', 'ignore_tribes']
     ordering = ['-id']
     search_fields = ['email', 'data']
     readonly_fields = ['active_bounties_list', 'user_sybil_info']
@@ -450,6 +447,7 @@ class CouponAdmin(admin.ModelAdmin):
 
 class HackathonRegistrationAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'referer', 'registrant']
+    search_fields = ['name', 'registrant__handle']
     raw_id_fields = ['registrant']
 
 
