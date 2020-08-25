@@ -1965,6 +1965,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['avatar_url'] = bounty.get_avatar_url(True)
                 params['canonical_url'] = bounty.canonical_url
                 params['is_bounties_network'] = bounty.is_bounties_network
+                params['web3_type'] = bounty.web3_type
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
@@ -5335,7 +5336,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type == 'qr' and not fulfiller_address:
+    elif (payout_type == 'qr' or payout_type == 'polkadot-ext') and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -5449,8 +5450,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -5516,7 +5517,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)

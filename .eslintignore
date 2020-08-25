@@ -11,3 +11,6 @@ app/assets/v2/js/ethereumjs-accounts.js
 app/assets/onepager/js/tx.js
 app/assets/onepager/js/bignumber.js
 app/assets/v2/js/data-chains.js
+
+app/assets/v2/js/polkadot/core.js
+app/assets/v2/js/polkadot/extension.js
