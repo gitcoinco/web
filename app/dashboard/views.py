@@ -1178,7 +1178,6 @@ def bounty_mentor(request):
 
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
-    can_manage = request.user.profile.handle.lower() == body.bounty_org.lower()
 
     if not can_manage:
         return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
