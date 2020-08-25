@@ -41,6 +41,7 @@ services:
     volumes:
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
 
+
   ipfs:
     image: ipfs/go-ipfs:release
     restart: unless-stopped
@@ -90,18 +91,18 @@ services:
         reservations:
           memory: 512M
 
-#  testrpc:
-#    image: trufflesuite/ganache-cli
-#    ports:
-#      - "8545:8545"
-#    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
-#    deploy:
-#      replicas: 1
-#      resources:
-#        limits:
-#          memory: 1024M
-#        reservations:
-#          memory: 128M
+  testrpc:
+    image: trufflesuite/ganache-cli
+    ports:
+      - "8545:8545"
+    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
 
   redis:
     restart: unless-stopped
