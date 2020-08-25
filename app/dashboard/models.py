@@ -4211,10 +4211,6 @@ class Profile(SuperModel):
             dict: The profile card context.
 
         """
-        # Avoid circular ref error
-        from ptokens.models import PurchasePToken
-        from ptokens.models import RedemptionToken
-
         params = {}
         network = self.get_network()
         query_kwargs = {'network': network}

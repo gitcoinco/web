@@ -161,7 +161,7 @@
                   </div>
                 </div>
                 <div>
-                  <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" v-if="token.requester == current_user">Complete</button>
+                  <button @click="setSelectedRequest(token)" data-toggle="modal" data-target="#redemptionCompleteModal" class="btn btn-sm m-2 btn-gc-blue" :disabled="key === disabledBtn" >[[token.requester]] [[current_user]]Complete</button>
                   <button @click="cancel(token.id)" class="btn btn-sm btn-outline-gc-blue m-2" :disabled="key === disabledBtn">Cancel</button>
                 </div>
               </div>
@@ -269,7 +269,7 @@
               </span>
               <span v-if="token.requester == current_user && token.canceller == current_user">You cancelled a <span class="font-weight-bold"> [[ token.token_symbol ]] </span> request to @[[current_user]].</span>
               <span v-else-if="token.requester == current_user && token.canceller != current_user">[[token.requester]] cancelled their request for <span class="font-weight-bold"> [[ token.token_symbol ]] </span>.</span>
-              <span v-else-if="token.requester != current_user && token.canceller == current_user">You cancelled a <span class="font-weight-bold"> [[ token.token_symbol ]] </span> request from @[[current_user]].</span>
+              <span v-else-if="token.requester != current_user && token.canceller == current_user">You cancelled a <span class="font-weight-bold"> [[ token.token_symbol ]] </span> request from @[[token.requester]].</span>
               <span v-else-if="token.requester != current_user && token.canceller != current_user">[[token.token_owner]] cancelled your request for <span class="font-weight-bold"> [[ token.token_symbol ]] </span>.</span>
               <div class="d-flex flex-column flex-lg-row justify-content-between border p-3 my-2 ml-5 rounded">
                 <div class="list-bounty-item_content my-auto">

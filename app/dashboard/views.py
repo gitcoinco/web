@@ -915,8 +915,8 @@ def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_ra
             hackathon_registration__hackathon=hackathon_id
         )
     if only_with_tokens:
-        token_ids = PersonalToken.objects.filter(network=network).values_list('token_owner_profile_id', flat=True)
-        profile_list = profile_list.filter(pk__in=token_ids)
+        token_owners_profile_ids = PersonalToken.objects.filter(network=network).values_list('token_owner_profile_id', flat=True)
+        profile_list = profile_list.filter(pk__in=token_owners_profile_ids)
     return profile_list
 
 

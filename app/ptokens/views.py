@@ -166,12 +166,12 @@ def tokens(request, token_state=None):
 
 
 @csrf_exempt
-def ptoken(request, tokenId='me'):
+def ptoken(request, token_id='me'):
     """Access and change the state for fiven ptoken"""
-    if tokenId == 'me' and request.user.is_authenticated:
+    if token_id == 'me' and request.user.is_authenticated:
         ptoken = get_object_or_404(PersonalToken, token_owner_profile=request.user.profile)
     else:
-        ptoken = get_object_or_404(PersonalToken, pk=tokenId)
+        ptoken = get_object_or_404(PersonalToken, pk=token_id)
 
     minimal = request.GET.get('minimal', False)
     user = request.user if request.user.is_authenticated else None
@@ -265,11 +265,11 @@ def ptoken(request, tokenId='me'):
 
 
 @csrf_exempt
-def ptoken_redemptions(request, tokenId=None, redemption_state=None):
+def ptoken_redemptions(request, token_id=None, redemption_state=None):
     """List and create token redemptions"""
 
-    if tokenId:
-        ptoken = get_object_or_404(PersonalToken, id=tokenId)
+    if token_id:
+        ptoken = get_object_or_404(PersonalToken, id=token_id)
         network = request.POST.get('network')
         total = request.POST.get('total', 0)
         description = request.POST.get('description', '')
@@ -329,9 +329,9 @@ def ptoken_redemptions(request, tokenId=None, redemption_state=None):
 
 
 @csrf_exempt
-def ptoken_redemption(request, redemptionId):
+def ptoken_redemption(request, redemption_id):
     """Change the state for given redemption"""
-    redemption = get_object_or_404(RedemptionToken, id=redemptionId)
+    redemption = get_object_or_404(RedemptionToken, id=redemption_id)
     user = request.user if request.user.is_authenticated else None
     send_notifications = None
 
@@ -412,8 +412,8 @@ def ptoken_redemption(request, redemptionId):
 
 
 @csrf_exempt
-def ptoken_purchases(request, tokenId):
-    ptoken = get_object_or_404(PersonalToken, id=tokenId)
+def ptoken_purchases(request, token_id):
+    ptoken = get_object_or_404(PersonalToken, id=token_id)
     user = request.user if request.user.is_authenticated else None
 
     if request.method == 'POST':

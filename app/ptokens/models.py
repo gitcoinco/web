@@ -18,51 +18,25 @@
 '''
 from __future__ import unicode_literals
 
-import base64
-import collections
-import json
 import logging
-from datetime import datetime, timedelta
-from decimal import Decimal
-from functools import reduce
-from urllib.parse import urlsplit
 
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.auth.signals import user_logged_in, user_logged_out
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
-from django.contrib.postgres.fields import ArrayField, JSONField
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import connection, models
-from django.db.models import Count, F, Q, Subquery, Sum
-from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
-from django.dispatch import receiver
-from django.forms.models import model_to_dict
-from django.template.loader import render_to_string
-from django.templatetags.static import static
+from django.contrib.postgres.fields import JSONField
+from django.db import models
+from django.db.models import Q, Sum
 from django.urls import reverse
-from django.urls.exceptions import NoReverseMatch
-from django.utils import timezone
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 
 from app.settings import PTOKEN_ABI
 from dashboard.abi import ptoken_factory_abi
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, get_tx_status
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
 
-import pytz
-import requests
-from bleach import clean
-from bounty_requests.models import BountyRequest
-from bs4 import BeautifulSoup
-from rest_framework import serializers
-from web3 import HTTPProvider, Web3, WebsocketProvider
+from web3 import Web3
 
 from ptokens.helpers import record_ptoken_activity
+from ptokens.mails import send_personal_token_created, send_ptoken_redemption_complete_for_requester, \
+    send_ptoken_redemption_complete_for_owner
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +50,7 @@ TX_STATUS_CHOICES = (
 )
 
 FACTORY_ADDRESS = settings.PTOKEN_FACTORY_ADDRESS
+
 
 class PersonalTokenQuerySet(models.QuerySet):
     """Handle the manager queryset for Personal Tokens."""
@@ -140,7 +115,6 @@ class PersonalToken(SuperModel):
             self.token_owner_address = to_checksum_address(self.token_owner_address)
 
         super().save(*args, **kwargs)
-
 
     @property
     def title(self):
@@ -224,9 +198,6 @@ class PersonalToken(SuperModel):
             self.save()
 
     def update_tx_status(self):
-        # Get transaction status
-        from dashboard.utils import get_tx_status
-        from ptokens.mails import send_personal_token_created
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
 
         # Exit if transaction not mined, otherwise continue
@@ -265,8 +236,6 @@ class PTokenEvent(SuperModel):
     )
 
     def update_tx_status(self):
-        # Get transaction status
-        from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
 
         # Exit if transaction not mined, otherwise continue
@@ -311,7 +280,6 @@ class RedemptionToken(SuperModel):
         return f'{reverse("dashboard")}?tab=ptoken&redemption={self.id}'
 
     def update_tx_status(self):
-        from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
 
         if self.redemption_state == 'waiting_complete':
@@ -320,7 +288,6 @@ class RedemptionToken(SuperModel):
             if self.tx_status == 'success':
                 metadata = {'redemption': self.id}
                 record_ptoken_activity('complete_redemption_ptoken', self.ptoken, self.redemption_requester, metadata, self)
-                from ptokens.mails import send_ptoken_redemption_complete_for_owner, send_ptoken_redemption_complete_for_requester
                 send_ptoken_redemption_complete_for_requester(self.redemption_requester, self.ptoken, self)
                 send_ptoken_redemption_complete_for_owner(self.redemption_requester, self.ptoken, self)
                 self.redemption_state = 'completed'
@@ -346,7 +313,6 @@ class PurchasePToken(SuperModel):
     )
 
     def update_tx_status(self):
-        from dashboard.utils import get_tx_status
         self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
 
         if self.tx_status == 'success':
@@ -359,7 +325,6 @@ class PurchasePToken(SuperModel):
             }
 
             record_ptoken_activity('buy_ptoken', self.ptoken, self.token_holder_profile, metadata)
-
 
         self.ptoken.update_token_status()
         self.ptoken.update_user_balance(self.token_holder_profile, self.token_holder_address)
