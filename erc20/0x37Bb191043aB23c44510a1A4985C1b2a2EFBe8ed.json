@@ -1,0 +1,19 @@
+{
+  "symbol": "FCC",
+  "address": "0x37Bb191043aB23c44510a1A4985C1b2a2EFBe8ed",
+  "overview":{
+        "en": "FCC is released by Leekdash event trading platform (Leekdash). Its essence and function are game props in the platform, and the purpose is to let users use it in prediction topic games on the platform. As a virtual commodity, FCC is not a security, nor is it a speculative investment tool. The platform does not guarantee its intrinsic value, or the existence of any return. Once the FCC coin is owned, no one will promise to buy back or redeem it. This platform also strictly prohibits the exchange between FCC currency and legal currency and will not participate in it. If users are found to use the legal currency to repurchase FCC coins, the platform will adopt various punishment measures including banning and freezing accounts.",
+        "zh": "FCC由韭大师事件交易平台(Leekdash)发布，其本质及作用是平台内的游戏道具，目的是为了让用户在平台内进行预测话题游戏时使用。FCC作为一种虚拟商品，不是证券，也不是投机性的投资工具。平台不保证它的内在价值或存在任何回报。FCC币一旦拥有后就不会有任何人对它承诺回购或赎回。本平台亦严格禁止FCC币与法币之间的兑换，更不会参与其中。如发现有用户使用法币回购FCC币，本平台将采用包括封禁、冻结账户等各种惩罚措施。"
+  },
+  "email": "55729950@qq.com",
+  "website": "https://www.leekdash.com/",
+  "whitepaper": "https://www.leekdash.com/ListPageCount/whitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-07-01",
+  "initial_price":{
+        "ETH":"0.00005 ETH"
+  },
+  "links": {
+    "weixin": "https://mp.weixin.qq.com/s/yPOkGEjKDMT3EKBQ_PQoDQ", 
+  }
+}
