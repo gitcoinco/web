@@ -1092,6 +1092,12 @@ def create_status_update(request):
         attach_token_name = request.POST.get('attachTokenName', '')
         tx_id = request.POST.get('attachTxId', '')
 
+        if request.user.is_authenticated and request.user.profile.is_blocked:
+            response['status'] = 200
+            response['message'] = 'Status updated!'
+            return JsonResponse(response, status=400)
+
+
         kwargs = {
             'activity_type': 'status_update',
             'metadata': {

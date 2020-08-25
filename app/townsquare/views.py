@@ -658,7 +658,8 @@ def api(request, activity_id):
         comment = request.POST.get('comment')
         title = request.POST.get('comment')
         if 'Just sent a tip of' not in comment:
-            comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
+            if not request.user.profile.is_blocked:
+                comment = Comment.objects.create(profile=request.user.profile, activity=activity, comment=comment)
 
     return JsonResponse(response, status=status)
 

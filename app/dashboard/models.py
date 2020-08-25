@@ -2847,6 +2847,12 @@ class Profile(SuperModel):
     objects_full = ProfileQuerySet.as_manager()
 
     @property
+    def is_blocked(self):
+        if not self.user:
+            return False
+        return BlockedUser.objects.filter(user=self.user).exists()
+
+    @property
     def logins(self):
         return self.actions.filter(action='Login')
 
