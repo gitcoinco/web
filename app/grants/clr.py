@@ -107,7 +107,7 @@ def get_verified_list(grant_contributions):
                 }
             }
 '''
-def aggregate_contributions(grant_contributions, _round='current'):
+def aggregate_contributions(grant_contributions):
     round_dict = {}
     contrib_dict = {}
     for proj, user, _, amount in grant_contributions:
@@ -142,7 +142,7 @@ def get_totals_by_pair(contrib_dict):
     tot_overlap = {}
 
     # start pairwise match
-    for _, contribz in contrib_dict['current'].items():
+    for _, contribz in contrib_dict.items():
         for k1, v1 in contribz.items():
             if k1 not in tot_overlap:
                 tot_overlap[k1] = {}
@@ -183,7 +183,7 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
     bigtot = 0
     totals = []
     
-    for proj, contribz in aggregated_contributions['current'].items():
+    for proj, contribz in aggregated_contributions.items():
         tot = 0
         _num = 0
         _sum = 0
@@ -452,7 +452,11 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     v_threshold = float(clr_round.verified_threshold)
     uv_threshold = float(clr_round.unverified_threshold)
 
+    print(total_pot)
+
     grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
+
+    print(grants)
 
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
 
@@ -473,6 +477,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     total_pot_close = round(pre_pot + 5000, -4) 
     if total_pot_close >= total_pot:
         total_pot_close = total_pot
+
+    print(total_pot_close) 
 
     # calculate clr given additional donations
     for grant in grants:
