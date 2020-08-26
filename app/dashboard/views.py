@@ -4307,9 +4307,15 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
     if not hackathon:
         hackathon = project.hackathon
 
+    title = project.name
+    desc = project.summary
+    avatar_url = project.logo.url if project.logo else project.bounty.avatar_url
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     what = f'project:{project_id}'
     params = {
+        'title': title,
+        'card_desc': desc,
+        'avatar_url': avatar_url,
         'target': f'/activity?what={what}',
         'what': what,
         'tab': active,
