@@ -215,6 +215,7 @@ async function requestPtokenRedemption(tokenAmount, redemptionDescription) {
 
     $('#redeemTokenModal').bootstrapModal('hide');
     _alert('Your redemption request was successful! You should hear from the token owner shortly.', 'success');
+    await updatePTokenInfoOnPage(document.current_ptoken_id);
   } catch (err) {
     handleError(err);
   }
@@ -273,10 +274,40 @@ async function updatePtokenStatusinDatabase(transactionHash, successMsg, errorMs
       console.error(errorMsg);
     }
 
-    const userTokenBalance = await getPToken(document.current_ptoken_id);
-
-    $('#available-ptokens').text(userTokenBalance.available_to_redeem);
-    $('#amount-available').text(userTokenBalance.available);
-    $('#purchase-counter').text(userTokenBalance.purchases);
+    await updatePTokenInfoOnPage(document.current_ptoken_id);
   });
 }
+
+const updatePTokenInfoOnPage = async() => {
+  const userTokenBalance = await getPToken(document.current_ptoken_id);
+
+  console.log(userTokenBalance);
+
+
+  $('#ptoken-price').text(userTokenBalance.price);
+  $('#available-ptokens').text(userTokenBalance.available_to_redeem);
+  $('#amount-available').text(userTokenBalance.available);
+  $('#purchase-counter').text(userTokenBalance.purchases);
+  if (parseInt(userTokenBalance.available_to_redeem) > 0) {
+    $('#redeemPToken').attr("disabled", false);
+    $('#redeemPToken').css("cursor", "pointer");
+    $('#redeemPToken').css("pointer-events", "auto");
+  } else {
+    $('#redeemPToken').attr("disabled", true);
+    $('#redeemPToken').css("cursor", "default");
+    $('#redeemPToken').css("pointer-events", "none");
+  }
+
+
+  document.current_ptoken_value = parseInt(userTokenBalance.price);
+  document.current_ptoken_total_available = parseInt(userTokenBalance.available);
+  document.current_hodling = parseInt(userTokenBalance.available_to_redeem);
+};
+
+$(document).ready(() => {
+  const tokenId = document.current_ptoken_id;
+
+  setInterval(async() => {
+    await updatePTokenInfoOnPage(tokenId);
+  }, 10000);
+});

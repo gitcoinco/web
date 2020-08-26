@@ -75,7 +75,7 @@
             {% trans "HACKATHONS" %}
             {% if projects_count %}<span class="nav-badge">({{projects_count}})</span>{% endif %}
         {% endif %}
-        {% if personal_tokens_count %}
+        {% if is_staff and personal_tokens_count %}
           <button type="button" id="nav-description" href="{{profile.url}}/ptokens" class="text-center section-tab {% if tab == "ptokens" %} active {% endif %}">
             {% trans "PERSONAL TOKENS" %}
             {% if personal_tokens_count %}<span  class="nav-badge">({{personal_tokens_count}})</span>{%endif%}

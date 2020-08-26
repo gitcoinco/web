@@ -67,7 +67,11 @@
               {% include 'profiles/header_avatar.html' %}
               {% include 'profiles/header_details.html' %}
             </div>
-            {% include 'profiles/scorecard_ptoken.html' %}
+            {% if is_staff %}
+              {% include 'profiles/scorecard_ptoken.html' %}
+            {% else %}
+              <div class="col-12 col-lg-3"></div>
+            {% endif %}
             {% if profile.is_org %}
               {% include 'profiles/organization.html' %}
             {% elif profile.cascaded_persona == 'funder' %}
@@ -142,7 +146,7 @@
         document.current_ptoken_id = {{ ptoken.id }};
         document.current_ptoken_value = {{ ptoken.value }};
         document.current_ptoken_total_available = {{ ptoken.total_available }};
-        document.current_hodling = {{ current_hodling }};
+        document.current_hodling = {{ available_to_redeem|default:0 }};
       {% endif %}
     </script>
   </body>
