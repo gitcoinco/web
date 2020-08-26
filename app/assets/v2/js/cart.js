@@ -16,6 +16,8 @@ const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin 
 // Contract parameters
 const bulkCheckoutAbi = [{ 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': false, 'internalType': 'address', 'name': 'dest', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'donor', 'type': 'address' }], 'name': 'DonationSent', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'previousOwner', 'type': 'address' }, { 'indexed': true, 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'OwnershipTransferred', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Paused', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': true, 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'indexed': true, 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'indexed': true, 'internalType': 'address', 'name': 'dest', 'type': 'address' }], 'name': 'TokenWithdrawn', 'type': 'event' }, { 'anonymous': false, 'inputs': [{ 'indexed': false, 'internalType': 'address', 'name': 'account', 'type': 'address' }], 'name': 'Unpaused', 'type': 'event' }, { 'inputs': [{ 'components': [{ 'internalType': 'address', 'name': 'token', 'type': 'address' }, { 'internalType': 'uint256', 'name': 'amount', 'type': 'uint256' }, { 'internalType': 'address payable', 'name': 'dest', 'type': 'address' }], 'internalType': 'struct BulkCheckout.Donation[]', 'name': '_donations', 'type': 'tuple[]' }], 'name': 'donate', 'outputs': [], 'stateMutability': 'payable', 'type': 'function' }, { 'inputs': [], 'name': 'owner', 'outputs': [{ 'internalType': 'address', 'name': '', 'type': 'address' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'pause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'paused', 'outputs': [{ 'internalType': 'bool', 'name': '', 'type': 'bool' }], 'stateMutability': 'view', 'type': 'function' }, { 'inputs': [], 'name': 'renounceOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': 'newOwner', 'type': 'address' }], 'name': 'transferOwnership', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [], 'name': 'unpause', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address payable', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawEther', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }, { 'inputs': [{ 'internalType': 'address', 'name': '_tokenAddress', 'type': 'address' }, { 'internalType': 'address', 'name': '_dest', 'type': 'address' }], 'name': 'withdrawToken', 'outputs': [], 'stateMutability': 'nonpayable', 'type': 'function' }];
 const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
+const batchZkSyncDepositContractAddress = '0x7232b298937b99e967e4Fa3aFCAA2a4c35Afbf24';
+const batchZkSyncDepositContractAbi = `[{"inputs":[{"internalType":"address","name":"_zkSync","type":"address"},{"internalType":"contract IERC20[]","name":"_tokens","type":"address[]"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract IERC20","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"AllowanceSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract IERC20","name":"token","type":"address"},{"indexed":true,"internalType":"uint104","name":"amount","type":"uint104"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"DepositMade","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"ETH_TOKEN_PLACHOLDER","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_recipient","type":"address"},{"components":[{"internalType":"contract IERC20","name":"token","type":"address"},{"internalType":"uint104","name":"amount","type":"uint104"}],"internalType":"struct BatchZkSyncDeposit.Deposit[]","name":"_deposits","type":"tuple[]"}],"name":"deposit","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setAllowance","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"zkSync","outputs":[{"internalType":"contract IZkSync","name":"","type":"address"}],"stateMutability":"view","type":"function"}]`;
 
 // Grant data
 let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
@@ -28,6 +30,7 @@ Vue.component('grants-cart', {
 
   data: function() {
     return {
+      // Checkout, shared
       adjustGitcoinFactor: false, // if true, show section for user to adjust Gitcoin's percentage
       tokenList: undefined, // array of all tokens for selected network
       isLoading: undefined,
@@ -37,6 +40,9 @@ Vue.component('grants-cart', {
       comments: undefined,
       hideWalletAddress: true,
       windowWidth: window.innerWidth,
+      // Checkout, zkSync
+      zkSyncContractAddress: undefined,
+      zkSyncContractAbi: `[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockVerification","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"totalBlocksVerified","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"totalBlocksCommitted","type":"uint32"}],"name":"BlocksRevert","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"DepositCommit","type":"event"},{"anonymous":false,"inputs":[],"name":"ExodusMode","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint32","name":"nonce","type":"uint32"},{"indexed":false,"internalType":"bytes","name":"fact","type":"bytes"}],"name":"FactAuth","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"FullExitCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint64","name":"serialId","type":"uint64"},{"indexed":false,"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"indexed":false,"internalType":"bytes","name":"pubData","type":"bytes"},{"indexed":false,"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"name":"NewPriorityRequest","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"},{"indexed":true,"internalType":"address","name":"owner","type":"address"}],"name":"OnchainDeposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"OnchainWithdrawal","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsAdd","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsComplete","type":"event"},{"constant":true,"inputs":[],"name":"EMPTY_STRING_KECCAK","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"}],"name":"authFacts","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"bytes22","name":"","type":"bytes22"}],"name":"balancesToWithdraw","outputs":[{"internalType":"uint128","name":"balanceToWithdraw","type":"uint128"},{"internalType":"uint8","name":"gasReserveValue","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"blocks","outputs":[{"internalType":"uint32","name":"committedAtBlock","type":"uint32"},{"internalType":"uint64","name":"priorityOperations","type":"uint64"},{"internalType":"uint32","name":"chunks","type":"uint32"},{"internalType":"bytes32","name":"withdrawalsDataHash","type":"bytes32"},{"internalType":"bytes32","name":"commitment","type":"bytes32"},{"internalType":"bytes32","name":"stateRoot","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint64","name":"_n","type":"uint64"}],"name":"cancelOutstandingDepositsForExodusMode","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint32","name":"_feeAccount","type":"uint32"},{"internalType":"bytes32[]","name":"_newBlockInfo","type":"bytes32[]"},{"internalType":"bytes","name":"_publicData","type":"bytes"},{"internalType":"bytes","name":"_ethWitness","type":"bytes"},{"internalType":"uint32[]","name":"_ethWitnessSizes","type":"uint32[]"}],"name":"commitBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_n","type":"uint32"}],"name":"completeWithdrawals","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint104","name":"_amount","type":"uint104"},{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositETH","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"uint16","name":"_tokenId","type":"uint16"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint16","name":"","type":"uint16"}],"name":"exited","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"exodusMode","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPendingWithdrawalIndex","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPriorityRequestId","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"address","name":"_token","type":"address"}],"name":"fullExit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"_address","type":"address"},{"internalType":"uint16","name":"_tokenId","type":"uint16"}],"name":"getBalanceToWithdraw","outputs":[{"internalType":"uint128","name":"","type":"uint128"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"getNoticePeriod","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"initializationParameters","type":"bytes"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"isReadyForUpgrade","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"numberOfPendingWithdrawals","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"pendingWithdrawals","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint16","name":"tokenId","type":"uint16"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint64","name":"","type":"uint64"}],"name":"priorityRequests","outputs":[{"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"internalType":"bytes","name":"pubData","type":"bytes"},{"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_maxBlocksToRevert","type":"uint32"}],"name":"revertBlocks","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"_pubkey_hash","type":"bytes"},{"internalType":"uint32","name":"_nonce","type":"uint32"}],"name":"setAuthPubkeyHash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksCommitted","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksVerified","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCommittedPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalOpenPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"triggerExodusIfNeeded","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"upgradeParameters","type":"bytes"}],"name":"upgrade","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeCanceled","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeFinishes","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeNoticePeriodStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActivationTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActive","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"upgradePreparationStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"},{"internalType":"bytes","name":"_withdrawalsData","type":"bytes"}],"name":"verifyBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint128","name":"_maxAmount","type":"uint128"}],"name":"withdrawERC20Guarded","outputs":[{"internalType":"uint128","name":"withdrawnAmount","type":"uint128"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawETH","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]`,
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -657,6 +663,7 @@ Vue.component('grants-cart', {
       callback,
       callbackParams = []
     ) {
+      console.log('Requesting token approvals...');
       indicateMetamaskPopup();
       for (let i = 0; i < allowanceData.length; i += 1) {
         const allowance = allowanceData[i].allowance;
@@ -684,6 +691,7 @@ Vue.component('grants-cart', {
               // eslint-disable-line no-loop-func
               indicateMetamaskPopup(true);
               this.setApprovalTxHash(tokenName, txHash);
+              console.log('✅ Received all token approvals');
               await callback(...callbackParams);
             })
             .on("error", (error, receipt) => {
@@ -740,10 +748,12 @@ Vue.component('grants-cart', {
       });
     },
 
-    async sendDonationTx(userAddress) {
-      // Configure our donation inputs
+    /**
+     * Returns donation inputs for a transaction, filtered to remove unused data
+     * @param {*} userAddress 
+     */
+    getDonationInputs() {
       // We use parse and stringify to avoid mutating this.donationInputs since we use it later
-      const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
       const donationInputs = JSON.parse(JSON.stringify(this.donationInputs)).map(donation => {
         delete donation.name;
         delete donation.grant;
@@ -756,6 +766,14 @@ Vue.component('grants-cart', {
       const donationInputsFiltered = donationInputs.filter(donation => {
         return Number(donation.amount) !== 0;
       });
+
+      return donationInputsFiltered;
+    },
+
+    async sendDonationTx(userAddress) {
+      // Get our donation inputs
+      const bulkTransaction = new web3.eth.Contract(bulkCheckoutAbi, bulkCheckoutAddress);
+      const donationInputsFiltered = this.getDonationInputs();
 
       indicateMetamaskPopup();
       bulkTransaction.methods
@@ -1015,16 +1033,224 @@ Vue.component('grants-cart', {
      * @returns ethers.js Wallet instance of the ephemeral wallet
      */
     createEphemeralWallet() {
+      // TODO look for existing one and be sure not to overwrite it
+
       // TODO replace determinstic one with random one. Using determinstic so we can easily
       // recycle ETH and tokens more easily during evelopment
       
-      // const ephemeralWallet = new ethers.Wallet.createRandom();
-      const ephemeralWallet = new ethers.Wallet.fromMnemonic(
-        'measure cycle combine rare annual online accident grab police moment cloud vanish'
-      );
+      const ephemeralWallet = new ethers.Wallet.createRandom();
+      // const ephemeralWallet = new ethers.Wallet.fromMnemonic(
+      //   'measure cycle combine rare annual online accident grab police moment cloud vanish'
+      // );
       window.localStorage.setItem('ephemeral-mnemonic', ephemeralWallet.mnemonic.phrase);
       console.log('✅ Ephemeral wallet generated and mnemonic saved in local storage');
       return ephemeralWallet;
+    },
+
+    /**
+     * @notice Retrieves the ephemeral wallet from local storage. We use this instead of
+     * accessing the generated wallet immediately so we can guarantee it was saved properly
+     * before sending funds to it
+     */
+    getEphemeralWallet() {
+      const mnemonic = window.localStorage.getItem('ephemeral-mnemonic');
+      if (mnemonic === 'undefined') return undefined;
+      const wallet = new ethers.Wallet.fromMnemonic(mnemonic);
+      console.log('✅ Ephemeral wallet retrieved from local storage with address', wallet.address);
+      return wallet;
+    },
+
+    /**
+     * @notice Core logic for zkSync checkout
+     * @param allowanceData Output from getAllowanceData() function
+     */
+    async sendZkSyncDonation(allowanceData) {
+      // Setup -------------------------------------------------------------------------------------
+      console.log('Initializing zkSync checkout process...');
+      const ethersProvider = new ethers.providers.Web3Provider(provider);
+      const signer = ethersProvider.getSigner();
+      const syncProvider = await zksync.getDefaultProvider(document.web3network);
+      const ethAmount = this.donationInputsEthAmount;
+      this.createEphemeralWallet();
+      console.log("✅ Initialization complete");
+
+
+      // Get required contracts and addresses ------------------------------------------------------
+      const batckZkSyncDepositContract = new ethers.Contract(
+        batchZkSyncDepositContractAddress,
+        batchZkSyncDepositContractAbi,
+        signer
+      );
+      console.log(
+        "✅ Created instance of batch zkSync deposit contract",
+        batckZkSyncDepositContract
+      );
+
+      // Get address of deposit recipient
+      const ephemeralWallet = this.getEphemeralWallet();
+      const depositRecipient = ephemeralWallet.address;
+
+
+      // Generate deposit payload ------------------------------------------------------------------
+      console.log('Generating deposit payload...');
+      const deposits = []
+      let overrides = { gasLimit: '1000000' }; // TODO improve gas estimate
+
+      // Handle ETH
+      if (ethers.BigNumber.from(ethAmount).gt('0')) {
+        deposits.push([ETH_ADDRESS, ethAmount])
+        overrides.value = ethAmount; // specify how much ETH to send with transaction
+      }
+
+      // Handle tokens
+      if (allowanceData.length > 0) {
+        allowanceData.forEach((tokenDonation) => {
+          const tokenAddress = tokenDonation.contract._address;
+          const tokenAmount = tokenDonation.allowance;
+          deposits.push([tokenAddress, tokenAmount])
+        })
+      }
+
+      if (deposits.length === 0) {
+        throw new Error('There are no deposits to be made')
+      }
+      console.log('✅ Deposit payload ready');
+      console.log('    _deposits array', deposits);
+      console.log('    overrides', overrides);
+      
+
+      // Send transaction --------------------------------------------------------------------------
+      console.log('Waiting for user to send deposit transaction...');
+      const depositTx = await batckZkSyncDepositContract.deposit(
+        depositRecipient,
+        deposits,
+        overrides
+      );
+      console.log("✅ Deposit transaction sent", depositTx);
+      console.log("Waiting for deposit transaction to be mined...");
+
+      const receipt = await depositTx.wait();
+      console.log("✅ Deposit transaction mined", receipt);
+
+      // Parse logs in receipt so we can get priority request IDs from the events
+      console.log('Parsing transaction receipt for NewPriorityRequest events...');
+      const zkSyncInterface = new ethers.utils.Interface(this.zkSyncContractAbi);
+      const logs = receipt.logs
+        .map((log) => {
+          // Only parse logs from the zkSync contract, not our batch deposit contract
+          if (log.address === this.zkSyncContractAddress) return zkSyncInterface.parseLog(log);
+        })
+        .filter((log) => log && log.name === "NewPriorityRequest") // only keep these events
+        .map((event) => event.args.serialId.toNumber()); // we only need the serialId
+        console.log(`Found ${logs.length} serial IDs in the event logs. Will track the last one`, logs);
+      
+      // Take the last ID and track that one to know when deposit is committed. Since all
+      // deposits were in the same tx, it shouldn't matter which ID we use. We do not wait
+      // for it to be verified, as this takes much longer and it's safe enough to wait only
+      // for commitment. Some relevant notes are below.
+      // 
+      // There are two types of states on the zkSync network: (1) Commited, and (2) Verified
+      //   (1) Committed: last state known to the zkSync network, can be ahead of verified state
+      //   (2) Verified: state that is proved with ZKP on the Ethereum network. 
+      // 
+      // There are also two types of operations: (1) Priority operations, and (2) Transactions
+      //   (1) Priority operations: Initiated directly on the Ethereum mainnet, e.g. deposits. 
+      //       These are identified with a numerical ID or the hash of the Ethereum transaction
+      //   (2) Transactions: Submitted through the zkSync operator using the API. These are
+      //       identified by the has of their serialized representation
+      // 
+      // Note: If we do not wait for this receipt, the unlock step below will fail with
+      // "Error: Failed to Set Signing Key: Account does not exist in the zkSync network"
+      const serialId = logs[logs.length-1]; 
+      console.log(`Waiting for confirmation that priority operation with ID ${serialId} is committed...`);
+      const depositReceipt = await syncProvider.notifyPriorityOp(serialId, 'COMMIT');
+      console.log('✅ Deposit receipt received', depositReceipt);
+
+
+      // Unlock ephemeral wallet's zkSync account --------------------------------------------------
+      // To control assets in zkSync network, an account must register a separate public key
+      // once, so we now do that for the ephemeral keypair
+      console.log("Registering public key to unlock ephemeral wallet on zkSync...");
+      const ephemeralSyncWallet = await zksync.Wallet.fromEthSigner(ephemeralWallet, syncProvider);
+
+      if (!(await ephemeralSyncWallet.isSigningKeySet())) {
+        if ((await ephemeralSyncWallet.getAccountId()) == undefined) {
+          throw new Error("Unknown account");
+        }
+        const changePubkey = await ephemeralSyncWallet.setSigningKey();
+        // Wait until the tx is committed
+        await changePubkey.awaitReceipt();
+        console.log("✅ Ephemeral wallet is ready to use on zkSync");
+      } else {
+        console.log("✅ Ephemeral wallet was already initialized");
+      }
+
+
+      // Get committed account state ---------------------------------------------------------------
+      // The nonce will almost always be zero since this is a newly generated wallet. However, to
+      // account for edge cases where not all transactions have sent, we fetch the expected
+      // nonce from the network
+      console.log('Getting state and nonce of ephemeral wallet...');
+      const ephemeralWalletState = await ephemeralSyncWallet.getAccountState();
+      let nonce = ephemeralWalletState.committed.nonce; // this will be incremented later
+      console.log('✅ State of ephemeral wallet retrieved', ephemeralWalletState);
+
+
+      // Generate signatures for each transfer -----------------------------------------------------
+      const donationInputs = this.donationInputs;
+      console.log('Generating signatures for transfers...');
+      console.log('  Array of donations to be made is', donationInputs);
+
+      const donationSignatures = [];
+      for (let i = 0; i < donationInputs.length; i += 1) {
+        console.log(`  Generating signature ${i+1} of ${donationInputs.length}...`);
+        const donationInput = donationInputs[i];
+
+        // Transfer amounts must be packable to 5-byte long floating-point representations. So 
+        // here we find the closest packable amount
+        const amount = zksync.utils.closestPackableTransactionAmount(donationInput.amount);
+
+        // Fees must be packable to 2-byte long floating-point representations. We can find an
+        // acceptable transaction fee by querying the server, and this will already be packable
+        const fee = await syncProvider.getTransactionFee(
+          'Transfer', // transaction type
+          donationInput.dest, // recipient address
+          donationInput.name // token name
+        );
+
+        // Now we can generate the signature for this transfer
+        const signedTransfer = await ephemeralSyncWallet.signSyncTransfer({
+          to: donationInput.dest,
+          token: donationInput.name,
+          amount: amount.sub(fee.totalFee),
+          fee: fee.totalFee,
+          nonce,
+        });
+        donationSignatures.push(signedTransfer);
+
+        // Increment nonce to prepare for next signature
+        nonce += 1;
+      }
+
+      console.log('✅ All signatures have been generated', donationSignatures);
+
+
+      // Send each transfer ------------------------------------------------------------------------
+      // Save signatures in local storage
+      localStorage.setItem('grants_zksync_signatures', JSON.stringify(donationSignatures));
+
+      // Read them from local storage to ensure nothing was corrupt
+      const signatures = JSON.parse(localStorage.getItem('grants_zksync_signatures'));
+
+      console.log('Sending transfers to the network...');
+      for (let i = 0; i < signatures.length; i += 1) {
+        console.log(`  Sending transfer ${i+1} of ${signatures.length}...`);
+        const transfer = await zksync.wallet.submitSignedTransaction(signatures[i], syncProvider);
+        console.log(`  Transfer ${i+1} sent`, transfer);
+        const receipt = await transfer.awaitReceipt();
+        console.log(`  ✅ Got transfer ${i+1} receipt`, receipt);
+      }
+      console.log('✅✅✅ Done!');
     },
     
     /**
@@ -1034,7 +1260,7 @@ Vue.component('grants-cart', {
       // Setup -------------------------------------------------------------------------------------
       console.log('Checking out with zkSync', zksync);
       const userAddress = await this.initializeCheckout();
-      
+
       // Configure ethers and zkSync
       const ethersProvider = new ethers.providers.Web3Provider(provider);
       const signer = ethersProvider.getSigner();
@@ -1045,76 +1271,28 @@ Vue.component('grants-cart', {
 
       // Prompt for user's signature to login to zkSync
       const syncWallet = await this.loginToZkSync(signer, syncProvider);
-      
-      // Ephemeral wallet setup
-      const ephemeralWallet = this.createEphemeralWallet();
 
-      // Deposit -----------------------------------------------------------------------------------
-      console.log(`✅ Total deposit amount is valid: ${this.donationInputsEthAmount} ETH`);
-      console.log('donationInputs: ', this.donationInputs);
+      // Set zkSync contract address based on network
+      this.zkSyncContractAddress = document.web3network === "mainnet"
+        ? "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF" // mainnet
+        : "0x82F67958A5474e40E1485742d648C0b0686b6e5D"; // rinkeby
 
-      console.log('Waiting for user to approve transaction to deposit funds to ephemeral wallet...');
-      const deposit = await syncWallet.depositToSyncFromEthereum({
-        depositTo: ephemeralWallet.address,
-        token: 'ETH',
-        amount: this.donationInputsEthAmount,
-      });
-      console.log('✅ Deposit transaction successfully sent. View deposit info and tx hash:', deposit);
-
-      // Unlock zkSync account ---------------------------------------------------------------------
-      console.log('Waiting for zkSync operator to issue promise that transaction will be processed...');
-
-      // If we do not wait for this receipt, the unlock step below will fail with
-      // "Error: Failed to Set Signing Key: Account does not exist in the zkSync network"
-      const depositReceipt = await deposit.awaitReceipt();
-      console.log('✅ Deposit receipt received. View deposit receipt:', depositReceipt);
-
-      // To control assets in zkSync network, an account must register a separate public key
-      // once, so we now do that for the ephemeral keypair
-      console.log('Registering ephemeral wallet on zkSync...');
-      const ephemeralSyncWallet = await zksync.Wallet.fromEthSigner(ephemeralWallet, syncProvider);
-
-      if (!(await ephemeralSyncWallet.isSigningKeySet())) {
-        if ((await ephemeralSyncWallet.getAccountId()) == undefined) {
-          throw new Error('Unknown account');
-        }
-        const changePubkey = await ephemeralSyncWallet.setSigningKey();
-        // Wait until the tx is committed
-        await changePubkey.awaitReceipt();
-        console.log('✅ Ephemeral wallet is ready to use on zkSync');
-      } else {
-        console.log('✅ Ephemeral wallet was already initialized');
+      // Send donation if no approvals -----------------------------------------------------------
+      if (allowanceData.length === 0) {
+        // Send transaction and exit function
+        console.log('Only sending ETH, no token approvals required');
+        this.sendZkSyncDonation(userAddress);
+        return;
       }
 
-      // Get account state (deposit will be committed, not verified) -------------------------------
-      const ephemeralWalletState = await ephemeralSyncWallet.getAccountState();
-      const nonce = ephemeralWalletState.committed.nonce;
-      console.log('✅ State of ephemeral wallet retrieved. View state:', ephemeralWalletState);
-
-      // Generate signatures -----------------------------------------------------------------------
-      console.log('Generating signatures for transfers...');
-      const amount = zksync.utils.closestPackableTransactionAmount(this.donationInputsEthAmount);
-      const fee = await syncProvider.getTransactionFee(
-        'Transfer',
-        ephemeralWallet.address, // send to self for now
-        'ETH'
+      // Request approvals then send donations ---------------------------------------------------
+      await this.requestAllowanceApprovalsThenExecuteCallback(
+        allowanceData,
+        userAddress,
+        batchZkSyncDepositContractAddress, 
+        this.sendZkSyncDonation,
+        [allowanceData]
       );
-      const signedTransfer = await ephemeralSyncWallet.signSyncTransfer({
-        to: ephemeralWallet.address, // send to self for now
-        token: "ETH",
-        amount: amount.sub(fee.totalFee),
-        fee: fee.totalFee,
-        nonce,
-      });
-      console.log('✅ Signature for transfer generated. View it:', signedTransfer);
-
-      // Send transfers ----------------------------------------------------------------------------
-      console.log('Sending transfer to the network...');
-      const transfer = await zksync.wallet.submitSignedTransaction(signedTransfer, syncProvider);
-      console.log('✅ Transfer sent:', transfer);
-      const receipt = await transfer.awaitReceipt();
-      console.log('✅ Receipt received:', receipt);
-      console.log('✅✅✅ Done!');
     },
 
     // =============================================================================================
