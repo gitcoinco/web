@@ -561,6 +561,8 @@ Vue.mixin({
       const vm = this;
       const updatePtokenStatusinDatabase = this.updatePtokenStatusinDatabase;
       const handleError = this.handleError;
+      const redemptionReceiptModal = $('#redemptionCompleteReceiptModal');
+      const redemptionEtherscanUrl = $('#redeem-tx');
 
       try {
         const network = vm.checkNetwork();
@@ -576,6 +578,17 @@ Vue.mixin({
         pToken.methods.redeem(amount).send({ from: user })
           .on('transactionHash', async function(transactionHash) {
             indicateMetamaskPopup(true);
+
+            // Show success modal and set Etherscan link
+            redemptionReceiptModal.bootstrapModal('show');
+
+            const etherscanUrl = network === 'mainnet'
+              ? `https://etherscan.io/tx/${transactionHash}`
+              : `https://${network}.etherscan.io/tx/${transactionHash}`;
+
+            redemptionEtherscanUrl.prop('href', etherscanUrl);
+
+            // Save redemption info in database
             const redemption = complete_redemption(
               redemptionId,
               transactionHash,

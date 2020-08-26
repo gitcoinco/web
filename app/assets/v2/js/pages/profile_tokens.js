@@ -227,7 +227,7 @@ async function requestPtokenRedemption(tokenAmount, redemptionDescription) {
     const response = await request_redemption(document.current_ptoken_id, tokenAmount, redemptionDescription, network);
 
     $('#redeemTokenModal').bootstrapModal('hide');
-    _alert('Your redemption request was successful! You should hear from the token owner shortly.', 'success');
+    $('#redeemTokenSuccessModal').bootstrapModal('show');
     await updatePTokenInfoOnPage(document.current_ptoken_id);
   } catch (err) {
     handleError(err);
