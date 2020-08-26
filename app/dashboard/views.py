@@ -4361,6 +4361,10 @@ def hackathon_registration(request):
             status=401)
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+
+        if HackathonRegistration.objects.filter(hackathon=hackathon_event, registrant=profile).exists():
+            return JsonResponse({'error': _('Already registered.')}, status=401)
+
         HackathonRegistration.objects.create(
             name=hackathon,
             hackathon=hackathon_event,
