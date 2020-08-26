@@ -1,0 +1,25 @@
+{
+    "symbol":"BSB",
+    "address":"0x47BeD2cdF27995e861B2E0c5ACd930C7E4AEFFe2",
+    "overview":{
+        "en": "As the representative of the rights and interests of the BSBDEX trading platform, BSB is the cornerstone of the ecological development of the BSBDEX trading platform and a circulated encrypted digital proof of rights.",
+        "zh": "BSB作为 BSBDEX 交易平台权益的代表，是BSBDEX 交易平台的生态发展基石，是可流通的加密数字权益证明。"
+  },
+    "email":"BSBDEX@outlook.com",
+    "website":"http://www.bsbdex.com/",
+    "whitepaper":"http://www.bsbdex.com/doc/BSBDEX%20%E4%B8%AD%E6%96%87%E7%89%88%201.0.1.pdf",
+    "state":"NORMAL",
+    "published_on":"2019-08-31",
+    "initial_price":{
+        "ETH":"0.000131686 ETH",
+        "USD":"0.05 USD",
+        "BTC":"0.00000441928 BTC"
+    },
+    "links":{
+        "twitter":"https://twitter.com/home",
+        "telegram":"https://t.me/BSBdexEnglish",
+        "github":"https://github.com/BSBDEX",
+        "facebook":"https://www.facebook.com/defi.bsb",
+        "medium":"https://medium.com/@bsbdex"
+    }
+}
