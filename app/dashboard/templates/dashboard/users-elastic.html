@@ -38,19 +38,9 @@
       <div class="">
         <nav class="search-section p-5 text-center">
           <div>
-          <img v-if="showBanner" class="mb-5" :src="[[showBanner]]" />
+            <img v-if="showBanner" class="mb-5" :src="[[showBanner]]" />
             <searchbox :id="'searchbox'" :autofocus="true" :realtime="true" :timeout="200" :field="'keywords'" :placeholder="'Search by keyword'"></searchbox>
-
-<!--            <search-datalist :id="'searchdatalist'" :realtime="true" :field="'keywords'" :suggestion="['keywords']" :showForcedSuggestions="true" operator="OR">-->
-<!--            <template slot="items" slot-scope="{ item }">-->
-<!--                [[ item.highlight.keywords[0] ]]-->
-<!--            </template>-->
-<!--            <template slot="suggestions" slot-scope="{ suggestion }">-->
-<!--                <span v-html="suggestion.highlight.keywords ? suggestion.highlight.keywords[0] : suggestion._source.keywords"></span>-->
-<!--            </template>-->
-<!--            </search-datalist>-->
           </div>
-
         </nav>
       </div>
       <div class="sidebar-container flex-column flex-lg-row">
