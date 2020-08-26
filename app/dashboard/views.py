@@ -4304,6 +4304,9 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
     if tab == 'activity':
         active = 1
 
+    if not hackathon:
+        hackathon = project.hackathon
+
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     what = f'project:{project_id}'
     params = {
@@ -4321,7 +4324,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
             'winner': project.winner,
             'looking_members': project.looking_members,
             'work_url': project.work_url,
-            'logo_url': project.logo.url if project.logo else staticfiles_storage.url(f'v2/images/projects/logos/${project.id}.png'),
+            'logo_url': project.logo.url if project.logo else '',
             'prize': {
                 'id': project.bounty.id,
                 'title': project.bounty.title,
