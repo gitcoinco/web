@@ -94,29 +94,23 @@ def get_verified_list(grant_contributions):
     args:
         list of lists of grant data
             [[grant_id (str), user_id (str), verification_status (boolean), contribution_amount (float)]]
-        round
-            str ('current') only
 
     returns:
-        aggregated contributions by pair in nested list
+        aggregated contributions by pair nested dict
             {
-                round: {
-                    grant_id (str): {
-                        user_id (str): aggregated_amount (float)
-                    }
+                grant_id (str): {
+                    user_id (str): aggregated_amount (float)
                 }
             }
 '''
 def aggregate_contributions(grant_contributions):
-    round_dict = {}
     contrib_dict = {}
     for proj, user, _, amount in grant_contributions:
         if proj not in contrib_dict:
             contrib_dict[proj] = {}
         contrib_dict[proj][user] = contrib_dict[proj].get(user, 0) + amount
-    round_dict[_round] = contrib_dict
 
-    return round_dict
+    return contrib_dict
 
 
 
@@ -124,17 +118,15 @@ def aggregate_contributions(grant_contributions):
     gets pair totals between current round, current round
 
     args:
-        aggregated contributions by pair in nested dict
+        aggregated contributions by pair nested dict
             {
-                round: {
-                    grant_id (str): {
-                        user_id (str): aggregated_amount (float)
-                    }
+                grant_id (str): {
+                    user_id (str): aggregated_amount (float)
                 }
             }
 
     returns:
-        pair totals between current round, current round
+        pair totals between current round
             {user_id (str): {user_id (str): pair_total (float)}}
 
 '''
@@ -160,12 +152,10 @@ def get_totals_by_pair(contrib_dict):
 '''
     calculates the clr amount at the given threshold and total pot
     args:
-        aggregated_contributions by pair in nested dict
+        aggregated contributions by pair nested dict
             {
-                round: {
-                    grant_id (str): {
-                        user_id (str): aggregated_amount (float)
-                    }
+                grant_id (str): {
+                    user_id (str): aggregated_amount (float)
                 }
             }
         pair_totals   :   {user_id (str): {user_id (str): pair_total (float)}}
@@ -174,8 +164,8 @@ def get_totals_by_pair(contrib_dict):
         total_pot     :   float
 
     returns:
-        total clr award by grant, normalized by the normalization factor
-            [{'id': proj, 'clr_amount': tot}]
+        total clr award by grant, analytics, normalized by the normalization factor
+            [{'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot}]
         saturation point
             boolean
 '''
@@ -202,6 +192,7 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
 
         bigtot += tot
         totals.append({'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot})
+        # totals.append({'id': proj, 'clr_amount': tot})
 
     global CLR_PERCENTAGE_DISTRIBUTED
 
@@ -244,14 +235,13 @@ def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
     vlist = get_verified_list(curr_round)
 
     # aggregate data
-    curr_agg = aggregate_contributions(curr_round, 'current')
-    combinedagg = {**curr_agg}
+    curr_agg = aggregate_contributions(curr_round)
 
     # get pair totals
-    ptots = get_totals_by_pair(combinedagg)
+    ptots = get_totals_by_pair(curr_agg)
 
     # clr calcluation
-    totals = calculate_clr(combinedagg, ptots, vlist, v_threshold, uv_threshold, total_pot)
+    totals = calculate_clr(curr_agg, ptots, vlist, v_threshold, uv_threshold, total_pot)
 
     return totals
 
@@ -277,10 +267,10 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
     # find grant we added the contribution to and get the new clr amount
     for grant_clr in grants_clr:
         if grant_clr['id'] == grant.id:
-            return (grant_clr['clr_amount'], grants_clr)
+            return (grant_clr['clr_amount'], grants_clr, grant_clr['number_contributions'], grant_clr['contribution_amount'])
 
     # print(f'info: no contributions found for grant {grant}')
-    return (None, None)
+    return (None, None, None, None)
 
 
 
@@ -392,52 +382,31 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
 def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
     # setup
     clr_calc_start_time = timezone.now()
-    debug_output = []
+    debug_output = [['grant_id', 'grant_title', 'number_contributions', 'contribution_amount', 'clr_amount']]
 
     # one-time data call
     total_pot = float(clr_round.total_pot)
     v_threshold = float(clr_round.verified_threshold)
     uv_threshold = float(clr_round.unverified_threshold)
 
+    print(total_pot)
+
     grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
 
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
 
-    # pre-calculate clr amount to figure out a closer total pot
-    pre_pot = 0
-    for grant in grants:
-        p_clr, g_clr = calculate_clr_for_donation(
-                grant,
-                amount,
-                grant_contributions_curr,
-                total_pot,
-                v_threshold,
-                uv_threshold
-            )
-        pre_pot += p_clr
-
-    # using clr amount, round total pot up to the closest 10k
-    total_pot_close = round(pre_pot + 5000, -4) 
-    if total_pot_close >= total_pot:
-        total_pot_close = total_pot
-
     # calculate clr analytics output
-    clr_matches = []
     for grant in grants:
-        _, grants_clr = calculate_clr_for_donation(
+        clr_amount, grants_clr, num_contribs, contrib_amount = calculate_clr_for_donation(
             grant,
-            amount,
+            0,
             grant_contributions_curr,
-            total_pot_close,
+            total_pot,
             v_threshold,
             uv_threshold
         )
-        debug_output.append({
-            'grant': grant.id, 
-            'number_contributions': grants_clr['number_contributions'], 
-            'contribution_amount': grants_clr['contribution_amount'], 
-            'clr_amount': grants_clr['clr_amount']
-        })
+        debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
+
     return debug_output
 
 
@@ -456,29 +425,37 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
     grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
 
-    print(grants)
-
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
 
     # pre-calculate clr amount to figure out a closer total pot
     pre_pot = 0
     for grant in grants:
-        p_clr, g_clr = calculate_clr_for_donation(
+        p_clr, g_clr, _, _ = calculate_clr_for_donation(
                 grant,
-                amount,
+                0,
                 grant_contributions_curr,
                 total_pot,
                 v_threshold,
                 uv_threshold
             )
-        pre_pot += p_clr
+        
+        # print(f'{grant}\namount: {p_clr}')
+       
+        if p_clr is None: 
+            pre_pot += 0
+        if p_clr is not None:
+            pre_pot += p_clr
+
+    print(f'match hit so far using full pot: {pre_pot}')
 
     # using clr amount, round total pot up to the closest 10k
+    # I think this needs to be changed to round down
     total_pot_close = round(pre_pot + 5000, -4) 
-    if total_pot_close >= total_pot:
-        total_pot_close = total_pot
 
-    print(total_pot_close) 
+    print(f'using {total_pot_close} to calculate preds based on full pot') 
+
+    # # when not using our pot mechanisms
+    # total_pot_close = total_pot
 
     # calculate clr given additional donations
     for grant in grants:
@@ -488,7 +465,8 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
         for amount in potential_donations:
             # calculate clr with each additional donation and save to grants model
-            predicted_clr, grants_clr = calculate_clr_for_donation(
+            # print(f'using {total_pot_close}')
+            predicted_clr, grants_clr, _, _ = calculate_clr_for_donation(
                 grant,
                 amount,
                 grant_contributions_curr,
