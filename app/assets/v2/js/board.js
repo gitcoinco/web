@@ -355,6 +355,9 @@ Vue.mixin({
         });
 
         _alert(successMsg, 'success');
+
+        // For the redemption case, we must hide the "tx pending" modal
+        $('#redemptionCompleteReceiptModal').bootstrapModal('hide');
       } else {
         _alert(errorMsg, 'error');
       }
