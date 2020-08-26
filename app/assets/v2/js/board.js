@@ -575,6 +575,7 @@ Vue.mixin({
 
         pToken.methods.redeem(amount).send({ from: user })
           .on('transactionHash', async function(transactionHash) {
+            indicateMetamaskPopup(true);
             const redemption = complete_redemption(
               redemptionId,
               transactionHash,
@@ -588,7 +589,6 @@ Vue.mixin({
 
             $.when(redemption).then((response) => {
               vm.checkData('personal-tokens');
-              indicateMetamaskPopup(true);
             });
 
             const successMsg = 'Congratulations, your redemption was successfully completed!';

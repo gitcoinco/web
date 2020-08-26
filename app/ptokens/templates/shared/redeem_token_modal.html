@@ -26,26 +26,34 @@
         </div>
         <form id="ptokenRedeemForm" class="modal-body">
           <div id="ptokenRedeemAmountDiv" class="d-flex align-items-baseline justify-content-between">
-            <label class="font-caption font-weight-semibold letter-spacing text-black-60 text-uppercase" for="ptokenRedeemAmount">{% trans 'Amount' %}</label>
+            <label class="font-caption font-weight-semibold letter-spacing text-black-60 text-uppercase" for="ptokenRedeemAmount">{% trans 'Amount:' %}</label>
             <div class="w-75">
               <input name='ptokenRedeemAmount' id="ptokenRedeemAmount" class="form__input" type="text" placeholder="10 {{ ptoken.token_symbol }}"/>
               <br>
               <span class="text-muted font-smaller-6">You have <span id="available-ptokens">{{ available_to_redeem|default:0 }}</span> {{ ptoken.token_symbol }}</span>
+              <div class="invalid-feedback"></div>
             </div>
           </div>
           <div id="ptokenRedeemDescriptionDiv" class="mt-2">
             <label class="font-caption font-weight-semibold letter-spacing text-black-60 text-uppercase" for="ptokenRedeemCost">{% trans 'Description:' %}</label>
             <textarea name='ptokenRedeemDescriptionDiv' id="ptokenRedeemDescription" class="form__input"></textarea>
+            <div class="invalid-feedback">
+              Please describe what you would like to redeem the token for
+            </div>
           </div>
-          <div class="form__checkbox mt-3">
-            <input class="form-control form-check-inline" name='ptokenRedeemTerms' id='ptokenRedeemTerms' type="checkbox" required/>
-            <label class="form__label" for=ptokenRedeemTerms>{% trans "I have read, understand, and agree to the " %}<a href="{% url "_terms" %}">{% trans "Terms of Service" %}</a>
-            </label>
+          <div class="form-check mt-3 mb-5">
+            <input class="form-check-input" name='ptokenRedeemTerms' id='ptokenRedeemTerms' type="checkbox" required/>
+            <small class="form-check-label" id="TOSText" for=ptokenRedeemTerms>{% trans "I have read, understand, and agree to the " %}<a href="{% url "_terms" %}">{% trans "Terms of Service" %}</a>
+            </small>
+            <div class="invalid-feedback">
+              You must agree to the terms before submitting.
+            </div>
           </div>
         </form>
-        <div class="p-2 text-center mt-3">
-          <button type="button" class="btn btn-outline-gc-blue btn-md" data-dismiss="modal" aria-label="Close">Cancel</button>
-          <button class="btn btn-gc-blue btn-md ml-2" id="submit_redeem_token">Submit</button>
+        <div class="text-center">
+          <button class="btn btn-lg btn-gc-blue mb-3 px-5" id="submit_redeem_token">Submit</button>
+          <br>
+          <button type="button" class="btn btn-lg btn-outline-gc-blue px-5" data-dismiss="modal" aria-label="Close">Cancel</button>
         </div>
       </div>
     </div>

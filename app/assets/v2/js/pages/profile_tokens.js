@@ -27,8 +27,8 @@ $(document).on('click', '#submit_buy_token', (event) => {
 
 
   if (!$('#ptokenTerms').is(':checked')) {
-    $('#ptokenTerms').addClass('is-invalid');
-    $('#ptokenTerms ~ .invalid-feedback').show();
+    $('#TOSText').addClass('is-invalid');
+    $('#TOSText ~ .invalid-feedback').show();
     return;
   }
   $('#ptokenTerms').removeClass('is-invalid');
@@ -56,39 +56,52 @@ $(document).on('input', '#ptokenAmount', (event) => {
 
 $(document).on('click', '#submit_redeem_token', (event) => {
   event.preventDefault();
+
+  // Hide existing validation errors
+  $('#ptokenRedeemAmount').removeClass('is-invalid');
+  $('#ptokenRedeemAmount ~ .invalid-feedback').hide();
+  $('#ptokenRedeemDescription').removeClass('is-invalid');
+  $('#ptokenRedeemDescription ~ .invalid-feedback').hide();
+  $('#ptokenRedeemTerms').removeClass('is-invalid');
+  $('#ptokenRedeemTerms ~ .invalid-feedback').hide();
+
+  // Get form info
   const form = $('#ptokenRedeemForm')[0];
   const amountField = $(form.ptokenRedeemAmount);
   const tos = $(form.ptokenRedeemTerms);
-  const descriptionField = $(form.ptokenRedeemDescription);
   const redeem_amount = parseFloat(amountField.val());
   const redeem_description = $('#ptokenRedeemDescription').val();
 
-  if (!tos.prop('checked')) {
-    event.stopPropagation();
-    _alert('You must agree before submitting', 'error', 2000);
-    tos.addClass('is-invalid');
-    return;
-  }
-  tos.removeClass('is-invalid');
-
-  if (isNaN(redeem_amount)) {
-    _alert(`Provide a valid amount no greater than ${document.current_hodling} ${document.current_ptoken_symbol}`, 'error', 2000);
-    amountField.addClass('is-invalid');
+  // Validate amount
+  if (isNaN(redeem_amount) || redeem_amount <= 0) {
+    $('#ptokenRedeemAmount').addClass('is-invalid');
+    $('#ptokenRedeemAmount ~ .invalid-feedback').show();
+    $('#ptokenRedeemAmount ~ .invalid-feedback').text(`Please enter a number between 0 and ${document.current_hodling} ${document.current_ptoken_symbol}`);
     return;
   } else if (document.current_hodling === 0) {
-    _alert(`You don't have ${document.current_ptoken_symbol} tokens`, 'error', 2000);
-    amountField.addClass('is-invalid');
+    $('#ptokenRedeemAmount').addClass('is-invalid');
+    $('#ptokenRedeemAmount ~ .invalid-feedback').show();
+    $('#ptokenRedeemAmount ~ .invalid-feedback').text(`You don't have ${document.current_ptoken_symbol} tokens`);
     return;
   } else if (redeem_amount > document.current_hodling) {
-    _alert(`You can't redeem more than ${document.current_hodling}  ${document.current_ptoken_symbol}`, 'error', 2000);
-    amountField.addClass('is-invalid');
+    $('#ptokenRedeemAmount').addClass('is-invalid');
+    $('#ptokenRedeemAmount ~ .invalid-feedback').show();
+    $('#ptokenRedeemAmount ~ .invalid-feedback').text(`You can't redeem more than ${document.current_hodling}  ${document.current_ptoken_symbol}`);
     return;
   }
-  amountField.removeClass('is-invalid');
 
+  // Validate description
   if (redeem_description.length < 1) {
-    _alert('Please describe what you would like to redeem the token for', 'error', 2000);
-    descriptionField.addClass('is-invalid');
+    $('#ptokenRedeemDescription').addClass('is-invalid');
+    $('#ptokenRedeemDescription ~ .invalid-feedback').show();
+    return;
+  }
+
+  // Validate terms
+  if (!tos.prop('checked')) {
+    event.stopPropagation();
+    $('#TOSText').addClass('is-invalid');
+    $('#TOSText ~ .invalid-feedback').show();
     return;
   }
 
