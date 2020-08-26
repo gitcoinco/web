@@ -1,0 +1,27 @@
+{
+  "symbol": "NIRX",
+  "address": "0xf0cCCa32cd300356629216EB301Ec6649c7C6AdB",
+  "overview":{
+        "en": "NIRX is a stablecoin pegged to the the value of the Nigerian Naira with its initial utility proposed for African ecommerce",
+        "zh": "NIRX是一种稳定币，与尼日利亚奈拉的价值挂钩，其最初的实用程序建议用于非洲电子商务"
+  },
+  "email": "hello@nirxblock.com",
+  "website": "https://www.nirxblock.com/",
+  "whitepaper": "https://www.nirxblock.com/NIRX_Whitepaper1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2019-04-22",
+  "initial_price":{
+        "ETH":"0.0000052 ETH",
+        "USD":"0.002 USD",
+        "BTC":"0.00000018 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/@nirxcoin",
+    "twitter": "https://twitter.com/nirxcoin",
+    "telegram": "https://t.me/NairaX",
+    "github": "https://github.com/NairaX",
+    "facebook": "https://www.facebook.com/601064640390185",
+    "reddit": "https://reddit.com/r/u_NairaX",
+    "medium": "https://medium.com/@nirxcoin"
+  }
+}
