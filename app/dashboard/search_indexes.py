@@ -9,7 +9,6 @@ class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     github_created_at = indexes.CharField(null=True,model_attr='github_created_at')
     first_name = indexes.CharField(null=True,model_attr='first_name')
     last_name = indexes.CharField(null=True,model_attr='last_name')
-    email = indexes.CharField(null=True,model_attr='email')
     handle = indexes.CharField(null=True,model_attr='handle')
     sms_verification = indexes.BooleanField(null=True,model_attr='sms_verification',faceted=True)
     persona = indexes.CharField(null=True,model_attr='persona',faceted=True)
