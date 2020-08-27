@@ -264,7 +264,7 @@ def render_tip_email(to_email, tip, is_new):
 
     return response_html, response_txt
 
-def render_tribe_hackathon_prizes(hackathon, sponsor, prizes):
+def render_tribe_hackathon_prizes(hackathon, sponsors_prizes, intro_begin):
     email_style = 'hackathon'
     
     hackathon = {
@@ -273,16 +273,17 @@ def render_tribe_hackathon_prizes(hackathon, sponsor, prizes):
         'image_url': hackathon.logo.url if hackathon.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
         'url': hackathon.url,
     }
-    sponsor = {
-        'sponsor': sponsor,
-        'name': sponsor.name,
-        'image_url': sponsor.logo.url if sponsor.logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png',
-    }
+
+    for sponsor_prize in sponsors_prizes:
+        sponsor_prize['name'] = sponsor_prize['sponsor'].name
+        sponsor_prize['image_url'] = sponsor_prize['sponsor'].logo.url if sponsor_prize['sponsor'].logo else f'{settings.STATIC_URL}v2/images/emails/hackathons-neg.png'
+
+    intro = f"{intro_begin} participating on a new hackathon on Gitcoin: "
 
     params = {
         'hackathon': hackathon,
-        'sponsor': sponsor,
-        'prizes': prizes,
+        'sponsors_prizes': sponsors_prizes,
+        'intro': intro,
         'email_style': email_style,
         'hide_bottom_logo': True,
     }
