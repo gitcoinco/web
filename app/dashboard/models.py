@@ -857,7 +857,7 @@ class Bounty(SuperModel):
 
     def value_in_usdt_at_time(self, at_time):
         decimals = 10 ** 18
-        if self.token_name == 'USDT':
+        if self.token_name in ['USDT', 'USDC']:
             return float(self.value_in_token / 10 ** 6)
         if self.token_name in settings.STABLE_COINS:
             return float(self.value_in_token / 10 ** 18)
