@@ -284,12 +284,6 @@ class Grant(SuperModel):
         help_text=_('The team members contributing to this Grant.'),
     )
     image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
-    clr_matching = models.DecimalField(
-        default=0,
-        decimal_places=2,
-        max_digits=20,
-        help_text=_('The TOTAL CLR matching amount across all rounds'),
-    )
     amount_received_with_phantom_funds = models.DecimalField(
         default=0,
         decimal_places=2,
