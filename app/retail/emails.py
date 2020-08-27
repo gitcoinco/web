@@ -1691,11 +1691,22 @@ def start_work_applicant_expired(request):
 @staff_member_required
 def tribe_hackathon_prizes(request):
     from dashboard.models import HackathonEvent
-    hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
-    sponsor = hackathon.sponsors.first()
-    prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor.tribe)
-    response_html, _ = render_tribe_hackathon_prizes(hackathon, sponsor, prizes)
+    from marketing.utils import generate_hackathon_email_intro
 
+    hackathon = HackathonEvent.objects.filter(start_date__date=(timezone.now()+timezone.timedelta(days=3))).first()
+
+    sponsors_prizes = []
+    for sponsor in hackathon.sponsors.all()[:3]:
+        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor.tribe)
+        sponsor_prize = {
+            "sponsor": sponsor,
+            "prizes": prizes
+        }
+        sponsors_prizes.append(sponsor_prize)
+
+    intro_begin = generate_hackathon_email_intro(sponsors_prizes)
+
+    response_html, _ = render_tribe_hackathon_prizes(hackathon,sponsors_prizes, intro_begin)
     return HttpResponse(response_html)
 
 def render_remember_your_cart(grants_query, grants, hours):
