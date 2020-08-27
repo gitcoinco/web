@@ -120,7 +120,7 @@ def get_stats(round_type):
             continue
         keys = []
         if ele[3] == 'grants':
-            top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
+            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
             startswith = f"{ele[0]}{round_type}_"
