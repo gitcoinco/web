@@ -358,7 +358,7 @@ Vue.mixin({
             if (errors) {
               _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
             } else {
-
+              vm.form.feeTxId = txnHash;
               saveAttestationData(
                 txnHash,
                 vm.totalAmount.totalFee,
@@ -461,8 +461,8 @@ Vue.mixin({
         'repo_type': metadata.repo_type,
         'is_featured': metadata.is_featured,
         'featuring_date': metadata.featuring_date,
-        'fee_amount': 0,
-        'fee_tx_id': null,
+        'fee_amount': vm.totalAmount.totalFee,
+        'fee_tx_id': vm.form.feeTxId,
         'coupon_code': vm.form.couponCode,
         'privacy_preferences': JSON.stringify({
           show_email_publicly: vm.form.showEmailPublicly
@@ -662,6 +662,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           token: {},
           terms: false,
           termsPrivacy: false,
+          feeTxId: null,
           couponCode: document.coupon_code
         }
       };
