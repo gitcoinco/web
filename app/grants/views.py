@@ -389,7 +389,7 @@ def grants_by_grant_type(request, grant_type):
             grant.clr_round_num = clr_round.round_num
         else:
             grant.is_clr_active = False
-            grant.clr_round_num = 'LAST' if grant.clr_matching > 0 else None
+            grant.clr_round_num = 'LAST'
 
 
     # populate active round info
@@ -649,7 +649,7 @@ def grant_details(request, grant_id, grant_slug):
         clr_round_num = clr_round.round_num
     else:
         is_clr_active = False
-        clr_round_num = 'LAST' if grant.clr_matching > 0 else None
+        clr_round_num = 'LAST'
 
     is_clr_active = True if clr_round else False
     title = grant.title + " | Grants"
