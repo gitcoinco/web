@@ -67,12 +67,13 @@ class Command(BaseCommand):
         bounties = bounties.exclude(bounty_state__in=['done', 'cancelled'])
         bounties = bounties.order_by('metadata__hyper_tweet_counter')
 
-        bounty = bounties.first()
 
-        offer_title = f'Work on "{bounty.title}" and receive {floatformat(bounty.value_true)} {bounty.token_name}'
-        offer_desc = ''
+        if bounties:
+            bounty = bounties.first()
 
-        if bounty:
+            offer_title = f'Work on "{bounty.title}" and receive {floatformat(bounty.value_true)} {bounty.token_name}'
+            offer_desc = ''
+
             event_name = ''
             counter = bounty.metadata['hyper_tweet_counter']
             if counter == 0:
