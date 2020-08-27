@@ -1,0 +1,31 @@
+{
+    "symbol": "HAKKA",
+    "address": "0x0E29e5AbbB5FD88e28b2d355774e73BD47dE3bcd",
+    "overview":
+    {
+        "en": "Hakka Finance is a decentralized financial ecosystem with remarkable DeFi products administered by governance token: HAKKA. By distributing HAKKA directly into the hands of users and community, an increasingly huge ecosystem will be incentivized to upgrade the protocol and collectively steward the protocol into the future with excellent governance.",
+        "zh": "Hakka Finance 是一個持續推出原創 DeFi 產品的 DAO（Decentralized Autonomous Organization，去中心化自治組織）。透過將協議治理代幣 “Hakka” 直接分配至使用者與社群的手中，讓規模持續成長增大的生態系能為協議不斷進行升級，並藉由群眾智慧去中心化地將 Hakka Finance 帶領至更理想的未來。"
+    },
+    "email": "admin@hakka.finance",
+    "website": "https://hakka.finance/",
+    "whitepaper": "https://hakka.finance/whitepaper",
+    "state": "NORMAL",
+    "published_on": "2020-04-14",
+    "initial_price":
+    {
+        "ETH": "0.00002328 ETH",
+        "USD": "0.01 USD",
+        "BTC": "0.00000085 BTC"
+    },
+    "links":
+    {
+        "blog": "",
+        "twitter": "https://twitter.com/hakkafinance",
+        "telegram": "https://t.me/hakkafinance",
+        "github": "https://github.com/hakka-finance/",
+        "facebook": "",
+        "reddit": "",
+        "slack": "",
+        "medium": "https://medium.com/hakkafinance"
+    }
+}
