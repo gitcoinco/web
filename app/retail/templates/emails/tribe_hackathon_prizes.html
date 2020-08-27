@@ -50,10 +50,12 @@
 
 <div class="container" style="margin-bottom: 3em; padding: 0;">
 <div class="inner-container">
-  <img class="sponsor-logo" src="{{sponsor.image_url}}">
-  <h1>Win exciting prizes with {{ sponsor.name }}</h1>
+  {% for sponsor in sponsors_prizes %}
+    <img class="sponsor-logo" src="{{sponsor.image_url}}">
+  {% endfor %}
+  <h1>Win exciting prizes at {{ hackathon.name }}</h1>
 
-  <p class="left message"><b>{{ sponsor.name }}</b> is participating on a new hackathon on Gitcoin: <b>{{ hackathon.name }}</b> 🚀</p>
+  <p class="left message"><b>{{intro}}<b>{{ hackathon.name }}</b> 🚀</p>
 
   {% if hackathon %}
     {% if hackathon.image_url %}
@@ -64,14 +66,19 @@
     </div>
   {% endif %}
 
-  {% if prizes %}
-    <p class="left message">Meet a community of like-minded hackers, buidl cool stuff, and win these exciting prizes:</p>
-    <div style="margin-bottom: 3em;">
-      {% for prize in prizes %}
-        {% include 'emails/bounty.html' with bounty=prize count=forloop.counter small=1 prize=1 %}
-      {% endfor %}
+  <p class="left message">Meet a community of like-minded hackers, buidl cool stuff, and win these exciting prizes:</p>
+  <div style="margin-bottom: 3em;">
+    {% for sponsor in sponsors_prizes %}
+      {% if sponsor.prizes %}
+      <div style="margin: 4em 0">
+        <h3 style="text-decoration: underline;">Bounties by {{sponsor.name}}:</h3>
+          {% for prize in sponsor.prizes %}
+            {% include 'emails/bounty.html' with bounty=prize count=forloop.counter small=1 prize=1 %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endfor %}
     </div>
-  {% endif %}
 
   <p class="left" style="margin-top: 5em;">See you @ <a href="{{ hackathon.url }}">{{ hackathon.name }}</a>!</p>
 
