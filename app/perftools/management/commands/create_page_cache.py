@@ -29,24 +29,30 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
-from dashboard.models import HackathonEvent, Profile
+from avatar.models import AvatarTheme, CustomAvatar
+from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything, SuperModel
+from grants.models import Contribution, Grant
+from grants.utils import generate_leaderboard
+from grants.views import next_round_start, round_types
+from marketing.models import Stat
 from perftools.models import JSONStore
+from quests.helpers import generate_leaderboard
+from quests.models import Quest
+from quests.views import current_round_number
 from retail.utils import build_stat_results, programming_languages
+from retail.views import get_contributor_landing_page_context, get_specific_activities
+from townsquare.views import tags
 
 
 def create_top_grant_spenders_cache():
-    from marketing.models import Stat
-    from grants.views import next_round_start, round_types
-    from grants.models import Grant, Contribution
     for round_type in round_types:
         contributions = Contribution.objects.filter(
             success=True,
             created_on__gt=next_round_start,
-            subscription__grant__grant_type=round_type
+            subscription__grant__grant_type__name=round_type
             ).values_list('subscription__contributor_profile__handle', 'subscription__amount_per_period_usdt')
-
         count_dict = {ele[0]:0 for ele in contributions}
         sum_dict = {ele[0]:0 for ele in contributions}
         for ele in contributions:
@@ -138,7 +144,6 @@ def create_post_cache():
 
 
 def create_avatar_cache():
-    from avatar.models import AvatarTheme, CustomAvatar
     for at in AvatarTheme.objects.all():
         at.popularity = at.popularity_cheat_by
         if at.name == 'classic':
@@ -152,8 +157,6 @@ def create_avatar_cache():
 
 
 def create_activity_cache():
-    from django.utils import timezone
-    from dashboard.models import Activity
     hours = 24 if not settings.DEBUG else 1000
 
     print('activity.1')
@@ -168,8 +171,7 @@ def create_activity_cache():
         )
 
     print('activity.2')
-    from retail.views import get_specific_activities
-    from townsquare.views import tags
+
     for tag in tags:
         keyword = tag[2]
         data = get_specific_activities(keyword, False, None, None).filter(created_on__gt=timezone.now() - timezone.timedelta(hours=hours)).count()
@@ -181,7 +183,6 @@ def create_activity_cache():
             )
 
 def create_grants_cache():
-    from grants.utils import generate_leaderboard
     print('grants')
     view = 'grants'
     keyword = 'leaderboard'
@@ -194,8 +195,7 @@ def create_grants_cache():
 
 
 def create_quests_cache():
-    from quests.helpers import generate_leaderboard
-    from quests.views import current_round_number
+
     for i in range(1, current_round_number+1):
         print(f'quests_{i}')
         view = 'quests'
@@ -207,7 +207,6 @@ def create_quests_cache():
             data=json.loads(json.dumps(data, cls=EncodeAnything)),
             )
 
-    from quests.models import Quest
     for quest in Quest.objects.filter(visible=True):
         quest.save()
 
@@ -287,7 +286,6 @@ def create_contributor_landing_page_context():
     if settings.DEBUG:
         keywords = ['']
     view = 'contributor_landing_page'
-    from retail.views import get_contributor_landing_page_context
     with transaction.atomic():
         items = []
         JSONStore.objects.filter(view=view).all().delete()

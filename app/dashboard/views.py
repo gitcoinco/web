@@ -31,7 +31,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-
 from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import PermissionDenied, ValidationError
@@ -120,11 +119,9 @@ from .notifications import (
 )
 from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context,
-    get_custom_avatars, get_hackathon_events, get_hackathons_page_default_tabs,
-    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
-    re_market_bounty, record_user_action_on_interest,
-    release_bounty_to_the_public, sync_payout, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
+    get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
+    re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -4307,9 +4304,15 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
     if not hackathon:
         hackathon = project.hackathon
 
+    title = project.name
+    desc = project.summary
+    avatar_url = project.logo.url if project.logo else project.bounty.avatar_url
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     what = f'project:{project_id}'
     params = {
+        'title': title,
+        'card_desc': desc,
+        'avatar_url': avatar_url,
         'target': f'/activity?what={what}',
         'what': what,
         'tab': active,

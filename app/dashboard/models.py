@@ -35,8 +35,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
-
-
 from django.db import connection, models
 from django.db.models import Count, F, Q, Subquery, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
@@ -53,7 +51,6 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
-
 from app.settings import HYPERCHARGE_BOUNTIES_PROFILE_HANDLE
 from app.utils import get_upload_filename, timeout
 from avatar.models import SocialAvatar
@@ -72,9 +69,9 @@ from git.utils import (
 from marketing.mails import featured_funded_bounty, fund_request_email, start_work_approved
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
+from townsquare.models import Offer, PinnedPost
 from web3 import Web3
 
-from townsquare.models import PinnedPost, Offer
 from .notifications import maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack
 from .signals import m2m_changed_interested
 

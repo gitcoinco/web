@@ -273,7 +273,7 @@
 
       @media (min-width: 1200px) {
         .project-grid {
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
         }
       }
 
@@ -564,15 +564,15 @@
                                     [[ project.summary | truncate(500) ]]
                                   </p>
                                   <div class="text-left">
-                                    <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+                                    <a :href="`/hackathon/${project.hackathon.slug}/projects/${project.pk}/${$options.filters.slugify(project.name)}`" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
                                     <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
-                                    <b-dropdown varitant="outline-gc-blue" toggle-class="btn-sm btn" split-class="btn-sm btn btn-gc-blue">
-                                     <template v-slot:button-content>
-                                       <i class='fas fa-comment-dots'></i>
-                                     </template>
-                                     <b-dropdown-item-button @click.prevent="chatWindow('@' + profile.handle);" v-for="profile in project.profiles" :key=`"team-member-chat-${profile.handle}"` aria-describedby="dropdown-header-label">
-                                       @ [[ profile.handle ]]
-                                     </b-dropdown-item-button>
+                                    <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm font-smaller-2" split-class="btn-sm btn btn-gc-blue">
+                                      <template v-slot:button-content>
+                                        <i class='fas fa-comment-dots'></i>
+                                      </template>
+                                      <b-dropdown-item-button @click.prevent="chatWindow('@' +profile.handle);" v-for="profile in project.profiles" aria-describedby="dropdown-header-label" :key="profile.id">
+                                        @ [[ profile.handle ]]
+                                      </b-dropdown-item-button>
                                     </b-dropdown>
                                   </div>
                                 </div>
