@@ -2013,35 +2013,45 @@ def remember_your_cart(profile, cart_query, grants, hours):
         translation.activate(cur_language)
 
 def tribe_hackathon_prizes(hackathon):
+    from dashboard.models import TribeMember, Sponsor
+    from marketing.utils import generate_hackathon_email_intro
+
     sponsors = hackathon.sponsors.all()
+    tribe_members_in_sponsors = TribeMember.objects.filter(org__in=[sponsor.tribe for sponsor in sponsors]).exclude(status='rejected').exclude(profile__user=None).only('profile')
 
-    for sponsor in sponsors:
-        prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor.tribe)
+    for tribe_member in tribe_members_in_sponsors.distinct('profile'):
+        tribe_member_records = tribe_members_in_sponsors.filter(profile=tribe_member.profile)
 
-        tribe_members = sponsor.tribe.tribe_members
+        sponsors_prizes = []
+        for sponsor in sponsors.filter(tribe__in=[tribe_member_record.org for tribe_member_record in tribe_member_records]):
+            prizes = hackathon.get_current_bounties.filter(bounty_owner_profile=sponsor.tribe)
+            sponsor_prize = {
+                "sponsor": sponsor,
+                "prizes": prizes
+            }
+            sponsors_prizes.append(sponsor_prize)
 
-        subject = f"{sponsor.name} is participating on {hackathon.name} on Gitcoin 🚀"
+        subject_begin = generate_hackathon_email_intro(sponsors_prizes)
+        subject = f"{subject_begin} participating in {hackathon.name} on Gitcoin 🚀"
 
         try:
-            html, text = render_tribe_hackathon_prizes(hackathon, sponsor, prizes)
+            html, text = render_tribe_hackathon_prizes(hackathon, sponsors_prizes, subject_begin)
         except:
             return
 
-        for tribe_member in tribe_members:
-            profile = tribe_member.profile
+        profile = tribe_member.profile
+        to_email = profile.email
+        from_email = settings.CONTACT_EMAIL
+        if not to_email:
+            if profile and profile.user:
+                to_email = profile.user.email
+        if not to_email:
+            continue
 
-            to_email = profile.email
-            from_email = settings.CONTACT_EMAIL
-            if not to_email:
-                if profile and profile.user:
-                    to_email = profile.user.email
-            if not to_email:
-                return
+        cur_language = translation.get_language()
 
-            cur_language = translation.get_language()
-
-            try:
-                setup_lang(to_email)
-                send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
-            finally:
-                translation.activate(cur_language)
+        try:
+            setup_lang(to_email)
+            send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
+        finally:
+            translation.activate(cur_language)
