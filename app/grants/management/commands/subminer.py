@@ -160,7 +160,7 @@ class Command(BaseCommand):
                 num_tx_processed__lt=F('num_tx_approved')
             )
 
-            is_clr_active = active_clr_rounds.filter(grant_type=grant.grant_type)
+            is_clr_active = active_clr_rounds.filter(grant_type=grant.grant_type__name)
             if not is_clr_active:
                 subs = subs.exclude(frequency_unit='roundup') #dont process grant subscriptions until next round
 
