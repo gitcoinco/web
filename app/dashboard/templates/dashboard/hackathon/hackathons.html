@@ -155,7 +155,7 @@
                 <div class="mt-3 font-smaller-2 hackathon-summary">
                   <p>{{ event.summary }}</p>
                 </div>
-                {% if event.sponsor_profiles %}
+                {% if event.sponsor_profiles|length %}
                   <div class="mt-3 font-smaller-2">
                     <span class="pr-1">Sponsored by</span>
                     {% for sponsor in event.sponsor_profiles %}
