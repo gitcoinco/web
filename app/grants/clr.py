@@ -21,6 +21,7 @@ import copy
 import datetime as dt
 import json
 import math
+import numpy as np
 import time
 from itertools import combinations
 
@@ -202,8 +203,10 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
         for t in totals:
             t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
     else:
-        CLR_PERCENTAGE_DISTRIBUTED =  (bigtot / total_pot) * 100
-
+        CLR_PERCENTAGE_DISTRIBUTED = (bigtot / total_pot) * 100
+        percentage_increase = np.log(total_pot / bigtot) / 100 
+        for t in totals:
+            t['clr_amount'] = t['clr_amount'] * (1 + percentage_increase)
     return totals
 
 
@@ -427,36 +430,6 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
 
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
 
-    # pre-calculate clr amount to figure out a closer total pot
-    pre_pot = 0
-    for grant in grants:
-        p_clr, g_clr, _, _ = calculate_clr_for_donation(
-                grant,
-                0,
-                grant_contributions_curr,
-                total_pot,
-                v_threshold,
-                uv_threshold
-            )
-        
-        # print(f'{grant}\namount: {p_clr}')
-       
-        if p_clr is None: 
-            pre_pot += 0
-        if p_clr is not None:
-            pre_pot += p_clr
-
-    print(f'match hit so far using full pot: {pre_pot}')
-
-    # using clr amount, round total pot up to the closest 10k
-    # I think this needs to be changed to round down
-    total_pot_close = round(pre_pot + 5000, -4) 
-
-    print(f'using {total_pot_close} to calculate preds based on full pot') 
-
-    # # when not using our pot mechanisms
-    # total_pot_close = total_pot
-
     # calculate clr given additional donations
     for grant in grants:
         # five potential additional donations plus the base case of 0
@@ -470,7 +443,7 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
                 grant,
                 amount,
                 grant_contributions_curr,
-                total_pot_close,
+                total_pot,
                 v_threshold,
                 uv_threshold
             )
