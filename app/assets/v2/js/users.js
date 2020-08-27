@@ -7,11 +7,6 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 // let funderBounties = [];
 
 Vue.mixin({
-  computed: {
-    orderedUsers: function() {
-      return _.orderBy(this.users, 'position_contributor', 'asc');
-    }
-  },
   methods: {
     chatWindow: function(channel) {
       window.chatSidebar.chatWindow(channel);
