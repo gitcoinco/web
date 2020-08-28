@@ -9,7 +9,7 @@ from dashboard.sync.helpers import record_payout_activity
 
 logger = logging.getLogger(__name__)
 
-def get_polkadot_txn_status(txnid):
+def get_polkadot_txn_status(txnid, token_name):
     if not txnid:
         return None
 
@@ -24,12 +24,15 @@ def get_polkadot_txn_status(txnid):
         # payload = { "hash": txnid }
         # headers = { 'Content-Type': 'application/json'}
         # subscan_response = requests.post(subscan_url, headers=headers, data=json.dumps(payload)).json()
-    
+
         # if subscan_response:
         #     status = subscan_response.get('data').get('extrinsic').get('success')
 
+        if token_name == 'DOT':
+            polkascan_url = f'https://explorer-31.polkascan.io/polkadot/api/v1/extrinsic/{txnid}'
+        elif token_name == 'KSM':
+            polkascan_url = f'https://explorer-31.polkascan.io/kusama/api/v1/extrinsic/{txnid}'
 
-        polkascan_url = f'https://explorer-31.polkascan.io/kusama/api/v1/extrinsic/{txnid}'
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0. 2272.118 Safari/537.36.'}
         polkascan_response = requests.get(polkascan_url, headers=headers).json()
 
@@ -49,7 +52,7 @@ def get_polkadot_txn_status(txnid):
 
 def sync_polkadot_payout(fulfillment):
     if fulfillment.payout_tx_id:
-        txn_status = get_polkadot_txn_status(fulfillment.payout_tx_id)
+        txn_status = get_polkadot_txn_status(fulfillment.payout_tx_id, fulfillment.token_name)
         if txn_status:
             if txn_status.get('status') == 'done':
                 fulfillment.payout_status = 'done'
