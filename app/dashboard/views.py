@@ -5173,6 +5173,7 @@ def create_bounty_v1(request):
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
+    print('### GITCOIN BOT A0')
     maybe_market_to_github(bounty, event_name)
 
     response = {
