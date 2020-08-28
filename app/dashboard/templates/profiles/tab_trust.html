@@ -31,7 +31,7 @@
                 </div>
                     {% if brightid_status == 'not_connected' %}
                         <div class="col-md-3">
-                            <button class="button button--primary">Connect</button>
+                            <a href="javascript:show_brightid_connect_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Connect</a>
                         </div>
                     {% elif brightid_status == 'not_verified' %}
                         <div class="col-md-3">
