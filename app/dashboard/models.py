@@ -1093,6 +1093,9 @@ class Bounty(SuperModel):
         print(f'### GITCOIN BOT A2 get_natural_value < 0.0001: {a}')
         print(f'### GITCOIN BOT A2 network {self.network}')
         print(f'### GITCOIN BOT A2 settings.DEBUG {settings.DEBUG}')
+        print(f'### GITCOIN BOT A2 settings.ENV {settings.ENV}')
+        print(f'### GITCOIN BOT A2 settings.GITHUB_API_USER {settings.GITHUB_API_USER}')
+        print(f'### GITCOIN BOT A2 self.github_org_name {self.github_org_name}')
 
         if not var_to_check or self.get_natural_value() < 0.0001 or (
            self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
@@ -1103,7 +1106,7 @@ class Bounty(SuperModel):
         print(f'### GITCOIN BOT A4')
         if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
             return False
-        print(f'### GITCOIN BOT A5')
+        print(f'### GITCOIN BOT A5 - Is Eligible')
         return True
 
     @property
