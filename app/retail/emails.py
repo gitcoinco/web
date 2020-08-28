@@ -1201,6 +1201,8 @@ def render_new_bounty_roundup(to_email):
     from django.conf import settings
     from marketing.models import RoundupEmail
     args = RoundupEmail.objects.order_by('created_on').last()
+    hide_dynamic = args.hide_dynamic
+
     subject = args.subject
     new_kudos_pks = args.kudos_ids.split(',')
     new_kudos_size_px = 150
@@ -1220,8 +1222,27 @@ def render_new_bounty_roundup(to_email):
 </p>
 </div>
     '''
-
     intro = args.body.replace('KUDOS_INPUT_HERE', kudos_friday)
+
+    if hide_dynamic:
+        params = {
+            'intro': intro,
+            'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
+            'invert_footer': False,
+            'hide_header': False,
+            'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+            'email_type': 'roundup',
+            'email_style': email_style,
+            'hide_dynamic': hide_dynamic,
+            'hide_bottom_logo': True,
+        }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
+    response_txt = render_to_string("emails/bounty_roundup.txt", params)
+
+    return response_html, response_txt, subject, args.from_email, args.from_name
+
+
     highlights = args.highlights
     sponsor = args.sponsor
     bounties_spec = args.bounties_spec
@@ -1286,6 +1307,7 @@ def render_new_bounty_roundup(to_email):
         'sponsor': sponsor,
 		'email_type': 'roundup',
         'email_style': email_style,
+        'hide_dynamic': hide_dynamic,
         'hide_bottom_logo': True,
     }
 

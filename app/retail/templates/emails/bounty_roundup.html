@@ -126,6 +126,7 @@
     <hr>
   {% endif %}
 
+  {% if not hide_dynamic %}
   <div>
     <h3>{% trans "💡Open Funded Issues" %}</h3>
     <h5>{% trans "Grow Open Source &amp; Make Some ETH" %}</h5>
@@ -203,5 +204,8 @@
     <br>
   </div>
   {% endif %}
+
+  {% endif %}
+
 </div>
 {% endblock %}

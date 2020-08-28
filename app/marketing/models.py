@@ -401,6 +401,7 @@ class RoundupEmail(SuperModel):
     highlights = JSONField(default=dict, blank=True)
     sponsor = JSONField(default=dict, blank=True)
     bounties_spec = JSONField(default=dict, blank=True)
+    hide_dynamic = models.BooleanField(default=False)    
 
     def get_absolute_url(self):
         return '/_administration/email/roundup'
