@@ -51,7 +51,7 @@ CLR_PERCENTAGE_DISTRIBUTED = 0
 
     returns:
         list of lists of grant data
-            [[grant_id (str), user_id (str), verification_status (boolean), contribution_amount (float)]]
+            [[grant_id (str), user_id (str), verification_status (str), contribution_amount (float)]]
 '''
 def translate_data(grants_data):
     grants_list = []
@@ -75,17 +75,23 @@ def translate_data(grants_data):
             [[grant_id (str), user_id (str), verification_status (str), contribution_amount (float)]]
 
     returns:
-        set list of verified user_ids
+        set list of sms verified user_ids
             [user_id (str)]
+        set list of bright verified user_ids
+            [user_id (str)]
+
 
 '''
 def get_verified_list(grant_contributions):
-    verified_list = []
+    sms_verified_list = []
+    bright_verified_list = []
     for _, user, ver_stat, _ in grant_contributions:
-        if ver_stat and user not in verified_list:
-            verified_list.append(user)
+        if ver_stat == 'sms' and user not in sms_verified_list:
+            sms_verified_list.append(user)
+        elif ver_stat == 'bright' and user not in bright_verified_list:
+            bright_verified_list.append(user)
 
-    return verified_list
+    return sms_verified_list, bright_verified_list
 
 
 
@@ -159,10 +165,18 @@ def get_totals_by_pair(contrib_dict):
                     user_id (str): aggregated_amount (float)
                 }
             }
-        pair_totals   :   {user_id (str): {user_id (str): pair_total (float)}}
-        v_threshold   :   float
-        uv_threshold  :   float
-        total_pot     :   float
+        pair_totals
+            {user_id (str): {user_id (str): pair_total (float)}}
+        sms_verified_list
+            [user_id (str)] 
+        bright_verified_list
+            [user_id (str)]
+        v_threshold 
+            float
+        uv_threshold
+            float
+        total_pot
+            float
 
     returns:
         total clr award by grant, analytics, normalized by the normalization factor
@@ -170,7 +184,7 @@ def get_totals_by_pair(contrib_dict):
         saturation point
             boolean
 '''
-def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_threshold, uv_threshold, total_pot):
+def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, bright_verified_list, v_threshold, uv_threshold, total_pot):
     bigtot = 0
     totals = []
     
@@ -186,10 +200,21 @@ def calculate_clr(aggregated_contributions, pair_totals, verified_list, v_thresh
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
-                if k2 > k1 and all(i in verified_list for i in [k2, k1]):
-                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / v_threshold + 1)
-                else:
+                # both sms
+                if k2 > k1 and all(i in sms_verified_list for i in [k2, k1]):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.05) + 1)
+                # both bright
+                elif k2 > k1 and all(i in bright_verified_list for i in [k2, k1]):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.2) + 1)
+                # both none
+                elif k2 > k1 and not any(i in sms_verified_list + bright_verified_list for i in [k2, k1]):
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
+                # one bright or sms, one none
+                elif k2 > k1 and (((k2 in sms_verified_list + bright_verified_list) and (k1 not in sms_verified_list + bright_verified_list)) or ((k1 in sms_verified_list + bright_verified_list) and (k2 not in sms_verified_list + bright_verified_list))):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
+                # one bright, one sms
+                elif k2 > k1:
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.125) + 1)
 
         bigtot += tot
         totals.append({'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot})
@@ -235,7 +260,7 @@ def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
     # get data
     curr_round = translate_data(grant_contribs_curr)
 
-    vlist = get_verified_list(curr_round)
+    sms_list, bright_list = get_verified_list(curr_round)
 
     # aggregate data
     curr_agg = aggregate_contributions(curr_round)
@@ -244,7 +269,7 @@ def run_clr_calcs(grant_contribs_curr, v_threshold, uv_threshold, total_pot):
     ptots = get_totals_by_pair(curr_agg)
 
     # clr calcluation
-    totals = calculate_clr(curr_agg, ptots, vlist, v_threshold, uv_threshold, total_pot)
+    totals = calculate_clr(curr_agg, ptots, sms_list, bright_list, v_threshold, uv_threshold, total_pot)
 
     return totals
 
