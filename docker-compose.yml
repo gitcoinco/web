@@ -21,7 +21,7 @@ services:
     ports:
       - "8065:8065"
     volumes:
-      - ./chatconfig:/mattermost/config/
+      - ./chatdata/config:/mattermost/config/
     depends_on:
       - db
     deploy:
