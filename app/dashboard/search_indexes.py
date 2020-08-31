@@ -2,6 +2,7 @@ from haystack import indexes
 
 from .models import UserDirectory
 
+
 class UserDirectoryIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     profile_id = indexes.IntegerField(null=True,model_attr='profile_id')
