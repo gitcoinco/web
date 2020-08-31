@@ -2,20 +2,20 @@
   "symbol": "BCHC",
   "address": "0x2ab05B915C30093679165bcdba9C26D8Cd8BeE99",
   "overview":{
-        "en": "BCHC is BitCherry distributed electricity networks Token.",
-        "zh": "BCHC是 BitCherry 分布式电商网络通证。"
+        "en": "BCHC is token issued by BitCherry which is the world's first commercial scalable blockchain infrastructure based on IPv8 technology.",
+        "zh": "BCHC是 由BitCherry 发行的通证, BitCherry是全球首个基于IPv8技术的分布式商业可扩容区块链基础设施。"
   },
-  "email": "contact@bitcherry.io",
+  "email": "eric@bitcherry.io",
   "website": "http://www.bitcherry.io/",
-  "whitepaper": "http://www.bitcherry.io/img/BitCherry-White-Paper-EN.pdf",
+  "whitepaper": "https://www.bitcherry.io/static/BitCherry-White-Paper-EN-V2.0.1.pdf",
   "state": "NORMAL",
   "published_on": "2019-05-05",
-  "initial_price":{
-        "USD":"0.015 USD"
-  },
   "links": {
-    "twitter": "https://twitter.com/Bitcherry1",
-    "telegram": "https://t.me/bitcherry",
-    "reddit": "https://www.reddit.com/user/BitCherryOfficial"
+    "twitter": "https://twitter.com/BitCherryGlobal",
+    "telegram": "https://t.me/BitCherryEnglish",
+    "instagram":"https://www.instagram.com/bitcherryofficial/",
+    "facebook": "https://www.facebook.com/BCHCGlobal",
+    "linkedin":"https://www.linkedin.com/company/bitcherry",
+    "medium": "https://medium.com/@bitcherryofficial"
   }
 }
