@@ -134,7 +134,7 @@ def preprocess(request):
         'MEDIA_URL': settings.MEDIA_URL,
         'max_length': max_length,
         'max_length_offset': max_length_offset,
-        'search_url': settings.ELASTIC_SEARCH_LB_URL,
+        'search_url': f'{settings.BASE_URL}user_lookup',
         'chat_url': chat_url,
         'base_url': settings.BASE_URL,
         'chat_id': chat_id,

@@ -500,7 +500,7 @@ Vue.component('user-directory-elastic', {
     });
   },
   created() {
-    this.setHost('https://elastic.androolloyd.com'); // TODO: set to proper env variable
+    this.setHost(document.contxt.search_url);
     this.setIndex('haystack');
     this.setType('modelresult');
     this.fetchBounties();
@@ -613,7 +613,7 @@ if (document.getElementById('gc-users-directory')) {
       });
     },
     created() {
-      this.setHost(document.contxt.search_url ? document.contxt.search_url : 'https://elastic.gitcoin.co'); // TODO: set to proper env variable
+      this.setHost(document.contxt.search_url);
       this.setIndex('haystack');
       this.setType('modelresult');
       // this.extractURLFilters();
