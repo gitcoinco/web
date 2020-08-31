@@ -1,0 +1,22 @@
+{
+  "symbol": "FM",
+  "address": "0x73e4A6B80F8De0aA3f95331c5a93e7f8431B6d95",
+  "overview":{
+        "en": "FM is a basic setting for building a commercial blockchain. Both companies and individuals can use FM to realize payment, which is easy to operate. FM is a transaction medium between merchants, merchants and individuals, and individuals. FM as a digital currency will fully become a circulation demand and emerge..",
+        "zh": "FM是构建商业区块链基础设置，无论是企业还是个人都可以使用FM实现支付，操作方便。FM为商家与商家、商家与个体、个体之间交易媒介，FM作为一种数字货币就会充分成为流通需求而出现。"
+  },
+  "email": "support@famacoins.com",
+  "website": "https://famacoins.com/",
+  "whitepaper": "https://famacoins.com/Whitepaper-zh.html",
+  "state": "NORMAL",
+  "published_on": "2020-08-05",
+  "initial_price":{
+        "USD":"2.00 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/FamaCoin2020",
+    "telegram": "https://t.me/famacoin",
+    "github": "https://github.com/famacoin20",
+    "facebook": "https://www.facebook.com/FamaCoin2020"
+  }
+}
