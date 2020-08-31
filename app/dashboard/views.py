@@ -111,7 +111,7 @@ from .models import (
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile,
     ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
-    TribeMember, UserAction, UserVerificationModel,
+    TribeMember, UserAction, UserDirectory, UserVerificationModel
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -869,6 +869,28 @@ def users_directory(request):
 
     return TemplateResponse(request, 'dashboard/users.html', params)
 
+@staff_member_required
+def users_directory_elastic(request):
+    """Handle displaying users directory page."""
+    from retail.utils import programming_languages, programming_languages_full
+
+    keywords = programming_languages + programming_languages_full
+
+    params = {
+        'is_staff': request.user.is_staff,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')) ,
+        'active': 'users',
+        'title': 'Users',
+        'meta_title': "",
+        'meta_description': "",
+        'keywords': keywords
+    }
+
+    if request.path == '/tribes/explore':
+        params['explore'] = 'explore_tribes'
+
+    return TemplateResponse(request, 'dashboard/users-elastic.html', params)
+
 
 def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = ""):
     if not settings.DEBUG:
@@ -959,6 +981,34 @@ def set_project_notes(request):
 
     return JsonResponse({})
 
+
+@require_GET
+def users_autocomplete(request):
+    max_items = 5
+    q = request.GET.get('q')
+    if q:
+        from haystack.query import SQ, SearchQuerySet
+        sqs = SearchQuerySet().autocomplete((SQ(first_name_auto=q) | SQ(last_name_auto=q) | SQ(handle_auto=q)))
+        results = [str(result.object) for result in sqs[:max_items]]
+    else:
+        results = []
+
+    return JsonResponse({
+        'results': results
+    })
+
+
+@require_GET
+def output_users_to_csv(request):
+
+    if request.user.is_authenticated and not request.user.is_staff:
+        return Http404()
+
+    profile_ids = request.GET.getlist('profile_ids[]')
+
+    user_query = UserDirectory.objects.filter(profile_id__in=profile_ids)
+    from djqscsv import render_to_csv_response
+    return render_to_csv_response(user_query)
 
 @require_GET
 def users_fetch(request):
@@ -1166,6 +1216,7 @@ def users_fetch(request):
         pass
 
     return JsonResponse(params, status=200, safe=False)
+
 
 @require_POST
 def bounty_mentor(request):

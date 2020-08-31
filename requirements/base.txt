@@ -7,6 +7,7 @@ django-celery-beat==1.1.1
 django==2.2.4
 django-cors-headers==2.4.0
 django-filter==2.0.0
+django-haystack
 django-ratelimit==1.1.0
 djangorestframework==3.9.1
 gitterpy
@@ -26,6 +27,7 @@ python-twitter==3.2
 sendgrid==5.6.0
 slackclient==2.0.0
 eth-tester
+elasticsearch>=2.0.0,<3.0.0
 websockets
 web3==4.5.0
 eth-abi==1.1.1
@@ -93,7 +95,7 @@ redis==3.3.11
 pandas
 wiki
 django-bulk-update
-elasticsearch
 pdfrw
 django-admin-sortable2==0.7.6
 twilio
+django-queryset-csv
