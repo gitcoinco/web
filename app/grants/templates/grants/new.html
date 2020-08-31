@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input_title">{% trans "Project Title" %}</label>
+                  <label class="font-body" for="input_title">{% trans "Project Title *" %}</label>
                   <input class="form__input form__input-lg " maxlength="150" type="text" id="input_title" name="input_title" placeholder="The Human Fund" required />
                 </div>
 
@@ -87,7 +87,7 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input-url">{% trans "Project Website" %}</label>
+                  <label class="font-body" for="input-url">{% trans "Project Website *" %}</label>
                   <input type="url" class="form__input form__input-lg " id="input-url" name="reference_url" placeholder="https://human.fund/" required/>
                 </div>
 
@@ -152,7 +152,7 @@
                 </div>
 
                 <div class="form__group-horizontal pb-3">
-                  <label class="font-body" for="input-admin_address">{% trans "Funding Recipient Wallet Address" %}</label>
+                  <label class="font-body" for="input-admin_address">{% trans "Funding Recipient Wallet Address *" %}</label>
                   <input type="text" class="form__input form__input-lg " id="input-admin_address" value="" name="admin_address" required placeholder="0x00... or domain.eth"/>
                   <label class="font-body" for="input-admin_address">{% trans "This is where funds from contributors to this grant will be sent." %}</label>
                   <label class="font-body" for="input-admin_address"><i class="fas fa-exclamation-circle"></i> - {% trans "IMPORTANT NOTE - Contributions to this grant will be sent directly via the Ethereum blockchain to *this address*.  Gitcoin does *not* escrow any funds. Gitcoin does *not* have the ability to reverse any transactions.  As a preventative measure, please confirm that someone working on the project has access to funds that are sent to this address!" %}</label>
