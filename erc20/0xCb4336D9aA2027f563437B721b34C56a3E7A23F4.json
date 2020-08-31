@@ -1,0 +1,19 @@
+{
+  "symbol": "BT",
+  "address": "0xCb4336D9aA2027f563437B721b34C56a3E7A23F4",
+  "overview":{
+        "en": "BTswap is a decentralized trade and liquidity mining exchange based on AMA. It is an automatic token exchange protocol implemented through Ethereum，and designed around ease of use, gas usage effificiency, censorship resistance and there is no threshold for listing. BTswap added the concept of dual mining of trading and liquidity on the basis of the existing DEX functions. For ordinary transaction users, compared with Uniswap platform, it not only saves about 20% of the transaction fee, but traders also can mine 60% of the platform token for free. For liquidity providers, while earning transaction fees, they can also mine 30% of platform tokens.",
+        "zh": "BTswap是一个基于AMM的去中心化交易所，通过以太坊高度完全去中心化分发其平台币，围绕易用性、gas使用效率、抗审查性等设计，并且没有上币门槛。BTswap在现有DEX的功能基础之上，增加了交易和流动性双挖矿的理念。对于普通交易用户来说，相比Uniswap平台，不仅节约了20%左右的手续费，同时可以免费挖60%的平台币。对于流动性做市商来说，在赚取手续费的同时，也可以免费挖30%的平台币。"
+  },
+  "email": "business@btswap.com",
+  "website": "https://btswap.com/",
+  "whitepaper": "https://btswap.com/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-08-01",
+  "links": {
+    "twitter": "https://twitter.com/BtSwap",
+    "telegram": "https://t.me/BTswapdex",
+    "github": "https://github.com/btswap",
+    "facebook": "https://www.facebook.com/BtSwap-102009841619463/"
+  }
+}
