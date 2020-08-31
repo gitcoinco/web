@@ -1,0 +1,18 @@
+{
+    "symbol": "OFC",
+    "address": "0x51d35698E3c9c29F4f59D29B2a332BA6801BABfF",
+    "overview": {
+        "zh": "OFC(Organic Farm Chain) 将在底层技术、生态建设、产业、落地等各个层面提供立体化服务,推动区块链技术落地,帮助更多农业项目成功上链,实现全球农业的新变革和产业升级,Organic Farm Chain 生态里,农产品供应链将各参与主体彼此间产生的商流、信息流、物流和资金流进行整合,建立从农产品生产商、分销商、零售商到消费者的全链式网络。"
+    },
+    "email": "hailang9103@163.com",
+    "website": "http://www.chinashike.net/",
+    "whitepaper": "http://www.chinashike.net/pdf/ofc.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-08-25",
+    "initial_price":{
+        "USD":"0.05 USD"
+      },
+    "links": {
+      "medium": "https://www.sohu.com/a/414039315_120149088"
+      }
+}
