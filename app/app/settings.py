@@ -146,6 +146,7 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -822,6 +823,16 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+        'URL': f"{ELASTIC_SEARCH_URL}:9200",
+        'INDEX_NAME': 'haystack',
+    },
+}
+# Update Search index in realtime (using models.db.signals)
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')
