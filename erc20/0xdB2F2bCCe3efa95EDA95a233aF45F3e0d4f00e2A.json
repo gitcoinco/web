@@ -1,0 +1,28 @@
+{
+  "symbol": "AGS",
+  "address": "0xdB2F2bCCe3efa95EDA95a233aF45F3e0d4f00e2A",
+  "overview":{
+        "en": "Aegis As a DeFi 2.0 protocol, Aegis features more diversified lending services besides over-collateralized lending, such as micro-lending and Unsecured Borrowing. Aegis uses a proprietary AI-powered credit scoring algorithm to assess users’ creditworthiness based on the data provided, and assign an “Aegis Score” to each user, which is similar to traditional risk profile assessments. The Aegis Score determines the maximum credit that a user is allowed to draw down from the liquidity pool. making DeFi services accessible for basically all users. Besides, Aegis also empowers the tokenization of assets and derivatives such as CDS etc.",
+        "zh": "Aegis DeFi是DeFi2.0协议，致力于提供除目前DeFi市场上普遍的抵押借贷产品之外，Aegis还提供基于用户信用情况的小额抵押贷款甚至是无抵押贷款。Aegis会根据用户提供的信用数据，使用Aegis独创的结合了区块链及AI技术的评分算法对每个用户的信用进行评分。Aegis评分可以决定每个用户可以从流动性资金池中获得的信贷额度。Aegis真正做到了将DeFi服务带给所有用户。除借贷业务，Aegis还支持资产及衍生品，例如CDS产品的发行等。"
+  },
+  "email": "official@aegis.finance",
+  "website": "https://aegis.finance/",
+  "whitepaper": "https://aegis.finance/whitepage/AegisNetworkLitepaperEN.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-07-27",
+  "initial_price":{
+        "ETH":"0.0013 ETH",
+        "USD":"0.5 USD",
+        "BTC":"0.000043 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/aegisdefi-blog",
+    "twitter": "https://twitter.com/AegisDeFi",
+    "telegram": "https://t.me/AegisEN",
+    "github": "https://github.com/AegisDeFi",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": "https://medium.com/aegisdefi-blog"
+  }
+}
