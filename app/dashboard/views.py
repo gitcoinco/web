@@ -869,6 +869,17 @@ def users_directory(request):
 
     return TemplateResponse(request, 'dashboard/users.html', params)
 
+@csrf_exempt
+def user_lookup(request):
+
+    if not request.user.is_authenticated:
+        return HttpResponse(status=404)
+
+    path = request.get_full_path().replace('/user_lookup', '')
+    remote_url = f'http://{settings.ELASTIC_SEARCH_URL}:9200{path}'
+    from proxy.views import proxy_view
+    return proxy_view(request, remote_url)
+
 @staff_member_required
 def users_directory_elastic(request):
     """Handle displaying users directory page."""
