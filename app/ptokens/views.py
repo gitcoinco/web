@@ -165,6 +165,22 @@ def tokens(request, token_state=None):
         )
 
 
+def verification(request):
+    """Validate ptoken info"""
+
+    name = request.GET.get('name', '')
+    symbol = request.GET.get('symbol', '')
+    ptokens = PersonalToken.objects.all()
+    results = {}
+
+    if name:
+        results['name'] = ptokens.filter(token_name__iexact=name).exists()
+
+    if symbol:
+        results['symbol'] = ptokens.filter(token_symbol__iexact=symbol).exists()
+
+    return JsonResponse(results)
+
 @csrf_exempt
 def ptoken(request, token_id='me'):
     """Access and change the state for fiven ptoken"""

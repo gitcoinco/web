@@ -259,7 +259,7 @@ Vue.mixin({
         let supply = parseFloat(this.newPToken.supply);
         let stopFlow;
 
-        if (this.newPToken.name === '') {
+        if (this.newPToken.name === '' || await this.nameExists() ) {
           this.$set(this.pToken, 'is_invalid_name', true);
           !stopFlow && (stopFlow = true);
           $('#createPTokenName').addClass('is-invalid');
@@ -268,7 +268,7 @@ Vue.mixin({
           this.$set(this.pToken, 'is_invalid_name', false);
         }
 
-        if (this.newPToken.symbol === '') {
+        if (this.newPToken.symbol === '' || await this.symbolExists()) {
           this.$set(this.pToken, 'is_invalid_symbol', true);
           !stopFlow && (stopFlow = true);
           $('#createPTokenSymbol').addClass('is-invalid');
@@ -341,6 +341,18 @@ Vue.mixin({
           onError(err);
         }
       }
+    },
+    async nameExists() {
+      const name_exists = await ptoken_name_exists(this.newPToken.name);
+
+      this.$set(this.newPToken, 'name_exists', name_exists);
+      return name_exists;
+    },
+    async symbolExists() {
+      const symbol_exists = await ptoken_symbol_exists(this.newPToken.symbol);
+
+      this.$set(this.newPToken, 'symbol_exists', symbol_exists);
+      return symbol_exists;
     },
     async checkTokenStatus(successMsg, errorMsg) {
       const res = await update_ptokens(); // update all ptokens in DB
