@@ -19,8 +19,26 @@ if (document.getElementById('gc-onboard')) {
     },
     data() {
       return {
+        step: 1,
         skills: ['css','php'],
         skillsSelected: [],
+        interests: [
+          'Front End Development',
+          'Back End Development',
+          'Design',
+          'Decentralized Finance',
+          'Non-Fungibles & Gaming',
+          'Infrastructure & Research',
+          `DAO's & Governance`,
+          'Marketplaces',
+          'Token Economics',
+          'Community Building',
+          'Gamification',
+          'Web3',
+          'Freelance Jobs',
+          'Healthcare'
+        ],
+        interestsSelected: [],
       };
     },
     computed: {

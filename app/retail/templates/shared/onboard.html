@@ -17,19 +17,61 @@
 
 {% endcomment %}
 {% load static %}
-
+<style>
+  #onboard-modal {
+    background-image: url(/static/v2/images/tribes/promo-decoration.svg);
+    background-color: rgb(62 0 255 / 94%);
+    background-size: cover;
+  }
+</style>
 <div id="gc-onboard">
   <modal id="onboard-modal" ref="onboard-modal" size="modal-lg">
-    <div slot="header">Setup your profile</div>
-    <div slot="body">
-      Tell us a little more about you:
-      <v-select multiple :options="skills" v-model="skillsSelected">
-        <template v-slot:option="option">
-          <span class="font-weight-semibold">[[ option.label ]]</span>
+    <template v-if="step === 1">
 
-        </template>
-      </v-select>
+      <div slot="header">Setup your profile</div>
+      <div slot="body">
+        Tell us a little more about you:
+        <div class="form-group">
+          <label for="">Skills</label>
+          <v-select multiple :options="skills" v-model="skillsSelected">
+            <template v-slot:option="option">
+              <span class="font-weight-semibold">[[ option.label ]]</span>
 
-    </div>
+            </template>
+          </v-select>
+        </div>
+        <div class="form-group">
+          <label for="">Bio</label>
+          <textarea class="form-control" name="" id="" cols="10" rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="">What are you interested in?</label>
+          <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap mt-3">
+            <label class="btn btn-radio d-flex align-items-center mr-2 mb-2 px-3 py-1" :class="{'active': interestsSelected.includes(interest)}"  v-for="interest in interests">
+              <input type="checkbox" name="interests" id="" :value="interest" v-model="interestsSelected"> [[interest]]
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="">Are you currently looking for work?</label>
+          <select class="form-control" name="" id="" cols="10" rows="5"></select>
+        </div>
+        <button class="btn" @click="step++">Next</button>
+      </div>
+    </template>
+    <template v-if="step === 2">
+      <div slot="header">Setup your </div>
+      <div slot="body">
+
+        <p>Our tools are based on the principes of earn (💰), learn (📖), and meet (💬).
+          Select the ones you are interested in. You can change it later in your settings.</p>
+
+        <button class="btn" @click="step--">Back</button>
+        <button class="btn" @click="step++">Next</button>
+      </div>
+
+    </template>
   </modal>
 </div>
