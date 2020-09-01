@@ -394,7 +394,7 @@
                   </div>
                 </div>
                 <div>
-                  <small v-show="form.amountusd" class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text">[[form.hours]] hrs at $[[form.amountusd]]/hr leads to <b> [[ successRate]]% success rate</b>. Read our <a href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/" target="_blank" class="underline" rel="noopener noreferrer">pricing guide</a>.</small>
+                  <small v-show="form.amountusd" class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="usd_amount_text">[[form.hours]] hrs at  $[[form.amountusd / form.hours | decimals(2)]]/hr leads to <b> [[ successRate]]% success rate</b>. Read our <a href="https://gitcoin.co/blog/tutorial-how-to-price-work-on-gitcoin/" target="_blank" class="underline" rel="noopener noreferrer">pricing guide</a>.</small>
                   <small  v-show="chainId === '666'" class="form__input-help--dynamic text-highlight-gc-blue bg-lightpurple p-1" id="fiat_text">
                     USD payment is powered by <span class="font-weight-bold">PayPal</span>. Please note that there might be a small fee for payment to contributors in outside of the US.
                   </small>

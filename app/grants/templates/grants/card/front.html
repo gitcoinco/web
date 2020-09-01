@@ -97,9 +97,9 @@
             </p>
           {% else %}
             <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-              {{ grant.monthly_amount_subscribed|floatformat:0|intcomma }} DAI
+              {{ grant.amount_received|floatformat:0|intcomma }} DAI
             </h2>
-            <p class="amount mb-2 font-caption font-weight-semibold">MONTHLY RECURRING</p>
+            <p class="amount mb-2 font-caption font-weight-semibold">All Time Funding</p>
           {% endif %}
         </div>
       </div>

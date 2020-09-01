@@ -32,6 +32,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.serializers.json import DjangoJSONEncoder
@@ -51,7 +52,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-import dateutil
+import dateutil.parser
 import magic
 import pytz
 from app.services import RedisService, TwilioService
@@ -120,9 +121,9 @@ from .notifications import (
 )
 from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_event,
-    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address, re_market_bounty,
-    record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
+    get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
+    re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -1181,42 +1182,46 @@ def bounty_mentor(request):
 
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
-    can_manage = request.user.profile.handle.lower() == body.bounty_org.lower()
-
-    if not can_manage:
-        return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
-
-    bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{request.user.profile.handle.lower()}-mentors')[0]
-    message = f'Mentors Updated Successfully'
-    if body['set_default_mentors']:
-        current_mentors = Profile.objects.filter(user__groups=bounty_org_default_mentors)
-        mentors_to_remove = list(set([current.id for current in current_mentors]) - set(body['new_default_mentors']))
-
-        mentors_to_remove = Profile.objects.filter(id__in=mentors_to_remove)
-        for mentor_to_r in mentors_to_remove:
-            mentor_to_r.user.groups.remove(bounty_org_default_mentors)
-
-        mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
-        for mentor in mentors_to_add:
-            mentor.user.groups.add(bounty_org_default_mentors)
-
-    if body['has_overrides']:
-        for key, val in body['overrides']:
-            bounty = Bounty.objects.get(id=key)
-            bounty_group = Group.objects.get_or_create(name=f'bounty-override-{key}-mentors')[0]
-            mentor_pks = [int(mentorpk) for mentorpk in val.mentors]
-            mentors = User.objects.filter(id__in=mentor_pks)
-            for mentor in mentors:
-                mentor.groups.add(bounty_group)
-
     if body['hackathon_id']:
-        try:
-            hackathon_event = HackathonEvent.objects.get(id=int(body['hackathon_id']))
-            from chat.tasks import hackathon_chat_sync
-            hackathon_chat_sync.delay(hackathon_id=hackathon_event.id)
-        except Exception as e:
-            message = 'Hackathon does not exist'
-            logger.info(str(e))
+
+        hackathon_event = HackathonEvent.objects.get(id=int(body['hackathon_id']))
+
+        if body['bounty_org']:
+            sponsor = hackathon_event.sponsor_profiles.get(handle__iexact=body['bounty_org'])
+        else:
+            sponsor = None
+
+        if not hackathon_event:
+            return JsonResponse({'message': 'Event not Found'}, status=404)
+
+        profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+        print(sponsor)
+        is_sponsor_member = profile.organizations_fk.filter(pk=sponsor.pk)
+
+        if not is_sponsor_member:
+            return JsonResponse({'message': 'UNAUTHORIZED'}, status=401)
+
+        bounty_org_default_mentors = Group.objects.get_or_create(name=f'sponsor-org-{sponsor.handle.lower()}-mentors')[0]
+        message = f'Mentors Updated Successfully'
+        if body['set_default_mentors']:
+            current_mentors = Profile.objects.filter(user__groups=bounty_org_default_mentors)
+            mentors_to_remove = list(set([current.id for current in current_mentors]) - set(body['new_default_mentors']))
+
+            mentors_to_remove = Profile.objects.filter(id__in=mentors_to_remove)
+            for mentor_to_r in mentors_to_remove:
+                mentor_to_r.user.groups.remove(bounty_org_default_mentors)
+
+            mentors_to_add = Profile.objects.filter(id__in=body['new_default_mentors'])
+            for mentor in mentors_to_add:
+                mentor.user.groups.add(bounty_org_default_mentors)
+
+            try:
+                from chat.tasks import hackathon_chat_sync
+                hackathon_chat_sync.delay(hackathon_id=hackathon_event.id)
+            except Exception as e:
+                message = 'Hackathon does not exist'
+                logger.info(str(e))
 
     return JsonResponse({'message': message}, status=200, safe=False)
 
@@ -3775,7 +3780,6 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         static('v2/images/twitter_cards/tw_cards-02.png'))
     network = get_default_network()
     hackathon_not_started = timezone.now() < hackathon_event.start_date and not request.user.is_staff
-    print(sponsor_profile)
     org = {
         'display_name': sponsor_profile.name,
         'avatar_url': sponsor_profile.avatar_url,
@@ -3790,6 +3794,8 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
         active_tab = 0
     elif panel == "stats":
         active_tab = 1
+    elif panel == "mentors":
+        active_tab = 2
 
     filter = ''
     if request.GET.get('filter'):
@@ -3799,7 +3805,17 @@ def dashboard_sponsors(request, hackathon='', panel='prizes'):
 
     num_participants = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='express_interest', bounty__in=query_prizes).count()
     num_submissions = BountyEvent.objects.filter(bounty__event_id=hackathon_event.id, event_type='submit_work', bounty__in=query_prizes).count()
+
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    default_mentors = []
+    if profile:
+        default_mentors = Profile.objects.filter(
+            user__groups__name=f'sponsor-org-{profile.handle}-mentors'
+        )
+
     params = {
+        'default_mentors': default_mentors,
         'active': 'dashboard',
         'prize_count': query_prizes.count(),
         'type': 'hackathon',
@@ -3948,16 +3964,6 @@ def hackathon(request, hackathon='', panel='prizes'):
     params['active'] = 'users'
     from chat.tasks import get_chat_url
     params['chat_override_url'] = f"{get_chat_url()}/hackathons/channels/{hackathon_event.chat_channel_id}"
-
-    can_manage = request.user.is_authenticated and any(
-        [request.user.profile.handle.lower() == bounty.bounty_owner_github_username.lower() for bounty in Bounty.objects.filter(event=hackathon_event)]
-    )
-
-    if can_manage:
-        params['can_manage'] = can_manage
-        params['default_mentors'] = Profile.objects.filter(
-            user__groups__name=f'sponsor-org-{request.user.profile.handle}-mentors'
-        )
 
     return TemplateResponse(request, 'dashboard/index-vue.html', params)
 
@@ -4278,6 +4284,106 @@ def hackathon_save_project(request):
         })
 
 
+@login_required
+def get_project(request, project_id):
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        raise Http404("The project doesnt exists.")
+
+    hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    params = {
+        'project': {
+            'name': project.name,
+            'id': project.id,
+            'summary': project.summary,
+            'status': project.status,
+            'winner': project.winner,
+            'looking_members': project.looking_members,
+            'work_url': project.work_url,
+            'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
+            'logo_url': project.logo.url if project.logo else staticfiles_storage.url(
+                f'v2/images/projects/logos/${project.id}.png'),
+            'prize': {
+                'id': project.bounty.id,
+                'title': project.bounty.title,
+                'avatar': project.bounty.avatar_url,
+                'org': project.bounty.org_display_name,
+                'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
+                'url': project.bounty.url
+            },
+            'team_members': [{
+                'url': member_profile.url,
+                'handle': member_profile.handle,
+                'avatar': member_profile.avatar_url
+            } for member_profile in project.profiles.all()]
+        },
+        'hackathon': hackathon_obj[0],
+    }
+
+    return JsonResponse(params)
+
+
+def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
+    profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        raise Http404("No Hackathon Project matches the given query.")
+
+    active = 0
+    if tab == 'activity':
+        active = 1
+
+    if not hackathon:
+        hackathon = project.hackathon
+
+    title = project.name
+    desc = project.summary
+    avatar_url = project.logo.url if project.logo else project.bounty.avatar_url
+    hackathon_obj = HackathonEventSerializer(project.hackathon).data,
+    what = f'project:{project_id}'
+    params = {
+        'title': title,
+        'card_desc': desc,
+        'avatar_url': avatar_url,
+        'target': f'/activity?what={what}',
+        'what': what,
+        'tab': active,
+        'currentProfile': TribesSerializer(profile, context={'request': request}).data,
+        'is_member': project.profiles.filter(pk=profile.id).exists() if profile else False,
+        'project_obj': {
+            'name': project.name,
+            'id': project.id,
+            'summary': project.summary,
+            'url': reverse('hackathon_project_page', args=[project.hackathon.slug, project_id, slugify(project.name)]),
+            'status': project.status,
+            'winner': project.winner,
+            'looking_members': project.looking_members,
+            'work_url': project.work_url,
+            'logo_url': project.logo.url if project.logo else '',
+            'prize': {
+                'id': project.bounty.id,
+                'title': project.bounty.title,
+                'avatar': project.bounty.avatar_url,
+                'org': project.bounty.org_display_name,
+                'org_url': project.bounty.org_profile.url if project.bounty.org_profile else '',
+                'url': project.bounty.url
+            },
+            'team_members': [{
+                'url': member_profile.url,
+                'handle': member_profile.handle,
+                'avatar': member_profile.avatar_url
+            } for member_profile in project.profiles.all()]
+        },
+        'hackathon_obj': hackathon_obj[0],
+        'hackathon': hackathon,
+        'profile': profile,
+    }
+    return TemplateResponse(request, 'dashboard/hackathon/project_page.html', params)
+
+
 @csrf_exempt
 @require_POST
 def hackathon_registration(request):
@@ -4293,6 +4399,10 @@ def hackathon_registration(request):
             status=401)
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+
+        if HackathonRegistration.objects.filter(hackathon=hackathon_event, registrant=profile).exists():
+            return JsonResponse({'error': _('Already registered.')}, status=401)
+
         HackathonRegistration.objects.create(
             name=hackathon,
             hackathon=hackathon_event,
@@ -4391,12 +4501,10 @@ def hackathon_registration(request):
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
 
-    current_hackathon_events = HackathonEvent.objects.current().filter(visible=True).order_by('-start_date')
-    upcoming_hackathon_events = HackathonEvent.objects.upcoming().filter(visible=True).order_by('-start_date')
-    finished_hackathon_events = HackathonEvent.objects.finished().filter(visible=True).order_by('-start_date')
-    all_hackathon_events = HackathonEvent.objects.all().filter(visible=True)
-
-    network = get_default_network()
+    if settings.DEBUG:
+        from perftools.management.commands import create_page_cache
+        
+        create_page_cache.create_hackathon_list_page_cache()
 
     tabs = [
         ('current', 'happening now'),
@@ -4404,39 +4512,15 @@ def get_hackathons(request):
         ('finished', 'completed'),
     ]
 
-    hackathon_events = []
-
-    if current_hackathon_events.exists():
-        for event in current_hackathon_events:
-            event_dict = get_hackathon_event('current', event, network)
-            hackathon_events.append(event_dict)
-
-    if upcoming_hackathon_events.exists():
-        for event in upcoming_hackathon_events:
-            event_dict = get_hackathon_event('upcoming', event, network)
-            hackathon_events.append(event_dict)
-
-    if finished_hackathon_events.exists():
-        for event in finished_hackathon_events:
-            event_dict = get_hackathon_event('finished', event, network)
-            hackathon_events.append(event_dict)
-
-
     params = {
         'active': 'hackathons',
         'title': 'Hackathons',
         'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-02.png')),
         'card_desc': "Gitcoin runs Virtual Hackathons. Learn, earn, and connect with the best hackers in the space -- only on Gitcoin.",
         'tabs': tabs,
-        'events': hackathon_events,
+        'events': get_hackathon_events(),
+        'default_tab': get_hackathons_page_default_tabs(),
     }
-
-    if current_hackathon_events.exists():
-        params['default_tab'] = 'current'
-    elif upcoming_hackathon_events.exists():
-        params['default_tab'] = 'upcoming'
-    else:
-        params['default_tab'] = 'finished'
 
     return TemplateResponse(request, 'dashboard/hackathon/hackathons.html', params)
 

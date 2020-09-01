@@ -1,5 +1,5 @@
 // document.result.pk
-const submitProject = (logo, data) => {
+const submitProject = (logo, data, callback) => {
   let formData = new FormData();
 
   formData.append('logo', logo);
@@ -19,18 +19,29 @@ const submitProject = (logo, data) => {
 
   $.ajax(sendConfig).done(function(response) {
     if (!response.success) {
+      if (callback) {
+        callback(response);
+      }
       return _alert(response.msg, 'error');
     }
     delete localStorage['pendingProject'];
     $('#modalProject').bootstrapModal('hide');
+    if (callback) {
+      callback(response);
+    }
     return _alert({message: response.msg}, 'info');
 
   }).fail(function(data) {
     _alert(data.responseJSON['error'], 'error');
+
+    if (callback) {
+      callback(data);
+    }
+    return true;
   });
 };
 
-const projectModal = (bountyId, projectId) => {
+const projectModal = (bountyId, projectId, callback) => {
   $('#modalProject').bootstrapModal('hide');
   const modalUrl = projectId ? `/modal/new_project/${bountyId}/${projectId}/` : `/modal/new_project/${bountyId}/`;
 
@@ -49,10 +60,11 @@ const projectModal = (bountyId, projectId) => {
       $('.looking-members').toggle();
     });
     $('#projectForm').on('submit', function(e) {
+      e.preventDefault();
       let logo = $(this)[0]['logo'].files[0];
       let data = $(this).serializeArray();
 
-      submitProject(logo, data);
+      submitProject(logo, data, callback);
     });
   });
 

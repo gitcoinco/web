@@ -120,7 +120,7 @@ def get_stats(round_type):
             continue
         keys = []
         if ele[3] == 'grants':
-            top_grants = Grant.objects.filter(active=True, grant_type=round_type).order_by(order_by)[0:50]
+            top_grants = Grant.objects.filter(active=True, grant_type__name=round_type).order_by(order_by)[0:50]
             keys = [grant.title[0:43] + key for grant in top_grants]
         if ele[3] == 'profile':
             startswith = f"{ele[0]}{round_type}_"
@@ -389,7 +389,7 @@ def grants_by_grant_type(request, grant_type):
             grant.clr_round_num = clr_round.round_num
         else:
             grant.is_clr_active = False
-            grant.clr_round_num = 'LAST' if grant.clr_matching > 0 else None
+            grant.clr_round_num = 'LAST'
 
 
     # populate active round info
@@ -649,7 +649,7 @@ def grant_details(request, grant_id, grant_slug):
         clr_round_num = clr_round.round_num
     else:
         is_clr_active = False
-        clr_round_num = 'LAST' if grant.clr_matching > 0 else None
+        clr_round_num = 'LAST'
 
     is_clr_active = True if clr_round else False
     title = grant.title + " | Grants"
@@ -770,6 +770,7 @@ def grant_new(request):
                 'description': request.POST.get('description', ''),
                 'description_rich': request.POST.get('description_rich', ''),
                 'reference_url': request.POST.get('reference_url', ''),
+                'github_project_url': request.POST.get('github_project_url', ''),
                 'admin_address': request.POST.get('admin_address', ''),
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
                 'token_address': request.POST.get('token_address', ''),
