@@ -166,6 +166,7 @@ class Grant(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
     description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+    github_project_url = models.URLField(blank=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',

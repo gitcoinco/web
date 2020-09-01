@@ -770,6 +770,7 @@ def grant_new(request):
                 'description': request.POST.get('description', ''),
                 'description_rich': request.POST.get('description_rich', ''),
                 'reference_url': request.POST.get('reference_url', ''),
+                'github_project_url': request.POST.get('github_project_url', ''),
                 'admin_address': request.POST.get('admin_address', ''),
                 'contract_owner_address': request.POST.get('contract_owner_address', ''),
                 'token_address': request.POST.get('token_address', ''),
