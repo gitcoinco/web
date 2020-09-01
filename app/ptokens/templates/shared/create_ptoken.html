@@ -17,15 +17,17 @@
           <input
             style="width: 75%"
             type="text"
-            :class="`form-control d-inline-block ${newPToken.is_valid_name && 'is-invalid' || ''}`"
+            :class="`form-control d-inline-block ${newPToken.is_valid_name || newPToken.name_exists && 'is-invalid' || ''}`"
             id="createPTokenName"
             aria-describedby="tokenName"
             placeholder="Your Token"
             required
             v-model="newPToken.name"
+            @keyup="nameExists"
           />
           <div class="invalid-feedback">
-            Please provide a name.
+            <span v-if="newPToken.is_valid_name">Please provide a name.</span>
+            <span v-if="newPToken.name_exists">This name is already in use.</span>
           </div>
         </div>
         <div class="form-group align-items-center mb-4">
@@ -33,15 +35,17 @@
           <input
             type="text"
             style="width: 75%"
-            :class="`form-control d-inline-block ${newPToken.is_valid_symbol && 'is-invalid' || ''}`"
+            :class="`form-control d-inline-block ${newPToken.is_valid_symbol || newPToken.symbol_exists && 'is-invalid' || ''}`"
             id="createPTokenSymbol"
             aria-describedby="tokenSymbol"
             required
             placeholder="TOKN"
             v-model="newPToken.symbol"
+            @keyup="symbolExists"
           />
           <div class="invalid-feedback">
-            Please provide the token symbol
+            <span v-if="newPToken.is_valid_symbol">Please provide the token symbol.</span>
+            <span v-if="newPToken.symbol_exists">This symbol is already in use.</span>
           </div>
         </div>
         <div class="`form-group align-items-center mb-4">

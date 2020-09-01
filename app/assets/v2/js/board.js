@@ -259,7 +259,7 @@ Vue.mixin({
         let supply = parseFloat(this.newPToken.supply);
         let stopFlow;
 
-        if (this.newPToken.name === '') {
+        if (this.newPToken.name === '' || await this.nameExists() ) {
           this.$set(this.pToken, 'is_invalid_name', true);
           !stopFlow && (stopFlow = true);
           $('#createPTokenName').addClass('is-invalid');
@@ -268,7 +268,7 @@ Vue.mixin({
           this.$set(this.pToken, 'is_invalid_name', false);
         }
 
-        if (this.newPToken.symbol === '') {
+        if (this.newPToken.symbol === '' || await this.symbolExists()) {
           this.$set(this.pToken, 'is_invalid_symbol', true);
           !stopFlow && (stopFlow = true);
           $('#createPTokenSymbol').addClass('is-invalid');
@@ -342,6 +342,18 @@ Vue.mixin({
         }
       }
     },
+    async nameExists() {
+      const name_exists = await ptoken_name_exists(this.newPToken.name);
+
+      this.$set(this.newPToken, 'name_exists', name_exists);
+      return name_exists;
+    },
+    async symbolExists() {
+      const symbol_exists = await ptoken_symbol_exists(this.newPToken.symbol);
+
+      this.$set(this.newPToken, 'symbol_exists', symbol_exists);
+      return symbol_exists;
+    },
     async checkTokenStatus(successMsg, errorMsg) {
       const res = await update_ptokens(); // update all ptokens in DB
 
@@ -355,6 +367,9 @@ Vue.mixin({
         });
 
         _alert(successMsg, 'success');
+
+        // For the redemption case, we must hide the "tx pending" modal
+        $('#redemptionCompleteReceiptModal').bootstrapModal('hide');
       } else {
         _alert(errorMsg, 'error');
       }
@@ -561,6 +576,8 @@ Vue.mixin({
       const vm = this;
       const updatePtokenStatusinDatabase = this.updatePtokenStatusinDatabase;
       const handleError = this.handleError;
+      const redemptionReceiptModal = $('#redemptionCompleteReceiptModal');
+      const redemptionEtherscanUrl = $('#redeem-tx');
 
       try {
         const network = vm.checkNetwork();
@@ -575,6 +592,18 @@ Vue.mixin({
 
         pToken.methods.redeem(amount).send({ from: user })
           .on('transactionHash', async function(transactionHash) {
+            indicateMetamaskPopup(true);
+
+            // Show success modal and set Etherscan link
+            redemptionReceiptModal.bootstrapModal('show');
+
+            const etherscanUrl = network === 'mainnet'
+              ? `https://etherscan.io/tx/${transactionHash}`
+              : `https://${network}.etherscan.io/tx/${transactionHash}`;
+
+            redemptionEtherscanUrl.prop('href', etherscanUrl);
+
+            // Save redemption info in database
             const redemption = complete_redemption(
               redemptionId,
               transactionHash,
@@ -588,7 +617,6 @@ Vue.mixin({
 
             $.when(redemption).then((response) => {
               vm.checkData('personal-tokens');
-              indicateMetamaskPopup(true);
             });
 
             const successMsg = 'Congratulations, your redemption was successfully completed!';

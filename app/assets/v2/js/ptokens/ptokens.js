@@ -113,3 +113,14 @@ function accept_redemption(redemptionId) {
   });
 }
 
+async function ptoken_name_exists(ptoken_name) {
+  let data = await fetchData(`/ptokens/verify?name=${ptoken_name}`, 'GET');
+
+  return data['name'];
+}
+
+async function ptoken_symbol_exists(ptoken_symbol) {
+  let data = await fetchData(`/ptokens/verify?symbol=${ptoken_symbol}`, 'GET');
+
+  return data['symbol'];
+}

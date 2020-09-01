@@ -92,6 +92,7 @@ urlpatterns = [
     path('ptokens/<str:token_state>/', ptokens.views.tokens, name='tokens'),
     path('ptokens/', ptokens.views.tokens, name='tokens'),
     path('ptokens/update', ptokens.views.process_ptokens, name='process_ptokens'),
+    path('ptokens/verify', ptokens.views.verification, name='ptoken_verification'),
 
     # kudos
     re_path(r'^kudos/?$', kudos.views.about, name='kudos_main'),
