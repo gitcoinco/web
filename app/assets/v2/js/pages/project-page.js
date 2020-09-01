@@ -2,6 +2,20 @@
 (function($) {
 
   $(function() {
+    Vue.mixin({
+      methods: {
+        getVideoId(videoURL) {
+          const metadata = getVideoMetadata(videoURL);
+
+          if (metadata) {
+            return metadata['id'];
+          }
+
+          return '';
+        }
+      }
+    });
+
     Vue = Vue.extend({
       delimiters: [ '[[', ']]' ]
     });

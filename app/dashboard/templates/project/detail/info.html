@@ -62,7 +62,7 @@
               <p>🏆 <strong>Winner</strong></p>
               <p class="font-body">This project is selected as the winner of the <strong>[[ project.prize.title ]]</strong> prize.</p>
             </div>
-            <div class="mt-5">
+            <div class="mt-3">
               <h3 class="font-title font-weight-semibold">Prize bounty</h3>
               <div class="d-flex mt-4">
                 <img width="50" height="50" :src="project.prize.avatar" alt="" class="mr-3">
@@ -72,7 +72,20 @@
                 </div>
               </div>
             </div>
-            <div class="mt-5 mb-5">
+
+            <div class="mt-4 mb-5 col-sm-12 col-md-9 p-0" v-if="project.demo.url">
+              <vue-plyr v-if="project.demo.provider != 'loom'">
+                <div :data-plyr-provider="project.demo.provider" :data-plyr-embed-id="getVideoId(project.demo.url)" v-if="project.demo.provider == 'youtube' || project.demo.provider == 'vimeo'"></div>
+                <video :src="project.demo.url" v-else-if="project.demo.provider == 'generic'"></video>
+              </vue-plyr>
+              <div style="position: relative; padding-bottom: 56.25%; height: 0;" v-else>
+                <iframe :src="`https://www.loom.com/embed/${getVideoId(project.demo.url)}`" frameborder="0"
+                        webkitallowfullscreen mozallowfullscreen allowfullscreen
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                </iframe>
+              </div>
+            </div>
+            <div class="mt-2 mb-5">
               <h3 class="font-title font-weight-semibold">Description</h3>
               <p class="font-body mt-3">[[project.summary]]</p>
             </div>
@@ -85,7 +98,7 @@
             </div>
           </template>
           <div>
-            {% csrf_token %}
+              {% csrf_token %}
             {% if user.is_authenticated %}
               {% include 'profiles/status_box.html' with suppress_tags=1 placeholder="Write on Project wall" what="project" whatid=project_obj.id  %}
             {% endif %}

@@ -71,6 +71,18 @@
                 <label  class="font-weight-semibold" for="work_url">Project Github Repository or Link to Pull Request</label>
                 <input type="url" class="form-control" name="work_url" id="work_url" value="{{project_selected.work_url}}" placeholder="https://github.com/gitcoinco/web" required>
               </div>
+              <div class="form-group mt-4">
+                <label class="font-weight-semibold" for="videodemo-url">Link to Video Demo</label>
+                <div class="d-flex">
+                  <select class="form-control col-3 mr-2" name="videodemo-provider" id="videodemo-provider">
+                    <option value="youtube" {% if project_selected.extra.video_provider == 'youtube' %}selected{% endif %}>Youtube</option>
+                    <option value="vimeo" {% if project_selected.extra.video_provider == 'vimeo' %}selected{% endif %}>Vimeo</option>
+                    <option value="loom" {% if project_selected.extra.video_provider == 'loom' %}selected{% endif %}>Loom</option>
+                    <option value="generic" {% if project_selected.extra.video_provider == 'generic' %}selected{% endif %}>HTML5 video</option>
+                  </select>
+                  <input type="url" class="form-control" name="videodemo-url" id="videodemo-url" value="{{project_selected.extra.video_url}}" placeholder="https://www.youtube.com/watch?v=DJartWzDn0E">
+                </div>
+              </div>
               <div class="from-group mb-3 mt-4">
                 <label  class="font-weight-semibold" for="project_profiles">Team Members (Optional) <small>Add Gitcoin Usernames</small></label>
                 <div class="form__select2 g-multiselect">
@@ -138,7 +150,6 @@
                 <label class="font-weight-semibold" for="work_url">Project Github Repository or Link to Pull Request</label>
                 <input type="url" class="form-control" name="work_url" id="work_url" placeholder="https://github.com/gitcoinco/web" required>
               </div>
-
               <div class="from-group mb-3 mt-4">
                 <label class="font-weight-semibold" for="project_profiles">Team members</label>
                 <div class="form__select2 g-multiselect">

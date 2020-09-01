@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+
+    <link rel="stylesheet" href="{% static "v2/css/lib/plyr.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
@@ -87,6 +89,8 @@
     {{hackathon_obj|json_script:"hackathon-object"}}
     {{project_obj|json_script:"project-object"}}
     {{currentProfile|json_script:"current-profile"}}
+    <script src="{% static "v2/js/lib/plyr.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/vue-plyr.js" %}"></script>
 
     <script src="{% static "v2/js/pages/project-page.js" %}"></script>
     <script src="{% static "v2/js/pages/join_tribe.js" %}"></script>

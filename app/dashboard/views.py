@@ -4155,6 +4155,8 @@ def hackathon_save_project(request):
     logo = request.FILES.get('logo')
     looking_members = request.POST.get('looking-members', '') == 'on'
     message = request.POST.get('looking-members-message', '')[:150]
+    video_provider = request.POST.get('videodemo-provider', '')
+    video_url = request.POST.get('videodemo-url', '')
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     error_response = invalid_file_response(logo, supported=['image/png', 'image/jpeg', 'image/jpg'])
 
@@ -4184,6 +4186,10 @@ def hackathon_save_project(request):
             'other_contact_method': '',
         }
     }
+
+    if video_url and video_provider:
+        kwargs['extra']['video_provider'] = video_provider
+        kwargs['extra']['video_url'] = video_url
 
     if looking_members:
         has_gitcoin_chat = request.POST.get('has_gitcoin_chat', '') == 'on'
@@ -4328,6 +4334,10 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
             'looking_members': project.looking_members,
             'work_url': project.work_url,
             'logo_url': project.logo.url if project.logo else '',
+            'demo': {
+              'url': project.extra.get('video_url', None),
+              'provider': project.extra.get('video_provider', None),
+            },
             'prize': {
                 'id': project.bounty.id,
                 'title': project.bounty.title,
@@ -4468,7 +4478,7 @@ def get_hackathons(request):
 
     if settings.DEBUG:
         from perftools.management.commands import create_page_cache
-        
+
         create_page_cache.create_hackathon_list_page_cache()
 
     tabs = [
@@ -5302,6 +5312,11 @@ def fulfill_bounty_v1(request):
     if bounty.event:
         try:
             project = HackathonProject.objects.get(pk=request.POST.get('projectId'))
+            demo_provider = request.POST.get('videoDemoProvider')
+            demo_link = request.POST.get('videoDemoLink')
+            if demo_link:
+                project.extra['video_url'] = demo_link
+                project.extra['video_provider'] = demo_provider if demo_provider in ('loom', 'youtube', 'vimeo') else 'generic'
         except HackathonProject.DoesNotExist:
             response['message'] = 'error: Project not found'
             return JsonResponse(response)
@@ -5380,6 +5395,8 @@ def fulfill_bounty_v1(request):
     fulfillment.fulfiller_metadata = json.loads(fulfiller_metadata)
 
     fulfillment.save()
+    if project:
+        project.save()
 
     response = {
         'status': 204,

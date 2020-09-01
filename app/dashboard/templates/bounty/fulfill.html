@@ -92,6 +92,14 @@
                         {% endfor %}
                       </select>
                     </div>
+
+                    <div class="mt-2">
+                      <label class="form__label" for="videoDemoLink">{% trans "Video demo Link" %}</label>
+                      <input name='videoDemoLink' id='videoDemoLink' class="form__input font-body" type="text"
+                        placeholder="https://youtu.be/DJartWzDn0E" value=""
+                        required
+                      />
+                    </div>
                   {% endif %}
 
                   {% if bounty.web3_type == 'fiat' %}

@@ -66,6 +66,15 @@ const projectModal = (bountyId, projectId, callback) => {
 
       submitProject(logo, data, callback);
     });
+
+    $('#videodemo-url').keyup(function(event) {
+      const url = $('#videodemo-url').val();
+      const metadata = getVideoMetadata(url);
+
+      if (metadata) {
+        $('#videodemo-provider').val(metadata.provider);
+      }
+    });
   });
 
   $(document).on('change', '#project_logo', function() {
