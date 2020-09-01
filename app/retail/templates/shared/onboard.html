@@ -25,7 +25,7 @@
       Tell us a little more about you:
       <v-select multiple :options="skills" v-model="skillsSelected">
         <template v-slot:option="option">
-          <span class="font-weight-semibold">[[ option ]]</span>
+          <span class="font-weight-semibold">[[ option.label ]]</span>
 
         </template>
       </v-select>

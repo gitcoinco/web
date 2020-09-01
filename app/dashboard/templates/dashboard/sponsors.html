@@ -361,7 +361,6 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with vue=True %}
     {% include 'shared/footer.html' %}
-    <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{user_orgs|json_script:"orgs-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
     <script>

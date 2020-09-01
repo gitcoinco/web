@@ -71,6 +71,9 @@ Vue.component('modal', {
   methods: {
     closeModal() {
       this.jqEl.bootstrapModal('hide');
+    },
+    openModal() {
+      this.jqEl.bootstrapModal('show');
     }
   }
 
