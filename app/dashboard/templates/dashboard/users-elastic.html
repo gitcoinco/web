@@ -34,7 +34,7 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'home/nav.html' %}
     </div>
-    <div id="gc-users-directory" v-cloak>
+    <div id="gc-users-elastic" v-cloak>
       <div class="">
         <nav class="search-section p-5 text-center">
           <div>
@@ -268,13 +268,10 @@
 
     {% csrf_token %}
     {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim="1" %}
     {% include 'shared/footer.html' %}
-    <script src="{% static "v2/js/vue-components.js" %}"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.5.1/vuex.min.js"></script>
     <script src="https://unpkg.com/vue-innersearch@0.0.12/vue-innersearch.min.js"></script>
-
-
     <script>
       $('body').bootstrapTooltip({
         selector: '[data-toggle="tooltip"]'
@@ -282,6 +279,6 @@
       const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
       document.keywords = {{keywords | safe}};
     </script>
-    <script src="{% static "v2/js/users-elastic.js" %}"></script>
+  <script src="{% static "v2/js/users-elastic.js" %}"></script>
   </body>
 </html>
