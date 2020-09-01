@@ -20,12 +20,12 @@
 <html lang="en">
 
   <head>
+    <link rel="stylesheet" href="https://unpkg.com/vue-innersearch/default-innersearch-theme.min.css">
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/users.css" %} />
     <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href={% static "v2/css/rating.css" %} />
-    <link rel="stylesheet" href="https://unpkg.com/vue-innersearch/default-innersearch-theme.min.css">
   </head>
 
   <body id="{{ explore }}" class="interior {{active}} g-font-muli">
@@ -74,76 +74,74 @@
           <button v-if="!hideFilterButton" class="blue btn font-smaller-1 font-weight-bold" @click="showFilters = !showFilters">[[ showFilters ? 'Hide' : 'Show' ]] filters <i class="fas fa-filter"></i></button>
           <div class="py-5 mt-4">
             <hits>
-                <template slot="hits" slot-scope="{ hits }">
-                    <div class="is-score is-hits">
-                        <strong v-if="hits.score === 0">No result found</strong>
-                        <strong v-else-if="hits.score === 1">1 result found</strong>
-                        <strong v-else-if="hits.score > 1">[[ hits.score ]] results found</strong>
-                    </div>
-                    <div class="grid-4 pt-5">
-                      <directory-card v-for="user in hits.items" :key="user._source.profile_id" :user="user._source" inline-template >
-                        <div class="card card-user shadow-sm border-0">
-                          <div class="d-flex flex-column py-1 bg-lightblue">
-                            <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
-                            <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
-                                        <a href='/funding/new?invite=${user.profile_id}' target="_blank" class="dropdown-item p-2">
-                                <i class="fab fa-ethereum mr-2"></i>
-                                Fund Bounty
-                              </a>
-                              <div class="dropdown-divider"></div>
-                              <a :href="/profile/[[ user.handle ]]" class="dropdown-item p-2" target="_blank">
-                                <i class="fas fa-user mr-2"></i>
-                                View profile
-                              </a>
-                            </div>
-                            <a :href=`"/profile/${user.handle}"` class="mx-auto">
-                              <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${user.handle}`" />
-                            </a>
-                            <h5 class="text-center card-user_name">
-                              [[ user.handle ]]
-                              <span v-if="user.verification">
-                                <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
-                              </span>
-                            </h5>
-                            <a :href=`"/profile/${user.handle}"` v-bind:data-usercard="user.handle" class="text-center d-block">
-                              @[[ user.handle ]]
-                            </a>
-                            <small class="text-center pb-1" v-if="user.previously_worked">
-                              <i class="far fa-handshake mr-1"></i>Worked with you
-                            </small>
-                          </div>
-                          <div class="card-body d-flex flex-column justify-content-between">
-                            <!-- User : Funder / Contributor-->
-                            <template>
-                              <div v-if="user.keywords" class="text-center">
-                                <template v-for="keyword in user.keywords">
-                                  <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
-                                </template>
-                              </div>
-                              <div class="text-center my-1 font-smaller-1">
-                                <a :href=`"https://github.com/${user.handle}"` target="_blank" rel="noopener noreferrer" >
-                                  <i class="fab fa-github"></i>
-                                </a>
-                                <a :href="user.blog" target="_blank" rel="noopener noreferrer" v-if="user.blog">
-                                  <i class="fas fa-home"></i>
-                                </a>
-                                <a :href=`"https://www.linkedin.com/in/${user.linkedin_url}"` v-if="user.linkedin_url">
-                                  <i class="fab fa-linkedin-in"></i>
-                                </a>
-                              </div>
-                              <div class="text-center" id="job_status" v-if="user.show_job_status">
-                                <a v-if="user.resume && user.job_search_status !== 'N'" :href=`"${media_url}${user.resume}"` download data-toggle="tooltip" title="Download resume">
-                                  <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
-                                </a>
-                              </div>
-
-
+              <template slot="hits" slot-scope="{ hits }">
+                <div class="is-score is-hits">
+                  <strong v-if="hits.score === 0">No result found</strong>
+                  <strong v-else-if="hits.score === 1">1 result found</strong>
+                  <strong v-else-if="hits.score > 1">[[ hits.score ]] results found</strong>
+                </div>
+                <div class="grid-4 pt-5">
+                  <directory-card v-for="user in hits.items" :key="user._source.profile_id" :user="user._source" inline-template >
+                    <div class="card card-user shadow-sm border-0">
+                      <div class="d-flex flex-column py-1 bg-lightblue">
+                        <button class="btn position-absolute align-self-end" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></button>
+                        <div class="dropdown-menu dropdown-menu-right font-caption bg-white">
+                          <a href='/funding/new?invite=${user.profile_id}' target="_blank" class="dropdown-item p-2">
+                            <i class="fab fa-ethereum mr-2"></i>
+                            Fund Bounty
+                          </a>
+                          <div class="dropdown-divider"></div>
+                          <a :href="/profile/[[ user.handle ]]" class="dropdown-item p-2" target="_blank">
+                            <i class="fas fa-user mr-2"></i>
+                            View profile
+                          </a>
+                        </div>
+                        <a :href=`"/profile/${user.handle}"` class="mx-auto">
+                          <img class="rounded-circle shadow-sm mt-n5 mb-3 bg-white" width="113" height="113" :src="`/dynamic/avatar/${user.handle}`" />
+                        </a>
+                        <h5 class="text-center card-user_name">
+                          [[ user.handle ]]
+                          <span v-if="user.verification">
+                            <img src="{% static 'v2/images/badge-verify.svg' %}" width="15" height="15" title="Verified user" alt="verify badget">
+                          </span>
+                        </h5>
+                        <a :href=`"/profile/${user.handle}"` v-bind:data-usercard="user.handle" class="text-center d-block">
+                          @[[ user.handle ]]
+                        </a>
+                        <small class="text-center pb-1" v-if="user.previously_worked">
+                          <i class="far fa-handshake mr-1"></i>Worked with you
+                        </small>
+                      </div>
+                      <div class="card-body d-flex flex-column justify-content-between">
+                        <!-- User : Funder / Contributor-->
+                        <template>
+                          <div v-if="user.keywords" class="text-center">
+                            <template v-for="keyword in user.keywords">
+                              <span class="badge badge--bluelight">[[ keyword ]]</span>[[ ' ' ]]
                             </template>
                           </div>
-                        </div>
-                      </directory-card>
+                          <div class="text-center my-1 font-smaller-1">
+                            <a :href=`"https://github.com/${user.handle}"` target="_blank" rel="noopener noreferrer" >
+                              <i class="fab fa-github"></i>
+                            </a>
+                            <a :href="user.blog" target="_blank" rel="noopener noreferrer" v-if="user.blog">
+                              <i class="fas fa-home"></i>
+                            </a>
+                            <a :href=`"https://www.linkedin.com/in/${user.linkedin_url}"` v-if="user.linkedin_url">
+                              <i class="fab fa-linkedin-in"></i>
+                            </a>
+                          </div>
+                          <div class="text-center" id="job_status" v-if="user.show_job_status">
+                            <a v-if="user.resume && user.job_search_status !== 'N'" :href=`"${media_url}${user.resume}"` download data-toggle="tooltip" title="Download resume">
+                              <i class="fa fa-briefcase mr-2" aria-hidden="true"></i> [[ user.job_status ]]
+                            </a>
+                          </div>
+                        </template>
+                      </div>
                     </div>
-                </template>
+                  </directory-card>
+                </div>
+              </template>
             </hits>
             <paginate :previousText="'&#x2B9C; Previous page'" :nextText="'Next page &#x2B9E;'" :size="10"></paginate>
             <div v-if="noResults" class="text-center">
@@ -252,12 +250,12 @@
                     </div>
                   </template>
 
-    </div>
+                </div>
               </div>
             </div>
+          </div>
         </div>
-        </div>
-    </div>
+      </div>
     </div>
 
     <script type="text/x-template" id="select2-template">
@@ -265,11 +263,9 @@
         <slot></slot>
       </select>
     </script>
-
-    {% csrf_token %}
+    {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim="1" %}
-    {% include 'shared/footer.html' %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.5.1/vuex.min.js"></script>
     <script src="https://unpkg.com/vue-innersearch@0.0.12/vue-innersearch.min.js"></script>
     <script>
