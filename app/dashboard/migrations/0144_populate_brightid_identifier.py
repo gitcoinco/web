@@ -10,7 +10,7 @@ def gen_uuid(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0142_brightid_identifier_column'),
+        ('dashboard', '0143_brightid_identifier_column'),
     ]
 
     operations = [

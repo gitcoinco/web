@@ -4,7 +4,7 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0143_populate_brightid_identifier'),
+        ('dashboard', '0144_populate_brightid_identifier'),
     ]
 
     operations = [

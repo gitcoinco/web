@@ -4,7 +4,7 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0141_auto_20200813_1219'),
+        ('dashboard', '0142_auto_20200818_0807'),
     ]
 
     operations = [

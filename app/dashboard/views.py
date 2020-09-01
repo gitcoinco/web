@@ -115,6 +115,7 @@ from .models import (
     ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
     TribeMember, UserAction, UserDirectory, UserVerificationModel,
 )
+from marketing.models import UpcomingDate
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
@@ -2866,7 +2867,9 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
     elif tab == 'trust':
+        today = datetime.today()
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
+        context['upcoming_calls'] = UpcomingDate.objects.filter(context_tag='brightid').filter(date__gte=today).order_by('date').values()
     else:
         raise Http404
     return context

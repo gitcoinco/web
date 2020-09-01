@@ -2,8 +2,16 @@
 
 {% if not profile.is_org and is_my_profile %}
     <h3 class="py-3 font-weight-bold">Trust Score</h3>
-    Lorem Ipsum Copy...
-    {{profile.brightid_uuid}}
+    Lorem Ipsum Copy... {{profile.brightid_uuid}} <br />
+
+    {% for call in upcoming_calls %}
+        <form class="js-upcomingBrightIDCalls-form">
+            <input type="hidden" id="id" name="id" value="{{ call.id }}">
+            <input type="hidden" id="title" name="title" value="{{ call.title }}">
+            <input type="hidden" id="date" name="date" value="{{ call.date.timestamp }}">
+            <input type="hidden" id="url" name="url" value="{{ call.url }}">
+        </form>
+    {% endfor %}
     <div class="container mt-3">
         <div class="row">
             {% if brightid_status == 'unknown' %}
@@ -35,7 +43,7 @@
                         </div>
                     {% elif brightid_status == 'not_verified' %}
                         <div class="col-md-3">
-                            <button class="button button--primary">Verify</button>
+                            <a href="javascript:show_brightid_verify_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Verify</a>
                         </div>
                     {% endif %}
             {% endif %}
