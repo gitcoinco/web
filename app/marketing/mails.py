@@ -219,6 +219,24 @@ def new_grant(grant, profile):
         translation.activate(cur_language)
 
 
+def new_grant_match_pledge(matchpledge):
+    to_email = 'founders@gitcoin.co'
+    from_email = matchpledge.profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        subject = f"New Grants Match Pledge Inquiry from {matchpledge.profile.handle}"
+        body = f""
+        for key, val in matchpledge.data_json.items():
+            body += f"{key}: {val}\n"
+        body += f"\n\n\n{settings.BASE_URL}{matchpledge.admin_url}"
+        html = f"<pre>{body}</pre>"
+        send_mail(from_email, to_email, subject, body, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
 def new_supporter(grant, subscription):
     if subscription and subscription.negative:
         return

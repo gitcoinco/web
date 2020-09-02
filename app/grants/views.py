@@ -62,8 +62,8 @@ from grants.utils import get_leaderboard, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
-    grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_supporter, subscription_terminated,
-    support_cancellation, thank_you_for_supporting,
+    grant_cancellation, new_grant, new_grant_admin, new_grant_flag_admin, new_grant_match_pledge, new_supporter,
+    subscription_terminated, support_cancellation, thank_you_for_supporting,
 )
 from marketing.models import Keyword, Stat
 from perftools.models import JSONStore
@@ -1286,56 +1286,40 @@ def record_grant_activity_helper(activity_type, grant, profile, amount=None, tok
     Activity.objects.create(**kwargs)
 
 
-@csrf_exempt
 def new_matching_partner(request):
 
-    tx_hash = request.POST.get('hash')
-    tx_amount = request.POST.get('amount')
     profile = get_profile(request)
-
-    def get_json_response(message, status):
-        return JsonResponse(
-            {'status': status, 'message': message},
-            status=status
-        )
-
-    def is_verified(tx_details, tx_hash, tx_amount, network):
-        gitcoin_account = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'
-        return has_tx_mined(tx_hash, network) and\
-            tx_details.to.lower() == gitcoin_account.lower()
+    params = {
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+        'title': 'Pledge your support.',
+        'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
+        'data': request.POST.dict(),
+        'grant_types': basic_grant_categories(None),
+    }
 
     if not request.user.is_authenticated:
-        return get_json_response("Not Authorized", 403)
-
-    if not profile:
-        return get_json_response("Profile not found.", 404)
-
-    if request.POST and tx_hash:
+        messages.info(
+                request,
+                _('Please login to submit this form.')
+            )
+    elif request.POST:
+        end_date = timezone.now() + timezone.timedelta(days=7*3)
         network = 'mainnet'
-        web3 = get_web3(network)
-        tx = web3.eth.getTransaction(tx_hash)
-        if not tx:
-            raise Http404
         match_pledge = MatchPledge.objects.create(
             profile=profile,
-            amount=convert_amount(tx.value / 10**18, 'ETH', 'USDT'),
-            data=json.dumps({
-                'tx_hash': tx_hash,
-                'network': network,
-                'from': tx['from'],
-                'to': tx.to,
-                'tx_amount': tx.value}
-            )
+            active=False,
+            end_date=end_date,
+            amount=0,
+            data=json.dumps(request.POST.dict())
         )
-        match_pledge.active = is_verified(tx, tx_hash, tx_amount, network)
         match_pledge.save()
+        new_grant_match_pledge(match_pledge)
+        messages.info(
+                request,
+                _("""Thank you for your inquiry. We will respond within 1-2 business days.  """)
+            )
 
-        return get_json_response(
-            """Thank you for volunteering to match on Gitcoin Grants.
-            You are supporting open source, and we thank you.""", 201
-        )
-
-    return get_json_response("Wrong request.", 400)
+    return TemplateResponse(request, 'grants/newmatch.html', params)
 
 
 def invoice(request, contribution_pk):
