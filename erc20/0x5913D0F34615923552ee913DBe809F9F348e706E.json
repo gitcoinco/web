@@ -6,8 +6,8 @@
 		"zh": "BMJ是一个高速、安全、可拓展的区块链分布式存储项目，通过切片技术对节点的P2P传输，实现数百兆文件的秒传。在ETH主链限量发行21万个DEFI代币支持21个BMJ 分布式节点加速启动， 最终实现全球百万设备有效链接， 可为全球企业及个人提供最廉价且高效的CDN、 分布式存储、 边缘计算等服务， 从而构建一个完整的应用生态圈。"
 	},
 	"email": "bmj01234@163.com",
-	"website": "www.bmjcoin.com",
-	"whitepaper": "www.bmjcoin.com",
+	"website": "http://www.bmjcoin.com",
+	"whitepaper": "http://www.bmjcoin.com",
 	"state": "NORMAL",
 	"published_on": "2020-08-22",
 	"initial_price": {
