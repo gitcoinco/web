@@ -1,0 +1,22 @@
+{
+  "symbol": "CT",
+  "address": "0xAf88dAbda076777d02fbD8b703AfCEEc3aaAF351",
+  "overview":{
+        "en": "DLT is committed to creating a mobile wallet with decentralized digital asset management, asset management and cross-chain free flash swap. It supports the management and exchange of multiple currencies based on digital identities, and aims to solve the inconvenience of users in managing multiple digital currencies, the greater risk of centralized wealth management products, the complicated exchange transaction process, the repeated development of wallets by project parties, and the difficulty of market value management. The problem of insufficient large-scale application scenarios, DLT has smart contract lock-up and cross-chain flash swap technology, hoping to promote the application and development of digital currency.",
+        "zh": "DLT致力于打造一款去中心化数字资产管理、资产理财及跨链自由闪兑的移动端钱包。它基于数字身份支持多币种的管理与兑换，旨在解决用户管理多种数字货币的不便、中心化理财产品风险较大及兑换交易过程繁杂、项目方针对钱包的重复开发、市值管理难度较大等应用场景不足的问题，DLT拥有的智能合约锁仓和跨链闪兑技术，希望能够促进数字货币的应用与发展。"
+  },
+  "email": "zc21302130@gmail.com",
+  "website": "http://www.dltup.com",
+  "whitepaper": "http://www.dltup.com/DLT.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-01",
+  "initial_price":{
+        "ETH":"0.00 ETH",
+        "USD":"0.00 USD",
+        "BTC":"0.00 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/dltsmail",
+    "facebook": "https://www.facebook.com/dlt.smail.5",
+  }
+}
