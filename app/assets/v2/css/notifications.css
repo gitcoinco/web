@@ -26,15 +26,21 @@ html.dark-mode {
 }
 
 .notification__dot {
-  background: rgba(var(--color-notification), 1);
+  background: red;
   display: none;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 8.5px;
   box-shadow: 0 0 0 rgba(var(--color-notification), .4);
   position: absolute;
-  top: 0.5em;
-  right: 0.9em;
+  top: 0;
+  left: 2.5em;
+  font-size: 10px;
+  text-align: center;
+  font-weight: bold;
+  padding: 2px;
+  font-family: 'Font Awesome\ 5 Pro', sans-serif;
+  line-height: initial;
 }
 
 .notification__dot_active {

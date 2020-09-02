@@ -462,6 +462,7 @@ function applyCartMenuStyles() {
 
   if (CartData.hasItems()) {
     dot.addClass('notification__dot_active');
+    dot.text(CartData.length());
   } else {
     dot.removeClass('notification__dot_active');
     if (document.location.href.indexOf('/grants') == -1) {
