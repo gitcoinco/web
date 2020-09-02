@@ -20,6 +20,8 @@ if (document.getElementById('gc-onboard')) {
     data() {
       return {
         step: 1,
+        bio: '',
+        // totalcharacter:0,
         skills: ['css','php'],
         skillsSelected: [],
         interests: [
@@ -38,13 +40,37 @@ if (document.getElementById('gc-onboard')) {
           'Freelance Jobs',
           'Healthcare'
         ],
+        jobSelected: [],
+        jobSearchStatus: [
+          {
+            value: 'AL',
+            string: 'I am actively looking for work'
+          },
+          {
+            value: 'PL',
+            string: 'I am passively looking and open to hearing new opportunities'
+          },
+          {
+            value: 'N',
+            string: 'I am not open to hearing new opportunities'
+          }
+        ],
         interestsSelected: [],
+        // userOptions: [{
+        //   product: 'Bounties',
+        //   icons: '📖💰💬',
+        //   logo:
+        // }]
+        userOptions: []
       };
     },
     computed: {
-
+      totalcharacter: function() {
+        return this.bio.length;
+      }
     },
     methods: {
+
 
     },
     mounted() {
