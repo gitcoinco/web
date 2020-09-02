@@ -1,0 +1,19 @@
+{
+  "symbol": "DLP",
+  "address": "0x51baf2656778ad6D67b19A419F91D38C3d0b87B6",
+  "overview":{
+        "en": "DODO is a next-generation on-chain liquidity provider, which leverages the Proactive Market Maker algorithm (PMM) to provide pure on-chain and contract-fillable liquidity for everyone.",
+        "zh": ""
+  },
+  "email": "contact@dodoex.io",
+  "website": "https://dodoex.io",
+  "state": "NORMAL",
+  "published_on": "2020-06-04",
+  "links": {
+    "twitter": "https://twitter.com/BreederDodo",
+    "telegram": "https://t.me/dodoex_official",
+    "github": "https://dodoex.github.io/",
+    "reddit": "https://www.reddit.com/r/DodoEx/",
+    "medium": "https://medium.com/@dodo.in.the.zoo"
+  }
+}
