@@ -1,5 +1,5 @@
 {
-  "symbol": "DOT (old)",
+  "symbol": "New DOT",
   "address": "polkadot",
   "overview":{
         "en": "It consists of many parachains with potentially differing characteristics which can make it easier to achieve anonymity or formal verification. On approximately August 21st at 13:15 UTC (block number 1,248,328), the DOT token will undergo a redenomination from its original sale. The New DOT balance will be 100x higher than your DOT (old) and the New DOT price will be 100x lower. So, your wallet will show the following two tokens: 1) First, you will see DOT (old) token which is the earlier DOT; 2) Later, after block 1,248,328, your wallet shows New DOT which is now 100x bigger with the same total $ value.",
