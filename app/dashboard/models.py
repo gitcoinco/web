@@ -4473,7 +4473,7 @@ class UserDirectory(models.Model):
     sms_verification = models.BooleanField()
     persona = models.CharField(null=True, max_length=255)
     rank_coder = models.IntegerField()
-    rank_funder = models.IntegerField()
+    rank_funder = models.IntegerField(null=True)
     num_hacks_joined = models.IntegerField()
     which_hacks_joined = ArrayField(base_field=models.IntegerField(), null=True)
     hack_work_starts = models.IntegerField()
@@ -4534,7 +4534,7 @@ class UserDirectory(models.Model):
     objects = UserDirectoryManager()
 
     class Meta:
-        managed = False
+        managed = True
 
 class ProfileSerializer(serializers.BaseSerializer):
     """Handle serializing the Profile object."""
