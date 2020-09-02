@@ -1,0 +1,22 @@
+{
+	"symbol": "BMJ",
+	"address": "0x5913D0F34615923552ee913DBe809F9F348e706E",
+	"overview": {
+		"en": "BMJ is a high-speed, secure and scalable blockchain distributed storage project that transmits hundreds of megabits of files in seconds through slice technology to the P2P of nodes.The limited release of 210,000 DEFI tokens in the ETH main chain supports the accelerated start - up of 21 BMJ distributed nodes,resulting in effective global linking of millions of devices,providing the cheapest and most efficient CDN,distributed storage,edge computing and other services for enterprises and individuals worldwide,thus creating a complete application ecosystem.",
+		"zh": "BMJ是一个高速、安全、可拓展的区块链分布式存储项目，通过切片技术对节点的P2P传输，实现数百兆文件的秒传。在ETH主链限量发行21万个DEFI代币支持21个BMJ 分布式节点加速启动， 最终实现全球百万设备有效链接， 可为全球企业及个人提供最廉价且高效的CDN、 分布式存储、 边缘计算等服务， 从而构建一个完整的应用生态圈。"
+	},
+	"email": "bmj01234@163.com",
+	"website": "http://www.bmjcoin.com",
+	"whitepaper": "http://www.bmjcoin.com",
+	"state": "NORMAL",
+	"published_on": "2020-08-22",
+	"initial_price": {
+		"ETH": "0.001 ETH"
+	},
+	"links": {
+		"blog": "https://medium.com/BMJ",
+		"twitter": "https://twitter.com/BMJ",
+		"telegram": "https://t.me/BMJGroup",
+		"reddit": "https://www.reddit.com/BMJ"
+	}
+}
