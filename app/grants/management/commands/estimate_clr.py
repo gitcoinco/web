@@ -50,13 +50,23 @@ class Command(BaseCommand):
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
                 print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num}")
-                a = predict_clr(
+                predict_clr(
                     save_to_db=True,
                     from_date=timezone.now(),
                     clr_round=clr_round,
                     network=network
                 )
                 print(f"finished CLR estimates for {clr_round.round_num}")
+
+                # TOTAL GRANT   
+                # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None) 
+                # grants = grants.filter(**clr_round.grant_filters) 
+
+                # total_clr_distributed = 0 
+                # for grant in grants:  
+                #     total_clr_distributed += grant.clr_prediction_curve[0][1] 
+
+                # print(f'Total CLR allocated for {clr_round.round_num} - {total_clr_distributed}')
 
         else:
             print("No active CLRs found")
