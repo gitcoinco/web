@@ -911,6 +911,9 @@
             case 3:
               newPathName = 'participants';
               break;
+            case 4:
+              newPathName = 'events';
+              break;
             case 5:
               newPathName = 'showcase';
               break;

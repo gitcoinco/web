@@ -621,6 +621,60 @@
                     </div>
                   </user-directory>
                 </b-tab>
+              <b-tab class="col-12" title-item-class="navigation">
+                <template v-slot:title>
+                    <div class="mt-4">
+                      {% trans "Events" %}
+                    </div>
+                </template>
+                <div id="events">
+                  <events inline-template>
+                    <div style="background-color: white; padding: 5%;" class="container">
+                      <div>
+                        <h1 class="font-bigger-4 font-weight-bold">Events Schedule</h1>
+                        {% if is_staff %}
+                          <button class="btn btn-lg gc-border-blue">Add event</button>
+                        {% endif %}
+                        <hr style="color: black; height: 3px">
+                         <div class="d-flex justify-content-between my-5" v-for="event in events">
+                           <div class="d-flex col-8">
+                             <div>
+                               <img src="{% static 'v2/images/hackathon/formation.svg' %}" alt="" v-if="eventTag(event) == 'formation'">
+                               <img src="{% static 'v2/images/hackathon/pitch.svg' %}" alt="" v-if="eventTag(event) == 'pitch'">
+                               <img src="{% static 'v2/images/hackathon/check.svg' %}" alt="" v-if="eventTag(event) == 'check'">
+                               <img src="{% static 'v2/images/hackathon/workshop.svg' %}" alt="" v-if="eventTag(event) == 'workshop'">
+                               <img src="{% static 'v2/images/hackathon/office.svg' %}" alt="" v-if="eventTag(event) == 'office'">
+                               <img src="{% static 'v2/images/hackathon/demo.svg' %}" alt="" v-if="eventTag(event) == 'demo'">
+                             </div>
+                             <div class="ml-4">
+                               <p class="m-0" v-if="eventTag(event) == 'formation'" style="color: #1BD389">Team formation</p>
+                               <p class="m-0" v-if="eventTag(event) == 'pitch'" style="color: #FF00B8">Pitch Day</p>
+                               <p class="m-0" v-if="eventTag(event) == 'check'" style="color: #00DACD">Mid hack Check-In</p>
+                               <p class="m-0" v-if="eventTag(event) == 'office'" style="color: #0090FF">Sponsor Office Hours</p>
+                               <p class="m-0" v-if="eventTag(event) == 'workshop'" style="color: #D9AE00">Workshop</p>
+                               <p class="m-0" v-if="eventTag(event) == 'demo'" style="color: #8948FF">Demo Day</p>
+                               <p class="m-0 font-weight-bold">[[formatDate(event)]]</p>
+                               <h3 class="font-title"><b>[[event.title]]</b> [[ event.organizer ? `with ${event.organizer}` : '']]</h3>
+                               <p class="m-0"  class="font-body">[[event.description]]</p>
+                             </div>
+                           </div>
+                           <div>
+                             <div title="Add to Calendar" class="addeventatc">
+                                Add to Calendar
+                                <span class="start">[[event.date_start]] [[event.date_start_time]]</span>
+                                <span class="end">[[event.date_end]] [[event.date_end_time]]</span>
+                                <span class="timezone">[[event.timezone]]</span>
+                                <span class="title">[[event.title]]</span>
+                                <span class="description">[[event.description]]</span>
+                                <span class="location">[[event.location]]</span>
+                            </div>
+                           </div>
+                         </div>
+                      </div>
+                    </div>
+                  </events>
+                </div>
+              </b-tab>
               <b-tab class="col-12" title-item-class="navigation" v-if="hackHasEnded">
                 <template v-slot:title>
                     <div class="mt-4">
@@ -822,6 +876,7 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
+    <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
     <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>

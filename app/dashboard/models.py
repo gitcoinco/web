@@ -4768,6 +4768,7 @@ class HackathonEvent(SuperModel):
     objects = HackathonEventQuerySet.as_manager()
     display_showcase = models.BooleanField(default=False)
     showcase = JSONField(default=dict, blank=True, null=True)
+    calendar_id = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         """String representation for HackathonEvent.

@@ -268,6 +268,7 @@ urlpatterns = [
     path('api/v0.1/hackathon/<str:hackathon>/save/', dashboard.views.save_hackathon, name='save_hackathon'),
     path('api/v1/hackathon/<str:hackathon>/prizes', dashboard.views.hackathon_prizes, name='hackathon_prizes_api'),
     path('api/v0.1/hackathon/<str:hackathon>/showcase/', dashboard.views.showcase, name='hackathon_showcase'),
+    path('api/v0.1/hackathon/<str:hackathon>/events/', dashboard.views.events, name='hackathon_events'),
     path('api/v0.1/projects/<int:project_id>', dashboard.views.get_project, name='project_context'),
     # action URLs
     url(r'^funder', retail.views.funder_bounties_redirect, name='funder_bounties_redirect'),

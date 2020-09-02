@@ -399,6 +399,68 @@ Vue.component('project-directory', {
 });
 
 
+Vue.component('events', {
+  delimiters: [ '[[', ']]' ],
+  props: [],
+  data: function() {
+    return {
+      events: []
+    };
+  },
+  methods: {
+    nth: function(d) {
+      if (d > 3 && d < 21)
+        return 'th';
+      switch (d % 10) {
+        case 1: return 'st';
+        case 2: return 'nd';
+        case 3: return 'rd';
+        default: return 'th';
+      }
+    },
+    fetchEvents: async function() {
+      const response = await fetchData(`/api/v0.1/hackathon/${document.hackathonObj.id}/events/`, 'GET');
+
+      this.$set(this, 'events', response.events.events);
+    },
+    formatDate: function(event) {
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      const date = event.date_start.split('/');
+      const time = event.date_start_time;
+      const newDate = new Date(`${date[2]}-${date[0]}-${date[1]}T${time}`);
+      const month = monthNames[newDate.getMonth()];
+      const day = newDate.getDay();
+      const hours = newDate.getHours();
+      const ampm = event.date_start_ampm.toLowerCase();
+
+      return `${month} ${day}${this.nth(newDate.getDay())}, ${hours} ${ampm}  ET`;
+    },
+    eventTag: function(event) {
+      const text = event.eventname;
+
+      if (text.includes('formation')) {
+        return 'formation';
+      } else if (text.includes('pitch')) {
+        return 'pitch';
+      } else if (text.includes('check')) {
+        return 'check';
+      } else if (text.includes('office')) {
+        return 'office';
+      } else if (text.includes('demo')) {
+        return 'demo';
+      }
+
+      return 'workshop';
+    }
+  },
+  mounted() {
+    this.fetchEvents();
+  }
+});
+
 Vue.component('showcase', {
   delimiters: [ '[[', ']]' ],
   props: [],

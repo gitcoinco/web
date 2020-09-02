@@ -27,6 +27,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
 
+import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -3866,9 +3867,9 @@ def hackathon(request, hackathon='', panel='prizes'):
         active_tab = 1
     elif panel == "projects":
         active_tab = 2
-    elif panel == "chat":
-        active_tab = 3
     elif panel == "participants":
+        active_tab = 3
+    elif panel == "events":
         active_tab = 4
     elif panel == "showcase":
         active_tab = 5
@@ -4468,7 +4469,7 @@ def get_hackathons(request):
 
     if settings.DEBUG:
         from perftools.management.commands import create_page_cache
-        
+
         create_page_cache.create_hackathon_list_page_cache()
 
     tabs = [
@@ -5835,4 +5836,37 @@ def showcase(request, hackathon):
 
     return JsonResponse({
         'success': True,
+    })
+
+
+def events(request, hackathon):
+    hackathon_event = get_object_or_404(HackathonEvent, id=hackathon)
+    calendar_unique = hackathon_event.calendar_id
+    token = settings.ADDEVENT_API_TOKEN
+    endpoint = f'https://www.addevent.com/api/v1/oe/events/list/'
+    calendar_endpoint = 'https://www.addevent.com/api/v1/me/calendars/list/'
+
+    calendar_response = requests.get(calendar_endpoint, {
+        'token': token,
+    })
+
+    calendars = calendar_response.json()["calendars"]
+    calendar_id = None
+
+    for calendar in calendars:
+        if calendar['uniquekey'] == calendar_unique:
+            calendar_id = calendar['id']
+            break
+
+    upcoming = hackathon_event.start_date.strftime('%Y-%m-%d %H:%M:%S')
+    response = requests.get(endpoint, {
+        'token': token,
+        'calendar_id': calendar_id,
+        'upcoming': upcoming
+    })
+
+    events = response.json()
+
+    return JsonResponse({
+        'events': events,
     })
