@@ -154,25 +154,29 @@
                 <div class="btn-group-toggle d-flex flex-column flex-lg-row flex-wrap">
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '1'}">
-                    <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="24"> Ethereum
+                    <input type="radio" name="bounty_chain" id="1_chain" value="1" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum.svg' %}" alt="" width="15"> ETH
                   </label>
 
                   {% if is_staff %}
-                  <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
-                    <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="24"> PayPal
-                  </label>
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '666'}">
+                      <input type="radio" name="bounty_chain" id="666_chain" value="666" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/paypal.svg' %}" alt="" width="15"> PayPal
+                    </label>
+
+                    <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === 58}">
+                      <input type="radio" name="bounty_chain" id="58_chain" value="58" v-model="chainId"><img class="mr-1" src="{% static 'v2/images/chains/polkadot.svg' %}" alt="" width="30"> Polkadot
+                    </label>
                   {% endif %}
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '61'}">
-                    <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="24"> Ethereum Classic
+                    <input type="radio" name="bounty_chain" id="61_chain" value="61" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/ethereum-classic.svg' %}" alt="" width="15"> ETC
                   </label>
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '102'}">
-                    <input type="radio" name="bounty_chain" id="102_chain" value="102" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="24"> Zilliqa
+                    <input type="radio" name="bounty_chain" id="102_chain" value="102" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/zilliqa.svg' %}" alt="" width="15"> Zilliqa
                   </label>
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '42220'}">
-                    <input type="radio" name="bounty_chain" id="42220_chain" value="42220" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="24"> Celo
+                    <input type="radio" name="bounty_chain" id="42220_chain" value="42220" v-model="chainId"><img class="mr-2" src="{% static 'v2/images/chains/celo.svg' %}" alt="" width="15"> Celo
                   </label>
 
                   <label class="btn btn-radio chain-btn d-flex align-items-center mr-2 mb-2 font-weight-bold py-2 px-4" :class="{'active': chainId === '717171'}">
@@ -401,10 +405,9 @@
                   <div class="col-12 col-md-4">
                     <label class="form__label" for="token">Denomination</label>
 
-                    <v-select id="token" :options="filterByChainId" label="symbol" v-model="form.token" @input="getAmount(form.token ? form.token.symbol : null)">
+                    <v-select id="token" :options="filterByChainId" label="symbol" v-model="form.token" @input="getAmount(form.token ? form.token.symbol : null); injectProvider(form.token ? form.token.symbol : null);">
                       <template v-slot:option="option">
                         <span class="font-weight-semibold">[[ option.symbol ]]</span>
-                        <small class="d-block text-black-50 font-smaller-3 text-truncate">[[option.address]]</small>
                       </template>
                     </v-select>
 
@@ -493,6 +496,10 @@
     <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="https://unpkg.com/vue-select@latest"></script>
+
+    <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>
+    <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
 
     <script>
       $('body').bootstrapTooltip({
