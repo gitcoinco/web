@@ -1,3 +1,5 @@
+let step = 2;
+
 Vue.component('v-select', VueSelect.VueSelect);
 
 Vue.mixin({
@@ -19,7 +21,8 @@ if (document.getElementById('gc-onboard')) {
     },
     data() {
       return {
-        step: 1,
+        step: step,
+        isOrg: false,
         bio: '',
         // totalcharacter:0,
         skills: ['css','php'],
@@ -70,6 +73,11 @@ if (document.getElementById('gc-onboard')) {
       }
     },
     methods: {
+      openModalStep(step) {
+        let vm = this;
+        vm.step = step;
+        vm.$refs['onboard-modal'].openModal();
+      }
 
 
     },

@@ -132,6 +132,12 @@
               </label>
             </div>
           </div>
+          <div class="checkbox_container mt-3">
+            <input name='isorg' id='isorg' type="checkbox" v-model="isOrg" class="form-check-input form__input" />
+            <label class="form-check-label" for=isorg>I'm also an organization manager looking for a great community.
+            </label>
+          </div>
+
         <div class="d-flex justify-content-center mt-4">
           <button class="btn btn-outline-gc-blue mr-4" @click="step--">Back</button>
           <button class="btn btn-gc-blue" @click="step++">Next</button>
