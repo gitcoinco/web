@@ -21,10 +21,10 @@
                     Failed to load BrightID Status
                 </div>
             {% else %}
-                <div class="col-md-1 mx-auto text-center">
+                <div class="col-12 col-md-1 mx-auto text-center">
                     <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" class="img-fluid">
                 </div>
-                <div class="col-md-7">
+                <div class="col-12 col-md-7 mb-3 mb-md-0">
                     {% if brightid_status == 'not_connected' %}
                         <div class="font-weight-bold">
                             Connect with BrightID
@@ -51,7 +51,7 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="col-md-2 text-center">
+                <div class="col-6 col-md-2 text-center">
                     <div class="font-weight-bold">
                         +25%
                     </div>
@@ -59,7 +59,7 @@
                         <small>Grants CLR Match</small>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-6 col-md-2">
                     {% if brightid_status == 'not_connected' %}
                         <a href="javascript:show_brightid_connect_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Connect</a>
                     {% elif brightid_status == 'not_verified' %}
