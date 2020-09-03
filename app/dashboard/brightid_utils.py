@@ -4,11 +4,8 @@ import requests
 import base64
 import ed25519
 from django.conf import settings
-import logging
-logger = logging.getLogger(__name__)
 
-URL = 'http://node.brightid.org/brightid/v5/operations'
-
+V5_URL = 'http://node.brightid.org/brightid/v5/operations'
 
 def get_brightid_status(brightid_uuid):
     brightIDUrl = 'http://node.brightid.org/brightid/v4/verifications/Gitcoin/' + str(brightid_uuid)
@@ -16,11 +13,12 @@ def get_brightid_status(brightid_uuid):
     try:
         response = requests.get(brightIDUrl)
         responseData = response.json()
+        isVerified = responseData.get('data', {}).get('unique', False) and responseData.get('data', {}).get('context', '') == 'Gitcoin'
 
-        # {'error': True, 'errorNum': 3, 'errorMessage': 'user can not be verified for this context', 'code': 404}
-
+        if isVerified:
+            return 'verified'
         # NOT CONNECTED
-        if responseData['errorNum'] == 2:
+        elif responseData['errorNum'] == 2:
             return 'not_connected'
         # CONNECTED NOT SPONSORED
         elif responseData['errorNum'] == 4:
@@ -34,7 +32,6 @@ def get_brightid_status(brightid_uuid):
         elif responseData['errorNum'] == 3:
             return 'not_verified'
         else:
-            logger.info('***BRIGHTID***' + str(response.json()))
             return 'unknown'
     except:
         return 'unknown'
@@ -53,14 +50,12 @@ def assign_brightid_sponsorship(brightid_uuid):
     sig = signing_key.sign(message)
     op['sig'] = base64.b64encode(sig).decode('ascii')
 
-    response = requests.post(URL, json.dumps(op))
+    response = requests.post(V5_URL, json.dumps(op))
 
     if 200 == response.status_code:
         # {'data': {'hash': 'LVleLJw0siU7C47-MhpVXZTfhpJl2AXvNr-Vx2N11sI'}}
-        logger.info("**BRIGHTID** Sponsorship Success" + str(response['data']['hash']))
         return True
     else:
-        logger.info("**BRIGHTID** Sponsorship Error" + str(response['errorNum']) + str(response['errorMessage']) + str(response['code']))
         return False
 
 

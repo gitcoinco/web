@@ -3,7 +3,7 @@
 {% if not profile.is_org and is_my_profile %}
     <h3 class="py-3 font-weight-bold">Trust Score</h3>
     Lorem Ipsum Copy... {{profile.brightid_uuid}} <br />
-
+    {{brightid_status}}
     {% for call in upcoming_calls %}
         <form class="js-upcomingBrightIDCalls-form">
             <input type="hidden" id="id" name="id" value="{{ call.id }}">
@@ -33,9 +33,18 @@
                         </div>
                         <div>
                             Verify yourself on BrightID by proving you're human to other humans. Connect
-                            with other users and join groups to meet the threshold.
+                            with other users and join groups to meet the threshold. <a href="https://brightid.org">Learn more.</a>
                         </div>
-                    {% endif %} <!-- TODO: what to show if verified-->
+                    {% elif brightid_status == 'verified' %}
+                        <div class="font-weight-bold">
+                            Verified With BrightID
+                        </div>
+                        <div>
+                            You're verified with BrightID, the unique, decentralized digital identity solution.
+                            This qualifies your grant donations for a trust bonus.
+                            <a href="https://brightid.org" target="_blank">Learn more.</a>
+                        </div>
+                    {% endif %}
                 </div>
                     {% if brightid_status == 'not_connected' %}
                         <div class="col-md-3">
@@ -44,6 +53,10 @@
                     {% elif brightid_status == 'not_verified' %}
                         <div class="col-md-3">
                             <a href="javascript:show_brightid_verify_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Verify</a>
+                        </div>
+                    {% elif brightid_status == 'verified' %}
+                        <div class="col-md-3" style="color:limegreen">
+                            <i class="fas fa-check"></i> Verified
                         </div>
                     {% endif %}
             {% endif %}
