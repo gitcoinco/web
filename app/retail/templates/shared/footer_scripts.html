@@ -31,13 +31,13 @@
   <script src="{% static 'v2/js/lib/vue.js' %}"></script>
 {% else %}
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.5.1/vuex.min.js"></script>
-
 {% endif %}
 
 {% include 'shared/sentry.html' %}
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+<script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
+
 <script>
   const bootstrapTooltip = $.fn.tooltip.noConflict()
   $.fn.bootstrapTooltip = bootstrapTooltip;
@@ -81,10 +81,10 @@
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
 <script src="{% static "v2/js/search.js" %}"></script>
 <script src="{% static "v2/js/vue-filters.js" %}"></script>
+<script src="{% static "v2/js/vue-components.js" %}"></script>
 <script src="{% static "v2/js/user_card.js" %}"></script>
 <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
 
-<script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
 {% if user.is_authenticated %}
   <script src='{% static "v2/js/chatWindow.js" %}'></script>
   <script src="{% static "v2/js/notifications.js" %}"></script>

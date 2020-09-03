@@ -4,7 +4,6 @@ let usersNumPages = '';
 let usersHasNext = false;
 let numUsers = '';
 let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_id : '';
-// let funderBounties = [];
 
 Vue.mixin({
   methods: {
@@ -25,9 +24,7 @@ Vue.mixin({
         vm.usersPage = newPage;
       }
       vm.params.page = vm.usersPage;
-      if (hackathonId) {
-        vm.params.hackathon = hackathonId;
-      }
+
       if (vm.searchTerm) {
         vm.params.search = vm.searchTerm;
       } else {
@@ -518,11 +515,11 @@ Vue.component('user-directory-elastic', {
     });
   }
 });
-if (document.getElementById('gc-users-directory')) {
+if (document.getElementById('gc-users-elastic')) {
 
   window.UserDirectory = new Vue({
     delimiters: [ '[[', ']]' ],
-    el: '#gc-users-directory',
+    el: '#gc-users-elastic',
     data: {
       filters: [],
       esColumns: [],
