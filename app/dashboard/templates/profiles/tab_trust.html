@@ -1,9 +1,11 @@
 {% load i18n static humanize %}
 
 {% if not profile.is_org and is_my_profile %}
-    <h3 class="py-3 font-weight-bold">Trust Score</h3>
-    Lorem Ipsum Copy... {{profile.brightid_uuid}} <br />
-    {{brightid_status}}
+    <h3 class="py-3 font-weight-bold">Trust Bonus</h3>
+    Trust Bonus ensures that Gitcoin is sybil-resistant, which means the higher the Trust
+    Bonus of a user is, the more we can be confident that the user is real. Higher
+    Trust Bonuses come with benefits, such as higher CLR match for grants.
+    To increase your Trust Bonus, here are some steps you can take:
     {% for call in upcoming_calls %}
         <form class="js-upcomingBrightIDCalls-form">
             <input type="hidden" id="id" name="id" value="{{ call.id }}">
@@ -19,7 +21,10 @@
                     Failed to load BrightID Status
                 </div>
             {% else %}
-                <div class="col-md-9">
+                <div class="col-md-1 mx-auto text-center">
+                    <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" class="img-fluid">
+                </div>
+                <div class="col-md-7">
                     {% if brightid_status == 'not_connected' %}
                         <div class="font-weight-bold">
                             Connect with BrightID
@@ -46,19 +51,23 @@
                         </div>
                     {% endif %}
                 </div>
+                <div class="col-md-2 text-center">
+                    <div class="font-weight-bold">
+                        +25%
+                    </div>
+                    <div style="color:grey">
+                        <small>Grants CLR Match</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
                     {% if brightid_status == 'not_connected' %}
-                        <div class="col-md-3">
-                            <a href="javascript:show_brightid_connect_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Connect</a>
-                        </div>
+                        <a href="javascript:show_brightid_connect_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Connect</a>
                     {% elif brightid_status == 'not_verified' %}
-                        <div class="col-md-3">
-                            <a href="javascript:show_brightid_verify_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Verify</a>
-                        </div>
+                        <a href="javascript:show_brightid_verify_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Verify</a>
                     {% elif brightid_status == 'verified' %}
-                        <div class="col-md-3" style="color:limegreen">
-                            <i class="fas fa-check"></i> Verified
-                        </div>
+                        <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
                     {% endif %}
+                </div>
             {% endif %}
         </div>
     </div>

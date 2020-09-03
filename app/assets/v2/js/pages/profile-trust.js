@@ -24,7 +24,7 @@ let show_brightid_connect_modal = function(brightid_uuid) {
               </button>
             </div>
             <div class="col-12 pt-2 pb-2 text-center">
-              <img src="/static/v2/images/project_logos/brightid.png" width="100">
+              <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
               <h2 class="font-title mt-2">Connect With BrightID</h2>
             </div>
             <div class="col-12 pt-2">
@@ -104,7 +104,7 @@ let show_brightid_connect_modal = function(brightid_uuid) {
               </button>
             </div>
             <div class="col-12 pt-2 pb-2 text-center">
-              <img src="/static/v2/images/project_logos/brightid.png" width="100">
+              <img src="/static/v2/images/project_logos/brightid.png" alt="BrightID Logo" width="100">
               <h2 class="font-title mt-2">Verify Your BrightID</h2>
             </div>
             <div class="col-12 pt-2">
