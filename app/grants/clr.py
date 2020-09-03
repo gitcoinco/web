@@ -407,38 +407,6 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
 
 
 
-def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
-    # setup
-    clr_calc_start_time = timezone.now()
-    debug_output = [['grant_id', 'grant_title', 'number_contributions', 'contribution_amount', 'clr_amount']]
-
-    # one-time data call
-    total_pot = float(clr_round.total_pot)
-    v_threshold = float(clr_round.verified_threshold)
-    uv_threshold = float(clr_round.unverified_threshold)
-
-    print(total_pot)
-
-    grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
-
-    grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
-
-    # calculate clr analytics output
-    for grant in grants:
-        clr_amount, grants_clr, num_contribs, contrib_amount = calculate_clr_for_donation(
-            grant,
-            0,
-            grant_contributions_curr,
-            total_pot,
-            v_threshold,
-            uv_threshold
-        )
-        debug_output.append([grant.id, grant.title, num_contribs, contrib_amount, clr_amount])
-
-    return debug_output
-
-
-
 def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainnet'):
     # setup
     clr_calc_start_time = timezone.now()
