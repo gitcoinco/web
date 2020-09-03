@@ -1051,7 +1051,7 @@ Vue.component('grants-cart', {
      */
     createEphemeralWallet() {
       const ephemeralWallet = new ethers.Wallet.createRandom();
-      window.localStorage.setItem('ephemeral-mnemonic', ephemeralWallet.mnemonic.phrase);
+      window.localStorage.setItem('zksync-ephemeral-mnemonic', ephemeralWallet.mnemonic.phrase);
       console.log('✅ Ephemeral wallet generated and mnemonic saved in local storage');
       return ephemeralWallet;
     },
@@ -1062,7 +1062,7 @@ Vue.component('grants-cart', {
      * before sending funds to it
      */
     getEphemeralWallet() {
-      const mnemonic = window.localStorage.getItem('ephemeral-mnemonic');
+      const mnemonic = window.localStorage.getItem('zksync-ephemeral-mnemonic');
       if (mnemonic === 'undefined') return undefined;
       const wallet = new ethers.Wallet.fromMnemonic(mnemonic);
       console.log('✅ Ephemeral wallet retrieved from local storage with address', wallet.address);
@@ -1326,15 +1326,14 @@ Vue.component('grants-cart', {
         nonce += 1;
       }
 
+      // Save signatures to local storage as backup
+      localStorage.setItem('zksync-signed-transfers', JSON.stringify(donationSignatures));
       console.log('✅ All signatures have been generated', donationSignatures);
 
 
       // Send each transfer ------------------------------------------------------------------------
-      // Save signatures in local storage
-      localStorage.setItem('grants_zksync_signatures', JSON.stringify(donationSignatures));
-
-      // Read them from local storage to ensure nothing was corrupt
-      const signatures = JSON.parse(localStorage.getItem('grants_zksync_signatures'));
+      // Read signatures from local storage to ensure nothing was corrupt
+      const signatures = JSON.parse(localStorage.getItem('zksync-signed-transfers'));
 
       console.log('Sending transfers to the network...');
       this.zkSyncCheckoutFlowStep += 1; // sending transactions
@@ -1461,6 +1460,27 @@ Vue.component('grants-cart', {
     }
     // Support responsive design
     window.addEventListener('resize', this.onResize);
+
+    // If user started deposit tx (final step of zkSync checkout), warn them before closing or 
+    // reloading page. We do not save the signatures here -- we do that immediately after they
+    // are generated -- to increase reliability. This is because the beforeunload may sometimes
+    // be ignored by browsers, e.g. if users have not interacted with the page
+    window.addEventListener("beforeunload", (e) => {
+      console.log('this.zkSyncCheckoutStep1Status: ', this.zkSyncCheckoutStep1Status);
+      console.log('this.zkSyncCheckoutStep3Status: ', this.zkSyncCheckoutStep3Status);
+      if (
+        this.zkSyncCheckoutStep3Status === "pending" &&
+        this.zkSyncCheckoutStep3Status !== "complete"
+      ) {
+        // This shows a generic message staying "Leave site? Changes you made may not be saved". This
+        // cannot be changed, as "the ability to do this was removed in Chrome 51. It is widely
+        // considered a security issue, and most vendors have removed support."
+        // source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    });
+
     // Cart is now ready
     this.isLoading = false;
   },
