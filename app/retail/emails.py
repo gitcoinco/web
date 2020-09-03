@@ -1281,7 +1281,10 @@ def render_new_bounty_roundup(to_email):
         'new_kudos_pks': new_kudos_pks,
         'new_kudos_size_px': new_kudos_size_px,
         'videos': args.videos,
-        'news': args.news
+        'news': args.news,
+        'updates': args.updates,
+        'issue': args.issue,
+        'release_date': args.release_date
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
