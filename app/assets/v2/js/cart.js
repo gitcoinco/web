@@ -45,9 +45,9 @@ Vue.component('grants-cart', {
       zkSyncContractAddress: undefined,
       zkSyncContractAbi: `[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockVerification","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"totalBlocksVerified","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"totalBlocksCommitted","type":"uint32"}],"name":"BlocksRevert","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"DepositCommit","type":"event"},{"anonymous":false,"inputs":[],"name":"ExodusMode","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint32","name":"nonce","type":"uint32"},{"indexed":false,"internalType":"bytes","name":"fact","type":"bytes"}],"name":"FactAuth","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"FullExitCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint64","name":"serialId","type":"uint64"},{"indexed":false,"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"indexed":false,"internalType":"bytes","name":"pubData","type":"bytes"},{"indexed":false,"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"name":"NewPriorityRequest","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"},{"indexed":true,"internalType":"address","name":"owner","type":"address"}],"name":"OnchainDeposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"OnchainWithdrawal","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsAdd","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsComplete","type":"event"},{"constant":true,"inputs":[],"name":"EMPTY_STRING_KECCAK","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"}],"name":"authFacts","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"bytes22","name":"","type":"bytes22"}],"name":"balancesToWithdraw","outputs":[{"internalType":"uint128","name":"balanceToWithdraw","type":"uint128"},{"internalType":"uint8","name":"gasReserveValue","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"blocks","outputs":[{"internalType":"uint32","name":"committedAtBlock","type":"uint32"},{"internalType":"uint64","name":"priorityOperations","type":"uint64"},{"internalType":"uint32","name":"chunks","type":"uint32"},{"internalType":"bytes32","name":"withdrawalsDataHash","type":"bytes32"},{"internalType":"bytes32","name":"commitment","type":"bytes32"},{"internalType":"bytes32","name":"stateRoot","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint64","name":"_n","type":"uint64"}],"name":"cancelOutstandingDepositsForExodusMode","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint32","name":"_feeAccount","type":"uint32"},{"internalType":"bytes32[]","name":"_newBlockInfo","type":"bytes32[]"},{"internalType":"bytes","name":"_publicData","type":"bytes"},{"internalType":"bytes","name":"_ethWitness","type":"bytes"},{"internalType":"uint32[]","name":"_ethWitnessSizes","type":"uint32[]"}],"name":"commitBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_n","type":"uint32"}],"name":"completeWithdrawals","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint104","name":"_amount","type":"uint104"},{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositETH","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"uint16","name":"_tokenId","type":"uint16"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint16","name":"","type":"uint16"}],"name":"exited","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"exodusMode","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPendingWithdrawalIndex","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPriorityRequestId","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"address","name":"_token","type":"address"}],"name":"fullExit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"_address","type":"address"},{"internalType":"uint16","name":"_tokenId","type":"uint16"}],"name":"getBalanceToWithdraw","outputs":[{"internalType":"uint128","name":"","type":"uint128"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"getNoticePeriod","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"initializationParameters","type":"bytes"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"isReadyForUpgrade","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"numberOfPendingWithdrawals","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"pendingWithdrawals","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint16","name":"tokenId","type":"uint16"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint64","name":"","type":"uint64"}],"name":"priorityRequests","outputs":[{"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"internalType":"bytes","name":"pubData","type":"bytes"},{"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_maxBlocksToRevert","type":"uint32"}],"name":"revertBlocks","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"_pubkey_hash","type":"bytes"},{"internalType":"uint32","name":"_nonce","type":"uint32"}],"name":"setAuthPubkeyHash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksCommitted","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksVerified","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCommittedPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalOpenPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"triggerExodusIfNeeded","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"upgradeParameters","type":"bytes"}],"name":"upgrade","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeCanceled","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeFinishes","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeNoticePeriodStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActivationTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActive","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"upgradePreparationStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"},{"internalType":"bytes","name":"_withdrawalsData","type":"bytes"}],"name":"verifyBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint128","name":"_maxAmount","type":"uint128"}],"name":"withdrawERC20Guarded","outputs":[{"internalType":"uint128","name":"withdrawnAmount","type":"uint128"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawETH","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]`,
       ethersProvider: undefined,
-      signer: undefined,
-      syncProvider: undefined,
-      syncWallet: undefined,
+      signer: undefined, // signer from regular web3 wallet
+      syncProvider: undefined, 
+      syncWallet: undefined, // signer from zkSync wallet
       showZkSyncModal: false,
       zkSyncAllowanceData: undefined,
       zkSyncDepositEtherscanUrl: undefined, // link to deposit transaction on Etherscan
@@ -58,6 +58,7 @@ Vue.component('grants-cart', {
       currentConfirmationNumber: 0, // current number of confirmations received  for deposit tx
       zkSyncCheckoutFlowStep: 0, // used for UI updates during the final step
       currentTxNumber: 0, // used as part of the UI updates during the final step
+      zkSyncWasInterrupted: undefined, // read from local storage, true if user closes window before deposit is complete
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -1013,60 +1014,64 @@ Vue.component('grants-cart', {
     // =============================================================================================
     
     /**
-     * @notice Login to zkSync
-     * @param signer ethers.js signer generated from user's web3 wallet
-     * @param syncProvider zkSync provider instantiated with same network as signer
+     * @notice For each token, returns the total amount donated in that token. Used instead of
+     * this.donationsTotal to ensure there's no floating point errors. This is very similar to 
+     * getAllowanceData()
+     */
+    zkSyncSummaryData() {
+      const selectedTokens = Object.keys(this.donationsToGrants); // list of tokens being used
+      let summaryData = [];
+
+      // Define function that calculates the total amount for the specified token
+      const calcTotalAllowance = (tokenDetails) => {
+        const initialValue = new BN('0');
+
+        return this.donationInputs.reduce((accumulator, currentValue) => {
+          return currentValue.token === tokenDetails.addr
+            ? accumulator.add(new BN(currentValue.amount)) // token donation
+            : accumulator.add(new BN('0')); // ETH donation
+        }, initialValue);
+      };
+
+      // Loop over each token in the cart and check allowance
+      for (let i = 0; i < selectedTokens.length; i += 1) {
+        const tokenName = selectedTokens[i];
+        const tokenDetails = this.getTokenByName(tokenName);
+        const tokenContract = new web3.eth.Contract(token_abi, tokenDetails.addr);
+        const requiredAllowance = calcTotalAllowance(tokenDetails);
+
+        // If ETH donation we can skip
+        if (tokenDetails.name === 'ETH') {
+          continue;
+        }
+
+        // If we do need to set the allowance, save off the required info to request it later
+        summaryData.push({
+          allowance: requiredAllowance.toString(),
+          contract: tokenContract,
+          tokenName
+        });
+      } 
+
+      return summaryData;
+    },
+
+    /**
+     * @notice Generate a Gitcoin-specific private key to use 
      * @returns User's syncWallet instance
      */
-    async loginToZkSync(signer, syncProvider) {
-      // Login
-      // OPTION 1
+    async loginToZkSync() {
+      // Prompt for user's signature to generate deterministic private key
+      const message = 'Access Gitcoin zkSync account.\n\nOnly sign this message for a trusted client!';
+      const signature = await this.signer.signMessage(message);
+      const privateKey = ethers.utils.sha256(signature);
+      const wallet = new ethers.Wallet(privateKey);
+
+      // Login to zkSync
       console.log('Waiting for user to sign the prompt to log in...');
-      const syncWallet = await zksync.Wallet.fromEthSigner(signer, syncProvider);
-      console.log(
-        '✅ Login complete. Sync wallet generated from web3 account. View wallet:',
-        syncWallet
-      );
-
-      // // OPTION 2 
-      // const ephemeralSigner = await this.zksync.Wallet.fromEthSigner(
-      //   this.getEphemeralWallet(),
-      //   this.syncProvider
-      // );
-      //
-      // this.syncWallet = await this.zksync.Wallet.fromEthSigner(
-      //   this.signer,
-      //   this.syncProvider,
-      //   ephemeralSigner,
-      //   undefined,
-      //   'EthereumSignature'
-      // );
-
+      const syncWallet = await zksync.Wallet.fromEthSigner(wallet, this.syncProvider);
+      console.log('✅ Login complete. Sync wallet generated from web3 account. View wallet:', syncWallet);
       return syncWallet;
-    },
-
-    /**
-     * @notice Generates an ephemeral wallet and saves it in localstorage
-     * @returns ethers.js Wallet instance of the ephemeral wallet
-     */
-    createEphemeralWallet() {
-      const ephemeralWallet = new ethers.Wallet.createRandom();
-      window.localStorage.setItem('zksync-ephemeral-mnemonic', ephemeralWallet.mnemonic.phrase);
-      console.log('✅ Ephemeral wallet generated and mnemonic saved in local storage');
-      return ephemeralWallet;
-    },
-
-    /**
-     * @notice Retrieves the ephemeral wallet from local storage. We use this instead of
-     * accessing the generated wallet immediately so we can guarantee it was saved properly
-     * before sending funds to it
-     */
-    getEphemeralWallet() {
-      const mnemonic = window.localStorage.getItem('zksync-ephemeral-mnemonic');
-      if (mnemonic === 'undefined') return undefined;
-      const wallet = new ethers.Wallet.fromMnemonic(mnemonic);
-      console.log('✅ Ephemeral wallet retrieved from local storage with address', wallet.address);
-      return wallet;
     },
 
     /**
@@ -1081,6 +1086,7 @@ Vue.component('grants-cart', {
         this.ethersProvider = new ethers.providers.Web3Provider(provider);
         this.signer = this.ethersProvider.getSigner();
         this.syncProvider = await zksync.getDefaultProvider(document.web3network, "HTTP");
+        this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
         
         // Set zkSync contract address based on network
         this.zkSyncContractAddress = document.web3network === "mainnet"
@@ -1088,16 +1094,17 @@ Vue.component('grants-cart', {
           : "0x82F67958A5474e40E1485742d648C0b0686b6e5D"; // rinkeby
         
         // Prompt for user's signature to login to zkSync
-        this.syncWallet = await this.loginToZkSync(this.signer, this.syncProvider);
+        this.syncWallet = await this.loginToZkSync();
 
-        // Check allowances for next step, for better UX on next step
-        // This just does tken approvals and balance checks, and does not execute approavals
+        // Check allowances for next step, for better UX on next step.
+        // This just does tken approvals and balance checks, and does not execute approavals.
+        // We check against userAddress (the main web3 wallet) because this is where funds will
+        // be transferred from
         this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, batchZkSyncDepositContractAddress);
         if (this.zkSyncAllowanceData.length === 0) {
           // User is only donating ETH, so does not need any token approvals
           this.zkSyncCheckoutStep2Status = 'not-applicable';
         }
-
         this.zkSyncCheckoutStep1Status = 'complete';
       } catch(e) {
         this.zkSyncCheckoutStep1Status = 'not-started';
@@ -1112,7 +1119,8 @@ Vue.component('grants-cart', {
       try {
         this.zkSyncCheckoutStep2Status = 'pending';
         
-        // Otherwise, request approvals
+        // Otherwise, request approvals. As mentioned above, we check against userAddress
+        // (the main web3 wallet) because this is where funds will be transferred from
         await this.requestAllowanceApprovalsThenExecuteCallback(
           this.zkSyncAllowanceData,
           this.userAddress,
@@ -1133,29 +1141,22 @@ Vue.component('grants-cart', {
       this.zkSyncCheckoutStep3Status = 'pending';
       console.log('Initializing zkSync checkout process...');
       const ethAmount = this.donationInputsEthAmount;
-      this.createEphemeralWallet();
-      console.log("✅ Initialization complete");
 
-
-      // Get required contracts and addresses ------------------------------------------------------
+      // Get required contracts and addresses
       const batckZkSyncDepositContract = new ethers.Contract(
         batchZkSyncDepositContractAddress,
         batchZkSyncDepositContractAbi,
         this.signer
       );
-      console.log(
-        "✅ Created instance of batch zkSync deposit contract",
-        batckZkSyncDepositContract
-      );
-
+      
       // Get address of deposit recipient
-      const ephemeralWallet = this.getEphemeralWallet();
-      const depositRecipient = ephemeralWallet.address;
+      const depositRecipient = this.syncWallet.address();
+      console.log('✅ Initialization complete');
 
 
       // Generate deposit payload ------------------------------------------------------------------
       console.log('Generating deposit payload...');
-      const deposits = []
+      const deposits = []; // array of arrays, passed into batckZkSyncDepositContract.deposit(...)
       let overrides = { gasLimit: '1000000' }; // TODO improve gas estimate
 
       // Handle ETH
@@ -1165,8 +1166,9 @@ Vue.component('grants-cart', {
       }
 
       // Handle tokens
-      if (this.zkSyncAllowanceData.length > 0) {
-        this.zkSyncAllowanceData.forEach((tokenDonation) => {
+      const summaryData = this.zkSyncSummaryData();
+      if (summaryData.length > 0) {
+        summaryData.forEach((tokenDonation) => {
           const tokenAddress = tokenDonation.contract._address;
           const tokenAmount = tokenDonation.allowance;
           deposits.push([tokenAddress, tokenAmount])
@@ -1183,25 +1185,23 @@ Vue.component('grants-cart', {
 
       // Send transaction --------------------------------------------------------------------------
       console.log('Waiting for user to send deposit transaction...');
-      const depositTx = await batckZkSyncDepositContract.deposit(
-        depositRecipient,
-        deposits,
-        overrides
-      );
-      console.log("✅ Deposit transaction sent", depositTx);
-      console.log("Waiting for deposit transaction to be mined...");
+      const depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
+      const zkSyncDepositTxHash = depositTx.hash;
+      localStorage.setItem('zksync-deposit-tx-hash', zkSyncDepositTxHash);
+      console.log('✅ Deposit transaction sent', depositTx);
+      console.log('Waiting for deposit transaction to be mined...');
       
       // Setup UI helpers --------------------------------------------------------------------------
       // Get Etherscan URL
-      const zkSyncDepositTxHash = depositTx.hash;
       this.zkSyncDepositEtherscanUrl = document.web3network === 'mainnet'
       ? `https://etherscan.io/tx/${zkSyncDepositTxHash}`
       : `https://${document.web3network}.etherscan.io/tx/${zkSyncDepositTxHash}`;
 
-      // Track number of confirmations
-      this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
+      // Wait for first confirmation
       const receipt = await depositTx.wait();
       console.log("✅ Deposit transaction mined", receipt);
+
+      // Track number of confirmations live in UI
       this.currentConfirmationNumber = 1;
       this.ethersProvider.on('block', () => {
         this.currentConfirmationNumber += 1
@@ -1249,49 +1249,62 @@ Vue.component('grants-cart', {
       // Note: If we do not wait for this receipt, the unlock step below will fail with
       // "Error: Failed to Set Signing Key: Account does not exist in the zkSync network"
       const serialId = logs[logs.length-1]; 
+      localStorage.setItem('zksync-deposit-serial-id', serialId);
       console.log(`Waiting for confirmation that priority operation with ID ${serialId} is committed...`);
+      
+      // Check status. It almost certainly has not been committed yet, but good practice to check
       const depositStatus = await this.syncProvider.getPriorityOpStatus(serialId);
       console.log('Current deposit status: ', depositStatus);
+      
+      // If deposit has not yet been committed, wait for that
       if (!depositStatus.block || !depositStatus.block.committed) {
-        // Deposit has not yet been committed, wait for that
         console.log('Deposit not yet committed, waiting for it...');
         const depositReceipt = await this.syncProvider.notifyPriorityOp(serialId, 'COMMIT');
+        console.log('✅ Deposit received', depositReceipt);
+      } else {
+        console.log('✅ Deposit received', depositStatus);
       }
-      this.zkSyncCheckoutFlowStep += 1; // register ephemeral wallet and sign transactions
-      console.log('✅ Deposit received');
+      this.zkSyncCheckoutFlowStep += 1; // register deterministic wallet and sign transactions
 
 
-      // Unlock ephemeral wallet's zkSync account --------------------------------------------------
+      // Unlock deterministic wallet's zkSync account ----------------------------------------------
+      // The deterministic wallet was generated earlier from the user's signature and saved
+      // as this.syncWallet. We refer to it now as the deterministic wallet to be explicit about
+      // the fact that it's not the user's ordinary wallet, but instead one deterministically
+      // generated from their singature of a special message.
+
       // To control assets in zkSync network, an account must register a separate public key
-      // once, so we now do that for the ephemeral keypair
-      console.log("Registering public key to unlock ephemeral wallet on zkSync...");
-      const ephemeralSyncWallet = await zksync.Wallet.fromEthSigner(ephemeralWallet, this.syncProvider);
+      // once. This can only be done once they have interacted with the network in some way, such
+      // as receiving a deposit, so we do that now since the deposit is complete. It cannot be
+      // done earlier because otherwise the account won't exist in the zkSync accounts Merkle tree
+      console.log('Registering public key to unlock deterministic wallet on zkSync...');
+      const deterministicSyncWallet = this.syncWallet; 
 
-      if (!(await ephemeralSyncWallet.isSigningKeySet())) {
-        if ((await ephemeralSyncWallet.getAccountId()) == undefined) {
-          throw new Error("Unknown account");
+      if (!(await deterministicSyncWallet.isSigningKeySet())) {
+        if ((await deterministicSyncWallet.getAccountId()) == undefined) {
+          // This means the account has never interacted with the network
+          throw new Error('Unknown account');
         }
-        const changePubkey = await ephemeralSyncWallet.setSigningKey();
+        const changePubkey = await deterministicSyncWallet.setSigningKey();
         // Wait until the tx is committed
         await changePubkey.awaitReceipt();
-        console.log("✅ Ephemeral wallet is ready to use on zkSync");
+        console.log('✅ Ephemeral wallet is ready to use on zkSync');
       } else {
-        console.log("✅ Ephemeral wallet was already initialized");
+        console.log('✅ Ephemeral wallet was already initialized');
       }
 
 
       // Get committed account state ---------------------------------------------------------------
-      // The nonce will almost always be zero since this is a newly generated wallet. However, to
-      // account for edge cases where not all transactions have sent, we fetch the expected
-      // nonce from the network
+      // Fetch the expected nonce from the network. We cannot assume it's zero because this may
+      // not be the user's first checkout
       console.log('Getting state and nonce of ephemeral wallet...');
-      const ephemeralWalletState = await ephemeralSyncWallet.getAccountState();
-      let nonce = ephemeralWalletState.committed.nonce; // this will be incremented later
-      console.log('✅ State of ephemeral wallet retrieved', ephemeralWalletState);
+      const deterministicWalletState = await deterministicSyncWallet.getAccountState();
+      let nonce = deterministicWalletState.committed.nonce; // this will be incremented later
+      console.log('✅ State of ephemeral wallet retrieved', deterministicWalletState);
 
 
       // Generate signatures for each transfer -----------------------------------------------------
-      const donationInputs = this.donationInputs;
+      const donationInputs = this.donationInputs; // just for convenience
       console.log('Generating signatures for transfers...');
       console.log('  Array of donations to be made is', donationInputs);
 
@@ -1304,7 +1317,7 @@ Vue.component('grants-cart', {
         // here we find the closest packable amount
         const amount = zksync.utils.closestPackableTransactionAmount(donationInput.amount);
 
-        // Fees must be packable to 2-byte long floating-point representations. We can find an
+        // Fees must be packable to 2-byte long floating-point representations. Here we find an
         // acceptable transaction fee by querying the server, and this will already be packable
         const fee = await this.syncProvider.getTransactionFee(
           'Transfer', // transaction type
@@ -1313,7 +1326,7 @@ Vue.component('grants-cart', {
         );
 
         // Now we can generate the signature for this transfer
-        const signedTransfer = await ephemeralSyncWallet.signSyncTransfer({
+        const signedTransfer = await deterministicSyncWallet.signSyncTransfer({
           to: donationInput.dest,
           token: donationInput.name,
           amount: amount.sub(fee.totalFee),
@@ -1325,22 +1338,16 @@ Vue.component('grants-cart', {
         // Increment nonce to prepare for next signature
         nonce += 1;
       }
-
-      // Save signatures to local storage as backup
-      localStorage.setItem('zksync-signed-transfers', JSON.stringify(donationSignatures));
       console.log('✅ All signatures have been generated', donationSignatures);
 
 
       // Send each transfer ------------------------------------------------------------------------
-      // Read signatures from local storage to ensure nothing was corrupt
-      const signatures = JSON.parse(localStorage.getItem('zksync-signed-transfers'));
-
       console.log('Sending transfers to the network...');
       this.zkSyncCheckoutFlowStep += 1; // sending transactions
-      for (let i = 0; i < signatures.length; i += 1) {
+      for (let i = 0; i < donationSignatures.length; i += 1) {
         this.currentTxNumber += 1
-        console.log(`  Sending transfer ${i+1} of ${signatures.length}...`);
-        const transfer = await zksync.wallet.submitSignedTransaction(signatures[i], this.syncProvider);
+        console.log(`  Sending transfer ${i+1} of ${donationSignatures.length}...`);
+        const transfer = await zksync.wallet.submitSignedTransaction(donationSignatures[i], this.syncProvider);
         console.log(`  Transfer ${i+1} sent`, transfer);
         const receipt = await transfer.awaitReceipt();
         console.log(`  ✅ Got transfer ${i+1} receipt`, receipt);
@@ -1349,6 +1356,38 @@ Vue.component('grants-cart', {
       this.zkSyncCheckoutFlowStep += 1; // Done!
       console.log('✅✅✅ Done!');
     },
+
+    /**
+     * @notice Step 3: Main function for executing zkSync checkout, but for when a previous
+     * checkout was interrupted and not completed
+     */
+    async sendZkSyncDonationAfterInterrupt() {
+      // Optimistic approach: First we load the signatures and dispatch them. If successful, we
+      // are done, otherwise we figure out what went wrong
+
+      try {
+        const signatures = JSON.parse(localStorage.getItem('zksync-signed-transfers'));
+        // Dispatch signatures
+      } catch (e) {
+        console.error(e);
+        // Read all relevant data from local storage
+        const signatures = JSON.parse(localStorage.getItem('zksync-signed-transfers'));
+        const depositTxHash = localStorage.getItem('zksync-deposit-tx-hash');
+
+        // TODOs and notes below
+        // Assume interrupt, and flip flag after completion
+
+        // Assume user will speed up deposit, so search for event logs 
+
+        // First we check if the deposit transaction was mined
+        //   If not, recommended user cancel transaction????
+        //   If so, parse serialId from logs
+
+        // Check that serialId was committed
+        //   If not, contact zkSync
+        //   If so, send txs
+      }
+    }
 
 
     // =============================================================================================
@@ -1478,8 +1517,15 @@ Vue.component('grants-cart', {
         // source: https://stackoverflow.com/questions/40570164/how-to-customize-the-message-changes-you-made-may-not-be-saved-for-window-onb
         e.preventDefault();
         e.returnValue = "";
+        localStorage.setItem('zksync-was-interrupted', true);
       }
     });
+
+    // Check if user previously started checking out but was interrupted
+    this.zkSyncWasInterrupted = Boolean(localStorage.getItem('zksync-was-interrupted'));
+    if (this.zkSyncWasInterrupted) {
+      this.showZkSyncModal = true;
+    }
 
     // Cart is now ready
     this.isLoading = false;

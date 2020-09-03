@@ -510,15 +510,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   {% comment %} Header {% endcomment %}
                   <div class="mb-3">
                     <img src="{% static 'v2/images/grants/zksync.svg' %}" alt="zkSync Logo" width="150">
-                    <h1 class="font-bigger-4 font-weight-bold mt-2">Pay with zkSync</h1>
-                    <p class="my-4 text-left">
-                      zkSync is powered by zkRollup with a universal setup &mdash; an L2
-                      scaling solution. Save gas fees and get faster confirmations. 
+                    {% comment %} Ordinary header and text {% endcomment %}
+                    <div v-if="!zkSyncWasInterrupted">
+                      <h1 class="font-bigger-4 font-weight-bold mt-2">Pay with zkSync</h1>
+                      <p class="my-4 text-left">
+                        zkSync is powered by zkRollup with a universal setup &mdash; an L2
+                        scaling solution. Save gas fees and get faster confirmations.
                       <a href="https://zksync.io/" target="_blank">Learn more</a>.
                       <br><br>
-                      To pay with zkSync, you will have to sign one message and send up to
-                      [[maxPossibleTransactions]] transactions with your Web3 wallet.
-                    </p>
+                        To pay with zkSync, you will have to sign one message and send up to
+                        [[maxPossibleTransactions]] transactions with your Web3 wallet.
+                      </p>
+                    </div>
+                    {% comment %} Special header and text if user is finishing checkout {% endcomment %}
+                    <div v-else>
+                      <h1 class="font-bigger-4 font-weight-bold mt-2">
+                      <i class="fas fa-exclamation-triangle" style="color: #ECC94B"></i>
+                        Complete zkSync Checkout
+                      </h1>
+                      <p class="my-4 text-left">
+                        You started checking out with zkSync but never completed the process. If you
+                        do not complete it, funds may be lost and the grants will never receive the
+                        funds. Please follow the prompts below to complete checkout.
+                      </p>
+                    </div>
                   </div>
                   <br>
                   {% comment %} Body {% endcomment %}
@@ -596,7 +611,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep3Status === 'not-started'" :disabled="zkSyncCheckoutStep2Status === 'not-started'" class="btn btn-gc-blue button--full shadow-none" @click="sendZkSyncDonation">
+                        <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted" :disabled="zkSyncCheckoutStep2Status === 'not-started'" class="btn btn-gc-blue button--full shadow-none" @click="sendZkSyncDonation">
+                          Confirm
+                        </button>
+                        <button v-else-if="zkSyncCheckoutStep3Status === 'not-started' && zkSyncWasInterrupted" :disabled="zkSyncCheckoutStep2Status === 'not-started'" class="btn btn-gc-blue button--full shadow-none" @click="sendZkSyncDonationAfterInterrupt">
                           Confirm
                         </button>
                         <div v-else-if="zkSyncCheckoutStep3Status === 'pending'">
