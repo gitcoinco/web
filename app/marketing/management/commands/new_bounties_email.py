@@ -75,7 +75,7 @@ class Command(BaseCommand):
             print("not active in non prod environments")
             return
         hours_back = 24
-        eses = EmailSubscriber.objects.filter(active=True).distinct('email')
+        eses = EmailSubscriber.objects.filter(active=True).distinct('email').order_by('-email')
         counter_grant_total = 0
         counter_total = 0
         counter_sent = 0
