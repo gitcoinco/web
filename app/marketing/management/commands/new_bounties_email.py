@@ -26,6 +26,7 @@ from django.utils import timezone
 from dashboard.models import Bounty
 from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
+from marketing.utils import should_suppress_notification_email
 from townsquare.utils import is_email_townsquare_enabled
 
 warnings.filterwarnings("ignore")
@@ -83,6 +84,8 @@ class Command(BaseCommand):
         print("got {} emails".format(total_count))
         for es in eses:
             try:
+                if should_suppress_notification_email(es.email, 'new_bounty_notifications'):
+                    continue
                 # prep
                 now = timezone.now()
                 counter_grant_total += 1
