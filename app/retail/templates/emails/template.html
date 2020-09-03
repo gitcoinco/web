@@ -88,7 +88,7 @@
   h5{
     color: #000000;
     font-size: 0.8em;
-    margin-top:5px; 
+    margin-top:5px;
     margin-bottom: 0;
     font-weight: 400;
   }
@@ -177,7 +177,7 @@
     align-content: center;
     text-align: center;
   }
-  
+
   body, #header {
       {% if email_style == 1 %}
         background-color: #3E00FF;
@@ -191,7 +191,7 @@
         background-color: #2bffbc;
       {% elif email_style == 0 %}
         background-color: #15003e;
-      {% elif email_style == 7 or email_style == 8 or email_style == 9 or email_style == 11 or email_style == 15 or email_style == 16 or email_style == 18 or email_style == 19 %}
+      {% elif email_style == 7 or email_style == 8 or email_style == 9 or email_style == 11 or email_style == 15 or email_style == 16 or email_style == 18 or email_style == 19 or email_style == 28 %}
         background-color: #150065;
       {% elif email_style == 12 or  email_style == 25 %}
         background-color: #ffffff;
@@ -212,7 +212,7 @@
       {% else %}
         background-color: #15003e;
       {% endif %}
-  } 
+  }
   #footer {
     padding: 30px 50px;
     background-color: #0D0764;
@@ -275,15 +275,15 @@
     padding-bottom: 0.5em;
     line-height: 20px;
   }
-  
+
   .grant-recontrib-msg {
     margin: 0 auto;
   }
 
   .grant-tile {
-    margin: 0 auto; 
+    margin: 0 auto;
     border-bottom: 1px solid #EFEFEF;
-    text-align: left; 
+    text-align: left;
     padding: 10px;
   }
 
@@ -322,7 +322,7 @@
       width: 35%;
     }
   }
-  
+
   @media (min-width: 768px) {
     .grant-txn-msg {
       width: 70%;
@@ -334,9 +334,9 @@
       width: 60%;
     }
   }
-  
+
   /* Bootstrap styles used for activities -- START */
-  
+
     *,
     ::after,
     ::before {
@@ -487,7 +487,7 @@
     vertical-align: middle;
     border-style: none;
   }
-  
+
   .pl-2,
   .px-2 {
     padding-left: .5rem !important;
@@ -636,7 +636,7 @@
   /* Bootstrap styles used for activities -- END */
 
   /* Styles for .activity_stream -- START */
-  
+
   .activity_stream .box {
     padding-left: 0;
     padding-right: 0;
@@ -649,7 +649,7 @@
     list-style: none;
     padding: 5px;
   }
-  
+
   .tag {
     text-align: center;
     border-radius: 2px;
@@ -670,12 +670,12 @@
   .tag span {
     color: #3E00FF; /* var(--gc-blue) */
   }
-  
+
   .tag p {
     margin-top: 0;
     line-height: normal;
   }
-  
+
   .font-smaller-6 {
     font-size: 0.6rem;
   }
@@ -728,7 +728,7 @@
     background-color: #3E00FF; /* var(--gc-blue) */
   }
   /* Styles for .activity_stream -- END */
-  
+
   @media screen and (min-width: 35.5em) {
     .social-img {
       max-height: 50px;
@@ -771,11 +771,11 @@
     .kudos_highlights_items {
       margin: 2em 0;
     }
-    
-    .quest-img-bottom { 
+
+    .quest-img-bottom {
       margin-right: 30vw;
     }
-    
+
     .quest-img-top {
       margin-left: 30vw;
     }
@@ -829,20 +829,20 @@
   }
 
   @media screen and (min-width: 120em) {
-    .quest-img-bottom { 
+    .quest-img-bottom {
       margin-right: 7vw;
     }
-    
+
     .quest-img-top {
       margin-left: 7vw;
     }
   }
 
   @media screen and (min-width: 160em) {
-    .quest-img-bottom { 
+    .quest-img-bottom {
       margin-right: 5vw;
     }
-    
+
     .quest-img-top {
       margin-left: 5vw;
     }
@@ -888,6 +888,7 @@
       {% elif email_style == 24 %} <img id="logo" src="{% static "v2/images/emails/email_header24.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 26 %} <img id="logo" src="{% static "v2/images/emails/email_header26.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% elif email_style == 27 %} <img id="logo" src="{% static "v2/images/emails/email_header27.png" %}" alt="Gitcoin" title="Gitcoin Logo">
+      {% elif email_style == 28 %} <img id="logo" src="{% static "v2/images/emails/email_header28.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% else %}
         <img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
       {% endif %}
@@ -909,7 +910,7 @@
       <a href="https://gitcoin.co/settings/account">New Wallet? Click here to update Payout Address.</a>
     {% else %}
       You do not have a preferred payout address on file.
-      <a href="https://gitcoin.co/settings/account">Click here to set a Payout Address.</a>    
+      <a href="https://gitcoin.co/settings/account">Click here to set a Payout Address.</a>
     {% endif %}
 
   </div>

@@ -29,15 +29,32 @@
   h4{
     margin-top: 10px;
   }
-  
+
   .intro a{
     color: #3E00FF;
   }
-  
+
   .text-left {
     text-align: left;
   }
 
+  .highlight li {
+    color: #000;
+    font-size: 16px;
+    line-height: 26px;
+    list-style: none;
+    margin-top: 15px;
+    margin-bottom: 15px
+  }
+
+  .highlight li a{
+    color:#3E00FF;
+    text-decoration:none;
+    font-size:16px;
+    line-height:26px;
+    list-style:none;
+    margin-top:1.5em
+  }
   /* Styling for thanks and regards ("Back to Chillin and Shillin,") at the end of intro */
   .regards p{
     display: inline;
@@ -51,7 +68,7 @@
   .leaderboard-item-container a{
       color: #ffffff;
   }
-  
+
   @media screen and (max-width: 599px) {
     .leaderboard-item-container {
       margin-left: 2%;
@@ -69,10 +86,13 @@
 </style>
 
 <div class="roundup">
-  <div>
-    <h1 class="text-centre">{% trans "The Gitcoin Weekly" %}</h1>
-  </div>
-
+  <center>
+    <img width="35%" style="border-style:none; vertical-align:middle" valign="middle"
+         src="{% static 'v2/images/emails/weekly_mint.png' %}">
+    <br>
+    <code>issue #1 · August 28, 2020</code>
+  </center>
+  <hr style="margin-top: 20px; background:  linear-gradient(#098F59, #59FA55) ; height: 1px; width: 100%;">
   <div class='intro text-left'>
     {{ intro|safe }}
     {% if sponsor %}
@@ -97,26 +117,48 @@
 
   </div>
 
-  <div class="primary-content text-center" style="padding-top: 0">
+  <h2 style="font-weight:500; text-transform:capitalize; font-size:1.6rem; text-align: left">
+    <img src="{% static 'v2/images/emails/rect-news.png' %}" width="65%" style="border-style:none; vertical-align:middle" valign="middle">
+  </h2>
+  {% for new in news %}
+  <div style="text-align: left">
+    <h4 style="padding-top:40px; font-weight:500; text-transform:capitalize; font-size:1.1rem; text-align:center; margin-top:10px" align="center">
+      <a href="{{ new.link }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">
+        {{ new.title }}
+      </a>
+    </h4>
+    <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em;">
+      {{ new.description }}
+    </p>
+    <code>via <a href="https://gitcoin.co/@{{ new.via }}" style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">@{{ new.via }}</a> {% if new.source %} / {{ new.source }}{% endif %}</code>
+  </div>
+  {% endfor %}
+  <h2 style="font-weight:500; text-transform:capitalize; font-size:1.6rem; text-align: left">
+    <img src="{% static 'v2/images/emails/rect-updates.png' %}" width="65%" style="border-style:none; vertical-align:middle" valign="middle">
+  </h2>
+
+  {% if videos %}
+  <h2 style="font-weight:500; text-transform:capitalize; font-size:1.6rem; text-align: left">
+    <img src="{% static 'v2/images/emails/rect-videos.png' %}" width="65%" style="border-style:none; vertical-align:middle" valign="middle">
+  </h2>
+    <div class="highlight" style="text-align: left">
+    {{ videos|safe }}
+    </div>
+  {% endif %}
+
 
   {% if highlights %}
-    <h3>{% trans "✨Last Week's Highlights" %}</h3>
-    <h5>{% trans "Community Members growing open source" %}</h5>
-
+    <h2 style="font-weight:500; text-transform:capitalize; font-size:1.6rem; text-align: left">
+      <img src="{% static 'v2/images/emails/rect-townsquare.png' %}" width="65%" style="border-style:none; vertical-align:middle" valign="middle">
+    </h2>
     <div style="text-align: center;">
       <ul>
       {% for highlight in highlights %}
-        <li style="list-style:none; margin-left: 0; margin-top: 2.5em">
-          {% if highlight.who_link %}
-            <img style="border-radius: 20px; vertical-align: middle;" src="{% avatar_url highlight.who%}" width=30px height=30px>
-            <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>
-          {% else %}
-            * <strong>{{ highlight.who }}</strong>
-          {% endif %}
-            <p style="margin-bottom: 20px; margin-top:5px">{{ highlight.what }}</p>
-          {% if highlight.link %}
-            <a class="button" href="{{ highlight.link }}">{{ highlight.link_copy }}</a>
-          {% endif %}
+        <li style="margin-top: 2.5em; text-align: left;">
+          <p>
+          - <a style="color:#3E00FF; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>:
+            {{ highlight.what }}
+          </p>
         </li>
       {% endfor %}
       </ul>
@@ -126,6 +168,26 @@
     <hr>
   {% endif %}
 
+  <h2 style="font-weight:500; text-transform:capitalize; font-size:1.6rem; text-align: left">
+    <img src="{% static 'v2/images/emails/rect-kudos.png' %}" width="65%" style="border-style:none; vertical-align:middle" valign="middle">
+  </h2>
+
+  <div style="text-align: center">
+    <p>Congrats, you made it to the end of this issue! Grab your Kudos below.</p>
+    {% for pk in new_kudos_pks %}
+      <a href='https://gitcoin.co/kudos/{pk}/'>
+        <img src="https://p21.p4.n0.cdn.getcloudapp.com/items/o0u8XzlJ/image8.png?v=9411bc4cc4df4253753f1c4776b51b0e" width="300px" alt="Issue #1 Kudos" style="border-style:none; vertical-align:middle" valign="middle">
+      </a>
+    {% endfor %}
+    </p>
+
+    <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em">  <strong>Get Your Kudos</strong></p>
+  </div>
+
+
+  <div class="primary-content text-center" style="padding-top: 0">
+
+  {% if bounties %}
   <div>
     <h3>{% trans "💡Open Funded Issues" %}</h3>
     <h5>{% trans "Grow Open Source &amp; Make Some ETH" %}</h5>
@@ -142,9 +204,10 @@
       <a class="button" href="{% url "explorer" %}">{% trans "View Explorer" %}</a>
     </div>
   </div>
-  
+  {% endif %}
+
   {% if leaderboard %}
-</div>
+  </div>
   <div class="full-width text-center" style="background-color: #000000; color: #ffffff; margin: 0 auto; padding-top: 15px; padding-bottom:15px">
     <h3 style="color: #ffffff;">{% trans "🏆Who's leading the Leaderboard?" %}</h3>
     <h5 style="color: #ffffff;">{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
@@ -172,6 +235,7 @@
   </div>
   {% endif %}
 
+  {% comment %}
   {% if kudos_highlights %}
   </div>
   <div class="full-width text-center" style="background-color: #F7F5FF; margin: 0 auto; padding-top:10px; padding-bottom: 15px;">
@@ -203,5 +267,6 @@
     <br>
   </div>
   {% endif %}
+  {% endcomment %}
 </div>
 {% endblock %}

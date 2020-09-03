@@ -401,6 +401,10 @@ class RoundupEmail(SuperModel):
     highlights = JSONField(default=dict, blank=True)
     sponsor = JSONField(default=dict, blank=True)
     bounties_spec = JSONField(default=dict, blank=True)
+    news = JSONField(default=dict, blank=True)
+    gitcoin_updates = models.TextField(max_length=15000, blank=True)
+    videos = models.TextField(max_length=15000, blank=True)
+
 
     def get_absolute_url(self):
         return '/_administration/email/roundup'
