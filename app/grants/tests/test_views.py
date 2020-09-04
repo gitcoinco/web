@@ -8,8 +8,8 @@ from test_plus.test import TestCase
 
 
 class GrantsViewResponsesTests(TestCase):
-    def test_not_authorized(self):
-        response = self.client.post(reverse('grants:new_matching_partner'))
+    # def test_not_authorized(self):
+        # response = self.client.post(reverse('grants:new_matching_partner'))
 
 
         # expected_response = {'status': 200}
