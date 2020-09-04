@@ -5,17 +5,18 @@ let brightIDCalls = [];
 $(document).ready(function() {
 
   $('.js-upcomingBrightIDCalls-form').each(function() {
-      const formData = objectifySerialized($(this).serializeArray());
-      brightIDCalls.push(formData);
+    const formData = objectifySerialized($(this).serializeArray());
+
+    brightIDCalls.push(formData);
   });
 });
 
 let show_brightid_connect_modal = function(brightid_uuid) {
-    const brightIdLink = `https://app.brightid.org/link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${brightid_uuid}`;
-    const brightIdAppLink = `brightid://link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${brightid_uuid}`;
+  const brightIdLink = `https://app.brightid.org/link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${brightid_uuid}`;
+  const brightIdAppLink = `brightid://link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${brightid_uuid}`;
 
-    const content = $.parseHTML(
-      `<div id="connect_brightid_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  const content = $.parseHTML(
+    `<div id="connect_brightid_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content px-4 py-3">
             <div class="col-12">
@@ -57,31 +58,32 @@ let show_brightid_connect_modal = function(brightid_uuid) {
         </div>
       </div>`);
 
-    $(content).appendTo('body');
-    $('#connect_brightid_modal').bootstrapModal('show');
+  $(content).appendTo('body');
+  $('#connect_brightid_modal').bootstrapModal('show');
 
-    // avoid duplicate QR Codes if user presses button multiple times
-    if (!hasGeneratedBrightIdQRCode) {
-      const element = document.getElementById("qrcode");
-      const qrCodeData = {
-        text: brightIdAppLink,
-        width: 100,
-        height: 100,
-      };
-      new QRCode(element, qrCodeData);
+  // avoid duplicate QR Codes if user presses button multiple times
+  if (!hasGeneratedBrightIdQRCode) {
+    const element = document.getElementById('qrcode');
+    const qrCodeData = {
+      text: brightIdAppLink,
+      width: 100,
+      height: 100
+    };
 
-      hasGeneratedBrightIdQRCode = true;
-    }
-  };
+    new QRCode(element, qrCodeData); // eslint-disable-line
 
-  let show_brightid_verify_modal = function(brightid_uuid) {
-    let callsMarkup = '';
+    hasGeneratedBrightIdQRCode = true;
+  }
+};
 
-    for (let index = 0; index < brightIDCalls.length; index++) {
-      const call = brightIDCalls[index];
-      const callDate = new Date(parseFloat(call.date) * 1000);
+let show_brightid_verify_modal = function(brightid_uuid) {
+  let callsMarkup = '';
 
-      callsMarkup = `${callsMarkup}
+  for (let index = 0; index < brightIDCalls.length; index++) {
+    const call = brightIDCalls[index];
+    const callDate = new Date(parseFloat(call.date) * 1000);
+
+    callsMarkup = `${callsMarkup}
         <div class="row mb-3">
           <div class="col-md-7">
             <strong>${call.title}</strong><br />
@@ -91,11 +93,11 @@ let show_brightid_connect_modal = function(brightid_uuid) {
             <a href="${call.url}" target="_blank" class="btn btn-gc-blue px-5 mb-2 mx-1">Register</a>
           </div>
         </div>
-      `
-    }
+      `;
+  }
 
-    const content = $.parseHTML(
-      `<div id="verify_brightid_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  const content = $.parseHTML(
+    `<div id="verify_brightid_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content px-4 py-3">
             <div class="col-12">
@@ -129,6 +131,6 @@ let show_brightid_connect_modal = function(brightid_uuid) {
         </div>
       </div>`);
 
-    $(content).appendTo('body');
-    $('#verify_brightid_modal').bootstrapModal('show');
-  };
+  $(content).appendTo('body');
+  $('#verify_brightid_modal').bootstrapModal('show');
+};
