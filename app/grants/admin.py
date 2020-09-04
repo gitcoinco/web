@@ -17,12 +17,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from django.conf import settings
 from django.contrib import admin
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from grants.models import CartActivity, CLRMatch, Contribution, Flag, Grant, MatchPledge, PhantomFunding, Subscription
+import twitter
+from grants.models import (
+    CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
+    Subscription,
+)
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -38,13 +45,10 @@ class FlagAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile', 'grant']
 
     def response_change(self, request, obj):
-        from django.shortcuts import redirect
         if "_post_flag" in request.POST:
             obj.post_flag()
             self.message_user(request, "posted flag to activity feed")
         if "_tweet" in request.POST:
-            import twitter
-            from django.conf import settings
             # TODO : get @gicoindisputes out of twitter jail
             api = twitter.Api(
                 consumer_key=settings.DISPUTES_TWITTER_CONSUMER_KEY,
@@ -83,22 +87,22 @@ class GrantAdmin(GeneralAdmin):
     ordering = ['-id']
     fields = [
         'migrated_to',
-        'title', 'description', 'reference_url', 'admin_address', 'active',
+        'title', 'description', 'description_rich', 'reference_url', 'admin_address', 'active',
         'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
         'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
-        'link', 'clr_matching', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
-        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible'
+        'link', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
+        'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs'
     ]
     readonly_fields = [
         'logo_svg_asset', 'logo_asset',
         'team_member_list', 'clr_prediction_curve',
         'subscriptions_links', 'contributions_links', 'link',
-        'migrated_to', 'view_count'
+        'migrated_to', 'view_count', 'in_active_clrs'
     ]
-    list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active','grant_type', 'link', 'hidden', 'migrated_to']
+    list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
     raw_id_fields = ['admin_profile']
     search_fields = ['description', 'admin_profile__handle']
 
@@ -254,7 +258,6 @@ class ContributionAdmin(GeneralAdmin):
         return format_html(f"<a href='/{obj.subscription.contributor_profile.handle}'>{obj.subscription.contributor_profile}</a>")
 
     def created_on_nt(self, obj):
-        from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(obj.created_on)
 
     def amount_str(self, obj):
@@ -273,7 +276,6 @@ class ContributionAdmin(GeneralAdmin):
         return obj.subscription.amount_per_period
 
     def github_created_on(self, instance):
-        from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(instance.subscription.contributor_profile.github_created_on)
 
     def from_ip_address(self, instance):
@@ -298,7 +300,6 @@ class ContributionAdmin(GeneralAdmin):
         return instance.subscription.amount_per_period_minus_gas_price
 
     def response_change(self, request, obj):
-        from django.shortcuts import redirect
         if "_notify_contribution_failure" in request.POST:
             from marketing.mails import grant_txn_failed
             grant_txn_failed(obj)
@@ -320,7 +321,6 @@ class PhantomFundingAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile', 'grant']
 
     def github_created_on(self, instance):
-        from django.contrib.humanize.templatetags.humanize import naturaltime
         return naturaltime(instance.profile.github_created_on)
 
     def from_ip_address(self, instance):
@@ -337,6 +337,21 @@ class CartActivityAdmin(admin.ModelAdmin):
     search_fields = ['bulk', 'action', 'grant']
 
 
+class GrantTypeAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name']
+    readonly_fields = ['pk']
+
+
+class GrantCategoryAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'category']
+    readonly_fields = ['pk']
+
+
+
+class GrantCLRAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active']
+
+
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
 admin.site.register(MatchPledge, MatchPledgeAdmin)
 admin.site.register(Grant, GrantAdmin)
@@ -345,3 +360,6 @@ admin.site.register(CLRMatch, CLRMatchAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Contribution, ContributionAdmin)
 admin.site.register(CartActivity, CartActivityAdmin)
+admin.site.register(GrantType, GrantTypeAdmin)
+admin.site.register(GrantCategory, GrantCategoryAdmin)
+admin.site.register(GrantCLR, GrantCLRAdmin)

@@ -433,7 +433,7 @@
                           </div>
 
                           <!-- WEB3 MODAL FLOW -->
-                          <div v-else-if="fulfillment.payout_type == 'web3_modal'" class="px-sm-4">
+                          <div v-else-if="fulfillment.payout_type == 'web3_modal' || fulfillment.payout_type == 'polkadot_ext'" class="px-sm-4">
 
                             <div class="text-center pb-3">
                               <p class="mb-3 font-subheader font-weight-bold">Payout</p>
@@ -487,10 +487,21 @@
                                 </p>
                               </div>
 
-                              <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
-                                @click="payWithWeb3Step(fulfillment.pk, fulfillment.fulfiller_address, $event)"
-                              >Payout
-                              </button>
+                              <template v-if="fulfillment.payout_type == 'web3_modal'">
+                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                  @click="payWithWeb3Step(fulfillment.pk, fulfillment.fulfiller_address, $event)"
+                                >
+                                  Payout
+                                </button>
+                              </template>
+                              <template v-if="fulfillment.payout_type == 'polkadot_ext'">
+                                <button class="btn btn-gc-blue button--full py-3 font-subheader mt-3"
+                                  @click="payWithPolkadotExtensionStep(fulfillment.pk, fulfillment.fulfiller_address, $event)"
+                                >
+                                  Payout
+                                </button>
+                              </template>
+
                               <p class="font-subheader mt-4 mb-0 text-center">
                                 <a href="#" v-on:click="goToStep('payout_amount', 'payout')">
                                   <i class="fas fa-chevron-left mr-2 font-caption"></i>
@@ -980,7 +991,7 @@
                         {% endif %}
 
                         <div class="text-center mt-2">
-                          <a href="{{project.work_url}}" target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
+                          <a href="{% url 'hackathon_project_page' hackathon=project.hackathon.slug project_id=project.id project_name=project.name|slugify %}" target="_blank" class="font-weight-bold card-subtitle">{{project.name}}</a>
                           <div class="mb-2">
                             <b class="text-muted font-smaller-2">Team Members</b>
                             <div class="mt-1">
@@ -1082,7 +1093,6 @@
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/clipboard.js" %}"></script>
     <script src="{% static "v2/js/lib/qrcode.js" %}"></script>
-    <script src="{% static "v2/js/vue-components.js" %}"></script>
 
     <script>
       $('body').bootstrapTooltip({
@@ -1091,15 +1101,32 @@
       });
       const csrftoken = $('input[name="csrfmiddlewaretoken"]').attr('value');
     </script>
-    <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
-    <script src="{% static "v2/js/pages/bounty_detail/web3_modal.js" %}"></script>
+
+
+    {% if web3_type == 'polkadot_ext' %}
+
+      <script src="{% static "v2/js/lib/polkadot/core.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/polkadot/extension.min.js" %}"></script>
+      <script src="{% static "v2/js/lib/polkadot/utils.js" %}"></script>
+      <script src="{% static "v2/js/pages/bounty_detail/polkadot_extension.js" %}"></script>
+
+    {% elif web3_type == 'fiat' %}
+      <script src="{% static "v2/js/pages/bounty_detail/PYPL.js" %}"></script>
+
+    {% elif web3_type == 'web3_modal' %}
+
+      <script src="{% static "v2/js/pages/bounty_detail/web3_modal.js" %}"></script>
+      <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
+      <script src="{% static "v2/js/ipfs.js" %}"></script>
+
+    {% endif %}
+
+
     <script src="{% static "v2/js/pages/bounty_details2.js" %}"></script>
     <script src="{% static "v2/js/lib/daterangepicker.min.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_funder_payout_reminder.js" %}"></script>
     <script src="{% static "v2/js/pages/bounty_share.js" %}"></script>
     <script src="{% static "v2/js/hackathon-projects.js" %}"></script>
-    <script src="{% static "v2/js/lib/ipfs-api.js" %}"></script>
-    <script src="{% static "v2/js/ipfs.js" %}"></script>
     <script src="{% static "v2/js/user-search.js" %}"></script>
     <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
   </body>

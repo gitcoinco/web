@@ -108,7 +108,7 @@
       .stats-iframe {
         width: 100%;
         height: 100vh;
-        height: -webkit-fill-available;
+        min-height: 1600px;
       }
 
       .tag {
@@ -302,6 +302,7 @@
                   </div>
                 </div>
               </b-tab>
+
               <b-tab title-item-class="navigation">
                 <template class="d-none" v-slot:title>
                   <div class="mt-4">
@@ -314,6 +315,31 @@
                   </div>
                 </div>
 
+              </b-tab>
+              <b-tab title-item-class="navigation">
+                <template class="d-none" v-slot:title>
+                  <div class="mt-4">
+                    {% trans "Mentors" %}
+                  </div>
+                </template>
+                <manage-mentors :org_name="userOrg.org_name" :hackathon_id="hackathonObj.id" inline-template>
+                  <div class="offset-3 col-6">
+                    <p>Set default mentors for bounties below. Mentors will be added to hackathon chat channels that you sponsor.</p>
+                    <div class="from-group mb-3 mt-4">
+                      <label class="font-weight-semibold" for="org-mentors">Bounty Mentors (Optional) <small>Add Gitcoin/Github Usernames</small></label>
+                      <div class="form__select2 g-multiselect">
+                        <select id="org-mentors" class="mentor-users" multiple="multiple" aria-describedby="profilesHelp">
+                          {% for profile in default_mentors %}
+                          <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group mb-3 mt-4">
+                      <b-button class="btn btn-gc-blue"@click="updateBountyMentors();">Update Mentors</b-button>
+                    </div>
+                  </div>
+                </manage-mentors>
               </b-tab>
             </b-tabs>
           </div>
@@ -335,7 +361,6 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with vue=True %}
     {% include 'shared/footer.html' %}
-    <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{user_orgs|json_script:"orgs-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
     <script>
@@ -356,7 +381,6 @@
     {% include 'shared/activity_scripts.html' %}
     <script src='{% static "v2/js/status.js" %}'></script>
     <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
-    <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
     <script src='{% static "v2/js/users.js" %}'></script>
     <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
     {% include 'shared/current_profile.html' %}

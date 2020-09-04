@@ -58,23 +58,27 @@
     </div>
     <div class="col-10 col-sm-8 pl-2 px-sm-0 activity_detail">
       <div>
-         {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
+        {% include 'profiles/presence_indicator.html' with last_chat_status=row.profile.last_chat_status chat_id=row.profile.chat_id handle=row.profile.handle additionalclasses="mini" show_even_if_offline=1 %}
         <b>{% firstof row.profile.data.name or row.profile.handle %}</b>
         <span class="grey">
-         <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
-         {% if row.metadata.looking_team_members %}
-           <span class="font-body"> is
-             <i class="fas fa-users gc-text-blue"></i>
-             <span>Looking for Team Members</span>
-           </span>
-         {% elif row.metadata.looking_project %}
-           <span class="font-body"> is
-             <i class="far font-body fa-lightbulb gc-text-blue"></i>
-             <span>Looking for a Project</span>
-           </span>
-           <br>
-         {% endif %}
-         {% if row.hackathonevent %}
+          <a class="grey" href="/profile/{{ row.profile.handle }}" data-usercard="{{ row.profile.handle }}">@{{ row.profile.handle }}</a>
+          {% if row.metadata.looking_team_members %}
+            <span class="font-body"> is
+              <i class="fas fa-users gc-text-blue"></i>
+              <span>Looking for Team Members</span>
+            </span>
+          {% elif row.metadata.looking_project %}
+            <span class="font-body"> is
+              <i class="far font-body fa-lightbulb gc-text-blue"></i>
+              <span>Looking for a Project</span>
+            </span>
+            <br>
+          {% endif %}
+          {% if row.project %}
+            <a href="{% url 'hackathon_project_page' hackathon=row.project.hackathon.slug project_id=row.project.id project_name=row.project.name|slugify %}" class="tag"   data-toggle="tooltip" title="Go to {{ row.project.name }}">via {{ row.project.name }}</a>
+          {% endif %}
+
+          {% if row.hackathonevent %}
             <a href="{% url 'hackathon' row.hackathonevent.slug %}townsquare/?tab=hackathon:{{row.hackathonevent.id}}" class="tag" data-toggle="tooltip" title="Go to {{ row.hackathonevent.name }} Townsquare">via {{ row.hackathonevent.name }}</a>
             <a href="/townsquare/?tab=hackathon:{{ row.hackathonevent.id }}" data-toggle="tooltip" title="Filter {{ row.hackathonevent.name }} Posts">
               <i class="fas fa-filter"></i>
@@ -251,6 +255,8 @@
 
       {% elif row.activity_type == 'leaderboard_rank' %}
         <a href="{{ row.metadata.link }}">{{ row.metadata.title }}</a>
+      {% elif row.activity_type == 'hypercharge_bounty' %}
+        <a href="{{row.bounty.url}}">{{ row.metadata.title | safe }}</a>
       {% elif row.activity_type == 'new_bounty' %}
         <a href="{{row.bounty.url}}">{{ row.bounty.title | safe }}</a>
       {% elif row.activity_type == 'start_work' %}
@@ -488,7 +494,36 @@
       </div>
     {% endif %}
   </div>
-  {% if row.activity_type == 'new_bounty' and not for_email %}
+  {% if row.activity_type == 'hypercharge_bounty'%}
+  <div class="mt-1 mb-2">
+    <div class="row align-items-center bg-light content py-3">
+      <div class="col-12 col-md-2 text-center">
+        {% if row.bounty.funding_organisation %}
+          <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.funding_organisation %}">
+        {% else %}
+          <img class="logo-metacard rounded-circle" src="{% url 'org_avatar' row.bounty.bounty_owner_github_username %}">
+        {% endif %}
+      </div>
+      <div class="col-12 col-md-7 d-flex flex-column">
+        <div class="bounty-detail">
+          <div class="title font-subheader font-weight-bold">
+            {{ row.metadata.description }}
+          </div>
+
+          <div class="bounty-summary p-0 col-12">
+            <div class="info font-caption">
+              {% if row.bounty.funding_organisation %}
+                {{ row.bounty.funding_organisation }}
+              {% else %}
+                {{ row.bounty.bounty_owner_github_username }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% elif row.activity_type == 'new_bounty' and not for_email %}
   <div class="mt-1 mb-2">
     <div class="row align-items-center bg-light content py-3">
       <div class="col-12 col-md-2 text-center">

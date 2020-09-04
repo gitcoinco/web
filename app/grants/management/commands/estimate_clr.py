@@ -24,8 +24,7 @@ from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
 from grants.clr import predict_clr
-from grants.models import Contribution, Grant
-from grants.views import clr_active
+from grants.models import Contribution, Grant, GrantCLR
 from marketing.mails import warn_subscription_failed
 
 
@@ -34,37 +33,56 @@ class Command(BaseCommand):
     help = 'calculate CLR estimates for all grants'
 
     def add_arguments(self, parser):
-
-        parser.add_argument('clr_type', type=str, default='tech', choices=['tech', 'media', 'health', 'change', 'matic'])
         parser.add_argument('network', type=str, default='mainnet', choices=['rinkeby', 'mainnet'])
-        parser.add_argument(
-            '-force', '--force', action='store_true', dest='force', default=False, help='Force to run the CLR calcs even if the round is closed'
-        )
+        parser.add_argument('clr_pk', type=str, default="all")
+
 
     def handle(self, *args, **options):
-        if not clr_active and not options['force']:
-            print('CLR round is not active according to grants.views.clr_active, so cowardly refusing to spend the CPU cycles + exiting instead')
-            return
 
-        clr_type = options['clr_type']
         network = options['network']
-        # identity mechanism is profiles for traditional rounds. for experimental rounds, where we saw collusion
-        # make the identity mechanism into funds originated addr
-        # this is a stopgap until a "one identity mechanism to rule them all is round", probably in round 6.
+        clr_pk = options['clr_pk']
 
-        predict_clr(
-            save_to_db=True,
-            from_date=timezone.now(),
-            clr_type=clr_type,
-            network=network
-        )
+        if clr_pk == "all":
+            active_clr_rounds = GrantCLR.objects.filter(is_active=True)
+        else:
+            active_clr_rounds = GrantCLR.objects.filter(pk=clr_pk)
 
-        print("finished CLR estimates")
+        if active_clr_rounds:
+            for clr_round in active_clr_rounds:
+                print(f"CALCULATING CLR estimates for ROUND: {clr_round.round_num}")
+                predict_clr(
+                    save_to_db=True,
+                    from_date=timezone.now(),
+                    clr_round=clr_round,
+                    network=network
+                )
+                print(f"finished CLR estimates for {clr_round.round_num}")
 
-        # TOTAL GRANT
-        # grants = Grant.objects.filter(network=network, hidden=False, active=True, grant_type=clr_type, link_to_new_grant=None)
-        # total_clr_distributed = 0
-        # for grant in grants:
-        #     total_clr_distributed += grant.clr_prediction_curve[0][1]
+                # TOTAL GRANT
+                # grants = Grant.objects.filter(network=network, hidden=False, active=True, link_to_new_grant=None)
+                # grants = grants.filter(**clr_round.grant_filters)
 
-        # print(f'Total CLR allocated for {clr_type} - {total_clr_distributed}')
+                # total_clr_distributed = 0
+                # for grant in grants:
+                #     total_clr_distributed += grant.clr_prediction_curve[0][1]
+
+                # print(f'Total CLR allocated for {clr_round.round_num} - {total_clr_distributed}')
+
+        else:
+            print("No active CLRs found")
+
+        # Upate grants mppping to active CLR rounds
+        grants = Grant.objects.all()
+        clr_rounds = GrantCLR.objects.all()
+        for clr_round in clr_rounds:
+            grants_in_clr_round = grants.filter(**clr_round.grant_filters)
+
+            for grant in grants_in_clr_round:
+                grant_has_mapping_to_round = grant.in_active_clrs.filter(pk=clr_round.pk).exists()
+
+                if clr_round.is_active and not grant_has_mapping_to_round:
+                    grant.in_active_clrs.add(clr_round)
+                    grant.save()
+                elif not clr_round.is_active and grant_has_mapping_to_round:
+                    grant.in_active_clrs.remove(clr_round)
+                    grant.save()

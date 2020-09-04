@@ -39,6 +39,7 @@ Vue.mixin({
         }
         vm.staffOptions();
         vm.fetchIfPendingFulfillments();
+        vm.initChain();
       }).catch(function(error) {
         vm.loadingState = 'error';
         _alert('Error fetching bounties. Please contact founders@gitcoin.co', 'error');
@@ -59,6 +60,14 @@ Vue.mixin({
 
         case 'ZIL':
           url = `https://viewblock.io/zilliqa/tx/${txn}`;
+          break;
+
+        case 'DOT':
+          url = `https://polkadot.subscan.io/extrinsic/${txn}`;
+          break;
+
+        case 'KSM':
+          url = `https://kusama.subscan.io/extrinsic/${txn}`;
           break;
 
         default:
@@ -84,6 +93,14 @@ Vue.mixin({
           url = `https://viewblock.io/zilliqa/address/${address}`;
           break;
 
+        case 'DOT':
+          url = `https://polkadot.subscan.io/account/${address}`;
+          break;
+
+        case 'KSM':
+          url = `https://kusama.subscan.io/account/${address}`;
+          break;
+
         default:
           url = `https://etherscan.io/address/${address}`;
       }
@@ -102,16 +119,10 @@ Vue.mixin({
           break;
 
         case 'CELO':
-          qr_string = value ?
-            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address,uint256)?args=[${address},${value}]` :
-            `celo:0xa561131a1c8ac25925fb848bca45a74af61e5a38/transfer(address)?args=[${address}]`;
-          break;
-
         case 'cUSD':
-          // TODO: Wire in when we know the address
           qr_string = value ?
-            `celo:${address}?value=${value}` :
-            `celo:${address}`;
+            `celo://${address}/${token_name}?v=${value}` :
+            `celo://${address}/${token_name}`;
           break;
 
         case 'ZIL':
@@ -271,6 +282,11 @@ Vue.mixin({
           tenant = 'ZIL';
           break;
 
+        case 'DOT':
+        case 'KSM':
+          tenant = 'POLKADOT';
+          break;
+
         default:
           tenant = 'ETH';
       }
@@ -338,6 +354,12 @@ Vue.mixin({
       const modal = this.$refs['payout-modal'][0];
 
       payWithWeb3(fulfillment_id, fulfiller_address, vm, modal);
+    },
+    payWithPolkadotExtensionStep: function(fulfillment_id, fulfiller_address) {
+      let vm = this;
+      const modal = this.$refs['payout-modal'][0];
+
+      payWithPolkadotExtension(fulfillment_id, fulfiller_address, vm, modal);
     },
     closeBounty: function() {
 
@@ -513,8 +535,37 @@ Vue.mixin({
           break;
 
         case 'web3_modal':
+        case 'polkadot_ext':
           vm.fulfillment_context.active_step = 'payout_amount';
           break;
+      }
+    },
+    initChain: function() {
+
+      let vm = this;
+      const token = vm.bounty.token_name;
+
+      switch (vm.bounty.web3_type) {
+        case 'polkadot_ext': {
+          let polkadot_endpoint;
+
+          if (token == 'KSM') {
+            polkadot_endpoint = KUSAMA_ENDPOINT;
+          } else if (token == 'DOT') {
+            polkadot_endpoint = POLKADOT_ENDPOINT;
+          }
+
+          polkadot_utils.connect(polkadot_endpoint).then(res =>{
+            console.log(res);
+            polkadot_extension_dapp.web3Enable('gitcoin').then(() => {
+              vm.fulfillment_context.active_step = 'payout_amount';
+            }).catch(err => {
+              _alert('Pleasure ensure you\'ve connected your polkadot extension to Gitcoin', 'error');
+              console.log(err);
+            });
+          });
+          break;
+        }
       }
     }
   },

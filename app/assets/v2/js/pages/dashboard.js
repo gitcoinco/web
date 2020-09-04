@@ -345,7 +345,7 @@ var get_search_URI = function(offset, order) {
       values.forEach(function(_value) {
         var _key;
 
-        if (_value === 'createdByMe') {
+        if (_value === 'createdByMe' || _value === 'stale') {
           _key = 'bounty_owner_github_username';
           _value = document.contxt.github_handle;
         } else if (_value === 'startedByMe') {
@@ -529,6 +529,20 @@ var refreshBounties = function(event, offset, append) {
   }
 
   explorer.bounties_request = $.get(bountiesURI, function(results, x) {
+
+    // Filter results by open bounties created more than 3 days ago
+    const filter_checked = $('input[name="bounty_filter"]:checked').val();
+
+    if (filter_checked && filter_checked.toString() === 'stale') {
+      results = results.filter(bounty => {
+        const now = new Date();
+        const created = new Date(bounty.web3_created);
+        const daysAgo = new Date(now.setDate(now.getDate() - 3));
+
+        return daysAgo > created && bounty.status === 'open';
+      });
+    }
+
     results = sanitizeAPIResults(results);
 
     if (results.length === 0 && !append) {

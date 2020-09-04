@@ -33,19 +33,20 @@ from marketing.utils import func_name, get_or_save_email_subscriber, should_supp
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     email_to_profile, get_notification_count, render_admin_contact_funder, render_bounty_changed,
-    render_bounty_expire_warning, render_bounty_feedback, render_bounty_request, render_bounty_startwork_expire_warning,
-    render_bounty_unintersted, render_comment, render_faucet_rejected, render_faucet_request,
-    render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale, render_gdpr_reconsent,
-    render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute, render_grant_txn_failed,
-    render_grant_update, render_kudos_email, render_match_distribution, render_match_email, render_mention,
-    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_no_applicant_reminder,
-    render_nth_day_email_campaign, render_quarterly_stats, render_remember_your_cart, render_request_amount_email,
-    render_reserved_issue, render_share_bounty, render_start_work_applicant_about_to_expire,
-    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
-    render_start_work_rejected, render_subscription_terminated_email, render_successful_contribution_email,
-    render_support_cancellation_email, render_tax_report, render_thank_you_for_supporting_email, render_tip_email,
-    render_unread_notification_email_weekly_roundup, render_wallpost, render_weekly_recap,
+    render_bounty_expire_warning, render_bounty_feedback, render_bounty_hypercharged, render_bounty_request,
+    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_comment, render_faucet_rejected,
+    render_faucet_request, render_featured_funded_bounty, render_funder_payout_reminder, render_funder_stale,
+    render_gdpr_reconsent, render_gdpr_update, render_grant_cancellation_email, render_grant_recontribute,
+    render_grant_txn_failed, render_grant_update, render_kudos_email, render_match_distribution, render_match_email,
+    render_mention, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
+    render_new_bounty_roundup, render_new_grant_email, render_new_supporter_email, render_new_work_submission,
+    render_no_applicant_reminder, render_nth_day_email_campaign, render_quarterly_stats, render_remember_your_cart,
+    render_request_amount_email, render_reserved_issue, render_share_bounty,
+    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_start_work_new_applicant, render_start_work_rejected, render_subscription_terminated_email,
+    render_successful_contribution_email, render_support_cancellation_email, render_tax_report,
+    render_thank_you_for_supporting_email, render_tip_email, render_unread_notification_email_weekly_roundup,
+    render_wallpost, render_weekly_recap,
 )
 from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -214,6 +215,24 @@ def new_grant(grant, profile):
 
         if not should_suppress_notification_email(to_email, 'new_grant'):
             send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
+
+def new_grant_match_pledge(matchpledge):
+    to_email = 'founders@gitcoin.co'
+    from_email = matchpledge.profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        subject = f"New Grants Match Pledge Inquiry from {matchpledge.profile.handle}"
+        body = f""
+        for key, val in matchpledge.data_json.items():
+            body += f"{key}: {val}\n"
+        body += f"\n\n\n{settings.BASE_URL}{matchpledge.admin_url}"
+        html = f"<pre>{body}</pre>"
+        send_mail(from_email, to_email, subject, body, html, categories=['transactional', func_name()])
     finally:
         translation.activate(cur_language)
 
@@ -1211,7 +1230,7 @@ def reject_faucet_request(fr):
         translation.activate(cur_language)
 
 
-def new_bounty_daily(bounties, old_bounties, to_emails=None):
+def new_bounty_daily(bounties, old_bounties, to_emails=None, featured_bounties=[]):
     max_bounties = 5
     if len(bounties) > max_bounties:
         bounties = bounties[0:max_bounties]
@@ -1289,7 +1308,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
             user = User.objects.filter(email__iexact=to_email).first()
             activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities, chats_count=chats_count)
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities, chats_count=chats_count, featured_bounties=featured_bounties)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
@@ -1497,6 +1516,24 @@ def bounty_changed(bounty, to_emails=None):
         finally:
             translation.activate(cur_language)
 
+
+def bounty_hypercharged(bounty, to_emails=None):
+    subject = gettext("We selected a bounty for you")
+
+    if to_emails is None:
+        to_emails = []
+
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_bounty_hypercharged(to_email, bounty)
+
+            if not should_suppress_notification_email(to_email, 'bounty'):
+                send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+        finally:
+            translation.activate(cur_language)
 
 def new_match(to_emails, bounty, github_username):
     subject = gettext("⚡️ {} Meet {}: {}! ").format(github_username.title(), bounty.org_name.title(), bounty.title)

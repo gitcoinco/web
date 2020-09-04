@@ -78,12 +78,15 @@ Vue.component('modal', {
 
 
 Vue.component('select2', {
-  props: [ 'options', 'value' ],
+  props: [ 'options', 'value', 'placeholder', 'inputlength' ],
   template: '#select2-template',
   mounted: function() {
     let vm = this;
 
-    $(this.$el).select2({data: this.options})
+    $(this.$el).select2({
+      data: this.options,
+      placeHolder: this.placeholder !== null ? this.placeholder : 'filter here',
+      minimumInputLength: this.inputlength !== null ? this.inputlength : 1})
       .val(this.value)
       .trigger('change')
       .on('change', function() {
@@ -203,23 +206,21 @@ Vue.component('tribes-settings', {
   methods: {}
 });
 
-Vue.component('manage-sponsor', {
-  props: ['hackathon_id'],
+Vue.component('manage-mentors', {
+  props: [ 'hackathon_id', 'org_name' ],
   methods: {
     onMentorChange: function(event) {
 
       this.bountyMentors = $('.mentor-users').select2('data').map(element => {
         return element.id;
       });
-      console.log(event);
-      console.log(this.bountyMentors);
     },
     updateBountyMentors: function() {
       let vm = this;
       const url = '/api/v0.1/bounty_mentor/';
 
       const updateBountyMentor = fetchData(url, 'POST', JSON.stringify({
-        has_overrides: false,
+        bounty_org: vm.org_name,
         hackathon_id: vm.hackathon_id,
         set_default_mentors: true,
         new_default_mentors: vm.bountyMentors
@@ -238,7 +239,6 @@ Vue.component('manage-sponsor', {
       return element.id;
     });
 
-    console.log(this.bountyMentors);
   },
   data: function() {
     return {
@@ -518,6 +518,14 @@ Vue.component('project-card', {
     };
   },
   props: [ 'project', 'edit', 'is_staff' ],
+  computed: {
+    project_url: function() {
+      let project = this.$props.project;
+      let project_name = (project.name || '').replace(/ /g, '-');
+
+      return `/hackathon/${project.hackathon.slug}/projects/${project.pk}/${project_name}`;
+    }
+  },
   methods: {
     markWinner: function($event, project) {
       let vm = this;
@@ -559,7 +567,7 @@ Vue.component('project-card', {
             [[ project.summary | truncate(500) ]]
           </p>
           <div class="text-left">
-            <a :href="project.work_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
+            <a :href="project_url" target="_blank" class="btn btn-sm btn-gc-blue font-smaller-2 font-weight-semibold">View Project</a>
             <a :href="project.bounty.url" class="btn btn-sm btn-outline-gc-blue font-smaller-2 font-weight-semibold">View Bounty</a>
             <b-dropdown variant="outline-gc-blue" toggle-class="btn btn-sm" split-class="btn-sm btn btn-gc-blue">
             <template v-slot:button-content>

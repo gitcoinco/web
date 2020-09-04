@@ -41,7 +41,7 @@ class BountyEventAdmin(admin.ModelAdmin):
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
-    raw_id_fields = ['bounty', 'profile']
+    raw_id_fields = ['bounty', 'profile', 'funder_profile', 'project']
     readonly_fields = ['fulfiller_github_username']
     list_display = ['id', 'bounty', 'profile', 'fulfiller_github_url', 'payout_status']
     search_fields = [
@@ -447,6 +447,7 @@ class CouponAdmin(admin.ModelAdmin):
 
 class HackathonRegistrationAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'referer', 'registrant']
+    search_fields = ['name', 'registrant__handle']
     raw_id_fields = ['registrant']
 
 

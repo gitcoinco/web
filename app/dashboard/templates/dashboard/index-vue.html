@@ -198,7 +198,8 @@
                     {% trans "Townsquare" %}
                   </div>
                 </template>
-                <div class="ml-md-4 townsquare_header">
+                  <div v-if="hackathonObj.name === 'APOLLO' || hackathonObj.name === 'filecoin'"><iframe style="border: 0; box-shadow: none; width: 100%; height: 80vh;" src="https://gitcoin.circle.so/c/meet-and-greet"></iframe></div>
+                  <div v-else class="ml-md-4 townsquare_header">
                   <div class="row">
                     <div class="ml-4 col-12 col-md-2 col-xl-3 d-lg-block">
                       <a href="{% url 'hackathon_ts' hackathon.slug %}" class="btn gc-text-blue">
@@ -761,32 +762,6 @@
                 </div>
 
               </b-tab>
-              {% if can_manage %}
-              <b-tab class="col-12" title-item-class="navigation" lazy>
-                <template v-slot:title>
-                  <div class="mt-4">
-                    {% trans "Dashboard" %}
-                  </div>
-                </template>
-                <manage-sponsor v-bind:hackathon_id="hackathonObj.id" inline-template>
-                  <div class="offset-3 col-6">
-                      <div class="from-group mb-3 mt-4">
-                        <label class="font-weight-semibold" for="org-mentors">Bounty Mentors (Optional) <small>Add Gitcoin/Github Usernames</small></label>
-                        <div class="form__select2 g-multiselect">
-                          <select id="org-mentors" class="mentor-users" multiple="multiple" aria-describedby="profilesHelp">
-                            {% for profile in default_mentors %}
-                            <option selected="selected"  value="{{ profile.id }}">{{ profile }}</option>
-                            {% endfor %}
-                          </select>
-                        </div>
-                      </div>
-                      <div class="form-group mb-3 mt-4">
-                        <b-button @click="updateBountyMentors();">Update Mentors</b-button>
-                      </div>
-                  </div>
-                </manage-sponsor>
-              </b-tab>
-              {% endif %}
               <template v-slot:tabs-end  v-if="!hackHasEnded">
                 <li role="presentation" class="nav-item navigation">
                   <a href="{% url 'hackathon_onboard' hackathon.slug %}" class="text-reset text-decoration-none nav-link">
@@ -854,7 +829,6 @@
       </select>
     </script>
     <script src='{% static "v2/js/lib/markdown-it.js" %}'></script>
-    <script src='{% static "v2/js/vue-components.js" %}'></script>
     {{orgs|json_script:"sponsor-list"}}
     {{hackathon_obj|json_script:"hackathon-object"}}
     {{prize_founders|json_script:"prize-founders"}}
@@ -882,7 +856,6 @@
     {% include 'shared/activity_scripts.html' %}
     <script src='{% static "v2/js/status.js" %}'></script>
     <script src='{% static "v2/js/pages/townsquare.js" %}'></script>
-    <script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
     <script src='{% static "v2/js/users.js" %}'></script>
     <script src='{% static "v2/js/hackathon-projects.js" %}'></script>
     {% include 'shared/current_profile.html' %}
