@@ -407,7 +407,7 @@ class RoundupEmail(SuperModel):
     videos = models.TextField(max_length=15000, blank=True)
     issue = models.SmallIntegerField(default=0)
     release_date = models.DateField(default=datetime.now)
-
+    hide_dynamic = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return '/_administration/email/roundup'

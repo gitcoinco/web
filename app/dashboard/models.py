@@ -859,7 +859,7 @@ class Bounty(SuperModel):
 
     def value_in_usdt_at_time(self, at_time):
         decimals = 10 ** 18
-        if self.token_name == 'USDT':
+        if self.token_name in ['USDT', 'USDC']:
             return float(self.value_in_token / 10 ** 6)
         if self.token_name in settings.STABLE_COINS:
             return float(self.value_in_token / 10 ** 18)
@@ -1089,14 +1089,21 @@ class Bounty(SuperModel):
             bool: Whether or not the Bounty is eligible for outbound notifications.
 
         """
-        if not var_to_check or self.get_natural_value() < 0.0001 or (
-           self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
-            return False
-        if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
-            return False
-        if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
+        print(f'### GITCOIN BOT A2 network {self.network}')
+        print(f'### GITCOIN BOT A2 settings.DEBUG {settings.DEBUG}')
+        print(f'### GITCOIN BOT A2 settings.ENV {settings.ENV}')
+
+        if self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
             return False
 
+        print(f'### GITCOIN BOT A3')
+
+        if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
+            return False
+
+        print(f'### GITCOIN BOT A4')
+
+        print(f'### GITCOIN BOT A5 - Is Eligible')
         return True
 
     @property
@@ -2611,6 +2618,7 @@ class ProfileQuerySet(models.QuerySet):
 class ProfileManager(models.Manager):
     def get_queryset(self):
         return ProfileQuerySet(self.model, using=self._db).slim()
+
 
 
 class Repo(SuperModel):
@@ -4178,6 +4186,9 @@ class Profile(SuperModel):
         }
 
 
+    def to_es(self):
+        return json.dumps(self.to_dict())
+
     def to_dict(self):
         """Get the dictionary representation with additional data.
 
@@ -4338,6 +4349,7 @@ class Profile(SuperModel):
         return context
 
 
+
     @property
     def reassemble_profile_dict(self):
         params = self.as_dict
@@ -4442,6 +4454,85 @@ def post_logout(sender, request, user, **kwargs):
     from dashboard.utils import create_user_action
     create_user_action(user, 'Logout', request)
 
+class UserDirectoryQuerySet(models.QuerySet):
+    """Define the Profile QuerySet to be used as the objects manager."""
+
+class UserDirectoryManager(models.Manager):
+    def get_queryset(self):
+        return UserDirectoryQuerySet(self.model, using=self._db)
+
+class UserDirectory(models.Model):
+    profile_id = models.CharField(max_length=255, primary_key=True)
+    join_date = models.CharField(max_length=255)
+    github_created_at = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    handle = models.CharField(max_length=255)
+    sms_verification = models.BooleanField()
+    persona = models.CharField(max_length=255)
+    rank_coder = models.IntegerField()
+    num_hacks_joined = models.IntegerField()
+    which_hacks_joined = ArrayField(base_field=models.IntegerField())
+    hack_work_starts = models.IntegerField()
+    hack_work_submits = models.IntegerField()
+    hack_work_start_orgs = models.IntegerField()
+    hack_work_submit_orgs = models.IntegerField()
+    bounty_work_starts = models.IntegerField()
+    bounty_work_submits = models.IntegerField()
+    hack_started_feature = models.IntegerField()
+    hack_started_code_review = models.IntegerField()
+    hack_started_security = models.IntegerField()
+    hack_started_design = models.IntegerField()
+    hack_started_documentation = models.IntegerField()
+    hack_started_bug = models.IntegerField()
+    hack_started_other = models.IntegerField()
+    hack_started_improvement = models.IntegerField()
+    started_feature = models.IntegerField()
+    started_code_review = models.IntegerField()
+    started_security = models.IntegerField()
+    started_design = models.IntegerField()
+    started_documentation = models.IntegerField()
+    started_bug = models.IntegerField()
+    started_other = models.IntegerField()
+    started_improvement = models.IntegerField()
+    submitted_feature = models.IntegerField()
+    submitted_code_review = models.IntegerField()
+    submitted_security = models.IntegerField()
+    submitted_design = models.IntegerField()
+    submitted_documentation = models.IntegerField()
+    submitted_bug = models.IntegerField()
+    submitted_other = models.IntegerField()
+    submitted_improvement = models.IntegerField()
+    bounty_earnings  = models.IntegerField()
+    bounty_work_start_orgs = models.IntegerField()
+    bounty_work_submit_orgs = models.IntegerField()
+    kudos_sends = models.IntegerField()
+    kudos_receives = models.IntegerField()
+    hack_winner_kudos_received = models.IntegerField()
+    grants_opened = models.IntegerField()
+    grant_contributed = models.IntegerField()
+    grant_contributions = models.IntegerField()
+    grant_contribution_amount = models.IntegerField()
+    num_actions = models.IntegerField()
+    action_points = models.FloatField()
+    avg_points_per_action = models.FloatField()
+    last_action_on = models.IntegerField()
+    keywords = ArrayField(base_field=models.CharField(max_length=255))
+    activity_level = models.CharField(max_length=255)
+    reliability = models.CharField(max_length=255)
+    average_rating = models.IntegerField()
+    longest_streak = models.IntegerField()
+    earnings_count = models.IntegerField()
+    follower_count = models.IntegerField()
+    following_count = models.IntegerField()
+    num_repeated_relationships  = models.IntegerField()
+    verification_status = models.IntegerField()
+
+    objects = UserDirectoryManager()
+
+    class Meta:
+        managed = False
 
 class ProfileSerializer(serializers.BaseSerializer):
     """Handle serializing the Profile object."""
