@@ -1201,6 +1201,8 @@ def render_new_bounty_roundup(to_email):
     from django.conf import settings
     from marketing.models import RoundupEmail
     args = RoundupEmail.objects.order_by('created_on').last()
+    hide_dynamic = args.hide_dynamic
+
     subject = args.subject
     new_kudos_pks = args.kudos_ids.split(',')
     new_kudos_size_px = 150
@@ -1277,6 +1279,7 @@ def render_new_bounty_roundup(to_email):
         'sponsor': sponsor,
 		'email_type': 'roundup',
         'email_style': email_style,
+        'hide_dynamic': hide_dynamic,
         'hide_bottom_logo': True,
         'new_kudos_pks': new_kudos_pks,
         'new_kudos_size_px': new_kudos_size_px,
