@@ -1,4 +1,5 @@
 let step = 2;
+let orgs = document.contxt.orgs;
 
 Vue.component('v-select', VueSelect.VueSelect);
 
@@ -24,6 +25,7 @@ if (document.getElementById('gc-onboard')) {
         step: step,
         isOrg: false,
         bio: '',
+        orgs: orgs,
         // totalcharacter:0,
         skills: ['css','php'],
         skillsSelected: [],

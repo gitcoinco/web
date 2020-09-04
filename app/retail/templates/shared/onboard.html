@@ -140,7 +140,12 @@
 
         <div class="d-flex justify-content-center mt-4">
           <button class="btn btn-outline-gc-blue mr-4" @click="step--">Back</button>
-          <button class="btn btn-gc-blue" @click="step++">Next</button>
+          <template v-if="isOrg">
+            <button class="btn btn-gc-blue" @click="step++" :disabled="!userOptions.length">Next</button>
+          </template>
+          <template v-else>
+            <button class="btn btn-gc-blue" @click="step++" :disabled="!userOptions.length">Save</button>
+          </template>
         </div>
       </div>
 
