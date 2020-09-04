@@ -879,7 +879,7 @@ def user_lookup(request):
         return HttpResponse(status=404)
 
     path = request.get_full_path().replace('/user_lookup', '')
-    remote_url = f'{"https" if not settings.DEBUG else "http"}://{settings.ELASTIC_SEARCH_URL}:9200{path}'
+    remote_url = f'{settings.HAYSTACK_ELASTIC_SEARCH_URL}{path}'
     from proxy.views import proxy_view
     return proxy_view(request, remote_url)
 
