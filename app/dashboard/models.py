@@ -2856,6 +2856,7 @@ class Profile(SuperModel):
     objects = ProfileManager()
     objects_full = ProfileQuerySet.as_manager()
     brightid_uuid=models.UUIDField(default=uuid.uuid4, unique=True)
+    is_brightid_verified=models.BooleanField(default=True)
 
     @property
     def is_blocked(self):
