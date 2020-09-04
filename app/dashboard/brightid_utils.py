@@ -58,4 +58,15 @@ def assign_brightid_sponsorship(brightid_uuid):
     else:
         return False
 
+def get_verified_uuids():
+    endpointURL = 'https://app.brightid.org/node/v5/verifications/Gitcoin'
+
+    try:
+        response = requests.get(endpointURL)
+        responseData = response.json()
+        approved_uuids = responseData.get('data', {}).get('contextIds', [])
+
+        return approved_uuids
+    except:
+        return []
 

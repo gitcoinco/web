@@ -10,6 +10,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='is_brightid_verified',
-            field=models.BooleanField(default=True)
+            field=models.BooleanField(default=False)
         ),
     ]
