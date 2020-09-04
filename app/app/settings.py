@@ -829,7 +829,7 @@ HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': f"{HAYSTACK_ELASTIC_SEARCH_URL}",
+        'URL': HAYSTACK_ELASTIC_SEARCH_URL,
         'INDEX_NAME': 'haystack',
     },
 }
