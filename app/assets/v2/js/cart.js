@@ -800,25 +800,7 @@ Vue.component('grants-cart', {
         .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
-          this.postToDatabase(txHash, userAddress); // add `await` here if you want to wait for a response
-          // Clear cart, redirect back to grants page, and show success alert
-          localStorage.setItem('contributions_were_successful', 'true');
-          localStorage.setItem('contributions_count', String(this.grantData.length));
-          var network = document.web3network;
-          let timeout_amount = 1500 + (CartData.loadCart().length * 500);
-
-          _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
-
-          setTimeout(function() {
-            _alert('Contributions saved', 'success', 1000);
-            setTimeout(function() {
-              if (network === 'rinkeby') {
-                window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
-              } else {
-                window.location.href = `${window.location.origin}/grants`;
-              }
-            }, 500);
-          }, timeout_amount);
+          await this.finalizeCheckout(txHash, bulkCheckoutAddress, userAddress);
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
@@ -826,7 +808,10 @@ Vue.component('grants-cart', {
         });
     },
 
-    async postToDatabase(txHash, userAddress) {
+    /**
+     * @notice POSTs donation data to database. Intended to be called from finalizeCheckout()
+     */
+    async postToDatabase(txHash, contractAddress, userAddress) {
       // this.donationInputs is the array used for bulk donations
       // We loop through each donation and POST the required data
       const donations = this.donationInputs;
@@ -849,7 +834,7 @@ Vue.component('grants-cart', {
         recurring_or_not: 'once',
         signature: 'onetime',
         split_tx_id: txHash, // this txhash is our bulk donation hash
-        splitter_contract_address: bulkCheckoutAddress,
+        splitter_contract_address: contractAddress,
         subscription_hash: 'onetime',
         // Values that vary by donation
         'gitcoin-grant-input-amount': [],
@@ -925,6 +910,37 @@ Vue.component('grants-cart', {
       const json = await res.json();
 
       console.log('Bulk fund POST response, JSON', json);
+    },
+
+    /**
+     * POSTs donation data to database, updates local storage, redirects page, shows success alert
+     * @param {string} txHash An L1 transaction hash, from user interaction with either
+     * BulkCheckout or from BatchZkSyncDeposit
+     * @param {string} contractAddress Address of the contract for the above transaction hash, i.e.
+     * pass in a value of either 'bulkCheckoutAddress' or 'batchZkSyncDepositContractAddress'
+     * @param {string} userAddress User's web3 address
+     */
+    async finalizeCheckout(txHash, contractAddress, userAddress) {
+      // Save contributions to database
+      _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
+      await this.postToDatabase(txHash, contractAddress, userAddress);
+
+      // Clear cart, redirect back to grants page, and show success alert
+      localStorage.setItem('contributions_were_successful', 'true');
+      localStorage.setItem('contributions_count', String(this.grantData.length));
+      var network = document.web3network;
+      let timeout_amount = 1500 + (CartData.loadCart().length * 500);
+
+      setTimeout(function() {
+        _alert('Contributions saved', 'success', 1000);
+        setTimeout(function() {
+          if (network === 'rinkeby') {
+            window.location.href = `${window.location.origin}/grants/?network=rinkeby&category=`;
+          } else {
+            window.location.href = `${window.location.origin}/grants`;
+          }
+        }, 500);
+      }, timeout_amount);
     },
 
     sleep(ms) {
@@ -1083,14 +1099,20 @@ Vue.component('grants-cart', {
     updateConfirmationsInUI() {
       // Track number of confirmations live in UI
       this.currentConfirmationNumber = 1;
-      this.ethersProvider.on('block', () => {
-        this.currentConfirmationNumber += 1
-        if (this.currentConfirmationNumber === this.numberOfConfirmationsNeeded) {
-          // Remove listener and update state once we get all required confirmations
-          this.zkSyncCheckoutFlowStep += 1;
-          this.ethersProvider.removeAllListeners('block');
-        }
-      });
+      if (this.currentConfirmationNumber === this.numberOfConfirmationsNeeded) {
+        // We only need one confirmation, so we're done -- this is for Rinkeby
+        this.zkSyncCheckoutFlowStep += 1;
+      } else {
+        // Watch for blocks so update number of confirmations received in UI
+        this.ethersProvider.on('block', () => {
+          this.currentConfirmationNumber += 1
+          if (this.currentConfirmationNumber === this.numberOfConfirmationsNeeded) {
+            // Remove listener and update state once we get all required confirmations
+            this.zkSyncCheckoutFlowStep += 1;
+            this.ethersProvider.removeAllListeners('block');
+          }
+        });
+      }
     },
 
     /**
@@ -1420,6 +1442,10 @@ Vue.component('grants-cart', {
       // Dispatch the transfers
       await this.dispatchSignedTransfers(donationSignatures);
       console.log('✅✅✅ Checkout complete!');
+
+      // Final processing
+      const userAddress = (await web3.eth.getAccounts())[0]; 
+      await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, userAddress);
     },
 
     /**
@@ -1475,6 +1501,10 @@ Vue.component('grants-cart', {
         await this.dispatchSignedTransfers(donationSignatures);
         console.log('✅✅✅ Interrupted checkout complete!');
         this.zkSyncCheckoutStep3Status = 'complete';
+
+        // Final processing
+        const userAddress = (await web3.eth.getAccounts())[0]; 
+        await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, userAddress);
     
       } catch(e) {
         this.handleError(e);
