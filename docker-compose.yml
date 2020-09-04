@@ -42,7 +42,7 @@ services:
 
 
   ipfs:
-    image: ipfs/go-ipfs:release
+    image: ipfs/go-ipfs:v0.6.0
     restart: unless-stopped
     volumes:
       - 'ipfsexport:/export'
