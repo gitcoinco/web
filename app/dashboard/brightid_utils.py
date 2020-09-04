@@ -5,8 +5,6 @@ import base64
 import ed25519
 from django.conf import settings
 
-V5_URL = 'http://node.brightid.org/brightid/v5/operations'
-
 def get_brightid_status(brightid_uuid):
     brightIDUrl = 'http://node.brightid.org/brightid/v4/verifications/Gitcoin/' + str(brightid_uuid)
 
@@ -37,6 +35,8 @@ def get_brightid_status(brightid_uuid):
         return 'unknown'
 
 def assign_brightid_sponsorship(brightid_uuid):
+    brightIDv5OpUrl = 'http://node.brightid.org/brightid/v5/operations'
+
     op = {
         'name': 'Sponsor',
         'app': 'Gitcoin',
@@ -50,7 +50,7 @@ def assign_brightid_sponsorship(brightid_uuid):
     sig = signing_key.sign(message)
     op['sig'] = base64.b64encode(sig).decode('ascii')
 
-    response = requests.post(V5_URL, json.dumps(op))
+    response = requests.post(brightIDv5OpUrl, json.dumps(op))
 
     if 200 == response.status_code:
         # {'data': {'hash': 'LVleLJw0siU7C47-MhpVXZTfhpJl2AXvNr-Vx2N11sI'}}
