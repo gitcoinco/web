@@ -1237,34 +1237,13 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None, featured_bounties=[
     if to_emails is None:
         to_emails = []
 
-    from marketing.views import quest_of_the_day, upcoming_grant, upcoming_hackathon, latest_activities, upcoming_dates, upcoming_dates, email_announcements
+    from marketing.views import quest_of_the_day, latest_activities, email_announcements
     quest = quest_of_the_day()
-    grant = upcoming_grant()
-    dates = list(upcoming_hackathon()) + list(upcoming_dates())
-    announcements = email_announcements()
-    chats_count = 0
 
     offers = f""
     if to_emails:
         offers = ""
-
-        profile = email_to_profile(to_emails[0])
-        chat = ""
-        if profile:
-            try:
-                chats_count = profile.chat_num_unread_msgs
-            except:
-                chats_count = 0
-            if chats_count:
-                plural = 's' if chats_count > 1 else ''
-                chat = f"💬 {chats_count} Chat{plural}"
-
-        notifications = get_notification_count(profile, 7, timezone.now())
-        if notifications:
-            plural = 's' if notifications > 1 else ''
-            notifications = f"🔵 {notifications} Notification{plural}"
-        else:
-            notifications = ''
+        
         has_offer = is_email_townsquare_enabled(to_emails[0]) and is_there_an_action_available()
         if has_offer:
             offers = f"⚡️ 1 New Action"
@@ -1283,20 +1262,10 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None, featured_bounties=[
         if quest:
             new_quests = f"🎯1 Quest"
 
-        new_dates = ""
-        if dates:
-            plural_dates = "Events" if len(dates)>1 else "Event"
-            new_dates = f"🛠📆{len(dates)} {plural_dates}"
-
-        new_announcements = ""
-        if announcements:
-            plural = "Announcement"
-            new_announcements = f"📣 1 {plural}"
-
         def comma(a):
-            return ", " if a and (new_bounties or new_quests or new_dates or new_announcements or notifications) else ""
+            return ", " if a and (new_bounties or new_quests or has_offer) else ""
 
-        subject = f"{chat}{comma(chat)}{notifications}{comma(notifications)}{new_announcements}{comma(new_announcements)}{new_bounties}{comma(new_bounties)}{new_dates}{comma(new_dates)}{new_quests}{comma(new_quests)}{offers}{comma(True)}👤1 Trending Avatar"
+        subject = f"{new_bounties}{comma(new_bounties)}{new_quests}{comma(new_quests)}{offers}{comma(True)} & More"
 
     for to_email in to_emails:
         cur_language = translation.get_language()
@@ -1308,7 +1277,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None, featured_bounties=[
             user = User.objects.filter(email__iexact=to_email).first()
             activities = latest_activities(user)
 
-            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, upcoming_grant=grant, upcoming_hackathon=upcoming_hackathon(), latest_activities=activities, chats_count=chats_count, featured_bounties=featured_bounties)
+            html, text = render_new_bounty(to_email, bounties, old_bounties='', quest_of_the_day=quest, latest_activities=activities, featured_bounties=featured_bounties)
 
             if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html, categories=['marketing', func_name()])
