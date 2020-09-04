@@ -839,10 +839,12 @@ if PTOKEN_FACTORY_ABI_PATH:
     with open(str(root.path(PTOKEN_FACTORY_ABI_PATH))) as f:
         PTOKEN_FACTORY_ABI = json.load(f)
 
+HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
+
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': f"{ELASTIC_SEARCH_URL}:9200",
+        'URL': HAYSTACK_ELASTIC_SEARCH_URL,
         'INDEX_NAME': 'haystack',
     },
 }
