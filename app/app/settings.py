@@ -824,10 +824,12 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
 
+HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
+
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-        'URL': f"{ELASTIC_SEARCH_URL}:9200",
+        'URL': f"{HAYSTACK_ELASTIC_SEARCH_URL}",
         'INDEX_NAME': 'haystack',
     },
 }
