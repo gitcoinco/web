@@ -1253,14 +1253,14 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None, featured_bounties=[
         new_bounties = ""
         if bounties:
             plural_bounties = "Bounties" if len(bounties)>1 else "Bounty"
-            new_bounties = f"💰{len(bounties)} {plural_bounties}"
+            new_bounties = f"💰 {len(bounties)} {plural_bounties}"
         elif old_bounties:
             plural_old_bounties = "Bounties" if len(old_bounties)>1 else "Bounty"
-            new_bounties = f"💰{len(old_bounties)} {plural_old_bounties}"
+            new_bounties = f"💰 {len(old_bounties)} {plural_old_bounties}"
 
         new_quests = ""
         if quest:
-            new_quests = f"🎯1 Quest"
+            new_quests = f"🎯 1 Quest"
 
         def comma(a):
             return ", " if a and (new_bounties or new_quests or has_offer) else ""
