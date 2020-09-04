@@ -33,7 +33,7 @@ services:
           memory: 128M
 
   elasticsearch:
-    image: launcher.gcr.io/google/elasticsearch2
+    image: launcher.gcr.io/google/elasticsearch5
     ports:
       - "9200:9200"
       - "9300:9300"
