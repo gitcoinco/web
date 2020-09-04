@@ -107,12 +107,10 @@ const renderPopOverData = function(data) {
     {'type': 'Grants', 'sent': 'Fund', 'received': 'Contrib'}
   );
 
-  let mount_graph;
+  let mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
 
   if (data.profile.has_ptoken) {
-    mount_graph = [ tips_total_percent, token_total_percent, bounties_total_percent, grants_total_percent ];
-  } else {
-    mount_graph = [ tips_total_percent, bounties_total_percent, grants_total_percent ];
+    mount_graph.push(token_total_percent);
   }
 
 

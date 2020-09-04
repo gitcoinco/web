@@ -66,12 +66,12 @@ class EncodeAnything(DjangoJSONEncoder):
 
 def get_time():
     """Get the local time."""
-    return timezone.now()
+    return localtime(timezone.now())
 
 
 def get_0_time():
     """Get the local time."""
-    return timezone.datetime(1970, 1, 1).replace(tzinfo=pytz.utc)
+    return localtime(timezone.datetime(1970, 1, 1).replace(tzinfo=pytz.utc))
 
 
 class SuperModel(models.Model):
