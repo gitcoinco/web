@@ -798,7 +798,9 @@ Vue.component('grants-cart', {
         .on('transactionHash', async(txHash) => {
           console.log('Donation transaction hash: ', txHash);
           indicateMetamaskPopup(true);
-          await this.finalizeCheckout(txHash, bulkCheckoutAddress, userAddress);
+          _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
+          await this.postToDatabase(txHash, bulkCheckoutAddress, userAddress); // Save contributions to database
+          await this.finalizeCheckout(); // Update UI and redirect
         })
         .on('error', (error, receipt) => {
           // If the transaction was rejected by the network with a receipt, the second parameter will be the receipt.
@@ -911,18 +913,10 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * POSTs donation data to database, updates local storage, redirects page, shows success alert
-     * @param {string} txHash An L1 transaction hash, from user interaction with either
-     * BulkCheckout or from BatchZkSyncDeposit
-     * @param {string} contractAddress Address of the contract for the above transaction hash, i.e.
-     * pass in a value of either 'bulkCheckoutAddress' or 'batchZkSyncDepositContractAddress'
-     * @param {string} userAddress User's web3 address
+     * @notice POSTs donation data to database, updates local storage, redirects page, shows
+     * success alert
      */
-    async finalizeCheckout(txHash, contractAddress, userAddress) {
-      // Save contributions to database
-      _alert('Saving contributions. Please do not leave this page.', 'success', 2000);
-      await this.postToDatabase(txHash, contractAddress, userAddress);
-
+    async finalizeCheckout() {
       // Clear cart, redirect back to grants page, and show success alert
       localStorage.setItem('contributions_were_successful', 'true');
       localStorage.setItem('contributions_count', String(this.grantData.length));
@@ -1339,7 +1333,6 @@ Vue.component('grants-cart', {
       }
       this.zkSyncCheckoutStep3Status = 'complete';
       this.zkSyncCheckoutFlowStep += 1; // Done!
-      localStorage.setItem('zksync-was-interrupted', false);
       console.log('✅ Transfers have been successfully sent');
       return;
     },
@@ -1466,8 +1459,9 @@ Vue.component('grants-cart', {
       const depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
       const zkSyncDepositTxHash = depositTx.hash;
 
+      _alert('Finalizing deposit. Please keep this page open until all steps are complete! This will take about 2–3 minutes.', 'success');
+      await this.postToDatabase(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress); // Save contributions to database
       await this.setInterruptStatus(true, this.userAddress);
-      localStorage.setItem('zksync-deposit-tx-hash', zkSyncDepositTxHash);
       console.log('✅ Deposit transaction sent', depositTx);
       console.log('Waiting for deposit transaction to be mined...');
       
@@ -1517,6 +1511,7 @@ Vue.component('grants-cart', {
       console.log('✅✅✅ Checkout complete!');
 
       // Final processing
+      await this.setInterruptStatus(false, this.userAddress);
       await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress);
     },
 
@@ -1531,9 +1526,10 @@ Vue.component('grants-cart', {
         
         
         // TODO Assume user will speed up deposit, so search for event logs?
+        // TODO after updating tx validator
+
+        // OLD CODE BELOW
         
-        
-        const zkSyncDepositTxHash = localStorage.getItem('zksync-deposit-tx-hash');
 
         this.zkSyncDepositEtherscanUrl = document.web3network === 'mainnet'
           ? `https://etherscan.io/tx/${zkSyncDepositTxHash}`
@@ -1576,7 +1572,7 @@ Vue.component('grants-cart', {
         this.zkSyncCheckoutStep3Status = 'complete';
 
         // Final processing
-        await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress);
+        await this.finalizeCheckout();
     
       } catch (e) {
         this.handleError(e);

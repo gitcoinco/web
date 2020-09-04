@@ -102,7 +102,10 @@ def check_transaction_contract(transaction_tax):
             return transaction_status(transaction, transaction_tax)
 
 
-def grants_transaction_validator(contribution):
+def grants_transaction_validator(contribution, w3):
+    # To facilitate testing on Rinkeby, we pass in a web3 instance instead of using the mainnet
+    # instance defined at the top of this file
+
     tx_list = [contribution.tx_id, contribution.split_tx_id]
     network = contribution.subscription.network
 
@@ -141,7 +144,7 @@ def grants_transaction_validator(contribution):
             if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
                 maybeprint(138, round(time.time(),2))
                 transaction_hash = transaction_receipt.transactionHash.hex()
-                transaction = check_transaction(transaction_hash)
+                transaction = w3.eth.getTransaction(transaction_hash)
                 if transaction.value > 0.001:
                     recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
                     transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)

@@ -1254,8 +1254,12 @@ class Contribution(SuperModel):
                         print('TODO: do stuff related to long running pending txns')
                     return
 
+            network = self.subscription.network
+            PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
+            w3 = Web3(Web3.WebsocketProvider(PROVIDER))
+            
             # actually validate token transfers
-            response = grants_transaction_validator(self)
+            response = grants_transaction_validator(self, w3)
             if len(response['originator']):
                 self.originated_address = response['originator'][0]
             self.validator_passed = response['validation']['passed']
