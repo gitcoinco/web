@@ -404,7 +404,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </button>
                     <div v-else class="row align-items-center justify-content-between">
                       <div class="col-auto">
-                        <button class="btn btn-gc-blue button--full shadow-none py-3" id='js-zkSyncfundGrants-button' @click="showZkSyncModal = true">
+                        <button class="btn btn-gc-blue button--full shadow-none py-3" id='js-zkSyncfundGrants-button' @click="startCheckoutProcess">
                         Checkout with zkSync
                         </button>
                       </div>
@@ -504,7 +504,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             {% comment %} ================== START ZKSYNC MODAL =================== {% endcomment %}
             {% comment %} ========================================================= {% endcomment %}
 
-            <b-modal id="zksync-modal" :visible="showZkSyncModal" class="modal-dialog modal-lg" center hide-header hide-footer>
+            <b-modal id="zksync-modal" :visible="showZkSyncModal" @hide="showZkSyncModal = false" class="modal-dialog modal-lg" center hide-header hide-footer>
               <template v-slot:default="{ hide }">
                 <div class="mx-4 mt-5 mb-4 text-center">
                   {% comment %} Header {% endcomment %}
@@ -529,9 +529,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         Complete zkSync Checkout
                       </h1>
                       <p class="my-4 text-left">
-                        You started checking out with zkSync but never completed the process. If you
-                        do not complete it, funds may be lost and the grants will never receive the
-                        funds. Please follow the prompts below to complete checkout.
+                        You started checking out with zkSync but never completed the process. 
+                        You must complete this checkout before proceeding with any other checkouts.
+                        Please follow the prompts below to complete the process.
                       </p>
                     </div>
                   </div>

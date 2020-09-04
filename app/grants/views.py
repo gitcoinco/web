@@ -1066,6 +1066,52 @@ def bulk_fund(request):
     })
 
 @login_required
+def zksync_set_interrupt_status(request):
+    """
+    For the specified address, set interrupt status to true if the zkSync checkout was not
+    completed. If true, the user must complete the existing checkout before doing another one
+    """
+    
+    user_address = request.POST.get('user_address')
+    was_interrupted = request.POST.get('was_interrupted')
+    
+    try:
+        # Look for existing entry, and if present we overwrite it
+        entry = JSONStore.objects.get(key=user_address, view='zksync_checkout')
+        entry.data = was_interrupted
+        entry.save()
+    except JSONStore.DoesNotExist:
+        # No entry exists for this user, so create a new one
+        JSONStore.objects.create(
+            key=user_address,
+            view='zksync_checkout',
+            data=was_interrupted
+        )
+    
+    return JsonResponse({
+        'success': True,
+        'was_interrupted': was_interrupted
+    })
+
+@login_required
+def zksync_get_interrupt_status(request):
+    """
+    Returns true if user was interrupted before zkSync chekout was complete, false otherwise
+    """
+    user_address = request.GET.get('user_address')
+    try:
+        result = JSONStore.objects.get(key=user_address, view='zksync_checkout')
+        was_interrupted = result.data
+    except JSONStore.DoesNotExist:
+        # If there's no entry for this user, assume they haven't been interrupted
+        was_interrupted = False
+    
+    return JsonResponse({
+        'success': True,
+        'was_interrupted': was_interrupted
+    })
+
+@login_required
 def subscription_cancel(request, grant_id, grant_slug, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)

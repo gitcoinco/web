@@ -1030,6 +1030,58 @@ Vue.component('grants-cart', {
     // =============================================================================================
 
     // ===================================== Helper functions ======================================
+
+    /**
+     * @notice Set flag in database to true if user was interrupted before completing zkSync
+     * checkout
+     * @param {Boolean} was_interrupted True if user was interrupted, false otherwise
+     * @param {String} userAddress Address of user to check status for
+     */
+    async setInterruptStatus(was_interrupted, userAddress) {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const url = 'zksync-set-interrupt-status';
+      const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
+      const payload = {
+        method: 'POST',
+        headers,
+        body: new URLSearchParams({ was_interrupted, user_address: userAddress, csrfmiddlewaretoken })
+      };
+
+      // Send request
+      const res = await fetch(url, payload);
+      const json = await res.json();
+      return json
+    },
+
+    /**
+     * @notice Check interrupt status for the logged in user
+     * @param {String} userAddress Address of user to check status for
+     */
+    async getInterruptStatus(userAddress) {
+      const url = `zksync-get-interrupt-status?user_address=${userAddress}`;
+      const res = await fetch(url, { method: 'GET' });
+      const json = await res.json();
+
+      return json.was_interrupted;
+    },
+
+    /**
+     * @notice Checks the interrupt status for a user, and prompts them to complete their 
+     * checkout if they have been interrupted
+     */
+    async checkInterruptStatus() {
+      try {      
+        // We manually fetch the address so we can try checking independently of whether the
+        // this.userAddress parameter has been set. This is also why we need a try/catch -- the
+        // user may not have connected their wallet.
+        const userAddress = (await web3.eth.getAccounts())[0]; 
+
+        this.zkSyncWasInterrupted = JSON.parse(await this.getInterruptStatus(userAddress));
+        if (this.zkSyncWasInterrupted) this.showZkSyncModal = true;
+      } catch(e) {
+        console.error(e)
+      }
+    },
     
     /**
      * @notice For each token, returns the total amount donated in that token. Used instead of
@@ -1391,10 +1443,12 @@ Vue.component('grants-cart', {
       
 
       // Send transaction --------------------------------------------------------------------------
+      // Once deposit transaction has sent, we conservatively assume checkout will not be completed
       console.log('Waiting for user to send deposit transaction...');
       const depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
-      localStorage.setItem('zksync-was-interrupted', true); // assume checkout will be interrupted (i.e. user closes window)
       const zkSyncDepositTxHash = depositTx.hash;
+
+      await this.setInterruptStatus(true, this.userAddress)
       localStorage.setItem('zksync-deposit-tx-hash', zkSyncDepositTxHash);
       console.log('✅ Deposit transaction sent', depositTx);
       console.log('Waiting for deposit transaction to be mined...');
@@ -1444,8 +1498,7 @@ Vue.component('grants-cart', {
       console.log('✅✅✅ Checkout complete!');
 
       // Final processing
-      const userAddress = (await web3.eth.getAccounts())[0]; 
-      await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, userAddress);
+      await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress);
     },
 
     /**
@@ -1503,12 +1556,21 @@ Vue.component('grants-cart', {
         this.zkSyncCheckoutStep3Status = 'complete';
 
         // Final processing
-        const userAddress = (await web3.eth.getAccounts())[0]; 
-        await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, userAddress);
+        await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress);
     
       } catch(e) {
         this.handleError(e);
       }
+    },
+
+    /**
+     * @notice Triggers appropriate modal when user begins checkout. If user has an interrupted
+     * cart, they must finish checking out with that before doing another checkout
+     */
+    async startCheckoutProcess() {
+      // See if user was previously interrupted during checkout and show appropriate modal
+      await this.checkInterruptStatus();
+      this.showZkSyncModal = true;
     },
 
 
@@ -1642,12 +1704,8 @@ Vue.component('grants-cart', {
       }
     });
 
-    // Check if user previously started checking out but was interrupted
-    this.zkSyncWasInterrupted = JSON.parse(localStorage.getItem('zksync-was-interrupted'));
-
-    if (this.zkSyncWasInterrupted) {
-      this.showZkSyncModal = true;
-    }
+    // See if user was previously interrupted during checkout
+    await this.checkInterruptStatus();
 
     // Cart is now ready
     this.isLoading = false;
