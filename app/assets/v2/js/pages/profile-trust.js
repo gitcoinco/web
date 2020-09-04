@@ -132,15 +132,3 @@ let show_brightid_connect_modal = function(brightid_uuid) {
     $(content).appendTo('body');
     $('#verify_brightid_modal').bootstrapModal('show');
   };
-
-function objectifySerialized(data) {
-  let objectData = {};
-
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
-
-    objectData[item.name] = item.value;
-  }
-
-  return objectData;
-}
