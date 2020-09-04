@@ -21,13 +21,13 @@ import copy
 import datetime as dt
 import json
 import math
-import numpy as np
 import time
 from itertools import combinations
 
 from django.conf import settings
 from django.utils import timezone
 
+import numpy as np
 import pytz
 from grants.models import Contribution, Grant, PhantomFunding
 from marketing.models import Stat
@@ -59,8 +59,13 @@ def translate_data(grants_data):
         grant_id = g.get('id')
         for c in g.get('contributions'):
             profile_id = c.get('id')
+            verification_status = None
+            if c.get('is_sms_verified'):
+                verification_status = 'sms'
+            elif c.get('is_brightid_verified'):
+                verification_status = 'brightid'
             if profile_id:
-                val = [grant_id] + [c.get('id')] + [c.get('is_verified')] + [c.get('sum_of_each_profiles_contributions')]
+                val = [grant_id] + [c.get('id')] + [verification_status] + [c.get('sum_of_each_profiles_contributions')]
                 grants_list.append(val)
 
     return grants_list
@@ -88,7 +93,7 @@ def get_verified_list(grant_contributions):
     for _, user, ver_stat, _ in grant_contributions:
         if ver_stat == 'sms' and user not in sms_verified_list:
             sms_verified_list.append(user)
-        elif ver_stat == 'bright' and user not in bright_verified_list:
+        elif ver_stat == 'brightid' and user not in bright_verified_list:
             bright_verified_list.append(user)
 
     return sms_verified_list, bright_verified_list
@@ -287,7 +292,8 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
                 grant_contribution['contributions'].append({
                     'id': '999999999999',
                     'sum_of_each_profiles_contributions': amount,
-                    'is_verified': True
+                    'is_sms_verified': True,
+                    'is_brightid_verified': True
                 })
 
     grants_clr = run_clr_calcs(_grant_contributions_curr, v_threshold, uv_threshold, total_pot)
@@ -373,10 +379,15 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
         # phantom funding
         grant_phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-        # verified profiles
-        verified_profile_ids = [ele.pk for ele in contribs if ele.profile_for_clr.sms_verification]
-        verified_phantom_funding_profile_ids = [ele.profile_id for ele in grant_phantom_funding_profiles if ele.profile.sms_verification]
-        verified_profile = list(set(verified_profile_ids + verified_phantom_funding_profile_ids))
+        # SMS verified profiles
+        sms_verified_profile_ids = [ele.pk for ele in contribs if ele.profile_for_clr.sms_verification]
+        sms_verified_phantom_funding_profile_ids = [ele.profile_id for ele in grant_phantom_funding_profiles if ele.profile.sms_verification]
+        sms_verified_profile = list(set(sms_verified_profile_ids + sms_verified_phantom_funding_profile_ids))
+
+        # BrightID verified profiles
+        brightid_verified_profile_ids = [ele.pk for ele in contribs if ele.profile_for_clr.is_brightid_verified]
+        brightid_verified_phantom_funding_profile_ids = [ele.profile_id for ele in grant_phantom_funding_profiles if ele.profile.is_brightid_verified]
+        brightid_verified_profile = list(set(brightid_verified_profile_ids + brightid_verified_phantom_funding_profile_ids))
 
         # combine
         contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_profiles]))
@@ -395,7 +406,8 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
                 summed_contributions.append({
                     'id': str(profile_id),
                     'sum_of_each_profiles_contributions': sum_of_each_profiles_contributions,
-                    'is_verified': True if profile_id in verified_profile else False
+                    'is_sms_verified': True if profile_id in sms_verified_profile else False,
+                    'is_brightid_verified': True if profile_id in brightid_verified_profile else False
                 })
 
             contrib_data_list.append({

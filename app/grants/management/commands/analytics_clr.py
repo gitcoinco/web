@@ -23,15 +23,14 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.utils import get_tx_status, has_tx_mined
-from grants.clr import fetch_data, populate_data_for_clr, calculate_clr_for_donation
+from grants.clr import calculate_clr_for_donation, fetch_data, populate_data_for_clr
 from grants.models import Contribution, Grant, GrantCLR
 from marketing.mails import warn_subscription_failed
 
 
-
 def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
     # setup
-    clr_calc_start_time = timezone.now()
+    # clr_calc_start_time = timezone.now()
     debug_output = [['grant_id', 'grant_title', 'number_contributions', 'contribution_amount', 'clr_amount']]
 
     # one-time data call
@@ -47,7 +46,7 @@ def analytics_clr(from_date=None, clr_round=None, network='mainnet'):
 
     # calculate clr analytics output
     for grant in grants:
-        clr_amount, grants_clr, num_contribs, contrib_amount = calculate_clr_for_donation(
+        clr_amount, _, num_contribs, contrib_amount = calculate_clr_for_donation(
             grant,
             0,
             grant_contributions_curr,
@@ -83,12 +82,12 @@ class Command(BaseCommand):
         if active_clr_rounds:
             for clr_round in active_clr_rounds:
                 print(f"calculating CLR results for round: {clr_round.round_num}")
-                a = analytics_clr(
+                analytics = analytics_clr(
                     from_date=timezone.now(),
                     clr_round=clr_round,
                     network=network
                 )
-                print(a)
+                print(analytics)
                 print(f"finished CLR results for round: {clr_round.round_num}")
 
         else:
