@@ -3,7 +3,7 @@
     <div class="container-fluid grants-container">
       <div class="container">
         <div class="infinite-container row" v-if="grants">
-          <div class="col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card" v-for="grant in grants">
+          <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="grant in grants">
             {% include 'grants/components/card.html' %}
           </div>
         </div>

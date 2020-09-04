@@ -1,9 +1,9 @@
 Vue.component('grant-card', {
   delimiters: [ '[[', ']]' ],
-  props: [ 'grant', 'cred', 'token' ],
+  props: [ 'grant', 'cred', 'token', 'view' ],
   methods: {
     get_clr_prediction: function(indexA, indexB) {
-      if (this.grant.clr_prediction_curve) {
+      if (this.grant.clr_prediction_curve && this.grant.clr_prediction_curve.length) {
         return this.grant.clr_prediction_curve[indexA][indexB];
       }
     }
@@ -67,40 +67,158 @@ $(document).ready(() => {
   });
 
   if (document.getElementById('grants-showcase')) {
+    Vue.component('grant-sidebar', {
+      name: 'grant-sidebar',
+      props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following' ],
+      data: function() {
+        return {
+          search: this.keyword
+        };
+      },
+      methods: {
+        toggleFollowing: function(state, event) {
+          event.preventDefault;
+          this.filter_grants({following: state});
+        }
+      }
+    });
+
     var app = new Vue({
       delimiters: [ '[[', ']]' ],
       el: '#grants-showcase',
+      components: ['grant-sidebar'],
       data: {
         grants: [],
         page: 1,
         limit: 6,
         sort: 'weighted_shuffle',
         network: 'mainnet',
-        keyword: '',
+        keyword: document.keyword,
+        current_type: document.current_type,
+        following: document.following,
         state: 'active',
-        category: '',
-        credentials: false
+        category: document.selected_category,
+        credentials: false,
+        grant_types: [],
+        lock: false,
+        view: 'list'
       },
       methods: {
-        fetchGrants: async function(page) {
-          const params = new URLSearchParams({
+        setView: function(mode, event) {
+          event.preventDefault();
+          this.view = mode;
+        },
+        filter_grants: function(filters) {
+          if (filters.type !== null && filters.type !== undefined) {
+            this.current_type = filters.type;
+          }
+          if (filters.category !== null && filters.category !== undefined) {
+            this.category = filters.category;
+          }
+          if (filters.keyword !== null && filters.keyword !== undefined) {
+            this.keyword = filters.keyword;
+          }
+          if (filters.following !== null && filters.following !== undefined) {
+            this.following = filters.following;
+          }
+          if (filters.sort !== null && filters.sort !== undefined) {
+            this.sort = filters.sort;
+          }
+
+          this.page = 1;
+          const query_elements = {};
+
+          if (this.category && this.current_type !== 'all') {
+            query_elements['category'] = this.category;
+          }
+
+          if (this.keyword) {
+            query_elements['keyword'] = this.keyword;
+          }
+
+          if (this.following) {
+            query_elements['following'] = this.following;
+          }
+          if (this.sort !== 'weighted_shuffle') {
+            query_elements['sort'] = this.sort;
+          }
+          const q = $.param(query_elements);
+
+          if (this.current_type === 'all') {
+            window.history.pushState('', '', `/grants/?${q}`);
+          } else {
+            window.history.pushState('', '', `/grants/${this.current_type}?${q}`);
+          }
+          this.fetchGrants(this.page);
+        },
+        fetchGrants: async function(page, append_mode) {
+          if (this.lock)
+            return;
+
+          this.lock = true;
+
+          const base_params = {
             page: page || this.page,
             limit: this.limit,
             sort_option: this.sort,
             network: this.network,
             keyword: this.keyword,
             state: this.state,
-            category: this.category
-          }).toString();
+            category: this.category,
+            type: this.current_type
+          };
+
+          if (this.following) {
+            base_params['following'] = this.following;
+          }
+
+          const params = new URLSearchParams(base_params).toString();
           const response = await fetchData(`/grants/cards_info?${params}`);
 
-          console.log(response);
-          this.grants = response.grants;
+          if (append_mode) {
+            this.grants = this.grants.concat(response.grants);
+          } else {
+            this.grants = response.grants;
+          }
+
           this.credentials = response.credentials;
+          this.grant_types = response.grant_types;
+
+          this.lock = false;
+          return this.grants;
+        },
+        scroll: function() {
+          let vm = this;
+
+          window.onscroll = async() => {
+            const scrollHeight = $(document).height();
+            const scrollPos = $(window).height() + $(window).scrollTop();
+
+            if (((scrollHeight - 300) >= scrollPos) / scrollHeight == 0) {
+              const grants = await vm.fetchGrants(vm.page + 1, true);
+
+              if (grants && grants.length) {
+                vm.page = vm.page + 1;
+              }
+            }
+          };
         }
       },
       mounted() {
+        let vm = this;
+
         this.fetchGrants(this.page);
+        this.scroll();
+
+        $('#sort_option2').select2({
+          minimumResultsForSearch: Infinity,
+          templateSelection: function(data, container) {
+            // Add custom attributes to the <option> tag for the selected option
+            vm.filter_grants({sort: data.id});
+
+            return data.text;
+          }
+        });
       }
     });
   }

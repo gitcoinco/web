@@ -15,8 +15,104 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static humanize grants_extra %}
-<grant-card inline-template :grant="grant" :cred="credentials">
-  <div class="grant-item">
+<grant-card inline-template :grant="grant" :cred="credentials" :view="view">
+  <div class="grant-item grant-item--list flex-md-row flex-column" v-if="view == 'list'">
+      <div class="grant-item__img col-md-1 d-md-block d-none">
+        <img :src="grant.logo_url">
+      </div>
+      <div class="grant-item__content col-md-8 col-sm-12 px-3">
+      <h2 class="grant-item__title font-subheader">
+        <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+      </h2>
+      <div>
+        <p class="text-muted font-smaller-4 mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
+          <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
+          Last Update: [[ grant.last_update ?  grant.last_update_natural : 'Before Round 6' ]]
+
+          <template v-if="cred.is_staff">
+            <span class="ml-3" ><i class="fa fa-lock" aria-hidden="true"></i> SybilScore ™️: [[ grant.sybil_score ]]</span>
+
+            <span class="ml-3"><i class="fa fa-lock" aria-hidden="true"></i> RiskScore ™️: [[ grant.weighted_risk_score ]]</span>
+          </template>
+
+        </p>
+
+        <div class="grant-item__owner">
+          <div class="d-flex">
+            <span class="grant-item__owner-handle font-smaller-3">{% trans 'by' %}</span>
+            <a :href="grant.admin_profile.url" :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">
+              <div class="d-flex align-center">
+                <div class="grant-item__owner-image ml-2">
+                  <img :src="grant.admin_profile.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
+                </div>
+                <div class="grant-item__owner-handle font-smaller-3">
+                  <span class="ml-2">
+                    [[ grant.admin_profile.handle || 'anonymous' ]]
+                  </span>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="d-flex match ml-3">
+            <template v-if="1">
+              <div class="match__round--inline mr-3">
+                  <template v-if="grant.is_clr_eligible">
+                    <span class="font-subheader font-weight-bold amount pt-1 mb-2">
+                      {# format curve.0.1|floatformat:0|intcomma|default:0 #}
+                      [[ get_clr_prediction(0, 1) || 0 ]] DAI
+                    </span>
+                    <span class="amount mb-2 font-smaller-3">
+                      {#% if grant.id in round_5_5_grants %#}
+                      {# [[ grant_in_round_5_5 ? 'Current Round 5.5 Match' : 'Final CLR Match']]  #}
+                      Final CLR Match
+                    </span>
+                  </template>
+                  <template v-else>
+                    <span class="font-subheader font-weight-bold amount pt-1 mb-2">
+                      {# format |floatformat:0|intcomma #}
+                      [[ grant.monthly_amount_subscribed ]] DAI
+                    </span>
+                    <span class="amount mb-2 font-smaller-3">MONTHLY RECURRING</span>
+                  </template>
+              </div>
+              <div>
+                <span class="font-subheader font-weight-bold amount pt-1 mb-2">
+                  [[ grant.amount_received_in_round ]] DAI
+                </span>
+                <span class="amount mb-2 font-smaller-3">
+                  raised from
+                </span>
+                <span class="amount mb-2 font-smaller-3 font-weight-semibold">
+                 [[ grant.positive_round_contributor_count ]] contributors
+                </span>
+              </div>
+
+            </template>
+          </div>
+            <template v-if="cred.is_authenticated">
+              <button :class="`ml-3 text-decoration-none btn btn-link star-action m-0 p-0 font-smaller-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+                <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+                <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
+              </button>
+            </template>
+          </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-12 py-4 pr-md-5 pl-md-0 grant-action">
+      {#% is_team_member grant profile as is_on_team %#}
+      <form class="js-addDetailToCart-form" v-if="!grant.is_on_team">
+        {% include 'grants/components/hidden_inputs.html' %}
+        <button class="btn btn-gc-blue cart-btn large font-body font-weight-semibold mt-1 mr-1">
+          + Add to Cart
+        </button>
+      </form>
+
+      <button class="btn btn-gc-grey cart-btn large font-body font-weight-semibold mt-1 mr-1" v-else>
+        <i class="fa fa-stop" aria-hidden="true"></i> Cannot Fund your Own Grant
+      </button>
+    </div>
+  </div>
+  <div class="grant-item" v-else>
     <a :href="grant.details_url">
     <div class="grant-item__img">
       <img :src="grant.logo_url">
@@ -56,7 +152,7 @@
               </div>
             </div>
           </a>
-          </div>
+        </div>
           <template v-if="cred.is_authenticated">
             <button :class="`text-decoration-none btn btn-link star-action m-0 p-0 mr-4 mt-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
               <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>

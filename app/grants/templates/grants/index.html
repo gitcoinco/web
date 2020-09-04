@@ -104,6 +104,12 @@ along with this program. If not, see
     {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
+    <script>
+      document.current_type = "{{ type|default:'all' }}";
+      document.selected_category = "{{ selected_category }}"
+      document.keyword = "{{ keyword }}"
+      document.following = "{{ following }}"
+    </script>
 </body>
 <script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
 <script src="{% static "v2/js/lib/infinite.min.js" %}"></script>

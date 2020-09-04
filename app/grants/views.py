@@ -271,8 +271,9 @@ def get_grants(request):
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
+    following = request.GET.get('following', '') != ''
 
-    _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category)
+    _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category, following)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -285,6 +286,9 @@ def get_grants(request):
         grant_amount = lazy_round_number(grant_stats.first().val)
 
     return JsonResponse({
+        'grant_types': get_grant_types(network),
+        'current_type': grant_type,
+        'category': category,
         'grants': [{
             'id': grant.id,
             'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
@@ -318,7 +322,7 @@ def get_grants(request):
     })
 
 
-def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active', category=''):
+def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active', category='', following=False):
     sort_by_clr_pledge_matching_amount = None
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
@@ -332,13 +336,14 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
 
     if state == 'active':
         _grants = _grants.active()
-    if not keyword:
-        # dotn do search by cateogry
-        if grant_type == 'following' and request.user.is_authenticated:
-            favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
-            _grants = _grants.filter(id__in=Subquery(favorite_grants))
-        elif grant_type != 'all':
-            _grants = _grants.filter(grant_type=grant_type)
+
+    if grant_type != 'all':
+        _grants = _grants.filter(grant_type=grant_type)
+
+
+    if following and request.user.is_authenticated:
+        favorite_grants = Favorite.grants().filter(user=request.user).values('grant_id')
+        _grants = _grants.filter(id__in=Subquery(favorite_grants))
 
     clr_prediction_curve_schema_map = {10 ** x: x + 1 for x in range(0, 5)}
     if sort_by_clr_pledge_matching_amount in clr_prediction_curve_schema_map.keys():
@@ -352,6 +357,61 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     _grants = _grants.prefetch_related('categories')
 
     return _grants
+
+
+def get_grant_types(network):
+    tech_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='tech'
+    ).count()
+    media_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='media'
+    ).count()
+    health_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='health'
+    ).count()
+    matic_grants_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='matic'
+    ).count()
+    change_count = Grant.objects.filter(
+        network=network, hidden=False, grant_type='change'
+    ).count()
+
+    grant_types = [
+        {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
+        {'label': 'Community', 'keyword': 'media', 'count': media_grants_count},
+        #        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
+        {'label': 'Matic: Build-n-Earn', 'keyword': 'matic', 'count': matic_grants_count},
+        {'label': 'Crypto for Black Lives', 'keyword': 'change', 'count': change_count},
+    ]
+
+    for grant_type in grant_types:
+        _keyword = grant_type['keyword']
+        grant_type['sub_categories'] = [tuple[0] for tuple in basic_grant_categories(_keyword)]
+
+    return grant_types
+
+
+def get_bg(grant_type):
+    bg = 4
+    bg = f"{bg}.jpg"
+    mid_back = 'bg14.png'
+    bottom_back = 'bg13.gif'
+    if grant_type == 'tech':
+        bottom_back = '0.png'
+        bg = '0.jpg'
+    if grant_type == 'tech':
+        bottom_back = 'bg20-2.png'
+        bg = '1.jpg'
+    if grant_type == 'media':
+        bottom_back = 'bg16.gif'
+        bg = '2.jpg'
+    if grant_type == 'health':
+        bottom_back = 'health.jpg'
+        bg = 'health2.jpg'
+    if grant_type in ['about', 'activity']:
+        bg = '3.jpg'
+
+    return bg, mid_back, bottom_back
 
 
 def grants_by_grant_type(request, grant_type):
@@ -371,29 +431,13 @@ def grants_by_grant_type(request, grant_type):
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
+    following = request.GET.get('following', '')
     grants_following = 0
     if keyword:
         category = ''
     profile = get_profile(request)
     _grants = None
-    bg = 4
-    bg = f"{bg}.jpg"
-    mid_back = 'bg14.png'
-    bottom_back = 'bg13.gif'
-    if grant_type == 'tech':
-        bottom_back = '0.png'
-        bg = '0.jpg'
-    if grant_type == 'tech':
-        bottom_back = 'bg20-2.png'
-        bg = '1.jpg'
-    if grant_type == 'media':
-        bottom_back = 'bg16.gif'
-        bg = '2.jpg'
-    if grant_type == 'health':
-        bottom_back = 'health.jpg'
-        bg = 'health2.jpg'
-    if grant_type in ['about', 'activity']:
-        bg = '3.jpg'
+    bg, mid_back, bottom_back = get_bg(grant_type)
     show_past_clr = False
 
     sort_by_index = None
@@ -433,21 +477,6 @@ def grants_by_grant_type(request, grant_type):
     if grant_stats.exists():
         grant_amount = lazy_round_number(grant_stats.first().val)
 
-    tech_grants_count = Grant.objects.filter(
-        network=network, hidden=False, grant_type='tech'
-    ).count()
-    media_grants_count = Grant.objects.filter(
-        network=network, hidden=False, grant_type='media'
-    ).count()
-    health_grants_count = Grant.objects.filter(
-        network=network, hidden=False, grant_type='health'
-    ).count()
-    matic_grants_count = Grant.objects.filter(
-        network=network, hidden=False, grant_type='matic'
-    ).count()
-    change_count = Grant.objects.filter(
-        network=network, hidden=False, grant_type='change'
-    ).count()
     all_grants_count = Grant.objects.filter(
         network=network, hidden=False
     ).count()
@@ -457,20 +486,8 @@ def grants_by_grant_type(request, grant_type):
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
 
-    grant_types = [
-        {'label': 'Tech', 'keyword': 'tech', 'count': tech_grants_count},
-        {'label': 'Community', 'keyword': 'media', 'count': media_grants_count},
-#        {'label': 'Health', 'keyword': 'health', 'count': health_grants_count},
-        {'label': 'Matic: Build-n-Earn', 'keyword': 'matic', 'count': matic_grants_count},
-        {'label': 'Crypto for Black Lives', 'keyword': 'change', 'count': change_count},
+    grant_types = get_grant_types(network)
 
-    ]
-
-    sub_categories = []
-    for _keyword in [grant_type['keyword'] for grant_type in grant_types]:
-        sub_category = {}
-        sub_category[_keyword] = [tuple[0] for tuple in basic_grant_categories(_keyword)]
-        sub_categories.append(sub_category)
 
     title = matching_live + str(_('Grants'))
     has_real_grant_type = grant_type and grant_type != 'activity'
@@ -517,7 +534,6 @@ def grants_by_grant_type(request, grant_type):
         'bottom_back': bottom_back,
         'clr_matching_banners_style': clr_matching_banners_style,
         'categories': categories,
-        'sub_categories': sub_categories,
         'prev_grants': prev_grants,
         'grant_types': grant_types,
         'current_partners_fund': current_partners_fund,
@@ -544,7 +560,8 @@ def grants_by_grant_type(request, grant_type):
         'is_staff': request.user.is_staff,
         'selected_category': category,
         'profile': profile,
-        'grants_following': grants_following
+        'grants_following': grants_following,
+        'following': following
     }
 
     # log this search, it might be useful for matching purposes down the line

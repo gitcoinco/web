@@ -5,8 +5,21 @@
   border: 1px solid #D3D3D3;
 }
 
+
+.grant-item--list {
+  padding-bottom: 10px;
+}
+
+.grant-item--list:hover {
+  background-color: #EFEAFD;
+}
+
 .grant-item__content {
   margin-top: 1.0625rem;
+}
+
+.grant-item--list .grant-item__content {
+  margin-top: 0.938rem;
 }
 
 .flip-card__flipper {
@@ -19,6 +32,11 @@
   font-weight: bold;
   font-size: 1.25rem;
   margin-bottom: 15px;
+}
+
+.grant-item--list .grant-item__title {
+  font-size: 1rem;
+  margin-bottom: 2px;
 }
 
 .grant-item__title a {
@@ -39,9 +57,37 @@
   display: flex;
 }
 
+@media (max-width: 500px) {
+  .grant-item--list .grant-item__owner {
+    align-items: baseline;
+    display: flex;
+    flex-direction: column;
+  }
+  .grant-item--list .match, .grant-item--list .star-action {
+    margin-top: 5px !important;
+    margin-left: 0 !important;
+  }
+
+  .grant-item--list .match {
+    flex-direction: column;
+  }
+
+  .grant-item--list .grant-action {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+}
+
+
 .grant-item__img {
   height: 11rem;
   overflow: hidden;
+}
+
+.grant-item--list .grant-item__img {
+  height: 3.1rem;
+  overflow: hidden;
+  margin: 10px 12px;
 }
 
 .grant-item__img img {
@@ -70,6 +116,13 @@
   height: 35px;
   width: 35px;
 }
+
+
+.grant-item--list .grant-item__owner-image {
+  height: 20px;
+  width: 20px;
+}
+
 
 .grant-item__owner-image img {
   width: 100%;
@@ -181,6 +234,10 @@
   letter-spacing: 1px;
   color: #069953;
   background-color: rgba(88, 254, 183, 0.1);
+}
+
+.match__round--inline {
+  color: #069953;
 }
 
 .clr-prediction.arrow_box {
