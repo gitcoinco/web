@@ -1213,7 +1213,6 @@ def render_new_bounty_roundup(to_email):
         offset = 2
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
-
     intro = args.body
     highlights = args.highlights
     sponsor = args.sponsor
