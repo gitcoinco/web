@@ -139,8 +139,9 @@
   </h2>
   {% if updates %}
     {% if updates.hackathons %}
-      <img src="{% static 'v2/images/top-bar/hackathons-pos.svg' %}" width="35%" style="border-style:none; vertical-align:middle; text-align: left" valign="middle" class="updates">
-      <br>
+      <div width="100%" style="height: 60px">
+        <img src="{% static 'v2/images/top-bar/hackathons-pos.svg' %}" width="35%" style="border-style:none; vertical-align:middle; text-align: left" valign="middle" class="updates">
+      </div>
       <br>
       <p style="text-align: left">{{ updates.hackathons.description|safe }}</p>
       {% for hackathon in updates.hackathons.active %}
@@ -178,11 +179,9 @@
 
     {% if updates.grants %}
       <br>
-      <h2>
+      <div width="100%" style="height: 60px">
         <img src="{% static 'v2/images/top-bar/grants-pos.svg' %}" width="35%" style="border-style:none; vertical-align:middle; text-align: left" valign="middle" class="updates">
-      </h2>
-      <br>
-      <br>
+      </div>
       <br>
       {% for grant in updates.grants %}
         <p style="color:#000; font-size:16px; line-height:26px; list-style:none; margin-top:2.5em; text-align: left">
@@ -219,7 +218,7 @@
         <li style="margin-top: 2.5em; text-align: left;">
           <p>
           - <a style="color:#3E00FF; text-decoration: none;" href="{% url "profile" highlight.who %}">{{ highlight.who }}</a>:
-            {{ highlight.what }}
+            {{ highlight.what }} {% if highlight.id %}<a style="color:#3E00FF; text-decoration:none; font-size:16px; line-height:26px; list-style:none; margin-top:1.5em" href="{% url 'townsquare' %}?tab=activity:{{ highlight.id }}">Like or comment</a>{% endif %}
           </p>
         </li>
       {% endfor %}
