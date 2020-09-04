@@ -31,7 +31,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-
 from django.contrib.auth.models import Group, User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.exceptions import PermissionDenied, ValidationError
@@ -112,7 +111,7 @@ from .models import (
     CoinRedemptionRequest, Coupon, Earning, FeedbackEntry, HackathonEvent, HackathonProject, HackathonRegistration,
     HackathonSponsor, HackathonWorkshop, Interest, LabsResearch, Option, Poll, PortfolioItem, Profile,
     ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
-    TribeMember, UserAction, UserVerificationModel,
+    TribeMember, UserAction, UserDirectory, UserVerificationModel,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -120,11 +119,9 @@ from .notifications import (
 )
 from .router import HackathonEventSerializer, HackathonProjectSerializer, TribesSerializer, TribesTeamSerializer
 from .utils import (
-    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context,
-    get_custom_avatars, get_hackathon_events, get_hackathons_page_default_tabs,
-    get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
-    re_market_bounty, record_user_action_on_interest,
-    release_bounty_to_the_public, sync_payout, web3_process_bounty,
+    apply_new_bounty_deadline, get_bounty, get_bounty_id, get_context, get_custom_avatars, get_hackathon_events,
+    get_hackathons_page_default_tabs, get_unrated_bounties_count, get_web3, has_tx_mined, is_valid_eth_address,
+    re_market_bounty, record_user_action_on_interest, release_bounty_to_the_public, sync_payout, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -872,6 +869,40 @@ def users_directory(request):
 
     return TemplateResponse(request, 'dashboard/users.html', params)
 
+@csrf_exempt
+@staff_member_required
+def user_lookup(request):
+
+    if not request.user.is_authenticated:
+        return HttpResponse(status=404)
+
+    path = request.get_full_path().replace('/user_lookup', '')
+    remote_url = f'{"https" if not settings.DEBUG else "http"}://{settings.ELASTIC_SEARCH_URL}:9200{path}'
+    from proxy.views import proxy_view
+    return proxy_view(request, remote_url)
+
+@staff_member_required
+def users_directory_elastic(request):
+    """Handle displaying users directory page."""
+    from retail.utils import programming_languages, programming_languages_full
+
+    keywords = programming_languages + programming_languages_full
+
+    params = {
+        'is_staff': request.user.is_staff,
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-07.png')) ,
+        'active': 'users',
+        'title': 'Users',
+        'meta_title': "",
+        'meta_description': "",
+        'keywords': keywords
+    }
+
+    if request.path == '/tribes/explore':
+        params['explore'] = 'explore_tribes'
+
+    return TemplateResponse(request, 'dashboard/users-elastic.html', params)
+
 
 def users_fetch_filters(profile_list, skills, bounties_completed, leaderboard_rank, rating, organisation, hackathon_id = ""):
     if not settings.DEBUG:
@@ -962,6 +993,34 @@ def set_project_notes(request):
 
     return JsonResponse({})
 
+
+@require_GET
+def users_autocomplete(request):
+    max_items = 5
+    q = request.GET.get('q')
+    if q:
+        from haystack.query import SQ, SearchQuerySet
+        sqs = SearchQuerySet().autocomplete((SQ(first_name_auto=q) | SQ(last_name_auto=q) | SQ(handle_auto=q)))
+        results = [str(result.object) for result in sqs[:max_items]]
+    else:
+        results = []
+
+    return JsonResponse({
+        'results': results
+    })
+
+
+@require_GET
+def output_users_to_csv(request):
+
+    if request.user.is_authenticated and not request.user.is_staff:
+        return Http404()
+
+    profile_ids = request.GET.getlist('profile_ids[]')
+
+    user_query = UserDirectory.objects.filter(profile_id__in=profile_ids)
+    from djqscsv import render_to_csv_response
+    return render_to_csv_response(user_query)
 
 @require_GET
 def users_fetch(request):
@@ -1169,6 +1228,7 @@ def users_fetch(request):
         pass
 
     return JsonResponse(params, status=200, safe=False)
+
 
 @require_POST
 def bounty_mentor(request):
@@ -1968,6 +2028,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['avatar_url'] = bounty.get_avatar_url(True)
                 params['canonical_url'] = bounty.canonical_url
                 params['is_bounties_network'] = bounty.is_bounties_network
+                params['web3_type'] = bounty.web3_type
 
                 if bounty.event:
                     params['event_tag'] = bounty.event.slug
@@ -4304,9 +4365,18 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
     if tab == 'activity':
         active = 1
 
+    if not hackathon:
+        hackathon = project.hackathon
+
+    title = project.name
+    desc = project.summary
+    avatar_url = project.logo.url if project.logo else project.bounty.avatar_url
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     what = f'project:{project_id}'
     params = {
+        'title': title,
+        'card_desc': desc,
+        'avatar_url': avatar_url,
         'target': f'/activity?what={what}',
         'what': what,
         'tab': active,
@@ -4321,7 +4391,7 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
             'winner': project.winner,
             'looking_members': project.looking_members,
             'work_url': project.work_url,
-            'logo_url': project.logo.url if project.logo else staticfiles_storage.url(f'v2/images/projects/logos/${project.id}.png'),
+            'logo_url': project.logo.url if project.logo else '',
             'prize': {
                 'id': project.bounty.id,
                 'title': project.bounty.title,
@@ -4358,6 +4428,10 @@ def hackathon_registration(request):
             status=401)
     try:
         hackathon_event = HackathonEvent.objects.filter(slug__iexact=hackathon).latest('id')
+
+        if HackathonRegistration.objects.filter(hackathon=hackathon_event, registrant=profile).exists():
+            return JsonResponse({'error': _('Already registered.')}, status=401)
+
         HackathonRegistration.objects.create(
             name=hackathon,
             hackathon=hackathon_event,
@@ -4455,6 +4529,11 @@ def hackathon_registration(request):
 
 def get_hackathons(request):
     """Handle rendering all Hackathons."""
+
+    if settings.DEBUG:
+        from perftools.management.commands import create_page_cache
+        
+        create_page_cache.create_hackathon_list_page_cache()
 
     tabs = [
         ('current', 'happening now'),
@@ -5167,6 +5246,7 @@ def create_bounty_v1(request):
     event_name = 'new_bounty'
     record_bounty_activity(bounty, user, event_name)
     maybe_market_to_email(bounty, event_name)
+    print('### GITCOIN BOT A0')
     maybe_market_to_github(bounty, event_name)
 
     response = {
@@ -5320,7 +5400,7 @@ def fulfill_bounty_v1(request):
     if payout_type == 'fiat' and not fulfiller_identifier:
         response['message'] = 'error: missing fulfiller_identifier'
         return JsonResponse(response)
-    elif payout_type == 'qr' and not fulfiller_address:
+    elif (payout_type == 'qr' or payout_type == 'polkadot-ext') and not fulfiller_address:
         response['message'] = 'error: missing fulfiller_address'
         return JsonResponse(response)
 
@@ -5434,8 +5514,8 @@ def payout_bounty_v1(request, fulfillment_id):
     if not payout_type:
         response['message'] = 'error: missing parameter payout_type'
         return JsonResponse(response)
-    if payout_type not in ['fiat', 'qr', 'web3_modal', 'manual']:
-        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / manual'
+    if payout_type not in ['fiat', 'qr', 'web3_modal', 'polkadot_ext', 'manual']:
+        response['message'] = 'error: parameter payout_type must be fiat / qr / web_modal / polkadot_ext / manual'
         return JsonResponse(response)
     if payout_type == 'manual' and not bounty.event:
         response['message'] = 'error: payout_type manual is eligible only for hackathons'
@@ -5501,7 +5581,7 @@ def payout_bounty_v1(request, fulfillment_id):
         fulfillment.save()
         record_bounty_activity(bounty, user, 'worker_paid', None, fulfillment)
 
-    elif payout_type in ['qr', 'web3_modal']:
+    elif payout_type in ['qr', 'web3_modal', 'polkadot_ext']:
         fulfillment.payout_status = 'pending'
         fulfillment.save()
         sync_payout(fulfillment)

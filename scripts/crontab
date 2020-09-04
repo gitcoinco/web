@@ -103,6 +103,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## INFRASTRUCTURE
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash warm_cache  >> /var/log/gitcoin/warm_cache.log  2>&1
+*/15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash update_index >> /var/log/gitcoin/elastic_search.log  2>&1
 
 * * * * * date >> /var/log/gitcoin/running_procs.log; ps -aux | grep python3 >> /var/log/gitcoin/running_procs.log  2>&1
 1 1 * * * rm -f /var/log/gitcoin/running_procs.log

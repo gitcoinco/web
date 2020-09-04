@@ -62,6 +62,7 @@ Vue.mixin({
         vm.tokens = response;
         vm.form.token = vm.filterByChainId[0];
         vm.getAmount(vm.form.token.symbol);
+        vm.injectProvider(vm.form.token.symbol);
 
       }).catch((err) => {
         console.log(err);
@@ -84,6 +85,37 @@ Vue.mixin({
       }).catch((err) => {
         console.log(err);
       });
+    },
+    injectProvider: function(token) {
+      let vm = this;
+      const chainId = vm.chainId;
+
+      if (!token || !chainId) {
+        return;
+      }
+
+      switch (chainId) {
+        case '58': {
+          let polkadot_endpoint;
+
+          if (token == 'KSM') {
+            polkadot_endpoint = KUSAMA_ENDPOINT;
+          } else if (token == 'DOT') {
+            polkadot_endpoint = POLKADOT_ENDPOINT;
+          }
+
+          polkadot_utils.connect(polkadot_endpoint).then(res =>{
+            console.log(res);
+            polkadot_extension_dapp.web3Enable('gitcoin');
+          }).catch(err => {
+            console.log(err);
+          });
+          break;
+        }
+
+        default:
+          break;
+      }
     },
     calcValues: function(direction) {
       let vm = this;
@@ -150,6 +182,9 @@ Vue.mixin({
         case '1':
           // ethereum
           type = 'web3_modal';
+          break;
+        case '58':
+          type = 'polkadot_ext';
           break;
         case '666':
           // paypal
@@ -358,7 +393,7 @@ Vue.mixin({
             if (errors) {
               _alert({ message: gettext('Unable to pay bounty fee. Please try again.') }, 'error');
             } else {
-
+              vm.form.feeTxId = txnHash;
               saveAttestationData(
                 txnHash,
                 vm.totalAmount.totalFee,
@@ -461,8 +496,8 @@ Vue.mixin({
         'repo_type': metadata.repo_type,
         'is_featured': metadata.is_featured,
         'featuring_date': metadata.featuring_date,
-        'fee_amount': 0,
-        'fee_tx_id': null,
+        'fee_amount': vm.totalAmount.totalFee,
+        'fee_tx_id': vm.form.feeTxId,
         'coupon_code': vm.form.couponCode,
         'privacy_preferences': JSON.stringify({
           show_email_publicly: vm.form.showEmailPublicly
@@ -662,6 +697,7 @@ if (document.getElementById('gc-hackathon-new-bounty')) {
           token: {},
           terms: false,
           termsPrivacy: false,
+          feeTxId: null,
           couponCode: document.coupon_code
         }
       };

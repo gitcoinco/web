@@ -101,6 +101,18 @@
           </p>
         </div>
       {% endif %}
+        
+       {% if grant.github_project_url %}
+        <div class="font-body mb-2">
+          <i style="width: 14px;" class="fab fa-github-square mr-2 text-center"></i>
+          <p class="d-inline-block mb-0">
+            <a href="{{ grant.github_project_url }}" target="_blank" rel="" data-toggle="tooltip" data-html="true" data-placement="top" for="github_project_url" 
+            title="Project Github URL">
+              {{ grant.github_project_url }}
+            </a>
+          </p>
+         </div>
+        {% endif %}
 
         <div class="mb-2">
           <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>

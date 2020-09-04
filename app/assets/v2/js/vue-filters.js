@@ -134,3 +134,15 @@ Vue.filter('decimals', (number, decimals) => {
   result = parseFloat(Number(number).toFixed(decimals));
   return result;
 });
+
+Vue.filter('slugify', (string) => {
+  let slug;
+
+  if (!string) {
+    return '';
+  }
+
+  slug = (string || '').replace(/ /g, '-');
+
+  return slug;
+});

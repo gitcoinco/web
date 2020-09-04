@@ -3,7 +3,6 @@ from django.utils.timesince import timesince
 
 import dateutil.parser
 
-
 register = template.Library()
 
 

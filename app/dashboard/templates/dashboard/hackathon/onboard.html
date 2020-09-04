@@ -475,6 +475,7 @@
           const data = {'name': name, 'referer': referer};
           const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
+          $('[data-registration]').addClass('disabled');
           $.when(sendRegister).then((response) => {
             _alert('You have now registered for this hackathon.', 'success');
             console.log(response)
@@ -492,6 +493,7 @@
             const data = { 'name': name, 'referer': referer, 'poll': JSON.stringify(poll)};
             const sendRegister = fetchData(url, 'POST', data, {'X-CSRFToken': csrftoken});
 
+            $(this).addClass('disabled');
             $.when(sendRegister).then((response) => {
               _alert('You have now registered for this hackathon.', 'success');
               console.log(response)

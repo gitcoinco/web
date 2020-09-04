@@ -166,6 +166,7 @@ class Grant(SuperModel):
     description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
     description_rich = models.TextField(default='', blank=True, help_text=_('HTML rich description.'))
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
+    github_project_url = models.URLField(blank=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',
@@ -284,12 +285,6 @@ class Grant(SuperModel):
         help_text=_('The team members contributing to this Grant.'),
     )
     image_css = models.CharField(default='', blank=True, max_length=255, help_text=_('additional CSS to attach to the grant-banner img.'))
-    clr_matching = models.DecimalField(
-        default=0,
-        decimal_places=2,
-        max_digits=20,
-        help_text=_('The TOTAL CLR matching amount across all rounds'),
-    )
     amount_received_with_phantom_funds = models.DecimalField(
         default=0,
         decimal_places=2,
@@ -1419,7 +1414,12 @@ class MatchPledge(SuperModel):
     pledge_type = models.CharField(max_length=15, choices=PLEDGE_TYPES, default='tech', help_text=_('CLR pledge type'))
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
-    data = models.TextField(blank=True)
+    data = JSONField(blank=True)
+
+    @property
+    def data_json(self):
+        import json
+        return json.loads(self.data)
 
     def __str__(self):
         """Return the string representation of this object."""

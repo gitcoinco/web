@@ -35,12 +35,20 @@ class Command(BaseCommand):
             payout_status='pending'
         )
 
+        # web3 modal
         web3_modal_pending_fulfillments = pending_fulfillments.filter(payout_type='web3_modal')
         if web3_modal_pending_fulfillments:
             for fulfillment in web3_modal_pending_fulfillments.all():
                 sync_payout(fulfillment)
 
+        # polkadot extension
+        polkadot_pending_fulfillments = pending_fulfillments.filter(payout_type='polkadot_ext')
+        if polkadot_pending_fulfillments:
+            for fulfillment in polkadot_pending_fulfillments.all():
+                sync_payout(fulfillment)
 
+
+        # QR
         qr_pending_fulfillments = pending_fulfillments.filter(payout_type='qr')
         if qr_pending_fulfillments:
             # Auto expire pending transactions

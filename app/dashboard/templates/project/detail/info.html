@@ -24,13 +24,14 @@
   <div class="row hackathon-project mt-3 mb-5">
     <div class="col-12 px-0">
       <div class="col-12 col-lg-10 pb-2 d-flex" style="padding-top: 20px !important;">
-          <img width="111" height="111" :src="project.logo_url" style="{{project.image_css}}">
-          <div class="ml-3">
-            <a class="text-decoration-none text-black project-title" :href="project.url"><h1 class="font-title-xl mt-md-4 mb-2 font-weight-bold">[[ project.name ]]</h1></a>
-            <div class="d-flex align-items-baseline">
-              <i class="fab fa-github mr-2"></i> <a class="font-body" :href="project.work_url">[[project.work_url]]</a>
-            </div>
+        <img v-if="project.logo_url" width="111" height="111" :src="project.logo_url">
+        <img v-else width="111" height="111" :src="project.prize.avatar">
+        <div class="ml-3">
+          <a class="text-decoration-none text-black project-title" :href="project.url"><h1 class="font-title-xl mt-md-4 mb-2 font-weight-bold">[[ project.name ]]</h1></a>
+          <div class="d-flex align-items-baseline">
+            <i class="fab fa-github mr-2"></i> <a class="font-body" :href="project.work_url">[[project.work_url]]</a>
           </div>
+        </div>
       </div>
       <div class="col-12 col-lg-7">
         <div class="mt-4">

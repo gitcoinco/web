@@ -3,7 +3,6 @@ from django.utils.formats import date_format
 
 import dateutil.parser
 
-
 register = template.Library()
 
 

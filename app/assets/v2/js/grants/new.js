@@ -120,6 +120,7 @@ const init = () => {
       formData.append('description', description.getText());
       formData.append('description_rich', JSON.stringify(description.getContents()));
       formData.append('reference_url', $('#input-url').val());
+      formData.append('github_project_url', $('#github_project_url').val());
       formData.append('admin_address', $('#input-admin_address').val());
       formData.append('contract_owner_address', $('#contract_owner_address').val());
       if ($('#token_address').length) {
