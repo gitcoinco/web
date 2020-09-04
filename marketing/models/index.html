@@ -2796,7 +2796,7 @@ object the first time, the query is executed.</p>
 <pre><code class="python">RoundupEmail(self, *args, **kwargs)
 </code></pre>
 
-<p>RoundupEmail(id, created_on, modified_on, from_email, from_name, subject, body, kudos_ids, highlights, sponsor, bounties_spec)
+<p>RoundupEmail(id, created_on, modified_on, from_email, from_name, subject, body, kudos_ids, highlights, sponsor, bounties_spec, news, updates, videos, issue, release_date, hide_dynamic)
 <h3 id="marketing.models.RoundupEmail.body">body</h3></p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2822,6 +2822,11 @@ object the first time, the query is executed.</p>
 <pre><code class="python">RoundupEmail._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=True, **kwargs)
 </code></pre>
 
+<h3 id="marketing.models.RoundupEmail.get_next_by_release_date">_method</h3>
+
+<pre><code class="python">RoundupEmail._method(self, *, field=&lt;django.db.models.fields.DateField: release_date&gt;, is_next=True, **kwargs)
+</code></pre>
+
 <h3 id="marketing.models.RoundupEmail.get_previous_by_created_on">_method</h3>
 
 <pre><code class="python">RoundupEmail._method(self, *, field=&lt;django.db.models.fields.DateTimeField: created_on&gt;, is_next=False, **kwargs)
@@ -2832,6 +2837,15 @@ object the first time, the query is executed.</p>
 <pre><code class="python">RoundupEmail._method(self, *, field=&lt;django.db.models.fields.DateTimeField: modified_on&gt;, is_next=False, **kwargs)
 </code></pre>
 
+<h3 id="marketing.models.RoundupEmail.get_previous_by_release_date">_method</h3>
+
+<pre><code class="python">RoundupEmail._method(self, *, field=&lt;django.db.models.fields.DateField: release_date&gt;, is_next=False, **kwargs)
+</code></pre>
+
+<h3 id="marketing.models.RoundupEmail.hide_dynamic">hide_dynamic</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="marketing.models.RoundupEmail.highlights">highlights</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
@@ -2840,7 +2854,19 @@ object the first time, the query is executed.</p>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
+<h3 id="marketing.models.RoundupEmail.issue">issue</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
 <h3 id="marketing.models.RoundupEmail.kudos_ids">kudos_ids</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="marketing.models.RoundupEmail.news">news</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="marketing.models.RoundupEmail.release_date">release_date</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
@@ -2849,6 +2875,14 @@ object the first time, the query is executed.</p>
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="marketing.models.RoundupEmail.subject">subject</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="marketing.models.RoundupEmail.updates">updates</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="marketing.models.RoundupEmail.videos">videos</h3>
 
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>

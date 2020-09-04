@@ -6710,7 +6710,281 @@ for a particular user
 </code></pre>
 
 <p>Handle actions to take on user logout.
-<h2 id="dashboard.models.ProfileSerializer">ProfileSerializer</h2></p>
+<h2 id="dashboard.models.UserDirectoryQuerySet">UserDirectoryQuerySet</h2></p>
+<pre><code class="python">UserDirectoryQuerySet(self, model=None, query=None, using=None, hints=None)
+</code></pre>
+
+<p>Define the Profile QuerySet to be used as the objects manager.
+<h2 id="dashboard.models.UserDirectory">UserDirectory</h2></p>
+<pre><code class="python">UserDirectory(self, *args, **kwargs)
+</code></pre>
+
+<p>UserDirectory(profile_id, join_date, github_created_at, first_name, last_name, email, handle, sms_verification, persona, rank_coder, num_hacks_joined, which_hacks_joined, hack_work_starts, hack_work_submits, hack_work_start_orgs, hack_work_submit_orgs, bounty_work_starts, bounty_work_submits, hack_started_feature, hack_started_code_review, hack_started_security, hack_started_design, hack_started_documentation, hack_started_bug, hack_started_other, hack_started_improvement, started_feature, started_code_review, started_security, started_design, started_documentation, started_bug, started_other, started_improvement, submitted_feature, submitted_code_review, submitted_security, submitted_design, submitted_documentation, submitted_bug, submitted_other, submitted_improvement, bounty_earnings, bounty_work_start_orgs, bounty_work_submit_orgs, kudos_sends, kudos_receives, hack_winner_kudos_received, grants_opened, grant_contributed, grant_contributions, grant_contribution_amount, num_actions, action_points, avg_points_per_action, last_action_on, keywords, activity_level, reliability, average_rating, longest_streak, earnings_count, follower_count, following_count, num_repeated_relationships, verification_status)
+<h3 id="dashboard.models.UserDirectory.action_points">action_points</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.activity_level">activity_level</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.average_rating">average_rating</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.avg_points_per_action">avg_points_per_action</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.bounty_earnings">bounty_earnings</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.bounty_work_start_orgs">bounty_work_start_orgs</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.bounty_work_starts">bounty_work_starts</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.bounty_work_submit_orgs">bounty_work_submit_orgs</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.bounty_work_submits">bounty_work_submits</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.earnings_count">earnings_count</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.email">email</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.first_name">first_name</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.follower_count">follower_count</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.following_count">following_count</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.github_created_at">github_created_at</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.grant_contributed">grant_contributed</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.grant_contribution_amount">grant_contribution_amount</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.grant_contributions">grant_contributions</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.grants_opened">grants_opened</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_started_bug">hack_started_bug</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_started_code_review">hack_started_code_review</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_started_design">hack_started_design</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_started_documentation">hack_started_documentation</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_started_feature">hack_started_feature</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_started_improvement">hack_started_improvement</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_started_other">hack_started_other</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_started_security">hack_started_security</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_winner_kudos_received">hack_winner_kudos_received</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_work_start_orgs">hack_work_start_orgs</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_work_starts">hack_work_starts</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_work_submit_orgs">hack_work_submit_orgs</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.hack_work_submits">hack_work_submits</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.handle">handle</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.join_date">join_date</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.keywords">keywords</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.kudos_receives">kudos_receives</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.kudos_sends">kudos_sends</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.last_action_on">last_action_on</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.last_name">last_name</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.longest_streak">longest_streak</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.num_actions">num_actions</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.num_hacks_joined">num_hacks_joined</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.num_repeated_relationships">num_repeated_relationships</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.persona">persona</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.profile_id">profile_id</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.rank_coder">rank_coder</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.reliability">reliability</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.sms_verification">sms_verification</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.started_bug">started_bug</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.started_code_review">started_code_review</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.started_design">started_design</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.started_documentation">started_documentation</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.started_feature">started_feature</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.started_improvement">started_improvement</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.started_other">started_other</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.started_security">started_security</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.submitted_bug">submitted_bug</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.submitted_code_review">submitted_code_review</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.submitted_design">submitted_design</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.submitted_documentation">submitted_documentation</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.submitted_feature">submitted_feature</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.submitted_improvement">submitted_improvement</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.submitted_other">submitted_other</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.submitted_security">submitted_security</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.verification_status">verification_status</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="dashboard.models.UserDirectory.which_hacks_joined">which_hacks_joined</h3>
+
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h2 id="dashboard.models.ProfileSerializer">ProfileSerializer</h2>
+
 <pre><code class="python">ProfileSerializer(self, instance=None, data=&lt;class 'rest_framework.fields.empty'&gt;, **kwargs)
 </code></pre>
 
