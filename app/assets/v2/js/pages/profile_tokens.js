@@ -302,13 +302,13 @@ const updatePTokenInfoOnPage = async() => {
   $('#amount-available').text(userTokenBalance.available);
   $('#purchase-counter').text(userTokenBalance.purchases);
   if (parseInt(userTokenBalance.available_to_redeem) > 0) {
-    $('#redeemPToken').attr("disabled", false);
-    $('#redeemPToken').css("cursor", "pointer");
-    $('#redeemPToken').css("pointer-events", "auto");
+    $('#redeemPToken').attr('disabled', false);
+    $('#redeemPToken').css('cursor', 'pointer');
+    $('#redeemPToken').css('pointer-events', 'auto');
   } else {
-    $('#redeemPToken').attr("disabled", true);
-    $('#redeemPToken').css("cursor", "default");
-    $('#redeemPToken').css("pointer-events", "none");
+    $('#redeemPToken').attr('disabled', true);
+    $('#redeemPToken').css('cursor', 'default');
+    $('#redeemPToken').css('pointer-events', 'none');
   }
 
 

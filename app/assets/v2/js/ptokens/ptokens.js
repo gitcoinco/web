@@ -86,7 +86,7 @@ function request_redemption(tokenId, total, redemptionDescription, network) {
   return fetchData(`/ptokens/${tokenId}/redemptions/`, 'POST', {
     'network': network,
     'total': total,
-    'description': redemptionDescription,
+    'description': redemptionDescription
   });
 }
 

@@ -259,7 +259,7 @@ Vue.mixin({
         let supply = parseFloat(this.newPToken.supply);
         let stopFlow;
 
-        if (this.newPToken.name === '' || await this.nameExists() ) {
+        if (this.newPToken.name === '' || await this.nameExists()) {
           this.$set(this.pToken, 'is_invalid_name', true);
           !stopFlow && (stopFlow = true);
           $('#createPTokenName').addClass('is-invalid');
