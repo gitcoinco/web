@@ -1201,6 +1201,8 @@ def render_new_bounty_roundup(to_email):
     from django.conf import settings
     from marketing.models import RoundupEmail
     args = RoundupEmail.objects.order_by('created_on').last()
+    hide_dynamic = args.hide_dynamic
+
     subject = args.subject
     new_kudos_pks = args.kudos_ids.split(',')
     new_kudos_size_px = 150
@@ -1211,17 +1213,8 @@ def render_new_bounty_roundup(to_email):
         offset = 2
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
 
-    kudos_friday = f'''
-<div style="text-align: center">
-<h3>New Kudos This Month</h3>
-</p>
-<p>
-''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
-</p>
-</div>
-    '''
 
-    intro = args.body.replace('KUDOS_INPUT_HERE', kudos_friday)
+    intro = args.body
     highlights = args.highlights
     sponsor = args.sponsor
     bounties_spec = args.bounties_spec
@@ -1279,14 +1272,22 @@ def render_new_bounty_roundup(to_email):
         'bounties': bounties,
         'leaderboard': leaderboard,
         'invert_footer': False,
-        'hide_header': False,
+        'hide_header': True,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'kudos_highlights': kudos_highlights,
         'sponsor': sponsor,
 		'email_type': 'roundup',
         'email_style': email_style,
+        'hide_dynamic': hide_dynamic,
         'hide_bottom_logo': True,
+        'new_kudos_pks': new_kudos_pks,
+        'new_kudos_size_px': new_kudos_size_px,
+        'videos': args.videos,
+        'news': args.news,
+        'updates': args.updates,
+        'issue': args.issue,
+        'release_date': args.release_date
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

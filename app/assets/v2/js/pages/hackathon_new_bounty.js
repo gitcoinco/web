@@ -54,6 +54,7 @@ Vue.mixin({
         vm.tokens = response;
         vm.form.token = vm.filterByChainId[0];
         vm.getAmount(vm.form.token.symbol);
+        vm.injectProvider(vm.form.token.symbol);
 
       }).catch((err) => {
         console.log(err);
@@ -77,6 +78,38 @@ Vue.mixin({
       }).catch((err) => {
         console.log(err);
       });
+    },
+    injectProvider: function(token) {
+      let vm = this;
+      const chainId = vm.chainId;
+
+      if (!token || !chainId) {
+        return;
+      }
+
+      switch (chainId) {
+        case '58': {
+          let polkadot_endpoint;
+
+          if (token == 'KSM') {
+            polkadot_endpoint = KUSAMA_ENDPOINT;
+          } else if (token == 'DOT') {
+            polkadot_endpoint = POLKADOT_ENDPOINT;
+          }
+
+          polkadot_utils.connect(polkadot_endpoint).then(res =>{
+            console.log(res);
+            polkadot_extension_dapp.web3Enable('gitcoin');
+          }).catch(err => {
+            console.log(err);
+          });
+          break;
+        }
+
+        default:
+          break;
+
+      }
     },
     calcValues: function(direction) {
       let vm = this;
@@ -140,6 +173,10 @@ Vue.mixin({
         case '1':
           // ethereum
           type = 'web3_modal';
+          break;
+        case '58':
+          // polkadot
+          type = 'polkadot_ext';
           break;
         case '666':
           // paypal

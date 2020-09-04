@@ -258,6 +258,9 @@ const addFollowAction = () => {
 };
 
 function openContributorPopOver(contributor, element) {
+  if (!contributor) {
+    return;
+  }
 
   const contributorURL = `/api/v0.1/user_card/${contributor}`;
 
