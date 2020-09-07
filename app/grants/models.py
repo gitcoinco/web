@@ -1414,7 +1414,7 @@ class MatchPledge(SuperModel):
     pledge_type = models.CharField(max_length=15, choices=PLEDGE_TYPES, default='tech', help_text=_('CLR pledge type'))
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
-    data = JSONField(blank=True)
+    data = JSONField(null=True, blank=True)
 
     @property
     def data_json(self):

@@ -10,6 +10,7 @@ Usage
 import re
 import sys
 
+
 # https://stackoverflow.com/a/49146722/330558
 def remove_emoji(string):
     emoji_pattern = re.compile("["
