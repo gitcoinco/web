@@ -1,0 +1,34 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static matches cookielaw_tags %}
+<nav class="navbar navbar-expand-md navbar-dark g-font-muli gitcoin-background">
+  <a class="navbar-brand py-0 mr-0" href="/landing">
+    <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+  </a>
+  {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
+    <div class="navbar-network ml-xl-5 py-1 px-2 hidden">
+      <i class="fas fa-circle pr-1"></i>
+      <span id="current-network"></span>
+    </div>
+  {% endif %}
+  {% include 'shared/menu.html' %}
+</nav>
+{% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*)|(.*fund.*)|(.*cancel.*))$" %}
+  <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
+{% endif %}
+{% cookielaw_banner %}
