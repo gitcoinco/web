@@ -51,12 +51,7 @@ def assign_brightid_sponsorship(brightid_uuid):
     op['sig'] = base64.b64encode(sig).decode('ascii')
 
     response = requests.post(brightIDv5OpUrl, json.dumps(op))
-
-    if 200 == response.status_code:
-        # {'data': {'hash': 'LVleLJw0siU7C47-MhpVXZTfhpJl2AXvNr-Vx2N11sI'}}
-        return True
-    else:
-        return False
+    return 200 == response.status_code
 
 def get_verified_uuids():
     endpointURL = 'https://app.brightid.org/node/v5/verifications/Gitcoin'
