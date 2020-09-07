@@ -7,34 +7,34 @@
   </p>
   <div class="row mx-1">
     <div class="col-6 px-2 mb-2">
-      <p class="predict-label mb-0"><span class="font-weight-semibold">1 DAI</span> contribution</p>
+      <p class="predict-label mb-0"><span class="font-weight-semibold">1 {{ token }}</span> contribution</p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
-        <span class="font-weight-bold"> + [[ get_clr_prediction(1, 2) || 0 | round | formatNumber ]] DAI</span> match
+        <span class="font-weight-bold"> + [[ get_clr_prediction(1, 2) || 0 | round | formatNumber ]] {{ token }}</span> match
       </p>
     </div>
 
     <div class="col-6 px-2 mb-2" v-if="!short">
-      <p class="predict-label mb-0"><span class="font-weight-semibold">10 DAI</span> contribution</p>
+      <p class="predict-label mb-0"><span class="font-weight-semibold">10 {{ token }}</span> contribution</p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
-        <span class="font-weight-bold"> + [[ get_clr_prediction(2, 2) || 0 | round | formatNumber ]] DAI</span> match
+        <span class="font-weight-bold"> + [[ get_clr_prediction(2, 2) || 0 | round | formatNumber ]] {{ token }}</span> match
       </p>
     </div>
 
     <div class="col-6 px-2 mb-2">
-      <p class="predict-label mb-0"><span class="font-weight-semibold">100 DAI</span> contribution</p>
+      <p class="predict-label mb-0"><span class="font-weight-semibold">100 {{ token }}</span> contribution</p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
-        <span class="font-weight-bold"> +  [[ get_clr_prediction(3, 2) || 0 | round | formatNumber ]] DAI</span> match
+        <span class="font-weight-bold"> +  [[ get_clr_prediction(3, 2) || 0 | round | formatNumber ]] {{ token }}</span> match
       </p>
     </div>
 
     <div class="col-6 px-2 mb-2" v-if="!short">
-      <p class="predict-label mb-0"><span class="font-weight-semibold">1,000 DAI</span> contribution</p>
+      <p class="predict-label mb-0"><span class="font-weight-semibold">1,000 {{ token }}</span> contribution</p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
-        <span class="font-weight-bold"> + [[ get_clr_prediction(4, 2) || 0 | round | formatNumber]] DAI</span> match
+        <span class="font-weight-bold"> + [[ get_clr_prediction(4, 2) || 0 | round | formatNumber]] {{ token }}</span> match
       </p>
     </div>
 

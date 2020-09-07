@@ -7,35 +7,35 @@
   </p>
   <div class="row mx-1">
     <div class="col-6 px-2 mb-2">
-      <p class="predict-label mb-0"><span class="font-weight-semibold">1 DAI</span> contribution</p>
+      <p class="predict-label mb-0"><span class="font-weight-semibold">1 {{ token }}</span> contribution</p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
-        <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.1.2|floatformat:0|intcomma|default:0 }} DAI</span> match
+        <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.1.2|floatformat:0|intcomma|default:0 }} {{ token }}</span> match
       </p>
     </div>
     {% if not short %}
       <div class="col-6 px-2 mb-2">
-        <p class="predict-label mb-0"><span class="font-weight-semibold">10 DAI</span> contribution</p>
+        <p class="predict-label mb-0"><span class="font-weight-semibold">10 {{ token }}</span> contribution</p>
         <p class="amount mb-0">
           <i class="fas fa-arrow-circle-right"></i>
-          <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.2.2|floatformat:0|intcomma|default:0 }} DAI</span> match
+          <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.2.2|floatformat:0|intcomma|default:0 }} {{ token }}</span> match
         </p>
       </div>
     {% endif %}
 
     <div class="col-6 px-2 mb-2">
-      <p class="predict-label mb-0"><span class="font-weight-semibold">100 DAI</span> contribution</p>
+      <p class="predict-label mb-0"><span class="font-weight-semibold">100 {{ token }}</span> contribution</p>
       <p class="amount mb-0">
         <i class="fas fa-arrow-circle-right"></i>
-        <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.3.2|floatformat:0|intcomma|default:0 }} DAI</span> match
+        <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.3.2|floatformat:0|intcomma|default:0 }} {{ token }}</span> match
       </p>
     </div>
     {% if not short %}
       <div class="col-6 px-2 mb-2">
-        <p class="predict-label mb-0"><span class="font-weight-semibold">1,000 DAI</span> contribution</p>
+        <p class="predict-label mb-0"><span class="font-weight-semibold">1,000 {{ token }}</span> contribution</p>
         <p class="amount mb-0">
           <i class="fas fa-arrow-circle-right"></i>
-          <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.4.2|floatformat:0|intcomma|default:0 }} DAI</span> match
+          <span class="font-weight-bold"> + {{ grant.clr_prediction_curve.4.2|floatformat:0|intcomma|default:0 }} {{ token }}</span> match
         </p>
       </div>
     {% endif %}

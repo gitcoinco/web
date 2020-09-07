@@ -281,10 +281,17 @@ class ContributionAdmin(GeneralAdmin):
     search_fields = ['tx_id', 'split_tx_id', 'subscription__token_symbol']
 
     def txn_url(self, obj):
-        tx_id = obj.tx_id
-        if not tx_id:
-            tx_id = obj.split_tx_id
-        tx_url = 'https://etherscan.io/tx/' + tx_id
+
+        if obj.subscription.tenant == 'ZCASH':
+            tx_id = obj.tx_id
+            tx_url = 'https://sochain.com/tx/ZEC/' + tx_id
+
+        elif obj.subscription.tenant == 'ETH':
+            tx_id = obj.tx_id
+            if not tx_id:
+                tx_id = obj.split_tx_id
+            tx_url = 'https://etherscan.io/tx/' + tx_id
+
         return format_html("<a href='{}' target='_blank'>{}</a>", tx_url, tx_id)
 
     def profile(self, obj):
