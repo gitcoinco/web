@@ -25,6 +25,7 @@ from secrets import token_hex
 
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate
+from grants.sync.zcash import sync_zcash_payout
 from perftools.models import JSONStore
 
 logger = logging.getLogger(__name__)
@@ -154,3 +155,16 @@ def get_user_code(user_id, grant, coding_set=block_codes, length=6):
     coding_id = [coding_set[randint(0, 9)] for _ in range(length)]
 
     return ''.join(coding_id)
+
+
+def sync_payout(contribution):
+    if not contribution:
+        return None
+
+    subscription = contribution.subscription
+
+    if not subscription:
+        return None
+
+    if subscription.tenant == 'ZCASH':
+        sync_zcash_payout(contribution)
