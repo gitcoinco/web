@@ -1,0 +1,246 @@
+{% comment %}
+    Copyright (C) 2019 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not,see
+    <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <meta name="title" content="Mission | Gitcoin">
+    <meta name="description" content="Gitcoin's mission is to grow/sustain open source.">
+    <link rel="stylesheet" href="{% static "v2/css/mission_old.css" %}" />
+  </head>
+
+  <body class="{{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
+    <div class="header">
+      {% include 'home/nav.html' %}
+      {% include 'shared/minihero.html' with h1='Mission' position_h1_below_logo=1 %}
+    </div>
+
+    <div class="container-fluid" id="mission_hero">
+      <div class="row p-5 p-5">
+        <div class="offset-lg-1 col-2 flex-sm-row flex-column text-center">
+            {% include 'shared/tree.html' %}
+        </div>
+        <div class="col-9 col-lg-9 offset-md-0 d-flex flex-sm-row flex-column text-center">
+          <div class="text">
+            <div class="font-title-xl">
+              {% blocktrans %}
+              Gitcoin Core's mission is our
+              {% endblocktrans %}
+              <br />
+              {% blocktrans %}
+              <span class="text-highlight-dark-blue">
+                north star.
+              </span>  Our mission is to
+              {% endblocktrans %}
+              <br />
+              {% blocktrans %}
+              <span class="text-highlight-pink">Grow & Sustain Open Source</span>.
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light" id="we_want">
+      <div class="row">
+        <div class="col pb-4">
+          <h4 class="text-left text-uppercase">
+            {% blocktrans %}
+            <span class="text-highlight-green">We</span> Want
+            {% endblocktrans %}
+          </h4>
+        </div>
+      </div>
+      <div class="row we-want">
+        <div class="col-md-12 col-lg-8 col-xl-6">
+          <div class="row mb-5">
+            <div class="col-md-10 d-flex align-items-center">
+              <img class="icon" src="{% static "v2/images/mission/want/rocket_man.svg" %}" alt="Rocket man" />
+              <span class="icon-text font-body">
+              {% blocktrans %}
+                We want to build a world in which everyone has the <strong>financial
+                leverage to leave</strong> their job.
+              {% endblocktrans %}
+              </span>
+            </div>
+          </div>
+
+          <div class="row mb-5">
+            <div class="col-md-10 d-flex align-items-center">
+              <img class="icon" src="{% static "v2/images/mission/want/find_work.svg" %}" />
+              <span class="icon-text">
+              {% blocktrans %}
+                We want it to be as <strong>easy to find work in software</strong>, as it is for an
+                Uber driver to find a ride today.
+              {% endblocktrans %}
+              </span>
+            </div>
+          </div>
+
+          <div class="row mb-5">
+            <div class="col-md-10 d-flex align-items-center">
+              <img class="icon" src="{% static "v2/images/mission/want/incentive.svg" %}" />
+              <span class="icon-text">
+                {% blocktrans %}
+                  We want to build a network with <strong>aligned incentives</strong>, especially between capital &amp; labour.
+                {% endblocktrans %}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-lg-block col-md-4 col-lg-4 col-xl-6">
+          <div class="falcon-wrapper">
+            <img class="falcon-pull g-fadein" data-fade-duration=1000 src="{% static "v2/images/mission/want/falcon_1.svg" %}" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid" id="we_believe">
+      <div class="row">
+        <div class="col pb-4">
+          <h4 class="text-left text-uppercase">
+            {% blocktrans %}
+            <span class="text-highlight-green">We</span> Believe
+            {% endblocktrans %}
+          </h4>
+        </div>
+      </div>
+
+      <div class="row we-want">
+        <div class="col-12">
+          <div class="row mb-5">
+            <div class="col-md-6 mb-5 d-flex align-items-center">
+              <img class="icon" src="{% static "v2/images/mission/believe/bounty.png" %}" />
+              <span class="icon-text">
+              {% blocktrans %}
+                We believe in open standards and fat protocols, and have built Gitcoin with StandardBounties -- an Open, Free, Fair, Bounty Protocol on Ethereum.
+              {% endblocktrans %}
+              </span>
+            </div>
+
+            <div class="col-md-6 mx-auto mb-5 d-flex align-items-center">
+              <img class="icon" src="{% static "v2/images/mission/believe/blockchain.png" %}" />
+              <span class="icon-text">
+                {% trans "We believe that blockchain is a game-changer for funding of Open Source. We believe that Open Source Funding and Open Source Jobs will be built on Open Source Money" %}.
+              </span>
+            </div>
+
+            <div class="col-md-6 mb-5 d-flex align-items-center">
+              <img class="icon" src="{% static "v2/images/mission/believe/no_token.png" %}" />
+              <span class="icon-text">
+              {% blocktrans %}
+                We believe that an ICO and tokenization is not the best business model for our dapp. We do not have a token.
+              {% endblocktrans %}
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container-fluid bg-light" id="we_value">
+      <div class="row">
+        <div class="col pb-4">
+          <h4 class="text-left text-uppercase">
+            {% blocktrans %}
+            <span class="text-highlight-green">We</span> Value
+            {% endblocktrans %}
+          </h4>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 col-lg-7">
+          <div class="row">
+            {% for value in values %}
+              <div class="col-6 col-md-4 my-5">
+                <img class="icon-small" src="{% static value.img %}" alt="{{ value.alt }}" />
+                <div class="divider"></div>
+                <p>{{ value.name }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="d-lg-block col-lg-5">
+          <div class="falcon-wrapper">
+            <img
+              class="falcon g-fadein" data-fade-duration=1000
+              src="{% static "v2/images/mission/value/falcon_2.svg" %}"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid" id="we_interact">
+      <div class="row">
+        <div class="col pb-4">
+          <h4 class="text-left text-uppercase">
+            {% blocktrans %}
+              <span class="text-highlight-green">We</span> Interact
+            {% endblocktrans %}
+          </h4>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-8 row">
+          {% for interaction in interactions %}
+            <div class="col-12 col-md-6 my-4 d-flex align-items-center">
+              <img class="icon" src="{% static interaction.img %}" alt="{{ value.alt }}" />
+              <span class="icon-text">{{ interaction.text | safe }}</span>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-4">
+          <div class="falcon-wrapper">
+            <img class="falcon g-fadein" data-fade-duration=1000 src="{% static "v2/images/mission/interact/falcon_3.svg" %}" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-5 pb-3 mb-5">
+        <div class="col text-center">
+          <a class="button button--primary" role="button" href="{% url "about" %}">
+            <i class="fas fa-rocket mr-2"></i>
+            {% trans "About Gitcoin" %}
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+
+  </body>
+</html>

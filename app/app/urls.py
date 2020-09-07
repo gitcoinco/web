@@ -419,6 +419,7 @@ urlpatterns = [
     re_path(r'^landing/?$', retail.views.index, name='landing'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
+    re_path(r'^mission_old/?', retail.views.mission_old, name='mission_old'),
     re_path(r'^jobs/?', retail.views.jobs, name='jobs'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
     re_path(r'^products/?', retail.views.products, name='products'),
