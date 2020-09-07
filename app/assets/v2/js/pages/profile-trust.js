@@ -11,6 +11,15 @@ $(document).ready(function() {
   });
 });
 
+Vue.component('grants-cart', {
+  delimiters: [ '[[', ']]' ],
+
+  data: function() {
+  },
+
+  template: `<h1>HULLO WORLD</h1>`,
+}
+
 let show_brightid_connect_modal = function(brightid_uuid) {
   const brightIdLink = `https://app.brightid.org/link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${brightid_uuid}`;
   const brightIdAppLink = `brightid://link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${brightid_uuid}`;
@@ -134,3 +143,16 @@ let show_brightid_verify_modal = function(brightid_uuid) {
   $(content).appendTo('body');
   $('#verify_brightid_modal').bootstrapModal('show');
 };
+
+if (document.getElementById('gc-trust-bonus-tab')) {
+
+  const app = new Vue({
+    delimiters: [ '[[', ']]' ],
+    el: '#gc-trust-bonus-tab',
+    data: {
+    }
+  });
+
+  console.log('APP', app);
+}
+

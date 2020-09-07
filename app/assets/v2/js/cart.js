@@ -344,6 +344,7 @@ Vue.component('grants-cart', {
         _alert('You have been verified previously');
       }
     },
+    // VALIDATE
     validateCode() {
       const vm = this;
 
@@ -410,6 +411,7 @@ Vue.component('grants-cart', {
         });
       }
     },
+    // REQUEST VERIFICATION
     requestVerification(event) {
       const e164 = this.phone.replace(/\s/g, '');
       const vm = this;

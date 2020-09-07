@@ -1368,6 +1368,7 @@ def grants_cart_view(request):
         'EMAIL_ACCOUNT_VALIDATION': EMAIL_ACCOUNT_VALIDATION
     }
     if request.user.is_authenticated:
+        # GET THE SMS STATUS FROM PROFILE
         context['verified'] = request.user.profile.sms_verification
     else:
         return redirect('/login/github?next=' + request.get_full_path())
