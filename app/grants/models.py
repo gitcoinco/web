@@ -39,6 +39,8 @@ from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_t
 from grants.utils import get_upload_filename
 from web3 import Web3
 
+from townsquare.models import Favorite
+
 logger = logging.getLogger(__name__)
 
 
@@ -543,6 +545,8 @@ class Grant(SuperModel):
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
 
+    def favorite(self, user):
+        return Favorite.objects.filter(user=user, grant=self).exists()
 
 class SubscriptionQuerySet(models.QuerySet):
     """Define the Subscription default queryset and manager."""
@@ -1331,7 +1335,7 @@ def presave_contrib(sender, instance, **kwargs):
 
 def next_month():
     """Get the next month time."""
-    return localtime(timezone.now() + timedelta(days=30))
+    return (timezone.now() + timedelta(days=30))
 
 
 class CLRMatch(SuperModel):

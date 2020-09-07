@@ -25,6 +25,16 @@ along with this program. If not, see
   <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   <link rel="stylesheet" href="{% static "v2/css/sidebar_search.css" %}" />
   <link rel="stylesheet" href="{% static "v2/css/grants/side-cart.css" %}">
+  <style>
+    .select2-selection .select2-selection--single {
+      background: none;
+      outline: none;
+      border: none !important;
+      color: var(--gc-blue);
+      padding: 0;
+      max-width: 136px;
+    }
+  </style>
 </head>
 
 <body class="interior {{type}}_grants {{ active }} grant g-font-muli">
@@ -35,7 +45,7 @@ along with this program. If not, see
 
     {% include 'shared/grant_thanks_modal.html' %}
     {% include 'grants/shared/landing_hero.html' %}
-    <div class="row">
+    <div class="row" style="width: 100vw">
       <div id="grants-details" class="col-12 pr-0">
         <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
           <div
@@ -56,35 +66,33 @@ along with this program. If not, see
               </div>
             </div>
             {% endif %}
-            <div class="row">
-              <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container">
-                {% include 'grants/shared/sidebar_search.html' %}
-              </div>
-
-              <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
-                {% include 'grants/shared/landing_navbar.html' %}
-                {% include 'grants/shared/landing_clr.html' %}
-                {% if type == 'activity' %}
-                {% include 'grants/shared/landing_activity.html' %}
-                {% elif type == 'about' %}
-                {% include 'grants/shared/landing_announce.html' %}
-                {% elif type == 'stats' %}
-                <div id="insert_iframe">
+            <div id="grants-showcase" v-cloak>
+              <div class="row" style="max-width: 99vw">
+                <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container">
+                  {% include 'grants/shared/sidebar_search.html' %}
                 </div>
-                <script>
-                  var insert_iframe = function () {
-                    if (typeof $ != 'undefined') {
-                      $('#insert_iframe').html('<iframe src="/grants/getstats/?category={{selected_category}}" style="width: 100%; height: 100%; min-height: 1000px;">')
-                    } else {
-                      setTimeout(insert_iframe, 100);
-                    }
-                  };
-                  setTimeout(insert_iframe, 100);
-                </script>
-                {% else %}
-                {% include 'grants/shared/landing_subnav.html' %}
-                {% include 'grants/shared/landing_grants.html' %}
-                {% endif %}
+
+                <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">
+                  {% include 'grants/shared/landing_navbar.html' %}
+                  {% include 'grants/shared/landing_clr.html' %}
+
+                  <template v-if="'activity' == current_type">
+                    {% include 'grants/shared/landing_activity.html' %}
+                  </template>
+                  <template v-else-if="'about' == current_type">
+                    {% include 'grants/shared/landing_announce.html' %}
+                  </template>
+                  <template v-else-if="'stats' == current_type">
+                    <div id="insert_iframe">
+                      <iframe :src="`/grants/getstats/?category=${category}`" style="width: 100%; height: 100%; min-height: 1000px;">
+                      </iframe>
+                    </div>
+                  </template>
+                  <template v-else>
+                    {% include 'grants/shared/landing_subnav.html' %}
+                    {% include 'grants/shared/landing_grants.html' %}
+                  </template>
+                </div>
               </div>
             </div>
           </div>
@@ -102,6 +110,12 @@ along with this program. If not, see
     {% include 'shared/footer_scripts.html' with ignore_inject_web3=1 %}
     {% include 'shared/footer.html' %}
     {% include 'grants/shared/shared_scripts.html' %}
+    <script>
+      document.current_type = "{{ type|default:'all' }}";
+      document.selected_category = "{{ selected_category }}";
+      document.keyword = "{{ keyword }}";
+      document.following = {{ following|yesno:'true,false' }};
+    </script>
 </body>
 <script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>
 <script src="{% static "v2/js/lib/infinite.min.js" %}"></script>
