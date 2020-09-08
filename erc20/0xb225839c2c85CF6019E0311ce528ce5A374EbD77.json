@@ -1,0 +1,22 @@
+{
+  "symbol": "HKT",
+  "address": "0xb225839c2c85CF6019E0311ce528ce5A374EbD77",
+  "overview":{
+        "en": "The HKT project is TIANji General Aviation HanKn Digital Platform Pass. The project was approved by Hong Kong General Aviation TECHNOLOGY HK TONGHANG TECHNOLOGY LIMITED, and operated by China Aviation Industry Corporation, Tianji General Aviation. China is a big country with the development of commercial digitization. At present, all domestic commercial systems have undergone digitization reform. In such a big environment, the rapid development of domestic general aviation cannot be achieved without the support of digitization. In addition, the platform is dedicated to creating the Aviation Block Chain Verification File system, which will use the bottom layer of the Block Chain to verify the reality of various maintenance and maintenance of spacecraft, thus ensuring the unified identification of internationalized spacecraft.",
+        "zh": "HKT项目全称添际通航HanKn数字化平台通证，该项目由香港通航科技HK TONGHANG TECHNOLOGY LIMITED立项，中航工业合作企业添际通用航空公司运营。中国是一个商业数字化发展的大国，目前国内商业体系无不进行了数字化改革，在如此的大环境下，国内通航的快速发展离不开数字化的加持，只有线上的客户端服务才能更好的让消费者快速接触线下业务，让通航事业普便化。此外平台致力于打造Aviation Block Chain Verified  File航空区块链验证文件系统，该系统将利用区块链底层作用于航天器各项保养维修真实情况等验证，从而保证国际化航天器的统一标识性。"
+  },
+  "email": "caps2019@qq.com",
+  "website": "http://hankntoken.com/",
+  "whitepaper": "http://www.hankntoken.com/nd.jsp?id=29#_np=0_451_3",
+  "state": "NORMAL",
+  "published_on": "2020-09-09",
+  "initial_price":{
+        "ETH":"0.0001 ETH",
+        "USD":"0.03 USD",
+        "BTC":"0.0000032 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/guyuehi/status/1303444381924499461?s=20",
+    "facebook": "https://www.facebook.com/permalink.php?story_fbid=1242927759398999&id=100010453604932"
+  }
+}
