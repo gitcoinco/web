@@ -23,7 +23,6 @@ import json
 import logging
 import os
 import time
-import requests
 from copy import deepcopy
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -56,6 +55,7 @@ from django.views.decorators.http import require_GET, require_POST
 import dateutil.parser
 import magic
 import pytz
+import requests
 from app.services import RedisService, TwilioService
 from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
 from app.utils import clean_str, ellipses, get_default_network
@@ -68,6 +68,7 @@ from cacheops import invalidate_obj
 from chat.tasks import (
     add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
 )
+from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
@@ -89,7 +90,7 @@ from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
     wall_post_email,
 )
-from marketing.models import EmailSubscriber, Keyword
+from marketing.models import EmailSubscriber, Keyword, UpcomingDate
 from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -99,7 +100,6 @@ from retail.utils import programming_languages, programming_languages_full
 from townsquare.models import Comment, PinnedPost
 from townsquare.views import get_following_tribes, get_tags
 from web3 import HTTPProvider, Web3
-from dashboard.brightid_utils import get_brightid_status
 
 from .export import (
     ActivityExportSerializer, BountyExportSerializer, CustomAvatarExportSerializer, GrantExportSerializer,
@@ -115,7 +115,6 @@ from .models import (
     ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
     TribeMember, UserAction, UserDirectory, UserVerificationModel,
 )
-from marketing.models import UpcomingDate
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,

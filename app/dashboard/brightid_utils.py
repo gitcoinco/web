@@ -1,9 +1,12 @@
+import base64
 import json
 import time
-import requests
-import base64
-import ed25519
+
 from django.conf import settings
+
+import ed25519
+import requests
+
 
 def get_brightid_status(brightid_uuid):
     brightIDUrl = 'http://node.brightid.org/brightid/v4/verifications/Gitcoin/' + str(brightid_uuid)
@@ -64,4 +67,3 @@ def get_verified_uuids():
         return approved_uuids
     except:
         return []
-
