@@ -1294,7 +1294,7 @@ def new_matching_partner(request):
         'title': 'Pledge your support.',
         'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
         'data': request.POST.dict(),
-        'grant_types': basic_grant_categories(None),
+        'grant_types': basic_grant_types() + basic_grant_categories(None),
     }
 
     if not request.user.is_authenticated:
@@ -1339,6 +1339,11 @@ def invoice(request, contribution_pk):
     }
 
     return TemplateResponse(request, 'grants/invoice.html', params)
+
+def basic_grant_types():
+    result = GrantType.objects.all()
+    return [ (ele.name, ele.label) for ele in result ]
+
 
 def basic_grant_categories(name):
     result = []
