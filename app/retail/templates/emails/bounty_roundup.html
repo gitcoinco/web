@@ -233,9 +233,10 @@
 
   <div style="text-align: center">
     <p>Congrats, you made it to the end of this issue! Grab your Kudos below.</p>
-    {% for pk in new_kudos_pks %}
-      <a href='https://gitcoin.co/kudos/{pk}/'>
-        <img src="https://p21.p4.n0.cdn.getcloudapp.com/items/o0u8XzlJ/image8.png?v=9411bc4cc4df4253753f1c4776b51b0e" width="300px" alt="Issue #1 Kudos" style="border-style:none; vertical-align:middle" valign="middle">
+    <!-- {{new_kudos}} -->
+    {% for kudos in new_kudos %}
+      <a href='https://gitcoin.co/kudos/{{kudos.pk}}/'>
+        <img style="max-width: 100%; border-style:none; vertical-align:middle" valign="middle" src="{{ kudos.img_url }}" width="300px" alt="{{kudos.name}}">
       </a>
     {% endfor %}
     </p>
