@@ -1,0 +1,22 @@
+{
+  "symbol": "XMPT",
+  "address": "0xbf1D65af601DcFf5b804e02A75833fF51E3869B2",
+  "overview":{
+    "en": "XiaMiPool is user-centric, providing a stable, fair and open business platform for crypto asset holders, providing users with multi-dimensional technical services such as project governance, node voting, node custody, wallet services, financial management, etc.",
+    "zh": "虾米矿池是以用户为中心，为数字资产持有者提供稳定、安全、公平、公开的业务平台，为用户提供项目治理，节点投票，节点托管，钱包服务，金融理财等多维度技术服务"
+  },
+  "email": "hi@xiamipool.com",
+  "website": "https://www.xiamipool.com",
+  "whitepaper": "https://xiamipool.oss-cn-shanghai.aliyuncs.com/whitepaper_cn.1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2020-09-07",
+  "initial_price":{
+    "USD":"0.013 USD"
+  },
+  "links": {
+    "blog": "https://bihu.com/people/160445",
+    "twitter": "https://twitter.com/xiamipool",
+    "telegram": "https://t.me/xiamipool",
+    "github": "https://github.com/xiamipool"
+  }
+}
