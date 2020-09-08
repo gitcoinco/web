@@ -1128,7 +1128,11 @@ Vue.component('grants-cart', {
       // Prompt for user's signature to generate deterministic private key. This enables us
       // to determinstically generate the same, Gitcoin-specific zkSync wallet on each visit
       const message = 'Access Gitcoin zkSync account.\n\nOnly sign this message for a trusted client!';
+
+      indicateMetamaskPopup();
       const signature = await this.signer.signMessage(message); // web3 prompt to user is here
+
+      indicateMetamaskPopup(true);
       const privateKey = ethers.utils.sha256(signature);
       const wallet = new ethers.Wallet(privateKey);
 
@@ -1456,7 +1460,10 @@ Vue.component('grants-cart', {
       // Send transaction --------------------------------------------------------------------------
       // Once deposit transaction has sent, we conservatively assume checkout will not be completed
       console.log('Waiting for user to send deposit transaction...');
+      indicateMetamaskPopup();
       const depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
+
+      indicateMetamaskPopup(true);
       const zkSyncDepositTxHash = depositTx.hash;
 
       _alert('Finalizing deposit. Please keep this page open until all steps are complete! This will take about 2–3 minutes.', 'success');
