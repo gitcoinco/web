@@ -504,9 +504,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             {% comment %} ================== START ZKSYNC MODAL =================== {% endcomment %}
             {% comment %} ========================================================= {% endcomment %}
 
-            <b-modal id="zksync-modal" :visible="showZkSyncModal" @hide="showZkSyncModal = false" class="modal-dialog modal-lg" center hide-header hide-footer>
+            <b-modal id="zksync-modal" :visible="showZkSyncModal" @hide="showZkSyncModal = false" 
+              class="modal-dialog modal-lg" header-border-variant="transparent" 
+              center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
+            >
+              <template v-slot:modal-header="{ close }">
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  @click="close()"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </template>
               <template v-slot:default="{ hide }">
-                <div class="mx-4 mt-5 mb-4 text-center">
+                <div class="mx-4 mb-4 text-center">
                   {% comment %} Header {% endcomment %}
                   <div class="mb-3">
                     <img src="{% static 'v2/images/grants/zksync.svg' %}" alt="zkSync Logo" width="150">
