@@ -116,10 +116,14 @@
 
         <div class="mb-2">
           <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
-          <a id="wallet-address" class="wallet-address"
-            target="_blank" data-toggle="tooltip" data-placement="top" title="Project Funding Address">
-            {{ grant.admin_address }}
-          </a>
+          <span id="wallet-address" class="wallet-address"
+          target="_blank" data-toggle="tooltip" data-placement="top" title="Project Funding Address">
+          {{ grant.admin_address }}
+          </span>
+          <div class="row justify-start font-smaller-2">
+            <a target="_blank" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a>
+            <a target="_blank" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a>
+          </div>
         </div>
 
         {% if is_unsubscribed_from_updates_from_this_grant %}

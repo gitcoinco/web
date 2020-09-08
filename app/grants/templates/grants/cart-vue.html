@@ -651,27 +651,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       {% comment %} Status updates for user {% endcomment %}
-                      <div class="col-12 font-smaller-2" v-if="zkSyncDepositEtherscanUrl">
-                        View deposit transaction on <a :href="zkSyncDepositEtherscanUrl" target="_blank">Etherscan</a>.
-                      </div>
-                      <div class="col-12 font-smaller-2" v-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutFlowStep === 0">
-                        Confirmations received: [[currentConfirmationNumber]]/[[numberOfConfirmationsNeeded]]
-                      </div>
-                      <div class="col-12 font-smaller-2" v-else-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutFlowStep === 1">
-                        Waiting for confirmation that deposit was received by zkSync...
-                      </div>
-                      <div class="col-12 font-smaller-2" v-else-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutFlowStep === 2">
-                        Preparing transfer [[currentTxNumber]] of [[donationInputs.length]]
-                      </div>
-                      <div class="col-12 font-smaller-2" v-else-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutFlowStep === 3">
-                        Sending transfer [[currentTxNumber]] of [[donationInputs.length]]
-                      </div>
-                      <div class="col-12 font-smaller-2" v-else-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutFlowStep === 4">
-                        Checkout complete!
-                      </div>
-                      {% comment %} Warn user not to close page until complete {% endcomment %}
-                      <div v-if="zkSyncDepositEtherscanUrl" class="mt-4 text-center font-weight-semibold">
-                        Please keep this page open until all steps are complete! This will take about 3 minutes.
+                      <div v-if="zkSyncDepositEtherscanUrl" class="mt-4 p-2 text-left font-smaller-1" style="background-color: #F1F1F1; width: 100%;">
+                        <div class="font-weight-bold">PLEASE DO NOT CLOSE THIS WINDOW!</div>
+                        <div>
+                          <div>
+                            Estimated processing time: <span class="font-weight-bold">2m&ndash;3m</span>.&nbsp;
+                            <span><a :href="zkSyncDepositEtherscanUrl" target="_blank">View deposit transaction&nbsp;<i class="fas fa-external-link-alt"></i></a></span>
+                          </div>
+                          <div v-if="zkSyncCheckoutFlowStep === 0">
+                          Confirmations received: [[currentConfirmationNumber]] of [[numberOfConfirmationsNeeded]]
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 1">
+                            Waiting for confirmation that deposit was received by zkSync...
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 2">
+                            Preparing transfer [[currentTxNumber]] of [[donationInputs.length]]
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 3">
+                            Sending transfer [[currentTxNumber]] of [[donationInputs.length]]
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 4">
+                            Checkout complete!
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
