@@ -1,0 +1,17 @@
+{
+  "symbol": "HBTT",
+  "address": "0x43257DDCf6f22987062a7Dbe032Ffa67E4e0bB3a",
+  "overview": {
+    "en": "HBTT Payment Processing Service",
+    "zh": "HBTT付款处理服务"
+  },
+  "email": "hbttplus@gmail.com",
+  "website": "https://hbttplus.space/",
+  "whitepaper": "https://hbttplus.space/HBTTPAY.pdf",
+  "state": "NORMAL",
+  "published_on": "20-08-23",
+  "links": {
+        "facebook": "https://web.facebook.com/HBTT-Plus-103240664859236",
+        "twitter": "https://twitter.com/HuobiPlus"
+    }
+}
