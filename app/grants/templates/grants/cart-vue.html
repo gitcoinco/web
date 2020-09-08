@@ -625,10 +625,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted" :disabled="zkSyncCheckoutStep2Status === 'not-started'" class="btn btn-gc-blue button--full shadow-none" @click="sendZkSyncDonation">
+                        <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted" 
+                          :disabled="zkSyncCheckoutStep2Status === 'not-started'" 
+                          class="btn btn-gc-blue button--full shadow-none" @click="sendZkSyncDonation"
+                        >
                           Confirm
                         </button>
-                        <button v-else-if="zkSyncCheckoutStep3Status === 'not-started' && zkSyncWasInterrupted" :disabled="zkSyncCheckoutStep2Status === 'not-started'" class="btn btn-gc-blue button--full shadow-none" @click="sendZkSyncDonationAfterInterrupt">
+                        <button v-else-if="zkSyncCheckoutStep3Status === 'not-started' && zkSyncWasInterrupted" 
+                          :disabled="zkSyncCheckoutStep2Status === 'not-started'" 
+                          class="btn btn-gc-blue button--full shadow-none" @click="resumeZkSyncDonation"
+                        >
                           Confirm
                         </button>
                         <div v-else-if="zkSyncCheckoutStep3Status === 'pending'">
@@ -655,13 +661,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         Waiting for confirmation that deposit was received by zkSync...
                       </div>
                       <div class="col-12 font-smaller-2" v-else-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutFlowStep === 2">
-                        Preparing your donations...
+                        Preparing transfer [[currentTxNumber]] of [[donationInputs.length]]
                       </div>
                       <div class="col-12 font-smaller-2" v-else-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutFlowStep === 3">
-                        Sending transaction [[currentTxNumber]]/[[donationInputs.length]]
+                        Sending transfer [[currentTxNumber]] of [[donationInputs.length]]
                       </div>
                       <div class="col-12 font-smaller-2" v-else-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutFlowStep === 4">
                         Checkout complete!
+                      </div>
+                      {% comment %} Warn user not to close page until complete {% endcomment %}
+                      <div v-if="zkSyncDepositEtherscanUrl" class="mt-4 text-center font-weight-semibold">
+                        Please keep this page open until all steps are complete! This will take about 3 minutes.
                       </div>
                     </div>
                   </div>

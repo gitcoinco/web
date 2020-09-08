@@ -50,7 +50,7 @@ Vue.component('grants-cart', {
       syncWallet: undefined, // signer from zkSync wallet
       showZkSyncModal: false,
       zkSyncAllowanceData: undefined,
-      zkSyncDepositEtherscanUrl: undefined, // link to deposit transaction on Etherscan
+      zkSyncDepositTxHash: undefined,
       zkSyncCheckoutStep1Status: 'not-started', // valid values: not-started, pending, complete
       zkSyncCheckoutStep2Status: 'not-started', // valid values: not-started, pending, complete, not-applicable
       zkSyncCheckoutStep3Status: 'not-started', // valid values: not-started, pending, complete
@@ -285,7 +285,23 @@ Vue.component('grants-cart', {
         }
       });
       return number;
+    },
+
+    // =============================================================================================
+    // ============================= START ZKSYNC COMPUTED PROPERTIES ==============================
+    // =============================================================================================
+    
+    // Link to deposit transaction on Etherscan
+    zkSyncDepositEtherscanUrl() {
+      if (!this.zkSyncDepositTxHash)
+        return undefined;
+      if (document.web3network === 'mainnet')
+        return `https://etherscan.io/tx/${this.zkSyncDepositTxHash}`;
+      return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
     }
+    // =============================================================================================
+    // ============================== END ZKSYNC COMPUTED PROPERTIES ===============================
+    // =============================================================================================
   },
 
   methods: {
@@ -1026,17 +1042,18 @@ Vue.component('grants-cart', {
     /**
      * @notice Set flag in database to true if user was interrupted before completing zkSync
      * checkout
-     * @param {Boolean} was_interrupted True if user was interrupted, false otherwise
+     * @param {Boolean} deposit_tx_hash Tx hash of the corresponding deposit that was interrupted,
+     * undefined otherwise
      * @param {String} userAddress Address of user to check status for
      */
-    async setInterruptStatus(was_interrupted, userAddress) {
+    async setInterruptStatus(deposit_tx_hash, userAddress) {
       const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const url = 'zksync-set-interrupt-status';
       const headers = { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' };
       const payload = {
         method: 'POST',
         headers,
-        body: new URLSearchParams({ was_interrupted, user_address: userAddress, csrfmiddlewaretoken })
+        body: new URLSearchParams({ deposit_tx_hash, user_address: userAddress, csrfmiddlewaretoken })
       };
 
       // Send request
@@ -1054,8 +1071,14 @@ Vue.component('grants-cart', {
       const url = `zksync-get-interrupt-status?user_address=${userAddress}`;
       const res = await fetch(url, { method: 'GET' });
       const json = await res.json();
+      const txHash = json.deposit_tx_hash;
 
-      return json.was_interrupted;
+      if (txHash.length === 66 && txHash.startsWith('0x')) {
+        // Valid transaction hash, return it
+        return txHash;
+      }
+      // Otherwise, parse JSON so 'false' becomes a boolean
+      return JSON.parse(txHash);
     },
 
     /**
@@ -1068,13 +1091,30 @@ Vue.component('grants-cart', {
         // this.userAddress parameter has been set. This is also why we need a try/catch -- the
         // user may not have connected their wallet.
         const userAddress = (await web3.eth.getAccounts())[0];
+        const result = await this.getInterruptStatus(userAddress);
 
-        this.zkSyncWasInterrupted = JSON.parse(await this.getInterruptStatus(userAddress));
-        if (this.zkSyncWasInterrupted)
+        this.zkSyncWasInterrupted = Boolean(result);
+        if (this.zkSyncWasInterrupted) {
           this.showZkSyncModal = true;
+          this.zkSyncDepositTxHash = result;
+        }
       } catch (e) {
         this.handleError(e);
       }
+    },
+
+    /**
+     * @notice For the given transaction hash, looks to see if it's been replaced
+     * @param txHash String, transaction hash to check
+     * @returns New transaction hash if found, original othrwise
+     */
+    async getReplacedTx(txHash) {
+      const url = `get-replaced-tx?tx_hash=${txHash}`;
+      const res = await fetch(url, { method: 'GET' });
+      const json = await res.json();
+      const newTxHash = json.tx_hash;
+
+      return newTxHash;
     },
     
     /**
@@ -1285,6 +1325,7 @@ Vue.component('grants-cart', {
       const donationSignatures = [];
 
       for (let i = 0; i < donationInputs.length; i += 1) {
+        this.currentTxNumber += 1;
         console.log(`  Generating signature ${i + 1} of ${donationInputs.length}...`);
         const donationInput = donationInputs[i];
 
@@ -1314,6 +1355,7 @@ Vue.component('grants-cart', {
         // Increment nonce to prepare for next signature
         nonce += 1;
       }
+      this.currentTxNumber = 0;
       console.log('✅ All signatures have been generated', donationSignatures);
       return donationSignatures;
     },
@@ -1340,6 +1382,7 @@ Vue.component('grants-cart', {
       console.log('✅ Transfers have been successfully sent');
       return;
     },
+
 
     // ==================================== Main functionality =====================================
 
@@ -1405,94 +1448,12 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Step 3: Main function for executing zkSync checkout
+     * @notice Executes final shared steps between nominal flow and interrupt flow
+     * @param receipt receipt from the deposit transaction
      */
-    async sendZkSyncDonation() {
-      // Setup -------------------------------------------------------------------------------------
-      this.zkSyncCheckoutStep3Status = 'pending';
-      console.log('Initializing zkSync checkout process...');
-      const ethAmount = this.donationInputsEthAmount;
-
-      // Get required contracts and addresses
-      const batckZkSyncDepositContract = new ethers.Contract(
-        batchZkSyncDepositContractAddress,
-        batchZkSyncDepositContractAbi,
-        this.signer
-      );
-      
-      // Get address of deposit recipient
-      const depositRecipient = this.syncWallet.address();
-
-      console.log('✅ Initialization complete');
-
-
-      // Generate deposit payload ------------------------------------------------------------------
-      console.log('Generating deposit payload...');
-      const deposits = []; // array of arrays, passed into batckZkSyncDepositContract.deposit(...)
-      let overrides = { gasLimit: '1000000' }; // TODO improve gas estimate
-
-      // Handle ETH
-      if (ethers.BigNumber.from(ethAmount).gt('0')) {
-        deposits.push([ ETH_ADDRESS, ethAmount ]);
-        overrides.value = ethAmount; // specify how much ETH to send with transaction
-      }
-
-      // Handle tokens
-      const summaryData = this.zkSyncSummaryData();
-
-      if (summaryData.length > 0) {
-        summaryData.forEach((tokenDonation) => {
-          const tokenAddress = tokenDonation.contract._address;
-          const tokenAmount = tokenDonation.allowance;
-
-          deposits.push([ tokenAddress, tokenAmount ]);
-        });
-      }
-
-      if (deposits.length === 0) {
-        throw new Error('There are no deposits to be made');
-      }
-      console.log('✅ Deposit payload ready');
-      console.log('    _deposits array', deposits);
-      console.log('    overrides', overrides);
-      
-
-      // Send transaction --------------------------------------------------------------------------
-      // Once deposit transaction has sent, we conservatively assume checkout will not be completed
-      console.log('Waiting for user to send deposit transaction...');
-      indicateMetamaskPopup();
-      const depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
-
-      indicateMetamaskPopup(true);
-      const zkSyncDepositTxHash = depositTx.hash;
-
-      _alert('Finalizing deposit. Please keep this page open until all steps are complete! This will take about 2–3 minutes.', 'success');
-      await this.postToDatabase(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress); // Save contributions to database
-      await this.setInterruptStatus(true, this.userAddress);
-      console.log('✅ Deposit transaction sent', depositTx);
-      console.log('Waiting for deposit transaction to be mined...');
-      
-      // Setup UI helpers --------------------------------------------------------------------------
-      // Get Etherscan URL
-      this.zkSyncDepositEtherscanUrl = document.web3network === 'mainnet'
-        ? `https://etherscan.io/tx/${zkSyncDepositTxHash}`
-        : `https://${document.web3network}.etherscan.io/tx/${zkSyncDepositTxHash}`;
-
-      // Wait for first confirmation
-      const receipt = await depositTx.wait();
-
-      console.log('✅ Deposit transaction mined', receipt);
-
+    async finishZkSyncStep3(receipt) {
       // Track number of confirmations live in UI
       this.updateConfirmationsInUI();
-
-      // NOTE: The UI and flow here are arguably "out of sync". The .on('block') above is used to
-      // update the UI to show the user how many confirmations there has been. However, in the
-      // code we don't actually wait for 3 confirmations. Instead we go straight to
-      // notifyPriorityOp below. This function returns a promise that resolves once the 3
-      // confirmations elapsed AND zkSync confirms the deposit was received. As a result, it
-      // is not necessary to separately wait for the 3 confirmations above.
-
 
       // Wait for deposit to be committed ----------------------------------------------------------
       // Parse logs in receipt so we can get priority request IDs from the events
@@ -1500,8 +1461,7 @@ Vue.component('grants-cart', {
 
       // Wait for that ID to be acknowledged by the zkSync network
       await this.waitForSerialIdCommitment(serialId);
-
-      
+    
       // Final steps -------------------------------------------------------------------------------
       // Unlock deterministic wallet's zkSync account
       await this.checkAndRegisterSigningKey();
@@ -1509,7 +1469,7 @@ Vue.component('grants-cart', {
       // Fetch the expected nonce from the network. We cannot assume it's zero because this may
       // not be the user's first checkout
       let nonce = await this.getSyncWalletNonce();
-      
+    
       // Generate signatures
       const donationSignatures = await this.generateTransferSignatures(nonce);
 
@@ -1518,72 +1478,112 @@ Vue.component('grants-cart', {
       console.log('✅✅✅ Checkout complete!');
 
       // Final processing
-      await this.setInterruptStatus(false, this.userAddress);
-      await this.finalizeCheckout(zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress);
+      await this.setInterruptStatus(null, this.userAddress);
+      await this.finalizeCheckout(this.zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress);
     },
 
     /**
-     * @notice Step 3: Main function for executing zkSync checkout, but for when a previous
-     * checkout was interrupted and not completed
+     * @notice Step 3: Main function for executing zkSync checkout
      */
-    async sendZkSyncDonationAfterInterrupt() {
+    async sendZkSyncDonation() {
       try {
+      // Setup -------------------------------------------------------------------------------------
         this.zkSyncCheckoutStep3Status = 'pending';
-        // 1. Get receipt of deposit transaction hash ----------------------------------------------
-        
-        
-        // TODO Assume user will speed up deposit, so search for event logs?
-        // TODO after updating tx validator
+        console.log('Initializing zkSync checkout process...');
+        const ethAmount = this.donationInputsEthAmount;
 
-        // OLD CODE BELOW
-        
-
-        this.zkSyncDepositEtherscanUrl = document.web3network === 'mainnet'
-          ? `https://etherscan.io/tx/${zkSyncDepositTxHash}`
-          : `https://${document.web3network}.etherscan.io/tx/${zkSyncDepositTxHash}`;
-        console.log(`Resuming donation for deposit with transaction hash ${zkSyncDepositTxHash}`);
-
-        let receipt = await this.ethersProvider.getTransactionReceipt(zkSyncDepositTxHash);
-
-        if (!receipt || receipt.confirmations === 0) {
-          // Transaction is still pending, wait for confirmation
-          receipt = await depositTx.wait();
-          this.updateConfirmationsInUI();
-          console.log('✅ Deposit transaction mined', receipt);
-        } else if (receipt.confirmations >= 3) {
-          // First UI update is based on number of confirmations
-          this.zkSyncCheckoutFlowStep += 1;
-        }
-        console.log('Deposit transaction receipt:', receipt);
-        
-
-        // 2. If tx confirmed, get serialId from event logs ----------------------------------------
-        // Get serial ID from event logs
-        const serialId = this.getDepositSerialId(receipt);
-        
-        // Check if deposit was committed, and wait for it if not
-        await this.waitForSerialIdCommitment(serialId);
-
-        // If needed, unlock deterministic wallet's zkSync account
-        await this.checkAndRegisterSigningKey();
-
-        // Fetch the expected nonce from the network
-        let nonce = await this.getSyncWalletNonce();
+        // Get required contracts and addresses
+        const batckZkSyncDepositContract = new ethers.Contract(
+          batchZkSyncDepositContractAddress,
+          batchZkSyncDepositContractAbi,
+          this.signer
+        );
       
-        // Generate signatures
-        const donationSignatures = await this.generateTransferSignatures(nonce);
+        // Get address of deposit recipient
+        const depositRecipient = this.syncWallet.address();
 
-        // Dispatch the transfers
-        await this.dispatchSignedTransfers(donationSignatures);
-        console.log('✅✅✅ Interrupted checkout complete!');
-        this.zkSyncCheckoutStep3Status = 'complete';
+        console.log('✅ Initialization complete');
 
-        // Final processing
-        await this.finalizeCheckout();
-    
+
+        // Generate deposit payload ------------------------------------------------------------------
+        console.log('Generating deposit payload...');
+        const deposits = []; // array of arrays, passed into batckZkSyncDepositContract.deposit(...)
+        let overrides = { gasLimit: '1000000' }; // TODO improve gas estimate
+
+        // Handle ETH
+        if (ethers.BigNumber.from(ethAmount).gt('0')) {
+          deposits.push([ ETH_ADDRESS, ethAmount ]);
+          overrides.value = ethAmount; // specify how much ETH to send with transaction
+        }
+
+        // Handle tokens
+        const summaryData = this.zkSyncSummaryData();
+
+        if (summaryData.length > 0) {
+          summaryData.forEach((tokenDonation) => {
+            const tokenAddress = tokenDonation.contract._address;
+            const tokenAmount = tokenDonation.allowance;
+
+            deposits.push([ tokenAddress, tokenAmount ]);
+          });
+        }
+
+        if (deposits.length === 0) {
+          throw new Error('There are no deposits to be made');
+        }
+        console.log('✅ Deposit payload ready');
+        console.log('    _deposits array', deposits);
+        console.log('    overrides', overrides);
+      
+
+        // Send transaction --------------------------------------------------------------------------
+        // Once deposit transaction has sent, we conservatively assume checkout will not be completed
+        console.log('Waiting for user to send deposit transaction...');
+        indicateMetamaskPopup();
+        const depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
+
+        indicateMetamaskPopup(true);
+        this.zkSyncDepositTxHash = depositTx.hash;
+
+        await this.postToDatabase(this.zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress); // Save contributions to database
+        await this.setInterruptStatus(this.zkSyncDepositTxHash, this.userAddress);
+        console.log('✅ Deposit transaction sent', depositTx);
+        console.log('Waiting for deposit transaction to be mined...');
+      
+        // Setup UI helpers --------------------------------------------------------------------------
+
+        // Wait for first confirmation
+        const receipt = await depositTx.wait();
+
+        console.log('✅ Deposit transaction mined', receipt);
+
+        // Final steps
+        await this.finishZkSyncStep3(receipt);
       } catch (e) {
         this.handleError(e);
       }
+    },
+
+    /**
+     * @notice Step 3, alternate: Used if zkSync checkout is interrupted
+     */
+    async resumeZkSyncDonation() {
+      // By this point, the deposit transaction hash will be known
+      this.zkSyncCheckoutStep3Status = 'pending';
+
+      // Check for updated transaction hash
+      this.zkSyncDepositTxHash = await this.getReplacedTx(this.zkSyncDepositTxHash);
+
+      // Get transaction receipt
+      let receipt = await this.ethersProvider.getTransactionReceipt(this.zkSyncDepositTxHash);
+      
+      if (!receipt) {
+        //  Transaction is pending, wait for it and resume normal flow afterwards
+        receipt = await this.ethersProvider.waitForTransaction(this.zkSyncDepositTxHash);
+        console.log('✅ Deposit transaction mined', receipt);
+      }
+      
+      await this.finishZkSyncStep3(receipt);
     },
 
     /**
