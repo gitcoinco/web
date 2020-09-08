@@ -11,6 +11,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='brightid_uuid',
-            field=models.UUIDField(default=uuid.uuid4, null=True),
+            field=models.UUIDField(null=True),
         ),
     ]
