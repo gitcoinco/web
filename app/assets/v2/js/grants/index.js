@@ -134,9 +134,6 @@ $(document).ready(() => {
         },
         setCurrentType: function(currentType, q) {
           this.current_type = currentType;
-          if ([ 'about', 'stats', 'activity' ].indexOf(currentType) !== -1) {
-            // window.location = `/grants/${currentType}`;
-          }
 
           if (this.current_type === 'all') {
             window.history.pushState('', '', `/grants/?${q || ''}`);

@@ -99,8 +99,8 @@
           </li>
           {% if github_handle %}
           <li>
-            <a target="new" href='/{{github_handle}}/grants' class="mr-1 px-1 ">
-              My Grants <i class="fas fa-external-link-alt"></i>
+            <a @click="filter_grants({type: 'me', category: ''})"  :class="`mr-1  px-1 ${ type == 'me'? 'selected':''}`">
+              My Grants
             </a>
           </li>
           {% endif %}

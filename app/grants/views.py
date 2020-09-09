@@ -349,28 +349,31 @@ def get_grants(request):
 def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
                          category='', following=False, idle_grants=False, only_contributions=False):
     sort_by_clr_pledge_matching_amount = None
+    profile = request.user.profile
+    three_months_ago = timezone.now() - datetime.timedelta(days=90)
+    _grants = Grant.objects.filter(network=network, hidden=False)
+
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
 
-    if only_contributions:
-        contributions = request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
-        _grants = Grant.objects.filter(id__in=Subquery(contributions), hidden=False)
-    else:
-        _grants = Grant.objects.filter(network=network, hidden=False)
+    if grant_type == 'me':
+        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                    list(profile.grant_admin.all().values_list('pk', flat=True))
+        _grants = _grants.filter(id__in=grants_id)
+    elif only_contributions:
+        contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
+        _grants = _grants.filter(id__in=Subquery(contributions))
 
-    _grants = _grants.keyword(keyword)
-
-    _grants = _grants.order_by(sort, 'pk')
+    _grants = _grants.keyword(keyword).order_by(sort, 'pk')
     _grants.first()
 
-    three_months_ago = timezone.now() - datetime.timedelta(days=90)
     if not idle_grants:
         _grants = _grants.filter(last_update__gt=three_months_ago)
 
     if state == 'active':
         _grants = _grants.active()
 
-    if grant_type != 'all':
+    if grant_type != 'all' and grant_type != 'me':
         _grants = _grants.filter(grant_type__name=grant_type)
 
     if following and request.user.is_authenticated:
