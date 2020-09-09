@@ -1,22 +1,13 @@
 {% load humanize static i18n %}
-          <div class="row">
-
-            <div class="col-12 col-xl-8" style="display: none;">
-              <ul class="grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-center text-xl-left font-body font-weight-semibold">
-                <a data-type="category" data-value="" class="mr-3 mr-md-2 mr-lg-3 {% if selected_category == '' %} selected {% endif %}">
-                  All
-                </a>
-                {% for category in categories %}
-                  <a data-type="category" data-value="{{category}}" class="mr-3 mr-md-2 mr-lg-3 {% if selected_category == category %} selected {% endif %}">
-                    {{category|title}}
-                  </a>
-                {% endfor %}
-              </ul>
-            </div>
-
+          <div id="top-filters" class="row">
             <div class="col-12 col-xl-12 mt-2 mt-xl-0 font-caption text-center text-xl-right font-weight-semibold order_by sort_container">
-              <div class="heading">{% trans "Sort by" %}</div>
-              <select name="sort_option" id="sort_option">
+              <div class="mr-4">
+                <span class="heading mr-2">View</span>
+                <a href="#" :class="`font-weight-bold ${view == 'list' ? 'gc-text-blue' : 'text-black'}`" @click="setView('list', $event)">List</a> |
+                <a href="#" :class="`font-weight-bold ${view == 'grid' ? 'gc-text-blue' : 'text-black'}`" @click="setView('grid', $event)">Grid</a>
+              </div>
+              <span class="heading">{% trans "Sort by" %}</span>
+              <select @change="filter_grants({sort: sort})" v-model="sort" name="sort_option" id="sort_option2">
                 <option value="weighted_shuffle">{% trans "Weighted Shuffle" %}</option>
                 {% if is_staff %}
                 <option value="-weighted_risk_score">{% trans "Weighted Risk Score" %}</option>
