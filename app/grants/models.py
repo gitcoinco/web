@@ -28,6 +28,7 @@ from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.text import slugify
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 
@@ -1051,6 +1052,10 @@ class Flag(SuperModel):
             activity=activity,
             comment=f"Comment from anonymous user: {self.comments}")
 
+    @property
+    def url(self):
+        slug = slugify(self.comments[0:50])
+        return f"/grants/governance/{self.pk}/{slug}"
 
 
     def __str__(self):

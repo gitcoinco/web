@@ -22,7 +22,7 @@ from django.urls import path, re_path
 from grants.views import (
     bulk_fund, flag, grant_activity, grant_categories, grant_details, grant_fund, grant_new, grant_new_whitelabel,
     grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_clr, grants_stats_view,
-    invoice, leaderboard, new_matching_partner, profile, quickstart, subscription_cancel,
+    invoice, leaderboard, new_matching_partner, profile, quickstart, subscription_cancel, governance, governance_detail
 )
 
 app_name = 'grants'
@@ -30,6 +30,8 @@ urlpatterns = [
     path('', grants, name='grants'),
     path('getstats/', grants_stats_view, name='grants_stats'),
     path('grants.json', grants_addr_as_json, name='grants_json'),
+    path('governance', governance, name='governance'),
+    path('governance/<int:pk>/<slug:slug>', governance_detail, name='governance_detail'),
     path('flag/<int:grant_id>', flag, name='grantflag'),
     path('<int:grant_id>/activity', grant_activity, name='log_activity'),
     path('activity', grant_activity, name='log_activity'),
@@ -59,5 +61,6 @@ urlpatterns = [
     path('<slug:grant_type>', grants_by_grant_type, name='grants_by_category2'),
     path('<slug:grant_type>/', grants_by_grant_type, name='grants_by_category'),
     path('v1/api/clr', grants_clr, name='grants_clr'),
+
 
 ]

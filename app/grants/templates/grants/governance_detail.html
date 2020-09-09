@@ -1,0 +1,11 @@
+{% load humanize static i18n %}
+
+<h1> Grants Governance </h1>
+
+<ul>
+  <li>
+    🚩 <a href="{{flag.grant.url}}">{{flag.grant.title}}</a> by <a href="/{{flag.profile.handle}}">@{{flag.profile.handle}}</a>;
+    {{flag.comments|truncatechars:55 }}
+    <a href="{{flag.url}}">[link]</a>
+  </li>
+</ul>

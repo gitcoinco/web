@@ -1437,3 +1437,20 @@ def grants_clr(request):
         'grants': grants
     }
     return JsonResponse(response)
+
+def governance(request):
+    params = {
+        'flags': Flag.objects.all(),
+    }
+    response =  TemplateResponse(request, 'grants/governance.html', params)
+    return response
+
+
+def governance_detail(request, pk, slug):
+    flag = Flag.objects.get(pk=pk)
+    params = {
+        'flag': flag
+    }
+    response =  TemplateResponse(request, 'grants/governance_detail.html', params)
+    return response
+
