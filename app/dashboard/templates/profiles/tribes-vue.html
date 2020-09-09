@@ -438,7 +438,7 @@
         <div class="row">
           <div :id="tribe.handle" class="d-flex col-12 justify-content-between flex-column flex-md-row align-items-center p-3 header profile-header dash" v-bind:style="[{backgroundImage: `url(${tribe.profile_wallpaper})`}, {backgroundImage: `url(${headerFilePreview || tribe.tribes_cover_image})`}]">
             {% csrf_token %}
-            <div class="mt-5 mt-sm-0 position-relative" v-if="is_my_org" style="height: 100%; width:100%;">
+            <div class="mt-5 mt-sm-0 position-relative" v-if="is_my_org || is_staff" style="height: 100%; width:100%;">
               <div style="position:absolute;bottom:1rem;right:0;">
                 <b-button v-b-modal.change-tribe-header variant="info" class="btn profile-banner-cta text-center">
                   <i class="fa fa-camera"></i>
@@ -1449,7 +1449,7 @@
             </div>
           </div>
         </div>
-        <b-modal v-if="is_my_org" @hide="resetPreview" @close="resetPreview" @cancel="resetPreview"  hide-backdrop content-class="shadow" id="change-tribe-header" tabindex="-1" role="dialog" aria-labelledby="changeProfileHeaderLabel" aria-hidden="true">
+        <b-modal v-if="is_my_org || is_staff" @hide="resetPreview" @close="resetPreview" @cancel="resetPreview"  hide-backdrop content-class="shadow" id="change-tribe-header" tabindex="-1" role="dialog" aria-labelledby="changeProfileHeaderLabel" aria-hidden="true">
           <template v-slot:modal-title>
             {% trans "Update Tribe Header"%}
           </template>
