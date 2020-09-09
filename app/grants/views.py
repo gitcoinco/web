@@ -259,10 +259,10 @@ def get_grants(request):
     keyword = request.GET.get('keyword', '')
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
-
+    idle_grants = request.GET.get('idle', '') == 'true'
     following = request.GET.get('following', '') != ''
 
-    _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category, following)
+    _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category, following, idle_grants)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -311,7 +311,7 @@ def get_grants(request):
     })
 
 
-def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active', category='', following=False):
+def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active', category='', following=False, idle_grants=False):
     sort_by_clr_pledge_matching_amount = None
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
@@ -322,6 +322,10 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
 
     _grants = _grants.order_by(sort, 'pk')
     _grants.first()
+
+    three_months_ago = timezone.now() - datetime.timedelta(days=90)
+    if not idle_grants:
+        _grants = _grants.filter(last_update__gt=three_months_ago)
 
     if state == 'active':
         _grants = _grants.active()
@@ -414,6 +418,7 @@ def grants_by_grant_type(request, grant_type):
     state = request.GET.get('state', 'active')
     category = request.GET.get('category', '')
     following = request.GET.get('following', '') == 'true'
+    idle_grants = request.GET.get('idle', '') == 'true'
 
     if keyword:
         category = ''
@@ -538,7 +543,8 @@ def grants_by_grant_type(request, grant_type):
         'selected_category': category,
         'profile': profile,
         'grants_following': grants_following,
-        'following': following
+        'following': following,
+        'idle_grants': idle_grants
     }
 
     # log this search, it might be useful for matching purposes down the line

@@ -115,6 +115,7 @@ along with this program. If not, see
       document.selected_category = "{{ selected_category }}";
       document.keyword = "{{ keyword }}";
       document.following = {{ following|yesno:'true,false' }};
+      document.idle_grants = {{ idle_grants|yesno:'true,false' }};
     </script>
 </body>
 <script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>

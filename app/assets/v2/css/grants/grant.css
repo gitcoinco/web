@@ -630,7 +630,7 @@ background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, 
 }
 
 @media (max-width: 991.98px) {
-  #sidebar_container form#filters {
+  .hide_filters {
     height: 0;
     display: none;
   }

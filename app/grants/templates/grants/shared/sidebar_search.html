@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static get_categories_from_list %}
-<grant-sidebar :grant_types="grant_types" :filter_grants="filter_grants" :type="current_type" :selected_category="category" :keyword="keyword" :following="following"  :set_type="setCurrentType" inline-template>
+<grant-sidebar :grant_types="grant_types" :filter_grants="filter_grants" :type="current_type" :selected_category="category" :keyword="keyword" :following="following"  :set_type="setCurrentType" :idle_grants="idle_grants" inline-template>
   <div class="sidebar_search font-body pr-0 pl-4" >
     <div class="search font-caption mb-4" style="width: 110%;">
       <div class="search-area col-12">
@@ -23,21 +23,24 @@
       </div>
     </div>
 
-    <p id="expand" class="text-right font-caption font-weight-semibold">
+    <p @click="show_filters = !show_filters" class="d-md-none text-right font-caption font-weight-semibold" v-if="show_filters">
       {% trans "Expand Filter" %}
       <i class="fas fa-chevron-down"></i>
     </p>
-    <p id="minimize" class="text-right font-caption font-weight-semibold">
+    <p @click="show_filters = !show_filters" class="d-md-none text-right font-caption font-weight-semibold" v-if="!show_filters">
       {% trans "Minimize Filter" %}
       <i class="fas fa-chevron-up"></i>
     </p>
 
-    <form id="filters">
+    <form id="filters" :class="{hide_filters: !show_filters }">
       {% if profile %}
         <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ${ following ? 'gc-text-blue' : 'text-black'}`">
           <i :class="`${ following ? 'fas' : 'far'} fa-star`" ></i> Following [[ following ? 'x' : '']]
         </span>
       {% endif %}
+      <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ${ idle_grants ? 'gc-text-blue' : 'text-black'}`">
+        <i :class="`${ idle_grants ? 'fas' : 'far'} fa-clock`" ></i> Show Idle grants [[ idle_grants ? 'x' : '']]
+      </span>
       <div class="col border-top-0">
         <div class="subheading">
           {% trans "Categories" as cats %}{{ cats|upper }}

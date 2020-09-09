@@ -74,16 +74,22 @@ $(document).ready(() => {
   if (document.getElementById('grants-showcase')) {
     Vue.component('grant-sidebar', {
       name: 'grant-sidebar',
-      props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type' ],
+      props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type', 'idle_grants' ],
       data: function() {
         return {
-          search: this.keyword
+          search: this.keyword,
+          show_filters: true
         };
       },
       methods: {
         toggleFollowing: function(state, event) {
           event.preventDefault;
           this.filter_grants({following: state});
+        },
+        toggleIdle: function(state, event) {
+          event.preventDefault;
+          console.log(state)
+          this.filter_grants({idle_grants: state});
         }
       }
     });
@@ -100,6 +106,7 @@ $(document).ready(() => {
         network: 'mainnet',
         keyword: document.keyword,
         current_type: document.current_type,
+        idle_grants: document.idle_grants,
         following: document.following,
         state: 'active',
         category: document.selected_category,
@@ -139,6 +146,9 @@ $(document).ready(() => {
           if (filters.following !== null && filters.following !== undefined) {
             this.following = filters.following;
           }
+          if (filters.idle_grants !== null && filters.idle_grants !== undefined) {
+            this.idle_grants = filters.idle_grants;
+          }
           if (filters.sort !== null && filters.sort !== undefined) {
             this.sort = filters.sort;
           }
@@ -153,7 +163,9 @@ $(document).ready(() => {
           if (this.keyword) {
             query_elements['keyword'] = this.keyword;
           }
-
+          if (this.idle_grants) {
+            query_elements['idle'] = this.idle_grants;
+          }
           if (this.following) {
             query_elements['following'] = this.following;
           }
@@ -184,6 +196,10 @@ $(document).ready(() => {
 
           if (this.following) {
             base_params['following'] = this.following;
+          }
+
+          if (this.idle_grants) {
+            base_params['idle'] = this.idle_grants;
           }
 
           const params = new URLSearchParams(base_params).toString();
