@@ -301,7 +301,12 @@ def calculate_clr_for_donation(grant, amount, grant_contributions_curr, total_po
     # find grant we added the contribution to and get the new clr amount
     for grant_clr in grants_clr:
         if grant_clr['id'] == grant.id:
-            return (grant_clr['clr_amount'], grants_clr, grant_clr['number_contributions'], grant_clr['contribution_amount'])
+            return (
+                grant_clr['clr_amount'],
+                grants_clr,
+                grant_clr['number_contributions'],
+                grant_clr['contribution_amount']
+            )
 
     # print(f'info: no contributions found for grant {grant}')
     return (None, None, None, None)
@@ -377,20 +382,20 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
         contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
         # phantom funding
-        grant_phantom_funding_profiles = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
+        grant_phantom_funding_contributions = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
-        # SMS verified profiles
-        sms_verified_profile_ids = [ele.pk for ele in contribs if ele.profile_for_clr.sms_verification]
-        sms_verified_phantom_funding_profile_ids = [ele.profile_id for ele in grant_phantom_funding_profiles if ele.profile.sms_verification]
-        sms_verified_profile = list(set(sms_verified_profile_ids + sms_verified_phantom_funding_profile_ids))
+        # SMS verified contributions
+        sms_verified_contribution_ids = [ele.pk for ele in contribs if ele.profile_for_clr.sms_verification]
+        sms_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.sms_verification]
+        sms_verified_profile = list(set(sms_verified_contribution_ids + sms_verified_phantom_funding_contribution_ids))
 
-        # BrightID verified profiles
-        brightid_verified_profile_ids = [ele.pk for ele in contribs if ele.profile_for_clr.is_brightid_verified]
-        brightid_verified_phantom_funding_profile_ids = [ele.profile_id for ele in grant_phantom_funding_profiles if ele.profile.is_brightid_verified]
-        brightid_verified_profile = list(set(brightid_verified_profile_ids + brightid_verified_phantom_funding_profile_ids))
+        # BrightID verified contributions
+        brightid_verified_contribution_ids = [ele.pk for ele in contribs if ele.profile_for_clr.is_brightid_verified]
+        brightid_verified_phantom_funding_contribution_ids = [ele.profile_id for ele in grant_phantom_funding_contributions if ele.profile.is_brightid_verified]
+        brightid_verified_profile = list(set(brightid_verified_contribution_ids + brightid_verified_phantom_funding_contribution_ids))
 
         # combine
-        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_profiles]))
+        contributing_profile_ids = list(set([c.identity_identifier(mechanism) for c in contribs] + [p.profile_id for p in grant_phantom_funding_contributions]))
 
         summed_contributions = []
 
@@ -399,7 +404,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
             for profile_id in contributing_profile_ids:
                 profile_contributions = contribs.filter(profile_for_clr_id=profile_id)
                 sum_of_each_profiles_contributions = float(sum([c.subscription.amount_per_period_usdt for c in profile_contributions if c.subscription.amount_per_period_usdt]))
-                phantom_funding = grant_phantom_funding_profiles.filter(profile_id=profile_id)
+                phantom_funding = grant_phantom_funding_contributions.filter(profile_id=profile_id)
                 if phantom_funding.exists():
                     sum_of_each_profiles_contributions = sum_of_each_profiles_contributions + phantom_funding.first().value
 
@@ -430,6 +435,10 @@ def predict_clr(save_to_db=False, from_date=None, clr_round=None, network='mainn
     uv_threshold = float(clr_round.unverified_threshold)
 
     grants, contributions, phantom_funding_profiles = fetch_data(clr_round, network)
+
+    if contributions.count() == 0:
+        print(f'No Contributions for CLR {clr_round.round_num}. Exiting')
+        return
 
     grant_contributions_curr = populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_round)
 
