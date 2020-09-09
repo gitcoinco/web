@@ -1,4 +1,4 @@
-let step = 2;
+let step = 3;
 let orgs = document.contxt.orgs;
 
 Vue.component('v-select', VueSelect.VueSelect);
@@ -29,6 +29,7 @@ if (document.getElementById('gc-onboard')) {
         // totalcharacter:0,
         skills: ['css','php'],
         skillsSelected: [],
+        orgSelected: [],
         interests: [
           'Front End Development',
           'Back End Development',
@@ -79,6 +80,18 @@ if (document.getElementById('gc-onboard')) {
         let vm = this;
         vm.step = step;
         vm.$refs['onboard-modal'].openModal();
+      },
+      submitData() {
+        let vm = this;
+        const apiUrlPersona = '/api/v1/choose_persona/';
+        const postPersonaData = fetchData(apiUrlPersona, 'POST', data);
+
+        $.when(postPersonaData).then((response) => {
+
+        }).catch((err) => {
+          console.log(err);
+          _alert('Unable to create a bounty. Please try again later', 'error');
+        });
       }
 
 
