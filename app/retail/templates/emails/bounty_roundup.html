@@ -235,7 +235,7 @@
     <p>Congrats, you made it to the end of this issue! Grab your Kudos below.</p>
     <!-- {{new_kudos}} -->
     {% for kudos in new_kudos %}
-      <a href='https://gitcoin.co/kudos/{{kudos.pk}}/'>
+      <a href='{{ kudos.airdrop }}'>
         <img style="max-width: 100%; border-style:none; vertical-align:middle" valign="middle" src="{{ kudos.img_url }}" width="300px" alt="{{kudos.name}}">
       </a>
     {% endfor %}
