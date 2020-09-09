@@ -81,12 +81,15 @@ Vue.component('modal', {
 
 
 Vue.component('select2', {
-  props: [ 'options', 'value' ],
+  props: [ 'options', 'value', 'placeholder', 'inputlength' ],
   template: '#select2-template',
   mounted: function() {
     let vm = this;
 
-    $(this.$el).select2({data: this.options})
+    $(this.$el).select2({
+      data: this.options,
+      placeHolder: this.placeholder !== null ? this.placeholder : 'filter here',
+      minimumInputLength: this.inputlength !== null ? this.inputlength : 1})
       .val(this.value)
       .trigger('change')
       .on('change', function() {

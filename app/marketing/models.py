@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
+from datetime import datetime
 from secrets import token_hex
 
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -401,6 +402,12 @@ class RoundupEmail(SuperModel):
     highlights = JSONField(default=dict, blank=True)
     sponsor = JSONField(default=dict, blank=True)
     bounties_spec = JSONField(default=dict, blank=True)
+    news = JSONField(default=dict, blank=True)
+    updates = JSONField(default=dict, blank=True)
+    videos = models.TextField(max_length=15000, blank=True)
+    issue = models.SmallIntegerField(default=0)
+    release_date = models.DateField(default=datetime.now)
+    hide_dynamic = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return '/_administration/email/roundup'
@@ -413,9 +420,11 @@ class UpcomingDate(SuperModel):
 
     title = models.CharField(max_length=255)
     date = models.DateTimeField(db_index=True)
+
     img_url = models.URLField(db_index=True, blank=True)
     url = models.URLField(db_index=True)
     comment = models.TextField(max_length=255, default='', blank=True)
+    context_tag = models.TextField(max_length=255, default='', blank=True)
 
     @property
     def naturaltime(self):

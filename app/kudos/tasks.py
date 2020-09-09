@@ -66,9 +66,10 @@ def redeem_bulk_kudos(self, kt_id, retry=False):
             multiplier = 1
             # high gas prices, 5 hour gas limit - DL
             gas_price = int(float(recommend_min_gas_price_to_confirm_in_time(300)) * multiplier)
-            if gas_price > delay_if_gas_prices_gt_redeem and self.request.retries < self.max_retries:
-
-                self.retry(countdown=60*10)
+            if gas_price > delay_if_gas_prices_gt_redeem:
+                # do not retry is gas prices are too high
+                # TODO: revisit this when gas prices go down
+                # self.retry(countdown=60*10)
                 return
 
             obj = KudosTransfer.objects.get(pk=kt_id)
