@@ -4538,7 +4538,7 @@ def get_hackathons(request):
 
     if settings.DEBUG:
         from perftools.management.commands import create_page_cache
-        
+
         create_page_cache.create_hackathon_list_page_cache()
 
     tabs = [
@@ -5907,3 +5907,16 @@ def showcase(request, hackathon):
     return JsonResponse({
         'success': True,
     })
+
+
+def get_keywords(request):
+
+    if request.is_ajax():
+        q = request.GET.get('term', '').lower()
+        results = [str(key) for key in Keyword.objects.filter(keyword__istartswith=q).cache().values_list('keyword', flat=True)]
+
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

@@ -25,7 +25,7 @@
   }
 </style>
 <div id="gc-onboard">
-  <modal id="onboard-modal" ref="onboard-modal" size="modal-lg">
+  <modal id="onboard-modal" ref="onboard-modal" size="modal-lg" hide-close="true" backdrop="static" keyboard="false">
     <template v-if="step === 1">
 
       <div slot="header">Setup your profile</div>
@@ -33,7 +33,10 @@
         Tell us a little more about you:
         <div class="form-group">
           <label for="">Skills</label>
-          <v-select multiple :options="skills" v-model="data.skillsSelected">
+          <v-select @search="keywordSearch" :options="skills" placeholder="eg. CSS, HTML, Solidity..." v-model="data.skillsSelected" multiple>
+            <template slot="no-options">
+              Type to search skills..
+            </template>
             <template v-slot:option="option">
               <span class="font-weight-semibold">[[ option.label ]]</span>
             </template>
@@ -56,7 +59,7 @@
 
         <div class="form-group">
           <label for="">Are you currently looking for work?</label>
-          <v-select placeholder="Job status"  :options="jobSearchStatus" label="string" v-model="data.jobSelected" :reduce="state => state.value">
+          <v-select placeholder="Job status" :options="jobSearchStatus" label="string" v-model="data.jobSelected" :reduce="state => state.value">
             <template v-slot:option="option">
               <span class="font-weight-semibold">[[ option.string ]]</span>
             </template>
@@ -237,6 +240,13 @@
             </label>
           </div>
         </div>
+        <p>Out of the box you will receive Tribes Lite for your organization. Please provide us with a contact email:</p>
+        <div class="form-group">
+          <label for="">Email</label>
+          <input type="email" v-model="data.email" placeholder="eg. user@domain.com" class="form-control">
+        </div>
+
+
         <div class="d-flex justify-content-center mt-4">
           <button class="btn btn-outline-gc-blue mr-4" @click="goStep(2)">Back</button>
           <button class="btn btn-gc-blue" @click="submitData()" :disabled="!data.orgOptions.length">Save</button>

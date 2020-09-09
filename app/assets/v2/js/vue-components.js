@@ -39,12 +39,13 @@ Vue.component('hackathon-sponsor-dashboard', {
 });
 
 Vue.component('modal', {
-  props: [ 'user', 'size', 'id', 'issueDetails' ],
-  template: `<div class="vue-modal modal fade" :id="id" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  props: [ 'user', 'size', 'id', 'issueDetails', 'hideClose', 'backdrop', 'keyboard' ],
+  template: `<div class="vue-modal modal fade" :id="id" :data-backdrop="propBackdrop" :data-keyboard="propKeyboard" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" :class="size" role="document">
           <div class="modal-content">
             <div class="modal-header border-0">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <slot name="top"></slot>
+              <button type="button" class="close" data-dismiss="modal" v-show="showClose" aria-label="Close">
                 <span aria-hidden="true">×</span>
               </button>
             </div>
@@ -67,6 +68,24 @@ Vue.component('modal', {
     let vm = this;
 
     vm.jqEl = $(this.$el);
+  },
+  computed: {
+    showClose() {
+      if (!this.hideClose) return true;
+
+      return false;
+    },
+    propKeyboard() {
+      if (!this.keyboard) return true;
+
+      return this.keyboard;
+    },
+    propBackdrop() {
+      if (!this.backdrop) return true;
+
+      return this.backdrop;
+
+    }
   },
   methods: {
     closeModal() {

@@ -24,7 +24,6 @@ if (document.getElementById('gc-onboard')) {
       return {
         step: step,
         isOrg: false,
-        // bio: '',
         orgs: orgs,
         data: {
           bio: '',
@@ -34,12 +33,9 @@ if (document.getElementById('gc-onboard')) {
           userOptions: [],
           orgOptions: [],
           jobSelected: [],
-
+          email: ''
         },
-        // totalcharacter:0,
-        skills: ['css','php'],
-        // skillsSelected: [],
-        // orgSelected: [],
+        skills: [],
         interests: [
           'Front End Development',
           'Back End Development',
@@ -56,7 +52,6 @@ if (document.getElementById('gc-onboard')) {
           'Freelance Jobs',
           'Healthcare'
         ],
-        // jobSelected: [],
         jobSearchStatus: [
           {
             value: 'AL',
@@ -71,13 +66,6 @@ if (document.getElementById('gc-onboard')) {
             string: 'I am not open to hearing new opportunities'
           }
         ],
-        // interestsSelected: [],
-        // userOptions: [{
-        //   product: 'Bounties',
-        //   icons: '📖💰💬',
-        //   logo:
-        // }]
-        // userOptions: []
       };
     },
     computed: {
@@ -114,12 +102,57 @@ if (document.getElementById('gc-onboard')) {
           console.log(err);
           _alert('Unable to create a bounty. Please try again later', 'error');
         });
-      }
+      },
+      fetchSkills() {
+        let vm = this;
+        const apiUrlSkills = `/api/v0.1/profile/${document.contxt.github_handle}/keywords`;
+        const getSkillsData = fetchData(apiUrlSkills, 'GET');
+        $.when(getSkillsData).then((response) => {
+          vm.data.skillsSelected = response.keywords;
+
+        }).catch((err) => {
+          console.log(err);
+          // _alert('Unable to create a bounty. Please try again later', 'error');
+        });
+      },
+      keywordSearch(search, loading) {
+        let vm = this;
+
+        if (search.length < 1) {
+          return;
+        }
+        loading(true);
+        vm.getKeyword(loading, search);
+
+      },
+      getKeyword: async function(loading, search) {
+        let vm = this;
+        let myHeaders = new Headers();
+        let url = `/api/v0.1/keywords_search/?term=${escape(search)}`;
+
+        myHeaders.append('X-Requested-With', 'XMLHttpRequest');
+        return new Promise(resolve => {
+
+          fetch(url, {
+            credentials: 'include',
+            headers: myHeaders
+          }).then(res => {
+            res.json().then(json => {
+              vm.skills = json;
+              resolve();
+            });
+            if (loading) {
+              loading(false);
+            }
+          });
+        });
+      },
 
 
     },
     mounted() {
       this.$refs['onboard-modal'].openModal();
+      this.fetchSkills();
     },
     created() {
 

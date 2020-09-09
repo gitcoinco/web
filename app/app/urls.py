@@ -165,6 +165,7 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
     url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/keywords_search/', dashboard.views.get_keywords, name='keywords_search'),
     url(r'^api/v0.1/search/', search.views.get_search, name='search'),
     url(r'^api/v0.1/choose_persona/', dashboard.views.choose_persona, name='choose_persona'),
 
