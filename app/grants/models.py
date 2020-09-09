@@ -1281,7 +1281,7 @@ class Contribution(SuperModel):
             zksync_mainnet_addr = '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF'
             zksync_rinkeby_addr = '0x82F67958A5474e40E1485742d648C0b0686b6e5D'
             zksync_contract_addr = zksync_rinkeby_addr if network == 'rinkeby' else zksync_mainnet_addr
-            batch_zksync_deposit_contract_addr = '0x7232b298937b99e967e4Fa3aFCAA2a4c35Afbf24'.lower()
+            batch_zksync_deposit_contract_addr = '0x9D37F793E5eD4EbD66d62D505684CD9f756504F6'.lower()
             
             recipients = [zksync_contract_addr.lower(), batch_zksync_deposit_contract_addr.lower()]
             receipt = w3.eth.getTransactionReceipt(self.split_tx_id)            
