@@ -88,7 +88,7 @@ last_round_start = timezone.datetime(2020, 3, 23, 12, 0)
 last_round_end = timezone.datetime(2020, 4, 7, 12, 0)
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
 next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
-next_round_start = timezone.datetime(2020, 9, 15, 9, 0)
+next_round_start = timezone.datetime(2020, 9, 16, 15, 0) #tz=utc, not mst
 after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
 round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
 round_types = ['media', 'tech', 'change']
@@ -1294,7 +1294,7 @@ def new_matching_partner(request):
         'title': 'Pledge your support.',
         'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
         'data': request.POST.dict(),
-        'grant_types': basic_grant_categories(None),
+        'grant_types': basic_grant_types() + basic_grant_categories(None),
     }
 
     if not request.user.is_authenticated:
@@ -1339,6 +1339,11 @@ def invoice(request, contribution_pk):
     }
 
     return TemplateResponse(request, 'grants/invoice.html', params)
+
+def basic_grant_types():
+    result = GrantType.objects.all()
+    return [ (ele.name, ele.label) for ele in result ]
+
 
 def basic_grant_categories(name):
     result = []
