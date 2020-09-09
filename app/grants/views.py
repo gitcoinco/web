@@ -410,11 +410,10 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
 def get_grant_types(network):
     all_grants_count = 0
     grant_types = []
-    for _grant_type in GrantType.objects.all():
+    active_grants = Grant.objects.filter(network=network, hidden=False, active=True)
 
-        count = Grant.objects.filter(
-            network=network, hidden=False, active=True, grant_type=_grant_type
-        ).count()
+    for _grant_type in GrantType.objects.all():
+        count = active_grants.filter(grant_type=_grant_type).count()
 
         if count > 0:
             all_grants_count += count
