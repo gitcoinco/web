@@ -19,6 +19,8 @@ const bulkCheckoutAddress = '0x7d655c57f71464B6f83811C55D84009Cd9f5221C';
 const batchZkSyncDepositContractAddress = '0x9D37F793E5eD4EbD66d62D505684CD9f756504F6';
 const batchZkSyncDepositContractAbi = '[{"inputs":[{"internalType":"address","name":"_zkSync","type":"address"},{"internalType":"contract IERC20[]","name":"_tokens","type":"address[]"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract IERC20","name":"token","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"AllowanceSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"contract IERC20","name":"token","type":"address"},{"indexed":true,"internalType":"uint104","name":"amount","type":"uint104"},{"indexed":true,"internalType":"address","name":"user","type":"address"}],"name":"DepositMade","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"ETH_TOKEN_PLACHOLDER","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_recipient","type":"address"},{"components":[{"internalType":"contract IERC20","name":"token","type":"address"},{"internalType":"uint104","name":"amount","type":"uint104"}],"internalType":"struct BatchZkSyncDeposit.Deposit[]","name":"_deposits","type":"tuple[]"}],"name":"deposit","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"setAllowance","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"zkSync","outputs":[{"internalType":"contract IZkSync","name":"","type":"address"}],"stateMutability":"view","type":"function"}]';
 const zkSyncContractAbi = '[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"blockNumber","type":"uint32"}],"name":"BlockVerification","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"totalBlocksVerified","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"totalBlocksCommitted","type":"uint32"}],"name":"BlocksRevert","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"DepositCommit","type":"event"},{"anonymous":false,"inputs":[],"name":"ExodusMode","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint32","name":"nonce","type":"uint32"},{"indexed":false,"internalType":"bytes","name":"fact","type":"bytes"}],"name":"FactAuth","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint32","name":"zkSyncBlockId","type":"uint32"},{"indexed":true,"internalType":"uint32","name":"accountId","type":"uint32"},{"indexed":false,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"FullExitCommit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint64","name":"serialId","type":"uint64"},{"indexed":false,"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"indexed":false,"internalType":"bytes","name":"pubData","type":"bytes"},{"indexed":false,"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"name":"NewPriorityRequest","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"},{"indexed":true,"internalType":"address","name":"owner","type":"address"}],"name":"OnchainDeposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"uint16","name":"tokenId","type":"uint16"},{"indexed":false,"internalType":"uint128","name":"amount","type":"uint128"}],"name":"OnchainWithdrawal","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsAdd","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint32","name":"queueStartIndex","type":"uint32"},{"indexed":false,"internalType":"uint32","name":"queueEndIndex","type":"uint32"}],"name":"PendingWithdrawalsComplete","type":"event"},{"constant":true,"inputs":[],"name":"EMPTY_STRING_KECCAK","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint32","name":"","type":"uint32"}],"name":"authFacts","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"bytes22","name":"","type":"bytes22"}],"name":"balancesToWithdraw","outputs":[{"internalType":"uint128","name":"balanceToWithdraw","type":"uint128"},{"internalType":"uint8","name":"gasReserveValue","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"blocks","outputs":[{"internalType":"uint32","name":"committedAtBlock","type":"uint32"},{"internalType":"uint64","name":"priorityOperations","type":"uint64"},{"internalType":"uint32","name":"chunks","type":"uint32"},{"internalType":"bytes32","name":"withdrawalsDataHash","type":"bytes32"},{"internalType":"bytes32","name":"commitment","type":"bytes32"},{"internalType":"bytes32","name":"stateRoot","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint64","name":"_n","type":"uint64"}],"name":"cancelOutstandingDepositsForExodusMode","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint32","name":"_feeAccount","type":"uint32"},{"internalType":"bytes32[]","name":"_newBlockInfo","type":"bytes32[]"},{"internalType":"bytes","name":"_publicData","type":"bytes"},{"internalType":"bytes","name":"_ethWitness","type":"bytes"},{"internalType":"uint32[]","name":"_ethWitnessSizes","type":"uint32[]"}],"name":"commitBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_n","type":"uint32"}],"name":"completeWithdrawals","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint104","name":"_amount","type":"uint104"},{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_franklinAddr","type":"address"}],"name":"depositETH","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"uint16","name":"_tokenId","type":"uint16"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"}],"name":"exit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"},{"internalType":"uint16","name":"","type":"uint16"}],"name":"exited","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"exodusMode","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPendingWithdrawalIndex","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"firstPriorityRequestId","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_accountId","type":"uint32"},{"internalType":"address","name":"_token","type":"address"}],"name":"fullExit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"_address","type":"address"},{"internalType":"uint16","name":"_tokenId","type":"uint16"}],"name":"getBalanceToWithdraw","outputs":[{"internalType":"uint128","name":"","type":"uint128"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"getNoticePeriod","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"initializationParameters","type":"bytes"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"isReadyForUpgrade","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"numberOfPendingWithdrawals","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint32","name":"","type":"uint32"}],"name":"pendingWithdrawals","outputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint16","name":"tokenId","type":"uint16"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint64","name":"","type":"uint64"}],"name":"priorityRequests","outputs":[{"internalType":"enum Operations.OpType","name":"opType","type":"uint8"},{"internalType":"bytes","name":"pubData","type":"bytes"},{"internalType":"uint256","name":"expirationBlock","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_maxBlocksToRevert","type":"uint32"}],"name":"revertBlocks","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"_pubkey_hash","type":"bytes"},{"internalType":"uint32","name":"_nonce","type":"uint32"}],"name":"setAuthPubkeyHash","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksCommitted","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalBlocksVerified","outputs":[{"internalType":"uint32","name":"","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalCommittedPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalOpenPriorityRequests","outputs":[{"internalType":"uint64","name":"","type":"uint64"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"triggerExodusIfNeeded","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"bytes","name":"upgradeParameters","type":"bytes"}],"name":"upgrade","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeCanceled","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeFinishes","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"upgradeNoticePeriodStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActivationTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"upgradePreparationActive","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"upgradePreparationStarted","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint32","name":"_blockNumber","type":"uint32"},{"internalType":"uint256[]","name":"_proof","type":"uint256[]"},{"internalType":"bytes","name":"_withdrawalsData","type":"bytes"}],"name":"verifyBlock","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawERC20","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"contract IERC20","name":"_token","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint128","name":"_maxAmount","type":"uint128"}],"name":"withdrawERC20Guarded","outputs":[{"internalType":"uint128","name":"withdrawnAmount","type":"uint128"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"withdrawETH","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]';
+const zkSyncContractAddressMainnet = '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF';
+const zkSyncContractAddressRinkeby = '0x82F67958A5474e40E1485742d648C0b0686b6e5D';
 
 // Grant data
 let grantHeaders = [ 'Grant', 'Amount', 'Total CLR Match Amount' ]; // cart column headers
@@ -44,6 +46,7 @@ Vue.component('grants-cart', {
       userAddress: undefined,
       // Checkout, zkSync
       zkSyncContractAddress: undefined,
+      depositContractToUse: undefined, // what address to deposit through, batch contract or regular zkSync contract
       ethersProvider: undefined,
       signer: undefined, // signer from regular web3 wallet
       syncProvider: undefined,
@@ -1137,7 +1140,8 @@ Vue.component('grants-cart', {
         }, initialValue);
       };
 
-      // Loop over each token in the cart and check allowance
+      // Loop over each token in the cart and get required allowance (i.e. total donation amount in
+      // that token)
       for (let i = 0; i < selectedTokens.length; i += 1) {
         const tokenName = selectedTokens[i];
         const tokenDetails = this.getTokenByName(tokenName);
@@ -1399,12 +1403,21 @@ Vue.component('grants-cart', {
         this.signer = this.ethersProvider.getSigner();
         this.syncProvider = await zksync.getDefaultProvider(document.web3network, 'HTTP');
         this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
-        
+
         // Set zkSync contract address based on network
         this.zkSyncContractAddress = document.web3network === 'mainnet'
-          ? '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF' // mainnet
-          : '0x82F67958A5474e40E1485742d648C0b0686b6e5D'; // rinkeby
+          ? zkSyncContractAddressMainnet // mainnet
+          : zkSyncContractAddressRinkeby; // rinkeby
         
+        // Set contract to deposit through based on number of tokens used. We do this to save
+        // gas costs by avoiding the overhead of the batch deposit contract if the user is only
+        // donating one token
+        const numberOfCurrencies = Object.keys(this.donationsToGrants).length;
+        
+        this.depositContractToUse = numberOfCurrencies === 1
+          ? this.depositContractToUse = this.zkSyncContractAddress
+          : this.depositContractToUse = batchZkSyncDepositContractAddress;
+
         // Prompt for user's signature to login to zkSync
         this.syncWallet = await this.loginToZkSync();
 
@@ -1412,7 +1425,7 @@ Vue.component('grants-cart', {
         // This just does tken approvals and balance checks, and does not execute approavals.
         // We check against userAddress (the main web3 wallet) because this is where funds will
         // be transferred from
-        this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, batchZkSyncDepositContractAddress);
+        this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, this.depositContractToUse);
         if (this.zkSyncAllowanceData.length === 0) {
           // User is only donating ETH, so does not need any token approvals
           this.zkSyncCheckoutStep2Status = 'not-applicable';
@@ -1436,7 +1449,7 @@ Vue.component('grants-cart', {
         await this.requestAllowanceApprovalsThenExecuteCallback(
           this.zkSyncAllowanceData,
           this.userAddress,
-          batchZkSyncDepositContractAddress,
+          this.depositContractToUse,
           () => {
             this.zkSyncCheckoutStep2Status = 'complete';
           }
@@ -1479,7 +1492,7 @@ Vue.component('grants-cart', {
 
       // Final processing
       await this.setInterruptStatus(null, this.userAddress);
-      await this.finalizeCheckout(this.zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress);
+      await this.finalizeCheckout();
     },
 
     /**
@@ -1489,63 +1502,86 @@ Vue.component('grants-cart', {
       try {
       // Setup -------------------------------------------------------------------------------------
         this.zkSyncCheckoutStep3Status = 'pending';
-        console.log('Initializing zkSync checkout process...');
-        const ethAmount = this.donationInputsEthAmount;
+        const ethAmount = this.donationInputsEthAmount; // amount of ETH being donated
+        const depositRecipient = this.syncWallet.address(); // address of deposit recipient
 
-        // Get required contracts and addresses
-        const batckZkSyncDepositContract = new ethers.Contract(
-          batchZkSyncDepositContractAddress,
-          batchZkSyncDepositContractAbi,
-          this.signer
-        );
-      
-        // Get address of deposit recipient
-        const depositRecipient = this.syncWallet.address();
-
-        console.log('✅ Initialization complete');
-
-
-        // Generate deposit payload ------------------------------------------------------------------
-        console.log('Generating deposit payload...');
-        const deposits = []; // array of arrays, passed into batckZkSyncDepositContract.deposit(...)
+        // Deposit funds ---------------------------------------------------------------------------
+        // Setup overrides
         let overrides = { gasLimit: '1000000' }; // TODO improve gas estimate
-
-        // Handle ETH
-        if (ethers.BigNumber.from(ethAmount).gt('0')) {
-          deposits.push([ ETH_ADDRESS, ethAmount ]);
+        
+        if (ethers.BigNumber.from(ethAmount).gt('0'))
           overrides.value = ethAmount; // specify how much ETH to send with transaction
+        
+        const selectedTokens = Object.keys(this.donationsToGrants);
+        let depositTx;
+
+        
+        if (this.depositContractToUse === batchZkSyncDepositContractAddress) {
+          // Deposit mix of tokens
+          console.log('Generating deposit payload...');
+          const deposits = []; // array of arrays, passed into batckZkSyncDepositContract.deposit(...)
+
+          // Handle ETH
+          if (ethers.BigNumber.from(ethAmount).gt('0'))
+            deposits.push([ ETH_ADDRESS, ethAmount ]);
+          
+          // Handle tokens
+          const summaryData = this.zkSyncSummaryData();
+
+          if (summaryData.length > 0) {
+            summaryData.forEach((tokenDonation) => {
+              const tokenAddress = tokenDonation.contract._address;
+              const tokenAmount = tokenDonation.allowance;
+
+              deposits.push([ tokenAddress, tokenAmount ]);
+            });
+          }
+
+          if (deposits.length === 0) {
+            throw new Error('There are no deposits to be made');
+          }
+          console.log('✅ Deposit payload ready');
+          console.log('    _deposits array', deposits);
+          console.log('    overrides', overrides);
+
+          // Get contract instance
+          const batckZkSyncDepositContract = new ethers.Contract(
+            batchZkSyncDepositContractAddress,
+            batchZkSyncDepositContractAbi,
+            this.signer
+          );
+        
+          // Send transaction
+          console.log('Waiting for user to send deposit transaction...');
+          indicateMetamaskPopup();
+          depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
+
+        } else if (selectedTokens.length === 1 && selectedTokens[0] === 'ETH') {
+          // Deposit ETH
+          const zkSyncContract = new ethers.Contract(this.depositContractToUse, zkSyncContractAbi, this.signer);
+          
+          console.log('Waiting for user to send deposit transaction...');
+          indicateMetamaskPopup();
+          depositTx = await zkSyncContract.depositETH(depositRecipient, overrides);
+
+        } else if (selectedTokens.length === 1 && selectedTokens[0] !== 'ETH') {
+          // Deposit tokens
+          const zkSyncContract = new ethers.Contract(this.depositContractToUse, zkSyncContractAbi, this.signer);
+          const tokenInfo = this.zkSyncSummaryData()[0];
+
+          console.log('Waiting for user to send deposit transaction...');
+          indicateMetamaskPopup();
+          depositTx = await zkSyncContract.depositERC20(tokenInfo.contract._address, tokenInfo.allowance, depositRecipient, overrides);
+
+        } else {
+          throw new Error('Something went wrong');
         }
-
-        // Handle tokens
-        const summaryData = this.zkSyncSummaryData();
-
-        if (summaryData.length > 0) {
-          summaryData.forEach((tokenDonation) => {
-            const tokenAddress = tokenDonation.contract._address;
-            const tokenAmount = tokenDonation.allowance;
-
-            deposits.push([ tokenAddress, tokenAmount ]);
-          });
-        }
-
-        if (deposits.length === 0) {
-          throw new Error('There are no deposits to be made');
-        }
-        console.log('✅ Deposit payload ready');
-        console.log('    _deposits array', deposits);
-        console.log('    overrides', overrides);
-      
-
-        // Send transaction --------------------------------------------------------------------------
-        // Once deposit transaction has sent, we conservatively assume checkout will not be completed
-        console.log('Waiting for user to send deposit transaction...');
-        indicateMetamaskPopup();
-        const depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
 
         indicateMetamaskPopup(true);
         this.zkSyncDepositTxHash = depositTx.hash;
-
-        await this.postToDatabase(this.zkSyncDepositTxHash, batchZkSyncDepositContractAddress, this.userAddress); // Save contributions to database
+        // Save contributions to database
+        await this.postToDatabase(this.zkSyncDepositTxHash, this.depositContractToUse, this.userAddress);
+        // Assume checkout will not be completed
         await this.setInterruptStatus(this.zkSyncDepositTxHash, this.userAddress);
         console.log('✅ Deposit transaction sent', depositTx);
         console.log('Waiting for deposit transaction to be mined...');
