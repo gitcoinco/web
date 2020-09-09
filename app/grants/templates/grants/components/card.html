@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n static humanize grants_extra %}
 <grant-card inline-template :grant="grant" :cred="credentials" :view="view" :short="shortView"
-            :contributions='contributions' :show_contributions="show_contributions">
+            :contributions='contributions' :show_contributions="show_contributions" :toggle_following="toggleFollowingGrant">
   <template>
     <div v-if="view == 'list'">
       <div class="grant-item grant-item--list flex-md-row flex-column" >
@@ -84,7 +84,7 @@
                 </div>
               </div>
               <template v-if="cred.is_authenticated">
-                <button :class="`ml-3 text-decoration-none btn btn-link star-action m-0 p-0 font-smaller-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+                <button @click="toggle_following(grant.id, $event)" :class="`ml-3 text-decoration-none btn btn-link star-action m-0 p-0 font-smaller-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
                   <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
                   <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
                 </button>
@@ -156,8 +156,8 @@
             </a>
           </div>
           <template v-if="cred.is_authenticated">
-            <button :class="`text-decoration-none btn btn-link star-action m-0 p-0 mr-4 mt-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
-              <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i>
+            <button @click="toggle_following(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 mr-4 mt-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+              <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i> [[ toggleFollowingGrant ]]
               <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
             </button>
           </template>

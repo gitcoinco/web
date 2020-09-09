@@ -1,6 +1,6 @@
 Vue.component('grant-card', {
   delimiters: [ '[[', ']]' ],
-  props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions', 'contributions' ],
+  props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions', 'contributions', 'toggle_following' ],
   methods: {
     get_clr_prediction: function(indexA, indexB) {
       if (this.grant.clr_prediction_curve && this.grant.clr_prediction_curve.length) {
@@ -248,6 +248,21 @@ $(document).ready(() => {
               vm.page = vm.page + 1;
             }
           }
+        },
+        toggleFollowingGrant: async function(grantId, event) {
+          event.preventDefault();
+
+          const favorite_url = `/grants/${grantId}/favorite`;
+          let response = await fetchData(favorite_url, 'POST');
+
+          console.log(favorite_url);
+          if (response.action === 'follow') {
+            this.$set(this.grants[grantId], 'favorite', true);
+          } else {
+            this.$set(this.grants[grantId], 'favorite', false);
+          }
+
+          return true;
         }
       },
       mounted() {
@@ -353,7 +368,7 @@ $('#minimize').on('click', () => {
   });
 });
 
-$(document).on('click', '.star-action', async(e) => {
+$(document).on('click', '.following-action', async(e) => {
   e.preventDefault();
   const element = (e.target.tagName === 'BUTTON') ? $(e.target) : $(e.target.parentElement);
   const grantId = element.data('grant');

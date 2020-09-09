@@ -1335,7 +1335,7 @@ def presave_contrib(sender, instance, **kwargs):
 
 def next_month():
     """Get the next month time."""
-    return (timezone.now() + timedelta(days=30))
+    return localtime(timezone.now() + timedelta(days=30))
 
 
 class CLRMatch(SuperModel):

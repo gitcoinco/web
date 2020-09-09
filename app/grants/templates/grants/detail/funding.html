@@ -59,7 +59,7 @@
         <div class="pt-2 mb-1 d-flex justify-content-between">
           {% is_favorite grant profile.user as is_grant_favorite %}
           {% if profile.user.is_authenticated %}
-            <button class="text-decoration-none btn btn-link star-action m-0 p-0 mr-4 gc-text-blue {% if not is_grant_favorite %}text-muted{% endif %}" data-grant="{{ grant.id }}">
+            <button class="text-decoration-none btn btn-link following-action m-0 p-0 mr-4 gc-text-blue {% if not is_grant_favorite %}text-muted{% endif %}" data-grant="{{ grant.id }}">
                 {% if not is_grant_favorite %}
                   <i class="far fa-star" ></i><span class="ml-1 font-body">Follow</span>
                 {% else %}
