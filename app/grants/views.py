@@ -23,6 +23,7 @@ import json
 import logging
 import random
 from decimal import Decimal
+import re
 
 from django.conf import settings
 from django.contrib import messages
@@ -42,6 +43,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
+
+import requests
+from bs4 import BeautifulSoup
 
 from app.services import RedisService
 from app.settings import EMAIL_ACCOUNT_VALIDATION
@@ -1064,6 +1068,89 @@ def bulk_fund(request):
         'successes': successes,
         'failures': failures
     })
+
+@login_required
+def zksync_set_interrupt_status(request):
+    """
+    For the specified address, save off the deposit hash of the value the tx that was interrupted.
+    If a deposit hash is present, then the user was interrupted and must complete the existing
+    checkout before doing another one
+    """
+    
+    user_address = request.POST.get('user_address')
+    deposit_tx_hash = request.POST.get('deposit_tx_hash')
+    print('deposit_tx_hash')
+    print(deposit_tx_hash)
+    
+    try:
+        # Look for existing entry, and if present we overwrite it
+        entry = JSONStore.objects.get(key=user_address, view='zksync_checkout')
+        entry.data = deposit_tx_hash
+        entry.save()
+    except JSONStore.DoesNotExist:
+        # No entry exists for this user, so create a new one
+        JSONStore.objects.create(
+            key=user_address,
+            view='zksync_checkout',
+            data=deposit_tx_hash
+        )
+    
+    return JsonResponse({
+        'success': True,
+        'deposit_tx_hash': deposit_tx_hash
+    })
+
+@login_required
+def zksync_get_interrupt_status(request):
+    """
+    Returns the transaction hash of a deposit into zkSync if user was interrupted before zkSync
+    chekout was complete
+    """
+    user_address = request.GET.get('user_address')
+    try:
+        result = JSONStore.objects.get(key=user_address, view='zksync_checkout')
+        deposit_tx_hash = result.data
+        print('deposit_tx_hash')
+        print(deposit_tx_hash)
+    except JSONStore.DoesNotExist:
+        # If there's no entry for this user, assume they haven't been interrupted
+        deposit_tx_hash = False
+    
+    return JsonResponse({
+        'success': True,
+        'deposit_tx_hash': deposit_tx_hash
+    })
+
+@login_required
+def get_replaced_tx(request):
+    """
+    scrapes etherscan to get the replaced tx
+    """
+    tx_hash = request.GET.get('tx_hash')
+    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+    headers = {'User-Agent': user_agent}
+    response = requests.get(f"https://etherscan.io/tx/{tx_hash}/", headers=headers)
+    soup = BeautifulSoup(response.content, "html.parser")
+    # look for span that contains the dropped&replaced msg
+    p = soup.find("span", "u-label u-label--sm u-label--warning rounded")
+    if not p:
+        return JsonResponse({
+            'success': True,
+            'tx_hash': tx_hash
+        })
+    if "Replaced" in p.text:  # check if it's a replaced tx
+        # get the id for the replaced tx
+        q = soup.find(href=re.compile("/tx/0x"))
+        return JsonResponse({
+            'success': True,
+            'tx_hash': q.text
+        })
+    else:
+        return JsonResponse({
+            'success': True,
+            'tx_hash': tx_hash
+        })
+
 
 @login_required
 def subscription_cancel(request, grant_id, grant_slug, subscription_id):
