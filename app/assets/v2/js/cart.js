@@ -301,6 +301,14 @@ Vue.component('grants-cart', {
       if (document.web3network === 'mainnet')
         return `https://etherscan.io/tx/${this.zkSyncDepositTxHash}`;
       return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
+    },
+
+    zkSyncSupportedTokens() {
+      if (!document.web3network)
+        return [];
+      if (document.web3network === 'rinkeby')
+        return [ 'ETH', 'USDT', 'LINK' ];
+      return [ 'ETH', 'DAI', 'USDC', 'USDT', 'LINK', 'WBTC', 'PAN' ];
     }
     // =============================================================================================
     // ============================== END ZKSYNC COMPUTED PROPERTIES ===============================
@@ -1098,7 +1106,6 @@ Vue.component('grants-cart', {
 
         this.zkSyncWasInterrupted = Boolean(result);
         if (this.zkSyncWasInterrupted) {
-          this.showZkSyncModal = true;
           this.zkSyncDepositTxHash = result;
         }
       } catch (e) {
@@ -1626,10 +1633,20 @@ Vue.component('grants-cart', {
      * @notice Triggers appropriate modal when user begins checkout. If user has an interrupted
      * cart, they must finish checking out with that before doing another checkout
      */
-    async startCheckoutProcess() {
-      // See if user was previously interrupted during checkout and show appropriate modal
+    async startZkSyncCheckoutProcess() {
       try {
+        // See if user was previously interrupted during checkout
         await this.checkInterruptStatus();
+
+        // Make sure token list is valid
+        const selectedTokens = Object.keys(this.donationsToGrants);
+        
+        selectedTokens.forEach((token) => {
+          if (!this.zkSyncSupportedTokens.includes(token)) {
+            throw new Error(`${token} is not supported with zkSync checkout. Supported currencies are: ${this.zkSyncSupportedTokens.join(', ')}`);
+          }
+        });
+
         this.showZkSyncModal = true;
       } catch (e) {
         this.handleError(e);
@@ -1769,6 +1786,9 @@ Vue.component('grants-cart', {
 
     // See if user was previously interrupted during checkout
     await this.checkInterruptStatus();
+    if (this.zkSyncWasInterrupted) {
+      this.showZkSyncModal = true;
+    }
 
     // Cart is now ready
     this.isLoading = false;
