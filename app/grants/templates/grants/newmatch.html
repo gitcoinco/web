@@ -120,6 +120,19 @@
                 <h5 class="mt-4">Misc</h5>
                 <hr>
 
+                {% if github_handle %}
+                 <div class="form__group-horizontal pb-1">
+                  <label>
+                    From: <a href="/{{github_handle}}">@{{github_handle}}</a>
+                  </label>
+                  <br>
+                  <input type="checkbox" name="anonymous" id='input-anonymous'>
+                  <label class="font-body" for="input-anonymous">{% trans "I would prefer to stay anonymous" %}</label>
+
+                  </div>
+                {% endif %}
+
+
                 <div class="form__group-horizontal pb-1">
                   <label class="font-body" for="input-comment">{% trans "Comment" %}</label>
                   <textarea placeholder="Hi Gitcoin team, I found you from XYZ, and am reaching out from Project ABC.  Looking forward to working together on information-age public goods!" id=input-comment class="form__input form__input-lg " name="comment">{{data.comment}}</textarea>
