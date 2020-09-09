@@ -1185,6 +1185,7 @@ def users_fetch(request):
             profile_json['previously_worked'] = False # user.previous_worked_count > 0
             profile_json['position_contributor'] = user.get_contributor_leaderboard_index()
             profile_json['position_funder'] = user.get_funder_leaderboard_index()
+            profile_json['rank_coder'] = user.rank_coder
             profile_json['work_done'] = count_work_completed
             profile_json['verification'] = user.get_my_verified_check
             profile_json['avg_rating'] = user.get_average_star_rating()

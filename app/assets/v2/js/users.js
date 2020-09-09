@@ -9,7 +9,7 @@ let hackathonId = document.hasOwnProperty('hackathon_id') ? document.hackathon_i
 Vue.mixin({
   computed: {
     orderedUsers: function() {
-      return _.orderBy(this.users, 'position_contributor', 'asc');
+      return _.orderBy(this.users, 'rank_coder', 'desc');
     }
   },
   methods: {
