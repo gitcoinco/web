@@ -34,6 +34,9 @@ along with this program. If not, see
       padding: 0;
       max-width: 136px;
     }
+    .no-bg {
+      background: none !important;
+    }
   </style>
 </head>
 
@@ -116,6 +119,7 @@ along with this program. If not, see
       document.keyword = "{{ keyword }}";
       document.following = {{ following|yesno:'true,false' }};
       document.idle_grants = {{ idle_grants|yesno:'true,false' }};
+      document.show_contributions = {{ show_contributions|yesno:'true,false' }}
     </script>
 </body>
 <script src="{% static "v2/js/lib/jquery.waypoints.min.js" %}"></script>

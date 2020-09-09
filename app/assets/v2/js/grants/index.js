@@ -1,11 +1,14 @@
 Vue.component('grant-card', {
   delimiters: [ '[[', ']]' ],
-  props: [ 'grant', 'cred', 'token', 'view', 'short'],
+  props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions', 'contributions' ],
   methods: {
     get_clr_prediction: function(indexA, indexB) {
       if (this.grant.clr_prediction_curve && this.grant.clr_prediction_curve.length) {
         return this.grant.clr_prediction_curve[indexA][indexB];
       }
+    },
+    getContributions: function(grantId) {
+      return this.contributions[grantId] || [];
     }
   }
 });
@@ -74,7 +77,9 @@ $(document).ready(() => {
   if (document.getElementById('grants-showcase')) {
     Vue.component('grant-sidebar', {
       name: 'grant-sidebar',
-      props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type', 'idle_grants' ],
+      props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
+        'idle_grants', 'show_contributions'
+      ],
       data: function() {
         return {
           search: this.keyword,
@@ -88,8 +93,11 @@ $(document).ready(() => {
         },
         toggleIdle: function(state, event) {
           event.preventDefault;
-          console.log(state)
           this.filter_grants({idle_grants: state});
+        },
+        toggleContributionView: function(state, event) {
+          event.preventDefault;
+          this.filter_grants({show_contributions: state});
         }
       }
     });
@@ -112,13 +120,16 @@ $(document).ready(() => {
         category: document.selected_category,
         credentials: false,
         grant_types: [],
+        contributions: {},
+        show_contributions: document.show_contributions,
         lock: false,
-        view: 'list',
+        view: localStorage.getItem('grants_view') || 'grid',
         shortView: true
       },
       methods: {
         setView: function(mode, event) {
           event.preventDefault();
+          localStorage.setItem('grants_view', mode);
           this.view = mode;
         },
         setCurrentType: function(currentType, q) {
@@ -152,6 +163,9 @@ $(document).ready(() => {
           if (filters.sort !== null && filters.sort !== undefined) {
             this.sort = filters.sort;
           }
+          if (filters.show_contributions !== null && filters.show_contributions !== undefined) {
+            this.show_contributions = filters.show_contributions;
+          }
 
           this.page = 1;
           const query_elements = {};
@@ -168,6 +182,9 @@ $(document).ready(() => {
           }
           if (this.following) {
             query_elements['following'] = this.following;
+          }
+          if (this.show_contributions) {
+            query_elements['only_contributions'] = this.show_contributions;
           }
           if (this.sort !== 'weighted_shuffle') {
             query_elements['sort'] = this.sort;
@@ -202,6 +219,10 @@ $(document).ready(() => {
             base_params['idle'] = this.idle_grants;
           }
 
+          if (this.show_contributions) {
+            base_params['only_contributions'] = this.show_contributions;
+          }
+
           const params = new URLSearchParams(base_params).toString();
           const response = await fetchData(`/grants/cards_info?${params}`);
 
@@ -213,16 +234,15 @@ $(document).ready(() => {
 
           this.credentials = response.credentials;
           this.grant_types = response.grant_types;
+          this.contributions = response.contributions;
 
           this.lock = false;
           return this.grants;
         },
         scroll: async function(event) {
-          let vm = this;
-
-
           const scrollHeight = $(document).height();
           const scrollPos = $(window).height() + $(window).scrollTop();
+          let vm = this;
 
           if (((scrollHeight - 300) >= scrollPos) / scrollHeight == 0) {
             const grants = await vm.fetchGrants(vm.page + 1, true);

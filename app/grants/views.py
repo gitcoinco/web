@@ -261,8 +261,22 @@ def get_grants(request):
     category = request.GET.get('category', '')
     idle_grants = request.GET.get('idle', '') == 'true'
     following = request.GET.get('following', '') != ''
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
 
-    _grants = build_grants_by_type(request, grant_type, sort, network, keyword, state, category, following, idle_grants)
+
+    filters = {
+        'request': request,
+        'grant_type': grant_type,
+        'sort': sort,
+        'network': network,
+        'keyword': keyword,
+        'state': state,
+        'category': category,
+        'following': following,
+        'idle_grants': idle_grants,
+        'only_contributions': only_contributions
+    }
+    _grants = build_grants_by_type(**filters)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -272,53 +286,79 @@ def get_grants(request):
     if grant_stats.exists():
         grant_amount = lazy_round_number(grant_stats.first().val)
 
+    contributions = Contribution.objects.filter(
+        id__in=request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values(
+            'subscription_contribution__id')).prefetch_related('subscription')
+
+    contributions_by_grant = {}
+    for contribution in contributions:
+        grant_id = str(contribution.subscription.grant_id)
+        group = contributions_by_grant.get(grant_id, [])
+
+        group.append({
+            **contribution.normalized_data,
+            'id': contribution.id,
+            'grant_id': contribution.subscription.grant_id,
+            'created_on': contribution.created_on.strftime("%Y-%m-%d %H:%M")
+        })
+
+        contributions_by_grant[grant_id] = group
+
     return JsonResponse({
         'grant_types': get_grant_types(network),
         'current_type': grant_type,
         'category': category,
-        'grants': [{
-            'id': grant.id,
-            'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
-            'details_url': reverse('grants:details', args=(grant.id, grant.slug)),
-            'title': grant.title,
-            'description': grant.description,
-            'last_update': grant.last_update,
-            'last_update_natural': naturaltime(grant.last_update),
-            'sybil_score': grant.sybil_score,
-            'weighted_risk_score': grant.weighted_risk_score,
-            'is_clr_active': grant.is_clr_active,
-            'clr_round_num': grant.clr_round_num,
-            'admin_profile': {
-                'url': grant.admin_profile.url,
-                'handle': grant.admin_profile.handle,
-                'avatar_url': grant.admin_profile.avatar_url
-            },
-            'favorite': grant.favorite(request.user) if request.user.is_authenticated else False,
-            'is_on_team': is_grant_team_member(grant, request.user.profile) if request.user.is_authenticated else False,
-            'amount': grant_amount,
-            'clr_prediction_curve': grant.clr_prediction_curve,
-            'last_clr_calc_date': grant.last_clr_calc_date,
-            'safe_next_clr_calc_date': naturaltime(grant.safe_next_clr_calc_date) if grant.last_clr_calc_date else None,
-            'amount_received_in_round': grant.amount_received_in_round,
-            'positive_round_contributor_count': grant.positive_round_contributor_count,
-            'monthly_amount_subscribed': grant.monthly_amount_subscribed,
-            'is_clr_eligible': grant.is_clr_eligible
-        } for grant in grants],
+        'grants': {
+            str(grant.id): {
+                'id': grant.id,
+                'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
+                'details_url': reverse('grants:details', args=(grant.id, grant.slug)),
+                'title': grant.title,
+                'description': grant.description,
+                'last_update': grant.last_update,
+                'last_update_natural': naturaltime(grant.last_update),
+                'sybil_score': grant.sybil_score,
+                'weighted_risk_score': grant.weighted_risk_score,
+                'is_clr_active': grant.is_clr_active,
+                'clr_round_num': grant.clr_round_num,
+                'admin_profile': {
+                    'url': grant.admin_profile.url,
+                    'handle': grant.admin_profile.handle,
+                    'avatar_url': grant.admin_profile.avatar_url
+                },
+                'favorite': grant.favorite(request.user) if request.user.is_authenticated else False,
+                'is_on_team': is_grant_team_member(grant, request.user.profile) if request.user.is_authenticated else False,
+                'amount': grant_amount,
+                'clr_prediction_curve': grant.clr_prediction_curve,
+                'last_clr_calc_date': grant.last_clr_calc_date,
+                'safe_next_clr_calc_date': naturaltime(grant.safe_next_clr_calc_date) if grant.last_clr_calc_date else None,
+                'amount_received_in_round': grant.amount_received_in_round,
+                'positive_round_contributor_count': grant.positive_round_contributor_count,
+                'monthly_amount_subscribed': grant.monthly_amount_subscribed,
+                'is_clr_eligible': grant.is_clr_eligible
+            } for grant in grants
+        },
         'credentials': {
             'is_staff': request.user.is_staff,
             'is_authenticated': request.user.is_authenticated
-        }
+        },
+        'contributions': contributions_by_grant
     })
 
 
-def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active', category='', following=False, idle_grants=False):
+def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
+                         category='', following=False, idle_grants=False, only_contributions=False):
     sort_by_clr_pledge_matching_amount = None
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
 
-    _grants = Grant.objects.filter(
-        network=network, hidden=False
-    ).keyword(keyword)
+    if only_contributions:
+        contributions = request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
+        _grants = Grant.objects.filter(id__in=Subquery(contributions), hidden=False)
+    else:
+        _grants = Grant.objects.filter(network=network, hidden=False)
+
+    _grants = _grants.keyword(keyword)
 
     _grants = _grants.order_by(sort, 'pk')
     _grants.first()
@@ -419,6 +459,7 @@ def grants_by_grant_type(request, grant_type):
     category = request.GET.get('category', '')
     following = request.GET.get('following', '') == 'true'
     idle_grants = request.GET.get('idle', '') == 'true'
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
 
     if keyword:
         category = ''
@@ -544,7 +585,8 @@ def grants_by_grant_type(request, grant_type):
         'profile': profile,
         'grants_following': grants_following,
         'following': following,
-        'idle_grants': idle_grants
+        'idle_grants': idle_grants,
+        'only_contributions': only_contributions
     }
 
     # log this search, it might be useful for matching purposes down the line
