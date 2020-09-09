@@ -550,6 +550,59 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
                   </div>
                   <br>
+                  {% comment %} Advanced settings {% endcomment %}
+                  <div v-if="!zkSyncWasInterrupted" class="mb-3">
+                    <div class="row justify-content-end font-smaller-1 font-weight-semibold text-highlight-dark-blue">
+                      <div @click="showAdvancedSettings = !showAdvancedSettings" class="col-auto" style="cursor: pointer;">
+                        Advanced settings <i class="ml-1 fas fa-cog"></i>
+                      </div> 
+                    </div>
+                    <div v-if="showAdvancedSettings" class="p-3 text-left" style="background-color: #F1F1F1; width: 100%;">
+                      <div>
+                        Save 99% on future checkouts!
+                      </div>
+                      <div class="mt-1 font-smaller-1 text-medium-dark-grey">
+                        When you have enough funds on zkSync there is no need for an L1 transaction.
+                        The funds can also be accessed via
+                        <a href="https://wallet.zksync.io/" target="_blank">https://wallet.zksync.io/</a>
+                        for use outside of Gitcoin.
+                      </div>
+                      <div class="row justify-content-start align-items-center mt-3">
+                        <div class="col-4 font-smaller-1 text-medium-dark-grey">
+                          Current deposit
+                        </div>
+                        <div class="col-1">
+                          &nbsp;
+                        </div>
+                        <div class="col-7 font-smaller-1 text-medium-dark-grey">
+                          Additional deposit
+                        </div>
+                      </div>
+                      <div>
+                        {% comment %} v-for each token in cart {% endcomment %}
+                        <div v-for="(additionalDeposit, index) in zkSyncAdditionalDeposits"
+                          class="row justify-content-start align-items-center mt-1"
+                        >
+                          <div class="col-4">
+                            [[ donationsTotal[additionalDeposit.tokenSymbol] ]] [[ additionalDeposit.tokenSymbol ]]
+                          </div>
+                          <div class="col-1">
+                            +
+                          </div>
+                          <div class="col-7">
+                            <div class="row justify-content-start align-items-center">
+                              {% comment %} User must input amount before {% endcomment %}
+                              <input v-model.number="additionalDeposit.amount" class="col-5 form-control"
+                                style="margin-left:0.5rem" min="0" step="any" type="number"
+                                :disabled="zkSyncCheckoutStep2Status !== 'not-started'"
+                              >
+                              <div class="col-5">[[ additionalDeposit.tokenSymbol ]]</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   {% comment %} Body {% endcomment %}
                   <div>
                     {% comment %} Step 1 {% endcomment %}
@@ -662,15 +715,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                           Confirmations received: [[currentConfirmationNumber]] of [[numberOfConfirmationsNeeded]]
                           </div>
                           <div v-else-if="zkSyncCheckoutFlowStep === 1">
+                            {% comment %} Wait for state change commitment {% endcomment %}
                             Waiting for confirmation that deposit was received by zkSync...
                           </div>
                           <div v-else-if="zkSyncCheckoutFlowStep === 2">
+                          {% comment %} Get signatures for each transfer {% endcomment %}
                             Preparing transfer [[currentTxNumber]] of [[donationInputs.length]]
                           </div>
                           <div v-else-if="zkSyncCheckoutFlowStep === 3">
+                            {% comment %} Dispatch transfers to the zkSync network {% endcomment %}
                             Sending transfer [[currentTxNumber]] of [[donationInputs.length]]
                           </div>
                           <div v-else-if="zkSyncCheckoutFlowStep === 4">
+                            {% comment %} Transfer remaining balances to user's main wallet {% endcomment %}
+                            Finalizing contributions...
+                          </div>
+                          <div v-else-if="zkSyncCheckoutFlowStep === 5">
                             Checkout complete!
                           </div>
                         </div>

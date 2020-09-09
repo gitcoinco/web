@@ -62,6 +62,9 @@ Vue.component('grants-cart', {
       zkSyncCheckoutFlowStep: 0, // used for UI updates during the final step
       currentTxNumber: 0, // used as part of the UI updates during the final step
       zkSyncWasInterrupted: undefined, // read from local storage, true if user closes window before deposit is complete
+      showAdvancedSettings: false, // advanced settings let user deposit extra funds into zkSync
+      zkSyncAdditionalDeposits: [], // array of objects of: { amount: ABC, tokenSymbol: 'XYZ' }
+      zkSyncDonationInputsEthAmount: undefined, // version of donationInputsEthAmount, but used to account for additional deposit amount
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -708,6 +711,14 @@ Vue.component('grants-cart', {
       callbackParams = []
     ) {
       console.log('Requesting token approvals...');
+      
+      if (allowanceData.length === 0) {
+        console.log('✅ No approvals needed');
+        if (callback)
+          await callback(...callbackParams);
+        return;
+      }
+      
       indicateMetamaskPopup();
       for (let i = 0; i < allowanceData.length; i += 1) {
         const allowance = allowanceData[i].allowance;
@@ -1328,8 +1339,9 @@ Vue.component('grants-cart', {
       console.log('Generating signatures for transfers...');
       console.log('  Array of donations to be made is', donationInputs);
 
-      const donationSignatures = [];
+      const donationSignatures = []; // signatures for grant contribution transfers
 
+      // Get signatures for donation transfers
       for (let i = 0; i < donationInputs.length; i += 1) {
         this.currentTxNumber += 1;
         console.log(`  Generating signature ${i + 1} of ${donationInputs.length}...`);
@@ -1362,6 +1374,8 @@ Vue.component('grants-cart', {
     async dispatchSignedTransfers(donationSignatures) {
       console.log('Sending transfers to the network...');
       this.zkSyncCheckoutFlowStep += 1; // sending transactions
+      
+      // Dispatch donations ------------------------------------------------------------------------
       for (let i = 0; i < donationSignatures.length; i += 1) {
         this.currentTxNumber += 1;
         console.log(`  Sending transfer ${i + 1} of ${donationSignatures.length}...`);
@@ -1372,9 +1386,54 @@ Vue.component('grants-cart', {
 
         console.log(`  ✅ Got transfer ${i + 1} receipt`, receipt);
       }
+
+      // Transfer any remaining tokens to user's main wallet ---------------------------------------
+      this.zkSyncCheckoutFlowStep += 1; // Done!
+      const gitcoinZkSyncState = await this.syncProvider.getState(this.syncWallet.cachedAddress);
+      const balances = gitcoinZkSyncState.committed.balances;
+      const tokens = Object.keys(balances);
+      
+      // Loop through each token the user has
+      for (let i = 0; i < tokens.length; i += 1) {
+        try {
+          const tokenSymbol = tokens[i];
+          const transferInfo = {
+            dest: this.userAddress,
+            name: tokenSymbol,
+            amount: balances[tokenSymbol]
+          };
+          
+          console.log(`Sending remaining ${tokenSymbol} to user's main zkSync wallet...`);
+          const { fee, amount } = await this.getZkSyncFeeAndAmount(transferInfo);
+
+          // Send transfer
+          const tx = await this.syncWallet.syncTransfer({
+            to: transferInfo.dest,
+            token: transferInfo.name,
+            amount,
+            fee
+          });
+
+          console.log('  Transfer sent', tx);
+
+          // Wait for it to be committed
+          const receipt = await tx.awaitReceipt();
+
+          console.log('  ✅ Got transfer receipt', receipt);
+        } catch (e) {
+          if (e.message === 'zkSync transaction failed: Not enough balance') {
+            // Only dust is left for this token, so skip it
+            console.log('  ❗ Only dust left, skipping this transfer');
+            continue;
+          }
+          throw e;
+        }
+      }
+      
+      // Done!
       this.zkSyncCheckoutStep3Status = 'complete';
       this.zkSyncCheckoutFlowStep += 1; // Done!
-      console.log('✅ Transfers have been successfully sent');
+      console.log('✅ All transfers have been successfully sent');
       return;
     },
 
@@ -1408,6 +1467,7 @@ Vue.component('grants-cart', {
       this.signer = this.ethersProvider.getSigner();
       this.syncProvider = await zksync.getDefaultProvider(document.web3network, 'HTTP');
       this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
+      this.zkSyncDonationInputsEthAmount = this.donationInputsEthAmount;
 
       // Set zkSync contract address based on network
       this.zkSyncContractAddress = document.web3network === 'mainnet'
@@ -1430,6 +1490,9 @@ Vue.component('grants-cart', {
 
         // See if user was previously interrupted during checkout
         await this.checkInterruptStatus();
+
+        // Set current ETH amount
+        this.zkSyncDonationInputsEthAmount = this.donationInputsEthAmount;
 
         // Make sure token list is valid
         const selectedTokens = Object.keys(this.donationsToGrants);
@@ -1468,6 +1531,10 @@ Vue.component('grants-cart', {
           }
         }
 
+        // Populate field for holding additional deposits
+        this.zkSyncAdditionalDeposits = []; // clear existing data
+        selectedTokens.forEach((tokenSymbol) => this.zkSyncAdditionalDeposits.push({amount: 0, tokenSymbol }));
+
         this.showZkSyncModal = true;
       } catch (e) {
         this.handleError(e);
@@ -1493,13 +1560,11 @@ Vue.component('grants-cart', {
         // Prompt for user's signature to login to zkSync
         this.syncWallet = await this.loginToZkSync();
 
-        // Check allowances for next step, for better UX on next step.
-        // This just does tken approvals and balance checks, and does not execute approavals.
-        // We check against userAddress (the main web3 wallet) because this is where funds will
-        // be transferred from
-        this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, this.depositContractToUse);
-        if (this.zkSyncAllowanceData.length === 0) {
-          // User is only donating ETH, so does not need any token approvals
+        // Skip next step if only donating ETH, but check that user has enough balance
+        const selectedTokens = Object.keys(this.donationsToGrants);
+
+        if (selectedTokens.length === 1 && selectedTokens[0] === 'ETH') {
+          this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, this.depositContractToUse);
           this.zkSyncCheckoutStep2Status = 'not-applicable';
         }
         this.zkSyncCheckoutStep1Status = 'complete';
@@ -1515,7 +1580,50 @@ Vue.component('grants-cart', {
     async zkSyncApprovals() {
       try {
         this.zkSyncCheckoutStep2Status = 'pending';
-        
+        this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, this.depositContractToUse);
+        const BigNumber = ethers.ethers.BigNumber;
+
+        // Add token allowances for any additional deposits that user has specified
+        for (let i = 0; i < this.zkSyncAllowanceData.length; i += 1) {
+          const allowanceDetails = this.zkSyncAllowanceData[i];
+          const tokenSymbol = allowanceDetails.tokenName;
+          const decimals = this.getTokenByName(tokenSymbol).decimals;
+          const currentAmount = BigNumber.from(allowanceDetails.allowance);
+          const extra = this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === tokenSymbol)[0];
+
+          if (!extra)
+            continue;
+
+          const additionalAmount = ethers.utils.parseUnits(String(extra.amount), decimals);
+          const newAmount = currentAmount.add(additionalAmount).toString();
+          
+          this.zkSyncAllowanceData[i].allowance = newAmount;
+
+          // Make sure user has enough funds
+          const userTokenBalance = await allowanceDetails.contract.methods
+            .balanceOf(this.userAddress)
+            .call({from: this.userAddress});
+
+          if (BigNumber.from(userTokenBalance).lt(BigNumber.from(newAmount)))
+            throw new Error(`Insufficient ${tokenSymbol} balance to complete checkout`, 'error');
+        }
+
+        // Add ETH additional deposit and ensure user has enough for donation + gas (use lte not lt)
+        const selectedTokens = Object.keys(this.donationsToGrants);
+
+        if (selectedTokens.includes('ETH') && this.zkSyncAdditionalDeposits.length > 0) {
+          const initialAmount = BigNumber.from(this.zkSyncDonationInputsEthAmount);
+          const newAmount = ethers.utils.parseEther(
+            String(this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === 'ETH')[0].amount)
+          );
+
+          this.zkSyncDonationInputsEthAmount = initialAmount.add(newAmount).toString();
+          const userEthBalance = await web3.eth.getBalance(this.userAddress);
+  
+          if (BigNumber.from(userEthBalance).lte(BigNumber.from(this.zkSyncDonationInputsEthAmount)))
+            throw new Error('Insufficient ETH balance to complete checkout');
+        }
+
         // Otherwise, request approvals. As mentioned above, we check against userAddress
         // (the main web3 wallet) because this is where funds will be transferred from
         await this.requestAllowanceApprovalsThenExecuteCallback(
@@ -1539,7 +1647,7 @@ Vue.component('grants-cart', {
       try {
       // Setup -------------------------------------------------------------------------------------
         this.zkSyncCheckoutStep3Status = 'pending';
-        const ethAmount = this.donationInputsEthAmount; // amount of ETH being donated
+        const ethAmount = this.zkSyncDonationInputsEthAmount; // amount of ETH being donated
         const depositRecipient = this.syncWallet.address(); // address of deposit recipient
 
         // Deposit funds ---------------------------------------------------------------------------
