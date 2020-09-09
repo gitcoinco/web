@@ -930,13 +930,8 @@ Vue.component('grants-cart', {
       };
 
       // Send saveSubscription request
-      // check `Preserve log` in console settings to inspect these logs more easily
       const res = await fetch(url, saveSubscriptionParams);
-
-      console.log('Bulk fund POST response', res);
       const json = await res.json();
-
-      console.log('Bulk fund POST response, JSON', json);
     },
 
     /**
@@ -1088,8 +1083,8 @@ Vue.component('grants-cart', {
         // Valid transaction hash, return it
         return txHash;
       }
-      // Otherwise, parse JSON so 'false' becomes a boolean
-      return JSON.parse(txHash);
+      // Otherwise, user was not interrupted
+      return false;
     },
 
     /**
@@ -1339,25 +1334,14 @@ Vue.component('grants-cart', {
         this.currentTxNumber += 1;
         console.log(`  Generating signature ${i + 1} of ${donationInputs.length}...`);
         const donationInput = donationInputs[i];
-
-        // Transfer amounts must be packable to 5-byte long floating-point representations. So
-        // here we find the closest packable amount
-        const amount = zksync.utils.closestPackableTransactionAmount(donationInput.amount);
-
-        // Fees must be packable to 2-byte long floating-point representations. Here we find an
-        // acceptable transaction fee by querying the server, and this will already be packable
-        const fee = await this.syncProvider.getTransactionFee(
-          'Transfer', // transaction type
-          donationInput.dest, // recipient address
-          donationInput.name // token name
-        );
+        const { fee, amount } = await this.getZkSyncFeeAndAmount(donationInput);
 
         // Now we can generate the signature for this transfer
         const signedTransfer = await this.syncWallet.signSyncTransfer({
           to: donationInput.dest,
           token: donationInput.name,
-          amount: amount.sub(fee.totalFee),
-          fee: fee.totalFee,
+          amount,
+          fee,
           nonce
         });
 
@@ -1394,8 +1378,101 @@ Vue.component('grants-cart', {
       return;
     },
 
+    /**
+     * @notice For a given donation in this.donationInputs, returns the packed fee and amount
+     * @param donation Object, one element from the this.donationInputs array
+     */
+    async getZkSyncFeeAndAmount(donation) {
+      // Fees must be packable to 2-byte long floating-point representations. Here we find an
+      // acceptable transaction fee by querying the server, and this will already be packable
+      const fee = await this.syncProvider.getTransactionFee(
+        'Transfer', // transaction type
+        donation.dest, // recipient address
+        donation.name // token name
+      );
+
+      // Transfer amounts must be packable to 5-byte long floating-point representations. So
+      // here we find the closest packable amount
+      const amountBN = ethers.BigNumber.from(donation.amount);
+      const amount = zksync.utils.closestPackableTransactionAmount(amountBN.sub(fee.totalFee));
+
+      return { fee: fee.totalFee, amount };
+    },
+
+    /**
+     * @notice Setup parameters needed for zkSync checkout
+     */
+    async setupZkSync() {
+      // Configure ethers and zkSync
+      this.ethersProvider = new ethers.providers.Web3Provider(provider);
+      this.signer = this.ethersProvider.getSigner();
+      this.syncProvider = await zksync.getDefaultProvider(document.web3network, 'HTTP');
+      this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
+
+      // Set zkSync contract address based on network
+      this.zkSyncContractAddress = document.web3network === 'mainnet'
+        ? zkSyncContractAddressMainnet // mainnet
+        : zkSyncContractAddressRinkeby; // rinkeby
+    },
+
 
     // ==================================== Main functionality =====================================
+
+    /**
+     * @notice Triggers appropriate modal when user begins checkout. If user has an interrupted
+     * cart, they must finish checking out with that before doing another checkout
+     */
+    async startZkSyncCheckoutProcess() {
+      try {
+        // Make sure user is connected to web3 and setup zkSync
+        this.userAddress = await this.initializeCheckout();
+        await this.setupZkSync();
+
+        // See if user was previously interrupted during checkout
+        await this.checkInterruptStatus();
+
+        // Make sure token list is valid
+        const selectedTokens = Object.keys(this.donationsToGrants);
+        
+        selectedTokens.forEach((token) => {
+          if (!this.zkSyncSupportedTokens.includes(token)) {
+            throw new Error(`${token} is not supported with zkSync checkout. Supported currencies are: ${this.zkSyncSupportedTokens.join(', ')}`);
+          }
+        });
+
+        // Make sure amounts are packable
+        for (let i = 0; i < this.donationInputs.length; i += 1) {
+          const donation = this.donationInputs[i];
+          let fee;
+          let amount;
+
+          try {
+            // This will throw if amounts are not ok
+            ({ fee, amount } = await this.getZkSyncFeeAndAmount(donation));
+
+            // Verify returned values are big numbers above zero
+            if (!fee.gt(ethers.constants.Zero))
+              throw new Error('Something went wrong with fee amount');
+            if (!amount.gt(ethers.constants.Zero))
+              throw new Error('Something went wrong with fee amount');
+
+          } catch (e) {
+            console.error(e);
+            console.log('Corresponding donation:', donation);
+            console.log('Corresponding fee:', fee);
+            console.log('Corresponding amount:', amount);
+            const tokenDetails = this.getTokenByName(donation.grant.grant_donation_currency);
+            const amount = ethers.utils.formatUnits(donation.amount, tokenDetails.decimals);
+
+            throw new Error(`Amount of ${amount} ${donation.name} is too small for zkSync. This amount comes from either the amounts in your cart minus the contribution to Gitcoin, or is the value of the Gitcoin contribution itself. Please increase either the amounts in your cart or increase the Gitcoin contribution percentage.`);
+          }
+        }
+
+        this.showZkSyncModal = true;
+      } catch (e) {
+        this.handleError(e);
+      }
+    },
 
     /**
      * @notice Step 1: Initialize app state and login to zkSync
@@ -1403,19 +1480,7 @@ Vue.component('grants-cart', {
     async zkSyncLogin() {
       try {
         this.zkSyncCheckoutStep1Status = 'pending';
-        this.userAddress = await this.initializeCheckout();
 
-        // Configure ethers and zkSync
-        this.ethersProvider = new ethers.providers.Web3Provider(provider);
-        this.signer = this.ethersProvider.getSigner();
-        this.syncProvider = await zksync.getDefaultProvider(document.web3network, 'HTTP');
-        this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
-
-        // Set zkSync contract address based on network
-        this.zkSyncContractAddress = document.web3network === 'mainnet'
-          ? zkSyncContractAddressMainnet // mainnet
-          : zkSyncContractAddressRinkeby; // rinkeby
-        
         // Set contract to deposit through based on number of tokens used. We do this to save
         // gas costs by avoiding the overhead of the batch deposit contract if the user is only
         // donating one token
@@ -1465,41 +1530,6 @@ Vue.component('grants-cart', {
         this.zkSyncCheckoutStep2Status = 'not-started';
         this.handleError(e);
       }
-    },
-
-    /**
-     * @notice Executes final shared steps between nominal flow and interrupt flow
-     * @param receipt receipt from the deposit transaction
-     */
-    async finishZkSyncStep3(receipt) {
-      // Track number of confirmations live in UI
-      this.updateConfirmationsInUI();
-
-      // Wait for deposit to be committed ----------------------------------------------------------
-      // Parse logs in receipt so we can get priority request IDs from the events
-      const serialId = this.getDepositSerialId(receipt);
-
-      // Wait for that ID to be acknowledged by the zkSync network
-      await this.waitForSerialIdCommitment(serialId);
-    
-      // Final steps -------------------------------------------------------------------------------
-      // Unlock deterministic wallet's zkSync account
-      await this.checkAndRegisterSigningKey();
-
-      // Fetch the expected nonce from the network. We cannot assume it's zero because this may
-      // not be the user's first checkout
-      let nonce = await this.getSyncWalletNonce();
-    
-      // Generate signatures
-      const donationSignatures = await this.generateTransferSignatures(nonce);
-
-      // Dispatch the transfers
-      await this.dispatchSignedTransfers(donationSignatures);
-      console.log('✅✅✅ Checkout complete!');
-
-      // Final processing
-      await this.setInterruptStatus(null, this.userAddress);
-      await this.finalizeCheckout();
     },
 
     /**
@@ -1630,27 +1660,38 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Triggers appropriate modal when user begins checkout. If user has an interrupted
-     * cart, they must finish checking out with that before doing another checkout
+     * @notice Executes final shared steps between nominal flow and interrupt flow
+     * @param receipt receipt from the deposit transaction
      */
-    async startZkSyncCheckoutProcess() {
-      try {
-        // See if user was previously interrupted during checkout
-        await this.checkInterruptStatus();
+    async finishZkSyncStep3(receipt) {
+      // Track number of confirmations live in UI
+      this.updateConfirmationsInUI();
 
-        // Make sure token list is valid
-        const selectedTokens = Object.keys(this.donationsToGrants);
-        
-        selectedTokens.forEach((token) => {
-          if (!this.zkSyncSupportedTokens.includes(token)) {
-            throw new Error(`${token} is not supported with zkSync checkout. Supported currencies are: ${this.zkSyncSupportedTokens.join(', ')}`);
-          }
-        });
+      // Wait for deposit to be committed ----------------------------------------------------------
+      // Parse logs in receipt so we can get priority request IDs from the events
+      const serialId = this.getDepositSerialId(receipt);
 
-        this.showZkSyncModal = true;
-      } catch (e) {
-        this.handleError(e);
-      }
+      // Wait for that ID to be acknowledged by the zkSync network
+      await this.waitForSerialIdCommitment(serialId);
+    
+      // Final steps -------------------------------------------------------------------------------
+      // Unlock deterministic wallet's zkSync account
+      await this.checkAndRegisterSigningKey();
+
+      // Fetch the expected nonce from the network. We cannot assume it's zero because this may
+      // not be the user's first checkout
+      let nonce = await this.getSyncWalletNonce();
+    
+      // Generate signatures
+      const donationSignatures = await this.generateTransferSignatures(nonce);
+
+      // Dispatch the transfers
+      await this.dispatchSignedTransfers(donationSignatures);
+      console.log('✅✅✅ Checkout complete!');
+
+      // Final processing
+      await this.setInterruptStatus(null, this.userAddress);
+      await this.finalizeCheckout();
     }
 
 
@@ -1769,8 +1810,6 @@ Vue.component('grants-cart', {
     // are generated -- to increase reliability. This is because the beforeunload may sometimes
     // be ignored by browsers, e.g. if users have not interacted with the page
     window.addEventListener('beforeunload', (e) => {
-      console.log('this.zkSyncCheckoutStep1Status: ', this.zkSyncCheckoutStep1Status);
-      console.log('this.zkSyncCheckoutStep3Status: ', this.zkSyncCheckoutStep3Status);
       if (
         this.zkSyncCheckoutStep3Status === 'pending' &&
         this.zkSyncCheckoutStep3Status !== 'complete'
@@ -1787,6 +1826,8 @@ Vue.component('grants-cart', {
     // See if user was previously interrupted during checkout
     await this.checkInterruptStatus();
     if (this.zkSyncWasInterrupted) {
+      this.userAddress = (await web3.eth.getAccounts())[0];
+      await this.setupZkSync();
       this.showZkSyncModal = true;
     }
 
