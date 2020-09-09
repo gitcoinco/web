@@ -1,4 +1,4 @@
-let step = 3;
+let step = 1;
 let orgs = document.contxt.orgs;
 
 Vue.component('v-select', VueSelect.VueSelect);
@@ -24,12 +24,22 @@ if (document.getElementById('gc-onboard')) {
       return {
         step: step,
         isOrg: false,
-        bio: '',
+        // bio: '',
         orgs: orgs,
+        data: {
+          bio: '',
+          skillsSelected: [],
+          orgSelected: [],
+          interestsSelected: [],
+          userOptions: [],
+          orgOptions: [],
+          jobSelected: [],
+
+        },
         // totalcharacter:0,
         skills: ['css','php'],
-        skillsSelected: [],
-        orgSelected: [],
+        // skillsSelected: [],
+        // orgSelected: [],
         interests: [
           'Front End Development',
           'Back End Development',
@@ -46,7 +56,7 @@ if (document.getElementById('gc-onboard')) {
           'Freelance Jobs',
           'Healthcare'
         ],
-        jobSelected: [],
+        // jobSelected: [],
         jobSearchStatus: [
           {
             value: 'AL',
@@ -61,25 +71,37 @@ if (document.getElementById('gc-onboard')) {
             string: 'I am not open to hearing new opportunities'
           }
         ],
-        interestsSelected: [],
+        // interestsSelected: [],
         // userOptions: [{
         //   product: 'Bounties',
         //   icons: '📖💰💬',
         //   logo:
         // }]
-        userOptions: []
+        // userOptions: []
       };
     },
     computed: {
       totalcharacter: function() {
-        return this.bio.length;
+        return this.data.bio.length;
       }
     },
     methods: {
       openModalStep(step) {
         let vm = this;
+
         vm.step = step;
         vm.$refs['onboard-modal'].openModal();
+      },
+      goStep(step) {
+        let vm = this;
+
+        vm.step = step;
+        vm.scrollToTop();
+      },
+      scrollToTop() {
+        let vm = this;
+
+        vm.$refs["onboard-modal"].$el.scrollTo(0,0);
       },
       submitData() {
         let vm = this;
