@@ -420,9 +420,11 @@ class UpcomingDate(SuperModel):
 
     title = models.CharField(max_length=255)
     date = models.DateTimeField(db_index=True)
+
     img_url = models.URLField(db_index=True, blank=True)
     url = models.URLField(db_index=True)
     comment = models.TextField(max_length=255, default='', blank=True)
+    context_tag = models.TextField(max_length=255, default='', blank=True)
 
     @property
     def naturaltime(self):
