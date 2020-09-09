@@ -57,6 +57,7 @@ def modulo(num, val):
         int: The modulo of number and value.
 
     """
+
     return num % val
 
 @register.simple_tag
@@ -66,3 +67,10 @@ def is_team_member(grant, profile):
 @register.simple_tag
 def is_grants_path(path):
     return path.lower().startswith('/grants')
+
+@register.simple_tag
+def is_favorite(grant, profile):
+    if profile:
+        return grant.favorite(profile)
+
+    return False

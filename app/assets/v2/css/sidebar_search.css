@@ -92,11 +92,6 @@
 }
 
 @media (max-width: 991.98px) {
-  #sidebar_container form {
-    height: 0;
-    display: none;
-  }
-
   #expand {
     display: inherit;
   }
