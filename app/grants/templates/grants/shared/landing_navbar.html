@@ -9,7 +9,7 @@
           <div class="col-12"r>
             {% trans "[ Admin ] Choose Network :" %}
             <span class="network-container">
-              <select name="network" id="network">
+              <select name="network" id="network" v-model="network">
                 <option value="mainnet">Mainnet</option>
                 <option value="rinkeby">Rinkeby</option>
               </select>
