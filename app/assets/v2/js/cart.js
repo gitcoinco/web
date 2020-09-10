@@ -1426,6 +1426,9 @@ Vue.component('grants-cart', {
         console.log(`  ✅ Got transfer ${i + 1} receipt`, receipt);
       }
 
+      // Save contributions to database
+      await this.postToDatabase(this.gitcoinSyncWallet.cachedAddress, 'zkSync', this.userAddress);
+
       // Transfer any remaining tokens to user's main wallet ---------------------------------------
       this.zkSyncCheckoutFlowStep += 1; // Done!
       const gitcoinZkSyncState = await this.syncProvider.getState(this.gitcoinSyncWallet.cachedAddress);
@@ -1563,10 +1566,7 @@ Vue.component('grants-cart', {
             console.log('Corresponding donation:', donation);
             console.log('Corresponding fee:', fee);
             console.log('Corresponding amount:', amount);
-            const tokenDetails = this.getTokenByName(donation.grant.grant_donation_currency);
-            const amount = ethers.utils.formatUnits(donation.amount, tokenDetails.decimals);
-
-            throw new Error(`Amount of ${amount} ${donation.name} is too small for zkSync. This amount comes from either the amounts in your cart minus the contribution to Gitcoin, or is the value of the Gitcoin contribution itself. Please increase either the amounts in your cart or increase the Gitcoin contribution percentage.`);
+            throw e;
           }
         }
 
@@ -1941,7 +1941,7 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Executes final shared steps between standard flow and interrupt flow
+     * @notice Executes final shared Flow B steps between standard flow and interrupt flow
      * @param receipt receipt from the deposit transaction
      */
     async finishZkSyncStep3(receipt) {
