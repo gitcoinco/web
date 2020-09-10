@@ -262,7 +262,7 @@ if (document.getElementById('grants-showcase')) {
             vm.page = vm.page + 1;
           }
         }
-      },
+      }
       // toggleFollowingGrant: async function(grantId, event) {
       //   event.preventDefault();
 
