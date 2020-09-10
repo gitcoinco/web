@@ -68,6 +68,7 @@ Vue.component('grants-cart', {
       zkSyncDonationInputsEthAmount: undefined, // version of donationInputsEthAmount, but used to account for additional deposit amount
       hasSufficientZkSyncBalance: undefined, // true if user already has enough funds in their zkSync account for checkout
       maxPossibleSignatures: 4, // for Flow A, start by assuming 4 -- two logins, set signing key, one transfer
+      isZkSyncModalLoading: false, // modal requires async actions before loading, so show loading spinner to improve UX
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -1526,6 +1527,10 @@ Vue.component('grants-cart', {
      */
     async startZkSyncCheckoutProcess() {
       try {
+        // Show zkSync checkout modal
+        this.isZkSyncModalLoading = true;
+        this.showZkSyncModal = true;
+
         // Make sure user is connected to web3 and setup zkSync
         this.userAddress = await this.initializeCheckout();
         await this.setupZkSync();
@@ -1611,8 +1616,7 @@ Vue.component('grants-cart', {
           });
         }
 
-        // Show zkSync checkout modal
-        this.showZkSyncModal = true;
+        this.isZkSyncModalLoading = false;
       } catch (e) {
         this.handleError(e);
       }

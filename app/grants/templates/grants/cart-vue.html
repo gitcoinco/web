@@ -534,7 +534,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                   <span aria-hidden="true">&times;</span>
                 </button>
               </template>
-              <template v-slot:default="{ hide }">
+              <template v-if="isZkSyncModalLoading" v-slot:default="{ hide }">
+                <div class="my-5 py-5">
+                  <loading-screen></loading-screen>
+                  <div class="text-center my-5">Loading...</div>
+                </div>
+              </template>
+              <template v-else v-slot:default="{ hide }">
                 <div class="mx-2 mb-4 text-center">
                   {% comment %} Header {% endcomment %}
                   <div class="mb-3">
