@@ -48,7 +48,8 @@ from app.settings import EMAIL_ACCOUNT_VALIDATION
 from app.utils import get_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import Activity, Profile, SearchHistory
+from dashboard.models import Activity, Profile, SearchHistory, HackathonProject
+from dashboard.views import project
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
 from economy.models import Token as FTokens
@@ -754,7 +755,7 @@ def grant_new_whitelabel(request):
 
 
 @login_required
-def grant_new(request):
+def grant_new(request, project_id=None):
     """Handle new grant."""
     profile = get_profile(request)
 
@@ -821,6 +822,12 @@ def grant_new(request):
 
 
 
+    check_profile = None
+    project_data = None
+    if project_id is not None:
+        check_profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+        project_data = project(project_id)
+
     params = {
         'active': 'new_grant',
         'title': _('New Grant'),
@@ -836,8 +843,12 @@ def grant_new(request):
         'conf_time_spread': conf_time_spread(),
         'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
-        'grant_types': GrantType.objects.all()
+        'grant_types': GrantType.objects.all(),
+        'data': {}
     }
+    if check_profile is not None:
+        params["data"] = project_data
+
     return TemplateResponse(request, 'grants/new.html', params)
 
 
