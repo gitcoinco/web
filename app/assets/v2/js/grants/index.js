@@ -120,7 +120,6 @@ if (document.getElementById('grants-showcase')) {
   var appGrants = new Vue({
     delimiters: [ '[[', ']]' ],
     el: '#grants-showcase',
-    components: ['grant-sidebar'],
     data: {
       grants: [],
       page: 1,
