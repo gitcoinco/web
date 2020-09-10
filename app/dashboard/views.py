@@ -4323,10 +4323,17 @@ def hackathon_save_project(request):
 def get_project(request, project_id):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
-    if not project:
+    params = project(project_id)
+    if not params:
         raise Http404("The project doesnt exists.")
 
+    return JsonResponse(params)
+
+def project(project_id):
+    project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    if not project:
+        return None
+    
     hackathon_obj = HackathonEventSerializer(project.hackathon).data,
     params = {
         'project': {
@@ -4352,14 +4359,14 @@ def get_project(request, project_id):
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
-            } for member_profile in project.profiles.all()]
+            } for member_profile in project.profiles.all()],
+            'team_members_profile': [member_profile for member_profile in project.profiles.all()]
         },
         'hackathon': hackathon_obj[0],
     }
+    return params
 
-    return JsonResponse(params)
-
-
+    
 def hackathon_project_page(request, hackathon, project_id, project_name, tab=''):
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
