@@ -1,0 +1,25 @@
+{
+    "symbol": "INT",
+    "address": "0xbe038A2FDfec62Cf1beD852f141A43005035edcC",
+    "overview":{
+          "en": "INT is an INT Chain cross-chain asset based on Ethereum network, and INT Chain is the world's first bottom up new-generation blockchain of things (BoT) communication standard and base application platform.",
+          "zh": "INT是INT Chain基于以太坊主网发行的跨链资产，INT Chain是全球首个从物联网结构体系演进的角度，自下而上打造而成的新一代物联网区块链交互标准和基础应用平台。"
+    },
+    "email": "support@tether.to",
+    "website": "https://intchain.io/",
+    "whitepaper": "https://intchain.io/whitepaper/INT-whitepaper-release-EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-08-26",
+    "initial_price":{
+          "USD":"0.04 USD"
+    },
+    "links": {
+      "twitter": "https://twitter.com/intchain",
+      "explorer": "https://explorer.intchain.io/",
+      "facebook": "https://www.facebook.com/INTchainINT",
+      "telegram": "https://t.me/INTChainOfficial",
+      "github": "https://github.com/intfoundation",
+      "bitcointalk": "https://bitcointalk.org/index.php?topic=4748651",
+      "medium": "https://medium.com/int-chain"
+    }
+  }
