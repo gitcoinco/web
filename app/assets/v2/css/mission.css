@@ -3,7 +3,7 @@
 /* Font */
 /* The Titles */
 .section-title {
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 30px;
@@ -186,7 +186,7 @@
 
 /* We Value Section */
 #we-value {
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 19px;
@@ -195,7 +195,7 @@
   color: #000000;
 }
 #vote-text {
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 12px;
@@ -210,7 +210,7 @@
   max-width: 11.5%;
 }
 .we-value-text {
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   font-style: normal;
   font-weight: bold;
   font-size: 21px;
@@ -301,7 +301,7 @@
   .we-interact-card-text {
     width: 213px;
     height: 108px;
-    font-family: 'Muli';
+    font-family: 'Muli', sans-serif;
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
