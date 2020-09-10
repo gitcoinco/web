@@ -51,9 +51,6 @@ $(document).ready(() => {
     e.preventDefault();
   });
 
-  $('#network').select2({
-    minimumResultsForSearch: Infinity
-  });
 
   $(document).on('click', '.grant-item', function() {
     $(this).find('img').each(function() {
@@ -63,18 +60,8 @@ $(document).ready(() => {
     });
   });
 
-  searchGrant();
-  populateFilters();
 
   $('.select2-selection__rendered').removeAttr('title');
-
-  // $(document).on('click keypress', '.flip-card', e => {
-  //   if ($(e.target).is('a') || $(e.target).is('img')) {
-  //     e.stopPropagation();
-  //     return;
-  //   }
-  //   $(e.currentTarget).toggleClass('turn');
-  // });
 
   waitforWeb3(() => {
     let _network = $('#grant-network').html();
@@ -185,6 +172,9 @@ if (document.getElementById('grants-showcase')) {
         if (filters.show_contributions !== null && filters.show_contributions !== undefined) {
           this.show_contributions = filters.show_contributions;
         }
+        if (filters.network !== null && filters.network !== undefined) {
+          this.network = filters.network;
+        }
 
         this.page = 1;
         const query_elements = {};
@@ -208,6 +198,10 @@ if (document.getElementById('grants-showcase')) {
         if (this.sort !== 'weighted_shuffle') {
           query_elements['sort'] = this.sort;
         }
+        if (this.network !== 'mainnet') {
+          query_elements['network'] = this.network;
+        }
+
         const q = $.param(query_elements);
 
         this.setCurrentType(this.current_type, q);
@@ -329,34 +323,6 @@ const etherscanUrlConvert = (elem, network) => {
   elem.each(function() {
     $(this).attr('href', get_etherscan_url($(this).attr('href'), network));
   });
-};
-
-const searchGrant = () => {
-  $('#sort_option').on('change', function(e) {
-    updateParams('sort_option', $('#sort_option').val());
-  });
-
-  $('#network').on('change', function(e) {
-    updateParams('network', $('#network').val());
-  });
-
-  $('#search_form').on('submit', (e) => {
-    e.preventDefault();
-    updateParams('keyword', $('#keyword').val());
-  });
-};
-
-const populateFilters = () => {
-  const sort = getURLParams('sort_option');
-  const network = getURLParams('network');
-  const keyword = getURLParams('keyword') ? getURLParams('keyword').replace('%20', ' ') : null;
-
-  if (sort)
-    $('#sort_option').val(getURLParams('sort_option')).trigger('change');
-  if (network)
-    $('#network').val(getURLParams('network')).trigger('change');
-  if (keyword)
-    $('#keyword').val(keyword);
 };
 
 
