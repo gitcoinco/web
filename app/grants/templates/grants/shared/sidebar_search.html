@@ -59,13 +59,13 @@
         </div>
         <ul class="nav d-inline-block font-body mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
           <li class="mr-1 ">
-            <a @click="filter_grants({type: 'all', category: ''})" data-type="all" data-category="" :class="`mr-1 ${ type == 'all'? 'selected':''}`">
+            <a :href="`/grants`" data-type="all" data-category="" :class="`mr-1 ${ type == 'all'? 'selected':''}`">
               All Categories
             </a>
           </li>
           <template v-for="grant_type in grant_types">
             <li class="mr-1 accordion">
-              <a @click="filter_grants({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" data-category="" :class="`mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
+              <a :href="`/grants/${grant_type.keyword}`" :data-type="grant_type.keyword" data-category="" :class="`mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
                 [[grant_type.label]] <sup>([[grant_type.count]])</sup>
               </a>
             </li>
@@ -73,12 +73,12 @@
               <div class="col-12 options">
                 <ul class="nav d-inline-block font-body mb-2 grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-xl-left font-body font-weight-semibold">
                   <li class="mr-1 ">
-                    <a @click="filter_grants({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
+                    <a :href="`/grants/${grant_type.keyword}`" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
                       All [[grant_type.label]]
                     </a>
                   </li>
                   <li class="mr-1" v-for="category in grant_type.sub_categories">
-                    <a @click="filter_grants({type: grant_type.keyword, category: category})" :data-type="grant_type.keyword" data-category="category" :class="`mr-3 mr-md-2 mr-lg-3 ${ selected_category == category ? 'selected' : '' }`">
+                    <a :href="`/grants/${grant_type.keyword}?category=${category}`" :data-type="grant_type.keyword" data-category="category" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category ? 'selected' : '' }`">
                       [[category]]
                     </a>
                   </li>
