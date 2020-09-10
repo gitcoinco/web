@@ -50,7 +50,8 @@ Vue.component('grants-cart', {
       ethersProvider: undefined,
       signer: undefined, // signer from regular web3 wallet
       syncProvider: undefined,
-      syncWallet: undefined, // signer from zkSync wallet
+      gitcoinSyncWallet: undefined, // wallet from zkSync wallet using Gitcoin-specific signature
+      nominalSyncWallet: undefined, // default wallet from zkSync using their SDK
       showZkSyncModal: false,
       zkSyncAllowanceData: undefined,
       zkSyncDepositTxHash: undefined,
@@ -65,6 +66,8 @@ Vue.component('grants-cart', {
       showAdvancedSettings: false, // advanced settings let user deposit extra funds into zkSync
       zkSyncAdditionalDeposits: [], // array of objects of: { amount: ABC, tokenSymbol: 'XYZ' }
       zkSyncDonationInputsEthAmount: undefined, // version of donationInputsEthAmount, but used to account for additional deposit amount
+      hasSufficientZkSyncBalance: undefined, // true if user already has enough funds in their zkSync account for checkout
+      maxPossibleSignatures: 4, // for Flow A, start by assuming 4 -- two logins, set signing key, one transfer
       // SMS validation
       csrf: $("input[name='csrfmiddlewaretoken']").val(),
       validationStep: 'intro',
@@ -297,8 +300,18 @@ Vue.component('grants-cart', {
     // ============================= START ZKSYNC COMPUTED PROPERTIES ==============================
     // =============================================================================================
     
-    // Link to deposit transaction on Etherscan
-    zkSyncDepositEtherscanUrl() {
+    // Link to L2 account (Flow A) or L1 deposit transaction (Flow B) on block explorer. For L2
+    // we link to an account instead of a transfer because there are multiple transfers if multiple
+    // tokens are being used
+    zkSyncBlockExplorerUrl() {
+      // Flow A, zkScan link
+      if (this.hasSufficientZkSyncBalance) {
+        if (document.web3network === 'mainnet')
+          return `https://zkscan.io/explorer/accounts/${this.userAddress}`;
+        return `https://${document.web3network}.zkscan.io/explorer/accounts/${this.userAddress}`;
+      }
+
+      // Flow B, etherscan link
       if (!this.zkSyncDepositTxHash)
         return undefined;
       if (document.web3network === 'mainnet')
@@ -306,6 +319,7 @@ Vue.component('grants-cart', {
       return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
     },
 
+    // Array of supported tokens
     zkSyncSupportedTokens() {
       if (!document.web3network)
         return [];
@@ -1178,10 +1192,21 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Generate a Gitcoin-specific private key to use
-     * @returns User's syncWallet instance
+     * @notice Login to zkSync account associated with user's web3 wallet
      */
-    async loginToZkSync() {
+    async zkSyncLoginNominal() {
+      console.log('Waiting for user to sign the prompt to log in to zkSync directly...');
+      const nominalSyncWallet = await zksync.Wallet.fromEthSigner(this.signer, this.syncProvider);
+      
+      console.log('✅ Login complete. Nominal sync wallet generated from web3 account. View wallet:', nominalSyncWallet);
+      return nominalSyncWallet;
+    },
+
+    /**
+     * @notice Generate a Gitcoin-specific private key to use and login to zkSync with it
+     * @returns User's gitcoinSyncWallet instance
+     */
+    async zkSyncLoginGitcoin() {
       // Prompt for user's signature to generate deterministic private key. This enables us
       // to determinstically generate the same, Gitcoin-specific zkSync wallet on each visit
       const message = 'Access Gitcoin zkSync account.\n\nOnly sign this message for a trusted client!';
@@ -1194,11 +1219,11 @@ Vue.component('grants-cart', {
       const wallet = new ethers.Wallet(privateKey);
 
       // Login to zkSync
-      console.log('Waiting for user to sign the prompt to log in...');
-      const syncWallet = await zksync.Wallet.fromEthSigner(wallet, this.syncProvider);
+      console.log('Waiting for user to sign the prompt to log in to zkSync via Gitcoin...');
+      const gitcoinSyncWallet = await zksync.Wallet.fromEthSigner(wallet, this.syncProvider);
 
-      console.log('✅ Login complete. Sync wallet generated from web3 account. View wallet:', syncWallet);
-      return syncWallet;
+      console.log('✅ Login complete. Gitcoin sync wallet generated from web3 account. View wallet:', gitcoinSyncWallet);
+      return gitcoinSyncWallet;
     },
 
     /**
@@ -1291,40 +1316,40 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice For the active syncWallet, see if the public key needs to be registered, and if so,
+     * @notice For the given syncWallet, see if the public key needs to be registered, and if so,
      * register it
      */
-    async checkAndRegisterSigningKey() {
+    async checkAndRegisterSigningKey(syncWallet) {
       // To control assets in zkSync network, an account must register a separate public key
       // once. This can only be done once they have interacted with the network in some way, such
       // as receiving a deposit, so we do that now since the deposit is complete. It cannot be
       // done earlier because otherwise the account won't exist in the zkSync accounts Merkle tree
       console.log('Registering public key to unlock deterministic wallet on zkSync...');
-      if (!(await this.syncWallet.isSigningKeySet())) {
-        if ((await this.syncWallet.getAccountId()) == undefined) {
+      if (!(await syncWallet.isSigningKeySet())) {
+        if ((await syncWallet.getAccountId()) == undefined) {
           // This means the account has never interacted with the network
           throw new Error('Unknown account');
         }
-        const changePubkey = await this.syncWallet.setSigningKey();
-        // Wait until the tx is committed
+        const changePubkey = await syncWallet.setSigningKey();
 
+        // Wait until the tx is committed
         await changePubkey.awaitReceipt();
-        console.log('✅ Ephemeral wallet is ready to use on zkSync');
+        console.log('✅ specified sync wallet is ready to use on zkSync');
       } else {
-        console.log('✅ Ephemeral wallet was already initialized');
+        console.log('✅ specified sync wallet was already initialized');
       }
       return;
     },
 
     /**
-     * @notice Returns next expected nonce for the user's sync wallet
+     * @notice Returns next expected nonce for the user's Gitcoin sync wallet
      */
-    async getSyncWalletNonce() {
-      console.log('Getting state and nonce of ephemeral wallet...');
-      const syncWalletState = await this.syncWallet.getAccountState();
+    async getGitcoinSyncWalletNonce() {
+      console.log('Getting state and nonce of Gitcoin sync wallet...');
+      const syncWalletState = await this.gitcoinSyncWallet.getAccountState();
       const nonce = syncWalletState.committed.nonce;
 
-      console.log('✅ State of ephemeral wallet retrieved', syncWalletState);
+      console.log('✅ State of Gitcoin sync wallet retrieved', syncWalletState);
       return nonce;
     },
 
@@ -1349,7 +1374,7 @@ Vue.component('grants-cart', {
         const { fee, amount } = await this.getZkSyncFeeAndAmount(donationInput);
 
         // Now we can generate the signature for this transfer
-        const signedTransfer = await this.syncWallet.signSyncTransfer({
+        const signedTransfer = await this.gitcoinSyncWallet.signSyncTransfer({
           to: donationInput.dest,
           token: donationInput.name,
           amount,
@@ -1389,7 +1414,7 @@ Vue.component('grants-cart', {
 
       // Transfer any remaining tokens to user's main wallet ---------------------------------------
       this.zkSyncCheckoutFlowStep += 1; // Done!
-      const gitcoinZkSyncState = await this.syncProvider.getState(this.syncWallet.cachedAddress);
+      const gitcoinZkSyncState = await this.syncProvider.getState(this.gitcoinSyncWallet.cachedAddress);
       const balances = gitcoinZkSyncState.committed.balances;
       const tokens = Object.keys(balances);
       
@@ -1407,7 +1432,7 @@ Vue.component('grants-cart', {
           const { fee, amount } = await this.getZkSyncFeeAndAmount(transferInfo);
 
           // Send transfer
-          const tx = await this.syncWallet.syncTransfer({
+          const tx = await this.gitcoinSyncWallet.syncTransfer({
             to: transferInfo.dest,
             token: transferInfo.name,
             amount,
@@ -1494,7 +1519,7 @@ Vue.component('grants-cart', {
         // Set current ETH amount
         this.zkSyncDonationInputsEthAmount = this.donationInputsEthAmount;
 
-        // Make sure token list is valid
+        // Make sure selected tokens are valid on zkSync
         const selectedTokens = Object.keys(this.donationsToGrants);
         
         selectedTokens.forEach((token) => {
@@ -1535,6 +1560,44 @@ Vue.component('grants-cart', {
         this.zkSyncAdditionalDeposits = []; // clear existing data
         selectedTokens.forEach((tokenSymbol) => this.zkSyncAdditionalDeposits.push({amount: 0, tokenSymbol }));
 
+        // Determine if user has sufficient funds in the zkSync account (Flow A), or if they will
+        // need deposit into the Gitcoin zkSync account (Flow B)
+        const zkSyncWalletState = await this.syncProvider.getState(this.userAddress);
+        
+        this.hasSufficientZkSyncBalance = true; // assume true until proven otherwise
+        for (let i = 0; i < selectedTokens.length; i += 1) {
+          const tokenSymbol = selectedTokens[i];
+          const decimals = this.getTokenByName(tokenSymbol).decimals;
+          const balance = zkSyncWalletState.committed.balances[tokenSymbol];
+          const requiredAmount = ethers.utils.parseUnits(String(this.donationsTotal[tokenSymbol]), decimals);
+
+          // Balance will be undefined if the user does not have that token, so we can break
+          if (!balance) {
+            this.hasSufficientZkSyncBalance = false;
+            break;
+          }
+
+          // Otherwise, we compare their balance against the required amount
+          if (ethers.BigNumber.from(balance).lt(requiredAmount)) {
+            this.hasSufficientZkSyncBalance = false;
+            break;
+          }
+        }
+
+        // If user has sufficient balance, count how many signatures they need (Flow A)
+        if (this.hasSufficientZkSyncBalance) {
+          // 4 minimum —- login via Gitcoin, login directly, one token transfer, assume
+          // signing key is set
+          
+          // +1 for each additional token in their cart
+          Object.keys(this.donationsTotal).forEach((token) => {
+            if (token !== 'ETH') {
+              this.maxPossibleSignatures += 1;
+            }
+          });
+        }
+
+        // Show zkSync checkout modal
         this.showZkSyncModal = true;
       } catch (e) {
         this.handleError(e);
@@ -1542,9 +1605,10 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Step 1: Initialize app state and login to zkSync
+     * @notice Step 1: Initialize app state and login to zkSync via Gitcoin. This applies to
+     * Flow A and Flow B
      */
-    async zkSyncLogin() {
+    async zkSyncLoginGitcoinFlow() {
       try {
         this.zkSyncCheckoutStep1Status = 'pending';
 
@@ -1558,12 +1622,12 @@ Vue.component('grants-cart', {
           : this.depositContractToUse = batchZkSyncDepositContractAddress;
 
         // Prompt for user's signature to login to zkSync
-        this.syncWallet = await this.loginToZkSync();
+        this.gitcoinSyncWallet = await this.zkSyncLoginGitcoin();
 
         // Skip next step if only donating ETH, but check that user has enough balance
         const selectedTokens = Object.keys(this.donationsToGrants);
 
-        if (selectedTokens.length === 1 && selectedTokens[0] === 'ETH') {
+        if (selectedTokens.length === 1 && selectedTokens[0] === 'ETH' && !this.hasSufficientZkSyncBalance) {
           this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, this.depositContractToUse);
           this.zkSyncCheckoutStep2Status = 'not-applicable';
         }
@@ -1575,11 +1639,36 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Step 2: Get ERC20 approvals
+     * @notice Step 2: Sign in to zkSync directly (Flow A) OR get ERC20 approvals (Flow B)
+     */
+    async zkSyncBeginStep2() {
+      try {
+        this.zkSyncCheckoutStep2Status = 'pending';
+        // Flow A
+        if (this.hasSufficientZkSyncBalance) {
+          this.zkSyncCheckoutFlowStep = -1; // dummy value to prevent "Confirmations received" from showing
+          this.nominalSyncWallet = await this.zkSyncLoginNominal();
+
+          const isSigningKeySet = this.nominalSyncWallet.isSigningKeySet();
+          
+          if (isSigningKeySet)
+            this.maxPossibleSignatures -= 1;
+          this.zkSyncCheckoutStep2Status = 'complete';
+          return;
+        }
+        // Flow B
+        await this.zkSyncApprovals(); // callback is used here so step 2 status is updated elsewhere
+      } catch (e) {
+        this.zkSyncCheckoutStep2Status = 'not-started';
+        this.handleError(e);
+      }
+    },
+
+    /**
+     * @notice Step 2 of Flow B: Checks balances and gets ERC20 approvals
      */
     async zkSyncApprovals() {
       try {
-        this.zkSyncCheckoutStep2Status = 'pending';
         this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, this.depositContractToUse);
         const BigNumber = ethers.ethers.BigNumber;
 
@@ -1643,12 +1732,82 @@ Vue.component('grants-cart', {
     /**
      * @notice Step 3: Main function for executing zkSync checkout
      */
-    async sendZkSyncDonation() {
+    async zkSyncBeginStep3() {
+      this.zkSyncCheckoutStep3Status = 'pending';
+      // Flow A
+      if (this.hasSufficientZkSyncBalance) {
+        await this.sendZkSyncDonationFlowA();
+        return;
+      }
+      // Flow B
+      await this.sendZkSyncDonationFlowB();
+    },
+
+    /**
+     * @notice Step 3 of Flow A. User already has funds in L2, so we transfer from there to their
+     * Gitcoin sync wallet, and from the sync wallet we dispatch all transfers without needing to
+     * prompt the user
+     */
+    async sendZkSyncDonationFlowA() {
+      // Set signing key for nominal zkSync account if necessary
+      await this.checkAndRegisterSigningKey(this.nominalSyncWallet);
+
+      // Do the transfers to gitcoin sync wallet
+      const selectedTokens = Object.keys(this.donationsToGrants);
+
+      for (let i = 0; i < selectedTokens.length; i += 1) {
+        tokenSymbol = selectedTokens[i];
+        console.log(`Transferring all required ${tokenSymbol} to Gitcoin sync wallet...`);
+        const decimals = this.getTokenByName(tokenSymbol).decimals;
+        const totalAmount = ethers.utils.parseUnits(String(this.donationsTotal[tokenSymbol]), decimals);
+        const transferInfo = {
+          dest: this.gitcoinSyncWallet.cachedAddress,
+          name: tokenSymbol,
+          amount: totalAmount
+        };
+        const { fee, amount } = await this.getZkSyncFeeAndAmount(transferInfo);
+
+        // The fee returned above is the cost to transfer to the Gitcoin sync wallet. However, we
+        // need to account for additional fees incurred for each donation transfer from the Gitcoin
+        // sync wallet. To do this, we find how many transfers need to be made with this token and
+        // add the fee for each transfer, plus one more to be conservative. If we do not account
+        // for these fees, transfers will fail with insufficent balance. If we transfer too much
+        // and have leftover, that is ok, as we always attempt to transfer excess funds back to the
+        // user afterwards
+        const numTransfers = this.donationInputs.filter((details) => details.name === tokenSymbol).length; // eslint-disable-line
+        const amountToTransfer = amount.add(fee.mul(String(numTransfers + 1)));
+
+        const tx = await this.nominalSyncWallet.syncTransfer({
+          to: transferInfo.dest,
+          token: transferInfo.name,
+          amount: amountToTransfer,
+          fee
+        });
+        
+        console.log('  Transfer sent', tx);
+
+        // Wait for it to be committed
+        const receipt = await tx.awaitReceipt();
+
+        console.log('  ✅ Got transfer receipt', receipt);
+      }
+
+      // Final steps
+      
+      this.zkSyncCheckoutFlowStep = 2; // Steps 0 and 1 are skipped here
+      await this.finishZkSyncTransfersAllFlows();
+    },
+    
+    /**
+     * @notice Step 3 of Flow B. User has no funds in L2, so we deposit directly to their Gitcoin
+     * sync wallet, and from the sync wallet we dispatch all transfers without needing to prompt
+     * the user. Any excess funds are transferred to the user's ordinary L1 account
+     */
+    async sendZkSyncDonationFlowB() {
       try {
       // Setup -------------------------------------------------------------------------------------
-        this.zkSyncCheckoutStep3Status = 'pending';
         const ethAmount = this.zkSyncDonationInputsEthAmount; // amount of ETH being donated
-        const depositRecipient = this.syncWallet.address(); // address of deposit recipient
+        const depositRecipient = this.gitcoinSyncWallet.address(); // address of deposit recipient
 
         // Deposit funds ---------------------------------------------------------------------------
         // Setup overrides
@@ -1768,28 +1927,36 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Executes final shared steps between nominal flow and interrupt flow
+     * @notice Executes final shared steps between standard flow and interrupt flow
      * @param receipt receipt from the deposit transaction
      */
     async finishZkSyncStep3(receipt) {
       // Track number of confirmations live in UI
       this.updateConfirmationsInUI();
 
-      // Wait for deposit to be committed ----------------------------------------------------------
+      // Wait for deposit to be committed
       // Parse logs in receipt so we can get priority request IDs from the events
       const serialId = this.getDepositSerialId(receipt);
 
       // Wait for that ID to be acknowledged by the zkSync network
       await this.waitForSerialIdCommitment(serialId);
     
-      // Final steps -------------------------------------------------------------------------------
+      // Final steps
+      await this.finishZkSyncTransfersAllFlows();
+    },
+
+    /**
+     * @notice Final shared steps between Flow A and Flow B
+     */
+    async finishZkSyncTransfersAllFlows() {
       // Unlock deterministic wallet's zkSync account
-      await this.checkAndRegisterSigningKey();
+      await this.checkAndRegisterSigningKey(this.gitcoinSyncWallet);
 
       // Fetch the expected nonce from the network. We cannot assume it's zero because this may
       // not be the user's first checkout
-      let nonce = await this.getSyncWalletNonce();
+      let nonce = await this.getGitcoinSyncWalletNonce();
     
+
       // Generate signatures
       const donationSignatures = await this.generateTransferSignatures(nonce);
 

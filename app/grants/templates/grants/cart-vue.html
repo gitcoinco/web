@@ -542,14 +542,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="font-weight-bold">PLEASE DO NOT CLOSE THIS WINDOW!</div>
                       <div>
                         <div>
-                          Estimated processing time: <span class="font-weight-bold">2m&ndash;4m</span>.&nbsp;
-                          <span v-if="zkSyncDepositEtherscanUrl">
-                            <a :href="zkSyncDepositEtherscanUrl" target="_blank">
-                              View deposit transaction&nbsp;<i class="fas fa-external-link-alt"></i>
+                          <span v-if="hasSufficientZkSyncBalance">
+                            Estimated processing time: <span class="font-weight-bold">&lt; 1m</span>.&nbsp;
+                          </span>
+                          <span v-else>
+                            Estimated processing time: <span class="font-weight-bold">2m&ndash;4m</span>.&nbsp;
+                          </span>
+                          <span v-if="zkSyncBlockExplorerUrl">
+                            <a :href="zkSyncBlockExplorerUrl" target="_blank">
+                              View transaction<span v-if="hasSufficientZkSyncBalance">s</span>
+                              &nbsp;<i class="fas fa-external-link-alt"></i>
                             </a>
                           </span>
                         </div>
-                        <div v-if="zkSyncDepositEtherscanUrl && zkSyncCheckoutStep3Status !== 'not-started'">
+                        <div v-if="zkSyncBlockExplorerUrl && zkSyncCheckoutStep3Status !== 'not-started'">
                           <div v-if="zkSyncCheckoutFlowStep === 0">
                             Confirmations received: [[currentConfirmationNumber]] of [[numberOfConfirmationsNeeded]]
                           </div>
@@ -575,26 +581,32 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                     </div>
-                    <p v-if="!zkSyncWasInterrupted" class="my-4 text-left">
+                    <p v-if="!zkSyncWasInterrupted" class="mt-4 text-left">
                       <span v-if="zkSyncCheckoutStep2Status === 'not-started'">
                         zkSync is powered by zkRollup with a universal setup &mdash; an L2
                         scaling solution. Save gas fees and get faster confirmations.
                         <a href="https://zksync.io/" target="_blank">Learn more</a>.
                         <br><br>
                       </span>
-                      To pay with zkSync, you will have to sign one message and send up to
-                      [[maxPossibleTransactions]] transactions with your Web3 wallet.
+                      <span v-if="hasSufficientZkSyncBalance">
+                        To pay with zkSync, you will have to sign
+                        <span v-if="zkSyncCheckoutStep2Status !== 'complete'">up to</span>
+                        [[maxPossibleSignatures]] messages with your Web3 wallet.
+                      </span>
+                      <span v-else>
+                        To pay with zkSync, you will have to sign one message and send up to
+                        [[maxPossibleTransactions]] transactions with your Web3 wallet.
+                      </span>
                     </p>
-                    <p v-else class="my-4 text-left">
+                    <p v-else class="mt-4 text-left">
                       You started checking out with zkSync but never completed the process. 
                       You must complete this checkout before proceeding with any other checkouts.
                       Please follow the prompts below to complete the process.
                     </p>
                     </div>
                   </div>
-                  <br>
                   {% comment %} Advanced settings {% endcomment %}
-                  <div v-if="!zkSyncWasInterrupted" class="mb-3">
+                  <div v-if="!zkSyncWasInterrupted && !hasSufficientZkSyncBalance" class="mb-3">
                     <div class="row justify-content-end font-smaller-1 font-weight-semibold text-highlight-dark-blue">
                       <div @click="showAdvancedSettings = !showAdvancedSettings" class="col-auto" style="cursor: pointer;">
                         Advanced settings <i class="ml-1 fas fa-cog"></i>
@@ -655,11 +667,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                           Step 1
                         </div>
                         <div>
-                          Sign in to zkSync
+                          Sign in to zkSync via Gitcoin
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep1Status === 'not-started'" class="btn btn-gc-blue button--full shadow-none" @click="zkSyncLogin">
+                        <button v-if="zkSyncCheckoutStep1Status === 'not-started'" 
+                          class="btn btn-gc-blue button--full shadow-none" @click="zkSyncLoginGitcoinFlow"
+                        >
                           Sign in
                         </button>
                         <div v-else-if="zkSyncCheckoutStep1Status === 'pending'">
@@ -683,12 +697,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                           Step 2
                         </div>
                         <div>
-                          ERC20 token approvals
+                          <span v-if="hasSufficientZkSyncBalance">Sign in to zkSync directly</span>
+                          <span v-else>ERC20 token approvals</span>
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep2Status === 'not-started'" :disabled="zkSyncCheckoutStep1Status !== 'complete'" class="btn btn-gc-blue button--full shadow-none" @click="zkSyncApprovals">
-                          Approve
+                        <button v-if="zkSyncCheckoutStep2Status === 'not-started'" 
+                          :disabled="zkSyncCheckoutStep1Status !== 'complete'" class="btn btn-gc-blue button--full shadow-none" 
+                          @click="zkSyncBeginStep2"
+                        >
+                          <span v-if="hasSufficientZkSyncBalance">Sign in</span>
+                          <span v-else>Approve</span>
                         </button>
                         <div v-else-if="zkSyncCheckoutStep2Status === 'not-applicable'">
                           <span class="text-highlight-green">
@@ -723,7 +742,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <div class="col-4">
                         <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted" 
                           :disabled="zkSyncCheckoutStep2Status === 'not-started'" 
-                          class="btn btn-gc-blue button--full shadow-none" @click="sendZkSyncDonation"
+                          class="btn btn-gc-blue button--full shadow-none" @click="zkSyncBeginStep3"
                         >
                           Confirm
                         </button>
