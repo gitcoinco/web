@@ -1,3 +1,7 @@
+let grantsNumPages = '';
+let grantsHasNext = false;
+let numGrants = '';
+
 Vue.component('grant-card', {
   delimiters: [ '[[', ']]' ],
   props: [ 'grant', 'cred', 'token', 'view', 'short', 'show_contributions', 'contributions', 'toggle_following' ],
@@ -125,7 +129,7 @@ if (document.getElementById('grants-showcase')) {
       page: 1,
       limit: 6,
       sort: 'weighted_shuffle',
-      network: 'rinkeby',
+      network: 'mainnet',
       keyword: document.keyword,
       current_type: document.current_type,
       idle_grants: document.idle_grants,
@@ -138,7 +142,11 @@ if (document.getElementById('grants-showcase')) {
       show_contributions: document.show_contributions,
       lock: false,
       view: localStorage.getItem('grants_view') || 'grid',
-      shortView: true
+      shortView: true,
+      bottom: false,
+      grantsNumPages,
+      grantsHasNext,
+      numGrants
     },
     methods: {
       setView: function(mode, event) {
@@ -206,6 +214,8 @@ if (document.getElementById('grants-showcase')) {
         this.fetchGrants(this.page);
       },
       fetchGrants: async function(page, append_mode) {
+        let vm = this;
+
         if (this.lock)
           return;
 
@@ -235,55 +245,72 @@ if (document.getElementById('grants-showcase')) {
         }
 
         const params = new URLSearchParams(base_params).toString();
-        const response = await fetchData(`/grants/cards_info?${params}`);
+        const getGrants = await fetchData(`/grants/cards_info?${params}`);
 
         if (append_mode) {
-          this.grants = this.grants.concat(response.grants);
+          vm.grants = Object.assign({}, vm.grants, getGrants.grants);
         } else {
-          this.grants = response.grants;
+          vm.grants = getGrants.grants;
         }
 
-        this.credentials = response.credentials;
-        this.grant_types = response.grant_types;
-        this.contributions = response.contributions;
+        vm.credentials = getGrants.credentials;
+        vm.grant_types = getGrants.grant_types;
+        vm.contributions = getGrants.contributions;
+        vm.grantsNumPages = getGrants.num_pages;
+        vm.grantsHasNext = getGrants.has_next;
+        vm.numGrants = getGrants.count;
 
-        this.lock = false;
-        return this.grants;
+        vm.lock = false;
+
+        if (vm.grantsHasNext) {
+          vm.page = ++vm.page;
+
+        } else {
+          vm.page = 1;
+        }
+        return vm.grants;
       },
-      scroll: async function(event) {
-        const scrollHeight = $(document).height();
-        const scrollPos = $(window).height() + $(window).scrollTop();
+      scrollEnd: async function(event) {
         let vm = this;
 
-        if (((scrollHeight - 300) >= scrollPos) / scrollHeight == 0) {
-          const grants = await vm.fetchGrants(vm.page + 1, true);
+        const scrollY = window.scrollY;
+        const visible = document.documentElement.clientHeight;
+        const pageHeight = document.documentElement.scrollHeight - 500;
+        const bottomOfPage = visible + scrollY >= pageHeight;
 
-          if (grants && grants.length) {
-            vm.page = vm.page + 1;
+        if (bottomOfPage || pageHeight < visible) {
+          if (vm.grantsHasNext) {
+            vm.fetchGrants(vm.page, true);
+            vm.grantsHasNext = false;
           }
         }
+        // const scrollHeight = $(document).height();
+        // const scrollPos = $(window).height() + $(window).scrollTop();
+        // let vm = this;
+
+        // if (((scrollHeight - 300) >= scrollPos) / scrollHeight == 0) {
+        //   const grants = await vm.fetchGrants(vm.page + 1, true);
+
+        //   if (grants && grants.length) {
+        //     vm.page = vm.page++;
+        //   }
+        // }
       }
-      // toggleFollowingGrant: async function(grantId, event) {
-      //   event.preventDefault();
-
-      //   const favorite_url = `/grants/${grantId}/favorite`;
-      //   let response = await fetchData(favorite_url, 'POST');
-
-      //   console.log(favorite_url);
-      //   if (response.action === 'follow') {
-      //     this.$set(this.grants[grantId], 'favorite', true);
-      //   } else {
-      //     this.$set(this.grants[grantId], 'favorite', false);
-      //   }
-
-      //   return true;
-      // }
+    },
+    beforeMount() {
+      window.addEventListener('scroll', () => {
+        this.bottom = this.scrollEnd();
+      }, false);
+    },
+    beforeDestroy() {
+      window.removeEventListener('scroll', () => {
+        this.bottom = this.scrollEnd();
+      });
     },
     mounted() {
       let vm = this;
 
       this.fetchGrants(this.page);
-      this.scroll();
 
       $('#sort_option2').select2({
         minimumResultsForSearch: Infinity,

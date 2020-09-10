@@ -348,7 +348,10 @@ def get_grants(request):
             'is_staff': request.user.is_staff,
             'is_authenticated': request.user.is_authenticated
         },
-        'contributions': contributions_by_grant
+        'contributions': contributions_by_grant,
+        'has_next': paginator.page(page).has_next(),
+        'count': paginator.count,
+        'num_pages': paginator.num_pages,
     })
 
 
@@ -1220,12 +1223,12 @@ def zksync_set_interrupt_status(request):
     If a deposit hash is present, then the user was interrupted and must complete the existing
     checkout before doing another one
     """
-    
+
     user_address = request.POST.get('user_address')
     deposit_tx_hash = request.POST.get('deposit_tx_hash')
     print('deposit_tx_hash')
     print(deposit_tx_hash)
-    
+
     try:
         # Look for existing entry, and if present we overwrite it
         entry = JSONStore.objects.get(key=user_address, view='zksync_checkout')
@@ -1238,7 +1241,7 @@ def zksync_set_interrupt_status(request):
             view='zksync_checkout',
             data=deposit_tx_hash
         )
-    
+
     return JsonResponse({
         'success': True,
         'deposit_tx_hash': deposit_tx_hash
@@ -1259,7 +1262,7 @@ def zksync_get_interrupt_status(request):
     except JSONStore.DoesNotExist:
         # If there's no entry for this user, assume they haven't been interrupted
         deposit_tx_hash = False
-    
+
     return JsonResponse({
         'success': True,
         'deposit_tx_hash': deposit_tx_hash
