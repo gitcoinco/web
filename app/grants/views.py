@@ -290,9 +290,11 @@ def get_grants(request):
     if grant_stats.exists():
         grant_amount = lazy_round_number(grant_stats.first().val)
 
-    contributions = Contribution.objects.filter(
-        id__in=request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values(
-            'subscription_contribution__id')).prefetch_related('subscription')
+    contributions = Contribution.objects.none()
+    if request.user.is_authenticated:
+        contributions = Contribution.objects.filter(
+            id__in=request.user.profile.grant_contributor.filter(subscription_contribution__success=True).values(
+                'subscription_contribution__id')).prefetch_related('subscription')
 
     contributions_by_grant = {}
     for contribution in contributions:
@@ -735,7 +737,7 @@ def grant_details(request, grant_id, grant_slug):
             grant.save()
             record_grant_activity_helper('update_grant', grant, profile)
             return redirect(reverse('grants:details', args=(grant.pk, grant.slug)))
-        if 'contract_address' in request.POST:
+        if 'grant_cancel_tx_id' in request.POST:
             grant.cancel_tx_id = request.POST.get('grant_cancel_tx_id', '')
             grant.active = False
             grant.save()
