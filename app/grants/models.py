@@ -379,7 +379,7 @@ class Grant(SuperModel):
 
     @property
     def safe_next_clr_calc_date(self):
-        if self.next_clr_calc_date < timezone.now():
+        if self.next_clr_calc_date and next_clr_calc_date < timezone.now():
             return timezone.now() + timezone.timedelta(minutes=5)
         return self.next_clr_calc_date
 
@@ -1261,7 +1261,7 @@ class Contribution(SuperModel):
             network = self.subscription.network
             PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
             w3 = Web3(Web3.WebsocketProvider(PROVIDER))
-            
+
             # actually validate token transfers
             response = grants_transaction_validator(self, w3)
             if len(response['originator']):
@@ -1285,9 +1285,9 @@ class Contribution(SuperModel):
             zksync_rinkeby_addr = '0x82F67958A5474e40E1485742d648C0b0686b6e5D'
             zksync_contract_addr = zksync_rinkeby_addr if network == 'rinkeby' else zksync_mainnet_addr
             batch_zksync_deposit_contract_addr = '0x9D37F793E5eD4EbD66d62D505684CD9f756504F6'.lower()
-            
+
             recipients = [zksync_contract_addr.lower(), batch_zksync_deposit_contract_addr.lower()]
-            receipt = w3.eth.getTransactionReceipt(self.split_tx_id)            
+            receipt = w3.eth.getTransactionReceipt(self.split_tx_id)
             isZkSyncDeposit = True if receipt.to.lower() in recipients else False
 
             if not isZkSyncDeposit:
@@ -1304,7 +1304,7 @@ class Contribution(SuperModel):
                 zksync_contract = w3.eth.contract(address=zksync_contract_addr, abi=zksync_abi)
                 parsed_logs = zksync_contract.events.OnchainDeposit().processReceipt(receipt)
                 deposit_recipient = parsed_logs[0]['args']['owner']
-                
+
                 # Get last 100 executed zkSync transfers for that address
                 #   - TODO support users with more than 100 transfers (i.e. more than 100 grant
                 #      donations)
@@ -1320,7 +1320,7 @@ class Contribution(SuperModel):
                 # Define expected properties of the transfer
                 expected_recipient = self.normalized_data['admin_address']
                 expected_token = self.normalized_data['token_symbol']
-                
+
                 token = Token.objects.filter(network=network, symbol=expected_token, approved=True).first().to_dict
                 decimals = token['decimals']
                 expected_transfer_amount = Decimal(
@@ -1334,7 +1334,7 @@ class Contribution(SuperModel):
 
                     is_correct_recipient = transaction['tx']['to'].lower() == expected_recipient.lower()
                     is_correct_token = transaction['tx']['token'] == expected_token
-                    
+
                     transfer_amount = Decimal(transaction['tx']['amount']) + Decimal(transaction['tx']['fee'])
                     is_correct_amount = transfer_amount == expected_transfer_amount
 
