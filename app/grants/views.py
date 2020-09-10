@@ -22,8 +22,8 @@ import hashlib
 import json
 import logging
 import random
-from decimal import Decimal
 import re
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
@@ -45,11 +45,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 import requests
-from bs4 import BeautifulSoup
-
 from app.services import RedisService
 from app.settings import EMAIL_ACCOUNT_VALIDATION
 from app.utils import get_profile
+from bs4 import BeautifulSoup
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
 from dashboard.models import Activity, Profile, SearchHistory
@@ -73,7 +72,7 @@ from marketing.models import Keyword, Stat
 from perftools.models import JSONStore
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from townsquare.models import Comment, PinnedPost, Favorite
+from townsquare.models import Comment, Favorite, PinnedPost
 from townsquare.utils import can_pin
 from web3 import HTTPProvider, Web3
 
@@ -337,8 +336,8 @@ def get_grants(request):
                 'is_on_team': is_grant_team_member(grant, request.user.profile) if request.user.is_authenticated else False,
                 'amount': grant_amount,
                 'clr_prediction_curve': grant.clr_prediction_curve,
-                'last_clr_calc_date': grant.last_clr_calc_date,
-                'safe_next_clr_calc_date': naturaltime(grant.safe_next_clr_calc_date) if grant.last_clr_calc_date else None,
+                'last_clr_calc_date':  naturaltime(grant.last_clr_calc_date) if grant.last_clr_calc_date else None,
+                'safe_next_clr_calc_date': naturaltime(grant.safe_next_clr_calc_date) if grant.safe_next_clr_calc_date else None,
                 'amount_received_in_round': grant.amount_received_in_round,
                 'positive_round_contributor_count': grant.positive_round_contributor_count,
                 'monthly_amount_subscribed': grant.monthly_amount_subscribed,

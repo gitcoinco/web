@@ -32,15 +32,14 @@ from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
 
 import pytz
+import requests
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from grants.utils import get_upload_filename
-from web3 import Web3
-import requests
-
 from townsquare.models import Favorite
+from web3 import Web3
 
 logger = logging.getLogger(__name__)
 
