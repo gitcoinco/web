@@ -379,7 +379,7 @@ class Grant(SuperModel):
 
     @property
     def safe_next_clr_calc_date(self):
-        if self.next_clr_calc_date and next_clr_calc_date < timezone.now():
+        if self.next_clr_calc_date and self.next_clr_calc_date < timezone.now():
             return timezone.now() + timezone.timedelta(minutes=5)
         return self.next_clr_calc_date
 
