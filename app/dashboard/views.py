@@ -55,6 +55,7 @@ from django.views.decorators.http import require_GET, require_POST
 import dateutil.parser
 import magic
 import pytz
+import requests
 from app.services import RedisService, TwilioService
 from app.settings import EMAIL_ACCOUNT_VALIDATION, PHONE_SALT, SMS_COOLDOWN_IN_MINUTES, SMS_MAX_VERIFICATION_ATTEMPTS
 from app.utils import clean_str, ellipses, get_default_network
@@ -67,6 +68,7 @@ from cacheops import invalidate_obj
 from chat.tasks import (
     add_to_channel, associate_chat_to_profile, chat_notify_default_props, create_channel_if_not_exists,
 )
+from dashboard.brightid_utils import get_brightid_status
 from dashboard.context import quickstart as qs
 from dashboard.tasks import increment_view_count
 from dashboard.utils import (
@@ -88,7 +90,7 @@ from marketing.mails import (
     new_reserved_issue, share_bounty, start_work_approved, start_work_new_applicant, start_work_rejected,
     wall_post_email,
 )
-from marketing.models import EmailSubscriber, Keyword
+from marketing.models import EmailSubscriber, Keyword, UpcomingDate
 from oauth2_provider.decorators import protected_resource
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -2863,6 +2865,10 @@ def get_profile_tab(request, profile, tab, prev_context):
                     feedbacks__feedbackType='worker',
                     feedbacks__sender_profile=profile
                 ).distinct('pk').nocache()
+    elif tab == 'trust':
+        today = datetime.today()
+        context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
+        context['upcoming_calls'] = UpcomingDate.objects.filter(context_tag='brightid').filter(date__gte=today).order_by('date').values()
     else:
         raise Http404
     return context
@@ -2911,7 +2917,7 @@ def profile(request, handle, tab=None):
     disable_cache = False
 
     # make sure tab param is correct
-    all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons']
+    all_tabs = ['bounties', 'projects', 'manage', 'active', 'ratings', 'follow', 'portfolio', 'viewers', 'activity', 'resume', 'kudos', 'earnings', 'spent', 'orgs', 'people', 'grants', 'quests', 'tribe', 'hackathons', 'trust']
     tab = default_tab if tab not in all_tabs else tab
     if handle in all_tabs and request.user.is_authenticated:
         # someone trying to go to their own profile?
@@ -2922,7 +2928,7 @@ def profile(request, handle, tab=None):
     if not handle and request.user.is_authenticated:
         handle = request.user.username
     is_my_profile = request.user.is_authenticated and request.user.username.lower() == handle.lower()
-    user_only_tabs = ['viewers', 'earnings', 'spent']
+    user_only_tabs = ['viewers', 'earnings', 'spent', 'trust']
     tab = default_tab if tab in user_only_tabs and not is_my_profile else tab
 
     context = {}

@@ -469,3 +469,16 @@ function applyCartMenuStyles() {
     }
   }
 }
+
+// Turn form data pulled form page into a JS object
+function objectifySerialized(data) {
+  let objectData = {};
+
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+
+    objectData[item.name] = item.value;
+  }
+
+  return objectData;
+}
