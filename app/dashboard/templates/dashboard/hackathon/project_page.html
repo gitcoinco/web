@@ -65,18 +65,17 @@
       </div>
     {% endif %}
     <div id="hackathon-project-app" class="px-md-5" style="background-color: #FBFBFB" v-cloak>
-      <div class="row">
-        <div id="project-details" class="col-12 pr-0 ">
+        <div id="project-details" class="pr-0 ">
           {% if is_member %}
-            <button @click="projectModal" class="d-none d-md-block btn btn-outline-gc-blue btn-lg float-right mt-5 mr-5 px-5 py-3 font-subheader"><i class="fa fa-pencil mr-2"></i> Edit project</button>
+          <div class="float-right mt-5 mr-5 px-5 py-3">
+            <b-link href="{% url 'grants:new' project_obj.id %}" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"> <img src="{% static 'v2/images/grants/triangles.png' %}" alt="Triangles" width="30"> CONVERT TO GRANT</b-link>
+            <button @click="projectModal" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
+          </div>
           {% endif %}
-          <div class="row">
-            <div class="col-12 col-md-6 col-lg-8 px-5 px-md-0">
+            <div class="px-5 px-md-0">
               {% include 'project/detail/info.html' %}
             </div>
-          </div>
         </div>
-      </div>
     </div>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
