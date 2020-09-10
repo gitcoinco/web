@@ -356,14 +356,14 @@ def get_grants(request):
 def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
                          category='', following=False, idle_grants=False, only_contributions=False):
     sort_by_clr_pledge_matching_amount = None
-    profile = request.user.profile
+    profile = request.user.profile if request.user.is_authenticated else None
     three_months_ago = timezone.now() - datetime.timedelta(days=90)
     _grants = Grant.objects.filter(network=network, hidden=False)
 
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
 
-    if grant_type == 'me':
+    if grant_type == 'me' and profile:
         grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
                     list(profile.grant_admin.all().values_list('pk', flat=True))
         _grants = _grants.filter(id__in=grants_id)
@@ -528,6 +528,7 @@ def grants_by_grant_type(request, grant_type):
         pinned = None
 
     prev_grants = Grant.objects.none()
+    grants_following = Favorite.objects.none()
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
         prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
