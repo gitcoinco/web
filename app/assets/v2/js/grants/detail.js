@@ -204,7 +204,7 @@ $(document).ready(function() {
         type: 'post',
         url: '',
         data: {
-          'grant_cancel_tx_id': '0x0',
+          'grant_cancel_tx_id': '0x0'
         },
         success: function(json) {
           window.location.reload(false);
