@@ -128,16 +128,16 @@
             <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
             Last Update: [[ grant.last_update ?  grant.last_update_natural : `Before Round` ]]
           </span>
-          <template v-if="cred.is_staff">
-            <hr class="my-2">
-            <p class="font-caption font-weight-semibold">
-              <i class="fa fa-lock mr-2" aria-hidden="true"></i>
-              SybilScore ™️: [[ grant.sybil_score ]]
-              <span class="mx-2">|</span>
-              RiskScore ™️: [[ grant.weighted_risk_score ]]
-            </p>
-          </template>
         </p>
+        <template v-if="cred.is_staff">
+          <hr class="my-2">
+          <p class="font-caption font-weight-semibold">
+            <i class="fa fa-lock mr-2" aria-hidden="true"></i>
+            SybilScore ™️: [[ grant.sybil_score ]]
+            <span class="mx-2">|</span>
+            RiskScore ™️: [[ grant.weighted_risk_score ]]
+          </p>
+        </template>
 
         <div class="grant-item__owner my-3 justify-content-between">
           <div>
