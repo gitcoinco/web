@@ -30,7 +30,7 @@
           <div>
             <p class="text-muted font-smaller-5 mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
               <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
-              Last Update: [[ grant.last_update ?  grant.last_update_natural : `Before Round ${grant.round_num}` ]]
+              Last Update: [[ grant.last_update ?  grant.last_update_natural : `Before Round` ]]
               <template v-if="cred.is_staff">
                 <span class="ml-3" >
                   <i class="fa fa-lock" aria-hidden="true"></i> SybilScore ™️: [[ grant.sybil_score ]]
@@ -126,7 +126,7 @@
         <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
           <span class="font-smaller-5">
             <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
-            Last Update: [[ grant.last_update ?  grant.last_update_natural : `Before Round ${grant.round_num}` ]]
+            Last Update: [[ grant.last_update ?  grant.last_update_natural : `Before Round` ]]
           </span>
           <template v-if="cred.is_staff">
             <hr class="my-2">

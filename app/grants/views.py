@@ -530,8 +530,9 @@ def grants_by_grant_type(request, grant_type):
     grants_following = Favorite.objects.none()
     if request.user.is_authenticated:
         grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
-        prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
-        prev_grants = Grant.objects.filter(pk__in=prev_grants)
+        # KO 9/10/2020
+        # prev_grants = request.user.profile.grant_contributor.filter(created_on__gt=last_round_start, created_on__lt=last_round_end).values_list('grant', flat=True)
+        # rev_grants = Grant.objects.filter(pk__in=prev_grants)
 
 
     active_rounds = GrantCLR.objects.filter(is_active=True)
