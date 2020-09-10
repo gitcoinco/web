@@ -84,17 +84,18 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 # from canonical source of truth https://gitcoin.co/blog/gitcoin-grants-round-4/
 # Round 5 - March 23th — April 7th 2020
 # Round 6 - June 15th — June 29th 2020
-# Round 7 - September 14th — September 28th 2020
+# Round 7 - September 15th 9am MST — Oct 2nd 2020 at 5pm MST
+# Round 8: December 2nd — December 18th 2020
 
 # TODO-SELF-SERVICE: REMOVE BELOW VARIABLES NEEDED FOR MGMT
-clr_round=6
-last_round_start = timezone.datetime(2020, 3, 23, 12, 0)
-last_round_end = timezone.datetime(2020, 4, 7, 12, 0)
+clr_round=7
+last_round_start = timezone.datetime(2020, 6, 15, 12, 0)
+last_round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
 # TODO, also update grants.clr:CLR_START_DATE, PREV_CLR_START_DATE, PREV_CLR_END_DATE
-next_round_start = timezone.datetime(2020, 6, 15, 12, 0)
-next_round_start = timezone.datetime(2020, 9, 16, 15, 0) #tz=utc, not mst
-after_that_next_round_begin = timezone.datetime(2020, 9, 14, 12, 0)
-round_end = timezone.datetime(2020, 7, 3, 16, 0) #tz=utc, not mst
+next_round_start = timezone.datetime(2020, 9, 14, 15, 0) #tz=utc, not mst
+after_that_next_round_begin = timezone.datetime(2020, 12, 2, 12, 0)
+round_end = timezone.datetime(2020, 10, 2, 23, 0) #tz=utc, not mst
+
 round_types = ['media', 'tech', 'change']
 # TODO-SELF-SERVICE: END
 
