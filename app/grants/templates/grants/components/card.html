@@ -58,7 +58,7 @@
                 <div class="match__round--inline mr-3">
                   <template v-if="grant.is_clr_eligible">
                     <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                      [[ get_clr_prediction(0, 1) || 0  | round ]] DAI
+                      [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
                     </span>
                     <span class="amount mb-2 font-smaller-3">
                       Final CLR Match
@@ -66,14 +66,14 @@
                   </template>
                   <template v-else>
                     <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                      [[ grant.amount_received || 0 | round  ]] DAI
+                      [[ grant.amount_received || 0 | round | formatNumber ]] DAI
                     </span>
                     <span class="amount mb-2 font-smaller-3">All Time Funding</span>
                   </template>
                 </div>
                 <div>
                   <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                    [[ grant.amount_received_in_round || 0 | round ]] DAI
+                    [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
                   </span>
                   <span class="amount mb-2 font-smaller-3">
                     raised from
