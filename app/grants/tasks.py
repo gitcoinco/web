@@ -11,7 +11,6 @@ from celery import app, group
 from celery.utils.log import get_task_logger
 from dashboard.models import Profile
 from grants.models import Grant, Subscription
-from grants.views import record_subscription_activity_helper
 from marketing.mails import new_supporter, thank_you_for_supporting
 from townsquare.models import Comment
 
@@ -101,6 +100,8 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
     :param package:
     :return:
     """
+    from grants.views import record_subscription_activity_helper
+
     grant = Grant.objects.get(pk=grant_id)
     profile = Profile.objects.get(pk=profile_id)
 
