@@ -58,7 +58,7 @@
                 <div class="match__round--inline mr-3">
                   <template v-if="grant.is_clr_eligible">
                     <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                      [[ get_clr_prediction(0, 1) || 0 ]] DAI
+                      [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
                     </span>
                     <span class="amount mb-2 font-smaller-3">
                       Final CLR Match
@@ -66,14 +66,14 @@
                   </template>
                   <template v-else>
                     <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                      [[ grant.amount_received ]] DAI
+                      [[ grant.amount_received || 0 | round | formatNumber ]] DAI
                     </span>
                     <span class="amount mb-2 font-smaller-3">All Time Funding</span>
                   </template>
                 </div>
                 <div>
                   <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                    [[ grant.amount_received_in_round ]] DAI
+                    [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
                   </span>
                   <span class="amount mb-2 font-smaller-3">
                     raised from
@@ -139,24 +139,22 @@
           </template>
         </p>
 
-        <div class="grant-item__owner justify-content-between">
+        <div class="grant-item__owner my-3 justify-content-between">
           <div>
-            <span class="grant-item__owner-handle font-body">{% trans 'by' %}</span>
             <a :href="grant.admin_profile.url" :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">
-              <div class="grant-item__owner mt-3 mb-4">
-                <div class="grant-item__owner-image ml-2">
-                  <img :src="grant.admin_profile.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
+              <div class="grant-item__owner">
+                <span class="grant-item__owner-handle font-body">By</span>
+                <div v-if="grant.admin_profile.avatar_url" class="grant-item__owner-image mx-2">
+                  <img :src="grant.admin_profile.avatar_url">
                 </div>
-                <div class="grant-item__owner-handle font-body">
-                  <span class="ml-2">
-                    [[ grant.admin_profile.handle || 'anonymous' ]]
-                  </span>
+                <div class="grant-item__owner-handle font-smaller-2">
+                  [[ grant.admin_profile.handle]]
                 </div>
               </div>
             </a>
           </div>
           <template v-if="cred.is_authenticated">
-            <button @click="toggle_following(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 mr-4 mt-3 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
+            <button @click="toggle_following(grant.id, $event)" :class="`text-decoration-none btn btn-link star-action m-0 p-0 mr-4 gc-text-blue ${!grant.favorite ? 'text-muted' : ''}`" :data-grant="grant.id">
               <i :class="`${!grant.favorite ? 'far' : 'fa' } fa-star`" ></i> [[ toggleFollowingGrant ]]
               <span class="ml-1 font-body">[[ !grant.favorite ? 'Follow' : 'Following' ]]</span>
             </button>
@@ -172,38 +170,39 @@
             </div>
             <div class="col-6 float-right px-0">
               <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                [[ grant.amount_received_in_round ]] DAI
+                [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
               </h2>
               <p class="amount mb-2 font-caption font-weight-semibold">
-              raised from [[ grant.positive_round_contributor_count ]] contributors
+                raised from [[ grant.positive_round_contributor_count ]] contributors
               </p>
             </div>
             <div class="col-6">
 
               <template v-if="grant.is_clr_eligible">
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                  [[ get_clr_prediction(0, 1) || 0 ]] DAI DAI
+                  [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">
                   Final CLR Match
                 </p>
               </template>
-              <template>
+              <template v-else>
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
-                  [[ grant.amount_received ]] DAI
+                  [[ grant.amount_received || 0 | round | formatNumber ]] DAI
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">All Time Funding</p>
               </template>
             </div>
           </div>
-          {% if grant.is_clr_active %}
+
+          <template v-if="grant.is_clr_active">
             <div class="col-12 pb-3" v-if="grant.is_clr_eligible">
               {% include 'grants/components/clr_estimate.html' %}
             </div>
             <h2 class="font-subheader text-center amount pt-4 mb-3" style="color:#069953" v-else>
               NOT ELIGIBLE FOR CLR
             </h2>
-          {% endif %}
+          </template>
 
           <div class="col-12 pb-4">
             <form class="js-addDetailToCart-form" v-if="!grant.is_on_team">
