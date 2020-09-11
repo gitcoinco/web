@@ -186,8 +186,14 @@ def grants_transaction_validator(contribution, w3):
             })
 
     if not token_transfer:
-        validation['comment'] = "No Transfers Occured"
-        validation['passed'] = False
+        transaction_receipt = w3.eth.getTransactionReceipt(tx)
+        is_bulk_checkout = transaction_receipt['to'].lower() == "0x7d655c57f71464B6f83811C55D84009Cd9f5221C".lower()
+        if is_bulk_checkout:
+            validation['comment'] = "Bulk checkout"
+            validation['passed'] = transaction_receipt['status'] == 1
+        else:
+            validation['comment'] = "No Transfers Occured"
+            validation['passed'] = False
     else:
         if token_transfer['token_name'] != contribution.subscription.token_symbol:
             validation['comment'] = f"Tokens do not match, {token_transfer['token_name']} != {contribution.subscription.token_symbol}"

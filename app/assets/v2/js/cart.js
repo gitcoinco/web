@@ -1534,7 +1534,7 @@ Vue.component('grants-cart', {
       }
 
       // Save contributions to database
-      await this.postToDatabase(this.gitcoinSyncWallet.cachedAddress, 'zkSync', this.userAddress);
+      await this.postToDatabase(this.gitcoinSyncWallet.cachedAddress, '', this.userAddress);
 
       // Transfer any remaining tokens to user's main wallet ---------------------------------------
       this.zkSyncCheckoutFlowStep += 1; // Done!
@@ -1840,6 +1840,14 @@ Vue.component('grants-cart', {
      */
     async zkSyncApprovals() {
       try {
+        // If user was interrupted and already sent their deposit transaction, we do not need
+        // any token approvals
+        if (this.zkSyncDepositTxHash && this.zkSyncWasInterrupted) {
+          this.zkSyncCheckoutStep2Status = 'not-applicable';
+          return;
+        }
+
+        // Otherwise, get required allowance amounts and proceed as normal
         this.zkSyncAllowanceData = await this.getAllowanceData(this.userAddress, this.depositContractToUse);
         const BigNumber = ethers.ethers.BigNumber;
 
