@@ -2037,6 +2037,12 @@ Vue.component('grants-cart', {
   },
 
   async mounted() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.has('verify') && urlParams.get('verify').toLowerCase() === 'true') {
+      this.showSMSValidationModal();
+    }
+
     // Show loading dialog
     this.isLoading = true;
     // Read array of grants in cart from localStorage

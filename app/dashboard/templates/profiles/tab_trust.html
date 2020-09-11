@@ -17,6 +17,8 @@
       </form>
     {% endfor %}
     <div class="container mt-4">
+
+      <!-- SMS ROW -->
       <div class="row mb-4">
         <div class="col-12 col-md-1 mx-auto text-center">
           <i class="fa fa-mobile-alt fa-3x" aria-hidden="true"></i>
@@ -41,11 +43,13 @@
           {% if is_sms_verified %}
             <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
           {% else %}
-            <a href="" class="button button--primary">Verify</a>
+            <a href="/grants/cart?verify=true" class="button button--primary" target="_blank">Verify</a>
           {% endif %}
         </div>
       </div>
-      <div class="row">
+
+      <!-- BRIGHTID ROW -->
+      <div class="row mb-4">
         {% if brightid_status == 'unknown' %}
           <div class="col-md-12">
             Failed to load BrightID Status
@@ -99,6 +103,34 @@
             {% endif %}
           </div>
         {% endif %}
+      </div>
+
+      <!-- TWITTER ROW -->
+      <div class="row">
+        <div class="col-12 col-md-1 mx-auto text-center pt-1">
+          <span style="color: #00aced">
+            <i class="fab fa-twitter fa-3x" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="col-12 col-md-7 mb-3 mb-md-0">
+          <div class="font-weight-bold">
+            Verify With Twitter
+          </div>
+          <div>
+            Verify your Twitter account.
+          </div>
+        </div>
+        <div class="col-6 col-md-2 text-center">
+          <div class="font-weight-bold">
+            +5%
+          </div>
+          <div style="color:grey">
+            <small>Grants CLR Match</small>
+          </div>
+        </div>
+        <div class="col-6 col-md-2">
+          🚧Coming Soon
+        </div>
       </div>
     </div>
   </div>
