@@ -104,6 +104,12 @@ Vue.component('grant-sidebar', {
       event.preventDefault;
       this.filter_grants({show_contributions: state});
     },
+    toggleMyGrants: function(state, event) {
+      let me = state ? 'me' : 'all';
+
+      event.preventDefault;
+      this.filter_grants({type: me, category: ''});
+    },
     isMobileDevice: function() {
       return window.innerWidth < 576;
     },
