@@ -311,7 +311,7 @@ def get_grants(request):
         contributions_by_grant[grant_id] = group
 
     return JsonResponse({
-        'grant_types': get_grant_types(network),
+        'grant_types': get_grant_types(network, _grants),
         'current_type': grant_type,
         'category': category,
         'grants': {
@@ -377,7 +377,7 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     _grants.first()
 
     if not idle_grants:
-        _grants = _grants.filter(last_update__gt=three_months_ago)
+        _grants = _grants.filter(modified_on__gt=three_months_ago)
 
     if state == 'active':
         _grants = _grants.active()
@@ -416,10 +416,13 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     return _grants
 
 
-def get_grant_types(network):
+def get_grant_types(network, filtered_grants=None):
     all_grants_count = 0
     grant_types = []
-    active_grants = Grant.objects.filter(network=network, hidden=False, active=True)
+    if filtered_grants:
+        active_grants = filtered_grants
+    else:
+        active_grants = Grant.objects.filter(network=network, hidden=False, active=True)
 
     for _grant_type in GrantType.objects.all():
         count = active_grants.filter(grant_type=_grant_type).count()
@@ -518,7 +521,7 @@ def grants_by_grant_type(request, grant_type):
         current_partners_fund += partner.amount
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
-    grant_types = get_grant_types(network)
+    grant_types = get_grant_types(network, _grants)
 
     cht = []
     chart_list = ''
