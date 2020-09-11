@@ -781,6 +781,7 @@ def grant_new(request, project_id=None):
                 'network': request.POST.get('network', 'mainnet'),
                 'twitter_handle_1': request.POST.get('handle1', ''),
                 'twitter_handle_2': request.POST.get('handle2', ''),
+                'project_link': request.POST.get('project_link', ''),
                 'metadata': receipt,
                 'last_update': timezone.now(),
                 'admin_profile': profile,
@@ -819,8 +820,6 @@ def grant_new(request, project_id=None):
                 'success': True,
                 'url': grant.url,
             })
-
-
 
     check_profile = None
     project_data = None
