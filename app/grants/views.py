@@ -1370,6 +1370,7 @@ def grants_cart_view(request):
     if request.user.is_authenticated:
         # GET THE SMS STATUS FROM PROFILE
         context['verified'] = request.user.profile.sms_verification
+        context['brightid_uuid'] = request.user.profile.brightid_uuid
     else:
         return redirect('/login/github?next=' + request.get_full_path())
 

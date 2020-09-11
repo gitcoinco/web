@@ -84,6 +84,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               <div class="separator" />
             </div>
 
+
             {% comment %} Main container {% endcomment %}
             <div v-if="grantData.length === 0" class="flex-container font-bigger-1 text-left grant-header-row"
               style="justify-content: center; margin: 5rem 0">
@@ -96,6 +97,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             </div>
 
             <div v-else class="container" style="padding-bottom: 10rem;">
+              <div v-if="!isBrightIDVerified" class="grant-row-style">
+                <div class="row align-items-center justify-content-between">
+                  <div class="col col-12 col-md-8 col-lg-9">
+                    <strong>Get up to 30% greater CLR Match Amount by improving your Trust Bonus</strong> <br />
+                    <font size="2">
+                      Increase your CLR Match Amount by verifying your profile, and help Gitcoin be more sybil-resistant.
+                      Do this anytime before the end of the grants round to earn the match retroactively for all your contributions.
+                    </font>
+                  </div>
+                  <div class="col col-12 col-md-4 col-lg-3 mt-3 mt-md-0 mx-auto text-center">
+                    <a href="" class="button button--primary text-nowrap" role="button" target="_blank">Improve Trust Bonus</a>
+                  </div>
+                </div>
+              </div>
               {% comment %} Cart header {% endcomment %}
               <div v-if="!isMobileDevice"
                 class="row align-items-center justify-content-between font-smaller-2 text-left grant-header-row">
@@ -818,6 +833,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
       // MOVE VERIFIED STATUS INTO JS
       document.verified = {{ verified | yesno:"true,false" }};
       document.authenticated = {{ authenticated | yesno:"true,false" }};
+      document.brightid_uuid = "{{ brightid_uuid }}";
     </script>
     <script src="{% static "v2/js/cart.js" %}"></script>
   </body>
