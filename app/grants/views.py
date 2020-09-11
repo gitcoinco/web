@@ -341,7 +341,15 @@ def get_grants(request):
                 'amount_received_in_round': grant.amount_received_in_round,
                 'positive_round_contributor_count': grant.positive_round_contributor_count,
                 'monthly_amount_subscribed': grant.monthly_amount_subscribed,
-                'is_clr_eligible': grant.is_clr_eligible
+                'is_clr_eligible': grant.is_clr_eligible,
+                'slug': grant.slug,
+                'url': grant.url,
+                'contract_version': grant.contract_version,
+                'contract_address': grant.contract_address,
+                'token_symbol': grant.token_symbol,
+                'admin_address': grant.admin_address,
+                'token_address': grant.token_address,
+                'image_css': grant.image_css
             } for grant in grants
         },
         'credentials': {
