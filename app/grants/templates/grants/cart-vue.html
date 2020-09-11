@@ -417,16 +417,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       <i class="fab fa-github"></i>
                       Login with GitHub to Continue
                     </button>
-                    <div v-else class="row align-items-center justify-content-between">
-                      <div class="col-auto">
-                        <button class="btn btn-gc-blue button--full shadow-none py-3" id='js-zkSyncfundGrants-button' @click="startZkSyncCheckoutProcess">
-                        Checkout with zkSync
-                        </button>
+                    <div v-else>
+                      <div class="mb-1">
+                        Save
+                        <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
+                        on gas costs with [[ checkoutRecommendation.name ]]
                       </div>
-                      <div class="col-auto">
-                        <button class="btn btn-outline-gc-blue shadow-none py-3" id='js-fundGrants-button' @click="checkout">
-                          Normal Checkout
-                        </button>
+                      <div class="row align-items-center justify-content-between">
+                        <div class="col-auto">
+                          <button class="btn btn-gc-blue button--full shadow-none py-3" id='js-zkSyncfundGrants-button' @click="startZkSyncCheckoutProcess">
+                            Checkout with zkSync
+                          </button>
+                          </div>
+                        <div class="col-auto">
+                          <button class="btn btn-outline-gc-blue shadow-none py-3" id='js-fundGrants-button' @click="checkout">
+                            Standard Checkout
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
