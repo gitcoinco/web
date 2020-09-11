@@ -419,9 +419,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </button>
                     <div v-else>
                       <div class="mb-1">
-                        Save
-                        <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
-                        on gas costs with [[ checkoutRecommendation.name ]]
+                        <div v-if="zkSyncUnsupportedTokens.length > 0">
+                          zkSync checkout not supported due to [[ zkSyncUnsupportedTokens.join(', ') ]]
+                        </div>
+                        <div v-else-if="zkSyncDonationInputsGasLimit === '10000000'">
+                          zkSync checkout not supported
+                        </div>
+                        <div v-else>
+                          Save
+                          <span class="font-weight-bold text-highlight-green">~[[ checkoutRecommendation.savingsInPercent ]]%</span>
+                          on gas costs with [[ checkoutRecommendation.name ]]
+                        </div>
                       </div>
                       <div class="row align-items-center justify-content-between">
                         <div class="col-auto">
@@ -642,7 +650,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     </div>
                     <div v-if="showAdvancedSettings" class="p-3 text-left" style="background-color: #F1F1F1; width: 100%;">
                       <div>
-                        Save 99% on future checkouts!
+                        Save 98% on future checkouts!
                       </div>
                       <div class="mt-1 font-smaller-1 text-medium-dark-grey">
                         When you have enough funds on zkSync there is no need for an L1 transaction.
