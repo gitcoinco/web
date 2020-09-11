@@ -1,0 +1,24 @@
+{
+  "symbol": "Libfx",
+  "address": "0xc0ea83113038987d974FE667831a36E442e661E7",
+  "overview": {
+    "en": "Liber exchange platform officially issues token LIBFX to mobilize the support from community serving to expand the market for Liber exchange platform as well as use LIBFX as main payment method of Liber. The content is for informational purposes only, you should not construe any such information or other material as legal, tax, investment, financial, or other advice. Nothing contained on our site constitutes a solicitation, recommendation, endorsement, or offer by Coinmarketcap. You shall assume the sole responsibility of evaluating the merits and risks associated with the use of any information or other content on Coinmarketcap before making any decisions based on such information or other content. There are risks associated with investing in cryptocurrencies. Investing in cryptocurrencies involves risk of loss and loss of principal is possible.",
+    "zh": "Liber交易平台正式发行令牌LIBFX，以动员社区的支持，以扩大Liber交易平台的市场，并使用LIBFX作为Liber的主要付款方式。内容仅用于提供信息，您不应解释任何此类信息或其他材料，例如法律，税务，投资，财务或其他建议。我们网站上的任何内容均不构成Coinmarketcap的邀请，推荐，认可或要约。在基于此类信息或其他内容做出任何决定之前，您应承担评估与使用Coinmarketcap上任何信息或其他内容相关的优缺点的全部责任。投资加密货币存在风险。投资加密货币涉及损失风险，并且可能损失本金"
+  },
+  "email": "info@libermx.com",
+  "website": "https://libermx.com/",
+  "whitepaper": "https://libermx.com/white-paper",
+  "state": "NORMAL",
+  "published_on": "2020-06-16",
+  "initial_price": {
+    "ETH": "0.00119 ETH",
+    "USD": "0.5 USD",
+    "BTC": "0.000091 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/liberltd",
+    "telegram": "https://t.me/libermx",
+    "facebook": "https://www.facebook.com/liberltdofficial",
+    "medium": "https://medium.com/@liberltdforex"
+  }
+}
