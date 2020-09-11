@@ -23,7 +23,7 @@
   <div class="sidebar_search font-body pr-0 pl-4" >
     <div class="search font-caption mb-4" style="width: 110%;">
       <div class="search-area col-12">
-        <input @keyup="filter_grants({keyword: search})" class="form__input form__input_lg" type="search" v-model="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Muli', sans-serif; font-weight: 900;" placeholder="&#xF002; Search Grant" />
+        <input @input="searchKeyword()" class="form__input form__input_lg" type="search" v-model="search" id="keyword" name="keyword" style="font-family: 'Font Awesome 5 Pro', 'Muli', sans-serif; font-weight: 900;" placeholder="&#xF002; Search Grant" />
       </div>
     </div>
 

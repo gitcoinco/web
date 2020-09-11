@@ -107,6 +107,15 @@ Vue.component('grant-sidebar', {
     isMobileDevice: function() {
       return window.innerWidth < 576;
     },
+    searchKeyword: function() {
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+
+      this.timeout = setTimeout(() => {
+        this.filter_grants({keyword: this.search});
+      }, 1000);
+    },
     onResize: function() {
       if (!this.isMobileDevice() && this.show_filters !== null) {
         this.show_filters = null;
