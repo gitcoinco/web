@@ -16,9 +16,9 @@ your regular web3 wallet. This is great from a security perspective, but not so 
 perspective. Requiring one signature for each transfer can be a pain if you want to send a lot of
 transfers, so you'd be doing a lot of clicking when checking out with large carts. 
 
-To remedy this, we ask you to login to a "Gitcoin zkSync" account. This account is created by
-asking you to sign a different message from the regular zkSync message, and this gives us an L1 account
-that the Gitcoin app has the private key to. We then login to zkSync with *this account*, and now
+To remedy this, we ask you to login to a "Gitcoin zkSync" account. This generates an L1 account
+that the Gitcoin frontend can use to sign transactions directly. The private key to this account is
+derived from the signature, and is never stored or transmitted anywhere. We then login to zkSync with *this account*, and now
 can use this account to send transfers without prompting you for each transfer! Funds are
 only held by this account temporarily to improve UX. Because it does not permanently hold funds
 there is no additional security risk.
