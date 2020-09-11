@@ -43,7 +43,7 @@
           {% if is_sms_verified %}
             <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
           {% else %}
-            <a href="/grants/cart?verify=true" class="button button--primary" target="_blank">Verify</a>
+            <a href="/grants/cart?verify=true" role="button" class="button button--primary text-nowrap" target="_blank">Verify</a>
           {% endif %}
         </div>
       </div>
@@ -95,9 +95,9 @@
           </div>
           <div class="col-6 col-md-2">
             {% if brightid_status == 'not_connected' %}
-              <a href="javascript:show_brightid_connect_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Connect</a>
+              <a href="javascript:show_brightid_connect_modal(%22{{profile.brightid_uuid}}%22);" role="button" class="button button--primary text-nowrap">Connect</a>
             {% elif brightid_status == 'not_verified' %}
-              <a href="javascript:show_brightid_verify_modal(%22{{profile.brightid_uuid}}%22);" class="button button--primary">Verify</a>
+              <a href="javascript:show_brightid_verify_modal(%22{{profile.brightid_uuid}}%22);" role="button" class="button button--primary text-nowrap">Verify</a>
             {% elif brightid_status == 'verified' %}
               <span style="color:limegreen"><i class="fas fa-check"></i> Verified</span>
             {% endif %}
@@ -128,8 +128,13 @@
             <small>Grants CLR Match</small>
           </div>
         </div>
-        <div class="col-6 col-md-2">
-          🚧Coming Soon
+        <div class="col-6 col-md-2 text-center">
+          <div>
+            🚧
+          </div>
+          <div style="color:grey">
+            <small>Coming Soon</small>
+          </div>
         </div>
       </div>
     </div>
