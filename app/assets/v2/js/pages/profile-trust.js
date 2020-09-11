@@ -66,8 +66,8 @@ let show_brightid_connect_modal = function(brightid_uuid) {
     const element = document.getElementById('qrcode');
     const qrCodeData = {
       text: brightIdAppLink,
-      width: 100,
-      height: 100
+      width: 175,
+      height: 175
     };
 
     new QRCode(element, qrCodeData); // eslint-disable-line
