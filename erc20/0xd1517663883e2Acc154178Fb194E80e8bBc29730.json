@@ -1,0 +1,23 @@
+{
+    "symbol": "Dip",
+    "address": "0xd1517663883e2Acc154178Fb194E80e8bBc29730",
+    "overview": {
+        "en": "Dip(Deipool) is Deipool is committed to building a global DeFi ecosystem and providing users with a complete decentralized financial platform. DIP is the platform token",
+        "zh": "Dip(Deipool) 致力于打造全球DeFi生态系统,为用户提供完备的去中心化金融平台，DIP是平台代币"
+    },
+    "email": "deipoolofficial@gmail.com",
+    "website": "https://www.deipool.io",
+    "state": "NORMAL",
+    "published_on": "2019-8-20",
+    "initial_price": {
+        "USD": "0.3 USD"
+    },
+    "links": {
+        "blog": "https://weibo.com/Deipool",
+        "twitter": "https://twitter.com/deipoolofficial",
+        "telegram": "https://t.me/deipool",
+        "github": "https://github.com/Deipool",
+        "facebook": "https://www.facebook.com/your-awesome-project",
+        "medium": "https://www.jinse.com/news/blockchain/794965.html"
+    }
+}
