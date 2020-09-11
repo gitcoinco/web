@@ -373,19 +373,19 @@ Vue.component('grants-cart', {
       switch (numberOfTokens) {
         case 1:
           tokenName = donationCurrencies[0];
-          return depositGasCost[tokenName];
+          return String(depositGasCost[tokenName]);
         case 2:
-          return 250000 * 2;
+          return String(250000 * 2);
         case 3:
-          return 250000 * 3;
+          return String(250000 * 3);
         case 4:
-          return 250000 * 4;
+          return String(250000 * 4);
         case 5:
-          return 250000 * 5;
+          return String(250000 * 5);
         case 6:
-          return 250000 * 6;
+          return String(250000 * 6);
         case 7:
-          return 250000 * 7;
+          return String(250000 * 7);
         default:
           // Too many tokens, zkSync does not support them all
           return '10000000';
@@ -1978,7 +1978,7 @@ Vue.component('grants-cart', {
 
         // Deposit funds ---------------------------------------------------------------------------
         // Setup overrides
-        let overrides = { gasLimit: this.zkSyncDonationInputsGasLimit };
+        let overrides = { gasLimit: ethers.BigNumber.from(String(this.zkSyncDonationInputsGasLimit)) };
         
         if (ethers.BigNumber.from(ethAmount).gt('0')) {
           // Specify how much ETH to send with transaction
