@@ -39,19 +39,27 @@
     <form id="filters" :class="{hide_filters: !show_filters }">
       {% if profile %}
         <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ${ following ? 'gc-text-blue' : 'text-black'}`">
-          <i :class="`${ following ? 'fas' : 'far'} fa-star`" ></i> Following [[ following ? 'x' : '']]
+          <i :class="following ? 'fas' : 'far'" class="fa-fw fa-star" ></i>
+          Following
+          <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
         </span>
       {% endif %}
       <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ${ idle_grants ? 'gc-text-blue' : 'text-black'}`">
-        <i :class="`${ idle_grants ? 'fas' : 'far'} fa-clock`" ></i>
+        <i :class="idle_grants ? 'fas' : 'far'" class="fa-fw fa-clock" ></i>
          Show Idle grants
         <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
       </span>
       {% if profile %}
         <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
-          <i :class="`${ show_contributions ? 'fas' : 'far'} fa-donate`" ></i>
+          <i :class="show_contributions ? 'fas' : 'far'" class="fa-fw fa-donate" ></i>
           My contributions
           <i v-if="show_contributions" class="fas fa-times font-smaller-4 ml-1"></i>
+        </span>
+
+        <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-1 font-weight-semibold text-decoration-none" :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
+          <i :class="type === 'me' ? 'fas' : 'far'" class="fa-fw fa-user-alt"></i>
+          My Grants
+          <i v-if="type === 'me'" class="fas fa-times font-smaller-4 ml-1"></i>
         </span>
       {% endif %}
       <div class="col border-top-0">
@@ -104,13 +112,6 @@
               Activity
             </a>
           </li>
-          {% if github_handle %}
-          <li>
-            <a @click="filter_grants({type: 'me', category: ''}, $event)"  :class="` ${ type == 'me'? 'selected':''}`">
-              My Grants
-            </a>
-          </li>
-          {% endif %}
           <li>
             <a target="new" href='/wiki/grants' class="mr-1 px-1 ">
               FAQ <i class="fas fa-external-link-alt"></i>
