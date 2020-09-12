@@ -66,15 +66,27 @@
     {% endif %}
     <div id="hackathon-project-app" class="px-md-5" style="background-color: #FBFBFB" v-cloak>
         <div id="project-details" class="pr-0 ">
-          {% if is_member %}
           <div class="float-right mt-5 mr-5 px-5 py-3">
-            <b-link href="{% url 'grants:new' project_obj.id %}" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"> <img src="{% static 'v2/images/grants/triangles.png' %}" alt="Triangles" width="30"> CONVERT TO GRANT</b-link>
+
+          {% if project_obj.is_grant %}
+            {% if is_member %}
+              <b-link href="{{ project_obj.is_grant }}" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/triangles.png' %}" alt="Triangles" width="30"> EDIT GRANT</b-link> 
+            {% else %} 
+              <b-link href="{{ project_obj.is_grant }}" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/triangles.png' %}" alt="Triangles" width="30"> DONATE TO GRANT</b-link> 
+            {% endif %} 
+          {% endif %} 
+
+          {% if is_member %}
+            {% if project_obj.is_grant is None %}
+            <b-link href="{% url 'grants:new' project_obj.id %}" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/triangles.png' %}" alt="Triangles" width="30"> CONVERT TO GRANT</b-link>
+            {% endif %}
             <button @click="projectModal" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
+          {% endif %} 
           </div>
-          {% endif %}
-            <div class="px-5 px-md-0">
-              {% include 'project/detail/info.html' %}
-            </div>
+
+          <div class="px-5 px-md-0">
+            {% include 'project/detail/info.html' %}
+          </div>
         </div>
     </div>
     {% include 'shared/bottom_notification.html' %}

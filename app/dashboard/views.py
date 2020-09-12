@@ -115,6 +115,7 @@ from .models import (
     ProfileSerializer, ProfileVerification, ProfileView, Question, SearchHistory, Sponsor, Subscription, Tool, ToolVote,
     TribeMember, UserAction, UserDirectory, UserVerificationModel,
 )
+from grants.models import Grant
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_user_slack,
@@ -4371,8 +4372,15 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
     profile = request.user.profile if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
     project = HackathonProject.objects.filter(pk=project_id).nocache().first()
+    grant = Grant.objects.filter(project_link=project_id).first()
+
     if not project:
         raise Http404("No Hackathon Project matches the given query.")
+
+    if grant:
+        grant_url = grant.get_absolute_url()
+    else:
+        grant_url = None
 
     active = 0
     if tab == 'activity':
@@ -4417,7 +4425,8 @@ def hackathon_project_page(request, hackathon, project_id, project_name, tab='')
                 'url': member_profile.url,
                 'handle': member_profile.handle,
                 'avatar': member_profile.avatar_url
-            } for member_profile in project.profiles.all()]
+            } for member_profile in project.profiles.all()],
+            'is_grant': grant_url
         },
         'hackathon_obj': hackathon_obj[0],
         'hackathon': hackathon,
