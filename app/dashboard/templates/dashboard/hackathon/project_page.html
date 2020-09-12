@@ -78,7 +78,7 @@
 
           {% if is_member %}
             {% if project_obj.grant_link is None %}
-            <b-link href="{% url 'grants:new' project_obj.id %}" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/triangles.png' %}" alt="Triangles" width="30"> CONVERT TO GRANT</b-link>
+            <b-link href="{% url 'grants:new' project_obj.id %}" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"> <img class="mr-2" src="{% static 'v2/images/grants/triangles.png' %}" alt="Create" width="30"> CONVERT TO GRANT</b-link>
             {% endif %}
             <button @click="projectModal" class="d-none d-md-block btn btn-outline-gc-blue btn-block font-subheader btn-lg m-2"><i class="fa fa-pencil mr-2"></i> EDIT PROJECT</button>
           {% endif %} 

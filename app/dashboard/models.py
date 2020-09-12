@@ -5101,6 +5101,7 @@ class HackathonProject(SuperModel):
             'paid': paid,
             'payment_date': date(submission.accepted_on, 'Y-m-d H:i') if paid else '',
             'winner': self.winner,
+            'grant_link': self.grant_link,
             'extra': self.extra,
             'timestamp': submission.created_on.timestamp() if submission else 0
         }
