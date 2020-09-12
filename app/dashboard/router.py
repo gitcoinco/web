@@ -212,7 +212,7 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', "grant_link", 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'grant_link', 'admin_url')
         depth = 1
 
 
@@ -283,6 +283,10 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
         if 'winners' in filters:
             queryset = queryset.filter(
                 Q(winner=True)
+            )
+        if 'grants' in filters:
+            queryset = queryset.filter(
+                Q(grant_link__isnull=False)
             )
         if 'lfm' in filters:
             queryset = queryset.filter(
