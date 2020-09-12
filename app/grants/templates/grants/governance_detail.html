@@ -1,11 +1,14 @@
 {% load humanize static i18n %}
 
-<h1> Grants Governance </h1>
+<h1>Grants Governance</h1>
 
 <ul>
   <li>
-    🚩 <a href="{{flag.grant.url}}">{{flag.grant.title}}</a> by <a href="/{{flag.profile.handle}}">@{{flag.profile.handle}}</a>;
-    {{flag.comments|truncatechars:55 }}
-    <a href="{{flag.url}}">[link]</a>
+    🚩 <a href="{{flag.grant.url}}">{{flag.grant.title}}</a> by
+    <a href="/{{flag.profile.handle}}">@{{flag.profile.handle}}</a>;
+    {{flag.comments|truncatechars:55 }} Sybil Score --->
+    {{flag.grant.sybil_score}} & Weighted Risk Score --->
+    {{flag.grant.weighted_risk_score}}
+    <a href="/grants/governance">RETURN TO /grants</a>
   </li>
 </ul>
