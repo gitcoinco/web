@@ -1295,7 +1295,6 @@ def grant_new(request, project_id=None):
                 'network': request.POST.get('network', 'mainnet'),
                 'twitter_handle_1': request.POST.get('handle1', ''),
                 'twitter_handle_2': request.POST.get('handle2', ''),
-                'project_link': request.POST.get('project_link', ''),
                 'metadata': receipt,
                 'last_update': timezone.now(),
                 'admin_profile': profile,
@@ -1330,6 +1329,9 @@ def grant_new(request, project_id=None):
             record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
             add_grant_to_active_clrs(grant)
+
+            if project_pk:
+                HackathonProject.objects.filter(pk=project_pk).update(grant_link=grant.url)
 
             return JsonResponse({
                 'success': True,
