@@ -132,7 +132,7 @@ const init = () => {
       }
       formData.append('contract_version', $('#contract_version').val());
       formData.append('transaction_hash', $('#transaction_hash').val());
-      formData.append('project_link', $('#project_link').val());
+      formData.append('project_pk', $('#project_pk').val());
       if ($('#network').val()) {
         formData.append('network', $('#network').val());
       } else {

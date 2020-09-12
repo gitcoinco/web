@@ -91,7 +91,7 @@ class GrantAdmin(GeneralAdmin):
         'amount_received', 'monthly_amount_subscribed',
         'deploy_tx_id', 'cancel_tx_id', 'admin_profile', 'token_symbol',
         'token_address', 'contract_address', 'contract_version', 'network', 'required_gas_price', 'logo_svg_asset',
-        'logo_asset', 'created_on', 'modified_on', 'team_member_list', 'project_link',
+        'logo_asset', 'created_on', 'modified_on', 'team_member_list',
         'subscriptions_links', 'contributions_links', 'logo', 'logo_svg', 'image_css',
         'link', 'clr_prediction_curve', 'hidden', 'grant_type', 'next_clr_calc_date', 'last_clr_calc_date',
         'metadata', 'categories', 'twitter_handle_1', 'twitter_handle_2', 'view_count', 'is_clr_eligible', 'in_active_clrs'

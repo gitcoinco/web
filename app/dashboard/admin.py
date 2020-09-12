@@ -452,7 +452,7 @@ class HackathonRegistrationAdmin(admin.ModelAdmin):
 
 
 class HackathonProjectAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'usernames', 'status', 'sponsor']
+    list_display = ['pk', 'img', 'name', 'bounty', 'hackathon_link', 'grant_link', 'usernames', 'status', 'sponsor']
     raw_id_fields = ['profiles', 'bounty', 'hackathon']
     search_fields = ['name', 'summary', 'status']
 

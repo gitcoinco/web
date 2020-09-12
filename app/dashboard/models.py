@@ -5038,6 +5038,12 @@ class HackathonProject(SuperModel):
     chat_channel_id = models.CharField(max_length=255, blank=True, null=True)
     winner = models.BooleanField(default=False)
     extra = JSONField(default=dict, blank=True, null=True)
+    grant_link = models.URLField(
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text='Grant Link'
+    )
 
     class Meta:
         ordering = ['-name']

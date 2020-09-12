@@ -106,7 +106,7 @@ class GrantExportSerializer(serializers.ModelSerializer):
                   'admin_address', 'contract_owner_address',
                   'monthly_amount_subscribed', 'amount_received', 'token_address',
                   'token_symbol', 'contract_address', 'network',
-                  'org', 'created_at', 'url', 'contribution_count', 'contributor_count', 'project_link'
+                  'org', 'created_at', 'url', 'contribution_count', 'contributor_count'
                   )
 
     def get_created_at(self, instance):

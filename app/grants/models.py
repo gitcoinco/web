@@ -168,7 +168,6 @@ class Grant(SuperModel):
     reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     github_project_url = models.URLField(blank=True, help_text=_('Grant Github Project URL'))
     is_clr_eligible = models.BooleanField(default=True, help_text="Is grant eligible for CLR")
-    project_link = models.PositiveIntegerField(blank=True, null=True, help_text="Project Id which is converted to grant")
     link_to_new_grant = models.ForeignKey(
         'grants.Grant',
         null=True,
