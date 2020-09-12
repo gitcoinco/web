@@ -212,7 +212,7 @@ class HackathonProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HackathonProject
-        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', 'admin_url')
+        fields = ('pk', 'chat_channel_id', 'status', 'badge', 'bounty', 'name', 'summary', 'work_url', 'profiles', 'hackathon', 'summary', 'logo', 'message', 'looking_members', 'winner', "grant_link", 'admin_url')
         depth = 1
 
 
