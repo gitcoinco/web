@@ -1,0 +1,17 @@
+{
+    "symbol": "SEC",
+    "address": "0xa98369F702c355a19001a290134e09F150725EB7",
+    "overview":{
+          "en": "SEC is the certificate of SkyEcoChain's entire ecosystem. It is currently a smart contract token under the erc20 standard. Its application scenario is to support the circulation in scenarios such as SEC wallet, Cloud City Tycoon, and SEC trading center.",
+          "zh": "SEC是 SkyEcoChain 整个大生态的通证证明，目前是在erc20的标准下的智能合约TOKEN，它的应用场景在于支持在SEC钱包、云城大亨、SEC交易中心等场景的流通。"
+    },
+    "email": "sec16789@gmail.com",
+    "website": "http://www.skyecochain.com/",
+    "whitepaper": "http://www.skyecochain.com/pdf/web/viewer.html?file=../../images/SkyEcoChain.pdf",
+    "state": "NORMAL",
+    "published_on": "2020-08-26",
+    "links": {
+        "telegram": "https://t.me/joinchat/QfQbmBgiB8ahVke1dl_pHA",
+        "twitter": "https://twitter.com/SkyEcoChain1"
+      }
+}
