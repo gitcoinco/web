@@ -17,7 +17,22 @@
 
 {% load static humanize i18n grants_extra %}
 
-<div class="px-0 pr-md-3">
+<div class="px-0 pr-md-3 my-0 mx-0 mt-md-5 mr-md-5">
+  {% if not grant.verified %}
+  <div class="my-0 mx-0 mt-md-5 mr-md-5 py-2">
+    <div class="verification__warning py-2 px-2 d-flex">
+      <i class="fas fa-exclamation-triangle verification__warning__icon mr-2"></i>
+      <div>
+        <div class="uppercase">Warning: This grant has not verified their ownership of the property listed</div>
+        {% if is_team_member %}
+        <div class="text-right mt-3">
+          <button class="btn btn-sm btn-gc-blue" data-toggle="modal" data-target="#startVerification">Verify your grant</button>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
   <div id="funding-card" class="card my-0 mx-0 mt-md-5 mr-md-5 shadow-sm">
     <div class="card-body">
       <div class="row progress-container  {% if clr_active %} mb-2 {% endif %} {% if not is_team_member %} mt-4 {% endif %}">

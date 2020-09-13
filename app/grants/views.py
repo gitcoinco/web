@@ -45,8 +45,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 import requests
+import tweepy
 from app.services import RedisService
-from app.settings import EMAIL_ACCOUNT_VALIDATION
+from app.settings import EMAIL_ACCOUNT_VALIDATION, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, \
+    TWITTER_CONSUMER_KEY
 from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
@@ -61,7 +63,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
     Subscription,
 )
-from grants.utils import get_leaderboard, is_grant_team_member
+from grants.utils import get_leaderboard, is_grant_team_member, get_user_code, emoji_codes
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
@@ -847,6 +849,7 @@ def grant_details(request, grant_id, grant_slug):
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
         'is_round_5_5': False,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
+        'user_code': get_user_code(profile.id, emoji_codes)
     }
 
     if tab == 'stats':
@@ -1703,4 +1706,56 @@ def toggle_grant_favorite(request, grant_id):
 
     return JsonResponse({
         'action': 'follow'
+    })
+
+
+@login_required
+def verify_grant(request, grant_id):
+    grants = Grant.objects.filter(pk=grant_id)
+
+    if not grants.exists():
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Grant doesn\'t exists'
+        })
+
+    grant = grants.first()
+
+    if grant.verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': 'Grant was verified previously'
+        })
+
+    auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+    auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
+    try:
+        api = tweepy.API(auth)
+        last_tweet = api.user_timeline(screen_name=grant.twitter_handle_1, count=1, tweet_mode="extended")
+    except tweepy.TweepError as e:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Bad twitter credential'
+        })
+
+    user_code = get_user_code(request.user.profile.id, emoji_codes)
+    text = f"I am verifying my ownership of the { grant.title }"
+
+    has_code = user_code in last_tweet.text
+    has_text = text in last_tweet.text
+
+    if has_code and has_text:
+        grant.verified = True
+        grant.verified_by = request.user.profile
+        grant.verified_at = timezone.now()
+
+        grant.save()
+
+    return JsonResponse({
+        'ok': True,
+        'verified': True,
+        'text': last_tweet.text,
+        'has_code': has_code,
+        'has_text': has_text,
+        'account': grant.twitter_handle_1
     })

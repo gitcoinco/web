@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import os
 from decimal import Decimal
+from random import random, randint, seed
 from secrets import token_hex
 
 from economy.utils import ConversionRateNotFoundError, convert_amount
@@ -27,6 +28,10 @@ from gas.utils import eth_usd_conv_rate
 from perftools.models import JSONStore
 
 logger = logging.getLogger(__name__)
+
+block_codes = ['▖', '▗', '▘', '▙', '▚', '▛', '▜', '▝', '▞', '▟']
+emoji_codes = ['🎉', '🎈', '🎁', '🎊', '🙌', '🥂', '🎆', '🔥', '⚡', '👍']
+
 
 def get_upload_filename(instance, filename):
     salt = token_hex(16)
@@ -115,10 +120,10 @@ def which_clr_round(timestamp):
 
         if round_start < timestamp < round_end:
             return round
-    
+
     return None
 
-def get_converted_amount(amount, token_symbol):            
+def get_converted_amount(amount, token_symbol):
     try:
         if token_symbol == "ETH" or token_symbol == "WETH":
             return Decimal(float(amount) * float(eth_usd_conv_rate()))
@@ -142,3 +147,11 @@ def get_converted_amount(amount, token_symbol):
         except ConversionRateNotFoundError as no_conversion_e:
             logger.info(no_conversion_e)
             return None
+
+
+def get_user_code(user_id, coding_set=block_codes, length=6):
+    seed(user_id)
+    coding_id = [coding_set[randint(0, 9)] for _ in range(length)]
+
+    return ''.join(coding_id)
+

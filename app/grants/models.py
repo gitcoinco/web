@@ -364,6 +364,9 @@ class Grant(SuperModel):
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
+    verified = models.BooleanField(default=False)
+    verified_by = models.ForeignKey('dashboard.Profile', null=True, blank=True, on_delete=models.SET_NULL)
+    verified_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         """Return the string representation of a Grant."""
