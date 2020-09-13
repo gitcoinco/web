@@ -553,11 +553,11 @@ Vue.component('project-card', {
   template: `<div class="card card-user shadow-sm border-0">
     <div class="card card-project">
       <b-form-checkbox v-if="is_staff" switch v-model="project.winner" style="padding:0;float:left;" @change="markWinner($event, project)">mark winner</b-form-checkbox>
-      <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
+      <button v-on:click="projectModal" class="position-absolute btn btn-gc-green btn-sm m-2" style="left: 0.5rem; top: 3rem" id="edit-btn" v-bind:class="{ 'd-none': !edit }">edit</button>
       <img v-if="project.grant_link" class="position-absolute" style="right: 1rem" src="${static_url}v2/images/grants/grants-tag.svg" alt="grant_tag"/>
+      <img v-if="project.winner" class="position-absolute" style="left: 1rem; top: 1rem" src="${static_url}v2/images/project/winner.svg" alt="winner"/>
       <img v-if="project.badge" class="position-absolute card-badge" width="50" :src="profile.badge" alt="badge" />
       <div class="card-bg rounded-top">
-        <div v-if="project.winner" class="ribbon ribbon-top-right"><span>winner</span></div>
         <img v-if="project.logo" class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.logo" alt="Hackathon logo" />
         <img v-else class="card-project-logo m-auto rounded shadow" height="87" width="87" :src="project.bounty.avatar_url" alt="Bounty Logo" />
       </div>

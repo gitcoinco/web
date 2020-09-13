@@ -815,6 +815,7 @@ def grant_new(request, project_id=None):
             record_grant_activity_helper('new_grant', grant, profile)
             new_grant(grant, profile)
 
+            project_pk = request.POST.get('project_pk', '')
             if project_pk:
                 HackathonProject.objects.filter(pk=project_pk).update(grant_link=grant.url)
 
