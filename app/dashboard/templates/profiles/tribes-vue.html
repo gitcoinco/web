@@ -518,6 +518,14 @@
                             <span class="font-weight-bold">[[ numProjects ]] projects </span> found
                           </p>
                         </div>
+                        <div class="pb-4 border-bottom form-group">
+                          <b-form-checkbox value="winners" v-model="params.filters" name="winners" switch>
+                            Winners
+                          </b-form-checkbox>
+                          <b-form-checkbox value="grants" v-model="params.filters" name="grants" switch>
+                            Grants
+                          </b-form-checkbox>
+                        </div>
                         <div v-if="!tribe" class="pb-4 border-bottom form-group d-md-inline-block">
                           <label for="project_sponsors" class="font-weight-bold">Sponsor</label>
                           <div id="project_sponsors" class="form__select2">
