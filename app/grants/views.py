@@ -1330,6 +1330,7 @@ def grant_new(request, project_id=None):
             new_grant(grant, profile)
             add_grant_to_active_clrs(grant)
 
+            project_pk = request.POST.get('project_pk', '')
             if project_pk:
                 HackathonProject.objects.filter(pk=project_pk).update(grant_link=grant.url)
 
