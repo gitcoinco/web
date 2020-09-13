@@ -262,6 +262,12 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
             queryset = HackathonProject.objects.filter(Q(hackathon__sponsor_profiles__handle__iexact=sponsor) | Q(
                 bounty__bounty_owner_github_username=sponsor)).exclude(
                 status='invalid').prefetch_related('profiles', 'bounty').order_by('-winner', 'grant_link', order_by, 'id')
+        
+        # TODO Temp Solution to update grant_link after updating grant
+        queryset = queryset.filter(
+            Q(grant_link__isnull=False) |
+            Q(grant_link__isnull=True)
+        )
 
         if q:
             queryset = queryset.filter(
@@ -274,7 +280,6 @@ class HackathonProjectsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 Q(profiles__keywords__icontains=skills)
             )
-
         if rating:
             queryset = queryset.filter(
                 Q(rating__gte=rating)
