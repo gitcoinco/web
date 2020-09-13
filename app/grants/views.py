@@ -48,10 +48,10 @@ from app.settings import EMAIL_ACCOUNT_VALIDATION
 from app.utils import get_profile
 from cacheops import cached_view
 from chartit import PivotChart, PivotDataPool
-from dashboard.models import Activity, Profile, SearchHistory, HackathonProject
-from dashboard.views import project
+from dashboard.models import Activity, HackathonProject, Profile, SearchHistory
 from dashboard.tasks import increment_view_count
 from dashboard.utils import get_web3, has_tx_mined
+from dashboard.views import project
 from economy.models import Token as FTokens
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
