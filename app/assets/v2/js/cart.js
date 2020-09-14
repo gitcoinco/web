@@ -3,12 +3,10 @@
  * @dev If you need to interact with the Rinkeby Dai contract (e.g. to reset allowances for
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
-let BN;
+const BN = Web3.utils.BN;
 
 needWalletConnection();
-window.addEventListener('dataWalletReady', function(e) {
-  BN = web3.utils.BN;
-}, false);
+
 // Constants
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
@@ -594,6 +592,21 @@ Vue.component('grants-cart', {
     },
 
     /**
+     * @notice Wrapper around web3's estimateGas so it can be used with await
+     * @param tx Transaction to estimate gas for
+     */
+    async estimateGas(tx) {
+      return new Promise(function(resolve, reject) {
+        tx.estimateGas((err, res) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(res);
+        });
+      });
+    },
+
+    /**
      * @notice Generates an object where keys are token names and value are the total amount
      * being donated in that token. Scale factor scales the amounts used by a constant
      * @dev The addition here is based on human-readable numbers so BN is not needed
@@ -869,12 +882,13 @@ Vue.component('grants-cart', {
         const contract = allowanceData[i].contract;
         const tokenName = allowanceData[i].tokenName;
         const approvalTx = contract.methods.approve(targetContract, allowance);
+        const gasLimit = await this.estimateGas(approvalTx);
 
         // We split this into two very similar branches, because on the last approval
         // we execute the callback (the main donation flow) after we get the transaction hash
         if (i !== allowanceData.length - 1) {
           approvalTx
-            .send({ from: userAddress })
+            .send({ from: userAddress, gas: gasLimit })
             .on('transactionHash', (txHash) => {
               this.setApprovalTxHash(tokenName, txHash);
             })
@@ -884,7 +898,7 @@ Vue.component('grants-cart', {
             });
         } else {
           approvalTx
-            .send({ from: userAddress })
+            .send({ from: userAddress, gas: gasLimit })
             .on('transactionHash', async(txHash) => { // eslint-disable-line no-loop-func
               indicateMetamaskPopup(true);
               this.setApprovalTxHash(tokenName, txHash);
@@ -1460,7 +1474,19 @@ Vue.component('grants-cart', {
           // This means the account has never interacted with the network
           throw new Error('Unknown account');
         }
-        const changePubkey = await syncWallet.setSigningKey();
+
+        // Determine how to set key based on wallet type
+        let changePubkey;
+
+        if (syncWallet.ethSignerType.verificationMethod === 'ECDSA') {
+          console.log('  Using ECDSA to set signing key');
+          changePubkey = await syncWallet.setSigningKey();
+        } else {
+          console.log('  Using ERC-1271 to set signing key. This requires an on-chain transaction');
+          const signingKeyTx = await syncWallet.onchainAuthSigningKey();
+
+          changePubkey = await syncWallet.setSigningKey('committed', true);
+        }
 
         // Wait until the tx is committed
         await changePubkey.awaitReceipt();
