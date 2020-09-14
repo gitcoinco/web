@@ -1711,8 +1711,13 @@ def toggle_grant_favorite(request, grant_id):
     })
 
 
-def get_grant_verification_text(grant):
-    return f'I am verifying my ownership of { grant.title } on Gitcoin Grants at https://gitcoin.co{ grant.get_absolute_url() }.'
+def get_grant_verification_text(grant, long=True):
+    msg = f'I am verifying my ownership of { grant.title } on Gitcoin Grants'
+
+    if long:
+        msg += f' at https://gitcoin.co{ grant.get_absolute_url() }.'
+
+    return msg
 
 @login_required
 def verify_grant(request, grant_id):
@@ -1739,7 +1744,7 @@ def verify_grant(request, grant_id):
     except tweepy.TweepError:
         return JsonResponse({
             'ok': False,
-            'msg': 'Bad twitter credential'
+            'msg': f'Sorry, we couldn\'t get the last tweet from @{grant.twitter_handle_1}'
         })
     except IndexError:
         return JsonResponse({
@@ -1747,14 +1752,14 @@ def verify_grant(request, grant_id):
             'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
         })
 
-    if last_tweet.retweeted or 'RT @' in last_tweet.text:
+    if last_tweet.retweeted or 'RT @' in last_tweet.full_text:
         return JsonResponse({
             'ok': False,
             'msg': 'We get a retweet from your last status, at this moment we don\'t supported retweets.'
         })
 
     user_code = get_user_code(request.user.profile.id, grant, emoji_codes)
-    text = get_grant_verification_text(grant)
+    text = get_grant_verification_text(grant, False)
 
     has_code = user_code in last_tweet.full_text
     has_text = text in last_tweet.full_text
@@ -1769,7 +1774,7 @@ def verify_grant(request, grant_id):
     return JsonResponse({
         'ok': True,
         'verified': grant.twitter_verified,
-        'text': last_tweet.text,
+        'text': last_tweet.full_text,
         'has_code': has_code,
         'has_text': has_text,
         'account': grant.twitter_handle_1
