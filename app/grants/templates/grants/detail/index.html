@@ -98,7 +98,7 @@
             <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
             <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
             <p class="mb-4 text-left"><b>Step 1:</b> Send a tweet from your account (<b>{{ grant.twitter_handle_1 }}</b>) saying <b>
-              I am verifying my ownership of the {{ grant.title }} {{ user_code }}.</b> <br>
+              {{ verification_tweet }} {{ user_code }}</b> <br>
               <span id="tweet-container"></span>
             </p>
             <p class="mb-4 text-left"><b>Step 2:</b>Click the "Verify" button below</p>
@@ -168,6 +168,7 @@
 
       if (!response.ok) {
         _alert(response.msg, 'error');
+        return;
       }
       if (response.verified) {
         _alert('Congratulations, your grant is now verified!', 'success')
@@ -176,7 +177,7 @@
       }
 
       if (!response.has_text) {
-        $('#validation-errors').text(`Missing intent text "I am verifying my ownership of the {{ grant.title }}". Please don't remove the intent before validate your grant`);
+        $('#validation-errors').text(`Don't remove the intent "{{ verification_tweet }}"`);
         return;
       }
 
@@ -191,13 +192,12 @@
       $("#startVerification .close").click();
       if (!$("#tweet-container").children().length) {
         await twttr.widgets.createShareButton(
-          "https://gitcoin.co{{ grant.get_absolute_url }}",
+          ".",
           document.getElementById("tweet-container"),
           {
             size: 'large',
-            text: 'I am verifying my ownership of the {{ grant.title }}. \n{{ user_code }}\n',
+            text: '{{ verification_tweet }}. \n{{ user_code }}',
             hashtags: 'grants',
-            via: 'gitcoin'
           }
         );
       }

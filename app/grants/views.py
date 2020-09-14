@@ -850,7 +850,8 @@ def grant_details(request, grant_id, grant_slug):
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
         'is_round_5_5': False,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
-        'user_code': get_user_code(profile.id, emoji_codes)
+        'user_code': get_user_code(request.user.profile.id, grant,emoji_codes) if request.user.is_authenticated else '',
+        'verification_tweet': get_grant_verification_text(grant),
     }
 
     if tab == 'stats':
@@ -1710,9 +1711,18 @@ def toggle_grant_favorite(request, grant_id):
     })
 
 
+def get_grant_verification_text(grant):
+    return f'I am verifying my ownership of { grant.title } on Gitcoin Grants at https://gitcoin.co{ grant.get_absolute_url() }.'
+
 @login_required
 def verify_grant(request, grant_id):
     grant = Grant.objects.get(pk=grant_id)
+
+    if not is_grant_team_member(grant, request.user.profile):
+        return JsonResponse({
+            'ok': False,
+            'msg': f'You need to be a member of this grants to verify it.'
+        })
 
     if grant.twitter_verified:
         return JsonResponse({
@@ -1724,15 +1734,27 @@ def verify_grant(request, grant_id):
     auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
     try:
         api = tweepy.API(auth)
-        last_tweet = api.user_timeline(screen_name=grant.twitter_handle_1, count=1, tweet_mode="extended")
-    except tweepy.TweepError as e:
+        last_tweet = api.user_timeline(screen_name=grant.twitter_handle_1, count=1, tweet_mode="extended",
+                                       include_rts=False, exclude_replies=False)[0]
+    except tweepy.TweepError:
         return JsonResponse({
             'ok': False,
             'msg': 'Bad twitter credential'
         })
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
+        })
 
-    user_code = get_user_code(request.user.profile.id, emoji_codes)
-    text = f"I am verifying my ownership of the { grant.title }"
+    if last_tweet.retweeted or 'RT @' in last_tweet.text:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'We get a retweet from your last status, at this moment we don\'t supported retweets.'
+        })
+
+    user_code = get_user_code(request.user.profile.id, grant, emoji_codes)
+    text = get_grant_verification_text(grant)
 
     has_code = user_code in last_tweet.full_text
     has_text = text in last_tweet.full_text

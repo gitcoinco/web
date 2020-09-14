@@ -149,8 +149,8 @@ def get_converted_amount(amount, token_symbol):
             return None
 
 
-def get_user_code(user_id, coding_set=block_codes, length=6):
-    seed(user_id)
+def get_user_code(user_id, grant, coding_set=block_codes, length=6):
+    seed(user_id ** grant.id)
     coding_id = [coding_set[randint(0, 9)] for _ in range(length)]
 
     return ''.join(coding_id)
