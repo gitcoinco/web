@@ -37,32 +37,37 @@
     </p>
 
     <form id="filters" :class="{hide_filters: !show_filters }">
+      <div class="col border-top-0">
+        <div class="subheading">
+          {% trans "Filters" as filts %}{{ filts|upper }}
+        </div>
+
       {% if profile %}
-        <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ${ following ? 'gc-text-blue' : 'text-black'}`">
+        <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ml-0 pl-0 ${ following ? 'gc-text-blue' : 'text-black'}`">
           <i :class="following ? 'fas' : 'far'" class="fa-fw fa-star" ></i>
           Following
           <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
         </span>
       {% endif %}
-      <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ${ idle_grants ? 'gc-text-blue' : 'text-black'}`">
+      <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ml-0 pl-0 ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
         <i :class="idle_grants ? 'fas' : 'far'" class="fa-fw fa-clock" ></i>
-         Show Idle grants
+         Show Idle Grants
         <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
       </span>
       {% if profile %}
-        <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
+        <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold ml-0 pl-0 text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
           <i :class="show_contributions ? 'fas' : 'far'" class="fa-fw fa-donate" ></i>
-          My contributions
+          My Contributions
           <i v-if="show_contributions" class="fas fa-times font-smaller-4 ml-1"></i>
         </span>
 
-        <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-1 font-weight-semibold text-decoration-none" :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
+        <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-1 font-weight-semibold ml-0 pl-0 text-decoration-none" :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
           <i :class="type === 'me' ? 'fas' : 'far'" class="fa-fw fa-user-alt"></i>
           My Grants
           <i v-if="type === 'me'" class="fas fa-times font-smaller-4 ml-1"></i>
         </span>
       {% endif %}
-      <div class="col border-top-0">
+
         <div class="subheading">
           {% trans "Categories" as cats %}{{ cats|upper }}
         </div>
@@ -83,12 +88,12 @@
                 <ul class="nav d-inline-block font-body mb-2 grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-xl-left font-body font-weight-semibold">
                   <li class="mr-1 ">
                     <a :href="`/grants/${grant_type.keyword}?${query_params()}`" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
-                      All [[grant_type.label]]
+                      All [[grant_type.label]] <sup>([[grant_type.count]])</sup>
                     </a>
                   </li>
                   <li class="mr-1" v-for="category in grant_type.sub_categories">
                     <a :href="`/grants/${grant_type.keyword}?category=${category}&${query_params()}`" :data-type="grant_type.keyword" data-category="category" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category ? 'selected' : '' }`">
-                      [[category]]
+                      [[category]] 
                     </a>
                   </li>
                 </ul>
@@ -97,6 +102,10 @@
           </template>
 
           <hr>
+          <div class="subheading">
+            {% trans "Meta" as desc %}{{ desc|upper }}
+          </div>
+
           <li>
             <a @click="set_type('about')" data-type="about" data-category="" :class="`mr-1  px-1  ${ type == 'about'? 'selected':''}`">
               About
