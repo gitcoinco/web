@@ -2869,7 +2869,7 @@ def get_profile_tab(request, profile, tab, prev_context):
         today = datetime.today()
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
         context['upcoming_calls'] = UpcomingDate.objects.filter(context_tag='brightid').filter(date__gte=today).order_by('date').values()
-        context['sms_is_verified'] = profile.sms_verification
+        context['is_sms_verified'] = profile.sms_verification
     else:
         raise Http404
     return context
