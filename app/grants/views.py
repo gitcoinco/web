@@ -846,10 +846,8 @@ def grant_new(request, project_id=None):
         'gas_advisories': gas_advisories(),
         'trusted_relayer': settings.GRANTS_OWNER_ACCOUNT,
         'grant_types': GrantType.objects.all(),
-        'data': {}
+        'data': project_data
     }
-    if check_profile is not None:
-        params["data"] = project_data
 
     return TemplateResponse(request, 'grants/new.html', params)
 
