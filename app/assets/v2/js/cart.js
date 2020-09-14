@@ -555,7 +555,7 @@ Vue.component('grants-cart', {
         return;
       }
 
-      const url = `https://node.brightid.org/brightid/v4/verifications/Gitcoin/${document.brightid_uuid}`;
+      const url = `https://app.brightid.org/node/v5/verifications/Gitcoin/${document.brightid_uuid}`;
       const response = await fetch(url);
 
       this.isBrightIDVerified = (response.status === 200);
