@@ -351,7 +351,8 @@ def get_grants(request):
                 'token_symbol': grant.token_symbol,
                 'admin_address': grant.admin_address,
                 'token_address': grant.token_address,
-                'image_css': grant.image_css
+                'image_css': grant.image_css,
+                'verified': grant.verified,
             } for grant in grants
         },
         'credentials': {
@@ -1741,8 +1742,8 @@ def verify_grant(request, grant_id):
     user_code = get_user_code(request.user.profile.id, emoji_codes)
     text = f"I am verifying my ownership of the { grant.title }"
 
-    has_code = user_code in last_tweet.text
-    has_text = text in last_tweet.text
+    has_code = user_code in last_tweet.full_text
+    has_text = text in last_tweet.full_text
 
     if has_code and has_text:
         grant.verified = True
@@ -1753,7 +1754,7 @@ def verify_grant(request, grant_id):
 
     return JsonResponse({
         'ok': True,
-        'verified': True,
+        'verified': grant.verified,
         'text': last_tweet.text,
         'has_code': has_code,
         'has_text': has_text,

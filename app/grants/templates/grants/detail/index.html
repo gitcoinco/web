@@ -43,6 +43,10 @@
       .verification__warning__icon {
         font-size: 2.8rem;
       }
+
+      .error {
+        color: var(--gc-pink);
+      }
     </style>
   </head>
   <body class="interior {{ active }} grant grant-detail g-font-muli">
@@ -113,18 +117,12 @@
             <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
             <p class="mb-4 text-left"><b>Step 1:</b> Send a tweet from your account (<b>{{ grant.twitter_handle_1 }}</b>) saying <b>
               I am verifying my ownership of the {{ grant.title }} {{ user_code }}.</b> <br>
-              <a class="twitter-share-button"
-                href="https://twitter.com/intent/tweet"
-                data-size="small"
-                data-text="I am verifying my ownership of the {{ grant.title }}. \n{{ user_code }}\n"
-                data-url="https://gitcoin.co{{ grant.get_absolute_url }}"
-                data-hashtags="grants,round7">
-              Tweet
-              </a>
+              <a id="tweet-container"></a>
             </p>
             <p class="mb-4 text-left"><b>Step 2:</b>Click the "Verify" button below</p>
             <button class="btn btn-lg btn-gc-blue mb-4" id="twitterVerification">Verify</button>
-            <span id="validation-errors"></span>
+            <br>
+            <span class="error" id="validation-errors"></span>
 
           </div>
           <div class="modal-footer" style="border-top: none">
@@ -194,16 +192,16 @@
       if (response.verified) {
         _alert('Congratulations, your grant is now verified!', 'success')
         $('.verification__warning').remove();
-        $('#twitterVerification .close').click()
+        $('#startTwitterVerification .close').click()
       }
 
-      if (!response.has_code) {
-        $('validation-errors').text(`Missing intent text "I am verifying my ownership of the {{ grant.title }}". Please don't remove the intent before validate your grant`);
+      if (!response.has_text) {
+        $('#validation-errors').text(`Missing intent text "I am verifying my ownership of the {{ grant.title }}". Please don't remove the intent before validate your grant`);
         return;
       }
 
       if (!response.has_code) {
-        $('validation-errors').text(`Missing emoji code "${ user_code }", please don't remove this unique code to validate your grant`);
+        $('#validation-errors').text(`Missing emoji code "{{ user_code }}", please don't remove this unique code before validate your grant.`);
         return;
       }
     });
@@ -211,6 +209,16 @@
 
     $('#triggerTwitter').on('click', () => {
       $("#startVerification .close").click();
+      twttr.widgets.createShareButton(
+        "https://gitcoin.co{{ grant.get_absolute_url }}",
+        document.getElementById("tweet-container"),
+        {
+          size: "large",
+          text: "I am verifying my ownership of the {{ grant.title }}. \n{{ user_code }}\n",
+          hashtags: "grants,round7",
+          via: "gitcoin",
+        }
+      );
     });
   });
   </script>
