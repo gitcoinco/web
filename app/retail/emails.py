@@ -593,6 +593,7 @@ def render_new_bounty(to_email, bounties, old_bounties, offset=3, quest_of_the_d
             'date': ele.date.strftime("%Y-%m-%d")
         }]
     upcoming_events = sorted(upcoming_events, key=lambda ele: ele['date'])
+    upcoming_events = upcoming_events[0:7]
 
     params = {
         'old_bounties': old_bounties,

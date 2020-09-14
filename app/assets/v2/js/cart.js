@@ -3,12 +3,10 @@
  * @dev If you need to interact with the Rinkeby Dai contract (e.g. to reset allowances for
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
-let BN;
+const BN = Web3.utils.BN;
 
 needWalletConnection();
-window.addEventListener('dataWalletReady', function(e) {
-  BN = web3.utils.BN;
-}, false);
+
 // Constants
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
@@ -34,6 +32,7 @@ Vue.component('grants-cart', {
   data: function() {
     return {
       // Checkout, shared
+      currentTokens: [], // list of all available tokens
       adjustGitcoinFactor: false, // if true, show section for user to adjust Gitcoin's percentage
       tokenList: undefined, // array of all tokens for selected network
       isLoading: undefined,
@@ -310,17 +309,17 @@ Vue.component('grants-cart', {
     zkSyncBlockExplorerUrl() {
       // Flow A, zkScan link
       if (this.hasSufficientZkSyncBalance) {
-        if (document.web3network === 'mainnet')
-          return `https://zkscan.io/explorer/accounts/${this.userAddress}`;
-        return `https://${document.web3network}.zkscan.io/explorer/accounts/${this.userAddress}`;
+        if (document.web3network === 'rinkeby')
+          return `https://${document.web3network}.zkscan.io/explorer/accounts/${this.userAddress}`;
+        return `https://zkscan.io/explorer/accounts/${this.userAddress}`;
       }
 
       // Flow B, etherscan link
       if (!this.zkSyncDepositTxHash)
         return undefined;
-      if (document.web3network === 'mainnet')
-        return `https://etherscan.io/tx/${this.zkSyncDepositTxHash}`;
-      return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
+      if (document.web3network === 'rinkeby')
+        return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
+      return `https://etherscan.io/tx/${this.zkSyncDepositTxHash}`;
     },
 
     // Array of supported tokens
@@ -593,6 +592,21 @@ Vue.component('grants-cart', {
     },
 
     /**
+     * @notice Wrapper around web3's estimateGas so it can be used with await
+     * @param tx Transaction to estimate gas for
+     */
+    async estimateGas(tx) {
+      return new Promise(function(resolve, reject) {
+        tx.estimateGas((err, res) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(res);
+        });
+      });
+    },
+
+    /**
      * @notice Generates an object where keys are token names and value are the total amount
      * being donated in that token. Scale factor scales the amounts used by a constant
      * @dev The addition here is based on human-readable numbers so BN is not needed
@@ -656,23 +670,25 @@ Vue.component('grants-cart', {
     },
 
     /**
-     * @notice Get token address and decimals
+     * @notice Get token address and decimals using data fetched from the API endpoint in the
+     * mounted hook
      * @dev We use this instead of tokenNameToDetails in tokens.js because we use a different
-     * address to represent ETH
+     * address to represent ETH. We also add additional fields that are not included in the
+     * response to facilitate backward compatibility
      * @param {String} name Token name, e.g. ETH or DAI
      */
     getTokenByName(name) {
       if (name === 'ETH') {
         return {
           addr: ETH_ADDRESS,
+          address: ETH_ADDRESS,
           name: 'ETH',
+          symbol: 'ETH',
           decimals: 18,
           priority: 1
         };
       }
-      var network = document.web3network;
-
-      return tokens(network).filter(token => token.name === name)[0];
+      return this.currentTokens.filter(token => token.name === name)[0];
     },
 
     /**
@@ -788,6 +804,9 @@ Vue.component('grants-cart', {
 
           if (new BN(userEthBalance, 10).lt(new BN(this.donationInputsEthAmount, 10))) {
             // User ETH balance is too small compared to selected donation amounts
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.showZkSyncModal = false;
             throw new Error('Insufficient ETH balance to complete checkout');
           }
           // ETH balance is sufficient, continue to next iteration since no approval check
@@ -810,6 +829,9 @@ Vue.component('grants-cart', {
 
         if (new BN(userTokenBalance, 10).lt(requiredAllowance)) {
           // Balance is too small, exit checkout flow
+          this.zkSyncCheckoutStep1Status = 'not-started';
+          this.zkSyncCheckoutStep2Status = 'not-started';
+          this.showZkSyncModal = false;
           throw new Error(`Insufficient ${tokenName} balance to complete checkout`, 'error');
         }
 
@@ -860,12 +882,13 @@ Vue.component('grants-cart', {
         const contract = allowanceData[i].contract;
         const tokenName = allowanceData[i].tokenName;
         const approvalTx = contract.methods.approve(targetContract, allowance);
+        const gasLimit = await this.estimateGas(approvalTx);
 
         // We split this into two very similar branches, because on the last approval
         // we execute the callback (the main donation flow) after we get the transaction hash
         if (i !== allowanceData.length - 1) {
           approvalTx
-            .send({ from: userAddress })
+            .send({ from: userAddress, gas: gasLimit })
             .on('transactionHash', (txHash) => {
               this.setApprovalTxHash(tokenName, txHash);
             })
@@ -875,7 +898,7 @@ Vue.component('grants-cart', {
             });
         } else {
           approvalTx
-            .send({ from: userAddress })
+            .send({ from: userAddress, gas: gasLimit })
             .on('transactionHash', async(txHash) => { // eslint-disable-line no-loop-func
               indicateMetamaskPopup(true);
               this.setApprovalTxHash(tokenName, txHash);
@@ -1451,7 +1474,19 @@ Vue.component('grants-cart', {
           // This means the account has never interacted with the network
           throw new Error('Unknown account');
         }
-        const changePubkey = await syncWallet.setSigningKey();
+
+        // Determine how to set key based on wallet type
+        let changePubkey;
+
+        if (syncWallet.ethSignerType.verificationMethod === 'ECDSA') {
+          console.log('  Using ECDSA to set signing key');
+          changePubkey = await syncWallet.setSigningKey();
+        } else {
+          console.log('  Using ERC-1271 to set signing key. This requires an on-chain transaction');
+          const signingKeyTx = await syncWallet.onchainAuthSigningKey();
+
+          changePubkey = await syncWallet.setSigningKey('committed', true);
+        }
 
         // Wait until the tx is committed
         await changePubkey.awaitReceipt();
@@ -1613,15 +1648,17 @@ Vue.component('grants-cart', {
      */
     async setupZkSync() {
       // Configure ethers and zkSync
+      const network = document.web3network || 'mainnet';
+
       this.ethersProvider = new ethers.providers.Web3Provider(provider);
       this.signer = this.ethersProvider.getSigner();
-      this.syncProvider = await zksync.getDefaultProvider(document.web3network, 'HTTP');
+      this.syncProvider = await zksync.getDefaultProvider(network, 'HTTP');
       this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
       this.zkSyncDonationInputsEthAmount = this.donationInputsEthAmount;
       this.zkSyncWalletState = await this.syncProvider.getState(this.userAddress);
 
       // Set zkSync contract address based on network
-      this.zkSyncContractAddress = document.web3network === 'mainnet'
+      this.zkSyncContractAddress = network === 'mainnet'
         ? zkSyncContractAddressMainnet // mainnet
         : zkSyncContractAddressRinkeby; // rinkeby
     },
@@ -1873,8 +1910,12 @@ Vue.component('grants-cart', {
             .balanceOf(this.userAddress)
             .call({from: this.userAddress});
 
-          if (BigNumber.from(userTokenBalance).lt(BigNumber.from(totalRequiredAmount)))
+          if (BigNumber.from(userTokenBalance).lt(BigNumber.from(totalRequiredAmount))) {
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.showZkSyncModal = false;
             throw new Error(`Insufficient ${tokenSymbol} balance to complete checkout`, 'error');
+          }
         }
 
         // Add ETH additional deposit and ensure user has enough for donation + gas (use lte not lt)
@@ -1890,8 +1931,12 @@ Vue.component('grants-cart', {
           this.zkSyncDonationInputsEthAmount = initialAmount.add(totalRequiredAmount).toString();
           const userEthBalance = await web3.eth.getBalance(this.userAddress);
   
-          if (BigNumber.from(userEthBalance).lte(BigNumber.from(this.zkSyncDonationInputsEthAmount)))
+          if (BigNumber.from(userEthBalance).lte(BigNumber.from(this.zkSyncDonationInputsEthAmount))) {
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.showZkSyncModal = false;
             throw new Error('Insufficient ETH balance to complete checkout');
+          }
         }
 
         // Otherwise, request approvals. As mentioned above, we check against userAddress
@@ -1983,12 +2028,16 @@ Vue.component('grants-cart', {
       // Setup -------------------------------------------------------------------------------------
         const ethAmount = this.zkSyncDonationInputsEthAmount; // amount of ETH being donated
         const depositRecipient = this.gitcoinSyncWallet.address(); // address of deposit recipient
+        const BigNumber = ethers.BigNumber;
 
         // Deposit funds ---------------------------------------------------------------------------
         // Setup overrides
-        let overrides = { gasLimit: ethers.BigNumber.from(String(this.zkSyncDonationInputsGasLimit)) };
+        let overrides = {
+          gasLimit: BigNumber.from(String(this.zkSyncDonationInputsGasLimit)),
+          value: ethers.constants.Zero
+        };
         
-        if (ethers.BigNumber.from(ethAmount).gt('0')) {
+        if (BigNumber.from(ethAmount).gt('0')) {
           // Specify how much ETH to send with transaction
           overrides.value = await this.getTotalAmountToTransfer('ETH', ethAmount);
         }
@@ -1996,14 +2045,14 @@ Vue.component('grants-cart', {
         const selectedTokens = Object.keys(this.donationsToGrants);
         let depositTx;
 
-        
         if (this.depositContractToUse === batchZkSyncDepositContractAddress) {
+          // If batch deposit ---------------------------------------------------------
           // Deposit mix of tokens
           console.log('Generating deposit payload...');
           const deposits = []; // array of arrays, passed into batckZkSyncDepositContract.deposit(...)
 
           // Handle ETH
-          if (ethers.BigNumber.from(ethAmount).gt('0'))
+          if (BigNumber.from(ethAmount).gt('0'))
             deposits.push([ ETH_ADDRESS, overrides.value ]);
           
           // Handle tokens
@@ -2033,6 +2082,34 @@ Vue.component('grants-cart', {
             batchZkSyncDepositContractAbi,
             this.signer
           );
+
+          // Verify user has sufficient balances now that we account for transaction fees
+          // Check tokens
+          for (let i = 0; i < deposits.length; i += 1) {
+            const tokenContract = new web3.eth.Contract(token_abi, deposits[i][0]);
+            const requiredAmount = deposits[i][1];
+            const userTokenBalance = await tokenContract.methods.balanceOf(this.userAddress).call({from: this.userAddress});
+
+            if (BigNumber.from(userTokenBalance).lt(BigNumber.from(requiredAmount))) {
+              this.zkSyncCheckoutStep1Status = 'not-started';
+              this.zkSyncCheckoutStep2Status = 'not-started';
+              this.zkSyncCheckoutStep3Status = 'not-started';
+              this.showZkSyncModal = false;
+              throw new Error(`Insufficient ${tokenSymbol} balance to complete checkout`, 'error');
+            }
+          }
+          
+          // Check ETH
+          const userEthBalance = await web3.eth.getBalance(this.userAddress);
+          
+          if (BigNumber.from(userEthBalance).lt(BigNumber.from(overrides.value))) {
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.zkSyncCheckoutStep3Status = 'not-started';
+            this.showZkSyncModal = false;
+            throw new Error('Insufficient ETH balance to complete checkout');
+          }
+
         
           // Send transaction
           console.log('Waiting for user to send deposit transaction...');
@@ -2040,6 +2117,18 @@ Vue.component('grants-cart', {
           depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
 
         } else if (selectedTokens.length === 1 && selectedTokens[0] === 'ETH') {
+          // If only ETH deposit ---------------------------------------------------
+          // Check ETH balance
+          const userEthBalance = await web3.eth.getBalance(this.userAddress);
+          
+          if (BigNumber.from(userEthBalance).lt(BigNumber.from(overrides.value))) {
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.zkSyncCheckoutStep3Status = 'not-started';
+            this.showZkSyncModal = false;
+            throw new Error('Insufficient ETH balance to complete checkout');
+          }
+          
           // Deposit ETH
           const zkSyncContract = new ethers.Contract(this.depositContractToUse, zkSyncContractAbi, this.signer);
           
@@ -2048,10 +2137,22 @@ Vue.component('grants-cart', {
           depositTx = await zkSyncContract.depositETH(depositRecipient, overrides);
 
         } else if (selectedTokens.length === 1 && selectedTokens[0] !== 'ETH') {
+          // If only token deposit ---------------------------------------------------
           // Deposit tokens
           const zkSyncContract = new ethers.Contract(this.depositContractToUse, zkSyncContractAbi, this.signer);
           const tokenDonation = this.zkSyncSummaryData()[0];
           const tokenAmount = await this.getTotalAmountToTransfer(tokenDonation.tokenName, tokenDonation.allowance);
+
+          const tokenContract = new web3.eth.Contract(token_abi, tokenDonation.contract._address);
+          const userTokenBalance = await tokenContract.methods.balanceOf(this.userAddress).call({from: this.userAddress});
+
+          if (BigNumber.from(userTokenBalance).lt(BigNumber.from(tokenAmount))) {
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.zkSyncCheckoutStep3Status = 'not-started';
+            this.showZkSyncModal = false;
+            throw new Error(`Insufficient ${tokenDonation.tokenName} balance to complete checkout`, 'error');
+          }
 
           console.log('Waiting for user to send deposit transaction...');
           indicateMetamaskPopup();
@@ -2191,7 +2292,9 @@ Vue.component('grants-cart', {
         }
 
         // Update suggested checkout option
-        await this.checkZkSyncBalances();
+        if (this.zkSyncWalletState) {
+          await this.checkZkSyncBalances();
+        }
       },
       deep: true
     },
@@ -2225,6 +2328,19 @@ Vue.component('grants-cart', {
 
     // Show loading dialog
     this.isLoading = true;
+    
+    // Load list of all tokens
+    const tokensResponse = await fetch('/api/v1/tokens');
+    const allTokens = await tokensResponse.json();
+
+    // Only keep the ones for the current network
+    this.currentTokens = allTokens.filter((token) => token.network === document.web3network || 'mainnet');
+    this.currentTokens.forEach((token) => {
+      // Add addr and name fields for backwards compatibility with existing code in this file
+      token.addr = token.address;
+      token.name = token.symbol;
+    });
+    
     // Read array of grants in cart from localStorage
     this.grantData = CartData.loadCart();
     // Initialize array of empty comments

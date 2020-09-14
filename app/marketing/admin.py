@@ -32,6 +32,10 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
     list_display = ['created_on', '__str__']
 
+class UpcomingDateAdmin(admin.ModelAdmin):
+    ordering = ['-date']
+    list_display = ['created_on', 'date', '__str__']
+
 
 class LeaderboardRankAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -123,7 +127,7 @@ admin.site.register(GithubEvent, GithubEventAdmin)
 admin.site.register(Match, MatchAdmin)
 admin.site.register(Job, GeneralAdmin)
 admin.site.register(ManualStat, GeneralAdmin)
-admin.site.register(UpcomingDate, GeneralAdmin)
+admin.site.register(UpcomingDate, UpcomingDateAdmin)
 admin.site.register(Stat, GeneralAdmin)
 admin.site.register(Keyword, GeneralAdmin)
 admin.site.register(EmailEvent, EmailEventAdmin)

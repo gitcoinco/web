@@ -26,6 +26,12 @@
         <div class="grant-item__content col-md-8 px-3">
           <h2 class="grant-item__title font-subheader">
             <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+            <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="click" data-content='
+             <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
+             <p>Grant owner has verified ownership of their twitter account.</p>
+             <a href="#">Learn more.</p>'
+            ><img width="14" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+            </button>
           </h2>
           <div>
             <p class="text-muted font-smaller-5 mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
@@ -121,6 +127,12 @@
       <div class="grant-item__content px-3">
         <h2 class="grant-item__title font-subheader">
           <a :href="grant.details_url">[[ grant.title.slice(0,60) ]][[ grant.title.length > 60 ? '...' : '']]</a>
+          <button v-if="grant.verified" class="btn btn-sm animate-verify p-0" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+             <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
+             <p>Grant owner has verified ownership of their twitter account.</p>
+             <a href="#">Learn more.</p>'
+            ><img width="16" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+          </button>
         </h2>
         <p class="grant-item__pitch font-caption mb-2">[[ grant.description.slice(0, 145) ]][[ grant.description.length > 145 ? '...' : '']]</p>
         <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
