@@ -45,8 +45,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 import requests
+import tweepy
 from app.services import RedisService
-from app.settings import EMAIL_ACCOUNT_VALIDATION
+from app.settings import EMAIL_ACCOUNT_VALIDATION, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, \
+    TWITTER_CONSUMER_KEY
 from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
@@ -61,7 +63,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
     Subscription,
 )
-from grants.utils import get_leaderboard, is_grant_team_member
+from grants.utils import get_leaderboard, is_grant_team_member, get_user_code, emoji_codes
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
@@ -349,7 +351,8 @@ def get_grants(request):
                 'token_symbol': grant.token_symbol,
                 'admin_address': grant.admin_address,
                 'token_address': grant.token_address,
-                'image_css': grant.image_css
+                'image_css': grant.image_css,
+                'verified': grant.twitter_verified,
             } for grant in grants
         },
         'credentials': {
@@ -861,6 +864,8 @@ def grant_details(request, grant_id, grant_slug):
         'is_unsubscribed_from_updates_from_this_grant': is_unsubscribed_from_updates_from_this_grant,
         'is_round_5_5': False,
         'options': [(f'Email Grant Funders ({grant.contributor_count})', 'bullhorn', 'Select this option to email your status update to all your funders.')] if is_team_member else [],
+        'user_code': get_user_code(request.user.profile.id, grant,emoji_codes) if request.user.is_authenticated else '',
+        'verification_tweet': get_grant_verification_text(grant),
     }
 
     if tab == 'stats':
@@ -1727,4 +1732,74 @@ def toggle_grant_favorite(request, grant_id):
 
     return JsonResponse({
         'action': 'follow'
+    })
+
+
+def get_grant_verification_text(grant, long=True):
+    msg = f'I am verifying my ownership of { grant.title } on Gitcoin Grants'
+
+    if long:
+        msg += f' at https://gitcoin.co{ grant.get_absolute_url() }.'
+
+    return msg
+
+@login_required
+def verify_grant(request, grant_id):
+    grant = Grant.objects.get(pk=grant_id)
+
+    if not is_grant_team_member(grant, request.user.profile):
+        return JsonResponse({
+            'ok': False,
+            'msg': f'You need to be a member of this grants to verify it.'
+        })
+
+    if grant.twitter_verified:
+        return JsonResponse({
+            'ok': True,
+            'msg': 'Grant was verified previously'
+        })
+
+    auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+    auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET)
+    try:
+        api = tweepy.API(auth)
+        last_tweet = api.user_timeline(screen_name=grant.twitter_handle_1, count=1, tweet_mode="extended",
+                                       include_rts=False, exclude_replies=False)[0]
+    except tweepy.TweepError:
+        return JsonResponse({
+            'ok': False,
+            'msg': f'Sorry, we couldn\'t get the last tweet from @{grant.twitter_handle_1}'
+        })
+    except IndexError:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'Sorry, we couldn\'t retrieve the last tweet from your timeline'
+        })
+
+    if last_tweet.retweeted or 'RT @' in last_tweet.full_text:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'We get a retweet from your last status, at this moment we don\'t supported retweets.'
+        })
+
+    user_code = get_user_code(request.user.profile.id, grant, emoji_codes)
+    text = get_grant_verification_text(grant, False)
+
+    has_code = user_code in last_tweet.full_text
+    has_text = text in last_tweet.full_text
+
+    if has_code and has_text:
+        grant.twitter_verified = True
+        grant.twitter_verified_by = request.user.profile
+        grant.twitter_verified_at = timezone.now()
+
+        grant.save()
+
+    return JsonResponse({
+        'ok': True,
+        'verified': grant.twitter_verified,
+        'text': last_tweet.full_text,
+        'has_code': has_code,
+        'has_text': has_text,
+        'account': grant.twitter_handle_1
     })
