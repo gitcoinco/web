@@ -3,12 +3,10 @@
  * @dev If you need to interact with the Rinkeby Dai contract (e.g. to reset allowances for
  * testing), use this one click dapp: https://oneclickdapp.com/drink-leopard/
  */
-let BN;
+const BN = Web3.utils.BN;
 
 needWalletConnection();
-window.addEventListener('dataWalletReady', function(e) {
-  BN = web3.utils.BN;
-}, false);
+
 // Constants
 const ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 const gitcoinAddress = '0x00De4B13153673BCAE2616b67bf822500d325Fc3'; // Gitcoin donation address for mainnet and rinkeby
@@ -1476,7 +1474,19 @@ Vue.component('grants-cart', {
           // This means the account has never interacted with the network
           throw new Error('Unknown account');
         }
-        const changePubkey = await syncWallet.setSigningKey();
+
+        // Determine how to set key based on wallet type
+        let changePubkey;
+
+        if (syncWallet.ethSignerType.verificationMethod === 'ECDSA') {
+          console.log('  Using ECDSA to set signing key');
+          changePubkey = await syncWallet.setSigningKey();
+        } else {
+          console.log('  Using ERC-1271 to set signing key. This requires an on-chain transaction');
+          const signingKeyTx = await syncWallet.onchainAuthSigningKey();
+
+          changePubkey = await syncWallet.setSigningKey('committed', true);
+        }
 
         // Wait until the tx is committed
         await changePubkey.awaitReceipt();
