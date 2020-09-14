@@ -569,7 +569,12 @@ def grants_by_grant_type(request, grant_type):
             total_clr_pot = total_clr_pot + clr_round_amount if total_clr_pot else clr_round_amount
 
     if total_clr_pot:
-        int_total_clr_pot = intword(total_clr_pot)
+        if total_clr_pot > 1000 * 100:
+            int_total_clr_pot = f"{round(total_clr_pot/1000/1000, 1)}m"
+        elif total_clr_pot > 100:
+            int_total_clr_pot = f"{round(total_clr_pot/1000, 1)}k"
+        else:
+            int_total_clr_pot = intword(total_clr_pot)
         live_now = f'❇️ LIVE NOW! Up to ${int_total_clr_pot} Matching Funding on Gitcoin Grants' if total_clr_pot > 0 else ""
         title = f'(💰${int_total_clr_pot} Match LIVE!) Grants'
     else:
