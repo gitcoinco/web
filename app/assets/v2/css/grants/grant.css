@@ -630,7 +630,6 @@ background: linear-gradient(85.75deg, #03008D -17.8%, #000000 139.56%); /* W3C, 
 }
 
 .grants_hero_img{
-  background-size: contain !important;
   background-position-x: 50%;
   background-color: #030118;
 }

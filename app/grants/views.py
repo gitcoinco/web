@@ -453,6 +453,8 @@ def get_bg(grant_type):
     bg = 4
     bg = f"{bg}.jpg"
     mid_back = 'bg14.png'
+    bg_size = 'contain'
+    bg_color = '#030118'
     bottom_back = 'bg13.gif'
     if grant_type == 'tech':
         bottom_back = 'bg20-2.png'
@@ -468,9 +470,12 @@ def get_bg(grant_type):
     if grant_type != 'matic':
         bg = '../grants/grants_header_donors_round_7.png'
     if grant_type == 'matic':
+        # bg = '../grants/matic-banner.png'
         bg = '../grants/matic-banner.png'
+        bg_size = 'cover'
+        bg_color = '#0c1844'
 
-    return bg, mid_back, bottom_back
+    return bg, mid_back, bottom_back, bg_size, bg_color
 
 
 def grants_by_grant_type(request, grant_type):
@@ -491,7 +496,7 @@ def grants_by_grant_type(request, grant_type):
         category = ''
     profile = get_profile(request)
     _grants = None
-    bg, mid_back, bottom_back = get_bg(grant_type)
+    bg, mid_back, bottom_back, bg_size, bg_color = get_bg(grant_type)
     show_past_clr = False
 
     sort_by_index = None
@@ -602,6 +607,11 @@ def grants_by_grant_type(request, grant_type):
         'can_pin': can_pin(request, what),
         'pinned': pinned,
         'target': f'/activity?what=all_grants',
+        'styles': {
+            'bg': bg,
+            'bg_size': bg_size,
+            'bg_color': bg_color
+        },
         'bg': bg,
         'keywords': get_keywords(),
         'grant_amount': grant_amount,
