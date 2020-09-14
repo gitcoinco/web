@@ -1,5 +1,5 @@
-from grants.models import *
 from dashboard.models import Profile
+from grants.models import *
 from grants.utils import get_leaderboard, is_grant_team_member
 
 handles = [
@@ -20,4 +20,3 @@ for handle in handles:
         grant.save()
     else:
         print(f'{handle} is already a team member')
-

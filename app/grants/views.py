@@ -23,6 +23,7 @@ import json
 import logging
 import random
 import re
+import time
 from decimal import Decimal
 
 from django.conf import settings
@@ -478,7 +479,6 @@ def get_bg(grant_type):
     return bg, mid_back, bottom_back, bg_size, bg_color
 
 
-import time
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
     limit = request.GET.get('limit', 6)

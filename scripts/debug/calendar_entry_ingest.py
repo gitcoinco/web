@@ -1,9 +1,10 @@
 # Grants Round 7 BrightID verification parities input
 # https://docs.google.com/document/d/1wzPrlYu6K4R_lOcpYetU_52u4yrcozzBFVrEWjschnw/edit#heading=h.1el8e2wn7u87
 
-from marketing.models import UpcomingDate
 from django.utils import timezone
+
 import pytz
+from marketing.models import UpcomingDate
 
 # AirMeets
 # Every day at 07:00-07:30 UTC 
@@ -60,5 +61,3 @@ for package in packages:
             comment=comment,
             context_tag=context_tag,
             )
-
-

@@ -29,11 +29,12 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.functional import Promise
 
+from app.services import RedisService
 from avatar.models import AvatarTheme, CustomAvatar
 from dashboard.models import Activity, HackathonEvent, Profile
 from dashboard.utils import set_hackathon_event
 from economy.models import EncodeAnything, SuperModel
-from grants.models import Contribution, Grant
+from grants.models import Contribution, Grant, GrantCategory
 from grants.utils import generate_leaderboard
 from grants.views import next_round_start, round_types
 from marketing.models import Stat
@@ -44,8 +45,7 @@ from quests.views import current_round_number
 from retail.utils import build_stat_results, programming_languages
 from retail.views import get_contributor_landing_page_context, get_specific_activities
 from townsquare.views import tags
-from app.services import RedisService
-from grants.models import GrantCategory
+
 
 def create_grant_clr_cache():
     print('create_grant_clr_cache')
