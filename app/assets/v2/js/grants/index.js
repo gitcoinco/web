@@ -93,22 +93,18 @@ Vue.component('grant-sidebar', {
   },
   methods: {
     toggleFollowing: function(state, event) {
-      console.log(state)
       event.preventDefault;
       this.filter_grants({following: state});
     },
     toggleIdle: function(state, event) {
-      console.log(state)
       event.preventDefault;
       this.filter_grants({idle_grants: state});
     },
     toggleContributionView: function(state, event) {
-      console.log(state)
       event.preventDefault;
       this.filter_grants({show_contributions: state});
     },
     toggleMyGrants: function(state, event) {
-      console.log(state)
       let me = state ? 'me' : 'all';
 
       event.preventDefault;
