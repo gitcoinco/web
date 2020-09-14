@@ -87,12 +87,12 @@
               <div class="col-12 options">
                 <ul class="nav d-inline-block font-body mb-2 grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-xl-left font-body font-weight-semibold">
                   <li class="mr-1 ">
-                    <a :href="`/grants/${grant_type.keyword}?${query_params()}`" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
+                    <a @click="filter_grants({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
                       All [[grant_type.label]] <sup>([[grant_type.count]])</sup>
                     </a>
                   </li>
                   <li class="mr-1" v-for="category in grant_type.sub_categories">
-                    <a :href="`/grants/${grant_type.keyword}?category=${category.label}&${query_params()}`" :data-type="grant_type.keyword" data-category="category.label" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
+                    <a @click="filter_grants({type: grant_type.keyword, category: category.label})" :data-type="grant_type.keyword" data-category="category.label" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
                       [[category.label]] <sup>([[category.count]])</sup>
                     </a>
                   </li>
