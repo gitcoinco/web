@@ -521,6 +521,8 @@ class Bounty(SuperModel):
         return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
 
     def get_natural_value(self):
+        if not self.value_in_token:
+            return 0
         token = addr_to_token(self.token_address)
         if not token:
             return 0
