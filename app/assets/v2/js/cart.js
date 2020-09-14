@@ -594,6 +594,21 @@ Vue.component('grants-cart', {
     },
 
     /**
+     * @notice Wrapper around web3's estimateGas so it can be used with await
+     * @param tx Transaction to estimate gas for
+     */
+    async estimateGas(tx) {
+      return new Promise(function(resolve, reject) {
+        tx.estimateGas((err, res) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(res);
+        });
+      });
+    },
+
+    /**
      * @notice Generates an object where keys are token names and value are the total amount
      * being donated in that token. Scale factor scales the amounts used by a constant
      * @dev The addition here is based on human-readable numbers so BN is not needed
@@ -869,12 +884,13 @@ Vue.component('grants-cart', {
         const contract = allowanceData[i].contract;
         const tokenName = allowanceData[i].tokenName;
         const approvalTx = contract.methods.approve(targetContract, allowance);
+        const gasLimit = await this.estimateGas(approvalTx);
 
         // We split this into two very similar branches, because on the last approval
         // we execute the callback (the main donation flow) after we get the transaction hash
         if (i !== allowanceData.length - 1) {
           approvalTx
-            .send({ from: userAddress })
+            .send({ from: userAddress, gas: gasLimit })
             .on('transactionHash', (txHash) => {
               this.setApprovalTxHash(tokenName, txHash);
             })
@@ -884,7 +900,7 @@ Vue.component('grants-cart', {
             });
         } else {
           approvalTx
-            .send({ from: userAddress })
+            .send({ from: userAddress, gas: gasLimit })
             .on('transactionHash', async(txHash) => { // eslint-disable-line no-loop-func
               indicateMetamaskPopup(true);
               this.setApprovalTxHash(tokenName, txHash);
