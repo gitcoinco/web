@@ -70,5 +70,20 @@ h2.title {
   .title {
     padding-left: 10px;
   }
+}
 
+.verification__warning {
+  background-color: #f8f8f0;
+  border: 2px solid #ffce08;
+  color: #b88b16;
+  font-weight: bold;
+}
+
+.verification__warning__icon {
+  font-size: 1.8rem;
+  margin-top: 7px;
+}
+
+.error {
+  color: var(--gc-pink);
 }

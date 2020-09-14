@@ -371,6 +371,10 @@ class Grant(SuperModel):
     is_clr_active = models.BooleanField(default=False, help_text=_('CLR Round active or not? (auto computed)'))
     clr_round_num = models.CharField(default='', max_length=255, help_text=_('the CLR round number thats active'), blank=True)
 
+    twitter_verified = models.BooleanField(default=False, help_text='The owner grant has verified the twitter account')
+    twitter_verified_by = models.ForeignKey('dashboard.Profile', null=True, blank=True, on_delete=models.SET_NULL, help_text='Team member who verified this grant')
+    twitter_verified_at = models.DateTimeField(blank=True, null=True, help_text='At what time and date what verified this grant')
+
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
 
@@ -1259,38 +1263,38 @@ class Contribution(SuperModel):
 
             # We use the transaction hashes of this object to help identify zkSync checkouts. This
             # works as follows:
-            # 
+            #
             #   self.split_tx_id holds one of:
-            #     Case 1: The tx hash of an L1 transaction to the BulkCheckout contract for an 
+            #     Case 1: The tx hash of an L1 transaction to the BulkCheckout contract for an
             #             ordinary checkout
             #     Case 2: The tx hash of an L1 transaction that deposits funds into zkSync. This
             #             occurs when a user did not have existing funds in zkSync
             #     Case 3: The address of the Gitcoin zkSync wallet that executed the donations. This
             #             occurs when a user already had funds in zkSync
-            # 
+            #
             # Case 1 has already been handled by everything above. For Case 2, we mark a
             # contribution as cleared once both of the below conditions are met:
             #   1. The L1 deposit transaction has been confirmed, and
             #   2. The L2 transfers have been completed
             #
             # For case 3, we mark a contribution as cleared once the L2 transfers are completed.
-            
+
             # Prepare web3 provider
             network = self.subscription.network
             PROVIDER = "wss://" + network + ".infura.io/ws/v3/" + settings.INFURA_V3_PROJECT_ID
             w3 = Web3(Web3.WebsocketProvider(PROVIDER))
-            
+
             # Get case number
             is_split_tx_id_address = len(self.split_tx_id) == 42 and self.split_tx_id[0:2] == '0x'
             if is_split_tx_id_address:
                 case_number = 3
-                
+
             else:
                 # Figure out if we are in Case 1 or Case 2
                 # handle replace of split_tx_id
                 if not self.split_tx_id:
                     return
-                
+
                 split_tx_status, _ = get_tx_status(self.split_tx_id, self.subscription.network, self.created_on)
                 if split_tx_status in ['pending', 'dropped', 'unknown', '']:
                     new_tx = getReplacedTX(self.split_tx_id)
@@ -1311,7 +1315,7 @@ class Contribution(SuperModel):
                 batch_zksync_deposit_contract_addr = '0x9D37F793E5eD4EbD66d62D505684CD9f756504F6'.lower()
                 zkSync_recipients = [zksync_contract_addr.lower(), batch_zksync_deposit_contract_addr.lower()]
                 case_number = 2 if recipient_L1 in zkSync_recipients else 1
-                
+
             # If case 1, proceed as normal
             if case_number == 1:
                 # actually validate token transfers
