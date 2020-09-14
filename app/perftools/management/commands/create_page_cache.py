@@ -44,7 +44,16 @@ from quests.views import current_round_number
 from retail.utils import build_stat_results, programming_languages
 from retail.views import get_contributor_landing_page_context, get_specific_activities
 from townsquare.views import tags
+from app.services import RedisService
+from grants.models import GrantCategory
 
+def create_grant_category_size_cache():
+    print('create_grant_category_size_cache')
+    redis = RedisService().redis
+    for category in GrantCategory.objects.all():
+        key = f"grant_category_{category.category}"
+        val = Grant.objects.filter(categories__category__contains=category.category).count()
+        redis.set(key, val)
 
 def create_top_grant_spenders_cache():
     for round_type in round_types:
@@ -307,8 +316,9 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_results_cache()
+        create_grant_category_size_cache()
         if not settings.DEBUG:
+            create_results_cache()
             create_hidden_profiles_cache()
             create_tribes_cache()
             create_activity_cache()

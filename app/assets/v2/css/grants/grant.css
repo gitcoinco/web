@@ -387,12 +387,8 @@
   color: white;
 }
 
-.grants-hero .amount-round{
-  color: #25E899;
-}
-
-.grants-hero .title-round{
-  font-size: 24px;
+.title-round{
+  color: #25E899 !important;
 }
 
 .grants-hero .font-header,
