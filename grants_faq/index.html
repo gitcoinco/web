@@ -1296,8 +1296,42 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#rounds-6" title="Rounds 6+" class="md-nav__link">
-    Rounds 6+
+  <a href="#round-7" title="Round 7" class="md-nav__link">
+    Round 7
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture-background" title="Architecture Background" class="md-nav__link">
+    Architecture Background
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checkout-fow" title="Checkout Fow" class="md-nav__link">
+    Checkout Fow
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transfer-fees" title="Transfer Fees" class="md-nav__link">
+    Transfer Fees
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#round-6" title="Round 6" class="md-nav__link">
+    Round 6
   </a>
   
 </li>
@@ -2038,8 +2072,42 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#rounds-6" title="Rounds 6+" class="md-nav__link">
-    Rounds 6+
+  <a href="#round-7" title="Round 7" class="md-nav__link">
+    Round 7
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture-background" title="Architecture Background" class="md-nav__link">
+    Architecture Background
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checkout-fow" title="Checkout Fow" class="md-nav__link">
+    Checkout Fow
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transfer-fees" title="Transfer Fees" class="md-nav__link">
+    Transfer Fees
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#round-6" title="Round 6" class="md-nav__link">
+    Round 6
   </a>
   
 </li>
@@ -2096,7 +2164,62 @@
                 
                 
                 <h1 id="grants-general-documentation">Grants General Documentation</h1>
-<h2 id="rounds-6">Rounds 6+</h2>
+<h2 id="round-7">Round 7</h2>
+<p>In round 7 we introduced the option to checkout on L2 using <a href="https://zksync.io/">zkSync</a>.
+This means there are now three possible checkout flows&mdash;the Bulk Checkout flow introduced in
+Round 6, and two zkSync checkout flows.</p>
+<h3 id="architecture-background">Architecture Background</h3>
+<p>Before describing these two flows, we'll review how zkSync accounts work at a high level. When
+logging in to your zkSync account, such as at https://wallet.zksync.io/, you are asked to sign a
+message. That signature is used to generate a private key, and each transfer then requires two
+signatures&mdash;one from this private key, and as an additional security measure, one more from
+your regular web3 wallet. This is great from a security perspective, but not so great from a UX
+perspective. Requiring one signature for each transfer can be a pain if you want to send a lot of
+transfers, so you'd be doing a lot of clicking when checking out with large carts. </p>
+<p>To remedy this, we ask you to login to a "Gitcoin zkSync" account. This generates an L1 account
+that the Gitcoin frontend can use to sign transactions directly. The private key to this account is
+derived from the signature, and is never stored or transmitted anywhere. We then login to zkSync with <em>this account</em>, and now
+can use this account to send transfers without prompting you for each transfer! Funds are
+only held by this account temporarily to improve UX. Because it does not permanently hold funds
+there is no additional security risk.</p>
+<h3 id="checkout-fow">Checkout Fow</h3>
+<p>Based on the items in your cart, we check your zkSync balances to see if you already have enough
+funds on zkSync to complete checkout. </p>
+<p>If you do, the checkout flow is as follows:</p>
+<ol>
+<li>Sign a message to login to your Gitcoin zkSync account</li>
+<li>Sign a message to login to your regular zkSync account</li>
+<li>Sign a message to transfer funds from your regular zkSync account to your Gitcoin zkSync account</li>
+</ol>
+<p>Step 3 is repeated for each token you are donating. If you only are using DAI, step 3 will ask
+for one signature. If you are donating DAI and ETH, it will ask for two signatures.</p>
+<p>After those signatures are received, the transfers are executed so the funds are in your Gitcoin
+zkSync account. From there, all transfers of funds to grant owners are fired off in a rapid process
+that only takes a few  seconds. Any leftover funds in the Gitcoin zkSync account (typically due to
+our conservative estimates of what zkSync trasfer fees will be) are transferred back to your regular
+zkSync account so you can access them at https://wallet.zksync.io/.</p>
+<p>If you do not have enough funds in your zkSync account to complete checkout, the flow is as follows:</p>
+<ol>
+<li>Sign a message to login to your Gitcoin zkSync account</li>
+<li>Confirm one transaction for each required ERC20 approval (~25k–50k gas)</li>
+<li>Confirm one transaction to deposit funds into zkSync (~180k–200k gas)</li>
+</ol>
+<p>If you are only donating with one token, step 3 calls the deposit function directly on the 
+<a href="https://etherscan.io/address/0xabea9132b05a70803a4e85094fd0e1800777fbef">zkSync contract</a>. If you
+are donating with multiple tokens, step 3 uses our
+<a href="https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BatchZkSyncDeposit.sol">Batch ZkSync Deposit Contract</a>
+to reduce both the number of transactions and the gas costs for multiple deposits.</p>
+<p>Funds are deposited directly to your Gitcoin zkSync account. To ensure your deposit is not reverted, it
+takes 10 confirmations for your deposit to be accepted by zkSync. After waiting for those 10 confirmations,
+we converge on the above flow, so all transfers of funds to grant owners are now executed. Again,
+any leftover funds in the Gitcoin zkSync account (in this case, this includes any additional funds
+you elected to deposit into zkSync) are transferred back to your regular zkSync account.</p>
+<h3 id="transfer-fees">Transfer Fees</h3>
+<p>zkSync transfer costs can be found in their <a href="https://zksync.io/faq/tokens.html#fee-costs">documentation</a>.
+Right now it costs about 2000 gas per transfer, compared to ~60k gas to transfer DAI on L1, and
+~180k gas to deposit funds into zkSync. Once zkSync 1.1 is released, these transfer fees will be
+reduced to about 400 gas per transfer.</p>
+<h2 id="round-6">Round 6</h2>
 <p>In round 6 we transitioned away from the <a href="https://1337alliance.org">EIP 1337</a> contract and replaced
 it with a single contract that enables bulk donations for all grants. The source of this <code>BulkCheckout</code> contract
 can be found <a href="https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BulkCheckout.sol">here</a>,

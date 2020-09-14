@@ -2016,7 +2016,28 @@ The class bool is a subclass of the class int, and cannot be subclassed.
 </code></pre>
 
 <p>Handle grant funding.
-<h2 id="grants.views.subscription_cancel">subscription_cancel</h2></p>
+<h2 id="grants.views.zksync_set_interrupt_status">zksync_set_interrupt_status</h2></p>
+<pre><code class="python">zksync_set_interrupt_status(request)
+</code></pre>
+
+<p>For the specified address, save off the deposit hash of the value the tx that was interrupted.
+If a deposit hash is present, then the user was interrupted and must complete the existing
+checkout before doing another one</p>
+<h2 id="grants.views.zksync_get_interrupt_status">zksync_get_interrupt_status</h2>
+
+<pre><code class="python">zksync_get_interrupt_status(request)
+</code></pre>
+
+<p>Returns the transaction hash of a deposit into zkSync if user was interrupted before zkSync
+chekout was complete</p>
+<h2 id="grants.views.get_replaced_tx">get_replaced_tx</h2>
+
+<pre><code class="python">get_replaced_tx(request)
+</code></pre>
+
+<p>scrapes etherscan to get the replaced tx</p>
+<h2 id="grants.views.subscription_cancel">subscription_cancel</h2>
+
 <pre><code class="python">subscription_cancel(request, grant_id, grant_slug, subscription_id)
 </code></pre>
 
