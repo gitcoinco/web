@@ -1980,6 +1980,15 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_in_eth = instance.get_value_in_eth
     instance.value_true = instance.get_value_true
 
+    # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1600019142065700
+    if not instance.value_true:
+        instance.value_true = 0
+    if not instance.value_in_token:
+        instance.value_in_token = 0
+    if not instance.balance:
+        instance.balance = 0
+
+
     if not instance.bounty_owner_profile:
         if instance.bounty_owner_github_username:
             profiles = Profile.objects.filter(handle=instance.bounty_owner_github_username.lower().replace('@',''))
