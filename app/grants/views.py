@@ -311,7 +311,7 @@ def get_grants(request):
         contributions_by_grant[grant_id] = group
 
     return JsonResponse({
-        'grant_types': get_grant_type_cache(),
+        'grant_types': get_grant_type_cache(network),
         'current_type': grant_type,
         'category': category,
         'grants': {
@@ -415,9 +415,9 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     return _grants
 
 
-def get_grant_type_cache():
+def get_grant_type_cache(network):
     try:
-        return JSONStore.objects.get(view='get_grant_types').data
+        return JSONStore.objects.get(view=f'get_grant_types_{network}').data
     except:
         return {}
 
@@ -536,8 +536,7 @@ def grants_by_grant_type(request, grant_type):
         current_partners_fund += partner.amount
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
-    grant_types = get_grant_type_cache()
-    print(grant_types)
+    grant_types = get_grant_type_cache(network)
 
     cht = []
     chart_list = ''

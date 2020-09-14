@@ -68,16 +68,17 @@ def create_grant_clr_cache():
 def create_grant_type_cache():
     print('create_grant_type_cache')
     from grants.views import get_grant_types
-    view = 'get_grant_types'
-    keyword = 'get_grant_types'
-    data = get_grant_types('mainnet', None)
-    with transaction.atomic():
-        JSONStore.objects.filter(view=view).all().delete()
-        JSONStore.objects.create(
-            view=view,
-            key=keyword,
-            data=data,
-            )
+    for network in ['rinkeby', 'mainnet']:
+        view = f'get_grant_types_{network}'
+        keyword = view
+        data = get_grant_types('mainnet', None)
+        with transaction.atomic():
+            JSONStore.objects.filter(view=view).all().delete()
+            JSONStore.objects.create(
+                view=view,
+                key=keyword,
+                data=data,
+                )
 
 
 
