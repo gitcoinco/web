@@ -2002,12 +2002,16 @@ Vue.component('grants-cart', {
       // Setup -------------------------------------------------------------------------------------
         const ethAmount = this.zkSyncDonationInputsEthAmount; // amount of ETH being donated
         const depositRecipient = this.gitcoinSyncWallet.address(); // address of deposit recipient
+        const BigNumber = ethers.BigNumber;
 
         // Deposit funds ---------------------------------------------------------------------------
         // Setup overrides
-        let overrides = { gasLimit: ethers.BigNumber.from(String(this.zkSyncDonationInputsGasLimit)) };
+        let overrides = {
+          gasLimit: BigNumber.from(String(this.zkSyncDonationInputsGasLimit)),
+          value: ethers.constants.Zero
+        };
         
-        if (ethers.BigNumber.from(ethAmount).gt('0')) {
+        if (BigNumber.from(ethAmount).gt('0')) {
           // Specify how much ETH to send with transaction
           overrides.value = await this.getTotalAmountToTransfer('ETH', ethAmount);
         }
@@ -2015,14 +2019,14 @@ Vue.component('grants-cart', {
         const selectedTokens = Object.keys(this.donationsToGrants);
         let depositTx;
 
-        
         if (this.depositContractToUse === batchZkSyncDepositContractAddress) {
+          // If batch deposit ---------------------------------------------------------
           // Deposit mix of tokens
           console.log('Generating deposit payload...');
           const deposits = []; // array of arrays, passed into batckZkSyncDepositContract.deposit(...)
 
           // Handle ETH
-          if (ethers.BigNumber.from(ethAmount).gt('0'))
+          if (BigNumber.from(ethAmount).gt('0'))
             deposits.push([ ETH_ADDRESS, overrides.value ]);
           
           // Handle tokens
@@ -2052,6 +2056,34 @@ Vue.component('grants-cart', {
             batchZkSyncDepositContractAbi,
             this.signer
           );
+
+          // Verify user has sufficient balances now that we account for transaction fees
+          // Check tokens
+          for (let i = 0; i < deposits.length; i += 1) {
+            const tokenContract = new web3.eth.Contract(token_abi, deposits[i][0]);
+            const requiredAmount = deposits[i][1];
+            const userTokenBalance = await tokenContract.methods.balanceOf(this.userAddress).call({from: this.userAddress});
+
+            if (BigNumber.from(userTokenBalance).lt(BigNumber.from(requiredAmount))) {
+              this.zkSyncCheckoutStep1Status = 'not-started';
+              this.zkSyncCheckoutStep2Status = 'not-started';
+              this.zkSyncCheckoutStep3Status = 'not-started';
+              this.showZkSyncModal = false;
+              throw new Error(`Insufficient ${tokenSymbol} balance to complete checkout`, 'error');
+            }
+          }
+          
+          // Check ETH
+          const userEthBalance = await web3.eth.getBalance(this.userAddress);
+          
+          if (BigNumber.from(userEthBalance).lt(BigNumber.from(overrides.value))) {
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.zkSyncCheckoutStep3Status = 'not-started';
+            this.showZkSyncModal = false;
+            throw new Error('Insufficient ETH balance to complete checkout');
+          }
+
         
           // Send transaction
           console.log('Waiting for user to send deposit transaction...');
@@ -2059,6 +2091,18 @@ Vue.component('grants-cart', {
           depositTx = await batckZkSyncDepositContract.deposit(depositRecipient, deposits, overrides);
 
         } else if (selectedTokens.length === 1 && selectedTokens[0] === 'ETH') {
+          // If only ETH deposit ---------------------------------------------------
+          // Check ETH balance
+          const userEthBalance = await web3.eth.getBalance(this.userAddress);
+          
+          if (BigNumber.from(userEthBalance).lt(BigNumber.from(overrides.value))) {
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.zkSyncCheckoutStep3Status = 'not-started';
+            this.showZkSyncModal = false;
+            throw new Error('Insufficient ETH balance to complete checkout');
+          }
+          
           // Deposit ETH
           const zkSyncContract = new ethers.Contract(this.depositContractToUse, zkSyncContractAbi, this.signer);
           
@@ -2067,10 +2111,22 @@ Vue.component('grants-cart', {
           depositTx = await zkSyncContract.depositETH(depositRecipient, overrides);
 
         } else if (selectedTokens.length === 1 && selectedTokens[0] !== 'ETH') {
+          // If only token deposit ---------------------------------------------------
           // Deposit tokens
           const zkSyncContract = new ethers.Contract(this.depositContractToUse, zkSyncContractAbi, this.signer);
           const tokenDonation = this.zkSyncSummaryData()[0];
           const tokenAmount = await this.getTotalAmountToTransfer(tokenDonation.tokenName, tokenDonation.allowance);
+
+          const tokenContract = new web3.eth.Contract(token_abi, tokenDonation.contract._address);
+          const userTokenBalance = await tokenContract.methods.balanceOf(this.userAddress).call({from: this.userAddress});
+
+          if (BigNumber.from(userTokenBalance).lt(BigNumber.from(tokenAmount))) {
+            this.zkSyncCheckoutStep1Status = 'not-started';
+            this.zkSyncCheckoutStep2Status = 'not-started';
+            this.zkSyncCheckoutStep3Status = 'not-started';
+            this.showZkSyncModal = false;
+            throw new Error(`Insufficient ${tokenDonation.tokenName} balance to complete checkout`, 'error');
+          }
 
           console.log('Waiting for user to send deposit transaction...');
           indicateMetamaskPopup();
