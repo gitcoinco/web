@@ -93,18 +93,22 @@ Vue.component('grant-sidebar', {
   },
   methods: {
     toggleFollowing: function(state, event) {
+      console.log(state)
       event.preventDefault;
       this.filter_grants({following: state});
     },
     toggleIdle: function(state, event) {
+      console.log(state)
       event.preventDefault;
       this.filter_grants({idle_grants: state});
     },
     toggleContributionView: function(state, event) {
+      console.log(state)
       event.preventDefault;
       this.filter_grants({show_contributions: state});
     },
     toggleMyGrants: function(state, event) {
+      console.log(state)
       let me = state ? 'me' : 'all';
 
       event.preventDefault;
@@ -128,7 +132,6 @@ Vue.component('grant-sidebar', {
       } else if (this.isMobileDevice() && this.show_filters === null) {
         this.show_filters = false;
       }
-      console.log(this.show_filters);
     }
   },
   mounted() {
@@ -160,6 +163,7 @@ if (document.getElementById('grants-showcase')) {
       view: localStorage.getItem('grants_view') || 'grid',
       shortView: true,
       bottom: false,
+      cart_lock: false,
       grantsNumPages,
       grantsHasNext,
       numGrants
@@ -313,6 +317,49 @@ if (document.getElementById('grants-showcase')) {
           vm.page = 1;
         }
         return vm.grants;
+      },
+      addAllToCart: async function() {
+        let vm = this;
+
+        if (this.cart_lock)
+          return;
+
+        this.lock = true;
+
+        const base_params = {
+          no_pagination: true,
+          sort_option: this.sort,
+          network: this.network,
+          keyword: this.keyword,
+          state: this.state,
+          category: this.category,
+          type: this.current_type
+        };
+
+        if (this.following) {
+          base_params['following'] = this.following;
+        }
+
+        if (this.idle_grants) {
+          base_params['idle'] = this.idle_grants;
+        }
+
+        if (this.show_contributions) {
+          base_params['only_contributions'] = this.show_contributions;
+        }
+
+        const params = new URLSearchParams(base_params).toString();
+        const getGrants = await fetchData(`/grants/bulk_cart?${params}`);
+
+
+        (getGrants.grants || []).forEach((grant) => {
+          CartData.addToCart(grant);
+          console.log(grant);
+        });
+
+        showSideCart();
+        _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grants was' : 'grant were' } added to your cart!`, 'success');
+        vm.cart_lock = false;
       },
       scrollEnd: async function(event) {
         let vm = this;

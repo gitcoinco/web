@@ -253,9 +253,57 @@ def grants(request):
     return grants_by_grant_type(request, _type)
 
 
+def bulk_grants_for_cart(request):
+    grant_type = request.GET.get('type', 'all')
+    sort = request.GET.get('sort_option', 'weighted_shuffle')
+    network = request.GET.get('network', 'mainnet')
+    keyword = request.GET.get('keyword', '')
+    state = request.GET.get('state', 'active')
+    category = request.GET.get('category', '')
+    idle_grants = request.GET.get('idle', '') == 'true'
+    following = request.GET.get('following', '') != ''
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
+
+    filters = {
+        'request': request,
+        'grant_type': grant_type,
+        'sort': sort,
+        'network': network,
+        'keyword': keyword,
+        'state': state,
+        'category': category,
+        'following': following,
+        'idle_grants': idle_grants,
+        'only_contributions': only_contributions,
+        'omit_my_grants': True
+    }
+    _grants = build_grants_by_type(**filters)
+    grants = []
+
+    for grant in _grants:
+        grant_payload = {
+            'grant_id': grant.id,
+            'grant_slug': grant.slug,
+            'grant_url': grant.url,
+            'grant_title': grant.title,
+            'grant_contract_version': grant.contract_version,
+            'grant_contract_address': grant.contract_address,
+            'grant_token_symbol': grant.token_symbol,
+            'grant_admin_address': grant.admin_address,
+            'grant_token_address': grant.token_address,
+            'grant_logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
+            'grant_clr_prediction_curve': grant.clr_prediction_curve,
+            'grant_image_css': grant.image_css,
+            'is_clr_eligible': grant.is_clr_eligible
+        }
+
+        grants.append(grant_payload)
+
+    return JsonResponse({'grants': grants})
+
+
 def get_grants(request):
     grant_type = request.GET.get('type', 'all')
-
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
@@ -364,7 +412,7 @@ def get_grants(request):
 
 
 def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
-                         category='', following=False, idle_grants=False, only_contributions=False):
+                         category='', following=False, idle_grants=False, only_contributions=False, omit_my_grants=False):
     sort_by_clr_pledge_matching_amount = None
     profile = request.user.profile if request.user.is_authenticated else None
     three_months_ago = timezone.now() - datetime.timedelta(days=90)
@@ -373,7 +421,11 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
 
-    if grant_type == 'me' and profile:
+    if omit_my_grants and profile:
+        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                    list(profile.grant_admin.all().values_list('pk', flat=True))
+        _grants = _grants.exclude(id__in=grants_id)
+    elif grant_type == 'me' and profile:
         grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
                     list(profile.grant_admin.all().values_list('pk', flat=True))
         _grants = _grants.filter(id__in=grants_id)

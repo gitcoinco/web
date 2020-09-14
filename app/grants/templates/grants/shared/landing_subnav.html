@@ -2,6 +2,9 @@
           <div id="top-filters" class="row">
             <div class="col-12 col-xl-12 mt-2 mt-xl-0 font-caption text-center text-xl-right font-weight-semibold order_by sort_container">
               <div class="mr-4">
+                <button class="btn btn-outline-gc-blue font-caption" @click="addAllToCart($event)" :disabled="cart_lock">Add all to cart <i class="fas fa-spinner fa-spin gc-text-blue ml-2" v-if="cart_lock"></i> </button>
+              </div>
+              <div class="mr-4 d-inline-block">
                 <span class="heading mr-2">View</span>
                 <a href="#" :class="`font-weight-bold ${view == 'list' ?  'text-black' : 'gc-text-blue' }`" @click="setView('list', $event)">List</a> |
                 <a href="#" :class="`font-weight-bold ${view == 'grid' ? 'text-black' : 'gc-text-blue' }`" @click="setView('grid', $event)">Grid</a>

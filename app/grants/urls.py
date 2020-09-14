@@ -24,6 +24,7 @@ from grants.views import (
     grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
     grants_cart_view, grants_clr, grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
     subscription_cancel, toggle_grant_favorite, zksync_get_interrupt_status, zksync_set_interrupt_status,
+    bulk_grants_for_cart,
 )
 
 app_name = 'grants'
@@ -33,6 +34,7 @@ urlpatterns = [
     path('grants.json', grants_addr_as_json, name='grants_json'),
     path('flag/<int:grant_id>', flag, name='grantflag'),
     path('cards_info', get_grants, name='grant_cards_info'),
+    path('bulk_cart', bulk_grants_for_cart, name='bulk_grants_for_cart'),
     path('<int:grant_id>/activity', grant_activity, name='log_activity'),
     path('<int:grant_id>/favorite', toggle_grant_favorite, name='favorite_grant'),
     path('activity', grant_activity, name='log_activity'),
