@@ -102,7 +102,10 @@ def check_transaction_contract(transaction_tax):
             return transaction_status(transaction, transaction_tax)
 
 
-def grants_transaction_validator(contribution):
+def grants_transaction_validator(contribution, w3):
+    # To facilitate testing on Rinkeby, we pass in a web3 instance instead of using the mainnet
+    # instance defined at the top of this file
+
     tx_list = [contribution.tx_id, contribution.split_tx_id]
     network = contribution.subscription.network
 
@@ -141,7 +144,7 @@ def grants_transaction_validator(contribution):
             if (transaction_receipt != None and transaction_receipt.cumulativeGasUsed >= 2100):
                 maybeprint(138, round(time.time(),2))
                 transaction_hash = transaction_receipt.transactionHash.hex()
-                transaction = check_transaction(transaction_hash)
+                transaction = w3.eth.getTransaction(transaction_hash)
                 if transaction.value > 0.001:
                     recipient_address = Web3.toChecksumAddress(contribution.subscription.grant.admin_address)
                     transfer = get_token_originators(recipient_address, '0x0', from_address=from_address, return_what='transfers', tx_id=tx, amounts=amounts)
@@ -183,8 +186,14 @@ def grants_transaction_validator(contribution):
             })
 
     if not token_transfer:
-        validation['comment'] = "No Transfers Occured"
-        validation['passed'] = False
+        transaction_receipt = w3.eth.getTransactionReceipt(tx)
+        is_bulk_checkout = transaction_receipt['to'].lower() == "0x7d655c57f71464B6f83811C55D84009Cd9f5221C".lower()
+        if is_bulk_checkout:
+            validation['comment'] = "Bulk checkout"
+            validation['passed'] = transaction_receipt['status'] == 1
+        else:
+            validation['comment'] = "No Transfers Occured"
+            validation['passed'] = False
     else:
         if token_transfer['token_name'] != contribution.subscription.token_symbol:
             validation['comment'] = f"Tokens do not match, {token_transfer['token_name']} != {contribution.subscription.token_symbol}"

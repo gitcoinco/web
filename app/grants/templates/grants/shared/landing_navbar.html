@@ -6,10 +6,10 @@
 
       {% if is_staff %}
         <div class="row font-caption font-weight-semibold">
-          <div class="col-12"r>
+          <div class="col-12">
             {% trans "[ Admin ] Choose Network :" %}
             <span class="network-container">
-              <select name="network" id="network">
+              <select @change="filter_grants({network: network})" v-model="network" name="network" id="network">
                 <option value="mainnet">Mainnet</option>
                 <option value="rinkeby">Rinkeby</option>
               </select>
@@ -59,3 +59,6 @@
           {% endif %}
         </div>
       </div>
+    </form>
+  </div>
+</div>

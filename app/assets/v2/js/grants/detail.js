@@ -200,40 +200,18 @@ $(document).ready(function() {
 
   $('#cancel_grant').on('click', function(e) {
     $('.modal-cancel-grants').on('click', function(e) {
-      let contract_address = $('#contract_address').val();
-      let grant_cancel_tx_id;
-      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, contract_address);
-
-      web3.eth.getAccounts(function(err, accounts) {
-        deployedSubscription.methods.endContract()
-          .send({
-            from: accounts[0],
-            gas: 3000000
-          }).on('transactionHash', function(transactionHash) {
-            grant_cancel_tx_id = $('#grant_cancel_tx_id').val();
-            const linkURL = get_etherscan_url(transactionHash);
-
-            document.issueURL = linkURL;
-            $('#transaction_url').attr('href', linkURL);
-            $('.modal .close').trigger('click');
-            enableWaitState('#grants-details');
-          })
-          .on('confirmation', function(confirmationNumber, receipt) {
-            $.ajax({
-              type: 'post',
-              url: '',
-              data: {
-                'contract_address': contract_address,
-                'grant_cancel_tx_id': grant_cancel_tx_id
-              },
-              success: function(json) {
-                window.location.reload(false);
-              },
-              error: function() {
-                _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
-              }
-            });
-          });
+      $.ajax({
+        type: 'post',
+        url: '',
+        data: {
+          'grant_cancel_tx_id': '0x0'
+        },
+        success: function(json) {
+          window.location.reload(false);
+        },
+        error: function() {
+          _alert({ message: gettext('Canceling your grant failed to save. Please try again.') }, 'error');
+        }
       });
     });
   });

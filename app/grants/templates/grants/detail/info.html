@@ -101,12 +101,12 @@
           </p>
         </div>
       {% endif %}
-        
+
        {% if grant.github_project_url %}
         <div class="font-body mb-2">
           <i style="width: 14px;" class="fab fa-github-square mr-2 text-center"></i>
           <p class="d-inline-block mb-0">
-            <a href="{{ grant.github_project_url }}" target="_blank" rel="" data-toggle="tooltip" data-html="true" data-placement="top" for="github_project_url" 
+            <a href="{{ grant.github_project_url }}" target="_blank" rel="" data-toggle="tooltip" data-html="true" data-placement="top" for="github_project_url"
             title="Project Github URL">
               {{ grant.github_project_url }}
             </a>
@@ -116,10 +116,14 @@
 
         <div class="mb-2">
           <i style="width: 14px;" class="fab fa-ethereum mr-2 text-center"></i>
-          <a id="wallet-address" class="wallet-address"
-            target="_blank" data-toggle="tooltip" data-placement="top" title="Project Funding Address">
-            {{ grant.admin_address }}
-          </a>
+          <span id="wallet-address" class="wallet-address"
+          target="_blank" data-toggle="tooltip" data-placement="top" title="Project Funding Address">
+          {{ grant.admin_address }}
+          </span>
+          <div class="row justify-start font-smaller-2">
+            <a target="_blank" class="col-auto" id="wallet-etherscan-link">View on Etherscan (L1) <i class="ml-1 fas fa-external-link-alt"></i></a>
+            <a target="_blank" class="col-auto" id="wallet-zkscan-link">View on zkScan (L2) <i class="ml-1 fas fa-external-link-alt"></i></a>
+          </div>
         </div>
 
         {% if is_unsubscribed_from_updates_from_this_grant %}
@@ -145,9 +149,17 @@
             </p>
           </div>
         {% endif %}
+        {% if grant.funding_info %}
+          <div class="font-body mb-2">
+            <i style="width: 14px;" class="fas fa-donate mr-2 text-center"></i>
+            <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="ERC20 Token">
+              {{ grant.funding_info }}
+            </p>
+          </div>
+        {% endif %}
           {% if grant.last_update %}
           <div class="font-body mb-2">
-            <i style="width: 14px;" class="fas fa-clock mr-2 text-center"></i>
+            <i style="width: 14px;" class="fas fa-done mr-2 text-center"></i>
             <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant.">
               Last Update: {{ grant.last_update|naturaltime }}
             </p>
@@ -198,7 +210,7 @@
       <p class="sub-title {% if is_team_member %} mb-0 {% else %} mb-3 {% endif %}">
         TEAM
       </p>
-      {% if is_team_member and not grant.active %}
+      {% if is_team_member %}
         <div>
           <div class="form__select2">
             <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>

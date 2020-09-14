@@ -20,9 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    bulk_fund, flag, grant_activity, grant_categories, grant_details, grant_fund, grant_new, grant_new_whitelabel,
-    grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type, grants_cart_view, grants_clr, grants_stats_view,
-    invoice, leaderboard, new_matching_partner, profile, quickstart, subscription_cancel,
+    bulk_fund, flag, get_grants, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_fund,
+    grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
+    grants_cart_view, grants_clr, grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
+    subscription_cancel, toggle_grant_favorite, zksync_get_interrupt_status, zksync_set_interrupt_status,
 )
 
 app_name = 'grants'
@@ -31,7 +32,9 @@ urlpatterns = [
     path('getstats/', grants_stats_view, name='grants_stats'),
     path('grants.json', grants_addr_as_json, name='grants_json'),
     path('flag/<int:grant_id>', flag, name='grantflag'),
+    path('cards_info', get_grants, name='grant_cards_info'),
     path('<int:grant_id>/activity', grant_activity, name='log_activity'),
+    path('<int:grant_id>/favorite', toggle_grant_favorite, name='favorite_grant'),
     path('activity', grant_activity, name='log_activity'),
     path('<int:grant_id>/<slug:grant_slug>', grant_details, name='details'),
     path('<int:grant_id>/<slug:grant_slug>/', grant_details, name='details2'),
@@ -40,6 +43,9 @@ urlpatterns = [
     re_path(r'^categories', grant_categories, name='grant_categories'),
     path('<int:grant_id>/<slug:grant_slug>/fund', grant_fund, name='fund'),
     path('bulk-fund', bulk_fund, name='bulk_fund'),
+    path('zksync-set-interrupt-status', zksync_set_interrupt_status, name='zksync_set_interrupt_status'),
+    path('zksync-get-interrupt-status', zksync_get_interrupt_status, name='zksync_get_interrupt_status'),
+    path('get-replaced-tx', get_replaced_tx, name='get-replaced-tx'),
     path(
         '<int:grant_id>/<slug:grant_slug>/subscription/<int:subscription_id>/cancel',
         subscription_cancel,

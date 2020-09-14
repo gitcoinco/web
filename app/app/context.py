@@ -68,6 +68,7 @@ def preprocess(request):
     """Handle inserting pertinent data into the current context."""
 
     # make lbcheck super lightweight
+
     if request.path == '/lbcheck':
         return {}
 

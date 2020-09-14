@@ -19,7 +19,7 @@ logger = get_task_logger(__name__)
 
 redis = RedisService().redis
 
-CLR_START_DATE = dt.datetime(2020, 6, 15, 12, 0) # TODO:SELF-SERVICE
+CLR_START_DATE = dt.datetime(2020, 9, 14, 15, 0) # TODO:SELF-SERVICE
 
 @app.shared_task(bind=True, max_retries=1)
 def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
@@ -132,14 +132,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
 
         # one time payments
         activity = None
-        if int(subscription.num_tx_approved) == 1:
-            subscription.successful_contribution(subscription.new_approve_tx_id);
-            subscription.error = True #cancel subs so it doesnt try to bill again
-            subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
-            subscription.save()
-            activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
-        else:
-            activity = record_subscription_activity_helper('new_grant_subscription', subscription, profile)
+        subscription.error = True #cancel subs so it doesnt try to bill again
+        subscription.subminer_comments = "skipping subminer bc this is a 1 and done subscription, and tokens were alredy sent"
+        subscription.save()
+        activity = record_subscription_activity_helper('new_grant_contribution', subscription, profile)
 
         if 'comment' in package:
             _profile = profile
@@ -157,7 +153,10 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
             profile.hide_wallet_address = bool(package.get('hide_wallet_address', False))
             profile.save()
 
+        # emails to grant owner
         new_supporter(grant, subscription)
+        # emails to contributor
+        # subscription.successful_contribution(subscription.new_approve_tx_id);
         thank_you_for_supporting(grant, subscription)
 
         update_grant_metadata.delay(grant_id)
