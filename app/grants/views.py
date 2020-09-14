@@ -352,7 +352,7 @@ def get_grants(request):
                 'admin_address': grant.admin_address,
                 'token_address': grant.token_address,
                 'image_css': grant.image_css,
-                'verified': grant.verified,
+                'verified': grant.twitter_verified,
             } for grant in grants
         },
         'credentials': {
@@ -1712,17 +1712,9 @@ def toggle_grant_favorite(request, grant_id):
 
 @login_required
 def verify_grant(request, grant_id):
-    grants = Grant.objects.filter(pk=grant_id)
+    grant = Grant.objects.get(pk=grant_id)
 
-    if not grants.exists():
-        return JsonResponse({
-            'ok': False,
-            'msg': 'Grant doesn\'t exists'
-        })
-
-    grant = grants.first()
-
-    if grant.verified:
+    if grant.twitter_verified:
         return JsonResponse({
             'ok': True,
             'msg': 'Grant was verified previously'
@@ -1746,15 +1738,15 @@ def verify_grant(request, grant_id):
     has_text = text in last_tweet.full_text
 
     if has_code and has_text:
-        grant.verified = True
-        grant.verified_by = request.user.profile
-        grant.verified_at = timezone.now()
+        grant.twitter_verified = True
+        grant.twitter_verified_by = request.user.profile
+        grant.twitter_verified_at = timezone.now()
 
         grant.save()
 
     return JsonResponse({
         'ok': True,
-        'verified': grant.verified,
+        'verified': grant.twitter_verified,
         'text': last_tweet.text,
         'has_code': has_code,
         'has_text': has_text,

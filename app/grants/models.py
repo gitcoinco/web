@@ -364,9 +364,9 @@ class Grant(SuperModel):
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
-    verified = models.BooleanField(default=False)
-    verified_by = models.ForeignKey('dashboard.Profile', null=True, blank=True, on_delete=models.SET_NULL)
-    verified_at = models.DateTimeField(blank=True, null=True)
+    twitter_verified = models.BooleanField(default=False, help_text='The owner grant has verified the twitter account')
+    twitter_verified_by = models.ForeignKey('dashboard.Profile', null=True, blank=True, on_delete=models.SET_NULL, help_text='Team member who verified this grant')
+    twitter_verified_at = models.DateTimeField(blank=True, null=True, help_text='At what time and date what verified this grant')
 
     def __str__(self):
         """Return the string representation of a Grant."""

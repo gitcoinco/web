@@ -98,7 +98,7 @@
           <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center"></i>
           <p class="d-inline-block mb-0">
             <a href="https://twitter.com/{{grant.twitter_handle_1}}" target="new" rel="nofollow"  data-toggle="tooltip" data-html="true" data-placement="top" title="Project Twitter Account">{{grant.twitter_handle_1}}</a>
-            <button class="btn btn-sm animate-verify {% if not grant.verified %}d-none{% endif %}" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+            <button class="btn btn-sm animate-verify {% if not grant.twitter_verified %}d-none{% endif %}" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
              <p>Grant owner has verified ownership of their twitter account.</p>
              <a href="#">Learn more.</p>'
