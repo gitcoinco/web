@@ -3,13 +3,14 @@ from dashboard.models import Profile
 from grants.utils import get_leaderboard, is_grant_team_member
 
 handles = [
-    'mysticryuujin',
+    'adamstallard',
+    'alirezapaslar',
 ]
-grant_id = 1101
+grant_id = 191
 grant = Grant.objects.get(pk=grant_id)
 
 for handle in handles:
-    profile = Profile.objects.filter(handle=handle).first()
+    profile = Profile.objects.filter(handle__iexact=handle).first()
     if not profile:
         print(f"{handle} not found")
         continue
