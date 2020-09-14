@@ -80,15 +80,15 @@ var get_zkscan_url = function(id, network, type = 'transactions') {
   let _network = network ? network : document.web3network;
   switch (_network) {
     case 'mainnet':
-      return 'https://zkscan.io/explorer' + type + '/' + id;
+      return 'https://zkscan.io/explorer/' + type + '/' + id;
     case 'ropsten':
-      return 'https://ropsten.zkscan.io/explorer' + type + '/' + id;
+      return 'https://ropsten.zkscan.io/explorer/' + type + '/' + id;
     case 'rinkeby':
-      return 'https://rinkeby.zkscan.io/explorer' + type + '/' + id;
+      return 'https://rinkeby.zkscan.io/explorer/' + type + '/' + id;
     case 'custom network':
-      return 'https://localhost/explorer' + type + '/' + id;
+      return 'https://localhost/explorer/' + type + '/' + id;
     default:
-      return 'https://zkscan.io/explorer' + type + '/' + id;
+      return 'https://zkscan.io/explorer/' + type + '/' + id;
   }
 };
 
