@@ -315,12 +315,10 @@ if (document.getElementById('grants-showcase')) {
         return vm.grants;
       },
       addAllToCart: async function() {
-        let vm = this;
-
         if (this.cart_lock)
           return;
 
-        this.lock = true;
+        this.cart_lock = true;
 
         const base_params = {
           no_pagination: true,
@@ -350,12 +348,11 @@ if (document.getElementById('grants-showcase')) {
 
         (getGrants.grants || []).forEach((grant) => {
           CartData.addToCart(grant);
-          console.log(grant);
         });
 
         showSideCart();
-        _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grants was' : 'grant were' } added to your cart!`, 'success');
-        vm.cart_lock = false;
+        _alert(`Congratulations, ${getGrants.grants.length} ${getGrants.grants.length > 1 ? 'grant were' : 'grants was'} added to your cart!`, 'success');
+        this.cart_lock = false;
       },
       scrollEnd: async function(event) {
         let vm = this;

@@ -282,7 +282,7 @@ def bulk_grants_for_cart(request):
 
     for grant in _grants:
         grant_payload = {
-            'grant_id': grant.id,
+            'grant_id': str(grant.id),
             'grant_slug': grant.slug,
             'grant_url': grant.url,
             'grant_title': grant.title,
