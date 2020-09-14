@@ -408,19 +408,6 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
 
     _grants = _grants.prefetch_related('categories')
 
-    for grant in _grants:
-        clr_round = None
-
-        if grant.in_active_clrs.count() > 0:
-            clr_round = grant.in_active_clrs.first()
-
-        if clr_round:
-            grant.is_clr_active = True
-            grant.clr_round_num = clr_round.round_num
-        else:
-            grant.is_clr_active = False
-            grant.clr_round_num = 'LAST'
-
     return _grants
 
 

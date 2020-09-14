@@ -104,7 +104,7 @@ class GrantType(SuperModel):
 
 class GrantCLR(SuperModel):
     round_num = models.CharField(max_length=15, help_text="CLR Round Number")
-    is_active = models.BooleanField(default=False, help_text="Is CLR Round currently active")
+    is_active = models.BooleanField(default=False, db_index=True, help_text="Is CLR Round currently active")
     start_date = models.DateTimeField(help_text="CLR Round Start Date")
     end_date = models.DateTimeField(help_text="CLR Round Start Date")
     grant_filters = JSONField(
@@ -142,6 +142,10 @@ class GrantCLR(SuperModel):
 
     def __str__(self):
         return f"{self.round_num}"
+
+    @property
+    def grants(self):
+        return Grants.objects.filter(**self.grant_filters)
 
 
 class Grant(SuperModel):
@@ -363,6 +367,8 @@ class Grant(SuperModel):
         GrantCLR,
         help_text="Active Grants CLR Round"
     )
+    is_clr_active = models.BooleanField(default=False, help_text=_('CLR Round active or not? (auto computed)'))
+    clr_round_num = models.CharField(default='', max_length=255, help_text=_('the CLR round number thats active'), blank=True)
 
     # Grant Query Set used as manager.
     objects = GrantQuerySet.as_manager()
