@@ -310,17 +310,17 @@ Vue.component('grants-cart', {
     zkSyncBlockExplorerUrl() {
       // Flow A, zkScan link
       if (this.hasSufficientZkSyncBalance) {
-        if (document.web3network === 'mainnet')
-          return `https://zkscan.io/explorer/accounts/${this.userAddress}`;
-        return `https://${document.web3network}.zkscan.io/explorer/accounts/${this.userAddress}`;
+        if (document.web3network === 'rinkeby')
+          return `https://${document.web3network}.zkscan.io/explorer/accounts/${this.userAddress}`;
+        return `https://zkscan.io/explorer/accounts/${this.userAddress}`;
       }
 
       // Flow B, etherscan link
       if (!this.zkSyncDepositTxHash)
         return undefined;
-      if (document.web3network === 'mainnet')
-        return `https://etherscan.io/tx/${this.zkSyncDepositTxHash}`;
-      return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
+      if (document.web3network === 'rinkeby')
+        return `https://${document.web3network}.etherscan.io/tx/${this.zkSyncDepositTxHash}`;
+      return `https://etherscan.io/tx/${this.zkSyncDepositTxHash}`;
     },
 
     // Array of supported tokens
@@ -670,7 +670,7 @@ Vue.component('grants-cart', {
           priority: 1
         };
       }
-      var network = document.web3network;
+      var network = document.web3network || 'mainnet';
 
       return tokens(network).filter(token => token.name === name)[0];
     },
@@ -1613,15 +1613,17 @@ Vue.component('grants-cart', {
      */
     async setupZkSync() {
       // Configure ethers and zkSync
+      const network = document.web3network || 'mainnet';
+
       this.ethersProvider = new ethers.providers.Web3Provider(provider);
       this.signer = this.ethersProvider.getSigner();
-      this.syncProvider = await zksync.getDefaultProvider(document.web3network, 'HTTP');
+      this.syncProvider = await zksync.getDefaultProvider(network, 'HTTP');
       this.numberOfConfirmationsNeeded = await this.syncProvider.getConfirmationsForEthOpAmount();
       this.zkSyncDonationInputsEthAmount = this.donationInputsEthAmount;
       this.zkSyncWalletState = await this.syncProvider.getState(this.userAddress);
 
       // Set zkSync contract address based on network
-      this.zkSyncContractAddress = document.web3network === 'mainnet'
+      this.zkSyncContractAddress = network === 'mainnet'
         ? zkSyncContractAddressMainnet // mainnet
         : zkSyncContractAddressRinkeby; // rinkeby
     },
