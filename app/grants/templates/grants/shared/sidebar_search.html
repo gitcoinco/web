@@ -92,8 +92,8 @@
                     </a>
                   </li>
                   <li class="mr-1" v-for="category in grant_type.sub_categories">
-                    <a :href="`/grants/${grant_type.keyword}?category=${category}&${query_params()}`" :data-type="grant_type.keyword" data-category="category" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category ? 'selected' : '' }`">
-                      [[category]] 
+                    <a :href="`/grants/${grant_type.keyword}?category=${category.label}&${query_params()}`" :data-type="grant_type.keyword" data-category="category.label" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
+                      [[category.label]] <sup>([[category.count]])</sup>
                     </a>
                   </li>
                 </ul>

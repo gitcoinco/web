@@ -444,7 +444,7 @@ def get_grant_types(network, filtered_grants=None):
 
     for grant_type in grant_types:
         _keyword = grant_type['keyword']
-        grant_type['sub_categories'] = [tuple[0] for tuple in basic_grant_categories(_keyword)]
+        grant_type['sub_categories'] = [{'label': tuple[0], 'count': get_category_size(tuple[0])} for tuple in basic_grant_categories(_keyword)]
 
     return grant_types
 
@@ -1403,6 +1403,16 @@ def grants_cart_view(request):
     response = TemplateResponse(request, 'grants/cart-vue.html', context=context)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
+
+def get_category_size(category):
+    key = f"grant_category_{category}"
+    redis = RedisService().redis
+    try:
+        return int(redis.get(key))
+    except:
+        return 0
+
+
 
 
 def grants_bulk_add(request, grant_str):
