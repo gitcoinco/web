@@ -271,6 +271,7 @@ class Grant(SuperModel):
         max_length=8,
         default='mainnet',
         help_text=_('The network in which the Grant contract resides.'),
+        db_index=True
     )
     required_gas_price = models.DecimalField(
         default='0',
@@ -310,7 +311,7 @@ class Grant(SuperModel):
             size=2,
         ), blank=True, default=list, help_text=_('backup 5 point curve to predict CLR donations - used to store a secondary backup of the clr prediction curve, in the case a new identity mechanism is used'))
     activeSubscriptions = ArrayField(models.CharField(max_length=200), blank=True, default=list)
-    hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'))
+    hidden = models.BooleanField(default=False, help_text=_('Hide the grant from the /grants page?'), db_index=True)
     weighted_shuffle = models.PositiveIntegerField(blank=True, null=True)
     contribution_count = models.PositiveIntegerField(blank=True, default=0)
     contributor_count = models.PositiveIntegerField(blank=True, default=0)
@@ -570,7 +571,7 @@ class Subscription(SuperModel):
         ('ZCASH', 'ZCASH')
     ]
 
-    active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
+    active = models.BooleanField(default=True, db_index=True, help_text=_('Whether or not the Subscription is active.'))
     error = models.BooleanField(default=False, help_text=_('Whether or not the Subscription is erroring out.'))
     subminer_comments = models.TextField(default='', blank=True, help_text=_('Comments left by the subminer.'))
     comments = models.TextField(default='', blank=True, help_text=_('Comments left by subscriber.'))

@@ -311,7 +311,7 @@ def get_grants(request):
         contributions_by_grant[grant_id] = group
 
     return JsonResponse({
-        'grant_types': get_grant_types(network, _grants),
+        'grant_types': get_grant_type_cache(),
         'current_type': grant_type,
         'category': category,
         'grants': {
@@ -365,6 +365,8 @@ def get_grants(request):
 
 def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
                          category='', following=False, idle_grants=False, only_contributions=False):
+    print(" " + str(round(time.time(), 2)))
+
     sort_by_clr_pledge_matching_amount = None
     profile = request.user.profile if request.user.is_authenticated else None
     three_months_ago = timezone.now() - datetime.timedelta(days=90)
@@ -381,6 +383,7 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
         contributions = profile.grant_contributor.filter(subscription_contribution__success=True).values('grant_id')
         _grants = _grants.filter(id__in=Subquery(contributions))
 
+    print(" " + str(round(time.time(), 2)))
     _grants = _grants.keyword(keyword).order_by(sort, 'pk')
     _grants.first()
 
@@ -403,6 +406,7 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
         field_name = f'clr_prediction_curve__{sort_by_index}__2'
         _grants = _grants.order_by(f"-{field_name}")
 
+    print(" " + str(round(time.time(), 2)))
     if category:
         _grants = _grants.filter(Q(categories__category__icontains=category))
 
@@ -410,6 +414,12 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
 
     return _grants
 
+
+def get_grant_type_cache():
+    try:
+        return JSONStore.objects.get(view='get_grant_types').data
+    except:
+        return {}
 
 def get_grant_types(network, filtered_grants=None):
     all_grants_count = 0
@@ -465,9 +475,9 @@ def get_bg(grant_type):
     return bg, mid_back, bottom_back, bg_size, bg_color
 
 
+import time
 def grants_by_grant_type(request, grant_type):
     """Handle grants explorer."""
-
     limit = request.GET.get('limit', 6)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
@@ -489,9 +499,10 @@ def grants_by_grant_type(request, grant_type):
     sort_by_index = None
 
     grant_amount = 0
-    grant_stats = Stat.objects.filter(key='grants').order_by('-pk')
-    if grant_stats.exists():
-        grant_amount = lazy_round_number(grant_stats.first().val)
+    if grant_type == 'stats':
+        grant_stats = Stat.objects.filter(key='grants').order_by('-pk')
+        if grant_stats.exists():
+            grant_amount = lazy_round_number(grant_stats.first().val)
 
     _grants = None
     try:
@@ -525,7 +536,8 @@ def grants_by_grant_type(request, grant_type):
         current_partners_fund += partner.amount
 
     categories = [_category[0] for _category in basic_grant_categories(grant_type)]
-    grant_types = get_grant_types(network, _grants)
+    grant_types = get_grant_type_cache()
+    print(grant_types)
 
     cht = []
     chart_list = ''
@@ -561,6 +573,7 @@ def grants_by_grant_type(request, grant_type):
     else:
         live_now = 'Gitcoin Grants helps you find funding for your projects'
         title = 'Grants'
+
 
     params = {
         'active': 'grants_landing',

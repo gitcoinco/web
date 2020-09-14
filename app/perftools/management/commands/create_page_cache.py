@@ -65,6 +65,21 @@ def create_grant_clr_cache():
             grant.clr_round_num = 'LAST'
         grant.save()
 
+def create_grant_type_cache():
+    print('create_grant_type_cache')
+    from grants.views import get_grant_types
+    view = 'get_grant_types'
+    keyword = 'get_grant_types'
+    data = get_grant_types('mainnet', None)
+    with transaction.atomic():
+        JSONStore.objects.filter(view=view).all().delete()
+        JSONStore.objects.create(
+            view=view,
+            key=keyword,
+            data=data,
+            )
+
+
 
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
@@ -335,8 +350,9 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_grant_clr_cache()
+        create_grant_type_cache()
         if not settings.DEBUG:
+            create_grant_clr_cache()
             create_grant_category_size_cache()
             create_results_cache()
             create_hidden_profiles_cache()
