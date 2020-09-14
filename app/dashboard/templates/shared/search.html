@@ -45,7 +45,7 @@
           <ul class="gc-search-result">
             <template v-if="results && results[source_type]">
               <li v-for="result in results[source_type]" class="gc-search-result__content p-3" :key="result.id">
-                <a :href="[[ result.url ]]" class="d-flex" v-bind:data-usercard="result.title">
+               <a :href="[[ result.url ]]" class="d-flex" :data-usercard="result.source_type === 'Profile' ? result.title : ''">
                   <img class="gc-search__avatar my-auto mr-3" :src="[[ result.img_url ]]" :alt="result.title" />
                   <div>
                     <p class="gc-search-result__title font-body mb-0">[[ result.title ]]</p>

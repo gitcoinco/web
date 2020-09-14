@@ -1201,16 +1201,17 @@ def render_new_bounty_roundup(to_email):
     from django.conf import settings
     from marketing.models import RoundupEmail
     args = RoundupEmail.objects.order_by('created_on').last()
+    hide_dynamic = args.hide_dynamic
+    new_kudos_size_px = '300'
+
     subject = args.subject
-    new_kudos_pks = args.kudos_ids.split(',')
-    new_kudos_size_px = 150
+    new_kudos_ids = args.kudos_ids[0:-1].split(',')
     if settings.DEBUG and False:
         # for debugging email styles
         email_style = 2
     else:
         offset = 2
         email_style = (int(timezone.now().strftime("%V")) + offset) % 7
-
 
     intro = args.body
     highlights = args.highlights
@@ -1238,11 +1239,17 @@ def render_new_bounty_roundup(to_email):
     }
 
 
-    from kudos.models import KudosTransfer
+    from kudos.models import KudosTransfer, Token
     if highlight_kudos_ids:
         kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
     else:
         kudos_highlights = KudosTransfer.objects.exclude(network='mainnet', txid='').order_by('-created_on')[:num_kudos_to_show]
+
+    if new_kudos_ids:
+        new_kudos = Token.objects.filter(id__in=new_kudos_ids)
+    else:
+        new_kudos = None
+    print(new_kudos, new_kudos_ids)
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
@@ -1277,8 +1284,9 @@ def render_new_bounty_roundup(to_email):
         'sponsor': sponsor,
 		'email_type': 'roundup',
         'email_style': email_style,
+        'hide_dynamic': hide_dynamic,
         'hide_bottom_logo': True,
-        'new_kudos_pks': new_kudos_pks,
+        'new_kudos': new_kudos,
         'new_kudos_size_px': new_kudos_size_px,
         'videos': args.videos,
         'news': args.news,

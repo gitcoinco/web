@@ -21,7 +21,7 @@ services:
     ports:
       - "8065:8065"
     volumes:
-      - ./chatconfig:/mattermost/config/
+      - ./chatdata/config:/mattermost/config/
     depends_on:
       - db
     deploy:
@@ -32,8 +32,17 @@ services:
         reservations:
           memory: 128M
 
+  elasticsearch:
+    image: launcher.gcr.io/google/elasticsearch5
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+
+
   ipfs:
-    image: ipfs/go-ipfs:release
+    image: ipfs/go-ipfs:v0.6.0
     restart: unless-stopped
     volumes:
       - 'ipfsexport:/export'

@@ -255,15 +255,3 @@ function toggleSideCart() {
   $('#funding-card').toggleClass('d-none');
   $('#funding-card').toggleClass('d-lg-block');
 }
-
-function objectifySerialized(data) {
-  let objectData = {};
-
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
-
-    objectData[item.name] = item.value;
-  }
-
-  return objectData;
-}
