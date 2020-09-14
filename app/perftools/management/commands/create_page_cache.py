@@ -47,6 +47,25 @@ from townsquare.views import tags
 from app.services import RedisService
 from grants.models import GrantCategory
 
+def create_grant_clr_cache():
+    print('create_grant_clr_cache')
+    pks = Grant.objects.values_list('pk', flat=True)
+    for pk in pks:
+        grant = Grant.objects.get(pk=pk)
+        clr_round = None
+
+        if grant.in_active_clrs.count() > 0:
+            clr_round = grant.in_active_clrs.first()
+
+        if clr_round:
+            grant.is_clr_active = True
+            grant.clr_round_num = clr_round.round_num
+        else:
+            grant.is_clr_active = False
+            grant.clr_round_num = 'LAST'
+        grant.save()
+
+
 def create_grant_category_size_cache():
     print('create_grant_category_size_cache')
     redis = RedisService().redis
@@ -316,8 +335,9 @@ class Command(BaseCommand):
     help = 'generates some /results data'
 
     def handle(self, *args, **options):
-        create_grant_category_size_cache()
+        create_grant_clr_cache()
         if not settings.DEBUG:
+            create_grant_category_size_cache()
             create_results_cache()
             create_hidden_profiles_cache()
             create_tribes_cache()
