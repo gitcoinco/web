@@ -98,8 +98,9 @@
             <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
             <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
             <p class="mb-4 text-left"><b>Step 1:</b> Send a tweet from your account (<b>{{ grant.twitter_handle_1 }}</b>) saying <b>
-              {{ verification_tweet }} {{ user_code }}</b> <br>
-              <span id="tweet-container"></span>
+              {% with verification_tweet|add:" "|add:user_code as tweet %}
+              {{ tweet }} <a class="font-caption btn btn-outline-gc-blue btn-sm" href="https://twitter.com/intent/tweet?text={{ tweet|urlencode}}" target="_blank" ><i class="fab fa-twitter"></i> Tweet it</a></b> <br>
+              {% endwith %}
             </p>
             <p class="mb-4 text-left"><b>Step 2:</b>Click the "Verify" button below</p>
             <button class="btn btn-lg btn-gc-blue mb-4" id="twitterVerification">Verify</button>
@@ -119,7 +120,6 @@
     {% include 'grants/shared/shared_scripts.html' %}
   </body>
   {% include 'shared/activity_scripts.html' %}
-  <script src="https://platform.twitter.com/widgets.js"></script>
   <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
   <script src="{% static "v2/js/status.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
@@ -190,17 +190,6 @@
 
     $('#triggerTwitter').on('click', async () => {
       $("#startVerification .close").click();
-      if (!$("#tweet-container").children().length) {
-        await twttr.widgets.createShareButton(
-          ".",
-          document.getElementById("tweet-container"),
-          {
-            size: 'large',
-            text: '{{ verification_tweet }}. \n{{ user_code }}',
-            hashtags: 'grants',
-          }
-        );
-      }
     });
   });
   </script>
