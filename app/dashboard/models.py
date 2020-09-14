@@ -521,6 +521,8 @@ class Bounty(SuperModel):
         return settings.BASE_URL.rstrip('/') + reverse('issue_details_new2', kwargs={'ghuser': _org_name, 'ghrepo': _repo_name, 'ghissue': _issue_num})
 
     def get_natural_value(self):
+        if not self.value_in_token:
+            return 0
         token = addr_to_token(self.token_address)
         if not token:
             return 0
@@ -1977,6 +1979,15 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_in_usdt = instance.get_value_in_usdt
     instance.value_in_eth = instance.get_value_in_eth
     instance.value_true = instance.get_value_true
+
+    # https://gitcoincore.slack.com/archives/CAXQ7PT60/p1600019142065700
+    if not instance.value_true:
+        instance.value_true = 0
+    if not instance.value_in_token:
+        instance.value_in_token = 0
+    if not instance.balance:
+        instance.balance = 0
+
 
     if not instance.bounty_owner_profile:
         if instance.bounty_owner_github_username:
