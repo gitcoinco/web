@@ -621,7 +621,7 @@ def grants_by_grant_type(request, grant_type):
         'current_partners': current_partners,
         'past_partners': past_partners,
         'card_desc': f'{live_now}',
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants7.png')),
         'card_type': 'summary_large_image',
         'avatar_height': 1097,
         'avatar_width': 1953,
@@ -1488,7 +1488,7 @@ def grants_bulk_add(request, grant_str):
 
     context = {
         'grants': grants,
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants7.png')),
         'title': title,
         'card_desc': "Click to Add All to Cart: " + grant_titles
 
@@ -1511,7 +1511,7 @@ def quickstart(request):
     params = {
     'active': 'grants_quickstart',
     'title': _('Quickstart'),
-    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+    'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants7.png')),
     }
     return TemplateResponse(request, 'grants/quickstart.html', params)
 
@@ -1593,7 +1593,7 @@ def new_matching_partner(request):
 
     profile = get_profile(request)
     params = {
-        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/tw_cards-03.png')),
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants7.png')),
         'title': 'Pledge your support.',
         'card_desc': f'Thank you for your interest in supporting public goods.on Gitcoin. Complete the form below to get started.',
         'data': request.POST.dict(),
