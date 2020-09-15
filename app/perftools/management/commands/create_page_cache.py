@@ -62,7 +62,7 @@ def create_grant_clr_cache():
             grant.clr_round_num = clr_round.round_num
         else:
             grant.is_clr_active = False
-            grant.clr_round_num = 'LAST'
+            grant.clr_round_num = ''
         grant.save()
 
 def create_grant_type_cache():

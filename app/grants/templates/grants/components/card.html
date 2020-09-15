@@ -36,7 +36,7 @@
           <div>
             <p class="text-muted font-smaller-5 mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
               <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
-              Last Update: [[ grant.last_update ?  grant.last_update_natural : `Before Round` ]]
+              Last Update: [[ grant.last_update ?  grant.last_update_natural : `Long Ago` ]]
               <template v-if="cred.is_staff">
                 <span class="ml-3" >
                   <i class="fa fa-lock" aria-hidden="true"></i> SybilScore ™️: [[ grant.sybil_score ]]
@@ -61,24 +61,18 @@
               </div>
               <div class="d-flex match ml-3">
                 <div class="match__round--inline mr-3">
-                  <template v-if="grant.is_clr_eligible">
+                  <template v-if="grant.clr_round_num">
                     <span class="font-subheader font-weight-bold amount pt-1 mb-2">
                       [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
                     </span>
                     <span class="amount mb-2 font-smaller-3">
-                      <template v-if="grant.clr_round_num == 'LAST'">Final</template>
-                      <template v-else>Estimated</template>
                       CLR Match
                     </span>
                   </template>
                   <template v-else>
-                    <span class="font-subheader font-weight-bold amount pt-1 mb-2">
-                      [[ grant.amount_received || 0 | round | formatNumber ]] DAI
-                    </span>
-                    <span class="amount mb-2 font-smaller-3">All Time Funding</span>
                   </template>
                 </div>
-                <div>
+                <div v-if="grant.clr_round_num">
                   <span class="font-subheader font-weight-bold amount pt-1 mb-2">
                     [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
                   </span>
@@ -139,7 +133,7 @@
         <p class="grant-item__pitch font-caption mb-0" style="height:2rem;"  data-toggle="tooltip" data-placement="top" title="The last time the grant admin updated the grant." >
           <span class="font-smaller-5">
             <i style="width: 14px;" class="fas fa-clock mt-2 mb-0 text-center"></i>
-            Last Update: [[ grant.last_update ?  grant.last_update_natural : `Before Round` ]]
+            Last Update: [[ grant.last_update ?  grant.last_update_natural : `Long Ago` ]]
           </span>
         </p>
         <template v-if="cred.is_staff">
@@ -180,8 +174,11 @@
               <h2 class="title col-12 font-caption g-bold" v-if="grant.clr_round_num">
                 [[grant.clr_round_num]] CLR MATCH ROUND
               </h2>
+              <h2 class="title col-12 font-caption g-bold" v-if="!grant.clr_round_num">
+                NOT IN AN ACTIVE CLR ROUND
+              </h2>
             </div>
-            <div class="col-6 float-right px-0">
+            <div class="col-6 float-right px-0" v-if="grant.clr_round_num">
               <h2 class="font-title font-weight-bold amount pt-1 mb-2">
                 [[ grant.amount_received_in_round || 0 | round | formatNumber ]] DAI
               </h2>
@@ -189,7 +186,7 @@
                 raised from [[ grant.positive_round_contributor_count ]] contributors
               </p>
             </div>
-            <div class="col-6">
+            <div class="col-6" v-if="grant.clr_round_num">
 
               <template v-if="grant.is_clr_eligible">
                 <h2 class="font-title font-weight-bold amount pt-1 mb-2">
