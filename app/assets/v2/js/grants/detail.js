@@ -148,7 +148,7 @@ $(document).ready(function() {
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
-    let twitter_account = $('#form--twitter__account').val();
+    let twitter_account = $('#form--twitter__account').val().replace('@', '');
     let edit_grant_members = $('#grant-members').val();
     let edit_categories = $('#grant-categories').val();
 

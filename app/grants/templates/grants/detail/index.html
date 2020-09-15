@@ -97,13 +97,17 @@
           <div class="modal-body px-5">
             <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
             <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
-            <p class="mb-4 text-left"><b>Step 1:</b> Send a tweet from your account (<b>{{ grant.twitter_handle_1 }}</b>) <b>
+            <p class="mb-4 text-left"><b>Step 1:</b> Fill your twitter account into the grants twitter field
+              {% if grant.twitter_handle_1 %}<i class="fas fa-check text-highlight-green"></i>{% else %}
+                <i class="fas fa-exclamation-triangle" style="color: #b88b16"></i>
+              {% endif %}</p>
+            <p class="mb-4 text-left"><b>Step 2:</b> Send a tweet from your account (<b>{{ grant.twitter_handle_1 }}</b>) <b>
               {% with verification_tweet|add:" "|add:user_code as tweet %}
                <a class="font-caption btn btn-outline-gc-blue btn-sm" href="https://twitter.com/intent/tweet?text={{ tweet|urlencode}}" target="_blank" ><i class="fab fa-twitter"></i> Send Verification Tweet</a></b> <br>
               {% endwith %}
             </p>
-            <p class="mb-4 text-left"><b>Step 2:</b>Click the "Verify" button below</p>
-            <button class="btn btn-lg btn-gc-blue mb-4" id="twitterVerification">Verify</button>
+            <p class="mb-4 text-left mt-2"><b>Step 3:</b>Click the "Verify" button below</p>
+            <button class="btn btn-lg btn-gc-blue mt-2 mb-4" id="twitterVerification" {% if not grant.twitter_handle_1 %}disabled{% endif %}>Verify</button>
             <br>
             <span class="error" id="validation-errors"></span>
 
