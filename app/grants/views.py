@@ -48,8 +48,10 @@ from django.views.decorators.http import require_GET
 import requests
 import tweepy
 from app.services import RedisService
-from app.settings import EMAIL_ACCOUNT_VALIDATION, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_SECRET, \
-    TWITTER_ACCESS_TOKEN
+from app.settings import (
+    EMAIL_ACCOUNT_VALIDATION, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY,
+    TWITTER_CONSUMER_SECRET,
+)
 from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
@@ -64,7 +66,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
     Subscription,
 )
-from grants.utils import get_leaderboard, is_grant_team_member, emoji_codes, get_user_code
+from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
@@ -569,7 +571,12 @@ def grants_by_grant_type(request, grant_type):
             total_clr_pot = total_clr_pot + clr_round_amount if total_clr_pot else clr_round_amount
 
     if total_clr_pot:
-        int_total_clr_pot = intword(total_clr_pot)
+        if total_clr_pot > 1000 * 100:
+            int_total_clr_pot = f"{round(total_clr_pot/1000/1000, 1)}m"
+        elif total_clr_pot > 100:
+            int_total_clr_pot = f"{round(total_clr_pot/1000, 1)}k"
+        else:
+            int_total_clr_pot = intword(total_clr_pot)
         live_now = f'❇️ LIVE NOW! Up to ${int_total_clr_pot} Matching Funding on Gitcoin Grants' if total_clr_pot > 0 else ""
         title = f'(💰${int_total_clr_pot} Match LIVE!) Grants'
     else:
@@ -783,6 +790,12 @@ def grant_details(request, grant_id, grant_slug):
             team_members = request.POST.getlist('edit-grant_members[]')
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
+
+            if 'edit-twitter_account' in request.POST and request.POST.get('edit-twitter_account') != grant.twitter_handle_1:
+                grant.twitter_verified = False
+                grant.twitter_verified_at = None
+                grant.twitter_verified_by = None
+                grant.twitter_handle_1 = request.POST.get('edit-twitter_account')
 
             if 'edit-description' in request.POST:
                 grant.description = request.POST.get('edit-description')

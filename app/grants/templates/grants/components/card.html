@@ -30,7 +30,7 @@
              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
              <p>Grant owner has verified ownership of their twitter account.</p>
              <a href="#">Learn more.</p>'
-            ><img width="14" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+            ><img width="13" style="position: relative; top:-1px;" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
             </button>
           </h2>
           <div>
@@ -46,10 +46,9 @@
             </p>
             <div class="grant-item__owner">
               <div class="d-flex">
-                <span class="grant-item__owner-handle font-smaller-3">{% trans 'by' %}</span>
                 <a :href="grant.admin_profile.url" :data-usercard="grant.admin_profile.handle" target="_blank" rel="noopener noreferrer">
                   <div class="d-flex align-center">
-                    <div class="grant-item__owner-image ml-2">
+                    <div class="grant-item__owner-image ml-2 position-relative" style="top: -4px;">
                       <img :src="grant.admin_profile.avatar_url || 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'">
                     </div>
                     <div class="grant-item__owner-handle font-smaller-3">
@@ -67,7 +66,9 @@
                       [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
                     </span>
                     <span class="amount mb-2 font-smaller-3">
-                      Final CLR Match
+                      <template v-if="grant.clr_round_num == LAST">Final</template>
+                      <template v-else>Estimated</template>
+                      CLR Match
                     </span>
                   </template>
                   <template v-else>
@@ -131,7 +132,7 @@
              <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
              <p>Grant owner has verified ownership of their twitter account.</p>
              <a href="#">Learn more.</p>'
-            ><img width="16" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
+            ><img width="13" clas="position-relative" style="top: -2px;" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
           </button>
         </h2>
         <p class="grant-item__pitch font-caption mb-2">[[ grant.description.slice(0, 145) ]][[ grant.description.length > 145 ? '...' : '']]</p>
@@ -176,7 +177,7 @@
       <div class="grant-item__footer">
           <div class="clr mb-3">
             <div class="match__round pb-1 pt-2 mb-2">
-              <h2 class="title col-8 font-caption g-bold" v-if="grant.clr_round_num">
+              <h2 class="title col-12 font-caption g-bold" v-if="grant.clr_round_num">
                 [[grant.clr_round_num]] CLR MATCH ROUND
               </h2>
             </div>
@@ -195,7 +196,9 @@
                   [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">
-                  Final CLR Match
+                  <template v-if="grant.clr_round_num == LAST">Final</template>
+                  <template v-else>Estimated</template>
+                  CLR Match
                 </p>
               </template>
               <template v-else>

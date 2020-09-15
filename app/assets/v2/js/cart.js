@@ -302,7 +302,7 @@ Vue.component('grants-cart', {
     // =============================================================================================
     // ============================= START ZKSYNC COMPUTED PROPERTIES ==============================
     // =============================================================================================
-    
+
     // Link to L2 account (Flow A) or L1 deposit transaction (Flow B) on block explorer. For L2
     // we link to an account instead of a transfer because there are multiple transfers if multiple
     // tokens are being used
@@ -336,7 +336,7 @@ Vue.component('grants-cart', {
       // The below heuristics are used instead of `estimateGas()` so we can send the donation
       // transaction before the approval txs are confirmed, because if the approval txs
       // are not confirmed then estimateGas will fail.
-      
+
       // zkSync transfer costs from their docs
       const gasPerTransfer = 2000;
 
@@ -350,7 +350,7 @@ Vue.component('grants-cart', {
         'WBTC': 250000,
         'PAN': 250000
       };
-      
+
       // Make sure all tokens in cart are supported
       const donationCurrencies = this.donationInputs.map(donation => donation.name);
 
@@ -368,7 +368,7 @@ Vue.component('grants-cart', {
 
       // Otherwise, if they only have one token in cart, use those estimates
       const numberOfTokens = Array.from(new Set(donationCurrencies)).length;
-      
+
       switch (numberOfTokens) {
         case 1:
           tokenName = donationCurrencies[0];
@@ -417,7 +417,7 @@ Vue.component('grants-cart', {
       if (estimateL1 < estimateZkSync) {
         const savingsInGas = estimateZkSync - estimateL1;
         const savingsInPercent = Math.round(savingsInGas / estimateZkSync * 100);
-        
+
         return {
           name: 'Standard checkout',
           savingsInGas,
@@ -555,7 +555,7 @@ Vue.component('grants-cart', {
         return;
       }
 
-      const url = `http://node.brightid.org/brightid/v4/verifications/Gitcoin/${document.brightid_uuid}`;
+      const url = `https://app.brightid.org/node/v5/verifications/Gitcoin/${document.brightid_uuid}`;
       const response = await fetch(url);
 
       this.isBrightIDVerified = (response.status === 200);
@@ -868,14 +868,14 @@ Vue.component('grants-cart', {
       callbackParams = []
     ) {
       console.log('Requesting token approvals...');
-      
+
       if (allowanceData.length === 0) {
         console.log('✅ No approvals needed');
         if (callback)
           await callback(...callbackParams);
         return;
       }
-      
+
       indicateMetamaskPopup();
       for (let i = 0; i < allowanceData.length; i += 1) {
         const allowance = allowanceData[i].allowance;
@@ -1290,7 +1290,7 @@ Vue.component('grants-cart', {
 
       return newTxHash;
     },
-    
+
     /**
      * @notice For each token, returns the total amount donated in that token. Used instead of
      * this.donationsTotal to ensure there's no floating point errors. This is very similar to
@@ -1341,7 +1341,7 @@ Vue.component('grants-cart', {
     async zkSyncLoginNominal() {
       console.log('Waiting for user to sign the prompt to log in to zkSync directly...');
       const nominalSyncWallet = await zksync.Wallet.fromEthSigner(this.signer, this.syncProvider);
-      
+
       console.log('✅ Login complete. Nominal sync wallet generated from web3 account. View wallet:', nominalSyncWallet);
       return nominalSyncWallet;
     },
@@ -1410,7 +1410,7 @@ Vue.component('grants-cart', {
         .map((event) => event.args.serialId.toNumber()); // we only need the serialId
 
       console.log(`Found ${logs.length} serial IDs in the event logs. Will track the last one`, logs);
-      
+
       // Take the last ID and track that one to know when deposit is committed. Since all
       // deposits were in the same tx, it shouldn't matter which ID we use. We do not wait
       // for it to be verified, as this takes much longer and it's safe enough to wait only
@@ -1440,12 +1440,12 @@ Vue.component('grants-cart', {
      */
     async waitForSerialIdCommitment(serialId) {
       console.log(`Waiting for confirmation that priority operation with ID ${serialId} is committed...`);
-      
+
       // Check status. It almost certainly has not been committed yet, but good practice to check
       const depositStatus = await this.syncProvider.getPriorityOpStatus(serialId);
 
       console.log('Current deposit status: ', depositStatus);
-      
+
       // If deposit has not yet been committed, wait for that
       if (!depositStatus.block || !depositStatus.block.committed) {
         console.log('Deposit not yet committed, waiting for it...');
@@ -1555,7 +1555,7 @@ Vue.component('grants-cart', {
     async dispatchSignedTransfers(donationSignatures) {
       console.log('Sending transfers to the network...');
       this.zkSyncCheckoutFlowStep += 1; // sending transactions
-      
+
       // Dispatch donations ------------------------------------------------------------------------
       for (let i = 0; i < donationSignatures.length; i += 1) {
         this.currentTxNumber += 1;
@@ -1576,7 +1576,7 @@ Vue.component('grants-cart', {
       const gitcoinZkSyncState = await this.syncProvider.getState(this.gitcoinSyncWallet.cachedAddress);
       const balances = gitcoinZkSyncState.committed.balances;
       const tokens = Object.keys(balances);
-      
+
       // Loop through each token the user has
       for (let i = 0; i < tokens.length; i += 1) {
         try {
@@ -1586,7 +1586,7 @@ Vue.component('grants-cart', {
             name: tokenSymbol,
             amount: balances[tokenSymbol]
           };
-          
+
           console.log(`Sending remaining ${tokenSymbol} to user's main zkSync wallet...`);
           const { fee, amount } = await this.getZkSyncFeeAndAmount(transferInfo);
           const amountAferFee = zksync.utils.closestPackableTransactionAmount(amount.sub(fee));
@@ -1614,7 +1614,7 @@ Vue.component('grants-cart', {
           throw e;
         }
       }
-      
+
       // Done!
       this.zkSyncCheckoutStep3Status = 'complete';
       this.zkSyncCheckoutFlowStep += 1; // Done!
@@ -1676,7 +1676,7 @@ Vue.component('grants-cart', {
           const tokenSymbol = selectedTokens[i];
           const decimals = this.getTokenByName(tokenSymbol).decimals;
           const balance = this.zkSyncWalletState.committed.balances[tokenSymbol];
-          
+
           // Total amount user needs to transfer, including a conservative fee estimate
           const requiredAmount = ethers.utils.parseUnits(String(this.donationsTotal[tokenSymbol]), decimals);
           const totalRequiredAmount = await this.getTotalAmountToTransfer(tokenSymbol, requiredAmount);
@@ -1751,7 +1751,7 @@ Vue.component('grants-cart', {
 
         // Make sure selected tokens are valid on zkSync
         const selectedTokens = Object.keys(this.donationsToGrants);
-        
+
         selectedTokens.forEach((token) => {
           if (!this.zkSyncSupportedTokens.includes(token)) {
             throw new Error(`${token} is not supported with zkSync checkout. Supported currencies are: ${this.zkSyncSupportedTokens.join(', ')}`);
@@ -1796,7 +1796,7 @@ Vue.component('grants-cart', {
         if (this.hasSufficientZkSyncBalance) {
           // 4 minimum —- login via Gitcoin, login directly, one token transfer, assume
           // signing key is set
-          
+
           // +1 for each additional token in their cart
           Object.keys(this.donationsTotal).forEach((token) => {
             if (token !== 'ETH') {
@@ -1824,7 +1824,7 @@ Vue.component('grants-cart', {
         // gas costs by avoiding the overhead of the batch deposit contract if the user is only
         // donating one token
         const numberOfCurrencies = Object.keys(this.donationsToGrants).length;
-        
+
         this.depositContractToUse = numberOfCurrencies === 1
           ? this.depositContractToUse = this.zkSyncContractAddress
           : this.depositContractToUse = batchZkSyncDepositContractAddress;
@@ -1858,7 +1858,7 @@ Vue.component('grants-cart', {
           this.nominalSyncWallet = await this.zkSyncLoginNominal();
 
           const isSigningKeySet = this.nominalSyncWallet.isSigningKeySet();
-          
+
           if (isSigningKeySet)
             this.maxPossibleSignatures -= 1;
           this.zkSyncCheckoutStep2Status = 'complete';
@@ -1902,7 +1902,7 @@ Vue.component('grants-cart', {
           const additionalAmount = ethers.utils.parseUnits(String(extra.amount), decimals);
           const newAmount = currentAmount.add(additionalAmount).toString();
           const totalRequiredAmount = await this.getTotalAmountToTransfer(tokenSymbol, newAmount);
-          
+
           this.zkSyncAllowanceData[i].allowance = totalRequiredAmount;
 
           // Make sure user has enough funds
@@ -1930,7 +1930,7 @@ Vue.component('grants-cart', {
 
           this.zkSyncDonationInputsEthAmount = initialAmount.add(totalRequiredAmount).toString();
           const userEthBalance = await web3.eth.getBalance(this.userAddress);
-  
+
           if (BigNumber.from(userEthBalance).lte(BigNumber.from(this.zkSyncDonationInputsEthAmount))) {
             this.zkSyncCheckoutStep1Status = 'not-started';
             this.zkSyncCheckoutStep2Status = 'not-started';
@@ -2003,7 +2003,7 @@ Vue.component('grants-cart', {
           amount,
           fee
         });
-        
+
         console.log('  Transfer sent', tx);
 
         // Wait for it to be committed
@@ -2013,11 +2013,11 @@ Vue.component('grants-cart', {
       }
 
       // Final steps
-      
+
       this.zkSyncCheckoutFlowStep = 2; // Steps 0 and 1 are skipped here
       await this.finishZkSyncTransfersAllFlows();
     },
-    
+
     /**
      * @notice Step 3 of Flow B. User has no funds in L2, so we deposit directly to their Gitcoin
      * sync wallet, and from the sync wallet we dispatch all transfers without needing to prompt
@@ -2036,12 +2036,12 @@ Vue.component('grants-cart', {
           gasLimit: BigNumber.from(String(this.zkSyncDonationInputsGasLimit)),
           value: ethers.constants.Zero
         };
-        
+
         if (BigNumber.from(ethAmount).gt('0')) {
           // Specify how much ETH to send with transaction
           overrides.value = await this.getTotalAmountToTransfer('ETH', ethAmount);
         }
-        
+
         const selectedTokens = Object.keys(this.donationsToGrants);
         let depositTx;
 
@@ -2054,7 +2054,7 @@ Vue.component('grants-cart', {
           // Handle ETH
           if (BigNumber.from(ethAmount).gt('0'))
             deposits.push([ ETH_ADDRESS, overrides.value ]);
-          
+
           // Handle tokens
           const summaryData = this.zkSyncSummaryData();
 
@@ -2098,10 +2098,10 @@ Vue.component('grants-cart', {
               throw new Error(`Insufficient ${tokenSymbol} balance to complete checkout`, 'error');
             }
           }
-          
+
           // Check ETH
           const userEthBalance = await web3.eth.getBalance(this.userAddress);
-          
+
           if (BigNumber.from(userEthBalance).lt(BigNumber.from(overrides.value))) {
             this.zkSyncCheckoutStep1Status = 'not-started';
             this.zkSyncCheckoutStep2Status = 'not-started';
@@ -2110,7 +2110,7 @@ Vue.component('grants-cart', {
             throw new Error('Insufficient ETH balance to complete checkout');
           }
 
-        
+
           // Send transaction
           console.log('Waiting for user to send deposit transaction...');
           indicateMetamaskPopup();
@@ -2120,7 +2120,7 @@ Vue.component('grants-cart', {
           // If only ETH deposit ---------------------------------------------------
           // Check ETH balance
           const userEthBalance = await web3.eth.getBalance(this.userAddress);
-          
+
           if (BigNumber.from(userEthBalance).lt(BigNumber.from(overrides.value))) {
             this.zkSyncCheckoutStep1Status = 'not-started';
             this.zkSyncCheckoutStep2Status = 'not-started';
@@ -2128,10 +2128,10 @@ Vue.component('grants-cart', {
             this.showZkSyncModal = false;
             throw new Error('Insufficient ETH balance to complete checkout');
           }
-          
+
           // Deposit ETH
           const zkSyncContract = new ethers.Contract(this.depositContractToUse, zkSyncContractAbi, this.signer);
-          
+
           console.log('Waiting for user to send deposit transaction...');
           indicateMetamaskPopup();
           depositTx = await zkSyncContract.depositETH(depositRecipient, overrides);
@@ -2170,7 +2170,7 @@ Vue.component('grants-cart', {
         await this.setInterruptStatus(this.zkSyncDepositTxHash, this.userAddress);
         console.log('✅ Deposit transaction sent', depositTx);
         console.log('Waiting for deposit transaction to be mined...');
-      
+
         // Wait for first confirmation
         const receipt = await depositTx.wait();
 
@@ -2194,13 +2194,13 @@ Vue.component('grants-cart', {
 
       // Get transaction receipt
       let receipt = await this.ethersProvider.getTransactionReceipt(this.zkSyncDepositTxHash);
-      
+
       if (!receipt) {
         //  Transaction is pending, wait for it and resume normal flow afterwards
         receipt = await this.ethersProvider.waitForTransaction(this.zkSyncDepositTxHash);
         console.log('✅ Deposit transaction mined', receipt);
       }
-      
+
       await this.finishZkSyncStep3(receipt);
     },
 
@@ -2218,7 +2218,7 @@ Vue.component('grants-cart', {
 
       // Wait for that ID to be acknowledged by the zkSync network
       await this.waitForSerialIdCommitment(serialId);
-    
+
       // Final steps
       await this.finishZkSyncTransfersAllFlows();
     },
@@ -2233,7 +2233,7 @@ Vue.component('grants-cart', {
       // Fetch the expected nonce from the network. We cannot assume it's zero because this may
       // not be the user's first checkout
       let nonce = await this.getGitcoinSyncWalletNonce();
-    
+
 
       // Generate signatures
       const donationSignatures = await this.generateTransferSignatures(nonce);
@@ -2328,7 +2328,7 @@ Vue.component('grants-cart', {
 
     // Show loading dialog
     this.isLoading = true;
-    
+
     // Load list of all tokens
     const tokensResponse = await fetch('/api/v1/tokens');
     const allTokens = await tokensResponse.json();
@@ -2340,7 +2340,7 @@ Vue.component('grants-cart', {
       token.addr = token.address;
       token.name = token.symbol;
     });
-    
+
     // Read array of grants in cart from localStorage
     this.grantData = CartData.loadCart();
     // Initialize array of empty comments

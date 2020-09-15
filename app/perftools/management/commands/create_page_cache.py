@@ -352,9 +352,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         create_grant_type_cache()
+        create_grant_clr_cache()
+        create_grant_category_size_cache()
         if not settings.DEBUG:
-            create_grant_clr_cache()
-            create_grant_category_size_cache()
             create_results_cache()
             create_hidden_profiles_cache()
             create_tribes_cache()
