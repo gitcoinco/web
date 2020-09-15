@@ -30,7 +30,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
-from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Avg, Count, Max, Q, Subquery
@@ -242,7 +241,6 @@ def grants_stats_view(request):
         cht, chart_list = get_stats(request.GET.get('category'))
     except:
         raise Http404
-    # TODO-SELF-SERVICE
     round_types = GrantType.objects.all()
     round_types = [ele for ele in round_types if ele.active_clrs.exists()]
     round_types = round_types.values_list('name', flat=True)
@@ -319,7 +317,7 @@ def get_grants(request):
     for grant in grants:
         grant_json = {
                 'id': grant.id,
-                'logo_url': grant.logo.url if grant.logo and grant.logo.url else staticfiles_storage.url(f'v2/images/grants/logos/{grant.id % 3}.png'),
+                'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
                 'details_url': reverse('grants:details', args=(grant.id, grant.slug)),
                 'title': grant.title,
                 'description': grant.description,
@@ -517,7 +515,7 @@ def grants_by_grant_type(request, grant_type):
     sort_by_index = None
 
     grant_amount = 0
-    if grant_type == 'stats':
+    if grant_type == 'about':
         grant_stats = Stat.objects.filter(key='grants').order_by('-pk')
         if grant_stats.exists():
             grant_amount = lazy_round_number(grant_stats.first().val)
