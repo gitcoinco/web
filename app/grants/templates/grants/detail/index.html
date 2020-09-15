@@ -97,9 +97,9 @@
           <div class="modal-body px-5">
             <img height="45" class="mb-4" src="{% static "v2/images/badge-verify.svg" %}" >
             <h5 class="font-weight-bold mb-3">Verify Grant Ownership with Twitter</h5>
-            <p class="mb-4 text-left"><b>Step 1:</b> Send a tweet from your account (<b>{{ grant.twitter_handle_1 }}</b>) saying <b>
+            <p class="mb-4 text-left"><b>Step 1:</b> Send a tweet from your account (<b>{{ grant.twitter_handle_1 }}</b>) <b>
               {% with verification_tweet|add:" "|add:user_code as tweet %}
-              {{ tweet }} <a class="font-caption btn btn-outline-gc-blue btn-sm" href="https://twitter.com/intent/tweet?text={{ tweet|urlencode}}" target="_blank" ><i class="fab fa-twitter"></i> Tweet it</a></b> <br>
+               <a class="font-caption btn btn-outline-gc-blue btn-sm" href="https://twitter.com/intent/tweet?text={{ tweet|urlencode}}" target="_blank" ><i class="fab fa-twitter"></i> Send Verification Tweet</a></b> <br>
               {% endwith %}
             </p>
             <p class="mb-4 text-left"><b>Step 2:</b>Click the "Verify" button below</p>
@@ -164,6 +164,12 @@
   $(document).ready(function() {
 
     $('#twitterVerification').on('click', async () => {
+
+      if('{{ grant.twitter_handle_1 }}' == ''){
+        _alert('Please add a twitter account to your grant!', 'error', 5000);
+        return;
+      }
+
       const response = await fetchData('/grants/v1/api/{{grant.id}}/verify');
 
       if (!response.ok) {
@@ -171,18 +177,18 @@
         return;
       }
       if (response.verified) {
-        _alert('Congratulations, your grant is now verified!', 'success')
+        _alert('Congratulations, your grant is now verified!', 'success', 5000)
         $('.verification__warning').remove();
         $('#startTwitterVerification .close').click()
       }
 
       if (!response.has_text) {
-        $('#validation-errors').text(`Don't remove the intent "{{ verification_tweet }}"`);
+        _alert('Unable to verify tweet from {{ grant.twitter_handle_1 }}.  Is the twitter post live?  Was it sent from {{ grant.twitter_handle_1 }}?', 'error', 5000)
         return;
       }
 
       if (!response.has_code) {
-        $('#validation-errors').text(`Missing emoji code "{{ user_code }}", please don't remove this unique code before validate your grant.`);
+        _alert(`Missing emoji code "{{ user_code }}", please don't remove this unique code before validate your grant.`, 'error', 5000)
         return;
       }
     });
