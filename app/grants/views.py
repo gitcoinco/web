@@ -242,8 +242,7 @@ def grants_stats_view(request):
     except:
         raise Http404
     round_types = GrantType.objects.all()
-    round_types = [ele for ele in round_types if ele.active_clrs.exists()]
-    round_types = round_types.values_list('name', flat=True)
+    round_types = [ele.name for ele in round_types if ele.active_clrs.exists()]
     params = {
         'cht': cht,
         'chart_list': chart_list,
