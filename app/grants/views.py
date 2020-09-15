@@ -28,6 +28,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
 from django.core.paginator import Paginator
@@ -1813,8 +1814,12 @@ def verify_grant(request, grant_id):
     user_code = get_user_code(request.user.profile.id, grant, emoji_codes)
     text = get_grant_verification_text(grant, False)
 
-    has_code = user_code in last_tweet.full_text
-    has_text = text in last_tweet.full_text
+    full_text = last_tweet.full_text
+    for url in last_tweet.entities['urls']:
+        full_text = full_text.replace(url['url'], url['display_url'])
+
+    has_code = user_code in full_text
+    has_text = text in full_text
 
     if has_code and has_text:
         grant.twitter_verified = True
@@ -1827,6 +1832,7 @@ def verify_grant(request, grant_id):
         'ok': True,
         'verified': grant.twitter_verified,
         'text': last_tweet.full_text,
+        'expanded_text': full_text,
         'has_code': has_code,
         'has_text': has_text,
         'account': grant.twitter_handle_1
