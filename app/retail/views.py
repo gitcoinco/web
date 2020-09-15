@@ -620,10 +620,13 @@ def mission(request):
     context = {
         'is_outside': True,
         'active': 'mission',
+        'card_type': 'summary_large_image',
+        'avatar_width': 2614,
+        'avatar_height': 1286,
         'title': 'Mission',
         'card_title': _('Gitcoin is a mission-driven organization.'),
         'card_desc': _('Our mission is to grow open source.'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
+        'avatar_url': static('v2/images/mission.png'),
     }
     return TemplateResponse(request, 'mission.html', context)
 
