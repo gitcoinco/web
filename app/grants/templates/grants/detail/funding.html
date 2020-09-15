@@ -21,17 +21,16 @@
   {% if not grant.twitter_verified %}
   <div class="my-0 mx-0">
     <div class="verification__warning pt-0 pb-0 pr-2 pl-2 d-flex">
-      <i class="fas fa-exclamation-triangle verification__warning__icon mr-2"></i>
-      <div>
-        <div class="uppercase">
-          Warning: This grant has not verified their ownership of the twitter account listed.
-        </div>
+      <div class="font-body">
+        <i class="fas fa-exclamation-triangle verification__warning__icon mr-2 my-2"></i>
         {% if is_team_member %}
-        <div class="text-right mt-3">
-          <button class="btn btn-sm btn-gc-blue" data-toggle="modal" data-target="#startVerification">Verify your grant</button>
-          <br>
-          or <a href="https://github.com/gitcoinco/web/issues/new/">Submit a support request</a>.
+          <div class="mb-3 d-inline-block font-weight-semibold">
+            <button class="font-caption btn btn-sm btn-gc-blue" data-toggle="modal" data-target="#startVerification">VERIFY GRANT</button>
+            OR <a class="font-caption" href="https://github.com/gitcoinco/web/issues/new/">SUBMIT SUPPORT REQUEST</a>.
+          </div>
         {% endif %}
+        <div class="uppercase font-weight-semibold">
+          Warning: This grant has not verified their ownership of the twitter account listed.
         </div>
       </div>
     </div>

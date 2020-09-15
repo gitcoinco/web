@@ -64,7 +64,7 @@
     <div class="col-12 col-lg-7">
       <h1 class="font-title-xl my-4 font-weight-bold">
         {% if is_team_member %}
-          <textarea id="form--input__title" class="p-0 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.title }}</textarea>
+          <textarea id="form--input__title" class="p-2 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.title }}</textarea>
         {% else %}
           {{ grant.title }}
         {% endif %}
@@ -85,7 +85,10 @@
 
         <div class="font-body mb-2">
           {% if is_team_member %}
-            <textarea id="form--input__reference-url" class="p-0 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
+            <div class="d-flex my-3">
+              <i style="width: 14px;" class="fa fa-link mr-2 text-center my-auto"></i>
+              <textarea id="form--input__reference-url" class="p-2 m-0 inline-edit" disabled>{{ grant.reference_url }}</textarea>
+            </div>
           {% else %}
             <i style="width: 14px;" class="fa fa-link mr-2 text-center"></i>
             <a href="{{ grant.reference_url }}" target="_blank" data-toggle="tooltip" data-html="true" data-placement="top" title="Project URL">
@@ -95,7 +98,10 @@
         </div>
         {% if grant.twitter_handle_1 %}
           {% if is_team_member %}
-            <textarea id="form--twitter__account" placeholder="Twitter account" class="p-0 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.twitter_handle_1 }}</textarea>
+            <div class="d-flex my-3">
+              <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center my-auto"></i>
+              <textarea id="form--twitter__account" placeholder="Twitter account" class="p-2 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.twitter_handle_1 }}</textarea>
+            </div>
           {% else %}
             <div class="font-body mb-2">
               <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center"></i>
