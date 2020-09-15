@@ -11,7 +11,7 @@
 <input type="hidden" name="grant_clr_prediction_curve" :value="grant.clr_prediction_curve">
 <input type="hidden" name="grant_image_css" :value="grant.image_css">
 <input type="hidden" name="is_clr_eligible" :value="grant.is_clr_eligible ? grant.is_clr_eligible : ''">
-<input type="hidden" name="grant_donation_amount" :value="amount" v-if="grant.amount">
+<input type="hidden" name="grant_donation_amount" :value="grant.amount" v-if="grant.amount">
 
 <template v-if="token">
   <input type="hidden" name="grant_donation_currency" :value="token.symbol">

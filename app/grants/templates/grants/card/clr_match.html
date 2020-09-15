@@ -9,6 +9,7 @@
     {{ grant.clr_prediction_curve.0.1|floatformat:0|intcomma|default:0 }} DAI
   </h2>
   <p class="amount mb-2 font-caption font-weight-semibold">
-  FINAL MATCH 
+    {% if round_num == 'LAST' %} FINAL {% else %} ESTIMATED {% endif %}
+    MATCH
   </p>
 </div>

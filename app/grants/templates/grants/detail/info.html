@@ -98,17 +98,21 @@
             <textarea id="form--twitter__account" placeholder="Twitter account" class="p-0 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.twitter_handle_1 }}</textarea>
           {% else %}
             <div class="font-body mb-2">
-            <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center"></i>
-            <p class="d-inline-block mb-0">
-              <a href="https://twitter.com/{{grant.twitter_handle_1}}" target="new" rel="nofollow"  data-toggle="tooltip" data-html="true" data-placement="top" title="Project Twitter Account">{{grant.twitter_handle_1}}</a>
-              <button class="btn btn-sm animate-verify {% if not grant.twitter_verified %}d-none{% endif %}" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
-               <p class="h6 my-2 text-left">Verified Ownership <img width="18" src="{% static "v2/images/badge-verify.svg" %}"></p>
-               <p>Grant owner has verified ownership of their twitter account.</p>
-               <a href="#">Learn more.</p>'
-              ><img width="18" src="{% static 'v2/images/badge-verify.svg' %}" alt="">
-              </button>
-            </p>
-          </div>
+              <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center"></i>
+              <p class="d-inline-block mb-0">
+                <a href="https://twitter.com/{{grant.twitter_handle_1}}" target="new" rel="nofollow"  data-toggle="tooltip" data-html="true" data-placement="top" title="Project Twitter Account">{{grant.twitter_handle_1}}</a>
+                <button class="py-0 position-relative px-0 btn btn-sm animate-verify {% if not grant.twitter_verified %}d-none{% endif %}" data-container="body" data-toggle="popover" data-html="true" data-placement="bottom" data-trigger="hover click" data-content='
+                  <p class="h6 my-2 text-left">
+                    Verified Ownership
+                    <img width="18" src="{% static "v2/images/badge-verify.svg" %}">
+                  </p>
+                  <p>Grant owner has verified ownership of their twitter account.</p>
+                  <a href="#">Learn more.</p>'
+                >
+                  <img width="13" src="{% static 'v2/images/badge-verify.svg' %}" alt="" style="top: -2px">
+                </button>
+              </p>
+            </div>
           {% endif %}
       {% endif %}
 
@@ -162,7 +166,7 @@
         {% if grant.funding_info %}
           <div class="font-body mb-2">
             <i style="width: 14px;" class="fas fa-donate mr-2 text-center"></i>
-            <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="ERC20 Token">
+            <p class="d-inline-block mb-0" data-toggle="tooltip" data-placement="top" title="Was this grant funded by other funding sources?">
               {{ grant.funding_info }}
             </p>
           </div>

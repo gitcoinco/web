@@ -64,7 +64,7 @@
                   {% endif %}
 
                   {% if past_partners %}
-                    <div class="tab-pane fade show active" id="pastpartners"
+                    <div class="tab-pane fade show {% if not current_partners %}active{% endif %}" id="pastpartners"
                       role="tabpanel" aria-labelledby="pastpartners-tab"
                     >
                       {% for past_partner in past_partners %}
