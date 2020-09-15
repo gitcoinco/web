@@ -1800,8 +1800,9 @@ Vue.component('grants-cart', {
           // signing key is set
 
           // +1 for each additional token in their cart
-          Object.keys(this.donationsTotal).forEach((token) => {
-            if (token !== 'ETH') {
+          selectedTokens.forEach((token, index) => {
+            if (index !== 0) {
+              // SKip first one since we already expect at least one token transfer
               this.maxPossibleSignatures += 1;
             }
           });
@@ -2002,7 +2003,9 @@ Vue.component('grants-cart', {
         const tx = await this.nominalSyncWallet.syncTransfer({
           to: transferInfo.dest,
           token: transferInfo.name,
-          amount,
+          // totalRequiredAmount amount includes fee of this transfer, so subtract that now because
+          // otherwise we'd be transferring one additional fee
+          amount: zksync.utils.closestPackableTransactionAmount(amount.sub(fee)),
           fee
         });
 
