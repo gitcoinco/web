@@ -2404,6 +2404,13 @@ Vue.component('grants-cart', {
       }
     });
 
+    // Assume insufficient zkSync balance to start
+    this.hasSufficientZkSyncBalance = false;
+
+    // Show user cart
+    this.isLoading = false;
+
+    // Check zkSync balance. Used to find which checkout option is cheaper
     try {
       // Setup zkSync and check balances
       this.userAddress = (await web3.eth.getAccounts())[0];
