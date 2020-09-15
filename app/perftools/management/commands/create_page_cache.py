@@ -54,7 +54,7 @@ def create_grant_clr_cache():
         grant = Grant.objects.get(pk=pk)
         clr_round = None
 
-        if grant.in_active_clrs.count() > 0:
+        if grant.in_active_clrs.count() > 0 and grant.is_clr_eligible:
             clr_round = grant.in_active_clrs.first()
 
         if clr_round:
@@ -79,7 +79,6 @@ def create_grant_type_cache():
                 key=keyword,
                 data=data,
                 )
-
 
 
 def create_grant_category_size_cache():
