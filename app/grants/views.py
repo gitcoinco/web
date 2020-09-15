@@ -592,6 +592,11 @@ def grants_by_grant_type(request, grant_type):
         title = 'Grants'
 
 
+    grant_label = None
+    for _type in grant_types:
+        if _type.get("keyword") == grant_type:
+            grant_label = _type.get("label")
+
     params = {
         'active': 'grants_landing',
         'title': title,
@@ -599,6 +604,7 @@ def grants_by_grant_type(request, grant_type):
         'network': network,
         'keyword': keyword,
         'type': grant_type,
+        'grant_label': grant_label if grant_type else grant_type,
         'round_end': round_end,
         'next_round_start': next_round_start,
         'after_that_next_round_begin': after_that_next_round_begin,
