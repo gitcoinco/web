@@ -30,6 +30,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.humanize.templatetags.humanize import intword, naturaltime
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core.paginator import Paginator
 from django.db import connection
 from django.db.models import Avg, Count, Max, Q, Subquery
@@ -314,7 +315,7 @@ def get_grants(request):
     for grant in grants:
         grant_json = {
                 'id': grant.id,
-                'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
+                'logo_url': grant.logo.url if grant.logo and grant.logo.url else staticfiles_storage.url(f'v2/images/grants/logos/{grant.id % 3}.png'),
                 'details_url': reverse('grants:details', args=(grant.id, grant.slug)),
                 'title': grant.title,
                 'description': grant.description,
