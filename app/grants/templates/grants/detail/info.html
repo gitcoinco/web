@@ -99,7 +99,7 @@
         {% if is_team_member %}
           <div class="d-flex my-3">
             <i style="width: 14px;" class="fab fa-twitter-square mr-2 text-center my-auto"></i>
-            <textarea id="form--twitter__account" placeholder="Twitter account" class="p-2 m-0 inline-edit font-body" maxlength="150" disabled>{{ grant.twitter_handle_1 }}</textarea>
+            <input id="form--twitter__account" placeholder="Twitter account" class="p-2 m-0 inline-edit font-body" maxlength="150" disabled value="{{ grant.twitter_handle_1 }}"></input>
           </div>
         {% else %}
           <div class="font-body mb-2">
