@@ -80,7 +80,7 @@
           <template v-for="grant_type in grant_types">
             <li class="mr-1 accordion">
               <a :href="`/grants/${grant_type.keyword}?${query_params()}`" :data-type="grant_type.keyword" data-category="" :class="`mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
-                [[grant_type.label]] <sup>([[grant_type.count]])</sup>
+                <strong>[[grant_type.funding_ui]]</strong> - [[grant_type.label]] <sup>([[grant_type.count]])</sup>
               </a>
             </li>
             <div class="panel">

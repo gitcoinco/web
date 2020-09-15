@@ -101,6 +101,14 @@ class GrantType(SuperModel):
         """Return the string representation."""
         return f"{self.name}"
 
+    @property
+    def active_clrs(self):
+        return GrantCLR.objects.filter(is_active=True, grant_filters__grant_type=str(self.pk))
+
+    @property
+    def active_clrs_sum(self):
+        return sum(self.active_clrs.values_list('total_pot', flat=True))
+
 
 class GrantCLR(SuperModel):
     round_num = models.CharField(max_length=15, help_text="CLR Round Number")

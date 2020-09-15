@@ -446,12 +446,22 @@ def get_grant_types(network, filtered_grants=None):
             all_grants_count += count
 
             grant_types.append({
-                'label': _grant_type.label, 'keyword': _grant_type.name, 'count': count
+                'label': _grant_type.label,
+                'keyword': _grant_type.name,
+                'count': count,
+                'funding': int(_grant_type.active_clrs_sum),
+                'funding_ui': f"${round(int(_grant_type.active_clrs_sum)/1000)}k",
             })
+
+    grant_types = sorted(grant_types, key=lambda x: x['funding'], reverse=True)
 
     for grant_type in grant_types:
         _keyword = grant_type['keyword']
-        grant_type['sub_categories'] = [{'label': tuple[0], 'count': get_category_size(tuple[0])} for tuple in basic_grant_categories(_keyword)]
+        grant_type['sub_categories'] = [{
+            'label': tuple[0],
+            'count': get_category_size(tuple[0]),
+            # TODO: add in 'funding'
+            } for tuple in basic_grant_categories(_keyword)]
 
     return grant_types
 
