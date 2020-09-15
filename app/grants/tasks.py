@@ -30,6 +30,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
     round_start_date = CLR_START_DATE.replace(tzinfo=pytz.utc)
     instance.positive_round_contributor_count = instance.get_contributor_count(round_start_date, True)
     instance.negative_round_contributor_count = instance.get_contributor_count(round_start_date, False)
+    instance.twitter_handle_1 = instance.twitter_handle_1.replace('@', '')
+    instance.twitter_handle_2 = instance.twitter_handle_2.replace('@', '')
+
     instance.amount_received_in_round = 0
     instance.amount_received = 0
     instance.monthly_amount_subscribed = 0
