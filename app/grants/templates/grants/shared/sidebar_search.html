@@ -78,27 +78,31 @@
             </a>
           </li>
           <template v-for="grant_type in grant_types">
-            <li class="mr-1 accordion">
-              <a :href="`/grants/${grant_type.keyword}?${query_params()}`" :data-type="grant_type.keyword" data-category="" :class="`mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
+            <li class="mr-1">
+              <a @click="filterLink({type: grant_type.keyword, category: ''})"  :data-type="grant_type.keyword" data-category="" :class="`mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
                 <strong>[[grant_type.funding_ui]]</strong> - [[grant_type.label]] <sup>([[grant_type.count]])</sup>
               </a>
+              <a v-b-toggle='grant_type.keyword' href="#example-collapse" @click.prevent class="m-1">
+                <i class="fa fa-fw fa-chevron-up when-open"></i>
+                <i class="fa fa-fw fa-chevron-down when-closed"></i>
+              </a>
             </li>
-            <div class="panel">
+            <b-collapse class="" :id="grant_type.keyword" :visible="grant_type.keyword == type">
               <div class="col-12 options">
                 <ul class="nav d-inline-block font-body mb-2 grants_nav grants_keyword_nav pl-0 mb-0 pb-1 pt-2 mt-2 mt-xl-0 text-xl-left font-body font-weight-semibold">
                   <li class="mr-1 ">
-                    <a @click="filter_grants({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
+                    <a @click="filterLink({type: grant_type.keyword, category: ''})" :data-type="grant_type.keyword" data-category="" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == '' ? 'selected': ''}`">
                       All [[grant_type.label]] <sup>([[grant_type.count]])</sup>
                     </a>
                   </li>
                   <li class="mr-1" v-for="category in grant_type.sub_categories">
-                    <a @click="filter_grants({type: grant_type.keyword, category: category.label})" :data-type="grant_type.keyword" data-category="category.label" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
+                    <a @click="filterLink({type: grant_type.keyword, category: category.label})" :data-type="grant_type.keyword" data-category="category.label" :class="`mr-3 mr-md-2 mr-lg-3 ${ type == grant_type.keyword && selected_category == category.label ? 'selected' : '' }`">
                       [[category.label]] <sup>([[category.count]])</sup>
                     </a>
                   </li>
                 </ul>
               </div>
-            </div>
+            </b-collapse>
           </template>
 
           <hr>

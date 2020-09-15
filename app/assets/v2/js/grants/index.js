@@ -113,6 +113,13 @@ Vue.component('grant-sidebar', {
     isMobileDevice: function() {
       return window.innerWidth < 576;
     },
+    filterLink: function(params){
+      if (params.type === this.type) {
+        this.filter_grants(params)
+      } else {
+        document.location.href = `/grants/${params.type}`
+      }
+    },
     searchKeyword: function() {
       if (this.timeout) {
         clearTimeout(this.timeout);
