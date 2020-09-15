@@ -290,11 +290,6 @@ def get_grants(request):
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
-    grant_amount = 0
-    grant_stats = Stat.objects.filter(key='grants').order_by('-pk')
-    if grant_stats.exists():
-        grant_amount = lazy_round_number(grant_stats.first().val)
-
     contributions = Contribution.objects.none()
     if request.user.is_authenticated:
         contributions = Contribution.objects.filter(
@@ -336,7 +331,6 @@ def get_grants(request):
                 },
                 'favorite': grant.favorite(request.user) if request.user.is_authenticated else False,
                 'is_on_team': is_grant_team_member(grant, request.user.profile) if request.user.is_authenticated else False,
-                'amount': grant_amount,
                 'clr_prediction_curve': grant.clr_prediction_curve,
                 'last_clr_calc_date':  naturaltime(grant.last_clr_calc_date) if grant.last_clr_calc_date else None,
                 'safe_next_clr_calc_date': naturaltime(grant.safe_next_clr_calc_date) if grant.safe_next_clr_calc_date else None,
