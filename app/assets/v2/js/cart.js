@@ -878,7 +878,9 @@ Vue.component('grants-cart', {
 
       indicateMetamaskPopup();
       for (let i = 0; i < allowanceData.length; i += 1) {
-        const allowance = allowanceData[i].allowance;
+        // Add 20% margin to ensure enough is approved
+        // TODO make this more precise
+        const allowance = ethers.BigNumber.from(allowanceData[i].allowance.toString()).mul('120').div('100').toString();
         const contract = allowanceData[i].contract;
         const tokenName = allowanceData[i].tokenName;
         const approvalTx = contract.methods.approve(targetContract, allowance);
