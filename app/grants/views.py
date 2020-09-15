@@ -791,6 +791,12 @@ def grant_details(request, grant_id, grant_slug):
             team_members.append(str(grant.admin_profile.id))
             grant.team_members.set(team_members)
 
+            if 'edit-twitter_account' in request.POST and request.POST.get('edit-twitter_account') != grant.twitter_handle_1:
+                grant.twitter_verified = False
+                grant.twitter_verified_at = None
+                grant.twitter_verified_by = None
+                grant.twitter_handle_1 = request.POST.get('edit-twitter_account')
+
             if 'edit-description' in request.POST:
                 grant.description = request.POST.get('edit-description')
                 grant.description_rich = request.POST.get('edit-description_rich')

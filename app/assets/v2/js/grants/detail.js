@@ -1,5 +1,6 @@
 const editableFields = [
   '#form--input__title',
+  '#form--twitter__account',
   '#form--input__reference-url',
   '#contract_owner_address',
   '#grant-members',
@@ -111,6 +112,7 @@ $(document).ready(function() {
   $('.select2-selection__rendered').removeAttr('title');
   $('#form--input__title').height($('#form--input__title').prop('scrollHeight'));
   $('#form--input__reference-url').height($('#form--input__reference-url').prop('scrollHeight'));
+  $('#form--twitter__account').height($('#form--twitter__account').prop('scrollHeight'));
 
   $('#edit-details').on('click', (event) => {
     event.preventDefault();
@@ -146,12 +148,14 @@ $(document).ready(function() {
 
     let edit_title = $('#form--input__title').val();
     let edit_reference_url = $('#form--input__reference-url').val();
+    let twitter_account = $('#form--twitter__account').val();
     let edit_grant_members = $('#grant-members').val();
     let edit_categories = $('#grant-categories').val();
 
     let data = {
       'edit-title': edit_title,
       'edit-reference_url': edit_reference_url,
+      'edit-twitter_account': twitter_account,
       'edit-grant_members[]': edit_grant_members,
       'edit-categories[]': edit_categories
     };
