@@ -234,7 +234,6 @@ def grants_addr_as_json(request):
     response = list(set(_grants.values_list('title', 'admin_address')))
     return JsonResponse(response, safe=False)
 
-@cache_page(60 * 60)
 def grants_stats_view(request):
     cht, chart_list = None, None
     try:
