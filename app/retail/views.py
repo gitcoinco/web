@@ -75,6 +75,11 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return activities
 
+def index_2020(request):
+    context = {
+    }
+    return TemplateResponse(request, 'home/index2020.html', context)
+
 
 def index(request):
     products = [

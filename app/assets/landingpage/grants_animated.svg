@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Keyshape -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" style="white-space: preserve-spaces;">
+    <style>
+@keyframes a0_o { 0% { opacity: 1; } 10% { opacity: 0; } 20% { opacity: 1; } 100% { opacity: 1; } }
+@keyframes a1_o { 0% { opacity: 1; } 20% { opacity: 1; } 30% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: 1; } }
+@keyframes a2_o { 0% { opacity: 1; } 40% { opacity: 1; } 50% { opacity: 0; } 60% { opacity: 1; } 100% { opacity: 1; } }
+@keyframes a3_do { 0% { stroke-dashoffset: 0px; } 100% { stroke-dashoffset: 23px; } }
+@keyframes a4_o { 0% { opacity: 0; } 80% { opacity: 0; } 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes a5_o { 0% { opacity: 0; } 25% { opacity: 0; } 35% { opacity: 1; } 45% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes a6_o { 0% { opacity: 0; } 45% { opacity: 0; } 55% { opacity: 1; } 65% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes a7_o { 0% { opacity: 0; } 5% { opacity: 0; } 15% { opacity: 1; } 25% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes a8_o { 0% { opacity: 0; } 65% { opacity: 0; } 75% { opacity: 1; } 85% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes a9_o { 0% { opacity: 0; } 25% { opacity: 0; } 35% { opacity: 1; } 45% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes a10_o { 0% { opacity: 0; } 10% { opacity: 0; } 20% { opacity: 1; } 30% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes a11_o { 0% { opacity: 0; } 10% { opacity: 1; } 20% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes a12_o { 0% { opacity: 0; } 70% { opacity: 0; } 80% { opacity: 1; } 90% { opacity: 0; } 100% { opacity: 0; } }
+    </style>
+    <g id="Ebene_1">
+        <path class="st0" d="M336.4,210L336.4,210L311.8,218L248.3,238.6L109,207.2L109,354.7C107.7,354.3,106.3,354.5,105.1,355.1L98.2,359.2C95.9,360.6,95.1,363.4,96.3,365.8C96.3,365.9,96.3,366,96.3,366.1C95.8,368.4,96.1,370.7,96.9,372.9C98,375.9,100.2,378.4,102.4,380.7C103.1,381.5,104.1,382,105.2,382.1L105.4,382.5C106,384.1,107.3,385.4,109,385.7L109,389.8L248.3,440.5L437.7,334.5L437.7,177.1L336.4,210Z" fill="#15013D"/>
+        <path class="st0" d="M110.7,207.1L291.8,160.4L438.1,175.9L236.2,265.5L110.7,207.1" fill="#15013D"/>
+        <path class="st1" d="M108.9,207.2L292,160.9L438.8,176.4" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+        <path class="st1" d="M248.2,414.9L437.5,315.9" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+        <path class="st1" d="M247,414.5L109.3,368.2" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+        <ellipse class="st2" rx="5" ry="6.3" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none" opacity="1" transform="translate(0,0) translate(191.8,245.5)" style="animation: 2s linear infinite both a0_o;"/>
+        <ellipse class="st2" rx="5" ry="6.3" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none" opacity="1" transform="translate(0,0) translate(209.8,249.6)" style="animation: 2s linear infinite both a1_o;"/>
+        <ellipse class="st2" rx="5" ry="6.3" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none" opacity="1" transform="translate(0,0) translate(227.8,253.7)" style="animation: 2s linear infinite both a2_o;"/>
+        <path class="st1" d="M292.5,160.5L292.5,199.8" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+        <path class="st3" d="M186,317.2C185.8,316.4,185.1,315.7,184.3,315.4L180.7,314.5L164.8,310.5L161.2,309.6C160.5,309.4,159.7,309.8,159.3,310.4L159.3,310.5C158.9,311.3,158.8,312.3,159.2,313.1L160.8,317.5L167.7,337L169.3,341.4C169.5,342.2,170.2,342.9,171,343.2C171.8,343.4,172.5,343,172.9,342.3L174.9,338.8L183.9,323.3L185.9,319.8C186.3,319.1,186.3,318.1,186,317.2ZM171.4,335.4L164.5,315.9L180.4,319.9L171.4,335.4Z" fill="#0FCE7C"/>
+        <path class="st3" d="M194.1,349.1L147.9,337.5C147.1,337.2,146.4,336.6,146.2,335.7C145.9,334.8,145.9,333.9,146.3,333.1L163.3,303.6C163.7,302.8,164.8,302.4,165.6,302.9C165.8,303,166,303.2,166.2,303.4C167.2,304.4,167.4,305.9,166.8,307.2L151.8,333.2L190.8,343L179.2,310.2C178.7,308.8,179.1,307.2,180.2,306.8C181.3,306.4,182.5,307.1,183,308.5L196.2,345.7C196.5,346.6,196.5,347.5,196.1,348.3C195.6,349,194.8,349.3,194.1,349.1Z" fill="#0FCE7C"/>
+        <path class="st3" d="M168.6,299.7C168.2,299.6,167.9,299.4,167.6,299.1C166.6,298.1,166.4,296.6,167,295.3L172.4,285.9C172.8,285.2,173.5,284.9,174.3,285C175.1,285.3,175.8,285.9,176,286.8L180.2,298.5C180.7,299.9,180.3,301.4,179.2,301.9C178.1,302.4,176.9,301.6,176.4,300.2L173.8,292.9L170.4,298.8C170.1,299.5,169.4,299.9,168.6,299.7Z" fill="#0FCE7C"/>
+        <path class="st4" d="M193.4,306.6L206.2,338.5" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        <path class="st4" d="M198.3,319.2L247.4,332.9" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        <path class="st4" d="M154.9,297.3L142.5,318.2" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        <path class="st4" d="M148.2,308.5L109.1,298.3" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        <path class="st2" d="M118.3,393L128.4,385.8L218.6,417.1L225.1,431.9" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+        <path class="st2" d="M336,281.2L354.9,307.4L370.5,268.8" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+        <path class="st4" d="M174.8,223.1L178.3,262L247.1,278.2" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        <path class="st2" d="M164.8,219.7L225,210.8L271.4,230.9" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+        <path class="st2" d="M256,225.5L271.4,206.5L304,198.3L336.6,210.1L320.2,203.6L344.2,188.4L383.1,193.9" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+        <path class="st4" d="M108.4,352.7L96.1,360.8L96.1,373.3L109,387" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        <path class="st1" d="M95.1,366C95.1,366,48.7,368.9,42.9,405.4C37.1,441.9,0.2,440.4,0.2,440.4" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none" stroke-dasharray="12.11" stroke-dashoffset="0" style="animation: 2s linear infinite both a3_do;"/>
+        <path class="st2" d="M263.1,432L269.6,415L422.5,333.4L431.1,337.5" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+        <path class="st4" d="M248.7,278.7L311.7,256L311.7,216.9" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        <path class="st4" d="M249.4,333.3L316.7,307.5L328.4,284.4L376.5,266.8L390.6,276.6L437.2,257.4" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        <path class="st1" d="M437.6,177.1L437.6,334.5L248.2,440.5L108.9,389.8L108.9,207.2L248.2,238.6L311.7,218L336.4,210L336.4,210Z" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+        <path class="st1" d="M248.2,238.6L248.2,440.5" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+    </g>
+    <g id="particles">
+        <g opacity="0" style="animation: 2s linear infinite both a4_o;">
+            <path class="st0" d="M77,164C71.2,165.8,74,174.9,79.8,173.1C85.6,171.3,82.9,162.2,77,164Z" fill="#15013D"/>
+            <path class="st0" d="M83.5,147.6C82.4,151.2,80,156.6,81.3,161.3L81.6,161.2C82.3,161,83,161.4,83.3,162.1C83.3,162.1,83.3,162.1,83.3,162.1L84.7,166.7C84.9,167.4,84.5,168.1,83.8,168.4C83.8,168.4,83.8,168.4,83.8,168.4L73.5,171.6C72.8,171.8,72.1,171.4,71.8,170.7L70.4,166.1C70.2,165.4,70.6,164.7,71.3,164.4L71.6,164.3C70,159.7,65.1,156.7,62.2,154.3C60.1,152.6,58.6,150.3,57.8,147.8C55.5,140.4,58.6,133.5,66.7,131.1C74.8,128.7,80.9,132.9,83.2,139.2C84.3,141.9,84.4,144.8,83.5,147.6Z" fill="#15013D"/>
+            <path class="st4" d="M71.8,164.6C71.8,164.5,71.7,164.4,71.7,164.3C70.1,159.7,65.2,156.7,62.3,154.3C60.2,152.6,58.7,150.3,57.9,147.8C55.6,140.4,58.7,133.5,66.8,131.1C74.9,128.7,81,132.9,83.3,139.2C84.3,141.9,84.4,144.9,83.6,147.7C82.5,151.3,80.1,156.7,81.4,161.4C81.4,161.5,81.5,161.6,81.5,161.7" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+            <path class="st5" d="M82.1,169.5C82.7,171.3,81.7,173.2,79.9,173.7C78.1,174.2,76.2,173.3,75.7,171.5" stroke-width="2" stroke="#8E2ABE" stroke-miterlimit="10" fill="none"/>
+            <path class="st5" d="M71.4,164.4L81.7,161.2C82.4,161,83.1,161.4,83.4,162.1L84.8,166.7C85,167.4,84.6,168.1,83.9,168.4L73.6,171.6C72.9,171.8,72.2,171.4,71.9,170.7L70.5,166.1C70.3,165.4,70.7,164.6,71.4,164.4Z" stroke-width="2" stroke="#8E2ABE" stroke-miterlimit="10" fill="none"/>
+            <path class="st2" d="M54.6,148.8L49.8,150.3" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+            <path class="st2" d="M91.5,137.4L86.7,138.9" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+            <path class="st2" d="M56.6,155.2L53.9,157.8" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+            <path class="st2" d="M87.4,129.9L84.7,132.5" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+            <path class="st2" d="M52.7,142.4L48.7,141.8" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+            <path class="st2" d="M92.6,145.9L88.7,145.3" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+            <path class="st2" d="M76.2,161.6L73.9,154.2" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none"/>
+            <rect class="st2" width="4.6" height="4.6" stroke-width="2" stroke="#FFCE08" stroke-miterlimit="10" fill="none" transform="translate(-94.497,144.733) rotate(-62.1409) translate(70.6,148.5)"/>
+        </g>
+        <g opacity="0" style="animation: 2s linear infinite both a5_o;">
+            <path class="st6" d="M95.7,61L95.7,75" stroke-width="2" stroke="#F9006C" stroke-miterlimit="10" fill="none"/>
+            <path class="st6" d="M102.7,68L88.7,68" stroke-width="2" stroke="#F9006C" stroke-miterlimit="10" fill="none"/>
+        </g>
+        <g opacity="0" style="animation: 2s linear infinite both a6_o;">
+            <path class="st6" d="M160.7,143.6L160.7,157.6" stroke-width="2" stroke="#F9006C" stroke-miterlimit="10" fill="none"/>
+            <path class="st6" d="M167.7,150.6L153.7,150.6" stroke-width="2" stroke="#F9006C" stroke-miterlimit="10" fill="none"/>
+        </g>
+        <g opacity="0" style="animation: 2s linear infinite both a7_o;">
+            <path class="st0" d="M182.9,64.5L199.8,79.5L192.5,100.8L175.6,85.8Z" fill="#15013D"/>
+            <path class="st4" d="M199.8,79.5L192.5,100.8L175.6,85.8L182.9,64.5Z" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+            <path class="st4" d="M192.5,100.8L189.3,88.7L182.9,64.5M199.8,79.5L189.3,88.7L175.6,85.8" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        </g>
+        <g opacity="0" style="animation: 2s linear infinite both a8_o;">
+            <path class="st0" d="M269.8,95.8L276.9,117.2L259.9,131.9L252.8,110.5Z" fill="#15013D"/>
+            <path class="st4" d="M276.9,117.2L259.9,131.9L252.8,110.5L269.8,95.8Z" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+            <path class="st4" d="M259.9,131.9L263.2,119.9L269.8,95.8M276.9,117.2L263.2,119.9L252.8,110.6" stroke-width="2" stroke="#3E00FF" stroke-miterlimit="10" fill="none"/>
+        </g>
+        <g opacity="0" style="animation: 2s linear infinite both a9_o;">
+            <path class="st0" d="M354.7,68.6L346.7,76.4L348.6,87.4L338.7,82.2L328.8,87.4L330.7,76.4L322.7,68.6L333.8,67L338.7,56.9L343.7,67Z" fill="#15013D"/>
+            <path class="st1" d="M346.7,76.4L348.6,87.4L338.7,82.2L328.8,87.4L330.7,76.4L322.7,68.6L333.8,67L338.7,56.9L343.7,67L354.7,68.6Z" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+        </g>
+        <g opacity="0" style="animation: 2s linear infinite both a10_o;">
+            <path class="st6" d="M380.2,122.9L380.2,136.8" stroke-width="2" stroke="#F9006C" stroke-miterlimit="10" fill="none"/>
+            <path class="st6" d="M387.2,129.9L373.2,129.9" stroke-width="2" stroke="#F9006C" stroke-miterlimit="10" fill="none"/>
+        </g>
+        <g opacity="0" style="animation: 2s linear infinite both a11_o;">
+            <path class="st6" d="M411.5,43.8L411.5,57.8" stroke-width="2" stroke="#F9006C" stroke-miterlimit="10" fill="none"/>
+            <path class="st6" d="M418.5,50.8L404.5,50.8" stroke-width="2" stroke="#F9006C" stroke-miterlimit="10" fill="none"/>
+        </g>
+        <g opacity="0" style="animation: 2s linear infinite both a12_o;">
+            <ellipse class="st0" rx="15.2" ry="15.2" fill="#15013D" transform="translate(0,0) translate(441.6,109.8)"/>
+            <path class="st1" d="M440.1,109.8C438.4,109.8,437.1,108.4,437.1,106.8C437.1,105.2,438.5,103.8,440.1,103.8" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+            <path class="st1" d="M443.2,109.8C444.9,109.8,446.2,111.2,446.2,112.9C446.2,114.6,444.8,115.9,443.2,115.9" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+            <path class="st1" d="M441.6,100.7L441.6,103.7" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+            <path class="st1" d="M441.6,115.9L441.6,119" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+            <path class="st1" d="M440.1,109.8L443.2,109.8" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+            <path class="st1" d="M446.2,105.3C445.4,104.5,444.3,103.9,443.2,103.8L440.2,103.8" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+            <path class="st1" d="M437.1,114.4C437.9,115.2,439,115.8,440.1,115.9L443.1,115.9" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none"/>
+            <ellipse class="st1" rx="15.2" ry="15.2" stroke-width="2" stroke="#25E899" stroke-miterlimit="10" fill="none" transform="translate(0,0) translate(441.6,109.8)"/>
+        </g>
+    </g>
+</svg>

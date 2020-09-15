@@ -415,6 +415,7 @@ urlpatterns = [
 
     # brochureware views
     re_path(r'^home/?$', retail.views.index, name='home'),
+    re_path(r'^homenew/?$', retail.views.index_2020, name='home'),
     re_path(r'^landing/?$', retail.views.index, name='landing'),
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),

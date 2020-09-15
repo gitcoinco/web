@@ -1,0 +1,601 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+
+<symbol id="add1" viewBox="0 0 64 64" ><path d="M20 32h24M32 20v24M8 8h48v48H8z"/></symbol>
+
+<symbol id="add2" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M20 32h24M32 20v24"/></symbol>
+
+<symbol id="alarm" viewBox="0 0 64 64" ><path d="M12 44a48.53 48.53 0 0 0 20 4 48.53 48.53 0 0 0 20-4c-4-20-4-32-20-32S16 24 12 44zM32 8v4"/><path d="M24 47.41V48a8 8 0 0 0 16 0v-.59"/></symbol>
+
+<symbol id="android" viewBox="0 0 64 64" ><path d="M56 44v4H8v-4a24 24 0 0 1 48 0zM46.85 25.15L56 16M17.15 25.15L8 16M24 32v4M40 32v4"/></symbol>
+
+<symbol id="apple_command" viewBox="0 0 64 64" ><path d="M16 24a8 8 0 0 1-8-8h0a8 8 0 0 1 8-8h0a8 8 0 0 1 8 8v32a8 8 0 0 1-8 8h0a8 8 0 0 1-8-8h0a8 8 0 0 1 8-8h32a8 8 0 0 1 8 8h0a8 8 0 0 1-8 8h0a8 8 0 0 1-8-8V16a8 8 0 0 1 8-8h0a8 8 0 0 1 8 8h0a8 8 0 0 1-8 8z"/></symbol>
+
+<symbol id="arrow_bottom2" viewBox="0 0 64 64" ><path d="M24 28l8 8 8-8"/></symbol>
+
+<symbol id="arrow_bottom3" viewBox="0 0 64 64" ><path d="M24 24l8 8 8-8M24 32l8 8 8-8"/></symbol>
+
+<symbol id="arrow_bottom4" viewBox="0 0 64 64" ><path d="M48 24L32 40 16 24"/></symbol>
+
+<symbol id="arrow_bottom5" viewBox="0 0 64 64" ><path d="M48 32L32 48 16 32M48 16L32 32 16 16"/></symbol>
+
+<symbol id="arrow_bottomleft" viewBox="0 0 64 64" ><path d="M16 36v12h12M16 48l32-32"/></symbol>
+
+<symbol id="arrow_bottomright" viewBox="0 0 64 64" ><path d="M36 48h12V36M48 48L16 16"/></symbol>
+
+<symbol id="arrow_bottomtop" viewBox="0 0 64 64" ><path d="M40 20l-8-8-8 8M24 44l8 8 8-8M32 12v40"/></symbol>
+
+<symbol id="arrow_diagonal1" viewBox="0 0 64 64" ><path d="M48 27.31V16H36.69M16 36.69V48h11.31M48 16L16 48"/></symbol>
+
+<symbol id="arrow_diagonal2" viewBox="0 0 64 64" ><path d="M36.69 48H48V36.69M27.31 16H16v11.31M48 48L16 16"/></symbol>
+
+<symbol id="arrow_down" viewBox="0 0 64 64" ><path d="M24 44l8 8 8-8M32 12v40"/></symbol>
+
+<symbol id="arrow_down_boxed" viewBox="0 0 64 64" ><path d="M24 28l8 8 8-8"/><path d="M8 8h48v48H8z"/></symbol>
+
+<symbol id="arrow_left" viewBox="0 0 64 64" ><path d="M20 24l-8 8 8 8M52 32H12"/></symbol>
+
+<symbol id="arrow_left2" viewBox="0 0 64 64" ><path d="M36 24l-8 8 8 8"/></symbol>
+
+<symbol id="arrow_left3" viewBox="0 0 64 64" ><path d="M40 24l-8 8 8 8M32 24l-8 8 8 8"/></symbol>
+
+<symbol id="arrow_left4" viewBox="0 0 64 64" ><path d="M40 48L24 32l16-16"/></symbol>
+
+<symbol id="arrow_left5" viewBox="0 0 64 64" ><path d="M48 48L32 32l16-16M32 48L16 32l16-16"/></symbol>
+
+<symbol id="arrow_left_boxed" viewBox="0 0 64 64" ><path d="M36 24l-8 8 8 8"/><path d="M8 8h48v48H8z"/></symbol>
+
+<symbol id="arrow_leftright" viewBox="0 0 64 64" ><path d="M44 40l8-8-8-8M20 24l-8 8 8 8M52 32H12"/></symbol>
+
+<symbol id="arrow_right" viewBox="0 0 64 64" ><path d="M44 40l8-8-8-8M52 32H12"/></symbol>
+
+<symbol id="arrow_right2" viewBox="0 0 64 64" ><path d="M28 40l8-8-8-8"/></symbol>
+
+<symbol id="arrow_right3" viewBox="0 0 64 64" ><path d="M24 40l8-8-8-8M32 40l8-8-8-8"/></symbol>
+
+<symbol id="arrow_right4" viewBox="0 0 64 64" ><path d="M24 16l16 16-16 16"/></symbol>
+
+<symbol id="arrow_right5" viewBox="0 0 64 64" ><path d="M16 16l16 16-16 16M32 16l16 16-16 16"/></symbol>
+
+<symbol id="arrow_right_boxed" viewBox="0 0 64 64" ><path d="M28 40l8-8-8-8"/><path d="M8 8h48v48H8z"/></symbol>
+
+<symbol id="arrow_top2" viewBox="0 0 64 64" ><path d="M40 36l-8-8-8 8"/></symbol>
+
+<symbol id="arrow_top3" viewBox="0 0 64 64" ><path d="M40 40l-8-8-8 8M40 32l-8-8-8 8"/></symbol>
+
+<symbol id="arrow_top4" viewBox="0 0 64 64" ><path d="M16 40l16-16 16 16"/></symbol>
+
+<symbol id="arrow_top5" viewBox="0 0 64 64" ><path d="M16 48l16-16 16 16M16 32l16-16 16 16"/></symbol>
+
+<symbol id="arrow_topleft" viewBox="0 0 64 64" ><path d="M28 16H16v12M16 16l32 32"/></symbol>
+
+<symbol id="arrow_topright" viewBox="0 0 64 64" ><path d="M48 28V16H36M48 16L16 48"/></symbol>
+
+<symbol id="arrow_up" viewBox="0 0 64 64" ><path d="M40 20l-8-8-8 8M32 12v40"/></symbol>
+
+<symbol id="arrow_up_boxed" viewBox="0 0 64 64" ><path d="M40 36l-8-8-8 8"/><path d="M8 8h48v48H8z"/></symbol>
+
+<symbol id="axe" viewBox="0 0 64 64" ><path d="M52 12L8 56M44 20c-4-4-4-12-4-12a16 16 0 0 0-16 16s8 0 12 4 4 12 4 12a16 16 0 0 0 16-16s-8 0-12-4z"/></symbol>
+
+<symbol id="badge" viewBox="0 0 64 64" ><circle cx="32" cy="28" r="20"/><circle cx="32" cy="28" r="12"/><path d="M32 48h0a27.32 27.32 0 0 0 19.31 8H56V40h-8M32 48h0a27.32 27.32 0 0 1-19.31 8H8V40h8"/></symbol>
+
+<symbol id="ball" viewBox="0 0 64 64" ><path d="M46 51.49a24 24 0 0 1 0-39M18 12.51a24 24 0 0 1 0 39M8 32h48"/><circle cx="32" cy="32" r="24"/></symbol>
+
+<symbol id="bar_chart" viewBox="0 0 64 64" ><path d="M56 56H8V36M20 20v36M32 32v24M44 8v48"/></symbol>
+
+<symbol id="batery0" viewBox="0 0 64 64" ><path d="M48 24v-8H8v32h40v-8h8V24h-8z"/></symbol>
+
+<symbol id="batery1" viewBox="0 0 64 64" ><path d="M48 24v-8H8v32h40v-8h8V24h-8zM16 24v16"/></symbol>
+
+<symbol id="batery2" viewBox="0 0 64 64" ><path d="M16 24v16M24 24v16M48 24v-8H8v32h40v-8h8V24h-8z"/></symbol>
+
+<symbol id="batery3" viewBox="0 0 64 64" ><path d="M16 24v16M24 24v16M32 24v16M48 24v-8H8v32h40v-8h8V24h-8z"/></symbol>
+
+<symbol id="batery4" viewBox="0 0 64 64" ><path d="M48 24v-8H8v32h40v-8h8V24h-8zM16 24v16M24 24v16M32 24v16M40 24v16"/></symbol>
+
+<symbol id="block" viewBox="0 0 64 64" ><path d="M8 20v24l24 12 24-12V20L32 8 8 20z"/><path d="M56 20L32 32 8 20M32 32v24"/></symbol>
+
+<symbol id="block3d" viewBox="0 0 64 64" ><path d="M8 20v24l24 12 24-12V20L32 8 8 20zM32 32l24-12M32 56V32M56 44L32 32M8 44l24-12M8 20l24 12M32 8v24"/></symbol>
+
+<symbol id="blockchain" viewBox="0 0 64 64" ><path d="M48 8L16 24v16l32 16"/><path d="M16 8l32 16v16L16 56M48 24l-16 8M16 24l16 8M32 48V32"/></symbol>
+
+<symbol id="bluetooth" viewBox="0 0 64 64" ><path d="M20 40l20-16-12-12v40l12-12-20-16"/></symbol>
+
+<symbol id="book-185" viewBox="0 0 64 64" ><path d="M32 56l24-4V8l-24 4L8 8v44l24 4zM32 12v44"/></symbol>
+
+<symbol id="book-34" viewBox="0 0 64 64" ><path d="M32 56l24-4V8l-24 4L8 8v44l24 4zM32 12v44"/></symbol>
+
+<symbol id="box1" viewBox="0 0 64 64" ><path d="M8 8h48v48H8z"/></symbol>
+
+<symbol id="box2" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM32 56V8"/></symbol>
+
+<symbol id="box3" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM8 32h48"/></symbol>
+
+<symbol id="box4" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM32 56V8M8 32h48"/></symbol>
+
+<symbol id="box5" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM56 8L8 56"/></symbol>
+
+<symbol id="box6" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM56 56L8 8"/></symbol>
+
+<symbol id="box7" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM56 8L8 56M56 56L8 8"/></symbol>
+
+<symbol id="box_container" viewBox="0 0 64 64" ><path d="M16 8h32l8 16v32H8V24l8-16zM8 24h48"/></symbol>
+
+<symbol id="boxed_export" viewBox="0 0 64 64" ><path d="M52 32v24H8V12h24M56 24V8H40M36 28L56 8"/></symbol>
+
+<symbol id="boxed_import" viewBox="0 0 64 64" ><path d="M52 40v16H8V12h16"/><path d="M36 12v16h16M56 8L36 28"/></symbol>
+
+<symbol id="browser" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM8 24h48M48 16h-4M40 16h-4"/></symbol>
+
+<symbol id="bulp" viewBox="0 0 64 64" ><path d="M30.28 44L29 28.27a1.85 1.85 0 0 0-3.32-1h0a1.85 1.85 0 0 0 1.48 3h9.74a1.85 1.85 0 0 0 1.48-3h0a1.85 1.85 0 0 0-3.32 1L33.72 44"/><path d="M37.41 44c0-5.41 4.35-10.27 6.6-13.66a14.34 14.34 0 0 0 2.38-8.81C46 14.35 41 8 32 8s-14.41 6.08-14.41 14.38a14.33 14.33 0 0 0 2.48 8.09c2.3 3.38 6.52 8.12 6.52 13.53M28 52a4 4 0 0 0 8 0"/><rect x="24" y="44" width="16" height="8" rx="3"/></symbol>
+
+<symbol id="camera" viewBox="0 0 64 64" ><rect x="8" y="20" width="48" height="36" rx="4"/><path d="M16 20l4-12h24l4 12"/><circle cx="32" cy="38" r="10"/></symbol>
+
+<symbol id="cart1" viewBox="0 0 64 64" ><path d="M16 20h40l-4 24H16V8H8"/><circle cx="20" cy="52" r="4"/><circle cx="48" cy="52" r="4"/></symbol>
+
+<symbol id="cart2" viewBox="0 0 64 64" ><path d="M32 48V32M44 48V32M20 48V32M8 24l4 32h40l4-32H8zM16 24l4-16M48 24L44 8"/></symbol>
+
+<symbol id="cd" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="6"/><path d="M38 32h18M8 32h18.01M48.97 15.03L36.21 27.79M27.76 36.24L15.03 48.97"/></symbol>
+
+<symbol id="chat1" viewBox="0 0 64 64" ><path d="M8 52V18.58A6.59 6.59 0 0 1 14.58 12h34.84A6.59 6.59 0 0 1 56 18.58v22.84A6.59 6.59 0 0 1 49.42 48H16zM16 24h32M16 36h32"/></symbol>
+
+<symbol id="chat2" viewBox="0 0 64 64" ><path d="M16 20h32M16 30h32M16 40h32M56 56l-12-4H17.16A9.16 9.16 0 0 1 8 42.84V17.16A9.16 9.16 0 0 1 17.16 8h29.68A9.16 9.16 0 0 1 56 17.16z"/></symbol>
+
+<symbol id="check" viewBox="0 0 64 64" ><path d="M44 24L28 40l-8-8"/></symbol>
+
+<symbol id="check2" viewBox="0 0 64 64" ><path d="M44 24L28 40l-8-8M55.8 35.13A24 24 0 1 1 35.13 8.2"/></symbol>
+
+<symbol id="checkbox" viewBox="0 0 64 64" ><path d="M8 8h48v48H8z"/><path d="M20 32l8 8 16-16"/></symbol>
+
+<symbol id="checked" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M44 24L28 40l-8-8"/></symbol>
+
+<symbol id="checkmark" viewBox="0 0 64 64" ><path d="M12 28l16 16 24-24"/></symbol>
+
+<symbol id="circle1" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/></symbol>
+
+<symbol id="circle2" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M32 8v48"/></symbol>
+
+<symbol id="circle3" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M8 32h48"/></symbol>
+
+<symbol id="circle4" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M32 8v48M56 32H8"/></symbol>
+
+<symbol id="circle5" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M15.03 48.97l33.93-33.93"/></symbol>
+
+<symbol id="circle6" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M15.03 15.04l33.93 33.93"/></symbol>
+
+<symbol id="circle7" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M15.03 48.97l33.93-33.93M15.03 15.04l33.93 33.93"/></symbol>
+
+<symbol id="cli" viewBox="0 0 64 64" ><path d="M8 12h48v40H8z"/><path d="M20 40l8-8-8-8M32 40h12"/></symbol>
+
+<symbol id="close" viewBox="0 0 64 64" ><path d="M16 16l32 32M48 16L16 48"/></symbol>
+
+<symbol id="close_boxed" viewBox="0 0 64 64" ><path d="M20 20l24 24M44 20L20 44M8 8h48v48H8z"/></symbol>
+
+<symbol id="cloud" viewBox="0 0 64 64" ><path d="M42 48a14 14 0 1 0-4.46-27.26A12 12 0 0 0 16.71 32H16a8 8 0 0 0 0 16z"/></symbol>
+
+<symbol id="cloud_download" viewBox="0 0 64 64" ><path d="M45.84 43.47a14 14 0 1 0-8.3-26.73A12 12 0 0 0 16.71 28H16a8 8 0 0 0 0 16h2M24 44l8 8 8-8M32 52V28"/></symbol>
+
+<symbol id="cloud_upload" viewBox="0 0 64 64" ><path d="M42 44a14 14 0 1 0-4.46-27.26A12 12 0 0 0 16.71 28H16a8 8 0 0 0 0 16h6"/><path d="M40 36l-8-8-8 8M32 28v24"/></symbol>
+
+<symbol id="code1" viewBox="0 0 64 64" ><path d="M16 48L8 32l8-16M48 48l8-16-8-16M36 8l-8 48"/></symbol>
+
+<symbol id="code2" viewBox="0 0 64 64" ><path d="M20 56h0a8 8 0 0 1-8-8V36l-4-4 4-4V16a8 8 0 0 1 8-8h0M44 8h0a8 8 0 0 1 8 8v12l4 4-4 4v12a8 8 0 0 1-8 8h0M20 32h4M30 32h4M40 32h4"/></symbol>
+
+<symbol id="code3" viewBox="0 0 64 64" ><path d="M8 12h48v40H8z"/><path d="M40 40l8-8-8-8M24 24l-8 8 8 8M34 22l-4 20"/></symbol>
+
+<symbol id="coffee" viewBox="0 0 64 64" ><path d="M8 24h40v24a8 8 0 0 1-8 8H16a8 8 0 0 1-8-8V24h0zM28 16V8M16 16V8M40 16V8M48 44h5.42A2.59 2.59 0 0 0 56 41.42v-6.84A2.59 2.59 0 0 0 53.42 32H48"/></symbol>
+
+<symbol id="compass" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M28 28l-4 12 12-4 4-12-12 4z"/></symbol>
+
+<symbol id="copytoclipboard" viewBox="0 0 64 64" ><path d="M24 40H8V8h32v16"/><path d="M24 24h32v32H24z"/></symbol>
+
+<symbol id="crop" viewBox="0 0 64 64" ><path d="M56 48H16V8"/><path d="M8 16h40v40M8 56L56 8"/></symbol>
+
+<symbol id="crown" viewBox="0 0 64 64" ><path d="M52 56V44l4-24-12 4L32 8 20 24 8 20l4 24v12h40zM12 44h0z"/></symbol>
+
+<symbol id="cut" viewBox="0 0 64 64" ><circle cx="16" cy="20" r="8"/><circle cx="16" cy="44" r="8"/><path d="M20.8 37.6L56 20M20.8 26.4L56 44"/></symbol>
+
+<symbol id="dashboard" viewBox="0 0 64 64" ><path d="M32 8v8M32 56v-8M56 32h-8M8 32h8M48.97 15.03L32 32M15.03 48.97l5.66-5.66M48.97 48.97l-5.66-5.66M15.03 15.03l5.66 5.66"/><circle cx="32" cy="32" r="24"/></symbol>
+
+<symbol id="database" viewBox="0 0 64 64" ><path d="M56 16v32c0 4.42-10.75 8-24 8S8 52.42 8 48V16c0-4.42 10.75-8 24-8s24 3.58 24 8z"/><path d="M56 16c0 4.42-10.75 8-24 8S8 20.42 8 16M56 32c0 4.42-10.75 8-24 8S8 36.42 8 32"/></symbol>
+
+<symbol id="day" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="16"/><path d="M32 8v8M32 56v-8M56 32h-8M8 32h8M48.97 15.03l-5.66 5.66M15.03 48.97l5.66-5.66M48.97 48.97l-5.66-5.66M15.03 15.03l5.66 5.66"/></symbol>
+
+<symbol id="diamond" viewBox="0 0 64 64" ><path d="M32 56L20 32 32 8l12 24-12 24z"/></symbol>
+
+<symbol id="diamond2" viewBox="0 0 64 64" ><path d="M32 44L8 32l24-12 24 12-24 12z"/></symbol>
+
+<symbol id="display" viewBox="0 0 64 64" ><rect x="8" y="8" width="48" height="36" rx="4"/><path d="M16 56h32M28 44l-4 12M36 44l4 12M8 36h48"/></symbol>
+
+<symbol id="document" viewBox="0 0 64 64" ><path d="M12 8h40v48H12z"/></symbol>
+
+<symbol id="donate" viewBox="0 0 64 64" ><circle cx="32" cy="28" r="20"/><path d="M8 48v8h48v-8M30 28a4 4 0 0 1 0-8M34 28a4 4 0 0 1 0 8M32 16v4M32 36v4M30 28h4M38 22s-2-2-4-2h-4M26 34s2 2 4 2h4"/></symbol>
+
+<symbol id="door_enter" viewBox="0 0 64 64" ><path d="M16 20V8h32v48H16V44"/><path d="M28 40l8-8-8-8M8 32h28"/></symbol>
+
+<symbol id="door_exit" viewBox="0 0 64 64" ><path d="M40 44v12H8V8h32v12M48 40l8-8-8-8M28 32h28"/></symbol>
+
+<symbol id="download" viewBox="0 0 64 64" ><path d="M8 40h48v16H8zM24 24l8 8 8-8M32 8v24M16 48h4M24 48h4"/></symbol>
+
+<symbol id="drag" viewBox="0 0 64 64" ><path d="M32 8v48M56 32H8M40 16l-8-8-8 8M24 48l8 8 8-8M48 40l8-8-8-8M16 24l-8 8 8 8"/></symbol>
+
+<symbol id="drop" viewBox="0 0 64 64" ><path d="M52 36.8C52 17.6 32 8 32 8s-20 9.6-20 28.8C12 47.4 21 56 32 56s20-8.6 20-19.2zM22 36.8a9.81 9.81 0 0 0 10 9.6"/></symbol>
+
+<symbol id="edit1" viewBox="0 0 64 64" ><path d="M20 56l36-36L44 8 8 44v12h12zM12 40l12 12M36 16l12 12M20 56h36"/></symbol>
+
+<symbol id="edit2" viewBox="0 0 64 64" ><path d="M24 52l32-32L44 8 12 40 8 56l16-4zM12 40l12 12M36 16l12 12"/></symbol>
+
+<symbol id="edit3" viewBox="0 0 64 64" ><path d="M20 56l36-36L44 8 8 44v12h12zM12 40l12 12M36 16l12 12"/></symbol>
+
+<symbol id="edit4" viewBox="0 0 64 64" ><path d="M24 56l32-32L40 8 8 40v16h16zM8 40l16 16M32 16l16 16"/></symbol>
+
+<symbol id="email" viewBox="0 0 64 64" ><path d="M8 12h48v40H8z"/><path d="M56 20L32 36 8 20"/></symbol>
+
+<symbol id="email_open" viewBox="0 0 64 64" ><path d="M56 20l-24-8-24 8v32h48V20z"/><path d="M48 28l-16 8-16-8"/></symbol>
+
+<symbol id="emote_happy" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M40.49 40a12 12 0 0 1-3.82 2.57 12.07 12.07 0 0 1-9.34 0A12 12 0 0 1 23.51 40M40 24h-4M28 24h-4"/></symbol>
+
+<symbol id="emote_sad" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M23.51 43.51a12.18 12.18 0 0 1 3.82-2.57 12.07 12.07 0 0 1 9.34 0 12.18 12.18 0 0 1 3.82 2.57M40 24h-4M28 24h-4"/></symbol>
+
+<symbol id="export" viewBox="0 0 64 64" ><path d="M48 24L32 8 16 24M56 56H8M32 48V8"/></symbol>
+
+<symbol id="facebook" viewBox="0 0 64 64" ><path d="M28 56V20Q28 8 40 8M40 24H22"/></symbol>
+
+<symbol id="file_3d" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M20 26v12l12 6 12-6V26l-12-6-12 6zM32 32l12-6M32 44V32M44 38l-12-6M20 38l12-6M20 26l12 6M32 20v12"/></symbol>
+
+<symbol id="file_audio_cd" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><circle cx="32" cy="32" r="4"/><circle cx="32" cy="32" r="12"/></symbol>
+
+<symbol id="file_audio_record" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><circle cx="32" cy="32" r="4"/></symbol>
+
+<symbol id="file_audio_wave" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16zM32 20v24M38 24v16M26 24v16M20 28v8M44 28v8"/></symbol>
+
+<symbol id="file_book" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M32 44l12-2V20l-12 2-12-2v22l12 2zM32 21v22"/></symbol>
+
+<symbol id="file_bookmark" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M32 39.9L24.2 44l1.49-8.68-6.31-6.15 8.72-1.27L32 20l3.9 7.9 8.72 1.27-6.31 6.15L39.8 44 32 39.9z"/></symbol>
+
+<symbol id="file_camera" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M36 28.63l8-2v10.75l-8-2M36 36a4 4 0 0 1-4 4l-8-.62a4 4 0 0 1-4-4v-6.76a4 4 0 0 1 4-4l8-.62a4 4 0 0 1 4 4z"/></symbol>
+
+<symbol id="file_chart_bar" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16zM28 20v24M36 32v12"/><path d="M44 36v8H20V28"/></symbol>
+
+<symbol id="file_chart_pie" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><circle cx="32" cy="32" r="12"/><path d="M44 32H32V20M32 32l-8.47 8.47"/></symbol>
+
+<symbol id="file_code" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M24 40l-4-8 4-8M40 40l4-8-4-8M34 20l-4 24"/></symbol>
+
+<symbol id="file_config" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M44 32a11.49 11.49 0 0 0-.16-1.95L40 28.69 41.75 25A12 12 0 0 0 39 22.25L35.31 24 34 20.16a12 12 0 0 0-3.9 0L28.69 24 25 22.25A12 12 0 0 0 22.25 25L24 28.69l-3.84 1.36a12 12 0 0 0 0 3.9L24 35.31 22.25 39A12 12 0 0 0 25 41.75L28.69 40l1.36 3.84a12 12 0 0 0 3.9 0L35.31 40 39 41.75A12 12 0 0 0 41.75 39L40 35.31 43.84 34a11.49 11.49 0 0 0 .16-2z"/><circle cx="32" cy="32" r="2"/></symbol>
+
+<symbol id="file_database" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M44 24v16c0 2.21-5.37 4-12 4s-12-1.79-12-4V24c0-2.21 5.37-4 12-4s12 1.79 12 4z"/><path d="M44 24c0 2.21-5.37 4-12 4s-12-1.79-12-4M44 32c0 2.21-5.37 4-12 4s-12-1.79-12-4"/></symbol>
+
+<symbol id="file_email" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M52 32L32 44 12 32M20 20h8M36 28H20"/></symbol>
+
+<symbol id="file_empty" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/></symbol>
+
+<symbol id="file_excel" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16zM24 20l16 24M40 20L24 44"/></symbol>
+
+<symbol id="file_game" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M44 44l-4-2-4 2-4-2-4 2-4-2-4 2V32a12 12 0 0 1 12-12h0a12 12 0 0 1 12 12zM28 30v2M36 30v2"/></symbol>
+
+<symbol id="file_image" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M12 44h6.67c6.66 0 13.33-8 20-8s6.66 8 13.33 8h0"/><circle cx="26" cy="22" r="6"/></symbol>
+
+<symbol id="file_pdf" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M26.22 20.08C19.37 22 41.51 42.71 43 35.8s-26.33 2.89-21.41 7.68 11.48-25.27 4.63-23.4z"/></symbol>
+
+<symbol id="file_powerpoint" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M24 34.4h8.8a7.2 7.2 0 1 0 0-14.4H24v24"/></symbol>
+
+<symbol id="file_protected" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><rect x="22" y="30" width="20" height="14" rx="4"/><path d="M32 40v-6M26 30v-4a6 6 0 0 1 12 0v4"/></symbol>
+
+<symbol id="file_shell" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M20 40l8-8-8-8M32 40h12"/></symbol>
+
+<symbol id="file_text" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16zM20 20h8M20 28h24M36 36H20M20 44h24"/></symbol>
+
+<symbol id="file_vcard" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><ellipse cx="32" cy="28" rx="6" ry="8"/><path d="M27 32.73s-5 1.34-6 4A16.42 16.42 0 0 0 20 44h24a16.42 16.42 0 0 0-1-7.27c-1-2.66-6-4-6-4"/></symbol>
+
+<symbol id="file_video" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M39 32l-14-8v16l14-8z"/></symbol>
+
+<symbol id="file_word" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16z"/><path d="M44 20l-4 24-8-9.6-8 9.6-4-24"/></symbol>
+
+<symbol id="file_zip" viewBox="0 0 64 64" ><path d="M44 8v8h8"/><path d="M52 16l-8-8H12v48h40V16zM32 8v48M32 16h-8M40 24h-8M32 32h-8M40 40h-8M32 48h-8"/></symbol>
+
+<symbol id="fingernail" viewBox="0 0 64 64" ><path d="M12 56v-6.91a43.27 43.27 0 0 1 7.26-24L20 24M44 24l.74 1.11a43.27 43.27 0 0 1 7.26 24V56M44 44l-2.74.91a29.19 29.19 0 0 1-18.52 0L20 44V20A12 12 0 0 1 32 8h0a12 12 0 0 1 12 12zM28 36V24"/></symbol>
+
+<symbol id="flag" viewBox="0 0 64 64" ><path d="M16 32h32L36 20 48 8H16v48"/></symbol>
+
+<symbol id="folder" viewBox="0 0 64 64" ><path d="M28 20l-4-8H8v40h48V20H28z"/></symbol>
+
+<symbol id="folder_open" viewBox="0 0 64 64" ><path d="M28 20l-4-8H8v40h48V20H28zM56 28H8"/></symbol>
+
+<symbol id="fork" viewBox="0 0 64 64" ><path d="M40.12 8l-5.95 6a8.42 8.42 0 0 0 0 11.91l4 4a8.42 8.42 0 0 0 11.91 0l6-5.95M8 56l39.69-39.69"/></symbol>
+
+<symbol id="fullscreen1" viewBox="0 0 64 64" ><path d="M20 8H8v12M8 8l16 16M56 20V8H44M56 8L40 24M44 56h12V44M56 56L40 40M8 44v12h12M8 56l16-16"/></symbol>
+
+<symbol id="fullscreen2" viewBox="0 0 64 64" ><path d="M52 40H40v12M40 40l16 16M24 52V40H12M24 40L8 56M12 24h12V12M24 24L8 8M40 12v12h12M40 24L56 8"/></symbol>
+
+<symbol id="fullscreen_expand" viewBox="0 0 64 64" ><path d="M36 48h12V36M28 16H16v12"/><path d="M8 8h48v48H8zM16 16l12 12M48 48L36 36"/></symbol>
+
+<symbol id="fullscreen_shrink" viewBox="0 0 64 64" ><path d="M48 36H36v12"/><path d="M8 8h48v48H8zM36 36l12 12"/><path d="M16 28h12V16M28 28L16 16"/></symbol>
+
+<symbol id="ghost" viewBox="0 0 64 64" ><path d="M56 56l-8-4-8 4-8-4-8 4-8-4-8 4V32A24 24 0 0 1 32 8h0a24 24 0 0 1 24 24zM24 28v4M40 28v4"/></symbol>
+
+<symbol id="gift" viewBox="0 0 64 64" ><path d="M32 20h0c-6 0-12 0-12-6a6 6 0 0 1 6-6c6 0 6 8 6 12zM32 20h0c6 0 12 0 12-6a6 6 0 0 0-6-6c-6 0-6 8-6 12zM12 32v24h40V32M8 20h48v12H8zM32 20v36"/></symbol>
+
+<symbol id="gitcoin_kudos" viewBox="0 0 64 64" ><path d="M56 44V20L32 8 8 20v24l24 12 24-12z"/><path d="M44 38V26l-12-6-12 6v12l12 6 12-6z"/></symbol>
+
+<symbol id="github" viewBox="0 0 64 64" ><path d="M20 56a4 4 0 0 0 4-4 8 8 0 0 1 2.35-5.67s-13.69-1.53-16.6-7.41A21.67 21.67 0 0 1 8 29.42 17.23 17.23 0 0 1 11.9 18a15.43 15.43 0 0 1-.77-4.82C11.13 11 11 10 12 8c4.48 0 8 .85 11.37 3.52A39.58 39.58 0 0 1 32 10.7a39.58 39.58 0 0 1 8.63.82C44 8.85 47.52 8 52 8c1 1.95.87 3 .87 5.18A15.43 15.43 0 0 1 52.1 18 17.23 17.23 0 0 1 56 29.42a21.67 21.67 0 0 1-1.75 9.5c-2.91 5.88-16.6 7.41-16.6 7.41A8 8 0 0 1 40 52a4 4 0 0 0 4 4"/><path d="M24 50.88c-4 2-6.31-.43-8.75-2S11 46.75 8 48"/><ellipse cx="22.81" cy="31.72" rx="3.19" ry="4.82"/><ellipse cx="41.19" cy="31.72" rx="3.19" ry="4.82"/></symbol>
+
+<symbol id="glass_champagne" viewBox="0 0 64 64" ><path d="M36 40h-8l-1.74-7A75.87 75.87 0 0 1 24 14.68V8h16v6.68a75.87 75.87 0 0 1-2.26 18.37zM32 56V40M24 56h16"/></symbol>
+
+<symbol id="glass_coctail" viewBox="0 0 64 64" ><path d="M32 40L48 8H16l16 32zM20 56h24M32 40v16"/></symbol>
+
+<symbol id="glass_juice" viewBox="0 0 64 64" ><path d="M44 56H20L16 8h32l-4 48z"/></symbol>
+
+<symbol id="glass_wine" viewBox="0 0 64 64" ><path d="M16 24h0a33.83 33.83 0 0 1 3.58-15.16L20 8h24l.42.84A33.83 33.83 0 0 1 48 24h0M48 24a16 16 0 0 1-32 0M32 56V40M20 56h24"/></symbol>
+
+<symbol id="globe" viewBox="0 0 64 64" ><path d="M52 19.17a39.79 39.79 0 0 1-20 5.33 39.79 39.79 0 0 1-20-5.33M12 44.88a40 40 0 0 1 39.92 0M29 56a40 40 0 0 1 0-48M35 8a40 40 0 0 1 0 48"/><circle cx="32" cy="32" r="24"/></symbol>
+
+<symbol id="graph1" viewBox="0 0 64 64" ><path d="M56 56V40M44 56V32M32 56V24M20 56V16M8 56V8"/></symbol>
+
+<symbol id="graph2" viewBox="0 0 64 64" ><path d="M8 56V40M20 56V32M32 56V24M44 56V16M56 56V8"/></symbol>
+
+<symbol id="ground_plan" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM8 40h48M24 40v16"/><path d="M32 40V20H8M56 28H32M20 8v12"/></symbol>
+
+<symbol id="hash" viewBox="0 0 64 64" ><path d="M20 8v48M44 8v48M8 20h48M8 44h48"/></symbol>
+
+<symbol id="heart1" viewBox="0 0 64 64" ><path d="M44 12c-8 0-9.91 8-12 8s-4-8-12-8c-6.63 0-12 4-12 12 0 12 20 28 24 28s24-16 24-28c0-8-5.37-12-12-12z"/></symbol>
+
+<symbol id="heart2" viewBox="0 0 64 64" ><path d="M35.54 15.44L32 19l-3.54-3.53A11.67 11.67 0 0 0 12 31.94l3.54 3.54 8.25 8.25L32 52l8.25-8.25 8.25-8.25 3.5-3.56a11.67 11.67 0 0 0-16.5-16.5z"/></symbol>
+
+<symbol id="hexagon_spider_web" viewBox="0 0 64 64" ><path d="M20 54L8 32l12-22h24l12 22-12 22H20zM32 32l12-22M32 32h24M32 32l12 22M32 32L20 54M32 32H8M32 32L20 10"/></symbol>
+
+<symbol id="home" viewBox="0 0 64 64" ><path d="M8 24v32h48V24L32 8 8 24z"/><path d="M40 56V36H24v20"/></symbol>
+
+<symbol id="image" viewBox="0 0 64 64" ><path d="M8 44h8c8 0 16-8 24-8s8 8 16 8h0"/><path d="M8 8h48v48H8z"/><circle cx="22" cy="22" r="6"/></symbol>
+
+<symbol id="import" viewBox="0 0 64 64" ><path d="M16 32l16 16 16-16M56 56H8M32 8v40"/></symbol>
+
+<symbol id="invisible" viewBox="0 0 64 64" ><path d="M56 32s-8 16-24 16S8 32 8 32s8-16 24-16 24 16 24 16zM52 12L12 52M52 52L12 12"/></symbol>
+
+<symbol id="key" viewBox="0 0 64 64" ><circle cx="20" cy="32" r="12"/><path d="M56 44V32H32"/></symbol>
+
+<symbol id="keypair" viewBox="0 0 64 64" ><circle cx="20" cy="44" r="12"/><path d="M56 56V44H32"/><circle cx="20" cy="20" r="12"/><path d="M56 32V20H32"/></symbol>
+
+<symbol id="knowledge" viewBox="0 0 64 64" ><path d="M32 36L8 24l24-12 24 12-24 12z"/><path d="M48 28v24H16V28M56 24v20"/></symbol>
+
+<symbol id="layers2" viewBox="0 0 64 64" ><path d="M56 24L32 36 8 24l24-12 24 12z"/><path d="M40 32l16 8-24 12L8 40l16-8"/></symbol>
+
+<symbol id="layers3" viewBox="0 0 64 64" ><path d="M32 40l-16-8 16-8 16 8-16 8zM32 24l-16-8 16-8 16 8-16 8zM32 56l-16-8 16-8 16 8-16 8z"/></symbol>
+
+<symbol id="ledger" viewBox="0 0 64 64" ><path d="M8 24h16M8 40h48M40 40v16M24 8v48"/><rect x="8" y="8" width="48" height="48" rx="8"/></symbol>
+
+<symbol id="lifebelt" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="8"/><path d="M48.97 48.97L37.66 37.66M26.34 26.34L15.03 15.03M37.66 26.34l11.31-11.31M26.34 37.66L15.03 48.97"/></symbol>
+
+<symbol id="link1" viewBox="0 0 64 64" ><path d="M28 44h-8A12 12 0 0 1 8 32h0a12 12 0 0 1 12-12h8M36 20h8a12 12 0 0 1 12 12h0a12 12 0 0 1-12 12h-8M20 32h24"/></symbol>
+
+<symbol id="link2" viewBox="0 0 64 64" ><path d="M24 44h-4A12 12 0 0 1 8 32h0a12 12 0 0 1 12-12h4M40 20h4a12 12 0 0 1 12 12h0a12 12 0 0 1-12 12h-4M32 16v32"/></symbol>
+
+<symbol id="linkedin" viewBox="0 0 64 64" ><path d="M53 56V32M23 56V20M23 32c0-6.63 6.72-12 15-12s15 5.37 15 12M11 8v6M11 20v36"/></symbol>
+
+<symbol id="list" viewBox="0 0 64 64" ><path d="M20 16h36M20 32h36M20 48h36M8 16h4M8 32h4M8 48h4"/></symbol>
+
+<symbol id="location" viewBox="0 0 64 64" ><path d="M12 27.2C12 46.4 32 56 32 56s20-9.6 20-28.8C52 16.6 43.05 8 32 8s-20 8.6-20 19.2z"/><circle cx="32" cy="26.88" r="6.88"/></symbol>
+
+<symbol id="lock_checked" viewBox="0 0 64 64" ><path d="M20 28v-8a12 12 0 0 1 24 0v8H16a4 4 0 0 0-4 4v20a4 4 0 0 0 4 4h32a4 4 0 0 0 4-4V40"/><path d="M56 28L32 48l-8-8"/></symbol>
+
+<symbol id="lock_locked" viewBox="0 0 64 64" ><rect x="12" y="28" width="40" height="28" rx="4"/><path d="M32 48V36M20 28v-8a12 12 0 0 1 24 0v8"/></symbol>
+
+<symbol id="lock_unlocked" viewBox="0 0 64 64" ><rect x="12" y="28" width="40" height="28" rx="4"/><path d="M32 48V36M20 28v-8a12 12 0 0 1 20.49-8.49"/></symbol>
+
+<symbol id="loop" viewBox="0 0 64 64" ><path d="M56 32l-8 8-8-8M32 56l-8-8 8-8M8 32l8-8 8 8M32 8l8 8-8 8M40 16H16M16 24v24M48 48H24M48 40V16"/></symbol>
+
+<symbol id="loop1" viewBox="0 0 64 64" ><path d="M15 15a24 24 0 1 0 17-7M15.03 24v-8.97H8"/></symbol>
+
+<symbol id="loop2" viewBox="0 0 64 64" ><path d="M15 49A24 24 0 0 1 32 8M49 15a24 24 0 0 1-17 41"/><path d="M15.03 40v8.97H8M48.97 24v-8.97H56"/></symbol>
+
+<symbol id="magnet" viewBox="0 0 64 64" ><path d="M56 8H40v24a8 8 0 0 1-8 8h0a8 8 0 0 1-8-8V8H8v24a24 24 0 0 0 24 24h0a24 24 0 0 0 24-24zM56 20H40M24 20H8"/></symbol>
+
+<symbol id="magnet2" viewBox="0 0 64 64" ><path d="M52 8H40v28a8 8 0 0 1-8 8h0a8 8 0 0 1-8-8V8H12v28a20 20 0 0 0 20 20h0a20 20 0 0 0 20-20zM24 20H12M40 20h12"/></symbol>
+
+<symbol id="map" viewBox="0 0 64 64" ><path d="M24 56l16-4 16 4V12L40 8l-16 4L8 8v44l16 4zM24 12v44M40 8v44"/></symbol>
+
+<symbol id="marker" viewBox="0 0 64 64" ><path d="M52 12L12 28l16 8 8 16 16-40z"/></symbol>
+
+<symbol id="men" viewBox="0 0 64 64" ><path d="M56 8L35.31 28.69"/><circle cx="24" cy="40" r="16"/><path d="M40 8h16v16"/></symbol>
+
+<symbol id="menu" viewBox="0 0 64 64" ><path d="M16 32h32M16 20h32M16 44h32"/></symbol>
+
+<symbol id="menu2" viewBox="0 0 64 64" ><path d="M8 8h48v48H8zM20 24h24M20 40h24"/></symbol>
+
+<symbol id="menu_circle" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M31.5 31.5h1v1h-1zM43 31.5h1v1h-1zM19 31.5h1v1h-1z"/></symbol>
+
+<symbol id="menu_horizontal" viewBox="0 0 64 64" ><path d="M31.5 31.5h1v1h-1zM47 31.5h1v1h-1zM16 31.5h1v1h-1z"/></symbol>
+
+<symbol id="menu_vertical" viewBox="0 0 64 64" ><path d="M32.5 31.5v1h-1v-1zM32.5 47v1h-1v-1zM32.5 16v1h-1v-1z"/></symbol>
+
+<symbol id="model" viewBox="0 0 64 64" ><path d="M8 40h16v16H8zM40 40h16v16H40zM24 8h16v16H24zM48 40v-8H16v8M32 32v-8"/></symbol>
+
+<symbol id="model_connection" viewBox="0 0 64 64" ><path d="M24 20v4c0 12 16 4 16 16v4M24 44h32v12H24zM8 8h32v12H8z"/></symbol>
+
+<symbol id="mouse" viewBox="0 0 64 64" ><rect x="16" y="8" width="32" height="48" rx="16"/><path d="M32 16v12"/></symbol>
+
+<symbol id="network" viewBox="0 0 64 64" ><path d="M8 8h48v36H8zM12 56h40M40 44v12M24 44v12"/></symbol>
+
+<symbol id="network_connected" viewBox="0 0 64 64" ><path d="M8 8h48v36H8zM12 56h40M40 44v12M24 44v12"/><path d="M46 16L26 36l-8-8"/></symbol>
+
+<symbol id="network_disconnected" viewBox="0 0 64 64" ><path d="M8 8h48v36H8zM12 56h40M40 44v12M24 44v12M22 16l20 20M42 16L22 36"/></symbol>
+
+<symbol id="night" viewBox="0 0 64 64" ><path d="M46 44a26 26 0 0 1-24.94-33.36 24 24 0 1 0 32.3 32.3A26.24 26.24 0 0 1 46 44z"/></symbol>
+
+<symbol id="paperclip" viewBox="0 0 64 64" ><path d="M54.35 31.22L32.94 50.75a13.65 13.65 0 0 1-19.3-19.3l21.41-19.53a9.1 9.1 0 0 1 12.87 12.87L26.51 44.31a4.55 4.55 0 0 1-6.43-6.43l21.45-19.57"/></symbol>
+
+<symbol id="paperplane" viewBox="0 0 64 64" ><path d="M56 8L28 36M28 36l12 20L56 8 8 24l20 12z"/></symbol>
+
+<symbol id="peace" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M32 8v48M32 32L15.05 48.95M48.97 48.97L32 32"/></symbol>
+
+<symbol id="phone_cable" viewBox="0 0 64 64" ><path d="M53.26 54.62a4.09 4.09 0 0 0 2.51-5.22l-1.36-3.87A4.1 4.1 0 0 0 49.18 43c-7.73 2.71-10.45-5-11.81-8.88S33.3 22.55 41 19.83a4.1 4.1 0 0 0 2.51-5.22l-1.36-3.87A4.1 4.1 0 0 0 37 8.23c-9.66 3.4-14.1 9.3-7.31 28.63S43.6 58 53.26 54.62z"/><path d="M34.81 48.18A4 4 0 0 0 32 52a4 4 0 0 1-8 0 4 4 0 0 0-8 0 4 4 0 0 1-8 0"/></symbol>
+
+<symbol id="phone_chat" viewBox="0 0 64 64" ><rect x="18" y="8" width="28" height="48" rx="4"/><path d="M24 16h12M24 24h4M28 40h12M40 32h-8M28 48h-4"/></symbol>
+
+<symbol id="phone_chat_bubbles" viewBox="0 0 64 64" ><rect x="18" y="8" width="28" height="48" rx="4"/><path d="M35 28h-7l-4 2V17a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM29 48h7l4 2V37a1 1 0 0 0-1-1H29a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1z"/></symbol>
+
+<symbol id="phone_classic" viewBox="0 0 64 64" ><path d="M8 25a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4c0-4 4-4 8-4s8 0 8 4a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4c0-10-4-14-24-14S8 15 8 25z"/><circle cx="32" cy="37" r="8"/><path d="M16 29l-3.91 11.73A9.32 9.32 0 0 0 20.94 53h22.12a9.32 9.32 0 0 0 8.85-12.27L48 29"/></symbol>
+
+<symbol id="phone_hand" viewBox="0 0 64 64" ><path d="M14.87 32a17.67 17.67 0 0 1 0-25M20 26.87a10.41 10.41 0 0 1 0-14.71M28 30l-5.43 5.43a8.77 8.77 0 0 0-2.57 6.2V52"/><path d="M40 56h9a3 3 0 0 0 3-3V19a3 3 0 0 0-3-3H31a3 3 0 0 0-3 3v19.33a2 2 0 0 0 3.42 1.42l4.46-4.45a3.23 3.23 0 0 1 4.41-.24 3.12 3.12 0 0 1 .12 4.53l-3.29 3.29a9.83 9.83 0 0 0-2.88 7h0a6.25 6.25 0 0 1-6.24 6.2h0M39 52h2M36 20h8"/></symbol>
+
+<symbol id="phone_keys" viewBox="0 0 64 64" ><path d="M50.19 20.6a3.33 3.33 0 0 0-4.62.8l-1.9 2.71a3.31 3.31 0 0 0 .8 4.61c5.41 3.81 1.59 9.22-.31 11.93S38.44 48.76 33 45a3.31 3.31 0 0 0-4.61.8l-1.91 2.7a3.31 3.31 0 0 0 .8 4.61C34.07 57.83 40 58 49.57 44.46s7.43-19.09.62-23.86zM8 8h6v6H8zM20 8h6v6h-6zM32 8h6v6h-6zM8 20h6v6H8zM20 20h6v6h-6zM32 20h6v6h-6zM8 32h6v6H8zM20 32h6v6h-6z"/><path d="M32 32h6v6h-6z"/></symbol>
+
+<symbol id="phone_mobile" viewBox="0 0 64 64" ><rect x="18" y="8" width="28" height="48" rx="4"/><path d="M28 12h8M30 52h4"/></symbol>
+
+<symbol id="phone_mobile_keys" viewBox="0 0 64 64" ><rect x="16" y="8" width="32" height="48" rx="4"/><path d="M24 48h2M38 48h2M31 48h2M24 40h2M38 40h2M31 40h2M24 32h2M38 32h2M31 32h2M16 24h32"/></symbol>
+
+<symbol id="phone_mobile_ring" viewBox="0 0 64 64" ><path d="M49 15a24 24 0 0 1 0 34M42 22a14.15 14.15 0 0 1 0 20"/><rect x="8" y="8" width="28" height="48" rx="4"/><path d="M18 12h8M20 52h4"/></symbol>
+
+<symbol id="phone_mobile_user" viewBox="0 0 64 64" ><rect x="18" y="8" width="28" height="48" rx="4"/><path d="M28 12h8M30 52h4"/><ellipse cx="32" cy="29.35" rx="3.98" ry="5.3"/><path d="M28.67 32.48s-3.34.89-4 2.65a10.88 10.88 0 0 0-.62 4.87H40a10.88 10.88 0 0 0-.64-4.82c-.64-1.76-4-2.65-4-2.65"/></symbol>
+
+<symbol id="phone_numpad" viewBox="0 0 64 64" ><circle cx="13" cy="13" r="5"/><circle cx="13" cy="51" r="5"/><circle cx="13" cy="32" r="5"/><circle cx="51" cy="13" r="5"/><circle cx="51" cy="51" r="5"/><circle cx="51" cy="32" r="5"/><circle cx="32" cy="13" r="5"/><circle cx="32" cy="51" r="5"/><circle cx="32" cy="32" r="5"/></symbol>
+
+<symbol id="phone_office" viewBox="0 0 64 64" ><rect x="8" y="8" width="16" height="48" rx="4"/><path d="M24 12h28a4 4 0 0 1 4 4v32a4 4 0 0 1-4 4H24M32 44h2M46 44h2M39 44h2M32 36h2M46 36h2M39 36h2M32 28h2M46 28h2M39 28h2"/><path d="M48 12v8H32v-8"/></symbol>
+
+<symbol id="phone_ring" viewBox="0 0 64 64" ><path d="M24 56a4 4 0 0 0 4-4v-4a4 4 0 0 0-4-4c-8 0-8-8-8-12s0-12 8-12a4 4 0 0 0 4-4v-4a4 4 0 0 0-4-4C14 8 8 12 8 32s6 24 16 24zM47.4 52a27.33 27.33 0 0 0 0-38.63M39.67 44.27a16.38 16.38 0 0 0 0-23.17M32 36.55a5.47 5.47 0 0 0 0-7.73"/></symbol>
+
+<symbol id="phone_video_pc" viewBox="0 0 64 64" ><rect x="8" y="9" width="48" height="39" rx="3"/><path d="M8 40h48"/><ellipse cx="32" cy="23.97" rx="5.98" ry="7.97"/><path d="M44 39.9a16.29 16.29 0 0 0-1-7.24c-1-2.65-6-4-6-4M27 28.68s-5 1.33-6 4a16.29 16.29 0 0 0-1 7.24"/><path d="M30 44h4"/><path d="M40 56c-4-4-4-8-4-8M28 48s0 4-4 8"/></symbol>
+
+<symbol id="pie" viewBox="0 0 64 64" ><path d="M8 47.17v-24l24-12 24 12v24h0a53.69 53.69 0 0 1-48 0z"/><path d="M56 23.17h0a53.69 53.69 0 0 1-48 0h0"/></symbol>
+
+<symbol id="pie_chart" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M32 8v24M56 32H32M15.03 48.97L32 32"/></symbol>
+
+<symbol id="pin" viewBox="0 0 64 64" ><path d="M8 56l16-16M52 28l4-4-4-4-8-8-4-4-4 4a5.66 5.66 0 0 0 0 8h0l-8 8h0a11.31 11.31 0 0 0-16 0h0l23.94 24.12L36 52a11.36 11.36 0 0 0 0-16h0l8-8h0a5.66 5.66 0 0 0 8 0z"/></symbol>
+
+<symbol id="pintrest" viewBox="0 0 64 64" ><path d="M17.6 56s19.2-28.8 14.78-36.32c-2.12-3.61-10-2.08-4.91 15.64 3.82 13.35 23.73 5.31 23.73-8.12a19.2 19.2 0 1 0-32.78 13.58"/></symbol>
+
+<symbol id="play" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M28 40l8-8-8-8"/></symbol>
+
+<symbol id="play_video" viewBox="0 0 64 64" ><rect x="8" y="12" width="48" height="40" rx="11.96"/><path d="M28 40l8-8-8-8"/></symbol>
+
+<symbol id="power" viewBox="0 0 64 64" ><path d="M49 15a24 24 0 1 1-34 0M32 8v24"/></symbol>
+
+<symbol id="print" viewBox="0 0 64 64" ><path d="M16 32h32v24H16zM24 48h16M24 40h16M20 16V8h24v8"/><path d="M16 40H8V16h48v24h-8"/></symbol>
+
+<symbol id="products" viewBox="0 0 64 64" ><path d="M8 8h12v12H8zM26 8h12v12H26zM26 44h12v12H26zM44 8h12v12H44zM8 26h12v12H8zM26 26h12v12H26zM44 26h12v12H44zM8 44h12v12H8zM44 44h12v12H44z"/></symbol>
+
+<symbol id="puzzle" viewBox="0 0 64 64" ><path d="M48 28V12H36c0 2.21 4 8-4 8s-4-5.79-4-8H16v16c-2.21 0-8-4-8 4s5.79 4 8 4v16h12c0-2.21-4-8 4-8s4 5.79 4 8h12V36c2.21 0 8 4 8-4s-5.79-4-8-4z"/></symbol>
+
+<symbol id="qrcode" viewBox="0 0 64 64" ><path d="M16 56H8v-8M56 48v8h-8M48 8h8v8M8 16V8h8M16 16h32v32H16z"/><path d="M24 24h16v16H24z"/></symbol>
+
+<symbol id="radiobutton" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="8"/></symbol>
+
+<symbol id="record1" viewBox="0 0 64 64" ><path d="M49 40a24 24 0 0 1-34 0M20 56h24M32 48v8"/><path d="M40 32a8 8 0 0 1-16 0V16a8 8 0 0 1 16 0z"/></symbol>
+
+<symbol id="record2" viewBox="0 0 64 64" ><circle cx="16" cy="32" r="8"/><circle cx="48" cy="32" r="8"/><path d="M16 40h32"/></symbol>
+
+<symbol id="remove1" viewBox="0 0 64 64" ><path d="M20 32h24M8 8h48v48H8z"/></symbol>
+
+<symbol id="remove2" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M20 32h24"/></symbol>
+
+<symbol id="rhombus_number" viewBox="0 0 64 64" ><path d="M24 8v48M40 8v48M56 24H8M56 40H8"/></symbol>
+
+<symbol id="ruler" viewBox="0 0 64 64" ><path d="M8.006 40.004L40.002 8.008 56.004 24.01 24.007 56.006zM16 32l4 4M24 24l4 4M32 16l4 4"/></symbol>
+
+<symbol id="sandglass" viewBox="0 0 64 64" ><path d="M46 8v8c0 8.84-6.27 16-14 16h0c-7.73 0-14-7.16-14-16V8M12 8h40M18 56v-8c0-8.84 6.27-16 14-16h0c7.73 0 14 7.16 14 16v8M52 56H12"/></symbol>
+
+<symbol id="sandglass2" viewBox="0 0 64 64" ><path d="M44 56c0-7.55.44-14.67-5.6-19.2l-12.8-9.6C19.56 22.67 20 15.55 20 8"/><path d="M44 8c0 7.55.44 14.67-5.6 19.2l-12.8 9.6C19.56 41.33 20 48.45 20 56M12 8h40M52 56H12"/></symbol>
+
+<symbol id="save" viewBox="0 0 64 64" ><path d="M8 8h48v48H8z"/><path d="M48 8v20H16V8M24 56V44h16v12M32 44v12"/></symbol>
+
+<symbol id="search" viewBox="0 0 64 64" ><circle cx="28" cy="28" r="20"/><path d="M56 56L42.14 42.14"/></symbol>
+
+<symbol id="search1" viewBox="0 0 64 64" ><circle cx="24" cy="24" r="16"/><path d="M56 56L35.31 35.31"/></symbol>
+
+<symbol id="search2" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><circle cx="28" cy="28" r="8"/><path d="M44 44L33.66 33.66"/></symbol>
+
+<symbol id="search3" viewBox="0 0 64 64" ><path d="M32 56V40"/><circle cx="32" cy="24" r="16"/></symbol>
+
+<symbol id="sequence" viewBox="0 0 64 64" ><path d="M56 24l-8 8-16-16M40 56l-8-8 16-16M8 40l8-8 16 16M24 8l8 8-16 16"/><path d="M16 16h32v32H16z"/></symbol>
+
+<symbol id="settings" viewBox="0 0 64 64" ><path d="M56 32a23.74 23.74 0 0 0-.32-3.89L48 25.37 51.5 18a24.41 24.41 0 0 0-5.5-5.5L38.63 16l-2.74-7.68a23.8 23.8 0 0 0-7.78 0L25.37 16 18 12.5a24.41 24.41 0 0 0-5.5 5.5l3.5 7.37-7.68 2.74a23.8 23.8 0 0 0 0 7.78L16 38.63 12.5 46a24.41 24.41 0 0 0 5.5 5.5l7.37-3.5 2.74 7.68a23.8 23.8 0 0 0 7.78 0L38.63 48 46 51.5a24.41 24.41 0 0 0 5.5-5.5L48 38.63l7.68-2.74A23.74 23.74 0 0 0 56 32z"/><circle cx="32" cy="32" r="4"/></symbol>
+
+<symbol id="shirt" viewBox="0 0 64 64" ><path d="M44 12.09c3.92 1.62 12 12 12 12l-8 8-4-4v24H20v-24l-4 4-8-8s8.08-10.38 12-12c.92-.39 4 0 4 0 0 4 4 8 8 8s8-4 8-8c0 0 3.08-.39 4 0z"/></symbol>
+
+<symbol id="sign" viewBox="0 0 64 64" ><path d="M28 32v24M44 32H8V8h36l12 12-12 12z"/></symbol>
+
+<symbol id="sign2" viewBox="0 0 64 64" ><path d="M32 40H16l-8-8 8-8h16M32 56V8h16l8 8-8 8H32"/></symbol>
+
+<symbol id="skype" viewBox="0 0 64 64" ><path d="M53.85 34.55A21.55 21.55 0 0 0 54 32a22 22 0 0 0-22-22 21.55 21.55 0 0 0-2.55.15 14 14 0 0 0-19.3 19.3A21.55 21.55 0 0 0 10 32a22 22 0 0 0 22 22 21.55 21.55 0 0 0 2.55-.15 14 14 0 0 0 19.3-19.3z"/><path d="M40 26c0-2 0-6-8-6-4 0-8 0-8 6 0 10 16 2 16 12 0 6-4 6-8 6-8 0-8-4-8-6" stroke-linecap="round"/></symbol>
+
+<symbol id="sliders" viewBox="0 0 64 64" ><path d="M16 8v48M48 8v48M32 8v48M8 48h16M24 20h16M40 40h16"/></symbol>
+
+<symbol id="spinner1" viewBox="0 0 64 64" ><path d="M32 8v8M32 56v-8M56 32h-8M8 32h8M48.97 15.03l-5.66 5.66M15.03 48.97l5.66-5.66M48.97 48.97l-5.66-5.66M15.03 15.03l5.66 5.66"/></symbol>
+
+<symbol id="spinner2" viewBox="0 0 64 64" ><path d="M32 8v12M32 56V44M56 32H44M8 32h12M48.97 15.03l-8.48 8.48M15.03 48.97l8.48-8.48M48.97 48.97l-8.48-8.48M15.03 15.03l8.48 8.48"/></symbol>
+
+<symbol id="stairs" viewBox="0 0 64 64" ><path d="M48 48H28v-8h20M48 40H32v-8h16M48 32H36v-8h12M24 56v-8h24"/><path d="M16 8h32v48H16z"/></symbol>
+
+<symbol id="star" viewBox="0 0 64 64" ><path d="M32 12l6.41 12.84L52 27.28l-9.63 10.38L44.36 52 32 45.58 19.64 52l1.99-14.34L12 27.28l13.59-2.44L32 12z"/></symbol>
+
+<symbol id="steering_wheel" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="12"/><path d="M32 8v12M32 56V44M56 32H44M8 32h12M48.97 15.03l-8.48 8.48M15.03 48.97l8.48-8.48M48.97 48.97l-8.48-8.48M15.03 15.03l8.48 8.48"/></symbol>
+
+<symbol id="sun" viewBox="0 0 64 64" ><path d="M32 8v8M32 56v-8M56 32h-8M8 32h8M48.97 15.03l-5.66 5.66M15.03 48.97l5.66-5.66M48.97 48.97l-5.66-5.66M15.03 15.03l5.66 5.66"/><circle cx="32" cy="32" r="8"/></symbol>
+
+<symbol id="switch" viewBox="0 0 64 64" ><path d="M48 12l8 8-8 8M48 36l8 8-8 8"/><path d="M56 20H40c-12 0-12 24-24 24H8"/><path d="M8 20h8c12 0 12 24 24 24h16"/></symbol>
+
+<symbol id="tag" viewBox="0 0 64 64" ><path d="M36 8L8 36l20 20 28-28V8H36z"/><circle cx="44" cy="20" r="4"/></symbol>
+
+<symbol id="target" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="16"/><circle cx="32" cy="32" r="8"/></symbol>
+
+<symbol id="target_cross" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M32 8v8M32 48v8M56 32h-8M8 32h8"/></symbol>
+
+<symbol id="target_cross_small" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="16"/><path d="M32 8v16M32 40v16M56 32H40M8 32h16"/></symbol>
+
+<symbol id="telegram" viewBox="0 0 64 64" ><path d="M40 28L27.88 41.92M48 56l8-48L8 28l40 28z"/></symbol>
+
+<symbol id="textfile" viewBox="0 0 64 64" ><path d="M12 8h40v48H12zM20 32h24M20 20h24M20 44h24"/></symbol>
+
+<symbol id="time" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M40 44l-8-12V16"/></symbol>
+
+<symbol id="tire" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="12"/><path d="M40 24h16M40 40h16M40 40v16M24 40v16M24 40H8M24 24H8M24 24V8M40 24V8"/></symbol>
+
+<symbol id="toggle" viewBox="0 0 64 64" ><rect x="8" y="20" width="48" height="24" rx="12"/><circle cx="44" cy="32" r="8"/></symbol>
+
+<symbol id="token" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M32 14v4.5M32 50v-4.5M50 32h-4.5M14 32h4.5M44.73 19.27l-3.18 3.18M19.27 44.73l3.18-3.18M44.73 44.73l-3.18-3.18M19.27 19.27l3.18 3.18"/><circle cx="32" cy="32" r="8"/></symbol>
+
+<symbol id="toolkit" viewBox="0 0 64 64" ><path d="M8 20h48v32H8zM8 32h48M32 28v8M20 20l2.89-5.78a4 4 0 0 1 3.6-2.22h11a4 4 0 0 1 3.6 2.22L44 20"/></symbol>
+
+<symbol id="trash" viewBox="0 0 64 64" ><path d="M52 16l-4 40H16l-4-40M20 16v-3.94A4.06 4.06 0 0 1 24.06 8h15.88A4.06 4.06 0 0 1 44 12.06V16M8 16h48M24 28l16 16M40 28L24 44"/></symbol>
+
+<symbol id="trezor" viewBox="0 0 64 64" ><path d="M24.71 25.82L16 28v20l16 8 16-8V28l-8.71-2.18a30.22 30.22 0 0 0-14.58 0z"/><path d="M20 27v-7a12 12 0 0 1 24 0v7"/></symbol>
+
+<symbol id="twitter" viewBox="0 0 64 64" ><path d="M56 16.46a67.49 67.49 0 0 0-8.11-.73 9.75 9.75 0 0 0-16.56 8.91c-8.08-.41-14.2-4.56-19.92-10.73-.78 1.52-2.26 6.37-1.11 9.87a19.1 19.1 0 0 0 6.75 8.59 26.05 26.05 0 0 1-8.52-1.85c1.41 4.63 6.25 11.35 13.86 12.4a19.46 19.46 0 0 1-12.07 4.19A19.66 19.66 0 0 1 8 47a27.42 27.42 0 0 0 14.9 4.39c17.87 0 27.65-14.89 27.65-27.81v-1.27z"/></symbol>
+
+<symbol id="umbrella" viewBox="0 0 64 64" ><path d="M56 32H8c0-11 10.75-20 24-20s24 9 24 20zM32 52a4 4 0 0 1-8 0M32 32v20M32 8v4"/></symbol>
+
+<symbol id="unlink" viewBox="0 0 64 64" ><path d="M24 44h-4A12 12 0 0 1 8 32h0a12 12 0 0 1 12-12h4M40 20h4a12 12 0 0 1 12 12h0a12 12 0 0 1-12 12h-4M24 12l-4-4M40 12l4-4M24 52l-4 4M40 52l4 4"/></symbol>
+
+<symbol id="usb" viewBox="0 0 64 64" ><path d="M56 56V40H8v16M52 40V8H12v32"/><path d="M20 20h8v8h-8zM36 20h8v8h-8z"/></symbol>
+
+<symbol id="user" viewBox="0 0 64 64" ><ellipse cx="32" cy="24" rx="12" ry="16"/><path d="M22 33.46s-10.09 2.68-12 8A33 33 0 0 0 8 56h48a33 33 0 0 0-1.94-14.54c-1.93-5.32-12-8-12-8"/></symbol>
+
+<symbol id="user_add" viewBox="0 0 64 64" ><ellipse cx="32" cy="24" rx="12" ry="16"/><path d="M22 33.46s-10.09 2.68-12 8A33 33 0 0 0 8 56h24M48 56V40M40 48h16"/></symbol>
+
+<symbol id="view_grid" viewBox="0 0 64 64" ><path d="M32 8v48M8 32h48M8 8h48v48H8z"/></symbol>
+
+<symbol id="view_list" viewBox="0 0 64 64" ><path d="M16 20h32M16 44h32M48 32H16M8 8h48v48H8z"/></symbol>
+
+<symbol id="visible" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="8"/><path d="M56 32s-8 16-24 16S8 32 8 32s8-16 24-16 24 16 24 16z"/></symbol>
+
+<symbol id="warning" viewBox="0 0 64 64" ><circle cx="32" cy="32" r="24"/><path d="M32 16v20M32 44v4"/></symbol>
+
+<symbol id="wifi" viewBox="0 0 64 64" ><path d="M8 24c12-12 36-12 48 0M16 36c8-8 24-8 32 0M24 48c4-4 12-4 16 0"/></symbol>
+
+<symbol id="wifi2" viewBox="0 0 64 64" ><path d="M8 8a48 48 0 0 1 48 48M8 24a32 32 0 0 1 32 32M8 40a16 16 0 0 1 16 16"/></symbol>
+
+<symbol id="windows_layers" viewBox="0 0 64 64" ><path d="M20 44H8V8h28v20"/><path d="M20 28h36v28H20z"/></symbol>
+
+<symbol id="woman" viewBox="0 0 64 64" ><path d="M8 56l20.69-20.69"/><circle cx="40" cy="24" r="16"/><path d="M28 52L12 36"/></symbol>
+
+<symbol id="woman2" viewBox="0 0 64 64" ><circle cx="32" cy="22" r="14"/><path d="M32 36v24M40 48H24"/></symbol>
+
+<symbol id="wrench" viewBox="0 0 64 64" ><path d="M55.52 18.37l-3.35 3.36a7 7 0 1 1-9.9-9.9l3.36-3.36A14.51 14.51 0 0 0 42 8a14 14 0 0 0-13.19 18.7L10.34 42.34a8 8 0 0 0 11.32 11.32L37.3 35.19a14 14 0 0 0 18.22-16.82z"/></symbol>
+
+<symbol id="youtube" viewBox="0 0 64 64" ><path d="M55.16 20.42A5.94 5.94 0 0 0 50 15.6c-6-.38-12-.69-18-.7s-12 .3-18 .68a5.94 5.94 0 0 0-5.17 4.82 79.25 79.25 0 0 0 0 22.88 6.17 6.17 0 0 0 5.19 5c6 .38 12 .77 18 .77s12-.34 18-.73a6.24 6.24 0 0 0 5.18-5.1 78.19 78.19 0 0 0 .8-11.38 78 78 0 0 0-.84-11.42zm-28.6 18.31V24.79l13 7z"/></symbol>
+
+<symbol id="zoom_in" viewBox="0 0 64 64" ><circle cx="28" cy="28" r="20"/><path d="M56 56L42.14 42.14M16 28h24M28 16v24"/></symbol>
+
+<symbol id="zoom_out" viewBox="0 0 64 64" ><circle cx="28" cy="28" r="20"/><path d="M56 56L42.14 42.14M16 28h24"/></symbol>
+
+
+
+</svg>
