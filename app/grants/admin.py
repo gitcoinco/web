@@ -104,7 +104,7 @@ class GrantAdmin(GeneralAdmin):
         'migrated_to', 'view_count', 'in_active_clrs'
     ]
     list_display =['pk', 'sybil_score', 'weighted_risk_score', 'match_amount', 'positive_round_contributor_count', 'is_clr_eligible', 'title', 'active', 'link', 'hidden', 'migrated_to']
-    raw_id_fields = ['admin_profile']
+    raw_id_fields = ['admin_profile', 'twitter_verified_by']
     search_fields = ['description', 'admin_profile__handle']
 
 
@@ -149,6 +149,9 @@ class GrantAdmin(GeneralAdmin):
     def subscriptions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
+        # todo: figure out how to set request
+        # if not self.request.GET('expand'):
+        #    return mark_safe(f'<a href={instance.admin_url}?expand=t>expand</a>')
 
         for ele in instance.subscriptions.all().order_by('pk'):
             html = f"<a href='{ele.admin_url}'>{ele}</a>"
@@ -159,6 +162,10 @@ class GrantAdmin(GeneralAdmin):
     def contributions_links(self, instance):
         """Define the logo image tag to be displayed in the admin."""
         eles = []
+
+        # todo: figure out how to set request
+        #if not self.request.GET('expand'):
+        #    return mark_safe(f'<a href={instance.admin_url}?expand=t>expand</a>')
 
         for i in [True, False]:
             html = f"<h3>Success {i}</h3>"
