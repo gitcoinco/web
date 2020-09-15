@@ -234,7 +234,7 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
             t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
     else:
         CLR_PERCENTAGE_DISTRIBUTED = (bigtot / total_pot) * 100
-        percentage_increase = np.log(total_pot / bigtot) / 100 
+        percentage_increase = np.log(total_pot / bigtot) / 100 if bigtot > 0  else 1
         for t in totals:
             t['clr_amount'] = t['clr_amount'] * (1 + percentage_increase)
     return totals
