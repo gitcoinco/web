@@ -87,7 +87,7 @@ let show_brightid_verify_modal = function(brightid_uuid) {
         <div class="row mb-3">
           <div class="col-md-7">
             <strong>${call.title}</strong><br />
-            ${callDate.toLocaleString()}
+            ${callDate.toLocaleString()} UTC
           </div>
           <div class="col-md-5">
             <a href="${call.url}" target="_blank" class="btn btn-gc-blue px-5 mb-2 mx-1">Register</a>

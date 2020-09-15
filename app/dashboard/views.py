@@ -2868,7 +2868,9 @@ def get_profile_tab(request, profile, tab, prev_context):
     elif tab == 'trust':
         today = datetime.today()
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
-        context['upcoming_calls'] = UpcomingDate.objects.filter(context_tag='brightid').filter(date__gte=today).order_by('date').values()
+        if settings.DEBUG:
+            context['brightid_status'] = 'not_verified'
+        context['upcoming_calls'] = UpcomingDate.objects.filter(context_tag='brightid').filter(date__gte=today, date__lte=(today+timezone.timedelta(days=2))).order_by('date').values()
         context['is_sms_verified'] = profile.sms_verification
     else:
         raise Http404
