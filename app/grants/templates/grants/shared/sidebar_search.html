@@ -43,25 +43,25 @@
         </div>
 
       {% if profile %}
-        <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ml-0 pl-0 ${ following ? 'gc-text-blue' : 'text-black'}`">
+        <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ml-0 pl-0 text-left ${ following ? 'gc-text-blue' : 'text-black'}`">
           <i :class="following ? 'fas' : 'far'" class="fa-fw fa-star" ></i>
           Following
           <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
         </span>
       {% endif %}
-      <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ml-0 pl-0 ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+      <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ml-0 pl-0 text-left ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
         <i :class="idle_grants ? 'fas' : 'far'" class="fa-fw fa-clock" ></i>
          Show Idle Grants
         <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
       </span>
       {% if profile %}
-        <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold ml-0 pl-0 text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
+        <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold ml-0 pl-0 text-decoration-none text-left ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
           <i :class="show_contributions ? 'fas' : 'far'" class="fa-fw fa-donate" ></i>
           My Contributions
           <i v-if="show_contributions" class="fas fa-times font-smaller-4 ml-1"></i>
         </span>
 
-        <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-1 font-weight-semibold ml-0 pl-0 text-decoration-none" :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
+        <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-1 font-weight-semibold ml-0 pl-0 text-decoration-none text-left" :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
           <i :class="type === 'me' ? 'fas' : 'far'" class="fa-fw fa-user-alt"></i>
           My Grants
           <i v-if="type === 'me'" class="fas fa-times font-smaller-4 ml-1"></i>

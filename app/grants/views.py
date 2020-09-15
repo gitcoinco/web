@@ -48,8 +48,10 @@ from django.views.decorators.http import require_GET
 import requests
 import tweepy
 from app.services import RedisService
-from app.settings import EMAIL_ACCOUNT_VALIDATION, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_SECRET, \
-    TWITTER_ACCESS_TOKEN
+from app.settings import (
+    EMAIL_ACCOUNT_VALIDATION, TWITTER_ACCESS_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_CONSUMER_KEY,
+    TWITTER_CONSUMER_SECRET,
+)
 from app.utils import get_profile
 from bs4 import BeautifulSoup
 from cacheops import cached_view
@@ -64,7 +66,7 @@ from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
     Subscription,
 )
-from grants.utils import get_leaderboard, is_grant_team_member, emoji_codes, get_user_code
+from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
 from kudos.models import BulkTransferCoupon, Token
 from marketing.mails import (
