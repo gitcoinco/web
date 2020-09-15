@@ -239,7 +239,8 @@ def grants_stats_view(request):
     cht, chart_list = None, None
     try:
         cht, chart_list = get_stats(request.GET.get('category'))
-    except:
+    except Exception as e:
+        logger.exception(e)
         raise Http404
     round_types = GrantType.objects.all()
     round_types = [ele.name for ele in round_types if ele.active_clrs.exists()]
