@@ -66,7 +66,7 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
             }
             )
     instance.amount_received_with_phantom_funds = Decimal(round(instance.get_amount_received_with_phantom_funds(), 2))
-    instance.sybil_score = instance.sybil_score / instance.positive_round_contributor_count if instance.positive_round_contributor_count else "-1"
+    instance.sybil_score = instance.sybil_score / instance.positive_round_contributor_count if instance.positive_round_contributor_count else -1
     max_sybil_score = 5
     if instance.sybil_score > max_sybil_score:
         instance.sybil_score = max_sybil_score
