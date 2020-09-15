@@ -241,6 +241,10 @@ def grants_stats_view(request):
         cht, chart_list = get_stats(request.GET.get('category'))
     except:
         raise Http404
+    # TODO-SELF-SERVICE
+    round_types = GrantType.objects.all()
+    round_types = [ele for ele in round_types if ele.active_clrs.exists()]
+    round_types = round_types.values_list('name', flat=True)
     params = {
         'cht': cht,
         'chart_list': chart_list,
