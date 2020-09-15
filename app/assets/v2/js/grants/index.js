@@ -291,11 +291,12 @@ if (document.getElementById('grants-showcase')) {
         const params = new URLSearchParams(base_params).toString();
         const getGrants = await fetchData(`/grants/cards_info?${params}`);
 
-        if (append_mode) {
-          vm.grants = Object.assign({}, vm.grants, getGrants.grants);
-        } else {
-          vm.grants = getGrants.grants;
+        if (!append_mode) {
+          vm.grants = [];
         }
+        getGrants.grants.forEach(function(item) {
+          vm.grants.push(item);
+        });
 
         vm.credentials = getGrants.credentials;
         vm.grant_types = getGrants.grant_types;

@@ -290,11 +290,6 @@ def get_grants(request):
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
-    grant_amount = 0
-    grant_stats = Stat.objects.filter(key='grants').order_by('-pk')
-    if grant_stats.exists():
-        grant_amount = lazy_round_number(grant_stats.first().val)
-
     contributions = Contribution.objects.none()
     if request.user.is_authenticated:
         contributions = Contribution.objects.filter(
@@ -315,12 +310,9 @@ def get_grants(request):
 
         contributions_by_grant[grant_id] = group
 
-    return JsonResponse({
-        'grant_types': get_grant_type_cache(network),
-        'current_type': grant_type,
-        'category': category,
-        'grants': {
-            str(grant.id): {
+    grants_array = []
+    for grant in grants:
+        grant_json = {
                 'id': grant.id,
                 'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
                 'details_url': reverse('grants:details', args=(grant.id, grant.slug)),
@@ -339,7 +331,6 @@ def get_grants(request):
                 },
                 'favorite': grant.favorite(request.user) if request.user.is_authenticated else False,
                 'is_on_team': is_grant_team_member(grant, request.user.profile) if request.user.is_authenticated else False,
-                'amount': grant_amount,
                 'clr_prediction_curve': grant.clr_prediction_curve,
                 'last_clr_calc_date':  naturaltime(grant.last_clr_calc_date) if grant.last_clr_calc_date else None,
                 'safe_next_clr_calc_date': naturaltime(grant.safe_next_clr_calc_date) if grant.safe_next_clr_calc_date else None,
@@ -356,8 +347,15 @@ def get_grants(request):
                 'token_address': grant.token_address,
                 'image_css': grant.image_css,
                 'verified': grant.twitter_verified,
-            } for grant in grants
-        },
+            }
+
+        grants_array.append(grant_json)
+
+    return JsonResponse({
+        'grant_types': get_grant_type_cache(network),
+        'current_type': grant_type,
+        'category': category,
+        'grants': grants_array,
         'credentials': {
             'is_staff': request.user.is_staff,
             'is_authenticated': request.user.is_authenticated
