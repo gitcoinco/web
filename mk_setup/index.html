@@ -2701,7 +2701,7 @@ Alternatively, you can use the local <code>ganache-cli</code> test rpc network t
 <p>Add <code>import ipdb;ipdb.set_trace()</code> to the method you want to inspect, you then run: <code>make get_ipdb_shell</code> to drop into the active shell for inspection.</p>
 <h4 id="access-django-shell">Access Django Shell</h4>
 <p><code>Q: How can I access the Django shell, similar to: python manage.py shell ?</code></p>
-<p>Simply run: <code>make get_django_shell</code> or <code>docker-compose exec web python app/manage.py shell</code></p>
+<p>Simply run: <code>make get_django_shell</code> or <code>docker-compose exec web python3 app/manage.py shell</code></p>
 <h4 id="access-bash">Access BASH</h4>
 <p><code>Q: I want to inspect or manipulate the container via bash.  How can I access the root shell of the container?</code></p>
 <p>Run: <code>docker-compose exec web bash</code></p>
