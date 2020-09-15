@@ -422,6 +422,4 @@ $(document).on('click', '.following-action', async(e) => {
       element.closest('.grant-card').hide();
     }
   }
-
-  console.log(response);
 });

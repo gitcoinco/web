@@ -162,9 +162,8 @@
   <script src="{% static "v2/js/lib/jquery-unveil.js" %}"></script>
   <script type="text/javascript">
   $(document).ready(function() {
-    $("img").unveil();
 
-        $('#twitterVerification').on('click', async () => {
+    $('#twitterVerification').on('click', async () => {
       const response = await fetchData('/grants/v1/api/{{grant.id}}/verify');
 
       if (!response.ok) {
