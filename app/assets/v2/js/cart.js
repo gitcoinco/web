@@ -2101,7 +2101,14 @@ Vue.component('grants-cart', {
           // Verify user has sufficient balances now that we account for transaction fees
           // Check tokens
           for (let i = 0; i < deposits.length; i += 1) {
-            const tokenContract = new web3.eth.Contract(token_abi, deposits[i][0]);
+            const tokenAddress = deposits[i][0];
+            
+            if (tokenAddress === ETH_ADDRESS) {
+              // Skip ETH because we check it later
+              continue;
+            }
+              
+            const tokenContract = new web3.eth.Contract(token_abi, tokenAddress);
             const requiredAmount = deposits[i][1];
             const userTokenBalance = await tokenContract.methods.balanceOf(this.userAddress).call({from: this.userAddress});
 
