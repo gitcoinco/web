@@ -514,7 +514,10 @@ def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
 
     for grant_type in grant_types: # TODO : Tweak to get only needed categories
         _keyword = grant_type['keyword']
-        grant_type['sub_categories'] = [tuple[0] for tuple in basic_grant_categories(_keyword)]
+        grant_type['sub_categories'] = [{
+            'label': tuple[0],
+            'count': get_category_size(tuple[0]),
+            } for tuple in basic_grant_categories(_keyword)]
 
     return grant_types
 
