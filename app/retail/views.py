@@ -75,13 +75,13 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return activities
 
-def index_2020(request):
+def index(request):
     context = {
     }
     return TemplateResponse(request, 'home/index2020.html', context)
 
 
-def index(request):
+def index_old(request):
     products = [
         {
             'group' : 'grow_oss',
@@ -812,16 +812,7 @@ def products(request):
 
 def not_a_token(request):
     """Render the not_a_token response."""
-    context = {
-        'is_outside': True,
-        'active': 'not_a_token',
-        'avatar_url': static('v2/images/no-token/no-token.jpg'),
-        'title': 'Gitcoin is not a token',
-        'card_title': _("Gitcoin is not a token"),
-        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives \
-                        with our user base.  Read more about the future of monetization in web3."),
-    }
-    return TemplateResponse(request, 'not_a_token.html', context)
+    return redirect('/')
 
 
 def results(request, keyword=None):

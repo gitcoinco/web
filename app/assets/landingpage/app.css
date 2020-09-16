@@ -133,10 +133,11 @@ a.btn, button.btn {
   border: 0;
   outline: 0;
   font-size: 100%;
+  filter: brightness(95%);
   /* enhance to a 2col grid for icon */
 }
 a.btn:hover, button.btn:hover {
-  filter: brightness(75%);
+  filter: brightness(100%);
 }
 a.btn span, button.btn span {
   margin: auto;
@@ -146,7 +147,7 @@ a.btn.icon, button.btn.icon {
   grid-template-columns: auto auto;
 }
 a.btn.icon img, button.btn.icon img {
-  width: 32px;
+  width: 27px;
   height: 32px;
   margin: auto;
 }
@@ -1109,4 +1110,16 @@ section#footerconsensys figure {
   width: 200px;
   margin: auto;
   padding: 3em 0em;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  50% { transform: scale(0.9); }
+  to { transform: scale(1); }
+}
+
+.fe-pulse:hover {
+  animation-name: pulse;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
 }

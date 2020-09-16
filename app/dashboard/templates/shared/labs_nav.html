@@ -42,7 +42,6 @@
     <nav class="navbar-nav ml-auto mr-3">
       <a class="nav-link{% if active == 'labs' %} selected{% endif %} interior" href="{% url 'labs' %}">{% trans "About Labs" %}</a>
       <a class="nav-link{% if active == 'about' %} selected{% endif %} interior" href="https://medium.com/gitcoin/tagged/labs">{% trans "Research Reports" %}</a>
-      <a class="nav-link{% if active == 'tools' %} selected{% endif %} interior" href="{% url 'tools' %}">{% trans "Tools" %}</a>
 
       {% include 'shared/nav_auth.html' with source='authed' %}
     </nav>

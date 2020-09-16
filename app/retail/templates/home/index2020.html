@@ -43,8 +43,8 @@
 <!-- fixed signup button-->
 <div id="fixed-signup-button">
   <a class="btn icon" href="#">
-    <img src="/static/landingpage/github.svg">
-    <span href=/login/github?next=products>Enter Gitcoin</span>
+    <img src="/static/v2/images/helmet-white.svg">
+    <span href="{% if not github_handle %}/login/github?next=products{% else %}/townsquare{% endif %}">Enter Gitcoin</span>
   </a>
 </div>
 
@@ -105,9 +105,9 @@
 
     <p>Learn the latest tech, earn money, and network with top developers passionate about building and sustaining a remote-first open source community.</p>
 
-    <a class="btn icon" href="#">
-      <img src="/static/landingpage/github.svg">
-      <span href="/login/github?next=products">Enter Gitcoin</span>
+    <a class="btn icon fe-pulse" href="#">
+      <img src="/static/v2/images/helmet-white.svg">
+      <span href="{% if not github_handle %}/login/github?next=products{% else %}/townsquare{% endif %}">Enter Gitcoin</span>
     </a>
 
 
@@ -164,7 +164,7 @@
 
 <section id="trust">
 
-  <h1>Gitcoin is Trusted by Top Web3 Brands</h1>
+  <h1>Trusted by Top Web3 Brands</h1>
 
   <div class="grid">
 
@@ -247,7 +247,7 @@
   <div class="grid">
     <div>
       <h2>KERNEL</h2>
-      <p>An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web 3 companies.</p>
+      <p>An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web3 companies.</p>
       <a class="btn" href="http://kernel.community/"><span>Learn More</span></a>
     </div>
     <figure>
@@ -294,7 +294,7 @@
     <div>
       <h2>Town Square</h2>
       <p>Join the conversation. See what’s happening in Web3. Explore all that Gitcoin has to offer through the Gitcoin Townsquare social feed.</p>
-      <!--<a class="btn" href="#"><span>Learn More</span></a>-->
+      <a class="btn" href="/townsquare"><span>Learn More</span></a>
     </div>
     <figure>
       <img loading="lazy" class="floating2"  src="/static/landingpage/townsquare_animated.svg">
@@ -331,14 +331,14 @@
     <figure>
 
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/996210723998101505/fMagjqsq_400x400.jpg">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
-      <figcaption>I'm genuinely amazed by the projects in the <a href="https://twitter.com/ArweaveTeam" target=new>@ArweaveTeam</a> <a href="https://twitter.com/gitcoin" target=new>@gitcoin</a> incubator, these are incredible. Wow.</figcaption>
+      <figcaption>I'm genuinely amazed by the projects in the <a href="https://twitter.com/ArweaveTeam" target=_blank>@ArweaveTeam</a> <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> incubator, these are incredible. Wow.</figcaption>
     </figure>
 
     <figure>
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/1219463670431830019/o63Gb8v6_400x400.png">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
       <figcaption>
         Gitcoin Grants might be the most underrated experiment in Web3.
@@ -347,7 +347,7 @@
 
     <figure>
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/977496875887558661/L86xyLF4_400x400.jpg">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
       <figcaption>
 Gitcoin grants quadratic funding is not just for funds allocation, it's also a great signaling tool!
@@ -358,17 +358,17 @@ For the last few rounds, going to <a href="https://gitcoin.co/grants/">https://g
 
     <figure>
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/1148059058710155264/m317XmT4_400x400.png">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
-      <figcaption>One of the best way to start out in DeFi is working on a <a href="https://twitter.com/gitcoin" target=new>@gitcoin</a>  bounty. Grab one of the many 4-digit prizes offered during the NYBW virtual hackathon
+      <figcaption>One of the best way to start out in DeFi is working on a <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a>  bounty. Grab one of the many 4-digit prizes offered during the NYBW virtual hackathon
 </figcaption>
     </figure>
 
     <figure>
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/1274357399210487814/4edDspwk_400x400.jpg">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
-      <figcaption>Congrats to the entire <a href="https://twitter.com/gitcoin" target=new>@gitcoin</a> team on an amazing round 4 of CLR matching!
+      <figcaption>Congrats to the entire <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> team on an amazing round 4 of CLR matching!
 <br>
 <br>
 
@@ -478,13 +478,13 @@ Oh and thanks to all the haters for the free marketing 😘
 
 <section id="footersocial">
 
-  <figure><a href="/facebook"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#facebook"></use></svg></a></figure>
-  <figure><a href="/youtube"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#youtube"></use></svg></a></figure>
-  <figure><a href="/twitter"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg></a></figure>
-  <figure><a href="/telegram"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#telegram"></use></svg></a></figure>
-  <figure><a href="/github"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#github"></use></svg></a></figure>
-  <figure><a href="/chat"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#chat2"></use></svg></a></figure>
-  <figure><a href="mailto:founders@gitcoin.co"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#email"></use></svg></a></figure>
+  <figure><a href="/facebook"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#facebook"></use></svg></a></figure>
+  <figure><a href="/youtube"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#youtube"></use></svg></a></figure>
+  <figure><a href="/twitter"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg></a></figure>
+  <figure><a href="/telegram"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#telegram"></use></svg></a></figure>
+  <figure><a href="/github"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#github"></use></svg></a></figure>
+  <figure><a href="/chat"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#chat2"></use></svg></a></figure>
+  <figure><a href="mailto:founders@gitcoin.co"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#email"></use></svg></a></figure>
 
   
 </section>
@@ -496,7 +496,7 @@ Oh and thanks to all the haters for the free marketing 😘
 
 <section id="footerconsensys">
   <figure>
-    <a href="https://consensys.net">
+    <a href="https://consensys.net" target="_blank">
       <img loading="lazy" src="/static/landingpage/consensys_white.svg">
     </a>
   </figure>
