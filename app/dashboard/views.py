@@ -2871,7 +2871,12 @@ def get_profile_tab(request, profile, tab, prev_context):
         context['brightid_status'] = get_brightid_status(profile.brightid_uuid)
         if settings.DEBUG:
             context['brightid_status'] = 'not_verified'
-        context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+
+        try:
+            context['upcoming_calls'] = JSONStore.objects.get(key='brightid_verification_parties', view='brightid_verification_parties').data
+        except JSONStore.DoesNotExist:
+            context['upcoming_calls'] = []
+
         context['is_sms_verified'] = profile.sms_verification
     else:
         raise Http404
