@@ -1022,7 +1022,7 @@ class Command(BaseCommand):
                     #print(ele[0])
                     grant.categories.set(grant.grant_type.categories.all())
 
-                #grant.save()
+                grant.save()
             except Exception as e:
                 print("*****************************")
                 print(f"******DERP {ele[0]} {ele[1].strip().lower()} *****")
