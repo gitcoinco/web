@@ -117,7 +117,10 @@ Vue.component('grant-sidebar', {
       if (params.type === this.type) {
         this.filter_grants(params);
       } else {
-        document.location.href = `/grants/${params.type}`;
+        document.location.href = this.round_num ?
+          `/grants/clr/${this.round_num}/${params.type}` :
+          `/grants/${params.type}`
+        ;
       }
     },
     searchKeyword: function() {
@@ -167,6 +170,7 @@ if (document.getElementById('grants-showcase')) {
       view: localStorage.getItem('grants_view') || 'grid',
       shortView: true,
       bottom: false,
+      round_num: document.round_num,
       grantsNumPages,
       grantsHasNext,
       numGrants
@@ -179,11 +183,24 @@ if (document.getElementById('grants-showcase')) {
       },
       setCurrentType: function(currentType, q) {
         this.current_type = currentType;
+        let round_num = this.round_num;
 
-        if (this.current_type === 'all') {
-          window.history.pushState('', '', `/grants/?${q || ''}`);
+        if (round_num) {
+          let uri = `/grants/clr/${round_num}/`;
+
+          if (this.current_type === 'all') {
+            window.history.pushState('', '', `${uri}?${q || ''}`);
+          } else {
+            window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
+          }
         } else {
-          window.history.pushState('', '', `/grants/${this.current_type}?${q || ''}`);
+          let uri = '/grants/';
+
+          if (this.current_type === 'all') {
+            window.history.pushState('', '', `${uri}?${q || ''}`);
+          } else {
+            window.history.pushState('', '', `${uri}${this.current_type}?${q || ''}`);
+          }
         }
 
         if (this.current_type === 'activity') {
@@ -293,6 +310,10 @@ if (document.getElementById('grants-showcase')) {
 
         if (this.show_contributions) {
           base_params['only_contributions'] = this.show_contributions;
+        }
+
+        if (document.round_num) {
+          base_params['round_num'] = document.round_num;
         }
 
         const params = new URLSearchParams(base_params).toString();

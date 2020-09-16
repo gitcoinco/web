@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.urls import path, re_path
 
 from grants.views import (
-    bulk_fund, flag, get_grants, get_replaced_tx, grant_activity, grant_categories, grant_details, grant_fund,
-    grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
+    bulk_fund, clr_grants, flag, get_grants, get_replaced_tx, grant_activity, grant_categories, grant_details,
+    grant_fund, grant_new, grant_new_whitelabel, grants, grants_addr_as_json, grants_bulk_add, grants_by_grant_type,
     grants_cart_view, grants_clr, grants_stats_view, invoice, leaderboard, new_matching_partner, profile, quickstart,
     subscription_cancel, toggle_grant_favorite, verify_grant, zksync_get_interrupt_status, zksync_set_interrupt_status,
 )
@@ -29,6 +29,8 @@ from grants.views import (
 app_name = 'grants'
 urlpatterns = [
     path('', grants, name='grants'),
+    path('clr/<slug:round_num>', clr_grants, name='clr_grants'),
+    path('clr/<slug:round_num>/', clr_grants, name='clr_grants'),
     path('getstats/', grants_stats_view, name='grants_stats'),
     path('grants.json', grants_addr_as_json, name='grants_json'),
     path('flag/<int:grant_id>', flag, name='grantflag'),
