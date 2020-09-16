@@ -957,14 +957,13 @@ def grant_details(request, grant_id, grant_slug):
                     [f'{grant.grant_type.name} {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, grant.grant_type, index_on=item)],
                     [f'All {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, None, index_on=item)],
                 ]
-        if tab in ['transactions', 'contributors']:
-            _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
-            contributions = list(_contributions.order_by('-created_on'))
-            #voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
-            if tab == 'contributors':
-                phantom_funds = grant.phantom_funding.all().cache(timeout=60)
-                contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
-            activity_count = len(cancelled_subscriptions) + len(contributions)
+        _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+        contributions = list(_contributions.order_by('-created_on'))
+        #voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+        if tab == 'contributors':
+            phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+            contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+        activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
         add_cancel_params = user_subscription
