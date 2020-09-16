@@ -402,6 +402,7 @@ class RoundupEmail(SuperModel):
     highlights = JSONField(default=dict, blank=True)
     sponsor = JSONField(default=dict, blank=True)
     bounties_spec = JSONField(default=dict, blank=True)
+    kudos = JSONField(default=dict, blank=True)
     news = JSONField(default=dict, blank=True)
     updates = JSONField(default=dict, blank=True)
     videos = models.TextField(max_length=15000, blank=True)
