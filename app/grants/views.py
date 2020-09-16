@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import datetime
 import hashlib
+import html
 import json
 import logging
 import random
@@ -1813,7 +1814,7 @@ def verify_grant(request, grant_id):
     user_code = get_user_code(request.user.profile.id, grant, emoji_codes)
     text = get_grant_verification_text(grant, False)
 
-    full_text = last_tweet.full_text
+    full_text = html.unescape(last_tweet.full_text)
     for url in last_tweet.entities['urls']:
         full_text = full_text.replace(url['url'], url['display_url'])
 
