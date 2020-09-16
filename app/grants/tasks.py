@@ -78,8 +78,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # save all subscription comments
     wall_of_love = {}
+    forbidden_text = 'created by ingest'
     for subscription in instance.subscriptions.all():
-        if subscription.comments:
+        if subscription.comments and forbidden_text not in subscription.comments:
             key = subscription.comments
             if key not in wall_of_love.keys():
                 wall_of_love[key] = 0
