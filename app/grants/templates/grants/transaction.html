@@ -12,10 +12,10 @@
     <div class="col-3 col-sm-2 col-md-1 justify-content-center special_tag">
       {% if not anonymous %}
         <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
-          <img class="avatar rounded-circle" src="/dynamic/avatar/{{ transaction.subscription.contributor_profile.handle }}">
+          <img class="avatar rounded-circle" data-src="/dynamic/avatar/{{ transaction.subscription.contributor_profile.handle }}">
         </a>
       {% else %}
-        <img class="avatar rounded-circle" src="/dynamic/avatar/Anonymous">
+        <img class="avatar rounded-circle" data-src="/dynamic/avatar/Anonymous">
       {% endif %}
     </div>
     <div class="col-2 my-auto">
