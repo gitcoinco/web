@@ -28,7 +28,7 @@
     </button>
 
     <button type="button" id="nav-stats" href="{{grant.url}}?tab=stats" class="section-tab {% if tab == "stats" %} active {% endif %}">
-      {% trans "STATS" %}
+      {% trans "TRENDS" %}
     </button>
 
     <button type="button" id="nav-contributors" href="{{grant.url}}?tab=contributors" class="section-tab {% if tab == "contributors" %} active {% endif %}">
@@ -240,15 +240,13 @@
 
           <div class="value-container">
             <div class="chart_container chart_container--big">
-              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">CONTRIBUTION HISTORY OVER TIME</p>
+              <p class="sub-title font-weight-semibold font-caption mb-1 pt-1">CONTRIBUTION HISTORY OVER TIME (in USD)</p>
               <div class="chart_container__content">
                 <div id="grant_chart"></div>
               </div>
               <div class="grant-status-list">
-                <p><span class="box box_1"></span>{% trans "Subscription Billing" %}</p>
-                <p><span class="box box_2"></span>{% trans "New Subscriptions" %}</p>
-                <p><span class="box box_3"></span>{% trans "One-Time Contributions" %}</p>
-                <p><span class="box box_5"></span>{% trans "CLR Matching Funds" %}</p>
+                <p><span class="box box_1"></span>{% trans "Contributions" %}</p>
+                <p><span class="box box_2"></span>{% trans "CLR Matching Funds" %}</p>
               </div>
             </div>
           </div>

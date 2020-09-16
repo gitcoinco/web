@@ -767,10 +767,10 @@ def grant_details(request, grant_id, grant_slug):
                 ]
         if tab in ['transactions', 'contributors']:
             _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
-            #phantom_funds = grant.phantom_funding.all().cache(timeout=60)
             contributions = list(_contributions.order_by('-created_on'))
             #voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
             if tab == 'contributors':
+                phantom_funds = grant.phantom_funding.all().cache(timeout=60)
                 contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
             activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()

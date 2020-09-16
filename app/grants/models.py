@@ -491,6 +491,7 @@ class Grant(SuperModel):
 
     @property
     def history_by_month(self):
+        import math
         # gets the history of contributions to this grant month over month so they can be shown o grant details
         # returns [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"], ["December 2017", 5534, 2011, 0, 0], ["January 2018", 10396, 0 , 0, 0 ], ... for each monnth in which this grant has contribution history];
         CLR_PAYOUT_HANDLES = ['vs77bb', 'gitcoinbot', 'notscottmoore', 'owocki']
@@ -500,31 +501,21 @@ class Grant(SuperModel):
             contribs = [sc for sc in sub.subscription_contribution.all() if sc.success]
             for contrib in contribs:
                 #add all contributions
-                key = contrib.created_on.strftime("%Y/%m")
+                year = contrib.created_on.strftime("%Y")
+                quarter = math.ceil(int(contrib.created_on.strftime("%m"))/3.)
+                key = f"{year}/Q{quarter}"
                 subkey = 'One-Time'
-                if int(contrib.subscription.num_tx_approved) > 1:
-                    if contrib.is_first_in_sequence:
-                        subkey = 'New-Recurring'
-                    else:
-                        subkey = 'Recurring-Recurring'
                 if contrib.subscription.contributor_profile.handle in CLR_PAYOUT_HANDLES:
                     subkey = 'CLR'
                 if key not in month_to_contribution_numbers.keys():
                     month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
                 if contrib.subscription.amount_per_period_usdt:
                     month_to_contribution_numbers[key][subkey] += float(contrib.subscription.amount_per_period_usdt)
-        for pf in self.phantom_funding.all():
-            #add all phantom funds
-            subkey = 'One-Time'
-            key = pf.created_on.strftime("%Y/%m")
-            if key not in month_to_contribution_numbers.keys():
-                month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
-            month_to_contribution_numbers[key][subkey] += float(pf.value)
 
         # sort and return
-        return_me = [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"]]
+        return_me = [["", "Contributions", "CLR Matching Funds"]]
         for key, val in (sorted(month_to_contribution_numbers.items(), key=lambda kv:(kv[0]))):
-            return_me.append([key, val['Recurring-Recurring'], val['New-Recurring'], val['One-Time'], val['CLR']])
+            return_me.append([key, val['One-Time'], val['CLR']])
         return return_me
 
     @property
@@ -532,7 +523,7 @@ class Grant(SuperModel):
         max_amount = 0
         for ele in self.history_by_month:
             if type(ele[1]) is float:
-                max_amount = max(max_amount, ele[1]+ele[2]+ele[3]+ele[4])
+                max_amount = max(max_amount, ele[1]+ele[2])
         return max_amount
 
     def get_amount_received_with_phantom_funds(self):
