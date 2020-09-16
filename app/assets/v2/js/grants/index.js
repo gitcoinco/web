@@ -117,8 +117,8 @@ Vue.component('grant-sidebar', {
       if (params.type === this.type) {
         this.filter_grants(params);
       } else {
-        document.location.href = this.round_num ?
-          `/grants/clr/${this.round_num}/${params.type}` :
+        document.location.href = document.round_num ?
+          `/grants/clr/${document.round_num}?type=${params.type}` :
           `/grants/${params.type}`
         ;
       }
