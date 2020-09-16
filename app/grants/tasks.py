@@ -78,8 +78,9 @@ def update_grant_metadata(self, grant_id, retry: bool = True) -> None:
 
     # save all subscription comments
     wall_of_love = {}
+    forbidden_text = 'created by ingest'
     for subscription in instance.subscriptions.all():
-        if subscription.comments:
+        if subscription.comments and forbidden_text not in subscription.comments:
             key = subscription.comments
             if key not in wall_of_love.keys():
                 wall_of_love[key] = 0
@@ -159,7 +160,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         # emails to grant owner
         new_supporter(grant, subscription)
         # emails to contributor
-        # subscription.successful_contribution(subscription.new_approve_tx_id);
+        subscription.successful_contribution(subscription.new_approve_tx_id);
         thank_you_for_supporting(grant, subscription)
 
         update_grant_metadata.delay(grant_id)

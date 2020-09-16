@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import datetime
 import hashlib
+import html
 import json
 import logging
 import random
@@ -142,49 +143,52 @@ def get_stats(round_type):
     results = []
     counter = 0
     for chart in charts:
-        source = chart['db']
-        rankdata = \
-            PivotDataPool(
-               series=
-                [{'options': {
-                   'source': source,
-                    'legend_by': 'key',
-                    'categories': ['created_on'],
-                    'top_n_per_cat': 10,
-                    },
-                  'terms': {
-                    'val': Avg('val'),
-                    }}
-                 ])
-
-        #Step 2: Create the Chart object
-        cht = PivotChart(
-                datasource = rankdata,
-                series_options =
-                  [{'options':{
-                      'type': 'line',
-                      'stacking': False
-                      },
-                    'terms':
-                        ['val']
-
-                }],
-                chart_options =
-                  {'title': {
-                       'text': chart['title']},
-                   'xAxis': {
-                        'title': {
-                           'text': 'Time'}
+        try:
+            source = chart['db']
+            rankdata = \
+                PivotDataPool(
+                   series=
+                    [{'options': {
+                       'source': source,
+                        'legend_by': 'key',
+                        'categories': ['created_on'],
+                        'top_n_per_cat': 10,
                         },
-                    'renderTo':f'container{counter}',
-                    'height': '800px',
-                    'legend': {
-                        'enabled': False,
-                    },
-                    },
-                )
-        results.append(cht)
-        counter += 1
+                      'terms': {
+                        'val': Avg('val'),
+                        }}
+                     ])
+
+            #Step 2: Create the Chart object
+            cht = PivotChart(
+                    datasource = rankdata,
+                    series_options =
+                      [{'options':{
+                          'type': 'line',
+                          'stacking': False
+                          },
+                        'terms':
+                            ['val']
+
+                    }],
+                    chart_options =
+                      {'title': {
+                           'text': chart['title']},
+                       'xAxis': {
+                            'title': {
+                               'text': 'Time'}
+                            },
+                        'renderTo':f'container{counter}',
+                        'height': '800px',
+                        'legend': {
+                            'enabled': False,
+                        },
+                        },
+                    )
+            results.append(cht)
+            counter += 1
+        except:
+            logger.exception(e)
     chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
     return results, chart_list_str
 
@@ -304,6 +308,18 @@ def bulk_grants_for_cart(request):
 
     return JsonResponse({'grants': grants})
 
+  
+def clr_grants(request, round_num):
+    """CLR grants explorer."""
+
+    try:
+        clr_round = GrantCLR.objects.get(round_num=round_num)
+
+    except GrantCLR.DoesNotExist:
+        return redirect('/grants')
+
+    return grants_by_grant_clr(request, clr_round)
+
 
 def get_grants(request):
     grants = []
@@ -322,6 +338,14 @@ def get_grants(request):
     following = request.GET.get('following', '') != ''
     only_contributions = request.GET.get('only_contributions', '') == 'true'
     collection_id = request.GET.get('collection_id', '')
+    round_num = request.GET.get('round_num', None)
+
+    clr_round = None
+    try:
+        if round_num:
+            clr_round = GrantCLR.objects.get(round_num=round_num)
+    except GrantCLR.DoesNotExist:
+        pass
 
     filters = {
         'request': request,
@@ -333,7 +357,8 @@ def get_grants(request):
         'category': category,
         'following': following,
         'idle_grants': idle_grants,
-        'only_contributions': only_contributions
+        'only_contributions': only_contributions,
+        'clr_round': clr_round
     }
 
     if grant_type == 'collections':
@@ -368,11 +393,10 @@ def get_grants(request):
     grants_array = []
     for grant in grants:
         grant_json = grant.repr(request.user)
-
         grants_array.append(grant_json)
 
     return JsonResponse({
-        'grant_types': get_grant_type_cache(network),
+        'grant_types': get_grant_clr_types(clr_round, _grants, network) if clr_round else get_grant_type_cache(network),
         'current_type': grant_type,
         'category': category,
         'grants': grants_array,
@@ -389,7 +413,7 @@ def get_grants(request):
 
 
 def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
-                         category='', following=False, idle_grants=False, only_contributions=False, omit_my_grants=False):
+                         category='', following=False, idle_grants=False, only_contributions=False, omit_my_grants=False, clr_round=None):
     print(" " + str(round(time.time(), 2)))
 
     sort_by_clr_pledge_matching_amount = None
@@ -397,8 +421,13 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     three_months_ago = timezone.now() - datetime.timedelta(days=90)
     _grants = Grant.objects.filter(network=network, hidden=False)
 
+    if clr_round:
+        _grants = _grants.filter(**clr_round.grant_filters)
+
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
+    if sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
+        _grants = _grants.filter(is_clr_active=True)
 
     if omit_my_grants and profile:
         grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
@@ -417,7 +446,7 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     _grants.first()
 
     if not idle_grants:
-        _grants = _grants.filter(modified_on__gt=three_months_ago)
+        _grants = _grants.filter(last_update__gt=three_months_ago)
 
     if state == 'active':
         _grants = _grants.active()
@@ -480,6 +509,39 @@ def get_grant_types(network, filtered_grants=None):
             'label': tuple[0],
             'count': get_category_size(tuple[0]),
             # TODO: add in 'funding'
+            } for tuple in basic_grant_categories(_keyword)]
+
+    return grant_types
+
+
+def get_grant_clr_types(clr_round, active_grants=None, network='mainnet'):
+
+    grant_types = []
+    if not clr_round:
+        return []
+
+    grant_filters = clr_round.grant_filters
+
+    if not grant_filters:
+        return grant_types
+
+    if grant_filters.get('grant_type'):
+        _grant_types =  GrantType.objects.filter(pk=grant_filters['grant_type'])
+    elif grant_filters.get('grant_type__in'):
+        _grant_types = GrantType.objects.filter(pk__in=grant_filters['grant_type__in'])
+
+    for _grant_type in _grant_types:
+        count = active_grants.filter(grant_type=_grant_type,network=network).count() if active_grants else 0
+
+        grant_types.append({
+            'label': _grant_type.label, 'keyword': _grant_type.name, 'count': count
+        })
+
+    for grant_type in grant_types: # TODO : Tweak to get only needed categories
+        _keyword = grant_type['keyword']
+        grant_type['sub_categories'] = [{
+            'label': tuple[0],
+            'count': get_category_size(tuple[0]),
             } for tuple in basic_grant_categories(_keyword)]
 
     return grant_types
@@ -694,6 +756,137 @@ def grants_by_grant_type(request, grant_type):
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 
+
+def grants_by_grant_clr(request, clr_round):
+    """Handle grants explorer."""
+    grant_type = request.GET.get('type', 'all')
+    limit = request.GET.get('limit', 6)
+    page = request.GET.get('page', 1)
+    sort = request.GET.get('sort_option', 'weighted_shuffle')
+    network = request.GET.get('network', 'mainnet')
+    keyword = request.GET.get('keyword', '')
+    category = request.GET.get('category', '')
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
+
+    if keyword:
+        category = ''
+    profile = get_profile(request)
+
+    _grants = None
+    try:
+        filters = {
+            'request': request,
+            'grant_type': grant_type,
+            'sort': sort,
+            'network': network,
+            'keyword': keyword,
+            'state': 'active',
+            'category': category,
+            'idle_grants': True,
+            'only_contributions': only_contributions,
+            'clr_round': clr_round
+        }
+
+        _grants = build_grants_by_type(**filters)
+    except Exception as e:
+        print(e)
+        return redirect('/grants')
+
+
+    paginator = Paginator(_grants, limit)
+    grants = paginator.get_page(page)
+
+    # record view
+    pks = list([grant.pk for grant in grants])
+    if len(pks):
+        increment_view_count.delay(pks, grants[0].content_type, request.user.id, 'index')
+
+    current_partners = MatchPledge.objects.filter(clr_round_num=clr_round)
+    current_partners_fund = 0
+
+    for partner in current_partners:
+        current_partners_fund += partner.amount
+
+    grant_types = get_grant_clr_types(clr_round, network=network)
+
+    grants_following = Favorite.objects.none()
+    if request.user.is_authenticated:
+        grants_following = Favorite.objects.filter(user=request.user, activity=None).count()
+
+
+    # populate active round info
+    total_clr_pot = clr_round.total_pot
+
+    if  clr_round.is_active:
+        if total_clr_pot > 1000 * 100:
+            int_total_clr_pot = f"{round(total_clr_pot/1000/1000, 1)}m"
+        elif total_clr_pot > 100:
+            int_total_clr_pot = f"{round(total_clr_pot/1000, 1)}k"
+        else:
+            int_total_clr_pot = intword(total_clr_pot)
+        live_now = f'❇️ LIVE NOW! Up to ${int_total_clr_pot} Matching Funding on Gitcoin Grants' if total_clr_pot > 0 else ""
+        title = f'(💰${int_total_clr_pot} Match LIVE!) Grants'
+    else:
+        live_now = 'Gitcoin Grants helps you find funding for your projects'
+        title = 'Grants'
+
+
+    grant_label = None
+    for _type in grant_types:
+        if _type.get("keyword") == grant_type:
+            grant_label = _type.get("label")
+
+    params = {
+        'active': 'grants_landing',
+        'title': title,
+        'sort': sort,
+        'network': network,
+        'keyword': keyword,
+        'type': grant_type,
+        'grant_label': grant_label if grant_type else grant_type,
+        'round_end': round_end,
+        'next_round_start': next_round_start,
+        'after_that_next_round_begin': after_that_next_round_begin,
+        'all_grants_count': _grants.count(),
+        'now': timezone.now(),
+        'grant_types': grant_types,
+        'current_partners_fund': current_partners_fund,
+        'current_partners': current_partners,
+        'card_desc': f'{live_now}',
+        'avatar_url': request.build_absolute_uri(static('v2/images/twitter_cards/grants7.png')),
+        'card_type': 'summary_large_image',
+        'avatar_height': 1097,
+        'avatar_width': 1953,
+        'grants': grants,
+        'can_pin': False,
+        'target': f'/activity?what=all_grants',
+        'keywords': get_keywords(),
+        'total_clr_pot': total_clr_pot,
+        'is_staff': request.user.is_staff,
+        'selected_category': category,
+        'profile': profile,
+        'grants_following': grants_following,
+        'only_contributions': only_contributions,
+        'clr_round': clr_round,
+    }
+
+    # log this search, it might be useful for matching purposes down the line
+    if keyword:
+        try:
+            SearchHistory.objects.update_or_create(
+                search_type='grants',
+                user=request.user,
+                data=request.GET,
+                ip_address=get_ip(request)
+            )
+        except Exception as e:
+            logger.debug(e)
+            pass
+
+    response = TemplateResponse(request, 'grants/index.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
+
 def add_form_categories_to_grant(form_category_ids, grant, grant_type):
     form_category_ids = [int(i) for i in form_category_ids if i != '']
 
@@ -767,8 +960,8 @@ def grant_details(request, grant_id, grant_slug):
             )
 
         increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
-        subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
+        subscriptions = grant.subscriptions.none()
+        cancelled_subscriptions = grant.subscriptions.none()
 
         activity_count = grant.contribution_count
         contributors = []
@@ -789,13 +982,12 @@ def grant_details(request, grant_id, grant_slug):
                     [f'All {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, None, index_on=item)],
                 ]
         if tab in ['transactions', 'contributors']:
-            _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all().cache(timeout=60)).cache(timeout=60)
-            negative_contributions = _contributions.filter(subscription__is_postive_vote=False)
-            _contributions = _contributions.filter(subscription__is_postive_vote=True)
-            phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+            _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
             contributions = list(_contributions.order_by('-created_on'))
-            voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
-            contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+            #voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+            if tab == 'contributors':
+                phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+                contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
             activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()
@@ -1837,7 +2029,7 @@ def verify_grant(request, grant_id):
     user_code = get_user_code(request.user.profile.id, grant, emoji_codes)
     text = get_grant_verification_text(grant, False)
 
-    full_text = last_tweet.full_text
+    full_text = html.unescape(last_tweet.full_text)
     for url in last_tweet.entities['urls']:
         full_text = full_text.replace(url['url'], url['display_url'])
 

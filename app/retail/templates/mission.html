@@ -461,12 +461,38 @@
 
             <div class="row mt-5 mb-md-0 mb-5">
               <div class="col text-center">
+                <a class="button button--primary" role="button" href="{% url "mission" %}">
+                  <i class="fas fa-users"></i>
+                  {% trans "Mission" %}
+                </a>
+                &nbsp;
                 <a class="button button--primary" role="button" href="{% url "about" %}">
                   <i class="fas fa-rocket mr-2"></i>
-                  {% trans "About Gitcoin" %}
+                  {% trans "About" %}
+                </a>
+                &nbsp;
+                <a class="button button--primary" role="button" href="{% url "results" %}">
+                <i class="far fa-chart-bar"></i>
+                  {% trans "Results" %}
+                </a>
+                &nbsp;
+                <a class="button button--primary" role="button" href="{% url "vision" %}">
+                  <i class="far fa-eye"></i>
+                  {% trans "Vision" %}
                 </a>
               </div>
             </div>
+            <div class="row mt-2 mb-md-0 mb-5">
+              <div class="col text-center">
+                <hr>
+                - or -
+                <br>
+                <a href="/townsquare">
+                  Enter Gitcoin
+                </a>
+                </div>
+            </div>
+            
           </section>
         </div>
       </div>

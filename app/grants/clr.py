@@ -221,6 +221,9 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
                 elif k2 > k1:
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.125) + 1)
 
+        if type(tot) == complex:
+            tot = float(tot.real)
+
         bigtot += tot
         totals.append({'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot})
         # totals.append({'id': proj, 'clr_amount': tot})

@@ -75,13 +75,13 @@ def get_activities(tech_stack=None, num_activities=15):
     activities = activities[0:num_activities]
     return activities
 
-def index_2020(request):
+def index(request):
     context = {
     }
     return TemplateResponse(request, 'home/index2020.html', context)
 
 
-def index(request):
+def index_old(request):
     products = [
         {
             'group' : 'grow_oss',
@@ -757,15 +757,14 @@ def products(request):
             'traction': '$25k/mo',
         },
         {
-            'name': 'codefund',
-            'heading': _("Ethical advertising for developers"),
-            'description': _("CodeFund is an open source ad platform that funds contributors of the open \
-                            source ecosystem"),
-            'link': 'https://codefund.app/',
+            'name': 'kernel',
+            'heading': _("Accelerate your web3 entrepenurial career."),
+            'description': _("An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web3 companies."),
+            'link': 'https://kernel.community/',
             'img': static('v2/images/products/graphics-Codefund.svg'),
-            'logo': static('v2/images/products/codefund-logo.svg'),
-            'service_level': 'Self Service or Full Service',
-            'traction': 'over 300mm impressions',
+            'logo': static('landingpage/kernel.svg'),
+            'service_level': 'Full Service',
+            'traction': '100s of top devs',
         },
         {
             'name': 'matching engine',
@@ -812,16 +811,7 @@ def products(request):
 
 def not_a_token(request):
     """Render the not_a_token response."""
-    context = {
-        'is_outside': True,
-        'active': 'not_a_token',
-        'avatar_url': static('v2/images/no-token/no-token.jpg'),
-        'title': 'Gitcoin is not a token',
-        'card_title': _("Gitcoin is not a token"),
-        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives \
-                        with our user base.  Read more about the future of monetization in web3."),
-    }
-    return TemplateResponse(request, 'not_a_token.html', context)
+    return redirect('/')
 
 
 def results(request, keyword=None):
@@ -1341,6 +1331,10 @@ def livestream(request):
 
 def twitter(request):
     return redirect('http://twitter.com/gitcoin')
+
+
+def telegram(request):
+    return redirect('https://t.me/joinchat/DwEd_xps7gJqWt-Quf-tPA')
 
 
 def fb(request):

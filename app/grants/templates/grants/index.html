@@ -45,12 +45,21 @@ along with this program. If not, see
   {% include 'shared/tag_manager_2.html' %}
   {% include 'shared/top_nav.html' with class='d-md-flex' %}
   {% include 'grants/nav.html' %}
-  <div class="container-fluid header dash grants_hero_img" style="background: url('/static/v2/images/bg/{{styles.bg}}') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat;">
+  <div class="container-fluid header dash {% if not clr_round %} grants_hero_img {% endif %}"
+      style="{% if not clr_round %} background: url('/static/v2/images/bg/{{styles.bg}}') center top / {{styles.bg_size}} {{styles.bg_color}} no-repeat; {% endif %}"
+  >
 
     {% include 'shared/grant_thanks_modal.html' %}
-    {% include 'grants/shared/landing_hero.html' %}
-    <div class="" style="">
-      <div id="grants-details" class="no-gutters">
+
+    {% if clr_round and clr_round.logo %}
+        <img src="{{ clr_round.logo.url }}" class="w-100">
+    {% else %}
+      {% include 'grants/shared/landing_hero.html' %}
+    {% endif %}
+
+
+    <div class="row" class="mx-0" style="width: 100vw">
+      <div id="grants-details" class="no-gutters w-100">
         <div style="background-image: url('/static/v2/images/bg/{{bottom_back}}'); background-size: contain;">
           <div
             style="background-color: rgba(255, 255, 255, {% if type == 'health' %}0.9{% else %}0.92{% endif %});  padding-bottom: 20px; border-top: {% if type == 'health' %}#87c5ba{% elif type == 'activity' %}#eee{% else %}#aaa{% endif %} 10px solid;">
@@ -72,7 +81,7 @@ along with this program. If not, see
             {% endif %}
             <div id="grants-showcase" v-cloak>
               <div class="row" style="max-width: 99vw">
-                <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container">
+                <div class="col-12 col-lg-3 col-xl-2 pr-xl-0" id="sidebar_container">
                   {% include 'grants/shared/sidebar_search.html' %}
                 </div>
 
@@ -121,8 +130,12 @@ along with this program. If not, see
       document.keyword = "{{ keyword }}";
       document.following = {{ following|yesno:'true,false' }};
       document.idle_grants = {{ idle_grants|yesno:'true,false' }};
-      document.show_contributions = {{ show_contributions|yesno:'true,false' }}
+      document.show_contributions = {{ show_contributions|yesno:'true,false' }};
       document.collection_id = {{ collection_id|default:'null' }}
+
+      {% if clr_round %}
+        document.round_num = "{{clr_round.round_num}}";
+      {% endif %}
     </script>
 </body>
 {% include 'shared/activity_scripts.html' %}

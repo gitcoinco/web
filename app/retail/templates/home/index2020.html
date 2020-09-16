@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 
+  {% include 'shared/tag_manager_1.html' %}
   <title>Gitcoin</title>
   <meta name="description" content="A place for developers to learn, earn, and network" />
 
@@ -42,9 +43,9 @@
 
 <!-- fixed signup button-->
 <div id="fixed-signup-button">
-  <a class="btn icon" href="#">
-    <img src="/static/landingpage/github.svg">
-    <span href=/login/github?next=products>Enter Gitcoin</span>
+  <a class="btn icon fe-pulse" href="#">
+    <img src="/static/v2/images/helmet-white.svg">
+    <span href="{% if not github_handle %}/login/github?next=products{% else %}/townsquare{% endif %}">Enter Gitcoin</span>
   </a>
 </div>
 
@@ -105,9 +106,9 @@
 
     <p>Learn the latest tech, earn money, and network with top developers passionate about building and sustaining a remote-first open source community.</p>
 
-    <a class="btn icon" href="#">
-      <img src="/static/landingpage/github.svg">
-      <span href="/login/github?next=products">Enter Gitcoin</span>
+    <a class="btn icon fe-pulse" href="#">
+      <img src="/static/v2/images/helmet-white.svg">
+      <span href="{% if not github_handle %}/login/github?next=products{% else %}/townsquare{% endif %}">Enter Gitcoin</span>
     </a>
 
 
@@ -142,13 +143,13 @@
     <div>
       <h2>Gitcoin for Developers</h2>
       <p>Explore all that Gitcoin has to offer. Build exciting projects via hackathons or bounties while earning crypto. Find mentorship by connecting with talented developers and leaders of top Web3 companies.</p>
-      <a class="btn" href="/mission"><span>Learn More</span></a>
+      <a class="btn fe-pulse" href="/mission"><span>Learn More</span></a>
     </div>
 
     <div>
       <h2>Gitcoin for Funders</h2>
       <p>Leverage passionate developers to build a community amongst top Web3 developers. Source ideas through hackathons, hire freelancers through bounties, collaborate real-time on longer term projects and build your Web3 tribe all on Gitcoin.</p>
-      <a class="btn" href="/tribes"><span>Learn More</span></a>
+      <a class="btn fe-pulse" href="/tribes"><span>Learn More</span></a>
     </div>
   </div>
   
@@ -164,23 +165,29 @@
 
 <section id="trust">
 
-  <h1>Gitcoin is Trusted by Top Web3 Brands</h1>
+  <h1>Trusted by Top Web3 Brands</h1>
 
   <div class="grid">
 
-    <div>
-      <h1>1</h1>
-      <h2>Mission</h2>
+    <div class="hover-logo" href='/mission'>
+      <div>
+        <h1>1</h1>
+        <h2>Mission</h2>
+      </div>
     </div>
 
-    <div>
-      <h1>47k</h1>
-      <h2>Developers</h2>
+    <div class="hover-logo" href='/results'>
+      <div>
+        <h1>47k</h1>
+        <h2>Developers</h2>
+      </div>
     </div>
 
-    <div>
-      <h1>$6.5mm</h1>
-      <h2>Delivered to OSS devs so far</h2>
+    <div class="hover-logo" href='/results'>
+      <div>
+        <h1>$6.5mm</h1>
+        <h2>Delivered to OSS devs so far</h2>
+      </div>  
     </div>  
 
   </div>
@@ -226,7 +233,7 @@
     <div>
       <h2>Hackathons</h2>
       <p>Build cutting edge projects alongside talented Web3 developers while learning the latest technologies from leading blockchain companies.</p>
-      <a class="btn" href="https://gitcoin.co/hackathon-list/"><span>Learn More</span></a>
+      <a class="btn fe-pulse" href="https://gitcoin.co/hackathon-list/"><span>Learn More</span></a>
     </div>
     <figure>
       <img loading="lazy" class="floating" src="/static/landingpage/hackathons_animated.svg">
@@ -237,7 +244,7 @@
     <div>
       <h2>Grants</h2>
       <p>Get funding for open sourced projects (Over $3mm in funding delivered so far).</p>
-      <a class="btn" href="https://gitcoin.co/grants/"><span>Learn More</span></a>
+      <a class="btn fe-pulse" href="https://gitcoin.co/grants/"><span>Learn More</span></a>
     </div>
     <figure>
       <img loading="lazy" class="floating2"  src="/static/landingpage/grants_animated.svg">
@@ -247,8 +254,8 @@
   <div class="grid">
     <div>
       <h2>KERNEL</h2>
-      <p>An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web 3 companies.</p>
-      <a class="btn" href="http://kernel.community/"><span>Learn More</span></a>
+      <p>An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web3 companies.</p>
+      <a class="btn fe-pulse" href="http://kernel.community/"><span>Learn More</span></a>
     </div>
     <figure>
       <img loading="lazy" class="floating"  src="/static/landingpage/kernel_animated.svg">
@@ -259,7 +266,7 @@
     <div>
       <h2>Bounties</h2>
       <p>Earn crypto working directly with top Web3 companies working on short or long term development projects.</p>
-      <!--<a class="btn" href="#"><span>Learn More</span></a>-->
+      <!--<a class="btn fe-pulse" href="#"><span>Learn More</span></a>-->
     </div>
     <figure>
       <img loading="lazy" class="floating2"  src="/static/landingpage/bounties_animated.svg">
@@ -270,7 +277,7 @@
     <div>
       <h2>Quests</h2>
       <p>Earn rewards and learn about the Web3 ecosystem through fun challenges.</p>
-      <!--<a class="btn" href="#"><span>Learn More</span></a>-->
+      <!--<a class="btn fe-pulse" href="#"><span>Learn More</span></a>-->
     </div>
     <figure>
       <img loading="lazy" class="floating"  src="/static/landingpage/quests_animated.svg">
@@ -294,7 +301,7 @@
     <div>
       <h2>Town Square</h2>
       <p>Join the conversation. See what’s happening in Web3. Explore all that Gitcoin has to offer through the Gitcoin Townsquare social feed.</p>
-      <!--<a class="btn" href="#"><span>Learn More</span></a>-->
+      <a class="btn fe-pulse" href="/townsquare"><span>Learn More</span></a>
     </div>
     <figure>
       <img loading="lazy" class="floating2"  src="/static/landingpage/townsquare_animated.svg">
@@ -305,7 +312,7 @@
     <div>
       <h2>Hire Devs</h2>
       <p>Don’t just find a developer, find the right developer. Browse the best software developers in the space on Gitcoin’s user directory.</p>
-      <a class="btn" target="_blank" href="https://gitcoin.co/tribes"><span>Learn More</span></a>
+      <a class="btn fe-pulse" target="_blank" href="https://gitcoin.co/tribes"><span>Learn More</span></a>
     </div>
     <figure>
       <img loading="lazy" class="floating"  src="/static/landingpage/devs_animated.svg">
@@ -331,14 +338,14 @@
     <figure>
 
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/996210723998101505/fMagjqsq_400x400.jpg">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
-      <figcaption>I'm genuinely amazed by the projects in the <a href="https://twitter.com/ArweaveTeam" target=new>@ArweaveTeam</a> <a href="https://twitter.com/gitcoin" target=new>@gitcoin</a> incubator, these are incredible. Wow.</figcaption>
+      <figcaption>I'm genuinely amazed by the projects in the <a href="https://twitter.com/ArweaveTeam" target=_blank>@ArweaveTeam</a> <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> incubator, these are incredible. Wow.</figcaption>
     </figure>
 
     <figure>
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/1219463670431830019/o63Gb8v6_400x400.png">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
       <figcaption>
         Gitcoin Grants might be the most underrated experiment in Web3.
@@ -347,7 +354,7 @@
 
     <figure>
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/977496875887558661/L86xyLF4_400x400.jpg">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
       <figcaption>
 Gitcoin grants quadratic funding is not just for funds allocation, it's also a great signaling tool!
@@ -358,17 +365,17 @@ For the last few rounds, going to <a href="https://gitcoin.co/grants/">https://g
 
     <figure>
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/1148059058710155264/m317XmT4_400x400.png">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
-      <figcaption>One of the best way to start out in DeFi is working on a <a href="https://twitter.com/gitcoin" target=new>@gitcoin</a>  bounty. Grab one of the many 4-digit prizes offered during the NYBW virtual hackathon
+      <figcaption>One of the best way to start out in DeFi is working on a <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a>  bounty. Grab one of the many 4-digit prizes offered during the NYBW virtual hackathon
 </figcaption>
     </figure>
 
     <figure>
       <img loading="lazy" src="https://pbs.twimg.com/profile_images/1274357399210487814/4edDspwk_400x400.jpg">
-      <svg class="twitter-icon"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
 
-      <figcaption>Congrats to the entire <a href="https://twitter.com/gitcoin" target=new>@gitcoin</a> team on an amazing round 4 of CLR matching!
+      <figcaption>Congrats to the entire <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> team on an amazing round 4 of CLR matching!
 <br>
 <br>
 
@@ -379,6 +386,14 @@ Let's make round 5 even better 🚀
 <br>
 <br>
 Oh and thanks to all the haters for the free marketing 😘
+</figcaption>
+    </figure>
+
+    <figure>
+      <img loading="lazy" src="https://pbs.twimg.com/profile_images/1228728801858854912/kAlqxuaP_400x400.jpg">
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+
+      <figcaption>Sooo happy with <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> results! Submitted an issue last night and by the morning I had a PR with exactly what I wanted!
 </figcaption>
     </figure>
 
@@ -416,7 +431,7 @@ Oh and thanks to all the haters for the free marketing 😘
       <div>
       <input type="email" name="EMAIL" placeholder="Enter your email" required>
 
-      <button type="submit" class="btn">Subscribe</button>
+      <button type="submit" class="btn fe-pulse">Subscribe</button>
     </div>
 
 
@@ -478,13 +493,13 @@ Oh and thanks to all the haters for the free marketing 😘
 
 <section id="footersocial">
 
-  <figure><a href="/facebook"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#facebook"></use></svg></a></figure>
-  <figure><a href="/youtube"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#youtube"></use></svg></a></figure>
-  <figure><a href="/twitter"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#twitter"></use></svg></a></figure>
-  <figure><a href="/telegram"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#telegram"></use></svg></a></figure>
-  <figure><a href="/github"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#github"></use></svg></a></figure>
-  <figure><a href="/chat"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#chat2"></use></svg></a></figure>
-  <figure><a href="mailto:founders@gitcoin.co"><svg class="fusion"><use xlink:href="/static/landingpage/fusion/fusion-interface.svg#email"></use></svg></a></figure>
+  <figure><a href="/facebook"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#facebook"></use></svg></a></figure>
+  <figure><a href="/youtube"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#youtube"></use></svg></a></figure>
+  <figure><a href="/twitter"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg></a></figure>
+  <figure><a href="/telegram"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#telegram"></use></svg></a></figure>
+  <figure><a href="/github"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#github"></use></svg></a></figure>
+  <figure><a href="/chat"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#chat2"></use></svg></a></figure>
+  <figure><a href="mailto:founders@gitcoin.co"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#email"></use></svg></a></figure>
 
   
 </section>
@@ -496,7 +511,7 @@ Oh and thanks to all the haters for the free marketing 😘
 
 <section id="footerconsensys">
   <figure>
-    <a href="https://consensys.net">
+    <a href="https://consensys.net" target="_blank">
       <img loading="lazy" src="/static/landingpage/consensys_white.svg">
     </a>
   </figure>
@@ -508,5 +523,5 @@ Oh and thanks to all the haters for the free marketing 😘
 </body>
 </html>
 
-    {% include 'shared/analytics.html' %}
+    {% include 'shared/tag_manager_2.html' %}
 
