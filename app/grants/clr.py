@@ -205,8 +205,20 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
 
             # pairwise matches to current round
             for k2, v2 in contribz.items():
+                # both (sms & bright)
+                if k2 > k1 and all(i in sms_verified_list and i in bright_verified_list for i in [k2, k1]):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.4) + 1)
+                # (sms & bright) & bright
+                elif k2 > k1 and (((k2 in sms_verified_list and k2 in bright_verified_list) and (k1 in bright_verified_list)) or ((k1 in sms_verified_list and k1 in bright_verified_list) and (k2 in bright_verified_list))):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.3) + 1)
+                # (sms & bright) & sms
+                elif k2 > k1 and (((k2 in sms_verified_list and k2 in bright_verified_list) and (k1 in sms_verified_list)) or ((k1 in sms_verified_list and k1 in bright_verified_list) and (k2 in sms_verified_list))):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.225) + 1)
+                # (sms & bright) & none
+                elif k2 > k1 and (((k2 in sms_verified_list and k2 in bright_verified_list) and (k1 not in sms_verified_list + bright_verified_list)) or ((k1 in sms_verified_list and k1 in bright_verified_list) and (k2 not in sms_verified_list + bright_verified_list))):
+                    tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / uv_threshold + 1)
                 # both sms
-                if k2 > k1 and all(i in sms_verified_list for i in [k2, k1]):
+                elif k2 > k1 and all(i in sms_verified_list for i in [k2, k1]):
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.05) + 1)
                 # both bright
                 elif k2 > k1 and all(i in bright_verified_list for i in [k2, k1]):
