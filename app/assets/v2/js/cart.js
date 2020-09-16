@@ -1714,11 +1714,11 @@ Vue.component('grants-cart', {
       const numberOfFees = 3 + this.donationInputs.filter((x) => x.name === tokenSymbol).length;
 
       // Transfers to an address that has never used zkSync are more expensive, which is why we
-      // use the zero address as the recipient -- this gives us a conservative estimate. We also
+      // use a random address as the recipient -- this gives us a conservative estimate. We also
       // do this to avoid hitting the zkSync servers with dozens of rapid fee requests when users
       // have a large number of items in their cart
       const { fee, amount } = await this.getZkSyncFeeAndAmount({
-        dest: '0x0000000000000000000000000000000000000001', // zero address throws, so use 1
+        dest: ethers.Wallet.createRandom().address, // gives an address that has never been used on zkSync
         name: tokenSymbol,
         amount: initialAmount
       });
