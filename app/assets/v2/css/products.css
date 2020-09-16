@@ -54,7 +54,7 @@
   color: #ffffff;
 }
 
-.codefund{
+.kernel{
   background-color: #4c008f;
   color: #ffffff;
 }
@@ -88,7 +88,7 @@
   width: 66px;
 }
 
-.codefund .tag
+.kernel .tag
 {
   width: 140px;
 }
@@ -170,7 +170,7 @@
   width:180px;
 }
 
-.button-codefund{
+.button-kernel{
   background-color: #8e2abe;
   color: #fff;
 }

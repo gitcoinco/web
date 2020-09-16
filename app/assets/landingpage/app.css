@@ -1123,3 +1123,14 @@ section#footerconsensys figure {
   animation-duration: 3s;
   animation-iteration-count: infinite;
 }
+
+.hover-logo div{
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 20px;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+.hover-logo div:hover{
+  background: rgba(55, 0, 200, 0.3);
+}

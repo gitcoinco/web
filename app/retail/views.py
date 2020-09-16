@@ -757,15 +757,14 @@ def products(request):
             'traction': '$25k/mo',
         },
         {
-            'name': 'codefund',
-            'heading': _("Ethical advertising for developers"),
-            'description': _("CodeFund is an open source ad platform that funds contributors of the open \
-                            source ecosystem"),
-            'link': 'https://codefund.app/',
+            'name': 'kernel',
+            'heading': _("Accelerate your web3 entrepenurial career."),
+            'description': _("An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web3 companies."),
+            'link': 'https://kernel.community/',
             'img': static('v2/images/products/graphics-Codefund.svg'),
-            'logo': static('v2/images/products/codefund-logo.svg'),
-            'service_level': 'Self Service or Full Service',
-            'traction': 'over 300mm impressions',
+            'logo': static('landingpage/kernel.svg'),
+            'service_level': 'Full Service',
+            'traction': '100s of top devs',
         },
         {
             'name': 'matching engine',

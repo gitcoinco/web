@@ -42,7 +42,7 @@
 
 <!-- fixed signup button-->
 <div id="fixed-signup-button">
-  <a class="btn icon" href="#">
+  <a class="btn icon fe-pulse" href="#">
     <img src="/static/v2/images/helmet-white.svg">
     <span href="{% if not github_handle %}/login/github?next=products{% else %}/townsquare{% endif %}">Enter Gitcoin</span>
   </a>
@@ -168,19 +168,25 @@
 
   <div class="grid">
 
-    <div>
-      <h1>1</h1>
-      <h2>Mission</h2>
+    <div class="hover-logo" href='/mission'>
+      <div>
+        <h1>1</h1>
+        <h2>Mission</h2>
+      </div>
     </div>
 
-    <div>
-      <h1>47k</h1>
-      <h2>Developers</h2>
+    <div class="hover-logo" href='/results'>
+      <div>
+        <h1>47k</h1>
+        <h2>Developers</h2>
+      </div>
     </div>
 
-    <div>
-      <h1>$6.5mm</h1>
-      <h2>Delivered to OSS devs so far</h2>
+    <div class="hover-logo" href='/results'>
+      <div>
+        <h1>$6.5mm</h1>
+        <h2>Delivered to OSS devs so far</h2>
+      </div>  
     </div>  
 
   </div>
@@ -379,6 +385,14 @@ Let's make round 5 even better 🚀
 <br>
 <br>
 Oh and thanks to all the haters for the free marketing 😘
+</figcaption>
+    </figure>
+
+    <figure>
+      <img loading="lazy" src="https://pbs.twimg.com/profile_images/1228728801858854912/kAlqxuaP_400x400.jpg">
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+
+      <figcaption>Sooo happy with <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> results! Submitted an issue last night and by the morning I had a PR with exactly what I wanted!
 </figcaption>
     </figure>
 
