@@ -239,21 +239,22 @@ def earners():
     do_post(text)
 
 def grants():
-    from grants.views import clr_active, clr_round
-    if not clr_active:
+
+    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
+    if not active_clr_rounds.exists():
         return
 
     ############################################################################3
     # total stats
     ############################################################################3
 
-    start = next_round_start
-    end = round_end
+    start = active_clr_rounds.first().start_date
+    end = active_clr_rounds.first().end_date
     day = (datetime.now() - start).days
     pprint("")
     pprint("================================")
     pprint(f"== BEEP BOOP BOP ⚡️          ")
-    pprint(f"== Grants Round {clr_round} ({start.strftime('%m/%d/%Y')} ➡️ {end.strftime('%m/%d/%Y')})")
+    pprint(f"== Grants Round ({start.strftime('%m/%d/%Y')} ➡️ {end.strftime('%m/%d/%Y')})")
     pprint(f"== Day {day} Stats 💰🌲👇 ")
     pprint("================================")
     pprint("")
@@ -332,7 +333,7 @@ def grants():
     pprint("")
 
     limit = 25
-    pprint(f"Top Contributors by Num Contributions (Round {clr_round})")
+    pprint(f"Top Contributors by Num Contributions")
     counter = 0
     for obj in all_contributors_by_num[0:limit]:
         counter += 1
@@ -343,7 +344,7 @@ def grants():
     pprint("")
 
     counter = 0
-    pprint(f"Top Contributors by Amount of Contributions (Round {clr_round})")
+    pprint(f"Top Contributors by Amount of Contributions")
     for obj in all_contributors_by_amount[0:limit]:
         counter += 1
         pprint(f"{counter} - ${str(round(obj[1], 2))} by @{obj[0]}")
@@ -353,7 +354,7 @@ def grants():
     pprint("")
 
     counter = 0
-    pprint(f"Saturation by Token (Round {clr_round})")
+    pprint(f"Saturation by Token")
     for obj in all_contributions_by_token[0:limit]:
         counter += 1
         pprint(f"{counter} - ${str(round(obj[1], 2))} in {obj[0]}")
@@ -362,22 +363,8 @@ def grants():
     pprint("=======================")
     pprint("")
 
-    # active_rounds = ['tech', 'media', 'change']
-    # from grants.clr import TOTAL_POT_TECH, TOTAL_POT_MEDIA, TOTAL_POT_CHANGE
-    # active_round_threshold = {
-    #     'tech': TOTAL_POT_TECH,
-    #     'media': TOTAL_POT_MEDIA,
-    #     'change': TOTAL_POT_CHANGE,
-    # }
-    # active_round_threshold = {
-    #     'tech': 0,
-    #     'media': 0,
-    #     'change': 0,
-    # }
-
     active_rounds = []
     active_round_threshold = {}
-    active_clr_rounds = GrantCLR.objects.filter(is_active=True)
 
     for active_clr_round in active_clr_rounds:
         grant_type_name = active_clr_round.grant_type.name
