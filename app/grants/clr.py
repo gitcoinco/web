@@ -239,6 +239,7 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
         percentage_increase = np.log(total_pot / bigtot) / 100
         for t in totals:
             t['clr_amount'] = t['clr_amount'] * (1 + percentage_increase)
+
     return totals
 
 
