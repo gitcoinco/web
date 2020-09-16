@@ -5,6 +5,7 @@ from dashboard.tip_views import get_profile
 
 to_username = ''
 from_username = ''
+token_address = '0x0000000000000000000000000000000000000000'
 txid = ''
 token_address = ''
 from_address = ''
@@ -35,5 +36,8 @@ tip = Tip.objects.create(
     metadata={},
     recipient_profile=get_profile(to_username),
     sender_profile=get_profile(from_username),
+    txid=txid,
+    receive_txid=txid,
+    received_on=timezone.now(),
 )
 print(tip.pk)
