@@ -1002,7 +1002,6 @@ next_valid_timestamp: {next_valid_timestamp}
 
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
-        from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, int(self.real_period_seconds))
         self.num_tx_processed += 1
@@ -1027,8 +1026,6 @@ next_valid_timestamp: {next_valid_timestamp}
         self.save()
         grant.updateActiveSubscriptions()
         grant.save()
-        if not self.negative:
-            successful_contribution(self.grant, self, contribution)
         return contribution
 
 
