@@ -1590,30 +1590,49 @@ Vue.component('grants-cart', {
           };
 
           console.log(`Sending remaining ${tokenSymbol} to user's main zkSync wallet...`);
+
+          // The amount returned is the packable version of the amount input. Note that closest
+          // packable amount is strictly less than or equal to the input amount
           const { fee, amount } = await this.getZkSyncFeeAndAmount(transferInfo);
-          const amountAferFee = zksync.utils.closestPackableTransactionAmount(amount.sub(fee));
 
-          // Send transfer
-          const tx = await this.gitcoinSyncWallet.syncTransfer({
-            to: transferInfo.dest,
-            token: transferInfo.name,
-            amount: amountAferFee,
-            fee
-          });
+          // This fee and amount cannot be used directly, because the amount is the full balance.
+          // We now need to subtract the fee from this amount, and must ensure there is
+          // actually enough balance left to send this transfer. Otherwise we do not have enough
+          // balance to cover the transfer fee
+          
+          if (amount.gt(fee)) {
+            // Packed account balance is greater than fee, so we can proceed with transfer
+            const transferAmount = zksync.utils.closestPackableTransactionAmount(amount.sub(fee));
 
-          console.log('  Transfer sent', tx);
+            // Send transfer
+            const tx = await this.gitcoinSyncWallet.syncTransfer({
+              to: transferInfo.dest,
+              token: transferInfo.name,
+              amount: transferAmount,
+              fee
+            });
 
-          // Wait for it to be committed
-          const receipt = await tx.awaitReceipt();
+            console.log('  Transfer sent', tx);
 
-          console.log('  ✅ Got transfer receipt', receipt);
+            // Wait for it to be committed
+            const receipt = await tx.awaitReceipt();
+
+            console.log('  ✅ Got transfer receipt', receipt);
+          
+          } else {
+            console.log('  ❗ Remaining balance is less than the fee, skipping this transfer');
+            continue;
+          }
+
         } catch (e) {
           if (e.message === 'zkSync transaction failed: Not enough balance') {
             // Only dust is left for this token, so skip it
             console.log('  ❗ Only dust left, skipping this transfer');
             continue;
           }
-          throw e;
+          // Everything worked successfully, so let's not throw an error here because the user's
+          // donations did succeed. Instead, there is just small excess funds left in the account
+          console.error(e);
         }
       }
 
@@ -2054,7 +2073,16 @@ Vue.component('grants-cart', {
 
         if (BigNumber.from(ethAmount).gt('0')) {
           // Specify how much ETH to send with transaction
-          overrides.value = await this.getTotalAmountToTransfer('ETH', ethAmount);
+          const ethToDonate = await this.getTotalAmountToTransfer('ETH', ethAmount);
+          const extra = this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === 'ETH')[0];
+
+          if (!extra) {
+            overrides.value = ethToDonate;
+          } else {
+            const additionalAmount = ethers.utils.parseUnits(String(extra.amount), 18);
+
+            overrides.value = ethToDonate.add(additionalAmount);
+          }
         }
 
         const selectedTokens = Object.keys(this.donationsToGrants);
@@ -2079,8 +2107,19 @@ Vue.component('grants-cart', {
               const tokenAddress = tokenDonation.contract._address;
               const tokenName = tokenDonation.tokenName;
               const tokenAmount = await this.getTotalAmountToTransfer(tokenName, tokenDonation.allowance);
+              const extra = this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === tokenName)[0];
+              let totalAmount;
+              
+              if (!extra) {
+                totalAmount = tokenAmount;
+              } else {
+                const decimals = this.getTokenByName(tokenName).decimals;
+                const additionalAmount = ethers.utils.parseUnits(String(extra.amount), decimals);
 
-              deposits.push([ tokenAddress, tokenAmount ]);
+                totalAmount = tokenAmount.add(additionalAmount);
+              }
+
+              deposits.push([ tokenAddress, totalAmount ]);
             }
           }
 
@@ -2168,7 +2207,19 @@ Vue.component('grants-cart', {
           const tokenContract = new web3.eth.Contract(token_abi, tokenDonation.contract._address);
           const userTokenBalance = await tokenContract.methods.balanceOf(this.userAddress).call({from: this.userAddress});
 
-          if (BigNumber.from(userTokenBalance).lt(BigNumber.from(tokenAmount))) {
+          const extra = this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === tokenDonation.tokenName)[0];
+          let totalAmount;
+          
+          if (!extra) {
+            totalAmount = tokenAmount;
+          } else {
+            const decimals = this.getTokenByName(tokenDonation.tokenName).decimals;
+            const additionalAmount = ethers.utils.parseUnits(String(extra.amount), decimals);
+
+            totalAmount = tokenAmount.add(additionalAmount);
+          }
+
+          if (BigNumber.from(userTokenBalance).lt(BigNumber.from(totalAmount))) {
             this.zkSyncCheckoutStep1Status = 'not-started';
             this.zkSyncCheckoutStep2Status = 'not-started';
             this.zkSyncCheckoutStep3Status = 'not-started';
@@ -2178,7 +2229,7 @@ Vue.component('grants-cart', {
 
           console.log('Waiting for user to send deposit transaction...');
           indicateMetamaskPopup();
-          depositTx = await zkSyncContract.depositERC20(tokenDonation.contract._address, tokenAmount, depositRecipient, overrides);
+          depositTx = await zkSyncContract.depositERC20(tokenDonation.contract._address, totalAmount, depositRecipient, overrides);
 
         } else {
           throw new Error('Something went wrong');
