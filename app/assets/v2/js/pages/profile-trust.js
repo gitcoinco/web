@@ -2,15 +2,6 @@ let hasGeneratedBrightIdQRCode = false;
 
 let brightIDCalls = [];
 
-$(document).ready(function() {
-
-  $('.js-upcomingBrightIDCalls-form').each(function() {
-    const formData = objectifySerialized($(this).serializeArray());
-
-    brightIDCalls.push(formData);
-  });
-});
-
 let show_brightid_connect_modal = function(brightid_uuid) {
   const brightIdLink = `https://app.brightid.org/link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${brightid_uuid}`;
   const brightIdAppLink = `brightid://link-verification/http:%2f%2fnode.brightid.org/Gitcoin/${brightid_uuid}`;
@@ -79,18 +70,33 @@ let show_brightid_connect_modal = function(brightid_uuid) {
 let show_brightid_verify_modal = function(brightid_uuid) {
   let callsMarkup = '';
 
+  brightIDCalls = calendarData;
+
+  function dateFormatter(date) {
+    let options = {hour: 'numeric', minute: 'numeric', dayPeriod: 'short'};
+
+    return new Intl.DateTimeFormat('en-US', options).format(new Date(date));
+  }
+
   for (let index = 0; index < brightIDCalls.length; index++) {
     const call = brightIDCalls[index];
     const callDate = new Date(parseFloat(call.date) * 1000);
 
+    let callsDate = call.dates.map((date) => {
+      return `<span>${dateFormatter(date.timeStart)}</span> - <span>${dateFormatter(date.timeEnd)}</span>`;
+    }).join(' <b>&</b> ');
+
     callsMarkup = `${callsMarkup}
         <div class="row mb-3">
           <div class="col-md-8">
-            <strong>${call.title}</strong><br />
-            <span class="font-caption">${callDate.toLocaleString()} ${Intl.DateTimeFormat().resolvedOptions().timeZone}</span>
+            <strong class="d-block">${call.when}</strong>
+            <div class="font-caption">
+              At ${callsDate}
+            </div>
           </div>
+
           <div class="col-md-4 my-auto">
-            <a href="${call.url}" target="_blank" class="btn btn-gc-blue px-4 font-caption font-weight-bold my-auto mx-1">REGISTER</a>
+            <a href="${call.link}" target="_blank" class="btn btn-sm btn-block btn-gc-blue px-4 font-caption font-weight-bold">Register <br> on ${call.platform}</a>
           </div>
         </div>
       `;
@@ -115,15 +121,14 @@ let show_brightid_verify_modal = function(brightid_uuid) {
                 <a href="https://www.brightid.org/" target="_blank">Learn More</a>.
               </p>
               <p>
-                Now that you've connected your BrightID, you need to get verified by
-                by connecting with other real humans.
+                Now that you've connected your BrightID, you need to get verified by connecting with other real humans.
               </p>
               <p>
-                <strong>Join a Gitcoin + BrightID Zoom Community Call</strong><br />
-                <font size="2" color="grey">
-                  You can learn more about how BrightID works and make connections that will help you get verified on the Zooom Community Call.
+                <strong>Join a Gitcoin + BrightID Verification Party</strong><br />
+                <small class="text-muted">
+                  You can learn more about how BrightID works and make connections that will help you get verified on the verifications parties.
                   Register for one of the events.
-                </font>
+                </small>
                 ${callsMarkup}
               </p>
             </div>

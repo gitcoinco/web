@@ -10,14 +10,6 @@
     Trust Bonus ensures that Gitcoin is sybil-resistant, which is important for Quadratic Voting (and many other voting applications in web3!).
     <br>
     To increase your Trust Bonus, here are some steps you can take:
-    {% for call in upcoming_calls %}
-      <form class="js-upcomingBrightIDCalls-form">
-        <input type="hidden" id="id" name="id" value="{{ call.id }}">
-        <input type="hidden" id="title" name="title" value="{{ call.title }}">
-        <input type="hidden" id="date" name="date" value="{{ call.date.timestamp }}">
-        <input type="hidden" id="url" name="url" value="{{ call.url }}">
-      </form>
-    {% endfor %}
     <div class="container mt-4">
 
       <h5>Active Now</h5>
@@ -77,7 +69,7 @@
               </div>
               <div>
                 Verify yourself on BrightID by proving you're human to other humans. Connect
-                with other users and join groups to meet the threshold. 
+                with other users and join groups to meet the threshold.
                 <a href="https://brightid.org">Learn more.</a>
               </div>
             {% elif brightid_status == 'verified' %}
@@ -160,7 +152,10 @@
     </div>
   </div>
 
-
+  {{upcoming_calls | json_script:"calendarData" }}
+  <script>
+    const calendarData = JSON.parse(document.getElementById('calendarData').textContent);
+  </script>
   <script src="{% static "v2/js/lib/vue-tel-input.min.js" %}"></script>
   <script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
 {% endif %}
