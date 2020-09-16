@@ -1704,8 +1704,14 @@ Vue.component('grants-cart', {
      * and the corresponding total amount, after fees, that is needed to cover them.
      */
     async getTotalAmountToTransfer(tokenSymbol, initialAmount) {
-      // Number of transfers that will take place is number of donations, plus one initial transfer
-      const numberOfFees = 1 + this.donationInputs.filter((x) => x.name === tokenSymbol).length;
+      // Number of transfers that will take place is:
+      //   number of donations + 1 initial transfer + 1 final transfer + 1 for margin
+      //
+      // We are intentionally conservative here because we'd rather a user deposit too much
+      // and be successful than too little and fail. The downside to being conservative is that
+      // users are required to have enough margin in their accound balance to accomodate this, but
+      //  that is ok because it's similar to be required to have enough ETH for excess L1 gas limit
+      const numberOfFees = 3 + this.donationInputs.filter((x) => x.name === tokenSymbol).length;
 
       // Transfers to an address that has never used zkSync are more expensive, which is why we
       // use the zero address as the recipient -- this gives us a conservative estimate. We also
