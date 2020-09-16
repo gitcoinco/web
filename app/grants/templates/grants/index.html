@@ -81,12 +81,7 @@ along with this program. If not, see
             <div id="grants-showcase" v-cloak>
               <div class="row" style="max-width: 99vw">
                 <div class="col-12 col-lg-3 col-xl-2 pr-xl-0" id="sidebar_container">
-                  <template v-if="round_num">
-                    {% include 'grants/shared/clr_sidebar_search.html' %}
-                  </template>
-                  <template v-else>
-                    {% include 'grants/shared/sidebar_search.html' %}
-                  </template>
+                  {% include 'grants/shared/sidebar_search.html' %}
                 </div>
 
                 <div class="col-12 col-lg-9 col-xl-10 px-4 px-lg-0">

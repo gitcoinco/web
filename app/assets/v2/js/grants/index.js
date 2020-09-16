@@ -83,7 +83,7 @@ $(document).ready(() => {
 
 Vue.component('grant-sidebar', {
   props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-    'idle_grants', 'show_contributions', 'query_params'
+    'idle_grants', 'show_contributions', 'query_params', 'round_num'
   ],
   data: function() {
     return {
@@ -117,8 +117,8 @@ Vue.component('grant-sidebar', {
       if (params.type === this.type) {
         this.filter_grants(params);
       } else {
-        document.location.href = document.round_num ?
-          `/grants/clr/${document.round_num}?type=${params.type}` :
+        document.location.href = this.round_num ?
+          `/grants/clr/${this.round_num}?type=${params.type}` :
           `/grants/${params.type}`
         ;
       }
@@ -182,11 +182,13 @@ if (document.getElementById('grants-showcase')) {
         this.view = mode;
       },
       setCurrentType: function(currentType, q) {
-        this.current_type = currentType;
-        let round_num = this.round_num;
+        let vm = this;
 
-        if (round_num) {
-          let uri = `/grants/clr/${round_num}/`;
+        this.current_type = currentType;
+
+
+        if (vm.round_num) {
+          let uri = `/grants/clr/${vm.round_num}/`;
 
           if (this.current_type === 'all') {
             window.history.pushState('', '', `${uri}?${q || ''}`);
@@ -312,8 +314,8 @@ if (document.getElementById('grants-showcase')) {
           base_params['only_contributions'] = this.show_contributions;
         }
 
-        if (document.round_num) {
-          base_params['round_num'] = document.round_num;
+        if (vm.round_num) {
+          base_params['round_num'] = vm.round_num;
         }
 
         const params = new URLSearchParams(base_params).toString();
