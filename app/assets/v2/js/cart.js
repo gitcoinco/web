@@ -1570,9 +1570,6 @@ Vue.component('grants-cart', {
         console.log(`  ✅ Got transfer ${i + 1} receipt`, receipt);
       }
 
-      // Save contributions to database
-      await this.postToDatabase(this.gitcoinSyncWallet.cachedAddress, '', this.userAddress);
-
       // Transfer any remaining tokens to user's main wallet ---------------------------------------
       this.zkSyncCheckoutFlowStep += 1; // Done!
       const gitcoinZkSyncState = await this.syncProvider.getState(this.gitcoinSyncWallet.cachedAddress);
@@ -2020,6 +2017,10 @@ Vue.component('grants-cart', {
       // Final steps
 
       this.zkSyncCheckoutFlowStep = 2; // Steps 0 and 1 are skipped here
+
+      // Save contributions to database once transfers to gitcoinSyncWallet are complete
+      await this.postToDatabase(this.gitcoinSyncWallet.cachedAddress, '', this.userAddress);
+
       await this.finishZkSyncTransfersAllFlows();
     },
 
