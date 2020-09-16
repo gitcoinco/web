@@ -159,7 +159,7 @@ def process_grant_contribution(self, grant_id, grant_slug, profile_id, package, 
         # emails to grant owner
         new_supporter(grant, subscription)
         # emails to contributor
-        # subscription.successful_contribution(subscription.new_approve_tx_id);
+        subscription.successful_contribution(subscription.new_approve_tx_id);
         thank_you_for_supporting(grant, subscription)
 
         update_grant_metadata.delay(grant_id)
