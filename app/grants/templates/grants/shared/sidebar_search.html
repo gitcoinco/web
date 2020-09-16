@@ -126,6 +126,8 @@
             <a @click="filterLink({type: 'collections',  category: '', keyword: ''})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword != handle ? 'selected':''}`">
               View Collections <span class="gc-text-green">NEW</span>
             </a>
+          </li>
+          <li>
             <a @click="filterLink({type: 'collections',  keyword: handle})"  :class="`mr-1  px-1  ${ type == 'collections' && keyword == handle ? 'selected':''}`" v-if="handle">
               My Collections <span class="gc-text-green">NEW</span>
             </a>

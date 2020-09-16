@@ -220,8 +220,10 @@ if (document.getElementById('grants-showcase')) {
         if (this.network !== 'mainnet') {
           query_elements['network'] = this.network;
         }
-        if (self.current_type === 'collections' && this.collection_id) {
-          query_elements['collection_id'] = this.collection_id;
+        if (this.current_type === 'collections') {
+          if (this.collection_id) {
+            query_elements['collection_id'] = this.collection_id;
+          }
           this.collections = [];
         }
 

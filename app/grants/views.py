@@ -308,7 +308,7 @@ def bulk_grants_for_cart(request):
 
     return JsonResponse({'grants': grants})
 
-  
+
 def clr_grants(request, round_num):
     """CLR grants explorer."""
 
@@ -392,7 +392,7 @@ def get_grants(request):
 
     grants_array = []
     for grant in grants:
-        grant_json = grant.repr(request.user)
+        grant_json = grant.repr(request.user, request.build_absolute_uri)
         grants_array.append(grant_json)
 
     return JsonResponse({

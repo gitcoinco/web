@@ -28,6 +28,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.timezone import localtime
@@ -576,10 +577,10 @@ class Grant(SuperModel):
             'is_clr_eligible': self.is_clr_eligible
         }
 
-    def repr(self, user):
+    def repr(self, user, build_absolute_uri):
         return {
                 'id': self.id,
-                'logo_url': self.logo.url if self.logo and self.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+                'logo_url': self.logo.url if self.logo and self.logo.url else build_absolute_uri(static(f'v2/images/grants/logos/{self.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(self.id, self.slug)),
                 'title': self.title,
                 'description': self.description,
