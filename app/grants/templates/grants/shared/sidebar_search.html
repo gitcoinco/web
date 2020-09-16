@@ -42,36 +42,46 @@
           {% trans "Filters" as filts %}{{ filts|upper }}
         </div>
 
-      {% if profile %}
-        <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ml-0 pl-0 text-left ${ following ? 'gc-text-blue' : 'text-black'}`">
-          <i :class="following ? 'fas' : 'far'" class="fa-fw fa-star" ></i>
-          Following
-          <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
-        </span>
-      {% endif %}
-      <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold text-decoration-none ml-0 pl-0 text-left ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
-        <i :class="idle_grants ? 'fas' : 'far'" class="fa-fw fa-clock" ></i>
-         Show Idle Grants
-        <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
-      </span>
-      {% if profile %}
-        <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-1 font-weight-semibold ml-0 pl-0 text-decoration-none text-left ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
-          <i :class="show_contributions ? 'fas' : 'far'" class="fa-fw fa-donate" ></i>
-          My Contributions
-          <i v-if="show_contributions" class="fas fa-times font-smaller-4 ml-1"></i>
-        </span>
+        <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
+          {% if profile %}
+            <li>
+              <span @click="toggleFollowing(!following, $event)" :class="`btn btn-link font-smaller-1 text-decoration-none ml-0 pl-0 ${ following ? 'gc-text-blue' : 'text-black'}`">
+                <i :class="following ? 'fas' : 'far'" class="fa-fw fa-star" ></i>
+                Following
+                <i v-if="following" class="fas fa-times font-smaller-4 ml-1"></i>
+              </span>
+            </li>
+          {% endif %}
+          <li>
+            <span @click="toggleIdle(!idle_grants, $event)" :class="`btn btn-link font-smaller-1 text-decoration-none ml-0 pl-0  ${ idle_grants ? 'gc-text-blue' : 'text-black'}`" title="By default, grants that are not updated in 3 months are not shown, unless you select this option.">
+              <i :class="idle_grants ? 'fas' : 'far'" class="fa-fw fa-clock" ></i>
+              Show Idle Grants
+              <i v-if="idle_grants" class="fas fa-times font-smaller-4 ml-1"></i>
+            </span>
+          </li>
+          {% if profile %}
+            <li>
+              <span @click="toggleContributionView(!show_contributions, $event)" :class="`btn btn-link font-smaller-1 ml-0 pl-0 text-decoration-none ${ show_contributions ? 'gc-text-blue' : 'text-black'}`">
+                <i :class="show_contributions ? 'fas' : 'far'" class="fa-fw fa-donate" ></i>
+                My Contributions
+                <i v-if="show_contributions" class="fas fa-times font-smaller-4 ml-1"></i>
+              </span>
+            </li>
+            <li>
+              <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-1 ml-0 pl-0 text-decoration-none " :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
+                <i :class="type === 'me' ? 'fas' : 'far'" class="fa-fw fa-user-alt"></i>
+                My Grants
+                <i v-if="type === 'me'" class="fas fa-times font-smaller-4 ml-1"></i>
+              </span>
+            </li>
+          {% endif %}
+        </ul>
 
-        <span @click="toggleMyGrants(!(type == 'me'), $event)" class="btn btn-link font-smaller-1 font-weight-semibold ml-0 pl-0 text-decoration-none text-left" :class="type === 'me' ? 'gc-text-blue' : 'text-black'">
-          <i :class="type === 'me' ? 'fas' : 'far'" class="fa-fw fa-user-alt"></i>
-          My Grants
-          <i v-if="type === 'me'" class="fas fa-times font-smaller-4 ml-1"></i>
-        </span>
-      {% endif %}
 
         <div class="subheading">
           {% trans "Categories" as cats %}{{ cats|upper }}
         </div>
-        <ul class="nav d-inline-block font-body mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
+        <ul class="nav d-inline-block font-smaller-2 mb-2 grants_nav grants_type_nav pl-0 mb-0 pb-2 mt-2 text-left font-smaller-1 font-weight-semibold">
           <li class="mr-1 ">
             <a :href="`/grants`" data-type="all" data-category="" :class="`mr-1 ${ type == 'all'? 'selected':''}`">
               All Categories
@@ -114,22 +124,22 @@
           </div>
 
           <li>
-            <a @click="set_type('about')" data-type="about" data-category="" :class="`mr-1  px-1  ${ type == 'about'? 'selected':''}`">
+            <a @click="set_type('about')" data-type="about" data-category="" :class="`mr-1  pr-1  ${ type == 'about'? 'selected':''}`">
               About
             </a>
           </li>
           <li>
-            <a @click="set_type('stats')" data-type="stats" data-category="" :class="`mr-1  px-1  ${ type == 'stats'? 'selected':''}`">
+            <a @click="set_type('stats')" data-type="stats" data-category="" :class="`mr-1  pr-1  ${ type == 'stats'? 'selected':''}`">
               Stats
             </a>
           </li>
           <li>
-            <a @click="set_type('activity')" data-type="activity" data-category="" :class="`mr-1  px-1  ${ type == 'activity'? 'selected':''}`">
+            <a @click="set_type('activity')" data-type="activity" data-category="" :class="`mr-1  pr-1  ${ type == 'activity'? 'selected':''}`">
               Activity
             </a>
           </li>
           <li>
-            <a target="new" href='/wiki/grants' class="mr-1 px-1 ">
+            <a target="new" href='/wiki/grants' class="mr-1 pr-1 ">
               FAQ <i class="fas fa-external-link-alt"></i>
             </a>
           </li>
