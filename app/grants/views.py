@@ -143,49 +143,52 @@ def get_stats(round_type):
     results = []
     counter = 0
     for chart in charts:
-        source = chart['db']
-        rankdata = \
-            PivotDataPool(
-               series=
-                [{'options': {
-                   'source': source,
-                    'legend_by': 'key',
-                    'categories': ['created_on'],
-                    'top_n_per_cat': 10,
-                    },
-                  'terms': {
-                    'val': Avg('val'),
-                    }}
-                 ])
-
-        #Step 2: Create the Chart object
-        cht = PivotChart(
-                datasource = rankdata,
-                series_options =
-                  [{'options':{
-                      'type': 'line',
-                      'stacking': False
-                      },
-                    'terms':
-                        ['val']
-
-                }],
-                chart_options =
-                  {'title': {
-                       'text': chart['title']},
-                   'xAxis': {
-                        'title': {
-                           'text': 'Time'}
+        try:
+            source = chart['db']
+            rankdata = \
+                PivotDataPool(
+                   series=
+                    [{'options': {
+                       'source': source,
+                        'legend_by': 'key',
+                        'categories': ['created_on'],
+                        'top_n_per_cat': 10,
                         },
-                    'renderTo':f'container{counter}',
-                    'height': '800px',
-                    'legend': {
-                        'enabled': False,
-                    },
-                    },
-                )
-        results.append(cht)
-        counter += 1
+                      'terms': {
+                        'val': Avg('val'),
+                        }}
+                     ])
+
+            #Step 2: Create the Chart object
+            cht = PivotChart(
+                    datasource = rankdata,
+                    series_options =
+                      [{'options':{
+                          'type': 'line',
+                          'stacking': False
+                          },
+                        'terms':
+                            ['val']
+
+                    }],
+                    chart_options =
+                      {'title': {
+                           'text': chart['title']},
+                       'xAxis': {
+                            'title': {
+                               'text': 'Time'}
+                            },
+                        'renderTo':f'container{counter}',
+                        'height': '800px',
+                        'legend': {
+                            'enabled': False,
+                        },
+                        },
+                    )
+            results.append(cht)
+            counter += 1
+        except:
+            logger.exception(e)
     chart_list_str = ",".join([f'container{i}' for i in range(0, counter)])
     return results, chart_list_str
 
