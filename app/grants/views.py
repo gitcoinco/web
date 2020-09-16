@@ -382,6 +382,8 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
 
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
+    if sort in ['-amount_received_in_round', '-clr_prediction_curve__0__1']:
+        _grants = _grants.filter(is_clr_active=True)
 
     if grant_type == 'me' and profile:
         grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
