@@ -171,10 +171,10 @@
       <div class="grant-item__footer">
           <div class="clr mb-3">
             <div class="match__round pb-1 pt-2 mb-2">
-              <h2 class="title col-12 font-caption g-bold" v-if="grant.clr_round_num">
+              <h2 class="title col-12 font-caption g-bold" v-if="grant.clr_round_num && grant.is_clr_eligible">
                 [[grant.clr_round_num]] CLR MATCH ROUND
               </h2>
-              <h2 class="title col-12 font-caption g-bold" v-if="!grant.clr_round_num">
+              <h2 class="title col-12 font-caption g-bold" v-else>
                 NOT IN AN ACTIVE CLR ROUND
               </h2>
             </div>
@@ -193,9 +193,7 @@
                   [[ get_clr_prediction(0, 1) || 0  | round | formatNumber ]] DAI
                 </h2>
                 <p class="amount mb-2 font-caption font-weight-semibold">
-                  <template v-if="grant.clr_round_num == 'LAST'">Final</template>
-                  <template v-else>Estimated</template>
-                  CLR Match
+                  Estimated CLR Match
                 </p>
               </template>
               <template v-else>
@@ -207,14 +205,9 @@
             </div>
           </div>
 
-          <template v-if="grant.is_clr_active">
-            <div class="col-12 pb-3" v-if="grant.is_clr_eligible">
-              {% include 'grants/components/clr_estimate.html' %}
-            </div>
-            <h2 class="font-subheader text-center amount pt-4 mb-3" style="color:#069953" v-else>
-              NOT ELIGIBLE FOR CLR
-            </h2>
-          </template>
+          <div class="col-12 pb-3" v-if="grant.is_clr_eligible && grant.is_clr_active">
+            {% include 'grants/components/clr_estimate.html' %}
+          </div>
 
           <div class="col-12 pb-4">
             <form class="js-addDetailToCart-form" v-if="!grant.is_on_team">
