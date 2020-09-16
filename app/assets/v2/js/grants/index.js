@@ -83,7 +83,7 @@ $(document).ready(() => {
 
 Vue.component('grant-sidebar', {
   props: [ 'filter_grants', 'grant_types', 'type', 'selected_category', 'keyword', 'following', 'set_type',
-    'idle_grants', 'show_contributions', 'query_params'
+    'idle_grants', 'show_contributions', 'query_params', 'round_num'
   ],
   data: function() {
     return {
@@ -117,7 +117,10 @@ Vue.component('grant-sidebar', {
       if (params.type === this.type) {
         this.filter_grants(params);
       } else {
-        document.location.href = `/grants/${params.type}`;
+        document.location.href = this.round_num ?
+          `/grants/clr/${this.round_num}?type=${params.type}` :
+          `/grants/${params.type}`
+        ;
       }
     },
     searchKeyword: function() {
@@ -167,6 +170,7 @@ if (document.getElementById('grants-showcase')) {
       view: localStorage.getItem('grants_view') || 'grid',
       shortView: true,
       bottom: false,
+      round_num: document.round_num,
       grantsNumPages,
       grantsHasNext,
       numGrants
@@ -178,12 +182,27 @@ if (document.getElementById('grants-showcase')) {
         this.view = mode;
       },
       setCurrentType: function(currentType, q) {
+        let vm = this;
+
         this.current_type = currentType;
 
-        if (this.current_type === 'all') {
-          window.history.pushState('', '', `/grants/?${q || ''}`);
+
+        if (vm.round_num) {
+          let uri = `/grants/clr/${vm.round_num}/`;
+
+          if (this.current_type === 'all') {
+            window.history.pushState('', '', `${uri}?${q || ''}`);
+          } else {
+            window.history.pushState('', '', `${uri}?type=${this.current_type}&${q || ''}`);
+          }
         } else {
-          window.history.pushState('', '', `/grants/${this.current_type}?${q || ''}`);
+          let uri = '/grants/';
+
+          if (this.current_type === 'all') {
+            window.history.pushState('', '', `${uri}?${q || ''}`);
+          } else {
+            window.history.pushState('', '', `${uri}${this.current_type}?${q || ''}`);
+          }
         }
 
         if (this.current_type === 'activity') {
@@ -293,6 +312,10 @@ if (document.getElementById('grants-showcase')) {
 
         if (this.show_contributions) {
           base_params['only_contributions'] = this.show_contributions;
+        }
+
+        if (vm.round_num) {
+          base_params['round_num'] = vm.round_num;
         }
 
         const params = new URLSearchParams(base_params).toString();

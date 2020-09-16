@@ -1540,6 +1540,13 @@ class MatchPledge(SuperModel):
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
     data = JSONField(null=True, blank=True)
+    clr_round_num = models.ForeignKey(
+        'grants.GrantCLR',
+        on_delete=models.CASCADE,
+        help_text=_('Pledge CLR Round.'),
+        null=True,
+        blank=True
+    )
 
     @property
     def data_json(self):

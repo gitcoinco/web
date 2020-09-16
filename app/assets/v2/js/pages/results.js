@@ -145,10 +145,10 @@ $(document).ready(function() {
       });
     }
   });
-  setTimeout(function(){
+  setTimeout(function() {
     $('#leaderboard_nav .nav-link:first-child').click();
 
-    $("#tweets").html(`
+    $('#tweets').html(`
         <div class="row py-1">
           <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
             <blockquote class="twitter-tweet"><p lang="en" dir="ltr">And to <a href="https://twitter.com/owocki?ref_src=twsrc%5Etfw">@owocki</a> and the entire team at <a href="https://twitter.com/gitcoin?ref_src=twsrc%5Etfw">@gitcoin</a> <br><br>Thank you for making it so easy this time! You&#39;re everything that&#39;s good in this world 🌐😍 <a href="https://t.co/bVNIvUem01">pic.twitter.com/bVNIvUem01</a></p>&mdash; Mariano Conti | conti.eth (@nanexcool) <a href="https://twitter.com/nanexcool/status/1275513916714618882?ref_src=twsrc%5Etfw">June 23, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -209,7 +209,7 @@ $(document).ready(function() {
             <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Gitcoin grants quadratic funding is not just for funds allocation, it&#39;s also a great signaling tool!<br><br>For the last few rounds, going to <a href="https://t.co/F4VFg2s7LJ">https://t.co/F4VFg2s7LJ</a> (sort by top match) has led me to discover a lot of really cool Ethereum projects I previously did not know about.</p>&mdash; vitalik.eth (@VitalikButerin) <a href="https://twitter.com/VitalikButerin/status/1243284318987878401?ref_src=twsrc%5Etfw">March 26, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
           </div>
         </div>
-      `)
+      `);
 
-  },5000)
+  }, 5000);
 });
