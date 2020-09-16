@@ -80,7 +80,10 @@
           <template v-for="grant_type in grant_types">
             <li class="mr-1">
               <a @click="filterLink({type: grant_type.keyword, category: ''})"  :data-type="grant_type.keyword" data-category="" :class="`mr-1  ${type == grant_type.keyword ? 'selected' : ''}`">
-                <strong>[[grant_type.funding_ui]]</strong> - [[grant_type.label]] <sup>([[grant_type.count]])</sup>
+                <template v-if="grant_type.funding_ui != '$0k'">
+                  <strong>[[grant_type.funding_ui]]</strong> -
+                </template>
+                [[grant_type.label]] <sup>([[grant_type.count]])</sup>
               </a>
               <a v-b-toggle='grant_type.keyword' href="#example-collapse" @click.prevent class="m-1">
                 <i class="fa fa-fw fa-chevron-up when-open"></i>
