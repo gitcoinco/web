@@ -250,7 +250,7 @@ def grants():
 
     start = active_clr_rounds.first().start_date
     end = active_clr_rounds.first().end_date
-    day = (datetime.now() - start).days
+    day = (timezone.now() - start).days
     pprint("")
     pprint("================================")
     pprint(f"== BEEP BOOP BOP ⚡️          ")
@@ -411,8 +411,6 @@ def grants():
     # all contributions export
     ############################################################################3
 
-    start = next_round_start
-    end = round_end
     export = False
     if export:
         contributions = Contribution.objects.filter(created_on__gt=start, created_on__lt=end, success=True, subscription__network='mainnet')[0:100]
