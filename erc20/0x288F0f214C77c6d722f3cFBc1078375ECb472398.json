@@ -1,0 +1,18 @@
+{
+  "symbol": "GST",
+  "address": "0x288F0f214C77c6d722f3cFBc1078375ECb472398",
+  "overview":{
+        "en": "",
+        "zh": "GST是一种基于黄金与相关金融产业生态的链式生态系统，它服务于黄金上下游产业和科技金融，并基于区块链技术搭建用于专业的数字化结算。TOKEN总量2140万枚，永不增发。"
+  },
+  "email": "cs@gmhg.uk",
+  "website": "http://www.gmhg.uk",
+  "state": "NORMAL",
+  "published_on": "2020-09-12",
+  "initial_price":{
+        "USDT":"0.7 USDT",
+  },
+  "links": {
+    "gmhg": "http://www.gmhg.uk/gst/"
+  }
+}
