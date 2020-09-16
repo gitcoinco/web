@@ -283,8 +283,11 @@ def grants():
                 except Exception as e:
                     pass
                 if usdt_amount < discount_cart_amounts_over_this_threshold_usdt_as_insincere_trolling:
-                    amount_in_carts[currency][0] += float(amount)
-                    amount_in_carts[currency][1] += float(usdt_amount)
+                    try:
+                        amount_in_carts[currency][0] += float(amount)
+                        amount_in_carts[currency][1] += float(usdt_amount)
+                    except:
+                        pass
 
     contributors = len(set(list(contributions.values_list('subscription__contributor_profile', flat=True)) + list(pfs.values_list('profile', flat=True))))
     amount = sum([float(contrib.subscription.amount_per_period_usdt) for contrib in contributions] + [float(pf.value) for pf in pfs])
@@ -365,16 +368,16 @@ def grants():
 
     active_rounds = []
     active_round_threshold = {}
+    active_rounds_allocation = {}
 
     for active_clr_round in active_clr_rounds:
-        grant_type_name = active_clr_round.grant_type.name
+        key = active_clr_round.round_num
 
-        active_round_threshold[grant_type_name] = active_clr_round.total_pot
-        active_rounds.append(grant_type_name)
+        active_round_threshold[key] = active_clr_round.total_pot
+        active_rounds_allocation[key] = 0
+        active_rounds.append(key)
 
-    active_rounds_allocation = {key: 0 for key in active_rounds}
-    for ar in active_rounds:
-        grants = Grant.objects.filter(active=True, grant_type__name=ar, is_clr_eligible=True, hidden=False)
+        grants = active_clr_round.grants.filter(active=True, is_clr_eligible=True, hidden=False)
         for grant in grants:
             try:
                 active_rounds_allocation[ar] += grant.clr_prediction_curve[0][1]
