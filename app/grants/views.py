@@ -744,8 +744,8 @@ def grant_details(request, grant_id, grant_slug):
             )
 
         increment_view_count.delay([grant.pk], grant.content_type, request.user.id, 'individual')
-        subscriptions = grant.subscriptions.filter(active=True, error=False, is_postive_vote=True).order_by('-created_on')
-        cancelled_subscriptions = grant.subscriptions.filter(active=False, error=False, is_postive_vote=True).order_by('-created_on')
+        subscriptions = grant.subscriptions.none()
+        cancelled_subscriptions = grant.subscriptions.none()
 
         activity_count = grant.contribution_count
         contributors = []
@@ -766,13 +766,12 @@ def grant_details(request, grant_id, grant_slug):
                     [f'All {title} Summary Last 90 Days', get_grant_sybil_profile(None, 90 * 24, None, index_on=item)],
                 ]
         if tab in ['transactions', 'contributors']:
-            _contributions = Contribution.objects.filter(subscription__in=grant.subscriptions.all().cache(timeout=60)).cache(timeout=60)
-            negative_contributions = _contributions.filter(subscription__is_postive_vote=False)
-            _contributions = _contributions.filter(subscription__is_postive_vote=True)
-            phantom_funds = grant.phantom_funding.all().cache(timeout=60)
+            _contributions = Contribution.objects.filter(subscription__grant=grant, subscription__is_postive_vote=True).prefetch_related('subscription', 'subscription__contributor_profile')
+            #phantom_funds = grant.phantom_funding.all().cache(timeout=60)
             contributions = list(_contributions.order_by('-created_on'))
-            voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
-            contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
+            #voucher_fundings = [ele.to_mock_contribution() for ele in phantom_funds.order_by('-created_on')]
+            if tab == 'contributors':
+                contributors = list(_contributions.distinct('subscription__contributor_profile')) + list(phantom_funds.distinct('profile'))
             activity_count = len(cancelled_subscriptions) + len(contributions)
         user_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True).first()
         user_non_errored_subscription = grant.subscriptions.filter(contributor_profile=profile, active=True, error=False).first()

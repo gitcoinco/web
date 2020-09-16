@@ -594,7 +594,7 @@ class Subscription(SuperModel):
         help_text=_('The tx id of the split transfer'),
         blank=True,
     )
-    is_postive_vote = models.BooleanField(default=True, help_text=_('Whether this is positive or negative vote'))
+    is_postive_vote = models.BooleanField(default=True, db_index=True, help_text=_('Whether this is positive or negative vote'))
     split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
 
     subscription_hash = models.CharField(
@@ -1449,6 +1449,8 @@ def presave_contrib(sender, instance, **kwargs):
         'logo': grant.logo.url if grant.logo else None,
         'url': grant.url,
         'title': grant.title,
+        'amount_per_period_minus_gas_price': float(instance.subscription.amount_per_period_minus_gas_price),
+        'amount_per_period_to_gitcoin': float(instance.subscription.amount_per_period_to_gitcoin),
         'created_on': ele.created_on.strftime('%Y-%m-%d'),
         'frequency': int(sub.frequency),
         'frequency_unit': sub.frequency_unit,

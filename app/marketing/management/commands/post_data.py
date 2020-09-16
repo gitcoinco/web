@@ -373,16 +373,16 @@ def grants():
     for active_clr_round in active_clr_rounds:
         key = active_clr_round.round_num
 
-        active_round_threshold[key] = active_clr_round.total_pot
+        active_round_threshold[key] = float(active_clr_round.total_pot)
         active_rounds_allocation[key] = 0
         active_rounds.append(key)
 
         grants = active_clr_round.grants.filter(active=True, is_clr_eligible=True, hidden=False)
         for grant in grants:
             try:
-                active_rounds_allocation[ar] += grant.clr_prediction_curve[0][1]
-            except:
-                pass
+                active_rounds_allocation[key] += float(grant.clr_prediction_curve[0][1])
+            except Exception as e:
+                print(e)
 
     counter = 0
     pprint(f"Total Saturation of Matching Funds By Round Type (Round {clr_round})")
