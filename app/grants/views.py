@@ -398,7 +398,7 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     _grants.first()
 
     if not idle_grants:
-        _grants = _grants.filter(modified_on__gt=three_months_ago)
+        _grants = _grants.filter(last_update__gt=three_months_ago)
 
     if state == 'active':
         _grants = _grants.active()
