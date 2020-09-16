@@ -83,7 +83,11 @@ Vue.component('grants-cart', {
       display_email_option: false,
       countDownActive: false,
       // BrightID
-      isBrightIDVerified: false
+      isBrightIDVerified: false,
+      // Collection
+      showCreateCollection: false,
+      collectionTitle: '',
+      collectionDescription: ''
     };
   },
 
@@ -2250,13 +2254,43 @@ Vue.component('grants-cart', {
       // Final processing
       await this.setInterruptStatus(null, this.userAddress);
       await this.finalizeCheckout();
-    }
+    },
 
 
     // =============================================================================================
     // ==================================== END ZKSYNC METHODS =====================================
     // =============================================================================================
+    createCollection: async function() {
+      const csrfmiddlewaretoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const cart = CartData.loadCart();
+      const grantIds = cart.map(grant => grant.grant_id);
+      let response;
 
+      const body = {
+        collectionTitle: this.collectionTitle,
+        collectionDescription: this.collectionDescription,
+        grants: grantIds
+      };
+
+      try {
+
+        response = await fetchData('/grants/v1/api/collections/new', 'POST', body, {'X-CSRFToken': csrfmiddlewaretoken});
+        const redirect = `/grants/collections?collection_id=${response.collection.id}`;
+
+        _alert('Congratulations, your new collection was created successfully!', 'success');
+        this.cleanCollectionModal();
+        this.showCreateCollection = false;
+
+        window.location = redirect;
+
+      } catch (e) {
+        _alert(e.msg, 'error');
+      }
+    },
+    cleanCollectionModal: function() {
+      this.collectionTitle = '';
+      this.collectionDescription = '';
+    }
   },
 
   watch: {

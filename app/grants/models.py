@@ -22,11 +22,13 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.timezone import localtime
 from django.utils.translation import gettext_lazy as _
@@ -37,7 +39,7 @@ from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel, Token
 from economy.utils import ConversionRateNotFoundError, convert_amount
 from gas.utils import eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from grants.utils import get_upload_filename
+from grants.utils import get_upload_filename, is_grant_team_member
 from townsquare.models import Favorite
 from web3 import Web3
 
@@ -565,6 +567,44 @@ class Grant(SuperModel):
         web3 = get_web3(self.network)
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
+
+    def repr(self, user):
+        return {
+                'id': self.id,
+                'logo_url': self.logo.url if self.logo and self.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+                'details_url': reverse('grants:details', args=(self.id, self.slug)),
+                'title': self.title,
+                'description': self.description,
+                'last_update': self.last_update,
+                'last_update_natural': naturaltime(self.last_update),
+                'sybil_score': self.sybil_score,
+                'weighted_risk_score': self.weighted_risk_score,
+                'is_clr_active': self.is_clr_active,
+                'clr_round_num': self.clr_round_num,
+                'admin_profile': {
+                    'url': self.admin_profile.url,
+                    'handle': self.admin_profile.handle,
+                    'avatar_url': self.admin_profile.avatar_url
+                },
+                'favorite': self.favorite(user) if user.is_authenticated else False,
+                'is_on_team': is_grant_team_member(self, user.profile) if user.is_authenticated else False,
+                'clr_prediction_curve': self.clr_prediction_curve,
+                'last_clr_calc_date':  naturaltime(self.last_clr_calc_date) if self.last_clr_calc_date else None,
+                'safe_next_clr_calc_date': naturaltime(self.safe_next_clr_calc_date) if self.safe_next_clr_calc_date else None,
+                'amount_received_in_round': self.amount_received_in_round,
+                'positive_round_contributor_count': self.positive_round_contributor_count,
+                'monthly_amount_subscribed': self.monthly_amount_subscribed,
+                'is_clr_eligible': self.is_clr_eligible,
+                'slug': self.slug,
+                'url': self.url,
+                'contract_version': self.contract_version,
+                'contract_address': self.contract_address,
+                'token_symbol': self.token_symbol,
+                'admin_address': self.admin_address,
+                'token_address': self.token_address,
+                'image_css': self.image_css,
+                'verified': self.twitter_verified,
+            }
 
     def favorite(self, user):
         return Favorite.objects.filter(user=user, grant=self).exists()
@@ -1622,3 +1662,38 @@ class CartActivity(SuperModel):
 
     def __str__(self):
         return f'{self.action} {self.grant.id if self.grant else "bulk"} from the cart {self.profile.handle}'
+
+
+class GrantCollections(SuperModel):
+    grants = models.ManyToManyField(blank=True, to=Grant, help_text=_('References to grants related to this collection'))
+    profile = models.ForeignKey('dashboard.Profile', help_text=_('Owner of the collection'), related_name='curator', on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, help_text=_('Name of the collection'))
+    description = models.TextField(default='', blank=True, help_text=_('The description of the collection'))
+    cover = models.ImageField(upload_to=get_upload_filename, null=True,blank=True, max_length=500, help_text=_('Collection image'))
+    hidden = models.BooleanField(default=False, help_text=_('Hide the collection'), db_index=True)
+
+    def keyword(self, keyword):
+        if not keyword:
+            return self
+        return self.filter(
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
+            Q(profile__handle__icontains=keyword)
+        )
+
+
+    def to_json_dict(self):
+        return {
+            'id': self.id,
+            'curator': {
+                'url': self.profile.url,
+                'handle': self.profile.handle,
+                'avatar_url': self.profile.avatar_url
+            },
+            'title': self.title,
+            'description': self.description,
+            'cover': self.cover.url if self.cover else ''
+        }
+
+    def update_cover(self):
+        pass

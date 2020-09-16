@@ -441,6 +441,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                             Standard Checkout
                           </button>
                         </div>
+                        <div class="col-auto text-center">
+                          <button class="btn btn-outline-gc-blue shadow-none py-3 mt-1" id='js-createCollection-button' @click="showCreateCollection = true">
+                            Create Collection
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -529,12 +534,47 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
               </template>
             </b-modal>
 
+          {% comment %} Create Collection Modal {% endcomment %}
+            <b-modal id="createCollection" @hide="showCreateCollection = false" :visible="showCreateCollection" center hide-header hide-footer>
+              <template v-slot:modal-header="{ close }">
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  @click="showCreateCollection = false"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </template>
+              <template>
+                <div class="mx-5 my-5 ">
+                  <div class="mb-3 text-center">
+                    <h1 class="mb-5 font-bigger-4 font-weight-bold">Save Cart as Collection</h1>
+                  </div>
+                  <div class="mb-3">
+                    <p class="font-subheader">Collection Name.</p>
+                    <b-form-input v-model="collectionTitle" placeholder="What would your collection be called?"></b-form-input>
+                  </div>
+                  <div class="mb-3">
+                    <p class="font-subheader">Description (Optional)</p>
+                    <b-form-textarea rows="3" max-rows="6" :state=" collectionDescription.length == 0 ? null : collectionDescription.length < 140" v-model="collectionDescription" placeholder="Short description about your collection"></b-form-textarea>
+                    <p class="text-right">[[ collectionDescription.length ]]/140</p>
+                  </div>
+
+                  <b-button @click="createCollection()" class="btn-gc-blue mt-2 mb-2" size="lg" :disabled="collectionTitle.length < 3 || collectionDescription.length > 140">Save as Collection</b-button>
+                  <br>
+                </div>
+              </template>
+            </b-modal>
+
+
             {% comment %} ========================================================= {% endcomment %}
             {% comment %} ================== START ZKSYNC MODAL =================== {% endcomment %}
             {% comment %} ========================================================= {% endcomment %}
 
-            <b-modal id="zksync-modal" :visible="showZkSyncModal" @hide="showZkSyncModal = false" 
-              class="modal-dialog modal-lg" header-border-variant="transparent" 
+            <b-modal id="zksync-modal" :visible="showZkSyncModal" @hide="showZkSyncModal = false"
+              class="modal-dialog modal-lg" header-border-variant="transparent"
               center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
             >
               <template v-slot:modal-header="{ close }">
@@ -570,7 +610,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       </h1>
                     </div>
                     {% comment %} Body {% endcomment %}
-                    <div v-if="zkSyncCheckoutStep2Status !== 'not-started'" 
+                    <div v-if="zkSyncCheckoutStep2Status !== 'not-started'"
                       class="mt-4 p-2 text-left font-smaller-1" style="background-color: #FFF6CF; width: 100%;"
                     >
                       {% comment %} Status updates for user {% endcomment %}
@@ -634,7 +674,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       </span>
                     </p>
                     <p v-else class="mt-4 text-left">
-                      You started checking out with zkSync but never completed the process. 
+                      You started checking out with zkSync but never completed the process.
                       You must complete this checkout before proceeding with any other checkouts.
                       Please follow the prompts below to complete the process.
                     </p>
@@ -645,7 +685,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     <div class="row justify-content-end font-smaller-1 font-weight-semibold text-highlight-dark-blue">
                       <div @click="showAdvancedSettings = !showAdvancedSettings" class="col-auto" style="cursor: pointer;">
                         Advanced settings <i class="ml-1 fas fa-cog"></i>
-                      </div> 
+                      </div>
                     </div>
                     <div v-if="showAdvancedSettings" class="p-3 text-left" style="background-color: #F1F1F1; width: 100%;">
                       <div>
@@ -706,7 +746,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep1Status === 'not-started'" 
+                        <button v-if="zkSyncCheckoutStep1Status === 'not-started'"
                           class="btn btn-gc-blue button--full shadow-none" @click="zkSyncLoginGitcoinFlow"
                         >
                           Sign in
@@ -737,8 +777,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep2Status === 'not-started'" 
-                          :disabled="zkSyncCheckoutStep1Status !== 'complete'" class="btn btn-gc-blue button--full shadow-none" 
+                        <button v-if="zkSyncCheckoutStep2Status === 'not-started'"
+                          :disabled="zkSyncCheckoutStep1Status !== 'complete'" class="btn btn-gc-blue button--full shadow-none"
                           @click="zkSyncBeginStep2"
                         >
                           <span v-if="hasSufficientZkSyncBalance">Sign in</span>
@@ -775,14 +815,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted" 
-                          :disabled="zkSyncCheckoutStep2Status === 'not-started'" 
+                        <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted"
+                          :disabled="zkSyncCheckoutStep2Status === 'not-started'"
                           class="btn btn-gc-blue button--full shadow-none" @click="zkSyncBeginStep3"
                         >
                           Confirm
                         </button>
-                        <button v-else-if="zkSyncCheckoutStep3Status === 'not-started' && zkSyncWasInterrupted" 
-                          :disabled="zkSyncCheckoutStep2Status === 'not-started'" 
+                        <button v-else-if="zkSyncCheckoutStep3Status === 'not-started' && zkSyncWasInterrupted"
+                          :disabled="zkSyncCheckoutStep2Status === 'not-started'"
                           class="btn btn-gc-blue button--full shadow-none" @click="resumeZkSyncDonation"
                         >
                           Confirm
@@ -805,7 +845,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </div>
               </template>
             </b-modal>
-                        
+
             {% comment %} ========================================================= {% endcomment %}
             {% comment %} =================== END ZKSYNC MODAL ==================== {% endcomment %}
             {% comment %} ========================================================= {% endcomment %}

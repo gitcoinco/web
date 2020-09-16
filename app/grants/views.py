@@ -44,7 +44,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 
 import requests
 import tweepy
@@ -65,7 +65,7 @@ from economy.utils import convert_amount
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from grants.models import (
     CartActivity, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
-    Subscription,
+    Subscription, GrantCollections,
 )
 from grants.utils import emoji_codes, get_leaderboard, get_user_code, is_grant_team_member
 from inbox.utils import send_notification_to_user_from_gitcoinbot
@@ -260,8 +260,17 @@ def grants(request):
     _type = request.GET.get('type', 'all')
     return grants_by_grant_type(request, _type)
 
+def get_collections(user, sort, keyword):
+    _collections = GrantCollections.objects.filter(hidden=False)
+    _collections = _collections.keyword(keyword).order_by(sort, 'pk')
+    _collections = _collections.prefetch_related('grants')
+
+    return _collections
+
 
 def get_grants(request):
+    grants = []
+    collections = []
     grant_type = request.GET.get('type', 'all')
 
     limit = request.GET.get('limit', 6)
@@ -275,7 +284,6 @@ def get_grants(request):
     following = request.GET.get('following', '') != ''
     only_contributions = request.GET.get('only_contributions', '') == 'true'
 
-
     filters = {
         'request': request,
         'grant_type': grant_type,
@@ -288,10 +296,15 @@ def get_grants(request):
         'idle_grants': idle_grants,
         'only_contributions': only_contributions
     }
-    _grants = build_grants_by_type(**filters)
 
-    paginator = Paginator(_grants, limit)
-    grants = paginator.get_page(page)
+    if grant_type == 'collections':
+        _collections = get_collections(user, sort, keyword)
+        paginator = Paginator(_collections, limit)
+        collections = paginator.get_page(page)
+    else:
+        _grants = build_grants_by_type(**filters)
+        paginator = Paginator(_grants, limit)
+        grants = paginator.get_page(page)
 
     contributions = Contribution.objects.none()
     if request.user.is_authenticated:
@@ -315,42 +328,7 @@ def get_grants(request):
 
     grants_array = []
     for grant in grants:
-        grant_json = {
-                'id': grant.id,
-                'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
-                'details_url': reverse('grants:details', args=(grant.id, grant.slug)),
-                'title': grant.title,
-                'description': grant.description,
-                'last_update': grant.last_update,
-                'last_update_natural': naturaltime(grant.last_update),
-                'sybil_score': grant.sybil_score,
-                'weighted_risk_score': grant.weighted_risk_score,
-                'is_clr_active': grant.is_clr_active,
-                'clr_round_num': grant.clr_round_num,
-                'admin_profile': {
-                    'url': grant.admin_profile.url,
-                    'handle': grant.admin_profile.handle,
-                    'avatar_url': grant.admin_profile.avatar_url
-                },
-                'favorite': grant.favorite(request.user) if request.user.is_authenticated else False,
-                'is_on_team': is_grant_team_member(grant, request.user.profile) if request.user.is_authenticated else False,
-                'clr_prediction_curve': grant.clr_prediction_curve,
-                'last_clr_calc_date':  naturaltime(grant.last_clr_calc_date) if grant.last_clr_calc_date else None,
-                'safe_next_clr_calc_date': naturaltime(grant.safe_next_clr_calc_date) if grant.safe_next_clr_calc_date else None,
-                'amount_received_in_round': grant.amount_received_in_round,
-                'positive_round_contributor_count': grant.positive_round_contributor_count,
-                'monthly_amount_subscribed': grant.monthly_amount_subscribed,
-                'is_clr_eligible': grant.is_clr_eligible,
-                'slug': grant.slug,
-                'url': grant.url,
-                'contract_version': grant.contract_version,
-                'contract_address': grant.contract_address,
-                'token_symbol': grant.token_symbol,
-                'admin_address': grant.admin_address,
-                'token_address': grant.token_address,
-                'image_css': grant.image_css,
-                'verified': grant.twitter_verified,
-            }
+        grant_json = grant.repr(request.user)
 
         grants_array.append(grant_json)
 
@@ -359,6 +337,7 @@ def get_grants(request):
         'current_type': grant_type,
         'category': category,
         'grants': grants_array,
+        'collections': [collection.to_json_dict() for collection in collections],
         'credentials': {
             'is_staff': request.user.is_staff,
             'is_authenticated': request.user.is_authenticated
@@ -1835,4 +1814,54 @@ def verify_grant(request, grant_id):
         'has_code': has_code,
         'has_text': has_text,
         'account': grant.twitter_handle_1
+    })
+
+
+@login_required
+@require_POST
+def save_collection(request):
+    title = request.POST.get('collectionTitle')
+    description = request.POST.get('collectionDescription')
+    grant_ids = request.POST.getlist('grants[]')
+    profile = request.user.profile
+    grant_ids = [int(grant_id) for grant_id in grant_ids]
+
+    if len(grant_ids) == 0:
+        return JsonResponse({
+            'ok': False,
+            'msg': 'We can\'t create empty collections'
+
+        }, status=422)
+    kwargs = {
+        'title': title,
+        'description': description,
+        'profile': profile,
+    }
+
+    collection = GrantCollections.objects.create(**kwargs)
+    collection.grants.set(grant_ids)
+
+    return JsonResponse({
+        'ok': True,
+        'collection': {
+            'id': collection.id,
+            'title': title,
+        }
+    })
+
+
+def get_collection(request, collection_id):
+    collection = GrantCollections.objects.get(pk=collection_id)
+
+    grants = [grant.repr(request.user) for grant in collection.grants]
+
+    return JsonResponse({
+        'id': collection.id,
+        'title': collection.title,
+        'grants': grants,
+        'curator': {
+            'url': collection.profile.url,
+            'handle': collection.profile.handle,
+            'avatar_url': collection.profile.avatar_url
+        },
     })
