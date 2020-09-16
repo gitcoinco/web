@@ -1334,12 +1334,14 @@ class Contribution(SuperModel):
                 self.validator_passed = True
                 self.validator_comment = 'zkSync with L1 deposit'
                 self.split_tx_confirmed = True
+                self.success = True
 
             elif case_number == 3:
                 # If Case 3, the split_tx_id field hold the address
                 gitcoin_zksync_addr = self.split_tx_id
                 self.originated_address = self.subscription.contributor_address
                 self.validator_passed = True
+                self.success = True
                 self.validator_comment = 'zkSync only'
                 self.split_tx_confirmed = True
 
