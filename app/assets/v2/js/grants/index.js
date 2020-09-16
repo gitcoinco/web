@@ -203,6 +203,7 @@ if (document.getElementById('grants-showcase')) {
         }
         if (self.current_type === 'collections' && this.collection_id) {
           query_elements['collection_id'] = this.collection_id;
+          this.collections = [];
         }
 
         return $.param(query_elements);
