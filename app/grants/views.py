@@ -318,7 +318,7 @@ def get_grants(request):
     for grant in grants:
         grant_json = {
                 'id': grant.id,
-                'logo_url': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{grant.id % 3}.png',
+                'logo_url': grant.logo.url if grant.logo and grant.logo.url else request.build_absolute_uri(static(f'v2/images/grants/logos/{grant.id % 3}.png')),
                 'details_url': reverse('grants:details', args=(grant.id, grant.slug)),
                 'title': grant.title,
                 'description': grant.description,
