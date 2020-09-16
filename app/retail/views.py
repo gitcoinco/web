@@ -1333,6 +1333,10 @@ def twitter(request):
     return redirect('http://twitter.com/gitcoin')
 
 
+def telegram(request):
+    return redirect('https://t.me/joinchat/DwEd_xps7gJqWt-Quf-tPA')
+
+
 def fb(request):
     return redirect('https://www.facebook.com/GetGitcoin/')
 
