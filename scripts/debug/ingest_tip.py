@@ -1,4 +1,5 @@
 from django.utils import timezone
+
 from dashboard.models import Profile, Tip
 from dashboard.tip_views import get_profile
 
