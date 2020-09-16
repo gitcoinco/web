@@ -28,7 +28,7 @@ from django.utils.safestring import mark_safe
 import twitter
 from grants.models import (
     CartActivity, CLRMatch, Contribution, Flag, Grant, GrantCategory, GrantCLR, GrantType, MatchPledge, PhantomFunding,
-    Subscription,
+    Subscription, GrantCollections,
 )
 
 
@@ -355,9 +355,13 @@ class GrantCategoryAdmin(admin.ModelAdmin):
     readonly_fields = ['pk']
 
 
-
 class GrantCLRAdmin(admin.ModelAdmin):
     list_display = ['pk', 'round_num', 'start_date', 'end_date','is_active']
+
+
+class GrantCollectionsAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'title', 'description', 'hidden', 'cache']
+    raw_id_fields = ['profile', 'grants']
 
 
 admin.site.register(PhantomFunding, PhantomFundingAdmin)
@@ -371,3 +375,5 @@ admin.site.register(CartActivity, CartActivityAdmin)
 admin.site.register(GrantType, GrantTypeAdmin)
 admin.site.register(GrantCategory, GrantCategoryAdmin)
 admin.site.register(GrantCLR, GrantCLRAdmin)
+admin.site.register(GrantCollections, GrantCollectionsAdmin)
+

@@ -260,21 +260,20 @@ def grants(request):
     _type = request.GET.get('type', 'all')
     return grants_by_grant_type(request, _type)
 
-def get_collections(user, sort, keyword):
+
+def get_collections(user, keyword, sort='-modified_on', collection_id=None):
     _collections = GrantCollections.objects.filter(hidden=False)
+    if collection_id:
+        _collections = _collections.filter(pk=int(collection_id))
+
     _collections = _collections.keyword(keyword).order_by(sort, 'pk')
     _collections = _collections.prefetch_related('grants')
 
     return _collections
 
 
-def get_grants(request):
-    grants = []
-    collections = []
+def bulk_grants_for_cart(request):
     grant_type = request.GET.get('type', 'all')
-
-    limit = request.GET.get('limit', 6)
-    page = request.GET.get('page', 1)
     sort = request.GET.get('sort_option', 'weighted_shuffle')
     network = request.GET.get('network', 'mainnet')
     keyword = request.GET.get('keyword', '')
@@ -294,13 +293,53 @@ def get_grants(request):
         'category': category,
         'following': following,
         'idle_grants': idle_grants,
+        'only_contributions': only_contributions,
+        'omit_my_grants': True
+    }
+    _grants = build_grants_by_type(**filters)
+    grants = []
+
+    for grant in _grants:
+        grants.append(grant.cart_payload())
+
+    return JsonResponse({'grants': grants})
+
+
+def get_grants(request):
+    grants = []
+    collections = []
+    grant_type = request.GET.get('type', 'all')
+
+    limit = request.GET.get('limit', 6)
+    page = request.GET.get('page', 1)
+    collections_page = request.GET.get('collections_page', 1)
+    sort = request.GET.get('sort_option', 'weighted_shuffle')
+    network = request.GET.get('network', 'mainnet')
+    keyword = request.GET.get('keyword', '')
+    state = request.GET.get('state', 'active')
+    category = request.GET.get('category', '')
+    idle_grants = request.GET.get('idle', '') == 'true'
+    following = request.GET.get('following', '') != ''
+    only_contributions = request.GET.get('only_contributions', '') == 'true'
+    collection_id = request.GET.get('collection_id', '')
+
+    filters = {
+        'request': request,
+        'grant_type': grant_type,
+        'sort': sort,
+        'network': network,
+        'keyword': keyword,
+        'state': state,
+        'category': category,
+        'following': following,
+        'idle_grants': idle_grants,
         'only_contributions': only_contributions
     }
 
     if grant_type == 'collections':
-        _collections = get_collections(user, sort, keyword)
+        _collections = get_collections(request.user, keyword, collection_id=collection_id)
         paginator = Paginator(_collections, limit)
-        collections = paginator.get_page(page)
+        collections = paginator.get_page(collections_page)
     else:
         _grants = build_grants_by_type(**filters)
         paginator = Paginator(_grants, limit)
@@ -350,7 +389,7 @@ def get_grants(request):
 
 
 def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', network='mainnet', keyword='', state='active',
-                         category='', following=False, idle_grants=False, only_contributions=False):
+                         category='', following=False, idle_grants=False, only_contributions=False, omit_my_grants=False):
     print(" " + str(round(time.time(), 2)))
 
     sort_by_clr_pledge_matching_amount = None
@@ -361,7 +400,11 @@ def build_grants_by_type(request, grant_type='', sort='weighted_shuffle', networ
     if 'match_pledge_amount_' in sort:
         sort_by_clr_pledge_matching_amount = int(sort.split('amount_')[1])
 
-    if grant_type == 'me' and profile:
+    if omit_my_grants and profile:
+        grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
+                    list(profile.grant_admin.all().values_list('pk', flat=True))
+        _grants = _grants.exclude(id__in=grants_id)
+    elif grant_type == 'me' and profile:
         grants_id = list(profile.grant_teams.all().values_list('pk', flat=True)) + \
                     list(profile.grant_admin.all().values_list('pk', flat=True))
         _grants = _grants.filter(id__in=grants_id)
@@ -483,6 +526,7 @@ def grants_by_grant_type(request, grant_type):
     following = request.GET.get('following', '') == 'true'
     idle_grants = request.GET.get('idle', '') == 'true'
     only_contributions = request.GET.get('only_contributions', '') == 'true'
+    collection_id = request.GET.get('collection_id', '')
 
     if keyword:
         category = ''
@@ -629,7 +673,8 @@ def grants_by_grant_type(request, grant_type):
         'grants_following': grants_following,
         'following': following,
         'idle_grants': idle_grants,
-        'only_contributions': only_contributions
+        'only_contributions': only_contributions,
+        'collection_id': collection_id
     }
 
     # log this search, it might be useful for matching purposes down the line
@@ -1840,6 +1885,7 @@ def save_collection(request):
 
     collection = GrantCollections.objects.create(**kwargs)
     collection.grants.set(grant_ids)
+    collection.generate_cache()
 
     return JsonResponse({
         'ok': True,
@@ -1853,7 +1899,7 @@ def save_collection(request):
 def get_collection(request, collection_id):
     collection = GrantCollections.objects.get(pk=collection_id)
 
-    grants = [grant.repr(request.user) for grant in collection.grants]
+    grants = [grant.cart_payload() for grant in collection.grants.all()]
 
     return JsonResponse({
         'id': collection.id,

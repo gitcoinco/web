@@ -2,6 +2,11 @@
 
     <div class="container-fluid grants-container">
       <div class="container">
+        <div class="infinite-container row" @scroll.passive="onScroll($event)" v-if="collections">
+          <div :class="`col-12 col-md-6 col-xl-4 mb-4 infinite-item grant-card`" v-for="(collection, id) in collections">
+            {% include 'grants/components/collection.html' %}
+          </div>
+        </div>
         <div class="infinite-container row" @scroll.passive="onScroll($event)" v-if="grants">
           <div :class="`col-12 ${view == 'grid' ? 'col-md-6 col-xl-4' : ''} mb-4 infinite-item grant-card`" v-for="(grant, id) in grants">
             <a class="text-decoration-none" :href="grant.details_url">

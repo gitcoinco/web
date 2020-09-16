@@ -568,6 +568,23 @@ class Grant(SuperModel):
         grant_contract = web3.eth.contract(Web3.toChecksumAddress(self.contract_address), abi=self.abi)
         return grant_contract
 
+    def cart_payload(self):
+        return {
+            'grant_id': str(self.id),
+            'grant_slug': self.slug,
+            'grant_url': self.url,
+            'grant_title': self.title,
+            'grant_contract_version': self.contract_version,
+            'grant_contract_address': self.contract_address,
+            'grant_token_symbol': self.token_symbol,
+            'grant_admin_address': self.admin_address,
+            'grant_token_address': self.token_address,
+            'grant_logo': self.logo.url if self.logo and self.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+            'grant_clr_prediction_curve': self.clr_prediction_curve,
+            'grant_image_css': self.image_css,
+            'is_clr_eligible': self.is_clr_eligible
+        }
+
     def repr(self, user):
         return {
                 'id': self.id,
@@ -1664,13 +1681,12 @@ class CartActivity(SuperModel):
         return f'{self.action} {self.grant.id if self.grant else "bulk"} from the cart {self.profile.handle}'
 
 
-class GrantCollections(SuperModel):
-    grants = models.ManyToManyField(blank=True, to=Grant, help_text=_('References to grants related to this collection'))
-    profile = models.ForeignKey('dashboard.Profile', help_text=_('Owner of the collection'), related_name='curator', on_delete=models.CASCADE)
-    title = models.CharField(max_length=255, help_text=_('Name of the collection'))
-    description = models.TextField(default='', blank=True, help_text=_('The description of the collection'))
-    cover = models.ImageField(upload_to=get_upload_filename, null=True,blank=True, max_length=500, help_text=_('Collection image'))
-    hidden = models.BooleanField(default=False, help_text=_('Hide the collection'), db_index=True)
+class CollectionsQuerySet(models.QuerySet):
+    """Handle the manager queryset for Collections."""
+
+    def visible(self):
+        """Filter results down to visible collections only."""
+        return self.filter(hidden=False)
 
     def keyword(self, keyword):
         if not keyword:
@@ -1682,7 +1698,34 @@ class GrantCollections(SuperModel):
         )
 
 
+class GrantCollections(SuperModel):
+    grants = models.ManyToManyField(blank=True, to=Grant, help_text=_('References to grants related to this collection'))
+    profile = models.ForeignKey('dashboard.Profile', help_text=_('Owner of the collection'), related_name='curator', on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, help_text=_('Name of the collection'))
+    description = models.TextField(default='', blank=True, help_text=_('The description of the collection'))
+    cover = models.ImageField(upload_to=get_upload_filename, null=True,blank=True, max_length=500, help_text=_('Collection image'))
+    hidden = models.BooleanField(default=False, help_text=_('Hide the collection'), db_index=True)
+    cache = JSONField(default=dict, blank=True, help_text=_('Easy access to grant info'),)
+
+    objects = CollectionsQuerySet.as_manager()
+
+    def generate_cache(self):
+        grants = self.grants.all()
+
+        cache = {
+            'count': grants.count(),
+            'grants': [{
+                'id': grant.id,
+                'logo': grant.logo.url if grant.logo and grant.logo.url else f'v2/images/grants/logos/{self.id % 3}.png',
+            } for grant in grants]
+        }
+
+        self.cache = cache
+        self.save()
+
     def to_json_dict(self):
+        self.generate_cache()
+
         return {
             'id': self.id,
             'curator': {
@@ -1692,8 +1735,8 @@ class GrantCollections(SuperModel):
             },
             'title': self.title,
             'description': self.description,
-            'cover': self.cover.url if self.cover else ''
+            'cover': self.cover.url if self.cover else '',
+            'count': self.cache['count'],
+            'grants': self.cache['grants']
         }
 
-    def update_cover(self):
-        pass
