@@ -209,15 +209,19 @@ Vue.component('grants-cart', {
           isAutomatic: true // we add this field to help properly format the POST requests
         };
 
-        donations.push({
-          amount,
-          token: tokenDetails.addr,
-          dest: gitcoinAddress,
-          name: token, // token abbreviation, e.g. DAI
-          grant: gitcoinGrantInfo, // equivalent to grant data from localStorage
-          comment: '', // comment left by donor to grant owner
-          tokenApprovalTxHash: '' // tx hash of token approval required for this donation
-        });
+        // Only add to donation inputs array if donation amount is greater than 0
+        if ((new BN(amount)).gt(new BN('0'))) {
+          donations.push({
+            amount,
+            token: tokenDetails.addr,
+            dest: gitcoinAddress,
+            name: token, // token abbreviation, e.g. DAI
+            grant: gitcoinGrantInfo, // equivalent to grant data from localStorage
+            comment: '', // comment left by donor to grant owner
+            tokenApprovalTxHash: '' // tx hash of token approval required for this donation
+          });
+        }
+
       });
       return donations;
     },
@@ -884,13 +888,12 @@ Vue.component('grants-cart', {
         const contract = allowanceData[i].contract;
         const tokenName = allowanceData[i].tokenName;
         const approvalTx = contract.methods.approve(targetContract, allowance);
-        const gasLimit = await this.estimateGas(approvalTx);
 
         // We split this into two very similar branches, because on the last approval
         // we execute the callback (the main donation flow) after we get the transaction hash
         if (i !== allowanceData.length - 1) {
           approvalTx
-            .send({ from: userAddress, gas: gasLimit })
+            .send({ from: userAddress })
             .on('transactionHash', (txHash) => {
               this.setApprovalTxHash(tokenName, txHash);
             })
@@ -900,7 +903,7 @@ Vue.component('grants-cart', {
             });
         } else {
           approvalTx
-            .send({ from: userAddress, gas: gasLimit })
+            .send({ from: userAddress })
             .on('transactionHash', async(txHash) => { // eslint-disable-line no-loop-func
               indicateMetamaskPopup(true);
               this.setApprovalTxHash(tokenName, txHash);
