@@ -45,13 +45,13 @@
           <ul class="gc-search-result">
             <template v-if="results && results[source_type]">
               <li v-for="result in results[source_type]" class="gc-search-result__content p-3" :key="result.id">
-               <a :href="[[ result.url ]]" class="d-flex" :data-usercard="result.source_type === 'Profile' ? result.title : ''">
+               <a :href="[[ result.url ]]" class="d-flex">
                   <img class="gc-search__avatar my-auto mr-3" :src="[[ result.img_url ]]" :alt="result.title" />
                   <div>
                     <p class="gc-search-result__title font-body mb-0">[[ result.title ]]</p>
                     <p class="gc-search-result__description font-caption mb-2">[[ result.description | truncate(70) ]]</p>
                     <div>
-                      <span class="gc-search__tag font-weight-semibold font-smaller-4 py-1 px-3">
+                      <span class="gc-search__tag font-weight-semibold font-smaller-4 py-1 px-3" :data-usercard="result.source_type === 'Profile' ? result.title : ''">
                         [[ result.source_type | capitalize ]]
                       </span>
                     </div>
