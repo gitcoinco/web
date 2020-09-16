@@ -85,12 +85,12 @@ let show_brightid_verify_modal = function(brightid_uuid) {
 
     callsMarkup = `${callsMarkup}
         <div class="row mb-3">
-          <div class="col-md-7">
+          <div class="col-md-8">
             <strong>${call.title}</strong><br />
-            ${callDate.toLocaleString()}
+            <span class="font-caption">${callDate.toLocaleString()} ${Intl.DateTimeFormat().resolvedOptions().timeZone}</span>
           </div>
-          <div class="col-md-5">
-            <a href="${call.url}" target="_blank" class="btn btn-gc-blue px-5 mb-2 mx-1">Register</a>
+          <div class="col-md-4 my-auto">
+            <a href="${call.url}" target="_blank" class="btn btn-gc-blue px-4 font-caption font-weight-bold my-auto mx-1">REGISTER</a>
           </div>
         </div>
       `;
