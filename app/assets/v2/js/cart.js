@@ -1599,7 +1599,7 @@ Vue.component('grants-cart', {
           // We now need to subtract the fee from this amount, and must ensure there is
           // actually enough balance left to send this transfer. Otherwise we do not have enough
           // balance to cover the transfer fee
-          
+
           if (amount.gt(fee)) {
             // Packed account balance is greater than fee, so we can proceed with transfer
             const transferAmount = zksync.utils.closestPackableTransactionAmount(amount.sub(fee));
@@ -1618,7 +1618,7 @@ Vue.component('grants-cart', {
             const receipt = await tx.awaitReceipt();
 
             console.log('  ✅ Got transfer receipt', receipt);
-          
+
           } else {
             console.log('  ❗ Remaining balance is less than the fee, skipping this transfer');
             continue;
@@ -2109,7 +2109,7 @@ Vue.component('grants-cart', {
               const tokenAmount = await this.getTotalAmountToTransfer(tokenName, tokenDonation.allowance);
               const extra = this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === tokenName)[0];
               let totalAmount;
-              
+
               if (!extra) {
                 totalAmount = tokenAmount;
               } else {
@@ -2141,12 +2141,12 @@ Vue.component('grants-cart', {
           // Check tokens
           for (let i = 0; i < deposits.length; i += 1) {
             const tokenAddress = deposits[i][0];
-            
+
             if (tokenAddress === ETH_ADDRESS) {
               // Skip ETH because we check it later
               continue;
             }
-              
+
             const tokenContract = new web3.eth.Contract(token_abi, tokenAddress);
             const requiredAmount = deposits[i][1];
             const userTokenBalance = await tokenContract.methods.balanceOf(this.userAddress).call({from: this.userAddress});
@@ -2209,7 +2209,7 @@ Vue.component('grants-cart', {
 
           const extra = this.zkSyncAdditionalDeposits.filter((x) => x.tokenSymbol === tokenDonation.tokenName)[0];
           let totalAmount;
-          
+
           if (!extra) {
             totalAmount = tokenAmount;
           } else {
@@ -2479,26 +2479,30 @@ Vue.component('grants-cart', {
     this.hasSufficientZkSyncBalance = false;
 
     // Show user cart
-    this.isLoading = false;
 
     // Check zkSync balance. Used to find which checkout option is cheaper
-    try {
-      // Setup zkSync and check balances
-      this.userAddress = (await web3.eth.getAccounts())[0];
-      await this.setupZkSync();
-      await this.checkZkSyncBalances();
+    window.addEventListener('dataWalletReady', async (e) => {
+      this.isLoading = false;
+      try {
+        await needWalletConnection()
+        // Setup zkSync and check balances
+        this.userAddress = (await web3.eth.getAccounts())[0];
+        await this.setupZkSync();
+        await this.checkZkSyncBalances();
 
-      // See if user was previously interrupted during checkout
-      await this.checkInterruptStatus();
-      if (this.zkSyncWasInterrupted) {
-        this.showZkSyncModal = true;
+        // See if user was previously interrupted during checkout
+        await this.checkInterruptStatus();
+        if (this.zkSyncWasInterrupted) {
+          this.showZkSyncModal = true;
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    }
+
+    }, false);
 
     // Cart is now ready
-    this.isLoading = false;
+    // this.isLoading = false;
   },
 
   beforeDestroy() {
