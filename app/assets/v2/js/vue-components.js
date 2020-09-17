@@ -608,11 +608,6 @@ Vue.component('project-card', {
 
 Vue.component('suggested-profiles', {
   props: ['id'],
-  computed: {
-    orderedUsers: function() {
-      return _.orderBy(this.users, 'rank_coder', 'desc');
-    }
-  },
   data: function() {
     return {
       users: []
@@ -656,7 +651,7 @@ Vue.component('suggested-profiles', {
   template: `<div class="townsquare_nav-list my-2 tribe">
       <div id="suggested-tribes">
         <ul class="nav d-inline-block font-body col-lg-4 col-lg-11 pr-2" style="padding-right: 0">
-            <suggested-profile v-for="profile in orderedUsers" :key="profile.id" :profile="profile" />
+            <suggested-profile v-for="profile in users" :key="profile.id" :profile="profile" />
         </ul>
       </div>
     </div>`
