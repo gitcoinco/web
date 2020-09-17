@@ -537,8 +537,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
             {% comment %} ================== START ZKSYNC MODAL =================== {% endcomment %}
             {% comment %} ========================================================= {% endcomment %}
 
-            <b-modal id="zksync-modal" :visible="showZkSyncModal" @hide="showZkSyncModal = false" 
-              class="modal-dialog modal-lg" header-border-variant="transparent" 
+            <b-modal id="zksync-modal" :visible="showZkSyncModal" @hide="showZkSyncModal = false"
+              class="modal-dialog modal-lg" header-border-variant="transparent"
               center hide-footer no-close-on-backdrop no-close-on-esc hide-header-close
             >
               <template v-slot:modal-header="{ close }">
@@ -574,7 +574,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       </h1>
                     </div>
                     {% comment %} Body {% endcomment %}
-                    <div v-if="zkSyncCheckoutStep2Status !== 'not-started'" 
+                    <div v-if="zkSyncCheckoutStep2Status !== 'not-started'"
                       class="mt-4 p-2 text-left font-smaller-1" style="background-color: #FFF6CF; width: 100%;"
                     >
                       {% comment %} Status updates for user {% endcomment %}
@@ -638,7 +638,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                       </span>
                     </p>
                     <p v-else class="mt-4 text-left">
-                      You started checking out with zkSync but never completed the process. 
+                      You started checking out with zkSync but never completed the process.
                       You must complete this checkout before proceeding with any other checkouts.
                       Please follow the prompts below to complete the process.
                     </p>
@@ -649,7 +649,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                     <div class="row justify-content-end font-smaller-1 font-weight-semibold text-highlight-dark-blue">
                       <div @click="showAdvancedSettings = !showAdvancedSettings" class="col-auto" style="cursor: pointer;">
                         Advanced settings <i class="ml-1 fas fa-cog"></i>
-                      </div> 
+                      </div>
                     </div>
                     <div v-if="showAdvancedSettings" class="p-3 text-left" style="background-color: #F1F1F1; width: 100%;">
                       <div>
@@ -710,7 +710,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep1Status === 'not-started'" 
+                        <button v-if="zkSyncCheckoutStep1Status === 'not-started'"
                           class="btn btn-gc-blue button--full shadow-none" @click="zkSyncLoginGitcoinFlow"
                         >
                           Sign in
@@ -741,8 +741,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep2Status === 'not-started'" 
-                          :disabled="zkSyncCheckoutStep1Status !== 'complete'" class="btn btn-gc-blue button--full shadow-none" 
+                        <button v-if="zkSyncCheckoutStep2Status === 'not-started'"
+                          :disabled="zkSyncCheckoutStep1Status !== 'complete'" class="btn btn-gc-blue button--full shadow-none"
                           @click="zkSyncBeginStep2"
                         >
                           <span v-if="hasSufficientZkSyncBalance">Sign in</span>
@@ -779,14 +779,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                         </div>
                       </div>
                       <div class="col-4">
-                        <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted" 
-                          :disabled="zkSyncCheckoutStep2Status === 'not-started'" 
+                        <button v-if="zkSyncCheckoutStep3Status === 'not-started' && !zkSyncWasInterrupted"
+                          :disabled="zkSyncCheckoutStep2Status === 'not-started'"
                           class="btn btn-gc-blue button--full shadow-none" @click="zkSyncBeginStep3"
                         >
                           Confirm
                         </button>
-                        <button v-else-if="zkSyncCheckoutStep3Status === 'not-started' && zkSyncWasInterrupted" 
-                          :disabled="zkSyncCheckoutStep2Status === 'not-started'" 
+                        <button v-else-if="zkSyncCheckoutStep3Status === 'not-started' && zkSyncWasInterrupted"
+                          :disabled="zkSyncCheckoutStep2Status === 'not-started'"
                           class="btn btn-gc-blue button--full shadow-none" @click="resumeZkSyncDonation"
                         >
                           Confirm
@@ -809,7 +809,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
                 </div>
               </template>
             </b-modal>
-                        
+
             {% comment %} ========================================================= {% endcomment %}
             {% comment %} =================== END ZKSYNC MODAL ==================== {% endcomment %}
             {% comment %} ========================================================= {% endcomment %}
@@ -837,7 +837,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>. {% endcomme
     {% comment %} ================================================================= {% endcomment %}
 
     <script type="text/javascript" src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/zksync@0.6.4/dist/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/zksync@0.6.4/dist/main.js"></script>
     <script type="text/javascript">
     (async () => {
         // Loads and compiles wasm library
