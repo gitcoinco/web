@@ -146,6 +146,7 @@ INSTALLED_APPS = [
     'wiki.plugins.macros.apps.MacrosConfig',
     'adminsortable2',
     'debug_toolbar',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -823,6 +824,18 @@ TIP_PAYOUT_PRIVATE_KEY = env('TIP_PAYOUT_PRIVATE_KEY', default='0x00De4B13153673
 
 ELASTIC_SEARCH_URL = env('ELASTIC_SEARCH_URL', default='')
 
+HAYSTACK_ELASTIC_SEARCH_URL = env('HAYSTACK_ELASTIC_SEARCH_URL', default='')
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
+        'URL': HAYSTACK_ELASTIC_SEARCH_URL,
+        'INDEX_NAME': 'haystack',
+    },
+}
+# Update Search index in realtime (using models.db.signals)
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
 account_sid = env('TWILIO_ACCOUNT_SID', default='')
 auth_token = env('TWILIO_AUTH_TOKEN', default='')
 verify_service = env('TWILIO_VERIFY_SERVICE', default='')
@@ -833,3 +846,5 @@ EMAIL_ACCOUNT_VALIDATION = env.bool('EMAIL_ACCOUNT_VALIDATION', default=False)
 PHONE_SALT = env('PHONE_SALT', default='THIS_IS_INSECURE_CHANGE_THIS_PLEASE')
 
 HYPERCHARGE_BOUNTIES_PROFILE_HANDLE = env('HYPERCHARGE_BOUNTIES_PROFILE', default='gitcoinbot')
+
+BRIGHTID_PRIVATE_KEY = env('BRIGHTID_PRIVATE_KEY', default='wrong-private-key')
