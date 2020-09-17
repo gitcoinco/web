@@ -140,6 +140,9 @@ let show_brightid_verify_modal = function(brightid_uuid) {
   $('#verify_brightid_modal').bootstrapModal('show');
 };
 
+// TODO: This component consists primarily of code taken from the SMS verification flow in the cart.
+// This approach is not DRY, and after Grants Round 7 completes, the cart should be refactored to include
+// this as a shared component, rather than duplicating the code.
 Vue.component('sms-verify-modal', {
   delimiters: [ '[[', ']]' ],
   data: function() {
