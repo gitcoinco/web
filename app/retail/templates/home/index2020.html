@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  {% include 'shared/tag_manager_1.html' %}
+  <title>Gitcoin</title>
+  <meta name="description" content="A place for developers to learn, earn, and network" />
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+
+  {% include 'shared/cards.html' %}
+  {% include 'shared/favicon.html' %}
+
+  <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;800&display=swap" rel="stylesheet">
+
+  <link href="/static/landingpage/app.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script src="/static/landingpage/town.js"></script>
+  <script src="/static/landingpage/txtRotate.js"></script>
+  <script src="/static/landingpage/sal.js"></script>
+  <script src="/static/landingpage/gitcoin.js"></script>
+  <script src="/static/landingpage/animations.js"></script>
+
+
+</head>
+
+<body>
+
+
+
+<!-- fixed logo-->
+<div id="logo" >
+  <a href="#">
+    <img src="/static/landingpage/logo_animated.svg" alt="logo" >
+  </a>
+</div>
+
+
+
+
+<!-- fixed signup button-->
+<div id="fixed-signup-button">
+  <a class="btn icon fe-pulse" href="#">
+    <img src="/static/v2/images/helmet-white.svg">
+    <span href="{% if not github_handle %}/login/github?next=products{% else %}/townsquare{% endif %}">Enter Gitcoin</span>
+  </a>
+</div>
+
+
+
+
+<!-- section town. animated background -->
+
+<section id="town">
+
+  <figure data-height="20vh" data-speed="1"><img src="/static/landingpage/town_house1.svg"></figure>
+  <figure data-height="20vh" data-speed="1"><img src="/static/landingpage/town_house2.svg"></figure>
+  <figure data-height="25vh" data-speed="1"><img src="/static/landingpage/town_house3.svg"></figure>
+  <figure data-height="20vh" data-speed="1"><img src="/static/landingpage/town_house4.svg"></figure>
+  <figure data-height="20vh" data-speed="1"><img src="/static/landingpage/town_house5.svg"></figure>
+  <figure data-height="20vh" data-speed="1"><img src="/static/landingpage/town_house6.svg"></figure>
+
+  <figure data-height="30vh" data-speed="2"><img src="/static/landingpage/town_house1.svg"></figure>
+  <figure data-height="30vh" data-speed="2"><img src="/static/landingpage/town_house2.svg"></figure> 
+  <figure data-height="20vh" data-speed="2"><img src="/static/landingpage/town_house3.svg"></figure>
+  <figure data-height="30vh" data-speed="2"><img src="/static/landingpage/town_house4.svg"></figure>
+  <figure data-height="30vh" data-speed="2"><img src="/static/landingpage/town_house6.svg"></figure> 
+
+  <figure data-height="40vh" data-speed="3"><img src="/static/landingpage/town_house1.svg"></figure>
+  <figure data-height="50vh" data-speed="3"><img src="/static/landingpage/town_house2.svg"></figure> 
+  <figure data-height="60vh" data-speed="3"><img src="/static/landingpage/town_house4.svg"></figure>
+
+  <figure data-height="50vh" data-speed="3"><img src="/static/landingpage/town_animated_house1.svg"></figure>
+
+</section>
+
+
+
+
+
+<!-- section intro : this is the welcome area.-->
+
+<section id="intro">
+
+  <div>
+
+    <h1>
+
+      <!-- text carusell -->
+
+      <span
+      class="txt-rotate"
+        data-period="1500"
+        data-rotate='[ "Learn", "Earn", "Network", "Build"]'
+        >
+        </span>
+
+      at Gitcoin.<br/>
+      Join the Community of Web3’s Top Developers.
+
+    </h1>
+
+
+    <p>Learn the latest tech, earn money, and network with top developers passionate about building and sustaining a remote-first open source community.</p>
+
+    <a class="btn icon fe-pulse" href="#">
+      <img src="/static/v2/images/helmet-white.svg">
+      <span href="{% if not github_handle %}/login/github?next=products{% else %}/townsquare{% endif %}">Enter Gitcoin</span>
+    </a>
+
+
+  </div>
+
+  <figure>
+    <img id="introLearn" class="floating" src="/static/landingpage/introLearn_animation.svg">
+    <img id="introEarn" class="floating hidden" src="/static/landingpage/introEarn_animation.svg">
+    <img id="introNetwork" class="floating hidden" src="/static/landingpage/introNetwork_animation.svg">
+    <img id="introBuild" class="floating hidden" src="/static/landingpage/introBuild_animation.svg"> 
+  </figure>
+
+</section>
+
+
+
+
+
+
+
+<!-- what is gitcoin -->
+
+<section id="whatisgitcoin">
+
+  <h1>What is Gitcoin?</h1>
+  
+  <figure >
+    <img loading="lazy" class="floating2" src="/static/landingpage/whatisgitcoin_animated.svg">
+  </figure>
+
+  <div class="grid">
+    <div>
+      <h2>Gitcoin for Developers</h2>
+      <p>Explore all that Gitcoin has to offer. Build exciting projects via hackathons or bounties while earning crypto. Find mentorship by connecting with talented developers and leaders of top Web3 companies.</p>
+      <a class="btn fe-pulse" href="/mission"><span>Learn More</span></a>
+    </div>
+
+    <div>
+      <h2>Gitcoin for Funders</h2>
+      <p>Leverage passionate developers to build a community amongst top Web3 developers. Source ideas through hackathons, hire freelancers through bounties, collaborate real-time on longer term projects and build your Web3 tribe all on Gitcoin.</p>
+      <a class="btn fe-pulse" href="/tribes"><span>Learn More</span></a>
+    </div>
+  </div>
+  
+</section>
+
+
+
+
+
+
+
+<!-- section trust -->
+
+<section id="trust">
+
+  <h1>Trusted by Top Web3 Brands</h1>
+
+  <div class="grid">
+
+    <div class="hover-logo" href='/mission'>
+      <div>
+        <h1>1</h1>
+        <h2>Mission</h2>
+      </div>
+    </div>
+
+    <div class="hover-logo" href='/results'>
+      <div>
+        <h1>47k</h1>
+        <h2>Developers</h2>
+      </div>
+    </div>
+
+    <div class="hover-logo" href='/results'>
+      <div>
+        <h1>$6.5mm</h1>
+        <h2>Delivered to OSS devs so far</h2>
+      </div>  
+    </div>  
+
+  </div>
+
+</section>
+
+
+
+
+
+
+
+
+<!-- partner logos -->
+
+<section id="partners">
+
+  <div class="grid">
+    <figure><img loading="lazy" src="/static/landingpage/partners/arweave.svg"></figure>
+    <figure><img loading="lazy" src="/static/landingpage/partners/chainlink.svg"></figure>
+    <figure><img loading="lazy" src="/static/landingpage/partners/ethereumfoundation.svg"></figure>
+    <figure><img loading="lazy" src="/static/landingpage/partners/near.svg"></figure>
+    <figure><img loading="lazy" src="/static/landingpage/partners/protocollabs.svg"></figure>
+    <figure><img loading="lazy" src="/static/landingpage/partners/sia.svg"></figure>
+  </div>  
+
+</section>
+
+
+  
+
+
+
+
+
+<!-- developers -->
+
+<section class="grid">
+
+  <h1>Gitcoin for Developers</h1>
+
+  <div class="grid">
+    <div>
+      <h2>Hackathons</h2>
+      <p>Build cutting edge projects alongside talented Web3 developers while learning the latest technologies from leading blockchain companies.</p>
+      <a class="btn fe-pulse" href="https://gitcoin.co/hackathon-list/"><span>Learn More</span></a>
+    </div>
+    <figure>
+      <img loading="lazy" class="floating" src="/static/landingpage/hackathons_animated.svg">
+    </figure>
+  </div>
+
+  <div class="grid reverse">
+    <div>
+      <h2>Grants</h2>
+      <p>Get funding for open sourced projects (Over $3mm in funding delivered so far).</p>
+      <a class="btn fe-pulse" href="https://gitcoin.co/grants/"><span>Learn More</span></a>
+    </div>
+    <figure>
+      <img loading="lazy" class="floating2"  src="/static/landingpage/grants_animated.svg">
+    </figure>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h2>KERNEL</h2>
+      <p>An exciting 8 week fellowship program for experienced entrepreneurs, top hackers, and elite Gitcoin builders in the early stages of building or joining Web3 companies.</p>
+      <a class="btn fe-pulse" href="http://kernel.community/"><span>Learn More</span></a>
+    </div>
+    <figure>
+      <img loading="lazy" class="floating"  src="/static/landingpage/kernel_animated.svg">
+    </figure>
+  </div>
+
+  <div class="grid reverse">
+    <div>
+      <h2>Bounties</h2>
+      <p>Earn crypto working directly with top Web3 companies working on short or long term development projects.</p>
+      <!--<a class="btn fe-pulse" href="#"><span>Learn More</span></a>-->
+    </div>
+    <figure>
+      <img loading="lazy" class="floating2"  src="/static/landingpage/bounties_animated.svg">
+    </figure>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h2>Quests</h2>
+      <p>Earn rewards and learn about the Web3 ecosystem through fun challenges.</p>
+      <!--<a class="btn fe-pulse" href="#"><span>Learn More</span></a>-->
+    </div>
+    <figure>
+      <img loading="lazy" class="floating"  src="/static/landingpage/quests_animated.svg">
+    </figure>
+  </div>
+
+</section>
+
+
+
+
+
+
+<!-- network -->
+
+<section class="grid">
+
+  <h1>The Network</h1>
+
+  <div class="grid">
+    <div>
+      <h2>Town Square</h2>
+      <p>Join the conversation. See what’s happening in Web3. Explore all that Gitcoin has to offer through the Gitcoin Townsquare social feed.</p>
+      <a class="btn fe-pulse" href="/townsquare"><span>Learn More</span></a>
+    </div>
+    <figure>
+      <img loading="lazy" class="floating2"  src="/static/landingpage/townsquare_animated.svg">
+    </figure>
+  </div>
+
+  <div class="grid reverse">
+    <div>
+      <h2>Hire Devs</h2>
+      <p>Don’t just find a developer, find the right developer. Browse the best software developers in the space on Gitcoin’s user directory.</p>
+      <a class="btn fe-pulse" target="_blank" href="https://gitcoin.co/tribes"><span>Learn More</span></a>
+    </div>
+    <figure>
+      <img loading="lazy" class="floating"  src="/static/landingpage/devs_animated.svg">
+    </figure>
+  </div>
+
+</section>
+
+
+
+
+
+
+
+<!-- twitter wall of love -->
+
+<section id="twitter">
+
+  <h1>Twitter Wall of Love</h1>
+
+  <div class="grid">
+
+    <figure>
+
+      <img loading="lazy" src="https://pbs.twimg.com/profile_images/996210723998101505/fMagjqsq_400x400.jpg">
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+
+      <figcaption>I'm genuinely amazed by the projects in the <a href="https://twitter.com/ArweaveTeam" target=_blank>@ArweaveTeam</a> <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> incubator, these are incredible. Wow.</figcaption>
+    </figure>
+
+    <figure>
+      <img loading="lazy" src="https://pbs.twimg.com/profile_images/1219463670431830019/o63Gb8v6_400x400.png">
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+
+      <figcaption>
+        Gitcoin Grants might be the most underrated experiment in Web3.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <img loading="lazy" src="https://pbs.twimg.com/profile_images/977496875887558661/L86xyLF4_400x400.jpg">
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+
+      <figcaption>
+Gitcoin grants quadratic funding is not just for funds allocation, it's also a great signaling tool!
+<br>
+<br>
+For the last few rounds, going to <a href="https://gitcoin.co/grants/">https://gitcoin.co/grants/</a> (sort by top match) has led me to discover a lot of really cool Ethereum projects I previously did not know about.</figcaption>
+    </figure>
+
+    <figure>
+      <img loading="lazy" src="https://pbs.twimg.com/profile_images/1148059058710155264/m317XmT4_400x400.png">
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+
+      <figcaption>One of the best way to start out in DeFi is working on a <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a>  bounty. Grab one of the many 4-digit prizes offered during the NYBW virtual hackathon
+</figcaption>
+    </figure>
+
+    <figure>
+      <img loading="lazy" src="https://pbs.twimg.com/profile_images/1274357399210487814/4edDspwk_400x400.jpg">
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+
+      <figcaption>Congrats to the entire <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> team on an amazing round 4 of CLR matching!
+<br>
+<br>
+
+$144,810 given directly to open source initiatives that will benefit <a href="https://twitter.com/search?q=%23ethereum&src=typed_query">#Ethereum</a> and grow our ecosystem.
+<br>
+<br>
+Let's make round 5 even better 🚀
+<br>
+<br>
+Oh and thanks to all the haters for the free marketing 😘
+</figcaption>
+    </figure>
+
+    <figure>
+      <img loading="lazy" src="https://pbs.twimg.com/profile_images/1228728801858854912/kAlqxuaP_400x400.jpg">
+      <svg class="twitter-icon"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg>
+
+      <figcaption>Sooo happy with <a href="https://twitter.com/gitcoin" target=_blank>@gitcoin</a> results! Submitted an issue last night and by the morning I had a PR with exactly what I wanted!
+</figcaption>
+    </figure>
+
+  </div>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<!-- section newsletter -->
+
+<section id="newsletter">
+
+  <form method="post" target="_blank" id="newsletterForm" action="//consensys.us11.list-manage.com/subscribe/post?u=947c9b18fc27e0b00fc2ad055&amp;id=fbf50d06d9">
+
+    <h2>Get the Latest Gitcoin News! Join Our Newsletter.</h2>
+
+
+    <div class="options">
+      <span>I want to</span>
+      <input type="radio" id="fund" name="category" checked>
+          <label for="fund">fund bounties</label>
+      <input type="radio" id="work" name="category">
+          <label for="work">work on bounties</label>
+      </div>
+
+      <div>
+      <input type="email" name="EMAIL" placeholder="Enter your email" required>
+
+      <button type="submit" class="btn fe-pulse">Subscribe</button>
+    </div>
+
+
+  </form>
+
+</section>
+
+
+
+
+
+
+
+<!-- footer navigation -->
+
+<section id="footernavigation">
+
+  <div>
+    <h2>Products</h2>
+    <a href="https://gitcoin.co/hackathon-list/">Hackathons</a>
+    <a href="https://gitcoin.co/bounties/funder">Bounties</a>
+    <a href="https://gitcoin.co/grants/">Grants</a>
+    <a href="http://kernel.community/">Kernel</a>
+    <a href="https://gitcoin.co/quests">Quests</a>
+    <a href="https://gitcoin.co/kudos">Kudos</a>
+  </div>
+
+  <div>
+    <h2>Business</h2>
+    <a href="https://gitcoin.co/about">About</a>
+    <a href="https://gitcoin.co/mission">Mission</a>
+    <a href="https://gitcoin.co/results">Results</a>
+    <a href="https://gitcoin.co/jobs">Jobs</a>
+    <a href="https://gitcoin.co/blog">Blog</a>
+  </div>
+
+  <div>
+    <h2>Community</h2>
+    <a href="https://gitcoin.co/wiki/wiki-code-conduct/">Code of Conduct</a>
+    <a href="https://chat.gitcoin.co/">Chat</a>
+    <a href="https://gitcoin.co/requestmoney">Request Money</a>
+    <a href="https://gitcoin.co/wiki/">Wiki</a>
+    <a href="https://github.com/gitcoinco/web/issues/new/choose">Help</a>
+    <a href="https://store.gitcoin.co/">Store</a>
+  </div>
+
+  <div>
+    <h2>Legal</h2>
+    <a href="https://gitcoin.co/legal/terms">Terms</a>
+    <a href="https://gitcoin.co/legal/privacy">Privacy</a>
+  </div>
+
+</section>
+
+
+
+
+<!-- footer social icons -->
+
+<section id="footersocial">
+
+  <figure><a href="/facebook"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#facebook"></use></svg></a></figure>
+  <figure><a href="/youtube"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#youtube"></use></svg></a></figure>
+  <figure><a href="/twitter"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#twitter"></use></svg></a></figure>
+  <figure><a href="/telegram"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#telegram"></use></svg></a></figure>
+  <figure><a href="/github"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#github"></use></svg></a></figure>
+  <figure><a href="/chat"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#chat2"></use></svg></a></figure>
+  <figure><a href="mailto:founders@gitcoin.co"><svg class="fusion"><use xlink:href="/static_proxy/landingpage/fusion/fusion-interface.svg#email"></use></svg></a></figure>
+
+  
+</section>
+
+
+
+
+<!-- footer consensys -->
+
+<section id="footerconsensys">
+  <figure>
+    <a href="https://consensys.net" target="_blank">
+      <img loading="lazy" src="/static/landingpage/consensys_white.svg">
+    </a>
+  </figure>
+</section>
+
+
+
+
+</body>
+</html>
+
+    {% include 'shared/tag_manager_2.html' %}
+

@@ -600,9 +600,12 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
+    print('### GITCOIN BOT A1')
     if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
+        print(f'### GITCOIN BOT A6 NOT POSTING')
         return False
 
+    print(f'### GITCOIN BOT A6')
     # Define posting specific variables.
     comment_id = None
     url = bounty.github_url
@@ -611,6 +614,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
 
     # Prepare the comment message string.
     msg = build_github_notification(bounty, event_name, profile_pairs)
+    print(f'### GITCOIN BOT A7 {msg}')
     if not msg:
         return False
 

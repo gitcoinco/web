@@ -1,0 +1,26 @@
+#logo{
+	position: absolute;
+	top: 3em;
+	left: 3em;
+	
+	img{
+		//width: 150px;
+		width: 200px;
+	}
+}
+
+
+
+
+@media #{$phone} { 
+	#logo{
+
+	top: 2em;
+	left: 2em;
+	
+		img{
+			width: 150px;
+		}
+
+    }
+}

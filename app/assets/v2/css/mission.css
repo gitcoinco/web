@@ -1,112 +1,343 @@
-.mission p {
-  font-size: 20px;
-  font-weight: 500;
-  color: #666666;
+/* General Page Styles */
+
+/* Font */
+/* The Titles */
+.section-title {
+  font-family: 'Muli', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 38px;
+  letter-spacing: 0.02em;
 }
 
-.mission .icon {
-  width: 5rem;
-  float: left;
-  margin-right: 3rem;
-}
+/* Section Specific Styles */
 
-.mission #we_interact .icon {
-  margin-right: 1.5rem;
-}
-
-.mission .divider {
-  border-bottom: 2px solid #3e24fb;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.mission .icon-small {
-  height: 4rem;
-  width: auto;
-}
-
-.mission .falcon-wrapper {
-  position: relative;
-  height: 100%;
-}
-
-.mission .falcon-wrapper .falcon-pull, .mission .falcon {
-  float: right;
-}
-
-.mission .icon-text {
-  font-weight: 500;
-  font-size: 1rem;
-  color: #666666;
-}
-
-#mission_hero .text {
-  margin-left: 2rem;
-}
-
-#mission_hero .font-bigger-4 {
-  letter-spacing: 0.15rem;
-}
-
-#we_want,
-#we_value,
-#we_interact,
-#we_believe {
-  padding: 0 10vw;
-}
-
-@media(max-width: 768px) {
-  .falcon-wrapper {
-    display: none;
+/* We Want Section */
+@media (min-width: 319px) {
+  /* The Background Image. */
+  #we-want-section {
+    background-image: url('/static/v2/images/bg/we_want_bg_mobile.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 70rem;
   }
-  #mission_hero .row {
-    padding: 1rem !important;
+  .mt-320-22 {
+    margin-top: 22rem;
   }
-  #mission_hero .text{
-    margin-left: 0rem;
+  .card-text-container {
+    background: linear-gradient(270deg, #74F7FF -11.02%, #FFFFFF 103.41%);
   }
-  #mission_hero .col-2, #mission_hero .col-9 {
+  .card-text-container p {
+    color: #3E00FF;
+  }
+}
+@media (min-width: 374px) {
+  .mt-375-27 {
+    margin-top: 27rem;
+  }
+  .ml-374-n5, .mx-374-n5 {
+    margin-left: -3rem!important;
+  }
+
+  .mr-374-n5, .mx-374-n5 {
+    margin-right: -3rem!important;
+  }
+}
+@media (min-width: 319px) and (max-width: 376px) {
+  .pr-320-to-375-3 {
+    padding-right: 1rem!important;
+  }
+}
+@media (min-width: 424px) {
+  .mt-425-30 {
+    margin-top: 30rem;
+  }
+  .justify-content-425-center {
+    -ms-flex-pack: center!important;
+    justify-content: center!important;
+  }
+}
+@media (min-width: 767px) {
+  #we-want-section {
+    height: 100em;
+  }
+  .mt-768-60 {
+    margin-top: 60rem;
+  }
+
+}
+@media (min-width: 959px) {
+  #we-want-section {
+    background-image: url('/static/v2/images/bg/we_want_bg.svg');
+    background-size: cover;
+    background-position: 0px -136px;
+    height: 39.5rem;
+  }
+  .card-text-container {
+    background: #18003F;
+  }
+  .card-text-container p {
+    color: #FFFFFF;
+  }
+  .col-lg-33 {
+    -ms-flex: 0 0 33.4211%;
+    flex: 0 0 33.4211%;
+    max-width: 33.4211%;
+  }
+  .ml-lg-n6, .mx-lg-n6 {
+    margin-left: -4rem!important;
+  }
+
+  .mr-lg-n6, .mx-lg-n6 {
+    margin-right: -4rem!important;
+  }
+}
+@media (min-width: 976px) and (max-width: 1025px){
+  #we-want-section {
+    height: 41.5rem;
+  }
+}
+@media (min-width: 1199px) {
+  .ml-xl-n7, .mx-xl-n7 {
+    margin-left: -5rem!important;
+  }
+
+  .mr-xl-n7, .mx-xl-n7 {
+    margin-right: -5rem!important;
+  }
+}
+@media (min-width: 1439px) {
+  #we-want-section {
+    height: 59rem;
+  }
+}
+@media (min-width: 1530px) {
+  #we-want-section {
+    height: 62.7rem;
+  }
+}
+@media (min-width: 2500px) {
+  #we-want-section {
+    background-position: 0px -232px;
+    height: 105.7rem;
+  }
+}
+
+/* We Believe Section */
+@media (min-width: 319px) {
+  #we-believe-media {
+    width: 290px;
+    height: 242px;
+  }
+  #we-believe-title {
+    margin-left: 10%;
+  }
+}
+@media (min-width: 374px) {
+  #we-believe-media {
+    width: 345px;
+    height: 285px;
+  }
+  #we-believe-title {
+    margin-left: 15%;
+  }
+}
+@media (min-width: 424px) {
+  #we-believe-media {
+    width: 391px;
+    height: 323px;
+  }
+  #we-believe-title {
+    margin-left: 17%;
+  }
+}
+@media (min-width: 767px) {
+  #we-believe-media {
+    width: 700px;
+    height: 620px;
+  }
+  #we-believe-title {
+    margin-left: 8%;
+  }
+
+  .ml-md-6 {
+    margin-left: 6rem;
+  }
+}
+@media (min-width: 1023px) {
+  #we-believe-media {
+    width: 480px;
+    height: 400px;
+  }
+}
+@media (min-width: 1439px) {
+  #we-believe-media {
+    width: 680px;
+    height: 600px;
+  }
+}
+@media (min-width: 1535px) {
+  #we-believe-media {
+    width: 700px;
+    height: 620px;
+  }
+}
+
+/* We Value Section */
+#we-value {
+  font-family: 'Muli', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 19px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+  color: #000000;
+}
+#vote-text {
+  font-family: 'Muli', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+  color: #FFFFFF;
+}
+.col-we-value-buttons {
+  -ms-flex: 0 0 11.5%;
+  flex: 0 0 11.5%;
+  max-width: 11.5%;
+}
+.we-value-text {
+  font-family: 'Muli', sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 21px;
+  line-height: 26px;
+  text-align: center;
+  letter-spacing: 0.02em;
+
+  color: #42E8E0;
+}
+@media (max-width: 321px) {
+  .col-320-12 {
+    -ms-flex: 0 0 100%;
     flex: 0 0 100%;
     max-width: 100%;
   }
 }
-
-@media(min-width: 768px) {
-  .mission .falcon-wrapper .falcon,
-  .mission .falcon-wrapper .falcon-pull {
-    height: auto;
+@media (min-width: 319px) {
+  #we-value-bg_mobile {
+    background-image: url('/static/v2/images/bg/we_value_bg_mobile.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 0 350px;
+    height: 75rem;
+  }
+}
+@media (min-width: 374px) {
+  #we-value-bg_mobile {
+    background-position: 0 240px;
+    height: 70rem;
+  }
+}
+@media (min-width: 767px) {
+  #we-value-bg_mobile {
+    background-position: 0 160px;
+    height: 60rem;
+  }
+}
+@media (min-width: 319px) and (max-width: 769px) {
+  #we-value {
+    color: #3E00FF;
+  }
+}
+@media (min-width: 959px) {
+  #we-value-bg_mobile {
+    background-image: url('/static/v2/images/bg/we_value_bg.svg');
+    background-size: 90% 80%;
+    background-position: 40px -4px;
+    height: 75rem;
+  }
+  .mt-959-20 {
+    margin-top: 20rem;
+  }
+  .h-959-35 {
+    height: 35%;
+  }
+}
+@media (min-width: 1439px) {
+  #we-value-bg_mobile {
+    background-size: 77% 80%;
+    background-position: 160px 120px;
+    height: 58rem;
+  }
+  .mt-xl-7 {
+    margin-top: 7rem!important;
+  }
+}
+@media (min-width: 1535px) {
+  #we-value-bg_mobile {
+    background-size: 72% 80%;
+    background-position: 205px 120px;
+  }
+}
+@media (min-width: 2500px) {
+  #we-value-bg_mobile {
+    background-size: 44% 80%;
+    background-position: 719px 120px;
   }
 }
 
-@media(min-width: 768px) and (max-width: 991px)  {
-  .mission .falcon-wrapper .falcon {
-    width: 28rem;
-  }
 
-  .mission .falcon-wrapper .falcon-pull {
-    width: 22rem;
-    margin-top: -18rem;
+/* We Interact - Section */
+@media (min-width: 319px) {
+  #we-interact-section {
+    background-image: url('/static/v2/images/bg/we_interact_bg_mobile.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
   }
-}
-
-@media(min-width: 992px) {
-  .mission .falcon-wrapper .falcon {
-    width: 25rem;
-  }
-
-  .mission .falcon-wrapper .falcon-pull {
-    width: 30rem;
-  }
-}
-
-@media(min-width: 992px) and (max-width: 1199px)  {
-  .mission .falcon-wrapper .falcon-pull {
-    margin-top: -18rem;
+  .we-interact-card-text {
+    width: 213px;
+    height: 108px;
+    font-family: 'Muli', sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 20px;
+    text-align: center;
+    letter-spacing: 0.02em;
+    color: #3E00FF;
   }
 }
-
-@media(min-width: 1200px) {
-  .mission .falcon-wrapper .falcon-pull {
-    margin-top: -22rem;
+@media (min-width: 767px) {
+  #we-interact-section {
+    background-image: url('/static/v2/images/bg/we_interact_bg.svg');
+    height: 105rem;
+  }
+}
+@media (min-width: 960px) {
+  #we-interact-section {
+    height: 63rem;
+  }
+}
+@media (min-width: 1023px) {
+  #we-interact-section {
+    height: 72rem;
+  }
+  .we-interact-card-text {
+    color: #000000;
+  }
+}
+@media (min-width: 1439px) {
+  #we-interact-section {
+    background-size: contain;
+    height: 70rem;
+  }
+}
+@media (min-width: 2500px) {
+  #we-interact-section {
+    background-size: cover;
   }
 }

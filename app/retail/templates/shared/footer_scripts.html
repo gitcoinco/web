@@ -36,6 +36,8 @@
 {% include 'shared/sentry.html' %}
 <script src="{% static "v2/js/lib/popper.min.js" %}"></script>
 <script src="{% static "v2/js/lib/bootstrap.min.js" %}" crossorigin="anonymous"></script>
+<script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
+
 <script>
   const bootstrapTooltip = $.fn.tooltip.noConflict()
   $.fn.bootstrapTooltip = bootstrapTooltip;
@@ -49,7 +51,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@portis/web3@2.0.0-beta.57/umd/index.min.js"></script>
 <script src="{% static "v2/js/lib/fortmatic.js" %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/fortmatic@2.0.6/dist/fortmatic.js"></script>
-<script src="{% static "v2/js/lib/walletconnect-v1.0.0-beta-47.js" %}"></script>
+<!-- <script src="{% static "v2/js/lib/walletconnect-v1.0.0-beta-47.js" %}"></script> -->
+<script src="https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js"></script>
+
 <script src="{% static "v2/js/data-chains.js" %}"></script>
 <script src="{% static "v2/js/wallet.js" %}"></script>
 
@@ -77,9 +81,10 @@
 <script src="{% static "v2/js/pages/carousel.js" %}"></script>
 <script src="{% static "v2/js/search.js" %}"></script>
 <script src="{% static "v2/js/vue-filters.js" %}"></script>
+<script src="{% static "v2/js/vue-components.js" %}"></script>
 <script src="{% static "v2/js/user_card.js" %}"></script>
+<script src='{% static "v2/js/pages/join_tribe.js" %}'></script>
 
-<script src="{% static "v2/js/lib/bootstrap-vue.min.js" %}"></script>
 {% if user.is_authenticated %}
   <script src='{% static "v2/js/chatWindow.js" %}'></script>
   <script src="{% static "v2/js/notifications.js" %}"></script>
