@@ -190,6 +190,7 @@ Vue.mixin({
           // paypal
           type = 'fiat';
           break;
+        case '0': //bitcoin
         case '61': // ethereum classic
         case '102': // zilliqa
         case '42220': // celo mainnet

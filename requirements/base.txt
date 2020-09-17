@@ -102,3 +102,4 @@ django-queryset-csv
 django-proxy==1.2.1
 ed25519
 tweepy
+oogway==0.7.0

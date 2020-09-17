@@ -1409,6 +1409,7 @@ class BountyFulfillment(SuperModel):
     ]
 
     TENANT = [
+        ('BTC', 'BTC'),
         ('ETH', 'ETH'),
         ('ETC', 'ETC'),
         ('ZIL', 'ZIL'),
