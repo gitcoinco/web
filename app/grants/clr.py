@@ -379,7 +379,7 @@ def populate_data_for_clr(grants, contributions, phantom_funding_profiles, clr_r
         grant_id = grant.defer_clr_to.pk if grant.defer_clr_to else grant.id
 
         # contributions
-        contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, subscription__is_postive_vote=True, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
+        contribs = copy.deepcopy(contributions).filter(subscription__grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
 
         # phantom funding
         grant_phantom_funding_contributions = phantom_funding_profiles.filter(grant_id=grant.id, created_on__gte=clr_start_date, created_on__lte=clr_end_date)
