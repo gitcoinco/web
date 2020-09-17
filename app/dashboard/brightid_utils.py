@@ -9,7 +9,7 @@ import requests
 
 
 def get_brightid_status(brightid_uuid):
-    brightIDUrl = 'http://node.brightid.org/brightid/v4/verifications/Gitcoin/' + str(brightid_uuid)
+    brightIDUrl = 'https://app.brightid.org/node/v5/verifications/Gitcoin/' + str(brightid_uuid)
 
     try:
         response = requests.get(brightIDUrl)
@@ -38,7 +38,7 @@ def get_brightid_status(brightid_uuid):
         return 'unknown'
 
 def assign_brightid_sponsorship(brightid_uuid):
-    brightIDv5OpUrl = 'http://node.brightid.org/brightid/v5/operations'
+    brightIDv5OpUrl = 'https://app.brightid.org/brightid/v5/operations'
 
     op = {
         'name': 'Sponsor',

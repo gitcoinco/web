@@ -221,6 +221,9 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
                 elif k2 > k1:
                     tot += ((v1 * v2) ** 0.5) / (pair_totals[k1][k2] / (v_threshold * 1.125) + 1)
 
+        if type(tot) == complex:
+            tot = float(tot.real)
+
         bigtot += tot
         totals.append({'id': proj, 'number_contributions': _num, 'contribution_amount': _sum, 'clr_amount': tot})
         # totals.append({'id': proj, 'clr_amount': tot})
@@ -234,7 +237,9 @@ def calculate_clr(aggregated_contributions, pair_totals, sms_verified_list, brig
             t['clr_amount'] = ((t['clr_amount'] / bigtot) * total_pot)
     else:
         CLR_PERCENTAGE_DISTRIBUTED = (bigtot / total_pot) * 100
-        percentage_increase = np.log(total_pot / bigtot) / 100 
+        if bigtot == 0:
+            bigtot = 1
+        percentage_increase = np.log(total_pot / bigtot) / 100
         for t in totals:
             t['clr_amount'] = t['clr_amount'] * (1 + percentage_increase)
     return totals

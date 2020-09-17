@@ -12,10 +12,10 @@
     <div class="col-3 col-sm-2 col-md-1 justify-content-center special_tag">
       {% if not anonymous %}
         <a href="{% url 'profile' transaction.subscription.contributor_profile.handle %}">
-          <img class="avatar rounded-circle" src="/dynamic/avatar/{{ transaction.subscription.contributor_profile.handle }}">
+          <img class="avatar rounded-circle" data-src="/dynamic/avatar/{{ transaction.subscription.contributor_profile.handle }}">
         </a>
       {% else %}
-        <img class="avatar rounded-circle" src="/dynamic/avatar/Anonymous">
+        <img class="avatar rounded-circle" data-src="/dynamic/avatar/Anonymous">
       {% endif %}
     </div>
     <div class="col-2 my-auto">
@@ -45,7 +45,7 @@
         <div class="d-none d-md-block col-md-2 font-body my-auto txn-link">
           <div class="tag tag-lg token">
             <p>
-              {{ transaction.subscription.amount_per_period_minus_gas_price|floatformat:2|intcomma }}
+              {{ transaction.normalized_data.amount_per_period_minus_gas_price|floatformat:3|intcomma }}
               <span>{{ transaction.subscription.token_symbol }}</span>
             </p>
           </div>
@@ -63,8 +63,8 @@
       {% endif %}
     </div>
     <div class="col-1 my-auto d-none d-xl-block tags font-caption">
-        {% if transaction.success and transaction.subscription.amount_per_period_to_gitcoin %} 
-        (+{{transaction.subscription.amount_per_period_to_gitcoin|floatformat:2}}  {{ transaction.subscription.token_symbol }} => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
+        {% if transaction.success and transaction.normalized_data.amount_per_period_to_gitcoin %} 
+        (+{{transaction.normalized_data.amount_per_period_to_gitcoin|floatformat:2}}  {{ transaction.subscription.token_symbol }} => <a href="https://gitcoin.co/grants/86/gitcoin-sustainability-fund"> Grants Dev Fund</a>)
         {% endif %}
     </div>
   </div>

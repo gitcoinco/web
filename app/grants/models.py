@@ -101,6 +101,14 @@ class GrantType(SuperModel):
         """Return the string representation."""
         return f"{self.name}"
 
+    @property
+    def active_clrs(self):
+        return GrantCLR.objects.filter(is_active=True, grant_filters__grant_type=str(self.pk))
+
+    @property
+    def active_clrs_sum(self):
+        return sum(self.active_clrs.values_list('total_pot', flat=True))
+
 
 class GrantCLR(SuperModel):
     round_num = models.CharField(max_length=15, help_text="CLR Round Number")
@@ -145,7 +153,7 @@ class GrantCLR(SuperModel):
 
     @property
     def grants(self):
-        return Grants.objects.filter(**self.grant_filters)
+        return Grant.objects.filter(**self.grant_filters)
 
 
 class Grant(SuperModel):
@@ -355,7 +363,7 @@ class Grant(SuperModel):
         help_text=_('The Grants Sybil Score'),
     )
 
-    funding_info = models.CharField(default='', max_length=255, help_text=_('Is this grant VC funded?'))
+    funding_info = models.CharField(default='', blank=True, null=True, max_length=255, help_text=_('Is this grant VC funded?'))
 
     weighted_risk_score = models.DecimalField(
         default=0,
@@ -483,6 +491,7 @@ class Grant(SuperModel):
 
     @property
     def history_by_month(self):
+        import math
         # gets the history of contributions to this grant month over month so they can be shown o grant details
         # returns [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"], ["December 2017", 5534, 2011, 0, 0], ["January 2018", 10396, 0 , 0, 0 ], ... for each monnth in which this grant has contribution history];
         CLR_PAYOUT_HANDLES = ['vs77bb', 'gitcoinbot', 'notscottmoore', 'owocki']
@@ -492,31 +501,21 @@ class Grant(SuperModel):
             contribs = [sc for sc in sub.subscription_contribution.all() if sc.success]
             for contrib in contribs:
                 #add all contributions
-                key = contrib.created_on.strftime("%Y/%m")
+                year = contrib.created_on.strftime("%Y")
+                quarter = math.ceil(int(contrib.created_on.strftime("%m"))/3.)
+                key = f"{year}/Q{quarter}"
                 subkey = 'One-Time'
-                if int(contrib.subscription.num_tx_approved) > 1:
-                    if contrib.is_first_in_sequence:
-                        subkey = 'New-Recurring'
-                    else:
-                        subkey = 'Recurring-Recurring'
                 if contrib.subscription.contributor_profile.handle in CLR_PAYOUT_HANDLES:
                     subkey = 'CLR'
                 if key not in month_to_contribution_numbers.keys():
                     month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
                 if contrib.subscription.amount_per_period_usdt:
                     month_to_contribution_numbers[key][subkey] += float(contrib.subscription.amount_per_period_usdt)
-        for pf in self.phantom_funding.all():
-            #add all phantom funds
-            subkey = 'One-Time'
-            key = pf.created_on.strftime("%Y/%m")
-            if key not in month_to_contribution_numbers.keys():
-                month_to_contribution_numbers[key] = {"One-Time": 0, "Recurring-Recurring": 0, "New-Recurring": 0, 'CLR': 0}
-            month_to_contribution_numbers[key][subkey] += float(pf.value)
 
         # sort and return
-        return_me = [["", "Subscription Billing",  "New Subscriptions", "One-Time Contributions", "CLR Matching Funds"]]
+        return_me = [["", "Contributions", "CLR Matching Funds"]]
         for key, val in (sorted(month_to_contribution_numbers.items(), key=lambda kv:(kv[0]))):
-            return_me.append([key, val['Recurring-Recurring'], val['New-Recurring'], val['One-Time'], val['CLR']])
+            return_me.append([key, val['One-Time'], val['CLR']])
         return return_me
 
     @property
@@ -524,7 +523,7 @@ class Grant(SuperModel):
         max_amount = 0
         for ele in self.history_by_month:
             if type(ele[1]) is float:
-                max_amount = max(max_amount, ele[1]+ele[2]+ele[3]+ele[4])
+                max_amount = max(max_amount, ele[1]+ele[2])
         return max_amount
 
     def get_amount_received_with_phantom_funds(self):
@@ -586,7 +585,7 @@ class Subscription(SuperModel):
         help_text=_('The tx id of the split transfer'),
         blank=True,
     )
-    is_postive_vote = models.BooleanField(default=True, help_text=_('Whether this is positive or negative vote'))
+    is_postive_vote = models.BooleanField(default=True, db_index=True, help_text=_('Whether this is positive or negative vote'))
     split_tx_confirmed = models.BooleanField(default=False, help_text=_('Whether or not the split tx succeeded.'))
 
     subscription_hash = models.CharField(
@@ -994,7 +993,6 @@ next_valid_timestamp: {next_valid_timestamp}
 
     def successful_contribution(self, tx_id):
         """Create a contribution object."""
-        from marketing.mails import successful_contribution
         self.last_contribution_date = timezone.now()
         self.next_contribution_date = timezone.now() + timedelta(0, int(self.real_period_seconds))
         self.num_tx_processed += 1
@@ -1019,8 +1017,6 @@ next_valid_timestamp: {next_valid_timestamp}
         self.save()
         grant.updateActiveSubscriptions()
         grant.save()
-        if not self.negative:
-            successful_contribution(self.grant, self, contribution)
         return contribution
 
 
@@ -1444,6 +1440,8 @@ def presave_contrib(sender, instance, **kwargs):
         'logo': grant.logo.url if grant.logo else None,
         'url': grant.url,
         'title': grant.title,
+        'amount_per_period_minus_gas_price': float(instance.subscription.amount_per_period_minus_gas_price),
+        'amount_per_period_to_gitcoin': float(instance.subscription.amount_per_period_to_gitcoin),
         'created_on': ele.created_on.strftime('%Y-%m-%d'),
         'frequency': int(sub.frequency),
         'frequency_unit': sub.frequency_unit,
@@ -1542,6 +1540,13 @@ class MatchPledge(SuperModel):
     comments = models.TextField(default='', blank=True, help_text=_('The comments.'))
     end_date = models.DateTimeField(null=False, default=next_month)
     data = JSONField(null=True, blank=True)
+    clr_round_num = models.ForeignKey(
+        'grants.GrantCLR',
+        on_delete=models.CASCADE,
+        help_text=_('Pledge CLR Round.'),
+        null=True,
+        blank=True
+    )
 
     @property
     def data_json(self):
