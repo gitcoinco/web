@@ -640,7 +640,7 @@ class Subscription(SuperModel):
     )
     gas_price = models.DecimalField(
         default=1,
-        decimal_places=4,
+        decimal_places=18,
         max_digits=50,
         help_text=_('The required gas price for the Subscription.'),
     )
